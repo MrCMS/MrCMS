@@ -411,6 +411,7 @@ function getRemoteModel(href, elId, callback) {
             .on('hidden', function() {
                 $(this).remove();
             });
+        $.validator.unobtrusive.parse('.modal form');
     }).success(function () {
         $('input:text:visible:first').focus();
         resizeModal(div);

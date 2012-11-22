@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
@@ -102,10 +103,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             var layoutAreaId = widget.LayoutArea.Id;
             _widgetService.DeleteWidget(id);
 
-            return !string.IsNullOrWhiteSpace(returnUrl) ? (ActionResult) Redirect(returnUrl) :
-                webpageId > 0
-                       ? RedirectToAction("Edit", "Webpage", new { id = webpageId, layoutAreaId = layoutAreaId })
-                       : RedirectToAction("Edit", "LayoutArea", new { id = layoutAreaId });
+            return !string.IsNullOrWhiteSpace(returnUrl) &&
+                   !returnUrl.Contains("widget/edit/", StringComparison.OrdinalIgnoreCase)
+                       ? (ActionResult) Redirect(returnUrl)
+                       : webpageId > 0
+                             ? RedirectToAction("Edit", "Webpage", new {id = webpageId, layoutAreaId = layoutAreaId})
+                             : RedirectToAction("Edit", "LayoutArea", new {id = layoutAreaId});
         }
 
         [HttpGet]
