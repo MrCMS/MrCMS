@@ -1,0 +1,43 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.DocumentVersion
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Changes - Version from @Model.CreatedOn</h3>
+</div>
+<div class="modal-body">
+    <p>Edited by @Html.ActionLink(Model.User.Email, "Edit", "User", new { id = Model.User.Id }, null)</p>
+
+    <table class="table table-bordered" id="changes-table">
+        <thead>
+            <tr>
+                <th>Property
+                </th>
+                <th>Previous
+                </th>
+                <th>Current
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var change in Model.GetComparisonToCurrent())
+            {
+                <tr class="@(change.AnyChange ? "changed" : "unchanged")">
+                    <td>
+                        @change.Property
+                    </td>
+                    <td>
+                        @Html.RenderValue(change.PreviousValue)
+                    </td>
+                    <td>
+                        @Html.RenderValue(change.CurrentValue)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+</div>

@@ -1,0 +1,25 @@
+﻿@model MrCMS.Entities.Documents.Web.Webpage   
+<link href="/Areas/Admin/Content/Styles/front-end-editing.css" rel="stylesheet" />
+<link href="@Url.Content("~/Areas/Admin/Content/less/bootstrap.less")" type="text/less" rel="stylesheet" />
+<div id="admin-edit-menu-container" class="gradient-bg admin-tools">
+    <div class="admin-menu-items">
+        <ul>
+            <li><a href="/Admin/Webpage/Edit/@Model.Id" target="_parent" class="btn btn-mini">Edit page</a></li>
+            <li><a href="/Admin/Webpage/Add/@Model.Id" target="_parent" class="btn btn-mini">Add page</a></li>
+            <li><a id="enable-editing"  class="btn btn-mini">Editing: On</a></li>
+            <li><a href="/Admin" target="_parent" class="btn btn-mini">To Admin</a></li>
+        </ul>
+    </div>
+    <img src="/Areas/Admin/Content/Images/button-right.png" class="menu-handle"/>
+</div>
+@Html.HiddenFor(webpage => webpage.Id)
+<script src="../../Areas/Admin/Content/Editors/ckeditor4/ckeditor/ckeditor.js"></script>
+<script src="../../Areas/Admin/Content/Scripts/jquery.cookie.js"></script>
+<script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.mrcms-mediaselector.js")"></script>
+<script src="@Url.Content("~/Areas/Admin/Content/Scripts/admin.js")"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+<script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.treeview.js")"></script>
+<script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.contextMenu.js")"></script>
+<script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery-ui-timepicker-addon.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Scripts/front-end-editing.js")"></script>

@@ -1,0 +1,3 @@
+﻿@model MrCMS.Entities.Documents.Web.Webpage
+@Html.LabelFor(x => x.Layout)
+@Html.DropDownListFor(webpage => webpage.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)

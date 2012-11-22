@@ -1,0 +1,95 @@
+/*
+ * Note: While Microsoft is not the author of this file, Microsoft is
+ * offering you a license subject to the terms of the Microsoft Software
+ * License Terms for Microsoft ASP.NET Model View Controller 3.
+ * Microsoft reserves all other rights. The notices below are provided
+ * for informational purposes only and are not the license terms under
+ * which Microsoft distributed this file.
+ *
+ * jQuery UI CSS Framework 1.8.11
+ *
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ *
+ * http://docs.jquery.com/UI/Theming/API
+ */
+
+/* Layout helpers
+----------------------------------*/
+
+.ui-helper-hidden { display: none; }
+
+.ui-helper-hidden-accessible {
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px 1px 1px 1px);
+    position: absolute !important;
+}
+
+.ui-helper-reset {
+    border: 0;
+    font-size: 100%;
+    line-height: 1.3;
+    list-style: none;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+    text-decoration: none;
+}
+
+.ui-helper-clearfix:after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+
+.ui-helper-clearfix { display: inline-block; }
+/* required comment for clearfix to work in Opera \*/
+
+* html .ui-helper-clearfix { height: 1%; }
+
+.ui-helper-clearfix { display: block; }
+/* end clearfix */
+
+.ui-helper-zfix {
+    filter: Alpha(Opacity=0);
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+
+/* Interaction Cues
+----------------------------------*/
+
+.ui-state-disabled { cursor: default !important; }
+
+
+/* Icons
+----------------------------------*/
+
+/* states and images */
+
+.ui-icon {
+    background-repeat: no-repeat;
+    display: block;
+    overflow: hidden;
+    text-indent: -99999px;
+}
+
+
+/* Misc visuals
+----------------------------------*/
+
+/* Overlays */
+
+.ui-widget-overlay {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}

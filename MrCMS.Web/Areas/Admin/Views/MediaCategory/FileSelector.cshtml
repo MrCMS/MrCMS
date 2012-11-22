@@ -1,0 +1,20 @@
+﻿@using MrCMS.Helpers
+@model IEnumerable<SelectListItem>
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Select file</h3>
+</div>
+<div class="modal-body" id="file-selector">
+    @Html.Label("Category")
+    @Html.DropDownList("Category", Model)
+    @Html.Label("File")
+    @Html.DropDownList("File", new List<SelectListItem> { new SelectListItem { Text = "Select an file...", Value = "" } }, new { disabled = "disabled" })
+    <div id="file-selector-uploader">
+    </div>
+    <div id="file-selector-uploader-result">
+    </div>
+</div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+    <input type="button" class="btn-primary btn" id="set-file" value="Select File" />
+</div>

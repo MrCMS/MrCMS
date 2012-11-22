@@ -1,0 +1,39 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Services.FilesPagedResult
+<div id="media-selector">
+    <a class="close" data-dismiss="modal" style="position: absolute; right: 10px; top: 10px;">×</a>
+    <div class="modal-body">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#library" data-toggle="tab">Library</a></li>
+            <li><a href="#upload" data-toggle="tab">Upload</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="library">
+                <div id="media-selector-data">
+                    <div class="form-inline" style="margin-top: 2px; margin-bottom: 5px;">
+                        @Html.LabelFor(result => result.CategoryId, "Category")
+                        @Html.DropDownListFor(result => result.CategoryId, ViewData["categories"] as IEnumerable<SelectListItem>)
+                        @Html.CheckBoxFor(result => result.ImagesOnly)
+                        @Html.LabelFor(result => result.ImagesOnly, "Images Only?")
+                    </div>
+                    <div class="results">
+                        @foreach (var file in Model)
+                        {
+                            Html.RenderPartial("FileResult", file);
+                        }
+                    </div>
+                    <div class="clearfix"></div>
+                    @Html.Pager(Model, "MediaSelector", i => new { page = i })
+                </div>
+            </div>
+            <div class="tab-pane" id="upload">
+                @Html.Label("UploadCategoryId", "Category")
+                @Html.DropDownList("UploadCategoryId", ViewData["categories"] as IEnumerable<SelectListItem>)
+                <div id="media-selector-uploader">
+                </div>
+                <div id="media-selector-uploader-result">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

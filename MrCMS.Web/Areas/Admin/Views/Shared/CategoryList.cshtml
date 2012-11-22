@@ -1,0 +1,15 @@
+﻿@model MrCMS.Models.SiteTree<MrCMS.Entities.Documents.Media.MediaCategory>
+<div id="category">
+    <div class="well sidebar-nav">
+        <ul class="nav nav-list">
+            <li class="nav-header">somewebsite.co.uk</li>
+        </ul>
+        <ul class="filetree treeview-famfamfam browser">
+            <li data-id="@Model.Id" data-controller="@Model.NodeType"><i class="@Model.IconClass">
+                                                                          &nbsp;</i>
+                @Html.ActionLink(Model.Name, "View", Model.NodeType, new {id = Model.Id}, null)
+                @{ Html.RenderPartial("TreeChildren", Model.ChildrenModel); }
+            </li>
+        </ul>
+    </div>
+</div>

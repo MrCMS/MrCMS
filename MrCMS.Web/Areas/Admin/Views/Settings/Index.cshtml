@@ -1,0 +1,31 @@
+﻿@model List<MrCMS.Settings.ISettings>
+@{
+    ViewBag.Title = "Settings";
+}
+@using (Html.BeginForm("Index", "Settings", FormMethod.Post))
+{
+    <div class="row-fluid" style="margin-bottom: 10px;">
+        <div class="span4">
+            <h3>Edit Settings</h3>
+        </div>
+        <div class="span8">
+            <div class="btn-group  display-inline  pull-right">
+                <input class="btn" type="submit" id="save-edit" value="Save" />
+            </div>
+        </div>
+    </div>
+    <div id="tabs">
+        <ul class="nav nav-tabs">
+            @foreach (var settingType in Model)
+            {
+                <li><a href="#@settingType.GetDivId()" data-toggle="tab">@settingType.GetTypeName()</a></li>
+            }
+        </ul>
+        <div class="tab-content">
+            @foreach (var settingType in Model)
+            {
+                Html.RenderPartial("Settings", settingType);
+            }
+        </div>
+    </div>
+}

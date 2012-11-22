@@ -1,0 +1,7 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.TextPage
+
+<h1>@Model.Name</h1>
+@Html.RenderImage(Model.FeatureImage)
+
+@Html.RenderBodyContent(Model.BodyContent)

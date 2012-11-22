@@ -1,0 +1,228 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@model Webpage
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section JavaScriptBlock
+{
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/edit-webpage.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.formbuilder.js")"></script>
+
+}
+<link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.formbuilder.css")" rel="stylesheet" type="text/css" />
+<section class="admin-header">
+    @if (TempData["saved"] != null)
+    {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["saved"]
+        </div>
+    }
+</section>
+<div class="row-fluid">
+    <div class="span12">
+        <a id="move-to" class="btn btn-info" title="Drag on to new page to relocate" href="#" style="cursor: move">Move to...</a>
+        <div class="btn-group display-inline pull-right">
+            @Html.EditorFor(x => x.PublishOn)
+            @(Model.PublishOn == null
+                ? Html.FormLink("Publish", "PublishNow", new { id = Model.Id }, new { @class = "btn  btn-warning" })
+                : Html.FormLink("Unpublish", "Unpublish", new { id = Model.Id }, new { @class = "btn  btn-success" }))
+            @Html.ValidationMessageFor(x => x.PublishOn)
+
+            <a href="/@Model.LiveUrlSegment" class="btn">View</a>
+            @Html.ActionLink("Preview", "View", "Webpage", new { id = Model.Id }, new { @class = "btn" })
+            @if (Model.CanDelete)
+            {
+                <a href="@Url.Action("Delete", "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
+            }
+            <button class="btn btn-primary" id="save-edit" data-form-id="edit-document" data-action="save">
+                Save</button>
+        </div>
+        <div class="display-inline pull-right" style="margin-top: 5px;">Publish on &nbsp; </div>
+    </div>
+</div>
+@Html.ValidationSummary()
+
+<ul class="nav nav-tabs margin-top-10">
+    <li class="active"><a href="#edit-content" data-toggle="tab">Edit</a></li>
+    <li><a href="#layout-content" data-toggle="tab">Layout</a></li>
+    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Form&nbsp;<b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a href="#form-builder-tab" data-toggle="tab">Design</a></li>
+            <li><a href="#postings-tab" data-toggle="tab">Entries (@Model.FormPostings.Count)</a></li>
+            <li><a href="#form-message-tab" data-toggle="tab">Message Settings</a></li>
+        </ul>
+    </li>
+    <li><a href="#versions" data-toggle="tab">Versions</a></li>
+    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Permissions&nbsp;<b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a href="#permissions-front-end" data-toggle="tab">Front end</a></li>
+            <li><a href="#permissions-admin" data-toggle="tab">Admin</a></li>
+        </ul>
+    </li>
+    <li><a href="#preview" data-toggle="tab">Preview</a></li>
+</ul>
+
+<div class="row-fluid">
+
+    @using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document" }))
+    {
+        <div class="tab-content">
+            <div class="tab-pane active" id="edit-content">
+                <div class="span12">
+                    @Html.HiddenFor(x => x.DocumentType)
+                    @Html.HiddenFor(x => x.Id)
+                    <div class="accordion" id="accordion-page-edit">
+                        @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
+                        @Html.ValidationMessageFor(x => x.Name)
+                        <br />
+                        <div class="display-inline">
+                            <strong>Permalink:</strong> /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
+                            <button id="change-url" class="btn btn-mini">Change Url</button>
+                        </div>
+                        @Html.ValidationMessageFor(x => x.UrlSegment)
+
+                        @if (Model is TextPage)
+                        {
+                            Html.RenderPartial("Content", Model as TextPage);
+                        }
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-page-edit" href="#seo">SEO</a>
+                            </div>
+                            <div id="seo" class="accordion-body collapse">
+                                <div class="accordion-inner">
+                                    @Html.LabelFor(x => x.MetaTitle, "Meta Title")
+                                    @Html.TextBoxFor(x => x.MetaTitle, new { @class = "span3" })
+                                    @Html.ValidationMessageFor(x => x.MetaTitle)
+                                    @Html.LabelFor(x => x.MetaDescription, "Meta Description")
+                                    @Html.TextBoxFor(x => x.MetaDescription, new { @class = "span12" })
+                                    @Html.ValidationMessageFor(x => x.MetaDescription)
+                                    @Html.LabelFor(x => x.MetaKeywords, "Meta Keywords")
+                                    @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "span3" })
+                                    @Html.ValidationMessageFor(x => x.MetaKeywords)
+                                    <div class="form-inline">
+                                        @Html.CheckBoxFor(x => x.RevealInNavigation)
+                                        @Html.LabelFor(x => x.RevealInNavigation, "Include in navigation")
+                                    </div>
+                                    @Html.ValidationMessageFor(x => x.RevealInNavigation)
+                                </div>
+                            </div>
+                        </div>
+                        @Html.RenderCustomAdminProperties()
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="tab-pane " id="layout-content">
+                <div class="well">
+                    @if (!(Model is Redirect))
+                    {
+                        <p></p>
+                        Html.RenderPartial("Layout", Model);
+                        Html.RenderPartial("CustomLayout", Model);
+                    }
+                </div>
+            </div>
+
+            <div class="tab-pane" id="form-builder-tab">
+                <h4>Design</h4>
+                <div id="my-form-builder"></div>
+            </div>
+            <div class="tab-pane" id="postings-tab">
+                <h4>Entries (@Model.FormPostings.Count)</h4>
+                @Html.Action("Postings", new { id = Model.Id })
+            </div>
+            <div class="tab-pane" id="form-message-tab">
+                <h4>Message Settings</h4>
+                @Html.LabelFor(webpage => webpage.FormSubmittedMessage)
+                @Html.TextBoxFor(webpage => webpage.FormSubmittedMessage, new { @class = "span11" })
+                @Html.LabelFor(webpage => webpage.FormEmailTitle)
+                @Html.TextBoxFor(webpage => webpage.FormEmailTitle, new { @class = "span11" })
+                @Html.LabelFor(webpage => webpage.SendFormTo)
+                @Html.TextBoxFor(webpage => webpage.SendFormTo, new { @class = "span11" })
+                @Html.LabelFor(webpage => webpage.FormMessage)
+                @Html.TextAreaFor(x => x.FormMessage, new { @class = "ckedit-enabled" })
+            </div>
+            <div class="tab-pane" id="versions">
+                @Html.Action("Versions", new { id = Model.Id })
+            </div>
+            <div class="tab-pane" id="permissions-front-end">
+                <h4>Front End</h4>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Role
+                            </th>
+                            <th>Available
+                            </th>
+                            <th>Is recursive?
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var role in Model.GetFrontEndRoles())
+                        {
+                            <tr>
+                                <td>
+                                    @role.Name
+                                </td>
+                                <td>
+                                    @Html.DropDownList("role." + role.Name + ".FrontEnd.Status", role.GetStatusOptions)
+                                </td>
+                                <td>
+                                    @Html.DropDownList("role." + role.Name + ".FrontEnd.Recursive", role.GetRecursiveOptions)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane" id="permissions-admin">
+                <h4>Admin</h4>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Role
+                            </th>
+                            <th>Available
+                            </th>
+                            <th>Is recursive?
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var role in Model.GetAdminRoles())
+                        {
+                            <tr>
+                                <td>
+                                    @role.Name
+                                </td>
+                                <td>
+                                    @Html.DropDownList("role." + role.Name + ".Admin.Status", role.GetStatusOptions)
+                                </td>
+                                <td>
+                                    @Html.DropDownList("role." + role.Name + ".Admin.Recursive", role.GetRecursiveOptions)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane" id="preview">
+                <p>
+                    (<b>Note:</b> this preview is based on the last saved data, save any changes to see them reflected in the preview)
+                </p>
+                <iframe src="/@Model.LiveUrlSegment" width="100%" height="800" scrolling="yes" frameborder="0" border="0"></iframe>
+            </div>
+        </div>
+    }
+</div>
+<p style="margin-top: 10px; font-size: 11px;">
+    Created on: @Model.CreatedOn.ToShortDateString()
+    <br />
+    Last Updated on: @Model.UpdatedOn.ToShortDateString()
+</p>

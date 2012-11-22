@@ -1,0 +1,3 @@
+﻿@using MrCMS.Helpers
+@model List<MrCMS.Models.ImageSize>
+@Html.DropDownList("ImageSize", Model.BuildSelectItemList(size => size.Name, emptyItem: SelectListItemHelper.EmptyItem("Select an image size...")))

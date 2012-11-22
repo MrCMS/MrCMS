@@ -1,0 +1,44 @@
+﻿<div class="navbar navbar-fixed-top navbar-inverse">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+            </a><a class="brand" href="#">MrCMS</a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">CMS
+                                             <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Webpages", "Index", "Webpage")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Media", "Index", "MediaCategory")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Layouts", "Index", "Layout")
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Users
+                                             <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Manage Users", "Index", "User")</li>
+                            <li>@Html.ActionLink("Manage User Roles", "Index", "Role")</li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="navbar-search pull-left" action="@Url.Action("Index", "Search")" method="POST">
+                    @Html.TextBox("term", "", new { @class = "search-query span2", placeholder = "Search", autocomplete = "off" })
+                </form>
+                <ul class="nav pull-right">
+                    <li>
+                        <p class="navbar-text pull-right">@{ Html.RenderAction("LoggedInAs", "Navigation"); }</p>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.nav-collapse -->
+        </div>
+    </div>
+    <!-- /navbar-inner -->
+</div>

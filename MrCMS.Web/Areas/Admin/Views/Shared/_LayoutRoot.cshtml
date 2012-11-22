@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Areas/Admin/Content/Styles/admin.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Areas/Admin/Content/Styles/fileUpload.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.fileupload-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.treeview.css")" rel="stylesheet" type="text/css" />
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/smoothness/jquery-ui.css"
+        rel="stylesheet" type="text/css" />
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"> </script>
+        <![endif]-->
+</head>
+<body>
+    @RenderBody()
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js" type="text/javascript"> </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.validate.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.treeview.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.cookie.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.postback.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.contextMenu.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery-ui-timepicker-addon.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Styles/bootstrap/js/bootstrap.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.ui.widget.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/tmpl.min.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/load-image.min.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.iframe-transport.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.fileupload.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.fileupload-ui.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.mrcms-mediaselector.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/admin.js")" type="text/javascript"> </script>
+    <script src="@Url.Content("~/Areas/Admin/Content/Scripts/custom.js")" type="text/javascript"> </script>
+    @if (IsSectionDefined("JavaScriptBlock"))
+    {
+        @RenderSection("JavaScriptBlock")
+    }
+</body>
+</html>

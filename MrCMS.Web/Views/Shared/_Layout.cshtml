@@ -1,0 +1,90 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Settings
+@using MrCMS.Website
+@model MrCMS.Entities.Documents.Web.Webpage
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@(!string.IsNullOrWhiteSpace(Model.MetaTitle) ? Model.MetaTitle : Model.Name)</title>
+    <meta name="description" content="@Model.MetaDescription" />
+    <meta name="keywords" content="@Model.MetaKeywords" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="@Url.Content("~/Content/Styles/style.css")" rel="stylesheet" />
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><style type="text/css">.gradient {filter: none;}</style><![endif]-->
+    @Html.RenderZone("Head Files")
+</head>
+<body>
+
+    <div class="logo-container">
+        <div class="container">
+            <a href="/" style="margin: 0; padding: 0">
+                <img src="@Url.Content("~/Content/images/mrcms-logo.png")"></a>
+        </div>
+    </div>
+
+    <div class="navbar navbar-inverse navbar-fixed-top nav-container">
+        <div class="navbar-inner">
+            <div class="container">
+                <a href="/" data-toggle="collapse" data-target=".nav-collapse" class="logo-small"></a>
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="nav-collapse collapse">
+                    @Html.RenderZone("Main Navigation")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container main-container">
+        @Html.RenderZone("Before Content")
+        @RenderBody()
+        @Html.RenderZone("After Content")
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="span3">
+                    <h4><a href="">Twitter</a></h4>
+                    @Html.RenderZone("Footer area 1")
+                </div>
+                <div class="span3">
+                    <h4><a href="">Blog</a></h4>
+
+                    @Html.RenderZone("Footer area 2")
+                </div>
+                <div class="span3">
+                    <h4><a href="">Newsletter</a></h4>
+                    @Html.RenderZone("Footer area 3")
+                </div>
+                <div class="span3">
+                    <h4><a href="">Contact</a></h4>
+                    @Html.RenderZone("Footer area 4")
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+    @if (MrCMSApplication.CurrentUserIsAdmin)
+    {
+        Html.RenderAction("AdminEditor", "AdminTools", Model);
+    }
+
+    @if (IsSectionDefined("JavascriptBlockInclude"))
+    {
+        @RenderSection("JavascriptBlockInclude")
+    }
+
+
+    @{ Html.RenderAction("RenderAnalytics", "SEO"); }
+
+</body>
+</html>

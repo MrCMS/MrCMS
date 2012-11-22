@@ -1,0 +1,16 @@
+﻿@model MrCMS.Entities.Documents.Layout.Layout
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Confirm delete</h3>
+</div>
+<div class="modal-body">
+    <p>Deleting this layout can not be undone and will delete all areas within the layout.</p>
+    <p>This will also revert any pages that were using this layout to the site default</p>
+</div>
+<div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    @using (Html.BeginForm("Delete", "Layout", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+    {
+        <input type="submit" class="btn btn-primary" value="Confirm Delete Layout" />
+    }
+</div>

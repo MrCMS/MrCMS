@@ -62,3 +62,12 @@ packages/
 
 #Test files
 *.testsettings
+
+#ELMAH error files
+*error-*.xml
+
+#SQLite databases
+*.db
+
+#Connection strings config
+*ConnectionStrings.config

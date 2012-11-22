@@ -1,0 +1,33 @@
+﻿@model MrCMS.Web.Areas.Admin.Models.AddPageModel
+@{
+    ViewBag.Title = "Add media category";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section JavaScriptBlock
+{
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/add-category.js")"></script>
+}
+<div class="row-fluid">
+    <div class="span10">
+        <h3>Add Media Category</h3>
+    </div>
+    <div class="span2">
+        <button class="btn pull-right" data-form-id="add-media-category" data-action="save">
+            Save & Continue</button>
+    </div>
+</div>
+<hr class="small-margin" />
+@using (Html.BeginForm("Add", "MediaCategory", new { id = "" }, FormMethod.Post, new { id = "add-media-category" }))
+{
+    @Html.HiddenFor(x => x.Parent.Id)
+    ;
+    @Html.LabelFor(x => x.Name, "Category Name")
+    @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
+    @Html.ValidationMessageFor(x => x.Name)
+
+    @Html.LabelFor(x => x.UrlSegment, "Path")
+    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
+    @Html.ValidationMessageFor(x => x.UrlSegment)
+    <br />
+    @Html.Hidden("DocumentType", "MediaCategory")
+}

@@ -1,0 +1,39 @@
+﻿@using MrCMS.Entities.People
+@model IList<MrCMS.Entities.People.User>
+@{
+    ViewBag.Title = "Users";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+}
+<h2>
+    Users</h2>
+@Html.ActionLink("Add", "Add", null, new {@class = "btn btn-success", data_toggle = "modal"})
+<br />
+<br />
+<table class="table table-striped">
+    <tr>
+        <th>
+            Email
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            Created On
+        </th>
+    </tr>
+    @foreach (User user in Model)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(user.Email, "Edit", new {id = user.Id})
+            </td>
+            <td>
+                @user.Name
+            </td>
+            <td>
+                @user.CreatedOn
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,76 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Layout.LayoutArea
+@{
+    ViewBag.Title = "Edit | " + Model.AreaName;
+}
+<section class="admin-header">
+    <div class="row-fluid" style="margin-bottom: 10px;">
+        <div class="span6">
+            <h3>Edit Layout Area - @Model.AreaName</h3>
+        </div>
+        <div class="span6">
+            <div class="btn-group  display-inline  pull-right">
+                @Html.ActionLink("Back to Layout", "Edit", "Layout", new { id = Model.Layout.Id }, new { @class = "btn" })
+                <a href="@Url.Action("Delete", "LayoutArea", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
+                <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-document">
+                    Save</button>
+            </div>
+        </div>
+    </div>
+</section>
+@using (Html.BeginForm("Edit", "LayoutArea", FormMethod.Post, new { id = "edit-document" }))
+{
+    @Html.HiddenFor(x => x.Id)
+    <div id="tabs">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="properties" class="tab-pane active">
+                @Html.LabelFor(x => x.AreaName, "Area Name")
+                @Html.TextBoxFor(x => x.AreaName, new { @class = "span12" })
+
+                <h3>Widgets
+                </h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name
+                            </th>
+                            <th>Type
+                            </th>
+                            <th>Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var widget in Model.GetWidgets())
+                        {
+                            <tr>
+                                <td>@widget.Name</td>
+                                <td>
+                                    @widget.WidgetTypeFormatted
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", "Widget", new { id = widget.Id }, new { @class = "btn" })
+                                    <a href="@Url.Action("Delete", "Widget", new { id = widget.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="btn-group">
+                    <a href="@Url.Action("Add", "Widget", new { layoutAreaId = Model.Id })" class="btn" data-toggle="modal">Add widget</a>
+                    @Html.ActionLink("Sort widgets", "SortWidgets", "LayoutArea", new { id = Model.Id }, new { @class = "btn" })
+                </div>
+
+                <p>
+                    Created on: @Model.CreatedOn.ToShortDateString()
+                    <br />
+                    Last Updated on: @Model.UpdatedOn.ToShortDateString()
+                </p>
+            </div>
+        </div>
+    </div>
+}

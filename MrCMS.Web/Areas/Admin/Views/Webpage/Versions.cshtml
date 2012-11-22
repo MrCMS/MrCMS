@@ -1,0 +1,33 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Models.VersionsModel
+<div data-paging-type="async">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Date Created
+                </th>
+                <th>User
+                </th>
+                <th>Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var version in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @version.CreatedOn
+                    </td>
+                    <td>
+                        @(version.User != null ? version.User.Email : "")
+                    </td>
+                    <td>
+                        @Html.ActionLink("View Changes", "ViewChanges", "Webpage", new { id = version.Id }, new { data_toggle = "modal" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @Html.Pager(Model.Items, "Versions", i => new { Model.Id, page = i })
+</div>

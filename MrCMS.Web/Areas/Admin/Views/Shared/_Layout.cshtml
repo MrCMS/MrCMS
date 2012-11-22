@@ -1,0 +1,26 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutRoot.cshtml";
+}
+
+@Html.Hidden("controller-name", ViewData["controller-name"])
+@{ Html.RenderPartial("Navbar"); }
+
+<div class="container-mrcms">
+    @{ Html.RenderPartial("AdminNavigation"); }
+    <div class="main-content">
+        <div class="inner-content">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+<footer>
+    <hr />
+    <p>&copy; MrCMS 2012</p>
+</footer>
+<!-- Le javascript  ( Placed at the end of the document so the pages load faster) -->
+
+@if (IsSectionDefined("JavaScriptBlock"))
+{
+    DefineSection("JavaScriptBlock", () => Write(RenderSection("JavaScriptBlock")));
+}

@@ -1,0 +1,18 @@
+﻿@model MrCMS.Entities.Documents.Layout.LayoutArea
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>
+        Add layout area</h3>
+</div>
+@using (Html.BeginForm("Add", "LayoutArea", new {id = ""}, FormMethod.Post))
+{
+    <div class="modal-body">
+        @Html.HiddenFor(x => x.Layout.Id)
+        @Html.LabelFor(x => x.AreaName, "Area Name")
+        @Html.EditorFor(x => x.AreaName)
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Close</a>
+        <input type="submit" class="btn-success btn" value="Add layout area" />
+    </div>
+}

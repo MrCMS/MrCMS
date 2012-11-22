@@ -1,0 +1,49 @@
+﻿@using MrCMS.Entities.Documents
+@model MrCMS.Entities.Documents.Web.Webpage
+@{
+    ViewBag.Title = "Add Webpage";
+}
+@section JavaScriptBlock
+{
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/add-layout.js")"></script>
+}
+
+@using (Html.BeginForm("Add", "Webpage", new { id = "" }, FormMethod.Post))
+{
+    
+    <section class="admin-header">
+        <div class="row-fluid" style="margin-bottom: 10px;">
+            <div class="span4">
+                <h3>Add page</h3>
+            </div>
+            <div class="span8">
+                <div class="btn-group display-inline pull-right">
+                    <input type="submit" class="btn-primary btn" value="Save and continue" />
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="control-group">
+        <label class="control-label">
+            Page Type</label>
+        <div class="controls">
+            @foreach (var documentType in ViewData["DocumentTypes"] as List<DocumentTypeDefinition>)
+            {
+                <label class="radio">
+                    <i class="@documentType.IconClass">&nbsp;</i>
+                    <input id="DocumentType" name="DocumentType" type="radio" value="@documentType.TypeName" required>
+                    @documentType.Name
+                </label>
+            }
+        </div>
+    </div>
+    @Html.HiddenFor(x => x.Parent.Id)
+    @Html.LabelFor(x => x.Name, "Page Name")
+    @Html.TextBoxFor(x => x.Name, new { @class = "span12 required", autocomplete="off" })
+
+    @Html.LabelFor(x => x.UrlSegment, "Url")
+    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12 required" })
+    <br />
+    @Html.LabelFor(x => x.Layout)
+    @Html.DropDownListFor(x => x.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
+}

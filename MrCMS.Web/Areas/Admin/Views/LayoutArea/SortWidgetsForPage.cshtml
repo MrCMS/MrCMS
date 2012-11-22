@@ -1,0 +1,61 @@
+﻿@using MrCMS.Entities.Widget
+@model MrCMS.Web.Areas.Admin.Controllers.LayoutAreaController.PageWidgetSortModel
+@{
+    ViewBag.Title = "Sort Webpage";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section JavaScriptBlock
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sortable").sortable();
+            $("#sortable").disableSelection();
+            $(".progress").hide();
+            $("#save").click(function () {
+                $(".progress").show();
+
+                $('#sortable li').each(function (index) {
+                    $.post('/Admin/LayoutArea/SortWidgetsForPageAction',
+                        {
+                            widgetId: this.id,
+                            layoutAreaId: $('#LayoutAreaId').val(),
+                            webpageId: $('#WebpageId').val(),
+                            order: index
+                        });
+                });
+
+                reload();
+            });
+
+            function reload() {
+                window.location.href = $('#back-link').attr('href');
+            }
+        });
+    </script>
+}
+<div class="row-fluid">
+    <div class="span7">
+        <h3>Sort</h3>
+    </div>
+    <div class="span5">
+        <div class="row-fluid">
+            <div class="btn-group pull-right">
+                @Html.ActionLink("Back to page", "Edit", "Webpage", new { id = Model.Webpage.Id }, new { id="back-link", @class = "btn" })
+                <button class="btn" id="save">
+                    Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<hr class="small-margin" />
+@Html.Hidden("LayoutAreaId", Model.Area.Id)
+@Html.Hidden("WebpageId", Model.Webpage.Id)
+<ul id="sortable">
+    @foreach (Widget widget in Model.Widgets)
+    {
+        <li id="@widget.Id"><i class="icon-resize-full"></i>&nbsp;&nbsp;@widget.Name (@widget.WidgetTypeFormatted)</li>
+    }
+</ul>
+<div class="alert alert-info">
+    Drag items in to the order you would like then click save.
+</div>

@@ -1,0 +1,30 @@
+﻿@using MrCMS.Models
+@model SiteTreeNode.ChildModel
+@if (Model.Any())
+{
+    <ul>
+        @foreach (SiteTreeNode node in Model)
+        {
+            <li data-id="@node.Id" data-sort-id="@node.ParentId" data-custom-sort="@node.CustomSort" data-can-add-child="@node.CanAddChild" data-controller="@node.NodeType" @(!node.IsPublished ? "class=\"grey\"" : "")><i class="@node.IconClass">&nbsp;</i>
+                @{
+            var cssClass = "";
+            if (!node.IsPublished)
+            {
+                cssClass = "red";
+            }
+            if (!node.RevealInNavigation)
+            {
+                cssClass = "grey";
+            }
+                }
+
+                @(node.NodeType == "Webpage" ? Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, new { @class = cssClass != "" ? cssClass : "" }) : Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, null))
+                @{ Html.RenderPartial("TreeChildren", node.ChildrenModel); }
+            </li>
+        }
+        @if (Model.More)
+        {
+            <li><i class="icon-plus">&nbsp;</i>@Html.ActionLink(string.Format("{0} More", Model.NumberMore), "Index", "Search", new { parent = Model.Id }, null)</li>
+        }
+    </ul>
+}

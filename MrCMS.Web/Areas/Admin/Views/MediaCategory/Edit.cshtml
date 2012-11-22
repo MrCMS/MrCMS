@@ -1,0 +1,68 @@
+﻿@model MrCMS.Entities.Documents.Media.MediaCategory
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+}
+@section JavaScriptBlock   
+{
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/media-category.js")"></script>
+}
+
+<section class="admin-header">
+    @if (TempData["saved"] != null)
+    {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["saved"]
+        </div>
+    }
+    <div class="row-fluid" style="margin-bottom: 10px;">
+        <div class="span4">
+            <h3>Edit - @Model.Name</h3>
+        </div>
+        <div class="span8">
+            <div class="btn-group  display-inline  pull-right">
+                @if (Model.CanDelete)
+                {
+                    <a href="@Url.Action("Delete", "MediaCategory", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete Category</a>
+                }
+                <button class="btn btn-primary" id="save-edit" data-form-id="edit-media" data-action="save">
+                    Save</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="tabs">
+    <ul class="nav nav-tabs">
+        <li><a href="#properties" data-toggle="tab">Properties</a></li>
+        <li class="active"><a href="#media" data-toggle="tab">Files</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="properties" class="tab-pane">
+            @using (Html.BeginForm("Edit", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { id = "edit-media" }))
+            {
+                @Html.LabelFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
+                @Html.LabelFor(x => x.UrlSegment, "Path")
+                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12", disabled = "true" })
+                <p>
+                    Created on: @Model.CreatedOn.ToShortDateString()
+                </p>
+                <p>
+                    Last Updated on: @Model.UpdatedOn.ToShortDateString()
+                </p>
+            }
+        </div>
+        <div id="media" class="tab-pane active">
+            <h4>Add Files</h4>
+            <br />
+            <p id="dragdropsupported">To upload files please drag files them here.</p>
+
+            @{ Html.RenderPartial("Upload", Model); }
+
+            @{ Html.RenderPartial("UploadTemplate"); }
+            @{ Html.RenderPartial("DownloadTemplate"); }
+
+        </div>
+    </div>
+</div>

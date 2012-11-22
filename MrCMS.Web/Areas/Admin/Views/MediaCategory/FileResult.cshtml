@@ -1,0 +1,42 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaFile
+<div class="file-result">
+    <div class="header">
+        @if (Model.IsImage)
+        {
+            <img width="25" height="25" src="/@Model.FileLocation" alt="@Model.Title"/>
+        }
+        @Model.FileName - @Model.ContentLength bytes
+                                    <a href="#" class="pull-right show-hide-file-result">Show</a>
+    </div>
+    <div class="content" style="display: none">
+        @if (Model.IsImage)
+        {
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img width="100" height="100" src="/@Model.FileLocation" alt="@Model.Title"/>
+                        </td>
+                        <td>
+                            @foreach (var size in Model.Sizes)
+                            {
+                                <div>
+                                    @Html.RadioButton("SelectedFile", Model.Id + "-" + size.Width + "-" + size.Height, new { @class = "selected-file", id = "SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height }) @Html.Label("SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height, new { style = "display:inline" }, size.Name + " (" + size.ActualWidth + "px x " + size.ActualHeight + "px)")
+                                </div>
+                            }
+
+                            <input type="button" class="btn-primary btn set-file" data-action="select" disabled="disabled" value="Choose file" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @Html.RadioButton("SelectedFile", Model.FileLocation, new { @class = "selected-file", id = "SelectedFile-" + Model.Id }) @Html.Label("SelectedFile-" + Model.Id, "Select file")
+            
+            <input type="button" class="btn-primary btn set-file" data-action="select" disabled="disabled" value="Choose file" />
+        }
+    </div>
+</div>

@@ -1,0 +1,73 @@
+﻿@using MrCMS.Entities.People
+@model MrCMS.Entities.People.User
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="row-fluid">
+    <div class="span4">
+        <h4>Edit - @Model.Name</h4>
+    </div>
+    <div class="span8">
+        <div class="btn-group  display-inline  pull-right">
+            
+                <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn" data-toggle="modal">Reset Password</a>
+            <button class="btn">
+                Delete</button>
+            <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-user">
+                Save</button>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("Edit", "User", FormMethod.Post, new { id = "edit-user" }))
+{
+    @Html.HiddenFor(x => x.Id)
+    <div id="tabs">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
+        </ul>
+        <div class="tab-content">
+
+            <div id="properties" class="tab-pane active">
+
+                @Html.LabelFor(x => x.FirstName)
+                @Html.TextBoxFor(x => x.FirstName, new { @class = "span12" })
+                @Html.LabelFor(x => x.LastName)
+                @Html.TextBoxFor(x => x.LastName, new { @class = "span12" })
+                
+                <div class="form-inline">
+                    
+                @Html.CheckBoxFor(x => x.IsActive)
+                    @Html.LabelFor(x => x.IsActive)
+                </div>
+
+                <hr />
+
+                @Html.LabelFor(x => x.Roles)
+
+                @{
+                    var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
+                }
+                <div class="form-inline">
+                @if (userRoles != null)
+                {
+                    foreach (var role in userRoles)
+                    {
+                        bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
+
+                    @Html.CheckBox("Role-" + role.Id, isChecked)
+                        @:&nbsp;
+                    @Html.Label("Role-" + role.Id, role.Name)
+                    <br />
+                    }
+                }
+                </div>
+                <hr/>
+                <p>
+                    Created on: @Model.CreatedOn.ToShortDateString() <br />
+                    Last Updated on: @Model.UpdatedOn.ToShortDateString()
+                </p>
+            </div>
+        </div>
+    </div>
+}

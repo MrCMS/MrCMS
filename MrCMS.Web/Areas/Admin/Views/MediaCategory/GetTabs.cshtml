@@ -1,0 +1,16 @@
+﻿@using MrCMS.Entities.Documents
+@using MrCMS.Entities.Documents.Media
+@using MrCMS.Entities.Documents.Web
+@model MrCMS.Entities.Documents.Document
+<ul>
+    @*Web*@
+    <li><a href="#properties">Properties</a></li>
+    @if (Model is TextPage)
+    {
+        <li><a href="#content">Content</a></li>
+    }
+    @if (Model is MediaCategory)
+    {
+        <li><a href="#media">Files</a></li>
+    }
+</ul>

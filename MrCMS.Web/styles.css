@@ -1,0 +1,264 @@
+ @import url(bootstrap/css/bootstrap.css);
+  
+body { font-family: 'Montserrat', Arial, Helvetica Neue, Tahoma, Serfi;font-size: 12px;color: #aaaaaa;font-weight: 400;background: url(images/bg.jpg) no-repeat 50% 0 fixed;}
+input, button, select, textarea {font-family: 'Montserrat', Helvetica, Arial, sans-serif;}
+.container {position: relative; background:white-webkit-border-radius:15px;-moz-border-radius: 15px;border-radius:15px; box-sizing: border-box; background:white; width: 980px;background: url(images/container-bg.jpg) repeat;margin-top:20px;margin-bottom:20px;}
+.wrapper { width: 940px; margin: 20px;}
+a.logo {position:absolute;top:10px;left:0;width:219px;height:202px;display:block;z-index:3;}
+span.left-shadow { position: absolute;display: block;width: 35px;height: 644px;background: url('images/shadow.png') no-repeat 0 0;top: 60px;left:-15px;z-index: -1;}
+span.right-shadow {position: absolute;display: block;width: 35px;height: 644px;background: url('images/shadow.png') no-repeat 0 0;top: 60px;right: -15px;z-index: -1;}
+.padding-10 {padding: 10px;}
+.padding-20 {padding: 20px;}
+.padding-top-bottom-10 {padding:10px 0;}
+.padding-top-bottom-20 {padding:20px 0;}
+.padding-left-right-10 {padding:0 10px;}
+.padding-left-20 {padding-left:20px;}
+.padding-top-20 {padding-top: 20px;}
+.margin-10 {margin: 10px;}
+.margin-20 {margin:20px;}
+.margin-top-bottom-10 {margin: 10px 0;}
+.margin-left-right-10 {margin:0 10px;}
+.margin-top-10 {margin-top:10px;}
+.text-align-center {text-align:center;}
+
+header { position: relative;height:209px; margin-left:20px;}
+header .top {height: 108px;background:url(images/inside-bg.jpg) repeat;border: 2px solid #eee5e1;-webkit-border-radius:15px;-moz-border-radius: 15px;border-radius:15px; box-sizing:border-box;}
+header .bottom {height: 101px; width: 906px; position: relative;text-align:center;}
+header .bottom .lady-top {position: absolute; right: 85px; top:-20px;}
+header .bottom .deliver-to {width: 940px; padding-top: 10px; margin: 0 auto;}
+header .bottom .deliver-places {width: 520px; margin: 0 auto; font-size: 16px;}
+
+header .telephone-number {position:absolute; top: 14px; left: 281px;}
+header .twitter-follow-button {position: absolute; top: 14px; right: 20px;}
+header .fb-like {position: absolute; top: 40px; right: 20px;}
+
+nav {width: inherit; text-align:center; position:absolute; top:75px; width: 940px;}
+nav ul {list-style:none; margin:0;}
+nav ul li {display:inline;vertical-align:middle;}
+nav ul li.sep {background: url('images/star.png') 0px 2px no-repeat;  vertical-align: middle; margin: 0 14px; padding: 0 5px;}
+nav ul li a {color:#FFEB79; font-size: 14px; text-transform:uppercase;}
+nav ul li a:hover {color:#fff; text-decoration:none;}
+
+.left-content {-webkit-border-radius:30px;-moz-border-radius: 30px;border-radius:30px; border:solid 1px #E4E4DE; background:white; min-height: 200px; padding: 10px; margin-left: 0px;}
+.openning-times-container {background:white; border-left: solid 1px #E4E4DE; }
+
+footer {background:url(images/inside-bg.jpg) repeat;-webkit-border-radius:15px;-moz-border-radius: 15px;border-radius:15px; box-sizing:border-box;padding:20px 0;margin-top:15px;}
+
+.section-header {font-size:16px;color:#FFEB79;text-transform:uppercase;padding-bottom:5px;position:relative;}
+.section-header img {position:absolute;top:-10px;right:80px;}
+.section-content {padding-right:20px;}
+.section-content ul { margin: 0;padding: 0;}
+.section-content ul li { margin: 0;padding: 10px 0;list-style-type: none;color:#ffffff;}
+.section-content ul li a { color: #FFEB79;}
+
+.side-bar-con {height:338px;background:url('images/opening-bg.jpg') no-repeat 0 0;padding:20px;}
+.opening-times-header {text-align:center;padding:5px 0;}
+.opening-times {padding:5px 0;background:#f5f5ef;-webkit-border-radius:5px;-moz-border-radius: 5px;border-radius:5px; box-sizing:border-box;border:1px solid #e7e7e0;}
+.opening-times table tr td {padding-left:23px;}
+.special-offers-header {color:#DF006D;font-size:17px;text-transform:uppercase;text-align:center;padding:10px 0;border-bottom:1px dashed #dddddd;}
+.special-offers-header span {color:#dddddd;}
+.input-custom {width:245px;text-align:center;height:34px !important;background:#f5f5ef !important;}
+.input-row {width: 253px;background:#f5f5ef !important;height:34px !important;}
+.btn-custom {width:78px;height:27px;background:#ffffff url('images/button-bg.jpg') no-repeat 0 0;border:none;text-transform:uppercase;color:#ffffff;text-shadow:none;padding:4px 10px;}
+.btn-custom:hover {background:#ffffff url('images/button-bg.jpg') no-repeat 0 0;color:#ffffff;text-shadow:none;}
+.control-group .button-border {border-top:1px dotted #dddddd;border-bottom:1px dotted #dddddd;}
+.left-content {-webkit-border-radius:15px;-moz-border-radius: 15px;border-radius:15px; box-sizing:border-box;border:1px solid #dddddd;}
+.slider-container {-webkit-border-radius:15px;-moz-border-radius: 15px;border-radius:15px; box-sizing:border-box;border:1px solid #dddddd;background:#ffffff;position:relative;}
+#slider {-webkit-border-radius:15px;-moz-border-radius: 15px;border-radius:15px; box-sizing:border-box;}
+#slider img {-webkit-border-radius:15px;-moz-border-radius: 15px;border-radius:15px; box-sizing:border-box;}
+
+.contact-con {padding:20px 30px 10px 30px;}
+.contact-con .header {background:url('images/contact.jpg') no-repeat 0 0;width:153px;height:35px;}
+textarea.enquiry {width:520px;background:#f5f5ef;}
+
+.gallery-con ul li {float:left;margin: 0 1px 1px 0;}
+.fadehover {position: relative;float:left;margin:0 1px 1px 0;width:234px;height:177px;}
+.normal {position: absolute;left: 0;top: 0;z-index: 10;}
+.mouseover {position: absolute;left: 0;top: 0;}
+.gallery-con {position:relative;}
+.gallery-header {position:absolute;width:940px;text-align:center;top:-8px;z-index:100;}
+
+/* The Nivo Slider styles */
+.nivoSlider {
+	position:relative;
+	width:100%;
+	height:auto;
+	overflow: hidden;
+}
+.nivoSlider img {
+	position:absolute;
+	top:0px;
+	left:0px;
+	max-width: none;
+}
+.nivo-main-image {
+	display: block !important;
+	position: relative !important; 
+	width: 100% !important;
+}
+
+/* If an image is wrapped in a link */
+.nivoSlider a.nivo-imageLink {
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:100%;
+	height:100%;
+	border:0;
+	padding:0;
+	margin:0;
+	z-index:6;
+	display:none;
+}
+/* The slices and boxes in the Slider */
+.nivo-slice {
+	display:block;
+	position:absolute;
+	z-index:5;
+	height:100%;
+	top:0;
+}
+.nivo-box {
+	display:block;
+	position:absolute;
+	z-index:5;
+	overflow:hidden;
+}
+.nivo-box img { display:block; }
+
+/* Caption styles */
+.nivo-caption {
+	position:absolute;
+	left:0px;
+	bottom:0px;
+	background:#000;
+	color:#fff;
+	width:100%;
+	z-index:8;
+	padding: 5px 10px;
+	opacity: 0.8;
+	overflow: hidden;
+	display: none;
+	-moz-opacity: 0.8;
+	filter:alpha(opacity=8);
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+.nivo-caption p {
+	padding:5px;
+	margin:0;
+}
+.nivo-caption a {
+	display:inline !important;
+}
+.nivo-html-caption {
+    display:none;
+}
+/* Direction nav styles (e.g. Next & Prev) */
+.nivo-directionNav a {
+	position:absolute;
+	top:45%;
+	z-index:9;
+	cursor:pointer;
+}
+.nivo-prevNav {
+	left:0px;
+}
+.nivo-nextNav {
+	right:0px;
+}
+/* Control nav styles (e.g. 1,2,3...) */
+.nivo-controlNav {
+	text-align:center;
+	padding: 55px 0;
+    position:absolute;
+    bottom:-20px;
+    right:0;
+    width:320px;
+}
+.nivo-controlNav a {
+	cursor:pointer;
+}
+.nivo-controlNav a.active {
+	font-weight:bold;
+}
+.theme-default .nivoSlider {
+	position:relative;
+	background:#fff url(images/loading.gif) no-repeat 50% 50%;
+}
+.theme-default .nivoSlider img {
+	position:absolute;
+	top:0px;
+	left:0px;
+	display:none;
+}
+.theme-default .nivoSlider a {
+	border:0;
+	display:block;
+}
+
+.theme-default .nivo-controlNav {
+	text-align: center;
+	padding: 20px 0;
+}
+.theme-default .nivo-controlNav a {
+	display:inline-block;
+	width:22px;
+	height:22px;
+	background:url(images/bullets.png) no-repeat;
+	text-indent:-9999px;
+	border:0;
+	margin: 0 2px;
+}
+.theme-default .nivo-controlNav a.active {
+	background-position:0 -22px;
+}
+
+.theme-default .nivo-directionNav a {
+	display:block;
+	width:30px;
+	height:30px;
+	background:url(images/arrows.png) no-repeat;
+	text-indent:-9999px;
+	border:0;
+	opacity: 0;
+	-webkit-transition: all 200ms ease-in-out;
+    -moz-transition: all 200ms ease-in-out;
+    -o-transition: all 200ms ease-in-out;
+    transition: all 200ms ease-in-out;
+}
+.theme-default:hover .nivo-directionNav a { opacity: 1; }
+.theme-default a.nivo-nextNav {
+	background-position:-30px 0;
+	right:15px;
+}
+.theme-default a.nivo-prevNav {
+	left:15px;
+}
+
+.theme-default .nivo-caption {
+    font-family: Helvetica, Arial, sans-serif;
+}
+.theme-default .nivo-caption a {
+    color:#fff;
+    border-bottom:1px dotted #fff;
+}
+.theme-default .nivo-caption a:hover {
+    color:#fff;
+}
+
+.theme-default .nivo-controlNav.nivo-thumbs-enabled {
+	width: 100%;
+}
+.theme-default .nivo-controlNav.nivo-thumbs-enabled a {
+	width: auto;
+	height: auto;
+	background: none;
+	margin-bottom: 5px;
+}
+.theme-default .nivo-controlNav.nivo-thumbs-enabled img {
+	display: block;
+	width: 120px;
+	height: auto;
+}

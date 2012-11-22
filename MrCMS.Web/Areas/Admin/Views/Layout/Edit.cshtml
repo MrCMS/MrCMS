@@ -1,0 +1,82 @@
+﻿@using MrCMS.Entities.Documents.Layout
+@model Layout
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<section class="admin-header">
+    @if (TempData["saved"] != null)
+    {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["saved"]
+        </div>
+    }
+    <div class="row-fluid" style="margin-bottom: 10px;">
+        <div class="span4">
+            <h3>Edit - @Model.Name</h3>
+        </div>
+        <div class="span8">
+            <div class="btn-group  display-inline  pull-right">
+                @if (Model.CanDelete)
+                {
+                    <a href="@Url.Action("Delete", "Layout", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete Layout</a>
+                }
+                <button class="btn btn-primary" id="save-edit" data-form-id="edit-document" data-action="save">Save</button>
+
+            </div>
+        </div>
+    </div>
+</section>
+@using (Html.BeginForm("Edit", "Layout", FormMethod.Post, new { id = "edit-document" }))
+{
+    @Html.HiddenFor(x => x.Id)
+    <div id="tabs">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
+            <li><a href="#zones" data-toggle="tab">Layout areas</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="properties" class="tab-pane active">
+                @Html.LabelFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
+                @Html.LabelFor(x => x.UrlSegment, "Layout Location")
+                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
+                @Html.LabelFor(x => x.Hidden)
+                @Html.CheckBoxFor(x => x.Hidden)
+                <p>
+                    Created on: @Model.CreatedOn.ToShortDateString()
+                </p>
+                <p>
+                    Last Updated on: @Model.UpdatedOn.ToShortDateString()
+                </p>
+            </div>
+            <div id="zones" class="tab-pane">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (LayoutArea area in Model.LayoutAreas)
+                        {
+                            <tr>
+                                <td>
+                                    @area.AreaName
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", "LayoutArea", new { id = area.Id }, new { @class = "btn" })
+                                    <a href="@Url.Action("Delete", "LayoutArea", new { id = area.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <a href="@Url.Action("Add", "LayoutArea", new { id = Model.Id })" class="btn" data-toggle="modal">Add layout area</a>
+            </div>
+        </div>
+    </div>
+}

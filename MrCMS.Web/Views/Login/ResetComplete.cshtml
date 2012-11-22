@@ -1,0 +1,32 @@
+﻿@model dynamic
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Reset Complete</title>
+    <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="container">
+        <p>&nbsp;</p>
+        <div class="row">
+            <div class="span2">&nbsp;</div>
+            <div class="span8">
+                <div class="well">
+                    <div class="control-group">
+                        <div class="controls">
+                            <h4>Password Reset Complete</h4>
+                            @Html.ActionLink("Back to login", "Login", "Login")
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span2">&nbsp;</div>
+        </div>
+    </div>
+</body>
+</html>

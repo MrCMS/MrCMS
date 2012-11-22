@@ -1,0 +1,37 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Paging.IPagedList<MrCMS.Models.DetailedSearchResultModel>
+<div class="row-fluid">
+    @using (Html.BeginForm())
+    {
+        <div class="form-search">
+            @Html.Label("term", "Search")
+            @Html.TextBox("term", ViewData["term"])
+            @Html.DropDownList("type", ViewData["doc-types"] as IEnumerable<SelectListItem>)
+            @Html.Label("parent", "Select Parent:")
+            @Html.DropDownList("parent", ViewData["parents"] as IEnumerable<SelectListItem>)
+            <input type="submit" class="btn" />
+        </div>
+    }
+</div>
+<div id="search-results">
+    @if (!Model.Any())
+    {
+        <p>No documents could be found matching your search term</p>
+    }
+    @foreach (var result in Model)
+    {
+        <div class="row-fluid">
+            <div class="span12">
+                <a href="@result.EditUrl">
+                    <strong>@result.Name</strong>
+                </a>
+                @if (!string.IsNullOrWhiteSpace(result.ViewUrl))
+                {
+                    <a href="@result.ViewUrl" target="_blank">(View)</a>
+                }
+                <p>Last updated on @result.LastUpdated</p>
+            </div>
+        </div>
+    }
+    @Html.Pager(Model, "Index", i => new { term = ViewData["term"], type = ViewData["type"], parent = ViewData["parent-val"], page = i })
+</div>

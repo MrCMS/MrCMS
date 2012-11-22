@@ -1,0 +1,40 @@
+﻿@using System.ComponentModel
+@using System.Web.Mvc.Html
+@using MrCMS.Helpers
+@using MrCMS.Settings
+@model ISettings
+<div id="@Model.GetDivId()" class="tab-pane">
+    @{
+        var type = Model.GetType();
+    }
+    @foreach (var property in type.GetProperties().Where(info => info.CanWrite))
+    {
+        var name = (type.FullName + "." + property.Name).ToLower();
+        var displayNameAttribute = property.GetCustomAttributes(typeof(DisplayNameAttribute), true).OfType<DisplayNameAttribute>().FirstOrDefault();
+        var dropDownSelectionAttribute = property.GetCustomAttributes(typeof(DropDownSelectionAttribute), true).OfType<DropDownSelectionAttribute>().FirstOrDefault();
+        var textAreaAttribute = property.GetCustomAttributes(typeof(TextAreaAttribute), true).OfType<TextAreaAttribute>().FirstOrDefault();
+        var readonlyAttribute = property.GetCustomAttributes(typeof(ReadOnlyAttribute), true).OfType<ReadOnlyAttribute>().FirstOrDefault(attribute => attribute.IsReadOnly);
+
+        @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
+        if (readonlyAttribute != null)
+        {
+        @property.GetValue(Model, null)
+        }
+        else if (textAreaAttribute != null)
+        {
+        @Html.TextArea(name, Convert.ToString(property.GetValue(Model, null)))
+        }
+        else if (dropDownSelectionAttribute != null)
+        {
+        @Html.DropDownList(name, ViewData[dropDownSelectionAttribute.ViewDataName] as IEnumerable<SelectListItem>)
+        }
+        else if (property.PropertyType == typeof(bool))
+        {
+        @Html.CheckBox(name, (bool)property.GetValue(Model, null))
+        }
+        else
+        {
+        @Html.TextBox(name, property.GetValue(Model, null))
+        }
+    }
+</div>

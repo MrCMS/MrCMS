@@ -1,0 +1,63 @@
+﻿<div class="left-nav">
+    <div id="nav-tabs">
+        <ul class="nav nav-tabs">
+            <li id="web-nav"><a href="#web" data-toggle="tab">Pages</a></li>
+            <li id="media-tree-nav"><a href="#media-tree" data-toggle="tab">Media</a></li>
+            <li id="layout-nav"><a href="#layout" data-toggle="tab">Layout</a></li>
+        </ul>
+        <div class="tab-content">
+            @{ Html.RenderAction("WebSiteTree", "Navigation"); }
+            @{ Html.RenderAction("MediaTree", "Navigation"); }
+            @{ Html.RenderAction("LayoutTree", "Navigation"); }
+        </div>
+    </div>
+</div>
+<ul id="edit-menu" class="context-menu">
+    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
+    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
+    <li><i class="icon-trash"></i><a href="#delete">Delete</a></li>
+    <li><i class="icon-random sort"></i><a href="#sort">Sort items</a></li>
+</ul>
+<ul id="edit-no-sort-menu" class="context-menu">
+    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
+    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
+    <li><i class="icon-trash"></i><a href="#delete">Delete</a></li>
+</ul>
+<ul id="edit-no-delete-menu" class="context-menu">
+    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
+    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
+    <li><i class="icon-random sort"></i><a href="#sort">Sort items</a></li>
+</ul>
+<ul id="edit-no-delete-no-sort-menu" class="context-menu">
+    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
+    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
+</ul>
+<ul id="edit-no-add-menu" class="context-menu">
+    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
+    <li><i class="icon-trash"></i><a href="#delete">Delete</a></li>
+    <li><i class="icon-random sort"></i><a href="#sort">Sort items</a></li>
+</ul>
+<ul id="edit-no-add-no-sort-menu" class="context-menu">
+    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
+    <li><i class="icon-trash"></i><a href="#delete">Delete</a></li>
+</ul>
+<ul id="edit-no-add-no-delete-menu" class="context-menu">
+    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
+    <li><i class="icon-random sort"></i><a href="#sort">Sort items</a></li>
+</ul>
+<ul id="edit-no-add-no-delete-no-sort-menu" class="context-menu">
+    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
+</ul>
+<ul id="edit-root-menu" class="context-menu">
+    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
+    <li><i class="icon-random sort"></i><a href="#sort">Sort Items</a></li>
+</ul>
+<ul id="edit-user-menu" class="context-menu">
+    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
+</ul>
+<ul id="edit-user-root-menu" class="context-menu">
+    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
+</ul>
+<ul id="edit-category-root-menu" class="context-menu">
+    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
+</ul>

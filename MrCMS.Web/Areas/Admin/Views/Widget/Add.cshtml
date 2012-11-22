@@ -1,0 +1,19 @@
+﻿@model MrCMS.Web.Areas.Admin.Controllers.AddWidgetModel
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Add widget</h3>
+</div>
+@using (Html.BeginForm("Add", "Widget", new { id = "", layoutAreaId = Model.LayoutAreaId, returnUrl = Model.ReturnUrl, Model.Name }, FormMethod.Post))
+{
+    <div class="modal-body">
+        @Html.Label("WidgetType", "Widget Type")
+        @Html.DropDownList("WidgetType", Model.Types)
+        <br />
+        @Html.LabelFor(model => model.Name)
+        @Html.EditorFor(model => model.Name, Model.Name)
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Close</a>
+        <input type="submit" class="btn-success btn" value="Add widget" />
+    </div>
+}
