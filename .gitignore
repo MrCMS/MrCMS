@@ -71,3 +71,6 @@ packages/
 
 #Connection strings config
 *ConnectionStrings.config
+
+#Media files
+MrCMS.Web/media*
