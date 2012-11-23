@@ -5,10 +5,13 @@ using System.Runtime.InteropServices;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.People;
+using MrCMS.Services;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
+using MrCMS.Helpers;
 
 namespace MrCMS.Tests
 {
@@ -25,7 +28,7 @@ namespace MrCMS.Tests
             {
                 lock (lockObject)
                 {
-                    var assemblies = new List<Assembly> {typeof (TextPage).Assembly};
+                    var assemblies = new List<Assembly> { typeof(TextPage).Assembly };
                     var nHibernateModule = new NHibernateConfigurator
                                                {
                                                    CacheEnabled = true,
@@ -33,7 +36,7 @@ namespace MrCMS.Tests
                                                    InDevelopment = true,
                                                    ManuallyAddedAssemblies = assemblies
                                                };
-                    Configuration= nHibernateModule.GetConfiguration();
+                    Configuration = nHibernateModule.GetConfiguration();
 
                     SessionFactory = Configuration.BuildSessionFactory();
                 }
@@ -42,13 +45,37 @@ namespace MrCMS.Tests
             MrCMSApplication.OverriddenSession = Session = SessionFactory.OpenSession();
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
+
+            SetupUser();
+        }
+
+        private void SetupUser()
+        {
+            var user = new User
+                           {
+                               Email = "test@example.com",
+                               IsActive = true,
+                           };
+
+            new AuthorisationService().SetPassword(user, "password", "password");
+            
+            var adminUserRole = new UserRole
+                                    {
+                                        Name = "Administrator"
+                                    };
+
+            user.Roles = new List<UserRole> { adminUserRole };
+            adminUserRole.Users = new List<User> { user };
+            
+
+            MrCMSApplication.OverriddenUser = user;
         }
 
         public void Dispose()
         {
             Dispose(true);
         }
-        
+
         // The bulk of the clean-up code is implemented in Dispose(bool)
         protected virtual void Dispose(bool disposing)
         {

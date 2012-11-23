@@ -4,7 +4,6 @@ using System.Text;
 using System.Web;
 using System.Web.Security;
 using MrCMS.Entities.People;
-using MrCMS.Settings;
 
 namespace MrCMS.Services
 {
@@ -19,13 +18,6 @@ namespace MrCMS.Services
 
     public class AuthorisationService : IAuthorisationService
     {
-        private readonly SiteSettings _siteSettings;
-
-        public AuthorisationService(SiteSettings siteSettings)
-        {
-            _siteSettings = siteSettings;
-        }
-
         public void ValidatePassword(string password, string confirmation)
         {
             if (password != confirmation)

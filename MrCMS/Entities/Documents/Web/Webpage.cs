@@ -143,6 +143,7 @@ namespace MrCMS.Entities.Documents.Web
             }
             return !AnyRoles(webpage => webpage.AdminAllowedRoles, webpage => webpage.AdminDisallowedRoles) && !BlockAnonymousAccess;
         }
+
         public virtual bool IsAllowed(User user)
         {
             var userRoles = user == null ? new List<UserRole>() : user.Roles;

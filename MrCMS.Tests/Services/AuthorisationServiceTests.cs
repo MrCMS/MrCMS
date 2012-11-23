@@ -10,7 +10,7 @@ namespace MrCMS.Tests.Services
     {
         private static AuthorisationService GetAuthorisationService()
         {
-            var authorisationService = new AuthorisationService(new SiteSettings());
+            var authorisationService = new AuthorisationService();
             return authorisationService;
         }
 

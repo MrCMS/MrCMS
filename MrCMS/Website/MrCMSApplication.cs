@@ -42,6 +42,9 @@ namespace MrCMS.Website
             ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
         }
 
+        public static ISession OverriddenSession { get; set; }
+        public static User OverriddenUser { get; set; }
+
         public override void Init()
         {
             if (DatabaseIsInstalled())
@@ -127,8 +130,9 @@ namespace MrCMS.Website
 
         public static User CurrentUser
         {
-            get { return Get<IUserService>().GetCurrentUser(HttpContext.Current); }
+            get { return OverriddenUser ?? Get<IUserService>().GetCurrentUser(HttpContext.Current); }
         }
+
 
         public static bool UserLoggedIn
         {
@@ -194,8 +198,6 @@ namespace MrCMS.Website
         {
             get { return RootChildren.Where(webpage => webpage.Published); }
         }
-
-        public static ISession OverriddenSession { get; set; }
 
         public static IEnumerable<Webpage> RootChildren
         {

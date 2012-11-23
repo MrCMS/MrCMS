@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
@@ -38,10 +39,10 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void NavigationService_WebpageTree_SiteTreeShouldRecursivelyReturnNodesToMirrorTheSavedWebpages()
         {
-            var page1 = new TextPage { Parent = null };
-            var page2 = new TextPage { Parent = page1 };
-            var page3 = new TextPage { Parent = page2 };
-            var page4 = new TextPage { Parent = page2 };
+            var page1 = new TextPage { Parent = null, AdminAllowedRoles = new List<AdminAllowedRole>(),AdminDisallowedRoles = new List<AdminDisallowedRole>()};
+            var page2 = new TextPage { Parent = page1, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>() };
+            var page3 = new TextPage { Parent = page2, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>() };
+            var page4 = new TextPage { Parent = page2, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>() };
             page2.Children.Add(page3);
             page2.Children.Add(page4);
             page1.Children.Add(page2);

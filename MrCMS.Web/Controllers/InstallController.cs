@@ -261,10 +261,10 @@ namespace MrCMS.Web.Controllers
             ISession session = sessionFactory.OpenSession();
 
             var siteSettings = new SiteSettings();
-            var authorisationService = new AuthorisationService(siteSettings);
+            var authorisationService = new AuthorisationService();
 
             var documentService = new DocumentService(session, null);
-            var userService = new UserService(new SiteSettings(), session, authorisationService);
+            var userService = new UserService(siteSettings, session, authorisationService);
 
             var layout = new Layout
                                {
