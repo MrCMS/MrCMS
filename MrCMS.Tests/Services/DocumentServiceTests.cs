@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using MrCMS.Entities.Documents;
@@ -32,7 +33,7 @@ namespace MrCMS.Tests.Services
 
         private DocumentService GetDocumentService()
         {
-            var documentService = GetDocumentService();
+            var documentService = new DocumentService(Session, _siteSettings);
             return documentService;
         }
 
@@ -92,12 +93,23 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            var parent = new TextPage { Name = "Parent" };
+            var parent = new TextPage
+            {
+                Name = "Parent",
+                AdminAllowedRoles = new List<AdminAllowedRole>(),
+                AdminDisallowedRoles = new List<AdminDisallowedRole>()
+            };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
             Enumerable.Range(1, 10).ForEach(i =>
                                              {
-                                                 var textPage = new TextPage { Name = String.Format("Page {0}", (object)i), Parent = parent };
+                                                 var textPage = new TextPage
+                                                 {
+                                                     Name = String.Format("Page {0}", (object)i),
+                                                     Parent = parent,
+                                                     AdminAllowedRoles = new List<AdminAllowedRole>(),
+                                                     AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                                                 };
                                                  parent.Children.Add(textPage);
                                                  Session.Transact(session => session.SaveOrUpdate(textPage));
                                                  Session.Transact(session => session.SaveOrUpdate(parent));
@@ -112,15 +124,26 @@ namespace MrCMS.Tests.Services
         public void DocumentService_GetDocumentsByParentId_ShouldOnlyReturnRequestedType()
         {
             var documentService = GetDocumentService();
-
-            var parent = new TextPage { Name = "Parent" };
+            
+            var parent = new TextPage
+                             {
+                                 Name = "Parent",
+                                 AdminAllowedRoles = new List<AdminAllowedRole>(),
+                                 AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                             };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
             Enumerable.Range(1, 10).ForEach(i =>
                                              {
                                                  var textPage = i % 2 == 0
                                                                     ? (Document)
-                                                                      new TextPage { Name = String.Format("Page {0}", i), Parent = parent }
+                                                                      new TextPage
+                                                                      {
+                                                                          Name = String.Format("Page {0}", i),
+                                                                          Parent = parent,
+                                                                          AdminAllowedRoles = new List<AdminAllowedRole>(),
+                                                                          AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                                                                      }
                                                                     : new Layout { Parent = parent };
                                                  parent.Children.Add(textPage);
                                                  Session.Transact(session => session.SaveOrUpdate(textPage));
@@ -137,12 +160,24 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            var parent = new TextPage { Name = "Parent" };
+            var parent = new TextPage
+                             {
+                                 Name = "Parent",
+                                 AdminAllowedRoles = new List<AdminAllowedRole>(),
+                                 AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                             };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
             Enumerable.Range(1, 3).ForEach(i =>
                                              {
-                                                 var textPage = new TextPage { Name = String.Format("Page {0}", i), Parent = parent, DisplayOrder = 4 - i };
+                                                 var textPage = new TextPage
+                                                 {
+                                                     Name = String.Format("Page {0}", i),
+                                                     Parent = parent,
+                                                     DisplayOrder = 4 - i,
+                                                     AdminAllowedRoles = new List<AdminAllowedRole>(),
+                                                     AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                                                 };
                                                  parent.Children.Add(textPage);
                                                  Session.Transact(session => session.SaveOrUpdate(textPage));
                                              });
