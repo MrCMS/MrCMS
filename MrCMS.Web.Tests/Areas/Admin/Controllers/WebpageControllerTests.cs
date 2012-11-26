@@ -15,22 +15,30 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class WebpageControllerTests
     {
+        private static IDocumentService documentService;
+
         [Fact]
         public void WebpageController_AddGet_ShouldReturnAddPageModel()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             var actionResult = webpageController.Add(1) as ViewResult;
 
             actionResult.Model.Should().BeOfType<AddPageModel>();
         }
 
+        private static WebpageController GetWebpageController()
+        {
+            documentService = A.Fake<IDocumentService>();
+            var formService = A.Fake<IFormService>();
+            var webpageController = new WebpageController(documentService,formService) {IsAjaxRequest = false};
+            return webpageController;
+        }
+
         [Fact]
         public void WebpageController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(new TextPage {Id = 1});
 
             var actionResult = webpageController.Add(1) as ViewResult;
@@ -41,8 +49,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldSetViewDataToSelectListItem()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             var result = webpageController.Add(1) as ViewResult;
 
@@ -52,8 +59,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddPost_ShouldCallSaveDocument()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             var webpage = new TextPage();
             webpageController.Add(webpage);
@@ -64,8 +70,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddPost_ShouldRedirectToView()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             var webpage = new TextPage { Id = 1 };
             var result = webpageController.Add(webpage) as RedirectToRouteResult;
@@ -77,8 +82,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_EditGet_ShouldReturnAViewResult()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             ActionResult result = webpageController.Edit(1);
 
@@ -88,8 +92,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_EditGet_ShouldReturnLayoutAsViewModel()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
             var webpage = new TextPage { Id = 1 };
             A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(webpage);
 
@@ -101,9 +104,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_EditGet_ShouldCallGetAllLayouts()
         {
-
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             webpageController.Edit(1);
 
@@ -113,8 +114,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_EditGet_ShouldSetViewDataToSelectListItem()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             var result = webpageController.Edit(1) as ViewResult;
 
@@ -124,8 +124,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_EditGet_ShouldSetLayoutDetailsToSelectListItems()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
             var layout = new Layout() { Id = 1, Name = "Layout Name" };
             A.CallTo(() => documentService.GetAllDocuments<Layout>()).Returns(new List<Layout> { layout });
 
@@ -139,8 +138,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_EditPost_ShouldCallSaveDocument()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
             Webpage textPage = new TextPage { Id = 1 };
 
             webpageController.Edit(textPage);
@@ -151,8 +149,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_EditPost_ShouldRedirectToEdit()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
             var textPage = new TextPage { Id = 1 };
 
             ActionResult actionResult = webpageController.Edit(textPage);
@@ -165,8 +162,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_Sort_ShouldCallGetDocumentsByParentId()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             webpageController.Sort(1);
 
@@ -176,8 +172,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_Sort_ShouldUseTheResultOfDocumentsByParentIdsAsModel()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
             var webpages = new List<Webpage> { new TextPage() };
             A.CallTo(() => documentService.GetAdminDocumentsByParentId<Webpage>(1)).Returns(webpages);
 
@@ -189,8 +184,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_SortAction_ShouldCallSortOrderOnTheDocumentServiceWithTheRelevantValues()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
             webpageController.SortAction(1, 2);
 
             A.CallTo(() => documentService.SetOrder(1, 2)).MustHaveHappened();
@@ -199,8 +193,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_View_CallsGetDocumentWithId()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             webpageController.View(1);
 
@@ -210,9 +203,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_View_InvalidIdReturnsRedirectToIndex()
         {
-            var documentService = A.Fake<IDocumentService>();
+            var webpageController = GetWebpageController();
             A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(null);
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
 
             var actionResult = webpageController.View(1);
 
@@ -222,8 +214,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_Index_ReturnsViewResult()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             var actionResult = webpageController.Index();
 
@@ -233,8 +224,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_SuggestDocumentUrl_ShouldCallGetDocumentUrl()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             webpageController.SuggestDocumentUrl(1, "test");
 
@@ -244,8 +234,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_SuggestDocumentUrl_ShouldReturnTheResultOfGetDocumentUrl()
         {
-            var documentService = A.Fake<IDocumentService>();
-            var webpageController = new WebpageController(documentService) { IsAjaxRequest = false };
+            var webpageController = GetWebpageController();
 
             A.CallTo(() => documentService.GetDocumentUrl("test", 1, false)).Returns("test/result");
             var url = webpageController.SuggestDocumentUrl(1, "test");

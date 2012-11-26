@@ -1,32 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
-using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
-using MrCMS.Models;
-using MrCMS.Settings;
-using MrCMS.Tasks;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
-using Ninject;
 
 namespace MrCMS.Services
 {
     public class UserService : IUserService
     {
-        private readonly SiteSettings _siteSettings;
         private readonly IAuthorisationService _authorisationService;
         private readonly ISession _session;
 
-        public UserService(SiteSettings siteSettings, ISession session, IAuthorisationService authorisationService = null)
+        public UserService(ISession session, IAuthorisationService authorisationService = null)
         {
-            _siteSettings = siteSettings ?? MrCMSApplication.Get<SiteSettings>();
-            _authorisationService = authorisationService ?? MrCMSApplication.Get<IAuthorisationService>();
             _session = session ?? MrCMSApplication.Get<ISession>();
+            _authorisationService = authorisationService ?? MrCMSApplication.Get<IAuthorisationService>();
         }
 
         public void SaveUser(User user)
@@ -104,48 +95,5 @@ namespace MrCMS.Services
         {
             _session.Transact(session => session.Delete(role));
         }
-
-        public void SetResetPassword(User user)
-        {
-            user.ResetPasswordExpiry = DateTime.UtcNow.AddDays(1);
-            user.ResetPasswordGuid = Guid.NewGuid();
-            SaveUser(user);
-
-            var urlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext, RouteTable.Routes);
-            var resetUrl = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority +
-                           urlHelper.Action("PasswordReset", "Login", new { id = user.ResetPasswordGuid });
-
-            var queuedMessage = new QueuedMessage
-                                    {
-                                        FromAddress = _siteSettings.SystemEmailAddress,
-                                        ToAddress = user.Email,
-                                        Subject = _siteSettings.SiteName + " Password reset",
-                                        Body =
-                                            string.Format(
-                                                "To reset your password please click <a href=\"{0}\">here</a>", resetUrl),
-                                        IsHtml = true
-                                    };
-
-            _session.Transact(session => session.SaveOrUpdate(queuedMessage));
-
-            TaskExecutor.ExecuteLater(new SendQueuedMessagesTask());
-        }
-
-        public void ResetPassword(ResetPasswordViewModel model)
-        {
-            var user = GetUserByEmail(model.Email);
-
-            if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > DateTime.UtcNow)
-            {
-                _authorisationService.SetPassword(user, model.Password, model.ConfirmPassword);
-
-                user.ResetPasswordExpiry = null;
-                user.ResetPasswordGuid = null;
-
-                SaveUser(user);
-            }
-            else throw new InvalidOperationException("Unable to reset password, resend forgotten password email");
-        }
-
     }
 }

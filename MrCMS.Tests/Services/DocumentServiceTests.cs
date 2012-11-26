@@ -4,6 +4,7 @@ using System.Linq;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -581,6 +582,90 @@ namespace MrCMS.Tests.Services
 
             searchResultModels.Should().HaveCount(1);
             searchResultModels.First().Name.Should().Be("Test");
+        }
+
+        [Fact]
+        public void DocumentService_AnyWebpages_ReturnsFalseWhenNoWebpagesAreSaved()
+        {
+            var documentService = GetDocumentService();
+
+            documentService.AnyWebpages().Should().BeFalse();
+        }
+
+        [Fact]
+        public void DocumentService_AnyWebpages_ReturnsTrueOnceAWebpageIsAdded()
+        {
+            var documentService = GetDocumentService();
+
+            documentService.AddDocument(new TextPage());
+
+            documentService.AnyWebpages().Should().BeTrue();
+        }
+
+        [Fact]
+        public void DocumentService_AnyPublishedWebpages_ReturnsFalseWhenThereAreNoWebpages()
+        {
+            var documentService = GetDocumentService();
+
+            documentService.AnyPublishedWebpages().Should().BeFalse();
+        }
+
+        [Fact]
+        public void DocumentService_AnyPublishedWebpages_ReturnsFalseWhenThereAreWebpagesButTheyAreNotPublished()
+        {
+            var documentService = GetDocumentService();
+
+            documentService.AddDocument(new TextPage());
+
+            documentService.AnyPublishedWebpages().Should().BeFalse();
+        }
+
+        [Fact]
+        public void DocumentService_AnyPublishedWebpages_ReturnsTrueOnceAPublishedWebpageIsAdded()
+        {
+            var documentService = GetDocumentService();
+
+            documentService.AddDocument(new TextPage {PublishOn = DateTime.UtcNow.AddDays(-1)});
+
+            documentService.AnyPublishedWebpages().Should().BeTrue();
+        }
+
+        [Fact]
+        public void DocumentService_HideWidget_AddsAWidgetToTheHiddenWidgetsListIfItIsNotInTheShownList()
+        {
+            var documentService = GetDocumentService();
+            var widgetService = new WidgetService(Session);
+
+            var textPage = new TextPage { ShownWidgets = new List<Widget>(), HiddenWidgets = new List<Widget>() };
+            documentService.SaveDocument(textPage);
+
+            var textWidget = new TextWidget();
+            widgetService.SaveWidget(textWidget);
+
+            documentService.HideWidget(textPage.Id, textWidget.Id);
+
+            textPage.HiddenWidgets.Should().Contain(textWidget);
+        }
+
+        [Fact]
+        public void DocumentService_HideWidget_RemovesAWidgetFromTheShownListIfItIsIncluded()
+        {
+            var documentService = GetDocumentService();
+            var widgetService = new WidgetService(Session);
+
+            var textWidget = new TextWidget();
+            widgetService.SaveWidget(textWidget);
+
+            var textPage = new TextPage
+                               {
+                                   ShownWidgets = new List<Widget> {textWidget},
+                                   HiddenWidgets = new List<Widget>()
+                               };
+            documentService.SaveDocument(textPage);
+
+            documentService.HideWidget(textPage.Id, textWidget.Id);
+
+            textPage.ShownWidgets.Should().NotContain(textWidget);
         }
     }
 }

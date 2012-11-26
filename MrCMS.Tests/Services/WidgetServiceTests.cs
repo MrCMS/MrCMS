@@ -1,6 +1,8 @@
-﻿using FluentAssertions;
+﻿using FakeItEasy;
+using FluentAssertions;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
+using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
 
@@ -39,6 +41,60 @@ namespace MrCMS.Tests.Services
             widgetService.SaveWidget(new TextWidget() {Text = "text"});
 
             Session.QueryOver<Widget>().RowCount().Should().Be(1);
+        }
+
+        [Fact]
+        public void WidgetService_GetModel_CallsWidgetGetModelOfTheWidgetWithTheSessionOfTheService()
+        {
+            var session = A.Fake<ISession>();
+            var widgetService = new WidgetService(session);
+
+            var widget = A.Fake<Widget>();
+
+            widgetService.GetModel(widget);
+
+            A.CallTo(() => widget.GetModel(session)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void WidgetService_DeleteModelWithWidget_CallsSessionDeleteOnTheWidget()
+        {
+            var session = A.Fake<ISession>();
+            var widgetService = new WidgetService(session);
+            
+            var widget = A.Fake<Widget>();
+
+            widgetService.DeleteWidget(widget);
+
+            A.CallTo(() => session.Delete(widget)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void WidgetService_DeleteModelWithId_LoadsWidgetFromSession()
+        {
+            var session = A.Fake<ISession>();
+            var widgetService = new WidgetService(session);
+
+            var widget = A.Fake<Widget>();
+
+            A.CallTo(() => session.Get<Widget>(1)).Returns(widget);
+            widgetService.DeleteWidget(1);
+
+            A.CallTo(() => session.Get<Widget>(1)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void WidgetService_DeleteModelWithId_CallsDeleteOnTheLoadedWidget()
+        {
+            var session = A.Fake<ISession>();
+            var widgetService = new WidgetService(session);
+
+            var widget = A.Fake<Widget>();
+
+            A.CallTo(() => session.Get<Widget>(1)).Returns(widget);
+            widgetService.DeleteWidget(1);
+
+            A.CallTo(() => session.Delete(widget)).MustHaveHappened();
         }
     }
 }

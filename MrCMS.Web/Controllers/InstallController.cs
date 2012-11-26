@@ -264,7 +264,7 @@ namespace MrCMS.Web.Controllers
             var authorisationService = new AuthorisationService();
 
             var documentService = new DocumentService(session, null);
-            var userService = new UserService(siteSettings, session, authorisationService);
+            var userService = new UserService(session, authorisationService);
 
             var layout = new Layout
                                {
@@ -320,8 +320,8 @@ namespace MrCMS.Web.Controllers
                                         Name = "Administrator"
                                     };
 
-            user.Roles=new List<UserRole> {adminUserRole};
-            adminUserRole.Users = new List<User> {user};
+            user.Roles = new List<UserRole> { adminUserRole };
+            adminUserRole.Users = new List<User> { user };
             userService.SaveRole(adminUserRole);
 
             authorisationService.Logout();

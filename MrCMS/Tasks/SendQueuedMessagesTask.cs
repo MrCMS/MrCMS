@@ -3,8 +3,6 @@ using System.Net;
 using System.Net.Mail;
 using MrCMS.Entities.Messaging;
 using MrCMS.Settings;
-using MrCMS.Website;
-using Ninject;
 
 namespace MrCMS.Tasks
 {
@@ -12,10 +10,6 @@ namespace MrCMS.Tasks
     {
         private readonly MailSettings _mailSettings;
 
-        public SendQueuedMessagesTask() : this(MrCMSApplication.Get<MailSettings>())
-        {
-            
-        }
         public SendQueuedMessagesTask(MailSettings mailSettings)
         {
             _mailSettings = mailSettings;

@@ -6,16 +6,16 @@ namespace MrCMS.Web.Controllers
 {
     public class FormController : MrCMSController
     {
-        private readonly IDocumentService _documentService;
+        private readonly IFormService _formService;
 
-        public FormController(IDocumentService documentService)
+        public FormController(IFormService formService)
         {
-            _documentService = documentService;
+            _formService = formService;
         }
 
         public ActionResult Save(int id, FormCollection collection)
         {
-            _documentService.SaveFormData(id, collection);
+            _formService.SaveFormData(id, collection);
 
             TempData["form-submitted"] = true;
             return Redirect(Referrer);

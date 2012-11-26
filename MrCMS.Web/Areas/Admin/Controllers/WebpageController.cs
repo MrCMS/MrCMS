@@ -19,9 +19,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class WebpageController : BaseDocumentController<Webpage>
     {
-        public WebpageController(IDocumentService documentService)
+        private readonly IFormService _formService;
+
+        public WebpageController(IDocumentService documentService,IFormService formService)
             : base(documentService)
         {
+            _formService = formService;
         }
 
         protected override void OnAuthorization(AuthorizationContext filterContext)
@@ -121,13 +124,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public JsonResult GetForm(int id)
         {
-            return Json(_documentService.GetFormStructure(id));
+            return Json(_formService.GetFormStructure(id));
         }
 
         [HttpPost]
         public void SaveForm(int id, string data)
         {
-            _documentService.SaveFormStructure(id, data);
+            _formService.SaveFormStructure(id, data);
         }
 
         public ActionResult ViewChanges(int id)

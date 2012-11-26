@@ -74,3 +74,5 @@ packages/
 
 #Media files
 MrCMS.Web/media*
+
+*.DotSettings

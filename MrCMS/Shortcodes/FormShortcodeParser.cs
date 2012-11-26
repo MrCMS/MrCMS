@@ -11,11 +11,13 @@ namespace MrCMS.Shortcodes
     public class FormShortcodeParser : IShortcodeParser
     {
         private readonly IDocumentService _documentService;
+        private readonly IFormService _formService;
         private readonly IFormElementRenderer _formElementRenderer;
 
-        public FormShortcodeParser(IDocumentService documentService, IFormElementRenderer formElementRenderer)
+        public FormShortcodeParser(IDocumentService documentService, IFormService formService, IFormElementRenderer formElementRenderer)
         {
             _documentService = documentService;
+            _formService = formService;
             _formElementRenderer = formElementRenderer;
         }
 
@@ -32,7 +34,7 @@ namespace MrCMS.Shortcodes
                                                      {
                                                          var formId = Convert.ToInt32(
                                                              match.Value.Replace("[", "").Replace("]", "").Split('-')[1]);
-                                                         var formData = _documentService.GetFormStructure(formId);
+                                                         var formData = _formService.GetFormStructure(formId);
                                                          var document = _documentService.GetDocument<Webpage>(formId);
                                                          return document == null
                                                                     ? string.Empty
@@ -44,7 +46,7 @@ namespace MrCMS.Shortcodes
                                                 match =>
                                                     {
                                                         var formData =
-                                                            _documentService.GetFormStructure(
+                                                            _formService.GetFormStructure(
                                                                 MrCMSApplication.CurrentPage.Id);
                                                         return GetForm(htmlHelper, formData,
                                                                        MrCMSApplication.CurrentPage);

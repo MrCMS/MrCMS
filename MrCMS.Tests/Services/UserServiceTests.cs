@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Web;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.People;
@@ -14,7 +16,8 @@ namespace MrCMS.Tests.Services
         private static UserService GetUserService()
         {
             var authorisationService = A.Fake<IAuthorisationService>();
-            var userService = new UserService(new SiteSettings(), Session, authorisationService);
+            
+            var userService = new UserService(Session, authorisationService);
             return userService;
         }
 

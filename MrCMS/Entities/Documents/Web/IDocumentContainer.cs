@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace MrCMS.Entities.Documents.Web
 {
-    public interface IDocumentContainer<out T> where T : IContainerItem
+    public interface IDocumentContainer
     {
         string LiveUrlSegment { get; }
         string BodyContent { get; }
@@ -16,7 +16,10 @@ namespace MrCMS.Entities.Documents.Web
 
         IList<Tag> Tags { get; }
 
-        IEnumerable<T> ChildItems { get; }
         string DocumentType { get; }
+    }
+    public interface IDocumentContainer<out T> : IDocumentContainer where T : IContainerItem
+    {
+        IEnumerable<T> ChildItems { get; }
     }
 }

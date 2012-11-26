@@ -10,10 +10,12 @@ namespace MrCMS.Web.Controllers
     {
         private readonly AuthorisationService _authorisationService;
         private readonly IUserService _userService;
+        private readonly IResetPasswordService _resetPasswordService;
 
-        public LoginController(IUserService userService, AuthorisationService authorisationService)
+        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, AuthorisationService authorisationService)
         {
             _userService = userService;
+            _resetPasswordService = resetPasswordService;
             _authorisationService = authorisationService;
         }
 
@@ -69,7 +71,7 @@ namespace MrCMS.Web.Controllers
 
             if (user != null)
             {
-                _userService.SetResetPassword(user);
+                _resetPasswordService.SetResetPassword(user);
             }
 
             return RedirectToAction("ForgottenPasswordSent");
@@ -110,7 +112,7 @@ namespace MrCMS.Web.Controllers
         {
             try
             {
-                _userService.ResetPassword(model);
+                _resetPasswordService.ResetPassword(model);
                 return RedirectToAction("ResetComplete");
             }
             catch (Exception ex)

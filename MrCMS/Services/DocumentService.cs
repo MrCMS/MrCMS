@@ -27,6 +27,7 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
+        private readonly FormService _formService;
 
         public DocumentService(ISession session, SiteSettings siteSettings)
         {
@@ -182,7 +183,7 @@ namespace MrCMS.Services
             return SearchResults<T>(searchTerm, parentId, page);
         }
 
-        private IList<T> SearchResults<T>(string searchTerm, int? parentId, int page ) where T : Document
+        private IList<T> SearchResults<T>(string searchTerm, int? parentId, int page) where T : Document
         {
             var queryOver = _session.QueryOver<T>().Where(x => x.Name.IsLike(searchTerm, MatchMode.Anywhere));
             if (parentId.HasValue)
@@ -432,138 +433,6 @@ namespace MrCMS.Services
             return _session.Get<TextPage>(error500Id)
                    ?? GetDocumentByUrl<TextPage>("500")
                    ?? MrCMSApplication.PublishedRootChildren.OfType<TextPage>().FirstOrDefault();
-        }
-
-        public string GetFormStructure(int id)
-        {
-            var document = GetDocument<Webpage>(id);
-            return document == null
-                       ? Newtonsoft.Json.JsonConvert.SerializeObject(new object())
-                       : document.FormData ?? Newtonsoft.Json.JsonConvert.SerializeObject(new object());
-        }
-
-        public void SaveFormStructure(int id, string data)
-        {
-            var document = GetDocument<Webpage>(id);
-            if (document == null) return;
-            document.FormData = data;
-            SaveDocument(document);
-        }
-
-        public void SaveFormData(int id, FormCollection formCollection)
-        {
-            _session.Transact(session =>
-                                  {
-
-                                      var webpage = GetDocument<Webpage>(id);
-                                      if (webpage == null) return;
-                                      var formPosting = new FormPosting
-                                                            {
-                                                                Webpage = webpage,
-                                                                FormValues = new List<FormValue>()
-                                                            };
-                                      formCollection.AllKeys.ForEach(s =>
-                                                                         {
-                                                                             var formValue = new FormValue
-                                                                                                 {
-                                                                                                     Key = s,
-                                                                                                     Value = formCollection[s],
-                                                                                                     FormPosting = formPosting,
-                                                                                                 };
-                                                                             formPosting.FormValues.Add(formValue);
-                                                                             session.SaveOrUpdate(formValue);
-                                                                         });
-
-                                      webpage.FormPostings.Add(formPosting);
-                                      session.SaveOrUpdate(formPosting);
-
-                                      SendFormMessages(webpage, formPosting);
-                                  });
-        }
-
-        private void SendFormMessages(Webpage webpage, FormPosting formPosting)
-        {
-            var sendTo = webpage.SendFormTo.Split(',');
-            if (sendTo.Any())
-            {
-                _session.Transact(session =>
-                                      {
-                                          foreach (var email in sendTo)
-                                          {
-                                              var formMessage = ParseFormMessage(webpage.FormMessage, webpage,
-                                                                                 formPosting);
-                                              var formTitle = ParseFormMessage(webpage.FormEmailTitle, webpage,
-                                                                               formPosting);
-
-                                              session.SaveOrUpdate(new QueuedMessage
-                                                                       {
-                                                                           Subject = formTitle,
-                                                                           Body = formMessage,
-                                                                           FromAddress =
-                                                                               _siteSettings.SystemEmailAddress,
-                                                                           ToAddress = email,
-                                                                           IsHtml = true
-                                                                       });
-                                          }
-
-                                          TaskExecutor.ExecuteLater(new SendQueuedMessagesTask());
-                                      });
-            }
-        }
-
-        private static string ParseFormMessage(string formMessage, Webpage webpage, FormPosting formPosting)
-        {
-
-            var formRegex = new Regex(@"\[form\]");
-            var pageRegex = new Regex(@"{{page.(.*)}}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            var messageRegex = new Regex(@"{{(.*)}}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-            formMessage = formRegex.Replace(formMessage, match =>
-                                                             {
-                                                                 var list = new TagBuilder("ul");
-
-                                                                 foreach (var formValue in formPosting.FormValues)
-                                                                 {
-                                                                     var listItem = new TagBuilder("li");
-
-                                                                     var title = new TagBuilder("b");
-                                                                     title.InnerHtml += formValue.Key + ":";
-                                                                     listItem.InnerHtml += title.ToString() + " " +
-                                                                                           formValue.Value;
-
-                                                                     list.InnerHtml += listItem.ToString();
-                                                                 }
-
-                                                                 return list.ToString();
-                                                             });
-
-            formMessage = pageRegex.Replace(formMessage, match =>
-            {
-                var propertyInfo =
-                    typeof(Webpage).GetProperties().FirstOrDefault(
-                        info =>
-                        info.Name.Equals(match.Value.Replace("{", "").Replace("}", "").Replace("page.", ""),
-                                         StringComparison.OrdinalIgnoreCase));
-
-                return propertyInfo == null
-                           ? string.Empty
-                           : propertyInfo.GetValue(webpage,
-                                                   null).
-                                 ToString();
-            });
-            return messageRegex.Replace(formMessage, match =>
-                                                         {
-                                                             var formValue =
-                                                                 formPosting.FormValues.FirstOrDefault(
-                                                                     value =>
-                                                                     value.Key.Equals(
-                                                                         match.Value.Replace("{", "").Replace("}", ""),
-                                                                         StringComparison.
-                                                                             OrdinalIgnoreCase));
-                                                             return formValue == null
-                                                                        ? string.Empty
-                                                                        : formValue.Value;
-                                                         });
         }
 
         public DocumentVersion GetDocumentVersion(int id)

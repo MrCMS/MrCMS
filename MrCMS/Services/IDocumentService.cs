@@ -37,9 +37,6 @@ namespace MrCMS.Services
         void ShowWidget(int id, int widgetId);
         TextPage Get404Page();
         TextPage Get500Page();
-        string GetFormStructure(int id);
-        void SaveFormStructure(int id, string data);
-        void SaveFormData(int id, FormCollection formCollection);
         DocumentVersion GetDocumentVersion(int id);
         FormPosting GetFormPosting(int id);
     }
