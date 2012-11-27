@@ -39,9 +39,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public void Delete(int id)
+        public void Delete(MediaFile file)
         {
-            _fileService.DeleteFile(id);
+            _fileService.DeleteFile(file);
         }
 
         [HttpPost]

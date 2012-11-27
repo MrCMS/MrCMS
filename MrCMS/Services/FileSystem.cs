@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Security.AccessControl;
+using System.Web;
+using System.Web.Hosting;
 
 namespace MrCMS.Services
 {
@@ -25,10 +27,9 @@ namespace MrCMS.Services
             }
         }
 
-        private static string GetPath(string relativeFilePath)
+        private string GetPath(string relativeFilePath)
         {
-            var directory = AppDomain.CurrentDomain.BaseDirectory;
-            var baseDirectory = directory.Substring(0, directory.Length - 1);
+            var baseDirectory = ApplicationPath.Substring(0, ApplicationPath.Length - 1);
             var path = Path.Combine(baseDirectory, relativeFilePath);
             return path;
         }
@@ -38,6 +39,27 @@ namespace MrCMS.Services
             var path = GetPath(filePath);
 
             File.Delete(path);
+        }
+
+        public bool Exists(string filePath)
+        {
+            return File.Exists(filePath);
+        }
+
+        public string ApplicationPath { get { return HostingEnvironment.ApplicationPhysicalPath; } }
+        public string GetExtension(string fileName)
+        {
+            return Path.GetExtension(fileName);
+        }
+
+        public byte[] ReadAllBytes(string location)
+        {
+            return File.ReadAllBytes(location);
+        }
+
+        public string MapPath(string path)
+        {
+            return HttpContext.Current.Server.MapPath(path);
         }
     }
 }

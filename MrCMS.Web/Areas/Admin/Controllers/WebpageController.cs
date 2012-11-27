@@ -21,7 +21,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IFormService _formService;
 
-        public WebpageController(IDocumentService documentService,IFormService formService)
+        public WebpageController(IDocumentService documentService, IFormService formService)
             : base(documentService)
         {
             _formService = formService;
@@ -70,19 +70,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult PublishNow(int id)
+        public ActionResult PublishNow(Webpage webpage)
         {
-            _documentService.PublishNow(id);
+            _documentService.PublishNow(webpage);
 
-            return RedirectToAction("Edit", new { id });
+            return RedirectToAction("Edit", new { id = webpage.Id });
         }
 
         [HttpPost]
-        public ActionResult Unpublish(int id)
+        public ActionResult Unpublish(Webpage webpage)
         {
-            _documentService.Unpublish(id);
+            _documentService.Unpublish(webpage);
 
-            return RedirectToAction("Edit", new { id });
+            return RedirectToAction("Edit", new { id = webpage.Id });
         }
         [HttpPost]
         public ActionResult HideWidget(int id, int widgetId, int layoutAreaId)
@@ -193,7 +193,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public ActionResult ViewPosting(int id)
         {
-            return PartialView(_documentService.GetFormPosting(id));
+            return PartialView(_formService.GetFormPosting(id));
         }
 
         public ActionResult Versions(int id, int page = 1)

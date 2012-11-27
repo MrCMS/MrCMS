@@ -80,9 +80,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(T document)
         {
-            _documentService.DeleteDocument<T>(id);
+            _documentService.DeleteDocument<T>(document);
 
             return RedirectToAction("Index");
         }

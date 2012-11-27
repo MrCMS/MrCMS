@@ -40,6 +40,7 @@ _ReSharper*/
 *.resharper
 [Tt]est[Rr]esult*
 *.sass-cache
+*.DotSettings
 
 #Project files
 [Bb]uild/
@@ -74,5 +75,3 @@ packages/
 
 #Media files
 MrCMS.Web/media*
-
-*.DotSettings

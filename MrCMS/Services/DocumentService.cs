@@ -271,16 +271,6 @@ namespace MrCMS.Services
             return _session.Get<Layout>(settingValue);
         }
 
-        public int? GetLayoutId(int webpageId)
-        {
-            var webpage = GetDocument<Webpage>(webpageId);
-            return webpage == null
-                       ? null
-                       : (webpage.Layout == null
-                              ? (int?)null
-                              : webpage.Layout.Id);
-        }
-
         public void SetTags(string taglist, Document document)
         {
             if (document == null) throw new ArgumentNullException("document");
@@ -330,18 +320,6 @@ namespace MrCMS.Services
                                   });
         }
 
-        public void CreateDirectory(MediaCategory doc)
-        {
-            //TODO: write this testably
-            var directoryForMediaCategory =
-                HttpContext.Current.Server.MapPath("~/" +
-                                                   SeoHelper.TidyUrl(string.Format("{0}/{1}",
-                                                                                   _siteSettings.MediaDirectory,
-                                                                                   doc.Name)));
-            if (!Directory.Exists(directoryForMediaCategory))
-                Directory.CreateDirectory(directoryForMediaCategory);
-        }
-
         public bool AnyPublishedWebpages()
         {
             return _session.QueryOver<Webpage>().Where(webpage => webpage.Published).Cacheable().RowCount() > 0;
@@ -360,10 +338,8 @@ namespace MrCMS.Services
                     List();
         }
 
-        public void DeleteDocument<T>(int id) where T : Document
+        public void DeleteDocument<T>(T document) where T : Document
         {
-            var document = _session.Get<T>(id);
-
             if (document != null)
             {
                 _session.Transact(session =>
@@ -374,16 +350,17 @@ namespace MrCMS.Services
             }
         }
 
-        public void PublishNow(int documentId)
+        public void PublishNow(Webpage document)
         {
-            var document = GetDocument<Webpage>(documentId);
-            document.PublishOn = DateTime.Now;
-            SaveDocument(document);
+            if (document.PublishOn == null)
+            {
+                document.PublishOn = DateTime.Now;
+                SaveDocument(document);
+            }
         }
 
-        public void Unpublish(int documentId)
+        public void Unpublish(Webpage document)
         {
-            var document = GetDocument<Webpage>(documentId);
             document.PublishOn = null;
             SaveDocument(document);
         }
@@ -438,11 +415,6 @@ namespace MrCMS.Services
         public DocumentVersion GetDocumentVersion(int id)
         {
             return _session.Get<DocumentVersion>(id);
-        }
-
-        public FormPosting GetFormPosting(int id)
-        {
-            return _session.Get<FormPosting>(id);
         }
     }
 }

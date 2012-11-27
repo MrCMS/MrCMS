@@ -396,7 +396,7 @@ namespace MrCMS.Helpers
             if (string.IsNullOrWhiteSpace(imageUrl))
                 return MvcHtmlString.Empty;
 
-            var image = MrCMSApplication.Get<IFileService>().GetImage(imageUrl);
+            var image = MrCMSApplication.Get<IImageProcessor>().GetImage(imageUrl);
 
             if (image == null)
                 return MvcHtmlString.Empty;

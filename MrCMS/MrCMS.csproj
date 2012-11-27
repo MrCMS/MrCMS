@@ -188,6 +188,7 @@
     <Compile Include="Membership\MrCmsRoleProvider.cs" />
     <Compile Include="Models\AsyncListModel.cs" />
     <Compile Include="Models\AutoCompleteResult.cs" />
+    <Compile Include="Models\FilesPagedResult.cs" />
     <Compile Include="Models\ImageSize.cs" />
     <Compile Include="Models\PostingsModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
@@ -211,6 +212,8 @@
     <Compile Include="Services\IDocumentService.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IFileSystem.cs" />
+    <Compile Include="Services\IFormService.cs" />
+    <Compile Include="Services\IImageProcessor.cs" />
     <Compile Include="Services\ILayoutAreaService.cs" />
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />

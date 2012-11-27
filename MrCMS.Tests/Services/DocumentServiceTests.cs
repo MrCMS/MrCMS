@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
@@ -8,6 +9,7 @@ using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
+using NHibernate;
 using Xunit;
 using FluentAssertions;
 
@@ -124,7 +126,7 @@ namespace MrCMS.Tests.Services
         public void DocumentService_GetDocumentsByParentId_ShouldOnlyReturnRequestedType()
         {
             var documentService = GetDocumentService();
-            
+
             var parent = new TextPage
                              {
                                  Name = "Parent",
@@ -293,47 +295,6 @@ namespace MrCMS.Tests.Services
             var documentUrl = documentService.GetDocumentUrl("Nested Page", textPage.Id, true);
 
             documentUrl.Should().Be("parent/test-page/nested-page-2");
-        }
-
-        [Fact]
-        public void DocumentService_GetLayoutId_IfWebpageIdIsInvalidReturnNull()
-        {
-            var documentService = GetDocumentService();
-
-            var layoutId = documentService.GetLayoutId(0);
-
-            layoutId.Should().Be(null);
-        }
-
-        [Fact]
-        public void DocumentService_GetLayoutId_IfWebpageIdIsValidButNoLayoutIsSetReturnNull()
-        {
-            var documentService = GetDocumentService();
-
-            var textpage = new TextPage();
-            Session.Transact(session => session.SaveOrUpdate(textpage));
-
-            var layoutId = documentService.GetLayoutId(textpage.Id);
-
-            layoutId.Should().Be(null);
-        }
-
-        [Fact]
-        public void DocumentService_GetLayoutId_IfWebpageIdIsValidAndLayoutIsSetReturnLayoutId()
-        {
-            var documentService = GetDocumentService();
-
-            var layout = new Layout();
-            var textpage = new TextPage() { Layout = layout };
-            Session.Transact(session =>
-                                 {
-                                     session.SaveOrUpdate(textpage);
-                                     session.SaveOrUpdate(layout);
-                                 });
-
-            var layoutId = documentService.GetLayoutId(textpage.Id);
-
-            layoutId.Should().Be(layout.Id);
         }
 
         [Fact]
@@ -542,30 +503,6 @@ namespace MrCMS.Tests.Services
             textPage.DisplayOrder.Should().Be(2);
         }
 
-        //[Fact]
-        //public void DocumentService_GetDefaultLayout_ShouldReturnNullIfIdIsNotSet()
-        //{
-        //    A.CallTo(() => _siteSettingsService.GetSettingValue<int?>(SiteSettings.DefaultLayoutKey)).Returns(null);
-        //    var documentService = new DocumentService(Session, _siteSettingsService);
-
-        //    var defaultLayout = documentService.GetDefaultLayout();
-
-        //    defaultLayout.Should().BeNull();
-        //}
-
-        //[Fact]
-        //public void DocumentService_GetDefaultLayout_ShouldReturnLayoutWithSiteSettingId()
-        //{
-        //    var layout = new Layout();
-        //    Session.Transact(session => session.SaveOrUpdate(layout));
-        //    A.CallTo(() => _siteSettingsService.GetSettingValue<int?>(SiteSettings.DefaultLayoutKey)).Returns(layout.Id);
-        //    var documentService = new DocumentService(Session, _siteSettingsService);
-
-        //    var defaultLayout = documentService.GetDefaultLayout();
-
-        //    defaultLayout.Should().BeSameAs(layout);
-        //}
-
         [Fact]
         public void DocumentService_SearchDocuments_ReturnsAnIEnumerableOfSearchResultModelsWhereTheNameMatches()
         {
@@ -625,7 +562,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new TextPage {PublishOn = DateTime.UtcNow.AddDays(-1)});
+            documentService.AddDocument(new TextPage { PublishOn = DateTime.UtcNow.AddDays(-1) });
 
             documentService.AnyPublishedWebpages().Should().BeTrue();
         }
@@ -657,15 +594,177 @@ namespace MrCMS.Tests.Services
             widgetService.SaveWidget(textWidget);
 
             var textPage = new TextPage
-                               {
-                                   ShownWidgets = new List<Widget> {textWidget},
-                                   HiddenWidgets = new List<Widget>()
-                               };
+            {
+                ShownWidgets = new List<Widget> { textWidget },
+                HiddenWidgets = new List<Widget>()
+            };
             documentService.SaveDocument(textPage);
 
             documentService.HideWidget(textPage.Id, textWidget.Id);
 
             textPage.ShownWidgets.Should().NotContain(textWidget);
+        }
+
+        [Fact]
+        public void DocumentService_HideWidget_DoesNothingIfTheWidgetIdIsInvalid()
+        {
+            var documentService = GetDocumentService();
+            var widgetService = new WidgetService(Session);
+
+            var textWidget = new TextWidget();
+            widgetService.SaveWidget(textWidget);
+
+            var textPage = new TextPage
+            {
+                ShownWidgets = new List<Widget> { textWidget },
+                HiddenWidgets = new List<Widget>()
+            };
+            documentService.SaveDocument(textPage);
+
+            documentService.HideWidget(textPage.Id, -1);
+
+            textPage.ShownWidgets.Should().Contain(textWidget);
+        }
+
+
+        [Fact]
+        public void DocumentService_ShowWidget_AddsAWidgetToTheShownWidgetsListIfItIsNotInTheHiddenList()
+        {
+            var documentService = GetDocumentService();
+            var widgetService = new WidgetService(Session);
+
+            var textPage = new TextPage { ShownWidgets = new List<Widget>(), HiddenWidgets = new List<Widget>() };
+            documentService.SaveDocument(textPage);
+
+            var textWidget = new TextWidget();
+            widgetService.SaveWidget(textWidget);
+
+            documentService.ShowWidget(textPage.Id, textWidget.Id);
+
+            textPage.ShownWidgets.Should().Contain(textWidget);
+        }
+
+        [Fact]
+        public void DocumentService_ShowWidget_RemovesAWidgetFromTheHiddenListIfItIsIncluded()
+        {
+            var documentService = GetDocumentService();
+            var widgetService = new WidgetService(Session);
+
+            var textWidget = new TextWidget();
+            widgetService.SaveWidget(textWidget);
+
+            var textPage = new TextPage
+            {
+                ShownWidgets = new List<Widget>(),
+                HiddenWidgets = new List<Widget> { textWidget }
+            };
+            documentService.SaveDocument(textPage);
+
+            documentService.ShowWidget(textPage.Id, textWidget.Id);
+
+            textPage.HiddenWidgets.Should().NotContain(textWidget);
+        }
+
+        [Fact]
+        public void DocumentService_ShowWidget_DoesNothingIfTheWidgetIdIsInvalid()
+        {
+            var documentService = GetDocumentService();
+            var widgetService = new WidgetService(Session);
+
+            var textWidget = new TextWidget();
+            widgetService.SaveWidget(textWidget);
+
+            var textPage = new TextPage
+            {
+                ShownWidgets = new List<Widget>(),
+                HiddenWidgets = new List<Widget> { textWidget }
+            };
+            documentService.SaveDocument(textPage);
+
+            documentService.ShowWidget(textPage.Id, -1);
+
+            textPage.HiddenWidgets.Should().Contain(textWidget);
+        }
+
+        [Fact]
+        public void DocumentService_PublishNow_UnpublishedWebpageWillGetPublishedOnValue()
+        {
+            var documentService = GetDocumentService();
+
+            var textPage = new TextPage();
+
+            Session.Transact(session => session.Save(textPage));
+
+            documentService.PublishNow(textPage);
+
+            textPage.PublishOn.Should().HaveValue();
+        }
+
+        [Fact]
+        public void DocumentService_PublishNow_PublishedWebpageShouldNotChangeValue()
+        {
+            var documentService = GetDocumentService();
+
+            var publishOn = DateTime.Now.AddDays(-1);
+            var textPage = new TextPage { PublishOn = publishOn };
+
+            Session.Transact(session => session.Save(textPage));
+
+            documentService.PublishNow(textPage);
+
+            textPage.PublishOn.Should().Be(publishOn);
+        }
+
+
+        [Fact]
+        public void DocumentService_Unpublish_ShouldSetPublishOnToNull()
+        {
+            var documentService = GetDocumentService();
+
+            var publishOn = DateTime.Now.AddDays(-1);
+            var textPage = new TextPage { PublishOn = publishOn };
+
+            Session.Transact(session => session.Save(textPage));
+
+            documentService.Unpublish(textPage);
+
+            textPage.PublishOn.Should().NotHaveValue();
+        }
+
+        [Fact]
+        public void DocumentService_DeleteDocument_ShouldCallSessionDelete()
+        {
+            var session = A.Fake<ISession>();
+            var documentService = new DocumentService(session, new SiteSettings());
+
+            var textPage = new TextPage();
+
+            documentService.DeleteDocument(textPage);
+
+            A.CallTo(() => session.Delete(textPage)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void DocumentService_GetDocumentVersion_CallsSessionGetDocumentVersionWithSpecifiedId()
+        {
+            var session = A.Fake<ISession>();
+            var documentService = new DocumentService(session, new SiteSettings());
+
+            documentService.GetDocumentVersion(1);
+
+            A.CallTo(() => session.Get<DocumentVersion>(1)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void DocumentService_GetDocumentVersion_ReturnsResultOfCallToSessionGet()
+        {
+            var session = A.Fake<ISession>();
+            var documentVersion = new DocumentVersion();
+            A.CallTo(() => session.Get<DocumentVersion>(1)).Returns(documentVersion);
+            var documentService = new DocumentService(session, new SiteSettings());
+
+            var version = documentService.GetDocumentVersion(1);
+            version.Should().Be(documentVersion);
         }
     }
 }

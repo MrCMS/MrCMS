@@ -29,19 +29,24 @@ namespace MrCMS.Tasks
 
         public static Action<Exception> ExceptionHandler { get; set; }
 
+        public static ThreadLocal<List<BackgroundTask>> TasksToExecute
+        {
+            get { return tasksToExecute; }
+        }
+
         public static void ExecuteLater(BackgroundTask task)
         {
-            tasksToExecute.Value.Add(task);
+            TasksToExecute.Value.Add(task);
         }
 
         public static void Discard()
         {
-            tasksToExecute.Value.Clear();
+            TasksToExecute.Value.Clear();
         }
 
         public static void StartExecuting()
         {
-            var value = tasksToExecute.Value;
+            var value = TasksToExecute.Value;
             var copy = value.ToArray();
             value.Clear();
 

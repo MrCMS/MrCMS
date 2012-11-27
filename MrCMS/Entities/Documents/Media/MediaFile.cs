@@ -41,20 +41,12 @@ namespace MrCMS.Entities.Documents.Media
             get
             {
                 yield return new ImageSize { Size = Size, ActualSize = Size, Name = "Original" };
-                foreach (var imageSize in FileService.ImageSizes.Where(size => FileService.RequiresResize(Size, size.Size)))
+                foreach (var imageSize in ImageProcessor.ImageSizes.Where(size => ImageProcessor.RequiresResize(Size, size.Size)))
                 {
-                    imageSize.ActualSize = FileService.CalculateDimensions(Size, imageSize.Size);
+                    imageSize.ActualSize = ImageProcessor.CalculateDimensions(Size, imageSize.Size);
                     yield return imageSize;
                 }
             }
-        }
-
-        private string GetFileName(string fileLocation, string suffix)
-        {
-            var directoryName = Path.GetDirectoryName(fileLocation);
-            var fileName = string.Format("{0}_{1}{2}", Path.GetFileNameWithoutExtension(fileLocation), suffix, Path.GetExtension(fileLocation));
-
-            return Path.Combine(directoryName, fileName).Replace("\\", "/");
         }
     }
 }

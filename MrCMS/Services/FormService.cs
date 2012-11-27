@@ -12,12 +12,6 @@ using NHibernate;
 
 namespace MrCMS.Services
 {
-    public interface IFormService
-    {
-        string GetFormStructure(int id);
-        void SaveFormStructure(int id, string data);
-        void SaveFormData(int id, FormCollection formCollection);
-    }
     public class FormService : IFormService
     {
         private readonly ISession _session;
@@ -161,6 +155,11 @@ namespace MrCMS.Services
                                                                         ? string.Empty
                                                                         : formValue.Value;
                                                          });
+        }
+
+        public FormPosting GetFormPosting(int id)
+        {
+            return _session.Get<FormPosting>(id);
         }
     }
 }

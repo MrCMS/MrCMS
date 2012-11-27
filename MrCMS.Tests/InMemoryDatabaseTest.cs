@@ -7,6 +7,7 @@ using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
 using MrCMS.Services;
+using MrCMS.Tasks;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cfg;
@@ -47,6 +48,8 @@ namespace MrCMS.Tests
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 
             SetupUser();
+
+            TaskExecutor.Discard();
         }
 
         private void SetupUser()

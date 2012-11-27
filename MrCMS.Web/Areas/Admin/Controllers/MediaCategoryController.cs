@@ -13,11 +13,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class MediaCategoryController : BaseDocumentController<MediaCategory>
     {
         private readonly IFileService _fileService;
+        private readonly IImageProcessor _imageProcessor;
 
-        public MediaCategoryController(IDocumentService documentService, IFileService fileService)
+        public MediaCategoryController(IDocumentService documentService, IFileService fileService, IImageProcessor imageProcessor)
             : base(documentService)
         {
             _fileService = fileService;
+            _imageProcessor = imageProcessor;
         }
 
         /**
@@ -115,14 +117,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public PartialViewResult Sizes()
         {
-            var items = _fileService.GetImageSizes();
+            var items = _imageProcessor.GetImageSizes();
             return PartialView(items);
         }
 
         public PartialViewResult ImagePreview(int id, string size)
         {
             var mediaFile = _fileService.GetFile(id);
-            var imageSize = _fileService.GetImageSizes().Find(imgSize => imgSize.Name == size);
+            var imageSize = _imageProcessor.GetImageSizes().Find(imgSize => imgSize.Name == size);
 
             return imageSize.Size == Size.Empty
                        ? PartialView((object)mediaFile.FileLocation)

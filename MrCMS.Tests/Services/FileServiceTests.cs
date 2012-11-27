@@ -14,22 +14,39 @@ namespace MrCMS.Tests.Services
 {
     public class FileServiceTests : InMemoryDatabaseTest
     {
+        private static SiteSettings _siteSettings;
+        private static IFileSystem _fileSystem;
+
         [Fact]
         public void FileService_AddFile_NullMediaCategoryThrowsArgumentNullException()
         {
-            var fileSystem = A.Fake<IFileSystem>();
-            var fileService = new FileService(Session, new SiteSettings(), fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService();
 
             Stream stream = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
             fileService.Invoking(service => service.AddFile(stream, "test.txt", "text/plain", 10, null)).ShouldThrow
                 <ArgumentNullException>();
         }
 
+        private static FileService GetFileService(ISession session = null, IFileSystem fileSystem = null)
+        {
+            _fileSystem = A.Fake<IFileSystem>();
+            A.CallTo(() => _fileSystem.ApplicationPath).Returns("C:\\temp\\");
+            A.CallTo(() => _fileSystem.GetExtension(A<string>.Ignored))
+             .ReturnsLazily(call =>
+                                {
+                                    var o = call.Arguments[0];
+                                    return Path.GetExtension(o.ToString());
+                                });
+
+            _siteSettings = new SiteSettings { MediaDirectory = "/media" };
+            return new FileService(session ?? Session, _siteSettings, fileSystem ?? _fileSystem,
+                                   A.Fake<IImageProcessor>());
+        }
+
         [Fact]
         public void FileService_AddFile_CreatesANewFileRecord()
         {
-            var fileSystem = A.Fake<IFileSystem>();
-            var fileService = new FileService(Session, new SiteSettings(), fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService();
 
             var mediaCategory = GetDefaultMediaCategory();
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
@@ -46,8 +63,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void FileService_AddFile_FileShouldHaveSameNameAsSet()
         {
-            var fileSystem = A.Fake<IFileSystem>();
-            var fileService = new FileService(Session, new SiteSettings(), fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService();
 
             var mediaCategory = GetDefaultMediaCategory();
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
@@ -59,12 +75,11 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void FileService_AddFile_FileShouldHaveSameContentTypeAsSet()
         {
-            var fileSystem = A.Fake<IFileSystem>();
-            var fileService = new FileService(Session, new SiteSettings(), fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService();
 
             var mediaCategory = GetDefaultMediaCategory();
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
-            var mediaFile = fileService.AddFile(GetDefaultStream(), null, "text/plain", 0, mediaCategory);
+            var mediaFile = fileService.AddFile(GetDefaultStream(), "test.txt", "text/plain", 0, mediaCategory);
 
             mediaFile.Type.Should().Be("text/plain");
         }
@@ -72,12 +87,11 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void FileService_AddFile_FileShouldHaveSameContentLengthAsSet()
         {
-            var fileSystem = A.Fake<IFileSystem>();
-            var fileService = new FileService(Session, new SiteSettings(), fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService();
 
             var mediaCategory = GetDefaultMediaCategory();
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
-            var mediaFile = fileService.AddFile(GetDefaultStream(), null, "text/plain", 1234, mediaCategory);
+            var mediaFile = fileService.AddFile(GetDefaultStream(), "test.txt", "text/plain", 1234, mediaCategory);
 
             mediaFile.size.Should().Be(1234);
         }
@@ -85,8 +99,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void FileService_AddFile_ShouldSetFileExtension()
         {
-            var fileSystem = A.Fake<IFileSystem>();
-            var fileService = new FileService(Session, new SiteSettings(), fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService();
 
             var mediaCategory = GetDefaultMediaCategory();
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
@@ -101,8 +114,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void FileService_AddFile_ShouldSetFileLocation()
         {
-            var fileSystem = A.Fake<IFileSystem>();
-            var fileService = new FileService(Session, new SiteSettings { MediaDirectory = "/media" }, fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService();
 
             var mediaCategory = GetDefaultMediaCategory();
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
@@ -117,8 +129,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void FileService_AddFile_MediaCategoryShouldHaveFile()
         {
-            var fileSystem = A.Fake<IFileSystem>();
-            var fileService = new FileService(Session, new SiteSettings(), fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService();
 
             var mediaCategory = GetDefaultMediaCategory();
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
@@ -136,18 +147,16 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void FileService_AddFile_CallsSaveToFileSystemOfIFileSystem()
         {
-            var fileSystem = A.Fake<IFileSystem>();
-
             var mediaCategory = GetDefaultMediaCategory();
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
 
             Stream stream = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
-            var fileService = new FileService(Session, new SiteSettings { MediaDirectory = "/media" }, fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService();
 
             fileService.AddFile(stream, "test.txt", "text/plain", 10, mediaCategory);
 
-            A.CallTo(() => fileSystem.SaveFile(stream, "/media/test-category/test.txt")).MustHaveHappened();
+            A.CallTo(() => _fileSystem.SaveFile(stream, "/media/test-category/test.txt")).MustHaveHappened();
         }
 
         [Fact]
@@ -166,8 +175,7 @@ namespace MrCMS.Tests.Services
                                      session.SaveOrUpdate(file2);
                                      session.SaveOrUpdate(file3);
                                  });
-            var fileSystem = A.Fake<IFileSystem>();
-            var fileService = new FileService(Session, new SiteSettings(), fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService();
 
             var files = fileService.GetFiles(mediaCategory.Id);
 
@@ -182,12 +190,40 @@ namespace MrCMS.Tests.Services
         public void FileService_GetFile_ShouldCallSessionGetById()
         {
             var session = A.Fake<ISession>();
-            var fileSystem = A.Fake<IFileSystem>();
-            var fileService = new FileService(session, new SiteSettings(), fileSystem) { OverrideApplicationPath = "C:\\temp\\" };
+            var fileService = GetFileService(session);
 
             var mediaFile = fileService.GetFile(1);
 
             A.CallTo(() => session.Get<MediaFile>(1)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void FileService_GetFileByLocation_ReturnsAMediaFileIfOneIsSavedWithAMatchingLocation()
+        {
+            var fileService = GetFileService();
+
+            const string fileLocation = "location.jpg";
+            var mediaFile = new MediaFile
+                                {
+                                    FileLocation = fileLocation
+                                };
+            Session.Transact(session => session.Save(mediaFile));
+
+            var fileByLocation = fileService.GetFileByLocation(fileLocation);
+
+            fileByLocation.Should().Be(mediaFile);
+        }
+
+        [Fact]
+        public void FileService_SaveFile_CallsSessionSaveOrUpdateOnThePassedFile()
+        {
+            var session = A.Fake<ISession>();
+            var fileService = GetFileService(session);
+            var mediaFile = new MediaFile();
+            
+            fileService.SaveFile(mediaFile);
+
+            A.CallTo(() => session.SaveOrUpdate(mediaFile)).MustHaveHappened();
         }
     }
 }
