@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using MrCMS.Entities.People;
 using MrCMS.Models;
+using MrCMS.Services;
 using MrCMS.Website;
 using MrCMS.Helpers;
 using System.Linq;
@@ -18,6 +19,14 @@ namespace MrCMS.Entities.Documents.Web
     public abstract class Webpage : Document
     {
         private Layout.Layout _layout;
+        private readonly AdminRoleUpdater _adminRoleUpdater;
+        private readonly FrontEndRoleUpdater _frontEndRoleUpdater;
+
+        public Webpage()
+        {
+            _adminRoleUpdater = new AdminRoleUpdater(this);
+            _frontEndRoleUpdater = new FrontEndRoleUpdater(this);
+        }
 
         [DisplayName("Meta Title")]
         public virtual string MetaTitle { get; set; }
@@ -53,46 +62,6 @@ namespace MrCMS.Entities.Documents.Web
         public virtual IList<Widget.Widget> HiddenWidgets { get; set; }
 
         public virtual IList<Widget.Widget> Widgets { get; set; }
-
-        public virtual Webpage CustomLayoutParent
-        {
-            get
-            {
-                var parent = Parent.Unproxy() as Webpage;
-
-                while (parent != null)
-                {
-                    if (parent.ChildrenInheritCustomLayoutOptions)
-                        return parent;
-
-                    parent = parent.Parent.Unproxy() as Webpage;
-                }
-
-                return null;
-            }
-        }
-
-        public virtual Webpage RootPage
-        {
-            get
-            {
-                if (Parent == null)
-                    return this;
-
-
-                var parent = Parent.Unproxy() as Webpage;
-
-                while (parent != null)
-                {
-                    if (parent.Parent.Unproxy() == null)
-                        return parent;
-
-                    parent = parent.Parent.Unproxy() as Webpage;
-                }
-
-                return null;
-            }
-        }
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
 
@@ -230,6 +199,16 @@ namespace MrCMS.Entities.Documents.Web
         public virtual IList<AdminAllowedRole> AdminAllowedRoles { get; set; }
         public virtual IList<AdminDisallowedRole> AdminDisallowedRoles { get; set; }
 
+        public virtual AdminRoleUpdater AdminRoleUpdater
+        {
+            get { return _adminRoleUpdater; }
+        }
+
+        public virtual FrontEndRoleUpdater FrontEndRoleUpdater
+        {
+            get { return _frontEndRoleUpdater; }
+        }
+
 
         public virtual IEnumerable<RoleModel> GetFrontEndRoles()
         {
@@ -288,213 +267,13 @@ namespace MrCMS.Entities.Documents.Web
 
         public override void CustomBinding(ControllerContext controllerContext, ISession session)
         {
-            foreach (var key in controllerContext.HttpContext.Request.Form.Keys.Cast<string>().Where(s => s.StartsWith("role.") && s.EndsWith("FrontEnd.Status")))
-            {
-                var parts = key.Split('.');
-                var roleName = parts[1];
-                var role = session.QueryOver<UserRole>().Where(userRole => userRole.Name == roleName).SingleOrDefault();
+            FrontEndRoleUpdater.UpdateFrontEndRoleStatuses(controllerContext, session);
 
-                var value = controllerContext.HttpContext.Request[key];
+            FrontEndRoleUpdater.UpdateFrontEndRoleRecursive(controllerContext, session);
 
-                switch (value)
-                {
-                    case "Any":
-                        {
-                            var allowedRole = FrontEndAllowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (allowedRole != null)
-                            {
-                                FrontEndAllowedRoles.Remove(allowedRole);
-                                session.Delete(allowedRole);
-                            }
-                            var disallowedRole = FrontEndDisallowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (disallowedRole != null)
-                            {
-                                FrontEndDisallowedRoles.Remove(disallowedRole);
-                                session.Delete(disallowedRole);
-                            }
-                        }
-                        break;
-                    case "Allowed":
-                        {
-                            var disallowedRole = FrontEndDisallowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (disallowedRole != null)
-                            {
-                                FrontEndDisallowedRoles.Remove(disallowedRole);
-                                session.Delete(disallowedRole);
-                            }
-                            var allowedRole = FrontEndAllowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (allowedRole == null)
-                            {
-                                var newRole = new FrontEndAllowedRole
-                                                  {
-                                                      Webpage = this,
-                                                      UserRole = role
-                                                  };
-                                FrontEndAllowedRoles.Add(newRole);
-                                session.SaveOrUpdate(newRole);
-                            }
-                        }
-                        break;
-                    case "Disallowed":
-                        {
-                            var allowedRole = FrontEndAllowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (allowedRole != null)
-                            {
-                                FrontEndAllowedRoles.Remove(allowedRole);
-                                session.Delete(allowedRole);
-                            }
+            AdminRoleUpdater.UpdateAdminRoleStatuses(controllerContext, session);
 
-                            var disallowedRole = FrontEndDisallowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (disallowedRole == null)
-                            {
-                                var newRole = new FrontEndDisallowedRole
-                                                  {
-                                                      Webpage = this,
-                                                      UserRole = role
-                                                  };
-                                FrontEndDisallowedRoles.Add(newRole);
-                                session.SaveOrUpdate(newRole);
-                            }
-                        }
-                        break;
-                }
-            }
-
-
-            foreach (var key in controllerContext.HttpContext.Request.Form.Keys.Cast<string>().Where(s => s.StartsWith("role.") && s.EndsWith("FrontEnd.Recursive")))
-            {
-                var parts = key.Split('.');
-                var roleName = parts[1];
-                var role = session.QueryOver<UserRole>().Where(userRole => userRole.Name == roleName).SingleOrDefault();
-
-                var value = controllerContext.HttpContext.Request[key];
-
-                switch (value)
-                {
-                    case "True":
-                        foreach (var source in FrontEndAllowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = true;
-                        foreach (var source in FrontEndDisallowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = true;
-                        break;
-                    case "False":
-                        foreach (var source in FrontEndAllowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = false;
-                        foreach (var source in FrontEndDisallowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = false;
-                        break;
-                    case "":
-                        foreach (var source in FrontEndAllowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = null;
-                        foreach (var source in FrontEndDisallowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = null;
-                        break;
-                }
-            }
-
-            foreach (var key in controllerContext.HttpContext.Request.Form.Keys.Cast<string>().Where(s => s.StartsWith("role.") && s.EndsWith("Admin.Status")))
-            {
-                var parts = key.Split('.');
-                var roleName = parts[1];
-                var role = session.QueryOver<UserRole>().Where(userRole => userRole.Name == roleName).SingleOrDefault();
-
-                var value = controllerContext.HttpContext.Request[key];
-
-                switch (value)
-                {
-                    case "Any":
-                        {
-                            var allowedRole = AdminAllowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (allowedRole != null)
-                            {
-                                AdminAllowedRoles.Remove(allowedRole);
-                                session.Delete(allowedRole);
-                            }
-                            var disallowedRole = AdminDisallowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (disallowedRole != null)
-                            {
-                                AdminDisallowedRoles.Remove(disallowedRole);
-                                session.Delete(disallowedRole);
-                            }
-                        }
-                        break;
-                    case "Allowed":
-                        {
-                            var disallowedRole = AdminDisallowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (disallowedRole != null)
-                            {
-                                AdminDisallowedRoles.Remove(disallowedRole);
-                                session.Delete(disallowedRole);
-                            }
-                            var allowedRole = AdminAllowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (allowedRole == null)
-                            {
-                                var newRole = new AdminAllowedRole
-                                {
-                                    Webpage = this,
-                                    UserRole = role
-                                };
-                                AdminAllowedRoles.Add(newRole);
-                                session.SaveOrUpdate(newRole);
-                            }
-                        }
-                        break;
-                    case "Disallowed":
-                        {
-                            var allowedRole = AdminAllowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (allowedRole != null)
-                            {
-                                AdminAllowedRoles.Remove(allowedRole);
-                                session.Delete(allowedRole);
-                            }
-
-                            var disallowedRole = AdminDisallowedRoles.FirstOrDefault(role1 => role1.UserRole.Name == roleName);
-                            if (disallowedRole == null)
-                            {
-                                var newRole = new AdminDisallowedRole
-                                {
-                                    Webpage = this,
-                                    UserRole = role
-                                };
-                                AdminDisallowedRoles.Add(newRole);
-                                session.SaveOrUpdate(newRole);
-                            }
-                        }
-                        break;
-                }
-            }
-
-
-            foreach (var key in controllerContext.HttpContext.Request.Form.Keys.Cast<string>().Where(s => s.StartsWith("role.") && s.EndsWith("Admin.Recursive")))
-            {
-                var parts = key.Split('.');
-                var roleName = parts[1];
-                var role = session.QueryOver<UserRole>().Where(userRole => userRole.Name == roleName).SingleOrDefault();
-
-                var value = controllerContext.HttpContext.Request[key];
-
-                switch (value)
-                {
-                    case "True":
-                        foreach (var source in AdminAllowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = true;
-                        foreach (var source in AdminDisallowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = true;
-                        break;
-                    case "False":
-                        foreach (var source in AdminAllowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = false;
-                        foreach (var source in AdminDisallowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = false;
-                        break;
-                    case "":
-                        foreach (var source in AdminAllowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = null;
-                        foreach (var source in AdminDisallowedRoles.Where(allowedRole => allowedRole.UserRole == role))
-                            source.IsRecursive = null;
-                        break;
-                }
-            }
+            AdminRoleUpdater.UpdateAdminRoleRecursive(controllerContext, session);
         }
 
         public virtual void AddTypeSpecificViewData(ViewDataDictionary viewData)
