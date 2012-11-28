@@ -14,8 +14,9 @@ namespace MrCMS.Services
         User GetUserByEmail(string email);
         User GetUserByResetGuid(Guid resetGuid);
         User GetCurrentUser(HttpContextBase context);
-        User GetCurrentUser(HttpContext context);
-        void SetPassword(int userId, string password);
+    }
+    public interface IRoleService
+    {
         void SaveRole(UserRole role);
         UserRole GetRole(int id);
         IEnumerable<UserRole> GetAllRoles();

@@ -225,6 +225,7 @@
     <Compile Include="Models\SiteTreeNode.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\ResetPasswordService.cs" />
+    <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\TagService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\WidgetService.cs" />

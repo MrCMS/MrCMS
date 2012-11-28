@@ -12,35 +12,46 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class UserControllerTests
     {
+        private static IUserService _userService;
+        private static IAuthorisationService _authorisationService;
+        private static IRoleService _roleService;
+
         [Fact]
         public void UserController_Index_ShouldReturnViewResult()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
 
             var actionResult = userController.Index();
 
             actionResult.Should().BeOfType<ViewResult>();
         }
 
+        private static UserController GetUserController(IUserService userService = null, IRoleService roleService = null,
+            IAuthorisationService authorisationService = null)
+        {
+            _userService = userService ?? A.Fake<IUserService>();
+            _roleService = roleService ?? A.Fake<IRoleService>();
+            _authorisationService = authorisationService ?? A.Fake<IAuthorisationService>();
+            var userController = new UserController(_userService, _roleService, _authorisationService) { IsAjaxRequest = false };
+            return userController;
+        }
+
         [Fact]
         public void UserController_Index_ShouldCallUserServiceGetAllUsers()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
 
             userController.Index();
 
-            A.CallTo(() => userService.GetAllUsers()).MustHaveHappened();
+            A.CallTo(() => _userService.GetAllUsers()).MustHaveHappened();
         }
 
         [Fact]
         public void UserController_Index_ShouldReturnTheResultOfServiceCallAsModel()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
             var users = new List<User>();
-            A.CallTo(() => userService.GetAllUsers()).Returns(users);
+            A.CallTo(() => _userService.GetAllUsers()).Returns(users);
 
             var actionResult = userController.Index();
 
@@ -50,8 +61,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_AddGet_ShouldReturnAViewResult()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
 
             var actionResult = userController.Add();
 
@@ -61,8 +71,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_AddGet_ShouldReturnAnAddUserModel()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
 
             var actionResult = userController.Add();
 
@@ -72,20 +81,18 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_AddPost_ShouldCallUserServiceSaveUser()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
             var user = new User();
 
             userController.Add(user);
 
-            A.CallTo(() => userService.SaveUser(user)).MustHaveHappened();
+            A.CallTo(() => _userService.SaveUser(user)).MustHaveHappened();
         }
 
         [Fact]
         public void UserController_AddPost_ShouldReturnRedirectToIndex()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
             var user = new User();
 
             var result = userController.Add(user);
@@ -96,21 +103,19 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_EditGet_ShouldCallGetUserForTheSpecifiedId()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
 
             userController.Edit(1);
 
-            A.CallTo(() => userService.GetUser(1)).MustHaveHappened();
+            A.CallTo(() => _userService.GetUser(1)).MustHaveHappened();
         }
 
         [Fact]
         public void UserController_EditGet_ShouldReturnAViewResultWithTheReturnedValueIfValidId()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
             var user = new User();
-            A.CallTo(() => userService.GetUser(1)).Returns(user);
+            A.CallTo(() => _userService.GetUser(1)).Returns(user);
 
             var result = userController.Edit(1);
 
@@ -120,9 +125,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_EditGet_ShouldReturnRedirectToIndexIfIdIsInvalid()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
-            A.CallTo(() => userService.GetUser(1)).Returns(null);
+            var userController = GetUserController();
+            A.CallTo(() => _userService.GetUser(1)).Returns(null);
 
             var result = userController.Edit(1);
 
@@ -132,20 +136,18 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_EditPost_ShouldCallSaveUser()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
             var user = new User();
 
             userController.Edit(user);
 
-            A.CallTo(() => userService.SaveUser(user)).MustHaveHappened();
+            A.CallTo(() => _userService.SaveUser(user)).MustHaveHappened();
         }
 
         [Fact]
         public void UserController_EditPost_ShouldReturnRedirectToIndex()
         {
-            var userService = A.Fake<IUserService>();
-            var userController = new UserController(userService) { IsAjaxRequest = false };
+            var userController = GetUserController();
             var user = new User();
 
             var result = userController.Edit(user);

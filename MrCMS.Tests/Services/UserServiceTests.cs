@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Principal;
 using System.Web;
 using FakeItEasy;
 using FluentAssertions;
@@ -15,9 +16,7 @@ namespace MrCMS.Tests.Services
     {
         private static UserService GetUserService()
         {
-            var authorisationService = A.Fake<IAuthorisationService>();
-            
-            var userService = new UserService(Session, authorisationService);
+            var userService = new UserService(Session);
             return userService;
         }
 
@@ -65,6 +64,104 @@ namespace MrCMS.Tests.Services
             var users = userService.GetAllUsers();
 
             users.Should().HaveCount(15);
+        }
+
+        [Fact]
+        public void UserService_GetUserByEmail_ReturnsNullWhenNoUserAvailable()
+        {
+            var userService = GetUserService();
+
+            userService.GetUserByEmail("test@example.com").Should().BeNull();
+        }
+        
+        [Fact]
+        public void UserService_GetUserByEmail_WithValidEmailReturnsTheCorrectUser()
+        {
+            var userService = GetUserService();
+
+            var user = new User {FirstName = "Test", LastName = "User", Email = "test@example.com"};
+            Session.Transact(session => Session.Save(user));
+            var user2 = new User {FirstName = "Test", LastName = "User2", Email = "test2@example.com"};
+            Session.Transact(session => Session.Save(user2));
+
+            userService.GetUserByEmail("test2@example.com").Should().Be(user2);
+        }
+
+        [Fact]
+        public void UserService_GetUserByResetGuid_ReturnsNullForInvalidGuid()
+        {
+            var userService = GetUserService();
+
+            userService.GetUserByResetGuid(Guid.Empty).Should().BeNull();
+        }
+
+        [Fact]
+        public void UserService_GetUserByResetGuid_ValidGuidButExpiryPassedReturnsNull()
+        {
+            var userService = GetUserService();
+
+            var resetPasswordGuid = Guid.NewGuid();
+            var user = new User
+            {
+                FirstName = "Test",
+                LastName = "User",
+                Email = "test@example.com",
+                ResetPasswordGuid = resetPasswordGuid,
+                ResetPasswordExpiry = DateTime.UtcNow.AddDays(-2)
+            };
+            Session.Transact(session => Session.Save(user));
+
+            userService.GetUserByResetGuid(resetPasswordGuid).Should().BeNull();
+        }
+
+        [Fact]
+        public void UserService_GetUserByResetGuid_ValidGuidAndExpiryInTheFutureReturnsUser()
+        {
+            var userService = GetUserService();
+
+            var resetPasswordGuid = Guid.NewGuid();
+            var user = new User
+            {
+                FirstName = "Test",
+                LastName = "User",
+                Email = "test@example.com",
+                ResetPasswordGuid = resetPasswordGuid,
+                ResetPasswordExpiry = DateTime.UtcNow.AddDays(1)
+            };
+            Session.Transact(session => Session.Save(user));
+
+            userService.GetUserByResetGuid(resetPasswordGuid).Should().Be(user);
+        }
+
+        [Fact]
+        public void UserService_GetCurrentUser_HttpContextUserIsNullReturnsNull()
+        {
+            var userService = GetUserService();
+            var httpContextBase = A.Fake<HttpContextBase>();
+            A.CallTo(() => httpContextBase.User).Returns(null);
+
+            userService.GetCurrentUser(httpContextBase).Should().BeNull();
+        }
+
+        [Fact]
+        public void UserService_GetCurrentUser_HttpContextUserHasIdentityGetByEmail()
+        {
+            var userService = GetUserService();
+            var httpContextBase = A.Fake<HttpContextBase>();
+            var principal = A.Fake<IPrincipal>();
+            var identity = A.Fake<IIdentity>();
+            A.CallTo(() => identity.Name).Returns("test@example.com");
+            A.CallTo(() => principal.Identity).Returns(identity);
+            A.CallTo(() => httpContextBase.User).Returns(principal);
+            var user = new User
+            {
+                FirstName = "Test",
+                LastName = "User",
+                Email = "test@example.com",
+            };
+            Session.Transact(session => Session.Save(user));
+
+            userService.GetCurrentUser(httpContextBase).Should().Be(user);
         }
     }
 }

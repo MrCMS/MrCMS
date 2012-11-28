@@ -11,7 +11,12 @@ namespace MrCMS.Membership
     public class MrCmsRoleProvider : RoleProvider
     {
         private readonly Func<IUserService> _userService;
+        private readonly Func<IRoleService> _roleService;
 
+        private IRoleService RoleService
+        {
+            get { return _roleService.Invoke(); }
+        }
         private IUserService UserService
         {
             get { return _userService.Invoke(); }
@@ -20,6 +25,7 @@ namespace MrCMS.Membership
         public MrCmsRoleProvider()
         {
             _userService = MrCMSApplication.Get<IUserService>;
+            _roleService = MrCMSApplication.Get<IRoleService>;
         }
 
         public override bool IsUserInRole(string username, string roleName)
@@ -44,30 +50,30 @@ namespace MrCMS.Membership
 
         public override void CreateRole(string roleName)
         {
-            var role = UserService.GetRoleByName(roleName);
+            var role = RoleService.GetRoleByName(roleName);
             if (role != null)
             {
-                UserService.SaveRole(new UserRole { Name = roleName });
+                RoleService.SaveRole(new UserRole { Name = roleName });
             }
         }
 
         public override bool DeleteRole(string roleName, bool throwOnPopulatedRole)
         {
-            var role = UserService.GetRoleByName(roleName);
+            var role = RoleService.GetRoleByName(roleName);
             if (throwOnPopulatedRole && role.Users.Any())
                 throw new Exception("Role " + roleName + " is still populated");
 
             foreach (User user in role.Users)
                 user.Roles.Remove(role);
 
-            UserService.DeleteRole(role);
+            RoleService.DeleteRole(role);
 
             return true;
         }
 
         public override bool RoleExists(string roleName)
         {
-            var role = UserService.GetRoleByName(roleName);
+            var role = RoleService.GetRoleByName(roleName);
             return (role != null);
         }
 
@@ -76,7 +82,7 @@ namespace MrCMS.Membership
             foreach (var user in usernames.Select(username => UserService.GetUserByEmail(username)))
             {
                 var thisUser = user;
-                foreach (var role in roleNames.Select(roleName => UserService.GetRoleByName(roleName)).Where(role => !thisUser.Roles.Contains(role)))
+                foreach (var role in roleNames.Select(roleName => RoleService.GetRoleByName(roleName)).Where(role => !thisUser.Roles.Contains(role)))
                 {
                     user.Roles.Add(role);
                     role.Users.Add(user);
@@ -90,7 +96,7 @@ namespace MrCMS.Membership
             foreach (var user in usernames.Select(username => UserService.GetUserByEmail(username)))
             {
                 var thisUser = user;
-                foreach (var role in roleNames.Select(roleName => UserService.GetRoleByName(roleName)).Where(role => thisUser.Roles.Contains(role)))
+                foreach (var role in roleNames.Select(roleName => RoleService.GetRoleByName(roleName)).Where(role => thisUser.Roles.Contains(role)))
                 {
                     user.Roles.Remove(role);
                     role.Users.Remove(user);
@@ -101,7 +107,7 @@ namespace MrCMS.Membership
 
         public override string[] GetUsersInRole(string roleName)
         {
-         var roleByName = UserService.GetRoleByName(roleName);
+            var roleByName = RoleService.GetRoleByName(roleName);
             return roleByName == null
                        ? new string[0]
                        : roleByName.Users.Select(user => user.Email).ToArray();
@@ -109,12 +115,12 @@ namespace MrCMS.Membership
 
         public override string[] GetAllRoles()
         {
-            return UserService.GetAllRoles().Select(role => role.Name).ToArray();
+            return RoleService.GetAllRoles().Select(role => role.Name).ToArray();
         }
 
         public override string[] FindUsersInRole(string roleName, string usernameToMatch)
         {
-            var roleByName = UserService.GetRoleByName(roleName);
+            var roleByName = RoleService.GetRoleByName(roleName);
             return roleByName == null
                        ? new string[0]
                        : roleByName.Users.Where(user => user.Email.Contains(usernameToMatch))

@@ -10,10 +10,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class UserController : AdminController
     {
         private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
+        private readonly IAuthorisationService _authorisationService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IRoleService roleService, IAuthorisationService authorisationService)
         {
             _userService = userService;
+            _roleService = roleService;
+            _authorisationService = authorisationService;
         }
 
         public ActionResult Index(int page = 1)
@@ -41,7 +45,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             User user = _userService.GetUser(id);
 
-            ViewData["AvailableRoles"] = _userService.GetAllRoles();
+            ViewData["AvailableRoles"] = _roleService.GetAllRoles();
 
             if (user == null)
                 return RedirectToAction("Index");
@@ -64,10 +68,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult SetPassword(int id, string password)
+        public ActionResult SetPassword(User user, string password)
         {
-            _userService.SetPassword(id, password);
-            return RedirectToAction("Edit", new {id});
+            _authorisationService.SetPassword(user, password, password);
+            return RedirectToAction("Edit", new {user.Id});
         }
     }
 }

@@ -11,16 +11,16 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class RoleController : Controller
     {
-        private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
 
-        public RoleController(IUserService userService)
+        public RoleController(IRoleService roleService)
         {
-            _userService = userService;
+            _roleService = roleService;
         }
         // GET: /Admin/Role/
         public ActionResult Index()
         {
-            return View(_userService.GetAllRoles());
+            return View(_roleService.GetAllRoles());
         }
 
         [HttpGet]
@@ -33,7 +33,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Add(UserRole model)
         {
-            _userService.SaveRole(model);
+            _roleService.SaveRole(model);
 
             return RedirectToAction("Index");
         }
@@ -41,7 +41,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Edit(int id)
         {
-            UserRole role = _userService.GetRole(id);
+            UserRole role = _roleService.GetRole(id);
 
             if (role == null)
                 return RedirectToAction("Index");
@@ -52,7 +52,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Edit(UserRole model)
         {
-            _userService.SaveRole(model);
+            _roleService.SaveRole(model);
 
             return RedirectToAction("Index");
         }
@@ -60,7 +60,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Delete(int id)
         {
-            UserRole role = _userService.GetRole(id);
+            UserRole role = _roleService.GetRole(id);
 
             if (role == null)
                 return RedirectToAction("Index");
@@ -71,7 +71,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Delete(UserRole role)
         {
-            _userService.DeleteRole(role);
+            _roleService.DeleteRole(role);
             return RedirectToAction("Index");
         }
     }

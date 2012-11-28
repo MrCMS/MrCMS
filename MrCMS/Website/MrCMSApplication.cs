@@ -120,7 +120,6 @@ namespace MrCMS.Website
             }
         }
 
-
         protected abstract void RegisterAppSpecificRoutes(RouteCollection routes);
 
         public static Layout GetDefaultLayout(Webpage page)
@@ -130,10 +129,9 @@ namespace MrCMS.Website
 
         public static User CurrentUser
         {
-            get { return OverriddenUser ?? Get<IUserService>().GetCurrentUser(HttpContext.Current); }
+            get { return OverriddenUser ?? Get<IUserService>().GetCurrentUser(new HttpContextWrapper(HttpContext.Current)); }
         }
-
-
+        
         public static bool UserLoggedIn
         {
             get { return CurrentUser != null; }

@@ -134,9 +134,13 @@ namespace MrCMS.Entities.Documents.Web
             var anyRoles = false;
             foreach (var item in ActivePages)
             {
-                if (item.AdminDisallowedRoles.Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault()).Any(role => userRoles.Contains(role.UserRole)))
+                if (item.AdminDisallowedRoles
+                    .Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault())
+                    .Any(role => userRoles.Contains(role.UserRole)))
                     return false;
-                if (item.AdminAllowedRoles.Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault()).Any(role => userRoles.Contains(role.UserRole)))
+                if (item.AdminAllowedRoles
+                    .Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault())
+                    .Any(role => userRoles.Contains(role.UserRole)))
                     return true;
 
                 anyRoles = anyRoles || item.AdminDisallowedRoles.Any() || item.AdminAllowedRoles.Any();
@@ -150,9 +154,13 @@ namespace MrCMS.Entities.Documents.Web
             var anyRoles = false;
             foreach (var item in ActivePages)
             {
-                if (item.FrontEndDisallowedRoles.Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault()).Any(role => userRoles.Contains(role.UserRole)))
+                if (item.FrontEndDisallowedRoles
+                    .Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault())
+                    .Any(role => userRoles.Contains(role.UserRole)))
                     return false;
-                if (item.FrontEndAllowedRoles.Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault()).Any(role => userRoles.Contains(role.UserRole)))
+                if (item.FrontEndAllowedRoles
+                    .Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault())
+                    .Any(role => userRoles.Contains(role.UserRole)))
                     return true;
 
                 anyRoles = anyRoles || item.FrontEndDisallowedRoles.Any() || item.FrontEndAllowedRoles.Any();

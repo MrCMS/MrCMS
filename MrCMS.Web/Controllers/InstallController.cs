@@ -261,10 +261,9 @@ namespace MrCMS.Web.Controllers
             ISession session = sessionFactory.OpenSession();
 
             var siteSettings = new SiteSettings();
-            var authorisationService = new AuthorisationService();
 
             var documentService = new DocumentService(session, null);
-            var userService = new UserService(session, authorisationService);
+            var userService = new UserService(session);
 
             var layout = new Layout
                                {
@@ -311,6 +310,7 @@ namespace MrCMS.Web.Controllers
                 };
 
 
+            var authorisationService = new AuthorisationService();
             authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
             authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
             userService.SaveUser(user);
@@ -322,7 +322,8 @@ namespace MrCMS.Web.Controllers
 
             user.Roles = new List<UserRole> { adminUserRole };
             adminUserRole.Users = new List<User> { user };
-            userService.SaveRole(adminUserRole);
+            var roleService = new RoleService(session);
+            roleService.SaveRole(adminUserRole);
 
             authorisationService.Logout();
             authorisationService.SetAuthCookie(user.Email, false);

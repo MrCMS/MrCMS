@@ -120,7 +120,7 @@ namespace MrCMS.Services
         public virtual string GetUrl(MediaFile file, Size size)
         {
             if (!file.IsImage)
-                return ""; // blank image?
+                return file.FileLocation;
 
             //check to see if the image already exists, if it does simply return it
             var requestedFileLocation = RequestedImageFileLocation(file, size);
@@ -173,12 +173,12 @@ namespace MrCMS.Services
                 mediaFile.MediaCategory.Files.Remove(mediaFile);
 
             _fileSystem.Delete(mediaFile.FileLocation);
-            foreach (var imageUrl in from imageSize in GetImageSizes()
-                                     select GetUrl(mediaFile, imageSize.Size)
-                                         into imageUrl
-                                         let file = _fileSystem.ApplicationPath + imageUrl
-                                         where _fileSystem.Exists(file)
-                                         select imageUrl)
+            foreach (var imageUrl in
+                GetImageSizes()
+                    .Select(imageSize => GetUrl(mediaFile, imageSize.Size))
+                    .Select(imageUrl => new {imageUrl, file = _fileSystem.ApplicationPath + imageUrl})
+                    .Where(@t => _fileSystem.Exists(@t.file))
+                    .Select(@t => @t.imageUrl))
             {
                 _fileSystem.Delete(imageUrl);
             }
