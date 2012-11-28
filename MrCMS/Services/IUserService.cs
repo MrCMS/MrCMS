@@ -15,12 +15,4 @@ namespace MrCMS.Services
         User GetUserByResetGuid(Guid resetGuid);
         User GetCurrentUser(HttpContextBase context);
     }
-    public interface IRoleService
-    {
-        void SaveRole(UserRole role);
-        UserRole GetRole(int id);
-        IEnumerable<UserRole> GetAllRoles();
-        UserRole GetRoleByName(string name);
-        void DeleteRole(UserRole role);
-    }
 }

@@ -216,6 +216,7 @@
     <Compile Include="Services\IImageProcessor.cs" />
     <Compile Include="Services\ILayoutAreaService.cs" />
     <Compile Include="Services\INavigationService.cs" />
+    <Compile Include="Services\IRoleService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
     <Compile Include="Services\ITagService.cs" />
     <Compile Include="Services\IUserService.cs" />
