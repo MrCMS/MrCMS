@@ -36,13 +36,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView("UserList", _service.GetUserList());
         }
 
-        public PartialViewResult GetMore(int parentId, int previous)
-        {
-            var more = _service.GetMore(parentId, previous);
-
-            return PartialView();
-        }
-
         [ChildActionOnly]
         public PartialViewResult LoggedInAs()
         {

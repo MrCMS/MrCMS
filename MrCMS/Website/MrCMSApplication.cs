@@ -129,9 +129,9 @@ namespace MrCMS.Website
 
         public static User CurrentUser
         {
-            get { return OverriddenUser ?? Get<IUserService>().GetCurrentUser(new HttpContextWrapper(HttpContext.Current)); }
+            get { return OverriddenUser ?? Get<IUserService>().GetCurrentUser(CurrentContext); }
         }
-        
+
         public static bool UserLoggedIn
         {
             get { return CurrentUser != null; }
@@ -179,7 +179,7 @@ namespace MrCMS.Website
 
         public static IEnumerable<T> GetAll<T>()
         {
-             return bootstrapper.Kernel.GetAll<T>(); 
+            return bootstrapper.Kernel.GetAll<T>();
         }
 
         public static T Get<T>()
@@ -209,18 +209,20 @@ namespace MrCMS.Website
 
         public static Webpage CurrentPage
         {
-            get { return (Webpage)HttpContext.Current.Items["current.webpage"]; }
-            set { HttpContext.Current.Items["current.webpage"] = value; }
+            get { return (Webpage)CurrentContext.Items["current.webpage"]; }
+            set { CurrentContext.Items["current.webpage"] = value; }
         }
 
-        public static IEnumerable<Webpage> ActivePages
+        public static HttpContextBase CurrentContext
         {
-            get { return CurrentPage.ActivePages; }
+            get { return OverridenContext ?? new HttpContextWrapper(HttpContext.Current); }
         }
+
+        public static HttpContextBase OverridenContext { get; set; }
 
         public static bool CurrentUserIsAdmin
         {
-            get { return HttpContext.Current.User.IsInRole("Administrator"); }
+            get { return CurrentContext.User.IsInRole("Administrator"); }
         }
 
         public static SiteSettings SiteSettings

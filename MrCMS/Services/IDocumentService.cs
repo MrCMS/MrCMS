@@ -34,5 +34,6 @@ namespace MrCMS.Services
         TextPage Get404Page();
         TextPage Get500Page();
         DocumentVersion GetDocumentVersion(int id);
+        void SetParent(Document document, int? parentId);
     }
 }

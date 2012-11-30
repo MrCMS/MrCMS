@@ -88,37 +88,20 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult HideWidget(int id, int widgetId, int layoutAreaId)
         {
             _documentService.HideWidget(id, widgetId);
-            return RedirectToAction("Edit", new { id, layoutAreaId = layoutAreaId });
+            return RedirectToAction("Edit", new { id, layoutAreaId });
         }
 
         [HttpPost]
         public ActionResult ShowWidget(int id, int widgetId, int layoutAreaId)
         {
             _documentService.ShowWidget(id, widgetId);
-            return RedirectToAction("Edit", new { id, layoutAreaId = layoutAreaId });
+            return RedirectToAction("Edit", new { id, layoutAreaId });
         }
 
         [HttpPost]
-        public void SetParent(int id, int? parentId)
+        public void SetParent(Webpage webpage, int? parentId)
         {
-            var document = _documentService.GetDocument<Webpage>(id);
-            if (document == null) return;
-
-            var existingParent = document.Parent;
-            var parent = parentId.HasValue ? _documentService.GetDocument<Webpage>(parentId.Value) : null;
-
-            document.Parent = parent;
-            if (parent != null)
-            {
-                parent.Children.Add(document);
-                _documentService.SaveDocument(parent);
-            }
-            if (existingParent != null)
-            {
-                existingParent.Children.Remove(document);
-                _documentService.SaveDocument(existingParent);
-            }
-            _documentService.SaveDocument(document);
+            _documentService.SetParent(webpage, parentId);
         }
 
         [HttpGet]
@@ -143,50 +126,22 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [ValidateInput(false)]
-        public string GetUnformattedBodyContent(int id)
+        public string GetUnformattedBodyContent(TextPage textPage)
         {
-            var doc = _documentService.GetDocument<TextPage>(id);
-            return doc.BodyContent;
+            return textPage.BodyContent;
         }
 
         [ValidateInput(false)]
-        public string GetFormattedBodyContent(int id)
+        public string GetFormattedBodyContent(TextPage textPage)
         {
-            var doc = _documentService.GetDocument<TextPage>(id);
-            MrCMSApplication.CurrentPage = doc;
-            var htmlHelper = GetHtmlHelper(this);
-            return htmlHelper.ParseShortcodes(doc.BodyContent).ToHtmlString();
+            MrCMSApplication.CurrentPage = textPage;
+            var htmlHelper = MrCMSHtmlHelper.GetHtmlHelper(this);
+            return htmlHelper.ParseShortcodes(textPage.BodyContent).ToHtmlString();
         }
 
-        private static HtmlHelper GetHtmlHelper(Controller controller)
+        public PartialViewResult Postings(Webpage webpage, int page = 1, string search = null)
         {
-            var viewContext = new ViewContext(controller.ControllerContext, new FakeView(), controller.ViewData, controller.TempData, TextWriter.Null);
-            return new HtmlHelper(viewContext, new ViewPage());
-        }
-
-        private class FakeView : IView
-        {
-            public void Render(ViewContext viewContext, TextWriter writer)
-            {
-                throw new InvalidOperationException();
-            }
-        }
-
-        public PartialViewResult Postings(int id, int page = 1, string search = null)
-        {
-            var doc = _documentService.GetDocument<Webpage>(id);
-
-            IEnumerable<FormPosting> formPostings = doc.FormPostings.OrderByDescending(posting => posting.CreatedOn);
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                formPostings =
-                    formPostings.Where(
-                        posting =>
-                        posting.FormValues.Any(value => value.Value.Contains(search, StringComparison.OrdinalIgnoreCase)));
-            }
-
-            var data = new PostingsModel(new PagedList<FormPosting>(formPostings, page, 10), id);
+            var data = _formService.GetFormPostings(webpage, page, search);
 
             return PartialView(data);
         }
@@ -196,12 +151,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(_formService.GetFormPosting(id));
         }
 
-        public ActionResult Versions(int id, int page = 1)
+        public ActionResult Versions(Document doc, int page = 1)
         {
-            var doc = _documentService.GetDocument<Webpage>(id);
-
-            var data = new VersionsModel(new PagedList<DocumentVersion>(doc.GetVersions(), page, 10), id);
-
+            var data = doc.GetVersions(page);
+           
             return PartialView(data);
         }
     }

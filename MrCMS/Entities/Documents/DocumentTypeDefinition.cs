@@ -65,20 +65,4 @@ namespace MrCMS.Entities.Documents
         BlackList,
         WhiteList
     }
-
-    [AttributeUsage(AttributeTargets.Class)]
-    public class RestrictedParentsAttribute : Attribute
-    {
-        private readonly Type[] _types;
-
-        public RestrictedParentsAttribute(params Type[] types)
-        {
-            _types = types;
-        }
-
-        public Type[] Types
-        {
-            get { return _types; }
-        }
-    }
 }

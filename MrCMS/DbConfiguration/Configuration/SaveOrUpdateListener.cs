@@ -142,11 +142,11 @@ namespace MrCMS.DbConfiguration.Configuration
 
         private User GetUser(ISession session)
         {
-            if (HttpContext.Current != null && HttpContext.Current.User != null)
+            if (MrCMSApplication.CurrentContext != null && MrCMSApplication.CurrentContext.User != null)
             {
                 var currentUser =
                     session.QueryOver<User>().Where(
-                        user => user.Email == HttpContext.Current.User.Identity.Name).
+                        user => user.Email == MrCMSApplication.CurrentContext.User.Identity.Name).
                         SingleOrDefault();
                 return currentUser;
             }

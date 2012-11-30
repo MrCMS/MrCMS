@@ -161,7 +161,6 @@
     <Compile Include="Entities\People\User.cs" />
     <Compile Include="Entities\People\UserRole.cs" />
     <Compile Include="Entities\Settings\Setting.cs" />
-    <Compile Include="Entities\Settings\SettingValue.cs" />
     <Compile Include="Entities\Widget\PlainTextWidget.cs" />
     <Compile Include="Entities\Widget\TextWidget.cs" />
     <Compile Include="Entities\Widget\Widget.cs" />
@@ -243,6 +242,7 @@
     <Compile Include="Settings\SEOSettings.cs" />
     <Compile Include="Settings\SettingService.cs" />
     <Compile Include="Settings\SiteSettings.cs" />
+    <Compile Include="Settings\SiteSettingsOptionGenerator.cs" />
     <Compile Include="Settings\TextAreaAttribute.cs" />
     <Compile Include="Shortcodes\FormElementRenderer.cs" />
     <Compile Include="Shortcodes\FormShortcodeParser.cs" />

@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.AccessControl;
 using System.Web;
 using System.Web.Hosting;
+using MrCMS.Website;
 
 namespace MrCMS.Services
 {
@@ -59,7 +60,7 @@ namespace MrCMS.Services
 
         public string MapPath(string path)
         {
-            return HttpContext.Current.Server.MapPath(path);
+            return MrCMSApplication.CurrentContext.Server.MapPath(path);
         }
     }
 }

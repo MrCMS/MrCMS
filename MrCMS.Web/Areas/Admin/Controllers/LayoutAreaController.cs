@@ -26,15 +26,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult Add(int id)
         {
             var layout = _documentService.GetDocument<Layout>(id);
-            return PartialView("Add", new LayoutArea{Layout = layout});
+            return PartialView("Add", new LayoutArea { Layout = layout });
         }
 
         [HttpPost]
-        public ActionResult Add([SessionModelBinder(typeof (AddLayoutAreaModelBinder))] LayoutArea layoutArea)
+        public ActionResult Add([SessionModelBinder(typeof(AddLayoutAreaModelBinder))] LayoutArea layoutArea)
         {
             _layoutAreaService.SaveArea(layoutArea);
 
-            return RedirectToAction("Edit", "Layout", new {id = layoutArea.Layout.Id});
+            return RedirectToAction("Edit", "Layout", new { id = layoutArea.Layout.Id });
         }
 
         [HttpGet]
@@ -49,30 +49,28 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit([SessionModelBinder(typeof (LayoutAreaModelBinder))] LayoutArea area)
+        public ActionResult Edit([SessionModelBinder(typeof(LayoutAreaModelBinder))] LayoutArea area)
         {
             _layoutAreaService.SaveArea(area);
 
-            return RedirectToAction("Edit", "Layout", new {id = area.Layout.Id});
+            return RedirectToAction("Edit", "Layout", new { id = area.Layout.Id });
         }
 
 
         [HttpGet]
         [ActionName("Delete")]
-        public ActionResult Delete_Get(int id)
+        public ActionResult Delete_Get(LayoutArea area)
         {
-            var area = _layoutAreaService.GetArea(id);
             return PartialView(area);
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(LayoutArea area)
         {
-            var area = _layoutAreaService.GetArea(id);
             var layoutId = area.Layout.Id;
             _layoutAreaService.DeleteArea(area);
 
-            return RedirectToAction("Edit", "Layout", new { id = layoutId});
+            return RedirectToAction("Edit", "Layout", new { id = layoutId });
         }
 
         [HttpGet]
@@ -85,7 +83,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public void SortWidgetsAction(string orders)
         {
-            _layoutAreaService.SetWidgetOrders(orders.GetIntList());
+            _layoutAreaService.SetWidgetOrders(orders);
         }
 
         [HttpGet]
@@ -97,15 +95,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View(new PageWidgetSortModel(area.GetWidgets(webpage), webpage, area));
         }
 
-        public void SortWidgetsForPageAction( int layoutAreaId, int order, int webpageId, int widgetId)
+        public void SortWidgetsForPageAction(WidgetPageOrder widgetPageOrder)
         {
-            _layoutAreaService.SetWidgetForPageOrder(new WidgetPageOrder
-                                                         {
-                                                             LayoutAreaId = layoutAreaId,
-                                                             Order = order,
-                                                             WebpageId = webpageId,
-                                                             WidgetId = widgetId
-                                                         });
+            _layoutAreaService.SetWidgetForPageOrder(widgetPageOrder);
         }
 
         public class PageWidgetSortModel

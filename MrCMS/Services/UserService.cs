@@ -15,7 +15,7 @@ namespace MrCMS.Services
 
         public UserService(ISession session)
         {
-            _session = session ?? MrCMSApplication.Get<ISession>();
+            _session = session;
         }
 
         public void SaveUser(User user)

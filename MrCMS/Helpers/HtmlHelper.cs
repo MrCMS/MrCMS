@@ -52,7 +52,7 @@ namespace MrCMS.Helpers
             }
 
             return CheckBoxHelper(htmlHelper, metadata,
-                                  string.Format("{0}.Deleted", ExpressionHelper.GetExpressionText(expression)),
+                                  String.Format("{0}.Deleted", ExpressionHelper.GetExpressionText(expression)),
                                   isChecked, htmlAttributes);
         }
 
@@ -268,7 +268,7 @@ namespace MrCMS.Helpers
                                                                     {
                                                                         string val = match.Value.Trim('@');
                                                                         return
-                                                                            string.Format(
+                                                                            String.Format(
                                                                                 "@<a href='http://twitter.com/{0}'>{1}</a>",
                                                                                 val, val);
                                                                     });
@@ -277,7 +277,7 @@ namespace MrCMS.Helpers
                                                                  {
                                                                      string val = match.Value;
                                                                      return
-                                                                         string.Format(
+                                                                         String.Format(
                                                                              "<a href='http://twitter.com/search/?q=%23{0}'>{1}</a>",
                                                                              val.Substring(1), val);
                                                                  });
@@ -326,7 +326,7 @@ namespace MrCMS.Helpers
                        ? MvcHtmlString.Create(IsJson(value.ToString())
                                                   ? GetPrettyPrintedJson(value.ToString())
                                                   : value.ToString())
-                       : MvcHtmlString.Create(string.Empty);
+                       : MvcHtmlString.Create(String.Empty);
         }
 
         private static string GetPrettyPrintedJson(string json)
@@ -393,7 +393,7 @@ namespace MrCMS.Helpers
 
         public static MvcHtmlString RenderImage(this HtmlHelper helper, string imageUrl, string alt = null, string title = null, object attributes = null)
         {
-            if (string.IsNullOrWhiteSpace(imageUrl))
+            if (String.IsNullOrWhiteSpace(imageUrl))
                 return MvcHtmlString.Empty;
 
             var image = MrCMSApplication.Get<IImageProcessor>().GetImage(imageUrl);
@@ -442,6 +442,20 @@ namespace MrCMS.Helpers
                 return result.ToString();
             }
             return url;
+        }
+
+        public static HtmlHelper GetHtmlHelper(Controller controller)
+        {
+            var viewContext = new ViewContext(controller.ControllerContext, new FakeView(), controller.ViewData, controller.TempData, TextWriter.Null);
+            return new HtmlHelper(viewContext, new ViewPage());
+        }
+
+        private class FakeView : IView
+        {
+            public void Render(ViewContext viewContext, TextWriter writer)
+            {
+                throw new InvalidOperationException();
+            }
         }
     }
 }

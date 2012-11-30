@@ -29,14 +29,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             ViewData["parent-val"] = parent;
             ViewData["parents"] = _navigationService.GetParentsList();
             ViewData["type"] = type;
-            ViewData["doc-types"] =
-                DocumentTypeHelper.DocumentTypeDefinitions
-                                  .BuildSelectItemList(definition => definition.Name, definition => definition.TypeName,
-                                                       definition => definition.TypeName == type, "Select type");
+            ViewData["doc-types"] = _navigationService.GetDocumentTypes(type);
 
             var docs = GetDetailedResults(term, type, parent, page);
             return View(docs);
         }
+
         [HttpPost]
         [ActionName("Index")]
         public ActionResult IndexPost(string term, string type, int? parent)

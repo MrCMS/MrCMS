@@ -13,7 +13,7 @@
             </text>
         }
         @Html.Label("WidgetType", "Widget Type")
-        @Html.DropDownList("WidgetType", Model.Types)
+        @Html.DropDownList("WidgetType", Model.Types, new { data_val = "true", data_val_required = "Please select a widget type" })
         <br />
         @Html.LabelFor(model => model.Name)
         @Html.EditorFor(model => model.Name, Model.Name)

@@ -43,7 +43,7 @@ namespace MrCMS.Services
             if (IsResized(imageUrl))
             {
                 var resizePart = GetResizePart(imageUrl);
-                var lastIndexOf = imageUrl.LastIndexOf(resizePart);
+                var lastIndexOf = imageUrl.LastIndexOf(resizePart, StringComparison.Ordinal);
                 imageUrl = imageUrl.Remove(lastIndexOf - 1, resizePart.Length + 1);
             }
             var fileByLocation =
@@ -53,7 +53,7 @@ namespace MrCMS.Services
                         .Cacheable()
                         .SingleOrDefault();
 
-            return fileByLocation ?? null;
+            return fileByLocation;
         }
 
         private bool IsResized(string imageUrl)

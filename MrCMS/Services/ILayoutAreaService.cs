@@ -14,7 +14,7 @@ namespace MrCMS.Services
         LayoutArea GetArea(int layoutAreaId);
         void SaveOverride(LayoutAreaOverride layoutAreaOverride);
         void DeleteArea(LayoutArea area);
-        void SetWidgetOrders(List<int> getIntList);
+        void SetWidgetOrders(string orders);
         void SetWidgetForPageOrder(WidgetPageOrder orders);
     }
 }

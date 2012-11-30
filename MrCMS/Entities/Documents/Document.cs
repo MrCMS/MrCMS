@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Models;
+using MrCMS.Paging;
 using MrCMS.Website;
 using MrCMS.Helpers;
 using NHibernate;
@@ -86,5 +88,13 @@ namespace MrCMS.Entities.Documents
         }
 
         protected internal virtual IList<DocumentVersion> Versions { get; set; }
+
+        public virtual VersionsModel GetVersions(int page)
+        {
+            return
+               new VersionsModel(
+                   new PagedList<DocumentVersion>(
+                       Versions.OrderByDescending(version => version.CreatedOn).ToList(), page, 10), Id);
+        }
     }
 }

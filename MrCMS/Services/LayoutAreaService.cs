@@ -80,14 +80,15 @@ namespace MrCMS.Services
             });
         }
 
-        public void SetWidgetOrders(List<int> getIntList)
+        public void SetWidgetOrders(string orders)
         {
             _session.Transact(session =>
                                   {
-                                      foreach (var widgetId in getIntList)
+                                      var widgetIds = orders.GetIntList();
+                                      foreach (var widgetId in widgetIds)
                                       {
                                           var widget = session.Get<Widget>(widgetId);
-                                          widget.DisplayOrder = getIntList.IndexOf(widgetId);
+                                          widget.DisplayOrder = widgetIds.IndexOf(widgetId);
                                           session.SaveOrUpdate(widget);
                                       }
                                   });

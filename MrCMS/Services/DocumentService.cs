@@ -73,6 +73,11 @@ namespace MrCMS.Services
             {
                 children = _session.QueryOver<T>().Where(arg => arg.Parent == null).List();
             }
+
+            children =
+                children.Where(
+                    arg => !(arg is Webpage) || (arg as Webpage).IsAllowed(MrCMSApplication.CurrentUser));
+
             if (document != null)
             {
                 var documentTypeDefinition = document.GetDefinition();
@@ -110,9 +115,7 @@ namespace MrCMS.Services
                     return Sort(documentTypeDefinition, children);
                 }
             }
-            return
-                children.
-                    OrderBy(arg => arg.DisplayOrder);
+            return children.OrderBy(arg => arg.DisplayOrder);
         }
 
         private static IOrderedEnumerable<T> Sort<T>(DocumentTypeDefinition documentTypeDefinition, IEnumerable<T> children) where T : Document
@@ -415,6 +418,26 @@ namespace MrCMS.Services
         public DocumentVersion GetDocumentVersion(int id)
         {
             return _session.Get<DocumentVersion>(id);
+        }
+
+        public void SetParent(Document document, int? parentId)
+        {
+            if (document == null) return;
+
+            var existingParent = document.Parent;
+            var parent = parentId.HasValue ? GetDocument<Webpage>(parentId.Value) : null;
+
+            document.Parent = parent;
+            if (parent != null)
+            {
+                parent.Children.Add(document);
+                SaveDocument(parent);
+            }
+            if (existingParent != null)
+            {
+                existingParent.Children.Remove(document);
+                SaveDocument(existingParent);
+            }
         }
     }
 }

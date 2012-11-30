@@ -73,16 +73,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Delete")]
-        public ActionResult Delete_Get(int id)
+        public ActionResult Delete_Get(T document)
         {
-            var doc = _documentService.GetDocument<T>(id);
-            return PartialView(doc);
+            return PartialView(document);
         }
 
         [HttpPost]
         public ActionResult Delete(T document)
         {
-            _documentService.DeleteDocument<T>(document);
+            _documentService.DeleteDocument(document);
 
             return RedirectToAction("Index");
         }

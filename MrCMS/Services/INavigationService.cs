@@ -17,6 +17,7 @@ namespace MrCMS.Services
         GetMoreResult GetMore(int parentId, int previousId);
         IEnumerable<SelectListItem> GetParentsList();
         string GetSiteMap(UrlHelper urlHelper);
+        IEnumerable<SelectListItem> GetDocumentTypes(string type);
     }
 
     public class GetMoreResult : List<SiteTreeNode>

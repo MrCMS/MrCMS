@@ -2,6 +2,7 @@ using System.Web;
 using System.Web.Mvc;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Website;
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
 using Ninject.Web.Common;
@@ -22,7 +23,7 @@ namespace MrCMS.IoC
                                       .BindWith<NinjectSettingsBinder>()
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
 
-            Kernel.Bind<HttpRequestBase>().ToMethod(context => new HttpRequestWrapper(HttpContext.Current.Request));
+            Kernel.Bind<HttpRequestBase>().ToMethod(context => MrCMSApplication.CurrentContext.Request);
         }
     }
 }

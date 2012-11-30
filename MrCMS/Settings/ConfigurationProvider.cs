@@ -24,7 +24,7 @@ namespace MrCMS.Settings
             // get properties we can write to
             var properties = from prop in typeof(TSettings).GetProperties()
                              where prop.CanWrite && prop.CanRead
-                             let setting = _settingService.GetSettingByKey<string>(typeof(TSettings).FullName + "." + prop.Name)
+                             let setting = _settingService.GetSettingValueByKey<string>(string.Format("{0}.{1}", typeof(TSettings).FullName, prop.Name))
                              where setting != null
                              where prop.PropertyType.GetCustomTypeConverter().CanConvertFrom(typeof(string))
                              where prop.PropertyType.GetCustomTypeConverter().IsValid(setting)

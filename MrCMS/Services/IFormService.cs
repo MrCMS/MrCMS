@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Models;
 
 namespace MrCMS.Services
 {
@@ -9,5 +10,6 @@ namespace MrCMS.Services
         void SaveFormStructure(int id, string data);
         void SaveFormData(int id, FormCollection formCollection);
         FormPosting GetFormPosting(int id);
+        PostingsModel GetFormPostings(Webpage webpage, int page, string search);
     }
 }

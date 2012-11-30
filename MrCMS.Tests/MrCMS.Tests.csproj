@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\DocumentTests.cs" />
     <Compile Include="Entities\MediaFileTests.cs" />
     <Compile Include="Services\AuthorisationServiceTests.cs" />
     <Compile Include="Services\DocumentServiceTests.cs" />
@@ -99,9 +100,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\NavigationServiceTests.cs" />
     <Compile Include="Services\ResetPasswordServiceTests.cs" />
+    <Compile Include="Services\RoleServiceTests.cs" />
     <Compile Include="Services\TagServiceTests.cs" />
     <Compile Include="Services\UserServiceTests.cs" />
     <Compile Include="Services\WidgetServiceTests.cs" />
+    <Compile Include="Settings\MailSettingsTests.cs" />
+    <Compile Include="Settings\MediaSettingsTests.cs" />
+    <Compile Include="Settings\SEOSettingsTests.cs" />
+    <Compile Include="Settings\SettingServiceTests.cs" />
+    <Compile Include="Settings\SiteSettingsOptionGeneratorTests.cs" />
+    <Compile Include="Settings\SiteSettingsTests.cs" />
+    <Compile Include="Stubs\StubDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MrCMS\MrCMS.csproj">

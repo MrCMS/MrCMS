@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
+using MrCMS.Models;
+using MrCMS.Paging;
 using MrCMS.Settings;
 using MrCMS.Tasks;
 using NHibernate;
@@ -160,6 +162,21 @@ namespace MrCMS.Services
         public FormPosting GetFormPosting(int id)
         {
             return _session.Get<FormPosting>(id);
+        }
+
+        public PostingsModel GetFormPostings(Webpage webpage, int page, string search)
+        {
+            IEnumerable<FormPosting> formPostings = webpage.FormPostings.OrderByDescending(posting => posting.CreatedOn);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                formPostings =
+                    formPostings.Where(
+                        posting =>
+                        posting.FormValues.Any(value => value.Value.Contains(search, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            return new PostingsModel(new PagedList<FormPosting>(formPostings, page, 10), webpage.Id);
         }
     }
 }

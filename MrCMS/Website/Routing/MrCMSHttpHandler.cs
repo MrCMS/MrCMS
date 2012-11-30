@@ -91,7 +91,7 @@ namespace MrCMS.Website.Routing
                 var errorSignal = ErrorSignal.FromContext(context);
                 errorSignal.Raise(exception);
 
-                if (!HttpContext.Current.IsDebuggingEnabled)
+                if (!MrCMSApplication.CurrentContext.IsDebuggingEnabled)
                     context.Response.Redirect("~/500");
             }
         }

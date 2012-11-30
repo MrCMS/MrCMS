@@ -160,6 +160,13 @@ namespace MrCMS.Services
             return content;
         }
 
+        public IEnumerable<SelectListItem> GetDocumentTypes(string type)
+        {
+            return DocumentTypeHelper.DocumentTypeDefinitions
+                                   .BuildSelectItemList(definition => definition.Name, definition => definition.TypeName,
+                                                        definition => definition.TypeName == type, "Select type");
+        }
+
         private IEnumerable<SelectListItem> GetPageListItems(IEnumerable<SiteTreeNode<Webpage>> nodes, int depth)
         {
             var items = new List<SelectListItem>();

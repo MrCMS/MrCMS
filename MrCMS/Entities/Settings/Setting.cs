@@ -1,5 +1,3 @@
-using MrCMS.Helpers;
-
 namespace MrCMS.Entities.Settings
 {
     /// <summary>
@@ -17,11 +15,6 @@ namespace MrCMS.Entities.Settings
         /// </summary>
         public virtual string Value { get; set; }
 
-
-        public virtual T ValueAs<T>()
-        {
-            return Value.ConvertTo<T>();
-        }
 
         public override string ToString()
         {

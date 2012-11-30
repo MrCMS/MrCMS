@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Paging;
+using MrCMS.Website;
 
 namespace MrCMS.Helpers
 {
@@ -51,8 +52,10 @@ namespace MrCMS.Helpers
 
         private static string GetCurrentPath()
         {
-            return HttpContext.Current.Request.Url.GetComponents(UriComponents.Path,
-                                                                 UriFormat.SafeUnescaped);
+            if (MrCMSApplication.CurrentContext.Request.Url != null)
+                return MrCMSApplication.CurrentContext.Request.Url.GetComponents(UriComponents.Path,
+                                                                                 UriFormat.SafeUnescaped);
+            throw new InvalidOperationException("Request does not have a URL");
         }
 
         private static TagBuilder Previous(HtmlHelper html, IPagedList list, string actionName,

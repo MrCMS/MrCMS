@@ -31,11 +31,7 @@ namespace MrCMS.Settings
         /// <returns>Setting</returns>
         public virtual Setting GetSettingById(int settingId)
         {
-            if (settingId == 0)
-                return null;
-
-            var setting = _session.Get<Setting>(settingId);
-            return setting;
+            return _session.Get<Setting>(settingId);
         }
 
         /// <summary>
@@ -67,7 +63,7 @@ namespace MrCMS.Settings
         /// <param name="key">Key</param>
         /// <param name="defaultValue">Default value</param>
         /// <returns>Setting value</returns>
-        public virtual T GetSettingByKey<T>(string key, T defaultValue = default(T))
+        public virtual T GetSettingValueByKey<T>(string key, T defaultValue = default(T))
         {
             if (String.IsNullOrEmpty(key))
                 return defaultValue;
@@ -144,26 +140,6 @@ namespace MrCMS.Settings
                     dictionary.Add(resourceName, new KeyValuePair<int, string>(s.Id, s.Value));
             }
             return dictionary;
-        }
-
-        /// <summary>
-        /// Save settings object
-        /// </summary>
-        /// <typeparam name="T">Type</typeparam>
-        /// <param name="settingInstance">Setting instance</param>
-        public virtual void SaveSetting<T>(T settingInstance) where T : ISettings, new()
-        {
-            //We should be sure that an appropriate ISettings object will not be cached in IoC tool after updating (by default cached per HTTP request)
-            MrCMSApplication.Get<IConfigurationProvider<T>>().SaveSettings(settingInstance);
-        }
-
-        /// <summary>
-        /// Delete all settings
-        /// </summary>
-        /// <typeparam name="T">Type</typeparam>
-        public virtual void DeleteSetting<T>() where T : ISettings, new()
-        {
-            MrCMSApplication.Get<IConfigurationProvider<T>>().DeleteSettings();
         }
     }
 }

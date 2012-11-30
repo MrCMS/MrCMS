@@ -91,7 +91,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void DocumentService_GetDocumentsByParentId_ShouldReturnAllDocumentsThatHaveTheCorrespondingParentId()
+        public void DocumentService_GetAdminDocumentsByParentId_ShouldReturnAllDocumentsThatHaveTheCorrespondingParentId()
         {
             var documentService = GetDocumentService();
 
@@ -123,7 +123,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void DocumentService_GetDocumentsByParentId_ShouldOnlyReturnRequestedType()
+        public void DocumentService_GetAdminDocumentsByParentId_ShouldOnlyReturnRequestedType()
         {
             var documentService = GetDocumentService();
 
@@ -158,7 +158,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void DocumentService_GetDocumentsByParentId_ShouldOrderByDisplayOrder()
+        public void DocumentService_GetAdminDocumentsByParentId_ShouldOrderByDisplayOrder()
         {
             var documentService = GetDocumentService();
 
@@ -509,13 +509,72 @@ namespace MrCMS.Tests.Services
             var doc1 = new TextPage { Name = "Test" };
             var doc2 = new TextPage { Name = "Different Name" };
             Session.Transact(session =>
-                                 {
-                                     session.SaveOrUpdate(doc1);
-                                     session.SaveOrUpdate(doc2);
-                                 });
+            {
+                session.SaveOrUpdate(doc1);
+                session.SaveOrUpdate(doc2);
+            });
             var documentService = GetDocumentService();
 
             var searchResultModels = documentService.SearchDocuments<TextPage>("Test");
+
+            searchResultModels.Should().HaveCount(1);
+            searchResultModels.First().Name.Should().Be("Test");
+        }
+
+        [Fact]
+        public void DocumentService_SearchDocumentsDetailed_ReturnsAnIEnumerableOfSearchResultModelsWhereTheNameMatches()
+        {
+            var doc1 = new TextPage { Name = "Test" };
+            var doc2 = new TextPage { Name = "Different Name" };
+            Session.Transact(session =>
+            {
+                session.SaveOrUpdate(doc1);
+                session.SaveOrUpdate(doc2);
+            });
+            var documentService = GetDocumentService();
+
+            var searchResultModels = documentService.SearchDocumentsDetailed<TextPage>("Test", null);
+
+            searchResultModels.Should().HaveCount(1);
+            searchResultModels.First().Name.Should().Be("Test");
+        }
+
+        [Fact]
+        public void DocumentService_SearchDocumentsDetailed_FiltersByParentIfIdIsSet()
+        {
+            var doc1 = new TextPage { Name = "Test" };
+            var doc2 = new TextPage { Name = "Different Name" };
+            var doc3 = new TextPage { Name = "Another Name" };
+            Session.Transact(session =>
+                                 {
+                                     doc1.Parent = doc2;
+                                     session.SaveOrUpdate(doc1);
+                                     session.SaveOrUpdate(doc2);
+                                     session.SaveOrUpdate(doc3);
+                                 });
+            var documentService = GetDocumentService();
+
+            var searchResultModels = documentService.SearchDocumentsDetailed<TextPage>("Test", doc3.Id);
+
+            searchResultModels.Should().HaveCount(0);
+        }
+
+        [Fact]
+        public void DocumentService_SearchDocumentsDetailed_FiltersByParentIfIdIsSetReturnsIfItIsCorrect()
+        {
+            var doc1 = new TextPage { Name = "Test" };
+            var doc2 = new TextPage { Name = "Different Name" };
+            var doc3 = new TextPage { Name = "Another Name" };
+            Session.Transact(session =>
+                                 {
+                                     doc1.Parent = doc2;
+                                     session.SaveOrUpdate(doc1);
+                                     session.SaveOrUpdate(doc2);
+                                     session.SaveOrUpdate(doc3);
+                                 });
+            var documentService = GetDocumentService();
+
+            var searchResultModels = documentService.SearchDocumentsDetailed<TextPage>("Test", doc2.Id);
 
             searchResultModels.Should().HaveCount(1);
             searchResultModels.First().Name.Should().Be("Test");

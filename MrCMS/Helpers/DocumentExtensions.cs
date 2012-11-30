@@ -4,23 +4,19 @@ using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
+using MrCMS.Models;
+using MrCMS.Paging;
 using Newtonsoft.Json;
 
 namespace MrCMS.Helpers
 {
-    public static class DocumentExtentions
+    public static class DocumentExtensions
     {
         public static void SetParent(this Document document, Document parent)
         {
             document.Parent = parent;
             if (parent != null && !parent.Children.Contains(document))
                 parent.Children.Add(document);
-        }
-
-        public static List<DocumentVersion> GetVersions<T>(this T doc) where T : Document
-        {
-            return
-                doc.Versions.OrderByDescending(version => version.CreatedOn).ToList();
         }
 
         public static T GetVersion<T>(this T doc, int id) where T : Document

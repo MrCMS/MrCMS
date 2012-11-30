@@ -154,5 +154,43 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
+
+        [Fact]
+        public void UserController_SetPasswordGet_ReturnsAPartialView()
+        {
+            var userController = GetUserController();
+            userController.SetPassword(1).Should().BeOfType<PartialViewResult>();
+        }
+
+        [Fact]
+        public void UserController_SetPasswordGet_ReturnsTheIdPassedAsTheModel()
+        {
+            var userController = GetUserController();
+            userController.SetPassword(1).As<PartialViewResult>().Model.Should().Be(1);
+        }
+
+        [Fact]
+        public void UserController_SetPasswordPost_ReturnsRedirectToEditUser()
+        {
+            var userController = GetUserController();
+
+            var result = userController.SetPassword(new User {Id = 1}, "password");
+
+            result.Should().BeOfType<RedirectToRouteResult>();
+            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
+            result.As<RedirectToRouteResult>().RouteValues["id"].Should().Be(1);
+        }
+
+        [Fact]
+        public void UserController_SetPasswordPost_ShouldCallAuthorisationServiceSetPassword()
+        {
+            var userController = GetUserController();
+
+            var user = new User {Id = 1};
+            const string password = "password";
+            var result = userController.SetPassword(user, password);
+
+            A.CallTo(() => _authorisationService.SetPassword(user, password, password)).MustHaveHappened();
+        }
     }
 }
