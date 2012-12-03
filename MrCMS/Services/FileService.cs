@@ -219,5 +219,19 @@ namespace MrCMS.Services
         {
             return _session.QueryOver<MediaFile>().Where(file => file.FileLocation == value).Take(1).Cacheable().SingleOrDefault();
         }
+
+        public string GetFileUrl(string value)
+        {
+            var mediaFile = GetFileByLocation(value);
+            if (mediaFile != null)
+                return "/" + mediaFile.FileLocation;
+
+            var split = value.Split('-');
+            var id = Convert.ToInt32(split[0]);
+            var file = GetFile(id);
+            var imageSize =
+                file.Sizes.FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
+            return "/" + GetFileLocation(file, imageSize);
+        }
     }
 }

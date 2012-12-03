@@ -185,6 +185,8 @@
     <Compile Include="IoC\ServiceModule.cs" />
     <Compile Include="Membership\MrCmsMembershipProvider.cs" />
     <Compile Include="Membership\MrCmsRoleProvider.cs" />
+    <Compile Include="Models\AddPageWidgetModel.cs" />
+    <Compile Include="Models\AddWidgetModel.cs" />
     <Compile Include="Models\AsyncListModel.cs" />
     <Compile Include="Models\AutoCompleteResult.cs" />
     <Compile Include="Models\FilesPagedResult.cs" />

@@ -6,6 +6,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
@@ -68,7 +69,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var mediaCategoryController = GetMediaCategoryController();
 
-            ActionResult result = mediaCategoryController.Edit(1);
+            ActionResult result = mediaCategoryController.Edit_Get(new MediaCategory());
 
             result.Should().BeOfType<ViewResult>();
         }
@@ -78,9 +79,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var mediaCategoryController = GetMediaCategoryController();
             var mediaCategory = new MediaCategory { Id = 1 };
-            A.CallTo(() => _documentService.GetDocument<MediaCategory>(1)).Returns(mediaCategory);
 
-            var result = mediaCategoryController.Edit(1) as ViewResult;
+            var result = mediaCategoryController.Edit_Get(mediaCategory) as ViewResult;
 
             result.Model.Should().Be(mediaCategory);
         }
@@ -176,7 +176,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var mediaCategoryController = GetMediaCategoryController();
 
-            var actionResult = mediaCategoryController.View(1);
+            var actionResult = mediaCategoryController.Show(new MediaCategory {Id = 1});
 
             actionResult.Should().BeOfType<RedirectToRouteResult>();
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
@@ -184,13 +184,14 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_Upload_ShouldCallGetMediaCategoryForTheGivenId()
+        public void MediaCategoryController_View_IncorrectCategoryIdRedirectsToIndex()
         {
             var mediaCategoryController = GetMediaCategoryController();
 
-            mediaCategoryController.Upload(1);
+            var actionResult = mediaCategoryController.Show(null);
 
-            A.CallTo(() => _documentService.GetDocument<MediaCategory>(1)).MustHaveHappened();
+            actionResult.Should().BeOfType<RedirectToRouteResult>();
+            actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
 
         [Fact]
@@ -198,20 +199,19 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var mediaCategoryController = GetMediaCategoryController();
 
-            ActionResult result = mediaCategoryController.Upload(1);
+            ActionResult result = mediaCategoryController.Upload(new MediaCategory());
 
             result.Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
-        public void MediaCategoryController_Upload_ShouldReturnTheResultOfTheMediaCategoryLookup()
+        public void MediaCategoryController_Upload_ShouldReturnTheResultOfTheMediaCategoryPassedToIt()
         {
             var mediaCategoryController = GetMediaCategoryController();
 
             var mediaCategory = new MediaCategory { Name = "test" };
-            A.CallTo(() => _documentService.GetDocument<MediaCategory>(1)).Returns(mediaCategory);
 
-            ActionResult result = mediaCategoryController.Upload(1);
+            ActionResult result = mediaCategoryController.Upload(mediaCategory);
 
             result.As<PartialViewResult>().Model.Should().Be(mediaCategory);
         }
@@ -247,14 +247,121 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_Media_ReturnsCategoryIfPassedToMethod()
+        public void MediaCategoryController_RemoveMedia_ShouldReturnAPartialView()
         {
             var mediaCategoryController = GetMediaCategoryController();
-            var mediaCategory = new MediaCategory();
 
-            ActionResult result = mediaCategoryController.Media(mediaCategory, null);
+            mediaCategoryController.RemoveMedia().Should().BeOfType<PartialViewResult>();
+        }
 
-            result.As<PartialViewResult>().Model.Should().Be(mediaCategory);
+        [Fact]
+        public void MediaCategoryController_Sizes_ShouldReturnAPartialView()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            mediaCategoryController.Sizes().Should().BeOfType<PartialViewResult>();
+        }
+
+        [Fact]
+        public void MediaCategoryController_Sizes_ShouldCallImageProcessorGetImageSizes()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            mediaCategoryController.Sizes();
+
+            A.CallTo(() => _imageProcessor.GetImageSizes()).MustHaveHappened();
+        }
+
+        [Fact]
+        public void MediaCategoryController_Sizes_ReturnsTheResultOfImageProcessorGetImageSizes()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+            var imageSizes = new List<ImageSize>();
+            A.CallTo(() => _imageProcessor.GetImageSizes()).Returns(imageSizes);
+
+            mediaCategoryController.Sizes().As<PartialViewResult>().Model.Should().Be(imageSizes);
+        }
+
+        [Fact]
+        public void MediaCategoryController_FileResult_ReturnsAPartialViewResult()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            mediaCategoryController.FileResult(new MediaFile()).Should().BeOfType<PartialViewResult>();
+        }
+
+        [Fact]
+        public void MediaCategoryController_FileResult_ReturnsTheMediaFilePassedToIt()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            var mediaFile = new MediaFile();
+
+            mediaCategoryController.FileResult(mediaFile).Model.Should().Be(mediaFile);
+        }
+
+        [Fact]
+        public void MediaCategoryController_MiniUploader_ReturnsPartialView()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            mediaCategoryController.MiniUploader(1).Should().BeOfType<PartialViewResult>();
+        }
+
+        [Fact]
+        public void MediaCategoryController_MiniUploader_ReturnsIdPassedToTheMethod()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            mediaCategoryController.MiniUploader(1).Model.Should().Be(1);
+        }
+
+        [Fact]
+        public void MediaCategoryController_GetFileUrl_CallsFileServiceGetFileUrlWithPassedValue()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            mediaCategoryController.GetFileUrl("test");
+
+            A.CallTo(() => _fileService.GetFileUrl("test")).MustHaveHappened();
+        }
+
+        [Fact]
+        public void MediaCategoryController_GetFileUrl_ReturnsResultOfCallToFileUrl()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            A.CallTo(() => _fileService.GetFileUrl("test")).Returns("test-result");
+
+            mediaCategoryController.GetFileUrl("test").Should().Be("test-result");
+        }
+
+        [Fact]
+        public void MediaCategoryController_MediaSelector_ReturnsAViewResult()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            mediaCategoryController.MediaSelector(null, false, 1).Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void MediaCategoryController_MediaSelector_CallsGetFilesPagedOnFileService()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            mediaCategoryController.MediaSelector(1, false, 1);
+
+            A.CallTo(() => _fileService.GetFilesPaged(1, false, 1, 10)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void MediaCategoryController_MediaSelector_ShouldHaveViewDataSet()
+        {
+            var mediaCategoryController = GetMediaCategoryController();
+
+            mediaCategoryController.MediaSelector(1, false, 1);
+
+            mediaCategoryController.ViewData["categories"].Should().BeOfType<List<SelectListItem>>();
         }
 
         private MediaCategoryController GetMediaCategoryController()

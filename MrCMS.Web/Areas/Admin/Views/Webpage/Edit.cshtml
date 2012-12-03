@@ -32,7 +32,7 @@
             @Html.ValidationMessageFor(x => x.PublishOn)
 
             <a href="/@Model.LiveUrlSegment" class="btn">View</a>
-            @Html.ActionLink("Preview", "View", "Webpage", new { id = Model.Id }, new { @class = "btn" })
+            @Html.ActionLink("Preview", "Show", "Webpage", new { id = Model.Id }, new { @class = "btn" })
             @if (Model.CanDelete)
             {
                 <a href="@Url.Action("Delete", "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>

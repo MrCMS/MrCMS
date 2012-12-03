@@ -20,7 +20,7 @@ namespace MrCMS.Settings
                              page => page.Name,
                              page => page.Id.ToString(CultureInfo.InvariantCulture),
                              page => page.Id == pageId,
-                             "Select page").ToList();
+                             "Select page");
         }
 
         public List<SelectListItem> GetLayoutOptions(ISession session, int? selectedLayoutId, bool includeDefault = false)
@@ -31,7 +31,7 @@ namespace MrCMS.Settings
                 layout => layout.Name,
                 layout => layout.Id.ToString(CultureInfo.InvariantCulture),
                 layout => layout.Id == selectedLayoutId,
-                includeDefault ? selectListItem : null).ToList();
+                includeDefault ? selectListItem : null);
         }
     }
 }

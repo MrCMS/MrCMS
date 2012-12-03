@@ -59,14 +59,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             doc.AddTypeSpecificViewData(ViewData);
         }
 
-        public override ActionResult View(int id)
+        public override ActionResult Show(Webpage document)
         {
-            var document = _documentService.GetDocument<Webpage>(id);
-
             if (document == null)
                 return RedirectToAction("Index");
 
-            return View(document);
+            return View((object) document);
         }
 
         [HttpPost]

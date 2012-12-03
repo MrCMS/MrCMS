@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -18,7 +19,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             set { _isAjaxRequest = value; }
         }
 
-        protected new HttpRequestBase Request
+        public new HttpRequestBase Request
         {
             get { return RequestMock ?? base.Request; }
         }
@@ -41,20 +42,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             return base.Json(data, contentType, contentEncoding, JsonRequestBehavior.AllowGet);
         }
-
-        protected string GetReferrer
-        {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(GetReferrerOverride))
-                    return GetReferrerOverride;
-                if (HttpContext != null && HttpContext.Request != null && HttpContext.Request.UrlReferrer != null)
-                    return HttpContext.Request.UrlReferrer.ToString();
-                return null;
-            }
-        }
-
-        public string GetReferrerOverride { get; set; }
 
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding)
         {
@@ -110,7 +97,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 }
                 if (Data == null) return;
 
-                var serializedData = Newtonsoft.Json.JsonConvert.SerializeObject(Data);
+                var serializedData = JsonConvert.SerializeObject(Data);
                 response.Write(serializedData);
             }
         }

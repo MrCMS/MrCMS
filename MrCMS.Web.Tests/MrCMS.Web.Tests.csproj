@@ -88,6 +88,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\Admin\Controllers\AdminControllerTests.cs" />
+    <Compile Include="Areas\Admin\Controllers\FileControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutContollerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaCategoryControllerTests.cs" />
@@ -100,6 +102,8 @@
     <Compile Include="Areas\Admin\Controllers\WidgetControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stubs\FakeHttpFileCollectionBase.cs" />
+    <Compile Include="Stubs\FakeHttpPostedFileBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

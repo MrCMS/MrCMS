@@ -2,11 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
-using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
-using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -52,9 +50,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        [ActionName("Edit")]
+        public ActionResult Edit_Get(T doc)
         {
-            var doc = _documentService.GetDocument<T>(id);
             PopulateEditDropdownLists(doc);
             return View(doc);
         }
@@ -98,6 +96,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _documentService.SetOrder(documentId, order);
         }
 
-        public abstract ActionResult View(int id);
+        public abstract ActionResult Show(T document);
     }
 }

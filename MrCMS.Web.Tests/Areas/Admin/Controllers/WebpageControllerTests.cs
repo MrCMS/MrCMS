@@ -92,7 +92,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var webpageController = GetWebpageController();
 
-            ActionResult result = webpageController.Edit(1);
+            ActionResult result = webpageController.Edit_Get(new TextPage());
 
             result.Should().BeOfType<ViewResult>();
         }
@@ -102,9 +102,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var webpageController = GetWebpageController();
             var webpage = new TextPage { Id = 1 };
-            A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(webpage);
 
-            var result = webpageController.Edit(1) as ViewResult;
+            var result = webpageController.Edit_Get(webpage) as ViewResult;
 
             result.Model.Should().Be(webpage);
         }
@@ -114,7 +113,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var webpageController = GetWebpageController();
 
-            webpageController.Edit(1);
+            webpageController.Edit_Get(new TextPage());
 
             A.CallTo(() => documentService.GetAllDocuments<Layout>()).MustHaveHappened();
         }
@@ -124,7 +123,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var webpageController = GetWebpageController();
 
-            var result = webpageController.Edit(1) as ViewResult;
+            var result = webpageController.Edit_Get(new TextPage()) as ViewResult;
 
             webpageController.ViewData["Layout"].Should().BeAssignableTo<IEnumerable<SelectListItem>>();
         }
@@ -136,7 +135,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var layout = new Layout() { Id = 1, Name = "Layout Name" };
             A.CallTo(() => documentService.GetAllDocuments<Layout>()).Returns(new List<Layout> { layout });
 
-            webpageController.Edit(1);
+            webpageController.Edit_Get(new TextPage());
 
             webpageController.ViewData["Layout"].As<IEnumerable<SelectListItem>>().Skip(1).First().Selected.Should().BeFalse();
             webpageController.ViewData["Layout"].As<IEnumerable<SelectListItem>>().Skip(1).First().Text.Should().Be("Layout Name");
@@ -199,22 +198,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WebpageController_View_CallsGetDocumentWithId()
-        {
-            var webpageController = GetWebpageController();
-
-            webpageController.View(1);
-
-            A.CallTo(() => documentService.GetDocument<Webpage>(1)).MustHaveHappened();
-        }
-
-        [Fact]
         public void WebpageController_View_InvalidIdReturnsRedirectToIndex()
         {
             var webpageController = GetWebpageController();
             A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(null);
 
-            var actionResult = webpageController.View(1);
+            var actionResult = webpageController.Show(null);
 
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }

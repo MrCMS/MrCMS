@@ -13,14 +13,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
         }
 
-        public override ActionResult View(int id)
+        public override ActionResult Show(Layout document)
         {
-            var document = _documentService.GetDocument<Layout>(id);
-
             if (document == null)
                 return RedirectToAction("Index");
 
-            return View(document);
+            return View((object) document);
         }
 
         public override ActionResult Add([SessionModelBinder(typeof(AddDocumentModelBinder))]Layout doc)

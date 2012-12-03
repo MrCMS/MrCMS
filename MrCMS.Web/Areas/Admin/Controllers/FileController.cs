@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Models;
 using MrCMS.Services;
-using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -28,14 +28,16 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Files")]
         public JsonResult Files_Post(int mediaCategoryId)
         {
-            return Json((from string files in Request.Files
-                         select Request.Files[files]
-                             into file
-                             select
-                                 _fileService.AddFile(file.InputStream, file.FileName, file.ContentType, file.ContentLength,
-                                                      _documentService.GetDocument<MediaCategory>(mediaCategoryId))
-                                 into dbFile
-                                 select dbFile).ToArray());
+            var list = new List<ViewDataUploadFilesResult>();
+            foreach (string files in Request.Files)
+            {
+                var file = Request.Files[files];
+                var dbFile = _fileService.AddFile(file.InputStream, file.FileName,
+                                                  file.ContentType, file.ContentLength,
+                                                  _documentService.GetDocument<MediaCategory>(mediaCategoryId));
+                list.Add(dbFile);
+            }
+            return Json(list.ToArray());
         }
 
         [HttpPost]
@@ -45,11 +47,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public string UpdateSEO(int id, string title, string description)
+        public string UpdateSEO(MediaFile mediaFile, string title, string description)
         {
             try
             {
-                var mediaFile = _fileService.GetFile(id);
                 mediaFile.Title = title;
                 mediaFile.Description = description;
                 _fileService.SaveFile(mediaFile);
@@ -58,7 +59,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return "There was an error saving the SEO values: " + ex.Message;
+                return string.Format("There was an error saving the SEO values: {0}", ex.Message);
             }
         }
     }

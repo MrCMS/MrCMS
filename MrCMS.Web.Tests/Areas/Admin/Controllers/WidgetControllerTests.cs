@@ -2,6 +2,7 @@
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
@@ -79,6 +80,101 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var result = widgetController.Edit(textWidget, "test-url");
 
             result.As<RedirectResult>().Url.Should().Be("test-url");
+        }
+
+        [Fact]
+        public void WidgetController_DeleteGet_ReturnsPartialViewResult()
+        {
+            var widgetController = GetWidgetController();
+            var textWidget = new TextWidget();
+
+            widgetController.Delete_Get(textWidget).Should().BeOfType<PartialViewResult>();
+        }
+
+        [Fact]
+        public void WidgetController_DeleteGet_ReturnsPassedObjectAsModel()
+        {
+            var widgetController = GetWidgetController();
+            var textWidget = new TextWidget();
+
+            widgetController.Delete_Get(textWidget).As<PartialViewResult>().Model.Should().Be(textWidget);
+        }
+
+        [Fact]
+        public void WidgetController_DeletePost_NullReturnUrlRedirectToRouteResult()
+        {
+            var widgetController = GetWidgetController();
+            var textWidget = new TextWidget();
+
+            widgetController.Delete(textWidget, null).Should().BeOfType<RedirectToRouteResult>();
+        }
+
+        [Fact]
+        public void WidgetController_DeletePost_IfReturnUrlIsSetReturnsRedirectResult()
+        {
+            var widgetController = GetWidgetController();
+            var textWidget = new TextWidget();
+
+            var actionResult = widgetController.Delete(textWidget, "test");
+            actionResult.Should().BeOfType<RedirectResult>();
+            actionResult.As<RedirectResult>().Url.Should().Be("test");
+        }
+
+        [Fact]
+        public void WidgetController_DeletePost_NullReturnUrlWebpageSetRedirectsToEditWebpage()
+        {
+            var widgetController = GetWidgetController();
+            var textWidget = new TextWidget {Webpage = new TextPage {Id = 1}};
+
+            var result = widgetController.Delete(textWidget, null).As<RedirectToRouteResult>();
+
+            result.RouteValues["controller"].Should().Be("Webpage");
+            result.RouteValues["action"].Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(1);
+        }
+
+        [Fact]
+        public void WidgetController_DeletePost_NullReturnUrlLayoutAreaIdSetRedirectsToEditLayoutArea()
+        {
+            var widgetController = GetWidgetController();
+            var textWidget = new TextWidget {LayoutArea = new LayoutArea {Id = 1}};
+
+            var result = widgetController.Delete(textWidget, null).As<RedirectToRouteResult>();
+
+            result.RouteValues["controller"].Should().Be("LayoutArea");
+            result.RouteValues["action"].Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(1);
+        }
+
+        [Fact]
+        public void WidgetController_DeletePost_ReturnUrlContainsWidgetEditIgnoreReturnUrl()
+        {
+            var widgetController = GetWidgetController();
+            var textWidget = new TextWidget {Id = 1, LayoutArea = new LayoutArea {Id = 1}};
+
+            var result = widgetController.Delete(textWidget, "/widget/edit/1").As<RedirectToRouteResult>();
+
+            result.RouteValues["controller"].Should().Be("LayoutArea");
+            result.RouteValues["action"].Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(1);
+        }
+
+        [Fact]
+        public void WidgetController_Add_ReturnsViewResult()
+        {
+            var widgetController = GetWidgetController();
+
+            widgetController.Add(1, null).Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void WidgetController_Add_CallsGetAddWidgetModelWithArguments()
+        {
+            var widgetController = GetWidgetController();
+
+            widgetController.Add(1, "return-url");
+
+            A.CallTo(() => _widgetService.GetAddWidgetModel(1, "return-url")).MustHaveHappened();
         }
     }
 }
