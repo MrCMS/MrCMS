@@ -255,34 +255,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_Sizes_ShouldReturnAPartialView()
-        {
-            var mediaCategoryController = GetMediaCategoryController();
-
-            mediaCategoryController.Sizes().Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void MediaCategoryController_Sizes_ShouldCallImageProcessorGetImageSizes()
-        {
-            var mediaCategoryController = GetMediaCategoryController();
-
-            mediaCategoryController.Sizes();
-
-            A.CallTo(() => _imageProcessor.GetImageSizes()).MustHaveHappened();
-        }
-
-        [Fact]
-        public void MediaCategoryController_Sizes_ReturnsTheResultOfImageProcessorGetImageSizes()
-        {
-            var mediaCategoryController = GetMediaCategoryController();
-            var imageSizes = new List<ImageSize>();
-            A.CallTo(() => _imageProcessor.GetImageSizes()).Returns(imageSizes);
-
-            mediaCategoryController.Sizes().As<PartialViewResult>().Model.Should().Be(imageSizes);
-        }
-
-        [Fact]
         public void MediaCategoryController_FileResult_ReturnsAPartialViewResult()
         {
             var mediaCategoryController = GetMediaCategoryController();

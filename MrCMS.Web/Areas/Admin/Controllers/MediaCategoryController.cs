@@ -67,12 +67,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View(_fileService.GetFilesPaged(categoryId, imagesOnly, page));
         }
 
-        public PartialViewResult Sizes()
-        {
-            var items = _imageProcessor.GetImageSizes();
-            return PartialView(items);
-        }
-
         public string GetFileUrl(string value)
         {
             return _fileService.GetFileUrl(value);
