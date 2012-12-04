@@ -16,6 +16,7 @@ using System.Web.Mvc;
 using FluentNHibernate.Cfg.Db;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
 using MrCMS.Services;
@@ -121,8 +122,6 @@ namespace MrCMS.Web.Controllers
             dirsToCheck.Add(rootDir + "App_Data");
             dirsToCheck.Add(rootDir + "bin");
             dirsToCheck.Add(rootDir + "content");
-            dirsToCheck.Add(rootDir + "images");
-            dirsToCheck.Add(rootDir + "images\\thumbs");
             foreach (string dir in dirsToCheck)
                 if (!checkPermissions(dir, false, true, true, true))
                     ModelState.AddModelError("",
@@ -260,7 +259,9 @@ namespace MrCMS.Web.Controllers
             var sessionFactory = _sessionFactory = configurator.CreateSessionFactory();
             ISession session = sessionFactory.OpenSession();
 
+            //settings
             var siteSettings = new SiteSettings();
+            var mediaSettings = new MediaSettings();
 
             var documentService = new DocumentService(session, null);
             var userService = new UserService(session);
@@ -275,7 +276,8 @@ namespace MrCMS.Web.Controllers
             documentService.AddDocument(new TextPage()
             {
                 Name = "Home",
-                UrlSegment = "home"
+                UrlSegment = "home",
+                RevealInNavigation = true
             });
 
             var error404 = new TextPage()
@@ -296,9 +298,26 @@ namespace MrCMS.Web.Controllers
                                };
             documentService.AddDocument(error500);
 
+            var defaultMediaCategory = new MediaCategory
+                {
+                    Name = "Default",
+                    UrlSegment = "default"
+                };
+            documentService.AddDocument(defaultMediaCategory);
+
             siteSettings.DefaultLayoutId = layout.Id;
             siteSettings.Error404PageId = error404.Id;
             siteSettings.Error500PageId = error500.Id;
+            siteSettings.MediaDirectory = "content/upload";
+
+            mediaSettings.ThumbnailImageHeight = 50;
+            mediaSettings.ThumbnailImageWidth = 50;
+            mediaSettings.LargeImageHeight = 800;
+            mediaSettings.LargeImageWidth = 800;
+            mediaSettings.MediumImageHeight = 500;
+            mediaSettings.MediumImageWidth = 500;
+            mediaSettings.SmallImageHeight = 200;
+            mediaSettings.SmallImageWidth = 200;
 
             var configurationProvider = new ConfigurationProvider<SiteSettings>(new SettingService(session));
             configurationProvider.SaveSettings(siteSettings);
