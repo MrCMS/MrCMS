@@ -9,6 +9,18 @@
 {
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/edit-webpage.js")"></script>
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.formbuilder.js")"></script>
+    
+    <script type="text/javascript">
+        // lazy load iframe preview when tab is selected
+        $('a[data-toggle="tab"]').on('shown', function(e) {
+            var tab = e.target.toString();
+            if (tab.length > 0) {
+                if (tab.indexOf("preview") !== -1) {
+                    $("#previewIframe").attr('src', '/@Model.LiveUrlSegment');
+                }
+            }
+        })
+    </script>
 
 }
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.formbuilder.css")" rel="stylesheet" type="text/css" />
@@ -32,7 +44,6 @@
             @Html.ValidationMessageFor(x => x.PublishOn)
 
             <a href="/@Model.LiveUrlSegment" class="btn">View</a>
-            @Html.ActionLink("Preview", "Show", "Webpage", new { id = Model.Id }, new { @class = "btn" })
             @if (Model.CanDelete)
             {
                 <a href="@Url.Action("Delete", "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
@@ -216,7 +227,7 @@
                 <p>
                     (<b>Note:</b> this preview is based on the last saved data, save any changes to see them reflected in the preview)
                 </p>
-                <iframe src="/@Model.LiveUrlSegment" width="100%" height="800" scrolling="yes" frameborder="0" border="0"></iframe>
+                <iframe src="" width="100%" height="800" scrolling="yes" frameborder="0" border="0" id="previewIframe"></iframe>
             </div>
         </div>
     }

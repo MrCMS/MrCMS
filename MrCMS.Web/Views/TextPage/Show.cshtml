@@ -2,6 +2,8 @@
 @model MrCMS.Entities.Documents.Web.TextPage
 
 <h1>@Model.Name</h1>
+<div class="right">
 @Html.RenderImage(Model.FeatureImage)
+</div>
 
 @Html.RenderBodyContent(Model.BodyContent)
