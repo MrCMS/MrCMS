@@ -39,10 +39,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        [ActionName("Edit")]
+        public ActionResult Edit_Get(UserRole role)
         {
-            UserRole role = _roleService.GetRole(id);
-
             if (role == null)
                 return RedirectToAction("Index");
 
@@ -58,10 +57,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Delete(int id)
+        [ActionName("Delete")]
+        public ActionResult Delete_Get(UserRole role)
         {
-            UserRole role = _roleService.GetRole(id);
-
             if (role == null)
                 return RedirectToAction("Index");
 
@@ -71,7 +69,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Delete(UserRole role)
         {
-            _roleService.DeleteRole(role);
+            if (role != null) _roleService.DeleteRole(role);
             return RedirectToAction("Index");
         }
     }

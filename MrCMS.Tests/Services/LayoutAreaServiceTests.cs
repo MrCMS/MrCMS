@@ -42,42 +42,6 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void LayoutAreaService_GetOverride_ShouldLoadOverrideIfItExists()
-        {
-            var layoutAreaService = new LayoutAreaService(Session);
-            var layoutArea = new LayoutArea {AreaName = "Area.Name"};
-            var webpage = new TextPage {Name = "Webpage"};
-            var areaOverride = new LayoutAreaOverride {LayoutArea = layoutArea, Document = webpage};
-            Session.Transact(session =>
-                                 {
-                                     session.SaveOrUpdate(layoutArea);
-                                     session.SaveOrUpdate(webpage);
-                                     session.SaveOrUpdate(areaOverride);
-                                 });
-
-            var layoutAreaOverride = layoutAreaService.GetOverride(layoutArea, webpage);
-            
-            layoutAreaOverride.Should().BeSameAs(areaOverride);
-        }
-
-        [Fact]
-        public void LayoutAreaService_GetOverrideWithNoOverride_ShouldReturnNull()
-        {
-            var layoutAreaService = new LayoutAreaService(Session);
-            var layoutArea = new LayoutArea {AreaName = "Area.Name"};
-            var webpage = new TextPage {Name = "Webpage"};
-            Session.Transact(session =>
-                                 {
-                                     session.SaveOrUpdate(layoutArea);
-                                     session.SaveOrUpdate(webpage);
-                                 });
-
-            var layoutAreaOverride = layoutAreaService.GetOverride(layoutArea, webpage);
-
-            layoutAreaOverride.Should().BeNull();
-        }
-
-        [Fact]
         public void LayoutAreaService_SaveArea_CallsSessionSaveOnTheArea()
         {
             var layoutArea = new LayoutArea();
@@ -87,6 +51,19 @@ namespace MrCMS.Tests.Services
             layoutAreaService.SaveArea(layoutArea);
 
             A.CallTo(() => session.SaveOrUpdate(layoutArea)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void LayoutAreaService_SaveArea_IfLayoutIsSetAddLayoutAreaToLayoutAreasList()
+        {
+            var layout = new Layout {LayoutAreas = new List<LayoutArea>()};
+            var layoutArea = new LayoutArea{Layout = layout};
+            var session = A.Fake<ISession>();
+            var layoutAreaService = new LayoutAreaService(session);
+
+            layoutAreaService.SaveArea(layoutArea);
+
+            layout.LayoutAreas.Should().Contain(layoutArea);
         }
 
         [Fact]
@@ -109,6 +86,31 @@ namespace MrCMS.Tests.Services
             var loadedLayoutArea = layoutAreaService.GetArea(layoutArea.Id);
 
             loadedLayoutArea.Should().BeSameAs(layoutArea);
+        }
+
+        [Fact]
+        public void LayoutAreaService_DeleteArea_CallsSessionDeleteOnThePassedArea()
+        {
+            var session = A.Fake<ISession>();
+            var layoutAreaService = new LayoutAreaService(session);
+
+            var layoutArea = new LayoutArea();
+            layoutAreaService.DeleteArea(layoutArea);
+
+            A.CallTo(() => session.Delete(layoutArea)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void LayoutAreaService_DeleteArea_AreaIsRemovedFromLayoutsLayoutAreaList()
+        {
+            var layout = new Layout { LayoutAreas = new List<LayoutArea>() };
+            var layoutArea = new LayoutArea { Layout = layout };
+            layout.LayoutAreas.Add(layoutArea);
+            var layoutAreaService = new LayoutAreaService(Session);
+
+            layoutAreaService.DeleteArea(layoutArea);
+
+            layout.LayoutAreas.Should().NotContain(layoutArea);
         }
     }
 }

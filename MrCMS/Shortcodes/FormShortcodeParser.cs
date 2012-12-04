@@ -32,10 +32,10 @@ namespace MrCMS.Shortcodes
             current = otherPageFormMatch.Replace(current,
                                                  match =>
                                                      {
-                                                         var formId = Convert.ToInt32(
+                                                         var pageId = Convert.ToInt32(
                                                              match.Value.Replace("[", "").Replace("]", "").Split('-')[1]);
-                                                         var formData = _formService.GetFormStructure(formId);
-                                                         var document = _documentService.GetDocument<Webpage>(formId);
+                                                         var document = _documentService.GetDocument<Webpage>(pageId);
+                                                         var formData = _formService.GetFormStructure(document);
                                                          return document == null
                                                                     ? string.Empty
                                                                     : GetForm(htmlHelper, formData,
@@ -47,7 +47,7 @@ namespace MrCMS.Shortcodes
                                                     {
                                                         var formData =
                                                             _formService.GetFormStructure(
-                                                                MrCMSApplication.CurrentPage.Id);
+                                                                MrCMSApplication.CurrentPage);
                                                         return GetForm(htmlHelper, formData,
                                                                        MrCMSApplication.CurrentPage);
                                                     });

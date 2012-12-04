@@ -33,7 +33,7 @@ namespace MrCMS.Web.Controllers
 
         public ActionResult Setup()
         {
-            if (MrCMSApplication.DatabaseIsInstalled())
+            if (MrCMSApplication.DatabaseIsInstalled)
                 return Redirect("~");
 
             //set page timeout to 5 minutes
@@ -56,7 +56,7 @@ namespace MrCMS.Web.Controllers
         [HttpPost]
         public ActionResult Setup(InstallModel model)
         {
-            if (MrCMSApplication.DatabaseIsInstalled())
+            if (MrCMSApplication.DatabaseIsInstalled)
                 return Redirect("~");
 
             //set page timeout to 5 minutes

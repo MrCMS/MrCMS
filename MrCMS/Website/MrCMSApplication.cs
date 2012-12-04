@@ -47,7 +47,7 @@ namespace MrCMS.Website
 
         public override void Init()
         {
-            if (DatabaseIsInstalled())
+            if (DatabaseIsInstalled)
                 TaskExecutor.SessionFactory = Get<ISessionFactory>();
 
             EndRequest += (sender, args) => TaskExecutor.StartExecuting();
@@ -232,24 +232,28 @@ namespace MrCMS.Website
 
         private static bool? _databaseIsInstalled;
 
-        public static bool DatabaseIsInstalled()
+        public static bool DatabaseIsInstalled
         {
-            if (!_databaseIsInstalled.HasValue)
+            get
             {
-                var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath;
-
-                var connectionStrings = Path.Combine(applicationPhysicalPath, "ConnectionStrings.config");
-
-                if (!File.Exists(connectionStrings))
+                if (!_databaseIsInstalled.HasValue)
                 {
-                    File.WriteAllText(connectionStrings, "<connectionStrings></connectionStrings>");
-                }
+                    var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath;
 
-                var connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
-                _databaseIsInstalled = connectionString != null &&
-                                       !String.IsNullOrEmpty(connectionString.ConnectionString);
+                    var connectionStrings = Path.Combine(applicationPhysicalPath, "ConnectionStrings.config");
+
+                    if (!File.Exists(connectionStrings))
+                    {
+                        File.WriteAllText(connectionStrings, "<connectionStrings></connectionStrings>");
+                    }
+
+                    var connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
+                    _databaseIsInstalled = connectionString != null &&
+                                           !String.IsNullOrEmpty(connectionString.ConnectionString);
+                }
+                return _databaseIsInstalled.Value;
             }
-            return _databaseIsInstalled.Value;
+            set { _databaseIsInstalled = value; }
         }
     }
 }

@@ -46,11 +46,6 @@ namespace MrCMS.Settings
         /// <param name="setting">Setting</param>
         void DeleteSetting(Setting setting);
 
-        /// <summary>
-        /// Gets all settings
-        /// </summary>
-        /// <returns>Setting collection</returns>
-        IDictionary<string, KeyValuePair<int, string>> GetAllSettings();
-
+        List<ISettings> GetAllISettings();
     }
 }

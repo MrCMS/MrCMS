@@ -40,18 +40,21 @@ namespace MrCMS.Entities.Documents.Layout
                 foreach (var widget in widgetsToRemove)
                     widgets.Remove(widget);
 
-                var pageWidgetSorts =
-                    webpage.PageWidgetSorts.Where(sort => sort.LayoutArea == this).OrderBy(sort => sort.Order).ToList();
-
-                if (pageWidgetSorts.Any())
+                if (webpage.PageWidgetSorts != null)
                 {
-                    var list =
-                        widgets.OrderByDescending(
-                            widget => pageWidgetSorts.Select(sort => sort.Widget.Id).Contains(widget.Id)).ThenBy(
-                                widget => pageWidgetSorts.Select(sort => sort.Widget.Id).ToList().IndexOf(widget.Id))
-                            .ToList();
-                    return
-                        list;
+                    var pageWidgetSorts =
+                        webpage.PageWidgetSorts.Where(sort => sort.LayoutArea == this).OrderBy(sort => sort.Order).ToList();
+
+                    if (pageWidgetSorts.Any())
+                    {
+                        var list =
+                            widgets.OrderByDescending(
+                                widget => pageWidgetSorts.Select(sort => sort.Widget.Id).Contains(widget.Id)).ThenBy(
+                                    widget => pageWidgetSorts.Select(sort => sort.Widget.Id).ToList().IndexOf(widget.Id))
+                                   .ToList();
+                        return
+                            list;
+                    }
                 }
             }
             else

@@ -137,7 +137,6 @@
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaController.cs" />
     <Compile Include="Areas\Admin\Models\AddCategoryModel.cs" />
-    <Compile Include="Areas\Admin\Models\AddLayoutOverrideModel.cs" />
     <Compile Include="Areas\Admin\Models\AddListingPage.cs" />
     <Compile Include="Areas\Admin\Models\AddPageModel.cs" />
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />

@@ -27,10 +27,10 @@ namespace MrCMS.Settings
 
         [DisplayName("404 Page")]
         [DropDownSelection("404Options")]
-        public int Error404PageId { get; set; }
+        public virtual int Error404PageId { get; set; }
         [DropDownSelection("500Options")]
         [DisplayName("500 Page")]
-        public int Error500PageId { get; set; }
+        public virtual int Error500PageId { get; set; }
 
         [DisplayName("Media Directory")]
         public string MediaDirectory { get; set; }

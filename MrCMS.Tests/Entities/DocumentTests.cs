@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
@@ -73,6 +74,23 @@ namespace MrCMS.Tests.Entities
             child.OnDeleting();
 
             doc.Children.Should().NotContain(child);
+        }
+
+        [Fact]
+        public void Document_GetVersions_ReturnsVersionsInDescendingCreatedOnOrder()
+        {
+            var document = new StubDocument();
+            var version1 = new DocumentVersion { CreatedOn = DateTime.UtcNow };
+            var version2 = new DocumentVersion { CreatedOn = DateTime.UtcNow.AddDays(1) };
+            document.SetVersions(new List<DocumentVersion>
+                                     {
+                                         version1,
+                                         version2
+                                     });
+
+            var versionsModel = document.GetVersions(1);
+
+            versionsModel.Items.Should().ContainInOrder(new List<DocumentVersion> {version2, version1});
         }
     }
 }

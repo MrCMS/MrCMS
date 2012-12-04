@@ -5,6 +5,7 @@ using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
 using Ninject;
+using System.Linq;
 
 namespace MrCMS.Settings
 {
@@ -128,7 +129,7 @@ namespace MrCMS.Settings
         /// Gets all settings
         /// </summary>
         /// <returns>Setting collection</returns>
-        public virtual IDictionary<string, KeyValuePair<int, string>> GetAllSettings()
+        private IDictionary<string, KeyValuePair<int, string>> GetAllSettings()
         {
             var settings = _session.QueryOver<Setting>().OrderBy(s => s.Name).Asc.List();
             //format: <name, <id, value>>
@@ -140,6 +141,12 @@ namespace MrCMS.Settings
                     dictionary.Add(resourceName, new KeyValuePair<int, string>(s.Id, s.Value));
             }
             return dictionary;
+        }
+
+        public List<ISettings> GetAllISettings()
+        {
+            return TypeHelper.GetAllConcreteTypesAssignableFrom<ISettings>()
+                             .Select(MrCMSApplication.Get).OfType<ISettings>().ToList();
         }
     }
 }

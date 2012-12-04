@@ -16,23 +16,25 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class SettingsController : AdminController
     {
         private readonly ISession _session;
-        private readonly List<Type> _settingTypes;
+        private readonly ISettingService _settingService;
 
-        public SettingsController(ISession session)
+        public SettingsController(ISession session, ISettingService settingService)
         {
             _session = session;
-            _settingTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<ISettings>();
+            _settingService = settingService;
         }
 
         [HttpGet]
         public ViewResultBase Index()
         {
-            var settingses = _settingTypes.Select(settingType =>
-                                                     {
-                                                         var settings = MrCMSApplication.Get(settingType) as ISettings;
-                                                         if (settings != null) settings.SetViewData(_session, ViewData);
-                                                         return settings;
-                                                     }).ToList();
+            var settingses = _settingService
+                .GetAllISettings()
+                .Select(settings =>
+                            {
+                                if (settings != null)
+                                    settings.SetViewData(_session, ViewData);
+                                return settings;
+                            }).ToList();
 
             return View(settingses);
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
@@ -35,5 +36,6 @@ namespace MrCMS.Services
         TextPage Get500Page();
         DocumentVersion GetDocumentVersion(int id);
         void SetParent(Document document, int? parentId);
+        DocumentTypeDefinition GetDefinitionByType(Type type);
     }
 }

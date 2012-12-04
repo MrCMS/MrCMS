@@ -439,5 +439,10 @@ namespace MrCMS.Services
                 SaveDocument(existingParent);
             }
         }
+
+        public DocumentTypeDefinition GetDefinitionByType(Type type)
+        {
+            return DocumentTypeHelper.GetDefinitionByType(type);
+        }
     }
 }

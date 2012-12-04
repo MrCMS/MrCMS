@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -456,6 +457,14 @@ namespace MrCMS.Helpers
             {
                 throw new InvalidOperationException();
             }
+        }
+
+        public static RouteValueDictionary Merge(this RouteValueDictionary baseDictionary, RouteValueDictionary additions)
+        {
+            foreach (var key in additions)
+                baseDictionary[key.Key] = key.Value;
+            
+            return baseDictionary;
         }
     }
 }

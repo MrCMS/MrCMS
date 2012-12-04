@@ -75,7 +75,7 @@
 
     @if (MrCMSApplication.CurrentUserIsAdmin)
     {
-        Html.RenderAction("AdminEditor", "AdminTools", Model);
+        Html.RenderAction("AdminEditor", "AdminTools", new {id = Model.Id});
     }
 
     @if (IsSectionDefined("JavascriptBlockInclude"))

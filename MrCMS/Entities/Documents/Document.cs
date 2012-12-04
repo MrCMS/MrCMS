@@ -91,10 +91,11 @@ namespace MrCMS.Entities.Documents
 
         public virtual VersionsModel GetVersions(int page)
         {
+            var documentVersions = Versions.OrderByDescending(version => version.CreatedOn).ToList();
             return
                new VersionsModel(
                    new PagedList<DocumentVersion>(
-                       Versions.OrderByDescending(version => version.CreatedOn).ToList(), page, 10), Id);
+                       documentVersions, page, 10), Id);
         }
     }
 }

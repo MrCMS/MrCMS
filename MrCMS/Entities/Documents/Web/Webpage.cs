@@ -48,8 +48,6 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual Layout.Layout Layout { get; set; } //if we want to override the default layout
 
-        public virtual IList<LayoutAreaOverride> LayoutAreaOverrides { get; set; }
-
         public virtual Layout.Layout CurrentLayout
         {
             get { return _layout ?? (_layout = Layout ?? MrCMSApplication.GetDefaultLayout(this)); }

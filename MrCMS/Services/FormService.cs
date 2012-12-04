@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
@@ -29,12 +30,11 @@ namespace MrCMS.Services
             _mailSettings = mailSettings;
         }
 
-        public string GetFormStructure(int id)
+        public string GetFormStructure(Webpage webpage)
         {
-            var document = _documentService.GetDocument<Webpage>(id);
-            return document == null
+            return webpage == null
                        ? Newtonsoft.Json.JsonConvert.SerializeObject(new object())
-                       : document.FormData ?? Newtonsoft.Json.JsonConvert.SerializeObject(new object());
+                       : webpage.FormData ?? Newtonsoft.Json.JsonConvert.SerializeObject(new object());
         }
 
         public void SaveFormStructure(int id, string data)

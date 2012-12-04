@@ -147,7 +147,6 @@
     <Compile Include="Entities\Documents\Web\IContainerItem.cs" />
     <Compile Include="Entities\Documents\Web\IDocumentContainer.cs" />
     <Compile Include="Entities\Documents\Web\IRole.cs" />
-    <Compile Include="Entities\Documents\Web\LayoutAreaOverride.cs" />
     <Compile Include="Entities\Documents\Web\PageWidgetSort.cs" />
     <Compile Include="Entities\Documents\Web\Redirect.cs" />
     <Compile Include="Entities\Documents\Web\RoleStatus.cs" />
@@ -168,7 +167,7 @@
     <Compile Include="Helpers\DocumentExtensions.cs" />
     <Compile Include="Helpers\DocumentTypeHelper.cs" />
     <Compile Include="Helpers\EnumerableHelper.cs" />
-    <Compile Include="Helpers\HtmlHelper.cs" />
+    <Compile Include="Helpers\MrCMSHtmlHelper.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\PagingHelper.cs" />
     <Compile Include="Helpers\SelectListItemHelper.cs" />
@@ -254,7 +253,6 @@
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\AddLayoutAreaModelBinder.cs" />
-    <Compile Include="Website\Binders\AddLayoutAreaOverrideModelBinder.cs" />
     <Compile Include="Website\Binders\AddListingModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
@@ -267,6 +265,7 @@
     <Compile Include="Website\Controllers\MrCMSController.cs" />
     <Compile Include="Website\MrCMSApplication.cs" />
     <Compile Include="Website\MrCMSDefaultModelBinder.cs" />
+    <Compile Include="Website\Routing\HandlerControllerModel.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandler.cs" />
   </ItemGroup>

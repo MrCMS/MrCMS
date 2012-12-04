@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -376,7 +377,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var webpageController = GetWebpageController();
 
-            webpageController.GetForm(1).Should().BeOfType<AdminController.JsonNetResult>();
+            webpageController.GetForm(new TextPage()).Should().BeOfType<AdminController.JsonNetResult>();
         }
 
         [Fact]
@@ -384,9 +385,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var webpageController = GetWebpageController();
 
-            webpageController.GetForm(1);
+            var textPage = new TextPage();
+            webpageController.GetForm(textPage);
 
-            A.CallTo(() => formService.GetFormStructure(1)).MustHaveHappened();
+            A.CallTo(() => formService.GetFormStructure(textPage)).MustHaveHappened();
         }
 
         [Fact]
@@ -500,6 +502,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             A.CallTo(() => document.GetVersions(1)).MustHaveHappened();
         }
+
 
         [Fact]
         public void WebpageController_HideWidget_CallsDocumentServiceHideWidgetWithPassedArguments()

@@ -103,9 +103,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetForm(int id)
+        public JsonResult GetForm(Webpage webpage)
         {
-            return Json(_formService.GetFormStructure(id));
+            return Json(_formService.GetFormStructure(webpage));
         }
 
         [HttpPost]

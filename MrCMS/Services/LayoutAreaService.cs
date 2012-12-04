@@ -24,18 +24,6 @@ namespace MrCMS.Services
                 area => area.Widgets).Eager.TransformUsing(Transformers.DistinctRootEntity).SingleOrDefault();
         }
 
-        public LayoutAreaOverride GetOverride(LayoutArea layoutArea, Webpage webpage)
-        {
-            return _session.QueryOver<LayoutAreaOverride>()
-                .Where(areaOverride => areaOverride.LayoutArea == layoutArea && areaOverride.Document == webpage).Fetch(
-                    areaOverride => areaOverride.Widget).Eager.Cacheable().SingleOrDefault();
-        }
-
-        public LayoutAreaOverride GetOverrideById(int id)
-        {
-            return _session.Get<LayoutAreaOverride>(id);
-        }
-
         public void SaveArea(LayoutArea layoutArea)
         {
             _session.Transact(session =>
@@ -55,29 +43,14 @@ namespace MrCMS.Services
             return _session.Get<LayoutArea>(layoutAreaId);
         }
 
-        public void SaveOverride(LayoutAreaOverride layoutAreaOverride)
-        {
-            _session.Transact(session =>
-                                  {
-                                      _session.SaveOrUpdate(layoutAreaOverride);
-
-                                      var webpage = layoutAreaOverride.Webpage;
-
-                                      if (webpage != null)
-                                      {
-                                          webpage.LayoutAreaOverrides.Add(layoutAreaOverride);
-                                          _session.SaveOrUpdate(webpage);
-                                      }
-                                  });
-        }
-
         public void DeleteArea(LayoutArea area)
         {
             _session.Transact(session =>
-            {
-                area.Layout.LayoutAreas.Remove(area); //required to clear cache
-                session.Delete(area);
-            });
+                                  {
+                                      if (area.Layout != null)
+                                          area.Layout.LayoutAreas.Remove(area); //required to clear cache
+                                      session.Delete(area);
+                                  });
         }
 
         public void SetWidgetOrders(string orders)

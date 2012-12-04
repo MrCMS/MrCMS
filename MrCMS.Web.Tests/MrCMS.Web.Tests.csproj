@@ -94,6 +94,7 @@
     <Compile Include="Areas\Admin\Controllers\LayoutContollerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaCategoryControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\NavigationControllerTests.cs" />
+    <Compile Include="Areas\Admin\Controllers\RoleControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\SearchControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\SettingsControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\TagControllerTests.cs" />
