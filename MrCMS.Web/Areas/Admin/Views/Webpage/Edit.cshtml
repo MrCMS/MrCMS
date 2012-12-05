@@ -89,7 +89,7 @@
                         @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
                         @Html.ValidationMessageFor(x => x.Name)
                         <br />
-                        <div class="display-inline">
+                        <div class="display-inline mar">
                             <strong>Permalink:</strong> /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
                             <button id="change-url" class="btn btn-mini">Change Url</button>
                         </div>
