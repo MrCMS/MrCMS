@@ -122,6 +122,7 @@ namespace MrCMS.Web.Controllers
             dirsToCheck.Add(rootDir + "App_Data");
             dirsToCheck.Add(rootDir + "bin");
             dirsToCheck.Add(rootDir + "content");
+            dirsToCheck.Add(rootDir + "content/upload");
             foreach (string dir in dirsToCheck)
                 if (!checkPermissions(dir, false, true, true, true))
                     ModelState.AddModelError("",
