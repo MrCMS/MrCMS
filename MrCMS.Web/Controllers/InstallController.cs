@@ -25,6 +25,7 @@ using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using AuthorizationRuleCollection = System.Security.AccessControl.AuthorizationRuleCollection;
+using MrCMS.Helpers;
 
 namespace MrCMS.Web.Controllers
 {
@@ -265,12 +266,23 @@ namespace MrCMS.Web.Controllers
             var mediaSettings = new MediaSettings();
 
             var site = new Site { Name = model.SiteName, BaseUrl = model.SiteUrl };
-            siteService.AddSite(site);
+            session.Transact(sess => sess.Save(site));
 
             var siteSettings = new SiteSettings { Site = site };
 
             var documentService = new DocumentService(session, siteSettings, siteService);
             var userService = new UserService(session, siteService);
+
+            var user = new User
+            {
+                Email = model.AdminEmail,
+                IsActive = true
+            };
+
+            var authorisationService = new AuthorisationService();
+            authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
+            authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
+            session.Transact(sess => sess.Save(user));
 
             var layout = new Layout
                                {
@@ -331,16 +343,6 @@ namespace MrCMS.Web.Controllers
             var configurationProvider = new ConfigurationProvider(new SettingService(session));
             configurationProvider.SaveSettings(siteSettings);
 
-            var user = new User
-                {
-                    Email = model.AdminEmail,
-                    IsActive = true
-                };
-
-            var authorisationService = new AuthorisationService();
-            authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
-            authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
-            userService.SaveUser(user);
 
             var adminUserRole = new UserRole
                                     {

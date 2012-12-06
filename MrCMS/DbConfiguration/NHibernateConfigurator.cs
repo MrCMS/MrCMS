@@ -1,22 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlServerCe;
 using System.Reflection;
-using System.Web;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.DbConfiguration.Conventions;
 using MrCMS.DbConfiguration.Mapping;
-using MrCMS.DbConfiguration.Overrides;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
-using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Caches.SysCache2;
@@ -24,7 +20,6 @@ using NHibernate.Dialect;
 using NHibernate.Event;
 using NHibernate.Tool.hbm2ddl;
 using Environment = NHibernate.Cfg.Environment;
-using MrCMS.Helpers;
 using System.Linq;
 
 namespace MrCMS.DbConfiguration
