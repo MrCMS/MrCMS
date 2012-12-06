@@ -1,25 +1,20 @@
-﻿using System;
-using System.Drawing;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 using MrCMS.Website.Binders;
 using System.Linq;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class MediaCategoryController : BaseDocumentController<MediaCategory>
     {
         private readonly IFileService _fileService;
-        private readonly IImageProcessor _imageProcessor;
 
-        public MediaCategoryController(IDocumentService documentService, IFileService fileService, IImageProcessor imageProcessor)
-            : base(documentService)
+        public MediaCategoryController(IDocumentService documentService, ISitesService sitesService, IFileService fileService)
+            : base(documentService, sitesService)
         {
             _fileService = fileService;
-            _imageProcessor = imageProcessor;
         }
 
         /**
@@ -59,12 +54,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView();
         }
 
-        public ActionResult MediaSelector(int? categoryId, bool imagesOnly = false, int page = 1)
+        public PartialViewResult MediaSelector(int? categoryId, bool imagesOnly = false, int page = 1)
         {
             ViewData["categories"] = _documentService.GetAllDocuments<MediaCategory>().OrderBy(category => category.Name).BuildSelectItemList
                        (category => category.Name, category => category.Id.ToString(),
                         emptyItem: SelectListItemHelper.EmptyItem("Select a category..."));
-            return View(_fileService.GetFilesPaged(categoryId, imagesOnly, page));
+            return PartialView(_fileService.GetFilesPaged(categoryId, imagesOnly, page));
         }
 
         public string GetFileUrl(string value)

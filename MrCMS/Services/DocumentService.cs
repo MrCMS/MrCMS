@@ -11,6 +11,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Messaging;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -27,12 +28,13 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
-        private readonly FormService _formService;
+        private readonly ISitesService _sitesService;
 
-        public DocumentService(ISession session, SiteSettings siteSettings)
+        public DocumentService(ISession session, SiteSettings siteSettings, ISitesService sitesService)
         {
             _session = session;
             _siteSettings = siteSettings;
+            _sitesService = sitesService;
         }
 
         public void AddDocument(Document document)
@@ -89,7 +91,7 @@ namespace MrCMS.Services
             return children.OrderBy(arg => arg.DisplayOrder);
         }
 
-        public IEnumerable<T> GetAdminDocumentsByParentId<T>(int? id) where T : Document
+        public IEnumerable<T> GetDocumentsByParentId<T>(int? id) where T : Document
         {
             IEnumerable<T> children;
             Document document = null;
@@ -103,9 +105,33 @@ namespace MrCMS.Services
                 children = _session.QueryOver<T>().Where(arg => arg.Parent == null).List();
             }
 
+            if (document != null)
+            {
+                var documentTypeDefinition = document.GetDefinition();
+                if (documentTypeDefinition != null)
+                {
+                    return Sort(documentTypeDefinition, children);
+                }
+            }
+            return children.OrderBy(arg => arg.DisplayOrder);
+        }
+
+        public IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Webpage
+        {
+            IEnumerable<T> children;
+            Document document = null;
+            if (id.HasValue)
+            {
+                document = _session.Get<Document>(id);
+                children = document.Children.Select(TypeHelper.Unproxy).OfType<T>();
+            }
+            else
+            {
+                children = _session.QueryOver<T>().Where(arg => arg.Parent == null && arg.Site == site).List();
+            }
+
             children =
-                children.Where(
-                    arg => !(arg is Webpage) || (arg as Webpage).IsAllowedForAdmin(MrCMSApplication.CurrentUser));
+                children.Where(arg => arg.IsAllowedForAdmin(MrCMSApplication.CurrentUser));
 
             if (document != null)
             {
@@ -147,7 +173,7 @@ namespace MrCMS.Services
 
                 if (parent != null)
                 {
-                    stringBuilder.Insert(0, SeoHelper.TidyUrl(parent.LiveUrlSegment) + "/");
+                    stringBuilder.Insert(0, SeoHelper.TidyUrl(parent.UrlSegment) + "/");
                 }
             }
             //add page name
@@ -401,18 +427,22 @@ namespace MrCMS.Services
         {
             var error404Id = _siteSettings.Error404PageId;
 
+            var currentSite = _sitesService.GetCurrentSite();
+
             return _session.Get<TextPage>(error404Id)
                    ?? GetDocumentByUrl<TextPage>("404")
-                   ?? MrCMSApplication.PublishedRootChildren.OfType<TextPage>().FirstOrDefault();
+                   ?? MrCMSApplication.PublishedRootChildren(currentSite).OfType<TextPage>().FirstOrDefault();
         }
 
         public TextPage Get500Page()
         {
             var error500Id = _siteSettings.Error500PageId;
 
+            var currentSite = _sitesService.GetCurrentSite();
+
             return _session.Get<TextPage>(error500Id)
                    ?? GetDocumentByUrl<TextPage>("500")
-                   ?? MrCMSApplication.PublishedRootChildren.OfType<TextPage>().FirstOrDefault();
+                   ?? MrCMSApplication.PublishedRootChildren(currentSite).OfType<TextPage>().FirstOrDefault();
         }
 
         public DocumentVersion GetDocumentVersion(int id)

@@ -5,8 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Settings;
 using Ninject;
+using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Website.Binders
 {
@@ -15,20 +17,23 @@ namespace MrCMS.Website.Binders
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var settingTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<ISettings>();
+            var sitesService = MrCMSApplication.Get<ISitesService>();
+            // Uses Id because the settings are edited on the same page as the site itself
+            var siteId = controllerContext.HttpContext.Request["Id"];
+
             var objects = settingTypes.Select(type =>
                                                   {
-                                                      var configProvider = typeof(ConfigurationProvider<>);
-                                                      var genericType = configProvider.MakeGenericType(type);
+                                                      var configurationProvider = MrCMSApplication.Get<ConfigurationProvider>();
 
-                                                      var configurationProvider =
-                                                          Activator.CreateInstance(genericType,
-                                                                                   MrCMSApplication.Get<ISettingService>
-                                                                                       ());
+                                                      var methodInfo = typeof(ConfigurationProvider).GetMethodExt("GetSettings", typeof(Site));
 
                                                       return
-                                                          configurationProvider.GetType()
-                                                                               .GetProperty("Settings")
-                                                                               .GetValue(configurationProvider, null);
+                                                          methodInfo.MakeGenericMethod(type).Invoke(configurationProvider,
+                                                                            new object[]
+                                                                                {
+                                                                                    sitesService.GetSite(
+                                                                                        Convert.ToInt32(siteId))
+                                                                                });
                                                   }).OfType<ISettings>().ToList();
 
             foreach (var settings in objects)
@@ -39,6 +44,7 @@ namespace MrCMS.Website.Binders
                             .Where(
                                 info =>
                                 info.CanWrite &&
+                                info.Name != "Site" &&
                                 !info.GetCustomAttributes(typeof (ReadOnlyAttribute), true)
                                     .Any(o => o.To<ReadOnlyAttribute>().IsReadOnly));
 
@@ -52,57 +58,6 @@ namespace MrCMS.Website.Binders
 
 
             return objects;
-            /*
-            var propertyNames =
-                _settingTypes.SelectMany(
-                    type =>
-                    type.GetProperties()
-                        .Where(info => info.CanWrite)
-                        .Select(property => (type.FullName + "." + property.Name).ToLower()));
-
-            var objects = _settingTypes.Select(type =>
-            {
-                var configProvider = typeof(ConfigurationProvider<>);
-                var genericType = configProvider.MakeGenericType(type);
-
-                var configurationProvider = Activator.CreateInstance(genericType, _settingService);
-
-                return
-                    configurationProvider.GetType()
-                                         .GetProperty("Settings")
-                                         .GetValue(configurationProvider, null);
-            }).OfType<ISettings>();
-
-            foreach (var o in objects)
-            {
-                var keys = collection.AllKeys.Where(s => s.StartsWith(o.GetType().FullName, StringComparison.OrdinalIgnoreCase));
-
-                var valueCollection = new NameValueCollection();
-                foreach (var key in keys)
-                    valueCollection.Add(key.Split('.').Last(), collection[key]);
-
-                var memberInfos =
-                    GetType()
-                        .GetMember("TryUpdateModel", MemberTypes.Method,
-                                   BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public |
-                                   BindingFlags.NonPublic | BindingFlags.FlattenHierarchy)
-                        .OfType<MethodInfo>();
-
-                var tryUpdateModel =
-                    memberInfos.FirstOrDefault(
-                        info =>
-                        info.GetParameters().Length == 2 &&
-                        info.GetParameters()[1].ParameterType == typeof(IValueProvider));
-
-                var result = tryUpdateModel.MakeGenericMethod(o.GetType()).Invoke(this, new object[] { o, new FormCollection(valueCollection) });
-
-                var hashCode = result.GetHashCode();
-                var clone = memberInfos.ToList();
-            }
-
-            foreach (var propertyName in propertyNames)
-                _settingService.SetSetting(propertyName, collection[propertyName]);
-            */
         }
 
         private object GetValue(PropertyInfo propertyInfo, ControllerContext controllerContext, string fullName)

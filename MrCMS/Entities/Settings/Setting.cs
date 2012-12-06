@@ -1,3 +1,5 @@
+using MrCMS.Entities.Multisite;
+
 namespace MrCMS.Entities.Settings
 {
     /// <summary>
@@ -15,10 +17,6 @@ namespace MrCMS.Entities.Settings
         /// </summary>
         public virtual string Value { get; set; }
 
-
-        public override string ToString()
-        {
-            return Name;
-        }
+        public virtual Site Site { get; set; }
     }
 }

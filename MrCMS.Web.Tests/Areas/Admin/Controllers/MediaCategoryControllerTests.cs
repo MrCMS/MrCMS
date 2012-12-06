@@ -19,6 +19,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private IDocumentService _documentService;
         private IFileService _fileService;
         private IImageProcessor _imageProcessor;
+        private ISitesService _sitesService;
 
         [Fact]
         public void MediaCategoryController_AddGet_ShouldReturnAddPageModel()
@@ -116,7 +117,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             mediaCategoryController.Sort(1);
 
-            A.CallTo(() => _documentService.GetAdminDocumentsByParentId<MediaCategory>(1)).MustHaveHappened();
+            A.CallTo(() => _documentService.GetDocumentsByParentId<MediaCategory>(1)).MustHaveHappened();
         }
 
         [Fact]
@@ -124,7 +125,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var mediaCategoryController = GetMediaCategoryController();
             var mediaCategories = new List<MediaCategory> { new MediaCategory() };
-            A.CallTo(() => _documentService.GetAdminDocumentsByParentId<MediaCategory>(1)).Returns(mediaCategories);
+            A.CallTo(() => _documentService.GetDocumentsByParentId<MediaCategory>(1)).Returns(mediaCategories);
 
             var viewResult = mediaCategoryController.Sort(1).As<ViewResult>();
 
@@ -176,7 +177,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var mediaCategoryController = GetMediaCategoryController();
 
-            var actionResult = mediaCategoryController.Show(new MediaCategory {Id = 1});
+            var actionResult = mediaCategoryController.Show(new MediaCategory { Id = 1 });
 
             actionResult.Should().BeOfType<RedirectToRouteResult>();
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
@@ -309,11 +310,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_MediaSelector_ReturnsAViewResult()
+        public void MediaCategoryController_MediaSelector_ReturnsAPartialViewResult()
         {
             var mediaCategoryController = GetMediaCategoryController();
 
-            mediaCategoryController.MediaSelector(null, false, 1).Should().BeOfType<ViewResult>();
+            mediaCategoryController.MediaSelector(null, false, 1).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
@@ -339,9 +340,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private MediaCategoryController GetMediaCategoryController()
         {
             _documentService = A.Fake<IDocumentService>();
+            _sitesService = A.Fake<ISitesService>();
             _fileService = A.Fake<IFileService>();
             _imageProcessor = A.Fake<IImageProcessor>();
-            var mediaCategoryController = new MediaCategoryController(_documentService, _fileService, _imageProcessor) { IsAjaxRequest = false };
+            var mediaCategoryController = new MediaCategoryController(_documentService, _sitesService, _fileService) { IsAjaxRequest = false };
             return mediaCategoryController;
         }
     }

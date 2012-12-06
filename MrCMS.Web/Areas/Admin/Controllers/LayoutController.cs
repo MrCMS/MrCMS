@@ -8,8 +8,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class LayoutController : BaseDocumentController<Layout>
     {
-        public LayoutController(IDocumentService documentService)
-            : base(documentService)
+        public LayoutController(IDocumentService documentService, ISitesService sitesService)
+            : base(documentService, sitesService)
         {
         }
 
@@ -18,7 +18,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (document == null)
                 return RedirectToAction("Index");
 
-            return View((object) document);
+            return View((object)document);
         }
 
         public override ActionResult Add([SessionModelBinder(typeof(AddDocumentModelBinder))]Layout doc)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Paging;
 
@@ -15,7 +16,8 @@ namespace MrCMS.Services
         T SaveDocument<T>(T document) where T : Document;
         IEnumerable<T> GetAllDocuments<T>() where T : Document;
         IEnumerable<T> GetFrontEndDocumentsByParentId<T>(int? id) where T : Document;
-        IEnumerable<T> GetAdminDocumentsByParentId<T>(int? id) where T : Document;
+        IEnumerable<T> GetDocumentsByParentId<T>(int? id) where T : Document;
+        IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Webpage;
         T GetDocumentByUrl<T>(string url) where T : Document;
         string GetDocumentUrl(string pageName, int? parentId, bool useHierarchy = false);
         IEnumerable<SearchResultModel> SearchDocuments<T>(string searchTerm) where T : Document;

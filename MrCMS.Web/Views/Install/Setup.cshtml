@@ -115,7 +115,25 @@
                                         </tr>
                                         <tr>
                                             <td colspan="2" align="left">
-                                                <h3>Store information</h3>
+                                                <h3>Site information</h3>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td nowrap="nowrap" align="left">
+                                                <label for="SiteName">
+                                                    Site Name:</label>
+                                            </td>
+                                            <td width="100%">
+                                                @Html.TextBoxFor(x => x.SiteName, new {@class = "textbox"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td nowrap="nowrap" align="left">
+                                                <label for="SiteUrl">
+                                                    Site Url:</label>
+                                            </td>
+                                            <td width="100%">
+                                                @Html.TextBoxFor(x => x.SiteUrl, new {@class = "textbox"})
                                             </td>
                                         </tr>
                                         <tr>

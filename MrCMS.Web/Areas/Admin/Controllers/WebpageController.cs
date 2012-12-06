@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using MrCMS.Models;
-using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -21,8 +16,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IFormService _formService;
 
-        public WebpageController(IDocumentService documentService, IFormService formService)
-            : base(documentService)
+        public WebpageController(IDocumentService documentService, ISitesService sitesService, IFormService formService)
+            : base(documentService, sitesService)
         {
             _formService = formService;
         }
@@ -64,7 +59,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (document == null)
                 return RedirectToAction("Index");
 
-            return View((object) document);
+            return View((object)document);
         }
 
         [HttpPost]
@@ -152,7 +147,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Versions(Document doc, int page = 1)
         {
             var data = doc.GetVersions(page);
-           
+
             return PartialView(data);
         }
     }

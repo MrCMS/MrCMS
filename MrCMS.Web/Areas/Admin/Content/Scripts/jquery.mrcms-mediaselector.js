@@ -1,13 +1,28 @@
 ﻿(function ($) {
     $.fn.mediaselector = function (options) {
         var settings = {
+            urlPrefix: null,
             iconImage: '',
             iconClass: 'media-selector-icon',
             noImageSelectedImage: '/Areas/Admin/Content/Images/no-media-selected.jpg',
-            previewStyle: 'max-height: 200px; max-width:200px;'
+            previewStyle: 'max-height: 200px; max-width:200px;',
+            mediaSelectorUrl: '/Admin/MediaCategory/MediaSelector',
+            removeMediaUrl: '/Admin/MediaCategory/RemoveMedia',
+            miniUploaderUrl: '/Admin/MediaCategory/MiniUploader/',
+            fileResultUrl: '/Admin/MediaCategory/FileResult/',
+            getFileUrl: '/Admin/MediaCategory/FileResult/'
         };
         if (options) {
             $.extend(settings, options);
+        }
+
+        if (settings.urlPrefix) {
+            settings.noImageSelectedImage = settings.urlPrefix + settings.noImageSelectedImage;
+            settings.mediaSelectorUrl = settings.urlPrefix + settings.mediaSelectorUrl;
+            settings.removeMediaUrl = settings.urlPrefix + settings.removeMediaUrl;
+            settings.miniUploaderUrl = settings.urlPrefix + settings.miniUploaderUrl;
+            settings.fileResultUrl = settings.urlPrefix + settings.fileResultUrl;
+            settings.getFileUrl = settings.urlPrefix + settings.getFileUrl;
         }
 
         function isImage(image) {
@@ -50,7 +65,7 @@
                 $('<button class="btn btn-success">Select media...</button>')
                     .click(function () {
                         if ($(this).attr('data-toggle') != 'modal') {
-                            $(this).attr("data-toggle", "modal").attr("data-link", "/Admin/MediaCategory/MediaSelector");
+                            $(this).attr("data-toggle", "modal").attr("data-link", settings.mediaSelectorUrl);
                         }
                         launchModal($(this), function (element, result) {
                             that.val(result);
@@ -63,7 +78,7 @@
                 deleteSpan = $('<button class="btn btn-danger">Remove media...</button>')
                     .click(function () {
                         if ($(this).attr('data-toggle') != 'modal') {
-                            $(this).attr("data-toggle", "modal").attr("data-link", "/Admin/MediaCategory/RemoveMedia");
+                            $(this).attr("data-toggle", "modal").attr("data-link", settings.removeMediaUrl);
                         }
                         launchModal($(this), function (element, result) {
                             that.val('');
@@ -114,90 +129,90 @@ $(function () {
         var imagesId = $('#media-selector #ImagesOnly').is(':checked');
         var categoryId = $('#media-selector #CategoryId').val();
 
-        $('#library').load('/admin/MediaCategory/MediaSelector?categoryId=' + categoryId + '&imagesOnly=' + imagesId + ' div#library', function () {
+        $('#library').load(settings.mediaSelectorUrl + '?categoryId=' + categoryId + '&imagesOnly=' + imagesId + ' div#library', function () {
             resizeModal($(this));
             $(".set-file").attr('disabled', 'disabled');
         });
     }
 
-    $(document).on('click', '#media-selector .selected-file', function() {
+    $(document).on('click', '#media-selector .selected-file', function () {
         $(".set-file").removeAttr('disabled');
-    }).on('click', '#media-selector .show-hide-file-result', function() {
+    }).on('click', '#media-selector .show-hide-file-result', function () {
         var self = $(this);
         $('.show-hide-file-result').not(self).html('Show').parent().siblings('.content').slideUp();
         $('.selected-file').removeAttr('checked');
         if (self.parent().siblings('.content').is(':hidden')) {
-            self.html('Hide').parent().siblings('.content').slideDown(function() {
+            self.html('Hide').parent().siblings('.content').slideDown(function () {
                 resizeModal(self);
             });
         } else {
-            self.html('Show').parent().siblings('.content').slideUp(function() {
+            self.html('Show').parent().siblings('.content').slideUp(function () {
                 resizeModal(self);
             });
         }
         $("#set-file").attr('disabled', 'disabled');
         return false;
-    }).on('click', '#media-selector .modal-body a[data-toggle=tab]', function() {
+    }).on('click', '#media-selector .modal-body a[data-toggle=tab]', function () {
         if ($(this).href != "#library") {
             $(".set-file").attr('disabled', 'disabled');
             $('.selected-file').prop('checked', false);
         }
         resizeModal($(this));
-    }).on('click', '#media-selector .file-result .header', function() {
+    }).on('click', '#media-selector .file-result .header', function () {
         $(this).find('a').click();
         return false;
-    }).on('click', '#media-selector .file-result .header a', function() {
+    }).on('click', '#media-selector .file-result .header a', function () {
         $(".set-file").attr('disabled', 'disabled');
         $('.selected-file').prop('checked', false);
-    }).on('change', '#media-selector #UploadCategoryId', function() {
+    }).on('change', '#media-selector #UploadCategoryId', function () {
         var categoryId = $(this).val();
         if (categoryId != '') {
-            $.get('/Admin/MediaCategory/MiniUploader/', { id: categoryId }, function(response) {
+            $.get(settings.miniUploaderUrl, { id: categoryId }, function (response) {
                 $('#media-selector-uploader').html(response);
                 $('#fileupload').fileupload({
-                    add: function(e, data) {
+                    add: function (e, data) {
                         var jqXhr = data.submit()
-                            .complete(function(result, textStatus, jqXhr) {
+                            .complete(function (result, textStatus, jqXhr) {
                                 var res = JSON.parse(result.responseText);
                                 $('#media-selector-uploader-result').html('');
                                 for (var i = 0; i < res.length; i++) {
-                                    $.get('/Admin/MediaCategory/FileResult/' + res[i].Id, function(resp) {
+                                    $.get(settings.fileResultUrl + res[i].Id, function (resp) {
                                         $('#media-selector-uploader-result').append(resp);
                                     });
                                 }
                                 updateFiles();
                             });
                     },
-                    done: function(e, data) {
+                    done: function (e, data) {
                     },
-                    create: function(e, data) {
+                    create: function (e, data) {
                     }
                 });
             });
         } else {
             $('#media-selector-uploader').html('');
         }
-    }).on('change', '#media-selector #ImagesOnly', function() {
+    }).on('change', '#media-selector #ImagesOnly', function () {
         updateFiles();
-    }).on('change', '#media-selector #CategoryId', function() {
+    }).on('change', '#media-selector #CategoryId', function () {
         updateFiles();
-    }).on('click', 'button[data-action=confirm]', function() {
+    }).on('click', 'button[data-action=confirm]', function () {
         var modal = $(this).parents('.modal');
         modal.data('modal').options.callback(modal.data('modal').options.element, true);
         modal.modal('hide');
-    }).on('click', '#media-selector input[data-action=select]', function() {
+    }).on('click', '#media-selector input[data-action=select]', function () {
         var fileValue = $('.selected-file').filter(':checked').val();
         if (fileValue != '') {
             var modal = $(this).parents('.modal');
-            $.get('/Admin/MediaCategory/GetFileUrl', { value: fileValue }, function(url) {
+            $.get(settings.getFileUrl, { value: fileValue }, function (url) {
                 modal.data('modal').options.callback(modal.data('modal').options.element, url);
                 modal.modal('hide');
             });
         }
-    }).on('click', '#media-selector .pagination a', function() {
+    }).on('click', '#media-selector .pagination a', function () {
         var href = $(this).attr('href');
         if (href != null && href != '') {
-            $('#library').load(href + ' div#media-selector-data', function() {
+            $('#library').load(href + ' div#media-selector-data', function () {
                 resizeModal($(this));
             });
         }

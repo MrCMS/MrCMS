@@ -1,7 +1,12 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Website;
 using NHibernate;
+using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -9,16 +14,25 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly INavigationService _service;
         private readonly IUserService _userService;
+        private readonly ISitesService _sitesService;
 
-        public NavigationController(INavigationService service, IUserService userService)
+        public NavigationController(INavigationService service, IUserService userService, ISitesService sitesService)
         {
             _service = service;
             _userService = userService;
+            _sitesService = sitesService;
         }
 
         public PartialViewResult WebSiteTree()
         {
-            return PartialView("WebSiteTree", _service.GetWebsiteTree());
+            var sites = _sitesService.GetAllSites();
+            var currentSite = _sitesService.GetCurrentSite();
+            return PartialView("WebsiteTreeList",
+                               new WebsiteTreeListModel(sites.BuildSelectItemList(site => site.Name,
+                                                                                  site => site.Id.ToString(),
+                                                                                  site => site == currentSite,
+                                                                                  emptyItemText: null),
+                                                        sites.Select(site => _service.GetWebsiteTree(site)).ToList()));
         }
 
         public PartialViewResult MediaTree()
@@ -42,81 +56,5 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             User user = _userService.GetCurrentUser(HttpContext);
             return PartialView(user);
         }
-
-        //public MvcHtmlString GetUserList()
-        //{
-        //    var rootUl = new TagBuilder("ul");
-        //    rootUl.Attributes.Add("class", "user-list");
-        //    var rootLi = new TagBuilder("li");
-        //    int rootId = 1;
-        //    rootLi.Attributes.Add("data-id", rootId.ToString());
-        //    rootLi.Attributes.Add("data-controller", "User");
-        //    rootLi.InnerHtml += string.Format("<i class=\"{0}\">&nbsp;</i>Root", DocumentTypeHelper.GetRootIconClass());
-        //    var userList = new TagBuilder("ul");
-        //    foreach (var user in UserService.GetAllUsers())
-        //    {
-        //        var listItem = new TagBuilder("li");
-        //        listItem.Attributes.Add("data-id", user.Id.ToString(CultureInfo.InvariantCulture));
-        //        listItem.Attributes.Add("data-controller", typeof(User).Name);
-        //        listItem.InnerHtml += string.Format("<i class=\"icon-user\">&nbsp;</i>");
-        //        listItem.InnerHtml += !string.IsNullOrWhiteSpace(user.Name) ? user.Name : user.Email;
-
-        //        userList.InnerHtml += listItem.ToString();
-        //    }
-
-        //    rootLi.InnerHtml += userList.ToString();
-
-        //    rootUl.InnerHtml = rootLi.ToString();
-        //    return MvcHtmlString.Create(rootUl.ToString()); //PartialView("UserList", _userService.GetUsers(1,1));
-        //}
-
-        //protected MvcHtmlString GetCategories<T>() where T : Document
-        //{
-        //    var rootUl = new TagBuilder("ul");
-
-        //    rootUl.Attributes.Add("class", "filetree treeview-famfamfam browser");
-
-        //    var rootLi = new TagBuilder("li");
-        //    int rootId = 1;
-        //    rootLi.Attributes.Add("data-id", rootId.ToString());
-        //    rootLi.Attributes.Add("data-controller", typeof(T).Name);
-        //    rootLi.InnerHtml += string.Format("<i class=\"{0}\">&nbsp;</i>", DocumentTypeHelper.GetRootIconClass());
-
-        //    var link = new TagBuilder("a");
-        //    link.Attributes.Add("href", Url.Action("View", typeof(T).Name, new { id = rootId }));
-        //    link.InnerHtml = "Root";
-        //    rootLi.InnerHtml += link.ToString();
-
-        //    var documents = DocumentService.GetDocumentsByParentId<T>(rootId);
-        //    rootLi.InnerHtml += GetNavList<T>(documents);
-        //    rootUl.InnerHtml = rootLi.ToString();
-
-        //    return MvcHtmlString.Create(rootUl.ToString());
-        //}
-
-        //private string GetNavList<T>(IEnumerable<Document> documents) where T : Document
-        //{
-        //    var tagBuilder = new TagBuilder("ul");
-        //    foreach (var document in documents)
-        //    {
-        //        var listItem = new TagBuilder("li");
-        //        listItem.Attributes.Add("data-id", document.Id.ToString(CultureInfo.InvariantCulture));
-        //        listItem.Attributes.Add("data-controller", typeof(T).Name);
-        //        listItem.InnerHtml += string.Format("<i class=\"{0}\">&nbsp;</i>", DocumentTypeHelper.GetIconClass(document));
-
-        //        var link = new TagBuilder("a");
-        //        link.Attributes.Add("href", Url.Action("View", typeof (T).Name, new {id = document.Id}));
-        //        link.InnerHtml = document.Name;
-        //        listItem.InnerHtml += link.ToString();
-
-        //        var children = DocumentService.GetDocumentsByParentId<T>(document.Id);
-        //        if (children != null && children.Any())
-        //        {
-        //            listItem.InnerHtml += GetNavList<T>(children);
-        //        }
-        //        tagBuilder.InnerHtml += listItem.ToString();
-        //    }
-        //    return tagBuilder.ToString();
-        //}
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web;
 using System.Web.Mvc;
@@ -20,6 +21,13 @@ namespace MrCMS.Tests.Website.Routing
 {
     public class MrCMSHttpHandlerTests
     {
+        public MrCMSHttpHandlerTests()
+        {
+            MrCMSApplication.DatabaseIsInstalled = true;
+            MrCMSApplication.OverriddenUser = new User();
+            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
+            MrCMSApplication.OverridenRootChildren = new List<Webpage>();
+        }
         [Fact]
         public void MrCMSHttpHandler_CheckIsInstalled_DatabaseIsNotInstalledRedirectsToInstall()
         {
@@ -35,7 +43,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_CheckIsInstalled_DatabaseIsInstalledReturnsTrue()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null);
             var httpContext = A.Fake<HttpContextBase>();
 
@@ -53,8 +60,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_IsAllowed_ReturnsTrueIfCurrentUserIsAllowedForWebpage()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null);
             var httpContext = A.Fake<HttpContextBase>();
             mrCMSHttpHandler.Webpage = new StubAllowedWebpage();
@@ -65,8 +70,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_IsAllowed_ReturnsFalseIfCurrentUserIsDisallowedForWebpage()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null);
             var httpContext = A.Fake<HttpContextBase>();
             mrCMSHttpHandler.Webpage = new StubDisallowedWebpage();
@@ -77,8 +80,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_IsAllowed_ShouldRedirectToRootIfDisallowed()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null);
             var httpContext = A.Fake<HttpContextBase>();
             mrCMSHttpHandler.Webpage = new StubDisallowedWebpage();
@@ -91,8 +92,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle500_CallsSiteSettings500PageId()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
             var siteSettings = A.Fake<SiteSettings>();
             var documentService = A.Fake<IDocumentService>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
@@ -106,8 +105,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle500_CallsGetDocumentWithResultOf500Page()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
             var siteSettings = A.Fake<SiteSettings>();
             A.CallTo(() => siteSettings.Error500PageId).Returns(1);
             var documentService = A.Fake<IDocumentService>();
@@ -122,8 +119,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle500_500DocumentFoundRedirectsToThatUrl()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
             var siteSettings = A.Fake<SiteSettings>();
             A.CallTo(() => siteSettings.Error500PageId).Returns(1);
             var documentService = A.Fake<IDocumentService>();
@@ -139,8 +134,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle500_500DocumentFoundRedirectsToRoot()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
             var siteSettings = A.Fake<SiteSettings>();
             A.CallTo(() => siteSettings.Error500PageId).Returns(1);
             var documentService = A.Fake<IDocumentService>();
@@ -156,9 +149,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_NullWebpageReturnsNull()
         {
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
                                        {
                                            Webpage = null
@@ -170,9 +160,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_WebpageNotPublishedAndNotAllowedReturnsNull()
         {
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
                 Webpage = new StubDisallowedWebpage()
@@ -184,9 +171,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_NullDocumentTypeDefinitionReturnsNull()
         {
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var documentService = A.Fake<IDocumentService>();
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).Returns(null);
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, null)
@@ -200,9 +184,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_HttpMethodIsGETReturnsWebGetController()
         {
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var documentService = A.Fake<IDocumentService>();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
@@ -221,9 +202,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_HttpMethodIsPOSTReturnsWebGetController()
         {
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var documentService = A.Fake<IDocumentService>();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
@@ -242,9 +220,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_HttpMethodIsAnotherTypeReturnsNull()
         {
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var documentService = A.Fake<IDocumentService>();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
@@ -263,10 +238,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_MustCallSiteSettings404PageId()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var siteSettings = A.Fake<SiteSettings>();
             var documentService = A.Fake<IDocumentService>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
@@ -280,10 +251,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_MustCallDocumentServiceWithTheResultOfThe404()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var siteSettings = A.Fake<SiteSettings>();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
             var documentService = A.Fake<IDocumentService>();
@@ -298,10 +265,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_404DocumentFoundRedirectsToThatUrl()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var siteSettings = A.Fake<SiteSettings>();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
             var documentService = A.Fake<IDocumentService>();
@@ -317,10 +280,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_WebpageSetReturnsFalse()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
                                        {
                                            Webpage = new TextPage()
@@ -333,10 +292,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_404DocumentNotFoundRedirectsToRoot()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var siteSettings = A.Fake<SiteSettings>();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
             var documentService = A.Fake<IDocumentService>();
@@ -352,10 +307,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_NullWebpageReturnsFalse()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
                 Webpage = null
@@ -368,10 +319,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_NonRedirectSetReturnsFalse()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
                 Webpage = new TextPage()
@@ -384,10 +331,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_RedirectSetReturnsTrue()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
                 Webpage = new Redirect { RedirectUrl = "test-redirect" }
@@ -400,10 +343,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_RedirectSetShouldCallResponseRedirectForTheRedirectUrl()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
                 Webpage = new Redirect { RedirectUrl = "test-redirect" }
@@ -417,10 +356,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_IfRedirectIsAbsoluteUrlShouldRedirectWithoutTilde()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
                 Webpage = new Redirect { RedirectUrl = "http://www.example.com" }
@@ -434,10 +369,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_RedirectSetRedirectUrlStartsWithBackSlashItShouldNotAddExtraSlash()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
                 Webpage = new Redirect { RedirectUrl = "/test-redirect" }
@@ -451,10 +382,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_WebpageIsNullReturnNull()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
                 Webpage = null
@@ -466,10 +393,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_WebpageNotAllowedAndUnpublishedReturnsNull()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
                 Webpage = new StubDisallowedWebpage()
@@ -481,10 +404,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_NullDocumentTypeDefinitionReturnsNull()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var documentService = A.Fake<IDocumentService>();
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).Returns(null);
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, null)
@@ -499,10 +418,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_ReturnsDefinitionWebGetActionIfHttpMethodIsGET()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var documentService = A.Fake<IDocumentService>();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
@@ -521,10 +436,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_ReturnsDefinitionWebGetActionIfHttpMethodIsPOST()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var documentService = A.Fake<IDocumentService>();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
@@ -543,10 +454,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_ReturnsNullIfHttpMethodIsSomethingElse()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var documentService = A.Fake<IDocumentService>();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
@@ -565,10 +472,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_CheckIsFile_UrlEndsWithoutExtensionReturnsFalse()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var requestContext = A.Fake<RequestContext>();
             A.CallTo(() => requestContext.HttpContext.Request.Url.ToString()).Returns("test-page");
             var mrCMSHttpHandler = new MrCMSHttpHandler(requestContext, null, null);
@@ -579,10 +482,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_CheckIsFile_UrlEndsWithExtensionReturnsTrue()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var requestContext = A.Fake<RequestContext>();
             A.CallTo(() => requestContext.HttpContext.Request.Url.ToString()).Returns("test-page.jpg");
             var mrCMSHttpHandler = new MrCMSHttpHandler(requestContext, null, null);
@@ -593,10 +492,6 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_SetFormData_IfHttpMethodIsPOSTAndTheFormDataIsNotNullSetTheRouteData()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverriddenSession = A.Fake<ISession>();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
             var requestContext = A.Fake<RequestContext>();
             A.CallTo(() => requestContext.HttpContext.Request.Form)
              .Returns(new NameValueCollection {{"test", "data"}});

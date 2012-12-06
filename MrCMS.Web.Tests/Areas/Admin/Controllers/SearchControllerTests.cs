@@ -4,6 +4,7 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
@@ -16,6 +17,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private static IDocumentService documentService;
         private static INavigationService navigationService;
+        private static ISitesService sitesService;
 
         [Fact]
         public void SearchController_GetSearchResults_NullStringShouldReturnEmptyObject()
@@ -31,7 +33,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             documentService = A.Fake<IDocumentService>();
             navigationService = A.Fake<INavigationService>();
-            var searchController = new SearchController(documentService, navigationService) {IsAjaxRequest = false};
+            sitesService = A.Fake<ISitesService>();
+            var searchController = new SearchController(documentService, navigationService, sitesService) { IsAjaxRequest = false };
             return searchController;
         }
 
@@ -93,22 +96,23 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var searchController = GetSearchController();
 
-            searchController.Index("searchterm", "TextPage", 1).Should().BeOfType<ViewResult>();
+            searchController.Index("searchterm", "TextPage", 1, 1).Should().BeOfType<ViewResult>();
         }
 
         [Fact]
         public void SearchController_Index_SetsViewData()
         {
             var searchController = GetSearchController();
+            var site = new Site();
+            A.CallTo(() => sitesService.GetCurrentSite()).Returns(site);
 
             var selectListItems = new List<SelectListItem>();
             var documentTypes = new List<SelectListItem>();
 
-            A.CallTo(() => navigationService.GetParentsList()).Returns(selectListItems);
+            A.CallTo(() => navigationService.GetParentsList(site)).Returns(selectListItems);
             A.CallTo(() => navigationService.GetDocumentTypes("TextPage")).Returns(documentTypes);
 
-
-            var result = searchController.Index("searchterm", "TextPage", 1).As<ViewResult>();
+            var result = searchController.Index("searchterm", "TextPage", 1, 1).As<ViewResult>();
 
             result.ViewData["term"].Should().Be("searchterm");
             result.ViewData["type"].Should().Be("TextPage");
@@ -122,7 +126,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var searchController = GetSearchController();
 
-            searchController.Index("searchterm", "TextPage", 1).As<ViewResult>();
+            searchController.Index("searchterm", "TextPage", 1, 1).As<ViewResult>();
 
             A.CallTo(() => documentService.SearchDocumentsDetailed<TextPage>("searchterm", 1, 1)).MustHaveHappened();
         }
@@ -132,7 +136,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var searchController = GetSearchController();
 
-            searchController.Index("searchterm", "", 1).As<ViewResult>();
+            searchController.Index("searchterm", "", 1, 1).As<ViewResult>();
 
             A.CallTo(() => documentService.SearchDocumentsDetailed<Document>("searchterm", 1, 1)).MustHaveHappened();
         }
@@ -142,7 +146,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var searchController = GetSearchController();
 
-            searchController.IndexPost("test", "TextPage", 1).Should().BeOfType<RedirectToRouteResult>();
+            searchController.IndexPost("test", "TextPage", 1, 1).Should().BeOfType<RedirectToRouteResult>();
         }
 
         [Fact]
@@ -150,7 +154,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var searchController = GetSearchController();
 
-            var result = searchController.IndexPost("test", "TextPage", 1).As<RedirectToRouteResult>();
+            var result = searchController.IndexPost("test", "TextPage", 1, 1).As<RedirectToRouteResult>();
 
             result.RouteValues["action"].Should().Be("Index");
             result.RouteValues["term"].Should().Be("test");

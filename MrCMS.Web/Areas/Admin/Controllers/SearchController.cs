@@ -15,19 +15,22 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IDocumentService _documentService;
         private readonly INavigationService _navigationService;
+        private readonly ISitesService _sitesService;
 
-        public SearchController(IDocumentService documentService, INavigationService navigationService)
+        public SearchController(IDocumentService documentService, INavigationService navigationService, ISitesService sitesService)
         {
             _documentService = documentService;
             _navigationService = navigationService;
+            _sitesService = sitesService;
         }
 
         [HttpGet]
-        public ActionResult Index(string term, string type, int? parent, int page = 1)
+        public ActionResult Index(string term, string type, int? parent, int? siteId, int page = 1)
         {
             ViewData["term"] = term;
+            ViewData["siteId"] = siteId;
             ViewData["parent-val"] = parent;
-            ViewData["parents"] = _navigationService.GetParentsList();
+            ViewData["parents"] = _navigationService.GetParentsList(_sitesService.GetCurrentSite());
             ViewData["type"] = type;
             ViewData["doc-types"] = _navigationService.GetDocumentTypes(type);
 
@@ -37,9 +40,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Index")]
-        public ActionResult IndexPost(string term, string type, int? parent)
+        public ActionResult IndexPost(string term, string type, int? parent, int? siteId)
         {
-            return RedirectToAction("Index", new { term, type, parent });
+            return RedirectToAction("Index", new {term, type, parent, siteId});
         }
 
         //

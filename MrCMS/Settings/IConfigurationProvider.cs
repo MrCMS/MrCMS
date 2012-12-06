@@ -1,11 +1,14 @@
+using System.Collections.Generic;
+using MrCMS.Entities.Multisite;
 using Ninject.Activation;
 
 namespace MrCMS.Settings
 {
-    public interface IConfigurationProvider<TSettings> : IProvider<TSettings> where TSettings : ISettings, new()
+    public interface IConfigurationProvider
     {
-        TSettings Settings { get; }
-        void SaveSettings(TSettings settings);
-        void DeleteSettings();
+        TSettings GetSettings<TSettings>(Site site) where TSettings : ISettings, new();
+        void SaveSettings(ISettings settings);
+        void DeleteSettings(Site site, ISettings settings);
+        List<ISettings> GetAllISettings(Site site);
     }
 }

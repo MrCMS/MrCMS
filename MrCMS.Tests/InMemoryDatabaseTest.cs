@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Tasks;
@@ -12,7 +12,6 @@ using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
-using MrCMS.Helpers;
 
 namespace MrCMS.Tests
 {
@@ -43,13 +42,20 @@ namespace MrCMS.Tests
                 }
             }
 
-            MrCMSApplication.OverriddenSession = Session = SessionFactory.OpenSession();
+            Session = SessionFactory.OpenSession();
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 
             SetupUser();
 
+            SetupRootChildren();
+
             TaskExecutor.Discard();
+        }
+
+        private void SetupRootChildren()
+        {
+            MrCMSApplication.OverridenRootChildren = new List<Webpage>();
         }
 
         private void SetupUser()
@@ -69,7 +75,6 @@ namespace MrCMS.Tests
 
             user.Roles = new List<UserRole> { adminUserRole };
             adminUserRole.Users = new List<User> { user };
-            
 
             MrCMSApplication.OverriddenUser = user;
         }

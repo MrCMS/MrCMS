@@ -1,0 +1,48 @@
+﻿@using MrCMS.Settings
+@model MrCMS.Entities.Multisite.Site
+@{
+    ViewBag.Title = "Edit | " + Model.Name;
+    var settings = ViewData["Settings"] as List<ISettings>;
+}
+<div class="row-fluid">
+    <div class="span4">
+        <h4>Edit - @Model.Name</h4>
+    </div>
+    <div class="span8">
+        <div class="btn-group  display-inline  pull-right">
+            <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-site">
+                Save</button>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("Edit", "Sites", FormMethod.Post, new { id = "edit-site" }))
+{
+    @Html.HiddenFor(x => x.Id)
+    <div id="tabs">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
+            @foreach (var settingType in settings)
+            {
+                <li><a href="#@settingType.GetDivId()" data-toggle="tab">@settingType.GetTypeName()</a></li>
+            }
+        </ul>
+        <div class="tab-content">
+            <div id="properties" class="tab-pane active">
+                @Html.LabelFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name, new { @class = "span6" })
+                @Html.LabelFor(x => x.BaseUrl)
+                @Html.TextBoxFor(x => x.BaseUrl, new { @class = "span6" })
+                <hr />
+                <p>
+                    Created on: @Model.CreatedOn.ToShortDateString()
+                    <br />
+                    Last Updated on: @Model.UpdatedOn.ToShortDateString()
+                </p>
+            </div>
+            @foreach (var settingType in settings)
+            {
+                Html.RenderPartial("Settings", settingType);
+            }
+        </div>
+    </div>
+}

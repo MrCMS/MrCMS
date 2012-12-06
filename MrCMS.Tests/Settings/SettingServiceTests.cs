@@ -1,5 +1,6 @@
 ﻿using System;
 using FakeItEasy;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Settings;
 using MrCMS.Settings;
 using NHibernate;
@@ -61,7 +62,10 @@ namespace MrCMS.Tests.Settings
         {
             var settingService = GetSettingService();
 
-            settingService.SetSetting("test", "value");
+            var site = new Site();
+            Session.Transact(session => session.Save(site));
+
+            settingService.SetSetting(site, "test", "value");
 
             Session.QueryOver<Setting>().List().Should().HaveCount(1);
         }
@@ -70,8 +74,10 @@ namespace MrCMS.Tests.Settings
         public void SettingService_SetSettingShouldUpdateExistingSetting()
         {
             var settingService = GetSettingService();
-            Session.Transact(session => session.Save(new Setting { Name = "test", Value = "value" }));
-            settingService.SetSetting("test", "value2");
+            var site = new Site();
+            Session.Transact(session => session.Save(site));
+            Session.Transact(session => session.Save(new Setting {Name = "test", Value = "value", Site = site}));
+            settingService.SetSetting(site, "test", "value2");
 
             var settings = Session.QueryOver<Setting>().List();
 
@@ -83,9 +89,10 @@ namespace MrCMS.Tests.Settings
         [Fact]
         public void SettingService_SetSetting_IfTheKeyIsNullThrowArgumentNullException()
         {
+            var site = new Site();
             var settingService = GetSettingService();
 
-            this.Invoking(tests => settingService.SetSetting(null, "value")).ShouldThrow<ArgumentNullException>();
+            this.Invoking(tests => settingService.SetSetting(site, null, "value")).ShouldThrow<ArgumentNullException>();
         }
 
         [Fact]
@@ -100,60 +107,66 @@ namespace MrCMS.Tests.Settings
         public void SettingService_GetSettingByKey_ReturnsTheSettingsObjectWithTheValidKey()
         {
             var settingService = GetSettingService();
-            var setting1 = new Setting { Name = "test", Value = "value" };
+            var site = new Site();
+            var setting1 = new Setting { Name = "test", Value = "value", Site = site };
             Session.Transact(session => session.Save(setting1));
-            var setting2 = new Setting { Name = "test2", Value = "value2" };
+            var setting2 = new Setting { Name = "test2", Value = "value2", Site = site };
             Session.Transact(session => session.Save(setting2));
 
-            settingService.GetSettingByKey("test2").Should().Be(setting2);
+            settingService.GetSettingByKey(site, "test2").Should().Be(setting2);
         }
 
         [Fact]
         public void SettingService_GetSettingByKey_ReturnsNullIfKeyIsNull()
         {
+            var site = new Site();
             var settingService = GetSettingService();
 
-            settingService.GetSettingByKey(null).Should().Be(null);
+            settingService.GetSettingByKey(site, null).Should().Be(null);
         }
 
         [Fact]
         public void SettingService_GetSettingByKey_ReturnsNullIfTheKeyDoesNotExist()
         {
             var settingService = GetSettingService();
-            var setting1 = new Setting { Name = "test", Value = "value" };
+            var site = new Site();
+            var setting1 = new Setting { Name = "test", Value = "value", Site = site };
             Session.Transact(session => session.Save(setting1));
 
-            settingService.GetSettingByKey("test2").Should().Be(null);
+            settingService.GetSettingByKey(site, "test2").Should().Be(null);
         }
 
         [Fact]
         public void SettingService_GetSettingValueByKey_ReturnsDefaultForNullKey()
         {
+            var site = new Site();
             var settingService = GetSettingService();
 
-            settingService.GetSettingValueByKey(null, "default").Should().Be("default");
+            settingService.GetSettingValueByKey(site, null, "default").Should().Be("default");
         }
 
         [Fact]
         public void SettingService_GetSettingValueByKey_ReturnsValueForSetting()
         {
             var settingService = GetSettingService();
-            var setting1 = new Setting { Name = "test", Value = "value" };
+            var site = new Site();
+            var setting1 = new Setting { Name = "test", Value = "value", Site = site };
             Session.Transact(session => session.Save(setting1));
-            var setting2 = new Setting { Name = "test2", Value = "value2" };
+            var setting2 = new Setting { Name = "test2", Value = "value2", Site = site };
             Session.Transact(session => session.Save(setting2));
 
-            settingService.GetSettingValueByKey("test2", "default").Should().Be("value2");
+            settingService.GetSettingValueByKey(site, "test2", "default").Should().Be("value2");
         }
 
         [Fact]
         public void SettingService_GetSettingValueByKey_DefaultWhenKeyDoesNotExist()
         {
             var settingService = GetSettingService();
-            var setting1 = new Setting { Name = "test", Value = "value" };
+            var site = new Site();
+            var setting1 = new Setting { Name = "test", Value = "value", Site = site };
             Session.Transact(session => session.Save(setting1));
 
-            settingService.GetSettingValueByKey("test2", "default").Should().Be("default");
+            settingService.GetSettingValueByKey(site, "test2", "default").Should().Be("default");
         }
 
         private static SettingService GetSettingService(ISession session = null)

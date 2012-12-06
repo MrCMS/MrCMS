@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
@@ -47,6 +48,8 @@ namespace MrCMS.Settings
         [DisplayName("Site name")]
         public string SiteName { get; set; }
 
+        public Site Site { get; set; }
+
         public string GetTypeName()
         {
             return "Site Settings";
@@ -60,13 +63,13 @@ namespace MrCMS.Settings
         public void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
             viewDataDictionary["DefaultLayoutOptions"] = _siteSettingsOptionGenerator.GetLayoutOptions(session, DefaultLayoutId);
-            viewDataDictionary["404Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Error404PageId);
-            viewDataDictionary["500Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Error500PageId);
+            viewDataDictionary["404Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error404PageId);
+            viewDataDictionary["500Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error500PageId);
         }
 
         public void Save()
         {
-            MrCMSApplication.Get<ConfigurationProvider<SiteSettings>>().SaveSettings(this);
+            MrCMSApplication.Get<ConfigurationProvider>().SaveSettings(this);
         }
     }
 }

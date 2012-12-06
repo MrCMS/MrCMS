@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="Entities\DocumentTests.cs" />
     <Compile Include="Entities\MediaFileTests.cs" />
+    <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
     <Compile Include="Services\AuthorisationServiceTests.cs" />
     <Compile Include="Services\DocumentServiceTests.cs" />
     <Compile Include="InMemoryDatabaseTest.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Services\NavigationServiceTests.cs" />
     <Compile Include="Services\ResetPasswordServiceTests.cs" />
     <Compile Include="Services\RoleServiceTests.cs" />
+    <Compile Include="Services\SitesServiceTests.cs" />
     <Compile Include="Services\TagServiceTests.cs" />
     <Compile Include="Services\UserServiceTests.cs" />
     <Compile Include="Services\WidgetServiceTests.cs" />

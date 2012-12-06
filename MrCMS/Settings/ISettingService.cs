@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Settings;
 
 namespace MrCMS.Settings
@@ -6,7 +7,7 @@ namespace MrCMS.Settings
     /// <summary>
     /// Setting service interface
     /// </summary>
-    public partial interface ISettingService
+    public interface ISettingService
     {
         /// <summary>
         /// Gets a setting by identifier
@@ -20,7 +21,7 @@ namespace MrCMS.Settings
         /// </summary>
         /// <param name="key">Key</param>
         /// <returns>Setting object</returns>
-        Setting GetSettingByKey(string key);
+        Setting GetSettingByKey(Site site, string key);
 
         /// <summary>
         /// Get setting value by key
@@ -29,7 +30,7 @@ namespace MrCMS.Settings
         /// <param name="key">Key</param>
         /// <param name="defaultValue">Default value</param>
         /// <returns>Setting value</returns>
-        T GetSettingValueByKey<T>(string key, T defaultValue = default(T));
+        T GetSettingValueByKey<T>(Site site, string key, T defaultValue = default(T));
 
         /// <summary>
         /// Set setting value
@@ -38,14 +39,12 @@ namespace MrCMS.Settings
         /// <param name="key">Key</param>
         /// <param name="value">Value</param>
         /// <param name="clearCache">A value indicating whether to clear cache after setting update</param>
-        void SetSetting<T>(string key, T value);
+        void SetSetting<T>(Site site, string key, T value);
 
         /// <summary>
         /// Deletes a setting
         /// </summary>
         /// <param name="setting">Setting</param>
         void DeleteSetting(Setting setting);
-
-        List<ISettings> GetAllISettings();
     }
 }

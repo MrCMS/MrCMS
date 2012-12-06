@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 
@@ -10,13 +11,12 @@ namespace MrCMS.Services
 {
     public interface INavigationService
     {
-        SiteTree<Webpage> GetWebsiteTree(int? depth = null);
+        SiteTree<Webpage> GetWebsiteTree(Site site, int? depth = null);
         SiteTree<MediaCategory> GetMediaTree();
         SiteTree<Layout> GetLayoutList();
         SiteTree<User> GetUserList();
-        GetMoreResult GetMore(int parentId, int previousId);
-        IEnumerable<SelectListItem> GetParentsList();
-        string GetSiteMap(UrlHelper urlHelper);
+        IEnumerable<SelectListItem> GetParentsList(Site site);
+        string GetSiteMap(UrlHelper urlHelper, Site site);
         IEnumerable<SelectListItem> GetDocumentTypes(string type);
     }
 

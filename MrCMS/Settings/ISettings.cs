@@ -1,4 +1,5 @@
 using System.Web.Mvc;
+using MrCMS.Entities.Multisite;
 using NHibernate;
 
 namespace MrCMS.Settings
@@ -11,5 +12,7 @@ namespace MrCMS.Settings
         void SetViewData(ISession session, ViewDataDictionary viewDataDictionary);
 
         void Save();
+
+        Site Site { get; set; }
     }
 }

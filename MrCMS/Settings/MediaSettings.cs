@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.Mvc;
+using MrCMS.Entities.Multisite;
 using MrCMS.Website;
 using NHibernate;
 using Ninject;
@@ -112,7 +113,9 @@ namespace MrCMS.Settings
 
         public void Save()
         {
-            MrCMSApplication.Get<ConfigurationProvider<MediaSettings>>().SaveSettings(this);
+            MrCMSApplication.Get<ConfigurationProvider>().SaveSettings(this);
         }
+
+        public Site Site { get; set; }
     }
 }

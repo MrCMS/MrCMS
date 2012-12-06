@@ -20,7 +20,6 @@
 @using (Html.BeginForm("Add", "MediaCategory", new { id = "" }, FormMethod.Post, new { id = "add-media-category" }))
 {
     @Html.HiddenFor(x => x.Parent.Id)
-    ;
     @Html.LabelFor(x => x.Name, "Category Name")
     @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
     @Html.ValidationMessageFor(x => x.Name)

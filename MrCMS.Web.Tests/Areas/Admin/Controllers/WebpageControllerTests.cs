@@ -25,6 +25,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private static IDocumentService documentService;
         private static IFormService formService;
+        private static ISitesService sitesService;
 
         [Fact]
         public void WebpageController_AddGet_ShouldReturnAddPageModel()
@@ -39,8 +40,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private static WebpageController GetWebpageController()
         {
             documentService = A.Fake<IDocumentService>();
+            sitesService = A.Fake<ISitesService>();
             formService = A.Fake<IFormService>();
-            var webpageController = new WebpageController(documentService, formService) { IsAjaxRequest = false };
+            var webpageController = new WebpageController(documentService, sitesService, formService) { IsAjaxRequest = false };
             return webpageController;
         }
 
@@ -174,7 +176,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             webpageController.Sort(1);
 
-            A.CallTo(() => documentService.GetAdminDocumentsByParentId<Webpage>(1)).MustHaveHappened();
+            A.CallTo(() => documentService.GetDocumentsByParentId<Webpage>(1)).MustHaveHappened();
         }
 
         [Fact]
@@ -182,7 +184,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var webpageController = GetWebpageController();
             var webpages = new List<Webpage> { new TextPage() };
-            A.CallTo(() => documentService.GetAdminDocumentsByParentId<Webpage>(1)).Returns(webpages);
+            A.CallTo(() => documentService.GetDocumentsByParentId<Webpage>(1)).Returns(webpages);
 
             var viewResult = webpageController.Sort(1).As<ViewResult>();
 

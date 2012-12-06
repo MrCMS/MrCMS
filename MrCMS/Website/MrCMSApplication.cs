@@ -11,6 +11,7 @@ using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.IoC;
 using MrCMS.Services;
@@ -42,7 +43,6 @@ namespace MrCMS.Website
             ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
         }
 
-        public static ISession OverriddenSession { get; set; }
         public static User OverriddenUser { get; set; }
 
         public override void Init()
@@ -107,7 +107,7 @@ namespace MrCMS.Website
         {
             return new RouteValueDictionary
                        {
-                           {"Namespaces", new string[] {"MrCMS.Web.Controllers"}}
+                           {"Namespaces", new[] {"MrCMS.Web.Controllers"}}
                        };
         }
 
@@ -122,9 +122,10 @@ namespace MrCMS.Website
 
         protected abstract void RegisterAppSpecificRoutes(RouteCollection routes);
 
+        public static Layout OverridenDefaultLayout { get; set; }
         public static Layout GetDefaultLayout(Webpage page)
         {
-            return Get<IDocumentService>().GetDefaultLayout(page);
+            return OverridenDefaultLayout ?? Get<IDocumentService>().GetDefaultLayout(page);
         }
 
         public static User CurrentUser
@@ -192,19 +193,27 @@ namespace MrCMS.Website
             return bootstrapper.Kernel.Get(type);
         }
 
-        public static IEnumerable<Webpage> PublishedRootChildren
+        public static IEnumerable<Webpage> PublishedRootChildren(Site site)
         {
-            get { return RootChildren.Where(webpage => webpage.Published); }
+            return RootChildren(site).Where(webpage => webpage.Published);
         }
 
-        public static IEnumerable<Webpage> RootChildren
+        public static IEnumerable<Webpage> OverridenRootChildren { get; set; }
+        public static IEnumerable<Webpage> RootChildren(Site site)
         {
-            get
-            {
-                return
-                    (OverriddenSession ?? Get<ISession>()).QueryOver<Webpage>().Where(document => document.Parent == null).OrderBy(x => x.DisplayOrder).Asc.Cacheable().
-                        List();
-            }
+            return OverridenRootChildren ??
+                   Get<ISession>()
+                       .QueryOver<Webpage>()
+                       .Where(document => document.Parent == null && document.Site == site)
+                       .OrderBy(x => x.DisplayOrder)
+                       .Asc.Cacheable()
+                       .List();
+        }
+
+        public static Site CurrentSite
+        {
+            get { return (Site)CurrentContext.Items["current.site"]; }
+            set { CurrentContext.Items["current.site"] = value; }
         }
 
         public static Webpage CurrentPage
@@ -225,9 +234,10 @@ namespace MrCMS.Website
             get { return CurrentContext.User.IsInRole("Administrator"); }
         }
 
+        public static SiteSettings OverriddenSiteSettings { get; set; }
         public static SiteSettings SiteSettings
         {
-            get { return Get<SiteSettings>(); }
+            get { return OverriddenSiteSettings ?? Get<SiteSettings>(); }
         }
 
         private static bool? _databaseIsInstalled;

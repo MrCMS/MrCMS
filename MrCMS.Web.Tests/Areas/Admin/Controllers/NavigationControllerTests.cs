@@ -1,25 +1,25 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
-using MrCMS.Tests;
-using MrCMS.Tests.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Website;
 using Xunit;
-using MrCMS.Helpers;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class NavigationControllerTests
     {
-        private static IUserService userService;
-        private static INavigationService navigationService;
+        private IUserService userService;
+        private INavigationService navigationService;
+        private ISitesService sitesService;
 
         [Fact]
         public void NavigationController_WebsiteTree_ShouldReturnPartialView()
@@ -31,23 +31,26 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             partialViewResult.Should().BeOfType<PartialViewResult>();
         }
 
-        private static NavigationController GetNavigationController()
+        private NavigationController GetNavigationController()
         {
             navigationService = A.Fake<INavigationService>();
             userService = A.Fake<IUserService>();
-            var navigationController = new NavigationController(navigationService, userService);
+            sitesService = A.Fake<ISitesService>();
+            var navigationController = new NavigationController(navigationService, userService, sitesService);
             return navigationController;
         }
 
         [Fact]
-        public void NavigationController_WebsiteTree_ShouldReturnSiteTreeAsModel()
+        public void NavigationController_WebsiteTree_ShouldReturnWebsiteTreeListModelAsModel()
         {
             var navigationController = GetNavigationController();
-            A.CallTo(() => navigationService.GetWebsiteTree(null)).Returns(new SiteTree<Webpage>());
+            var site = new Site();
+            A.CallTo(() => sitesService.GetCurrentSite()).Returns(site);
+            A.CallTo(() => navigationService.GetWebsiteTree(site, null)).Returns(new SiteTree<Webpage>());
 
             var partialViewResult = navigationController.WebSiteTree();
 
-            partialViewResult.Model.Should().BeOfType<SiteTree<Webpage>>();
+            partialViewResult.Model.Should().BeOfType<WebsiteTreeListModel>();
         }
 
         [Fact]
@@ -103,7 +106,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             result.Model.Should().Be(siteTree);
         }
-
 
         [Fact]
         public void NavigationController_LoggedInAs_ShouldCallGetEmailByName()

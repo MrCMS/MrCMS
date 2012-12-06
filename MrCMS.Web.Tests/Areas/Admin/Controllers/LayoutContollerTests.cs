@@ -14,22 +14,24 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class LayoutContollerTests
     {
-        private static IDocumentService documentService;
+        private IDocumentService documentService;
+        private ISitesService sitesService;
 
         [Fact]
         public void LayoutController_AddGet_ShouldReturnAddPageModel()
         {
             var layoutController = GetLayoutController();
 
-            var actionResult = layoutController.Add(1) as ViewResult;
+            var actionResult = layoutController.Add(1, 2) as ViewResult;
 
             actionResult.Model.Should().BeOfType<AddPageModel>();
         }
 
-        private static LayoutController GetLayoutController()
+        private LayoutController GetLayoutController()
         {
             documentService = A.Fake<IDocumentService>();
-            var layoutController = new LayoutController(documentService) {IsAjaxRequest = false};
+            sitesService = A.Fake<ISitesService>();
+            var layoutController = new LayoutController(documentService, sitesService) { IsAjaxRequest = false };
             return layoutController;
         }
 
@@ -39,7 +41,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var layoutController = GetLayoutController();
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(new TextPage { Id = 1 });
 
-            var actionResult = layoutController.Add(1) as ViewResult;
+            var actionResult = layoutController.Add(1, 2) as ViewResult;
 
             (actionResult.Model as AddPageModel).ParentId.Should().Be(1);
         }
@@ -60,7 +62,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var layoutController = GetLayoutController();
 
-            var layout = new Layout {Id = 1};
+            var layout = new Layout { Id = 1 };
             var result = layoutController.Add(layout) as RedirectToRouteResult;
 
             result.RouteValues["action"].Should().Be("Edit");
@@ -71,7 +73,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void LayoutController_EditGet_ShouldReturnAViewResult()
         {
             var layoutController = GetLayoutController();
-            var layout = new Layout {Id = 1};
+            var layout = new Layout { Id = 1 };
 
             var result = layoutController.Edit_Get(layout);
 
@@ -82,7 +84,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void LayoutController_EditGet_ShouldReturnLayoutAsViewModel()
         {
             var layoutController = GetLayoutController();
-            var layout = new Layout {Id = 1};
+            var layout = new Layout { Id = 1 };
 
             var result = layoutController.Edit_Get(layout) as ViewResult;
 
@@ -93,7 +95,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void LayoutController_EditPost_ShouldCallSaveDocument()
         {
             var layoutController = GetLayoutController();
-            var layout = new Layout {Id = 1};
+            var layout = new Layout { Id = 1 };
 
             layoutController.Edit(layout);
 
@@ -104,7 +106,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void LayoutController_EditPost_ShouldRedirectToEdit()
         {
             var layoutController = GetLayoutController();
-            var layout = new Layout {Id = 1};
+            var layout = new Layout { Id = 1 };
 
             var actionResult = layoutController.Edit(layout);
 
@@ -120,15 +122,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             layoutController.Sort(1);
 
-            A.CallTo(() => documentService.GetAdminDocumentsByParentId<Layout>(1)).MustHaveHappened();
+            A.CallTo(() => documentService.GetDocumentsByParentId<Layout>(1)).MustHaveHappened();
         }
 
         [Fact]
         public void LayoutController_Sort_ShouldUseTheResultOfDocumentsByParentIdsAsModel()
         {
             var layoutController = GetLayoutController();
-            var layouts = new List<Layout> {new Layout()};
-            A.CallTo(() => documentService.GetAdminDocumentsByParentId<Layout>(1)).Returns(layouts);
+            var layouts = new List<Layout> { new Layout() };
+            A.CallTo(() => documentService.GetDocumentsByParentId<Layout>(1)).Returns(layouts);
 
             var viewResult = layoutController.Sort(1).As<ViewResult>();
 

@@ -32,10 +32,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             base.OnActionExecuting(filterContext);
         }
 
-        protected new ViewResultBase View(object model)
-        {
-            return IsAjaxRequest ? (ViewResultBase)PartialView(model) : base.View(model);
-        }
+        //protected new ViewResultBase View(object model)
+        //{
+        //    return IsAjaxRequest ? (ViewResultBase)PartialView(model) : base.View(model);
+        //}
 
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding,
                                            JsonRequestBehavior behavior)

@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
@@ -42,6 +43,11 @@ namespace MrCMS.Entities.Documents.Web
             get { return PublishOn != null; }
         }
 
+        public virtual string LiveUrlSegment
+        {
+            get { return MrCMSApplication.PublishedRootChildren(Site).FirstOrDefault() == this ? string.Empty : UrlSegment; }
+        }
+
         [UIHint("DateTime")]
         [DisplayName("Publish On")]
         public virtual DateTime? PublishOn { get; set; }
@@ -53,15 +59,14 @@ namespace MrCMS.Entities.Documents.Web
             get { return _layout ?? (_layout = Layout ?? MrCMSApplication.GetDefaultLayout(this)); }
         }
 
-        [DisplayName("Children inherit these layout options")]
-        public virtual bool ChildrenInheritCustomLayoutOptions { get; set; }
-
         public virtual IList<Widget.Widget> ShownWidgets { get; set; }
         public virtual IList<Widget.Widget> HiddenWidgets { get; set; }
 
         public virtual IList<Widget.Widget> Widgets { get; set; }
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
+
+        public virtual Site Site { get; set; }
 
         public virtual IEnumerable<Webpage> ActivePages
         {

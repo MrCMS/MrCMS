@@ -7,6 +7,7 @@ using System.Web.Routing;
 using System.Web.SessionState;
 using Elmah;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -19,6 +20,7 @@ namespace MrCMS.Website.Routing
         private readonly Func<IDocumentService> _getDocumentService;
         private readonly Func<SiteSettings> _getSiteSettings;
         private IDocumentService _documentService;
+        private ISitesService _sitesService;
         private SiteSettings _siteSettings;
         private string _httpMethod;
         private Webpage _webpage;
@@ -246,8 +248,8 @@ namespace MrCMS.Website.Routing
 
             var webpage = string.IsNullOrWhiteSpace(data)
                               ? !MrCMSApplication.UserLoggedIn
-                                    ? MrCMSApplication.PublishedRootChildren.FirstOrDefault()
-                                    : MrCMSApplication.RootChildren.FirstOrDefault()
+                                    ? MrCMSApplication.PublishedRootChildren(SiteSettings.Site).FirstOrDefault()
+                                    : MrCMSApplication.RootChildren(SiteSettings.Site).FirstOrDefault()
                               : DocumentService.GetDocumentByUrl<Webpage>(data);
 
             MrCMSApplication.CurrentPage = webpage;

@@ -118,6 +118,7 @@
     <Compile Include="DbConfiguration\Overrides\PlainTextWidgetOveride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\SiteOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\TextPageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\TextWidgetOveride.cs" />
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Entities\Messaging\MessageTemplate.cs" />
     <Compile Include="Entities\Messaging\QueuedMessage.cs" />
     <Compile Include="Entities\Messaging\QueuedMessageAttachment.cs" />
+    <Compile Include="Entities\Multisite\Site.cs" />
     <Compile Include="Entities\People\User.cs" />
     <Compile Include="Entities\People\UserRole.cs" />
     <Compile Include="Entities\Settings\Setting.cs" />
@@ -197,6 +199,7 @@
     <Compile Include="Models\SearchResultModel.cs" />
     <Compile Include="Models\VersionsModel.cs" />
     <Compile Include="Models\ViewDataUploadFilesResult.cs" />
+    <Compile Include="Models\WebsiteTreeListModel.cs" />
     <Compile Include="Models\WidgetPageOrder.cs" />
     <Compile Include="Paging\BasePagedList.cs" />
     <Compile Include="Paging\IPagedList.cs" />
@@ -220,6 +223,7 @@
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\IRoleService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
+    <Compile Include="Services\ISitesService.cs" />
     <Compile Include="Services\ITagService.cs" />
     <Compile Include="Services\IUserService.cs" />
     <Compile Include="Services\IWidgetService.cs" />
@@ -229,6 +233,7 @@
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\ResetPasswordService.cs" />
     <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\SitesService.cs" />
     <Compile Include="Services\TagService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\WidgetService.cs" />

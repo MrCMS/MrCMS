@@ -17,6 +17,7 @@ using FluentNHibernate.Cfg.Db;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -260,9 +261,14 @@ namespace MrCMS.Web.Controllers
             var sessionFactory = _sessionFactory = configurator.CreateSessionFactory();
             ISession session = sessionFactory.OpenSession();
 
-            var siteSettings = new SiteSettings();
+            var sitesService = new SitesService(session, Request);
 
-            var documentService = new DocumentService(session, null);
+            var site = new Site { Name = model.SiteName, BaseUrl = model.SiteUrl };
+            sitesService.SaveSite(site);
+
+            var siteSettings = new SiteSettings { Site = site };
+
+            var documentService = new DocumentService(session, siteSettings, sitesService);
             var userService = new UserService(session);
 
             var layout = new Layout
@@ -272,27 +278,30 @@ namespace MrCMS.Web.Controllers
                                };
             documentService.AddDocument(layout);
 
-            documentService.AddDocument(new TextPage()
-            {
-                Name = "Home",
-                UrlSegment = "home"
-            });
+            documentService.AddDocument(new TextPage
+                                            {
+                                                Name = "Home",
+                                                UrlSegment = "home",
+                                                Site = site
+                                            });
 
-            var error404 = new TextPage()
+            var error404 = new TextPage
                                {
                                    Name = "404",
                                    UrlSegment = "404",
                                    RevealInNavigation = false,
                                    PublishOn = DateTime.Now,
+                                   Site = site
                                };
             documentService.AddDocument(error404);
 
-            var error500 = new TextPage()
+            var error500 = new TextPage
                                {
                                    Name = "500",
                                    UrlSegment = "500",
                                    RevealInNavigation = false,
                                    PublishOn = DateTime.Now,
+                                   Site = site
                                };
             documentService.AddDocument(error500);
 
@@ -300,7 +309,7 @@ namespace MrCMS.Web.Controllers
             siteSettings.Error404PageId = error404.Id;
             siteSettings.Error500PageId = error500.Id;
 
-            var configurationProvider = new ConfigurationProvider<SiteSettings>(new SettingService(session));
+            var configurationProvider = new ConfigurationProvider(new SettingService(session));
             configurationProvider.SaveSettings(siteSettings);
 
             var user = new User
@@ -308,7 +317,6 @@ namespace MrCMS.Web.Controllers
                     Email = model.AdminEmail,
                     IsActive = true
                 };
-
 
             var authorisationService = new AuthorisationService();
             authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
@@ -687,6 +695,9 @@ namespace MrCMS.Web.Controllers
 
             public string SqlAuthenticationType { get; set; }
             public bool SqlServerCreateDatabase { get; set; }
+
+            public string SiteName { get; set; }
+            public string SiteUrl { get; set; }
         }
 
         #endregion

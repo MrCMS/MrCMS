@@ -5,6 +5,7 @@ using FakeItEasy;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -18,6 +19,8 @@ namespace MrCMS.Tests.Services
     public class DocumentServiceTests : InMemoryDatabaseTest
     {
         private readonly SiteSettings _siteSettings;
+        private ISitesService _sitesService;
+
 
         public DocumentServiceTests()
         {
@@ -33,9 +36,10 @@ namespace MrCMS.Tests.Services
             Session.QueryOver<Document>().RowCount().Should().Be(1);
         }
 
-        private DocumentService GetDocumentService()
+        private DocumentService GetDocumentService(ISession session = null)
         {
-            var documentService = new DocumentService(Session, _siteSettings);
+            _sitesService = A.Fake<ISitesService>();
+            var documentService = new DocumentService(session ?? Session, _siteSettings, _sitesService);
             return documentService;
         }
 
@@ -103,21 +107,25 @@ namespace MrCMS.Tests.Services
             };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
+            var site = new Site();
             Enumerable.Range(1, 10).ForEach(i =>
-                                             {
-                                                 var textPage = new TextPage
-                                                 {
-                                                     Name = String.Format("Page {0}", (object)i),
-                                                     Parent = parent,
-                                                     AdminAllowedRoles = new List<AdminAllowedRole>(),
-                                                     AdminDisallowedRoles = new List<AdminDisallowedRole>()
-                                                 };
-                                                 parent.Children.Add(textPage);
-                                                 Session.Transact(session => session.SaveOrUpdate(textPage));
-                                                 Session.Transact(session => session.SaveOrUpdate(parent));
-                                             });
+                                                {
+                                                    var textPage = new TextPage
+                                                                       {
+                                                                           Name = String.Format("Page {0}", (object)i),
+                                                                           Parent = parent,
+                                                                           AdminAllowedRoles =
+                                                                               new List<AdminAllowedRole>(),
+                                                                           AdminDisallowedRoles =
+                                                                               new List<AdminDisallowedRole>(),
+                                                                           Site = site
+                                                                       };
+                                                    parent.Children.Add(textPage);
+                                                    Session.Transact(session => session.SaveOrUpdate(textPage));
+                                                    Session.Transact(session => session.SaveOrUpdate(parent));
+                                                });
 
-            var documents = documentService.GetAdminDocumentsByParentId<TextPage>(parent.Id);
+            var documents = documentService.GetAdminDocumentsByParentId<TextPage>(site, parent.Id);
 
             documents.Should().HaveCount(10);
         }
@@ -135,6 +143,7 @@ namespace MrCMS.Tests.Services
                              };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
+            var site = new Site();
             Enumerable.Range(1, 10).ForEach(i =>
                                              {
                                                  var textPage = i % 2 == 0
@@ -144,7 +153,8 @@ namespace MrCMS.Tests.Services
                                                                           Name = String.Format("Page {0}", i),
                                                                           Parent = parent,
                                                                           AdminAllowedRoles = new List<AdminAllowedRole>(),
-                                                                          AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                                                                          AdminDisallowedRoles = new List<AdminDisallowedRole>(),
+                                                                          Site = site
                                                                       }
                                                                     : new Layout { Parent = parent };
                                                  parent.Children.Add(textPage);
@@ -152,7 +162,7 @@ namespace MrCMS.Tests.Services
                                                  Session.Transact(session => session.SaveOrUpdate(parent));
                                              });
 
-            var textPages = documentService.GetAdminDocumentsByParentId<TextPage>(parent.Id);
+            var textPages = documentService.GetAdminDocumentsByParentId<TextPage>(site, parent.Id);
 
             textPages.Should().HaveCount(5);
         }
@@ -170,21 +180,25 @@ namespace MrCMS.Tests.Services
                              };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
+            var site = new Site();
             Enumerable.Range(1, 3).ForEach(i =>
-                                             {
-                                                 var textPage = new TextPage
-                                                 {
-                                                     Name = String.Format("Page {0}", i),
-                                                     Parent = parent,
-                                                     DisplayOrder = 4 - i,
-                                                     AdminAllowedRoles = new List<AdminAllowedRole>(),
-                                                     AdminDisallowedRoles = new List<AdminDisallowedRole>()
-                                                 };
-                                                 parent.Children.Add(textPage);
-                                                 Session.Transact(session => session.SaveOrUpdate(textPage));
-                                             });
+                                               {
+                                                   var textPage = new TextPage
+                                                                      {
+                                                                          Name = String.Format("Page {0}", i),
+                                                                          Parent = parent,
+                                                                          DisplayOrder = 4 - i,
+                                                                          AdminAllowedRoles =
+                                                                              new List<AdminAllowedRole>(),
+                                                                          AdminDisallowedRoles =
+                                                                              new List<AdminDisallowedRole>(),
+                                                                          Site = site
+                                                                      };
+                                                   parent.Children.Add(textPage);
+                                                   Session.Transact(session => session.SaveOrUpdate(textPage));
+                                               });
 
-            var documents = documentService.GetAdminDocumentsByParentId<TextPage>(parent.Id).ToList();
+            var documents = documentService.GetAdminDocumentsByParentId<TextPage>(site, parent.Id).ToList();
 
             documents[0].DisplayOrder.Should().Be(1);
             documents[1].DisplayOrder.Should().Be(2);
@@ -794,7 +808,7 @@ namespace MrCMS.Tests.Services
         public void DocumentService_DeleteDocument_ShouldCallSessionDelete()
         {
             var session = A.Fake<ISession>();
-            var documentService = new DocumentService(session, new SiteSettings());
+            var documentService = GetDocumentService(session);
 
             var textPage = new TextPage();
 
@@ -807,7 +821,7 @@ namespace MrCMS.Tests.Services
         public void DocumentService_GetDocumentVersion_CallsSessionGetDocumentVersionWithSpecifiedId()
         {
             var session = A.Fake<ISession>();
-            var documentService = new DocumentService(session, new SiteSettings());
+            var documentService = GetDocumentService(session);
 
             documentService.GetDocumentVersion(1);
 
@@ -820,7 +834,7 @@ namespace MrCMS.Tests.Services
             var session = A.Fake<ISession>();
             var documentVersion = new DocumentVersion();
             A.CallTo(() => session.Get<DocumentVersion>(1)).Returns(documentVersion);
-            var documentService = new DocumentService(session, new SiteSettings());
+            var documentService = GetDocumentService(session);
 
             var version = documentService.GetDocumentVersion(1);
             version.Should().Be(documentVersion);

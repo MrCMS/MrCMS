@@ -51,6 +51,23 @@
         }
     });
 
+
+    if ($.cookie('selected-site')) {
+        var cookie = $.cookie('selected-site');
+        $('#web #Site').val(cookie);
+        setVisibleSite(cookie);
+    }
+
+    $('#web #Site').change(function () {
+        setVisibleSite($(this).val());
+    });
+    function setVisibleSite(id) {
+        $('#web .filetree').hide();
+        $('#web .filetree[data-site-id=' + id + ']').show();
+
+        $.cookie('selected-site', id, { expires: 1, path: '/Admin' });
+    }
+
     $(".web-media").treeview({
         animated: "medium",
         persist: "cookie",
@@ -128,9 +145,10 @@
     });
 
     function processMenuAction(action, el, pos) {
-        var id = $(el).data('id');
-        var sortId = $(el).data('sort-id');
-        var controller = $(el).data('controller');
+        var element = $(el);
+        var id = element.data('id');
+        var sortId = element.data('sort-id');
+        var controller = element.data('controller');
         switch (action) {
             case "add":
                 location.href = '/Admin/' + controller + '/Add/' + id;
@@ -147,16 +165,25 @@
         }
     }
 
+    function processAdd(element, id, controller) {
+        if (controller == 'Webpage' && $(element).data('parent-id') == '') {
+        } else {
+
+        }
+    }
+
     // Show menu when an ahref is click
     $(".browser > li").contextMenu({
         menu: 'edit-root-menu'
     }, function (action, el, pos) {
-        var id = $(el).data('id');
-        var controller = $(el).data('controller');
+        var element = $(el);
+        var id = element.data('id');
+        var controller = element.data('controller');
         console.log("Controller is: " + controller);
         switch (action) {
             case "add":
-                location.href = '/Admin/' + controller + '/Add/' + (id == undefined ? '' : id);
+                var siteId = element.parents('.filetree').data('site-id');
+                location.href = '/Admin/' + controller + '/Add?siteId=' + siteId;
                 break;
             case "sort":
                 location.href = '/Admin/' + controller + '/Sort/' + id;
@@ -287,7 +314,7 @@
             return false;
         }
     });
-    
+
     $('[data-action=save]').click(function (e) {
         e.preventDefault();
         var formId = $(this).data('form-id');
@@ -408,7 +435,7 @@ function getRemoteModel(href, elId, callback) {
         div.modal({ elementId: elId, callback: callback })
             .on('shown', function () {
             })
-            .on('hidden', function() {
+            .on('hidden', function () {
                 $(this).remove();
             });
         $.validator.unobtrusive.parse('.modal form');

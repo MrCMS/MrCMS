@@ -7,7 +7,7 @@
     @{
         var type = Model.GetType();
     }
-    @foreach (var property in type.GetProperties().Where(info => info.CanWrite))
+    @foreach (var property in type.GetProperties().Where(info => info.CanWrite && info.Name != "Site"))
     {
         var name = (type.FullName + "." + property.Name).ToLower();
         var displayNameAttribute = property.GetCustomAttributes(typeof(DisplayNameAttribute), true).OfType<DisplayNameAttribute>().FirstOrDefault();

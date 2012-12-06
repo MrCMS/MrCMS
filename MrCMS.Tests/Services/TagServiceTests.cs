@@ -66,6 +66,8 @@ namespace MrCMS.Tests.Services
             {
                 Tags = tags;
             }
+
+            public string LiveUrlSegment { get; private set; }
             public string BodyContent { get; private set; }
             public int PageSize { get; private set; }
             public bool AllowPaging { get; private set; }

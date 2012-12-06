@@ -16,14 +16,14 @@ namespace MrCMS.Web.Controllers
         public ActionResult Error404()
         {
             var page = _documentService.Get404Page();
-            return View("~/Views/TextPage/Show.cshtml", page.CurrentLayout.LiveUrlSegment, page);
+            return View("~/Views/TextPage/Show.cshtml", page.CurrentLayout.UrlSegment, page);
         }
 
         [ActionName("500")]
         public ActionResult Error500()
         {
             var page = _documentService.Get500Page();
-            return View("~/Views/TextPage/Show.cshtml", page.CurrentLayout.LiveUrlSegment, page);
+            return View("~/Views/TextPage/Show.cshtml", page.CurrentLayout.UrlSegment, page);
         }
     }
 }

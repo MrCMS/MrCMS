@@ -320,7 +320,6 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
                                                 $('.image-url').val(value);
                                                 $('#' + B).attr('src', value);
                                                 $('#' + B).show();
-                                                
                                             });
                                         });
                                     }

@@ -24,11 +24,6 @@ namespace MrCMS.Entities.Documents
         [DisplayName("Url Segment")]
         public virtual string UrlSegment { get; set; }
 
-        public virtual string LiveUrlSegment
-        {
-            get { return MrCMSApplication.PublishedRootChildren.FirstOrDefault() == this ? string.Empty : UrlSegment; }
-        }
-
         private IList<Document> _children = new List<Document>();
         private IList<Tag> _tags = new List<Tag>();
 

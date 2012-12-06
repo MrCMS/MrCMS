@@ -16,12 +16,16 @@
     </div>
     <div id="tabs">
         <ul class="nav nav-tabs">
+            <li><a href="#sites" data-toggle="tab">Sites</a></li>
             @foreach (var settingType in Model)
             {
                 <li><a href="#@settingType.GetDivId()" data-toggle="tab">@settingType.GetTypeName()</a></li>
             }
         </ul>
         <div class="tab-content">
+            <div class="tab-pane" id="sites">
+                @{Html.RenderAction("Index", "Sites");}
+            </div>
             @foreach (var settingType in Model)
             {
                 Html.RenderPartial("Settings", settingType);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using NHibernate;
 
@@ -11,9 +12,9 @@ namespace MrCMS.Settings
 {
     public class SiteSettingsOptionGenerator
     {
-        public List<SelectListItem> GetErrorPageOptions(ISession session, int pageId)
+        public List<SelectListItem> GetErrorPageOptions(ISession session, Site site, int pageId)
         {
-            var queryOver = session.QueryOver<Webpage>().Cacheable().List();
+            var queryOver = session.QueryOver<Webpage>().Where(webpage => webpage.Site == site).Cacheable().List();
             return
                 queryOver.Where(page => page.Published)
                          .BuildSelectItemList(

@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Entities.Multisite;
+using MrCMS.Services;
 using MrCMS.Settings;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Extensions.Conventions.BindingGenerators;
 using Ninject.Syntax;
+using MrCMS.Helpers;
 
 namespace MrCMS.IoC
 {
@@ -27,14 +30,12 @@ namespace MrCMS.IoC
         private static object GetValue(Type type, IContext context)
         {
             var configProvider =
-                context.Kernel.Get(
-                    typeof (ConfigurationProvider<>).MakeGenericType(type));
-            var settingsObjectProperty =
-                configProvider.GetType().GetProperties().FirstOrDefault(
-                    info => info.Name == "Settings");
-
-            if (settingsObjectProperty != null)
-                return settingsObjectProperty.GetValue(configProvider, null);
+                context.Kernel.Get<ConfigurationProvider>();
+            var method =
+                typeof(ConfigurationProvider).GetMethodExt("GetSettings", typeof (Site));
+            
+            if (method != null)
+                return method.MakeGenericMethod(type).Invoke(configProvider, new object[] { context.Kernel.Get<ISitesService>().GetCurrentSite() });
             return null;
         }
     }

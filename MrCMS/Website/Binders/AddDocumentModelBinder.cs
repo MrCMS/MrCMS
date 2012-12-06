@@ -34,7 +34,7 @@ namespace MrCMS.Website.Binders
             // Extension method used to break cache
             document.SetParent(document.Parent);
             var pages = (document.Parent == null
-                             ? MrCMSApplication.RootChildren
+                             ? MrCMSApplication.RootChildren(MrCMSApplication.CurrentSite)
                              : document.Parent.Children.OfType<Webpage>()).ToList();
             document.DisplayOrder = pages.Any() ? pages.Max(x => x.DisplayOrder) + 1 : 0;
 

@@ -1,0 +1,21 @@
+﻿@model MrCMS.Models.WebsiteTreeListModel
+<div id="web" class="tab-pane">
+
+    <div class="well sidebar-nav">
+        @if (Model.Items.Count > 1)
+        {
+            @Html.DropDownList("Site", Model.Items, new { style = "width:100%;" })
+        }
+        @foreach (var site in Model.SiteTrees)
+        {
+            <ul data-site-id="@site.SiteId" class="filetree collapsable browser web-tree"  style="display: @(Model.Items.Any(item => item.Value == site.SiteId.ToString() && item.Selected) ? "block" : "none")">
+                <li data-id="@site.Id" data-sort-id="@site.ParentId" data-controller="@site.NodeType" ><i class="@site.IconClass">&nbsp;</i>
+                    @Html.ActionLink(site.Name, "Edit", site.NodeType, new { id = site.Children.Any() ? site.Children.FirstOrDefault().Id : 1 }, null)
+                    @{ Html.RenderPartial("TreeChildren", site.ChildrenModel); }
+                </li>
+            </ul>
+        }
+    </div>
+    <span class="grey">Grey = Not included in site navigation</span><br />
+    <span class="red">Red = Not published</span><br />
+</div>

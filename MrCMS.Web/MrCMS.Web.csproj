@@ -130,7 +130,7 @@
     <Compile Include="Areas\Admin\Controllers\NavigationController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\SearchController.cs" />
-    <Compile Include="Areas\Admin\Controllers\SettingsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SitesController.cs" />
     <Compile Include="Areas\Admin\Controllers\TagController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageController.cs" />
@@ -1054,7 +1054,14 @@
     <Content Include="Areas\Admin\Views\Webpage\Versions.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\RemoveMedia.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
-    <Content Include="Areas\Admin\Views\Settings\Settings.cshtml" />
+    <Content Include="Areas\Admin\Views\Sites\Settings.cshtml" />
+    <Content Include="Areas\Admin\Views\Sites\SiteList.cshtml" />
+    <Content Include="Areas\Admin\Views\Sites\EnableMultisite.cshtml" />
+    <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Sites\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Navigation\WebsiteTreeList.cshtml" />
+    <Content Include="Areas\Admin\Views\Sites\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Sites\Delete.cshtml" />
     <None Include="Properties\PublishProfiles\New.pubxml" />
     <Content Include="Views\Error\404.cshtml" />
     <Content Include="Views\Shared\AdminEditor.cshtml" />
@@ -1082,7 +1089,7 @@
     <Content Include="Areas\Admin\Views\Layout\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Layout\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Layout\Sort.cshtml" />
-    <Content Include="Areas\Admin\Views\Layout\View.cshtml" />
+    <Content Include="Areas\Admin\Views\Layout\Show.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Add.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\GetTabs.cshtml" />
@@ -1112,7 +1119,7 @@
     <Content Include="Areas\Admin\Views\Webpage\Layout.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Media.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Sort.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\View.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\Show.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\TextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\Edit.cshtml" />

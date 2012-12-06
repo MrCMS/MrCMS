@@ -11,10 +11,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public abstract class BaseDocumentController<T> : AdminController where T : Document
     {
         protected readonly IDocumentService _documentService;
+        protected readonly ISitesService _sitesService;
 
-        protected BaseDocumentController(IDocumentService documentService)
+        protected BaseDocumentController(IDocumentService documentService, ISitesService sitesService)
         {
             _documentService = documentService;
+            _sitesService = sitesService;
         }
 
         //
@@ -26,12 +28,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public virtual ActionResult Add(int? id)
+        public virtual ActionResult Add(int? id, int? siteId = null)
         {
             //Build list 
             var model = new AddPageModel
                 {
-                    Parent = _documentService.GetDocument<Document>(id.GetValueOrDefault(0))
+                    Parent = _documentService.GetDocument<Document>(id.GetValueOrDefault(0)),
+                    Site = _sitesService.GetSite(siteId.GetValueOrDefault())
                 };
             PopulateEditDropdownLists(model as T);
             return View(model);
@@ -86,7 +89,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public ActionResult Sort(int? id)
         {
-            List<T> categories = _documentService.GetAdminDocumentsByParentId<T>(id).ToList();
+            List<T> categories = _documentService.GetDocumentsByParentId<T>(id).ToList();
 
             return View(categories);
         }
