@@ -1,12 +1,9 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using FakeItEasy;
-using FakeItEasy.Configuration;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
@@ -18,7 +15,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private IDocumentService _documentService;
         private IFileService _fileService;
-        private IImageProcessor _imageProcessor;
         private ISitesService _sitesService;
 
         [Fact]
@@ -342,7 +338,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             _documentService = A.Fake<IDocumentService>();
             _sitesService = A.Fake<ISitesService>();
             _fileService = A.Fake<IFileService>();
-            _imageProcessor = A.Fake<IImageProcessor>();
             var mediaCategoryController = new MediaCategoryController(_documentService, _sitesService, _fileService) { IsAjaxRequest = false };
             return mediaCategoryController;
         }
