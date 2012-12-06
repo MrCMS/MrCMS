@@ -58,10 +58,6 @@ packages/
 *ncrunch*
 *crunch*.local.xml
 
-#Continuous Tests
-*_rltm_build_fl_*.csproj
-
-
 # visual studio database projects
 *.dbmdl
 
@@ -79,4 +75,8 @@ packages/
 
 #Media files
 MrCMS.Web/media*
+<<<<<<< HEAD
+*_rltm_build_fl_*.csproj
+=======
 MrCMS.Web/content/upload*
+>>>>>>> 79c9c4b7529d6e1da54caedc4ce2b9ffd18ac0e6

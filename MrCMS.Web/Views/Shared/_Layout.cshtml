@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <div class="container main-container">
+    <div class="container">
         @Html.RenderZone("Before Content")
         @RenderBody()
         @Html.RenderZone("After Content")
@@ -47,25 +47,7 @@
 
     <footer>
         <div class="container">
-            <div class="row">
-                <div class="span3">
-                    <h4><a href="">Twitter</a></h4>
-                    @Html.RenderZone("Footer area 1")
-                </div>
-                <div class="span3">
-                    <h4><a href="">Blog</a></h4>
-
-                    @Html.RenderZone("Footer area 2")
-                </div>
-                <div class="span3">
-                    <h4><a href="">Newsletter</a></h4>
-                    @Html.RenderZone("Footer area 3")
-                </div>
-                <div class="span3">
-                    <h4><a href="">Contact</a></h4>
-                    @Html.RenderZone("Footer area 4")
-                </div>
-            </div>
+            Mr CMS @DateTime.Now.Year
         </div>
     </footer>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>

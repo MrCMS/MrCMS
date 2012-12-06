@@ -6,10 +6,11 @@
     <div id="redirect" class="accordion-body collapse in">
         <div class="accordion-inner">
             @Html.LabelFor(redirect => redirect.RedirectUrl)
-            @Html.TextBoxFor(redirect => redirect.RedirectUrl)
+            @Html.TextBoxFor(redirect => redirect.RedirectUrl, new { @class = "span12" })
             @Html.ValidationMessageFor(redirect => redirect.RedirectUrl)
-            @Html.LabelFor(redirect => redirect.Permanent)
-            @Html.CheckBoxFor(redirect => redirect.Permanent)
+            <label class="checkbox" for="Permanent">
+                @Html.CheckBoxFor(redirect => redirect.Permanent) 301 Pemanent
+            </label>
             @Html.ValidationMessageFor(redirect => redirect.Permanent)
         </div>
     </div>

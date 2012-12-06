@@ -1,7 +1,7 @@
 ﻿@import url("../bootstrap/css/bootstrap.min.css");
 @import url("../bootstrap/css/bootstrap-responsive.min.css");
 
-html, body {background: #f6f6f6; font-family:helvetica, arial, verdana, sans-serif;color:#676767;}
+html, body {background: #f6f6f6; font-family:helvetica, arial, verdana, sans-serif;}
 .logo-container {background: #212121 url('../images/header-bg.jpg') fixed;height: 130px; }
 .nav-container { position:relative;}
 

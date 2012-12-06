@@ -1,98 +1,55 @@
 ﻿@import url("bootstrap/css/bootstrap.min.css");
 
 body { padding-top: 60px; }
-
 .container-mrcms { margin-left: 20px; padding-left: 300px; }
-
 .left-nav { float: left; width: 300px; margin-left: -300px; }
-
 .main-content { float: left; width: 100%; display: inline; }
-
     .main-content .inner-content { margin: 0 20px; }
-
 footer { clear: left; padding-top: 10px; }
-
     footer p { margin: 10px; }
-
 .search { margin-left: 30px; padding: 0px; }
-
     .search .search-query { margin-top: 5px; }
-
 .margin0 { margin: 0px; }
-
 .margin-top-0 { margin-top: 0px; }
-
 .display-inline { display: inline; }
-
 hr.small-margin { margin: 5px 0; }
-
 .grey { color: darkgrey; }
-
 .font-small { font-size: 0.8em; }
-
 .red { color: red; }
 
 /*Navigation*/
 #browser { padding-left: 10px; }
-
     #browser li { cursor: pointer; }
-
 .user-list li { list-style: none; }
 
 /*Right click context menu*/
 .context-menu { background: #fff; border: solid 1px #CCC; border-radius: 4px; display: none; margin: 0px; padding: 5px; position: absolute; width: 120px; z-index: 99999; }
-
     .context-menu li { list-style: none; }
-
     .context-menu a { font-style: normal; padding-left: 3px; }
-
 #sortable { cursor: pointer; list-style: none; margin-left: 0; padding-left: 0; }
-
     #sortable li { background: #eee; margin: 1px 0px; padding: 5px 5px; }
-
 #liveSearchResultsContainer { background: white; border-bottom: 1px solid #dbdbdb; border-left: 1px solid #dbdbdb; border-radius: 3px; border-right: 1px solid #dbdbdb; box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3); clear: both; list-style: none; position: absolute; width: 342px; z-index: 100; }
-
     #liveSearchResultsContainer ul { list-style-type: none; margin-left: 5px; padding: 4px; text-align: left; }
-
         #liveSearchResultsContainer ul li { float: left; font-size: 12px; width: 95%; }
 
 /*Removing bottom margin from forms in modal windows*/
 .modal form { margin: 0; }
-
 section.admin-header h3 { margin: 0px; }
-
 .tab-content { overflow-x: hidden; }
-
 #PublishOn { margin: 0; }
-
 .page-name-edit { white-space: nowrap; overflow: hidden; font-size: 18px; }
-
 .accordion-toggle { background-color: #f5f5f5; }
-
 .file-result { float: left; width: 99%; border: 1px solid #e7e7e7; border-top: none; }
-
     .file-result .header { cursor: pointer; padding: 5px; }
-
     .file-result .content { padding: 5px; border-top: 1px solid #e7e7e7; }
-
     .file-result:first-child { border-top: 1px solid #e7e7e7; }
-
 #media-selector .modal-body { max-height: none; }
-
 #media-selector label { display: inline; }
-
 .modal { -webkit-transition: opacity .3s linear, top .3s ease-out; -moz-transition: opacity .3s linear, top .3s ease-out; -o-transition: opacity .3s linear, top .3s ease-out; transition: opacity .3s linear, top .3s ease-out; margin: 0; }
-
 .modal { z-index: 100000; }
-
 #left-menu { position: absolute; width: 300px; background: white; z-index: 9999; box-shadow: 3px 3px 3px #e7e7e7; padding: 5px; }
-
 .menu-handle-admin { position: absolute; right: -37px; top: 80px; }
-
 .margin-top-10 { margin-top: 10px; }
-
 #changes-table tr.unchanged { background-color: rgb(203, 255, 203); }
-
 #changes-table tr.changed { background-color: rgb(255, 209, 209); }
-
 #changes-table pre { font-size: 0.6em; }
