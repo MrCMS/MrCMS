@@ -4,30 +4,77 @@ using System.Security.Principal;
 using System.Web;
 using FakeItEasy;
 using FluentAssertions;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
+using NHibernate;
 using Xunit;
 
 namespace MrCMS.Tests.Services
 {
     public class UserServiceTests : InMemoryDatabaseTest
     {
-        private static UserService GetUserService()
+        private static ISiteService siteService;
+
+        private static UserService GetUserService(ISession session = null)
         {
-            var userService = new UserService(Session);
+            siteService = A.Fake<ISiteService>();
+            var userService = new UserService(session ?? Session, siteService);
             return userService;
         }
 
         [Fact]
-        public void UserService_SaveUser_AddsAUserToTHeDb()
+        public void UserService_AddUser_SavesAUserToSession()
         {
-            var userService = GetUserService();
+            var session = A.Fake<ISession>();
+            var userService = GetUserService(session);
 
-            userService.SaveUser(new User());
+            var user = new User();
+            userService.AddUser(user);
 
-            Session.QueryOver<User>().RowCount().Should().Be(1);
+            A.CallTo(() => session.Save(user)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void UserService_AddUser_AddsTheCurrentSiteToTheUsersSites()
+        {
+            var session = A.Fake<ISession>();
+            var userService = GetUserService(session);
+            var site = new Site();
+            A.CallTo(() => siteService.GetCurrentSite()).Returns(site);
+
+            var user = new User();
+            userService.AddUser(user);
+
+            user.Sites.Should().Contain(site);
+        }
+
+        [Fact]
+        public void UserService_AddUser_AddsTheUserToTheSitesUsers()
+        {
+            var session = A.Fake<ISession>();
+            var userService = GetUserService(session);
+            var site = new Site();
+            A.CallTo(() => siteService.GetCurrentSite()).Returns(site);
+
+            var user = new User();
+            userService.AddUser(user);
+
+            site.Users.Should().Contain(user);
+        }
+
+        [Fact]
+        public void UserService_SaveUser_UpdatesAUser()
+        {
+            var session = A.Fake<ISession>();
+            var userService = GetUserService(session);
+
+            var user = new User();
+            userService.SaveUser(user);
+
+            A.CallTo(() => session.Update(user)).MustHaveHappened();
         }
 
         [Fact]
@@ -73,15 +120,15 @@ namespace MrCMS.Tests.Services
 
             userService.GetUserByEmail("test@example.com").Should().BeNull();
         }
-        
+
         [Fact]
         public void UserService_GetUserByEmail_WithValidEmailReturnsTheCorrectUser()
         {
             var userService = GetUserService();
 
-            var user = new User {FirstName = "Test", LastName = "User", Email = "test@example.com"};
+            var user = new User { FirstName = "Test", LastName = "User", Email = "test@example.com" };
             Session.Transact(session => Session.Save(user));
-            var user2 = new User {FirstName = "Test", LastName = "User2", Email = "test2@example.com"};
+            var user2 = new User { FirstName = "Test", LastName = "User2", Email = "test2@example.com" };
             Session.Transact(session => Session.Save(user2));
 
             userService.GetUserByEmail("test2@example.com").Should().Be(user2);

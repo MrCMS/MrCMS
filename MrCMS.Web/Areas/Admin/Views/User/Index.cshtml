@@ -1,5 +1,6 @@
 ﻿@using MrCMS.Entities.People
-@model IList<MrCMS.Entities.People.User>
+@using MrCMS.Helpers
+@model MrCMS.Paging.IPagedList<User>
 @{
     ViewBag.Title = "Users";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -37,3 +38,4 @@
         </tr>
     }
 </table>
+@Html.Pager(Model, "Index", page => new { page })

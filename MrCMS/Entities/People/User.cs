@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Entities.People
 {
@@ -34,5 +36,12 @@ namespace MrCMS.Entities.People
         public virtual DateTime? ResetPasswordExpiry { get; set; }
 
         public virtual IList<UserRole> Roles { get; set; }
+
+        public virtual bool IsAdmin
+        {
+            get { return Roles != null && Roles.Any(role => role.Name == "Administrator"); }
+        }
+
+        public virtual IList<Site> Sites { get; set; }
     }
 }

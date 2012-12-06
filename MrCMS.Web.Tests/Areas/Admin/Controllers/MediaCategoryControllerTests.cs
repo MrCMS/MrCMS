@@ -15,7 +15,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private IDocumentService _documentService;
         private IFileService _fileService;
-        private ISitesService _sitesService;
+        private ISiteService _siteService;
 
         [Fact]
         public void MediaCategoryController_AddGet_ShouldReturnAddPageModel()
@@ -336,9 +336,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private MediaCategoryController GetMediaCategoryController()
         {
             _documentService = A.Fake<IDocumentService>();
-            _sitesService = A.Fake<ISitesService>();
+            _siteService = A.Fake<ISiteService>();
             _fileService = A.Fake<IFileService>();
-            var mediaCategoryController = new MediaCategoryController(_documentService, _sitesService, _fileService) { IsAjaxRequest = false };
+            var mediaCategoryController = new MediaCategoryController(_documentService, _siteService, _fileService) { IsAjaxRequest = false };
             return mediaCategoryController;
         }
     }

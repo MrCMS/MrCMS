@@ -28,13 +28,13 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
-        private readonly ISitesService _sitesService;
+        private readonly ISiteService _siteService;
 
-        public DocumentService(ISession session, SiteSettings siteSettings, ISitesService sitesService)
+        public DocumentService(ISession session, SiteSettings siteSettings, ISiteService _siteService)
         {
             _session = session;
             _siteSettings = siteSettings;
-            _sitesService = sitesService;
+            _siteService = _siteService;
         }
 
         public void AddDocument(Document document)
@@ -427,7 +427,7 @@ namespace MrCMS.Services
         {
             var error404Id = _siteSettings.Error404PageId;
 
-            var currentSite = _sitesService.GetCurrentSite();
+            var currentSite = _siteService.GetCurrentSite();
 
             return _session.Get<TextPage>(error404Id)
                    ?? GetDocumentByUrl<TextPage>("404")
@@ -438,7 +438,7 @@ namespace MrCMS.Services
         {
             var error500Id = _siteSettings.Error500PageId;
 
-            var currentSite = _sitesService.GetCurrentSite();
+            var currentSite = _siteService.GetCurrentSite();
 
             return _session.Get<TextPage>(error500Id)
                    ?? GetDocumentByUrl<TextPage>("500")

@@ -223,7 +223,7 @@
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\IRoleService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
-    <Compile Include="Services\ISitesService.cs" />
+    <Compile Include="Services\ISiteService.cs" />
     <Compile Include="Services\ITagService.cs" />
     <Compile Include="Services\IUserService.cs" />
     <Compile Include="Services\IWidgetService.cs" />
@@ -233,7 +233,7 @@
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\ResetPasswordService.cs" />
     <Compile Include="Services\RoleService.cs" />
-    <Compile Include="Services\SitesService.cs" />
+    <Compile Include="Services\SiteService.cs" />
     <Compile Include="Services\TagService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\WidgetService.cs" />
@@ -262,6 +262,7 @@
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />
+    <Compile Include="Website\Binders\EditSiteModelBinder.cs" />
     <Compile Include="Website\Binders\EditUserModelBinder.cs" />
     <Compile Include="Website\Binders\LayoutAreaModelBinder.cs" />
     <Compile Include="Website\Binders\SessionModelBinderAttribute.cs" />

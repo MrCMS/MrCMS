@@ -14,19 +14,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly INavigationService _service;
         private readonly IUserService _userService;
-        private readonly ISitesService _sitesService;
+        private readonly ISiteService _siteService;
 
-        public NavigationController(INavigationService service, IUserService userService, ISitesService sitesService)
+        public NavigationController(INavigationService service, IUserService userService, ISiteService siteService)
         {
             _service = service;
             _userService = userService;
-            _sitesService = sitesService;
+            _siteService = siteService;
         }
 
         public PartialViewResult WebSiteTree()
         {
-            var sites = _sitesService.GetAllSites();
-            var currentSite = _sitesService.GetCurrentSite();
+            var sites = _siteService.GetAllSites();
+            var currentSite = _siteService.GetCurrentSite();
             return PartialView("WebsiteTreeList",
                                new WebsiteTreeListModel(sites.BuildSelectItemList(site => site.Name,
                                                                                   site => site.Id.ToString(),

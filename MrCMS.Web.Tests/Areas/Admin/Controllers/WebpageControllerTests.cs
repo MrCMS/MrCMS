@@ -25,7 +25,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private static IDocumentService documentService;
         private static IFormService formService;
-        private static ISitesService sitesService;
+        private static ISiteService _siteService;
 
         [Fact]
         public void WebpageController_AddGet_ShouldReturnAddPageModel()
@@ -40,9 +40,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private static WebpageController GetWebpageController()
         {
             documentService = A.Fake<IDocumentService>();
-            sitesService = A.Fake<ISitesService>();
+            _siteService = A.Fake<ISiteService>();
             formService = A.Fake<IFormService>();
-            var webpageController = new WebpageController(documentService, sitesService, formService) { IsAjaxRequest = false };
+            var webpageController = new WebpageController(documentService, _siteService, formService) { IsAjaxRequest = false };
             return webpageController;
         }
 

@@ -35,7 +35,7 @@ namespace MrCMS.IoC
                 typeof(ConfigurationProvider).GetMethodExt("GetSettings", typeof (Site));
             
             if (method != null)
-                return method.MakeGenericMethod(type).Invoke(configProvider, new object[] { context.Kernel.Get<ISitesService>().GetCurrentSite() });
+                return method.MakeGenericMethod(type).Invoke(configProvider, new object[] { context.Kernel.Get<ISiteService>().GetCurrentSite() });
             return null;
         }
     }

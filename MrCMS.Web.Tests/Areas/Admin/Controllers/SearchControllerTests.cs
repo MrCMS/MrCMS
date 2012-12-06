@@ -17,7 +17,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private static IDocumentService documentService;
         private static INavigationService navigationService;
-        private static ISitesService sitesService;
+        private static ISiteService _siteService;
 
         [Fact]
         public void SearchController_GetSearchResults_NullStringShouldReturnEmptyObject()
@@ -33,8 +33,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             documentService = A.Fake<IDocumentService>();
             navigationService = A.Fake<INavigationService>();
-            sitesService = A.Fake<ISitesService>();
-            var searchController = new SearchController(documentService, navigationService, sitesService) { IsAjaxRequest = false };
+            _siteService = A.Fake<ISiteService>();
+            var searchController = new SearchController(documentService, navigationService, _siteService) { IsAjaxRequest = false };
             return searchController;
         }
 
@@ -104,7 +104,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var searchController = GetSearchController();
             var site = new Site();
-            A.CallTo(() => sitesService.GetCurrentSite()).Returns(site);
+            A.CallTo(() => _siteService.GetCurrentSite()).Returns(site);
 
             var selectListItems = new List<SelectListItem>();
             var documentTypes = new List<SelectListItem>();

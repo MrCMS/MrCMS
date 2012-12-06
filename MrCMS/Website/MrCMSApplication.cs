@@ -231,7 +231,7 @@ namespace MrCMS.Website
 
         public static bool CurrentUserIsAdmin
         {
-            get { return CurrentContext.User.IsInRole("Administrator"); }
+            get { return CurrentUser.IsAdmin; }
         }
 
         public static SiteSettings OverriddenSiteSettings { get; set; }

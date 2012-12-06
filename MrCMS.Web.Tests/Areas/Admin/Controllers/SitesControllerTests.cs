@@ -12,9 +12,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class SitesControllerTests
     {
-        private ISitesService sitesService;
+        private ISiteService _siteService;
         private ISession session;
         private IConfigurationProvider configurationProvider;
+        private IUserService _userService;
 
         [Fact]
         public void SitesController_IndexGet_CallsISiteServiceGetAllSites()
@@ -23,7 +24,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             sitesController.Index_Get();
 
-            A.CallTo(() => sitesService.GetAllSites()).MustHaveHappened();
+            A.CallTo(() => _siteService.GetAllSites()).MustHaveHappened();
         }
 
         [Fact]
@@ -31,7 +32,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var sitesController = GetSitesController();
             var sites = new List<Site> { new Site() };
-            A.CallTo(() => sitesService.GetAllSites()).Returns(sites);
+            A.CallTo(() => _siteService.GetAllSites()).Returns(sites);
 
             var result = sitesController.Index_Get();
 
@@ -57,7 +58,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var site = new Site();
             sitesController.Add(site);
 
-            A.CallTo(() => sitesService.SaveSite(site)).MustHaveHappened();
+            A.CallTo(() => _siteService.AddSite(site)).MustHaveHappened();
         }
 
         [Fact]
@@ -87,7 +88,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var sitesController = GetSitesController();
 
-            var site = new Site {Id = 1};
+            var site = new Site { Id = 1 };
             sitesController.Edit_Get(site);
 
             A.CallTo(() => configurationProvider.GetAllISettings(site)).MustHaveHappened();
@@ -97,8 +98,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void SitesController_EditGet_ResultOfGetAllISettingsMustBeSetToViewDataSettings()
         {
             var sitesController = GetSitesController();
-            var site = new Site {Id = 1};
-            var settingses = new List<ISettings> {new SiteSettings()};
+            var site = new Site { Id = 1 };
+            var settingses = new List<ISettings> { new SiteSettings() };
             A.CallTo(() => configurationProvider.GetAllISettings(site)).Returns(settingses);
 
             sitesController.Edit_Get(site);
@@ -112,9 +113,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var sitesController = GetSitesController();
 
             var site = new Site();
-            sitesController.Edit(site,new List<ISettings>());
+            sitesController.Edit(site, new List<ISettings>());
 
-            A.CallTo(() => sitesService.SaveSite(site)).MustHaveHappened();
+            A.CallTo(() => _siteService.SaveSite(site)).MustHaveHappened();
         }
 
         [Fact]
@@ -146,7 +147,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var site = new Site();
             sitesController.Delete(site);
 
-            A.CallTo(() => sitesService.DeleteSite(site)).MustHaveHappened();
+            A.CallTo(() => _siteService.DeleteSite(site)).MustHaveHappened();
         }
 
         [Fact]
@@ -162,9 +163,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private SitesController GetSitesController()
         {
             session = A.Fake<ISession>();
-            sitesService = A.Fake<ISitesService>();
+            _siteService = A.Fake<ISiteService>();
             configurationProvider = A.Fake<IConfigurationProvider>();
-            return new SitesController(session, sitesService, configurationProvider);
+            _userService = A.Fake<IUserService>();
+            return new SitesController(session, _siteService, _userService, configurationProvider);
         }
     }
 }

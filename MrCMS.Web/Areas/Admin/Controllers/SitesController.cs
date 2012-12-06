@@ -12,13 +12,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class SitesController : AdminController
     {
         private readonly ISession _session;
-        private readonly ISitesService _sitesService;
+        private readonly ISiteService _siteService;
+        private readonly IUserService _userService;
         private readonly IConfigurationProvider _configurationProvider;
 
-        public SitesController(ISession session, ISitesService sitesService, IConfigurationProvider configurationProvider)
+        public SitesController(ISession session, ISiteService siteService, IUserService userService, IConfigurationProvider configurationProvider)
         {
             _session = session;
-            _sitesService = sitesService;
+            _siteService = siteService;
+            _userService = userService;
             _configurationProvider = configurationProvider;
         }
 
@@ -26,7 +28,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Index")]
         public ViewResult Index_Get()
         {
-            var sites = _sitesService.GetAllSites();
+            var sites = _siteService.GetAllSites();
             return View("Index", sites);
         }
 
@@ -40,7 +42,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public RedirectToRouteResult Add(Site site)
         {
-            _sitesService.SaveSite(site);
+            _siteService.AddSite(site);
             return RedirectToAction("Index");
         }
 
@@ -48,6 +50,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Edit")]
         public ViewResult Edit_Get(Site site)
         {
+            ViewData["Users"] = _userService.GetAllUsers();
             ViewData["Settings"] = _configurationProvider.GetAllISettings(site)
                 .Select(settings =>
                 {
@@ -55,13 +58,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                         settings.SetViewData(_session, ViewData);
                     return settings;
                 }).ToList();
+
             return View(site);
         }
 
         [HttpPost]
-        public RedirectToRouteResult Edit(Site site, [ModelBinder(typeof(SettingModelBinder))]List<ISettings> settings)
+        public RedirectToRouteResult Edit([SessionModelBinder(typeof(EditSiteModelBinder))] Site site, [ModelBinder(typeof(SettingModelBinder))]List<ISettings> settings)
         {
-            _sitesService.SaveSite(site);
+            _siteService.SaveSite(site);
             settings.ForEach(s => s.Save());
             return RedirectToAction("Index");
         }
@@ -76,7 +80,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public RedirectToRouteResult Delete(Site site)
         {
-            _sitesService.DeleteSite(site);
+            _siteService.DeleteSite(site);
             return RedirectToAction("Index");
         }
     }

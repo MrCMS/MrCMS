@@ -19,7 +19,7 @@ namespace MrCMS.Tests.Services
     public class DocumentServiceTests : InMemoryDatabaseTest
     {
         private readonly SiteSettings _siteSettings;
-        private ISitesService _sitesService;
+        private ISiteService _siteService;
 
 
         public DocumentServiceTests()
@@ -38,8 +38,8 @@ namespace MrCMS.Tests.Services
 
         private DocumentService GetDocumentService(ISession session = null)
         {
-            _sitesService = A.Fake<ISitesService>();
-            var documentService = new DocumentService(session ?? Session, _siteSettings, _sitesService);
+            _siteService = A.Fake<ISiteService>();
+            var documentService = new DocumentService(session ?? Session, _siteSettings, _siteService);
             return documentService;
         }
 

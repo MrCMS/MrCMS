@@ -20,7 +20,7 @@ namespace MrCMS.Website.Routing
         private readonly Func<IDocumentService> _getDocumentService;
         private readonly Func<SiteSettings> _getSiteSettings;
         private IDocumentService _documentService;
-        private ISitesService _sitesService;
+        private ISiteService _siteService;
         private SiteSettings _siteSettings;
         private string _httpMethod;
         private Webpage _webpage;

@@ -1,4 +1,5 @@
-﻿@using MrCMS.Settings
+﻿@using MrCMS.Entities.People
+@using MrCMS.Settings
 @model MrCMS.Entities.Multisite.Site
 @{
     ViewBag.Title = "Edit | " + Model.Name;
@@ -21,6 +22,7 @@
     <div id="tabs">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
+            <li><a href="#users" data-toggle="tab">Users</a></li>
             @foreach (var settingType in settings)
             {
                 <li><a href="#@settingType.GetDivId()" data-toggle="tab">@settingType.GetTypeName()</a></li>
@@ -38,6 +40,29 @@
                     <br />
                     Last Updated on: @Model.UpdatedOn.ToShortDateString()
                 </p>
+            </div>
+            <div id="users" class="tab-pane">
+                @{
+            var users = ViewData["Users"] as IEnumerable<User>;
+                }
+                <table class="table table-striped table-bordered">
+                    @if (users != null)
+                    {
+                        foreach (var user in users)
+                        {
+                            bool isChecked = user.IsAdmin || Model.Users.Any(x => x.Id == user.Id);
+                            bool isEnabled = !user.IsAdmin;
+                        <tr>
+                            <td>
+                                @Html.CheckBox("User-" + user.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
+                            </td>
+                            <td>
+                                @Html.Label("User-" + user.Id, user.Name)
+                            </td>
+                        </tr>
+                        }
+                    }
+                </table>
             </div>
             @foreach (var settingType in settings)
             {

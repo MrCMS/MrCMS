@@ -30,7 +30,6 @@ namespace MrCMS.Web.Controllers
     public class InstallController : Controller
     {
         private static AspNetHostingPermissionLevel? _trustLevel;
-        private static ISessionFactory _sessionFactory;
 
         public ActionResult Setup()
         {
@@ -258,18 +257,18 @@ namespace MrCMS.Web.Controllers
                                               connectionString)
             };
 
-            var sessionFactory = _sessionFactory = configurator.CreateSessionFactory();
+            var sessionFactory = configurator.CreateSessionFactory();
             ISession session = sessionFactory.OpenSession();
 
-            var sitesService = new SitesService(session, Request);
+            var siteService = new SiteService(session, Request);
 
             var site = new Site { Name = model.SiteName, BaseUrl = model.SiteUrl };
-            sitesService.SaveSite(site);
+            siteService.AddSite(site);
 
             var siteSettings = new SiteSettings { Site = site };
 
-            var documentService = new DocumentService(session, siteSettings, sitesService);
-            var userService = new UserService(session);
+            var documentService = new DocumentService(session, siteSettings, siteService);
+            var userService = new UserService(session, siteService);
 
             var layout = new Layout
                                {
@@ -332,6 +331,10 @@ namespace MrCMS.Web.Controllers
             adminUserRole.Users = new List<User> { user };
             var roleService = new RoleService(session);
             roleService.SaveRole(adminUserRole);
+
+            user.Sites = new List<Site> { site };
+            site.Users = new List<User> { user };
+            siteService.SaveSite(site);
 
             authorisationService.Logout();
             authorisationService.SetAuthCookie(user.Email, false);

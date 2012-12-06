@@ -8,8 +8,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class LayoutController : BaseDocumentController<Layout>
     {
-        public LayoutController(IDocumentService documentService, ISitesService sitesService)
-            : base(documentService, sitesService)
+        public LayoutController(IDocumentService documentService, ISiteService siteService)
+            : base(documentService, siteService)
         {
         }
 

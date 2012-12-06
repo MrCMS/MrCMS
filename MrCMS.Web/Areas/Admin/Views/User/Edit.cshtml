@@ -1,4 +1,5 @@
-﻿@using MrCMS.Entities.People
+﻿@using MrCMS.Entities.Multisite
+@using MrCMS.Entities.People
 @model MrCMS.Entities.People.User
 @{
     ViewBag.Title = "Edit | " + Model.Name;
@@ -10,8 +11,8 @@
     </div>
     <div class="span8">
         <div class="btn-group  display-inline  pull-right">
-            
-                <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn" data-toggle="modal">Reset Password</a>
+
+            <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn" data-toggle="modal">Reset Password</a>
             <button class="btn">
                 Delete</button>
             <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-user">
@@ -25,6 +26,8 @@
     <div id="tabs">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
+            <li><a href="#roles" data-toggle="tab">Roles</a></li>
+            <li><a href="#sites" data-toggle="tab">Sites</a></li>
         </ul>
         <div class="tab-content">
 
@@ -34,39 +37,56 @@
                 @Html.TextBoxFor(x => x.FirstName, new { @class = "span12" })
                 @Html.LabelFor(x => x.LastName)
                 @Html.TextBoxFor(x => x.LastName, new { @class = "span12" })
-                
+
                 <div class="form-inline">
-                    
-                @Html.CheckBoxFor(x => x.IsActive)
+
+                    @Html.CheckBoxFor(x => x.IsActive)
                     @Html.LabelFor(x => x.IsActive)
                 </div>
-
                 <hr />
-
-                @Html.LabelFor(x => x.Roles)
-
-                @{
-                    var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
-                }
-                <div class="form-inline">
-                @if (userRoles != null)
-                {
-                    foreach (var role in userRoles)
-                    {
-                        bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
-
-                    @Html.CheckBox("Role-" + role.Id, isChecked)
-                        @:&nbsp;
-                    @Html.Label("Role-" + role.Id, role.Name)
-                    <br />
-                    }
-                }
-                </div>
-                <hr/>
                 <p>
-                    Created on: @Model.CreatedOn.ToShortDateString() <br />
+                    Created on: @Model.CreatedOn.ToShortDateString()
+                    <br />
                     Last Updated on: @Model.UpdatedOn.ToShortDateString()
                 </p>
+            </div>
+            <div id="roles" class="tab-pane">
+                @{
+    var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
+                }
+                <div class="form-inline">
+                    @if (userRoles != null)
+                    {
+                        foreach (var role in userRoles)
+                        {
+                            bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
+
+                        @Html.CheckBox("Role-" + role.Id, isChecked)
+                        @:&nbsp;
+                        @Html.Label("Role-" + role.Id, role.Name)
+                        <br />
+                        }
+                    }
+                </div>
+            </div>
+            <div id="sites" class="tab-pane">
+                @{
+                    var sites = ViewData["AvailableSites"] as IEnumerable<Site>;
+                }
+                <div class="form-inline">
+                    @if (sites != null)
+                    {
+                        foreach (var site in sites)
+                        {
+                            bool isChecked = Model.Sites.Any(x => x.Id == site.Id);
+
+                        @Html.CheckBox("Site-" + site.Id, isChecked)
+                        @:&nbsp;
+                        @Html.Label("Site-" + site.Id, site.Name)
+                        <br />
+                        }
+                    }
+                </div>
             </div>
         </div>
     </div>

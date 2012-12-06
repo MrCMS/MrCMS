@@ -16,8 +16,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IFormService _formService;
 
-        public WebpageController(IDocumentService documentService, ISitesService sitesService, IFormService formService)
-            : base(documentService, sitesService)
+        public WebpageController(IDocumentService documentService, ISiteService _siteService, IFormService formService)
+            : base(documentService, _siteService)
         {
             _formService = formService;
         }

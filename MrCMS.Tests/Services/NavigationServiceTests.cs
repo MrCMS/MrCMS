@@ -58,7 +58,7 @@ namespace MrCMS.Tests.Services
                                      session.SaveOrUpdate(site);
                                  });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(),new SitesService(Session,A.Fake<HttpRequestBase>())), null);
+            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(),new SiteService(Session,A.Fake<HttpRequestBase>())), null);
             var websiteTree = navigationService.GetWebsiteTree(site);
 
             websiteTree.Children.Should().HaveCount(1);
@@ -93,7 +93,7 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(category4);
             });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), new SitesService(Session, A.Fake<HttpRequestBase>())), null);
+            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), new SiteService(Session, A.Fake<HttpRequestBase>())), null);
             var mediaTree = navigationService.GetMediaTree();
 
             mediaTree.Children.Should().HaveCount(1);
@@ -125,7 +125,7 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(layout4);
             });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), new SitesService(Session, A.Fake<HttpRequestBase>())), null);
+            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), new SiteService(Session, A.Fake<HttpRequestBase>())), null);
             var layoutList = navigationService.GetLayoutList();
 
             layoutList.Children.Should().HaveCount(4);

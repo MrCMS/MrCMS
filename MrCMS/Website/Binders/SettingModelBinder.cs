@@ -17,7 +17,7 @@ namespace MrCMS.Website.Binders
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var settingTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<ISettings>();
-            var sitesService = MrCMSApplication.Get<ISitesService>();
+            var sitesService = MrCMSApplication.Get<ISiteService>();
             // Uses Id because the settings are edited on the same page as the site itself
             var siteId = controllerContext.HttpContext.Request["Id"];
 

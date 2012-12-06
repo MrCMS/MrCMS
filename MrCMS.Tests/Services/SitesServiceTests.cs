@@ -4,7 +4,9 @@ using System.Web;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.People;
 using MrCMS.Services;
+using MrCMS.Website;
 using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
@@ -39,7 +41,61 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void SitesService_SaveSite_CallsSessionSaveOrUpdateOnPassedSite()
+        public void SitesService_AddSite_ShouldPersistSiteToSession()
+        {
+            var sitesService = GetSitesService();
+            var user = new User();
+            Session.Transact(session => session.Save(user));
+            MrCMSApplication.OverriddenUser = user;
+            var site = new Site();
+
+            sitesService.AddSite(site);
+
+            Session.QueryOver<Site>().RowCount().Should().Be(1);
+        }
+
+        [Fact]
+        public void SitesService_AddSite_CallsSessionSaveOnPassedSite()
+        {
+            var session = A.Fake<ISession>();
+            var sitesService = GetSitesService(session);
+            var site = new Site();
+
+            sitesService.AddSite(site);
+
+            A.CallTo(() => session.Save(site)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void SitesService_AddSite_ShouldAddCurrentUserToSiteUsers()
+        {
+            var sitesService = GetSitesService();
+            var user = new User();
+            Session.Transact(session => session.Save(user));
+            MrCMSApplication.OverriddenUser = user;
+            var site = new Site();
+
+            sitesService.AddSite(site);
+
+            site.Users.Should().Contain(user);
+        }
+
+        [Fact]
+        public void SitesService_AddSite_ShouldAddSiteToCurrentUsersSites()
+        {
+            var sitesService = GetSitesService();
+            var user = new User();
+            Session.Transact(session => session.Save(user));
+            MrCMSApplication.OverriddenUser = user;
+            var site = new Site();
+
+            sitesService.AddSite(site);
+
+            user.Sites.Should().Contain(site);
+        }
+
+        [Fact]
+        public void SitesService_SaveSite_CallsSessionUpdateOnPassedSite()
         {
             var session = A.Fake<ISession>();
             var sitesService = GetSitesService(session);
@@ -47,18 +103,7 @@ namespace MrCMS.Tests.Services
 
             sitesService.SaveSite(site);
 
-            A.CallTo(() => session.SaveOrUpdate(site)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void SitesService_SaveSite_ShouldPersistSiteToSession()
-        {
-            var sitesService = GetSitesService();
-            var site = new Site();
-
-            sitesService.SaveSite(site);
-
-            Session.QueryOver<Site>().RowCount().Should().Be(1);
+            A.CallTo(() => session.Update(site)).MustHaveHappened();
         }
 
         [Fact]
@@ -140,10 +185,10 @@ namespace MrCMS.Tests.Services
             sitesService.GetCurrentSite().Should().Be(site2);
         }
         
-        private SitesService GetSitesService(ISession session = null)
+        private SiteService GetSitesService(ISession session = null)
         {
             httpRequestBase = A.Fake<HttpRequestBase>();
-            return new SitesService(session ?? Session, httpRequestBase);
+            return new SiteService(session ?? Session, httpRequestBase);
         }
     }
 }

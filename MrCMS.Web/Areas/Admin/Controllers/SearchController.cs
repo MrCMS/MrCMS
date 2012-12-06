@@ -15,13 +15,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IDocumentService _documentService;
         private readonly INavigationService _navigationService;
-        private readonly ISitesService _sitesService;
+        private readonly ISiteService _siteService;
 
-        public SearchController(IDocumentService documentService, INavigationService navigationService, ISitesService sitesService)
+        public SearchController(IDocumentService documentService, INavigationService navigationService, ISiteService siteService)
         {
             _documentService = documentService;
             _navigationService = navigationService;
-            _sitesService = sitesService;
+            _siteService = siteService;
         }
 
         [HttpGet]
@@ -30,7 +30,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             ViewData["term"] = term;
             ViewData["siteId"] = siteId;
             ViewData["parent-val"] = parent;
-            ViewData["parents"] = _navigationService.GetParentsList(_sitesService.GetCurrentSite());
+            ViewData["parents"] = _navigationService.GetParentsList(_siteService.GetCurrentSite());
             ViewData["type"] = type;
             ViewData["doc-types"] = _navigationService.GetDocumentTypes(type);
 

@@ -15,7 +15,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     public class LayoutContollerTests
     {
         private IDocumentService documentService;
-        private ISitesService sitesService;
+        private ISiteService _siteService;
 
         [Fact]
         public void LayoutController_AddGet_ShouldReturnAddPageModel()
@@ -30,8 +30,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private LayoutController GetLayoutController()
         {
             documentService = A.Fake<IDocumentService>();
-            sitesService = A.Fake<ISitesService>();
-            var layoutController = new LayoutController(documentService, sitesService) { IsAjaxRequest = false };
+            _siteService = A.Fake<ISiteService>();
+            var layoutController = new LayoutController(documentService, _siteService) { IsAjaxRequest = false };
             return layoutController;
         }
 

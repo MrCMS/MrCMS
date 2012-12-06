@@ -2,7 +2,9 @@
 using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
@@ -15,6 +17,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private static IUserService _userService;
         private static IAuthorisationService _authorisationService;
         private static IRoleService _roleService;
+        private static ISiteService _siteService;
 
         [Fact]
         public void UserController_Index_ShouldReturnViewResult()
@@ -27,12 +30,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         private static UserController GetUserController(IUserService userService = null, IRoleService roleService = null,
-            IAuthorisationService authorisationService = null)
+            IAuthorisationService authorisationService = null,ISiteService siteService = null)
         {
             _userService = userService ?? A.Fake<IUserService>();
             _roleService = roleService ?? A.Fake<IRoleService>();
             _authorisationService = authorisationService ?? A.Fake<IAuthorisationService>();
-            var userController = new UserController(_userService, _roleService, _authorisationService) { IsAjaxRequest = false };
+            _siteService = siteService ?? A.Fake<ISiteService>();
+            var userController = new UserController(_userService, _roleService, _authorisationService,_siteService) { IsAjaxRequest = false };
             return userController;
         }
 
@@ -43,15 +47,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             userController.Index();
 
-            A.CallTo(() => _userService.GetAllUsers()).MustHaveHappened();
+            A.CallTo(() => _userService.GetAllUsersPaged(1)).MustHaveHappened();
         }
 
         [Fact]
         public void UserController_Index_ShouldReturnTheResultOfServiceCallAsModel()
         {
             var userController = GetUserController();
-            var users = new List<User>();
-            A.CallTo(() => _userService.GetAllUsers()).Returns(users);
+            var users = new StaticPagedList<User>(new List<User>(), 1, 1, 0);
+            A.CallTo(() => _userService.GetAllUsersPaged(1)).Returns(users);
 
             var actionResult = userController.Index();
 
@@ -65,7 +69,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             var actionResult = userController.Add();
 
-            actionResult.Should().BeOfType<ViewResult>();
+            actionResult.Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
@@ -75,7 +79,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             var actionResult = userController.Add();
 
-            actionResult.As<ViewResult>().Model.Should().BeOfType<AddUserModel>();
+            actionResult.As<PartialViewResult>().Model.Should().BeOfType<AddUserModel>();
         }
 
         [Fact]
@@ -86,7 +90,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             userController.Add(user);
 
-            A.CallTo(() => _userService.SaveUser(user)).MustHaveHappened();
+            A.CallTo(() => _userService.AddUser(user)).MustHaveHappened();
         }
 
         [Fact]
@@ -131,6 +135,24 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var result = userController.Edit(1);
 
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
+        }
+
+        [Fact]
+        public void UserController_EditGet_ShouldSetViewDataForAvailableRolesAndSites()
+        {
+            var userController = GetUserController();
+            var value = new User();
+            A.CallTo(() => _userService.GetUser(1)).Returns(value);
+            var roles = new List<UserRole>();
+            A.CallTo(() => _roleService.GetAllRoles()).Returns(roles);
+            var sites = new List<Site>();
+            A.CallTo(() => _siteService.GetAllSites()).Returns(sites);
+
+            userController.Edit(1);
+
+            userController.ViewData["AvailableRoles"].Should().Be(roles);
+            userController.ViewData["AvailableSites"].Should().Be(sites);
+
         }
 
         [Fact]

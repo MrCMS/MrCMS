@@ -11,8 +11,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IFileService _fileService;
 
-        public MediaCategoryController(IDocumentService documentService, ISitesService sitesService, IFileService fileService)
-            : base(documentService, sitesService)
+        public MediaCategoryController(IDocumentService documentService, ISiteService siteService, IFileService fileService)
+            : base(documentService, siteService)
         {
             _fileService = fileService;
         }
