@@ -44,8 +44,6 @@ namespace MrCMS.Web.Controllers
             var model = new InstallModel
                 {
                     AdminEmail = "admin@yoursite.com",
-                    //AdminPassword = "admin",
-                    //ConfirmPassword = "admin",
                     DatabaseConnectionString = "",
                     DataProvider = "sqlserver",
                     SqlAuthenticationType = "sqlauthentication",
@@ -192,7 +190,6 @@ namespace MrCMS.Web.Controllers
                     {
                         //SQL CE
                         //little hack here (SQL CE 4 bug - http://www.hanselman.com/blog/PDC10BuildingABlogWithMicrosoftUnnamedPackageOfWebLove.aspx)
-                        //string databasePath = HostingEnvironment.MapPath("~/App_Data/") + @"Nop.Db.sdf";
                         string databaseFileName = "MrCMS.Db.db";
                         string databasePath = @"|DataDirectory|\" + databaseFileName;
                         connectionString = "Data Source=" + databasePath;
@@ -222,17 +219,6 @@ namespace MrCMS.Web.Controllers
                     cfg.Save();
 
                     RestartAppDomain();
-
-                    ////now resolve installation service
-                    //var installationService = EngineContext.Current.Resolve<IInstallationService>();
-                    //installationService.InstallData(model.AdminEmail, model.AdminPassword, model.InstallSampleData);
-
-                    ////reset cache
-                    //DataSettingsHelper.ResetCache();
-
-                    ////restart application
-                    //var webHelper = EngineContext.Current.Resolve<IWebHelper>();
-                    //webHelper.RestartAppDomain();
 
                     //Redirect to home page
                     return Redirect("~");
@@ -329,7 +315,6 @@ namespace MrCMS.Web.Controllers
             siteSettings.DefaultLayoutId = layout.Id;
             siteSettings.Error404PageId = error404.Id;
             siteSettings.Error500PageId = error500.Id;
-            siteSettings.MediaDirectory = "content/upload";
 
             mediaSettings.ThumbnailImageHeight = 50;
             mediaSettings.ThumbnailImageWidth = 50;

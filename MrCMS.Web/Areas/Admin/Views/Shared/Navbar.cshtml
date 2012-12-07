@@ -3,10 +3,10 @@
         <div class="container-fluid">
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
                 class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-            </a><a class="brand" href="#">MrCMS</a>
+            </a><a class="brand" href="/Admin">MrCMS</a>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">CMS
+@*                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">CMS
                                              <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
@@ -19,12 +19,12 @@
                                 @Html.ActionLink("Layouts", "Index", "Layout")
                             </li>
                         </ul>
-                    </li>
+                    </li>*@
                     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Users
                                              <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Manage Users", "Index", "User")</li>
-                            <li>@Html.ActionLink("Manage User Roles", "Index", "Role")</li>
+                            <li>@Html.ActionLink("Users", "Index", "User")</li>
+                            <li>@Html.ActionLink("Roles", "Index", "Role")</li>
                         </ul>
                     </li>
                 </ul>

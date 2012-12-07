@@ -8,13 +8,13 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tests.Stubs;
 using MrCMS.Website;
 using MrCMS.Website.Routing;
-using NHibernate;
 using Xunit;
 
 namespace MrCMS.Tests.Website.Routing
@@ -305,6 +305,68 @@ namespace MrCMS.Tests.Website.Routing
         }
 
         [Fact]
+        public void MrCMSHttpHandler_RedirectsToHomePage_ReturnFalseIfUrlSegmentSameAsLiveUrlSegment()
+        {
+            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
+            {
+                Webpage = new TextPage { UrlSegment = "test" }
+            };
+            var httpContext = A.Fake<HttpContextBase>();
+
+            mrCMSHttpHandler.RedirectsToHomePage(httpContext).Should().BeFalse();
+        }
+
+        [Fact]
+        public void MrCMSHttpHandler_RedirectsToHomePage_ReturnTrueIfItIsHomePage()
+        {
+            var textPage = new TextPage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
+            MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
+            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
+            {
+                Webpage = textPage
+            };
+            var httpContext = A.Fake<HttpContextBase>();
+
+            A.CallTo(() => httpContext.Request.Url).Returns(new Uri("http://www.example.com/test"));
+
+            mrCMSHttpHandler.RedirectsToHomePage(httpContext).Should().BeTrue();
+        }
+
+        [Fact]
+        public void MrCMSHttpHandler_RedirectsToHomePage_RedirectsToRootIfItIsHomePage()
+        {
+            var textPage = new TextPage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
+            MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
+            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
+            {
+                Webpage = textPage
+            };
+            var httpContext = A.Fake<HttpContextBase>();
+
+            A.CallTo(() => httpContext.Request.Url).Returns(new Uri("http://www.example.com/test"));
+
+            mrCMSHttpHandler.RedirectsToHomePage(httpContext);
+
+            A.CallTo(() => httpContext.Response.Redirect("~/")).MustHaveHappened();
+        }
+
+        [Fact]
+        public void MrCMSHttpHandler_RedirectsToHomePage_FalseIfAlreadyRedirected()
+        {
+            var textPage = new TextPage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
+            MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
+            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
+            {
+                Webpage = textPage
+            };
+            var httpContext = A.Fake<HttpContextBase>();
+
+            A.CallTo(() => httpContext.Request.Url).Returns(new Uri("http://www.example.com/"));
+
+            mrCMSHttpHandler.RedirectsToHomePage(httpContext).Should().BeFalse();
+        }
+
+        [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_NullWebpageReturnsFalse()
         {
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
@@ -494,12 +556,12 @@ namespace MrCMS.Tests.Website.Routing
         {
             var requestContext = A.Fake<RequestContext>();
             A.CallTo(() => requestContext.HttpContext.Request.Form)
-             .Returns(new NameValueCollection {{"test", "data"}});
-            var mrCMSHttpHandler = new MrCMSHttpHandler(requestContext, null, null) {HttpMethod = "POST"};
+             .Returns(new NameValueCollection { { "test", "data" } });
+            var mrCMSHttpHandler = new MrCMSHttpHandler(requestContext, null, null) { HttpMethod = "POST" };
 
             var controller = A.Fake<Controller>();
             var routeData = new RouteData();
-            controller.ControllerContext = new ControllerContext {RouteData = routeData};
+            controller.ControllerContext = new ControllerContext { RouteData = routeData };
             mrCMSHttpHandler.SetFormData(controller);
 
             routeData.Values["form"].Should().NotBeNull();
