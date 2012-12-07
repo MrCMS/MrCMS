@@ -55,6 +55,8 @@ namespace MrCMS.Website.Routing
 
             if (PageIsRedirect(context)) return;
 
+            if (RedirectsToHomePage(context)) return;
+
             if (!IsAllowed(context)) return;
 
             var controller = GetController();
@@ -69,6 +71,16 @@ namespace MrCMS.Website.Routing
             {
                 Handle500(context, exception);
             }
+        }
+
+        public bool RedirectsToHomePage(HttpContextBase context)
+        {
+            if (Webpage.LiveUrlSegment != Webpage.UrlSegment && context.Request.Url.AbsolutePath != "/")
+            {
+                context.Response.Redirect("~/" + Webpage.LiveUrlSegment);
+                return true;
+            }
+            return false;
         }
 
         public void SetFormData(Controller controller)

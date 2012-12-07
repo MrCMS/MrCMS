@@ -1,16 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
 using System.Web.Mvc;
-using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
-using Ninject;
 
 namespace MrCMS.Settings
 {
@@ -32,12 +25,6 @@ namespace MrCMS.Settings
         [DropDownSelection("500Options")]
         [DisplayName("500 Page")]
         public virtual int Error500PageId { get; set; }
-
-        [DisplayName("Media Directory")]
-        public string MediaDirectory { get; set; }
-
-        [DisplayName("Site URL")]
-        public string SiteUrl { get; set; }
 
         [DisplayName("System Email Address")]
         public string SystemEmailAddress { get; set; }

@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Web.Mvc;
-using MrCMS.Entities.Documents;
 using NHibernate;
 
 namespace MrCMS.Entities
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity 
     {
         public virtual int Id { get; set; }
         [DisplayName("Created On")]

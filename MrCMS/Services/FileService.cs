@@ -17,14 +17,13 @@ namespace MrCMS.Services
     public class FileService : IFileService
     {
         private readonly ISession _session;
-        private readonly SiteSettings _siteSettings;
         private readonly IFileSystem _fileSystem;
         private readonly IImageProcessor _imageProcessor;
+        private const string _mediaDirectory = "content/upload";
 
-        public FileService(ISession session, SiteSettings siteSettings, IFileSystem fileSystem, IImageProcessor imageProcessor)
+        public FileService(ISession session,  IFileSystem fileSystem, IImageProcessor imageProcessor)
         {
             _session = session;
-            _siteSettings = siteSettings;
             _fileSystem = fileSystem;
             _imageProcessor = imageProcessor;
         }
@@ -36,7 +35,7 @@ namespace MrCMS.Services
             fileName = GetFileSeName(fileName);
             var fileNameOriginal = GetFileSeName(fileName);
 
-            string folderLocation = string.Format("{0}/{1}/", _siteSettings.MediaDirectory, mediaCategory.UrlSegment);
+            string folderLocation = string.Format("{0}/{1}/", MediaDirectory, mediaCategory.UrlSegment);
 
             //check for duplicates
             int i = 1;
@@ -46,7 +45,7 @@ namespace MrCMS.Services
                 i++;
             }
 
-            string fileLocation = string.Format("{0}/{1}/{2}", _siteSettings.MediaDirectory, mediaCategory.UrlSegment, fileName);
+            string fileLocation = string.Format("{0}/{1}/{2}", MediaDirectory, mediaCategory.UrlSegment, fileName);
 
             var mediaFile = new MediaFile
                                 {
@@ -233,5 +232,7 @@ namespace MrCMS.Services
                 file.Sizes.FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
             return "/" + GetFileLocation(file, imageSize);
         }
+
+        public string MediaDirectory { get { return _mediaDirectory; } }
     }
 }

@@ -267,7 +267,6 @@
     <Compile Include="Website\Binders\LayoutAreaModelBinder.cs" />
     <Compile Include="Website\Binders\SessionModelBinderAttribute.cs" />
     <Compile Include="Website\Binders\SettingModelBinder.cs" />
-    <Compile Include="Website\ControllerAttributes\AdminAuthorizationAttribute.cs" />
     <Compile Include="Website\Controllers\MrCMSController.cs" />
     <Compile Include="Website\MrCMSApplication.cs" />
     <Compile Include="Website\MrCMSDefaultModelBinder.cs" />

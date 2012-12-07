@@ -15,5 +15,6 @@ namespace MrCMS.Services
         FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1, int pageSize = 10);
         MediaFile GetFileByLocation(string value);
         string GetFileUrl(string value);
+        string MediaDirectory { get; }
     }
 }
