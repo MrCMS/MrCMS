@@ -30,11 +30,11 @@ namespace MrCMS.Services
         private readonly SiteSettings _siteSettings;
         private readonly ISiteService _siteService;
 
-        public DocumentService(ISession session, SiteSettings siteSettings, ISiteService _siteService)
+        public DocumentService(ISession session, SiteSettings siteSettings, ISiteService siteService)
         {
             _session = session;
             _siteSettings = siteSettings;
-            _siteService = _siteService;
+            _siteService = siteService;
         }
 
         public void AddDocument(Document document)
