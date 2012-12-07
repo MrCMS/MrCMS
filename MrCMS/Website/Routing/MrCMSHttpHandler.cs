@@ -7,7 +7,6 @@ using System.Web.Routing;
 using System.Web.SessionState;
 using Elmah;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -20,7 +19,6 @@ namespace MrCMS.Website.Routing
         private readonly Func<IDocumentService> _getDocumentService;
         private readonly Func<SiteSettings> _getSiteSettings;
         private IDocumentService _documentService;
-        private ISiteService _siteService;
         private SiteSettings _siteSettings;
         private string _httpMethod;
         private Webpage _webpage;
