@@ -9,5 +9,7 @@ CKEDITOR.editorConfig = function(config) {
     // config.uiColor = '#AADC6E';
     config.filebrowserImageBrowseUrl = '#';
     config.height = '300px';
+    
+    config.contentsCss = '/Content/Styles/style.css';
 
 };
