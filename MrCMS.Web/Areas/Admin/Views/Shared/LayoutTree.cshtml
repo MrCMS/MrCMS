@@ -4,7 +4,7 @@
         <ul class="filetree collapsable browser web-layout">
             <li data-id="@Model.Id" data-controller="@Model.NodeType"><i class="@Model.IconClass">
                                                                           &nbsp;</i>
-                @Html.ActionLink(Model.Name, "View", Model.NodeType, new {id = Model.Children.Any() ? Model.Children.FirstOrDefault().Id : 1}, null)
+                @Html.ActionLink(Model.Name, "Edit", Model.NodeType, new {id = Model.Children.Any() ? Model.Children.FirstOrDefault().Id : 1}, null)
                 @{ Html.RenderPartial("TreeChildren", Model.ChildrenModel); }
             </li>
         </ul>
