@@ -659,11 +659,9 @@
       <DependentUpon>mixins.less</DependentUpon>
     </Content>
     <Content Include="Content\Scripts\front-end-editing.js" />
-    <Content Include="Content\Scripts\jquery.nivo.slider.js" />
     <Content Include="Content\Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Content\Scripts\jquery.validate.min.js" />
     <Content Include="Content\Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Content\Styles\nivo-slider.css" />
     <Content Include="Content\Styles\style.css" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -694,8 +692,6 @@
     <Content Include="Areas\Admin\Content\Styles\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
     <Content Include="Areas\Admin\Content\Scripts\edit-slider.js" />
-    <Content Include="Content\Scripts\bootstrap.js" />
-    <Content Include="Content\Scripts\bootstrap.min.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\adapters\jquery.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\CHANGES.html" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\ckeditor.asp" />
@@ -919,7 +915,6 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\v2\skin.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\v2\templates.css" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\themes\default\theme.js" />
-    <Content Include="Content\Scripts\easyslider.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery-ui-timepicker-addon.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.contextMenu.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.cookie.js" />
@@ -950,8 +945,6 @@
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
-    <Content Include="Content\Scripts\modernizr-1.7.js" />
-    <Content Include="Content\Scripts\modernizr-1.7.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\tmpl.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -969,12 +962,6 @@
     <Content Include="Areas\Admin\Content\Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Content\Scripts\MicrosoftAjax.js" />
-    <Content Include="Content\Scripts\MicrosoftAjax.debug.js" />
-    <Content Include="Content\Scripts\MicrosoftMvcAjax.js" />
-    <Content Include="Content\Scripts\MicrosoftMvcAjax.debug.js" />
-    <Content Include="Content\Scripts\MicrosoftMvcValidation.js" />
-    <Content Include="Content\Scripts\MicrosoftMvcValidation.debug.js" />
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1152,7 +1139,6 @@
     <Content Include="Views\Shared\_Installation.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Widget\TextWidget.cshtml" />
-    <Content Include="Views\Shared\_LayoutTwoColumn.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
