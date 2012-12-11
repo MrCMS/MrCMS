@@ -11,11 +11,11 @@ namespace MrCMS.Web.Controllers
         private readonly SEOSettings _seoSettings;
         private readonly ISiteService _siteService;
 
-        public SEOController(INavigationService navigationService, SEOSettings seoSettings, ISiteService _siteService)
+        public SEOController(INavigationService navigationService, SEOSettings seoSettings, ISiteService siteService)
         {
             _navigationService = navigationService;
             _seoSettings = seoSettings;
-            _siteService = _siteService;
+            _siteService = siteService;
         }
 
         public ActionResult Sitemap()
