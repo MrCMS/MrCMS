@@ -215,6 +215,7 @@ namespace MrCMS.Web.Controllers
                                                                               : "System.Data.SqlClient"
                                                        };
                     Configuration cfg = WebConfigurationManager.OpenWebConfiguration(@"/");
+                    cfg.ConnectionStrings.ConnectionStrings.Remove("mrcms");
                     cfg.ConnectionStrings.ConnectionStrings.Add(connectionStringSettings);
                     cfg.Save();
 
