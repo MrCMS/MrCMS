@@ -9,7 +9,7 @@
             removeMediaUrl: '/Admin/MediaCategory/RemoveMedia',
             miniUploaderUrl: '/Admin/MediaCategory/MiniUploader/',
             fileResultUrl: '/Admin/MediaCategory/FileResult/',
-            getFileUrl: '/Admin/MediaCategory/FileResult/'
+            getFileUrl: '/Admin/MediaCategory/GetFileUrl/'
         };
         if (options) {
             $.extend(settings, options);
@@ -194,7 +194,7 @@ $(function () {
         var fileValue = $('.selected-file').filter(':checked').val();
         if (fileValue != '') {
             var modal = $(this).parents('.modal');
-            $.get('/Admin/MediaCategory/FileResult/', { value: fileValue }, function (url) {
+            $.get('/Admin/MediaCategory/GetFileUrl/', { value: fileValue }, function (url) {
                 modal.data('modal').options.callback(modal.data('modal').options.element, url);
                 modal.modal('hide');
             });
