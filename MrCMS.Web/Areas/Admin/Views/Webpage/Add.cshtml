@@ -47,9 +47,11 @@
     
     @Html.LabelFor(x => x.UrlSegment, "Url")
     @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12 required" })
+    
+    <label class="checkbox">
+        <input type="checkbox" name="mode" id="mode" value="1" checked />  Maintain Hierarchy
+    </label>
     <br />
-    <input type="checkbox" name="mode" id="mode" value="1" checked /> @:Maintain Hierarchy
-    <br /><br />
     @Html.LabelFor(x => x.Layout)
     @Html.DropDownListFor(x => x.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
 }
