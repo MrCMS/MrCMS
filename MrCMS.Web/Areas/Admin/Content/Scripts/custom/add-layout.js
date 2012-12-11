@@ -10,24 +10,28 @@
     return $(this);
 };
 $(function () {
-    $("#suggest-url").click(function(e) {
-        e.preventDefault();
-        SuggestUrl();
-    });
-
+    
     $("#Name").blur(function() {
-        SetStandardUrl();
+        if ($("#mode").is(':checked')) {
+            suggestUrl();
+        } else {
+            setStandardUrl();
+        }
     });
 
-    $("#Name").delayKeyup(function() {
-        SetStandardUrl();
+    $("#Name").delayKeyup(function () {
+        if ($("#mode").is(':checked')) {
+            suggestUrl(); 
+        } else {
+            setStandardUrl();
+        }
     }, 200);
 
-    function SetStandardUrl() {
+    function setStandardUrl() {
         $("#UrlSegment").val($("#Name").val().trim().replace(/\W/g, '-').toLowerCase());
     }
 
-    function SuggestUrl() {
+    function suggestUrl() {
         var pageName = $("#Name").val(),
             parentId = $("#Parent_Id").val();
         if (pageName != "") {
