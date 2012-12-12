@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Web.Mvc;
 using MrCMS.Entities.Multisite;
-using MrCMS.Website;
 using NHibernate;
 using Ninject;
 
@@ -33,11 +32,6 @@ namespace MrCMS.Settings
         public void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
             
-        }
-
-        public void Save()
-        {
-            MrCMSApplication.Get<ConfigurationProvider>().SaveSettings(this);
         }
 
         public Site Site { get; set; }
