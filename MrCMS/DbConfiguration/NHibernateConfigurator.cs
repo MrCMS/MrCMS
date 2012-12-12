@@ -21,6 +21,7 @@ using NHibernate.Event;
 using NHibernate.Tool.hbm2ddl;
 using Environment = NHibernate.Cfg.Environment;
 using System.Linq;
+using MrCMS.Helpers;
 
 namespace MrCMS.DbConfiguration
 {
@@ -89,10 +90,12 @@ namespace MrCMS.DbConfiguration
 
         public NHibernate.Cfg.Configuration GetConfiguration()
         {
-            var assemblies1 = AppDomain.CurrentDomain.GetAssemblies();
+            var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
             var assemblies =
-                assemblies1.Where(
-                    assembly => !assembly.IsDynamic && !assembly.GlobalAssemblyCache).ToList();
+                currentAssemblies.Where(
+                    assembly =>
+                    !assembly.IsDynamic && !assembly.GlobalAssemblyCache &&
+                    !assembly.FullName.Contains("xunit", StringComparison.OrdinalIgnoreCase)).ToList();
             assemblies.AddRange(ManuallyAddedAssemblies);
             assemblies = assemblies.Distinct().ToList();
 
