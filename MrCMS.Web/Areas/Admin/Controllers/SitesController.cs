@@ -66,7 +66,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public RedirectToRouteResult Edit([SessionModelBinder(typeof(EditSiteModelBinder))] Site site, [ModelBinder(typeof(SettingModelBinder))]List<ISettings> settings)
         {
             _siteService.SaveSite(site);
-            settings.ForEach(s => s.Save());
+            settings.ForEach(s => _configurationProvider.SaveSettings(s));
             return RedirectToAction("Index");
         }
 

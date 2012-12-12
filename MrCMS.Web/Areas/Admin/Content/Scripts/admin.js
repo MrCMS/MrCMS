@@ -179,7 +179,6 @@
         var element = $(el);
         var id = element.data('id');
         var controller = element.data('controller');
-        console.log("Controller is: " + controller);
         switch (action) {
             case "add":
                 var siteId = element.parents('.filetree').data('site-id');
@@ -318,7 +317,6 @@
     $('[data-action=save]').click(function (e) {
         e.preventDefault();
         var formId = $(this).data('form-id');
-        console.log($('#' + formId));
         $('#' + formId).submit();
     });
 
@@ -400,7 +398,6 @@
     });
 
     $(document).on('click', 'a.more-link', function () {
-        console.log('clicked');
         return false;
     });
 });

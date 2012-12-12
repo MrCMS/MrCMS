@@ -1164,7 +1164,11 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>36181</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
+<<<<<<< HEAD
+          <IISUrl>http://localhost:36185</IISUrl>
+=======
           <IISUrl>http://localhost:36187</IISUrl>
+>>>>>>> d1e6125d5a038fd81341b2b2d2744dea9428b805
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

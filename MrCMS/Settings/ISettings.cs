@@ -11,8 +11,6 @@ namespace MrCMS.Settings
 
         void SetViewData(ISession session, ViewDataDictionary viewDataDictionary);
 
-        void Save();
-
         Site Site { get; set; }
     }
 }

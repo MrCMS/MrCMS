@@ -44,7 +44,7 @@ namespace MrCMS.Helpers
                     }
                     catch (Exception ex)
                     {
-                        //ToDo: log
+                        Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                     }
 
                     if (MrCMSApplication.CurrentUserIsAdmin)

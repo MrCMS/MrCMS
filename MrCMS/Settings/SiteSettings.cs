@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using System.Web.Mvc;
 using MrCMS.Entities.Multisite;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Settings
@@ -52,11 +51,6 @@ namespace MrCMS.Settings
             viewDataDictionary["DefaultLayoutOptions"] = _siteSettingsOptionGenerator.GetLayoutOptions(session, DefaultLayoutId);
             viewDataDictionary["404Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error404PageId);
             viewDataDictionary["500Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error500PageId);
-        }
-
-        public void Save()
-        {
-            MrCMSApplication.Get<ConfigurationProvider>().SaveSettings(this);
         }
     }
 }

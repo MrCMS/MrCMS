@@ -77,30 +77,32 @@ namespace MrCMS.Services
 
         private void SendFormMessages(Webpage webpage, FormPosting formPosting)
         {
+            if (webpage.SendFormTo == null) return;
+
             var sendTo = webpage.SendFormTo.Split(',');
             if (sendTo.Any())
             {
                 _session.Transact(session =>
-                                                       {
-                                                           foreach (var email in sendTo)
-                                                           {
-                                                               var formMessage = ParseFormMessage(webpage.FormMessage, webpage,
-                                                                                                  formPosting);
-                                                               var formTitle = ParseFormMessage(webpage.FormEmailTitle, webpage,
-                                                                                                formPosting);
+                                      {
+                                          foreach (var email in sendTo)
+                                          {
+                                              var formMessage = ParseFormMessage(webpage.FormMessage, webpage,
+                                                                                 formPosting);
+                                              var formTitle = ParseFormMessage(webpage.FormEmailTitle, webpage,
+                                                                               formPosting);
 
-                                                               session.SaveOrUpdate(new QueuedMessage
-                                                                                        {
-                                                                                            Subject = formTitle,
-                                                                                            Body = formMessage,
-                                                                                            FromAddress = _siteSettings.SystemEmailAddress,
-                                                                                            ToAddress = email,
-                                                                                            IsHtml = true
-                                                                                        });
-                                                           }
+                                              session.SaveOrUpdate(new QueuedMessage
+                                                                       {
+                                                                           Subject = formTitle,
+                                                                           Body = formMessage,
+                                                                           FromAddress = _siteSettings.SystemEmailAddress,
+                                                                           ToAddress = email,
+                                                                           IsHtml = true
+                                                                       });
+                                          }
 
-                                                           TaskExecutor.ExecuteLater(new SendQueuedMessagesTask(_mailSettings));
-                                                       });
+                                          TaskExecutor.ExecuteLater(new SendQueuedMessagesTask(_mailSettings));
+                                      });
             }
         }
 
