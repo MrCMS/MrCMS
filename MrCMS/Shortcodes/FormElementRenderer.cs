@@ -8,14 +8,15 @@ namespace MrCMS.Shortcodes
         public virtual void AppendTextBox(dynamic element, TagBuilder formBuilder)
         {
             var labelBuilder = new TagBuilder("label");
-            labelBuilder.Attributes["for"] = element.values;
+            labelBuilder.Attributes["for"] = MakeId(element.values);
             labelBuilder.InnerHtml = element.values;
             formBuilder.InnerHtml += labelBuilder.ToString();
 
             var textBuilder = new TagBuilder("input");
             textBuilder.Attributes["type"] = "text";
-            textBuilder.Attributes["id"] = element.values;
+            textBuilder.Attributes["id"] = MakeId(element.values);
             textBuilder.Attributes["name"] = element.values;
+            textBuilder.AddCssClass(element.itemclass.ToString());
             if (element.required == "checked")
             {
                 textBuilder.Attributes["data-val"] = true.ToString();
@@ -25,16 +26,22 @@ namespace MrCMS.Shortcodes
             formBuilder.InnerHtml += textBuilder.ToString();
         }
 
+        private string MakeId(dynamic value)
+        {
+            return value.ToString().ToLower().Replace(" ", "_");
+        }
+
         public virtual void AppendTextArea(dynamic element, TagBuilder formBuilder)
         {
             var labelBuilder = new TagBuilder("label");
-            labelBuilder.Attributes["for"] = element.values;
+            labelBuilder.Attributes["for"] = MakeId(element.values);
             labelBuilder.InnerHtml = element.values;
             formBuilder.InnerHtml += labelBuilder.ToString();
 
             var textBuilder = new TagBuilder("textarea");
-            textBuilder.Attributes["id"] = element.values;
+            textBuilder.Attributes["id"] = MakeId(element.values);
             textBuilder.Attributes["name"] = element.values;
+            textBuilder.AddCssClass(element.itemclass.ToString());
             if (element.required == "checked")
             {
                 textBuilder.Attributes["data-val"] =
@@ -57,16 +64,17 @@ namespace MrCMS.Shortcodes
                 var checkboxBuilder = new TagBuilder("input");
                 checkboxBuilder.Attributes["type"] = "checkbox";
                 checkboxBuilder.Attributes["value"] = checkbox.value;
+                checkboxBuilder.AddCssClass(element.itemclass.ToString());
 
                 if (checkbox.baseline == true)
                     checkboxBuilder.Attributes["checked"] = "checked";
 
                 checkboxBuilder.Attributes["name"] = element.title;
-                checkboxBuilder.Attributes["id"] = element.title + "_" + checkbox.value;
+                checkboxBuilder.Attributes["id"] = MakeId(element.title + "_" + checkbox.value);
                 formBuilder.InnerHtml += checkboxBuilder.ToString();
 
                 var cbLabelBuilder = new TagBuilder("label");
-                cbLabelBuilder.Attributes["for"] = element.title + "_" + checkbox.value;
+                cbLabelBuilder.Attributes["for"] = MakeId(element.title + "_" + checkbox.value);
                 cbLabelBuilder.InnerHtml = checkbox.value;
                 formBuilder.InnerHtml += cbLabelBuilder.ToString();
             }
@@ -84,16 +92,17 @@ namespace MrCMS.Shortcodes
                 var radioButtonBuilder = new TagBuilder("input");
                 radioButtonBuilder.Attributes["type"] = "radio";
                 radioButtonBuilder.Attributes["value"] = radioButton.value;
+                radioButtonBuilder.AddCssClass(element.itemclass.ToString());
 
                 if (radioButton.baseline == true)
                     radioButtonBuilder.Attributes["checked"] = "checked";
 
                 radioButtonBuilder.Attributes["name"] = element.title;
-                radioButtonBuilder.Attributes["id"] = element.title + "_" + radioButton.value;
+                radioButtonBuilder.Attributes["id"] = MakeId(element.title + "_" + radioButton.value);
                 formBuilder.InnerHtml += radioButtonBuilder.ToString();
 
                 var cbLabelBuilder = new TagBuilder("label");
-                cbLabelBuilder.Attributes["for"] = element.title + "_" + radioButton.value;
+                cbLabelBuilder.Attributes["for"] = MakeId(element.title + "_" + radioButton.value);
                 cbLabelBuilder.InnerHtml = radioButton.value;
                 formBuilder.InnerHtml += cbLabelBuilder.ToString();
             }
@@ -102,13 +111,14 @@ namespace MrCMS.Shortcodes
         public virtual void AppendSelectList(dynamic element, TagBuilder formBuilder)
         {
             var labelBuilder = new TagBuilder("label");
-            labelBuilder.Attributes["for"] = element.title;
+            labelBuilder.Attributes["for"] = MakeId(element.title);
             labelBuilder.InnerHtml = element.title;
             formBuilder.InnerHtml += labelBuilder.ToString();
 
             var selectTagBuilder = new TagBuilder("select");
             selectTagBuilder.Attributes["name"] = element.title;
-            selectTagBuilder.Attributes["id"] = element.title;
+            selectTagBuilder.Attributes["id"] = MakeId(element.title);
+            selectTagBuilder.AddCssClass(element.itemclass.ToString());
             foreach (var option in element.values)
             {
                 var optionBuilder = new TagBuilder("option") { InnerHtml = option.value };
