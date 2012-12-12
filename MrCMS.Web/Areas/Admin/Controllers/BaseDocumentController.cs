@@ -49,7 +49,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public string SuggestDocumentUrl(int? parentId, string pageName)
         {
-            return _documentService.GetDocumentUrl(pageName, parentId);
+            return _documentService.GetDocumentUrl(pageName, parentId, true);
         }
 
         [HttpGet]

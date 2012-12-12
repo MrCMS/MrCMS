@@ -1,12 +1,11 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Entities.Documents.Layout.LayoutArea
+﻿@model MrCMS.Entities.Documents.Layout.LayoutArea
 @{
     ViewBag.Title = "Edit | " + Model.AreaName;
 }
 <section class="admin-header">
     <div class="row-fluid" style="margin-bottom: 10px;">
         <div class="span6">
-            <h3>Edit Layout Area - @Model.AreaName</h3>
+            <h3>@Model.AreaName</h3>
         </div>
         <div class="span6">
             <div class="btn-group  display-inline  pull-right">
@@ -30,44 +29,58 @@
                 @Html.LabelFor(x => x.AreaName, "Area Name")
                 @Html.TextBoxFor(x => x.AreaName, new { @class = "span12" })
 
-                <h3>Widgets
-                </h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name
-                            </th>
-                            <th>Type
-                            </th>
-                            <th>Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var widget in Model.GetWidgets())
-                        {
-                            <tr>
-                                <td>@widget.Name</td>
-                                <td>
-                                    @widget.WidgetTypeFormatted
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Edit", "Edit", "Widget", new { id = widget.Id }, new { @class = "btn" })
-                                    <a href="@Url.Action("Delete", "Widget", new { id = widget.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <h3>Widgets</h3>
+                @{
+                    if (Model.GetWidgets().Any())
+                    {
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Name
+                                    </th>
+                                    <th>Type
+                                    </th>
+                                    <th>Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var widget in Model.GetWidgets())
+                                {
+                                    <tr>
+                                        <td>@widget.Name</td>
+                                        <td>
+                                            @widget.WidgetTypeFormatted
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Edit", "Edit", "Widget", new {id = widget.Id}, new {@class = "btn"})
+                                            <a href="@Url.Action("Delete", "Widget", new {id = widget.Id})" class="btn btn-danger" data-toggle="modal">Delete</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        @:No widgets set for this area <br /> <br />
+                    }
+                }
+
 
                 <div class="btn-group">
                     <a href="@Url.Action("Add", "Widget", new { layoutAreaId = Model.Id })" class="btn" data-toggle="modal">Add widget</a>
-                    @Html.ActionLink("Sort widgets", "SortWidgets", "LayoutArea", new { id = Model.Id }, new { @class = "btn" })
+                    @{
+                        if (Model.GetWidgets().Any())
+                        {
+                            @Html.ActionLink("Sort widgets", "SortWidgets", "LayoutArea", new {id = Model.Id}, new {@class = "btn"})
+                        }
+                    }
+                    
                 </div>
-
-                <p>
-                    Created on: @Model.CreatedOn.ToShortDateString()
-                    <br />
+                <br /><br />
+                <p class="font-small">
+                    Created on: @Model.CreatedOn.ToShortDateString()<br />
                     Last Updated on: @Model.UpdatedOn.ToShortDateString()
                 </p>
             </div>
