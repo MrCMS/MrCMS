@@ -160,11 +160,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WidgetController_Add_ReturnsViewResult()
+        public void WidgetController_Add_ReturnsPartialViewResult()
         {
             var widgetController = GetWidgetController();
 
-            widgetController.Add(1, null).Should().BeOfType<ViewResult>();
+            widgetController.Add(1, null).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
