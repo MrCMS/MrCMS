@@ -25,6 +25,7 @@ namespace MrCMS.IoC
 
             Kernel.Bind<HttpRequestBase>().ToMethod(context => MrCMSApplication.CurrentContext.Request);
             Kernel.Bind<HttpContextBase>().ToMethod(context => MrCMSApplication.CurrentContext);
+            Kernel.Bind<HttpSessionStateBase>().ToMethod(context => MrCMSApplication.CurrentContext.Session);
         }
     }
 }
