@@ -24,6 +24,7 @@ namespace MrCMS.IoC
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
 
             Kernel.Bind<HttpRequestBase>().ToMethod(context => MrCMSApplication.CurrentContext.Request);
+            Kernel.Bind<HttpContextBase>().ToMethod(context => MrCMSApplication.CurrentContext);
         }
     }
 }

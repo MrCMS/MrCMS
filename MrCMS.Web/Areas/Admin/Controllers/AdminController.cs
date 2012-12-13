@@ -71,11 +71,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.DenyGet;
             }
 
-            public Encoding ContentEncoding { get; set; }
-            public string ContentType { get; set; }
-            public object Data { get; set; }
             public string JsonData { get; set; }
-            public JsonRequestBehavior JsonRequestBehavior { get; set; }
 
             public override void ExecuteResult(ControllerContext context)
             {
