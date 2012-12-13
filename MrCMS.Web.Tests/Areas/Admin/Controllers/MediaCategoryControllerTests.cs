@@ -154,7 +154,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             mediaCategoryController.SuggestDocumentUrl(1, "test");
 
-            A.CallTo(() => _documentService.GetDocumentUrl("test", 1, false)).MustHaveHappened();
+            A.CallTo(() => _documentService.GetDocumentUrl("test", 1, true)).MustHaveHappened();
         }
 
         [Fact]
@@ -162,7 +162,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var mediaCategoryController = GetMediaCategoryController();
 
-            A.CallTo(() => _documentService.GetDocumentUrl("test", 1, false)).Returns("test/result");
+            A.CallTo(() => _documentService.GetDocumentUrl("test", 1, true)).Returns("test/result");
             var url = mediaCategoryController.SuggestDocumentUrl(1, "test");
 
             url.Should().BeEquivalentTo("test/result");

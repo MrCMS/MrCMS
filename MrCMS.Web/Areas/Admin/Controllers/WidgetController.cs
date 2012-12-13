@@ -30,7 +30,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ViewResultBase Add(int layoutAreaId, string returnUrl = null)
         {
             var model = _widgetService.GetAddWidgetModel(layoutAreaId, returnUrl);
-            return View(model);
+            return PartialView(model);
         }
 
         [HttpPost]
@@ -106,7 +106,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                                                      type => type.Name,
                                                                      emptyItemText: "Select widget type...");
 
-            return View(new AddPageWidgetModel(types, layoutAreaId, pageId, ""));
+            return PartialView(new AddPageWidgetModel(types, layoutAreaId, pageId, ""));
         }
 
         [HttpPost]
