@@ -97,11 +97,18 @@ namespace MrCMS.DbConfiguration
                     !assembly.IsDynamic && !assembly.GlobalAssemblyCache &&
                     !assembly.FullName.Contains("xunit", StringComparison.OrdinalIgnoreCase)).ToList();
             assemblies.AddRange(ManuallyAddedAssemblies);
-            assemblies = assemblies.Distinct().ToList();
+
+            var finalAssemblies = new List<Assembly>();
+
+            assemblies.ForEach(assembly =>
+                {
+                    if (finalAssemblies.All(a => a.FullName != assembly.FullName))
+                        finalAssemblies.Add(assembly);
+                });
 
             var config = Fluently.Configure()
                 .Database(GetPersistenceConfigurer())
-                .Mappings(m => m.AutoMappings.Add(AutoMap.Assemblies(new TheventsMappingConfiguration(), assemblies)
+                .Mappings(m => m.AutoMappings.Add(AutoMap.Assemblies(new TheventsMappingConfiguration(), finalAssemblies)
                                                 .IgnoreBase<BaseEntity>().IgnoreBase<BaseDocumentItemEntity>()
                                                 .IncludeBase<Document>().IncludeBase<Webpage>().IncludeBase<Widget>().IncludeBase<Layout>()
                                                 .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
@@ -154,6 +161,21 @@ namespace MrCMS.DbConfiguration
                                                                              {
                                                                                  new PostCommitEventListener()
                                                                              });
+        }
+    }
+
+    public class AssemblyComparer : IEqualityComparer<Assembly>
+    {
+        public static readonly AssemblyComparer Default = new AssemblyComparer();
+
+        public bool Equals(Assembly x, Assembly y)
+        {
+            return x == null && y == null || x != null && y != null && x.FullName == y.FullName;
+        }
+
+        public int GetHashCode(Assembly obj)
+        {
+            return obj.GetHashCode();
         }
     }
 }
