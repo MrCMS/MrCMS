@@ -163,19 +163,4 @@ namespace MrCMS.DbConfiguration
                                                                              });
         }
     }
-
-    public class AssemblyComparer : IEqualityComparer<Assembly>
-    {
-        public static readonly AssemblyComparer Default = new AssemblyComparer();
-
-        public bool Equals(Assembly x, Assembly y)
-        {
-            return x == null && y == null || x != null && y != null && x.FullName == y.FullName;
-        }
-
-        public int GetHashCode(Assembly obj)
-        {
-            return obj.GetHashCode();
-        }
-    }
 }
