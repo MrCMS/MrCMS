@@ -10,17 +10,20 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
 using MrCMS.Website;
+using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class WebpageController : BaseDocumentController<Webpage>
     {
         private readonly IFormService _formService;
+        private readonly ISession _session;
 
-        public WebpageController(IDocumentService documentService, ISiteService _siteService, IFormService formService)
-            : base(documentService, _siteService)
+        public WebpageController(IDocumentService documentService, ISiteService siteService, IFormService formService,ISession session)
+            : base(documentService, siteService)
         {
             _formService = formService;
+            _session = session;
         }
 
         protected override void OnAuthorization(AuthorizationContext filterContext)
@@ -52,7 +55,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             var documentTypeDefinitions = (doc.Parent as Webpage).GetValidWebpageDocumentTypes().ToList();
             ViewData["DocumentTypes"] = documentTypeDefinitions;
 
-            doc.AddTypeSpecificViewData(ViewData);
+            doc.AddTypeSpecificViewData(ViewData, _session);
         }
 
         public override ActionResult Show(Webpage document)

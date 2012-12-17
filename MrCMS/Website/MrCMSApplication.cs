@@ -6,7 +6,6 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Routing;
-using System.Web.SessionState;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
@@ -68,8 +67,6 @@ namespace MrCMS.Website
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
-            routes.MapRoute("404 route", "404", new { controller = "Error", action = "404" });
-            routes.MapRoute("500 route", "500", new { controller = "Error", action = "500" });
 
             routes.MapRoute("Reset Complete", "reset-complete", new { controller = "Login", action = "ResetComplete" },
                             new[] { RootNamespace });

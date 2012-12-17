@@ -280,7 +280,7 @@ namespace MrCMS.Entities.Documents.Web
             AdminRoleUpdater.UpdateAdminRoleRecursive(controllerContext, session);
         }
 
-        public virtual void AddTypeSpecificViewData(ViewDataDictionary viewData)
+        public virtual void AddTypeSpecificViewData(ViewDataDictionary viewData, ISession session)
         {
         }
 
