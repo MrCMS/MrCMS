@@ -45,6 +45,8 @@
                 @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
                 @Html.LabelFor(x => x.UrlSegment, "Path")
                 @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12", disabled = "true" })
+                @Html.LabelFor(x => x.IsGallery)
+                @Html.CheckBoxFor(x => x.IsGallery)
                 <p>
                     Created on: @Model.CreatedOn.ToShortDateString()
                 </p>
