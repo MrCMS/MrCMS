@@ -113,6 +113,8 @@
     <Compile Include="Settings\SettingServiceTests.cs" />
     <Compile Include="Settings\SiteSettingsOptionGeneratorTests.cs" />
     <Compile Include="Settings\SiteSettingsTests.cs" />
+    <Compile Include="Stubs\BasicMappedWebpage.cs" />
+    <Compile Include="Stubs\BasicMappedWidget.cs" />
     <Compile Include="Stubs\StubAllowedWebpage.cs" />
     <Compile Include="Stubs\StubDisallowedWebpage.cs" />
     <Compile Include="Stubs\StubDocument.cs" />

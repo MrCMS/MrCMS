@@ -34,8 +34,8 @@ namespace MrCMS.Services
         void Unpublish(Webpage document);
         void HideWidget(int id, int widgetId);
         void ShowWidget(int id, int widgetId);
-        TextPage Get404Page();
-        TextPage Get500Page();
+        Document Get404Page();
+        Document Get500Page();
         DocumentVersion GetDocumentVersion(int id);
         void SetParent(Document document, int? parentId);
         DocumentTypeDefinition GetDefinitionByType(Type type);

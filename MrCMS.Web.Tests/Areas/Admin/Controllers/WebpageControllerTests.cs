@@ -13,6 +13,7 @@ using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Tests.Entities;
 using MrCMS.Tests.Stubs;
+using MrCMS.Web.Application.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website;

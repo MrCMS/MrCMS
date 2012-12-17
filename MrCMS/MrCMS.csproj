@@ -115,12 +115,9 @@
     <Compile Include="DbConfiguration\Overrides\MediaCategoryOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaFileOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\PageWidgetSortOverride.cs" />
-    <Compile Include="DbConfiguration\Overrides\PlainTextWidgetOveride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SiteOverride.cs" />
-    <Compile Include="DbConfiguration\Overrides\TextPageOverride.cs" />
-    <Compile Include="DbConfiguration\Overrides\TextWidgetOveride.cs" />
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WidgetOverride.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
@@ -151,8 +148,6 @@
     <Compile Include="Entities\Documents\Web\PageWidgetSort.cs" />
     <Compile Include="Entities\Documents\Web\Redirect.cs" />
     <Compile Include="Entities\Documents\Web\RoleStatus.cs" />
-    <Compile Include="Entities\Documents\Web\SearchPage.cs" />
-    <Compile Include="Entities\Documents\Web\TextPage.cs" />
     <Compile Include="Entities\Documents\Web\Webpage.cs" />
     <Compile Include="Entities\Interaction\ContactUs.cs" />
     <Compile Include="Entities\Messaging\MessageTemplate.cs" />
@@ -162,8 +157,6 @@
     <Compile Include="Entities\People\User.cs" />
     <Compile Include="Entities\People\UserRole.cs" />
     <Compile Include="Entities\Settings\Setting.cs" />
-    <Compile Include="Entities\Widget\PlainTextWidget.cs" />
-    <Compile Include="Entities\Widget\TextWidget.cs" />
     <Compile Include="Entities\Widget\Widget.cs" />
     <Compile Include="Helpers\ConversionHelper.cs" />
     <Compile Include="Helpers\DocumentExtensions.cs" />

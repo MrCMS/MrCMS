@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Web.Application.Pages;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 

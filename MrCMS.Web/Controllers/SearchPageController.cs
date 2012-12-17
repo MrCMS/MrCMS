@@ -1,6 +1,7 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
+using MrCMS.Web.Application.Pages;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Controllers

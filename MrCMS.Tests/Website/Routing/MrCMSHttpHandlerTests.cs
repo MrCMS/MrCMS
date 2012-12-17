@@ -122,7 +122,7 @@ namespace MrCMS.Tests.Website.Routing
             var siteSettings = A.Fake<SiteSettings>();
             A.CallTo(() => siteSettings.Error500PageId).Returns(1);
             var documentService = A.Fake<IDocumentService>();
-            A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(new TextPage { UrlSegment = "test-500" });
+            A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(new BasicMappedWebpage { UrlSegment = "test-500" });
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
             var httpContext = A.Fake<HttpContextBase>();
 
@@ -268,7 +268,7 @@ namespace MrCMS.Tests.Website.Routing
             var siteSettings = A.Fake<SiteSettings>();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
             var documentService = A.Fake<IDocumentService>();
-            A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(new TextPage { UrlSegment = "test-404" });
+            A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(new BasicMappedWebpage { UrlSegment = "test-404" });
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
             var httpContext = A.Fake<HttpContextBase>();
 
@@ -282,7 +282,7 @@ namespace MrCMS.Tests.Website.Routing
         {
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
                                        {
-                                           Webpage = new TextPage()
+                                           Webpage = new BasicMappedWebpage()
                                        };
             var httpContext = A.Fake<HttpContextBase>();
 
@@ -309,7 +309,7 @@ namespace MrCMS.Tests.Website.Routing
         {
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
-                Webpage = new TextPage { UrlSegment = "test" }
+                Webpage = new BasicMappedWebpage { UrlSegment = "test" }
             };
             var httpContext = A.Fake<HttpContextBase>();
 
@@ -319,7 +319,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_RedirectsToHomePage_ReturnTrueIfItIsHomePage()
         {
-            var textPage = new TextPage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
+            var textPage = new BasicMappedWebpage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
             MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
@@ -335,7 +335,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_RedirectsToHomePage_RedirectsToRootIfItIsHomePage()
         {
-            var textPage = new TextPage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
+            var textPage = new BasicMappedWebpage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
             MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
@@ -353,7 +353,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_RedirectsToHomePage_FalseIfAlreadyRedirected()
         {
-            var textPage = new TextPage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
+            var textPage = new BasicMappedWebpage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
             MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
@@ -383,7 +383,7 @@ namespace MrCMS.Tests.Website.Routing
         {
             var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
             {
-                Webpage = new TextPage()
+                Webpage = new BasicMappedWebpage()
             };
             var httpContext = A.Fake<HttpContextBase>();
 

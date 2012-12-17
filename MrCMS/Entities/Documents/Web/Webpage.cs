@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Xml;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Models;
@@ -23,7 +24,7 @@ namespace MrCMS.Entities.Documents.Web
         private readonly AdminRoleUpdater _adminRoleUpdater;
         private readonly FrontEndRoleUpdater _frontEndRoleUpdater;
 
-        public Webpage()
+        protected Webpage()
         {
             _adminRoleUpdater = new AdminRoleUpdater(this);
             _frontEndRoleUpdater = new FrontEndRoleUpdater(this);
@@ -280,6 +281,10 @@ namespace MrCMS.Entities.Documents.Web
         }
 
         public virtual void AddTypeSpecificViewData(ViewDataDictionary viewData)
+        {
+        }
+
+        public virtual void AddCustomSitemapData(UrlHelper urlHelper, XmlNode url, XmlDocument xmlDocument)
         {
         }
     }

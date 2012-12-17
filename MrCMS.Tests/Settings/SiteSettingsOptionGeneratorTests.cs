@@ -4,6 +4,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Settings;
+using MrCMS.Tests.Stubs;
 using Xunit;
 using MrCMS.Helpers;
 
@@ -30,7 +31,7 @@ namespace MrCMS.Tests.Settings
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
             var site = new Site();
-            var textPage = new TextPage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = site };
+            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = site };
             Session.Transact(session => session.Save(textPage));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, site, -1);
@@ -46,9 +47,9 @@ namespace MrCMS.Tests.Settings
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
             var site = new Site();
-            var textPage = new TextPage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = site };
+            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = site };
             var site2 = new Site();
-            var textPage2 = new TextPage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 2", Site = site2 };
+            var textPage2 = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 2", Site = site2 };
             Session.Transact(session =>
                                  {
                                      session.Save(textPage);
@@ -68,7 +69,7 @@ namespace MrCMS.Tests.Settings
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
             var site = new Site();
-            var textPage = new TextPage { Name = "Test 1", Site = site };
+            var textPage = new BasicMappedWebpage { Name = "Test 1", Site = site };
             Session.Transact(session => session.Save(textPage));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, site, -1);
@@ -82,7 +83,7 @@ namespace MrCMS.Tests.Settings
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
             var site = new Site();
-            var textPage = new TextPage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = site };
+            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = site };
             Session.Transact(session => session.Save(textPage));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, site, textPage.Id);

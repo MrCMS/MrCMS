@@ -2,6 +2,7 @@
 using FluentAssertions;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
+using MrCMS.Tests.Stubs;
 using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
@@ -15,10 +16,10 @@ namespace MrCMS.Tests.Services
         {
             var widgetService = new WidgetService(Session);
 
-            var textWidget = new TextWidget();
+            var textWidget = new BasicMappedWidget();
             Session.Transact(session => session.SaveOrUpdate(textWidget));
 
-            var loadedWidget = widgetService.GetWidget<TextWidget>(textWidget.Id);
+            var loadedWidget = widgetService.GetWidget<BasicMappedWidget>(textWidget.Id);
 
             loadedWidget.Should().BeSameAs(textWidget);
         }
@@ -28,7 +29,7 @@ namespace MrCMS.Tests.Services
         {
             var widgetService = new WidgetService(Session);
 
-            var loadedWidget = widgetService.GetWidget<TextWidget>(-1);
+            var loadedWidget = widgetService.GetWidget<BasicMappedWidget>(-1);
 
             loadedWidget.Should().BeNull();
         }
@@ -38,7 +39,7 @@ namespace MrCMS.Tests.Services
         {
             var widgetService = new WidgetService(Session);
 
-            widgetService.SaveWidget(new TextWidget() {Text = "text"});
+            widgetService.SaveWidget(new BasicMappedWidget());
 
             Session.QueryOver<Widget>().RowCount().Should().Be(1);
         }

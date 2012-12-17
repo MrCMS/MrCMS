@@ -22,6 +22,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Web.Application.Pages;
 using MrCMS.Website;
 using NHibernate;
 using AuthorizationRuleCollection = System.Security.AccessControl.AuthorizationRuleCollection;

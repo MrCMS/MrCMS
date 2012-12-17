@@ -120,6 +120,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\DbConfiguration\PlainTextWidgetOveride.cs" />
+    <Compile Include="Application\DbConfiguration\TextPageOverride.cs" />
+    <Compile Include="Application\DbConfiguration\TextWidgetOveride.cs" />
+    <Compile Include="Application\Pages\SearchPage.cs" />
+    <Compile Include="Application\Pages\TextPage.cs" />
+    <Compile Include="Application\Widgets\PlainTextWidget.cs" />
+    <Compile Include="Application\Widgets\TextWidget.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
@@ -140,7 +147,6 @@
     <Compile Include="Areas\Admin\Models\AddListingPage.cs" />
     <Compile Include="Areas\Admin\Models\AddPageModel.cs" />
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
-    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -1060,6 +1066,10 @@
     <Content Include="Views\Login\ResetComplete.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Application\Entities\" />
+    <Folder Include="Application\Models\" />
+    <Folder Include="Application\Services\" />
+    <Folder Include="Application\Settings\" />
     <Folder Include="App_Data\" />
     <Folder Include="images\" />
     <Folder Include="Scripts\ckeditor\plugins\showblocks\" />

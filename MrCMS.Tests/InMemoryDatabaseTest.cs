@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Tasks;
+using MrCMS.Tests.Stubs;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cfg;
@@ -27,7 +28,7 @@ namespace MrCMS.Tests
             {
                 lock (lockObject)
                 {
-                    var assemblies = new List<Assembly> { typeof(TextPage).Assembly };
+                    var assemblies = new List<Assembly> { typeof(BasicMappedWebpage).Assembly };
                     var nHibernateModule = new NHibernateConfigurator
                                                {
                                                    CacheEnabled = true,

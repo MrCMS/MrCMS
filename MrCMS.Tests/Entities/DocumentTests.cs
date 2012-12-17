@@ -46,7 +46,7 @@ namespace MrCMS.Tests.Entities
         {
             var doc = new StubDocument();
 
-            var document = new TextPage {PublishOn = DateTime.UtcNow.AddDays(-1)};
+            var document = new BasicMappedWebpage {PublishOn = DateTime.UtcNow.AddDays(-1)};
             doc.SetChildren(new List<Document> {document});
 
             doc.PublishedChildren.Should().Contain(document);
@@ -57,7 +57,7 @@ namespace MrCMS.Tests.Entities
         {
             var doc = new StubDocument();
 
-            var document = new TextPage {PublishOn = null};
+            var document = new BasicMappedWebpage {PublishOn = null};
             doc.SetChildren(new List<Document> {document});
 
             doc.PublishedChildren.Should().NotContain(document);

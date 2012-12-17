@@ -5,6 +5,8 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
+using MrCMS.Web.Application.Pages;
+using MrCMS.Web.Application.Widgets;
 using MrCMS.Web.Areas.Admin.Controllers;
 using NHibernate;
 using Xunit;

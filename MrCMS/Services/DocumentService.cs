@@ -416,26 +416,26 @@ namespace MrCMS.Services
 
         }
 
-        public TextPage Get404Page()
+        public Document Get404Page()
         {
             var error404Id = _siteSettings.Error404PageId;
 
             var currentSite = _siteService.GetCurrentSite();
 
-            return _session.Get<TextPage>(error404Id)
-                   ?? GetDocumentByUrl<TextPage>("404")
-                   ?? MrCMSApplication.PublishedRootChildren(currentSite).OfType<TextPage>().FirstOrDefault();
+            return _session.Get<Document>(error404Id)
+                   ?? GetDocumentByUrl<Document>("404")
+                   ?? MrCMSApplication.PublishedRootChildren(currentSite).OfType<Document>().FirstOrDefault();
         }
 
-        public TextPage Get500Page()
+        public Document Get500Page()
         {
             var error500Id = _siteSettings.Error500PageId;
 
             var currentSite = _siteService.GetCurrentSite();
 
-            return _session.Get<TextPage>(error500Id)
-                   ?? GetDocumentByUrl<TextPage>("500")
-                   ?? MrCMSApplication.PublishedRootChildren(currentSite).OfType<TextPage>().FirstOrDefault();
+            return _session.Get<Document>(error500Id)
+                   ?? GetDocumentByUrl<Document>("500")
+                   ?? MrCMSApplication.PublishedRootChildren(currentSite).OfType<Document>().FirstOrDefault();
         }
 
         public DocumentVersion GetDocumentVersion(int id)

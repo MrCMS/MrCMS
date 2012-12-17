@@ -1,10 +1,9 @@
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Automapping.Alterations;
 using MrCMS.DbConfiguration.Types;
-using MrCMS.Entities.Documents.Web;
-using NHibernate.SqlTypes;
+using MrCMS.Web.Application.Pages;
 
-namespace MrCMS.DbConfiguration.Overrides
+namespace MrCMS.Web.Application.DbConfiguration
 {
     public class TextPageOverride : IAutoMappingOverride<TextPage>
     {

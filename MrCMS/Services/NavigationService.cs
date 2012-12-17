@@ -131,13 +131,7 @@ namespace MrCMS.Services
                                              var loc =
                                                  url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "loc", ""));
                                              loc.InnerText = urlHelper.AbsoluteContent(node.Item.LiveUrlSegment);
-                                             if (node.Item is TextPage &&
-                                                 !string.IsNullOrEmpty((node.Item as TextPage).FeatureImage))
-                                             {
-                                                 var image = url.AppendChild(xmlDocument.CreateElement("image:image"));
-                                                 var imageLoc = image.AppendChild(xmlDocument.CreateElement("image:loc"));
-                                                 imageLoc.InnerText = urlHelper.AbsoluteContent((node.Item as TextPage).FeatureImage);
-                                             }
+                                             node.Item.AddCustomSitemapData(urlHelper, url, xmlDocument);
                                              var lastMod =
                                                  url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "lastmod",
                                                                                         ""));

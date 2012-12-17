@@ -8,6 +8,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Web.Application.Pages;
 using MrCMS.Website;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
