@@ -113,5 +113,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var navigationController = GetNavigationController();
             navigationController.LoggedInAs();
         }
+
+        [Fact]
+        public void NavigationController_Navlinks_ShouldReturnAPartialViewResult()
+        {
+            var navigationController = GetNavigationController();
+
+            navigationController.NavLinks().Should().BeOfType<PartialViewResult>();
+        }
     }
 }
