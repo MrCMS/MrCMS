@@ -14,7 +14,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void HomeController_OnGetIndex_ReturnsAViewResult()
         {
             var documentService = A.Fake<IDocumentService>();
-            var homeController = new HomeController() {IsAjaxRequest = false};
+            var homeController = new HomeController();
 
             var actionResult = homeController.Index();
 

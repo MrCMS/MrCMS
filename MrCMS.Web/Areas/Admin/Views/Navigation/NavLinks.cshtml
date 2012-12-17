@@ -1,0 +1,26 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Models
+@model dynamic
+<ul class="nav">
+    @foreach (var item in TypeHelper.GetAllConcreteTypesAssignableFrom<IAdminMenuItem>().Select(Activator.CreateInstance).Cast<IAdminMenuItem>().OrderBy(item => item.DisplayOrder))
+    {
+        if (item.Children.Any())
+        {
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@item.Text
+                <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                @foreach (var child in item.Children)
+                {
+                    <li><a href="@child.Url">@child.Text</a></li>
+                }
+            </ul>
+        </li>
+        }
+        else
+        {
+        <li><a href="@item.Url">@item.Text</a></li>
+        }
+    }
+
+</ul>

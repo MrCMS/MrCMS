@@ -23,15 +23,7 @@ namespace MrCMS.Membership
         public override bool ValidateUser(string email, string password)
         {
             User user = _userService.GetUserByEmail(email);
-                if (user != null && user.IsActive)
-                {
-                    if (_authorisationService.ValidateUser(user, password))
-                    {
-                        return true;
-                    }
-                }
-
-            return false;
+            return user != null && user.IsActive && _authorisationService.ValidateUser(user, password);
         }
 
         #region Not used

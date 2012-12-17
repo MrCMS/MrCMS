@@ -32,7 +32,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             documentService = A.Fake<IDocumentService>();
             _siteService = A.Fake<ISiteService>();
-            var layoutController = new LayoutController(documentService, _siteService) { IsAjaxRequest = false };
+            var layoutController = new LayoutController(documentService, _siteService);
             return layoutController;
         }
 

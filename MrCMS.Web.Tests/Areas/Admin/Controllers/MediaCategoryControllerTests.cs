@@ -338,7 +338,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             _documentService = A.Fake<IDocumentService>();
             _siteService = A.Fake<ISiteService>();
             _fileService = A.Fake<IFileService>();
-            var mediaCategoryController = new MediaCategoryController(_documentService, _siteService, _fileService) { IsAjaxRequest = false };
+            var mediaCategoryController = new MediaCategoryController(_documentService, _siteService, _fileService);
             return mediaCategoryController;
         }
     }

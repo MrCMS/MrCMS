@@ -50,6 +50,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView("UserList", _service.GetUserList());
         }
 
+        public PartialViewResult NavLinks()
+        {
+            return PartialView("NavLinks");
+        }
+
         [ChildActionOnly]
         public PartialViewResult LoggedInAs()
         {

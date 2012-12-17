@@ -17,6 +17,7 @@ using MrCMS.Web.Application.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website;
+using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
 
@@ -26,7 +27,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private static IDocumentService documentService;
         private static IFormService formService;
-        private static ISiteService _siteService;
+        private static ISiteService siteService;
+        private static ISession session;
 
         [Fact]
         public void WebpageController_AddGet_ShouldReturnAddPageModel()
@@ -41,9 +43,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private static WebpageController GetWebpageController()
         {
             documentService = A.Fake<IDocumentService>();
-            _siteService = A.Fake<ISiteService>();
+            siteService = A.Fake<ISiteService>();
             formService = A.Fake<IFormService>();
-            var webpageController = new WebpageController(documentService, _siteService, formService) { IsAjaxRequest = false };
+            session = A.Fake<ISession>();
+            var webpageController = new WebpageController(documentService, siteService, formService, session);
             return webpageController;
         }
 

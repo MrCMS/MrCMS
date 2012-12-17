@@ -144,7 +144,6 @@
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaController.cs" />
     <Compile Include="Areas\Admin\Models\AddCategoryModel.cs" />
-    <Compile Include="Areas\Admin\Models\AddListingPage.cs" />
     <Compile Include="Areas\Admin\Models\AddPageModel.cs" />
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
     <Compile Include="Controllers\FormController.cs" />
@@ -1055,6 +1054,7 @@
     <Content Include="Areas\Admin\Views\Navigation\WebsiteTreeList.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Navigation\NavLinks.cshtml" />
     <None Include="Properties\PublishProfiles\New.pubxml" />
     <Content Include="Views\Error\404.cshtml" />
     <Content Include="Views\Shared\AdminEditor.cshtml" />

@@ -22,7 +22,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             fileService = A.Fake<IFileService>();
             documentService = A.Fake<IDocumentService>();
-            var fileController = new FileController(fileService, documentService) { IsAjaxRequest = false };
+            var fileController = new FileController(fileService, documentService);
             return fileController;
         }
 

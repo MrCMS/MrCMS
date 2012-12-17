@@ -183,13 +183,17 @@
     <Compile Include="Models\AddWidgetModel.cs" />
     <Compile Include="Models\AsyncListModel.cs" />
     <Compile Include="Models\AutoCompleteResult.cs" />
+    <Compile Include="Models\ChildMenuItem.cs" />
     <Compile Include="Models\FilesPagedResult.cs" />
     <Compile Include="Models\ImageSize.cs" />
+    <Compile Include="Models\IAdminMenuItem.cs" />
+    <Compile Include="Models\IMenuItem.cs" />
     <Compile Include="Models\PostingsModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\SearchResult.cs" />
     <Compile Include="Models\SearchResultModel.cs" />
+    <Compile Include="Models\UsersAdminMenuItem.cs" />
     <Compile Include="Models\VersionsModel.cs" />
     <Compile Include="Models\ViewDataUploadFilesResult.cs" />
     <Compile Include="Models\WebsiteTreeListModel.cs" />
@@ -251,7 +255,6 @@
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\AddLayoutAreaModelBinder.cs" />
-    <Compile Include="Website\Binders\AddListingModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />

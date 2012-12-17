@@ -11,14 +11,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     [ValidateInput(false)]
     public abstract class AdminController : Controller
     {
-        private bool? _isAjaxRequest;
-
-        public bool IsAjaxRequest
-        {
-            get { return _isAjaxRequest.HasValue ? _isAjaxRequest.Value : Request.IsAjaxRequest(); }
-            set { _isAjaxRequest = value; }
-        }
-
         public new HttpRequestBase Request
         {
             get { return RequestMock ?? base.Request; }

@@ -35,7 +35,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             documentService = A.Fake<IDocumentService>();
             navigationService = A.Fake<INavigationService>();
             _siteService = A.Fake<ISiteService>();
-            var searchController = new SearchController(documentService, navigationService, _siteService) { IsAjaxRequest = false };
+            var searchController = new SearchController(documentService, navigationService, _siteService);
             return searchController;
         }
 

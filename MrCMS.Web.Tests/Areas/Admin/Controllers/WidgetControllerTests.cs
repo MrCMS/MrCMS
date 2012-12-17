@@ -33,8 +33,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             _documentService = A.Fake<IDocumentService>();
             _widgetService = A.Fake<IWidgetService>();
             var layoutAreaService = A.Fake<ILayoutAreaService>();
-            return new WidgetController(_documentService, _widgetService, layoutAreaService, A.Fake<ISession>())
-                       {IsAjaxRequest = false};
+            return new WidgetController(_documentService, _widgetService, layoutAreaService, A.Fake<ISession>());
         }
 
         [Fact]
