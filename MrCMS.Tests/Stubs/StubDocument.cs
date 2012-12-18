@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities.Documents;
 
 namespace MrCMS.Tests.Stubs
 {
+    [MrCMSMapClass]
     public class StubDocument : Document
     {
-        public void SetChildren(IList<Document> children)
+        public virtual void SetChildren(IList<Document> children)
         {
             Children = children;
             foreach (var document in Children)
@@ -14,7 +16,7 @@ namespace MrCMS.Tests.Stubs
             }
         }
 
-        public void SetVersions(List<DocumentVersion> versions)
+        public virtual void SetVersions(List<DocumentVersion> versions)
         {
             Versions = versions;
         }

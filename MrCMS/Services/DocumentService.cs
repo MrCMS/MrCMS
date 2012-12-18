@@ -32,6 +32,9 @@ namespace MrCMS.Services
 
         public void AddDocument(Document document)
         {
+            var sameParentDocs =
+                GetDocumentsByParentId<Document>(document.Parent == null ? (int?) null : document.Parent.Id);
+            document.DisplayOrder = sameParentDocs.Any() ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1 : 0;
             _session.Transact(session => session.SaveOrUpdate(document));
         }
 

@@ -840,5 +840,21 @@ namespace MrCMS.Tests.Services
             var version = documentService.GetDocumentVersion(1);
             version.Should().Be(documentVersion);
         }
+
+        [Fact]
+        public void DocumentService_AddDocument_RootDocShouldSetDisplayOrderToMaxOfNonParentDocsPlus1()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                Session.Transact(session => session.Save(new StubDocument {DisplayOrder = i}));
+            }
+
+            var documentService = GetDocumentService();
+
+            var stubDocument = new StubDocument();
+            documentService.AddDocument(stubDocument);
+
+            stubDocument.DisplayOrder.Should().Be(4);
+        }
     }
 }
