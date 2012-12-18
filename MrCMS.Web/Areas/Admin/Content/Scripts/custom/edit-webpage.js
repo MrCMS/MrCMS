@@ -1,6 +1,7 @@
 ﻿$(function () {
-    $("#UrlSegment").keyup(function (e) {
-        $(this).val($(this).val().replace(' ', '-').replace(/[^a-zA-Z 0-9\-]+\//g, '')).trim();
+    $("#UrlSegment").blur(function (e) {
+        var that = $(this);
+        that.val(that.val().trim().replace(/[\s]/g, '-').replace(/[^a-zA-Z0-9-/]/g, ''));
     });
 
     $("#change-url").click(function (e) {
