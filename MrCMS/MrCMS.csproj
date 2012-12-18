@@ -125,7 +125,6 @@
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />
     <Compile Include="Entities\Assets\EventDates.cs" />
-    <Compile Include="Entities\BaseDocumentItemEntity.cs" />
     <Compile Include="Entities\BaseEntity.cs" />
     <Compile Include="Entities\Documents\Document.cs" />
     <Compile Include="Entities\Documents\DocumentTypeDefinition.cs" />

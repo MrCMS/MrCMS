@@ -5,7 +5,7 @@ using MrCMS.Helpers;
 
 namespace MrCMS.Entities.Documents.Layout
 {
-    public class LayoutArea : BaseDocumentItemEntity
+    public class LayoutArea : BaseEntity
     {
         public virtual Layout Layout { get; set; } //which layout does the area belong to?
         public virtual string AreaName { get; set; } // IE. Area.Top, Area.Sidebar.First
