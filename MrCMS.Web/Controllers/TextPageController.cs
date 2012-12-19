@@ -9,7 +9,7 @@ namespace MrCMS.Web.Controllers
     {
         public ActionResult View(TextPage page)
         {
-            return View("~/Views/TextPage/Show.cshtml", page.CurrentLayout.UrlSegment, page);
+            return View("~/Views/Pages/TextPage.cshtml", page.CurrentLayout.UrlSegment, page);
         }
     }
 }

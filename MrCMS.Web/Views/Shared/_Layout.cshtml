@@ -13,6 +13,8 @@
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><style type="text/css">.gradient {filter: none;}</style><![endif]-->
     @Html.RenderZone("Head Files")
+
+    @{ Html.RenderAction("RenderAnalytics", "SEO"); }
 </head>
 <body>
 
@@ -64,9 +66,6 @@
     {
         @RenderSection("JavascriptBlockInclude")
     }
-
-
-    @{ Html.RenderAction("RenderAnalytics", "SEO"); }
 
 </body>
 </html>

@@ -1056,10 +1056,9 @@
     <Content Include="Areas\Admin\Views\Sites\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\NavLinks.cshtml" />
     <None Include="Properties\PublishProfiles\New.pubxml" />
-    <Content Include="Views\Error\404.cshtml" />
     <Content Include="Views\Shared\AdminEditor.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\SearchPage\Show.cshtml" />
+    <Content Include="Views\Pages\SearchPage.cshtml" />
     <Content Include="Views\Login\ForgottenPassword.cshtml" />
     <Content Include="Views\Login\ForgottenPasswordSent.cshtml" />
     <Content Include="Views\Login\PasswordReset.cshtml" />
@@ -1144,7 +1143,7 @@
     <None Include="Areas\Admin\Content\Editors\ckeditor\ckeditor.php" />
     <None Include="Areas\Admin\Content\Editors\ckeditor\ckeditor_php4.php" />
     <None Include="Areas\Admin\Content\Editors\ckeditor\ckeditor_php5.php" />
-    <Content Include="Views\TextPage\Show.cshtml" />
+    <Content Include="Views\Pages\TextPage.cshtml" />
     <Content Include="Views\Install\Setup.cshtml" />
     <Content Include="Views\Shared\_Installation.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />

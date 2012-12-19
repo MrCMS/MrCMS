@@ -25,8 +25,8 @@ namespace MrCMS.Web.Controllers
                                      ? pageVal
                                      : (int?) null;
             ViewData["searchResults"] = _documentService.SiteSearch(Request["q"], pageNum);
-                
-            return View("~/Views/SearchPage/Show.cshtml", page.CurrentLayout.UrlSegment, page);
+
+            return View("~/Views/Pages/SearchPage.cshtml", page.CurrentLayout.UrlSegment, page);
         }
 
         public ActionResult Post(SearchPage page, FormCollection form)
