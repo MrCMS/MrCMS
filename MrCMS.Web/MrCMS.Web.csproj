@@ -445,6 +445,7 @@
     <Content Include="Content\Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Content\Scripts\jquery.validate.min.js" />
     <Content Include="Content\Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Content\Scripts\respond.min.js" />
     <Content Include="Content\Styles\style.css" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
