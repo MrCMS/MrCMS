@@ -101,7 +101,8 @@ namespace MrCMS.Services
                                                                        });
                                           }
 
-                                          TaskExecutor.ExecuteLater(new SendQueuedMessagesTask(_mailSettings));
+                                          TaskExecutor.ExecuteLater(new SendQueuedMessagesTask(_mailSettings,
+                                                                                               _siteSettings));
                                       });
             }
         }

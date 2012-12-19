@@ -61,7 +61,7 @@ namespace MrCMS.Services
 
             _session.Transact(session => session.SaveOrUpdate(queuedMessage));
 
-            TaskExecutor.ExecuteLater(new SendQueuedMessagesTask(_mailSettings));
+            TaskExecutor.ExecuteLater(new SendQueuedMessagesTask(_mailSettings, _siteSettings));
         }
 
         public void ResetPassword(ResetPasswordViewModel model)

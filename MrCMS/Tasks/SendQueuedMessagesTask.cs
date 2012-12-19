@@ -9,10 +9,12 @@ namespace MrCMS.Tasks
     public class SendQueuedMessagesTask : BackgroundTask
     {
         private readonly MailSettings _mailSettings;
+        private readonly SiteSettings _siteSettings;
 
-        public SendQueuedMessagesTask(MailSettings mailSettings)
+        public SendQueuedMessagesTask(MailSettings mailSettings, SiteSettings siteSettings)
         {
             _mailSettings = mailSettings;
+            _siteSettings = siteSettings;
         }
 
         public override void Execute()
@@ -30,7 +32,7 @@ namespace MrCMS.Tasks
                         Session.QueryOver<QueuedMessage>().Where(
                             message => message.SentOn == null && message.Tries < MAX_TRIES).List())
                 {
-                    if (SiteSettings.SiteIsLive)
+                    if (_siteSettings.SiteIsLive)
                         SendMailMessage(queuedMessage, smtpClient);
                     else
                         MarkAsSent(queuedMessage);
@@ -54,7 +56,7 @@ namespace MrCMS.Tasks
                     mailMessage.CC.Add(queuedMessage.Cc);
                 if (!string.IsNullOrWhiteSpace(queuedMessage.Bcc))
                     mailMessage.Bcc.Add(queuedMessage.Bcc);
-                
+
                 foreach (var attachment in queuedMessage.QueuedMessageAttachments)
                     mailMessage.Attachments.Add(new Attachment(attachment.FileName));
 

@@ -845,9 +845,7 @@ namespace MrCMS.Tests.Services
         public void DocumentService_AddDocument_RootDocShouldSetDisplayOrderToMaxOfNonParentDocsPlus1()
         {
             for (int i = 0; i < 4; i++)
-            {
                 Session.Transact(session => session.Save(new StubDocument {DisplayOrder = i}));
-            }
 
             var documentService = GetDocumentService();
 

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using MrCMS.Settings;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Tasks
@@ -83,46 +81,5 @@ namespace MrCMS.Tasks
                 }
             }
         }
-    }
-    public abstract class BackgroundTask
-    {
-        protected ISession Session;
-        protected SiteSettings SiteSettings;
-
-        protected virtual void Initialize(ISession session, SiteSettings siteSettings)
-        {
-            Session = session;
-            SiteSettings = siteSettings;
-        }
-
-        protected virtual void OnError(Exception e)
-        {
-        }
-
-        public bool? Run(ISession openSession)
-        {
-            Initialize(openSession, MrCMSApplication.SiteSettings);
-            try
-            {
-                using (ITransaction transation = Session.BeginTransaction())
-                {
-                    Execute();
-                    transation.Commit();
-                }
-                TaskExecutor.StartExecuting();
-                return true;
-            }
-            catch (Exception e)
-            {
-                OnError(e);
-                return false;
-            }
-            finally
-            {
-                TaskExecutor.Discard();
-            }
-        }
-
-        public abstract void Execute();
     }
 }
