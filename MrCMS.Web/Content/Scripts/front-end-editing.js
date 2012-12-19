@@ -49,9 +49,6 @@ function inlineEditing() {
     if (getCookieValue() == "true") {
         if ($(".editable").length > 0) {
             $(".editable").attr('contenteditable', 'true');
-            CKEDITOR.config.toolbar = 'Basic';
-            CKEDITOR.inline('.editable');
-            CKEDITOR.config.toolbar = 'Basic';
             CKEDITOR.on('instanceCreated', function (event) {
                 var editor = event.editor,
                     element = editor.element;

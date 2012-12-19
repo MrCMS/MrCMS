@@ -451,6 +451,6 @@ function setCookie(name, value) {
 function getCookie(cookieName) {
     return $.cookie(cookieName);
 }
-
+CKEDITOR.config.toolbar = 'Basic';
 CKEDITOR.replaceAll('ckedit-enabled');
 CKEDITOR.on('instanceReady', function () { $(window).resize(); });
