@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -401,6 +402,39 @@ namespace MrCMS.Helpers
 
             if (image == null)
                 return MvcHtmlString.Empty;
+
+            var tagBuilder = new TagBuilder("img");
+            tagBuilder.Attributes.Add("src", imageUrl);
+            tagBuilder.Attributes.Add("alt", alt ?? image.Title);
+            tagBuilder.Attributes.Add("title", title ?? image.Description);
+            if (attributes != null)
+            {
+                var routeValueDictionary = new RouteValueDictionary(attributes);
+                foreach (var kvp in routeValueDictionary)
+                {
+                    tagBuilder.Attributes.Add(kvp.Key, kvp.Value.ToString());
+                }
+            }
+            return MvcHtmlString.Create(tagBuilder.ToString(TagRenderMode.SelfClosing));
+        }
+
+        public static MvcHtmlString RenderImage(this HtmlHelper helper, string imageUrl, Size targetSize, string alt = null, string title = null, object attributes = null)
+        {
+            if (String.IsNullOrWhiteSpace(imageUrl))
+                return MvcHtmlString.Empty;
+
+            var imageProcessor = MrCMSApplication.Get<IImageProcessor>();
+            var fileService = MrCMSApplication.Get<IFileService>();
+            var image = imageProcessor.GetImage(imageUrl);
+
+            if (image == null)
+                return MvcHtmlString.Empty;
+
+            if (ImageProcessor.RequiresResize(image.Size, targetSize))
+            {
+                var resized = ImageProcessor.CalculateDimensions(image.Size, targetSize);
+                imageUrl = fileService.GetFileLocation(image, resized);
+            }
 
             var tagBuilder = new TagBuilder("img");
             tagBuilder.Attributes.Add("src", imageUrl);

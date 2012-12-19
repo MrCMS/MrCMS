@@ -195,9 +195,9 @@ namespace MrCMS.Services
             return ImageProcessor.ImageSizes;
         }
 
-        public string GetFileLocation(MediaFile mediaFile, ImageSize imageSize)
+        public string GetFileLocation(MediaFile mediaFile, Size imageSize)
         {
-            return GetUrl(mediaFile, imageSize.Size);
+            return GetUrl(mediaFile, imageSize);
         }
 
         public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1, int pageSize = 10)
@@ -230,7 +230,7 @@ namespace MrCMS.Services
             var file = GetFile(id);
             var imageSize =
                 file.Sizes.FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
-            return "/" + GetFileLocation(file, imageSize);
+            return "/" + GetFileLocation(file, imageSize.Size);
         }
 
         public string MediaDirectory { get { return _mediaDirectory; } }
