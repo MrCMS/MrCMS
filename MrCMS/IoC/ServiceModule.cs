@@ -23,7 +23,7 @@ namespace MrCMS.IoC
                                       .BindWith<NinjectSettingsBinder>()
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
 
-            Kernel.Bind<HttpContextBase>().ToMethod(context => MrCMSApplication.CurrentContext);
+            //Kernel.Bind<HttpContextBase>().ToMethod(context => MrCMSApplication.CurrentContext);
             Kernel.Bind<HttpRequestBase>().ToMethod(context => MrCMSApplication.CurrentContext.Request);
             Kernel.Bind<HttpSessionStateBase>().ToMethod(context => MrCMSApplication.CurrentContext.Session);
         }
