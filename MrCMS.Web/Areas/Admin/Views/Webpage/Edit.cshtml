@@ -96,9 +96,9 @@
                         </div>
                         @Html.ValidationMessageFor(x => x.UrlSegment)
 
-                        @if (Model is TextPage)
+                        @if (Model is ITextPage)
                         {
-                            Html.RenderPartial("Content", Model as TextPage);
+                            Html.RenderPartial("Content", Model as ITextPage);
                         }
                         
                         @if (!(Model is Redirect))

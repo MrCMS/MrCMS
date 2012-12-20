@@ -37,7 +37,7 @@ namespace MrCMS.Services
                                Name = "Root",
                                NodeType = "Webpage",
                                SiteId = site.Id,
-                               CanAddChild = DocumentTypeHelper.GetValidWebpageDocumentTypes(null).Any()
+                               CanAddChild = DocumentTypeHelper.GetValidWebpageDocumentTypes(null, _documentService).Any()
                            };
             tree.Children = GetNodes(tree, _documentService.GetAdminDocumentsByParentId<Webpage>(site, null), null, maxDepth: depth);
 
@@ -216,7 +216,7 @@ namespace MrCMS.Services
                                                              CustomSort = IsCustomSort(document.Id),
                                                              CanAddChild =
                                                                  !(document is Webpage) ||
-                                                                 (document as Webpage).GetValidWebpageDocumentTypes().
+                                                                 (document as Webpage).GetValidWebpageDocumentTypes(_documentService).
                                                                      Any(),
                                                              IsPublished =
                                                                  !(document is Webpage) ||

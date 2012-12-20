@@ -144,7 +144,9 @@
     <Compile Include="Entities\Documents\Web\IContainerItem.cs" />
     <Compile Include="Entities\Documents\Web\IDocumentContainer.cs" />
     <Compile Include="Entities\Documents\Web\IRole.cs" />
+    <Compile Include="Entities\Documents\Web\ITextPage.cs" />
     <Compile Include="Entities\Documents\Web\PageWidgetSort.cs" />
+    <Compile Include="Entities\Documents\Web\ProcessPage.cs" />
     <Compile Include="Entities\Documents\Web\Redirect.cs" />
     <Compile Include="Entities\Documents\Web\RoleStatus.cs" />
     <Compile Include="Entities\Documents\Web\Webpage.cs" />

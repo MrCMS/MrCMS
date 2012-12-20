@@ -1,16 +1,20 @@
 ﻿using System.ComponentModel;
+using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Web.Application.Entities;
+using NHibernate;
 
 namespace MrCMS.Web.Application.Pages
 {
     [DocumentTypeDefinition(ChildrenListType.BlackList, Name = "Text Page", IconClass = "icon-file", DisplayOrder = 1, Type = typeof(TextPage), WebGetAction = "View", WebGetController = "TextPage", DefaultLayoutName = "Three Column")]
     [MrCMSMapClass]
-    public class TextPage : Webpage
+    public class TextPage : Webpage, ITextPage
     {
         [AllowHtml]
         [DisplayName("Body Content")]

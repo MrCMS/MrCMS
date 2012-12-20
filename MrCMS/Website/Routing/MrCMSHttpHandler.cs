@@ -6,16 +6,19 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.SessionState;
 using Elmah;
+using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
+using NHibernate;
 
 namespace MrCMS.Website.Routing
 {
     public sealed class MrCMSHttpHandler : IHttpHandler, IRequiresSessionState
     {
         private readonly RequestContext _requestContext;
+        private readonly Func<ISession> _getSession;
         private readonly Func<IDocumentService> _getDocumentService;
         private readonly Func<SiteSettings> _getSiteSettings;
         private IDocumentService _documentService;
@@ -23,10 +26,12 @@ namespace MrCMS.Website.Routing
         private string _httpMethod;
         private Webpage _webpage;
         private bool _webpageLookedUp;
+        private ISession _session;
 
-        public MrCMSHttpHandler(RequestContext requestContext, Func<IDocumentService> getDocumentService, Func<SiteSettings> getSiteSettings)
+        public MrCMSHttpHandler(RequestContext requestContext, Func<ISession> getSession, Func<IDocumentService> getDocumentService, Func<SiteSettings> getSiteSettings)
         {
             _requestContext = requestContext;
+            _getSession = getSession;
             _getDocumentService = getDocumentService;
             _getSiteSettings = getSiteSettings;
         }
@@ -59,6 +64,8 @@ namespace MrCMS.Website.Routing
 
             var controller = GetController();
 
+            SetViewModel(controller);
+
             SetFormData(controller);
 
             try
@@ -68,6 +75,14 @@ namespace MrCMS.Website.Routing
             catch (Exception exception)
             {
                 Handle500(context, exception);
+            }
+        }
+
+        public void SetViewModel(Controller controller)
+        {
+            if (HttpMethod == "GET" && Webpage!= null)
+            {
+                Webpage.UiViewData(controller.ViewData, Session, controller.Request);
             }
         }
 
@@ -84,7 +99,36 @@ namespace MrCMS.Website.Routing
         public void SetFormData(Controller controller)
         {
             if (HttpMethod == "POST" && RequestContext.HttpContext.Request.Form != null)
-                controller.RouteData.Values["form"] = new FormCollection(RequestContext.HttpContext.Request.Form);
+            {
+                var formCollection = new FormCollection(RequestContext.HttpContext.Request.Form);
+                if (WebpageDefinition != null && WebpageDefinition.PostType != null)
+                {
+                    var type = WebpageDefinition.PostType;
+
+                    var modelBinder = ModelBinders.Binders.GetBinder(type) as MrCMSDefaultModelBinder;
+                    if (modelBinder != null)
+                    {
+                        var modelBindingContext = new ModelBindingContext
+                                                      {
+                                                          ValueProvider =
+                                                              formCollection,
+                                                          ModelMetadata =
+                                                              ModelMetadataProviders.Current.GetMetadataForType(
+                                                                  () =>
+                                                                  modelBinder.GetModelFromSession(
+                                                                      controller.ControllerContext,
+                                                                      string.Empty, type), type)
+                                                      };
+
+                        var model = modelBinder.BindModel(controller.ControllerContext, modelBindingContext);
+                        controller.RouteData.Values["model"] = model;
+                    }
+                }
+                else
+                {
+                    controller.RouteData.Values["form"] = formCollection;
+                }
+            }
         }
 
         public void Handle500(HttpContextBase context, Exception exception)
@@ -158,7 +202,8 @@ namespace MrCMS.Website.Routing
 
         public bool CheckIsFile()
         {
-            var extension = Path.GetExtension(RequestContext.HttpContext.Request.Url.ToString());
+            var path = RequestContext.HttpContext.Request.Url.ToString();
+            var extension = Path.GetExtension(path);
             if (!string.IsNullOrWhiteSpace(extension))
                 return true;
             return false;
@@ -252,6 +297,11 @@ namespace MrCMS.Website.Routing
             }
         }
 
+        public DocumentTypeDefinition WebpageDefinition
+        {
+            get { return Webpage == null ? null : Webpage.GetDefinition(); }
+        }
+
         private Webpage GetWebpage()
         {
             var data = Convert.ToString(RequestContext.RouteData.Values["data"]);
@@ -270,6 +320,11 @@ namespace MrCMS.Website.Routing
         bool IHttpHandler.IsReusable
         {
             get { return false; }
+        }
+
+        public ISession Session
+        {
+            get { return _session ?? (_session = _getSession.Invoke()); }
         }
 
         public IDocumentService DocumentService

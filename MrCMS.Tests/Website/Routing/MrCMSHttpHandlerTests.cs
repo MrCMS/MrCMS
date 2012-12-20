@@ -15,12 +15,18 @@ using MrCMS.Settings;
 using MrCMS.Tests.Stubs;
 using MrCMS.Website;
 using MrCMS.Website.Routing;
+using NHibernate;
 using Xunit;
 
 namespace MrCMS.Tests.Website.Routing
 {
     public class MrCMSHttpHandlerTests
     {
+        private SiteSettings siteSettings;
+        private IDocumentService documentService;
+        private ISession session;
+        private RequestContext requestContext;
+
         public MrCMSHttpHandlerTests()
         {
             MrCMSApplication.DatabaseIsInstalled = true;
@@ -32,7 +38,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_CheckIsInstalled_DatabaseIsNotInstalledRedirectsToInstall()
         {
             MrCMSApplication.DatabaseIsInstalled = false;
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null);
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.CheckIsInstalled(httpContext).Should().BeFalse();
@@ -43,7 +49,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_CheckIsInstalled_DatabaseIsInstalledReturnsTrue()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null);
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.CheckIsInstalled(httpContext).Should().BeTrue();
@@ -52,7 +58,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_IsReusable_IsFalse()
         {
-            IHttpHandler mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null);
+            IHttpHandler mrCMSHttpHandler = GetMrCMSHttpHandler();
 
             mrCMSHttpHandler.IsReusable.Should().BeFalse();
         }
@@ -60,7 +66,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_IsAllowed_ReturnsTrueIfCurrentUserIsAllowedForWebpage()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null);
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var httpContext = A.Fake<HttpContextBase>();
             mrCMSHttpHandler.Webpage = new StubAllowedWebpage();
 
@@ -70,7 +76,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_IsAllowed_ReturnsFalseIfCurrentUserIsDisallowedForWebpage()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null);
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var httpContext = A.Fake<HttpContextBase>();
             mrCMSHttpHandler.Webpage = new StubDisallowedWebpage();
 
@@ -80,7 +86,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_IsAllowed_ShouldRedirectToRootIfDisallowed()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null);
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var httpContext = A.Fake<HttpContextBase>();
             mrCMSHttpHandler.Webpage = new StubDisallowedWebpage();
 
@@ -92,9 +98,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle500_CallsSiteSettings500PageId()
         {
-            var siteSettings = A.Fake<SiteSettings>();
-            var documentService = A.Fake<IDocumentService>();
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.Handle500(httpContext, new Exception());
@@ -105,10 +109,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle500_CallsGetDocumentWithResultOf500Page()
         {
-            var siteSettings = A.Fake<SiteSettings>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error500PageId).Returns(1);
-            var documentService = A.Fake<IDocumentService>();
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.Handle500(httpContext, new Exception());
@@ -119,11 +121,9 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle500_500DocumentFoundRedirectsToThatUrl()
         {
-            var siteSettings = A.Fake<SiteSettings>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error500PageId).Returns(1);
-            var documentService = A.Fake<IDocumentService>();
             A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(new BasicMappedWebpage { UrlSegment = "test-500" });
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.Handle500(httpContext, new Exception());
@@ -134,11 +134,9 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle500_500DocumentFoundRedirectsToRoot()
         {
-            var siteSettings = A.Fake<SiteSettings>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error500PageId).Returns(1);
-            var documentService = A.Fake<IDocumentService>();
             A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(null);
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.Handle500(httpContext, new Exception());
@@ -149,10 +147,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_NullWebpageReturnsNull()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-                                       {
-                                           Webpage = null
-                                       };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = null;
 
             mrCMSHttpHandler.GetControllerName().Should().BeNull();
         }
@@ -160,10 +156,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_WebpageNotPublishedAndNotAllowedReturnsNull()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = new StubDisallowedWebpage()
-            };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new StubDisallowedWebpage();
 
             mrCMSHttpHandler.GetControllerName().Should().BeNull();
         }
@@ -171,12 +165,9 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_NullDocumentTypeDefinitionReturnsNull()
         {
-            var documentService = A.Fake<IDocumentService>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).Returns(null);
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, null)
-            {
-                Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) }
-            };
+            mrCMSHttpHandler.Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
 
             mrCMSHttpHandler.GetControllerName().Should().BeNull();
         }
@@ -184,17 +175,14 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_HttpMethodIsGETReturnsWebGetController()
         {
-            var documentService = A.Fake<IDocumentService>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
                 WebGetController = "test-controller"
             };
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).Returns(documentTypeDefinition);
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, null)
-            {
-                Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) },
-                HttpMethod = "GET"
-            };
+            mrCMSHttpHandler.Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            mrCMSHttpHandler.HttpMethod = "GET";
 
             mrCMSHttpHandler.GetControllerName().Should().Be("test-controller");
         }
@@ -202,17 +190,14 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_HttpMethodIsPOSTReturnsWebGetController()
         {
-            var documentService = A.Fake<IDocumentService>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
                 WebPostController = "test-controller"
             };
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).Returns(documentTypeDefinition);
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, null)
-            {
-                Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) },
-                HttpMethod = "POST"
-            };
+            mrCMSHttpHandler.Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            mrCMSHttpHandler.HttpMethod = "POST";
 
             mrCMSHttpHandler.GetControllerName().Should().Be("test-controller");
         }
@@ -220,17 +205,14 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetControllerName_HttpMethodIsAnotherTypeReturnsNull()
         {
-            var documentService = A.Fake<IDocumentService>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
                 WebPostController = "test-controller"
             };
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).Returns(documentTypeDefinition);
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, null)
-            {
-                Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) },
-                HttpMethod = "PUT"
-            };
+            mrCMSHttpHandler.Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            mrCMSHttpHandler.HttpMethod = "PUT";
 
             mrCMSHttpHandler.GetControllerName().Should().BeNull();
         }
@@ -238,9 +220,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_MustCallSiteSettings404PageId()
         {
-            var siteSettings = A.Fake<SiteSettings>();
-            var documentService = A.Fake<IDocumentService>();
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.Handle404(httpContext);
@@ -251,10 +231,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_MustCallDocumentServiceWithTheResultOfThe404()
         {
-            var siteSettings = A.Fake<SiteSettings>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
-            var documentService = A.Fake<IDocumentService>();
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.Handle404(httpContext);
@@ -265,11 +243,9 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_404DocumentFoundRedirectsToThatUrl()
         {
-            var siteSettings = A.Fake<SiteSettings>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
-            var documentService = A.Fake<IDocumentService>();
             A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(new BasicMappedWebpage { UrlSegment = "test-404" });
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.Handle404(httpContext);
@@ -280,10 +256,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_WebpageSetReturnsFalse()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-                                       {
-                                           Webpage = new BasicMappedWebpage()
-                                       };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new BasicMappedWebpage();
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.Handle404(httpContext).Should().BeFalse();
@@ -292,11 +266,9 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_404DocumentNotFoundRedirectsToRoot()
         {
-            var siteSettings = A.Fake<SiteSettings>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
-            var documentService = A.Fake<IDocumentService>();
             A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(null);
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, () => siteSettings);
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.Handle404(httpContext);
@@ -307,10 +279,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_RedirectsToHomePage_ReturnFalseIfUrlSegmentSameAsLiveUrlSegment()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = new BasicMappedWebpage { UrlSegment = "test" }
-            };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new BasicMappedWebpage { UrlSegment = "test" };
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.RedirectsToHomePage(httpContext).Should().BeFalse();
@@ -319,12 +289,10 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_RedirectsToHomePage_ReturnTrueIfItIsHomePage()
         {
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var textPage = new BasicMappedWebpage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
             MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = textPage
-            };
+            mrCMSHttpHandler.Webpage = textPage;
             var httpContext = A.Fake<HttpContextBase>();
 
             A.CallTo(() => httpContext.Request.Url).Returns(new Uri("http://www.example.com/test"));
@@ -335,12 +303,10 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_RedirectsToHomePage_RedirectsToRootIfItIsHomePage()
         {
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var textPage = new BasicMappedWebpage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
             MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = textPage
-            };
+            mrCMSHttpHandler.Webpage = textPage;
             var httpContext = A.Fake<HttpContextBase>();
 
             A.CallTo(() => httpContext.Request.Url).Returns(new Uri("http://www.example.com/test"));
@@ -353,12 +319,10 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_RedirectsToHomePage_FalseIfAlreadyRedirected()
         {
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var textPage = new BasicMappedWebpage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
             MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = textPage
-            };
+            mrCMSHttpHandler.Webpage = textPage;
             var httpContext = A.Fake<HttpContextBase>();
 
             A.CallTo(() => httpContext.Request.Url).Returns(new Uri("http://www.example.com/"));
@@ -369,10 +333,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_NullWebpageReturnsFalse()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = null
-            };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = null;
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.PageIsRedirect(httpContext).Should().BeFalse();
@@ -381,10 +343,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_NonRedirectSetReturnsFalse()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = new BasicMappedWebpage()
-            };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new BasicMappedWebpage();
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.PageIsRedirect(httpContext).Should().BeFalse();
@@ -393,10 +353,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_RedirectSetReturnsTrue()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = new Redirect { RedirectUrl = "test-redirect" }
-            };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new Redirect { RedirectUrl = "test-redirect" };
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.PageIsRedirect(httpContext).Should().BeTrue();
@@ -405,10 +363,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_RedirectSetShouldCallResponseRedirectForTheRedirectUrl()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = new Redirect { RedirectUrl = "test-redirect" }
-            };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new Redirect { RedirectUrl = "test-redirect" };
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.PageIsRedirect(httpContext);
@@ -418,10 +374,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_IfRedirectIsAbsoluteUrlShouldRedirectWithoutTilde()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = new Redirect { RedirectUrl = "http://www.example.com" }
-            };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new Redirect { RedirectUrl = "http://www.example.com" };
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.PageIsRedirect(httpContext);
@@ -431,10 +385,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_RedirectSetRedirectUrlStartsWithBackSlashItShouldNotAddExtraSlash()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = new Redirect { RedirectUrl = "/test-redirect" }
-            };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new Redirect { RedirectUrl = "/test-redirect" };
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.PageIsRedirect(httpContext);
@@ -444,10 +396,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_WebpageIsNullReturnNull()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = null
-            };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = null;
 
             mrCMSHttpHandler.GetActionName().Should().BeNull();
         }
@@ -455,10 +405,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_WebpageNotAllowedAndUnpublishedReturnsNull()
         {
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), null, null)
-            {
-                Webpage = new StubDisallowedWebpage()
-            };
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new StubDisallowedWebpage();
 
             mrCMSHttpHandler.GetActionName().Should().BeNull();
         }
@@ -466,12 +414,9 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_NullDocumentTypeDefinitionReturnsNull()
         {
-            var documentService = A.Fake<IDocumentService>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).Returns(null);
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, null)
-            {
-                Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) }
-            };
+            mrCMSHttpHandler.Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
 
             mrCMSHttpHandler.GetActionName().Should().BeNull();
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).MustHaveHappened();
@@ -480,17 +425,14 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_ReturnsDefinitionWebGetActionIfHttpMethodIsGET()
         {
-            var documentService = A.Fake<IDocumentService>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
                 WebGetAction = "test-get-action"
             };
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).Returns(documentTypeDefinition);
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, null)
-            {
-                Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) },
-                HttpMethod = "GET"
-            };
+            mrCMSHttpHandler.Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            mrCMSHttpHandler.HttpMethod = "GET";
 
             mrCMSHttpHandler.GetActionName().Should().Be("test-get-action");
         }
@@ -498,17 +440,14 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_ReturnsDefinitionWebGetActionIfHttpMethodIsPOST()
         {
-            var documentService = A.Fake<IDocumentService>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
                 WebPostAction = "test-post-action"
             };
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).Returns(documentTypeDefinition);
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, null)
-            {
-                Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) },
-                HttpMethod = "POST"
-            };
+            mrCMSHttpHandler.Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            mrCMSHttpHandler.HttpMethod = "POST";
 
             mrCMSHttpHandler.GetActionName().Should().Be("test-post-action");
         }
@@ -516,17 +455,14 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_GetActionName_ReturnsNullIfHttpMethodIsSomethingElse()
         {
-            var documentService = A.Fake<IDocumentService>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
             {
                 WebPostAction = "test-post-action"
             };
             A.CallTo(() => documentService.GetDefinitionByType(typeof(StubAllowedWebpage))).Returns(documentTypeDefinition);
-            var mrCMSHttpHandler = new MrCMSHttpHandler(A.Fake<RequestContext>(), () => documentService, null)
-            {
-                Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) },
-                HttpMethod = "PUT"
-            };
+            mrCMSHttpHandler.Webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            mrCMSHttpHandler.HttpMethod = "PUT";
 
             mrCMSHttpHandler.GetActionName().Should().BeNull();
         }
@@ -534,9 +470,8 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_CheckIsFile_UrlEndsWithoutExtensionReturnsFalse()
         {
-            var requestContext = A.Fake<RequestContext>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => requestContext.HttpContext.Request.Url.ToString()).Returns("test-page");
-            var mrCMSHttpHandler = new MrCMSHttpHandler(requestContext, null, null);
 
             mrCMSHttpHandler.CheckIsFile().Should().BeFalse();
         }
@@ -544,9 +479,12 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_CheckIsFile_UrlEndsWithExtensionReturnsTrue()
         {
-            var requestContext = A.Fake<RequestContext>();
-            A.CallTo(() => requestContext.HttpContext.Request.Url.ToString()).Returns("test-page.jpg");
-            var mrCMSHttpHandler = new MrCMSHttpHandler(requestContext, null, null);
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            var httpContextBase = A.Fake<HttpContextBase>();
+            var httpRequestBase = A.Fake<HttpRequestBase>();
+            A.CallTo(() => requestContext.HttpContext).Returns(httpContextBase);
+            A.CallTo(() => httpContextBase.Request).Returns(httpRequestBase);
+            A.CallTo(() => httpRequestBase.Url).Returns(new Uri("/test-page.jpg", UriKind.Relative));
 
             mrCMSHttpHandler.CheckIsFile().Should().BeTrue();
         }
@@ -554,17 +492,29 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_SetFormData_IfHttpMethodIsPOSTAndTheFormDataIsNotNullSetTheRouteData()
         {
-            var requestContext = A.Fake<RequestContext>();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.HttpMethod = "POST";
             A.CallTo(() => requestContext.HttpContext.Request.Form)
              .Returns(new NameValueCollection { { "test", "data" } });
-            var mrCMSHttpHandler = new MrCMSHttpHandler(requestContext, null, null) { HttpMethod = "POST" };
-
             var controller = A.Fake<Controller>();
             var routeData = new RouteData();
             controller.ControllerContext = new ControllerContext { RouteData = routeData };
+            mrCMSHttpHandler.Webpage = new StubAllowedWebpage();
+
             mrCMSHttpHandler.SetFormData(controller);
 
             routeData.Values["form"].Should().NotBeNull();
+        }
+
+        private MrCMSHttpHandler GetMrCMSHttpHandler()
+        {
+            requestContext = A.Fake<RequestContext>();
+            session = A.Fake<ISession>();
+            siteSettings = A.Fake<SiteSettings>();
+            documentService = A.Fake<IDocumentService>();
+            var mrCMSHttpHandler = new MrCMSHttpHandler(requestContext, () => session, () => documentService,
+                                                        () => siteSettings);
+            return mrCMSHttpHandler;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         private readonly IFormService _formService;
         private readonly ISession _session;
 
-        public WebpageController(IDocumentService documentService, ISiteService siteService, IFormService formService,ISession session)
+        public WebpageController(IDocumentService documentService, ISiteService siteService, IFormService formService, ISession session)
             : base(documentService, siteService)
         {
             _formService = formService;
@@ -52,10 +52,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                                              doc.Layout.Id == layout.Id,
                                                              SelectListItemHelper.EmptyItem("Default Layout"));
 
-            var documentTypeDefinitions = (doc.Parent as Webpage).GetValidWebpageDocumentTypes().ToList();
+            var documentTypeDefinitions = (doc.Parent as Webpage).GetValidWebpageDocumentTypes(_documentService).ToList();
             ViewData["DocumentTypes"] = documentTypeDefinitions;
 
-            doc.AddTypeSpecificViewData(ViewData, _session);
+            doc.AdminViewData(ViewData, _session);
         }
 
         public override ActionResult Show(Webpage document)

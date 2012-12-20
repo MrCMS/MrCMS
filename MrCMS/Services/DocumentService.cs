@@ -58,6 +58,12 @@ namespace MrCMS.Services
             return _session.QueryOver<T>().Cacheable().List();
         }
 
+        public bool ExistAny(Type type)
+        {
+            var uniqueResult = _session.CreateCriteria(type).SetProjection(Projections.RowCount()).UniqueResult<int>();
+            return uniqueResult != 0;
+        }
+
         public IEnumerable<T> GetFrontEndDocumentsByParentId<T>(int? id) where T : Document
         {
             IEnumerable<T> children;

@@ -28,12 +28,15 @@ namespace MrCMS.Website
             var bindModel = base.BindModel(controllerContext, bindingContext);
             if (bindModel is BaseEntity)
             {
+                var model = bindModel;
                 bindingContext.ModelMetadata =
                         ModelMetadataProviders.Current.GetMetadataForType(
-                            () => CreateModel(controllerContext, bindingContext, bindModel.GetType()), bindModel.GetType());
+                            () => CreateModel(controllerContext, bindingContext, model.GetType()), bindModel.GetType());
                 bindingContext.ModelMetadata.Model = bindModel;
                 bindModel = base.BindModel(controllerContext, bindingContext);
-                (bindModel as BaseEntity).CustomBinding(controllerContext,Session);
+                var baseEntity = bindModel as BaseEntity;
+                if (baseEntity != null)
+                    baseEntity.CustomBinding(controllerContext,Session);
             }
             return bindModel;
         }
@@ -107,13 +110,19 @@ namespace MrCMS.Website
 
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
         {
-            if (typeof(BaseEntity).IsAssignableFrom(modelType))
+            return GetModelFromSession(controllerContext, bindingContext.ModelName, modelType)
+                   ?? base.CreateModel(controllerContext, bindingContext, modelType);
+        }
+
+        public object GetModelFromSession(ControllerContext controllerContext, string modelName, Type modelType)
+        {
+            if (typeof (BaseEntity).IsAssignableFrom(modelType))
             {
-                var subItem = string.Format("{0}.Id", bindingContext.ModelName);
+                var subItem = string.Format("{0}.Id", modelName);
 
                 var id =
-                        Convert.ToString(controllerContext.RouteData.Values[subItem] ??
-                                         controllerContext.HttpContext.Request[subItem]);
+                    Convert.ToString(controllerContext.RouteData.Values[subItem] ??
+                                     controllerContext.HttpContext.Request[subItem]);
 
                 int intId;
                 if (int.TryParse(id, out intId))
@@ -124,9 +133,8 @@ namespace MrCMS.Website
 
                 const string baseId = "Id";
                 id =
-                       Convert.ToString(controllerContext.RouteData.Values[baseId] ??
-                                        controllerContext.HttpContext.Request[baseId]);
-
+                    Convert.ToString(controllerContext.RouteData.Values[baseId] ??
+                                     controllerContext.HttpContext.Request[baseId]);
 
                 if (int.TryParse(id, out intId))
                 {
@@ -134,7 +142,7 @@ namespace MrCMS.Website
                     return obj ?? Activator.CreateInstance(modelType);
                 }
             }
-            return base.CreateModel(controllerContext, bindingContext, modelType);
+            return null;
         }
     }
 }

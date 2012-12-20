@@ -15,6 +15,7 @@ namespace MrCMS.Services
         T GetDocument<T>(int id) where T : Document;
         T SaveDocument<T>(T document) where T : Document;
         IEnumerable<T> GetAllDocuments<T>() where T : Document;
+        bool ExistAny(Type type);
         IEnumerable<T> GetFrontEndDocumentsByParentId<T>(int? id) where T : Document;
         IEnumerable<T> GetDocumentsByParentId<T>(int? id) where T : Document;
         IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Webpage;

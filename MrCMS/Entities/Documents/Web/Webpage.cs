@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -220,12 +219,12 @@ namespace MrCMS.Entities.Documents.Web
                                                        new RoleModel
                                                            {
                                                                Name = roleName,
-                                                               Status = GetStatus(
+                                                               Status = GetRoleStatus(
                                                                    webpage => webpage.FrontEndAllowedRoles,
                                                                    webpage => webpage.FrontEndDisallowedRoles,
                                                                    (webpage, s) => webpage.IsAllowed(roleName),
                                                                    roleName),
-                                                               Recursive = GetRecursive(
+                                                               Recursive = GetRoleIsRecursive(
                                                                    webpage => webpage.FrontEndAllowedRoles,
                                                                    webpage => webpage.FrontEndDisallowedRoles,
                                                                    roleName)
@@ -238,19 +237,19 @@ namespace MrCMS.Entities.Documents.Web
                                                            {
                                                                Name = roleName,
                                                                Status =
-                                                                   GetStatus(
+                                                                   GetRoleStatus(
                                                                        webpage => webpage.AdminAllowedRoles,
                                                                        webpage => webpage.AdminDisallowedRoles,
                                                                        (webpage, s) =>
                                                                        webpage.IsAllowedForAdmin(roleName),
                                                                        roleName),
-                                                               Recursive = GetRecursive(
+                                                               Recursive = GetRoleIsRecursive(
                                                                    webpage => webpage.AdminAllowedRoles,
                                                                    webpage => webpage.AdminDisallowedRoles, roleName)
                                                            });
         }
 
-        private bool? GetRecursive(Func<Webpage, IEnumerable<IRole>> allowedRoles, Func<Webpage, IEnumerable<IRole>> disallowedRoles, string roleName)
+        private bool? GetRoleIsRecursive(Func<Webpage, IEnumerable<IRole>> allowedRoles, Func<Webpage, IEnumerable<IRole>> disallowedRoles, string roleName)
         {
             return allowedRoles(this).Any(role => role.UserRole.Name == roleName)
                        ? allowedRoles(this).First(role => role.UserRole.Name == roleName).IsRecursive
@@ -259,7 +258,7 @@ namespace MrCMS.Entities.Documents.Web
                               : null);
         }
 
-        private RoleStatus GetStatus(Func<Webpage, IEnumerable<IRole>> allowedRoles, Func<Webpage, IEnumerable<IRole>> disallowedRoles,
+        private RoleStatus GetRoleStatus(Func<Webpage, IEnumerable<IRole>> allowedRoles, Func<Webpage, IEnumerable<IRole>> disallowedRoles,
             Func<Webpage, string, bool> func, string roleName)
         {
             return !AnyRoles(allowedRoles, disallowedRoles)
@@ -280,11 +279,15 @@ namespace MrCMS.Entities.Documents.Web
             AdminRoleUpdater.UpdateAdminRoleRecursive(controllerContext, session);
         }
 
-        public virtual void AddTypeSpecificViewData(ViewDataDictionary viewData, ISession session)
+        public virtual void AdminViewData(ViewDataDictionary viewData, ISession session)
+        {
+        }
+        
+        public virtual void AddCustomSitemapData(UrlHelper urlHelper, XmlNode url, XmlDocument xmlDocument)
         {
         }
 
-        public virtual void AddCustomSitemapData(UrlHelper urlHelper, XmlNode url, XmlDocument xmlDocument)
+        public virtual void UiViewData(ViewDataDictionary viewData, ISession session, HttpRequestBase request)
         {
         }
     }

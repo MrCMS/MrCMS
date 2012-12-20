@@ -123,6 +123,7 @@
     <Compile Include="Application\DbConfiguration\PlainTextWidgetOveride.cs" />
     <Compile Include="Application\DbConfiguration\TextPageOverride.cs" />
     <Compile Include="Application\DbConfiguration\TextWidgetOveride.cs" />
+    <Compile Include="Application\Entities\Order.cs" />
     <Compile Include="Application\Pages\SearchPage.cs" />
     <Compile Include="Application\Pages\TextPage.cs" />
     <Compile Include="Application\Widgets\PlainTextWidget.cs" />
@@ -622,7 +623,6 @@
     <Content Include="Views\Login\ResetComplete.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Application\Entities\" />
     <Folder Include="Application\Models\" />
     <Folder Include="Application\Services\" />
     <Folder Include="Application\Settings\" />

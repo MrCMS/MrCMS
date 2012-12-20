@@ -91,13 +91,8 @@ namespace MrCMS.Website
 
             RegisterAppSpecificRoutes(routes);
 
-            routes.Add(new Route("{*data}", new RouteValueDictionary
-                                                {
-
-                                                }, new RouteValueDictionary { },
-                                 GetConstraints(),
-                                 new MrCMSRouteHandler(Get<IDocumentService>,
-                                                       Get<SiteSettings>)));
+            routes.Add(new Route("{*data}", new RouteValueDictionary(), new RouteValueDictionary(), GetConstraints(),
+                                 new MrCMSRouteHandler(Get<ISession>, Get<IDocumentService>, Get<SiteSettings>)));
         }
 
         protected virtual RouteValueDictionary GetConstraints()
