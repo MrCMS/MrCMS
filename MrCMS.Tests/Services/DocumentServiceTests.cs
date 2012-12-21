@@ -27,6 +27,7 @@ namespace MrCMS.Tests.Services
         {
             _siteSettings = new SiteSettings();
         }
+
         [Fact]
         public void AddDocument_OnSave_AddsToRepository()
         {
@@ -853,6 +854,32 @@ namespace MrCMS.Tests.Services
             documentService.AddDocument(stubDocument);
 
             stubDocument.DisplayOrder.Should().Be(4);
+        }
+
+        [Fact]
+        public void DocumentService_GetProcessPageNonGeneric_InvalidTypeReturnsNull()
+        {
+            var documentService = GetDocumentService();
+
+            documentService.GetProcessPage(typeof(StubDocument)).Should().BeNull();
+        }
+
+        [Fact]
+        public void DocumentService_GetProcessPageNonGeneric_ValidTypeNoneSavedReturnsNull()
+        {
+            var documentService = GetDocumentService();
+
+            documentService.GetProcessPage(typeof(StubProcessPage)).Should().BeNull();
+        }
+
+        [Fact]
+        public void DocumentService_GetProcessPageNonGeneric_ValidTypeDocumentSavedReturnsDocument()
+        {
+            var documentService = GetDocumentService();
+            var stubProcessPage = new StubProcessPage();
+            Session.Transact(session => session.Save(stubProcessPage));
+
+            documentService.GetProcessPage(typeof (StubProcessPage)).Should().Be(stubProcessPage);
         }
     }
 }

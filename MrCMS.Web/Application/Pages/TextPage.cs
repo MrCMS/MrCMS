@@ -1,14 +1,10 @@
 ﻿using System.ComponentModel;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using MrCMS.Web.Application.Entities;
-using NHibernate;
 
 namespace MrCMS.Web.Application.Pages
 {

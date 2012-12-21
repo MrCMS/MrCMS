@@ -50,7 +50,7 @@ namespace MrCMS.Entities.Documents
 
         public int DisplayOrder { get; set; }
         public Type Type { get; set; }
-        public Type PostType { get; set; }
+        public Type[] PostTypes { get; set; }
         public string TypeName { get { return Type == null ? string.Empty : Type.Name; } }
 
         public ChildrenListType ChildrenListType { get; set; }

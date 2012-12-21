@@ -33,7 +33,7 @@ namespace MrCMS.Services
         public void AddDocument(Document document)
         {
             var sameParentDocs =
-                GetDocumentsByParentId<Document>(document.Parent == null ? (int?) null : document.Parent.Id);
+                GetDocumentsByParentId<Document>(document.Parent == null ? (int?)null : document.Parent.Id);
             document.DisplayOrder = sameParentDocs.Any() ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1 : 0;
             _session.Transact(session => session.SaveOrUpdate(document));
         }
@@ -46,6 +46,15 @@ namespace MrCMS.Services
         public T GetProcessPage<T>() where T : ProcessPage
         {
             return _session.QueryOver<T>().Take(1).Cacheable().SingleOrDefault();
+        }
+
+        public ProcessPage GetProcessPage(Type type)
+        {
+            if (!typeof(ProcessPage).IsAssignableFrom(type))
+            {
+                return null;
+            }
+            return GetType().GetMethod("GetProcessPage",new Type[0]).MakeGenericMethod(type).Invoke(this, new object[] { }) as ProcessPage;
         }
 
         public T SaveDocument<T>(T document) where T : Document

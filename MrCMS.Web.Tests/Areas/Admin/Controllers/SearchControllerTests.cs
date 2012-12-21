@@ -48,6 +48,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             result.Data.Should().BeOfType<object>();
         }
+
         [Fact]
         public void SearchController_GetSearchResults_WhiteSpaceStringgShouldReturnEmptyObject()
         {

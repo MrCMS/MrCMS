@@ -1,10 +1,11 @@
+using System;
+
 namespace MrCMS.Entities.Documents.Web
 {
+    /// <summary>
+    /// A restricted webpage type that can only exist once in a site
+    /// </summary>
     public abstract class ProcessPage : Webpage
     {
-    }
-    public abstract class ProcessPage<T> : ProcessPage where T : ProcessPage
-    {
-        public virtual T RedirectTo { get; set; }
     }
 }

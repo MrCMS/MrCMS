@@ -14,6 +14,7 @@ namespace MrCMS.Services
         void AddDocument(Document document);
         T GetDocument<T>(int id) where T : Document;
         T GetProcessPage<T>() where T : ProcessPage;
+        ProcessPage GetProcessPage(Type type);
         T SaveDocument<T>(T document) where T : Document;
         IEnumerable<T> GetAllDocuments<T>() where T : Document;
         bool ExistAny(Type type);

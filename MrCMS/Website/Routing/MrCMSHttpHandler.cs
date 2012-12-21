@@ -80,7 +80,7 @@ namespace MrCMS.Website.Routing
 
         public void SetViewModel(Controller controller)
         {
-            if (HttpMethod == "GET" && Webpage!= null)
+            if (HttpMethod == "GET" && Webpage != null)
             {
                 Webpage.UiViewData(controller.ViewData, Session, controller.Request);
             }
@@ -101,27 +101,28 @@ namespace MrCMS.Website.Routing
             if (HttpMethod == "POST" && RequestContext.HttpContext.Request.Form != null)
             {
                 var formCollection = new FormCollection(RequestContext.HttpContext.Request.Form);
-                if (WebpageDefinition != null && WebpageDefinition.PostType != null)
+                if (WebpageDefinition != null && WebpageDefinition.PostTypes != null && WebpageDefinition.PostTypes.Any())
                 {
-                    var type = WebpageDefinition.PostType;
-
-                    var modelBinder = ModelBinders.Binders.GetBinder(type) as MrCMSDefaultModelBinder;
-                    if (modelBinder != null)
+                    foreach (var type in WebpageDefinition.PostTypes)
                     {
-                        var modelBindingContext = new ModelBindingContext
-                                                      {
-                                                          ValueProvider =
-                                                              formCollection,
-                                                          ModelMetadata =
-                                                              ModelMetadataProviders.Current.GetMetadataForType(
-                                                                  () =>
-                                                                  modelBinder.GetModelFromSession(
-                                                                      controller.ControllerContext,
-                                                                      string.Empty, type), type)
-                                                      };
+                        var modelBinder = ModelBinders.Binders.GetBinder(type) as MrCMSDefaultModelBinder;
+                        if (modelBinder != null)
+                        {
+                            var modelBindingContext = new ModelBindingContext
+                                                          {
+                                                              ValueProvider =
+                                                                  formCollection,
+                                                              ModelMetadata =
+                                                                  ModelMetadataProviders.Current.GetMetadataForType(
+                                                                      () =>
+                                                                      modelBinder.GetModelFromSession(
+                                                                          controller.ControllerContext,
+                                                                          string.Empty, type), type)
+                                                          };
 
-                        var model = modelBinder.BindModel(controller.ControllerContext, modelBindingContext);
-                        controller.RouteData.Values["model"] = model;
+                            var model = modelBinder.BindModel(controller.ControllerContext, modelBindingContext);
+                            controller.RouteData.Values[type.Name.ToLower()] = model;
+                        }
                     }
                 }
                 else

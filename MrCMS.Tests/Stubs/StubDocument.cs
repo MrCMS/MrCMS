@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Tests.Stubs
 {
@@ -20,5 +21,9 @@ namespace MrCMS.Tests.Stubs
         {
             Versions = versions;
         }
+    }
+    [MrCMSMapClass]
+    public class StubProcessPage : ProcessPage
+    {
     }
 }
