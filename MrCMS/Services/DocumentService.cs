@@ -43,6 +43,11 @@ namespace MrCMS.Services
             return _session.Get<T>(id);
         }
 
+        public T GetProcessPage<T>() where T : ProcessPage
+        {
+            return _session.QueryOver<T>().Take(1).Cacheable().SingleOrDefault();
+        }
+
         public T SaveDocument<T>(T document) where T : Document
         {
             _session.Transact(session =>
