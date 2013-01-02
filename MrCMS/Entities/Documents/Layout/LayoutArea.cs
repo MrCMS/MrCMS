@@ -52,8 +52,7 @@ namespace MrCMS.Entities.Documents.Layout
                                 widget => pageWidgetSorts.Select(sort => sort.Widget.Id).Contains(widget.Id)).ThenBy(
                                     widget => pageWidgetSorts.Select(sort => sort.Widget.Id).ToList().IndexOf(widget.Id))
                                    .ToList();
-                        return
-                            list;
+                        return list;
                     }
                 }
             }
