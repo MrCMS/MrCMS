@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Web.Mvc;
 using MrCMS.Entities.Multisite;
+using MrCMS.Models;
 using NHibernate;
 using Ninject;
 
@@ -92,6 +93,21 @@ namespace MrCMS.Settings
                 yield return MediumSize;
                 yield return SmallSize;
                 yield return ThumbnailSize;
+            }
+        }
+
+        public IEnumerable<ImageSize> ImageSizes
+        {
+            get
+            {
+                if (LargeSize != Size.Empty)
+                    yield return new ImageSize("Large", LargeSize);
+                if (MediumSize != Size.Empty)
+                    yield return new ImageSize("Medium", MediumSize);
+                if (SmallSize != Size.Empty)
+                    yield return new ImageSize("Small", SmallSize);
+                if (ThumbnailSize != Size.Empty)
+                    yield return new ImageSize("Thumbnail", ThumbnailSize);
             }
         }
 

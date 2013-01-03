@@ -4,6 +4,7 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
+using MrCMS.Settings;
 using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
@@ -14,6 +15,7 @@ namespace MrCMS.Tests.Services
     public class FileServiceTests : InMemoryDatabaseTest
     {
         private static IFileSystem _fileSystem;
+        private static MediaSettings mediaSettings;
 
         [Fact]
         public void FileService_AddFile_NullMediaCategoryThrowsArgumentNullException()
@@ -36,8 +38,19 @@ namespace MrCMS.Tests.Services
                                     return Path.GetExtension(o.ToString());
                                 });
 
+            mediaSettings = new MediaSettings
+                                {
+                                    LargeImageHeight = 480,
+                                    LargeImageWidth = 640,
+                                    MediumImageHeight = 200,
+                                    MediumImageWidth = 320,
+                                    SmallImageHeight = 75,
+                                    SmallImageWidth = 100,
+                                    ThumbnailImageHeight = 64,
+                                    ThumbnailImageWidth = 64
+                                };
             return new FileService(session ?? Session, fileSystem ?? _fileSystem,
-                                   A.Fake<IImageProcessor>());
+                                   A.Fake<IImageProcessor>(), mediaSettings);
         }
 
         [Fact]

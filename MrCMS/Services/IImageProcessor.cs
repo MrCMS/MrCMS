@@ -13,7 +13,6 @@ namespace MrCMS.Services
 {
     public interface IImageProcessor
     {
-        List<ImageSize> GetImageSizes();
         MediaFile GetImage(string imageUrl);
 
         void SetFileDimensions(MediaFile mediaFile, Stream stream);
@@ -27,11 +26,6 @@ namespace MrCMS.Services
         public ImageProcessor(ISession session)
         {
             _session = session;
-        }
-
-        public List<ImageSize> GetImageSizes()
-        {
-            throw new NotImplementedException();
         }
 
         public MediaFile GetImage(string imageUrl)
@@ -170,9 +164,13 @@ namespace MrCMS.Services
                         ? originalSize.Width / (double)targetSize.Width
                         : originalSize.Height / (double)targetSize.Height;
 
-            var resizeWidth = Math.Ceiling(originalSize.Width / ratio);
+            var width = Math.Ceiling(originalSize.Width/ratio);
+            width = width > targetSize.Width ? targetSize.Width : width;
+            var resizeWidth = width;
 
-            var resizeHeight = Math.Ceiling(originalSize.Height / ratio);
+            var height = Math.Ceiling(originalSize.Height/ratio);
+            height = height > targetSize.Height ? targetSize.Height : height;
+            var resizeHeight = height;
 
             return new Size((int)resizeWidth, (int)resizeHeight);
         }
@@ -180,23 +178,6 @@ namespace MrCMS.Services
         public static bool RequiresResize(Size originalSize, Size targetSize)
         {
             return targetSize.Width < originalSize.Width || targetSize.Height < originalSize.Height;
-        }
-
-        public static List<ImageSize> ImageSizes
-        {
-            get
-            {
-                return new List<ImageSize>
-                           {
-                               new ImageSize {Size = new Size(480, 640), Name = "Large - Portrait"},
-                               new ImageSize {Size = new Size(640, 480), Name = "Large - Landscape"},
-                               new ImageSize {Size = new Size(240, 320), Name = "Medium - Portrait"},
-                               new ImageSize {Size = new Size(320, 240), Name = "Medium - Landscape"},
-                               new ImageSize {Size = new Size(75, 100), Name = "Small - Portrait"},
-                               new ImageSize {Size = new Size(100, 75), Name = "Small - Landscape"},
-                               new ImageSize {Size = new Size(64, 64), Name = "Thumbnail"}
-                           };
-            }
         }
 
         /// <summary>

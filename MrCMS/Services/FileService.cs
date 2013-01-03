@@ -19,13 +19,15 @@ namespace MrCMS.Services
         private readonly ISession _session;
         private readonly IFileSystem _fileSystem;
         private readonly IImageProcessor _imageProcessor;
+        private readonly MediaSettings _mediaSettings;
         private const string _mediaDirectory = "content/upload";
 
-        public FileService(ISession session,  IFileSystem fileSystem, IImageProcessor imageProcessor)
+        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor,MediaSettings mediaSettings)
         {
             _session = session;
             _fileSystem = fileSystem;
             _imageProcessor = imageProcessor;
+            _mediaSettings = mediaSettings;
         }
 
         public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, int contentLength, MediaCategory mediaCategory)
@@ -159,7 +161,7 @@ namespace MrCMS.Services
             foreach (var imageUrl in
                 GetImageSizes()
                     .Select(imageSize => GetUrl(mediaFile, imageSize.Size))
-                    .Select(imageUrl => new {imageUrl, file = _fileSystem.ApplicationPath + imageUrl})
+                    .Select(imageUrl => new { imageUrl, file = _fileSystem.ApplicationPath + imageUrl })
                     .Where(@t => _fileSystem.Exists(@t.file))
                     .Select(@t => @t.imageUrl))
             {
@@ -176,7 +178,7 @@ namespace MrCMS.Services
 
         public List<ImageSize> GetImageSizes()
         {
-            return ImageProcessor.ImageSizes;
+            return _mediaSettings.ImageSizes.ToList();
         }
 
         public string GetFileLocation(MediaFile mediaFile, Size imageSize)

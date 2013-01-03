@@ -7,12 +7,13 @@ using System.IO;
 using System.Linq;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Settings;
+using MrCMS.Website;
 
 namespace MrCMS.Entities.Documents.Media
 {
     public class MediaFile : BaseEntity
     {
-
         public virtual string FileExtension { get; set; }
         public virtual string ContentType { get; set; }
         public virtual MediaCategory MediaCategory { get; set; }
@@ -40,11 +41,16 @@ namespace MrCMS.Entities.Documents.Media
         {
             get
             {
-                yield return new ImageSize { Size = Size, ActualSize = Size, Name = "Original" };
-                foreach (var imageSize in ImageProcessor.ImageSizes.Where(size => ImageProcessor.RequiresResize(Size, size.Size)))
+                if (IsImage)
                 {
-                    imageSize.ActualSize = ImageProcessor.CalculateDimensions(Size, imageSize.Size);
-                    yield return imageSize;
+                    yield return new ImageSize("Original", Size);
+                    foreach (
+                        var imageSize in
+                            MrCMSApplication.Get<MediaSettings>().ImageSizes.Where(size => ImageProcessor.RequiresResize(Size, size.Size)))
+                    {
+                        imageSize.ActualSize = ImageProcessor.CalculateDimensions(Size, imageSize.Size);
+                        yield return imageSize;
+                    }
                 }
             }
         }
