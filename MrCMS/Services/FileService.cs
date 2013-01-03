@@ -122,7 +122,7 @@ namespace MrCMS.Services
                 return file.FileLocation;
 
             //check to see if the image already exists, if it does simply return it
-            var requestedFileLocation = RequestedImageFileLocation(file, size);
+            var requestedFileLocation = ImageProcessor.RequestedImageFileLocation(file, size);
 
             if (_fileSystem.Exists(_fileSystem.ApplicationPath + requestedFileLocation))
                 return requestedFileLocation;
@@ -135,22 +135,6 @@ namespace MrCMS.Services
             _imageProcessor.SaveResizedImage(file, size, fileBytes, _fileSystem.ApplicationPath + requestedFileLocation);
 
             return requestedFileLocation;
-        }
-
-        /// <summary>
-        /// Returns the name and full path of the requested file
-        /// </summary>
-        private string RequestedImageFileLocation(MediaFile file, Size size)
-        {
-            if (file.Size == size)
-                return file.FileLocation;
-
-            var fileLocation = file.FileLocation;
-
-            var temp = fileLocation.Replace(file.FileExtension, "");
-            return size.Height >= size.Width
-                       ? temp.Insert(temp.Length, "_h" + size.Height + file.FileExtension)
-                       : temp.Insert(temp.Length, "_w" + size.Width + file.FileExtension);
         }
 
         public ViewDataUploadFilesResult[] GetFiles(int mediaCategoryId)

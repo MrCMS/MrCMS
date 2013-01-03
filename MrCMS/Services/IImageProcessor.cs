@@ -88,8 +88,6 @@ namespace MrCMS.Services
 
         public void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string filePath)
         {
-
-
             using (var stream = new MemoryStream(fileBytes))
             {
                 using (var b = new Bitmap(stream))
@@ -172,9 +170,9 @@ namespace MrCMS.Services
                         ? originalSize.Width / (double)targetSize.Width
                         : originalSize.Height / (double)targetSize.Height;
 
-            var resizeWidth = Math.Floor(originalSize.Width / ratio);
+            var resizeWidth = Math.Ceiling(originalSize.Width / ratio);
 
-            var resizeHeight = Math.Floor(originalSize.Height / ratio);
+            var resizeHeight = Math.Ceiling(originalSize.Height / ratio);
 
             return new Size((int)resizeWidth, (int)resizeHeight);
         }
@@ -199,6 +197,22 @@ namespace MrCMS.Services
                                new ImageSize {Size = new Size(64, 64), Name = "Thumbnail"}
                            };
             }
+        }
+
+        /// <summary>
+        /// Returns the name and full path of the requested file
+        /// </summary>
+        public static string RequestedImageFileLocation(MediaFile file, Size size)
+        {
+            if (file.Size == size)
+                return file.FileLocation;
+
+            var fileLocation = file.FileLocation;
+
+            var temp = fileLocation.Replace(file.FileExtension, "");
+            return size.Height >= size.Width
+                       ? temp.Insert(temp.Length, "_h" + size.Height + file.FileExtension)
+                       : temp.Insert(temp.Length, "_w" + size.Width + file.FileExtension);
         }
     }
 }

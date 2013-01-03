@@ -1,7 +1,9 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using FluentAssertions;
 using MrCMS.Services;
 using Xunit;
+using Xunit.Extensions;
 
 namespace MrCMS.Tests.Services
 {
@@ -23,6 +25,27 @@ namespace MrCMS.Tests.Services
         public void ImageProcessor_RequiresResize_IfTargetSizeHeightIsSmallerThanOriginalWidthReturnTrue()
         {
             ImageProcessor.RequiresResize(new Size(20, 20), new Size(20, 19)).Should().BeTrue();
+        }
+
+        [Theory, PropertyData("ImageProcessingValues")]
+        public void ImageProcessor_CalculateDimensions_ShouldResizeToLongestSide(Size from, Size to, Size expected)
+        {
+            var size = ImageProcessor.CalculateDimensions(from, to);
+
+            size.Should().Be(expected);
+        }
+
+        public static IEnumerable<object[]> ImageProcessingValues
+        {
+            get
+            {
+                yield return new object[] { new Size(1000, 1000), new Size(500, 500), new Size(500, 500) };
+                yield return new object[] { new Size(1000, 1000), new Size(500, 250), new Size(250, 250) };
+                yield return new object[] { new Size(1000, 1000), new Size(250, 500), new Size(250, 250) };
+                yield return new object[] { new Size(620, 297), new Size(300, 300), new Size(300, 144) };
+                yield return new object[] { new Size(300, 200), new Size(100, 100), new Size(100, 67) };
+                yield return new object[] { new Size(200, 300), new Size(100, 100), new Size(67, 100) };
+            }
         }
     }
 }

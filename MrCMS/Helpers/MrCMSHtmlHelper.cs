@@ -435,7 +435,7 @@ namespace MrCMS.Helpers
                 var resized = ImageProcessor.CalculateDimensions(image.Size, targetSize);
                 var location = fileService.GetFileLocation(image, resized);
                 if (!string.IsNullOrWhiteSpace(location))
-                    imageUrl = location;
+                    imageUrl = "/" + location;
             }
 
             var tagBuilder = new TagBuilder("img");
