@@ -861,7 +861,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.GetProcessPage(typeof(StubDocument)).Should().BeNull();
+            documentService.GetUniquePage(typeof(StubDocument)).Should().BeNull();
         }
 
         [Fact]
@@ -869,17 +869,17 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.GetProcessPage(typeof(StubProcessPage)).Should().BeNull();
+            documentService.GetUniquePage(typeof(StubUniquePage)).Should().BeNull();
         }
 
         [Fact]
         public void DocumentService_GetProcessPageNonGeneric_ValidTypeDocumentSavedReturnsDocument()
         {
             var documentService = GetDocumentService();
-            var stubProcessPage = new StubProcessPage();
+            var stubProcessPage = new StubUniquePage();
             Session.Transact(session => session.Save(stubProcessPage));
 
-            documentService.GetProcessPage(typeof (StubProcessPage)).Should().Be(stubProcessPage);
+            documentService.GetUniquePage(typeof (StubUniquePage)).Should().Be(stubProcessPage);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace MrCMS.Entities.Documents.Web
     /// <summary>
     /// A restricted webpage type that can only exist once in a site
     /// </summary>
-    public abstract class ProcessPage : Webpage
+    public abstract class UniquePage : Webpage
     {
     }
 }

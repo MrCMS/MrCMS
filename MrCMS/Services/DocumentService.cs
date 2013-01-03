@@ -43,18 +43,18 @@ namespace MrCMS.Services
             return _session.Get<T>(id);
         }
 
-        public T GetProcessPage<T>() where T : ProcessPage
+        public T GetUniquePage<T>() where T : UniquePage
         {
             return _session.QueryOver<T>().Take(1).Cacheable().SingleOrDefault();
         }
 
-        public ProcessPage GetProcessPage(Type type)
+        public UniquePage GetUniquePage(Type type)
         {
-            if (!typeof(ProcessPage).IsAssignableFrom(type))
+            if (!typeof(UniquePage).IsAssignableFrom(type))
             {
                 return null;
             }
-            return GetType().GetMethod("GetProcessPage",new Type[0]).MakeGenericMethod(type).Invoke(this, new object[] { }) as ProcessPage;
+            return GetType().GetMethod("GetUniquePage", new Type[0]).MakeGenericMethod(type).Invoke(this, new object[] { }) as UniquePage;
         }
 
         public T SaveDocument<T>(T document) where T : Document
