@@ -108,7 +108,7 @@ namespace MrCMS.DbConfiguration
 
             var config = Fluently.Configure()
                 .Database(GetPersistenceConfigurer())
-                .Mappings(m => m.AutoMappings.Add(AutoMap.Assemblies(new TheventsMappingConfiguration(), finalAssemblies)
+                .Mappings(m => m.AutoMappings.Add(AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
                                                 .IgnoreBase<BaseEntity>().IncludeBase<Document>().IncludeBase<Webpage>()
                                                 .IncludeBase<Widget>().IncludeBase<Layout>()
                                                 .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())

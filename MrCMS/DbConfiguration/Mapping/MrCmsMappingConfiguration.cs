@@ -6,7 +6,7 @@ using MrCMS.Entities.Documents;
 
 namespace MrCMS.DbConfiguration.Mapping
 {
-    public class TheventsMappingConfiguration : DefaultAutomappingConfiguration
+    public class MrCMSMappingConfiguration : DefaultAutomappingConfiguration
     {
         public override bool ShouldMap(Type type)
         {

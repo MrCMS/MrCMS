@@ -13,6 +13,7 @@
         var displayNameAttribute = property.GetCustomAttributes(typeof(DisplayNameAttribute), true).OfType<DisplayNameAttribute>().FirstOrDefault();
         var dropDownSelectionAttribute = property.GetCustomAttributes(typeof(DropDownSelectionAttribute), true).OfType<DropDownSelectionAttribute>().FirstOrDefault();
         var textAreaAttribute = property.GetCustomAttributes(typeof(TextAreaAttribute), true).OfType<TextAreaAttribute>().FirstOrDefault();
+        var mediaSelectorAttribute = property.GetCustomAttributes(typeof(MediaSelectorAttribute), true).OfType<MediaSelectorAttribute>().FirstOrDefault();
         var readonlyAttribute = property.GetCustomAttributes(typeof(ReadOnlyAttribute), true).OfType<ReadOnlyAttribute>().FirstOrDefault(attribute => attribute.IsReadOnly);
 
         @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
@@ -31,6 +32,10 @@
         else if (property.PropertyType == typeof(bool))
         {
         @Html.CheckBox(name, (bool)property.GetValue(Model, null))
+        }
+        else if (mediaSelectorAttribute != null)
+        {
+        @Html.TextBox(name, Convert.ToString(property.GetValue(Model, null)), new { @class = "media-selector" })
         }
         else
         {

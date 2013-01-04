@@ -244,6 +244,7 @@
     <Compile Include="Settings\ISettings.cs" />
     <Compile Include="Settings\ISettingService.cs" />
     <Compile Include="Settings\MailSettings.cs" />
+    <Compile Include="Settings\MediaSelectorAttribute.cs" />
     <Compile Include="Settings\MediaSettings.cs" />
     <Compile Include="Settings\SEOSettings.cs" />
     <Compile Include="Settings\SettingService.cs" />
@@ -275,6 +276,7 @@
     <Compile Include="Website\Routing\HandlerControllerModel.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandler.cs" />
+    <Compile Include="Website\MrCMSPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
