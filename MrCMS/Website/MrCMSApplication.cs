@@ -208,12 +208,6 @@ namespace MrCMS.Website
                        .List();
         }
 
-        public static Site CurrentSite
-        {
-            get { return (Site)CurrentContext.Items["current.site"]; }
-            set { CurrentContext.Items["current.site"] = value; }
-        }
-
         public static Webpage CurrentPage
         {
             get { return (Webpage)CurrentContext.Items["current.webpage"]; }

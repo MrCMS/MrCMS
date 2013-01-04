@@ -31,11 +31,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public virtual ActionResult Add(int? id, int? siteId = null)
         {
             //Build list 
+            var document = _documentService.GetDocument<Document>(id.GetValueOrDefault(0));
             var model = new AddPageModel
-                {
-                    Parent = _documentService.GetDocument<Document>(id.GetValueOrDefault(0)),
-                    Site = _siteService.GetSite(siteId.GetValueOrDefault())
-                };
+            {
+                Parent = document,
+                Site = _siteService.GetSite(siteId.GetValueOrDefault(document == null ? 0 : (document is IHaveSite) ? (document as IHaveSite).Site.Id : 0))
+            };
             PopulateEditDropdownLists(model as T);
             return View(model);
         }

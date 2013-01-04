@@ -56,7 +56,6 @@ namespace MrCMS.Website.Binders
                 }
             }
 
-
             return objects;
         }
 

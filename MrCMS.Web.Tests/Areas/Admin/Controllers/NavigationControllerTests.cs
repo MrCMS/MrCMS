@@ -54,7 +54,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void NavigationController_LayoutTree_ShouldReturnSiteTreeAsModel()
+        public void NavigationController_LayoutTree_ShouldReturnLayoutTreeListModel()
         {
             var navigationController = GetNavigationController();
             var site = new Site();

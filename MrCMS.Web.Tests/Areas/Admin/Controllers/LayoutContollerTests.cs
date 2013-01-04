@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
@@ -40,7 +41,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void LayoutController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
         {
             var layoutController = GetLayoutController();
-            A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(new TextPage { Id = 1 });
+            A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(new TextPage { Id = 1, Site = new Site() });
 
             var actionResult = layoutController.Add(1, 2) as ViewResult;
 

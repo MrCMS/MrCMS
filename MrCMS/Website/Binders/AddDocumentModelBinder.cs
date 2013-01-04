@@ -11,7 +11,9 @@ namespace MrCMS.Website.Binders
 {
     public class AddDocumentModelBinder : DocumentModelBinder
     {
-        public AddDocumentModelBinder(ISession session, IDocumentService documentService) : base(session, documentService)
+
+        public AddDocumentModelBinder(ISession session, IDocumentService documentService)
+            : base(session, documentService)
         {
         }
 
@@ -25,19 +27,18 @@ namespace MrCMS.Website.Binders
 
             var document = base.BindModel(controllerContext, bindingContext) as Document;
 
+            // Extension method used to break cache
+            document.SetParent(document.Parent);
             //set include as navigation as default
             if (document is Webpage)
             {
                 (document as Webpage).RevealInNavigation = true;
+
+                var pages = (document.Parent == null
+                                 ? MrCMSApplication.RootChildren((document as Webpage).Site)
+                                 : document.Parent.Children.OfType<Webpage>()).ToList();
+                document.DisplayOrder = pages.Any() ? pages.Max(x => x.DisplayOrder) + 1 : 0;
             }
-
-            // Extension method used to break cache
-            document.SetParent(document.Parent);
-            var pages = (document.Parent == null
-                             ? MrCMSApplication.RootChildren(MrCMSApplication.CurrentSite)
-                             : document.Parent.Children.OfType<Webpage>()).ToList();
-            document.DisplayOrder = pages.Any() ? pages.Max(x => x.DisplayOrder) + 1 : 0;
-
             var taglist = GetValueFromContext(controllerContext, "TagList");
             DocumentService.SetTags(taglist, document);
 
