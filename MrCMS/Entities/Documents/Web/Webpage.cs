@@ -17,7 +17,7 @@ using NHibernate;
 
 namespace MrCMS.Entities.Documents.Web
 {
-    public abstract class Webpage : Document
+    public abstract class Webpage : Document, IHaveSite
     {
         private Layout.Layout _layout;
         private readonly AdminRoleUpdater _adminRoleUpdater;

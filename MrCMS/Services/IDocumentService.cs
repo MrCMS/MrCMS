@@ -20,7 +20,7 @@ namespace MrCMS.Services
         bool ExistAny(Type type);
         IEnumerable<T> GetFrontEndDocumentsByParentId<T>(int? id) where T : Document;
         IEnumerable<T> GetDocumentsByParentId<T>(int? id) where T : Document;
-        IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Webpage;
+        IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Document, IHaveSite;
         T GetDocumentByUrl<T>(string url) where T : Document;
         string GetDocumentUrl(string pageName, int? parentId, bool useHierarchy = false);
         IEnumerable<SearchResultModel> SearchDocuments<T>(string searchTerm) where T : Document;
@@ -42,5 +42,10 @@ namespace MrCMS.Services
         DocumentVersion GetDocumentVersion(int id);
         void SetParent(Document document, int? parentId);
         DocumentTypeDefinition GetDefinitionByType(Type type);
+    }
+
+    public interface IHaveSite
+    {
+        Site Site { get; set; }
     }
 }

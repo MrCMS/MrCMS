@@ -57,11 +57,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void NavigationController_LayoutTree_ShouldReturnSiteTreeAsModel()
         {
             var navigationController = GetNavigationController();
-            A.CallTo(() => navigationService.GetLayoutList()).Returns(new SiteTree<Layout>());
+            var site = new Site();
+            A.CallTo(() => _siteService.GetCurrentSite()).Returns(site);
+            A.CallTo(() => navigationService.GetLayoutList(site)).Returns(new SiteTree<Layout>());
 
             var partialViewResult = navigationController.LayoutTree();
 
-            partialViewResult.Model.Should().BeOfType<SiteTree<Layout>>();
+            partialViewResult.Model.Should().BeOfType<LayoutTreeListModel>();
         }
 
         [Fact]

@@ -132,7 +132,7 @@ namespace MrCMS.Services
             return children.OrderBy(arg => arg.DisplayOrder);
         }
 
-        public IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Webpage
+        public IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Document, IHaveSite
         {
             IEnumerable<T> children;
             Document document = null;
@@ -146,8 +146,8 @@ namespace MrCMS.Services
                 children = _session.QueryOver<T>().Where(arg => arg.Parent == null && arg.Site == site).List();
             }
 
-            children =
-                children.Where(arg => arg.IsAllowedForAdmin(MrCMSApplication.CurrentUser));
+            //children =
+            //    children.Where(arg => arg.IsAllowedForAdmin(MrCMSApplication.CurrentUser));
 
             if (document != null)
             {
@@ -308,7 +308,6 @@ namespace MrCMS.Services
                     var layout = _session.QueryOver<Layout>().Where(x => x.Name == defaultLayoutName).Cacheable().Take(1).SingleOrDefault();
                     if (layout != null)
                         return layout;
-
                 }
             }
             var settingValue = _siteSettings.DefaultLayoutId;

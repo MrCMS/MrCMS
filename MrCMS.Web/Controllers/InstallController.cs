@@ -259,7 +259,6 @@ namespace MrCMS.Web.Controllers
             var siteSettings = new SiteSettings { Site = site };
 
             var documentService = new DocumentService(session, siteSettings, siteService);
-            var userService = new UserService(session, siteService);
 
             var user = new User
             {
@@ -275,6 +274,7 @@ namespace MrCMS.Web.Controllers
             var layout = new Layout
                                {
                                    Name = "Base Layout",
+                                   Site = site,
                                    UrlSegment = "~/Views/Shared/_Layout.cshtml"
                                };
             documentService.AddDocument(layout);
@@ -284,7 +284,7 @@ namespace MrCMS.Web.Controllers
                                                 Name = "Home",
                                                 UrlSegment = "home",
                                                 Site = site,
-                RevealInNavigation = true
+                                                RevealInNavigation = true
                                             });
 
             var error404 = new TextPage
@@ -329,6 +329,7 @@ namespace MrCMS.Web.Controllers
 
             var configurationProvider = new ConfigurationProvider(new SettingService(session));
             configurationProvider.SaveSettings(siteSettings);
+            configurationProvider.SaveSettings(mediaSettings);
 
 
             var adminUserRole = new UserRole

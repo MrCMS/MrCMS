@@ -13,7 +13,7 @@ namespace MrCMS.Services
     {
         SiteTree<Webpage> GetWebsiteTree(Site site, int? depth = null);
         SiteTree<MediaCategory> GetMediaTree();
-        SiteTree<Layout> GetLayoutList();
+        SiteTree<Layout> GetLayoutList(Site site);
         SiteTree<User> GetUserList();
         IEnumerable<SelectListItem> GetParentsList(Site site);
         string GetSiteMap(UrlHelper urlHelper, Site site);

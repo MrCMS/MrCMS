@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Services;
 
 namespace MrCMS.Entities.Documents.Layout
 {
     [DocumentTypeDefinition(ChildrenListType.WhiteList, Name = "Layout", IconClass = "icon-th", DisplayOrder = 1, Type = typeof(Layout), WebGetAction = "View", WebGetController = "Layout")]
-    public class Layout : Document
+    public class Layout : Document, IHaveSite
     {
         //todo this can't be protected, required in admin on layoput edit
         public virtual IList<LayoutArea> LayoutAreas { get; set; }
@@ -24,6 +26,8 @@ namespace MrCMS.Entities.Documents.Layout
         }
 
         public virtual IList<Webpage> Webpages { get; set; }
+
+        public virtual Site Site { get; set; }
 
         public virtual bool Hidden { get; set; }
 

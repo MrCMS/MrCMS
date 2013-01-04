@@ -48,7 +48,7 @@ namespace MrCMS.Settings
 
         public void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-            viewDataDictionary["DefaultLayoutOptions"] = _siteSettingsOptionGenerator.GetLayoutOptions(session, DefaultLayoutId);
+            viewDataDictionary["DefaultLayoutOptions"] = _siteSettingsOptionGenerator.GetLayoutOptions(session, Site, DefaultLayoutId);
             viewDataDictionary["404Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error404PageId);
             viewDataDictionary["500Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error500PageId);
         }

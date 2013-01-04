@@ -97,7 +97,9 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, -1);
+            var site = new Site();
+            Session.Transact(session => session.Save(site));
+            var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, site, -1);
 
             errorPageOptions.Should().HaveCount(0);
         }
@@ -107,7 +109,9 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, -1, true);
+            var site = new Site();
+            Session.Transact(session => session.Save(site));
+            var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, site, -1, true);
 
             errorPageOptions.Should().HaveCount(1);
             errorPageOptions[0].Text.Should().Be("Default Layout");
@@ -118,10 +122,11 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var layout = new Layout { Name = "Test Layout" };
+            var site = new Site();
+            var layout = new Layout { Name = "Test Layout", Site = site };
             Session.Transact(session => session.Save(layout));
 
-            var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, -1);
+            var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, site, -1);
 
             errorPageOptions.Should().HaveCount(1);
             errorPageOptions[0].Text.Should().Be("Test Layout");
@@ -133,19 +138,41 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var layout = new Layout { Name = "Test Layout" };
-            var layout2 = new Layout { Name = "Test Layout 2" };
+            var site = new Site();
+            var layout = new Layout { Name = "Test Layout", Site = site };
+            var layout2 = new Layout { Name = "Test Layout 2", Site = site };
             Session.Transact(session =>
-                                 {
-                                     session.Save(layout);
-                                     session.Save(layout2);
-                                 });
+            {
+                session.Save(layout);
+                session.Save(layout2);
+            });
 
-            var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, layout2.Id);
+            var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, site, layout2.Id);
 
             errorPageOptions.Should().HaveCount(2);
             errorPageOptions[0].Selected.Should().BeFalse();
             errorPageOptions[1].Selected.Should().BeTrue();
+        }
+
+        [Fact]
+        public void SiteSettingsOptionGenerator_GetLayoutOptions_FiltersBySite()
+        {
+            var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
+
+            var site1 = new Site();
+            var site2 = new Site();
+            var layout = new Layout { Name = "Test Layout", Site = site1 };
+            var layout2 = new Layout { Name = "Test Layout 2", Site = site2 };
+            Session.Transact(session =>
+            {
+                session.Save(layout);
+                session.Save(layout2);
+            });
+
+            var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, site2, layout2.Id);
+
+            errorPageOptions.Should().HaveCount(1);
+            errorPageOptions[0].Value.Should().Be(layout2.Id.ToString());
         }
     }
 }

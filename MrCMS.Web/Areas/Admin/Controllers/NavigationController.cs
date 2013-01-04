@@ -42,7 +42,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public PartialViewResult LayoutTree()
         {
-            return PartialView("LayoutTree", _service.GetLayoutList());
+            var sites = _siteService.GetAllSites();
+            var currentSite = _siteService.GetCurrentSite();
+            return PartialView("LayoutTree",
+                               new LayoutTreeListModel(sites.BuildSelectItemList(site => site.Name,
+                                                                                  site => site.Id.ToString(),
+                                                                                  site => site == currentSite,
+                                                                                  emptyItemText: null),
+                                                        sites.Select(site => _service.GetLayoutList(site)).ToList()));
         }
 
         public PartialViewResult UserList()

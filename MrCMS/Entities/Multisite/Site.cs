@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Settings;
@@ -14,6 +15,8 @@ namespace MrCMS.Entities.Multisite
         public virtual string BaseUrl { get; set; }
 
         public virtual IList<Webpage> Webpages { get; set; }
+
+        public virtual IList<Layout> Layouts { get; set; }
 
         public virtual IList<Setting> Settings { get; set; }
 

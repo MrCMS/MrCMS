@@ -59,7 +59,7 @@ namespace MrCMS.Tests.Services
                                      session.SaveOrUpdate(site);
                                  });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(),new SiteService(Session,A.Fake<HttpRequestBase>())), null);
+            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), new SiteService(Session, A.Fake<HttpRequestBase>())), null);
             var websiteTree = navigationService.GetWebsiteTree(site);
 
             websiteTree.Children.Should().HaveCount(1);
@@ -106,17 +106,18 @@ namespace MrCMS.Tests.Services
         public void NavigationService_LayoutList_WithRootShouldReturnASiteTree()
         {
             var navigationService = GetDefaultNavigationService();
-            var layoutList = navigationService.GetLayoutList();
+            var layoutList = navigationService.GetLayoutList(new Site());
             layoutList.Should().BeOfType<SiteTree<Layout>>();
         }
 
         [Fact]
         public void NavigationService_LayoutList_SiteTreeShouldBeFlatListOfLayouts()
         {
-            var layout1 = new Layout { };
-            var layout2 = new Layout { };
-            var layout3 = new Layout { };
-            var layout4 = new Layout { };
+            var site = new Site();
+            var layout1 = new Layout { Site = site };
+            var layout2 = new Layout { Site = site };
+            var layout3 = new Layout { Site = site };
+            var layout4 = new Layout { Site = site };
 
             Session.Transact(session =>
             {
@@ -127,7 +128,7 @@ namespace MrCMS.Tests.Services
             });
 
             var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), new SiteService(Session, A.Fake<HttpRequestBase>())), null);
-            var layoutList = navigationService.GetLayoutList();
+            var layoutList = navigationService.GetLayoutList(site);
 
             layoutList.Children.Should().HaveCount(4);
         }

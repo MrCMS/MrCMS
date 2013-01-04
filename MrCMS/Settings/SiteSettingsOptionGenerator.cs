@@ -24,15 +24,19 @@ namespace MrCMS.Settings
                              "Select page");
         }
 
-        public List<SelectListItem> GetLayoutOptions(ISession session, int? selectedLayoutId, bool includeDefault = false)
+        public List<SelectListItem> GetLayoutOptions(ISession session, Site site, int? selectedLayoutId, bool includeDefault = false)
         {
             var selectListItem = SelectListItemHelper.EmptyItem("Default Layout");
             selectListItem.Selected = !selectedLayoutId.HasValue;
-            return session.QueryOver<Layout>().Cacheable().List().BuildSelectItemList(
-                layout => layout.Name,
-                layout => layout.Id.ToString(CultureInfo.InvariantCulture),
-                layout => layout.Id == selectedLayoutId,
-                includeDefault ? selectListItem : null);
+            return session.QueryOver<Layout>()
+                          .Where(layout => layout.Site == site)
+                          .Cacheable()
+                          .List()
+                          .BuildSelectItemList(
+                              layout => layout.Name,
+                              layout => layout.Id.ToString(CultureInfo.InvariantCulture),
+                              layout => layout.Id == selectedLayoutId,
+                              includeDefault ? selectListItem : null);
         }
     }
 }

@@ -190,6 +190,7 @@
     <Compile Include="Models\ImageSize.cs" />
     <Compile Include="Models\IAdminMenuItem.cs" />
     <Compile Include="Models\IMenuItem.cs" />
+    <Compile Include="Models\LayoutTreeListModel.cs" />
     <Compile Include="Models\PostingsModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Models\RoleModel.cs" />

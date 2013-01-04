@@ -43,7 +43,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         protected override void PopulateEditDropdownLists(Webpage doc)
         {
-            IEnumerable<Layout> layouts = _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false);
+            IEnumerable<Layout> layouts =
+                _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false && x.Site == doc.Site);
 
             ViewData["Layout"] = layouts.BuildSelectItemList(layout => layout.Name,
                                                              layout => layout.Id.ToString(CultureInfo.InvariantCulture),

@@ -60,7 +60,7 @@ namespace MrCMS.Services
             return tree;
         }
 
-        public SiteTree<Layout> GetLayoutList()
+        public SiteTree<Layout> GetLayoutList(Site site)
         {
             var tree = new SiteTree<Layout>
                            {
@@ -69,10 +69,11 @@ namespace MrCMS.Services
                                IconClass = "icon-asterisk",
                                Name = "Root",
                                NodeType = "Layout",
+                               SiteId = site.Id,
                                CanAddChild = true
                            };
 
-            tree.Children = GetNodes(tree, _documentService.GetDocumentsByParentId<Layout>(null), null);
+            tree.Children = GetNodes(tree, _documentService.GetAdminDocumentsByParentId<Layout>(site, null), null);
             return tree;
         }
 
