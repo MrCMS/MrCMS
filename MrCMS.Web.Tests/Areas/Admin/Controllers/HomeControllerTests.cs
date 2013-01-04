@@ -2,13 +2,12 @@
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Services;
-using MrCMS.Tests;
 using MrCMS.Web.Areas.Admin.Controllers;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
-    public class HomeControllerTests 
+    public class HomeControllerTests
     {
         [Fact]
         public void HomeController_OnGetIndex_ReturnsAViewResult()
@@ -16,7 +15,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var documentService = A.Fake<IDocumentService>();
             var homeController = new HomeController();
 
-            var actionResult = homeController.Index();
+            ActionResult actionResult = homeController.Index();
 
             actionResult.Should().NotBeNull();
             actionResult.Should().BeOfType<ViewResult>();

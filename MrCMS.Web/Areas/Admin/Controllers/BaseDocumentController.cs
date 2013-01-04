@@ -48,11 +48,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Edit", new { id = doc.Id });
         }
 
-        public string SuggestDocumentUrl(int? parentId, string pageName, int siteId)
-        {
-            return _documentService.GetDocumentUrl(pageName, parentId, _siteService.GetSite(siteId), true);
-        }
-
         [HttpGet]
         [ActionName("Edit")]
         public ActionResult Edit_Get(T doc)

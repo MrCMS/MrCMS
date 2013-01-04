@@ -16,7 +16,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var controller = new StubAdminController();
 
             var data = new object();
-            var jsonResult = controller.Json(data, "test/content-type", Encoding.ASCII);
+            JsonResult jsonResult = controller.Json(data, "test/content-type", Encoding.ASCII);
 
             jsonResult.Should().BeOfType<AdminController.JsonNetResult>();
         }

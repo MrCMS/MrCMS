@@ -29,7 +29,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void FileController_UpdateSEO_ShouldReturnChangesSaved()
         {
-            var fileController = GetFileController();
+            FileController fileController = GetFileController();
 
             var mediaFile = new MediaFile();
             fileController.UpdateSEO(mediaFile, "test", "test").Should().Be("Changes saved");
@@ -38,7 +38,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void FileController_UpdateSEO_ShouldSetTitleAndDescriptionFromInputs()
         {
-            var fileController = GetFileController();
+            FileController fileController = GetFileController();
 
             var mediaFile = new MediaFile();
             fileController.UpdateSEO(mediaFile, "test-title", "test-description");
@@ -50,7 +50,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void FileController_UpdateSEO_IfErrorIsThrownOnSaveReturnValueContainsMessage()
         {
-            var fileController = GetFileController();
+            FileController fileController = GetFileController();
 
             var mediaFile = new MediaFile();
             A.CallTo(() => fileService.SaveFile(mediaFile)).Throws(new Exception("Test exception"));
@@ -62,7 +62,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void FileController_Delete_CallsDeleteFileOnFileService()
         {
-            var fileController = GetFileController();
+            FileController fileController = GetFileController();
 
             var mediaFile = new MediaFile();
             fileController.Delete(mediaFile);
@@ -73,7 +73,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void FileController_Files_ReturnsAJsonResult()
         {
-            var fileController = GetFileController();
+            FileController fileController = GetFileController();
 
             fileController.Files(1).Should().BeOfType<JsonResult>();
         }
@@ -81,7 +81,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void FileController_Files_CallsFileServiceGetFilesWithPassedId()
         {
-            var fileController = GetFileController();
+            FileController fileController = GetFileController();
 
             fileController.Files(1);
 
@@ -91,7 +91,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void FileController_FilesPost_ReturnsJsonResult()
         {
-            var fileController = GetFileController();
+            FileController fileController = GetFileController();
             fileController.RequestMock = A.Fake<HttpRequestBase>();
 
             fileController.Files_Post(1).Should().BeOfType<JsonResult>();
@@ -100,12 +100,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void FileController_FilesPost_CallsAddFileForTheUploadedFile()
         {
-            var fileController = GetFileController();
+            FileController fileController = GetFileController();
             var httpRequestBase = A.Fake<HttpRequestBase>();
             var memoryStream = new MemoryStream();
-            var fileName = "test.txt";
-            var contentType = "text/plain";
-            var contentLength = 0;
+            string fileName = "test.txt";
+            string contentType = "text/plain";
+            int contentLength = 0;
             var httpFileCollectionWrapper =
                 new FakeHttpFileCollectionBase(new Dictionary<string, HttpPostedFileBase>
                                                    {

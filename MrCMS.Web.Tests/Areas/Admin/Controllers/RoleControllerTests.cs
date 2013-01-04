@@ -16,7 +16,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_Index_ReturnsViewResult()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
 
             roleController.Index().Should().BeOfType<ViewResult>();
         }
@@ -24,7 +24,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_Index_CallsRoleServiceGetAllRoles()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
 
             roleController.Index();
 
@@ -34,7 +34,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_Index_ShouldReturnTheResultOfGetAllRoles()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRoles = new List<UserRole>();
             A.CallTo(() => roleService.GetAllRoles()).Returns(userRoles);
 
@@ -46,7 +46,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_AddGet_ReturnsAViewResult()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
 
             roleController.Add().Should().BeOfType<ViewResult>();
         }
@@ -54,7 +54,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_AddGet_ModelShouldBeAUserRole()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
 
             roleController.Add().As<ViewResult>().Model.Should().BeOfType<UserRole>();
         }
@@ -62,7 +62,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_AddPost_ReturnsRedirectToRouteResult()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
             roleController.Add(userRole).Should().BeOfType<RedirectToRouteResult>();
@@ -71,7 +71,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_AddPost_ShouldCallSaveRoleWithPassedRole()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
             roleController.Add(userRole);
@@ -83,7 +83,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_AddPost_ShouldRedirectToIndex()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
             var redirectToRouteResult = roleController.Add(userRole).As<RedirectToRouteResult>();
@@ -94,9 +94,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_EditGet_IfUserRoleIsNullReturnsRedirectToIndex()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
 
-            var editGet = roleController.Edit_Get(null);
+            ActionResult editGet = roleController.Edit_Get(null);
 
             editGet.Should().BeOfType<RedirectToRouteResult>();
             editGet.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
@@ -105,9 +105,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_EditGet_IfUserRoleIsSetShouldReturnViewResult()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
 
-            var editGet = roleController.Edit_Get(new UserRole());
+            ActionResult editGet = roleController.Edit_Get(new UserRole());
 
             editGet.Should().BeOfType<ViewResult>();
         }
@@ -115,10 +115,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_EditGet_IfUserRoleIsSetViewResultModelShouldBeRolePassed()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
-            var editGet = roleController.Edit_Get(userRole);
+            ActionResult editGet = roleController.Edit_Get(userRole);
 
             editGet.As<ViewResult>().Model.Should().Be(userRole);
         }
@@ -126,10 +126,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_EditPost_ShouldReturnARedirectToRouteResult()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
-            var edit = roleController.Edit(userRole);
+            ActionResult edit = roleController.Edit(userRole);
 
             edit.Should().BeOfType<RedirectToRouteResult>();
         }
@@ -137,7 +137,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_EditPost_ShouldCallSaveRoleOnTheRoleService()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
             roleController.Edit(userRole);
@@ -148,7 +148,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_EditPost_ShouldRedirectToIndex()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
             var redirectToRouteResult = roleController.Edit(userRole).As<RedirectToRouteResult>();
@@ -159,9 +159,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_DeleteGet_NullRoleReturnsRedirectToIndex()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
 
-            var result = roleController.Delete_Get(null);
+            ActionResult result = roleController.Delete_Get(null);
 
             result.Should().BeOfType<RedirectToRouteResult>();
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
@@ -170,10 +170,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_DeleteGet_ReturnsViewResult()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
-            var result = roleController.Delete_Get(userRole);
+            ActionResult result = roleController.Delete_Get(userRole);
 
             result.Should().BeOfType<ViewResult>();
         }
@@ -181,10 +181,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_DeleteGet_ModelShouldBePassedRole()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
-            var result = roleController.Delete_Get(userRole);
+            ActionResult result = roleController.Delete_Get(userRole);
 
             result.As<ViewResult>().Model.Should().Be(userRole);
         }
@@ -192,7 +192,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_DeletePost_ReturnsRedirectToIndex()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
             roleController.Delete(userRole).Should().BeOfType<RedirectToRouteResult>();
@@ -201,7 +201,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_DeletePost_CallsRoleServiceDeleteRoleOnPassedRole()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
             var userRole = new UserRole();
 
             roleController.Delete(userRole);
@@ -212,7 +212,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void RoleController_DeletePost_DoesNotCallDeleteRoleIfUserRoleIsNull()
         {
-            var roleController = GetRoleController();
+            RoleController roleController = GetRoleController();
 
             roleController.Delete(null);
 

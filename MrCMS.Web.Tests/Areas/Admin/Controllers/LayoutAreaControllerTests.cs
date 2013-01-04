@@ -15,15 +15,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class LayoutAreaControllerTests
     {
-        private ILayoutAreaService _layoutAreaService;
         private IDocumentService _documentService;
+        private ILayoutAreaService _layoutAreaService;
 
         [Fact]
         public void LayoutAreaController_AddGet_ShouldReturnPartialViewWithAddLayoutAreaModel()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
-            var partialViewResult = layoutAreaController.Add(1);
+            PartialViewResult partialViewResult = layoutAreaController.Add(1);
 
             partialViewResult.Model.Should().BeOfType<LayoutArea>();
         }
@@ -39,11 +39,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_AddGet_ShouldSetTheLayoutIdToTheValueFromTheConstructor()
         {
-            var layoutAreaController = GetLayoutAreaController();
-            var layout = new Layout { Id = 1 };
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
+            var layout = new Layout {Id = 1};
             A.CallTo(() => _documentService.GetDocument<Layout>(1)).Returns(layout);
 
-            var partialViewResult = layoutAreaController.Add(1);
+            PartialViewResult partialViewResult = layoutAreaController.Add(1);
 
             partialViewResult.Model.As<LayoutArea>().Layout.Should().Be(layout);
         }
@@ -51,9 +51,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_AddPost_ShouldCallSaveArea()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
-            var layout = new Layout { Id = 1 };
+            var layout = new Layout {Id = 1};
             layoutArea.Layout = layout;
 
             layoutAreaController.Add(layoutArea);
@@ -64,12 +64,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_AddPost_ShouldRedirectToEditLayout()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
-            var layout = new Layout { Id = 1 };
+            var layout = new Layout {Id = 1};
             layoutArea.Layout = layout;
 
-            var actionResult = layoutAreaController.Add(layoutArea);
+            ActionResult actionResult = layoutAreaController.Add(layoutArea);
 
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
             actionResult.As<RedirectToRouteResult>().RouteValues["controller"].Should().Be("Layout");
@@ -79,7 +79,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_EditGet_LayoutAreaServiceGetLayoutAreaShouldBeCalled()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
             layoutAreaController.Edit(1);
 
@@ -89,11 +89,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_EditGet_IfIdIsValidShouldReturnViewResult()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
             A.CallTo(() => _layoutAreaService.GetArea(1)).Returns(layoutArea);
 
-            var actionResult = layoutAreaController.Edit(1);
+            ActionResult actionResult = layoutAreaController.Edit(1);
 
             actionResult.Should().BeOfType<ViewResult>();
             actionResult.As<ViewResult>().Model.Should().Be(layoutArea);
@@ -102,10 +102,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_EditGet_IfIdIsInvalidRedirectToLayoutIndex()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             A.CallTo(() => _layoutAreaService.GetArea(1)).Returns(null);
 
-            var actionResult = layoutAreaController.Edit(1);
+            ActionResult actionResult = layoutAreaController.Edit(1);
 
             actionResult.Should().BeOfType<RedirectToRouteResult>();
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
@@ -115,9 +115,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_EditPost_ShouldCallLayoutServicesSaveArea()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
-            var layout = new Layout { Id = 1 };
+            var layout = new Layout {Id = 1};
             layoutArea.Layout = layout;
 
             layoutAreaController.Edit(layoutArea);
@@ -128,12 +128,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_EditPost_ShouldRedirectBackToTheLayoutOnceDone()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
-            var layout = new Layout { Id = 1 };
+            var layout = new Layout {Id = 1};
             layoutArea.Layout = layout;
 
-            var actionResult = layoutAreaController.Edit(layoutArea);
+            ActionResult actionResult = layoutAreaController.Edit(layoutArea);
 
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
             actionResult.As<RedirectToRouteResult>().RouteValues["controller"].Should().Be("Layout");
@@ -143,7 +143,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_Delete_Get_ReturnsAPartialViewResult()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
             layoutAreaController.Delete_Get(null).Should().BeOfType<PartialViewResult>();
         }
@@ -151,7 +151,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_Delete_Get_ShouldReturnObjectPassedAsModel()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
 
             layoutAreaController.Delete_Get(layoutArea).As<PartialViewResult>().Model.Should().Be(layoutArea);
@@ -160,8 +160,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_DeletePost_ShouldCallDeleteAreaForThePassedArea()
         {
-            var layoutAreaController = GetLayoutAreaController();
-            var layoutArea = new LayoutArea { Layout = new Layout { Id = 1 } };
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
+            var layoutArea = new LayoutArea {Layout = new Layout {Id = 1}};
 
             layoutAreaController.Delete(layoutArea);
 
@@ -171,7 +171,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgets_ShouldCallLayoutAreaServiceGetAreaWithThePassedId()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = A.Fake<LayoutArea>();
             var widgets = new List<Widget>();
             A.CallTo(() => layoutArea.GetWidgets(null, false)).Returns(widgets);
@@ -185,7 +185,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgets_ReturnsAViewResult()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = A.Fake<LayoutArea>();
             var widgets = new List<Widget>();
             A.CallTo(() => layoutArea.GetWidgets(null, false)).Returns(widgets);
@@ -197,7 +197,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgets_ReturnsGetWidgetsOfArea()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = A.Fake<LayoutArea>();
             var widgets = new List<Widget>();
             A.CallTo(() => layoutArea.GetWidgets(null, false)).Returns(widgets);
@@ -209,8 +209,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgetsAction_CallsSetWidgetsOrderWithOrdersAsIntList()
         {
-            var layoutAreaController = GetLayoutAreaController();
-            
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
+
             layoutAreaController.SortWidgetsAction("1,2,3");
 
             A.CallTo(() => _layoutAreaService.SetWidgetOrders("1,2,3")).MustHaveHappened();
@@ -219,7 +219,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgetsForPage_CallsLayoutAreaServiceGetAreaForId()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
             layoutAreaController.SortWidgetsForPage(1, 2);
 
@@ -229,7 +229,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgetsForPage_CallsDocumentServiceGetWebpageForPageId()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
             layoutAreaController.SortWidgetsForPage(1, 2);
 
@@ -239,7 +239,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgetsForPage_ReturnsViewResult()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
             layoutAreaController.SortWidgetsForPage(1, 2).Should().BeOfType<ViewResult>();
         }
@@ -247,7 +247,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgetsForPage_ViewResultModelIsPageWidgetSortModel()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
             layoutAreaController.SortWidgetsForPage(1, 2)
                                 .As<ViewResult>()
@@ -258,7 +258,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgetsForPage_ViewResultModelWidgetsResultOfLayoutAreaGetWidgets()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
             var layoutArea = A.Fake<LayoutArea>();
             var widgets = new List<Widget>();
@@ -276,7 +276,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgetsForPage_ViewResultModelAreaShouldBeResultOfLayoutAreaServiceGetArea()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
             var layoutArea = A.Fake<LayoutArea>();
             var widgets = new List<Widget>();
@@ -294,7 +294,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_SortWidgetsForPage_ViewResultModelPageShouldBeResultOFGetDocument()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
             var document = new TextPage();
             A.CallTo(() => _documentService.GetDocument<Webpage>(2)).Returns(document);
@@ -308,9 +308,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void LayoutAreaController_SortWidgetsForPageAction_CallsLayoutAreaServiceSetWidgetForPageOrderWithWidgetPageOrder()
+        public void
+            LayoutAreaController_SortWidgetsForPageAction_CallsLayoutAreaServiceSetWidgetForPageOrderWithWidgetPageOrder
+            ()
         {
-            var layoutAreaController = GetLayoutAreaController();
+            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
             var widgetPageOrder = new WidgetPageOrder();
             layoutAreaController.SortWidgetsForPageAction(widgetPageOrder);

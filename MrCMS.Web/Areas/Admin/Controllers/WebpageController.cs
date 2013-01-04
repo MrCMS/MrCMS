@@ -155,5 +155,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             return PartialView(data);
         }
+
+        public string SuggestDocumentUrl(int? parentId, string pageName, int? siteId)
+        {
+            return _documentService.GetDocumentUrl(pageName, parentId, _siteService.GetSite(siteId.GetValueOrDefault()), true);
+        }
     }
 }

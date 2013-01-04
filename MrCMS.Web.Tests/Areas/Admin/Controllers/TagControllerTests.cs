@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Models;
@@ -30,7 +31,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             IEnumerable<AutoCompleteResult> results = Enumerable.Empty<AutoCompleteResult>();
             A.CallTo(() => tagService.Search("test", 1)).Returns(results);
 
-            var result = tagController.Search("test", 1);
+            JsonResult result = tagController.Search("test", 1);
             result.Data.As<IEnumerable<AutoCompleteResult>>().Should().BeEquivalentTo(results);
         }
     }

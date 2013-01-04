@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Multisite;
@@ -13,14 +14,14 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     public class SitesControllerTests
     {
         private ISiteService _siteService;
-        private ISession session;
-        private IConfigurationProvider configurationProvider;
         private IUserService _userService;
+        private IConfigurationProvider configurationProvider;
+        private ISession session;
 
         [Fact]
         public void SitesController_IndexGet_CallsISiteServiceGetAllSites()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
 
             sitesController.Index_Get();
 
@@ -30,11 +31,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_IndexGet_IfSitesReturnsViewIndexWithResultOfServiceCallAsModel()
         {
-            var sitesController = GetSitesController();
-            var sites = new List<Site> { new Site() };
+            SitesController sitesController = GetSitesController();
+            var sites = new List<Site> {new Site()};
             A.CallTo(() => _siteService.GetAllSites()).Returns(sites);
 
-            var result = sitesController.Index_Get();
+            ViewResult result = sitesController.Index_Get();
 
             result.ViewName.Should().Be("Index");
             result.Model.Should().Be(sites);
@@ -43,9 +44,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_AddGet_ReturnsPartialViewResultWithModelOfTypeSite()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
 
-            var result = sitesController.Add_Get();
+            PartialViewResult result = sitesController.Add_Get();
 
             result.Should().NotBeNull();
             result.Model.Should().BeOfType<Site>();
@@ -54,7 +55,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_AddPost_CallsSiteServiceSaveSiteWithPassedSite()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
             var site = new Site();
             sitesController.Add(site);
 
@@ -64,9 +65,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_AddPost_RedirectsToIndex()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
             var site = new Site();
-            var result = sitesController.Add(site);
+            RedirectToRouteResult result = sitesController.Add(site);
 
             result.RouteValues["action"].Should().Be("Index");
         }
@@ -74,10 +75,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_EditGet_ReturnsViewResultWithPassedSiteAsModel()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
 
             var site = new Site();
-            var result = sitesController.Edit_Get(site);
+            ViewResult result = sitesController.Edit_Get(site);
 
             result.Should().NotBeNull();
             result.Model.Should().Be(site);
@@ -86,9 +87,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_EditGet_SettingServiceGetAllSettingsForSiteIdShouldBeCalled()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
 
-            var site = new Site { Id = 1 };
+            var site = new Site {Id = 1};
             sitesController.Edit_Get(site);
 
             A.CallTo(() => configurationProvider.GetAllISettings(site)).MustHaveHappened();
@@ -97,9 +98,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_EditGet_ResultOfGetAllISettingsMustBeSetToViewDataSettings()
         {
-            var sitesController = GetSitesController();
-            var site = new Site { Id = 1 };
-            var settingses = new List<ISettings> { new SiteSettings() };
+            SitesController sitesController = GetSitesController();
+            var site = new Site {Id = 1};
+            var settingses = new List<ISettings> {new SiteSettings()};
             A.CallTo(() => configurationProvider.GetAllISettings(site)).Returns(settingses);
 
             sitesController.Edit_Get(site);
@@ -110,7 +111,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_EditPost_CallsSaveSiteWithPassedSite()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
 
             var site = new Site();
             sitesController.Edit(site, new List<ISettings>());
@@ -121,10 +122,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_EditPost_RedirectsToIndex()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
 
             var site = new Site();
-            var result = sitesController.Edit(site, new List<ISettings>());
+            RedirectToRouteResult result = sitesController.Edit(site, new List<ISettings>());
 
             result.RouteValues["action"].Should().Be("Index");
         }
@@ -132,9 +133,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_DeleteGet_ReturnsAPartialViewResultWithPassedModel()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
             var site = new Site();
-            var result = sitesController.Delete_Get(site);
+            PartialViewResult result = sitesController.Delete_Get(site);
 
             result.Should().NotBeNull();
             result.Model.Should().Be(site);
@@ -143,7 +144,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_DeletePost_CallsDeleteSiteOnSiteService()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
             var site = new Site();
             sitesController.Delete(site);
 
@@ -153,9 +154,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_DeletePost_RedirectsToIndex()
         {
-            var sitesController = GetSitesController();
+            SitesController sitesController = GetSitesController();
             var site = new Site();
-            var result = sitesController.Delete(site);
+            RedirectToRouteResult result = sitesController.Delete(site);
 
             result.RouteValues["action"].Should().Be("Index");
         }

@@ -3,9 +3,7 @@ using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
@@ -23,9 +21,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_GetSearchResults_NullStringShouldReturnEmptyObject()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
-            var result = searchController.GetSearchResults(null, null);
+            JsonResult result = searchController.GetSearchResults(null, null);
 
             result.Data.Should().BeOfType<object>();
         }
@@ -42,9 +40,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_GetSearchResults_EmptyStringShouldReturnEmptyObject()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
-            var result = searchController.GetSearchResults("", null);
+            JsonResult result = searchController.GetSearchResults("", null);
 
             result.Data.Should().BeOfType<object>();
         }
@@ -52,9 +50,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_GetSearchResults_WhiteSpaceStringgShouldReturnEmptyObject()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
-            var result = searchController.GetSearchResults("  ", null);
+            JsonResult result = searchController.GetSearchResults("  ", null);
 
             result.Data.Should().BeOfType<object>();
         }
@@ -62,7 +60,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_GetSearchResults_CallsDocumentServiceSearchDocuments()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
             searchController.GetSearchResults("test", null);
 
@@ -72,13 +70,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_GetSearchResults_ReturnsIEnumerableSearchResultModels()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
             IEnumerable<SearchResultModel> searchResultModels = A.CollectionOfFake<SearchResultModel>(1);
             A.CallTo(() => documentService.SearchDocuments<Document>("test")).Returns(
                 searchResultModels);
 
-            var searchResults = searchController.GetSearchResults("test", null);
+            JsonResult searchResults = searchController.GetSearchResults("test", null);
 
             searchResults.Data.As<IEnumerable<SearchResultModel>>().Should().BeEquivalentTo(searchResultModels);
         }
@@ -86,7 +84,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_GetSearchResultsDetailed_TypeSetCallsSearchDocumentsWithCorrectGenericType()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
             searchController.GetSearchResults("test", "TextPage");
 
@@ -96,7 +94,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_Index_ReturnsViewResult()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
             searchController.Index("searchterm", "TextPage", 1, 1).Should().BeOfType<ViewResult>();
         }
@@ -104,7 +102,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_Index_SetsViewData()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
             var site = new Site();
             A.CallTo(() => _siteService.GetCurrentSite()).Returns(site);
 
@@ -126,7 +124,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_Index_IfTypeIsSetUsesTypePassedAsGenericArgument()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
             searchController.Index("searchterm", "TextPage", 1, 1).As<ViewResult>();
 
@@ -136,7 +134,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_Index_IfTypeIsNotSetUsesDocument()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
             searchController.Index("searchterm", "", 1, 1).As<ViewResult>();
 
@@ -146,7 +144,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_IndexPost_ReturnsRedirectToRoute()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
             searchController.IndexPost("test", "TextPage", 1, 1).Should().BeOfType<RedirectToRouteResult>();
         }
@@ -154,7 +152,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SearchController_IndexPost_PassesArgumentsAsRouteValues()
         {
-            var searchController = GetSearchController();
+            SearchController searchController = GetSearchController();
 
             var result = searchController.IndexPost("test", "TextPage", 1, 1).As<RedirectToRouteResult>();
 

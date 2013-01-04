@@ -22,15 +22,16 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_Index_ShouldReturnViewResult()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
 
-            var actionResult = userController.Index();
+            ActionResult actionResult = userController.Index();
 
             actionResult.Should().BeOfType<ViewResult>();
         }
 
         private static UserController GetUserController(IUserService userService = null, IRoleService roleService = null,
-            IAuthorisationService authorisationService = null,ISiteService siteService = null)
+                                                        IAuthorisationService authorisationService = null,
+                                                        ISiteService siteService = null)
         {
             _userService = userService ?? A.Fake<IUserService>();
             _roleService = roleService ?? A.Fake<IRoleService>();
@@ -43,7 +44,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_Index_ShouldCallUserServiceGetAllUsers()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
 
             userController.Index();
 
@@ -53,11 +54,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_Index_ShouldReturnTheResultOfServiceCallAsModel()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
             var users = new StaticPagedList<User>(new List<User>(), 1, 1, 0);
             A.CallTo(() => _userService.GetAllUsersPaged(1)).Returns(users);
 
-            var actionResult = userController.Index();
+            ActionResult actionResult = userController.Index();
 
             actionResult.As<ViewResult>().Model.Should().BeSameAs(users);
         }
@@ -65,9 +66,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_AddGet_ShouldReturnAViewResult()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
 
-            var actionResult = userController.Add();
+            PartialViewResult actionResult = userController.Add();
 
             actionResult.Should().BeOfType<PartialViewResult>();
         }
@@ -75,9 +76,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_AddGet_ShouldReturnAnAddUserModel()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
 
-            var actionResult = userController.Add();
+            PartialViewResult actionResult = userController.Add();
 
             actionResult.As<PartialViewResult>().Model.Should().BeOfType<AddUserModel>();
         }
@@ -85,7 +86,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_AddPost_ShouldCallUserServiceSaveUser()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
             var user = new User();
 
             userController.Add(user);
@@ -96,10 +97,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_AddPost_ShouldReturnRedirectToIndex()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
             var user = new User();
 
-            var result = userController.Add(user);
+            ActionResult result = userController.Add(user);
 
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
@@ -107,7 +108,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_EditGet_ShouldCallGetUserForTheSpecifiedId()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
 
             userController.Edit(1);
 
@@ -117,11 +118,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_EditGet_ShouldReturnAViewResultWithTheReturnedValueIfValidId()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
             var user = new User();
             A.CallTo(() => _userService.GetUser(1)).Returns(user);
 
-            var result = userController.Edit(1);
+            ActionResult result = userController.Edit(1);
 
             result.As<ViewResult>().Model.Should().Be(user);
         }
@@ -129,10 +130,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_EditGet_ShouldReturnRedirectToIndexIfIdIsInvalid()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
             A.CallTo(() => _userService.GetUser(1)).Returns(null);
 
-            var result = userController.Edit(1);
+            ActionResult result = userController.Edit(1);
 
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
@@ -140,7 +141,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_EditGet_ShouldSetViewDataForAvailableRolesAndSites()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
             var value = new User();
             A.CallTo(() => _userService.GetUser(1)).Returns(value);
             var roles = new List<UserRole>();
@@ -152,13 +153,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             userController.ViewData["AvailableRoles"].Should().Be(roles);
             userController.ViewData["AvailableSites"].Should().Be(sites);
-
         }
 
         [Fact]
         public void UserController_EditPost_ShouldCallSaveUser()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
             var user = new User();
 
             userController.Edit(user);
@@ -169,10 +169,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_EditPost_ShouldReturnRedirectToIndex()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
             var user = new User();
 
-            var result = userController.Edit(user);
+            ActionResult result = userController.Edit(user);
 
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
@@ -180,23 +180,23 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_SetPasswordGet_ReturnsAPartialView()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
             userController.SetPassword(1).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
         public void UserController_SetPasswordGet_ReturnsTheIdPassedAsTheModel()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
             userController.SetPassword(1).As<PartialViewResult>().Model.Should().Be(1);
         }
 
         [Fact]
         public void UserController_SetPasswordPost_ReturnsRedirectToEditUser()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
 
-            var result = userController.SetPassword(new User {Id = 1}, "password");
+            ActionResult result = userController.SetPassword(new User {Id = 1}, "password");
 
             result.Should().BeOfType<RedirectToRouteResult>();
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
@@ -206,11 +206,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_SetPasswordPost_ShouldCallAuthorisationServiceSetPassword()
         {
-            var userController = GetUserController();
+            UserController userController = GetUserController();
 
             var user = new User {Id = 1};
             const string password = "password";
-            var result = userController.SetPassword(user, password);
+            ActionResult result = userController.SetPassword(user, password);
 
             A.CallTo(() => _authorisationService.SetPassword(user, password, password)).MustHaveHappened();
         }

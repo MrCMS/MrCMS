@@ -105,16 +105,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stubs\FakeHttpFileCollectionBase.cs" />
     <Compile Include="Stubs\FakeHttpPostedFileBase.cs" />
+    <Compile Include="Stubs\StubDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MrCMS.Tests\MrCMS.Tests.csproj">
-      <Project>{A0C47EBA-BAF0-43B8-A40A-D8D406E44525}</Project>
-      <Name>MrCMS.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MrCMS.Web\MrCMS.Web.csproj">
       <Project>{e64f6811-8373-4310-9cce-3fbca0d87826}</Project>
       <Name>MrCMS.Web</Name>

@@ -2,7 +2,6 @@
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
@@ -21,7 +20,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_EditGet_ShouldCallWidgetServiceGetWidget()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
 
             widgetController.Edit(1);
 
@@ -39,11 +38,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_EditGet_ShouldReturnTheResultOfTheCallToWidgetService()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
             var textWidget = new TextWidget();
             A.CallTo(() => _widgetService.GetWidget<Widget>(1)).Returns(textWidget);
 
-            var result = widgetController.Edit(1);
+            ViewResultBase result = widgetController.Edit(1);
 
             result.Model.Should().Be(textWidget);
         }
@@ -51,8 +50,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_EditPost_ShouldCallSaveWidgetOnTheWidgetService()
         {
-            var widgetController = GetWidgetController();
-            var textWidget = new TextWidget { LayoutArea = new LayoutArea() };
+            WidgetController widgetController = GetWidgetController();
+            var textWidget = new TextWidget {LayoutArea = new LayoutArea()};
 
             widgetController.Edit(textWidget);
 
@@ -62,10 +61,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_EditPost_ShouldByDefaultRedirectToLayoutIndex()
         {
-            var widgetController = GetWidgetController();
-            var textWidget = new TextWidget { LayoutArea = new LayoutArea { Id = 1 } };
+            WidgetController widgetController = GetWidgetController();
+            var textWidget = new TextWidget {LayoutArea = new LayoutArea {Id = 1}};
 
-            var result = widgetController.Edit(textWidget);
+            ActionResult result = widgetController.Edit(textWidget);
 
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
             result.As<RedirectToRouteResult>().RouteValues["controller"].Should().Be("LayoutArea");
@@ -75,10 +74,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_EditPost_IfReturnUrlIsSetRedirectToThere()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
             var textWidget = new TextWidget();
 
-            var result = widgetController.Edit(textWidget, "test-url");
+            ActionResult result = widgetController.Edit(textWidget, "test-url");
 
             result.As<RedirectResult>().Url.Should().Be("test-url");
         }
@@ -86,7 +85,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_DeleteGet_ReturnsPartialViewResult()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
             var textWidget = new TextWidget();
 
             widgetController.Delete_Get(textWidget).Should().BeOfType<PartialViewResult>();
@@ -95,7 +94,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_DeleteGet_ReturnsPassedObjectAsModel()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
             var textWidget = new TextWidget();
 
             widgetController.Delete_Get(textWidget).As<PartialViewResult>().Model.Should().Be(textWidget);
@@ -104,7 +103,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_DeletePost_NullReturnUrlRedirectToRouteResult()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
             var textWidget = new TextWidget();
 
             widgetController.Delete(textWidget, null).Should().BeOfType<RedirectToRouteResult>();
@@ -113,10 +112,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_DeletePost_IfReturnUrlIsSetReturnsRedirectResult()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
             var textWidget = new TextWidget();
 
-            var actionResult = widgetController.Delete(textWidget, "test");
+            ActionResult actionResult = widgetController.Delete(textWidget, "test");
             actionResult.Should().BeOfType<RedirectResult>();
             actionResult.As<RedirectResult>().Url.Should().Be("test");
         }
@@ -124,7 +123,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_DeletePost_NullReturnUrlWebpageSetRedirectsToEditWebpage()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
             var textWidget = new TextWidget {Webpage = new TextPage {Id = 1}};
 
             var result = widgetController.Delete(textWidget, null).As<RedirectToRouteResult>();
@@ -137,7 +136,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_DeletePost_NullReturnUrlLayoutAreaIdSetRedirectsToEditLayoutArea()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
             var textWidget = new TextWidget {LayoutArea = new LayoutArea {Id = 1}};
 
             var result = widgetController.Delete(textWidget, null).As<RedirectToRouteResult>();
@@ -150,7 +149,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_DeletePost_ReturnUrlContainsWidgetEditIgnoreReturnUrl()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
             var textWidget = new TextWidget {Id = 1, LayoutArea = new LayoutArea {Id = 1}};
 
             var result = widgetController.Delete(textWidget, "/widget/edit/1").As<RedirectToRouteResult>();
@@ -163,7 +162,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_Add_ReturnsPartialViewResult()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
 
             widgetController.Add(1, null).Should().BeOfType<PartialViewResult>();
         }
@@ -171,7 +170,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_Add_CallsGetAddWidgetModelWithArguments()
         {
-            var widgetController = GetWidgetController();
+            WidgetController widgetController = GetWidgetController();
 
             widgetController.Add(1, "return-url");
 
