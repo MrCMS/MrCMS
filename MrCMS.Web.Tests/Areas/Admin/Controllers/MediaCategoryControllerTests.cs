@@ -4,6 +4,7 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
@@ -151,19 +152,23 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void MediaCategoryController_SuggestDocumentUrl_ShouldCallGetDocumentUrl()
         {
             var mediaCategoryController = GetMediaCategoryController();
+            var site = new Site();
+            A.CallTo(() => _siteService.GetSite(1)).Returns(site);
 
-            mediaCategoryController.SuggestDocumentUrl(1, "test");
+            mediaCategoryController.SuggestDocumentUrl(1, "test", 1);
 
-            A.CallTo(() => _documentService.GetDocumentUrl("test", 1, true)).MustHaveHappened();
+            A.CallTo(() => _documentService.GetDocumentUrl("test", 1, site, true)).MustHaveHappened();
         }
 
         [Fact]
         public void MediaCategoryController_SuggestDocumentUrl_ShouldReturnTheResultOfGetDocumentUrl()
         {
             var mediaCategoryController = GetMediaCategoryController();
+            var site = new Site();
+            A.CallTo(() => _siteService.GetSite(1)).Returns(site);
 
-            A.CallTo(() => _documentService.GetDocumentUrl("test", 1, true)).Returns("test/result");
-            var url = mediaCategoryController.SuggestDocumentUrl(1, "test");
+            A.CallTo(() => _documentService.GetDocumentUrl("test", 1,site, true)).Returns("test/result");
+            var url = mediaCategoryController.SuggestDocumentUrl(1, "test", 1);
 
             url.Should().BeEquivalentTo("test/result");
         }

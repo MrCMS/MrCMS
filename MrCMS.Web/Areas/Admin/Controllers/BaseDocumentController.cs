@@ -48,9 +48,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Edit", new { id = doc.Id });
         }
 
-        public string SuggestDocumentUrl(int? parentId, string pageName)
+        public string SuggestDocumentUrl(int? parentId, string pageName, int siteId)
         {
-            return _documentService.GetDocumentUrl(pageName, parentId, true);
+            return _documentService.GetDocumentUrl(pageName, parentId, _siteService.GetSite(siteId), true);
         }
 
         [HttpGet]

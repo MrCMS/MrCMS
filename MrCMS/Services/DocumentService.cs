@@ -173,12 +173,16 @@ namespace MrCMS.Services
         }
 
 
-        public T GetDocumentByUrl<T>(string url) where T : Document
+        public T GetDocumentByUrl<T>(string url, Site site) where T : Document, IHaveSite
         {
-            return _session.QueryOver<T>().Where(doc => doc.UrlSegment == url).Take(1).SingleOrDefault();
+            return
+                _session.QueryOver<T>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == site.Id)
+                        .Take(1)
+                        .SingleOrDefault();
         }
 
-        public string GetDocumentUrl(string pageName, int? parentId, bool useHierarchy = false)
+        public string GetDocumentUrl(string pageName, int? parentId, Site site, bool useHierarchy = false)
         {
             var stringBuilder = new StringBuilder();
 
@@ -198,11 +202,11 @@ namespace MrCMS.Services
 
             //make sure the URL is unique
 
-            if (GetDocumentByUrl<Webpage>(stringBuilder.ToString()) != null)
+            if (GetDocumentByUrl<Webpage>(stringBuilder.ToString(), site) != null)
             {
                 var counter = 1;
 
-                while (GetDocumentByUrl<Webpage>(string.Format("{0}-{1}", stringBuilder, counter)) != null)
+                while (GetDocumentByUrl<Webpage>(string.Format("{0}-{1}", stringBuilder, counter), site) != null)
                     counter++;
 
                 stringBuilder.AppendFormat("-{0}", counter);
@@ -445,7 +449,7 @@ namespace MrCMS.Services
             var currentSite = _siteService.GetCurrentSite();
 
             return _session.Get<Document>(error404Id)
-                   ?? GetDocumentByUrl<Document>("404")
+                   ?? GetDocumentByUrl<Webpage>("404", currentSite)
                    ?? MrCMSApplication.PublishedRootChildren(currentSite).OfType<Document>().FirstOrDefault();
         }
 
@@ -456,7 +460,7 @@ namespace MrCMS.Services
             var currentSite = _siteService.GetCurrentSite();
 
             return _session.Get<Document>(error500Id)
-                   ?? GetDocumentByUrl<Document>("500")
+                   ?? GetDocumentByUrl<Webpage>("500", currentSite)
                    ?? MrCMSApplication.PublishedRootChildren(currentSite).OfType<Document>().FirstOrDefault();
         }
 

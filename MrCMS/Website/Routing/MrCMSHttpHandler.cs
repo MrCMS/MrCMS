@@ -311,7 +311,7 @@ namespace MrCMS.Website.Routing
                               ? !MrCMSApplication.UserLoggedIn
                                     ? MrCMSApplication.PublishedRootChildren(SiteSettings.Site).FirstOrDefault()
                                     : MrCMSApplication.RootChildren(SiteSettings.Site).FirstOrDefault()
-                              : DocumentService.GetDocumentByUrl<Webpage>(data);
+                              : DocumentService.GetDocumentByUrl<Webpage>(data, _siteSettings.Site);
 
             MrCMSApplication.CurrentPage = webpage;
             _webpageLookedUp = true;

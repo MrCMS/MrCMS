@@ -21,8 +21,8 @@ namespace MrCMS.Services
         IEnumerable<T> GetFrontEndDocumentsByParentId<T>(int? id) where T : Document;
         IEnumerable<T> GetDocumentsByParentId<T>(int? id) where T : Document;
         IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Document, IHaveSite;
-        T GetDocumentByUrl<T>(string url) where T : Document;
-        string GetDocumentUrl(string pageName, int? parentId, bool useHierarchy = false);
+        T GetDocumentByUrl<T>(string url, Site site) where T : Document, IHaveSite;
+        string GetDocumentUrl(string pageName, int? parentId, Site site, bool useHierarchy = false);
         IEnumerable<SearchResultModel> SearchDocuments<T>(string searchTerm) where T : Document;
         IPagedList<DetailedSearchResultModel> SearchDocumentsDetailed<T>(string searchTerm, int? parentId, int page = 1) where T : Document;
         IPagedList<SearchResult> SiteSearch(string query, int? page, int pageSize = 10);

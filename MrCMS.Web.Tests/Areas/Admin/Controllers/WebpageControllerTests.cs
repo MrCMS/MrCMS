@@ -230,19 +230,23 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_SuggestDocumentUrl_ShouldCallGetDocumentUrl()
         {
             var webpageController = GetWebpageController();
+            var site = new Site();
+            A.CallTo(() => siteService.GetSite(1)).Returns(site);
 
-            webpageController.SuggestDocumentUrl(1, "test");
+            webpageController.SuggestDocumentUrl(1, "test", 1);
 
-            A.CallTo(() => documentService.GetDocumentUrl("test", 1, true)).MustHaveHappened();
+            A.CallTo(() => documentService.GetDocumentUrl("test", 1, site, true)).MustHaveHappened();
         }
 
         [Fact]
         public void WebpageController_SuggestDocumentUrl_ShouldReturnTheResultOfGetDocumentUrl()
         {
             var webpageController = GetWebpageController();
+            var site = new Site();
+            A.CallTo(() => siteService.GetSite(1)).Returns(site);
 
-            A.CallTo(() => documentService.GetDocumentUrl("test", 1, true)).Returns("test/result");
-            var url = webpageController.SuggestDocumentUrl(1, "test");
+            A.CallTo(() => documentService.GetDocumentUrl("test", 1, site, true)).Returns("test/result");
+            var url = webpageController.SuggestDocumentUrl(1, "test", 1);
 
             url.Should().BeEquivalentTo("test/result");
         }
