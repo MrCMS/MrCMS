@@ -17,7 +17,7 @@ namespace MrCMS.Services
         UniquePage GetUniquePage(Type type);
         T SaveDocument<T>(T document) where T : Document;
         IEnumerable<T> GetAllDocuments<T>() where T : Document;
-        bool ExistAny(Type type);
+        bool ExistAny(Type type, Site site);
         IEnumerable<T> GetFrontEndDocumentsByParentId<T>(int? id) where T : Document;
         IEnumerable<T> GetDocumentsByParentId<T>(int? id) where T : Document;
         IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Document, IHaveSite;

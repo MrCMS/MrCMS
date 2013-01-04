@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using NHibernate;
 
@@ -63,7 +64,7 @@ namespace MrCMS.Helpers
             return DocumentTypeDefinitions.FirstOrDefault(x => x.Type.Name == document.DocumentType);
         }
 
-        public static IEnumerable<DocumentTypeDefinition> GetValidWebpageDocumentTypes(this Webpage parent, IDocumentService documentService)
+        public static IEnumerable<DocumentTypeDefinition> GetValidWebpageDocumentTypes(this Webpage parent, IDocumentService documentService, Site site)
         {
             var documentTypeDefinitions = new List<DocumentTypeDefinition>();
             if (parent == null)
@@ -93,8 +94,8 @@ namespace MrCMS.Helpers
 
             documentTypeDefinitions =
                 documentTypeDefinitions.FindAll(
-                    definition => !typeof(UniquePage).IsAssignableFrom(definition.Type) ||
-                    !documentService.ExistAny(definition.Type));
+                    definition => !typeof (UniquePage).IsAssignableFrom(definition.Type) ||
+                                  !documentService.ExistAny(definition.Type, site));
 
             return documentTypeDefinitions;
         }

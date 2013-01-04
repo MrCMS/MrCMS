@@ -72,9 +72,13 @@ namespace MrCMS.Services
             return _session.QueryOver<T>().Cacheable().List();
         }
 
-        public bool ExistAny(Type type)
+        public bool ExistAny(Type type, Site site)
         {
-            var uniqueResult = _session.CreateCriteria(type).SetProjection(Projections.RowCount()).UniqueResult<int>();
+            var uniqueResult =
+                _session.CreateCriteria(type)
+                        .Add(Restrictions.Eq(Projections.Property("Site"), site))
+                        .SetProjection(Projections.RowCount())
+                        .UniqueResult<int>();
             return uniqueResult != 0;
         }
 

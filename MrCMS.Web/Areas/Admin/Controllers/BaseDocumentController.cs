@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
@@ -32,12 +33,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             //Build list 
             var document = _documentService.GetDocument<Document>(id.GetValueOrDefault(0));
+            var site = _siteService.GetSite(siteId.GetValueOrDefault(document == null ? 0 : (document is IHaveSite) ? (document as IHaveSite).Site.Id : 0));
             var model = new AddPageModel
             {
                 Parent = document,
-                Site = _siteService.GetSite(siteId.GetValueOrDefault(document == null ? 0 : (document is IHaveSite) ? (document as IHaveSite).Site.Id : 0))
+                Site = site
             };
-            PopulateEditDropdownLists(model as T);
+            PopulateEditDropdownLists(model as T, site);
             return View(model);
         }
 
@@ -52,11 +54,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Edit")]
         public ActionResult Edit_Get(T doc)
         {
-            PopulateEditDropdownLists(doc);
+            PopulateEditDropdownLists(doc, doc is IHaveSite ? (doc as IHaveSite).Site : null);
             return View(doc);
         }
 
-        protected virtual void PopulateEditDropdownLists(T doc)
+        protected virtual void PopulateEditDropdownLists(T doc, Site site)
         {
         }
 

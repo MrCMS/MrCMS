@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
@@ -41,7 +42,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             }
         }
 
-        protected override void PopulateEditDropdownLists(Webpage doc)
+        protected override void PopulateEditDropdownLists(Webpage doc, Site site)
         {
             IEnumerable<Layout> layouts =
                 _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false && x.Site == doc.Site);
@@ -53,7 +54,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                                              doc.Layout.Id == layout.Id,
                                                              SelectListItemHelper.EmptyItem("Default Layout"));
 
-            var documentTypeDefinitions = (doc.Parent as Webpage).GetValidWebpageDocumentTypes(_documentService).ToList();
+            var documentTypeDefinitions =
+                (doc.Parent as Webpage).GetValidWebpageDocumentTypes(_documentService, site).ToList();
             ViewData["DocumentTypes"] = documentTypeDefinitions;
 
             doc.AdminViewData(ViewData, _session);
