@@ -305,13 +305,17 @@ namespace MrCMS.Website.Routing
 
         private Webpage GetWebpage()
         {
+            var site = SiteSettings.Site;
             var data = Convert.ToString(RequestContext.RouteData.Values["data"]);
 
-            var webpage = string.IsNullOrWhiteSpace(data)
-                              ? !MrCMSApplication.UserLoggedIn
-                                    ? MrCMSApplication.PublishedRootChildren(SiteSettings.Site).FirstOrDefault()
-                                    : MrCMSApplication.RootChildren(SiteSettings.Site).FirstOrDefault()
-                              : DocumentService.GetDocumentByUrl<Webpage>(data, _siteSettings.Site);
+            Webpage webpage;
+            if (string.IsNullOrWhiteSpace(data))
+            {
+                if (!MrCMSApplication.UserLoggedIn)
+                    webpage = MrCMSApplication.PublishedRootChildren(site).FirstOrDefault();
+                else webpage = MrCMSApplication.RootChildren(site).FirstOrDefault();
+            }
+            else webpage = DocumentService.GetDocumentByUrl<Webpage>(data, site);
 
             MrCMSApplication.CurrentPage = webpage;
             _webpageLookedUp = true;
