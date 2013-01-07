@@ -8,9 +8,13 @@ namespace MrCMS.Website
         private IConfigurationProvider _configurationProvider;
         private ISiteService _siteService;
 
-        public T Settings<T>() where T : ISettings, new()
+        public T SiteSettings<T>() where T : SiteSettingsBase, new()
         {
             return _configurationProvider.GetSettings<T>(_siteService.GetCurrentSite());
+        }
+        public T GlobalSettings<T>() where T : GlobalSettingsBase, new()
+        {
+            return _configurationProvider.GetSettings<T>();
         }
 
         public override void InitHelpers()

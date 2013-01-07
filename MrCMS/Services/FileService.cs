@@ -22,7 +22,7 @@ namespace MrCMS.Services
         private readonly MediaSettings _mediaSettings;
         private const string _mediaDirectory = "content/upload";
 
-        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor,MediaSettings mediaSettings)
+        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings)
         {
             _session = session;
             _fileSystem = fileSystem;
@@ -105,7 +105,9 @@ namespace MrCMS.Services
             name2 = name2.Replace("-", "_");
             while (name2.Contains("__"))
                 name2 = name2.Replace("__", "_");
-            return name2.ToLowerInvariant() + extension.ToLower();
+            return extension != null
+                       ? name2.ToLowerInvariant() + extension.ToLower()
+                       : name2.ToLowerInvariant();
         }
 
         public virtual byte[] LoadFile(MediaFile file)

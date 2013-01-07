@@ -6,7 +6,7 @@ using Ninject;
 
 namespace MrCMS.Settings
 {
-    public class SEOSettings : ISettings
+    public class SEOSettings : SiteSettingsBase
     {
         [DisplayName("Robots.txt file")]
         [TextArea]
@@ -18,22 +18,5 @@ namespace MrCMS.Settings
         [DisplayName("Tracking Scripts")]
         [TextArea]
         public string TrackingScripts { get; set; }
-
-        public string GetTypeName()
-        {
-            return "SEO Settings";
-        }
-
-        public string GetDivId()
-        {
-            return "seo-settings";
-        }
-
-        public void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
-        {
-            
-        }
-
-        public Site Site { get; set; }
     }
 }

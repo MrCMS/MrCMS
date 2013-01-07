@@ -2,8 +2,8 @@
 @using System.Web.Mvc.Html
 @using MrCMS.Helpers
 @using MrCMS.Settings
-@model ISettings
-<div id="@Model.GetDivId()" class="tab-pane">
+@model SettingsBase
+<div id="@Model.DivId" class="tab-pane">
     @{
         var type = Model.GetType();
     }

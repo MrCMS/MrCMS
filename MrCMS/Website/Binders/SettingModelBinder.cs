@@ -8,15 +8,14 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
 using Ninject;
-using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Website.Binders
 {
-    public class SettingModelBinder : DefaultModelBinder
+    public abstract class SettingModelBinder<T> : DefaultModelBinder where T : SettingsBase
     {
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            var settingTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<ISettings>();
+            var settingTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<T>();
             var sitesService = MrCMSApplication.Get<ISiteService>();
             // Uses Id because the settings are edited on the same page as the site itself
             var siteId = controllerContext.HttpContext.Request["Id"];
@@ -25,16 +24,12 @@ namespace MrCMS.Website.Binders
                                                   {
                                                       var configurationProvider = MrCMSApplication.Get<ConfigurationProvider>();
 
-                                                      var methodInfo = typeof(ConfigurationProvider).GetMethodExt("GetSettings", typeof(Site));
+                                                      var methodInfo = GetGetSettingsMethod();
 
                                                       return
                                                           methodInfo.MakeGenericMethod(type).Invoke(configurationProvider,
-                                                                            new object[]
-                                                                                {
-                                                                                    sitesService.GetSite(
-                                                                                        Convert.ToInt32(siteId))
-                                                                                });
-                                                  }).OfType<ISettings>().ToList();
+                                                                            Parameters(sitesService, siteId));
+                                                  }).OfType<T>().ToList();
 
             foreach (var settings in objects)
             {
@@ -58,6 +53,11 @@ namespace MrCMS.Website.Binders
 
             return objects;
         }
+
+        protected abstract object[] Parameters(ISiteService sitesService, string siteId);
+
+
+        protected abstract MethodInfo GetGetSettingsMethod();
 
         private object GetValue(PropertyInfo propertyInfo, ControllerContext controllerContext, string fullName)
         {

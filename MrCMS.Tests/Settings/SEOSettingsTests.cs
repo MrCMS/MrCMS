@@ -14,7 +14,7 @@ namespace MrCMS.Tests.Settings
         {
             var seoSettings = new SEOSettings();
 
-            seoSettings.GetTypeName().Should().Be("SEO Settings");
+            seoSettings.TypeName.Should().Be("SEO Settings");
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace MrCMS.Tests.Settings
         {
             var seoSettings = new SEOSettings();
 
-            seoSettings.GetDivId().Should().Be("seo-settings");
+            seoSettings.DivId.Should().Be("seo-settings");
         }
 
         [Fact]

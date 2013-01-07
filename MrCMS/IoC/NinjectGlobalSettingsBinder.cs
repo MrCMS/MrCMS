@@ -1,18 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using MrCMS.Entities.Multisite;
-using MrCMS.Services;
+using MrCMS.Helpers;
 using MrCMS.Settings;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Extensions.Conventions.BindingGenerators;
 using Ninject.Syntax;
-using MrCMS.Helpers;
 
 namespace MrCMS.IoC
 {
-    public class NinjectSettingsBinder : IBindingGenerator
+    public class NinjectGlobalSettingsBinder : IBindingGenerator
     {
         public IEnumerable<IBindingWhenInNamedWithOrOnSyntax<object>> CreateBindings(Type type, IBindingRoot bindingRoot)
         {
@@ -32,11 +29,11 @@ namespace MrCMS.IoC
             var configProvider =
                 context.Kernel.Get<ConfigurationProvider>();
             var method =
-                typeof(ConfigurationProvider).GetMethodExt("GetSettings", typeof (Site));
-            
-            if (method != null)
-                return method.MakeGenericMethod(type).Invoke(configProvider, new object[] { context.Kernel.Get<ISiteService>().GetCurrentSite() });
-            return null;
+                typeof(ConfigurationProvider).GetMethodExt("GetSettings");
+
+            return method != null
+                       ? method.MakeGenericMethod(type).Invoke(configProvider, new object[] {})
+                       : null;
         }
     }
 }

@@ -9,7 +9,7 @@ using Ninject;
 
 namespace MrCMS.Settings
 {
-    public class MediaSettings : ISettings
+    public class MediaSettings : GlobalSettingsBase
     {
         private Size _thumbnailSize;
         private Size _largeSize;
@@ -110,22 +110,5 @@ namespace MrCMS.Settings
                     yield return new ImageSize("Thumbnail", ThumbnailSize);
             }
         }
-
-        public string GetTypeName()
-        {
-            return "Media Settings";
-        }
-
-        public string GetDivId()
-        {
-            return GetTypeName().Replace(" ", "-").ToLower();
-        }
-
-        public void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
-        {
-            
-        }
-
-        public Site Site { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using Ninject;
 
 namespace MrCMS.Settings
 {
-    public class MailSettings : ISettings
+    public class MailSettings : SiteSettingsBase
     {
         public string Host { get; set; }
 
@@ -16,22 +16,5 @@ namespace MrCMS.Settings
         public string Password { get; set; }
 
         public int Port { get; set; }
-
-        public string GetTypeName()
-        {
-            return "Mail Settings";
-        }
-
-        public string GetDivId()
-        {
-            return GetTypeName().Replace(" ", "-").ToLower();
-        }
-
-        public void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
-        {
-            
-        }
-
-        public Site Site { get; set; }
     }
 }

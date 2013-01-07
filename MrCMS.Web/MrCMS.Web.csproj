@@ -14,7 +14,7 @@
     <RootNamespace>MrCMS.Web</RootNamespace>
     <AssemblyName>MrCMS.Web</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <MvcBuildViews>false</MvcBuildViews>
+    <MvcBuildViews>true</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -594,9 +594,6 @@
     <Content Include="Areas\Admin\Content\less\bootstrap.less" />
     <Content Include="Areas\Admin\Content\less\alerts.less" />
     <Content Include="Areas\Admin\Content\less\accordion.less" />
-    <Content Include="Areas\Admin\Views\Settings\SiteSettings.cshtml" />
-    <Content Include="Areas\Admin\Views\Settings\MediaSettings.cshtml" />
-    <Content Include="Areas\Admin\Views\Settings\MailSettings.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\FileResult.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\ViewChanges.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Postings.cshtml" />
@@ -649,7 +646,6 @@
     <Content Include="Areas\Admin\Views\MediaCategory\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Media.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Sort.cshtml" />
-    <Content Include="Areas\Admin\Views\Settings\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\AdminNavigation.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\LayoutTree.cshtml" />

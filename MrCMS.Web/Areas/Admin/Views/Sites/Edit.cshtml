@@ -3,7 +3,7 @@
 @model MrCMS.Entities.Multisite.Site
 @{
     ViewBag.Title = "Edit | " + Model.Name;
-    var settings = ViewData["Settings"] as List<ISettings>;
+    var settings = ViewData["Settings"] as List<SiteSettingsBase>;
 }
 <div class="row-fluid">
     <div class="span4">
@@ -26,7 +26,7 @@
             <li><a href="#users" data-toggle="tab">Users</a></li>
             @foreach (var settingType in settings)
             {
-                <li><a href="#@settingType.GetDivId()" data-toggle="tab">@settingType.GetTypeName()</a></li>
+                <li><a href="#@settingType.DivId" data-toggle="tab">@settingType.TypeName</a></li>
             }
         </ul>
         <div class="tab-content">

@@ -14,7 +14,7 @@ namespace MrCMS.Tests.Settings
         {
             var mailSettings = new MailSettings();
 
-            mailSettings.GetTypeName().Should().Be("Mail Settings");
+            mailSettings.TypeName.Should().Be("Mail Settings");
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace MrCMS.Tests.Settings
         {
             var mailSettings = new MailSettings();
 
-            mailSettings.GetDivId().Should().Be("mail-settings");
+            mailSettings.DivId.Should().Be("mail-settings");
         }
 
         [Fact]

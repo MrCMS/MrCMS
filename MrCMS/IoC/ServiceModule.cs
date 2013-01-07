@@ -15,12 +15,16 @@ namespace MrCMS.IoC
         public override void Load()
         {
             Kernel.Bind(syntax => syntax.FromAssembliesMatching("MrCMS.*").SelectAllClasses()
-                                      .Where(t => !typeof(ISettings).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t))
+                                      .Where(t => !typeof(SettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t))
                                       .BindWith<NinjectServiceToInterfaceBinder>()
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
             Kernel.Bind(syntax => syntax.FromAssembliesMatching("MrCMS.*").SelectAllClasses()
-                                      .Where(t => typeof(ISettings).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t))
-                                      .BindWith<NinjectSettingsBinder>()
+                                      .Where(t => typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t))
+                                      .BindWith<NinjectSiteSettingsBinder>()
+                                      .Configure(onSyntax => onSyntax.InRequestScope()));
+            Kernel.Bind(syntax => syntax.FromAssembliesMatching("MrCMS.*").SelectAllClasses()
+                                      .Where(t => typeof(GlobalSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t))
+                                      .BindWith<NinjectGlobalSettingsBinder>()
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
 
             //Kernel.Bind<HttpContextBase>().ToMethod(context => MrCMSApplication.CurrentContext);

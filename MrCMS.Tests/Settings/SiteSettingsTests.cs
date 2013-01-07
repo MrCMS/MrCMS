@@ -14,7 +14,7 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettings = new SiteSettings();
 
-            siteSettings.GetTypeName().Should().Be("Site Settings");
+            siteSettings.TypeName.Should().Be("Site Settings");
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettings = new SiteSettings();
 
-            siteSettings.GetDivId().Should().Be("site-settings");
+            siteSettings.DivId.Should().Be("site-settings");
         }
 
         [Fact]

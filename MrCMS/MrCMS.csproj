@@ -176,8 +176,9 @@
     <Compile Include="Helpers\WidgetHelper.cs" />
     <Compile Include="InvalidPasswordException.cs" />
     <Compile Include="IoC\NHibernateModule.cs" />
+    <Compile Include="IoC\NinjectGlobalSettingsBinder.cs" />
     <Compile Include="IoC\NinjectServiceToInterfaceBinder.cs" />
-    <Compile Include="IoC\NinjectSettingsBinder.cs" />
+    <Compile Include="IoC\NinjectSiteSettingsBinder.cs" />
     <Compile Include="IoC\ServiceModule.cs" />
     <Compile Include="Membership\MrCmsMembershipProvider.cs" />
     <Compile Include="Membership\MrCmsRoleProvider.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="Services\IFormService.cs" />
     <Compile Include="Services\IImageProcessor.cs" />
     <Compile Include="Services\ILayoutAreaService.cs" />
+    <Compile Include="Services\ImageProcessor.cs" />
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\IRoleService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
@@ -241,12 +243,12 @@
     <Compile Include="Settings\DropDownSelectionAttribute.cs" />
     <Compile Include="Settings\GenericListTypeConverter.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />
-    <Compile Include="Settings\ISettings.cs" />
+    <Compile Include="Settings\ISiteSettings.cs" />
     <Compile Include="Settings\ISettingService.cs" />
     <Compile Include="Settings\MailSettings.cs" />
     <Compile Include="Settings\MediaSelectorAttribute.cs" />
     <Compile Include="Settings\MediaSettings.cs" />
-    <Compile Include="Settings\SEOSettings.cs" />
+    <Compile Include="Settings\SeoSettings.cs" />
     <Compile Include="Settings\SettingService.cs" />
     <Compile Include="Settings\SiteSettings.cs" />
     <Compile Include="Settings\SiteSettingsOptionGenerator.cs" />
@@ -265,9 +267,11 @@
     <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditSiteModelBinder.cs" />
     <Compile Include="Website\Binders\EditUserModelBinder.cs" />
+    <Compile Include="Website\Binders\GlobalSettingsModelBinder.cs" />
     <Compile Include="Website\Binders\LayoutAreaModelBinder.cs" />
     <Compile Include="Website\Binders\SessionModelBinderAttribute.cs" />
     <Compile Include="Website\Binders\SettingModelBinder.cs" />
+    <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
     <Compile Include="Website\Caching\CacheManager.cs" />
     <Compile Include="Website\Caching\ICacheManager.cs" />
     <Compile Include="Website\Controllers\MrCMSController.cs" />

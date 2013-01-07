@@ -1,37 +1,70 @@
-﻿@model System.Collections.Generic.List<MrCMS.Entities.Multisite.Site>
+﻿@using MrCMS.Settings
+@model System.Collections.Generic.List<MrCMS.Entities.Multisite.Site>
 @{
     ViewBag.Title = "Sites";
+    var settings = ViewData["Settings"] as List<GlobalSettingsBase>;
 }
-<h2>Sites</h2>
-@Html.ActionLink("Add", "Add", null, new { @class = "btn btn-success", data_toggle = "modal" })
-<br />
-<br />
-<table class="table table-striped table-bordered">
-    <tr>
-        <th>Name
-        </th>
-        <th>Url
-        </th>
-        <th>Created On
-        </th>
-        <th>Actions
-        </th>
-    </tr>
-    @foreach (var site in Model)
-    {
-        <tr>
-            <td>
-                @Html.ActionLink(site.Name, "Edit", new { id = site.Id })
-            </td>
-            <td>
-                @site.BaseUrl
-            </td>
-            <td>
-                @site.CreatedOn
-            </td>
-            <td>
-                @Html.ActionLink("Delete", "Delete", new { id = site.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "modal" })
-            </td>
-        </tr>
-    }
-</table>
+<h2></h2>
+<div class="row-fluid">
+    <div class="span4">
+        <h2>Sites &amp; Global Settings</h2>
+    </div>
+    <div class="span8">
+        <div class="btn-group  display-inline  pull-right">
+            <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-global-settings">
+                Save Settings</button>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("Index", "Sites", FormMethod.Post, new { id = "edit-global-settings" }))
+{
+    <div id="tabs">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#sites" data-toggle="tab">Sites</a></li>
+            @foreach (var settingType in settings)
+            {
+                <li><a href="#@settingType.DivId" data-toggle="tab">@settingType.TypeName</a></li>
+            }
+        </ul>
+        <div class="tab-content">
+            <div id="sites" class="tab-pane active">
+                @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-success", data_toggle = "modal" })
+                <br />
+                <br />
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <th>Name
+                        </th>
+                        <th>Url
+                        </th>
+                        <th>Created On
+                        </th>
+                        <th>Actions
+                        </th>
+                    </tr>
+                    @foreach (var site in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.ActionLink(site.Name, "Edit", new { id = site.Id })
+                            </td>
+                            <td>
+                                @site.BaseUrl
+                            </td>
+                            <td>
+                                @site.CreatedOn
+                            </td>
+                            <td>
+                                @Html.ActionLink("Delete", "Delete", new { id = site.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "modal" })
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+            @foreach (var settingType in settings)
+            {
+                Html.RenderPartial("Settings", settingType);
+            }
+        </div>
+    </div>
+}

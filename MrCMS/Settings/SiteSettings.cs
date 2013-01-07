@@ -6,7 +6,7 @@ using NHibernate;
 
 namespace MrCMS.Settings
 {
-    public class SiteSettings : ISettings
+    public class SiteSettings : SiteSettingsBase
     {
         private Guid _siteId = Guid.NewGuid();
         private readonly SiteSettingsOptionGenerator _siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
@@ -34,19 +34,8 @@ namespace MrCMS.Settings
         [DisplayName("Site name")]
         public string SiteName { get; set; }
 
-        public Site Site { get; set; }
 
-        public string GetTypeName()
-        {
-            return "Site Settings";
-        }
-
-        public string GetDivId()
-        {
-            return GetTypeName().Replace(" ", "-").ToLower();
-        }
-
-        public void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
+        public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
             viewDataDictionary["DefaultLayoutOptions"] = _siteSettingsOptionGenerator.GetLayoutOptions(session, Site, DefaultLayoutId);
             viewDataDictionary["404Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error404PageId);

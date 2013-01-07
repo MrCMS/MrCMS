@@ -39,6 +39,7 @@ namespace MrCMS.Settings
         /// <summary>
         /// Get setting by key
         /// </summary>
+        /// <param name="site">Site (null for global parameter)</param>
         /// <param name="key">Key</param>
         /// <returns>Setting object</returns>
         public virtual Setting GetSettingByKey(Site site, string key)
@@ -62,6 +63,7 @@ namespace MrCMS.Settings
         /// Get setting value by key
         /// </summary>
         /// <typeparam name="T">Type</typeparam>
+        /// <param name="site">Site (null for global parameter)</param>
         /// <param name="key">Key</param>
         /// <param name="defaultValue">Default value</param>
         /// <returns>Setting value</returns>
@@ -83,6 +85,7 @@ namespace MrCMS.Settings
         /// Set setting value
         /// </summary>
         /// <typeparam name="T">Type</typeparam>
+        /// <param name="site">Site (null for global parameter)</param>
         /// <param name="key">Key</param>
         /// <param name="value">Value</param>
         public virtual void SetSetting<T>(Site site, string key, T value)
@@ -131,6 +134,7 @@ namespace MrCMS.Settings
         /// <summary>
         /// Gets all settings
         /// </summary>
+        /// <param name="site">Site (null for global parameter)</param>
         /// <returns>Setting collection</returns>
         private IDictionary<string, KeyValuePair<int, string>> GetAllSettings(Site site)
         {

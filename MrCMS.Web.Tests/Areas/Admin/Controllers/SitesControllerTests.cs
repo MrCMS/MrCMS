@@ -92,7 +92,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var site = new Site {Id = 1};
             sitesController.Edit_Get(site);
 
-            A.CallTo(() => configurationProvider.GetAllISettings(site)).MustHaveHappened();
+            A.CallTo(() => configurationProvider.GetAllSiteSettings(site)).MustHaveHappened();
         }
 
         [Fact]
@@ -100,12 +100,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             SitesController sitesController = GetSitesController();
             var site = new Site {Id = 1};
-            var settingses = new List<ISettings> {new SiteSettings()};
-            A.CallTo(() => configurationProvider.GetAllISettings(site)).Returns(settingses);
+            var settingses = new List<SiteSettingsBase> { new SiteSettings() };
+            A.CallTo(() => configurationProvider.GetAllSiteSettings(site)).Returns(settingses);
 
             sitesController.Edit_Get(site);
 
-            sitesController.ViewData["Settings"].As<List<ISettings>>().Should().BeEquivalentTo(settingses);
+            sitesController.ViewData["Settings"].As<List<SiteSettingsBase>>().Should().BeEquivalentTo(settingses);
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             SitesController sitesController = GetSitesController();
 
             var site = new Site();
-            sitesController.Edit(site, new List<ISettings>());
+            sitesController.Edit(site, new List<SiteSettingsBase>());
 
             A.CallTo(() => _siteService.SaveSite(site)).MustHaveHappened();
         }
@@ -125,7 +125,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             SitesController sitesController = GetSitesController();
 
             var site = new Site();
-            RedirectToRouteResult result = sitesController.Edit(site, new List<ISettings>());
+            RedirectToRouteResult result = sitesController.Edit(site, new List<SiteSettingsBase>());
 
             result.RouteValues["action"].Should().Be("Index");
         }

@@ -16,7 +16,7 @@ namespace MrCMS.Tests.Settings
         {
             var mediaSettings = GetMediaSettings();
 
-            mediaSettings.GetTypeName().Should().Be("Media Settings");
+            mediaSettings.TypeName.Should().Be("Media Settings");
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace MrCMS.Tests.Settings
         {
             var mediaSettings = GetMediaSettings();
 
-            mediaSettings.GetDivId().Should().Be("media-settings");
+            mediaSettings.DivId.Should().Be("media-settings");
         }
 
         [Fact]
