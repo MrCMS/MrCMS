@@ -84,10 +84,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
-
-        public ActionResult Sort(int? id)
+        
+        public ActionResult Sort(int? id, int? siteId = null)
         {
-            List<T> categories = _documentService.GetDocumentsByParentId<T>(id).ToList();
+            List<T> categories = _documentService.GetDocumentsByParentId<T>(id, siteId).ToList();
 
             return View(categories);
         }

@@ -159,7 +159,11 @@
         var id = element.data('id');
         var sortId = element.data('sort-id');
         var controller = element.data('controller');
-        switch (action) {
+        var href = element.data('href');
+        if (href != null) {
+            location.href = href;
+        } else {
+            switch (action) {
             case "add":
                 location.href = '/Admin/' + controller + '/Add/' + id;
                 break;
@@ -172,6 +176,7 @@
             case "sort":
                 location.href = '/Admin/' + controller + '/Sort/' + sortId;
                 break;
+            }
         }
     }
 
@@ -189,13 +194,13 @@
         var element = $(el);
         var id = element.data('id');
         var controller = element.data('controller');
+        var siteId = element.parents('.filetree').data('site-id');
         switch (action) {
             case "add":
-                var siteId = element.parents('.filetree').data('site-id');
                 location.href = '/Admin/' + controller + '/Add?siteId=' + siteId;
                 break;
             case "sort":
-                location.href = '/Admin/' + controller + '/Sort/' + id;
+                location.href = '/Admin/' + controller + '/Sort/?siteId=' + siteId;
                 break;
         }
     });

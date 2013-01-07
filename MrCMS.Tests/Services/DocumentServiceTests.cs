@@ -33,7 +33,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new BasicMappedWebpage());
+            documentService.AddDocument(new BasicMappedWebpage { Site = new Site() });
 
             Session.QueryOver<Document>().RowCount().Should().Be(1);
         }
@@ -618,7 +618,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new BasicMappedWebpage());
+            documentService.AddDocument(new BasicMappedWebpage { Site = new Site() });
 
             documentService.AnyWebpages().Should().BeTrue();
         }
@@ -636,7 +636,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new BasicMappedWebpage());
+            documentService.AddDocument(new BasicMappedWebpage() { Site = new Site() });
 
             documentService.AnyPublishedWebpages().Should().BeFalse();
         }
@@ -646,7 +646,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) });
+            documentService.AddDocument(new BasicMappedWebpage { Site = new Site() ,PublishOn = DateTime.UtcNow.AddDays(-1) });
 
             documentService.AnyPublishedWebpages().Should().BeTrue();
         }

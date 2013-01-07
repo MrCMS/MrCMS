@@ -11,7 +11,7 @@ namespace MrCMS.Services
 {
     public interface IDocumentService
     {
-        void AddDocument(Document document);
+        void AddDocument<T>(T document) where T : Document;
         T GetDocument<T>(int id) where T : Document;
         T GetUniquePage<T>() where T : UniquePage;
         UniquePage GetUniquePage(Type type);
@@ -19,7 +19,8 @@ namespace MrCMS.Services
         IEnumerable<T> GetAllDocuments<T>() where T : Document;
         bool ExistAny(Type type, Site site);
         IEnumerable<T> GetFrontEndDocumentsByParentId<T>(int? id) where T : Document;
-        IEnumerable<T> GetDocumentsByParentId<T>(int? id) where T : Document;
+        //IEnumerable<T> GetDocumentsByParentId<T>(int? id) where T : Document;
+        IEnumerable<T> GetDocumentsByParentId<T>(int? id, int? siteId = null) where T : Document;
         IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Document, IHaveSite;
         T GetDocumentByUrl<T>(string url, Site site) where T : Document, IHaveSite;
         string GetDocumentUrl(string pageName, int? parentId, Site site, bool useHierarchy = false);

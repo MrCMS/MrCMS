@@ -114,7 +114,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             mediaCategoryController.Sort(1);
 
-            A.CallTo(() => _documentService.GetDocumentsByParentId<MediaCategory>(1)).MustHaveHappened();
+            A.CallTo(() => _documentService.GetDocumentsByParentId<MediaCategory>(1,null)).MustHaveHappened();
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
             var mediaCategories = new List<MediaCategory> {new MediaCategory()};
-            A.CallTo(() => _documentService.GetDocumentsByParentId<MediaCategory>(1)).Returns(mediaCategories);
+            A.CallTo(() => _documentService.GetDocumentsByParentId<MediaCategory>(1, null)).Returns(mediaCategories);
 
             var viewResult = mediaCategoryController.Sort(1).As<ViewResult>();
 

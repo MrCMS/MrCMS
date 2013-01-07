@@ -30,10 +30,11 @@ namespace MrCMS.Services
             _siteService = siteService;
         }
 
-        public void AddDocument(Document document)
+        public void AddDocument<T>(T document) where T:Document
         {
             var sameParentDocs =
-                GetDocumentsByParentId<Document>(document.Parent == null ? (int?)null : document.Parent.Id);
+                GetDocumentsByParentId<T>(document.Parent == null ? (int?) null : document.Parent.Id,
+                                          (document is IHaveSite) ? (document as IHaveSite).Site.Id : (int?) null);
             document.DisplayOrder = sameParentDocs.Any() ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1 : 0;
             _session.Transact(session => session.SaveOrUpdate(document));
         }
@@ -111,7 +112,7 @@ namespace MrCMS.Services
             return children.OrderBy(arg => arg.DisplayOrder);
         }
 
-        public IEnumerable<T> GetDocumentsByParentId<T>(int? id) where T : Document
+        public IEnumerable<T> GetDocumentsByParentId<T>(int? id, int? siteId = null) where T : Document
         {
             IEnumerable<T> children;
             Document document = null;
@@ -122,7 +123,19 @@ namespace MrCMS.Services
             }
             else
             {
-                children = _session.QueryOver<T>().Where(arg => arg.Parent == null).List();
+                if (typeof (IHaveSite).IsAssignableFrom(typeof (T)))
+                {
+                    children =
+                        _session.CreateCriteria(typeof (T))
+                                .Add(Restrictions.IsNull("Parent"))
+                                .Add(Restrictions.Eq(Projections.Property("Site.Id"), siteId))
+                                .SetCacheable(true)
+                                .List<T>();
+                }
+                else
+                {
+                    children = _session.QueryOver<T>().Where(arg => arg.Parent == null).Cacheable().List();
+                }
             }
 
             if (document != null)

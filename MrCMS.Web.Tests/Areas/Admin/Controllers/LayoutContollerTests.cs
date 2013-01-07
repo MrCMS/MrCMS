@@ -123,7 +123,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             layoutController.Sort(1);
 
-            A.CallTo(() => documentService.GetDocumentsByParentId<Layout>(1)).MustHaveHappened();
+            A.CallTo(() => documentService.GetDocumentsByParentId<Layout>(1, null)).MustHaveHappened();
         }
 
         [Fact]
@@ -131,7 +131,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             LayoutController layoutController = GetLayoutController();
             var layouts = new List<Layout> {new Layout()};
-            A.CallTo(() => documentService.GetDocumentsByParentId<Layout>(1)).Returns(layouts);
+            A.CallTo(() => documentService.GetDocumentsByParentId<Layout>(1, null)).Returns(layouts);
 
             var viewResult = layoutController.Sort(1).As<ViewResult>();
 

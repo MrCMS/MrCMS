@@ -71,11 +71,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_AddPost_ShouldCallSaveDocument()
         {
             WebpageController webpageController = GetWebpageController();
-
-            var webpage = new TextPage();
+            var webpage = new TextPage {Site = new Site()};
+            
             webpageController.Add(webpage);
 
-            A.CallTo(() => documentService.AddDocument(webpage)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => documentService.AddDocument<Webpage>(webpage)).MustHaveHappened();
         }
 
         [Fact]
@@ -188,7 +188,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             webpageController.Sort(1);
 
-            A.CallTo(() => documentService.GetDocumentsByParentId<Webpage>(1)).MustHaveHappened();
+            A.CallTo(() => documentService.GetDocumentsByParentId<Webpage>(1, null)).MustHaveHappened();
         }
 
         [Fact]
@@ -196,7 +196,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             WebpageController webpageController = GetWebpageController();
             var webpages = new List<Webpage> {new TextPage()};
-            A.CallTo(() => documentService.GetDocumentsByParentId<Webpage>(1)).Returns(webpages);
+            A.CallTo(() => documentService.GetDocumentsByParentId<Webpage>(1, null)).Returns(webpages);
 
             var viewResult = webpageController.Sort(1).As<ViewResult>();
 
