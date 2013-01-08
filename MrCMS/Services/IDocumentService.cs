@@ -13,8 +13,7 @@ namespace MrCMS.Services
     {
         void AddDocument<T>(T document) where T : Document;
         T GetDocument<T>(int id) where T : Document;
-        T GetUniquePage<T>() where T : UniquePage;
-        UniquePage GetUniquePage(Type type);
+        T GetUniquePage<T>(Site site) where T : UniquePage;
         T SaveDocument<T>(T document) where T : Document;
         IEnumerable<T> GetAllDocuments<T>() where T : Document;
         bool ExistAny(Type type, Site site);

@@ -44,18 +44,9 @@ namespace MrCMS.Services
             return _session.Get<T>(id);
         }
 
-        public T GetUniquePage<T>() where T : UniquePage
+        public T GetUniquePage<T>(Site site) where T : UniquePage
         {
-            return _session.QueryOver<T>().Take(1).Cacheable().SingleOrDefault();
-        }
-
-        public UniquePage GetUniquePage(Type type)
-        {
-            if (!typeof(UniquePage).IsAssignableFrom(type))
-            {
-                return null;
-            }
-            return GetType().GetMethod("GetUniquePage", new Type[0]).MakeGenericMethod(type).Invoke(this, new object[] { }) as UniquePage;
+            return _session.QueryOver<T>().Where(arg => arg.Site == site).Take(1).Cacheable().SingleOrDefault();
         }
 
         public T SaveDocument<T>(T document) where T : Document
