@@ -1,7 +1,9 @@
 ﻿$(document).ready(function () {
     $().dropdown();
 
-    $("#nav-tabs li:eq(" + getTabNumber() + ") a").tab('show');
+    if ($('#nav-tabs').length) {
+        $("#nav-tabs li:eq(" + getTabNumber() + ") a").tab('show');
+    }
 
     if (location.hash !== '') {
         $('.inner-content a[href="' + location.hash + '"]').tab('show');
@@ -35,6 +37,7 @@
                     return 0;
             }
         }
+        return 0;
     }
 
     $('#MediaCategory_Id').change(function () {
@@ -64,7 +67,7 @@
         setVisibleSite(val);
         $('#layout #Site').val(val);
     });
-    $('#layout #Site').change(function() {
+    $('#layout #Site').change(function () {
         var val = $(this).val();
         setVisibleSite(val);
         $('#web #Site').val(val);
@@ -93,10 +96,16 @@
         }
     });
 
-    $(".date-time-picker").datetimepicker({
-        dateFormat: 'dd/mm/yy',
-        timeFormat: 'hh:mm'
+    $(document).on('click', '.date-time-picker', function() {
+        var that = $(this);
+        if (!that.hasClass('hasDatepicker')) {
+            that.datetimepicker({
+                dateFormat: 'dd/mm/yy',
+                timeFormat: 'hh:mm'
+            }).blur().focus();
+        }
     });
+    $(".date-time-picker");
 
     // Show menu when an ahref is click
     $(".browser li").not(".browser > li").not(':has(ul)').contextMenu({
@@ -164,18 +173,18 @@
             location.href = href;
         } else {
             switch (action) {
-            case "add":
-                location.href = '/Admin/' + controller + '/Add/' + id;
-                break;
-            case "edit":
-                location.href = '/Admin/' + controller + '/Edit/' + id;
-                break;
-            case "delete":
-                getRemoteModel('/Admin/' + controller + '/Delete/' + id);
-                break;
-            case "sort":
-                location.href = '/Admin/' + controller + '/Sort/' + sortId;
-                break;
+                case "add":
+                    location.href = '/Admin/' + controller + '/Add/' + id;
+                    break;
+                case "edit":
+                    location.href = '/Admin/' + controller + '/Edit/' + id;
+                    break;
+                case "delete":
+                    getRemoteModel('/Admin/' + controller + '/Delete/' + id);
+                    break;
+                case "sort":
+                    location.href = '/Admin/' + controller + '/Sort/' + sortId;
+                    break;
             }
         }
     }
