@@ -162,7 +162,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\build-config.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\ckeditor.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\config.js" />
@@ -624,7 +623,6 @@
     <Folder Include="Application\Services\" />
     <Folder Include="Application\Settings\" />
     <Folder Include="App_Data\" />
-    <Folder Include="images\" />
     <Folder Include="Scripts\ckeditor\plugins\showblocks\" />
     <Folder Include="Scripts\ckeditor\plugins\uicolor\yui\" />
     <Folder Include="Scripts\ckeditor\themes\" />
