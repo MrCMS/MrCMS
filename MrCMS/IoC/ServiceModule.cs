@@ -1,5 +1,6 @@
 using System.Runtime.Caching;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Mvc;
 using MrCMS.Settings;
 using MrCMS.Website;
@@ -31,6 +32,7 @@ namespace MrCMS.IoC
             Kernel.Bind<HttpRequestBase>().ToMethod(context => MrCMSApplication.CurrentContext.Request);
             Kernel.Bind<HttpSessionStateBase>().ToMethod(context => MrCMSApplication.CurrentContext.Session);
             Kernel.Bind<ObjectCache>().ToMethod(context => MemoryCache.Default);
+            Kernel.Bind<Cache>().ToMethod(context => MrCMSApplication.CurrentContext.Cache);
         }
     }
 }

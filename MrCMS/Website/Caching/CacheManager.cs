@@ -1,35 +1,34 @@
 ﻿using System;
-using System.Runtime.Caching;
-using NHibernate.Linq;
+using System.Web.Caching;
+using MrCMS.Helpers;
 
 namespace MrCMS.Website.Caching
 {
     public class CacheManager : ICacheManager
     {
-        private readonly ObjectCache _objectCache;
+        private readonly Cache _cache;
 
-        public CacheManager(ObjectCache objectCache)
+        public CacheManager(Cache cache)
         {
-            _objectCache = objectCache;
+            _cache = cache;
         }
 
         public T Get<T>(string key, Func<T> func, TimeSpan time)
         {
-            var o = _objectCache[key];
+            var o = _cache[key];
 
             if (o != null)
-                return o.As<T>();
+                return o.To<T>();
 
             o = func.Invoke();
 
-            _objectCache.Add(key, o, new CacheItemPolicy
-                                         {
-                                             SlidingExpiration = time,
-                                             AbsoluteExpiration = DateTimeOffset.MaxValue,
-                                             Priority = CacheItemPriority.NotRemovable
-                                         });
+            if (o != null)
+            {
+                _cache.Add(key, o, null, DateTime.MaxValue, time, CacheItemPriority.AboveNormal, null);
 
-            return o.As<T>();
+                return o.To<T>();
+            }
+            return (T) (object) null;
         }
     }
 }
