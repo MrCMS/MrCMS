@@ -263,7 +263,7 @@ CKEDITOR.dialog.add('link', function(a) {
                             label: 'Find file',
                             onLoad: function () {
                                 $(this.getInputElement().$).attr("href", null).attr("data-link", "/Admin/MediaCategory/MediaSelector").click(function () {
-                                    launchModal($(this), function (value) {
+                                    launchModal($(this), function (element, value) {
                                         $('.file-url').val(value);
                                         $('.file-url-protocol').val('');
                                     });
