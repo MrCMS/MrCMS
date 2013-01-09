@@ -185,16 +185,25 @@ namespace MrCMS.Website.Routing
         {
             if (Webpage is Redirect)
             {
-                string redirectUrl = (Webpage as Redirect).RedirectUrl;
+                var redirect = (Webpage as Redirect);
+                string redirectUrl = redirect.RedirectUrl;
                 Uri result;
                 if (Uri.TryCreate(redirectUrl, UriKind.Absolute, out result))
-                    context.Response.Redirect(redirectUrl);
+                {
+                    if (redirect.Permanent)
+                        context.Response.RedirectPermanent(redirectUrl);
+                    else
+                        context.Response.Redirect(redirectUrl);
+                }
                 else
                 {
                     if (redirectUrl.StartsWith("/"))
                         redirectUrl = redirectUrl.Substring(1);
 
-                    context.Response.Redirect("~/" + redirectUrl);
+                    if (redirect.Permanent)
+                        context.Response.RedirectPermanent("~/" + redirectUrl);
+                    else
+                        context.Response.Redirect("~/" + redirectUrl);
                 }
                 return true;
             }

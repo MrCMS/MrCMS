@@ -372,6 +372,17 @@ namespace MrCMS.Tests.Website.Routing
         }
 
         [Fact]
+        public void MrCMSHttpHandler_PageIsRedirect_RedirectWithPermanentCallsResponseRedirectPermanentForTheRedirectUrl()
+        {
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new Redirect {RedirectUrl = "test-redirect", Permanent = true};
+            var httpContext = A.Fake<HttpContextBase>();
+
+            mrCMSHttpHandler.PageIsRedirect(httpContext);
+            A.CallTo(() => httpContext.Response.RedirectPermanent("~/test-redirect")).MustHaveHappened();
+        }
+
+        [Fact]
         public void MrCMSHttpHandler_PageIsRedirect_IfRedirectIsAbsoluteUrlShouldRedirectWithoutTilde()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
@@ -380,6 +391,17 @@ namespace MrCMS.Tests.Website.Routing
 
             mrCMSHttpHandler.PageIsRedirect(httpContext);
             A.CallTo(() => httpContext.Response.Redirect("http://www.example.com")).MustHaveHappened();
+        }
+
+        [Fact]
+        public void MrCMSHttpHandler_PageIsRedirect_IfRedirectIsAbsoluteUrlAndIsPermanentShouldBe301()
+        {
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            mrCMSHttpHandler.Webpage = new Redirect {RedirectUrl = "http://www.example.com", Permanent = true};
+            var httpContext = A.Fake<HttpContextBase>();
+
+            mrCMSHttpHandler.PageIsRedirect(httpContext);
+            A.CallTo(() => httpContext.Response.RedirectPermanent("http://www.example.com")).MustHaveHappened();
         }
 
         [Fact]
