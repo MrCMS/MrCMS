@@ -44,11 +44,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void RoleController_AddGet_ReturnsAViewResult()
+        public void RoleController_AddGet_ReturnsAPartialViewResult()
         {
             RoleController roleController = GetRoleController();
 
-            roleController.Add().Should().BeOfType<ViewResult>();
+            roleController.Add().Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             RoleController roleController = GetRoleController();
 
-            roleController.Add().As<ViewResult>().Model.Should().BeOfType<UserRole>();
+            roleController.Add().As<PartialViewResult>().Model.Should().BeOfType<UserRole>();
         }
 
         [Fact]

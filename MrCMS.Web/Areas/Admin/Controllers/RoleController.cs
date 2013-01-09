@@ -24,10 +24,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Add()
+        public PartialViewResult Add()
         {
             var model = new UserRole();
-            return View(model);
+            return PartialView(model);
         }
 
         [HttpPost]
