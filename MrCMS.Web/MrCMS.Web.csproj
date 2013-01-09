@@ -609,7 +609,6 @@
     <Content Include="Areas\Admin\Views\Sites\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\NavLinks.cshtml" />
-    <None Include="Properties\PublishProfiles\New.pubxml" />
     <Content Include="Views\Shared\AdminEditor.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Pages\SearchPage.cshtml" />
