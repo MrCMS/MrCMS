@@ -14,18 +14,5 @@ namespace MrCMS.Website.Controllers
         {
             get { return ReferrerOverride ?? HttpContext.Request.UrlReferrer.ToString(); }
         }
-
-        private TempDataDictionary _tempDataDictionary;
-        public new TempDataDictionary TempData
-        {
-            get
-            {
-                if (ControllerContext != null && ControllerContext.IsChildAction)
-                {
-                    return ControllerContext.ParentActionViewContext.TempData;
-                }
-                return _tempDataDictionary ?? (_tempDataDictionary = new TempDataDictionary());
-            }
-        }
     }
 }

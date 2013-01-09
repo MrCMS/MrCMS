@@ -52,7 +52,7 @@ namespace MrCMS.Website.Routing
         {
             if (!CheckIsInstalled(context)) return;
 
-            if (CheckIsFile()) return;
+            if (CheckIsFile(context)) return;
 
             if (Handle404(context)) return;
 
@@ -134,17 +134,7 @@ namespace MrCMS.Website.Routing
 
         public void Handle500(HttpContextBase context, Exception exception)
         {
-            HandleExceptionWithElmah(context, exception);
-
-            var error500 = DocumentService.GetDocument<Webpage>(SiteSettings.Error500PageId);
-            if (error500 != null)
-            {
-                context.Response.Redirect("~/" + error500.LiveUrlSegment);
-            }
-            else
-            {
-                context.Response.Redirect("~");
-            }
+            HandleError(context, 500, SiteSettings.Error500PageId, new HttpException(500, exception.Message, exception));
         }
 
         private void HandleExceptionWithElmah(HttpContextBase context, Exception exception)
@@ -167,18 +157,34 @@ namespace MrCMS.Website.Routing
         {
             if (Webpage == null)
             {
-                var error404 = DocumentService.GetDocument<Webpage>(SiteSettings.Error404PageId);
-                if (error404 != null)
-                {
-                    context.Response.Redirect("~/" + error404.LiveUrlSegment);
-                }
-                else
-                {
-                    context.Response.Redirect("~");
-                }
+                HandleError(context, 404, SiteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data));
                 return true;
             }
             return false;
+        }
+
+        private void HandleError(HttpContextBase context, int code, int pageId, HttpException exception)
+        {
+            HandleExceptionWithElmah(context, exception);
+            var webpage = DocumentService.GetDocument<Webpage>(pageId);
+            if (webpage != null)
+            {
+                context.ClearError();
+                context.Response.Clear();
+                context.Response.StatusCode = code;
+                context.Response.TrySkipIisCustomErrors = true;
+
+                var data = new RouteData();
+                data.Values["data"] = webpage.LiveUrlSegment;
+
+                Webpage = webpage;
+                var controller = GetController();
+                (controller as IController).Execute(new RequestContext(context, controller.RouteData));
+            }
+            else
+            {
+                throw exception;
+            }
         }
 
         public bool PageIsRedirect(HttpContextBase context)
@@ -210,12 +216,17 @@ namespace MrCMS.Website.Routing
             return false;
         }
 
-        public bool CheckIsFile()
+        public bool CheckIsFile(HttpContextBase context)
         {
             var path = RequestContext.HttpContext.Request.Url.ToString();
             var extension = Path.GetExtension(path);
             if (!string.IsNullOrWhiteSpace(extension))
+            {
+                context.Response.Clear();
+                context.Response.StatusCode = 404;
+                context.Response.End();
                 return true;
+            }
             return false;
         }
 
@@ -315,20 +326,24 @@ namespace MrCMS.Website.Routing
         private Webpage GetWebpage()
         {
             var site = SiteSettings.Site;
-            var data = Convert.ToString(RequestContext.RouteData.Values["data"]);
 
             Webpage webpage;
-            if (string.IsNullOrWhiteSpace(data))
+            if (string.IsNullOrWhiteSpace(Data))
             {
                 if (!MrCMSApplication.UserLoggedIn)
                     webpage = MrCMSApplication.PublishedRootChildren(site).FirstOrDefault();
                 else webpage = MrCMSApplication.RootChildren(site).FirstOrDefault();
             }
-            else webpage = DocumentService.GetDocumentByUrl<Webpage>(data, site);
+            else webpage = DocumentService.GetDocumentByUrl<Webpage>(Data, site);
 
             MrCMSApplication.CurrentPage = webpage;
             _webpageLookedUp = true;
             return webpage;
+        }
+
+        private string Data
+        {
+            get { return Convert.ToString(RequestContext.RouteData.Values["data"]); }
         }
 
         bool IHttpHandler.IsReusable

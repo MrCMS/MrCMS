@@ -41,12 +41,6 @@ namespace MrCMS.Website
 
             ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
         }
-        void Application_Error(object sender, EventArgs e)
-        {
-            var error = Server.GetLastError();
-
-            Elmah.ErrorSignal.FromCurrentContext().Raise(error);
-        }
 
         public static User OverriddenUser { get; set; }
 
