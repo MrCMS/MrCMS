@@ -42,23 +42,37 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        [ActionName("Edit")]
+        public ActionResult Edit_Get(User user)
         {
-            User user = _userService.GetUser(id);
-
             ViewData["AvailableRoles"] = _roleService.GetAllRoles();
             ViewData["AvailableSites"] = _siteService.GetAllSites();
+            ViewData["OnlyAdmin"] = _roleService.IsOnlyAdmin(user);
 
-            if (user == null)
-                return RedirectToAction("Index");
-
-            return View(user);
+            return user == null
+                       ? (ActionResult) RedirectToAction("Index")
+                       : View(user);
         }
 
         [HttpPost]
         public ActionResult Edit([SessionModelBinder(typeof (EditUserModelBinder))] User user)
         {
             _userService.SaveUser(user);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [ActionName("Delete")]
+        public PartialViewResult Delete_Get(User user)
+        {
+            return PartialView(user);
+        }
+
+        [HttpPost]
+        public RedirectToRouteResult Delete(User user)
+        {
+            _userService.DeleteUser(user);
 
             return RedirectToAction("Index");
         }

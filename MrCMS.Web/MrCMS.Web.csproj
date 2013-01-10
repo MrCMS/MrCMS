@@ -616,6 +616,7 @@
     <Content Include="Views\Login\ForgottenPasswordSent.cshtml" />
     <Content Include="Views\Login\PasswordReset.cshtml" />
     <Content Include="Views\Login\ResetComplete.cshtml" />
+    <Content Include="Areas\Admin\Views\User\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Models\" />

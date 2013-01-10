@@ -3,6 +3,7 @@ using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Criterion;
+using System.Linq;
 
 namespace MrCMS.Services
 {
@@ -39,6 +40,13 @@ namespace MrCMS.Services
         public void DeleteRole(UserRole role)
         {
             _session.Transact(session => session.Delete(role));
+        }
+
+        public bool IsOnlyAdmin(User user)
+        {
+            var adminRole = GetRoleByName(UserRole.Administrator);
+
+            return adminRole.Users.Count != 1 || adminRole.Users.First() != user;
         }
     }
 }

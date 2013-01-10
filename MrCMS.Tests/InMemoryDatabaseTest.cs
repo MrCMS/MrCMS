@@ -70,7 +70,7 @@ namespace MrCMS.Tests
             
             var adminUserRole = new UserRole
                                     {
-                                        Name = "Administrator"
+                                        Name = UserRole.Administrator
                                     };
 
             user.Roles = new List<UserRole> { adminUserRole };

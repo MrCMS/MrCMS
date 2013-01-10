@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using NHibernate;
 
-namespace MrCMS.Website
+namespace MrCMS.Website.Binders
 {
     public class MrCMSDefaultModelBinder : DefaultModelBinder
     {

@@ -81,5 +81,14 @@ namespace MrCMS.Services
         {
             return context.User != null ? GetUserByEmail(context.User.Identity.Name) : null;
         }
+
+        public void DeleteUser(User user)
+        {
+            _session.Transact(session =>
+                                  {
+                                      user.OnDeleting();
+                                      session.Delete(user);
+                                  });
+        }
     }
 }

@@ -39,9 +39,20 @@ namespace MrCMS.Entities.People
 
         public virtual bool IsAdmin
         {
-            get { return Roles != null && Roles.Any(role => role.Name == "Administrator"); }
+            get { return Roles != null && Roles.Any(role => role.Name == UserRole.Administrator); }
         }
 
         public virtual IList<Site> Sites { get; set; }
+
+        public override void OnDeleting()
+        {
+            base.OnDeleting();
+            foreach (var userRole in Roles)
+                userRole.Users.Remove(this);
+            Roles.Clear();
+            foreach (var site in Sites)
+                site.Users.Remove(this);
+            Sites.Clear();
+        }
     }
 }

@@ -3,11 +3,13 @@ using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using MrCMS.Entities.People;
+using MrCMS.Website;
 using Newtonsoft.Json;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [MrCMSAuthorize(Roles = UserRole.Administrator)]
     [ValidateInput(false)]
     public abstract class AdminController : Controller
     {
@@ -23,11 +25,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             ViewData["controller-name"] = ControllerContext.RouteData.Values["controller"];
             base.OnActionExecuting(filterContext);
         }
-
-        //protected new ViewResultBase View(object model)
-        //{
-        //    return IsAjaxRequest ? (ViewResultBase)PartialView(model) : base.View(model);
-        //}
 
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding,
                                            JsonRequestBehavior behavior)

@@ -10,5 +10,6 @@ namespace MrCMS.Services
         IEnumerable<UserRole> GetAllRoles();
         UserRole GetRoleByName(string name);
         void DeleteRole(UserRole role);
+        bool IsOnlyAdmin(User user);
     }
 }

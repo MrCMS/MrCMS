@@ -6,6 +6,8 @@ namespace MrCMS.Entities.People
 {
     public class UserRole : BaseEntity
     {
+        public const string Administrator = "Administrator";
+
         [Required]
         [DisplayName("Role Name")]
         public virtual string Name { get; set; }

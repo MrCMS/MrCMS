@@ -269,6 +269,7 @@
     <Compile Include="Website\Binders\EditUserModelBinder.cs" />
     <Compile Include="Website\Binders\GlobalSettingsModelBinder.cs" />
     <Compile Include="Website\Binders\LayoutAreaModelBinder.cs" />
+    <Compile Include="Website\Binders\MrCMSDefaultModelBinder.cs" />
     <Compile Include="Website\Binders\SessionModelBinderAttribute.cs" />
     <Compile Include="Website\Binders\SettingModelBinder.cs" />
     <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
@@ -276,8 +277,7 @@
     <Compile Include="Website\Caching\ICacheManager.cs" />
     <Compile Include="Website\Controllers\MrCMSController.cs" />
     <Compile Include="Website\MrCMSApplication.cs" />
-    <Compile Include="Website\MrCMSDefaultModelBinder.cs" />
-    <Compile Include="Website\Routing\HandlerControllerModel.cs" />
+    <Compile Include="Website\MrCMSAuthorizeAttribute.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandler.cs" />
     <Compile Include="Website\MrCMSPage.cs" />

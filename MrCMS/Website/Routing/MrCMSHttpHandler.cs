@@ -11,6 +11,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Website.Binders;
 using NHibernate;
 
 namespace MrCMS.Website.Routing

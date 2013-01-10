@@ -2,6 +2,7 @@
 using System.IO;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
@@ -10,7 +11,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = UserRole.Administrator)]
     public class AdminToolsController : MrCMSController
     {
         private readonly IDocumentService _documentService;

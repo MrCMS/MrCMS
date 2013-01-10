@@ -1,0 +1,19 @@
+﻿@model MrCMS.Entities.People.User
+@{
+    Layout = null;
+}
+@using (Html.BeginForm("Delete", "User", new { id = Model.Id }, FormMethod.Post))
+{
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>Delete User</h3>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to delete this user? This action cannot be undone.
+        <br />
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Close</a>
+        <input type="submit" class="btn-primary btn" value="Delete User" />
+    </div>
+}

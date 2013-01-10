@@ -106,23 +106,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void UserController_EditGet_ShouldCallGetUserForTheSpecifiedId()
-        {
-            UserController userController = GetUserController();
-
-            userController.Edit(1);
-
-            A.CallTo(() => _userService.GetUser(1)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void UserController_EditGet_ShouldReturnAViewResultWithTheReturnedValueIfValidId()
+        public void UserController_EditGet_ShouldReturnAViewResultWithThePassedUserAsAModel()
         {
             UserController userController = GetUserController();
             var user = new User();
-            A.CallTo(() => _userService.GetUser(1)).Returns(user);
 
-            ActionResult result = userController.Edit(1);
+            ActionResult result = userController.Edit_Get(user);
 
             result.As<ViewResult>().Model.Should().Be(user);
         }
@@ -133,7 +122,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             UserController userController = GetUserController();
             A.CallTo(() => _userService.GetUser(1)).Returns(null);
 
-            ActionResult result = userController.Edit(1);
+            ActionResult result = userController.Edit_Get(null);
 
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
@@ -142,14 +131,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void UserController_EditGet_ShouldSetViewDataForAvailableRolesAndSites()
         {
             UserController userController = GetUserController();
-            var value = new User();
-            A.CallTo(() => _userService.GetUser(1)).Returns(value);
+            var user = new User();
             var roles = new List<UserRole>();
             A.CallTo(() => _roleService.GetAllRoles()).Returns(roles);
             var sites = new List<Site>();
             A.CallTo(() => _siteService.GetAllSites()).Returns(sites);
 
-            userController.Edit(1);
+            userController.Edit_Get(user);
 
             userController.ViewData["AvailableRoles"].Should().Be(roles);
             userController.ViewData["AvailableSites"].Should().Be(sites);

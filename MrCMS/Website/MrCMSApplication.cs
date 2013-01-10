@@ -17,6 +17,7 @@ using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website;
+using MrCMS.Website.Binders;
 using MrCMS.Website.Routing;
 using NHibernate;
 using Ninject;
