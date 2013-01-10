@@ -616,6 +616,7 @@
     <Content Include="Views\Login\PasswordReset.cshtml" />
     <Content Include="Views\Login\ResetComplete.cshtml" />
     <Content Include="Areas\Admin\Views\User\Delete.cshtml" />
+    <None Include="Properties\PublishProfiles\v0.1.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Models\" />
