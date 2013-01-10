@@ -1,7 +1,4 @@
-using System;
 using System.IO;
-using System.Security.AccessControl;
-using System.Web;
 using System.Web.Hosting;
 using MrCMS.Website;
 
@@ -39,7 +36,10 @@ namespace MrCMS.Services
         {
             var path = GetPath(filePath);
 
-            File.Delete(path);
+            if (Directory.Exists(path))
+                Directory.Delete(path);
+            else
+                File.Delete(path);
         }
 
         public bool Exists(string filePath)

@@ -17,5 +17,6 @@ namespace MrCMS.Services
         MediaFile GetFileByLocation(string value);
         string GetFileUrl(string value);
         string MediaDirectory { get; }
+        void RemoveFolder(MediaCategory mediaCategory);
     }
 }

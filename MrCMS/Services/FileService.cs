@@ -227,5 +227,12 @@ namespace MrCMS.Services
         }
 
         public string MediaDirectory { get { return _mediaDirectory; } }
+
+        public void RemoveFolder(MediaCategory mediaCategory)
+        {
+            string folderLocation = string.Format("{0}/{1}/", MediaDirectory, mediaCategory.UrlSegment);
+
+            _fileSystem.Delete(folderLocation);
+        }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using MrCMS.Services;
+using MrCMS.Website;
 
 namespace MrCMS.Entities.Documents.Media
 {
@@ -18,6 +21,18 @@ namespace MrCMS.Entities.Documents.Media
         {
             get { return _files; }
             protected internal set { _files = value; }
+        }
+
+        public override void OnDeleting()
+        {
+            base.OnDeleting();
+            
+            var mediaFiles = Files.ToList();
+
+            var fileService = MrCMSApplication.Get<IFileService>();
+            foreach (var mediaFile in mediaFiles)
+                fileService.DeleteFile(mediaFile);
+            fileService.RemoveFolder(this);
         }
     }
 }
