@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using NHibernate;
 using MrCMS.Helpers;
 
@@ -51,6 +52,13 @@ namespace MrCMS.Entities.Widget
                 Webpage.Widgets.Remove(this);
             }
             base.OnDeleting();
+        }
+
+        public virtual Site Site
+        {
+            get {
+                return Webpage != null ? Webpage.Site : LayoutArea.Layout.Site;
+            }
         }
     }
 }
