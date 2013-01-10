@@ -172,7 +172,6 @@
     <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\TypeHelper.cs" />
-    <Compile Include="Helpers\WebPageHelpers.cs" />
     <Compile Include="Helpers\WidgetHelper.cs" />
     <Compile Include="InvalidPasswordException.cs" />
     <Compile Include="IoC\NHibernateModule.cs" />

@@ -13,7 +13,7 @@
     <link href="@Url.Content("~/Content/Styles/style.css")" rel="stylesheet" />
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><script src="/Content/Scripts/respond.min.js"></script><![endif]-->
-    @Html.RenderZone("Head Files")
+    @RenderZone("Head Files")
 
     @{ Html.RenderAction("RenderAnalytics", "SEO"); }
 </head>
@@ -36,16 +36,16 @@
                     <span class="icon-bar"></span>
                 </button>
                 <div class="nav-collapse collapse">
-                    @Html.RenderZone("Main Navigation")
+                    @RenderZone("Main Navigation")
                 </div>
             </div>
         </div>
     </div>
 
     <div class="container">
-        @Html.RenderZone("Before Content")
+        @RenderZone("Before Content")
         @RenderBody()
-        @Html.RenderZone("After Content")
+        @RenderZone("After Content")
     </div>
 
     <footer>
