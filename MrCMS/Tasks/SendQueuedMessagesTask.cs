@@ -19,8 +19,6 @@ namespace MrCMS.Tasks
 
         public override void Execute()
         {
-            // Set up to use the client from the settings in web.config
-            // TODO: move this to admin configured
             using (var smtpClient = new SmtpClient(_mailSettings.Host, _mailSettings.Port)
                                         {
                                             EnableSsl = _mailSettings.UseSSL,
