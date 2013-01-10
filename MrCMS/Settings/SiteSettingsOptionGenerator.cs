@@ -20,8 +20,7 @@ namespace MrCMS.Settings
                          .BuildSelectItemList(
                              page => page.Name,
                              page => page.Id.ToString(CultureInfo.InvariantCulture),
-                             page => page.Id == pageId,
-                             "Select page");
+                             page => page.Id == pageId, (string) null);
         }
 
         public List<SelectListItem> GetLayoutOptions(ISession session, Site site, int? selectedLayoutId, bool includeDefault = false)

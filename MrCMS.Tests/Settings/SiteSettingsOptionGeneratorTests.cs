@@ -13,7 +13,7 @@ namespace MrCMS.Tests.Settings
     public class SiteSettingsOptionGeneratorTests : InMemoryDatabaseTest
     {
         [Fact]
-        public void SiteSettingsOptionGenerator_GetErrorPageOptions_IncludesSelectPage()
+        public void SiteSettingsOptionGenerator_GetErrorPageOptions_IsEmptyWithNoPages()
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
@@ -21,8 +21,7 @@ namespace MrCMS.Tests.Settings
             Session.Transact(session => session.Save(site));
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, site, -1);
 
-            errorPageOptions.Should().HaveCount(1);
-            errorPageOptions[0].Text.Should().Be("Select page");
+            errorPageOptions.Should().BeEmpty();
         }
 
         [Fact]
@@ -36,9 +35,9 @@ namespace MrCMS.Tests.Settings
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, site, -1);
 
-            errorPageOptions.Should().HaveCount(2);
-            errorPageOptions[1].Text.Should().Be("Test 1");
-            errorPageOptions[1].Value.Should().Be(textPage.Id.ToString());
+            errorPageOptions.Should().HaveCount(1);
+            errorPageOptions[0].Text.Should().Be("Test 1");
+            errorPageOptions[0].Value.Should().Be(textPage.Id.ToString());
         }
 
         [Fact]
@@ -58,9 +57,9 @@ namespace MrCMS.Tests.Settings
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, site2, -1);
 
-            errorPageOptions.Should().HaveCount(2);
-            errorPageOptions[1].Text.Should().Be("Test 2");
-            errorPageOptions[1].Value.Should().Be(textPage2.Id.ToString());
+            errorPageOptions.Should().HaveCount(1);
+            errorPageOptions[0].Text.Should().Be("Test 2");
+            errorPageOptions[0].Value.Should().Be(textPage2.Id.ToString());
         }
 
         [Fact]
@@ -74,7 +73,7 @@ namespace MrCMS.Tests.Settings
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, site, -1);
 
-            errorPageOptions.Should().HaveCount(1);
+            errorPageOptions.Should().HaveCount(0);
         }
 
         [Fact]
@@ -88,8 +87,8 @@ namespace MrCMS.Tests.Settings
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, site, textPage.Id);
 
-            errorPageOptions.Should().HaveCount(2);
-            errorPageOptions[1].Selected.Should().BeTrue();
+            errorPageOptions.Should().HaveCount(1);
+            errorPageOptions[0].Selected.Should().BeTrue();
         }
 
         [Fact]
