@@ -13,8 +13,8 @@
     <img src="/Areas/Admin/Content/Images/button-right.png" class="menu-handle"/>
 </div>
 @Html.HiddenFor(webpage => webpage.Id)
-<script src="../../Areas/Admin/Content/Editors/ckeditor/ckeditor.js"></script>
-<script src="../../Areas/Admin/Content/Scripts/jquery.cookie.js"></script>
+<script src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"></script>
+<script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.cookie.js")"></script>
 <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>
 <script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.mrcms-mediaselector.js")"></script>
 <script src="@Url.Content("~/Areas/Admin/Content/Scripts/admin.js")"></script>

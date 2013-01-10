@@ -39,25 +39,20 @@ function getCookieValue() {
 }
 
 function setCookieValue(value) {
-    return $.cookie('inline_edit', value, { expires: 7, path: '/' });
+    return $.cookie('inline_edit', value, { expires: 7, path: location.pathname });
 }
 
 var contentObj;
 var contents;
 
 function inlineEditing() {
+    var editable = $(".editable");
     if (getCookieValue() == "true") {
-        if ($(".editable").length > 0) {
-            $(".editable").attr('contenteditable', 'true');
-            CKEDITOR.on('instanceCreated', function (event) {
-                var editor = event.editor,
-                    element = editor.element;
-                editor.on('configLoaded', function () {
-                    editor.config.toolbar = 'Basic';
-                });
-            });
+        if (editable.length > 0) {
+            editable.attr('contenteditable', 'true');
+                CKEDITOR.inlineAll();
 
-            $('.editable').focus(function () {
+            editable.focus(function () {
                 var that = $(this);
                 contentObj = $('.editable');
                 $.get('/Admin/Webpage/GetUnformattedBodyContent/' + $('#Id').val(), function (response) {
@@ -65,7 +60,7 @@ function inlineEditing() {
                     contents = contentObj.html();
                 });
             });
-            $('.editable').blur(function () {
+            editable.blur(function () {
                 if (contents != $(this).html()) {
                     contents = $(this).html();
                     var data = {
@@ -120,7 +115,7 @@ function inlineEditing() {
             var instance = CKEDITOR.instances[k];
             instance.destroy();
         }
-        $(".editable").attr("contenteditable", "false");
+        editable.attr("contenteditable", "false");
         //$().removeAttr("cke_editable");
     }
 }
@@ -152,3 +147,11 @@ function setMenuState() {
         $(".menu-handle").attr('src', "/Areas/Admin/Content/Images/button-left.png");
     }
 }
+
+CKEDITOR.on('instanceCreated', function (event) {
+    var editor = event.editor,
+        element = editor.element;
+    editor.on('configLoaded', function () {
+        editor.config.toolbar = 'Basic';
+    });
+});
