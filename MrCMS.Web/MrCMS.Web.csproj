@@ -602,7 +602,6 @@
     <Content Include="Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Settings.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\SiteList.cshtml" />
-    <Content Include="Areas\Admin\Views\Sites\EnableMultisite.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\WebsiteTreeList.cshtml" />
