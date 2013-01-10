@@ -46,6 +46,7 @@ namespace MrCMS.Tests.Services
                 yield return new object[] { new Size(300, 200), new Size(100, 100), new Size(100, 67) };
                 yield return new object[] { new Size(200, 300), new Size(100, 100), new Size(67, 100) };
                 yield return new object[] { new Size(270, 337), new Size(320, 240), new Size(193, 240) };
+                yield return new object[] { new Size(298, 350), new Size(248, 0), new Size(248, 292) };
             }
         }
     }

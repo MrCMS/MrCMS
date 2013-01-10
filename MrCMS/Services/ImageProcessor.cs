@@ -141,7 +141,7 @@ namespace MrCMS.Services
         public static Size CalculateDimensions(Size originalSize, Size targetSize)
         {
             // If the target image is bigger than the source
-            if (!RequiresResize(originalSize, targetSize))
+            if (!RequiresResize(originalSize, targetSize)|| targetSize== Size.Empty)
             {
                 return originalSize;
             }
@@ -149,18 +149,20 @@ namespace MrCMS.Services
             double ratio = 0;
 
             // What ratio should we resize it by
-            var widthRatio = originalSize.Width / (double)targetSize.Width;
-            var heightRatio = originalSize.Height / (double)targetSize.Height;
-            ratio = widthRatio > heightRatio
+            double? widthRatio = targetSize.Width == 0 ? (double?) null : originalSize.Width/(double) targetSize.Width;
+            double? heightRatio = targetSize.Height == 0
+                                      ? (double?) null
+                                      : originalSize.Height/(double) targetSize.Height;
+            ratio = widthRatio.GetValueOrDefault() > heightRatio.GetValueOrDefault()
                         ? originalSize.Width / (double)targetSize.Width
                         : originalSize.Height / (double)targetSize.Height;
 
-            var width = Math.Ceiling(originalSize.Width/ratio);
-            width = width > targetSize.Width ? targetSize.Width : width;
+            var width = Math.Ceiling(originalSize.Width / ratio);
+            width = targetSize.Width != 0 && width > targetSize.Width ? targetSize.Width : width;
             var resizeWidth = width;
 
-            var height = Math.Ceiling(originalSize.Height/ratio);
-            height = height > targetSize.Height ? targetSize.Height : height;
+            var height = Math.Ceiling(originalSize.Height / ratio);
+            height = targetSize.Height != 0 && height > targetSize.Height ? targetSize.Height : height;
             var resizeHeight = height;
 
             return new Size((int)resizeWidth, (int)resizeHeight);
@@ -168,7 +170,8 @@ namespace MrCMS.Services
 
         public static bool RequiresResize(Size originalSize, Size targetSize)
         {
-            return targetSize.Width < originalSize.Width || targetSize.Height < originalSize.Height;
+            return (targetSize.Width != 0 && targetSize.Width < originalSize.Width) ||
+                   (targetSize.Height != 0 && targetSize.Height < originalSize.Height);
         }
 
         /// <summary>

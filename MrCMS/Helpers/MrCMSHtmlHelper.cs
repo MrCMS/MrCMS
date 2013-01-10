@@ -427,13 +427,13 @@ namespace MrCMS.Helpers
             var fileService = MrCMSApplication.Get<IFileService>();
             var image = imageProcessor.GetImage(imageUrl);
 
-            if (image == null)
+            if (image == null || targetSize == Size.Empty)
                 return MvcHtmlString.Empty;
 
             if (ImageProcessor.RequiresResize(image.Size, targetSize))
             {
                 var resized = ImageProcessor.CalculateDimensions(image.Size, targetSize);
-                var location = fileService.GetFileLocation(image, resized);
+                var location = fileService.GetFileLocation(image, targetSize);
                 if (!string.IsNullOrWhiteSpace(location))
                     imageUrl = "/" + location;
             }
@@ -499,7 +499,7 @@ namespace MrCMS.Helpers
         {
             foreach (var key in additions)
                 baseDictionary[key.Key] = key.Value;
-            
+
             return baseDictionary;
         }
     }

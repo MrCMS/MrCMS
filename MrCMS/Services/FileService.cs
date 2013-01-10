@@ -72,6 +72,11 @@ namespace MrCMS.Services
                                       session.SaveOrUpdate(mediaFile);
                                       session.SaveOrUpdate(mediaCategory);
                                   });
+            return GetUploadFilesResult(mediaFile);
+        }
+
+        private ViewDataUploadFilesResult GetUploadFilesResult(MediaFile mediaFile)
+        {
             return new ViewDataUploadFilesResult(mediaFile, GetUrl(mediaFile, GetImageSizes().Find(size => size.Name == "Thumbnail").Size));
         }
 
@@ -145,7 +150,7 @@ namespace MrCMS.Services
         {
             return
                 _session.QueryOver<MediaFile>().Where(file => file.MediaCategory.Id == mediaCategoryId).List().Select(
-                    file => new ViewDataUploadFilesResult(file, GetUrl(file, GetImageSizes().Find(size => size.Name == "Thumbnail").Size))).ToArray();
+                    GetUploadFilesResult).ToArray();
         }
 
         public MediaFile GetFile(int id)
