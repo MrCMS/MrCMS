@@ -39,7 +39,8 @@ namespace MrCMS.Services
 
         public void DeleteRole(UserRole role)
         {
-            _session.Transact(session => session.Delete(role));
+            if (!role.IsAdmin)
+                _session.Transact(session => session.Delete(role));
         }
 
         public bool IsOnlyAdmin(User user)

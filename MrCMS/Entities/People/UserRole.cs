@@ -13,5 +13,7 @@ namespace MrCMS.Entities.People
         public virtual string Name { get; set; }
 
         public virtual IList<User> Users { get; set; }
+
+        public virtual bool IsAdmin { get { return Name == Administrator; } }
     }
 }
