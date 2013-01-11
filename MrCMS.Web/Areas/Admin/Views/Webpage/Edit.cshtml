@@ -10,17 +10,9 @@
 {
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/edit-webpage.js")"></script>
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.formbuilder.js")"></script>
-    
+
     <script type="text/javascript">
-        // lazy load iframe preview when tab is selected
-        $('a[data-toggle="tab"]').on('shown', function(e) {
-            var tab = e.target.toString();
-            if (tab.length > 0) {
-                if (tab.indexOf("preview") !== -1) {
-                    $("#previewIframe").attr('src', '/@Model.LiveUrlSegment');
-                }
-            }
-        })
+
     </script>
 
 }
@@ -44,7 +36,7 @@
                 : Html.FormLink("Unpublish", "Unpublish", new { id = Model.Id }, new { @class = "btn  btn-success" }))
             @Html.ValidationMessageFor(x => x.PublishOn)
 
-            <a href="/@Model.LiveUrlSegment" class="btn">View</a>
+            <a href="@Model.Site.BaseUrl.TrimEnd('/')/@Model.LiveUrlSegment" class="btn">View</a>
             @if (Model.CanDelete)
             {
                 <a href="@Url.Action("Delete", "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
@@ -84,6 +76,8 @@
         <div class="tab-content">
             <div class="tab-pane active" id="edit-content">
                 <div class="span12">
+                    @Html.HiddenFor(webpage => webpage.PublishOn, new { id = "publish-on-hidden" })
+                    @Html.HiddenFor(x => x.LiveUrlSegment)
                     @Html.HiddenFor(x => x.DocumentType)
                     @Html.HiddenFor(x => x.Id)
                     <div class="accordion" id="accordion-page-edit">
@@ -100,7 +94,7 @@
                         {
                             Html.RenderPartial("Content", Model as ITextPage);
                         }
-                        
+
                         @if (!(Model is Redirect))
                         {
                             <div class="accordion-group">
@@ -110,13 +104,13 @@
                                 <div id="seo" class="accordion-body collapse">
                                     <div class="accordion-inner">
                                         @Html.LabelFor(x => x.MetaTitle, "Meta Title")
-                                        @Html.TextBoxFor(x => x.MetaTitle, new {@class = "span12"})
+                                        @Html.TextBoxFor(x => x.MetaTitle, new { @class = "span12" })
                                         @Html.ValidationMessageFor(x => x.MetaTitle)
                                         @Html.LabelFor(x => x.MetaDescription, "Meta Description")
-                                        @Html.TextBoxFor(x => x.MetaDescription, new {@class = "span12"})
+                                        @Html.TextBoxFor(x => x.MetaDescription, new { @class = "span12" })
                                         @Html.ValidationMessageFor(x => x.MetaDescription)
                                         @Html.LabelFor(x => x.MetaKeywords, "Meta Keywords")
-                                        @Html.TextBoxFor(x => x.MetaKeywords, new {@class = "span12"})
+                                        @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "span12" })
                                         @Html.ValidationMessageFor(x => x.MetaKeywords)
                                         <div class="form-inline">
                                             @Html.CheckBoxFor(x => x.RevealInNavigation)

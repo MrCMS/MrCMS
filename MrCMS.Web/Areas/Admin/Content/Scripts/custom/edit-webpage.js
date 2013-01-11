@@ -36,4 +36,20 @@
     $('#accordion-layout-areas').on('hidden', function (e) {
         $.cookie('selected-layout-area', '', { expires: 1, path: location.pathname });
     });
+
+    $('#PublishOn').change(function() {
+        $('#publish-on-hidden').val($(this).val());
+    });
+});
+
+
+// lazy load iframe preview when tab is selected
+// needs to be before shown from hash/cookie
+$('.main-content a[data-toggle="tab"]').on('shown', function (e) {
+    var tab = e.target.toString();
+    if (tab.length > 0) {
+        if (tab.indexOf("preview") !== -1) {
+            $("#previewIframe").attr('src', '/' + $('#LiveUrlSegment').val());
+        }
+    }
 });
