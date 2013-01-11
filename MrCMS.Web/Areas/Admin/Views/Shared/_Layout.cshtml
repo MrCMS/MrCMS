@@ -1,4 +1,7 @@
-﻿@{
+﻿@using System.Reflection
+@using MrCMS.Helpers
+@using MrCMS.Web
+@{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutRoot.cshtml";
 }
 
@@ -16,7 +19,8 @@
 
 <footer>
     <hr />
-    <p>&copy; MrCMS 2012</p>
+    <p>&copy; MrCMS 2012-@DateTime.UtcNow.Year - v@(Html.AssemblyVersion())
+       </p>
 </footer>
 <!-- Le javascript  ( Placed at the end of the document so the pages load faster) -->
 

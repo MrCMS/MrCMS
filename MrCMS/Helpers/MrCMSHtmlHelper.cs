@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -479,6 +480,18 @@ namespace MrCMS.Helpers
                 return result.ToString();
             }
             return url;
+        }
+
+
+
+        public static string AssemblyVersion(this HtmlHelper html)
+        {
+            var fileVersion =
+                typeof(MrCMSApplication)
+                    .Assembly.GetCustomAttributes(typeof (AssemblyFileVersionAttribute), true)
+                    .OfType<AssemblyFileVersionAttribute>()
+                    .FirstOrDefault();
+            return fileVersion != null ? fileVersion.Version : null;
         }
 
         public static HtmlHelper GetHtmlHelper(Controller controller)
