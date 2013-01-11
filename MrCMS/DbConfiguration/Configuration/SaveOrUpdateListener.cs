@@ -102,7 +102,7 @@ namespace MrCMS.DbConfiguration.Configuration
 
                         var oldValue = @event.OldState[i];
                         var newValue = @event.State[i];
-                        if(oldValue != newValue)
+                        if (oldValue != newValue)
                             anyChanges = true;
                         jObject.Add(propertyName, new JRaw(JsonConvert.SerializeObject(oldValue)));
                     }
@@ -128,8 +128,9 @@ namespace MrCMS.DbConfiguration.Configuration
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
+                MrCMSApplication.ErrorSignal.Raise(exception);
             }
         }
 

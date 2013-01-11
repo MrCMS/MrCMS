@@ -61,7 +61,7 @@ namespace MrCMS.Website
                     }
                     catch (Exception ex)
                     {
-                        Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                        MrCMSApplication.ErrorSignal.Raise(ex);
                     }
 
                     if (MrCMSApplication.CurrentUserIsAdmin)

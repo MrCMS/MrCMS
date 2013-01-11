@@ -34,7 +34,7 @@ namespace MrCMS.Services
         {
             _session.Transact(session =>
                                   {
-                                      widget.OnDeleting();
+                                      widget.OnDeleting(session);
                                       session.Delete(widget);
                                   });
         }

@@ -62,13 +62,13 @@ namespace MrCMS.Entities.Documents
         /// Called before a document is to be deleted
         /// Place custom logic in here, or things that cannot be handled by NHibernate due to same table references
         /// </summary>
-        public override void OnDeleting()
+        public override void OnDeleting(ISession session)
         {
             if (Parent != null)
             {
                 Parent.Children.Remove(this);
             }
-            base.OnDeleting();
+            base.OnDeleting(session);
         }
 
         public virtual void OnSaving(ISession session)  

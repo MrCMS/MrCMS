@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using FakeItEasy;
 using FluentAssertions;
+using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Entities.Settings;
 using MrCMS.Services;
 using MrCMS.Website;
 using NHibernate;

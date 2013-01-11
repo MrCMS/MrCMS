@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.SessionState;
-using Elmah;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -138,10 +137,9 @@ namespace MrCMS.Website.Routing
             HandleError(context, 500, SiteSettings.Error500PageId, new HttpException(500, exception.Message, exception));
         }
 
-        private void HandleExceptionWithElmah(HttpContextBase context, Exception exception)
+        private void HandleExceptionWithElmah(Exception exception)
         {
-            var errorSignal = ErrorSignal.Get(context.ApplicationInstance);
-            errorSignal.Raise(exception);
+            MrCMSApplication.ErrorSignal.Raise(exception);
         }
 
         public bool IsAllowed(HttpContextBase context)
@@ -166,7 +164,7 @@ namespace MrCMS.Website.Routing
 
         private void HandleError(HttpContextBase context, int code, int pageId, HttpException exception)
         {
-            HandleExceptionWithElmah(context, exception);
+            HandleExceptionWithElmah(exception);
             var webpage = DocumentService.GetDocument<Webpage>(pageId);
             if (webpage != null)
             {

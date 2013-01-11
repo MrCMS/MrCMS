@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Elmah;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
@@ -57,6 +58,13 @@ namespace MrCMS.Website
         {
             filters.Add(new HandleErrorAttribute());
         }
+
+        public static ErrorSignal ErrorSignal
+        {
+            get { return OverridenSignal ?? Elmah.ErrorSignal.FromCurrentContext(); }
+        }
+
+        public static ErrorSignal OverridenSignal { get; set; }
 
         public abstract string RootNamespace { get; }
 

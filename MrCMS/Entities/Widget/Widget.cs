@@ -42,7 +42,7 @@ namespace MrCMS.Entities.Widget
 
         public virtual bool HasProperties { get { return true; } }
 
-        public override void OnDeleting()
+        public override void OnDeleting(ISession session)
         {
             ShownOn.ForEach(webpage => webpage.ShownWidgets.Remove(this));
             HiddenOn.ForEach(webpage => webpage.HiddenWidgets.Remove(this));
@@ -51,7 +51,7 @@ namespace MrCMS.Entities.Widget
             {
                 Webpage.Widgets.Remove(this);
             }
-            base.OnDeleting();
+            base.OnDeleting(session);
         }
 
         public virtual Site Site

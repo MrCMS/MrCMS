@@ -1,4 +1,5 @@
 using MrCMS.Entities.Documents.Layout;
+using NHibernate;
 
 namespace MrCMS.Entities.Documents.Web
 {
@@ -9,7 +10,7 @@ namespace MrCMS.Entities.Documents.Web
         public virtual Widget.Widget Widget { get; set; }
         public virtual int Order { get; set; }
 
-        public override void OnDeleting()
+        public override void OnDeleting(ISession session)
         {
             if (LayoutArea.PageWidgetSorts.Contains(this))
                 LayoutArea.PageWidgetSorts.Remove(this);

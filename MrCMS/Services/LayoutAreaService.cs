@@ -110,7 +110,7 @@ namespace MrCMS.Services
 
             _session.Transact(session => list.ForEach(sort =>
                                                           {
-                                                              sort.OnDeleting();
+                                                              sort.OnDeleting(session);
                                                               session.Delete(sort);
                                                           }));
         }

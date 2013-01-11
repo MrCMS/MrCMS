@@ -6,6 +6,7 @@ using System.Linq;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
+using NHibernate;
 
 namespace MrCMS.Entities.People
 {
@@ -44,9 +45,9 @@ namespace MrCMS.Entities.People
 
         public virtual IList<Site> Sites { get; set; }
 
-        public override void OnDeleting()
+        public override void OnDeleting(ISession session)
         {
-            base.OnDeleting();
+            base.OnDeleting(session);
             foreach (var userRole in Roles)
                 userRole.Users.Remove(this);
             Roles.Clear();

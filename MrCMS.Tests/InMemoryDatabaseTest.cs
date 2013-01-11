@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Elmah;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
@@ -51,6 +52,8 @@ namespace MrCMS.Tests
             SetupRootChildren();
 
             TaskExecutor.Discard();
+
+            MrCMSApplication.OverridenSignal = new ErrorSignal();
         }
 
         private void SetupRootChildren()

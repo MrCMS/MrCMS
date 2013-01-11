@@ -47,8 +47,8 @@ namespace MrCMS.Models
     public class SiteTreeNode<T> : SiteTreeNode
     {
         public T Item { get; set; }
-        public List<SiteTreeNode<T>> Children { get { return base.Children.OfType<SiteTreeNode<T>>().ToList(); } set { base.Children = value.Cast<SiteTreeNode>().ToList(); } }
-        public List<SiteTreeNode<T>> PublishedChildren { get { return Children.FindAll(node => node.IsPublished); } }
+        public new List<SiteTreeNode<T>> Children { get { return base.Children.OfType<SiteTreeNode<T>>().ToList(); } set { base.Children = value.Cast<SiteTreeNode>().ToList(); } }
+        public new List<SiteTreeNode<T>> PublishedChildren { get { return Children.FindAll(node => node.IsPublished); } }
         public List<SiteTreeNode> BaseChildren
         {
             get { return Children.Cast<SiteTreeNode>().ToList(); }

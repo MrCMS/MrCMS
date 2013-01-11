@@ -400,7 +400,7 @@ namespace MrCMS.Services
             {
                 _session.Transact(session =>
                                       {
-                                          document.OnDeleting();
+                                          document.OnDeleting(session);
                                           session.Delete(document);
                                       });
             }

@@ -74,10 +74,14 @@
     });
 
     function setVisibleSite(id) {
-        $('#web .filetree').hide();
-        $('#web .filetree[data-site-id=' + id + ']').show();
-        $('#layout .filetree').hide();
-        $('#layout .filetree[data-site-id=' + id + ']').show();
+        if ($('#web .filetree[data-site-id=' + id + ']').length) {
+            $('#web .filetree').hide();
+            $('#web .filetree[data-site-id=' + id + ']').show();
+        }
+        if ($('#layout .filetree[data-site-id=' + id + ']').length) {
+            $('#layout .filetree').hide();
+            $('#layout .filetree[data-site-id=' + id + ']').show();
+        }
         $.cookie('selected-site', id, { expires: 1, path: '/Admin' });
     }
 

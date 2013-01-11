@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Mail;
 using MrCMS.Entities.Messaging;
 using MrCMS.Settings;
+using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
@@ -63,8 +64,10 @@ namespace MrCMS.Tasks
                 smtpClient.Send(mailMessage);
                 MarkAsSent(queuedMessage);
             }
-            catch (Exception exception)
+            catch
             {
+                // TODO: Make this work without HTTP context
+                //MrCMSApplication.ErrorSignal.Raise(exception);
                 queuedMessage.Tries++;
             }
         }

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using MrCMS.Services;
 using MrCMS.Website;
+using NHibernate;
 
 namespace MrCMS.Entities.Documents.Media
 {
@@ -23,9 +24,9 @@ namespace MrCMS.Entities.Documents.Media
             protected internal set { _files = value; }
         }
 
-        public override void OnDeleting()
+        public override void OnDeleting(ISession session)
         {
-            base.OnDeleting();
+            base.OnDeleting(session);
             
             var mediaFiles = Files.ToList();
 

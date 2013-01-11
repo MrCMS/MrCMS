@@ -58,7 +58,11 @@ namespace MrCMS.Services
 
         public void DeleteSite(Site site)
         {
-            _session.Transact(session => session.Delete(site));
+            _session.Transact(session =>
+                                  {
+                                      site.OnDeleting(session);
+                                      session.Delete(site);
+                                  });
         }
 
         public Site GetCurrentSite()

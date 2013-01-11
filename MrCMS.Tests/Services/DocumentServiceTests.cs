@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Elmah;
 using FakeItEasy;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
@@ -11,6 +12,7 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tests.Stubs;
+using MrCMS.Website;
 using NHibernate;
 using Xunit;
 using FluentAssertions;
@@ -646,7 +648,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new BasicMappedWebpage { Site = new Site() ,PublishOn = DateTime.UtcNow.AddDays(-1) });
+            documentService.AddDocument(new BasicMappedWebpage { Site = new Site(), PublishOn = DateTime.UtcNow.AddDays(-1) });
 
             documentService.AnyPublishedWebpages().Should().BeTrue();
         }

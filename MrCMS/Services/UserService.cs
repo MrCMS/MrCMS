@@ -86,7 +86,7 @@ namespace MrCMS.Services
         {
             _session.Transact(session =>
                                   {
-                                      user.OnDeleting();
+                                      user.OnDeleting(session);
                                       session.Delete(user);
                                   });
         }

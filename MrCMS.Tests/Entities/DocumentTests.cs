@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Tests.Stubs;
+using NHibernate;
 using Xunit;
 
 namespace MrCMS.Tests.Entities
@@ -71,7 +72,7 @@ namespace MrCMS.Tests.Entities
             var child = new StubDocument();
             doc.SetChildren(new List<Document> { child });
 
-            child.OnDeleting();
+            child.OnDeleting(A.Fake<ISession>());
 
             doc.Children.Should().NotContain(child);
         }
