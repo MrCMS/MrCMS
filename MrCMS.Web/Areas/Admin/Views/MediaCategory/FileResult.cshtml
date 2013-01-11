@@ -22,7 +22,7 @@
                             @foreach (var size in Model.Sizes)
                             {
                                 <div>
-                                    @Html.RadioButton("SelectedFile", Model.Id + "-" + size.Width + "-" + size.Height, new { @class = "selected-file", id = "SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height }) @Html.Label("SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height, new { style = "display:inline" }, size.Name + " (" + size.ActualWidth + "px x " + size.ActualHeight + "px)")
+                                    @Html.RadioButton("SelectedFile", Model.Id + "-" + size.Width + "-" + size.Height, new { @class = "selected-file", id = ViewData["upload"] + "SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height }) @Html.Label(ViewData["upload"] + "SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height, new { style = "display:inline" }, size.Name + " (" + size.ActualWidth + "px x " + size.ActualHeight + "px)")
                                 </div>
                             }
 
@@ -34,7 +34,7 @@
         }
         else
         {
-            @Html.RadioButton("SelectedFile", Model.FileLocation, new { @class = "selected-file", id = "SelectedFile-" + Model.Id }) @Html.Label("SelectedFile-" + Model.Id, "Select file")
+            @Html.RadioButton("SelectedFile", Model.FileLocation, new { @class = "selected-file", id = ViewData["upload"] + "SelectedFile-" + Model.Id }) @Html.Label(ViewData["upload"] + "SelectedFile-" + Model.Id, "Select file")
             
             <input type="button" class="btn-primary btn set-file" data-action="select" disabled="disabled" value="Choose file" />
         }

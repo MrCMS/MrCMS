@@ -74,6 +74,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public PartialViewResult FileResult(MediaFile mediaFile)
         {
+            ViewData["upload"] = "upload-";
             return PartialView(mediaFile);
         }
 
