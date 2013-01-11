@@ -67,36 +67,52 @@ namespace MrCMS.Services
                                   });
         }
 
-        public void SetWidgetForPageOrder(WidgetPageOrder order)
+        public void SetWidgetForPageOrders(PageWidgetSortModel pageWidgetSortModel)
         {
             _session.Transact(session =>
-                                  {
+            {
 
-                                      var layoutArea = _session.Get<LayoutArea>(order.LayoutAreaId);
-                                      var webpage = _session.Get<Webpage>(order.WebpageId);
-                                      var widget = _session.Get<Widget>(order.WidgetId);
+                var layoutArea = _session.Get<LayoutArea>(pageWidgetSortModel.LayoutAreaId);
+                var webpage = _session.Get<Webpage>(pageWidgetSortModel.WebpageId);
+                pageWidgetSortModel.Widgets.ForEach(model =>
+                                                        {
+                                                            var widget = _session.Get<Widget>(model.Id);
 
-                                      var widgetSort =
-                                          _session.QueryOver<PageWidgetSort>().Where(
-                                              sort =>
-                                              sort.LayoutArea == layoutArea && sort.Webpage == webpage &&
-                                              sort.Widget == widget).SingleOrDefault() ?? new PageWidgetSort
-                                                                                              {
-                                                                                                  LayoutArea =
-                                                                                                      layoutArea,
-                                                                                                  Webpage = webpage,
-                                                                                                  Widget = widget
-                                                                                              };
-                                      widgetSort.Order = order.Order;
-                                      if (!layoutArea.PageWidgetSorts.Contains(widgetSort))
-                                          layoutArea.PageWidgetSorts.Add(widgetSort);
-                                      if (!webpage.PageWidgetSorts.Contains(widgetSort))
-                                          webpage.PageWidgetSorts.Add(widgetSort);
-                                      if (!widget.PageWidgetSorts.Contains(widgetSort))
-                                          widget.PageWidgetSorts.Add(widgetSort);
-                                      session.SaveOrUpdate(widgetSort);
+                                                            var widgetSort =
+                                                                _session.QueryOver<PageWidgetSort>().Where(
+                                                                    sort =>
+                                                                    sort.LayoutArea == layoutArea &&
+                                                                    sort.Webpage == webpage &&
+                                                                    sort.Widget == widget).SingleOrDefault() ??
+                                                                new PageWidgetSort
+                                                                    {
+                                                                        LayoutArea =
+                                                                            layoutArea,
+                                                                        Webpage = webpage,
+                                                                        Widget = widget
+                                                                    };
+                                                            widgetSort.Order = model.Order;
+                                                            if (!layoutArea.PageWidgetSorts.Contains(widgetSort))
+                                                                layoutArea.PageWidgetSorts.Add(widgetSort);
+                                                            if (!webpage.PageWidgetSorts.Contains(widgetSort))
+                                                                webpage.PageWidgetSorts.Add(widgetSort);
+                                                            if (!widget.PageWidgetSorts.Contains(widgetSort))
+                                                                widget.PageWidgetSorts.Add(widgetSort);
+                                                            session.SaveOrUpdate(widgetSort);
+                                                        });
 
-                                  });
+            });
+        }
+
+        public void ResetSorting(LayoutArea area, Webpage webpage)
+        {
+            var list = webpage.PageWidgetSorts.Where(sort => sort.LayoutArea == area).ToList();
+
+            _session.Transact(session => list.ForEach(sort =>
+                                                          {
+                                                              sort.OnDeleting();
+                                                              session.Delete(sort);
+                                                          }));
         }
     }
 }

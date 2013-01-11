@@ -185,9 +185,12 @@ namespace MrCMS.Services
             var fileLocation = file.FileLocation;
 
             var temp = fileLocation.Replace(file.FileExtension, "");
-            return size.Height >= size.Width
-                       ? temp.Insert(temp.Length, "_h" + size.Height + file.FileExtension)
-                       : temp.Insert(temp.Length, "_w" + size.Width + file.FileExtension);
+            if(size.Width != 0)
+                temp += "_w" + size.Width;
+            if (size.Height != 0)
+                temp += "_h" + size.Height;
+
+            return temp + file.FileExtension;
         }
     }
 }

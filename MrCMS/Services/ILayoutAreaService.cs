@@ -1,4 +1,5 @@
 using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 
 namespace MrCMS.Services
@@ -10,6 +11,7 @@ namespace MrCMS.Services
         LayoutArea GetArea(int layoutAreaId);
         void DeleteArea(LayoutArea area);
         void SetWidgetOrders(string orders);
-        void SetWidgetForPageOrder(WidgetPageOrder orders);
+        void SetWidgetForPageOrders(PageWidgetSortModel pageWidgetSortModel);
+        void ResetSorting(LayoutArea area, Webpage webpage);
     }
 }

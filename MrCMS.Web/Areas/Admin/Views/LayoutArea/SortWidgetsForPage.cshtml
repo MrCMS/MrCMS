@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Entities.Widget
-@model MrCMS.Web.Areas.Admin.Controllers.LayoutAreaController.PageWidgetSortModel
+@model MrCMS.Models.PageWidgetSortModel
 @{
     ViewBag.Title = "Sort Webpage";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -8,54 +8,48 @@
 {
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#sortable").sortable();
-            $("#sortable").disableSelection();
-            $(".progress").hide();
-            $("#save").click(function () {
-                $(".progress").show();
-
-                $('#sortable li').each(function (index) {
-                    $.post('/Admin/LayoutArea/SortWidgetsForPageAction',
-                        {
-                            widgetId: this.id,
-                            layoutAreaId: $('#LayoutAreaId').val(),
-                            webpageId: $('#WebpageId').val(),
-                            order: index
-                        });
-                });
-
-                reload();
+            $("#sortable").sortable({
+                update: function (event, ui) {
+                    $('#sortable li').each(function (index, domElement) {
+                        $(domElement).find('[name*="Order"]').val(index);
+                    });
+                }
             });
-
-            function reload() {
-                window.location.href = $('#back-link').attr('href');
-            }
         });
     </script>
 }
 <div class="row-fluid">
     <div class="span7">
-        <h3>Sort</h3>
+        <h3>Re-order</h3>
     </div>
     <div class="span5">
         <div class="row-fluid">
             <div class="btn-group pull-right">
-                @Html.ActionLink("Back to page", "Edit", "Webpage", new { id = Model.Webpage.Id }, new { id="back-link", @class = "btn" })
-                <button class="btn" id="save">
+                @Html.ActionLink("Back to page", "Edit", "Webpage", new { id = Model.WebpageId }, new { id = "back-link", @class = "btn" })
+                <button class="btn btn-primary" id="save" data-form-id="edit-sort" data-action="save">
                     Save</button>
             </div>
         </div>
     </div>
 </div>
 <hr class="small-margin" />
-@Html.Hidden("LayoutAreaId", Model.Area.Id)
-@Html.Hidden("WebpageId", Model.Webpage.Id)
-<ul id="sortable">
-    @foreach (Widget widget in Model.Widgets)
-    {
-        <li id="@widget.Id"><i class="icon-resize-full"></i>&nbsp;&nbsp;@widget.Name (@widget.WidgetTypeFormatted)</li>
-    }
-</ul>
+@using (Html.BeginForm("SortWidgetsForPage", "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
+{
+    @Html.Hidden("LayoutAreaId", Model.LayoutAreaId)
+    @Html.Hidden("WebpageId", Model.WebpageId)
+    <ul id="sortable">
+        @for (int i = 0; i < Model.Widgets.Count; i++)
+        {
+            var widget = Model.Widgets[i];
+            <li>
+                @Html.HiddenFor(model => model.Widgets[i].Id)
+                @Html.HiddenFor(model => model.Widgets[i].Order)
+                <i class="icon-resize-full"></i>&nbsp;&nbsp;
+                @widget.Name
+            </li>
+        }
+    </ul>
+}
 <div class="alert alert-info">
     Drag items in to the order you would like then click save.
 </div>

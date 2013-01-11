@@ -5,6 +5,8 @@
     ViewBag.Title = "Edit | " + Model.Name;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var onlyAdmin = Convert.ToBoolean(ViewData["OnlyAdmin"]);
+    var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
+    var sites = ViewData["AvailableSites"] as IEnumerable<Site>;
 }
 <div class="row-fluid">
     <div class="span4">
@@ -14,7 +16,7 @@
         <div class="btn-group  display-inline  pull-right">
             @Html.ActionLink("Back to list", "Index", "User", null, new { @class = "btn" })
             <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn" data-toggle="modal">Reset Password</a>
-            
+
             @if (onlyAdmin)
             {
                 <a href="@Url.Action("Delete", "User", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
@@ -34,18 +36,15 @@
             <li><a href="#sites" data-toggle="tab">Sites</a></li>
         </ul>
         <div class="tab-content">
-
             <div id="properties" class="tab-pane active">
-
                 @Html.LabelFor(x => x.FirstName)
                 @Html.TextBoxFor(x => x.FirstName, new { @class = "span12" })
                 @Html.LabelFor(x => x.LastName)
                 @Html.TextBoxFor(x => x.LastName, new { @class = "span12" })
-
                 <div class="form-inline">
-
-                    @Html.CheckBoxFor(x => x.IsActive)
-                    @Html.LabelFor(x => x.IsActive)
+                    <label>
+                        @Html.CheckBoxFor(x => x.IsActive, onlyAdmin ? null : new { disabled = "disabled" }) Is Active
+                    </label>
                 </div>
                 <hr />
                 <p>
@@ -55,9 +54,6 @@
                 </p>
             </div>
             <div id="roles" class="tab-pane">
-                @{
-                    var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
-                }
                 <div class="form-inline">
                     @if (userRoles != null)
                     {
@@ -75,9 +71,6 @@
                 </div>
             </div>
             <div id="sites" class="tab-pane">
-                @{
-                    var sites = ViewData["AvailableSites"] as IEnumerable<Site>;
-                }
                 <div class="form-inline">
                     @if (sites != null)
                     {

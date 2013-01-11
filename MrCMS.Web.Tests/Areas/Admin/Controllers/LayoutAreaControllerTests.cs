@@ -252,7 +252,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             layoutAreaController.SortWidgetsForPage(1, 2)
                                 .As<ViewResult>()
                                 .Model.Should()
-                                .BeOfType<LayoutAreaController.PageWidgetSortModel>();
+                                .BeOfType<PageWidgetSortModel>();
         }
 
         [Fact]
@@ -268,7 +268,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var model =
                 layoutAreaController.SortWidgetsForPage(1, 2)
                                     .As<ViewResult>()
-                                    .Model.As<LayoutAreaController.PageWidgetSortModel>();
+                                    .Model.As<PageWidgetSortModel>();
 
             model.Widgets.Should().BeEquivalentTo(widgets);
         }
@@ -280,15 +280,16 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             var layoutArea = A.Fake<LayoutArea>();
             var widgets = new List<Widget>();
+            A.CallTo(() => layoutArea.Id).Returns(1);
             A.CallTo(() => layoutArea.GetWidgets(null, false)).Returns(widgets);
             A.CallTo(() => _layoutAreaService.GetArea(1)).Returns(layoutArea);
 
             var model =
                 layoutAreaController.SortWidgetsForPage(1, 2)
                                     .As<ViewResult>()
-                                    .Model.As<LayoutAreaController.PageWidgetSortModel>();
+                                    .Model.As<PageWidgetSortModel>();
 
-            model.Area.Should().Be(layoutArea);
+            model.LayoutAreaId.Should().Be(1);
         }
 
         [Fact]
@@ -296,28 +297,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
-            var document = new TextPage();
+            var document = new TextPage{Id = 1};
             A.CallTo(() => _documentService.GetDocument<Webpage>(2)).Returns(document);
 
             var model =
                 layoutAreaController.SortWidgetsForPage(1, 2)
                                     .As<ViewResult>()
-                                    .Model.As<LayoutAreaController.PageWidgetSortModel>();
-
-            model.Webpage.Should().Be(document);
-        }
-
-        [Fact]
-        public void
-            LayoutAreaController_SortWidgetsForPageAction_CallsLayoutAreaServiceSetWidgetForPageOrderWithWidgetPageOrder
-            ()
-        {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
-
-            var widgetPageOrder = new WidgetPageOrder();
-            layoutAreaController.SortWidgetsForPageAction(widgetPageOrder);
-
-            A.CallTo(() => _layoutAreaService.SetWidgetForPageOrder(widgetPageOrder));
+                                    .Model.As<PageWidgetSortModel>();
+            
+            model.WebpageId.Should().Be(1);
         }
     }
 }

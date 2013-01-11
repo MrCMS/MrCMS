@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
@@ -95,23 +93,21 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View(new PageWidgetSortModel(area.GetWidgets(webpage), webpage, area));
         }
 
-        public void SortWidgetsForPageAction(WidgetPageOrder widgetPageOrder)
+        [HttpPost]
+        public ActionResult SortWidgetsForPage(PageWidgetSortModel pageWidgetSortModel)
         {
-            _layoutAreaService.SetWidgetForPageOrder(widgetPageOrder);
+            _layoutAreaService.SetWidgetForPageOrders(pageWidgetSortModel);
+            return RedirectToAction("Edit", "Webpage", new {id = pageWidgetSortModel.WebpageId});
         }
 
-        public class PageWidgetSortModel
+        [HttpPost]
+        public ActionResult ResetSorting(int id, int pageId)
         {
-            public List<Widget> Widgets { get; set; }
-            public Webpage Webpage { get; set; }
-            public LayoutArea Area { get; set; }
+            var area = _layoutAreaService.GetArea(id);
+            var webpage = _documentService.GetDocument<Webpage>(pageId);
+            _layoutAreaService.ResetSorting(area, webpage);
 
-            public PageWidgetSortModel(List<Widget> widgets, Webpage webpage, LayoutArea area)
-            {
-                Widgets = widgets;
-                Webpage = webpage;
-                Area = area;
-            }
+            return RedirectToAction("Edit", "Webpage", new {id = pageId});
         }
     }
 }

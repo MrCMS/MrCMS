@@ -66,7 +66,10 @@
                             @if (widgets.Any())
                             {
                                 @Html.ActionLink("Re-order widgets", "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })
-                                ;
+                                if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == Model))
+                                {
+                                    @Html.FormLink("Reset sorting", "ResetSorting", "LayoutArea", new {id = layoutArea.Id, pageId = Model.Id}, new {@class = "btn btn-mini"})
+                                }
                             }
 
                         </div>
