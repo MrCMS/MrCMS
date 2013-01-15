@@ -52,8 +52,12 @@ function inlineEditing() {
     var editable = $(".editable");
     if (getCookieValue() == "true") {
         if (editable.length > 0) {
-            editable.attr('contenteditable', 'true');
-            CKEDITOR.inlineAll();
+            editable.each(function(index, element) {
+                if ($(element).attr('contenteditable') != 'true') {
+                    $(element).attr('contenteditable', 'true');
+                    CKEDITOR.inline(element);
+                }
+            });
 
             editable.focus(function () {
                 var that = $(this);
@@ -116,7 +120,7 @@ function inlineEditing() {
         //kill all ckeditors
         for (k in CKEDITOR.instances) {
             var instance = CKEDITOR.instances[k];
-            instance.destroy();
+            instance.destroy(true);
         }
         editable.attr("contenteditable", "false");
         //$().removeAttr("cke_editable");
@@ -158,3 +162,12 @@ CKEDITOR.on('instanceCreated', function (event) {
         editor.config.toolbar = 'Basic';
     });
 });
+
+//general functions
+function setCookie(name, value) {
+    $.cookie(name, value, { expires: 7, path: '/' });
+}
+
+function getCookie(cookieName) {
+    return $.cookie(cookieName);
+}
