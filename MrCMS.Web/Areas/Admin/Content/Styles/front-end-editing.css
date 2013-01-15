@@ -1,7 +1,7 @@
 ﻿#cke_editor1 { z-index: 9999; }
 .middle-col:focus { outline: none; background: #e7e7e7; }
 
-#admin-edit-menu-container { position: absolute; top: 5px;color: white; font-family: arial;font-size: 14px;cursor: pointer;border: 1px solid #d0d0d0;width: 100px;z-index: 1500;}
+#admin-edit-menu-container { position: fixed; top: 5px;color: white; font-family: arial;font-size: 14px;cursor: pointer;border: 1px solid #d0d0d0;width: 100px;z-index: 1500;}
 #admin-edit-menu-container .admin-menu-items a {  color: #808080;font-size: 12px;font-family: arial;padding: 3px;}
 #admin-edit-menu-container .admin-menu-items ul li { margin: 5px;}
 #admin-edit-menu-container .admin-menu-items ul {margin: 0;padding: 0;list-style-type: none;}
