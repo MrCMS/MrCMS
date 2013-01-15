@@ -1,4 +1,4 @@
-﻿window.onload = init();
+﻿window.onload = init;
 
 function init() {
     setMenuState();
@@ -21,18 +21,21 @@ var showLiveForm = function () {
         }
     });
 };
-$("#enable-editing").click(function () {
-    if (getCookieValue() == "true") {
-        setCookieValue("false");
-        showLiveForm();
-    } else {
-        setCookieValue("true");
-    }
-    checkSetEditMode();
+$(document).ready(function () {
+    $("#enable-editing").click(function () {
+        if (getCookieValue() == "true") {
+            setCookieValue("false");
+            showLiveForm();
+        } else {
+            setCookieValue("true");
+        }
+        checkSetEditMode();
 
-    //hack until we find out how to recreate ckeditor after killing it
-    //location.href = location.href;
+        //hack until we find out how to recreate ckeditor after killing it
+        //location.href = location.href;
+    });
 });
+
 
 function getCookieValue() {
     return $.cookie('inline_edit');
@@ -50,7 +53,7 @@ function inlineEditing() {
     if (getCookieValue() == "true") {
         if (editable.length > 0) {
             editable.attr('contenteditable', 'true');
-                CKEDITOR.inlineAll();
+            CKEDITOR.inlineAll();
 
             editable.focus(function () {
                 var that = $(this);
@@ -92,7 +95,7 @@ function inlineEditing() {
             //the widget?
             var widgetId = $(this).parent().data('widget-id');
 
-            var menu = '<div class="admin-tools edit-widget gradient-bg"><ul><li><a id="" href="/Admin/Widget/Edit/' + widgetId + '" target="_parent" class="btn btn-mini">Edit this widget</a></li><li><a href="/Admin/Widget/AddPageWidget?pageId=' + $('#Id').val() + '&layoutAreaId=' + layoutAreaContainerId + '" data-toggle="modal" class="btn btn-mini">Add new widget here</a></li><li><a href="/Admin/Widget/Delete/' + widgetId + '" data-toggle="modal" class="btn btn-mini">Delete this widget</a></li></ul></div>';
+            var menu = '<div class="admin-tools edit-widget gradient-bg" style="background:#ffffff;"><ul><li><a id="" href="/Admin/Widget/Edit/' + widgetId + '" target="_parent" class="btn btn-mini" style="color:#333;text-decoration:none;">Edit this widget</a></li><li><a href="/Admin/Widget/AddPageWidget?pageId=' + $('#Id').val() + '&layoutAreaId=' + layoutAreaContainerId + '" data-toggle="modal" class="btn btn-mini" style="color:#333;text-decoration:none;">Add new widget here</a></li><li><a href="/Admin/Widget/Delete/' + widgetId + '" data-toggle="modal" class="btn btn-mini" style="color:#333;text-decoration:none;">Delete this widget</a></li></ul></div>';
 
             $(this).parent().prepend(menu.replace('#widget-id#', widgetId).replace('#layoutid#', layoutAreaContainerId));
 
