@@ -420,17 +420,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WebpageController_GetUnformattedBodyContent_ReturnsBodyContentOfPassedTextPage()
-        {
-            WebpageController webpageController = GetWebpageController();
-
-            var textpage = new TextPage {BodyContent = "test body content"};
-            string unformattedBodyContent = webpageController.GetUnformattedBodyContent(textpage);
-
-            unformattedBodyContent.Should().Be("test body content");
-        }
-
-        [Fact]
         public void WebpageController_ViewPosting_ShouldReturnAPartialViewResult()
         {
             WebpageController webpageController = GetWebpageController();

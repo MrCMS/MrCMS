@@ -14,25 +14,19 @@ function checkSetEditMode() {
     inlineEditing();
 }
 
-var showLiveForm = function () {
-    $.get('/Admin/Webpage/GetFormattedBodyContent/' + $('#Id').val(), function (response) {
-        if (contentObj != null) {
-            contentObj.html(response);
-        }
+var showLiveForm = function (el) {
+    $.get('/Admin/InPageAdmin/GetFormattedBodyContent/', { id: el.data('id'), property: el.data('property'), type: el.data('type') }, function (response) {
+        el.html(response);
     });
 };
 $(document).ready(function () {
     $("#enable-editing").click(function () {
         if (getCookieValue() == "true") {
             setCookieValue("false");
-            showLiveForm();
         } else {
             setCookieValue("true");
         }
         checkSetEditMode();
-
-        //hack until we find out how to recreate ckeditor after killing it
-        //location.href = location.href;
     });
 });
 
@@ -45,48 +39,51 @@ function setCookieValue(value) {
     return $.cookie('inline_edit', value, { expires: 7, path: location.pathname });
 }
 
-var contentObj;
-var contents;
 
 function inlineEditing() {
     var editable = $(".editable");
     if (getCookieValue() == "true") {
-        if (editable.length > 0) {
-            editable.each(function(index, element) {
-                if ($(element).attr('contenteditable') != 'true') {
-                    $(element).attr('contenteditable', 'true');
-                    CKEDITOR.inline(element);
+        editable.each(function (index, element) {
+            var el = $(element);
+            if (el.attr('contenteditable') != 'true')
+                el.attr('contenteditable', 'true');
+            var isHtml = el.data("is-html") == true;
+            if (isHtml)
+                CKEDITOR.inline(element);
+            var original = null;
+
+            el.focus(function () {
+                if (isHtml) {
+                    $.get('/Admin/InPageAdmin/GetUnformattedBodyContent/', { id: el.data('id'), property: el.data('property'), type: el.data('type') }, function (response) {
+                        el.html(response);
+                        original = response;
+                    });
+                } else {
+                    original = el.html();
                 }
             });
-
-            editable.focus(function () {
-                var that = $(this);
-                contentObj = $('.editable');
-                $.get('/Admin/Webpage/GetUnformattedBodyContent/' + $('#Id').val(), function (response) {
-                    that.html(response);
-                    contents = contentObj.html();
-                });
-            });
-            editable.blur(function () {
-                if (contents != $(this).html()) {
-                    contents = $(this).html();
-                    var data = {
-                        id: $('#Id').val(),
-                        content: contents
-                    };
+            el.blur(function () {
+                if (original != el.html()) {
                     $.ajax({
                         type: "POST",
                         url: "/Admin/InPageAdmin/SaveBodyContent",
-                        data: data,
+                        data: {
+                            id: el.data('id'),
+                            property: el.data('property'),
+                            type: el.data('type'),
+                            content: el.html()
+                        },
                         success: function (msg) {
-                            showLiveForm();
+                            if (isHtml)
+                                showLiveForm(el);
                         }
                     });
                 } else {
-                    showLiveForm();
+                    if (isHtml)
+                        showLiveForm(el);
                 }
             });
-        }
+        });
         //foreach widget add the HTML code
         $("div[data-widget-id]").each(function () {
             $(this).prepend("<div class='edit-indicator'><img src='/Areas/Admin/Content/Images/pencil.png' /></div>");
@@ -94,7 +91,6 @@ function inlineEditing() {
 
         $('.edit-indicator').click(function () {
             //what is the layout area?
-            //$("li.item-a").parentsUntil(".level-1")
             var layoutAreaContainerId = $(this).parentsUntil(".layout-area").parent().data('layout-area-id');
             //the widget?
             var widgetId = $(this).parent().data('widget-id');
@@ -123,7 +119,6 @@ function inlineEditing() {
             instance.destroy(true);
         }
         editable.attr("contenteditable", "false");
-        //$().removeAttr("cke_editable");
     }
 }
 

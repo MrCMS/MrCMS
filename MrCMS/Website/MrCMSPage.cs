@@ -45,14 +45,14 @@ namespace MrCMS.Website
             }
         }
 
-        public MvcHtmlString Editable<T>(T model, Expression<Func<T, string>> method) where T : BaseEntity
+        public MvcHtmlString Editable<T>(T model, Expression<Func<T, string>> method, bool isHtml = false) where T : BaseEntity
         {
             if (model == null)
                 return MvcHtmlString.Empty;
 
-            var value = method.Compile().Invoke(model);
-            var typeName = typeof(T).Name;
             var propertyInfo = PropertyFinder.GetProperty(method);
+            var value = Html.ParseShortcodes(method.Compile().Invoke(model)).ToHtmlString();
+            var typeName = typeof(T).Name;
 
             if (MrCMSApplication.CurrentUserIsAdmin && propertyInfo != null)
             {
@@ -61,7 +61,7 @@ namespace MrCMS.Website
                 tagBuilder.Attributes["data-id"] = model.Id.ToString();
                 tagBuilder.Attributes["data-property"] = propertyInfo.Name;
                 tagBuilder.Attributes["data-type"] = typeName;
-                tagBuilder.Attributes["contenteditable"] = "true";
+                tagBuilder.Attributes["data-is-html"] = isHtml ? "true" : "false";
                 tagBuilder.InnerHtml = value;
 
                 return MvcHtmlString.Create(tagBuilder.ToString());
@@ -69,18 +69,6 @@ namespace MrCMS.Website
             else
             {
                 return MvcHtmlString.Create(value);
-            }
-        }
-
-        public class PropertyFinder
-        {
-            public static PropertyInfo GetProperty(Expression expression)
-            {
-                if (expression is MemberExpression && (expression as MemberExpression).Member is PropertyInfo)
-                {
-                    return ((expression as MemberExpression).Member as PropertyInfo);
-                }
-                return null;
             }
         }
 
@@ -139,5 +127,16 @@ namespace MrCMS.Website
 
     public abstract class MrCMSPage : MrCMSPage<dynamic>
     {
+    }
+
+    public class PropertyFinder
+    {
+        public static PropertyInfo GetProperty(Expression expression)
+        {
+            return expression is LambdaExpression && (expression as LambdaExpression).Body is MemberExpression &&
+                   ((expression as LambdaExpression).Body as MemberExpression).Member is PropertyInfo
+                       ? ((expression as LambdaExpression).Body as MemberExpression).Member as PropertyInfo
+                       : null;
+        }
     }
 }

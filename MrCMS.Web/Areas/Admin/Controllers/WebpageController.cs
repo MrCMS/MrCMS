@@ -125,20 +125,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(documentVersion);
         }
 
-        [ValidateInput(false)]
-        public string GetUnformattedBodyContent(TextPage textPage)
-        {
-            return textPage.BodyContent;
-        }
-
-        [ValidateInput(false)]
-        public string GetFormattedBodyContent(TextPage textPage)
-        {
-            MrCMSApplication.CurrentPage = textPage;
-            var htmlHelper = MrCMSHtmlHelper.GetHtmlHelper(this);
-            return htmlHelper.ParseShortcodes(textPage.BodyContent).ToHtmlString();
-        }
-
         public PartialViewResult Postings(Webpage webpage, int page = 1, string search = null)
         {
             var data = _formService.GetFormPostings(webpage, page, search);

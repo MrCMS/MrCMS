@@ -31,26 +31,26 @@ namespace MrCMS.Shortcodes
 
             current = otherPageFormMatch.Replace(current,
                                                  match =>
-                                                     {
-                                                         var pageId = Convert.ToInt32(
-                                                             match.Value.Replace("[", "").Replace("]", "").Split('-')[1]);
-                                                         var document = _documentService.GetDocument<Webpage>(pageId);
-                                                         var formData = _formService.GetFormStructure(document);
-                                                         return document == null
-                                                                    ? string.Empty
-                                                                    : GetForm(htmlHelper, formData,
-                                                                              document);
-                                                     });
+                                                 {
+                                                     var pageId = Convert.ToInt32(
+                                                         match.Value.Replace("[", "").Replace("]", "").Split('-')[1]);
+                                                     var document = _documentService.GetDocument<Webpage>(pageId);
+                                                     var formData = _formService.GetFormStructure(document);
+                                                     return document == null
+                                                                ? string.Empty
+                                                                : GetForm(htmlHelper, formData,
+                                                                          document);
+                                                 });
 
             current = thisPageFormMatch.Replace(current,
                                                 match =>
-                                                    {
-                                                        var formData =
-                                                            _formService.GetFormStructure(
-                                                                MrCMSApplication.CurrentPage);
-                                                        return GetForm(htmlHelper, formData,
-                                                                       MrCMSApplication.CurrentPage);
-                                                    });
+                                                {
+                                                    var formData =
+                                                        _formService.GetFormStructure(
+                                                            MrCMSApplication.CurrentPage);
+                                                    return GetForm(htmlHelper, formData,
+                                                                   MrCMSApplication.CurrentPage);
+                                                });
 
             return current;
         }
@@ -60,31 +60,34 @@ namespace MrCMS.Shortcodes
             dynamic deserializedObject =
                 JsonConvert.DeserializeObject(formData);
 
-            var formBuilder = new TagBuilder("form");
-            formBuilder.Attributes["action"] =
-                string.Format("/save-form/{0}", page.Id);
-            formBuilder.Attributes["method"] = "POST";
-
             var formStructure = deserializedObject.form_structure;
-            foreach (dynamic element in formStructure)
+            if (formStructure != null)
             {
-                if (element.cssClass == "input_text")
-                    _formElementRenderer.AppendTextBox(element, formBuilder);
-                else if (element.cssClass == "textarea")
-                    _formElementRenderer.AppendTextArea(element, formBuilder);
-                else if (element.cssClass == "checkbox")
-                    _formElementRenderer.AppendCheckboxList(element, formBuilder);
-                else if (element.cssClass == "radio")
-                    _formElementRenderer.AppendRadioButtons(element, formBuilder);
-                else if (element.cssClass == "select")
-                    _formElementRenderer.AppendSelectList(element, formBuilder);
+                var formBuilder = new TagBuilder("form");
+                formBuilder.Attributes["action"] =
+                    string.Format("/save-form/{0}", page.Id);
+                formBuilder.Attributes["method"] = "POST";
+
+                foreach (dynamic element in formStructure)
+                {
+                    if (element.cssClass == "input_text")
+                        _formElementRenderer.AppendTextBox(element, formBuilder);
+                    else if (element.cssClass == "textarea")
+                        _formElementRenderer.AppendTextArea(element, formBuilder);
+                    else if (element.cssClass == "checkbox")
+                        _formElementRenderer.AppendCheckboxList(element, formBuilder);
+                    else if (element.cssClass == "radio")
+                        _formElementRenderer.AppendRadioButtons(element, formBuilder);
+                    else if (element.cssClass == "select")
+                        _formElementRenderer.AppendSelectList(element, formBuilder);
+                }
+
+                _formElementRenderer.AppendSubmitButton(formBuilder);
+
+                _formElementRenderer.AppendSubmittedMessage(htmlHelper, formBuilder, page);
+                return formBuilder.ToString();
             }
-
-            _formElementRenderer.AppendSubmitButton(formBuilder);
-
-            _formElementRenderer.AppendSubmittedMessage(htmlHelper, formBuilder, page);
-
-            return formBuilder.ToString();
+            return string.Empty;
         }
     }
 }
