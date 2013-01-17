@@ -87,6 +87,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult SetPassword(User user, string password)
         {
             _authorisationService.SetPassword(user, password, password);
+            _userService.SaveUser(user);
             return RedirectToAction("Edit", new {user.Id});
         }
     }
