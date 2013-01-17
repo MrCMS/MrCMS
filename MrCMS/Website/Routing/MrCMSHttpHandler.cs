@@ -58,6 +58,8 @@ namespace MrCMS.Website.Routing
 
             if (PageIsRedirect(context)) return;
 
+            if (RequiresSSLRedirect(context)) return;
+
             if (RedirectsToHomePage(context)) return;
 
             if (!IsAllowed(context)) return;
@@ -157,6 +159,18 @@ namespace MrCMS.Website.Routing
             if (Webpage == null)
             {
                 HandleError(context, 404, SiteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data));
+                return true;
+            }
+            return false;
+        }
+
+        public bool RequiresSSLRedirect(HttpContextBase context)
+        {
+            var scheme = context.Request.Url.Scheme;
+            if (Webpage.RequiresSSL && scheme != "https" && _siteSettings.SiteIsLive)
+            {
+                var redirectUrl = context.Request.Url.ToString().Replace(scheme + "://", "https://");
+                context.Response.RedirectPermanent(redirectUrl);
                 return true;
             }
             return false;

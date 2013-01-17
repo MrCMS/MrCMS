@@ -111,6 +111,10 @@
                                             @Html.LabelFor(x => x.RevealInNavigation, "Include in navigation")
                                         </div>
                                         @Html.ValidationMessageFor(x => x.RevealInNavigation)
+                                        <label>
+                                            @Html.CheckBoxFor(webpage => webpage.RequiresSSL) Requires SSL
+                                        </label>
+
                                     </div>
                                 </div>
                             </div>
