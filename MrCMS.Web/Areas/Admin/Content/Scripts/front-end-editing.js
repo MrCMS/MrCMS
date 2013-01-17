@@ -76,7 +76,7 @@ function inlineEditing() {
                     };
                     $.ajax({
                         type: "POST",
-                        url: "/AdminTools/SaveBodyContent",
+                        url: "/Admin/InPageAdmin/SaveBodyContent",
                         data: data,
                         success: function (msg) {
                             showLiveForm();

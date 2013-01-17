@@ -149,7 +149,7 @@
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Controllers\AdminToolsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\InPageAdminController.cs" />
     <Compile Include="Controllers\SearchPageController.cs" />
     <Compile Include="Controllers\SEOController.cs" />
     <Compile Include="Controllers\TextPageController.cs" />
@@ -440,7 +440,7 @@
     <Content Include="Areas\Admin\Content\less\mixins.css">
       <DependentUpon>mixins.less</DependentUpon>
     </Content>
-    <Content Include="Content\Scripts\front-end-editing.js" />
+    <Content Include="Areas\Admin\Content\Scripts\front-end-editing.js" />
     <Content Include="Content\Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Content\Scripts\jquery.validate.min.js" />
     <Content Include="Content\Scripts\jquery.validate.unobtrusive.min.js" />
@@ -507,9 +507,6 @@
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\tmpl.min.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\less.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -607,7 +604,7 @@
     <Content Include="Areas\Admin\Views\Sites\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\NavLinks.cshtml" />
-    <Content Include="Views\Shared\AdminEditor.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\InPageEditor.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Pages\SearchPage.cshtml" />
     <Content Include="Views\Login\ForgottenPassword.cshtml" />
@@ -623,9 +620,6 @@
     <Folder Include="Application\Services\" />
     <Folder Include="Application\Settings\" />
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\ckeditor\plugins\showblocks\" />
-    <Folder Include="Scripts\ckeditor\plugins\uicolor\yui\" />
-    <Folder Include="Scripts\ckeditor\themes\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

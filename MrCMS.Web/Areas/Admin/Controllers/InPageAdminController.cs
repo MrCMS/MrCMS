@@ -1,22 +1,17 @@
 ﻿using System;
-using System.IO;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.People;
-using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
 
-namespace MrCMS.Web.Controllers
+namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = UserRole.Administrator)]
-    public class AdminToolsController : MrCMSController
+    public class InPageAdminController : AdminController
     {
         private readonly IDocumentService _documentService;
 
-        public AdminToolsController(IDocumentService documentService)
+        public InPageAdminController(IDocumentService documentService)
         {
             _documentService = documentService;
         }
@@ -36,9 +31,9 @@ namespace MrCMS.Web.Controllers
             }
         }
 
-        public PartialViewResult AdminEditor(Webpage page)
+        public PartialViewResult InPageEditor(Webpage page)
         {
-            return PartialView("AdminEditor", page);
+            return PartialView("InPageEditor", page);
         }
 
         [HttpPost]
