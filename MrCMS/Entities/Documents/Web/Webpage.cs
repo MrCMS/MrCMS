@@ -38,6 +38,9 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Reveal in navigation")]
         public virtual bool RevealInNavigation { get; set; }
 
+        [DisplayName("Requires SSL")]
+        public virtual bool RequiresSSL { get; set; }
+
         public virtual bool Published
         {
             get { return PublishOn != null; }
