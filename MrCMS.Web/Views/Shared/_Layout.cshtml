@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Settings
 @using MrCMS.Website
 @model MrCMS.Entities.Documents.Web.Webpage
 <!DOCTYPE html>
@@ -15,7 +16,7 @@
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><script src="/Content/Scripts/respond.min.js"></script><![endif]-->
     @RenderZone("Head Files")
 
-    @{ Html.RenderAction("RenderAnalytics", "SEO"); }
+    @Html.Raw(SiteSettings<SEOSettings>().TrackingScripts)
 </head>
 <body>
 
