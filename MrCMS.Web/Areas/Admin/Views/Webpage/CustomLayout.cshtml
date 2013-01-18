@@ -6,10 +6,12 @@
 
     <div class="accordion" id="accordion-layout-areas">
         @{
-            foreach (var layoutArea in Model.CurrentLayout.GetLayoutAreas())
+            if (Model.CurrentLayout.GetLayoutAreas().Any())
             {
-                var widgets = layoutArea.GetWidgets(Model, true);
-                        
+                foreach (var layoutArea in Model.CurrentLayout.GetLayoutAreas())
+                {
+                    var widgets = layoutArea.GetWidgets(Model, true);
+
             <div class="accordion-group">
                 <div class="accordion-heading">
                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-layout-areas" href="#collapse-@layoutArea.Id.ToString()">
@@ -68,7 +70,7 @@
                                 @Html.ActionLink("Re-order widgets", "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })
                                 if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == Model))
                                 {
-                                    @Html.FormLink("Reset sorting", "ResetSorting", "LayoutArea", new {id = layoutArea.Id, pageId = Model.Id}, new {@class = "btn btn-mini"})
+                                @Html.FormLink("Reset sorting", "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })
                                 }
                             }
 
@@ -76,6 +78,11 @@
                     </div>
                 </div>
             </div>
+                }
+            }
+            else
+            {
+            <text>No layout areas available.</text>
             }
 
         }
