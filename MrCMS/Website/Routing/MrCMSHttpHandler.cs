@@ -173,6 +173,12 @@ namespace MrCMS.Website.Routing
                 context.Response.RedirectPermanent(redirectUrl);
                 return true;
             }
+            if (!Webpage.RequiresSSL && scheme != "http")
+            {
+                var redirectUrl = context.Request.Url.ToString().Replace(scheme + "://", "http://");
+                context.Response.RedirectPermanent(redirectUrl);
+                return true;
+            }
             return false;
         }
 

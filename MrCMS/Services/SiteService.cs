@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -67,12 +68,16 @@ namespace MrCMS.Services
 
         public Site GetCurrentSite()
         {
-            var url = _requestBase.Url.ToString();
+            var authority = _requestBase.Url.Authority;
+            var isDefaultPort = _requestBase.Url.IsDefaultPort;
+            var port = _requestBase.Url.Port;
 
+            var searchQuery = isDefaultPort ? authority : string.Format("{0}:{1}", authority, port);
+            
             var allSites = GetAllSites();
-            var site = allSites.FirstOrDefault(s => url.StartsWith(s.BaseUrl));
+            var site = allSites.FirstOrDefault(s => s.BaseUrl.Equals(searchQuery, StringComparison.OrdinalIgnoreCase));
 
-            return site ?? allSites.FirstOrDefault();
+            return site;
         }
     }
 }

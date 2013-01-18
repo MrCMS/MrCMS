@@ -215,6 +215,19 @@ namespace MrCMS.Entities.Documents.Web
             get { return _frontEndRoleUpdater; }
         }
 
+        public virtual string AbsoluteUrl
+        {
+            get
+            {
+                var scheme = RequiresSSL ? "https://" : "http://";
+                var authority = Site.BaseUrl;
+                if (authority.EndsWith("/"))
+                    authority = authority.TrimEnd('/');
+
+                return string.Format("{0}{1}/{2}", scheme, authority, LiveUrlSegment);
+            }
+        }
+
 
         public virtual IEnumerable<RoleModel> GetFrontEndRoles()
         {
@@ -285,7 +298,7 @@ namespace MrCMS.Entities.Documents.Web
         public virtual void AdminViewData(ViewDataDictionary viewData, ISession session)
         {
         }
-        
+
         public virtual void AddCustomSitemapData(UrlHelper urlHelper, XmlNode url, XmlDocument xmlDocument)
         {
         }
