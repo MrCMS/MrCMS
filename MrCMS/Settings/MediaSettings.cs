@@ -9,7 +9,7 @@ using Ninject;
 
 namespace MrCMS.Settings
 {
-    public class MediaSettings : GlobalSettingsBase
+    public class MediaSettings : SiteSettingsBase
     {
         private Size _thumbnailSize;
         private Size _largeSize;

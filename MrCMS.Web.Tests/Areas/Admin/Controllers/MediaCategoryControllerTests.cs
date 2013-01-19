@@ -16,14 +16,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private IDocumentService _documentService;
         private IFileService _fileService;
-        private ISiteService _siteService;
 
         [Fact]
         public void MediaCategoryController_AddGet_ShouldReturnAddPageModel()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
 
-            var actionResult = mediaCategoryController.Add(1) as ViewResult;
+            var actionResult = mediaCategoryController.Add_Get(new MediaCategory()) as ViewResult;
 
             actionResult.Model.Should().BeOfType<AddPageModel>();
         }
@@ -32,9 +31,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void MediaCategoryController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
-            A.CallTo(() => _documentService.GetDocument<Document>(1)).Returns(new MediaCategory {Id = 1});
+            var mediaCategory = new MediaCategory {Id = 1};
+            A.CallTo(() => _documentService.GetDocument<Document>(1)).Returns(mediaCategory);
 
-            var actionResult = mediaCategoryController.Add(1) as ViewResult;
+            var actionResult = mediaCategoryController.Add_Get(mediaCategory) as ViewResult;
 
             (actionResult.Model as AddPageModel).ParentId.Should().Be(1);
         }
@@ -55,7 +55,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
 
-            var mediaCategory = new MediaCategory {Id = 1};
+            var mediaCategory = new MediaCategory { Id = 1 };
             var result = mediaCategoryController.Add(mediaCategory) as RedirectToRouteResult;
 
             result.RouteValues["action"].Should().Be("Edit");
@@ -76,7 +76,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void MediaCategoryController_EditGet_ShouldReturnLayoutAsViewModel()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
-            var mediaCategory = new MediaCategory {Id = 1};
+            var mediaCategory = new MediaCategory { Id = 1 };
 
             var result = mediaCategoryController.Edit_Get(mediaCategory) as ViewResult;
 
@@ -87,7 +87,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void MediaCategoryController_EditPost_ShouldCallSaveDocument()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
-            var mediaCategory = new MediaCategory {Id = 1};
+            var mediaCategory = new MediaCategory { Id = 1 };
 
             mediaCategoryController.Edit(mediaCategory);
 
@@ -98,7 +98,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void MediaCategoryController_EditPost_ShouldRedirectToEdit()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
-            var mediaCategory = new MediaCategory {Id = 1};
+            var mediaCategory = new MediaCategory { Id = 1 };
 
             ActionResult actionResult = mediaCategoryController.Edit(mediaCategory);
 
@@ -108,23 +108,25 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_Sort_ShouldCallGetDocumentsByParentId()
+        public void MediaCategoryController_Sort_ShouldCallGetDocumentsByParent()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
 
-            mediaCategoryController.Sort(1);
+            var mediaCategory = new MediaCategory();
+            mediaCategoryController.Sort(mediaCategory);
 
-            A.CallTo(() => _documentService.GetDocumentsByParentId<MediaCategory>(1,null)).MustHaveHappened();
+            A.CallTo(() => _documentService.GetDocumentsByParent(mediaCategory)).MustHaveHappened();
         }
 
         [Fact]
         public void MediaCategoryController_Sort_ShouldUseTheResultOfDocumentsByParentIdsAsModel()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
-            var mediaCategories = new List<MediaCategory> {new MediaCategory()};
-            A.CallTo(() => _documentService.GetDocumentsByParentId<MediaCategory>(1, null)).Returns(mediaCategories);
+            var mediaCategory = new MediaCategory();
+            var mediaCategories = new List<MediaCategory> { new MediaCategory() };
+            A.CallTo(() => _documentService.GetDocumentsByParent(mediaCategory)).Returns(mediaCategories);
 
-            var viewResult = mediaCategoryController.Sort(1).As<ViewResult>();
+            var viewResult = mediaCategoryController.Sort(mediaCategory).As<ViewResult>();
 
             viewResult.Model.As<List<MediaCategory>>().Should().BeEquivalentTo(mediaCategories);
         }
@@ -153,7 +155,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
 
-            ActionResult actionResult = mediaCategoryController.Show(new MediaCategory {Id = 1});
+            ActionResult actionResult = mediaCategoryController.Show(new MediaCategory { Id = 1 });
 
             actionResult.Should().BeOfType<RedirectToRouteResult>();
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
@@ -186,7 +188,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
 
-            var mediaCategory = new MediaCategory {Name = "test"};
+            var mediaCategory = new MediaCategory { Name = "test" };
 
             ActionResult result = mediaCategoryController.Upload(mediaCategory);
 
@@ -316,9 +318,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private MediaCategoryController GetMediaCategoryController()
         {
             _documentService = A.Fake<IDocumentService>();
-            _siteService = A.Fake<ISiteService>();
             _fileService = A.Fake<IFileService>();
-            var mediaCategoryController = new MediaCategoryController(_documentService, _siteService, _fileService);
+            var mediaCategoryController = new MediaCategoryController(_documentService, _fileService);
             return mediaCategoryController;
         }
     }

@@ -1,16 +1,18 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Website;
+using MrCMS.Website.Controllers;
 using NHibernate;
 using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class NavigationController : AdminController
+    public class NavigationController : SystemController
     {
         private readonly INavigationService _service;
         private readonly IUserService _userService;
@@ -25,14 +27,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public PartialViewResult WebSiteTree()
         {
-            var sites = _siteService.GetAllSites();
-            var currentSite = _siteService.GetCurrentSite();
-            return PartialView("WebsiteTreeList",
-                               new WebsiteTreeListModel(sites.BuildSelectItemList(site => site.Name,
-                                                                                  site => site.Id.ToString(),
-                                                                                  site => site == currentSite,
-                                                                                  emptyItemText: null),
-                                                        sites.Select(site => _service.GetWebsiteTree(site)).ToList()));
+            return PartialView("WebsiteTreeList", _service.GetWebsiteTree());
         }
 
         public PartialViewResult MediaTree()
@@ -42,14 +37,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public PartialViewResult LayoutTree()
         {
-            var sites = _siteService.GetAllSites();
-            var currentSite = _siteService.GetCurrentSite();
-            return PartialView("LayoutTree",
-                               new LayoutTreeListModel(sites.BuildSelectItemList(site => site.Name,
-                                                                                  site => site.Id.ToString(),
-                                                                                  site => site == currentSite,
-                                                                                  emptyItemText: null),
-                                                        sites.Select(site => _service.GetLayoutList(site)).ToList()));
+            return PartialView("LayoutTree", _service.GetLayoutList());
         }
 
         public PartialViewResult UserList()
@@ -59,7 +47,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public PartialViewResult NavLinks()
         {
-            return PartialView("NavLinks");
+            var items = TypeHelper.GetAllConcreteTypesAssignableFrom<IAdminMenuItem>().Select(Activator.CreateInstance).Cast<IAdminMenuItem>().OrderBy(item => item.DisplayOrder);
+            return PartialView("NavLinks", items);
         }
 
         [ChildActionOnly]
@@ -67,6 +56,18 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             User user = _userService.GetCurrentUser(HttpContext);
             return PartialView(user);
+        }
+
+        public ActionResult SiteList()
+        {
+            var allSites = _siteService.GetAllSites();
+
+            if (allSites.Count == 1)
+                return new EmptyResult();
+
+            return PartialView(allSites.BuildSelectItemList(site => site.Name, site => string.Format("http://{0}/admin/", site.BaseUrl),
+                                                            site => _siteService.GetCurrentSite() == site,
+                                                            emptyItemText: null));
         }
     }
 }

@@ -12,7 +12,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Entities.Documents.Media
 {
-    public class MediaFile : BaseEntity
+    public class MediaFile : SiteEntity
     {
         public virtual string FileExtension { get; set; }
         public virtual string ContentType { get; set; }

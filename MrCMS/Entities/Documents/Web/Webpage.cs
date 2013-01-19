@@ -6,7 +6,6 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Xml;
-using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
@@ -17,7 +16,7 @@ using NHibernate;
 
 namespace MrCMS.Entities.Documents.Web
 {
-    public abstract class Webpage : Document, IHaveSite
+    public abstract class Webpage : Document
     {
         private Layout.Layout _layout;
         private readonly AdminRoleUpdater _adminRoleUpdater;
@@ -48,7 +47,7 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual string LiveUrlSegment
         {
-            get { return MrCMSApplication.PublishedRootChildren(Site).FirstOrDefault() == this ? string.Empty : UrlSegment; }
+            get { return MrCMSApplication.PublishedRootChildren().FirstOrDefault() == this ? string.Empty : UrlSegment; }
         }
 
         [UIHint("DateTime")]
@@ -68,8 +67,6 @@ namespace MrCMS.Entities.Documents.Web
         public virtual IList<Widget.Widget> Widgets { get; set; }
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
-
-        public virtual Site Site { get; set; }
 
         public virtual IEnumerable<Webpage> ActivePages
         {
@@ -220,7 +217,7 @@ namespace MrCMS.Entities.Documents.Web
             get
             {
                 var scheme = RequiresSSL ? "https://" : "http://";
-                var authority = Site.BaseUrl;
+                var authority = Website.BaseUrl;
                 if (authority.EndsWith("/"))
                     authority = authority.TrimEnd('/');
 

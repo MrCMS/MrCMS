@@ -1,18 +1,25 @@
-using System;
-using System.IO;
+using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using MrCMS.Entities;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
-using MrCMS.Website;
-using Newtonsoft.Json;
 
-namespace MrCMS.Web.Areas.Admin.Controllers
+namespace MrCMS.Website.Controllers
 {
     [MrCMSAuthorize(Roles = UserRole.Administrator)]
     [ValidateInput(false)]
     public abstract class AdminController : Controller
     {
+        private Site _currentSite;
+
+        public Site CurrentSite
+        {
+            get { return _currentSite ?? MrCMSApplication.CurrentSite; }
+            set { _currentSite = value; }
+        }
+
         public new HttpRequestBase Request
         {
             get { return RequestMock ?? base.Request; }
@@ -22,8 +29,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            CheckCurrentSite(filterContext);
             ViewData["controller-name"] = ControllerContext.RouteData.Values["controller"];
             base.OnActionExecuting(filterContext);
+        }
+
+        private void CheckCurrentSite(ActionExecutingContext filterContext)
+        {
+            var entities = filterContext.ActionParameters.Values.OfType<SiteEntity>();
+
+            if (entities.Any(entity => entity.Website != CurrentSite))
+            {
+                filterContext.Result = new RedirectResult("~/admin");
+            }
         }
 
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding,
@@ -51,40 +69,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 JsonData = data
             };
-        }
-
-        public class JsonNetResult : JsonResult
-        {
-            public JsonNetResult()
-            {
-                JsonRequestBehavior = JsonRequestBehavior.DenyGet;
-            }
-
-            public string JsonData { get; set; }
-
-            public override void ExecuteResult(ControllerContext context)
-            {
-                if (context == null)
-                    throw new ArgumentNullException("context");
-
-                HttpResponseBase response = context.HttpContext.Response;
-
-                response.ContentType = !String.IsNullOrEmpty(ContentType)
-                                           ? ContentType
-                                           : "application/json";
-                if (ContentEncoding != null)
-                    response.ContentEncoding = ContentEncoding;
-
-                if (!string.IsNullOrWhiteSpace(JsonData))
-                {
-                    response.Write(JsonData);
-                    return;
-                }
-                if (Data == null) return;
-
-                var serializedData = JsonConvert.SerializeObject(Data);
-                response.Write(serializedData);
-            }
         }
     }
 }

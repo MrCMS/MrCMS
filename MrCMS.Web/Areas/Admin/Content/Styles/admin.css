@@ -16,6 +16,7 @@ hr.small-margin { margin: 5px 0; }
 .grey { color: darkgrey; }
 .font-small { font-size: 0.8em; }
 .red { color: red; }
+.nav select { margin: 5px 15px; }
 
 /*Navigation*/
 #browser { padding-left: 10px; }

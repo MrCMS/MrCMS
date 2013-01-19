@@ -1,6 +1,9 @@
 using System;
 using System.Linq;
+using FluentNHibernate;
 using FluentNHibernate.Automapping;
+using FluentNHibernate.Automapping.Alterations;
+using FluentNHibernate.Utils;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 
@@ -10,19 +13,13 @@ namespace MrCMS.DbConfiguration.Mapping
     {
         public override bool ShouldMap(Type type)
         {
-            return type.IsSubclassOf(typeof (BaseEntity)) &&
-                   (type.Assembly == typeof (BaseEntity).Assembly || HasMappingAttribute(type)) && base.ShouldMap(type) &&
-                   !HasDoNotMapAttribute(type);
+            return type.IsSubclassOf(typeof (SystemEntity)) &&
+                   base.ShouldMap(type) && !HasDoNotMapAttribute(type);
         }
 
         private bool HasDoNotMapAttribute(Type type)
         {
             return type.GetCustomAttributes(typeof(DoNotMapAttribute), false).Any();
-        }
-
-        private bool HasMappingAttribute(Type type)
-        {
-            return type.GetCustomAttributes(typeof(MrCMSMapClassAttribute), false).Any();
         }
 
         public override bool ShouldMap(FluentNHibernate.Member member)

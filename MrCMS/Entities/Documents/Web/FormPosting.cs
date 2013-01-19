@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MrCMS.Entities.Documents.Web
 {
-    public class FormPosting : BaseEntity
+    public class FormPosting : SiteEntity
     {
         public virtual Webpage Webpage { get; set; }
         public virtual IList<FormValue> FormValues { get; set; }

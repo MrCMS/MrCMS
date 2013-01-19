@@ -13,15 +13,14 @@ namespace MrCMS.Website
     public abstract class MrCMSPage<TModel> : System.Web.Mvc.WebViewPage<TModel>
     {
         private IConfigurationProvider _configurationProvider;
-        private ISiteService _siteService;
 
         public T SiteSettings<T>() where T : SiteSettingsBase, new()
         {
-            return _configurationProvider.GetSettings<T>(_siteService.GetCurrentSite());
+            return _configurationProvider.GetSiteSettings<T>();
         }
         public T GlobalSettings<T>() where T : GlobalSettingsBase, new()
         {
-            return _configurationProvider.GetSettings<T>();
+            return _configurationProvider.GetGlobalSettings<T>();
         }
 
         public override void InitHelpers()
@@ -30,7 +29,6 @@ namespace MrCMS.Website
 
             if (MrCMSApplication.DatabaseIsInstalled)
             {
-                _siteService = MrCMSApplication.Get<ISiteService>();
                 _configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
             }
         }

@@ -205,15 +205,13 @@
         menu: 'edit-root-menu'
     }, function (action, el, pos) {
         var element = $(el);
-        var id = element.data('id');
         var controller = element.data('controller');
-        var siteId = element.parents('.filetree').data('site-id');
         switch (action) {
             case "add":
-                location.href = '/Admin/' + controller + '/Add?siteId=' + siteId;
+                location.href = '/Admin/' + controller + '/Add';
                 break;
             case "sort":
-                location.href = '/Admin/' + controller + '/Sort/?siteId=' + siteId;
+                location.href = '/Admin/' + controller + '/Sort';
                 break;
         }
     });
@@ -428,6 +426,11 @@
     $(document).on('click', 'a.more-link', function () {
         return false;
     });
+
+    $(document).on('change', '#admin-site-selector', function () {
+        location.href = $(this).val();
+    });
+
 });
 
 function resizeModal(jqElement) {

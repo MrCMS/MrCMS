@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Website.Controllers;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -18,7 +19,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var data = new object();
             JsonResult jsonResult = controller.Json(data, "test/content-type", Encoding.ASCII);
 
-            jsonResult.Should().BeOfType<AdminController.JsonNetResult>();
+            jsonResult.Should().BeOfType<JsonNetResult>();
         }
 
         [Fact]

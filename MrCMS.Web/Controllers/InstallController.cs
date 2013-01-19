@@ -129,6 +129,15 @@ namespace MrCMS.Web.Controllers
                                              string.Format(
                                                  "The '{0}' account is not granted with Modify permission on folder '{1}'. Please configure these permissions.",
                                                  WindowsIdentity.GetCurrent().Name, dir));
+                else
+                {
+                    var directoryInfo = new DirectoryInfo(dir);
+                    if (!directoryInfo.Exists)
+                    {
+                        directoryInfo.Create();
+                    }
+                }
+
 
             var filesToCheck = new List<string>();
             filesToCheck.Add(rootDir + "web.config");
@@ -255,10 +264,12 @@ namespace MrCMS.Web.Controllers
 
             var site = new Site { Name = model.SiteName, BaseUrl = model.SiteUrl };
             session.Transact(sess => sess.Save(site));
+            MrCMSApplication.OverriddenSite = site;
+            var currentSite = new CurrentSite(site);
 
             var siteSettings = new SiteSettings { Site = site };
 
-            var documentService = new DocumentService(session, siteSettings, siteService);
+            var documentService = new DocumentService(session, siteSettings, currentSite);
 
             var user = new User
             {
@@ -274,7 +285,7 @@ namespace MrCMS.Web.Controllers
             var layout = new Layout
                                {
                                    Name = "Base Layout",
-                                   Site = site,
+                                   Website = site,
                                    UrlSegment = "~/Views/Shared/_Layout.cshtml"
                                };
             documentService.AddDocument(layout);
@@ -283,7 +294,7 @@ namespace MrCMS.Web.Controllers
                                             {
                                                 Name = "Home",
                                                 UrlSegment = "home",
-                                                Site = site,
+                                                Website = site,
                                                 RevealInNavigation = true
                                             });
 
@@ -293,7 +304,7 @@ namespace MrCMS.Web.Controllers
                                    UrlSegment = "404",
                                    RevealInNavigation = false,
                                    PublishOn = DateTime.Now,
-                                   Site = site
+                                   Website = site
                                };
             documentService.AddDocument(error404);
 
@@ -303,14 +314,15 @@ namespace MrCMS.Web.Controllers
                                    UrlSegment = "500",
                                    RevealInNavigation = false,
                                    PublishOn = DateTime.Now,
-                                   Site = site
+                                   Website = site
                                };
             documentService.AddDocument(error500);
 
             var defaultMediaCategory = new MediaCategory
                 {
                     Name = "Default",
-                    UrlSegment = "default"
+                    UrlSegment = "default",
+                    Website = site
                 };
             documentService.AddDocument(defaultMediaCategory);
 
@@ -327,7 +339,8 @@ namespace MrCMS.Web.Controllers
             mediaSettings.SmallImageHeight = 200;
             mediaSettings.SmallImageWidth = 200;
 
-            var configurationProvider = new ConfigurationProvider(new SettingService(session));
+            var configurationProvider = new ConfigurationProvider(new SettingService(session),
+                                                                  currentSite);
             configurationProvider.SaveSettings(siteSettings);
             configurationProvider.SaveSettings(mediaSettings);
 

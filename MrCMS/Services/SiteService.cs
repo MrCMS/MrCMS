@@ -14,6 +14,7 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
         private readonly HttpRequestBase _requestBase;
+        private Site _currentSite;
 
         public SiteService(ISession session, HttpRequestBase requestBase)
         {
@@ -68,14 +69,16 @@ namespace MrCMS.Services
 
         public Site GetCurrentSite()
         {
-            var authority = _requestBase.Url.Authority;
-            var isDefaultPort = _requestBase.Url.IsDefaultPort;
-            var port = _requestBase.Url.Port;
+            return _currentSite ?? (_currentSite = GetSiteFromRequest());
+        }
 
-            var searchQuery = isDefaultPort ? authority : string.Format("{0}:{1}", authority, port);
-            
+        private Site GetSiteFromRequest()
+        {
+            var authority = _requestBase.Url.Authority;
+
+
             var allSites = GetAllSites();
-            var site = allSites.FirstOrDefault(s => s.BaseUrl.Equals(searchQuery, StringComparison.OrdinalIgnoreCase));
+            var site = allSites.FirstOrDefault(s => s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase));
 
             return site;
         }

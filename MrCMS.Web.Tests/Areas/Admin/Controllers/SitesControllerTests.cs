@@ -85,30 +85,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void SitesController_EditGet_SettingServiceGetAllSettingsForSiteIdShouldBeCalled()
-        {
-            SitesController sitesController = GetSitesController();
-
-            var site = new Site {Id = 1};
-            sitesController.Edit_Get(site);
-
-            A.CallTo(() => configurationProvider.GetAllSiteSettings(site)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void SitesController_EditGet_ResultOfGetAllISettingsMustBeSetToViewDataSettings()
-        {
-            SitesController sitesController = GetSitesController();
-            var site = new Site {Id = 1};
-            var settingses = new List<SiteSettingsBase> { new SiteSettings() };
-            A.CallTo(() => configurationProvider.GetAllSiteSettings(site)).Returns(settingses);
-
-            sitesController.Edit_Get(site);
-
-            sitesController.ViewData["Settings"].As<List<SiteSettingsBase>>().Should().BeEquivalentTo(settingses);
-        }
-
-        [Fact]
         public void SitesController_EditPost_CallsSaveSiteWithPassedSite()
         {
             SitesController sitesController = GetSitesController();

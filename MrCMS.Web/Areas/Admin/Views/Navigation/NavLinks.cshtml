@@ -1,8 +1,8 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Models
-@model dynamic
+@model IEnumerable<IAdminMenuItem>
 <ul class="nav">
-    @foreach (var item in TypeHelper.GetAllConcreteTypesAssignableFrom<IAdminMenuItem>().Select(Activator.CreateInstance).Cast<IAdminMenuItem>().OrderBy(item => item.DisplayOrder))
+    @foreach (var item in Model)
     {
         if (item.Children.Any())
         {

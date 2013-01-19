@@ -34,6 +34,13 @@ namespace MrCMS.DbConfiguration
 
         public IPersistenceConfigurer PersistenceOverride { get; set; }
 
+        public List<Type> GetMappedClasses()
+        {
+            var configuration = GetConfiguration();
+
+            return configuration.ClassMappings.Select(@class => @class.MappedClass).ToList();
+        }
+
         public ISessionFactory CreateSessionFactory()
         {
             var configuration = GetConfiguration();
@@ -109,8 +116,8 @@ namespace MrCMS.DbConfiguration
             var config = Fluently.Configure()
                 .Database(GetPersistenceConfigurer())
                 .Mappings(m => m.AutoMappings.Add(AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
-                                                .IgnoreBase<BaseEntity>().IncludeBase<Document>().IncludeBase<Webpage>()
-                                                .IncludeBase<Widget>().IncludeBase<Layout>()
+                                                .IgnoreBase<SystemEntity>().IgnoreBase<SiteEntity>().IncludeBase<Document>().IncludeBase<Webpage>()
+                                                .IncludeBase<Widget>()
                                                 .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
                                                 .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()))
                 .Cache(builder =>
@@ -127,10 +134,11 @@ namespace MrCMS.DbConfiguration
                                          })
                 .BuildConfiguration();
 
+            
+
             ValidateSchema(config);
 
             config.BuildMappings();
-
 
             return config;
         }

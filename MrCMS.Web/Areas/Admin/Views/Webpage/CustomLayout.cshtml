@@ -61,7 +61,7 @@
                             </table>
                         }
                         <div class="btn-group">
-                            <a href="@Url.Action("AddPageWidget", "Widget", new { pageId = Model.Id, layoutAreaId = layoutArea.Id })" class="btn btn-mini btn-primary" data-toggle="modal">Add widget to area
+                            <a href="@Url.Action("AddPageWidget", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-mini btn-primary" data-toggle="modal">Add widget to area
                             </a>
                             @if (widgets.Any())
                             {

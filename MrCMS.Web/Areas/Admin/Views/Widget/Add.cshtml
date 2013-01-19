@@ -1,13 +1,15 @@
-﻿@model MrCMS.Models.AddWidgetModel
+﻿@using MrCMS.Helpers
+@model MrCMS.Models.AddWidgetModel
 <div class="modal-header">
     <a class="close" data-dismiss="modal">×</a>
     <h3>Add widget</h3>
 </div>
-@using (Html.BeginForm("Add", "Widget", new { id = "", layoutAreaId = Model.LayoutAreaId, returnUrl = Model.ReturnUrl, Model.Name }, FormMethod.Post))
+@using (Html.BeginForm("Add", "Widget", new { id = "", returnUrl = TempData["returnUrl"] }, FormMethod.Post))
 {
     <div class="modal-body">
+        @Html.HiddenFor(model => model.LayoutArea.Id)
         @Html.Label("WidgetType", "Widget Type")
-        @Html.DropDownList("WidgetType", Model.Types, new { data_val = "true", data_val_required = "Please select a widget type" })
+        @Html.DropDownList("WidgetType", WidgetHelper.WidgetTypeDropdownItems, new { data_val = "true", data_val_required = "Please select a widget type" })
         <br />
         @Html.LabelFor(model => model.Name)
         @Html.EditorFor(model => model.Name, Model.Name)

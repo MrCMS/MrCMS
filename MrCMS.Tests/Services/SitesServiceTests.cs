@@ -41,7 +41,8 @@ namespace MrCMS.Tests.Services
 
             var allSites = sitesService.GetAllSites();
 
-            allSites.Should().HaveCount(10);
+            // Including CurrentSite from the base class
+            allSites.Should().HaveCount(11);
         }
 
         [Fact]
@@ -55,7 +56,8 @@ namespace MrCMS.Tests.Services
 
             sitesService.AddSite(site);
 
-            Session.QueryOver<Site>().RowCount().Should().Be(1);
+            // Including CurrentSite from the base class
+            Session.QueryOver<Site>().RowCount().Should().Be(2);
         }
 
         [Fact]
@@ -126,12 +128,10 @@ namespace MrCMS.Tests.Services
         public void SitesService_DeleteSite_ShouldRemoveSiteFromSession()
         {
             var sitesService = GetSitesService();
-            var site = new Site();
-            Session.Transact(session => session.Save(site));
-            Session.QueryOver<Site>().RowCount().Should().Be(1);
 
-            sitesService.DeleteSite(site);
+            sitesService.DeleteSite(CurrentSite);
 
+            // Including CurrentSite from the base class
             Session.QueryOver<Site>().RowCount().Should().Be(0);
         }
 
@@ -158,7 +158,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void SitesService_GetCurrentSite_ByDefaultReturnsFirstSite()
+        public void SitesService_GetCurrentSite_ReturnsNullIfNoneMatch()
         {
             var site1 = new Site { BaseUrl = "test1" };
             var site2 = new Site { BaseUrl = "test2" };
@@ -170,14 +170,14 @@ namespace MrCMS.Tests.Services
             var sitesService = GetSitesService();
             A.CallTo(() => httpRequestBase.Url).Returns(new Uri("http://www.example.com/"));
 
-            sitesService.GetCurrentSite().Should().Be(site1);
+            sitesService.GetCurrentSite().Should().BeNull();
         }
 
         [Fact]
         public void SitesService_GetCurrentSite_IfUrlMatchesReturnsMatchingSite()
         {
             var site1 = new Site { BaseUrl = "test1" };
-            var site2 = new Site { BaseUrl = "http://www.example.com" };
+            var site2 = new Site { BaseUrl = "www.example.com" };
             Session.Transact(session =>
             {
                 session.Save(site1);

@@ -19,14 +19,16 @@ namespace MrCMS.Services
     {
         private readonly IDocumentService _documentService;
         private readonly IUserService _userService;
+        private readonly CurrentSite _currentSite;
 
-        public NavigationService(IDocumentService documentService, IUserService userService)
+        public NavigationService(IDocumentService documentService, IUserService userService, CurrentSite currentSite)
         {
             _documentService = documentService;
             _userService = userService;
+            _currentSite = currentSite;
         }
 
-        public SiteTree<Webpage> GetWebsiteTree(Site site, int? depth = null)
+        public SiteTree<Webpage> GetWebsiteTree(int? depth = null)
         {
             var tree = new SiteTree<Webpage>
                            {
@@ -36,10 +38,10 @@ namespace MrCMS.Services
                                IconClass = "icon-asterisk",
                                Name = "Root",
                                NodeType = "Webpage",
-                               SiteId = site.Id,
-                               CanAddChild = DocumentTypeHelper.GetValidWebpageDocumentTypes(null, _documentService, site).Any()
+                               SiteId = _currentSite.Id,
+                               CanAddChild = DocumentTypeHelper.GetValidWebpageDocumentTypes(null, _documentService, _currentSite.Site).Any()
                            };
-            tree.Children = GetNodes(tree, _documentService.GetAdminDocumentsByParentId<Webpage>(site, null), null, maxDepth: depth);
+            tree.Children = GetNodes(tree, _documentService.GetAdminDocumentsByParent<Webpage>(null), null, maxDepth: depth);
 
             return tree;
         }
@@ -55,12 +57,12 @@ namespace MrCMS.Services
                                NodeType = "MediaCategory",
                                CanAddChild = true
                            };
-            tree.Children = GetNodes(tree, _documentService.GetDocumentsByParentId<MediaCategory>(null), null);
+            tree.Children = GetNodes(tree, _documentService.GetDocumentsByParent<MediaCategory>(null), null);
 
             return tree;
         }
 
-        public SiteTree<Layout> GetLayoutList(Site site)
+        public SiteTree<Layout> GetLayoutList()
         {
             var tree = new SiteTree<Layout>
                            {
@@ -69,11 +71,11 @@ namespace MrCMS.Services
                                IconClass = "icon-asterisk",
                                Name = "Root",
                                NodeType = "Layout",
-                               SiteId = site.Id,
+                               SiteId = _currentSite.Id,
                                CanAddChild = true
                            };
 
-            tree.Children = GetNodes(tree, _documentService.GetAdminDocumentsByParentId<Layout>(site, null), null);
+            tree.Children = GetNodes(tree, _documentService.GetAdminDocumentsByParent<Layout>(null), null);
             return tree;
         }
 
@@ -92,16 +94,16 @@ namespace MrCMS.Services
             return tree;
         }
 
-        public IEnumerable<SelectListItem> GetParentsList(Site site)
+        public IEnumerable<SelectListItem> GetParentsList()
         {
-            var selectListItems = GetPageListItems(GetWebsiteTree(site).Children, 1).ToList();
+            var selectListItems = GetPageListItems(GetWebsiteTree().Children, 1).ToList();
             selectListItems.Insert(0, new SelectListItem { Selected = false, Text = "Root", Value = "" });
             return selectListItems;
         }
 
-        public string GetSiteMap(UrlHelper urlHelper, Site site)
+        public string GetSiteMap(UrlHelper urlHelper)
         {
-            var websiteTree = GetWebsiteTree(site);
+            var websiteTree = GetWebsiteTree();
 
             var xmlDocument = new XmlDocument();
             var xmlDeclaration = xmlDocument.CreateXmlDeclaration("1.0", "utf-8", null);
@@ -204,7 +206,7 @@ namespace MrCMS.Services
             }
             nodes.ForEach(document =>
                               {
-                                  var count = _documentService.GetDocumentsByParentId<T>(document.Id).Count();
+                                  var count = _documentService.GetDocumentsByParent<T>(document).Count();
                                   var siteTreeNode = new SiteTreeNode<T>
                                                          {
                                                              Total =
@@ -217,7 +219,7 @@ namespace MrCMS.Services
                                                              CustomSort = IsCustomSort(document.Id),
                                                              CanAddChild =
                                                                  !(document is Webpage) ||
-                                                                 (document as Webpage).GetValidWebpageDocumentTypes(_documentService, (document as Webpage).Site).
+                                                                 (document as Webpage).GetValidWebpageDocumentTypes(_documentService, (document as Webpage).Website).
                                                                      Any(),
                                                              IsPublished =
                                                                  !(document is Webpage) ||
@@ -232,11 +234,10 @@ namespace MrCMS.Services
                                           ? maxDepth.Value == 0
                                                 ? new List<SiteTreeNode<T>>()
                                                 : GetNodes(siteTreeNode,
-                                                    _documentService.GetDocumentsByParentId
-                                                        <T>(document.Id), document.Id,
+                                                    _documentService.GetDocumentsByParent(document), document.Id,
                                                     document.GetMaxChildNodes(), maxDepth - 1)
                                           : GetNodes(siteTreeNode,
-                                              _documentService.GetDocumentsByParentId<T>(document.Id), document.Id,
+                                              _documentService.GetDocumentsByParent(document), document.Id,
                                               document.GetMaxChildNodes());
                                   siteTreeNode.Parent = parent;
                                   list.Add(siteTreeNode);

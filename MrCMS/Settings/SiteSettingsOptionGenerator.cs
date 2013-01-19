@@ -14,7 +14,7 @@ namespace MrCMS.Settings
     {
         public List<SelectListItem> GetErrorPageOptions(ISession session, Site site, int pageId)
         {
-            var queryOver = session.QueryOver<Webpage>().Where(webpage => webpage.Site == site).Cacheable().List();
+            var queryOver = session.QueryOver<Webpage>().Where(webpage => webpage.Website == site).Cacheable().List();
             return
                 queryOver.Where(page => page.Published)
                          .BuildSelectItemList(
@@ -28,7 +28,7 @@ namespace MrCMS.Settings
             var selectListItem = SelectListItemHelper.EmptyItem("Default Layout");
             selectListItem.Selected = !selectedLayoutId.HasValue;
             return session.QueryOver<Layout>()
-                          .Where(layout => layout.Site == site)
+                          .Where(layout => layout.Website == site)
                           .Cacheable()
                           .List()
                           .BuildSelectItemList(

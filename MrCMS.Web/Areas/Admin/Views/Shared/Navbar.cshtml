@@ -9,6 +9,9 @@
                 </form>
                 <ul class="nav pull-right">
                     <li>
+                        @{ Html.RenderAction("SiteList", "Navigation"); }
+                    </li>
+                    <li>
                         <p class="navbar-text pull-right">@{ Html.RenderAction("LoggedInAs", "Navigation"); }</p>
                     </li>
                 </ul>

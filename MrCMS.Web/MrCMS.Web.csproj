@@ -128,7 +128,6 @@
     <Compile Include="Application\Widgets\PlainTextWidget.cs" />
     <Compile Include="Application\Widgets\TextWidget.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
-    <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
@@ -137,13 +136,13 @@
     <Compile Include="Areas\Admin\Controllers\NavigationController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\SearchController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SettingsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SitesController.cs" />
     <Compile Include="Areas\Admin\Controllers\TagController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageController.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaController.cs" />
-    <Compile Include="Areas\Admin\Models\AddCategoryModel.cs" />
     <Compile Include="Areas\Admin\Models\AddPageModel.cs" />
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
     <Compile Include="Controllers\FormController.cs" />
@@ -599,7 +598,7 @@
     <Content Include="Areas\Admin\Views\Webpage\Versions.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\RemoveMedia.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
-    <Content Include="Areas\Admin\Views\Sites\Settings.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\Settings.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\SiteList.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Add.cshtml" />
@@ -615,6 +614,8 @@
     <Content Include="Views\Login\PasswordReset.cshtml" />
     <Content Include="Views\Login\ResetComplete.cshtml" />
     <Content Include="Areas\Admin\Views\User\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Settings\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Navigation\SiteList.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
   </ItemGroup>
   <ItemGroup>

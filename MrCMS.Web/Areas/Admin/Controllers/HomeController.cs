@@ -1,4 +1,6 @@
 ﻿using System.Web.Mvc;
+using MrCMS.Services;
+using MrCMS.Website.Controllers;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers

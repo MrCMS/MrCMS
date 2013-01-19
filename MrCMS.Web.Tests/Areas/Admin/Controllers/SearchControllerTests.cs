@@ -109,7 +109,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var selectListItems = new List<SelectListItem>();
             var documentTypes = new List<SelectListItem>();
 
-            A.CallTo(() => navigationService.GetParentsList(site)).Returns(selectListItems);
+            A.CallTo(() => navigationService.GetParentsList()).Returns(selectListItems);
             A.CallTo(() => navigationService.GetDocumentTypes("TextPage")).Returns(documentTypes);
 
             var result = searchController.Index("searchterm", "TextPage", 1, 1).As<ViewResult>();
@@ -146,7 +146,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             SearchController searchController = GetSearchController();
 
-            searchController.IndexPost("test", "TextPage", 1, 1).Should().BeOfType<RedirectToRouteResult>();
+            searchController.IndexPost("test", "TextPage", 1).Should().BeOfType<RedirectToRouteResult>();
         }
 
         [Fact]
@@ -154,7 +154,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             SearchController searchController = GetSearchController();
 
-            var result = searchController.IndexPost("test", "TextPage", 1, 1).As<RedirectToRouteResult>();
+            var result = searchController.IndexPost("test", "TextPage", 1).As<RedirectToRouteResult>();
 
             result.RouteValues["action"].Should().Be("Index");
             result.RouteValues["term"].Should().Be("test");

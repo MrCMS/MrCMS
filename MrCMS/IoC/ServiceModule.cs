@@ -2,11 +2,14 @@ using System.Runtime.Caching;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
+using MrCMS.Entities.Multisite;
+using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Website;
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
 using Ninject.Web.Common;
+using Ninject;
 
 namespace MrCMS.IoC
 {
@@ -33,6 +36,9 @@ namespace MrCMS.IoC
             Kernel.Bind<HttpSessionStateBase>().ToMethod(context => MrCMSApplication.CurrentContext.Session);
             Kernel.Bind<ObjectCache>().ToMethod(context => MemoryCache.Default);
             Kernel.Bind<Cache>().ToMethod(context => MrCMSApplication.CurrentContext.Cache);
+            Kernel.Rebind<CurrentSite>()
+                  .ToMethod(context => new CurrentSite(context.Kernel.Get<ISiteService>().GetCurrentSite()))
+                  .InRequestScope();
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Web.Mvc;
+using MrCMS.Entities.Multisite;
 using NHibernate;
 
 namespace MrCMS.Entities
 {
-    public abstract class BaseEntity 
+    public abstract class SystemEntity
     {
         public virtual int Id { get; set; }
         [DisplayName("Created On")]
@@ -16,7 +17,11 @@ namespace MrCMS.Entities
         public virtual void OnDeleting(ISession session)
         {
         }
-
+    }
+    public abstract class SiteEntity : SystemEntity
+    {
         public virtual void CustomBinding(ControllerContext controllerContext, ISession session) { }
+
+        public virtual Site Website { get; set; }
     }
 }

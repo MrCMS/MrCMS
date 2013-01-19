@@ -2,7 +2,7 @@
 
 namespace MrCMS.Entities.Assets
 {
-    public class EventDates : BaseEntity
+    public class EventDates : SiteEntity
     {
         public virtual string Name { get; set; }
         public virtual DateTime DateFrom { get; set; }

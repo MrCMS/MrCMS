@@ -3,7 +3,7 @@ using NHibernate;
 
 namespace MrCMS.Entities.Documents.Web
 {
-    public class PageWidgetSort : BaseEntity
+    public class PageWidgetSort : SiteEntity
     {
         public virtual Webpage Webpage { get; set; }
         public virtual LayoutArea LayoutArea { get; set; }

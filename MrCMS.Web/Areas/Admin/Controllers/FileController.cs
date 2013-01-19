@@ -4,29 +4,28 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class FileController : AdminController
     {
         private readonly IFileService _fileService;
-        private readonly IDocumentService _documentService;
 
-        public FileController(IFileService fileService, IDocumentService documentService)
+        public FileController(IFileService fileService)
         {
             _fileService = fileService;
-            _documentService = documentService;
         }
 
         [HttpGet]
-        public JsonResult Files(int mediaCategoryId)
+        public JsonResult Files(MediaCategory mediaCategory)
         {
-            return Json(_fileService.GetFiles(mediaCategoryId));
+            return Json(_fileService.GetFiles(mediaCategory));
         }
 
         [HttpPost]
         [ActionName("Files")]
-        public JsonResult Files_Post(int mediaCategoryId)
+        public JsonResult Files_Post(MediaCategory mediaCategory)
         {
             var list = new List<ViewDataUploadFilesResult>();
             foreach (string files in Request.Files)
@@ -34,7 +33,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 var file = Request.Files[files];
                 var dbFile = _fileService.AddFile(file.InputStream, file.FileName,
                                                   file.ContentType, file.ContentLength,
-                                                  _documentService.GetDocument<MediaCategory>(mediaCategoryId));
+                                                  mediaCategory);
                 list.Add(dbFile);
             }
             return Json(list.ToArray());

@@ -1,6 +1,6 @@
 namespace MrCMS.Entities.Documents.Web
 {
-    public class FormValue : BaseEntity
+    public class FormValue : SiteEntity
     {
         public virtual FormPosting FormPosting  { get; set; }
         public virtual string Key { get; set; }

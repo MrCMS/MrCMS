@@ -194,22 +194,29 @@ namespace MrCMS.Website
             return bootstrapper.Kernel.Get(type);
         }
 
-        public static IEnumerable<Webpage> PublishedRootChildren(Site site)
+        public static IEnumerable<Webpage> PublishedRootChildren()
         {
-            return RootChildren(site).Where(webpage => webpage.Published);
+            return RootChildren().Where(webpage => webpage.Published);
         }
 
         public static IEnumerable<Webpage> OverridenRootChildren { get; set; }
-        public static IEnumerable<Webpage> RootChildren(Site site)
+        public static IEnumerable<Webpage> RootChildren()
         {
             return OverridenRootChildren ??
                    Get<ISession>()
                        .QueryOver<Webpage>()
-                       .Where(document => document.Parent == null && document.Site == site)
+                       .Where(document => document.Parent == null && document.Website == CurrentSite)
                        .OrderBy(x => x.DisplayOrder)
                        .Asc.Cacheable()
                        .List();
         }
+
+        public static Site CurrentSite
+        {
+            get {  return OverriddenSite?? Get<ISiteService>().GetCurrentSite(); }
+        }
+
+        public static Site OverriddenSite { get; set; }
 
         public static Webpage CurrentPage
         {

@@ -27,7 +27,7 @@ namespace MrCMS.Tests.Services
                 <ArgumentNullException>();
         }
 
-        private static FileService GetFileService(ISession session = null, IFileSystem fileSystem = null)
+        private FileService GetFileService(ISession session = null, IFileSystem fileSystem = null)
         {
             _fileSystem = A.Fake<IFileSystem>();
             A.CallTo(() => _fileSystem.ApplicationPath).Returns("C:\\temp\\");
@@ -47,7 +47,8 @@ namespace MrCMS.Tests.Services
                                     SmallImageHeight = 75,
                                     SmallImageWidth = 100,
                                     ThumbnailImageHeight = 64,
-                                    ThumbnailImageWidth = 64
+                                    ThumbnailImageWidth = 64,
+                                    Site = CurrentSite
                                 };
             return new FileService(session ?? Session, fileSystem ?? _fileSystem,
                                    A.Fake<IImageProcessor>(), mediaSettings);
@@ -79,7 +80,7 @@ namespace MrCMS.Tests.Services
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
             var mediaFile = fileService.AddFile(GetDefaultStream(), "test-file.txt", null, 0, mediaCategory);
 
-            mediaFile.name.Should().Be("test_file.txt");
+            mediaFile.name.Should().Be("test-file.txt");
         }
 
         [Fact]
@@ -133,7 +134,7 @@ namespace MrCMS.Tests.Services
             fileService.AddFile(stream, "test.txt", "text/plain", 1234, mediaCategory);
 
             var file = Session.Get<MediaFile>(1);
-            file.FileLocation.Should().Be("content/upload/test-category/test.txt");
+            file.FileLocation.Should().Be("content/upload/1/test-category/test.txt");
         }
 
         [Fact]
@@ -166,7 +167,7 @@ namespace MrCMS.Tests.Services
 
             fileService.AddFile(stream, "test.txt", "text/plain", 10, mediaCategory);
 
-            A.CallTo(() => _fileSystem.SaveFile(stream, "content/upload/test-category/test.txt")).MustHaveHappened();
+            A.CallTo(() => _fileSystem.SaveFile(stream, "content/upload/1/test-category/test.txt")).MustHaveHappened();
         }
 
         [Fact]
@@ -187,7 +188,7 @@ namespace MrCMS.Tests.Services
                                  });
             var fileService = GetFileService();
 
-            var files = fileService.GetFiles(mediaCategory.Id);
+            var files = fileService.GetFiles(mediaCategory);
 
             files.Should().HaveCount(2);
 
@@ -230,7 +231,7 @@ namespace MrCMS.Tests.Services
             var session = A.Fake<ISession>();
             var fileService = GetFileService(session);
             var mediaFile = new MediaFile();
-            
+
             fileService.SaveFile(mediaFile);
 
             A.CallTo(() => session.SaveOrUpdate(mediaFile)).MustHaveHappened();

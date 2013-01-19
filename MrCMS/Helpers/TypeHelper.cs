@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using MrCMS.DbConfiguration;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
+using MrCMS.IoC;
 using MrCMS.Settings;
 using NHibernate.Proxy;
 
@@ -15,10 +17,21 @@ namespace MrCMS.Helpers
     {
         private static List<Type> _alltypes;
 
+        public static List<Type> MappedClasses { get; set; }
+
         public static List<Type> GetAllTypes()
         {
             return _alltypes ??
                    (_alltypes = AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.GlobalAssemblyCache).SelectMany(GetLoadableTypes).Distinct().ToList());
+        }
+        public static List<Type> GetMappedClassesAssignableFrom<T>()
+        {
+            return MappedClasses.FindAll(type => typeof(T).IsAssignableFrom(type));
+        }
+
+        public static List<Type> GetAllConcreteMappedClassesAssignableFrom<T>()
+        {
+            return GetMappedClassesAssignableFrom<T>().FindAll(type => !type.IsAbstract);
         }
 
         public static List<Type> GetAllTypesAssignableFrom<T>()
@@ -43,7 +56,7 @@ namespace MrCMS.Helpers
             {
                 loadableTypes.AddRange(e.Types.Where(t => t != null));
             }
-            return loadableTypes.FindAll(type => !typeof (INHibernateProxy).IsAssignableFrom(type));
+            return loadableTypes.FindAll(type => !typeof(INHibernateProxy).IsAssignableFrom(type));
         }
         /// <summary>
         /// Search for a method by name and parameter types.  Unlike GetMethod(), does 'loose' matching on generic
@@ -149,17 +162,15 @@ namespace MrCMS.Helpers
             return false;
         }
 
-        public static T Unproxy<T>(this T document) where T : BaseEntity
+        public static T Unproxy<T>(this T document) where T : SiteEntity
         {
             var proxy = document as INHibernateProxy;
             if (proxy != null)
             {
                 return (T)proxy.HibernateLazyInitializer.GetImplementation();
             }
-            else
-            {
-                return (T)document;
-            }
+
+            return (T)document;
         }
 
         /// <summary>

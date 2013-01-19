@@ -11,8 +11,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IFileService _fileService;
 
-        public MediaCategoryController(IDocumentService documentService, ISiteService siteService, IFileService fileService)
-            : base(documentService, siteService)
+        public MediaCategoryController(IDocumentService documentService, IFileService fileService)
+            : base(documentService)
         {
             _fileService = fileService;
         }
@@ -22,9 +22,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
          * create a directory for media files.
          */
 
-        public override ActionResult Add([SessionModelBinder(typeof(AddDocumentModelBinder))] MediaCategory doc)
+        public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] MediaCategory doc)
         {
-            return base.Add(doc);
+            var actionResult = base.Add(doc);
+            _fileService.CreateFolder(doc);
+            return actionResult;
         }
 
         public override ActionResult Show(MediaCategory document)

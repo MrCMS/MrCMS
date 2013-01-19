@@ -2,6 +2,7 @@
 using System.Web;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Website;
@@ -19,13 +20,13 @@ namespace MrCMS.DbConfiguration.Configuration
     {
         public bool OnPreUpdate(PreUpdateEvent @event)
         {
-            var baseEntity = @event.Entity as BaseEntity;
-            if (baseEntity != null)
+            var systemEntity = @event.Entity as SystemEntity;
+            if (systemEntity != null)
             {
                 var now = DateTime.UtcNow;
                 if (!DbHasSetCreatedOn(@event.Persister, @event.State))
-                    SetCreatedOn(@event.Persister, @event.State, baseEntity, now);
-                SetUpdatedOn(@event.Persister, @event.State, baseEntity, now);
+                    SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
+                SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
             }
             return false;
         }
@@ -39,17 +40,24 @@ namespace MrCMS.DbConfiguration.Configuration
             return !DateTime.Equals(currentCreatedOn, defaultDateTime);
         }
 
-        private void SetUpdatedOn(IEntityPersister persister, object[] state, BaseEntity baseEntity, DateTime date)
+        private void SetUpdatedOn(IEntityPersister persister, object[] state, SystemEntity siteEntity, DateTime date)
         {
             Set(persister, state, "UpdatedOn", date);
 
-            baseEntity.UpdatedOn = date;
+            siteEntity.UpdatedOn = date;
         }
-        private void SetCreatedOn(IEntityPersister persister, object[] state, BaseEntity baseEntity, DateTime date)
+        private void SetCreatedOn(IEntityPersister persister, object[] state, SystemEntity siteEntity, DateTime date)
         {
             Set(persister, state, "CreatedOn", date);
 
-            baseEntity.CreatedOn = date;
+            siteEntity.CreatedOn = date;
+        }
+
+        private void SetSite(IEntityPersister persister, object[] state, SiteEntity siteEntity, Site site)
+        {
+            Set(persister, state, "Website", site);
+
+            siteEntity.Website = site;
         }
 
         private void Set(IEntityPersister persister, object[] state, string propertyName, object value)
@@ -62,12 +70,14 @@ namespace MrCMS.DbConfiguration.Configuration
 
         public bool OnPreInsert(PreInsertEvent @event)
         {
-            var baseEntity = @event.Entity as BaseEntity;
-            if (baseEntity != null)
+            var systemEntity = @event.Entity as SystemEntity;
+            if (systemEntity != null)
             {
                 var now = DateTime.UtcNow;
-                SetCreatedOn(@event.Persister, @event.State, baseEntity, now);
-                SetUpdatedOn(@event.Persister, @event.State, baseEntity, now);
+                SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
+                SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
+                if (systemEntity is SiteEntity && (systemEntity as SiteEntity).Website == null)
+                    SetSite(@event.Persister, @event.State, systemEntity as SiteEntity, MrCMSApplication.CurrentSite);
             }
             return false;
         }
@@ -85,7 +95,7 @@ namespace MrCMS.DbConfiguration.Configuration
                     var propertyInfos =
                         @event.Entity.GetType().GetProperties().Where(
                             info =>
-                            info.CanWrite && !typeof(BaseEntity).IsAssignableFrom(info.PropertyType) &&
+                            info.CanWrite && !typeof(SystemEntity).IsAssignableFrom(info.PropertyType) &&
                             !info.PropertyType.IsGenericType).ToList();
 
                     var propertyNames = @event.Persister.PropertyNames;
@@ -116,12 +126,13 @@ namespace MrCMS.DbConfiguration.Configuration
                                                       Data = JsonConvert.SerializeObject(jObject),
                                                       User = GetUser(session),
                                                       CreatedOn = DateTime.UtcNow,
-                                                      UpdatedOn = DateTime.UtcNow
+                                                      UpdatedOn = DateTime.UtcNow,
+                                                      Website = session.Get<Site>( MrCMSApplication.CurrentSite.Id)
                                                   };
                         document.Versions.Add(documentVersion);
                         using (var transaction = session.BeginTransaction())
                         {
-                            session.Save(documentVersion);
+                            //session.Save(documentVersion);
                             session.Update(document);
                             transaction.Commit();
                         }
