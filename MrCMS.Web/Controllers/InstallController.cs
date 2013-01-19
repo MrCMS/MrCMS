@@ -44,6 +44,7 @@ namespace MrCMS.Web.Controllers
 
             var model = new InstallModel
                 {
+                    SiteUrl = Request.Url.Authority,
                     AdminEmail = "admin@yoursite.com",
                     DatabaseConnectionString = "",
                     DataProvider = "sqlserver",

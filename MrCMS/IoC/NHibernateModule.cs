@@ -35,7 +35,7 @@ namespace MrCMS.IoC
                 Kernel.Bind<ISession>().ToMethod(
                     context =>
                     context.Kernel.Get<ISessionFactory>().OpenSession()).InRequestScope();
-            }
+            }   
             else
             {
                 Kernel.Bind<ISession>().ToMethod(context => context.Kernel.Get<ISessionFactory>().OpenSession()).
