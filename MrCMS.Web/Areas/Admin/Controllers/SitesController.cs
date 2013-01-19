@@ -58,10 +58,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToRouteResult Edit([IoCModelBinder(typeof(EditSiteModelBinder))] Site site, [ModelBinder(typeof(SiteSettingsModelBinder))]List<SiteSettingsBase> settings)
+        public RedirectToRouteResult Edit([IoCModelBinder(typeof(EditSiteModelBinder))] Site site)
         {
             _siteService.SaveSite(site);
-            settings.ForEach(s => _configurationProvider.SaveSettings(s));
             return RedirectToAction("Index");
         }
 
