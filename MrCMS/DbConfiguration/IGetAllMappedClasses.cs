@@ -7,14 +7,4 @@ namespace MrCMS.DbConfiguration
     {
         List<Type> MappedClasses { get; }
     }
-
-    public class AllMappedClasses : IGetAllMappedClasses
-    {
-        public AllMappedClasses(List<Type> mappedClasses)
-        {
-            MappedClasses = mappedClasses;
-        }
-
-        public List<Type> MappedClasses { get; private set; }
-    }
 }

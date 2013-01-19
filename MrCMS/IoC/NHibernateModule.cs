@@ -28,7 +28,7 @@ namespace MrCMS.IoC
         public override void Load()
         {
             Kernel.Bind<ISessionFactory>().ToMethod(context => _configurator.CreateSessionFactory()).InSingletonScope();
-            TypeHelper.MappedClasses = _configurator.GetMappedClasses();
+            Kernel.Rebind<IGetAllMappedClasses>().ToMethod(context => _configurator).InSingletonScope();
             
             if (_forWebsite)
             {

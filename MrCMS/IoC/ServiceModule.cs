@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
 using System.Web.Caching;
@@ -19,15 +20,15 @@ namespace MrCMS.IoC
         public override void Load()
         {
             Kernel.Bind(syntax => syntax.FromAssembliesMatching("MrCMS.*").SelectAllClasses()
-                                      .Where(t => !typeof(SettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t))
+                                      .Where(t => !typeof(SettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
                                       .BindWith<NinjectServiceToInterfaceBinder>()
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
             Kernel.Bind(syntax => syntax.FromAssembliesMatching("MrCMS.*").SelectAllClasses()
-                                      .Where(t => typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t))
+                                      .Where(t => typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
                                       .BindWith<NinjectSiteSettingsBinder>()
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
             Kernel.Bind(syntax => syntax.FromAssembliesMatching("MrCMS.*").SelectAllClasses()
-                                      .Where(t => typeof(GlobalSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t))
+                                      .Where(t => typeof(GlobalSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
                                       .BindWith<NinjectGlobalSettingsBinder>()
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
 

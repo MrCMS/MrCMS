@@ -9,6 +9,7 @@ using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.IoC;
 using MrCMS.Settings;
+using MrCMS.Website;
 using NHibernate.Proxy;
 
 namespace MrCMS.Helpers
@@ -17,7 +18,7 @@ namespace MrCMS.Helpers
     {
         private static List<Type> _alltypes;
 
-        public static List<Type> MappedClasses { get; set; }
+        public static List<Type> MappedClasses { get { return MrCMSApplication.Get<IGetAllMappedClasses>().MappedClasses; } }
 
         public static List<Type> GetAllTypes()
         {
