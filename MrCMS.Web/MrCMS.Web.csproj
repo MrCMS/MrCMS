@@ -686,7 +686,6 @@
     <Content Include="Areas\Admin\Views\MediaCategory\UploadTemplate.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\DownloadTemplate.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Upload.cshtml" />
-    <Content Include="Areas\Admin\Views\Navigation\LoggedInAs.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImageSelector.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImageList.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImagePreview.cshtml" />
