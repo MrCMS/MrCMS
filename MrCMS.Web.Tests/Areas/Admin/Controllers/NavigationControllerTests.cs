@@ -108,13 +108,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void NavigationController_LoggedInAs_ShouldCallGetEmailByName()
-        {
-            NavigationController navigationController = GetNavigationController();
-            navigationController.LoggedInAs();
-        }
-
-        [Fact]
         public void NavigationController_Navlinks_ShouldReturnAPartialViewResult()
         {
             NavigationController navigationController = GetNavigationController();

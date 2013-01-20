@@ -51,13 +51,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView("NavLinks", items);
         }
 
-        [ChildActionOnly]
-        public PartialViewResult LoggedInAs()
-        {
-            User user = _userService.GetCurrentUser(HttpContext);
-            return PartialView(user);
-        }
-
         public ActionResult SiteList()
         {
             var allSites = _siteService.GetAllSites();
