@@ -293,7 +293,11 @@ namespace MrCMS.Services
             var settingValue = _siteSettings.DefaultLayoutId;
 
             return _session.Get<Layout>(settingValue) ??
-                   _session.QueryOver<Layout>().Take(1).Cacheable().SingleOrDefault();
+                   _session.QueryOver<Layout>()
+                           .Where(layout => layout.Website == currentPage.Website)
+                           .Take(1)
+                           .Cacheable()
+                           .SingleOrDefault();
         }
 
         public void SetTags(string taglist, Document document)
