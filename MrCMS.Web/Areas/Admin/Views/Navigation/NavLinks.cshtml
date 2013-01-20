@@ -2,24 +2,25 @@
 @using MrCMS.Models
 @model IEnumerable<IAdminMenuItem>
 <ul class="nav">
+    <li><a href="/">Home</a></li>
     @foreach (var item in Model)
     {
         if (item.Children.Any())
         {
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@item.Text
-                <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                @foreach (var child in item.Children)
-                {
-                    <li><a href="@child.Url">@child.Text</a></li>
-                }
-            </ul>
-        </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">@item.Text
+                    <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    @foreach (var child in item.Children)
+                    {
+                        <li><a href="@child.Url">@child.Text</a></li>
+                    }
+                </ul>
+            </li>
         }
         else
         {
-        <li><a href="@item.Url">@item.Text</a></li>
+            <li><a href="@item.Url">@item.Text</a></li>
         }
     }
 
