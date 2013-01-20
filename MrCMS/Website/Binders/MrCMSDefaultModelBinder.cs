@@ -66,41 +66,44 @@ namespace MrCMS.Website.Binders
 
                 var retrievedValue = baseValue as IEnumerable<SiteEntity>;
 
-                var baseEntities = retrievedValue as SiteEntity[] ?? retrievedValue.ToArray();
-                for (int i = 0; i < baseEntities.Count(); i++)
+                if (retrievedValue != null)
                 {
-                    var deletedKey = propertyDescriptor.Name + "[" + i + "].Deleted";
-
-                    var isDeleted =
-                        Convert.ToString(controllerContext.RouteData.Values[deletedKey] ??
-                                         controllerContext.HttpContext.Request[deletedKey]).Contains("true");
-
-                    if (isDeleted)
+                    var baseEntities = retrievedValue as SiteEntity[] ?? retrievedValue.ToArray();
+                    for (int i = 0; i < baseEntities.Count(); i++)
                     {
-                        var baseEntity = baseEntities.ElementAt(i);
+                        var deletedKey = propertyDescriptor.Name + "[" + i + "].Deleted";
 
-                        foreach (var property in baseEntity.GetType().GetProperties().Where(info => info.PropertyType.IsSubclassOf(typeof(SiteEntity))))
+                        var isDeleted =
+                            Convert.ToString(controllerContext.RouteData.Values[deletedKey] ??
+                                             controllerContext.HttpContext.Request[deletedKey]).Contains("true");
+
+                        if (isDeleted)
                         {
-                            var parent = property.GetValue(baseEntity, null) as SiteEntity;
+                            var baseEntity = baseEntities.ElementAt(i);
 
-                            if (parent == null)
-                                continue;
-                            var makeGenericType = typeof(IList<>).MakeGenericType(baseEntity.GetType());
-                            var lists =
-                                parent.GetType().GetProperties().Where(
-                                    info => makeGenericType.IsAssignableFrom(info.PropertyType));
-
-                            foreach (var info in lists)
+                            foreach (var property in baseEntity.GetType().GetProperties().Where(info => info.PropertyType.IsSubclassOf(typeof(SiteEntity))))
                             {
-                                var infoValue = info.GetValue(parent, null);
-                                var methodInfo = info.PropertyType.GetMethodExt("Remove", new[] { baseEntity.GetType() });
+                                var parent = property.GetValue(baseEntity, null) as SiteEntity;
 
-                                methodInfo.Invoke(infoValue, new[] { baseEntity });
+                                if (parent == null)
+                                    continue;
+                                var makeGenericType = typeof(IList<>).MakeGenericType(baseEntity.GetType());
+                                var lists =
+                                    parent.GetType().GetProperties().Where(
+                                        info => makeGenericType.IsAssignableFrom(info.PropertyType));
+
+                                foreach (var info in lists)
+                                {
+                                    var infoValue = info.GetValue(parent, null);
+                                    var methodInfo = info.PropertyType.GetMethodExt("Remove", new[] { baseEntity.GetType() });
+
+                                    methodInfo.Invoke(infoValue, new[] { baseEntity });
+                                }
+
+                                property.SetValue(baseEntity, null, null);
                             }
-
-                            property.SetValue(baseEntity, null, null);
+                            Session.Delete(baseEntity);
                         }
-                        Session.Delete(baseEntity);
                     }
                 }
 

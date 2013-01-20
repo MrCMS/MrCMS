@@ -25,7 +25,7 @@ using MrCMS.Helpers;
 
 namespace MrCMS.DbConfiguration
 {
-    public class NHibernateConfigurator :IGetAllMappedClasses
+    public class NHibernateConfigurator : IGetAllMappedClasses
     {
         private List<Assembly> _manuallyAddedAssemblies = new List<Assembly>();
         public DatabaseType DatabaseType { get; set; }
@@ -59,7 +59,7 @@ namespace MrCMS.DbConfiguration
             {
                 case DatabaseType.Auto:
                     var connectionStringSettings = ConfigurationManager.ConnectionStrings["mrcms"];
-                    if (connectionStringSettings != null && "System.Data.SQLite".Equals(connectionStringSettings.ProviderName,StringComparison.OrdinalIgnoreCase))
+                    if (connectionStringSettings != null && "System.Data.SQLite".Equals(connectionStringSettings.ProviderName, StringComparison.OrdinalIgnoreCase))
                         return InDevelopment
                                    ? SQLiteConfiguration.Standard.ConnectionString(
                                        x => x.FromConnectionStringWithKey("mrcms-dev"))
@@ -137,7 +137,7 @@ namespace MrCMS.DbConfiguration
                                          })
                 .BuildConfiguration();
 
-            
+
 
             ValidateSchema(config);
 

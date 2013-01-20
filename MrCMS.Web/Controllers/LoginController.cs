@@ -38,7 +38,7 @@ namespace MrCMS.Web.Controllers
                     if (_authorisationService.ValidateUser(user, loginModel.Password))
                     {
                         _authorisationService.SetAuthCookie(loginModel.Email, loginModel.RememberMe);
-                        return Redirect(loginModel.RedirectUrl ?? "~/admin");
+                        return Redirect(loginModel.ReturnUrl ?? "~/admin");
                     }
                 }
             }
@@ -47,7 +47,7 @@ namespace MrCMS.Web.Controllers
                 {
                     Email = loginModel.Email,
                     RememberMe = loginModel.RememberMe,
-                    RedirectUrl = loginModel.RedirectUrl,
+                    ReturnUrl = loginModel.ReturnUrl,
                 });
         }
 
@@ -89,7 +89,7 @@ namespace MrCMS.Web.Controllers
             public string Email { get; set; }
             public string Password { get; set; }
             public bool RememberMe { get; set; }
-            public string RedirectUrl { get; set; }
+            public string ReturnUrl { get; set; }
         }
 
         #endregion

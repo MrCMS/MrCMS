@@ -90,7 +90,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             SitesController sitesController = GetSitesController();
 
             var site = new Site();
-            sitesController.Edit(site, new List<SiteSettingsBase>());
+            sitesController.Edit(site);
 
             A.CallTo(() => _siteService.SaveSite(site)).MustHaveHappened();
         }
@@ -101,7 +101,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             SitesController sitesController = GetSitesController();
 
             var site = new Site();
-            RedirectToRouteResult result = sitesController.Edit(site, new List<SiteSettingsBase>());
+            RedirectToRouteResult result = sitesController.Edit(site);
 
             result.RouteValues["action"].Should().Be("Index");
         }

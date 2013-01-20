@@ -1,5 +1,5 @@
 ﻿@model int
-@using (Html.BeginForm("Files", "File", new { mediaCategoryId = Model }, FormMethod.Post, new { id = "fileupload", enctype = "multipart/form-data", @class = "form-fileUpload" }))
+@using (Html.BeginForm("Files", "File", new { id = Model }, FormMethod.Post, new { id = "fileupload", enctype = "multipart/form-data", @class = "form-fileUpload" }))
 {
     <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
     <div class="row-fluid fileupload-buttonbar">

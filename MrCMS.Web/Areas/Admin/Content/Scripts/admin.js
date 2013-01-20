@@ -9,6 +9,8 @@
         $('.inner-content a[href="' + location.hash + '"]').tab('show');
     } else if ($.cookie('selected-tab')) {
         $('.inner-content a[href="' + $.cookie('selected-tab') + '"]').tab('show');
+    } else if ($('.inner-content li a[data-toggle="tab"]').length > 0 && $('.inner-content li.active a[data-toggle="tab"]').length ==0) {
+        $('.inner-content a[data-toggle="tab"]').eq(0).click();
     }
 
     $('.inner-content a[data-toggle="tab"]').on('shown', function (e) {
@@ -39,12 +41,6 @@
         }
         return 0;
     }
-
-    $('#MediaCategory_Id').change(function () {
-        $.get("/Admin/Listings/Thumbnails", { mediaCategoryId: $(this).val() }, function (data) {
-            $("#mediaCategoryThumbnails").html(data);
-        });
-    });
 
     $(".web-tree").treeview({
         animated: "medium",
