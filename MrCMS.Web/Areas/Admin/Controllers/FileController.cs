@@ -20,7 +20,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public JsonResult Files(MediaCategory mediaCategory)
         {
-            return Json(_fileService.GetFiles(mediaCategory));
+            return Json(_fileService.GetFiles(mediaCategory), "text/html", System.Text.Encoding.UTF8);
         }
 
         [HttpPost]
@@ -36,7 +36,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                                   mediaCategory);
                 list.Add(dbFile);
             }
-            return Json(list.ToArray());
+            return Json(list.ToArray(), "text/html", System.Text.Encoding.UTF8);
         }
 
         [HttpPost]
