@@ -373,7 +373,7 @@ namespace MrCMS.Installation
             var layout = new Layout
                 {
                     Name = "Base Layout",
-                    Website = site,
+                    Site = site,
                     UrlSegment = "~/Views/Shared/_Layout.cshtml"
                 };
             documentService.AddDocument(layout);
@@ -389,7 +389,7 @@ namespace MrCMS.Installation
                 {
                     Name = "Default",
                     UrlSegment = "default",
-                    Website = site
+                    Site = site
                 };
             documentService.AddDocument(defaultMediaCategory);
 

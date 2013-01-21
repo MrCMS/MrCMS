@@ -205,7 +205,7 @@ namespace MrCMS.Website
             return OverridenRootChildren ??
                    Get<ISession>()
                        .QueryOver<Webpage>()
-                       .Where(document => document.Parent == null && document.Website == CurrentSite)
+                       .Where(document => document.Parent == null && document.Site == CurrentSite)
                        .OrderBy(x => x.DisplayOrder)
                        .Asc.Cacheable()
                        .List();

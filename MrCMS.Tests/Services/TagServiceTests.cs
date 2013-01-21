@@ -19,9 +19,9 @@ namespace MrCMS.Tests.Services
         {
             var tagService = new TagService(Session);
 
-            var tag1 = new Tag { Name = "tag-1", Website = CurrentSite };
-            var tag2 = new Tag { Name = "tag-2", Website = CurrentSite };
-            var tag3 = new Tag { Name = "not-the-same", Website = CurrentSite };
+            var tag1 = new Tag { Name = "tag-1", Site = CurrentSite };
+            var tag2 = new Tag { Name = "tag-2", Site = CurrentSite };
+            var tag3 = new Tag { Name = "not-the-same", Site = CurrentSite };
 
             Session.Transact(session =>
                                  {
@@ -30,7 +30,7 @@ namespace MrCMS.Tests.Services
                                      Session.SaveOrUpdate(tag3);
                                  });
 
-            Document document = new StubDocument { Website = CurrentSite };
+            Document document = new StubDocument { Site = CurrentSite };
             var tags = tagService.Search(document, "tag");
 
             tags.Should().HaveCount(2);
@@ -44,13 +44,13 @@ namespace MrCMS.Tests.Services
             var fakeSession = A.Fake<ISession>();
 
             var tagService = new TagService(fakeSession);
-            var tag1 = new Tag { Name = "tag-1", Website = CurrentSite };
+            var tag1 = new Tag { Name = "tag-1", Site = CurrentSite };
 
             Session.Transact(session => Session.SaveOrUpdate(tag1));
 
-            var container = new FakeContainer { Website = CurrentSite };
+            var container = new FakeContainer { Site = CurrentSite };
             container.SetTags(new List<Tag> { tag1 });
-            var containerItem = new FakeContainerItem { Parent = container, Website = CurrentSite };
+            var containerItem = new FakeContainerItem { Parent = container, Site = CurrentSite };
 
             tagService.GetCategories(containerItem).Should().HaveCount(1);
         }

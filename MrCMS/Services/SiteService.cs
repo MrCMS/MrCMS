@@ -80,7 +80,7 @@ namespace MrCMS.Services
             var allSites = GetAllSites();
             var site = allSites.FirstOrDefault(s => s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase));
 
-            return site;
+            return site ?? allSites.First();
         }
     }
 }

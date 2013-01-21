@@ -104,7 +104,7 @@ namespace MrCMS.Settings
                 var settingId = settings[key].Key;
                 setting = GetSettingById(settingId);
                 setting.Value = valueStr;
-                setting.Website = site;
+                setting.Site = site;
             }
             else
             {
@@ -113,7 +113,7 @@ namespace MrCMS.Settings
                               {
                                   Name = key,
                                   Value = valueStr,
-                                  Website = site
+                                  Site = site
                               };
             }
             _session.Transact(session => session.SaveOrUpdate(setting));
@@ -140,7 +140,7 @@ namespace MrCMS.Settings
         {
             var settings =
                 _session.QueryOver<Setting>()
-                        .Where(setting => setting.Website == site)
+                        .Where(setting => setting.Site == site)
                         .OrderBy(s => s.Name)
                         .Asc.Cacheable()
                         .List();

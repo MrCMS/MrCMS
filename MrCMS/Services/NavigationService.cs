@@ -219,7 +219,7 @@ namespace MrCMS.Services
                                                              CustomSort = IsCustomSort(document.Id),
                                                              CanAddChild =
                                                                  !(document is Webpage) ||
-                                                                 (document as Webpage).GetValidWebpageDocumentTypes(_documentService, (document as Webpage).Website).
+                                                                 (document as Webpage).GetValidWebpageDocumentTypes(_documentService, (document as Webpage).Site).
                                                                      Any(),
                                                              IsPublished =
                                                                  !(document is Webpage) ||

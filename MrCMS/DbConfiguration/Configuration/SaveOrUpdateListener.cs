@@ -57,7 +57,7 @@ namespace MrCMS.DbConfiguration.Configuration
         {
             Set(persister, state, "Website", site);
 
-            siteEntity.Website = site;
+            siteEntity.Site = site;
         }
 
         private void Set(IEntityPersister persister, object[] state, string propertyName, object value)
@@ -76,7 +76,7 @@ namespace MrCMS.DbConfiguration.Configuration
                 var now = DateTime.UtcNow;
                 SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
                 SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
-                if (systemEntity is SiteEntity && (systemEntity as SiteEntity).Website == null)
+                if (systemEntity is SiteEntity && (systemEntity as SiteEntity).Site == null)
                     SetSite(@event.Persister, @event.State, systemEntity as SiteEntity, MrCMSApplication.CurrentSite);
             }
             return false;
@@ -127,7 +127,7 @@ namespace MrCMS.DbConfiguration.Configuration
                                                       User = GetUser(session),
                                                       CreatedOn = DateTime.UtcNow,
                                                       UpdatedOn = DateTime.UtcNow,
-                                                      Website = session.Get<Site>( MrCMSApplication.CurrentSite.Id)
+                                                      Site = session.Get<Site>( MrCMSApplication.CurrentSite.Id)
                                                   };
                         document.Versions.Add(documentVersion);
                         using (var transaction = session.BeginTransaction())

@@ -30,7 +30,7 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Website = CurrentSite };
+            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = CurrentSite };
             Session.Transact(session => session.Save(textPage));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, CurrentSite, -1);
@@ -45,13 +45,13 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Website = CurrentSite };
+            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = CurrentSite };
             Session.Transact(session =>
                                  {
                                      session.Save(textPage);
                                  });
             var site2 = new Site();
-            var textPage2 = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 2", Website = site2 };
+            var textPage2 = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 2", Site = site2 };
 
             MrCMSApplication.OverriddenSite = site2;
             Session.Transact(session =>
@@ -72,7 +72,7 @@ namespace MrCMS.Tests.Settings
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
             var site = new Site();
-            var textPage = new BasicMappedWebpage { Name = "Test 1", Website = site };
+            var textPage = new BasicMappedWebpage { Name = "Test 1", Site = site };
             Session.Transact(session => session.Save(textPage));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, site, -1);
@@ -85,7 +85,7 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Website = CurrentSite };
+            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = CurrentSite };
             Session.Transact(session => session.Save(textPage));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, CurrentSite, textPage.Id);
@@ -124,7 +124,7 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var layout = new Layout { Name = "Test Layout", Website = CurrentSite };
+            var layout = new Layout { Name = "Test Layout", Site = CurrentSite };
             Session.Transact(session => session.Save(layout));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, CurrentSite, -1);
@@ -139,8 +139,8 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var layout = new Layout { Name = "Test Layout", Website = CurrentSite };
-            var layout2 = new Layout { Name = "Test Layout 2", Website = CurrentSite };
+            var layout = new Layout { Name = "Test Layout", Site = CurrentSite };
+            var layout2 = new Layout { Name = "Test Layout 2", Site = CurrentSite };
             Session.Transact(session =>
             {
                 session.Save(layout);
@@ -160,14 +160,14 @@ namespace MrCMS.Tests.Settings
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
             var site1 = new Site();
-            var layout = new Layout { Name = "Test Layout", Website = site1 };
+            var layout = new Layout { Name = "Test Layout", Site = site1 };
             Session.Transact(session =>
             {
                 session.Save(layout);
             });
 
             var site2 = new Site();
-            var layout2 = new Layout { Name = "Test Layout 2", Website = site2 };
+            var layout2 = new Layout { Name = "Test Layout 2", Site = site2 };
             MrCMSApplication.OverriddenSite = site2;
             Session.Transact(session =>
             {

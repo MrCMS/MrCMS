@@ -78,7 +78,7 @@ namespace MrCMS.Tests.Settings
             var site = new Site();
             MrCMSApplication.OverriddenSite = site;
             Session.Transact(session => session.Save(site));
-            Session.Transact(session => session.Save(new Setting {Name = "test", Value = "value", Website = site}));
+            Session.Transact(session => session.Save(new Setting {Name = "test", Value = "value", Site = site}));
             settingService.SetSetting(site, "test", "value2");
 
             var settings = Session.QueryOver<Setting>().List();
@@ -109,9 +109,9 @@ namespace MrCMS.Tests.Settings
         public void SettingService_GetSettingByKey_ReturnsTheSettingsObjectWithTheValidKey()
         {
             var settingService = GetSettingService();
-            var setting1 = new Setting { Name = "test", Value = "value", Website = CurrentSite };
+            var setting1 = new Setting { Name = "test", Value = "value", Site = CurrentSite };
             Session.Transact(session => session.Save(setting1));
-            var setting2 = new Setting { Name = "test2", Value = "value2", Website = CurrentSite };
+            var setting2 = new Setting { Name = "test2", Value = "value2", Site = CurrentSite };
             Session.Transact(session => session.Save(setting2));
 
             settingService.GetSettingByKey(CurrentSite, "test2").Should().Be(setting2);
@@ -131,7 +131,7 @@ namespace MrCMS.Tests.Settings
         {
             var settingService = GetSettingService();
             var site = new Site();
-            var setting1 = new Setting { Name = "test", Value = "value", Website = site };
+            var setting1 = new Setting { Name = "test", Value = "value", Site = site };
             Session.Transact(session => session.Save(setting1));
 
             settingService.GetSettingByKey(site, "test2").Should().Be(null);
@@ -150,9 +150,9 @@ namespace MrCMS.Tests.Settings
         public void SettingService_GetSettingValueByKey_ReturnsValueForSetting()
         {
             var settingService = GetSettingService();
-            var setting1 = new Setting { Name = "test", Value = "value", Website = CurrentSite };
+            var setting1 = new Setting { Name = "test", Value = "value", Site = CurrentSite };
             Session.Transact(session => session.Save(setting1));
-            var setting2 = new Setting { Name = "test2", Value = "value2", Website = CurrentSite };
+            var setting2 = new Setting { Name = "test2", Value = "value2", Site = CurrentSite };
             Session.Transact(session => session.Save(setting2));
 
             settingService.GetSettingValueByKey(CurrentSite, "test2", "default").Should().Be("value2");
@@ -163,7 +163,7 @@ namespace MrCMS.Tests.Settings
         {
             var settingService = GetSettingService();
             var site = new Site();
-            var setting1 = new Setting { Name = "test", Value = "value", Website = site };
+            var setting1 = new Setting { Name = "test", Value = "value", Site = site };
             Session.Transact(session => session.Save(setting1));
 
             settingService.GetSettingValueByKey(site, "test2", "default").Should().Be("default");

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Settings;
 using NHibernate;
@@ -20,14 +21,16 @@ namespace MrCMS.Services
         private readonly IFileSystem _fileSystem;
         private readonly IImageProcessor _imageProcessor;
         private readonly MediaSettings _mediaSettings;
+        private readonly CurrentSite _currentSite;
         private const string _mediaDirectory = "content/upload";
 
-        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings)
+        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings, CurrentSite currentSite)
         {
             _session = session;
             _fileSystem = fileSystem;
             _imageProcessor = imageProcessor;
             _mediaSettings = mediaSettings;
+            _currentSite = currentSite;
         }
 
         public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, int contentLength, MediaCategory mediaCategory)
@@ -37,7 +40,7 @@ namespace MrCMS.Services
             fileName = GetFileSeName(fileName);
             var fileNameOriginal = GetFileSeName(fileName);
 
-            string folderLocation = string.Format("{0}/{1}/{2}", MediaDirectory, _mediaSettings.Site.Id, mediaCategory.UrlSegment);
+            string folderLocation = string.Format("{0}/{1}/{2}", MediaDirectory, _currentSite.Site.Id, mediaCategory.UrlSegment);
 
             //check for duplicates
             int i = 1;
@@ -47,7 +50,7 @@ namespace MrCMS.Services
                 i++;
             }
 
-            string fileLocation = string.Format("{0}/{1}/{2}/{3}", MediaDirectory, _mediaSettings.Site.Id, mediaCategory.UrlSegment, fileName);
+            string fileLocation = string.Format("{0}/{1}/{2}/{3}", MediaDirectory, _currentSite.Site.Id, mediaCategory.UrlSegment, fileName);
 
             var mediaFile = new MediaFile
                                 {
@@ -197,7 +200,7 @@ namespace MrCMS.Services
 
         public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1, int pageSize = 10)
         {
-            var queryOver = _session.QueryOver<MediaFile>();
+            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site == _currentSite.Site);
 
             if (categoryId.HasValue)
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == categoryId);
@@ -232,7 +235,7 @@ namespace MrCMS.Services
 
         public void RemoveFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/{2}/", MediaDirectory, _mediaSettings.Site.Id,
+            string folderLocation = string.Format("{0}/{1}/{2}/", MediaDirectory, _currentSite.Site.Id,
                                                   mediaCategory.UrlSegment);
 
             _fileSystem.Delete(folderLocation);
@@ -240,7 +243,7 @@ namespace MrCMS.Services
 
         public void CreateFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/{2}/", MediaDirectory, _mediaSettings.Site.Id,
+            string folderLocation = string.Format("{0}/{1}/{2}/", MediaDirectory, _currentSite.Site.Id,
                                                   mediaCategory.UrlSegment);
 
             _fileSystem.CreateDirectory(folderLocation);

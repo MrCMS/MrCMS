@@ -46,7 +46,7 @@ namespace MrCMS.Services
 
         public T GetUniquePage<T>() where T : UniquePage
         {
-            return _session.QueryOver<T>().Where(arg => arg.Website == _currentSite.Site).Take(1).Cacheable().SingleOrDefault();
+            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite.Site).Take(1).Cacheable().SingleOrDefault();
         }
 
         public T SaveDocument<T>(T document) where T : Document
@@ -61,7 +61,7 @@ namespace MrCMS.Services
 
         public IEnumerable<T> GetAllDocuments<T>() where T : Document
         {
-            return _session.QueryOver<T>().Cacheable().List();
+            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite.Site).Cacheable().List();
         }
 
         public bool ExistAny(Type type)
@@ -106,7 +106,7 @@ namespace MrCMS.Services
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
             IEnumerable<T> children =
-                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Website == _currentSite.Site).List();
+                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).List();
 
             if (parent != null)
             {
@@ -122,7 +122,7 @@ namespace MrCMS.Services
         public IEnumerable<T> GetAdminDocumentsByParent<T>(T parent) where T : Document
         {
             IEnumerable<T> children =
-                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Website == _currentSite.Site).List();
+                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).List();
 
             //children =
             //    children.Where(arg => arg.IsAllowedForAdmin(MrCMSApplication.CurrentUser));
@@ -155,7 +155,7 @@ namespace MrCMS.Services
         {
             return
                 _session.QueryOver<T>()
-                        .Where(doc => doc.UrlSegment == url && doc.Website.Id == _currentSite.Id)
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
                         .Take(1)
                         .SingleOrDefault();
         }
@@ -210,7 +210,7 @@ namespace MrCMS.Services
 
         private IList<T> SearchResults<T>(string searchTerm, int? parentId) where T : Document
         {
-            var queryOver = _session.QueryOver<T>().Where(x => x.Website == _currentSite.Site && x.Name.IsLike(searchTerm, MatchMode.Anywhere));
+            var queryOver = _session.QueryOver<T>().Where(x => x.Site == _currentSite.Site && x.Name.IsLike(searchTerm, MatchMode.Anywhere));
             if (parentId.HasValue)
             {
                 queryOver = queryOver.Where(arg => arg.Parent.Id == parentId);
@@ -294,7 +294,7 @@ namespace MrCMS.Services
 
             return _session.Get<Layout>(settingValue) ??
                    _session.QueryOver<Layout>()
-                           .Where(layout => layout.Website == currentPage.Website)
+                           .Where(layout => layout.Site == currentPage.Site)
                            .Take(1)
                            .Cacheable()
                            .SingleOrDefault();

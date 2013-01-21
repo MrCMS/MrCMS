@@ -23,7 +23,7 @@
         }
         else if (textAreaAttribute != null)
         {
-        @Html.TextArea(name, Convert.ToString(property.GetValue(Model, null)))
+        @Html.TextArea(name, Convert.ToString(property.GetValue(Model, null)), textAreaAttribute.CKEnabled ? new { @class = "ckedit-enabled" } : null)
         }
         else if (dropDownSelectionAttribute != null)
         {
