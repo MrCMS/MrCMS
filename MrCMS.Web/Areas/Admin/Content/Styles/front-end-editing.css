@@ -21,8 +21,8 @@ background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0.31, 
 div.layout-area, div.widget { position: relative; }
 .widget { position: relative; }
 .widget { position: relative; }
-.edit-widget { position: absolute; right: 0; padding: 5px; z-index:9999; border: 1px solid #d0d0d0;}
+.edit-widget { position: absolute; right: 0; padding: 5px; z-index:9999999; border: 1px solid #d0d0d0;}
 .edit-widget a {color: white; font-size: 12px;font-family: arial;padding: 3px;display: block;}
-.edit-indicator { width: 20px;height: 20px;position: absolute; right: 0;cursor: pointer;z-index: 1000;}
+.edit-indicator { width: 20px;height: 20px;position: absolute; right: 0;cursor: pointer;z-index: 9999999;}
 .edit-widget ul  {margin: 0!important;padding: 0;list-style-type: none;}
 .edit-widget ul li {margin: 5px!important;}
