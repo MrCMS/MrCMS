@@ -10,38 +10,18 @@ namespace MrCMS.Website.Controllers
 {
     [MrCMSAuthorize(Roles = UserRole.Administrator)]
     [ValidateInput(false)]
-    public abstract class AdminController : Controller
+    public abstract class AdminController : MrCMSController
     {
-        private Site _currentSite;
-
-        public Site CurrentSite
-        {
-            get { return _currentSite ?? MrCMSApplication.CurrentSite; }
-            set { _currentSite = value; }
-        }
-
-        public new HttpRequestBase Request
-        {
-            get { return RequestMock ?? base.Request; }
-        }
-
-        public HttpRequestBase RequestMock { get; set; }
-
+       
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            CheckCurrentSite(filterContext);
             ViewData["controller-name"] = ControllerContext.RouteData.Values["controller"];
             base.OnActionExecuting(filterContext);
         }
 
-        private void CheckCurrentSite(ActionExecutingContext filterContext)
+        protected override RedirectResult RedirectResult()
         {
-            var entities = filterContext.ActionParameters.Values.OfType<SiteEntity>();
-
-            if (entities.Any(entity => entity.Site != CurrentSite && entity.Id != 0))
-            {
-                filterContext.Result = new RedirectResult("~/admin");
-            }
+            return new RedirectResult("~/admin");
         }
 
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding,

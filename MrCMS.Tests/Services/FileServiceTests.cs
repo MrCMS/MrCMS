@@ -3,6 +3,7 @@ using System.IO;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Settings;
 using NHibernate;
@@ -51,7 +52,7 @@ namespace MrCMS.Tests.Services
                                     Site = CurrentSite
                                 };
             return new FileService(session ?? Session, fileSystem ?? _fileSystem,
-                                   A.Fake<IImageProcessor>(), mediaSettings);
+                                   A.Fake<IImageProcessor>(), mediaSettings, new CurrentSite(CurrentSite));
         }
 
         [Fact]

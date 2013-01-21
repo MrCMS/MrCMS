@@ -158,7 +158,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void SitesService_GetCurrentSite_ReturnsNullIfNoneMatch()
+        public void SitesService_GetCurrentSite_ReturnsFirstIfNoneMatch()
         {
             var site1 = new Site { BaseUrl = "test1" };
             var site2 = new Site { BaseUrl = "test2" };
@@ -170,7 +170,7 @@ namespace MrCMS.Tests.Services
             var sitesService = GetSitesService();
             A.CallTo(() => httpRequestBase.Url).Returns(new Uri("http://www.example.com/"));
 
-            sitesService.GetCurrentSite().Should().BeNull();
+            sitesService.GetCurrentSite().Should().Be(CurrentSite);
         }
 
         [Fact]

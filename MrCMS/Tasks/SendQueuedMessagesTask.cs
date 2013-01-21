@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Mail;
+using Elmah;
 using MrCMS.Entities.Messaging;
 using MrCMS.Settings;
 using MrCMS.Website;
@@ -64,10 +65,10 @@ namespace MrCMS.Tasks
                 smtpClient.Send(mailMessage);
                 MarkAsSent(queuedMessage);
             }
-            catch
+            catch (Exception exception)
             {
                 // TODO: Make this work without HTTP context
-                //MrCMSApplication.ErrorSignal.Raise(exception);
+                Elmah.ErrorLog.GetDefault(null).Log(new Error(exception));
                 queuedMessage.Tries++;
             }
         }

@@ -61,7 +61,7 @@ namespace MrCMS.Services
 
         public IEnumerable<T> GetAllDocuments<T>() where T : Document
         {
-            return _session.QueryOver<T>().Cacheable().List();
+            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite.Site).Cacheable().List();
         }
 
         public bool ExistAny(Type type)
