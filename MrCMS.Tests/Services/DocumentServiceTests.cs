@@ -35,7 +35,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new BasicMappedWebpage { Website = CurrentSite });
+            documentService.AddDocument(new BasicMappedWebpage { Site = CurrentSite });
 
             Session.QueryOver<Document>().RowCount().Should().Be(1);
         }
@@ -121,7 +121,7 @@ namespace MrCMS.Tests.Services
                                                                                new List<AdminAllowedRole>(),
                                                                            AdminDisallowedRoles =
                                                                                new List<AdminDisallowedRole>(),
-                                                                           Website = CurrentSite
+                                                                           Site = CurrentSite
                                                                        };
                                                     parent.Children.Add(textPage);
                                                     Session.Transact(session => session.SaveOrUpdate(textPage));
@@ -156,7 +156,7 @@ namespace MrCMS.Tests.Services
                                                                           Parent = parent,
                                                                           AdminAllowedRoles = new List<AdminAllowedRole>(),
                                                                           AdminDisallowedRoles = new List<AdminDisallowedRole>(),
-                                                                          Website = CurrentSite
+                                                                          Site = CurrentSite
                                                                       }
                                                                     : new Layout { Parent = parent };
                                                  parent.Children.Add(textPage);
@@ -193,7 +193,7 @@ namespace MrCMS.Tests.Services
                                                                               new List<AdminAllowedRole>(),
                                                                           AdminDisallowedRoles =
                                                                               new List<AdminDisallowedRole>(),
-                                                                          Website = CurrentSite
+                                                                          Site = CurrentSite
                                                                       };
                                                    parent.Children.Add(textPage);
                                                    Session.Transact(session => session.SaveOrUpdate(textPage));
@@ -211,7 +211,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            var textPage = new BasicMappedWebpage { UrlSegment = "test-page", Website = CurrentSite };
+            var textPage = new BasicMappedWebpage { UrlSegment = "test-page", Site = CurrentSite };
             Session.Transact(session => session.SaveOrUpdate(textPage));
 
             var document = documentService.GetDocumentByUrl<BasicMappedWebpage>("test-page");
@@ -225,7 +225,7 @@ namespace MrCMS.Tests.Services
             var documentService = GetDocumentService();
 
             Site site = new Site();
-            var textPage = new BasicMappedWebpage { UrlSegment = "test-page", Website = site };
+            var textPage = new BasicMappedWebpage { UrlSegment = "test-page", Site = site };
             Session.Transact(session => session.SaveOrUpdate(textPage));
 
             var document = documentService.GetDocumentByUrl<Layout>("test-page");
@@ -238,7 +238,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
             Site site = new Site();
-            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page", Website = site };
+            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page", Site = site };
 
             Session.Transact(session => session.SaveOrUpdate(textPage));
 
@@ -251,7 +251,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
             Site site = new Site();
-            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page", Website = site };
+            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page", Site = site };
 
             Session.Transact(session => session.SaveOrUpdate(textPage));
 
@@ -264,14 +264,14 @@ namespace MrCMS.Tests.Services
         public void DocumentService_GetDocumentUrlWithExistingName_ShouldReturnTheUrlWithADigitAppended()
         {
             var documentService = GetDocumentService();
-            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Website = CurrentSite };
-            var textPage = new BasicMappedWebpage { Name = "Test Page", Parent = parent, UrlSegment = "parent/test-page", Website = CurrentSite };
+            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage { Name = "Test Page", Parent = parent, UrlSegment = "parent/test-page", Site = CurrentSite };
             var existingPage = new BasicMappedWebpage
                                    {
                                        Name = "Nested Page",
                                        UrlSegment = "parent/test-page/nested-page",
                                        Parent = textPage,
-                                       Website = CurrentSite
+                                       Site = CurrentSite
                                    };
             Session.Transact(session =>
             {
@@ -289,21 +289,21 @@ namespace MrCMS.Tests.Services
         public void DocumentService_GetDocumentUrlWithExistingName_MultipleFilesWithSameNameShouldNotAppendMultipleDigits()
         {
             var documentService = GetDocumentService();
-            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Website = CurrentSite };
-            var textPage = new BasicMappedWebpage { Name = "Test Page", Parent = parent, UrlSegment = "parent/test-page", Website = CurrentSite };
+            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage { Name = "Test Page", Parent = parent, UrlSegment = "parent/test-page", Site = CurrentSite };
             var existingPage = new BasicMappedWebpage
                                    {
                                        Name = "Nested Page",
                                        UrlSegment = "parent/test-page/nested-page",
                                        Parent = textPage,
-                                       Website = CurrentSite
+                                       Site = CurrentSite
                                    };
             var existingPage2 = new BasicMappedWebpage
                                    {
                                        Name = "Nested Page",
                                        UrlSegment = "parent/test-page/nested-page-1",
                                        Parent = textPage,
-                                       Website = CurrentSite
+                                       Site = CurrentSite
                                    };
             Session.Transact(session =>
             {
@@ -614,7 +614,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new BasicMappedWebpage { Website = CurrentSite });
+            documentService.AddDocument(new BasicMappedWebpage { Site = CurrentSite });
 
             documentService.AnyWebpages().Should().BeTrue();
         }
@@ -632,7 +632,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new BasicMappedWebpage() { Website = CurrentSite });
+            documentService.AddDocument(new BasicMappedWebpage() { Site = CurrentSite });
 
             documentService.AnyPublishedWebpages().Should().BeFalse();
         }
@@ -642,7 +642,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new BasicMappedWebpage { Website = CurrentSite, PublishOn = DateTime.UtcNow.AddDays(-1) });
+            documentService.AddDocument(new BasicMappedWebpage { Site = CurrentSite, PublishOn = DateTime.UtcNow.AddDays(-1) });
 
             documentService.AnyPublishedWebpages().Should().BeTrue();
         }
@@ -852,12 +852,12 @@ namespace MrCMS.Tests.Services
         {
             for (int i = 0; i < 4; i++)
             {
-                Session.Transact(session => session.Save(new StubDocument { DisplayOrder = i, Website = CurrentSite }));
+                Session.Transact(session => session.Save(new StubDocument { DisplayOrder = i, Site = CurrentSite }));
             }
 
             var documentService = GetDocumentService();
 
-            var stubDocument = new StubDocument { Website = CurrentSite };
+            var stubDocument = new StubDocument { Site = CurrentSite };
             documentService.AddDocument(stubDocument);
 
             stubDocument.DisplayOrder.Should().Be(4);

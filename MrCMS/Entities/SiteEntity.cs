@@ -22,6 +22,6 @@ namespace MrCMS.Entities
     {
         public virtual void CustomBinding(ControllerContext controllerContext, ISession session) { }
 
-        public virtual Site Website { get; set; }
+        public virtual Site Site { get; set; }
     }
 }

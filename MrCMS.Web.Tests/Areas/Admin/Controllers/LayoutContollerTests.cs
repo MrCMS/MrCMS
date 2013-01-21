@@ -33,7 +33,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void LayoutController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
         {
             LayoutController layoutController = GetLayoutController();
-            var parent = new Layout() {Id = 1, Website = layoutController.CurrentSite};
+            var parent = new Layout() {Id = 1, Site = layoutController.CurrentSite};
             A.CallTo(() => documentService.GetDocument<Document>(1))
              .Returns(parent);
             

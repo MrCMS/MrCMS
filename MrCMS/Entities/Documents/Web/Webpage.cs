@@ -217,7 +217,7 @@ namespace MrCMS.Entities.Documents.Web
             get
             {
                 var scheme = RequiresSSL ? "https://" : "http://";
-                var authority = Website.BaseUrl;
+                var authority = Site.BaseUrl;
                 if (authority.EndsWith("/"))
                     authority = authority.TrimEnd('/');
 
