@@ -79,7 +79,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Sort(T parent)
+        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))]T parent)
         {
             List<T> categories = _documentService.GetDocumentsByParent(parent).ToList();
 
