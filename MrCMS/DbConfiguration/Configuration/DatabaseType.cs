@@ -4,6 +4,7 @@
     {
         Auto,
         Sqlite,
-        MsSql
+        MsSql,
+        MySQL
     }
 }
