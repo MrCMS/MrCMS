@@ -99,7 +99,7 @@
 
     function getRemoteModel(href, element, callback) {
         var div = null;
-        $.get(href, function (data) {
+        $.get(href, {v:new Date().getTime()}, function (data) {
             div = $('<div class="modal">' + data + '</div>');
             div.modal({ element: element, callback: callback }).on('hidden', function () {
                 $(this).remove();
@@ -115,14 +115,17 @@
 
 
 $(function () {
-    function updateFiles() {
+    function updateFiles(callback) {
         var imagesId = $('#media-selector #ImagesOnly').is(':checked');
         var categoryId = $('#media-selector #CategoryId').val();
 
-        $('#library').load('/Admin/MediaCategory/MediaSelector' + '?categoryId=' + categoryId + '&imagesOnly=' + imagesId + ' div#library', function () {
+        $('#library').load('/Admin/MediaCategory/MediaSelector div#library', { categoryId: categoryId, imagesOnly: imagesId, v:new Date().getTime() }, function () {
             resizeModal($(this));
             $(".set-file").attr('disabled', 'disabled');
+            if (callback)
+                callback();
         });
+        return $('#library');
     }
 
     $(document).on('click', '#media-selector .selected-file', function () {
@@ -156,21 +159,26 @@ $(function () {
         $('.selected-file').prop('checked', false);
     }).on('change', '#media-selector #UploadCategoryId', function () {
         var categoryId = $(this).val();
+        $('#media-selector #CategoryId').val(categoryId);
         if (categoryId != '') {
             $.get('/Admin/MediaCategory/MiniUploader/', { id: categoryId }, function (response) {
                 $('#media-selector-uploader').html(response);
                 $('#fileupload').fileupload({
                     add: function (e, data) {
                         var jqXhr = data.submit()
-                            .complete(function (result, textStatus, jqXhr) {
-                                var res = JSON.parse(result.responseText);
-                                $('#media-selector-uploader-result').html('');
-                                for (var i = 0; i < res.length; i++) {
-                                    $.get('/Admin/MediaCategory/FileResult/' + res[i].Id, function (resp) {
-                                        $('#media-selector-uploader-result').append(resp);
+                            .complete(function (result, textStatus, jqXHR) {
+                                updateFiles(function () {
+                                    $('#media-selector-uploader-result').html('<div class="file-result"></div>');
+                                    $('#media-selector-uploader-result .file-result').append($('#library .file-result').eq(0).html());
+                                    $('#media-selector-uploader-result .file-result input').each(function(index, element) {
+                                        var attr = $(element).attr('id');
+                                        $(element).attr('id', attr + "-upload");
                                     });
-                                }
-                                updateFiles();
+                                    $('#media-selector-uploader-result .file-result label').each(function (index, element) {
+                                        var attr = $(element).attr('for');
+                                        $(element).attr('for', attr + "-upload");
+                                    });
+                                });
                             });
                     },
                     done: function (e, data) {

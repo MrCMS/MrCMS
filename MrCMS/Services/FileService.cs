@@ -37,6 +37,8 @@ namespace MrCMS.Services
         {
             if (mediaCategory == null) throw new ArgumentNullException("mediaCategory");
 
+            fileName = Path.GetFileName(fileName);
+
             fileName = GetFileSeName(fileName);
             var fileNameOriginal = GetFileSeName(fileName);
 
