@@ -14,10 +14,10 @@ function checkSetEditMode() {
     inlineEditing();
 }
 
-var showLiveForm = function () {
+var showLiveForm = function (el) {
     $.get('/Admin/Webpage/GetFormattedBodyContent/' + $('#Id').val(), function (response) {
-        if (contentObj != null) {
-            contentObj.html(response);
+        if (el != null) {
+            el.html(response);
         }
     });
 };
@@ -45,48 +45,43 @@ function setCookieValue(value) {
     return $.cookie('inline_edit', value, { expires: 7, path: location.pathname });
 }
 
-var contentObj;
-var contents;
 
 function inlineEditing() {
     var editable = $(".editable");
     if (getCookieValue() == "true") {
-        if (editable.length > 0) {
-            editable.each(function(index, element) {
-                if ($(element).attr('contenteditable') != 'true') {
-                    $(element).attr('contenteditable', 'true');
-                    CKEDITOR.inline(element);
-                }
-            });
+        editable.each(function(index, element) {
+            var el = $(element);
+            if (el.attr('contenteditable') != 'true')
+                el.attr('contenteditable', 'true');
+            CKEDITOR.inline(element);
+            var original = null;
 
-            editable.focus(function () {
+            el.focus(function() {
                 var that = $(this);
-                contentObj = $('.editable');
-                $.get('/Admin/Webpage/GetUnformattedBodyContent/' + $('#Id').val(), function (response) {
+                $.get('/Admin/Webpage/GetUnformattedBodyContent/' + $('#Id').val(), function(response) {
                     that.html(response);
-                    contents = contentObj.html();
+                    original = response;
                 });
             });
-            editable.blur(function () {
-                if (contents != $(this).html()) {
-                    contents = $(this).html();
+            el.blur(function () {
+                if (original != $(this).html()) {
                     var data = {
                         id: $('#Id').val(),
-                        content: contents
+                        content: $(this).html()
                     };
                     $.ajax({
                         type: "POST",
                         url: "/AdminTools/SaveBodyContent",
                         data: data,
-                        success: function (msg) {
-                            showLiveForm();
+                        success: function(msg) {
+                            showLiveForm(el);
                         }
                     });
                 } else {
-                    showLiveForm();
+                    showLiveForm(el);
                 }
             });
-        }
+        });
         //foreach widget add the HTML code
         $("div[data-widget-id]").each(function () {
             $(this).prepend("<div class='edit-indicator'><img src='/Areas/Admin/Content/Images/pencil.png' /></div>");
