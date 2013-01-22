@@ -12,14 +12,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class SitesController : AdminController
     {
-        private readonly ISession _session;
         private readonly ISiteService _siteService;
         private readonly IUserService _userService;
         private readonly IConfigurationProvider _configurationProvider;
 
-        public SitesController(ISession session, ISiteService siteService, IUserService userService, IConfigurationProvider configurationProvider)
+        public SitesController(ISiteService siteService, IUserService userService, IConfigurationProvider configurationProvider)
         {
-            _session = session;
             _siteService = siteService;
             _userService = userService;
             _configurationProvider = configurationProvider;

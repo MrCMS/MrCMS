@@ -129,6 +129,7 @@
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WidgetOverride.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
+    <Compile Include="DbConfiguration\Types\BinaryData.cs" />
     <Compile Include="DbConfiguration\Types\VarCharMax.cs" />
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />
@@ -189,6 +190,9 @@
     <Compile Include="IoC\NinjectServiceToInterfaceBinder.cs" />
     <Compile Include="IoC\NinjectSiteSettingsBinder.cs" />
     <Compile Include="IoC\ServiceModule.cs" />
+    <Compile Include="Logging\ILogService.cs" />
+    <Compile Include="Logging\LogEntry.cs" />
+    <Compile Include="Logging\MrCMSErrorLog.cs" />
     <Compile Include="Membership\MrCmsMembershipProvider.cs" />
     <Compile Include="Membership\MrCmsRoleProvider.cs" />
     <Compile Include="Models\AddPageWidgetModel.cs" />

@@ -16,7 +16,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private ISiteService _siteService;
         private IUserService _userService;
         private IConfigurationProvider configurationProvider;
-        private ISession session;
 
         [Fact]
         public void SitesController_IndexGet_CallsISiteServiceGetAllSites()
@@ -139,11 +138,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
         private SitesController GetSitesController()
         {
-            session = A.Fake<ISession>();
             _siteService = A.Fake<ISiteService>();
             configurationProvider = A.Fake<IConfigurationProvider>();
             _userService = A.Fake<IUserService>();
-            return new SitesController(session, _siteService, _userService, configurationProvider);
+            return new SitesController( _siteService, _userService, configurationProvider);
         }
     }
 }

@@ -20,7 +20,8 @@ namespace MrCMS.Models
                         {
                             new ChildMenuItem("Settings", "/Admin/Settings"),
                             new ChildMenuItem("Sites", "/Admin/Sites"),
-                            new ChildMenuItem("Logout", "/Admin/Logout"),
+                            new ChildMenuItem("Logs", "/Admin/Log"),
+                            new ChildMenuItem("Logout", "/Logout"),
                         });
             }
         }
