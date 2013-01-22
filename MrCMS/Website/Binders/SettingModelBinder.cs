@@ -16,9 +16,7 @@ namespace MrCMS.Website.Binders
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var settingTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<T>();
-            var sitesService = MrCMSApplication.Get<ISiteService>();
             // Uses Id because the settings are edited on the same page as the site itself
-            var siteId = controllerContext.HttpContext.Request["Id"];
 
             var objects = settingTypes.Select(type =>
                                                   {
@@ -27,8 +25,9 @@ namespace MrCMS.Website.Binders
                                                       var methodInfo = GetGetSettingsMethod();
 
                                                       return
-                                                          methodInfo.MakeGenericMethod(type).Invoke(configurationProvider,
-                                                                            Parameters(sitesService, siteId));
+                                                          methodInfo.MakeGenericMethod(type)
+                                                                    .Invoke(configurationProvider,
+                                                                            new object[] {});
                                                   }).OfType<T>().ToList();
 
             foreach (var settings in objects)
@@ -53,8 +52,6 @@ namespace MrCMS.Website.Binders
 
             return objects;
         }
-
-        protected abstract object[] Parameters(ISiteService sitesService, string siteId);
 
 
         protected abstract MethodInfo GetGetSettingsMethod();

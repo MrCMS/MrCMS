@@ -9,6 +9,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Tests.Stubs;
+using MrCMS.Website.Controllers;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -22,7 +23,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             fileService = A.Fake<IFileService>();
             documentService = A.Fake<IDocumentService>();
-            var fileController = new FileController(fileService, documentService);
+            var fileController = new FileController(fileService);
             return fileController;
         }
 
@@ -71,30 +72,31 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void FileController_Files_ReturnsAJsonResult()
+        public void FileController_Files_ReturnsAJsonNetResult()
         {
             FileController fileController = GetFileController();
 
-            fileController.Files(1).Should().BeOfType<JsonResult>();
+            fileController.Files(new MediaCategory()).Should().BeOfType<JsonNetResult>();
         }
 
         [Fact]
         public void FileController_Files_CallsFileServiceGetFilesWithPassedId()
         {
             FileController fileController = GetFileController();
+            var mediaCategory = new MediaCategory();
+            
+            fileController.Files(mediaCategory);
 
-            fileController.Files(1);
-
-            A.CallTo(() => fileService.GetFiles(1)).MustHaveHappened();
+            A.CallTo(() => fileService.GetFiles(mediaCategory)).MustHaveHappened();
         }
 
         [Fact]
-        public void FileController_FilesPost_ReturnsJsonResult()
+        public void FileController_FilesPost_ReturnsJsonNetResult()
         {
             FileController fileController = GetFileController();
             fileController.RequestMock = A.Fake<HttpRequestBase>();
 
-            fileController.Files_Post(1).Should().BeOfType<JsonResult>();
+            fileController.Files_Post(new MediaCategory()).Should().BeOfType<JsonNetResult>();
         }
 
         [Fact]
@@ -119,8 +121,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             fileController.RequestMock = httpRequestBase;
 
             var mediaCategory = new MediaCategory();
-            A.CallTo(() => documentService.GetDocument<MediaCategory>(1)).Returns(mediaCategory);
-            fileController.Files_Post(1);
+            fileController.Files_Post(mediaCategory);
 
             A.CallTo(() => fileService.AddFile(memoryStream, fileName, contentType, contentLength, mediaCategory))
              .MustHaveHappened();

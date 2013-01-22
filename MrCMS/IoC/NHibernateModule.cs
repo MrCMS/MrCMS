@@ -1,9 +1,13 @@
+using System;
+using System.Collections.Generic;
 using System.Web;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
+using MrCMS.Helpers;
 using NHibernate;
 using Ninject;
 using Ninject.Modules;
+using Ninject.Parameters;
 using Ninject.Web.Common;
 
 namespace MrCMS.IoC
@@ -24,13 +28,14 @@ namespace MrCMS.IoC
         public override void Load()
         {
             Kernel.Bind<ISessionFactory>().ToMethod(context => _configurator.CreateSessionFactory()).InSingletonScope();
+            Kernel.Rebind<IGetAllMappedClasses>().ToMethod(context => _configurator).InSingletonScope();
             
             if (_forWebsite)
             {
                 Kernel.Bind<ISession>().ToMethod(
                     context =>
                     context.Kernel.Get<ISessionFactory>().OpenSession()).InRequestScope();
-            }
+            }   
             else
             {
                 Kernel.Bind<ISession>().ToMethod(context => context.Kernel.Get<ISessionFactory>().OpenSession()).

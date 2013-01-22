@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
@@ -21,20 +22,19 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
-        private readonly ISiteService _siteService;
+        private readonly CurrentSite _currentSite;
 
-        public DocumentService(ISession session, SiteSettings siteSettings, ISiteService siteService)
+        public DocumentService(ISession session, SiteSettings siteSettings, CurrentSite currentSite)
         {
             _session = session;
             _siteSettings = siteSettings;
-            _siteService = siteService;
+            _currentSite = currentSite;
         }
 
-        public void AddDocument<T>(T document) where T:Document
+        public void AddDocument<T>(T document) where T : Document
         {
             var sameParentDocs =
-                GetDocumentsByParentId<T>(document.Parent == null ? (int?) null : document.Parent.Id,
-                                          (document is IHaveSite) ? (document as IHaveSite).Site.Id : (int?) null);
+                GetDocumentsByParent(document.Parent as T);
             document.DisplayOrder = sameParentDocs.Any() ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1 : 0;
             _session.Transact(session => session.SaveOrUpdate(document));
         }
@@ -44,9 +44,9 @@ namespace MrCMS.Services
             return _session.Get<T>(id);
         }
 
-        public T GetUniquePage<T>(Site site) where T : UniquePage
+        public T GetUniquePage<T>() where T : UniquePage
         {
-            return _session.QueryOver<T>().Where(arg => arg.Site == site).Take(1).Cacheable().SingleOrDefault();
+            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite.Site).Take(1).Cacheable().SingleOrDefault();
         }
 
         public T SaveDocument<T>(T document) where T : Document
@@ -61,14 +61,14 @@ namespace MrCMS.Services
 
         public IEnumerable<T> GetAllDocuments<T>() where T : Document
         {
-            return _session.QueryOver<T>().Cacheable().List();
+            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite.Site).Cacheable().List();
         }
 
-        public bool ExistAny(Type type, Site site)
+        public bool ExistAny(Type type)
         {
             var uniqueResult =
                 _session.CreateCriteria(type)
-                        .Add(Restrictions.Eq(Projections.Property("Site"), site))
+                        .Add(Restrictions.Eq(Projections.Property("Site"), _currentSite.Site))
                         .SetProjection(Projections.RowCount())
                         .UniqueResult<int>();
             return uniqueResult != 0;
@@ -103,35 +103,14 @@ namespace MrCMS.Services
             return children.OrderBy(arg => arg.DisplayOrder);
         }
 
-        public IEnumerable<T> GetDocumentsByParentId<T>(int? id, int? siteId = null) where T : Document
+        public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
-            IEnumerable<T> children;
-            Document document = null;
-            if (id.HasValue)
-            {
-                document = _session.Get<Document>(id);
-                children = document.Children.Select(TypeHelper.Unproxy).OfType<T>();
-            }
-            else
-            {
-                if (typeof (IHaveSite).IsAssignableFrom(typeof (T)))
-                {
-                    children =
-                        _session.CreateCriteria(typeof (T))
-                                .Add(Restrictions.IsNull("Parent"))
-                                .Add(Restrictions.Eq(Projections.Property("Site.Id"), siteId))
-                                .SetCacheable(true)
-                                .List<T>();
-                }
-                else
-                {
-                    children = _session.QueryOver<T>().Where(arg => arg.Parent == null).Cacheable().List();
-                }
-            }
+            IEnumerable<T> children =
+                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).List();
 
-            if (document != null)
+            if (parent != null)
             {
-                var documentTypeDefinition = document.GetDefinition();
+                var documentTypeDefinition = parent.GetDefinition();
                 if (documentTypeDefinition != null)
                 {
                     return Sort(documentTypeDefinition, children);
@@ -140,26 +119,17 @@ namespace MrCMS.Services
             return children.OrderBy(arg => arg.DisplayOrder);
         }
 
-        public IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Document, IHaveSite
+        public IEnumerable<T> GetAdminDocumentsByParent<T>(T parent) where T : Document
         {
-            IEnumerable<T> children;
-            Document document = null;
-            if (id.HasValue)
-            {
-                document = _session.Get<Document>(id);
-                children = document.Children.Select(TypeHelper.Unproxy).OfType<T>();
-            }
-            else
-            {
-                children = _session.QueryOver<T>().Where(arg => arg.Parent == null && arg.Site == site).List();
-            }
+            IEnumerable<T> children =
+                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).List();
 
             //children =
             //    children.Where(arg => arg.IsAllowedForAdmin(MrCMSApplication.CurrentUser));
 
-            if (document != null)
+            if (parent != null)
             {
-                var documentTypeDefinition = document.GetDefinition();
+                var documentTypeDefinition = parent.GetDefinition();
                 if (documentTypeDefinition != null)
                 {
                     return Sort(documentTypeDefinition, children);
@@ -181,24 +151,22 @@ namespace MrCMS.Services
         }
 
 
-        public T GetDocumentByUrl<T>(string url, Site site) where T : Document, IHaveSite
+        public T GetDocumentByUrl<T>(string url) where T : Document
         {
             return
                 _session.QueryOver<T>()
-                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == site.Id)
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
                         .Take(1)
                         .SingleOrDefault();
         }
 
-        public string GetDocumentUrl(string pageName, int? parentId, Site site, bool useHierarchy = false)
+        public string GetDocumentUrl(string pageName, Webpage parent, bool useHierarchy = false)
         {
             var stringBuilder = new StringBuilder();
 
             if (useHierarchy)
             {
                 //get breadcrumb from parent
-                var parent = parentId.HasValue ? GetDocument<Document>(parentId.Value) : null;
-
                 if (parent != null)
                 {
                     stringBuilder.Insert(0, SeoHelper.TidyUrl(parent.UrlSegment) + "/");
@@ -210,11 +178,11 @@ namespace MrCMS.Services
 
             //make sure the URL is unique
 
-            if (GetDocumentByUrl<Webpage>(stringBuilder.ToString(), site) != null)
+            if (GetDocumentByUrl<Webpage>(stringBuilder.ToString()) != null)
             {
                 var counter = 1;
 
-                while (GetDocumentByUrl<Webpage>(string.Format("{0}-{1}", stringBuilder, counter), site) != null)
+                while (GetDocumentByUrl<Webpage>(string.Format("{0}-{1}", stringBuilder, counter)) != null)
                     counter++;
 
                 stringBuilder.AppendFormat("-{0}", counter);
@@ -235,14 +203,14 @@ namespace MrCMS.Services
                               });
         }
 
-        private IList<T> GetSearchResults<T>(string searchTerm, int? parentId = null, int page = 1) where T : Document
+        private IList<T> GetSearchResults<T>(string searchTerm, int? parentId = null) where T : Document
         {
-            return SearchResults<T>(searchTerm, parentId, page);
+            return SearchResults<T>(searchTerm, parentId);
         }
 
-        private IList<T> SearchResults<T>(string searchTerm, int? parentId, int page) where T : Document
+        private IList<T> SearchResults<T>(string searchTerm, int? parentId) where T : Document
         {
-            var queryOver = _session.QueryOver<T>().Where(x => x.Name.IsLike(searchTerm, MatchMode.Anywhere));
+            var queryOver = _session.QueryOver<T>().Where(x => x.Site == _currentSite.Site && x.Name.IsLike(searchTerm, MatchMode.Anywhere));
             if (parentId.HasValue)
             {
                 queryOver = queryOver.Where(arg => arg.Parent.Id == parentId);
@@ -324,7 +292,12 @@ namespace MrCMS.Services
             }
             var settingValue = _siteSettings.DefaultLayoutId;
 
-            return _session.Get<Layout>(settingValue);
+            return _session.Get<Layout>(settingValue) ??
+                   _session.QueryOver<Layout>()
+                           .Where(layout => layout.Site == currentPage.Site)
+                           .Take(1)
+                           .Cacheable()
+                           .SingleOrDefault();
         }
 
         public void SetTags(string taglist, Document document)
@@ -454,22 +427,18 @@ namespace MrCMS.Services
         {
             var error404Id = _siteSettings.Error404PageId;
 
-            var currentSite = _siteService.GetCurrentSite();
-
             return _session.Get<Document>(error404Id)
-                   ?? GetDocumentByUrl<Webpage>("404", currentSite)
-                   ?? MrCMSApplication.PublishedRootChildren(currentSite).OfType<Document>().FirstOrDefault();
+                   ?? GetDocumentByUrl<Webpage>("404")
+                   ?? MrCMSApplication.PublishedRootChildren().OfType<Document>().FirstOrDefault();
         }
 
         public Document Get500Page()
         {
             var error500Id = _siteSettings.Error500PageId;
 
-            var currentSite = _siteService.GetCurrentSite();
-
             return _session.Get<Document>(error500Id)
-                   ?? GetDocumentByUrl<Webpage>("500", currentSite)
-                   ?? MrCMSApplication.PublishedRootChildren(currentSite).OfType<Document>().FirstOrDefault();
+                   ?? GetDocumentByUrl<Webpage>("500")
+                   ?? MrCMSApplication.PublishedRootChildren().OfType<Document>().FirstOrDefault();
         }
 
         public DocumentVersion GetDocumentVersion(int id)

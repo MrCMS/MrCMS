@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
+using MrCMS.Tests.Stubs;
 using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
@@ -18,9 +19,9 @@ namespace MrCMS.Tests.Services
         {
             var tagService = new TagService(Session);
 
-            var tag1 = new Tag { Name = "tag-1" };
-            var tag2 = new Tag { Name = "tag-2" };
-            var tag3 = new Tag { Name = "not-the-same" };
+            var tag1 = new Tag { Name = "tag-1", Site = CurrentSite };
+            var tag2 = new Tag { Name = "tag-2", Site = CurrentSite };
+            var tag3 = new Tag { Name = "not-the-same", Site = CurrentSite };
 
             Session.Transact(session =>
                                  {
@@ -29,7 +30,8 @@ namespace MrCMS.Tests.Services
                                      Session.SaveOrUpdate(tag3);
                                  });
 
-            var tags = tagService.Search("tag", 1);
+            Document document = new StubDocument { Site = CurrentSite };
+            var tags = tagService.Search(document, "tag");
 
             tags.Should().HaveCount(2);
             tags.First().label.Should().Be("tag-1");
@@ -42,19 +44,17 @@ namespace MrCMS.Tests.Services
             var fakeSession = A.Fake<ISession>();
 
             var tagService = new TagService(fakeSession);
-            var tag1 = new Tag { Name = "tag-1" };
+            var tag1 = new Tag { Name = "tag-1", Site = CurrentSite };
 
             Session.Transact(session => Session.SaveOrUpdate(tag1));
 
-            var container = new FakeContainer();
-            container.SetTags(new List<Tag> {tag1});
-            var containerItem = new FakeContainerItem {Parent = container};
+            var container = new FakeContainer { Site = CurrentSite };
+            container.SetTags(new List<Tag> { tag1 });
+            var containerItem = new FakeContainerItem { Parent = container, Site = CurrentSite };
 
-            A.CallTo(() => fakeSession.Get<Document>(1)).Returns(containerItem);
-
-            tagService.GetCategories(1).Should().HaveCount(1);
+            tagService.GetCategories(containerItem).Should().HaveCount(1);
         }
-        
+
         public class FakeContainerItem : Document, IContainerItem
         {
             public string ContainerUrl { get; private set; }

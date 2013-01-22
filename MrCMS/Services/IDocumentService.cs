@@ -13,16 +13,15 @@ namespace MrCMS.Services
     {
         void AddDocument<T>(T document) where T : Document;
         T GetDocument<T>(int id) where T : Document;
-        T GetUniquePage<T>(Site site) where T : UniquePage;
+        T GetUniquePage<T>() where T : UniquePage;
         T SaveDocument<T>(T document) where T : Document;
         IEnumerable<T> GetAllDocuments<T>() where T : Document;
-        bool ExistAny(Type type, Site site);
+        bool ExistAny(Type type);
         IEnumerable<T> GetFrontEndDocumentsByParentId<T>(int? id) where T : Document;
-        //IEnumerable<T> GetDocumentsByParentId<T>(int? id) where T : Document;
-        IEnumerable<T> GetDocumentsByParentId<T>(int? id, int? siteId = null) where T : Document;
-        IEnumerable<T> GetAdminDocumentsByParentId<T>(Site site, int? id) where T : Document, IHaveSite;
-        T GetDocumentByUrl<T>(string url, Site site) where T : Document, IHaveSite;
-        string GetDocumentUrl(string pageName, int? parentId, Site site, bool useHierarchy = false);
+        IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document;
+        IEnumerable<T> GetAdminDocumentsByParent<T>(T parent) where T : Document;
+        T GetDocumentByUrl<T>(string url) where T : Document;
+        string GetDocumentUrl(string pageName, Webpage parent, bool useHierarchy = false);
         IEnumerable<SearchResultModel> SearchDocuments<T>(string searchTerm) where T : Document;
         IPagedList<DetailedSearchResultModel> SearchDocumentsDetailed<T>(string searchTerm, int? parentId, int page = 1) where T : Document;
         IPagedList<SearchResult> SiteSearch(string query, int? page, int pageSize = 10);
@@ -42,10 +41,5 @@ namespace MrCMS.Services
         DocumentVersion GetDocumentVersion(int id);
         void SetParent(Document document, int? parentId);
         DocumentTypeDefinition GetDefinitionByType(Type type);
-    }
-
-    public interface IHaveSite
-    {
-        Site Site { get; set; }
     }
 }

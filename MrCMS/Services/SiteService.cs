@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,6 +14,7 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
         private readonly HttpRequestBase _requestBase;
+        private Site _currentSite;
 
         public SiteService(ISession session, HttpRequestBase requestBase)
         {
@@ -67,12 +69,18 @@ namespace MrCMS.Services
 
         public Site GetCurrentSite()
         {
-            var url = _requestBase.Url.ToString();
+            return _currentSite ?? (_currentSite = GetSiteFromRequest());
+        }
+
+        private Site GetSiteFromRequest()
+        {
+            var authority = _requestBase.Url.Authority;
+
 
             var allSites = GetAllSites();
-            var site = allSites.FirstOrDefault(s => url.StartsWith(s.BaseUrl));
+            var site = allSites.FirstOrDefault(s => s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase));
 
-            return site ?? allSites.FirstOrDefault();
+            return site ?? allSites.First();
         }
     }
 }

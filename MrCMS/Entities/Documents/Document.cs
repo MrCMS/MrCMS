@@ -11,7 +11,7 @@ using NHibernate;
 
 namespace MrCMS.Entities.Documents
 {
-    public abstract class Document : BaseEntity
+    public abstract class Document : SiteEntity
     {
         [Required]
         public virtual string Name { get; set; }

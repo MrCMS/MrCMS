@@ -1,0 +1,9 @@
+﻿
+UPGRADE NOTES
+=======================================
+Update this file with helpful / required release notes
+
+v0.1 to v0.1.1
+---------------------------------------
+- depricated Google Analytics code (@{ Html.RenderAction("RenderAnalytics", "SEO"); }) using @Html.Raw(SiteSettings<SEOSettings>().TrackingScripts) in head instead
+

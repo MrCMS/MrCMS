@@ -7,6 +7,7 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
+using MrCMS.Website.Controllers;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -25,12 +26,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index(string term, string type, int? parent, int? siteId, int page = 1)
+        public ActionResult Index(string term, string type, int? parent, int page = 1)
         {
             ViewData["term"] = term;
-            ViewData["siteId"] = siteId;
             ViewData["parent-val"] = parent;
-            ViewData["parents"] = _navigationService.GetParentsList(_siteService.GetCurrentSite());
+            ViewData["parents"] = _navigationService.GetParentsList();
             ViewData["type"] = type;
             ViewData["doc-types"] = _navigationService.GetDocumentTypes(type);
 
@@ -40,9 +40,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Index")]
-        public ActionResult IndexPost(string term, string type, int? parent, int? siteId)
+        public ActionResult IndexPost(string term, string type, int? parent)
         {
-            return RedirectToAction("Index", new {term, type, parent, siteId});
+            return RedirectToAction("Index", new { term, type, parent });
         }
 
         //

@@ -3,22 +3,21 @@ using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class UserController : AdminController
+    public class UserController : SystemController
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
         private readonly IAuthorisationService _authorisationService;
-        private readonly ISiteService _siteService;
 
         public UserController(IUserService userService, IRoleService roleService, IAuthorisationService authorisationService, ISiteService siteService)
         {
             _userService = userService;
             _roleService = roleService;
             _authorisationService = authorisationService;
-            _siteService = siteService;
         }
 
         public ActionResult Index(int page = 1)
@@ -34,7 +33,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add([SessionModelBinder(typeof (AddUserModelBinder))] User user)
+        public ActionResult Add([IoCModelBinder(typeof (AddUserModelBinder))] User user)
         {
             _userService.AddUser(user);
 
@@ -46,7 +45,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Edit_Get(User user)
         {
             ViewData["AvailableRoles"] = _roleService.GetAllRoles();
-            ViewData["AvailableSites"] = _siteService.GetAllSites();
             ViewData["OnlyAdmin"] = _roleService.IsOnlyAdmin(user);
 
             return user == null
@@ -55,7 +53,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit([SessionModelBinder(typeof (EditUserModelBinder))] User user)
+        public ActionResult Edit([IoCModelBinder(typeof (EditUserModelBinder))] User user)
         {
             _userService.SaveUser(user);
 
@@ -78,15 +76,16 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult SetPassword(int id)
+        public ActionResult SetPassword(User user)
         {
-            return PartialView(id);
+            return PartialView(user);
         }
 
         [HttpPost]
         public ActionResult SetPassword(User user, string password)
         {
             _authorisationService.SetPassword(user, password, password);
+            _userService.SaveUser(user);
             return RedirectToAction("Edit", new {user.Id});
         }
     }

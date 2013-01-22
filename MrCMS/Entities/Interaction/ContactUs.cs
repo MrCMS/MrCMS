@@ -2,7 +2,7 @@
 
 namespace MrCMS.Entities.Interaction
 {
-    public class ContactUs : BaseEntity
+    public class ContactUs : SiteEntity
     {
         [Required]
         public virtual string Name { get; set; }

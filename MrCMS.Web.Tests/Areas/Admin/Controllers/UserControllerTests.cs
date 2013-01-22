@@ -134,13 +134,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var user = new User();
             var roles = new List<UserRole>();
             A.CallTo(() => _roleService.GetAllRoles()).Returns(roles);
-            var sites = new List<Site>();
-            A.CallTo(() => _siteService.GetAllSites()).Returns(sites);
 
             userController.Edit_Get(user);
 
             userController.ViewData["AvailableRoles"].Should().Be(roles);
-            userController.ViewData["AvailableSites"].Should().Be(sites);
         }
 
         [Fact]
@@ -169,14 +166,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void UserController_SetPasswordGet_ReturnsAPartialView()
         {
             UserController userController = GetUserController();
-            userController.SetPassword(1).Should().BeOfType<PartialViewResult>();
+            userController.SetPassword(new User()).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
         public void UserController_SetPasswordGet_ReturnsTheIdPassedAsTheModel()
         {
             UserController userController = GetUserController();
-            userController.SetPassword(1).As<PartialViewResult>().Model.Should().Be(1);
+            var user = new User();
+            userController.SetPassword(user).As<PartialViewResult>().Model.Should().Be(user);
         }
 
         [Fact]

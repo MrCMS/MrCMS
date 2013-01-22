@@ -16,7 +16,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private ISiteService _siteService;
         private IUserService _userService;
         private IConfigurationProvider configurationProvider;
-        private ISession session;
 
         [Fact]
         public void SitesController_IndexGet_CallsISiteServiceGetAllSites()
@@ -85,36 +84,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void SitesController_EditGet_SettingServiceGetAllSettingsForSiteIdShouldBeCalled()
-        {
-            SitesController sitesController = GetSitesController();
-
-            var site = new Site {Id = 1};
-            sitesController.Edit_Get(site);
-
-            A.CallTo(() => configurationProvider.GetAllSiteSettings(site)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void SitesController_EditGet_ResultOfGetAllISettingsMustBeSetToViewDataSettings()
-        {
-            SitesController sitesController = GetSitesController();
-            var site = new Site {Id = 1};
-            var settingses = new List<SiteSettingsBase> { new SiteSettings() };
-            A.CallTo(() => configurationProvider.GetAllSiteSettings(site)).Returns(settingses);
-
-            sitesController.Edit_Get(site);
-
-            sitesController.ViewData["Settings"].As<List<SiteSettingsBase>>().Should().BeEquivalentTo(settingses);
-        }
-
-        [Fact]
         public void SitesController_EditPost_CallsSaveSiteWithPassedSite()
         {
             SitesController sitesController = GetSitesController();
 
             var site = new Site();
-            sitesController.Edit(site, new List<SiteSettingsBase>());
+            sitesController.Edit(site);
 
             A.CallTo(() => _siteService.SaveSite(site)).MustHaveHappened();
         }
@@ -125,7 +100,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             SitesController sitesController = GetSitesController();
 
             var site = new Site();
-            RedirectToRouteResult result = sitesController.Edit(site, new List<SiteSettingsBase>());
+            RedirectToRouteResult result = sitesController.Edit(site);
 
             result.RouteValues["action"].Should().Be("Index");
         }
@@ -163,11 +138,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
         private SitesController GetSitesController()
         {
-            session = A.Fake<ISession>();
             _siteService = A.Fake<ISiteService>();
             configurationProvider = A.Fake<IConfigurationProvider>();
             _userService = A.Fake<IUserService>();
-            return new SitesController(session, _siteService, _userService, configurationProvider);
+            return new SitesController( _siteService, _userService, configurationProvider);
         }
     }
 }

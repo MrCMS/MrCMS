@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Settings;
 using NHibernate;
@@ -20,24 +21,28 @@ namespace MrCMS.Services
         private readonly IFileSystem _fileSystem;
         private readonly IImageProcessor _imageProcessor;
         private readonly MediaSettings _mediaSettings;
+        private readonly CurrentSite _currentSite;
         private const string _mediaDirectory = "content/upload";
 
-        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings)
+        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings, CurrentSite currentSite)
         {
             _session = session;
             _fileSystem = fileSystem;
             _imageProcessor = imageProcessor;
             _mediaSettings = mediaSettings;
+            _currentSite = currentSite;
         }
 
         public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, int contentLength, MediaCategory mediaCategory)
         {
             if (mediaCategory == null) throw new ArgumentNullException("mediaCategory");
 
+            fileName = Path.GetFileName(fileName);
+
             fileName = GetFileSeName(fileName);
             var fileNameOriginal = GetFileSeName(fileName);
 
-            string folderLocation = string.Format("{0}/{1}/", MediaDirectory, mediaCategory.UrlSegment);
+            string folderLocation = string.Format("{0}/{1}/{2}", MediaDirectory, _currentSite.Site.Id, mediaCategory.UrlSegment);
 
             //check for duplicates
             int i = 1;
@@ -47,7 +52,7 @@ namespace MrCMS.Services
                 i++;
             }
 
-            string fileLocation = string.Format("{0}/{1}/{2}", MediaDirectory, mediaCategory.UrlSegment, fileName);
+            string fileLocation = string.Format("{0}/{1}/{2}/{3}", MediaDirectory, _currentSite.Site.Id, mediaCategory.UrlSegment, fileName);
 
             var mediaFile = new MediaFile
                                 {
@@ -95,6 +100,8 @@ namespace MrCMS.Services
             if (!string.IsNullOrWhiteSpace(extension))
                 name = name.Replace(extension, "");
 
+            name = name.Replace("&", " and ");
+
             const string okChars = "abcdefghijklmnopqrstuvwxyz1234567890 _-";
             name = name.Trim().ToLowerInvariant();
 
@@ -106,10 +113,10 @@ namespace MrCMS.Services
                     sb.Append(c2);
             }
             string name2 = sb.ToString();
-            name2 = name2.Replace(" ", "_");
-            name2 = name2.Replace("-", "_");
-            while (name2.Contains("__"))
-                name2 = name2.Replace("__", "_");
+            name2 = name2.Replace(" ", "-");
+            name2 = name2.Replace("_", "-");
+            while (name2.Contains("--"))
+                name2 = name2.Replace("--", "-");
             return extension != null
                        ? name2.ToLowerInvariant() + extension.ToLower()
                        : name2.ToLowerInvariant();
@@ -146,10 +153,10 @@ namespace MrCMS.Services
             return requestedFileLocation;
         }
 
-        public ViewDataUploadFilesResult[] GetFiles(int mediaCategoryId)
+        public ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory)
         {
             return
-                _session.QueryOver<MediaFile>().Where(file => file.MediaCategory.Id == mediaCategoryId).List().Select(
+                _session.QueryOver<MediaFile>().Where(file => file.MediaCategory == mediaCategory).List().Select(
                     GetUploadFilesResult).ToArray();
         }
 
@@ -195,7 +202,7 @@ namespace MrCMS.Services
 
         public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1, int pageSize = 10)
         {
-            var queryOver = _session.QueryOver<MediaFile>();
+            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site == _currentSite.Site);
 
             if (categoryId.HasValue)
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == categoryId);
@@ -230,9 +237,19 @@ namespace MrCMS.Services
 
         public void RemoveFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/", MediaDirectory, mediaCategory.UrlSegment);
+            string folderLocation = string.Format("{0}/{1}/{2}/", MediaDirectory, _currentSite.Site.Id,
+                                                  mediaCategory.UrlSegment);
 
             _fileSystem.Delete(folderLocation);
+        }
+
+        public void CreateFolder(MediaCategory mediaCategory)
+        {
+            string folderLocation = string.Format("{0}/{1}/{2}/", MediaDirectory, _currentSite.Site.Id,
+                                                  mediaCategory.UrlSegment);
+
+            _fileSystem.CreateDirectory(folderLocation);
+
         }
     }
 }

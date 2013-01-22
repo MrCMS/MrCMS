@@ -9,6 +9,8 @@
         $('.inner-content a[href="' + location.hash + '"]').tab('show');
     } else if ($.cookie('selected-tab')) {
         $('.inner-content a[href="' + $.cookie('selected-tab') + '"]').tab('show');
+    } else if ($('.inner-content li a[data-toggle="tab"]').length > 0 && $('.inner-content li.active a[data-toggle="tab"]').length ==0) {
+        $('.inner-content a[data-toggle="tab"]').eq(0).click();
     }
 
     $('.inner-content a[data-toggle="tab"]').on('shown', function (e) {
@@ -39,12 +41,6 @@
         }
         return 0;
     }
-
-    $('#MediaCategory_Id').change(function () {
-        $.get("/Admin/Listings/Thumbnails", { mediaCategoryId: $(this).val() }, function (data) {
-            $("#mediaCategoryThumbnails").html(data);
-        });
-    });
 
     $(".web-tree").treeview({
         animated: "medium",
@@ -205,15 +201,13 @@
         menu: 'edit-root-menu'
     }, function (action, el, pos) {
         var element = $(el);
-        var id = element.data('id');
         var controller = element.data('controller');
-        var siteId = element.parents('.filetree').data('site-id');
         switch (action) {
             case "add":
-                location.href = '/Admin/' + controller + '/Add?siteId=' + siteId;
+                location.href = '/Admin/' + controller + '/Add';
                 break;
             case "sort":
-                location.href = '/Admin/' + controller + '/Sort/?siteId=' + siteId;
+                location.href = '/Admin/' + controller + '/Sort';
                 break;
         }
     });
@@ -428,6 +422,11 @@
     $(document).on('click', 'a.more-link', function () {
         return false;
     });
+
+    $(document).on('change', '#admin-site-selector', function () {
+        location.href = $(this).val();
+    });
+
 });
 
 function resizeModal(jqElement) {

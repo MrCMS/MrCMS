@@ -20,8 +20,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         private readonly IFormService _formService;
         private readonly ISession _session;
 
-        public WebpageController(IDocumentService documentService, ISiteService siteService, IFormService formService, ISession session)
-            : base(documentService, siteService)
+        public WebpageController(IDocumentService documentService, IFormService formService, ISession session)
+            : base(documentService)
         {
             _formService = formService;
             _session = session;
@@ -42,10 +42,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             }
         }
 
-        protected override void PopulateEditDropdownLists(Webpage doc, Site site)
+        protected override void PopulateEditDropdownLists(Webpage doc)
         {
             IEnumerable<Layout> layouts =
-                _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false && x.Site == doc.Site);
+                _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false && x.Site == CurrentSite);
 
             ViewData["Layout"] = layouts.BuildSelectItemList(layout => layout.Name,
                                                              layout => layout.Id.ToString(CultureInfo.InvariantCulture),
@@ -55,7 +55,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                                              SelectListItemHelper.EmptyItem("Default Layout"));
 
             var documentTypeDefinitions =
-                (doc.Parent as Webpage).GetValidWebpageDocumentTypes(_documentService, site).ToList();
+                (doc.Parent as Webpage).GetValidWebpageDocumentTypes(_documentService, CurrentSite).ToList();
             ViewData["DocumentTypes"] = documentTypeDefinitions;
 
             doc.AdminViewData(ViewData, _session);
@@ -125,20 +125,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(documentVersion);
         }
 
-        [ValidateInput(false)]
-        public string GetUnformattedBodyContent(TextPage textPage)
-        {
-            return textPage.BodyContent;
-        }
-
-        [ValidateInput(false)]
-        public string GetFormattedBodyContent(TextPage textPage)
-        {
-            MrCMSApplication.CurrentPage = textPage;
-            var htmlHelper = MrCMSHtmlHelper.GetHtmlHelper(this);
-            return htmlHelper.ParseShortcodes(textPage.BodyContent).ToHtmlString();
-        }
-
         public PartialViewResult Postings(Webpage webpage, int page = 1, string search = null)
         {
             var data = _formService.GetFormPostings(webpage, page, search);
@@ -158,9 +144,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(data);
         }
 
-        public string SuggestDocumentUrl(int? parentId, string pageName, int? siteId)
+        public string SuggestDocumentUrl(Webpage parent, string pageName)
         {
-            return _documentService.GetDocumentUrl(pageName, parentId, _siteService.GetSite(siteId.GetValueOrDefault()), true);
+            return _documentService.GetDocumentUrl(pageName, parent, true);
         }
     }
 }

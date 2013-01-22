@@ -40,7 +40,7 @@ namespace MrCMS.Helpers
 
 
         public static QueryOver<T, T> SetOrder<T>(this QueryOver<T, T> query, IProjection projection,
-                                                  OrderType orderType) where T : BaseEntity
+                                                  OrderType orderType) where T : SystemEntity
         {
             if (projection == null) return query;
 
@@ -58,14 +58,14 @@ namespace MrCMS.Helpers
 
         public static IQueryOver<T, T> SetFilters<T>(this IQueryOver<T, T> query,
                                                      IEnumerable<Expression<Func<T, bool>>> filters)
-            where T : BaseEntity
+            where T : SystemEntity
         {
             return filters.Aggregate(query, (current, filter) => current.Where(filter));
         }
 
         public static IPagedList<T2> Paged<T, T2>(this ISession session, QueryOver<T> query,
                                                   Func<IEnumerable<T>, IEnumerable<T2>> transform, int pageNumber,
-                                                  int pageSize) where T : BaseEntity
+                                                  int pageSize) where T : SystemEntity
         {
             IEnumerable<T> values =
                 query.GetExecutableQueryOver(session).Skip((pageNumber - 1) * pageSize).Take(pageSize).List<T>();
@@ -76,7 +76,7 @@ namespace MrCMS.Helpers
         }
 
         public static IPagedList<T> Paged<T>(this ISession session, QueryOver<T> query, int pageNumber, int pageSize)
-            where T : BaseEntity
+            where T : SystemEntity
         {
             return Paged(session, query, enumerable => enumerable, pageNumber, pageSize);
         }
@@ -86,7 +86,7 @@ namespace MrCMS.Helpers
                                                                 IEnumerable<Expression<Func<TBase, bool>>> restrictions
                                                                     = null, Expression<Func<TBase, object>> order = null,
                                                                 OrderType orderType = OrderType.Ascending)
-            where TBase : BaseEntity
+            where TBase : SystemEntity
         {
             IEnumerable<TBase> results =
                 GetBasePagedQuery(session, restrictions, order, orderType).Skip((pageNumber - 1) * pageSize).Take(pageSize)
@@ -101,7 +101,7 @@ namespace MrCMS.Helpers
                                                          IEnumerable<Expression<Func<TResult, bool>>> restrictions =
                                                              null, Expression<Func<TResult, object>> order = null,
                                                          OrderType orderType = OrderType.Ascending)
-            where TResult : BaseEntity
+            where TResult : SystemEntity
         {
             IEnumerable<TResult> results =
                 GetBasePagedQuery(session, restrictions, order, orderType).Skip((pageNumber - 1) * pageSize).Take(pageSize)
@@ -117,7 +117,7 @@ namespace MrCMS.Helpers
                                                                 IEnumerable<Expression<Func<TBase, bool>>> restrictions
                                                                     = null, Expression<Func<TBase, object>> order = null,
                                                                 OrderType orderType = OrderType.Ascending)
-            where TBase : BaseEntity
+            where TBase : SystemEntity
         {
             IEnumerable<TBase> results =
                 GetBasePagedQuery(queryBase, restrictions, order, orderType).Skip((pageNumber - 1) * pageSize).Take(pageSize)
@@ -132,7 +132,7 @@ namespace MrCMS.Helpers
                                                          IEnumerable<Expression<Func<TResult, bool>>> restrictions =
                                                              null, Expression<Func<TResult, object>> order = null,
                                                          OrderType orderType = OrderType.Ascending)
-            where TResult : BaseEntity
+            where TResult : SystemEntity
         {
             IEnumerable<TResult> results =
                 GetBasePagedQuery(queryBase, restrictions, order, orderType).Skip((pageNumber - 1) * pageSize).Take(pageSize)
@@ -149,7 +149,7 @@ namespace MrCMS.Helpers
                                                                                    restrictions,
                                                                                Expression<Func<TResult, object>> order,
                                                                                OrderType orderType)
-            where TResult : BaseEntity
+            where TResult : SystemEntity
         {
             IQueryOver<TResult, TResult> iQueryOver = session.QueryOver<TResult>();
             if (restrictions != null)
@@ -178,7 +178,7 @@ namespace MrCMS.Helpers
                                                                                    restrictions,
                                                                                Expression<Func<TResult, object>> order,
                                                                                OrderType orderType)
-            where TResult : BaseEntity
+            where TResult : SystemEntity
         {
             if (restrictions != null)
                 queryBase = queryBase.SetFilters(restrictions);
@@ -202,7 +202,7 @@ namespace MrCMS.Helpers
 
         public static IPagedList<TResult> Paged<TResult>(this ISession session, int pageNumber, int pageSize,
                                                             ICriterion restrictions = null, Order order = null)
-            where TResult : BaseEntity
+            where TResult : SystemEntity
         {
             ICriteria rowCountCriteria =
                 GetCriteria<TResult>(session).SetRestrictionsAndOrder(restrictions, order)
@@ -221,7 +221,7 @@ namespace MrCMS.Helpers
         }
 
         private static ICriteria GetCriteria<T1>(ISession session)
-            where T1 : BaseEntity
+            where T1 : SystemEntity
         {
             return
                 session.CreateCriteria<T1>();
@@ -231,23 +231,23 @@ namespace MrCMS.Helpers
     public static class QueryOverHelper
     {
         public static QueryOver<T, T> SetFilters<T>(this QueryOver<T, T> query,
-                                                    IEnumerable<Expression<Func<T, bool>>> filters) where T : BaseEntity
+                                                    IEnumerable<Expression<Func<T, bool>>> filters) where T : SystemEntity
         {
             return filters.Aggregate(query, (current, filter) => current.Where(filter));
         }
 
         public static QueryOver<T, T> SetFilters<T>(this QueryOver<T, T> query,
-                                                    IEnumerable<Expression<Func<bool>>> filters) where T : BaseEntity
+                                                    IEnumerable<Expression<Func<bool>>> filters) where T : SystemEntity
         {
             return filters.Aggregate(query, (current, filter) => current.Where(filter));
         }
         public static QueryOver<T, T> SetFilter<T>(this QueryOver<T, T> query,
-                                                    Expression<Func<bool>> filter) where T : BaseEntity
+                                                    Expression<Func<bool>> filter) where T : SystemEntity
         {
             return query.Where(filter);
         }
 
-        public static QueryOver<T, T> SetOrder<T>(this QueryOver<T, T> query, KeyValuePair<Expression<Func<T, object>>, OrderType> selector) where T : BaseEntity
+        public static QueryOver<T, T> SetOrder<T>(this QueryOver<T, T> query, KeyValuePair<Expression<Func<T, object>>, OrderType> selector) where T : SystemEntity
         {
             QueryOverOrderBuilder<T, T> queryOverOrderBuilder = query.OrderBy(selector.Key);
             switch (selector.Value)

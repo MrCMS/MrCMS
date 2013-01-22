@@ -24,7 +24,11 @@ $(function () {
     });
 
     $("#Name").delayKeyup(function () {
-        SetStandardUrl();
+        if ($("#mode").is(':checked')) {
+            SuggestUrl();
+        } else {
+            SetStandardUrl();
+        }
     }, 200);
 
     function SetStandardUrl() {

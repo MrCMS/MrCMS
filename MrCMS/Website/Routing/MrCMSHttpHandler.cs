@@ -58,6 +58,8 @@ namespace MrCMS.Website.Routing
 
             if (PageIsRedirect(context)) return;
 
+            if (RequiresSSLRedirect(context)) return;
+
             if (RedirectsToHomePage(context)) return;
 
             if (!IsAllowed(context)) return;
@@ -157,6 +159,25 @@ namespace MrCMS.Website.Routing
             if (Webpage == null)
             {
                 HandleError(context, 404, SiteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data));
+                return true;
+            }
+            return false;
+        }
+
+        public bool RequiresSSLRedirect(HttpContextBase context)
+        {
+            var url = context.Request.Url;
+            var scheme = url.Scheme;
+            if (Webpage.RequiresSSL && scheme != "https" && SiteSettings.SiteIsLive)
+            {
+                var redirectUrl = url.ToString().Replace(scheme + "://", "https://");
+                context.Response.RedirectPermanent(redirectUrl);
+                return true;
+            }
+            if (!Webpage.RequiresSSL && scheme != "http")
+            {
+                var redirectUrl = url.ToString().Replace(scheme + "://", "http://");
+                context.Response.RedirectPermanent(redirectUrl);
                 return true;
             }
             return false;
@@ -324,16 +345,14 @@ namespace MrCMS.Website.Routing
 
         private Webpage GetWebpage()
         {
-            var site = SiteSettings.Site;
-
             Webpage webpage;
             if (string.IsNullOrWhiteSpace(Data))
             {
                 if (!MrCMSApplication.UserLoggedIn)
-                    webpage = MrCMSApplication.PublishedRootChildren(site).FirstOrDefault();
-                else webpage = MrCMSApplication.RootChildren(site).FirstOrDefault();
+                    webpage = MrCMSApplication.PublishedRootChildren().FirstOrDefault();
+                else webpage = MrCMSApplication.RootChildren().FirstOrDefault();
             }
-            else webpage = DocumentService.GetDocumentByUrl<Webpage>(Data, site);
+            else webpage = DocumentService.GetDocumentByUrl<Webpage>(Data);
 
             MrCMSApplication.CurrentPage = webpage;
             _webpageLookedUp = true;

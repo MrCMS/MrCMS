@@ -9,7 +9,7 @@ using MrCMS.Helpers;
 
 namespace MrCMS.Entities.Widget
 {
-    public abstract class Widget : BaseEntity
+    public abstract class Widget : SiteEntity
     {
         public virtual LayoutArea LayoutArea { get; set; }
 
@@ -52,13 +52,6 @@ namespace MrCMS.Entities.Widget
                 Webpage.Widgets.Remove(this);
             }
             base.OnDeleting(session);
-        }
-
-        public virtual Site Site
-        {
-            get {
-                return Webpage != null ? Webpage.Site : LayoutArea.Layout.Site;
-            }
         }
     }
 }

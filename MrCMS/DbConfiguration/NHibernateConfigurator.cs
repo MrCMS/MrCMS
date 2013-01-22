@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Reflection;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
@@ -25,7 +26,7 @@ using MrCMS.Helpers;
 
 namespace MrCMS.DbConfiguration
 {
-    public class NHibernateConfigurator
+    public class NHibernateConfigurator : IGetAllMappedClasses
     {
         private List<Assembly> _manuallyAddedAssemblies = new List<Assembly>();
         public DatabaseType DatabaseType { get; set; }
@@ -33,6 +34,16 @@ namespace MrCMS.DbConfiguration
         public bool CacheEnabled { get; set; }
 
         public IPersistenceConfigurer PersistenceOverride { get; set; }
+
+        public List<Type> MappedClasses
+        {
+            get
+            {
+                var configuration = GetConfiguration();
+
+                return configuration.ClassMappings.Select(@class => @class.MappedClass).ToList();
+            }
+        }
 
         public ISessionFactory CreateSessionFactory()
         {
@@ -49,22 +60,39 @@ namespace MrCMS.DbConfiguration
             {
                 case DatabaseType.Auto:
                     var connectionStringSettings = ConfigurationManager.ConnectionStrings["mrcms"];
-                    if (connectionStringSettings != null && "System.Data.SQLite".Equals(connectionStringSettings.ProviderName,StringComparison.OrdinalIgnoreCase))
-                        return InDevelopment
-                                   ? SQLiteConfiguration.Standard.ConnectionString(
-                                       x => x.FromConnectionStringWithKey("mrcms-dev"))
-                                   : SQLiteConfiguration.Standard.ConnectionString(
-                                       x => x.FromConnectionStringWithKey("mrcms"));
-                    return InDevelopment
-                               ? MsSqlConfiguration.MsSql2008.ConnectionString(
-                                   x => x.FromConnectionStringWithKey("mrcms-dev"))
-                               : MsSqlConfiguration.MsSql2008.ConnectionString(
-                                   x => x.FromConnectionStringWithKey("mrcms"));
+                    switch (connectionStringSettings.ProviderName)
+                    {
+                        case "System.Data.SQLite":
+                            return InDevelopment
+                                       ? SQLiteConfiguration.Standard.ConnectionString(
+                                           x => x.FromConnectionStringWithKey("mrcms-dev"))
+                                       : SQLiteConfiguration.Standard.ConnectionString(
+                                           x => x.FromConnectionStringWithKey("mrcms"));
+                        case "System.Data.SqlClient":
+                            return InDevelopment
+                         ? MsSqlConfiguration.MsSql2008.ConnectionString(
+                             x => x.FromConnectionStringWithKey("mrcms-dev"))
+                         : MsSqlConfiguration.MsSql2008.ConnectionString(
+                             x => x.FromConnectionStringWithKey("mrcms"));
+                        case "MySql.Data.MySqlClient":
+                            return InDevelopment
+                                       ? MySQLConfiguration.Standard.ConnectionString(
+                                           x => x.FromConnectionStringWithKey("mrcms-dev"))
+                                       : MySQLConfiguration.Standard.ConnectionString(
+                                           x => x.FromConnectionStringWithKey("mrcms"));
+                    }
+                    throw new DataException("Provider Name not recognised: " + connectionStringSettings.ProviderName);
                 case DatabaseType.MsSql:
                     return InDevelopment
                                ? MsSqlConfiguration.MsSql2008.ConnectionString(
                                    x => x.FromConnectionStringWithKey("mrcms-dev"))
                                : MsSqlConfiguration.MsSql2008.ConnectionString(
+                                   x => x.FromConnectionStringWithKey("mrcms"));
+                case DatabaseType.MySQL:
+                    return InDevelopment
+                               ? MySQLConfiguration.Standard.ConnectionString(
+                                   x => x.FromConnectionStringWithKey("mrcms-dev"))
+                               : MySQLConfiguration.Standard.ConnectionString(
                                    x => x.FromConnectionStringWithKey("mrcms"));
                 case DatabaseType.Sqlite:
                     return SQLiteConfiguration.Standard.Dialect<SQLiteDialect>().InMemory().Raw(
@@ -106,11 +134,12 @@ namespace MrCMS.DbConfiguration
                         finalAssemblies.Add(assembly);
                 });
 
+            var iPersistenceConfigurer = GetPersistenceConfigurer();
             var config = Fluently.Configure()
-                .Database(GetPersistenceConfigurer())
+                .Database(iPersistenceConfigurer)
                 .Mappings(m => m.AutoMappings.Add(AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
-                                                .IgnoreBase<BaseEntity>().IncludeBase<Document>().IncludeBase<Webpage>()
-                                                .IncludeBase<Widget>().IncludeBase<Layout>()
+                                                .IgnoreBase<SystemEntity>().IgnoreBase<SiteEntity>().IncludeBase<Document>().IncludeBase<Webpage>()
+                                                .IncludeBase<Widget>()
                                                 .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
                                                 .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()))
                 .Cache(builder =>
@@ -127,10 +156,11 @@ namespace MrCMS.DbConfiguration
                                          })
                 .BuildConfiguration();
 
+
+
             ValidateSchema(config);
 
             config.BuildMappings();
-
 
             return config;
         }

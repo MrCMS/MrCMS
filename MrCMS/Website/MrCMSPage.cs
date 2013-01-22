@@ -1,27 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using System.Web.Routing;
+using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Helpers;
 
 namespace MrCMS.Website
 {
     public abstract class MrCMSPage<TModel> : System.Web.Mvc.WebViewPage<TModel>
     {
         private IConfigurationProvider _configurationProvider;
-        private ISiteService _siteService;
+        private IImageProcessor _imageProcessor;
 
         public T SiteSettings<T>() where T : SiteSettingsBase, new()
         {
-            return _configurationProvider.GetSettings<T>(_siteService.GetCurrentSite());
+            return _configurationProvider.GetSiteSettings<T>();
         }
+
         public T GlobalSettings<T>() where T : GlobalSettingsBase, new()
         {
-            return _configurationProvider.GetSettings<T>();
+            return _configurationProvider.GetGlobalSettings<T>();
         }
 
         public override void InitHelpers()
@@ -30,12 +38,39 @@ namespace MrCMS.Website
 
             if (MrCMSApplication.DatabaseIsInstalled)
             {
-                _siteService = MrCMSApplication.Get<ISiteService>();
                 _configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
+                _imageProcessor = MrCMSApplication.Get<IImageProcessor>();
             }
         }
 
-        public MvcHtmlString RenderZone( string areaName)
+        public MvcHtmlString Editable<T>(T model, Expression<Func<T, string>> method, bool isHtml = false) where T : SystemEntity
+        {
+            if (model == null)
+                return MvcHtmlString.Empty;
+
+            var propertyInfo = PropertyFinder.GetProperty(method);
+            var value = Html.ParseShortcodes(method.Compile().Invoke(model)).ToHtmlString();
+            var typeName = typeof(T).Name;
+
+            if (MrCMSApplication.CurrentUserIsAdmin && propertyInfo != null)
+            {
+                var tagBuilder = new TagBuilder("div");
+                tagBuilder.AddCssClass("editable");
+                tagBuilder.Attributes["data-id"] = model.Id.ToString();
+                tagBuilder.Attributes["data-property"] = propertyInfo.Name;
+                tagBuilder.Attributes["data-type"] = typeName;
+                tagBuilder.Attributes["data-is-html"] = isHtml ? "true" : "false";
+                tagBuilder.InnerHtml = value;
+
+                return MvcHtmlString.Create(tagBuilder.ToString());
+            }
+            else
+            {
+                return MvcHtmlString.Create(value);
+            }
+        }
+
+        public MvcHtmlString RenderZone(string areaName)
         {
             var page = Model as Webpage;
 
@@ -76,9 +111,30 @@ namespace MrCMS.Website
             }
             return MvcHtmlString.Empty;
         }
+
+        public MvcHtmlString RenderImage(string imageUrl, string alt = null, string title = null, object attributes = null)
+        {
+            return Html.RenderImage(imageUrl, alt, title, attributes);
+        }
+
+        public MvcHtmlString RenderImage(string imageUrl, Size size, string alt = null, string title = null, object attributes = null)
+        {
+            return Html.RenderImage(imageUrl, size, alt, title, attributes);
+        }
     }
 
     public abstract class MrCMSPage : MrCMSPage<dynamic>
     {
+    }
+
+    public class PropertyFinder
+    {
+        public static PropertyInfo GetProperty(Expression expression)
+        {
+            return expression is LambdaExpression && (expression as LambdaExpression).Body is MemberExpression &&
+                   ((expression as LambdaExpression).Body as MemberExpression).Member is PropertyInfo
+                       ? ((expression as LambdaExpression).Body as MemberExpression).Member as PropertyInfo
+                       : null;
+        }
     }
 }

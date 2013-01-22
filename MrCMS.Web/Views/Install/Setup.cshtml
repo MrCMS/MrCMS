@@ -1,4 +1,5 @@
-﻿@model MrCMS.Web.Controllers.InstallController.InstallModel
+﻿@using MrCMS.DbConfiguration.Configuration
+@model MrCMS.Installation.InstallModel
 
 @{
     ViewBag.Title = "Install MrCMS";
@@ -18,7 +19,7 @@
         });
 
         $(document).ready(function() {
-            $('input:radio[name=DataProvider]').click(toggleProvider);
+            $('input:radio[name=DatabaseType]').click(toggleProvider);
             $('input:radio[name=SqlConnectionInfo]').click(toggleSqlConnectionInfo);
             $('input:radio[name=SqlAuthenticationType]').click(toggleSqlAuthenticationType);
 
@@ -29,10 +30,10 @@
 
 
         function toggleProvider() {
-            var selectedProvider = $("input[name=DataProvider]:checked").attr('id');
+            var selectedProvider = $("input[name=DatabaseType]:checked").attr('id');
             if (selectedProvider == 'provider_sqlite') {
                 $('#sqlConnectionInfo').hide();
-            } else if (selectedProvider == 'provider_sqlserver') {
+            } else {
                 $('#sqlConnectionInfo').show();
             }
         }
@@ -171,16 +172,24 @@
                                         </tr>
                                         <tr>
                                             <td colspan="2" align="left">
-                                                @Html.RadioButton("DataProvider", "sqlite", (Model.DataProvider == "sqlite"), new {id = "provider_sqlite"})
+                                                @Html.RadioButton("DatabaseType", DatabaseType.Sqlite, (Model.DatabaseType==DatabaseType.Sqlite), new {id = "provider_sqlite"})
                                                 <label for="provider_sqlite">
                                                     Use built-in data storage (Sqlite).</label>
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td>
+                                                @Html.RadioButton("DatabaseType",  DatabaseType.MySQL, (Model.DatabaseType==DatabaseType.MySQL), new {id = "provider_mysql"})
+                                                <label for="provider_mysql">
+                                                    Use MySQL</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td colspan="2" align="left">
-                                                @Html.RadioButton("DataProvider", "sqlserver", (Model.DataProvider == "sqlserver"), new {id = "provider_sqlserver"})
+                                                @Html.RadioButton("DatabaseType", DatabaseType.MsSql, (Model.DatabaseType==DatabaseType.MsSql), new {id = "provider_sqlserver"})
                                                 <label for="provider_sqlserver">
                                                     Use SQL Server (or SQL Express) database. <b>[Recommended]</b></label>
+                                                <br/>   
                                                 <div id="sqlConnectionInfo">
                                                     <br />
                                                     <hr />

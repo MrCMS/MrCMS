@@ -24,10 +24,6 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
             <li><a href="#users" data-toggle="tab">Users</a></li>
-            @foreach (var settingType in settings)
-            {
-                <li><a href="#@settingType.DivId" data-toggle="tab">@settingType.TypeName</a></li>
-            }
         </ul>
         <div class="tab-content">
             <div id="properties" class="tab-pane active">
@@ -65,10 +61,6 @@
                     }
                 </table>
             </div>
-            @foreach (var settingType in settings)
-            {
-                Html.RenderPartial("Settings", settingType);
-            }
         </div>
     </div>
 }

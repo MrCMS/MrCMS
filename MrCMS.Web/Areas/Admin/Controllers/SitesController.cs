@@ -5,20 +5,19 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Controllers;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class SitesController : AdminController
     {
-        private readonly ISession _session;
         private readonly ISiteService _siteService;
         private readonly IUserService _userService;
         private readonly IConfigurationProvider _configurationProvider;
 
-        public SitesController(ISession session, ISiteService siteService, IUserService userService, IConfigurationProvider configurationProvider)
+        public SitesController(ISiteService siteService, IUserService userService, IConfigurationProvider configurationProvider)
         {
-            _session = session;
             _siteService = siteService;
             _userService = userService;
             _configurationProvider = configurationProvider;
@@ -31,14 +30,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             ViewData["Settings"] = _configurationProvider.GetAllGlobalSettings();
             var sites = _siteService.GetAllSites();
             return View("Index", sites);
-        }
-
-        [HttpPost]
-        [ActionName("Index")]
-        public RedirectToRouteResult Index_Post([ModelBinder(typeof(GlobalSettingsModelBinder))]List<GlobalSettingsBase> settings)
-        {
-            settings.ForEach(s => _configurationProvider.SaveSettings(s));
-            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -60,22 +51,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ViewResult Edit_Get(Site site)
         {
             ViewData["Users"] = _userService.GetAllUsers();
-            ViewData["Settings"] = _configurationProvider.GetAllSiteSettings(site)
-                .Select(settings =>
-                {
-                    if (settings != null)
-                        settings.SetViewData(_session, ViewData);
-                    return settings;
-                }).ToList();
 
             return View(site);
         }
 
         [HttpPost]
-        public RedirectToRouteResult Edit([SessionModelBinder(typeof(EditSiteModelBinder))] Site site, [ModelBinder(typeof(SiteSettingsModelBinder))]List<SiteSettingsBase> settings)
+        public RedirectToRouteResult Edit([IoCModelBinder(typeof(EditSiteModelBinder))] Site site)
         {
             _siteService.SaveSite(site);
-            settings.ForEach(s => _configurationProvider.SaveSettings(s));
             return RedirectToAction("Index");
         }
 

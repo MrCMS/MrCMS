@@ -30,7 +30,7 @@
                 : Html.FormLink("Unpublish", "Unpublish", new { id = Model.Id }, new { @class = "btn  btn-success" }))
             @Html.ValidationMessageFor(x => x.PublishOn)
 
-            <a href="@Model.Site.BaseUrl.TrimEnd('/')/@Model.LiveUrlSegment" class="btn">View</a>
+            <a href="@Model.AbsoluteUrl" class="btn">View</a>
             @if (Model.CanDelete)
             {
                 <a href="@Url.Action("Delete", "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
@@ -45,6 +45,7 @@
 
 <ul class="nav nav-tabs margin-top-10">
     <li class="active"><a href="#edit-content" data-toggle="tab">Edit</a></li>
+    <li><a href="#edit-seo" data-toggle="tab">SEO</a></li>
     <li><a href="#layout-content" data-toggle="tab">Layout</a></li>
     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Form&nbsp;<b class="caret"></b></a>
         <ul class="dropdown-menu">
@@ -84,43 +85,40 @@
                         </div>
                         @Html.ValidationMessageFor(x => x.UrlSegment)
 
-                        @if (Model is ITextPage)
-                        {
-                            Html.RenderPartial("Content", Model as ITextPage);
-                        }
+                        @{ Html.RenderPartial("Content", Model);}
 
-                        @if (!(Model is Redirect))
-                        {
-                            <div class="accordion-group">
-                                <div class="accordion-heading">
-                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-page-edit" href="#seo">SEO</a>
-                                </div>
-                                <div id="seo" class="accordion-body collapse">
-                                    <div class="accordion-inner">
-                                        @Html.LabelFor(x => x.MetaTitle, "Meta Title")
-                                        @Html.TextBoxFor(x => x.MetaTitle, new { @class = "span12" })
-                                        @Html.ValidationMessageFor(x => x.MetaTitle)
-                                        @Html.LabelFor(x => x.MetaDescription, "Meta Description")
-                                        @Html.TextBoxFor(x => x.MetaDescription, new { @class = "span12" })
-                                        @Html.ValidationMessageFor(x => x.MetaDescription)
-                                        @Html.LabelFor(x => x.MetaKeywords, "Meta Keywords")
-                                        @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "span12" })
-                                        @Html.ValidationMessageFor(x => x.MetaKeywords)
-                                        <div class="form-inline">
-                                            @Html.CheckBoxFor(x => x.RevealInNavigation)
-                                            @Html.LabelFor(x => x.RevealInNavigation, "Include in navigation")
-                                        </div>
-                                        @Html.ValidationMessageFor(x => x.RevealInNavigation)
-                                    </div>
-                                </div>
-                            </div>
-                        }
+
                         @Html.RenderCustomAdminProperties()
                     </div>
                 </div>
 
             </div>
 
+            <div class="tab-pane active" id="edit-seo">
+
+                @if (!(Model is Redirect))
+                {
+                    @Html.LabelFor(x => x.MetaTitle, "Meta Title")
+                    @Html.TextBoxFor(x => x.MetaTitle, new { @class = "span12" })
+                    @Html.ValidationMessageFor(x => x.MetaTitle)
+                    @Html.LabelFor(x => x.MetaDescription, "Meta Description")
+                    @Html.TextBoxFor(x => x.MetaDescription, new { @class = "span12" })
+                    @Html.ValidationMessageFor(x => x.MetaDescription)
+                    @Html.LabelFor(x => x.MetaKeywords, "Meta Keywords")
+                    @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "span12" })
+                    @Html.ValidationMessageFor(x => x.MetaKeywords)
+                    <div class="form-inline">
+                        @Html.CheckBoxFor(x => x.RevealInNavigation)
+                        @Html.LabelFor(x => x.RevealInNavigation, "Include in navigation")
+                    </div>
+                    @Html.ValidationMessageFor(x => x.RevealInNavigation)
+                    <label>
+                        @Html.CheckBoxFor(webpage => webpage.RequiresSSL) Requires SSL
+                    </label>
+
+                }
+
+            </div>
             <div class="tab-pane " id="layout-content">
                 <div class="well">
                     @if (!(Model is Redirect))

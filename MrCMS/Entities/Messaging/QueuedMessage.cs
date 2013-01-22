@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MrCMS.Entities.Messaging
 {
-    public class QueuedMessage : BaseEntity
+    public class QueuedMessage : SiteEntity
     {
         public virtual string FromAddress { get; set; }
         public virtual string FromName { get; set; }

@@ -1,5 +1,4 @@
 using MrCMS.Entities.Widget;
-using MrCMS.Models;
 
 namespace MrCMS.Services
 {
@@ -15,7 +14,6 @@ namespace MrCMS.Services
         object GetModel(Widget widget);
 
         void DeleteWidget(Widget widget);
-        AddWidgetModel GetAddWidgetModel(int layoutAreaId, string returnUrl);
-        Widget AddWidget(int layoutAreaId, string widgetType, string name);
+        Widget AddWidget(Widget widget);
     }
 }

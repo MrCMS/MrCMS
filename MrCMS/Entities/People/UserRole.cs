@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MrCMS.Entities.People
 {
-    public class UserRole : BaseEntity
+    public class UserRole : SystemEntity
     {
         public const string Administrator = "Administrator";
 

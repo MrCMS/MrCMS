@@ -8,7 +8,7 @@ namespace MrCMS.Services
     public interface IFileService
     {
         ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, int contentLength, MediaCategory mediaCategory);
-        ViewDataUploadFilesResult[] GetFiles(int mediaCategoryId);
+        ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory);
         MediaFile GetFile(int id);
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);
@@ -18,5 +18,6 @@ namespace MrCMS.Services
         string GetFileUrl(string value);
         string MediaDirectory { get; }
         void RemoveFolder(MediaCategory mediaCategory);
+        void CreateFolder(MediaCategory mediaCategory);
     }
 }

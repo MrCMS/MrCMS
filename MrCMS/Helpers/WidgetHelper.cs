@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Entities.Widget;
 
@@ -13,7 +14,16 @@ namespace MrCMS.Helpers
 
         public static IEnumerable<Type> WidgetTypes
         {
-            get { return _widgetTypes ?? (_widgetTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<Widget>()); }
+            get { return _widgetTypes ?? (_widgetTypes = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Widget>()); }
+        }
+
+        public static List<SelectListItem> WidgetTypeDropdownItems
+        {
+            get
+            {
+                return WidgetTypes.BuildSelectItemList(type => type.Name.BreakUpString(), type => type.Name,
+                                                       emptyItemText: null);
+            }
         }
 
         public static Widget GetNewWidget(string widgetType)
@@ -28,7 +38,7 @@ namespace MrCMS.Helpers
 
             var propertyInfos = widget.GetType().GetProperties();
 
-            foreach (var propertyInfo in propertyInfos.Where(x => x.DeclaringType != typeof(BaseEntity) && x.CanWrite))
+            foreach (var propertyInfo in propertyInfos.Where(x => x.DeclaringType != typeof(SiteEntity) && x.CanWrite))
             {
                 var value = collection[propertyInfo.Name];
 

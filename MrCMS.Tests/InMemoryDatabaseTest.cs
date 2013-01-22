@@ -5,7 +5,9 @@ using Elmah;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Tasks;
 using MrCMS.Tests.Stubs;
@@ -51,10 +53,21 @@ namespace MrCMS.Tests
 
             SetupRootChildren();
 
+            CurrentSite = Session.Transact(session =>
+                {
+                    var site = new Site { Name = "Current Site", BaseUrl = "www.currentsite.com" };
+                    MrCMSApplication.OverriddenSite = site;
+                    session.SaveOrUpdate(site);
+                    return site;
+                });
+
             TaskExecutor.Discard();
 
             MrCMSApplication.OverridenSignal = new ErrorSignal();
         }
+
+        protected Site CurrentSite { get; set; }
+
 
         private void SetupRootChildren()
         {
@@ -70,7 +83,7 @@ namespace MrCMS.Tests
                            };
 
             new AuthorisationService().SetPassword(user, "password", "password");
-            
+
             var adminUserRole = new UserRole
                                     {
                                         Name = UserRole.Administrator

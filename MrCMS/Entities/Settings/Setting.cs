@@ -5,7 +5,7 @@ namespace MrCMS.Entities.Settings
     /// <summary>
     /// Represents a setting
     /// </summary>
-    public partial class Setting : BaseEntity
+    public partial class Setting : SiteEntity
     {
         /// <summary>
         /// Gets or sets the name
@@ -16,7 +16,5 @@ namespace MrCMS.Entities.Settings
         /// Gets or sets the value
         /// </summary>
         public virtual string Value { get; set; }
-
-        public virtual Site Site { get; set; }
     }
 }

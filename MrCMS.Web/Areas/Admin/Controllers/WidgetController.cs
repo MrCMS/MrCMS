@@ -6,6 +6,8 @@ using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Website.Binders;
+using MrCMS.Website.Controllers;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -14,45 +16,46 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IDocumentService _documentService;
         private readonly IWidgetService _widgetService;
-        private readonly ILayoutAreaService _layoutAreaService;
         private readonly ISession _session;
 
-        public WidgetController(IDocumentService documentService, IWidgetService widgetService, ILayoutAreaService layoutAreaService, ISession session)
+        public WidgetController(IDocumentService documentService, IWidgetService widgetService, ISession session)
         {
             _documentService = documentService;
             _widgetService = widgetService;
-            _layoutAreaService = layoutAreaService;
             _session = session;
         }
 
         [HttpGet]
         [ValidateInput(false)]
-        public ViewResultBase Add(int layoutAreaId, string returnUrl = null)
+        public PartialViewResult Add(LayoutArea layoutArea, string returnUrl = null)
         {
-            var model = _widgetService.GetAddWidgetModel(layoutAreaId, returnUrl);
+            TempData["returnUrl"] = returnUrl;
+            var model = new AddWidgetModel
+                {
+                    LayoutArea = layoutArea
+                };
             return PartialView(model);
         }
 
         [HttpPost]
         [ActionName("Add")]
         [ValidateInput(false)]
-        public ActionResult Add_POST(int layoutAreaId, string widgetType, string returnUrl = null, string name = "")
+        public ActionResult Add_POST([IoCModelBinder(typeof(AddWidgetModelBinder))] Widget widget, string returnUrl = null)
         {
-            var newWidget = _widgetService.AddWidget(layoutAreaId, widgetType, name);
+            var newWidget = _widgetService.AddWidget(widget);
 
             return !string.IsNullOrWhiteSpace(returnUrl)
                        ? (ActionResult)Redirect(returnUrl)
                        : newWidget.HasProperties
                              ? RedirectToAction("Edit", "Widget", new { id = newWidget.Id })
-                             : RedirectToAction("Edit", "LayoutArea", new { id = layoutAreaId });
+                             : RedirectToAction("Edit", "LayoutArea", new { id = newWidget.LayoutArea.Id });
         }
 
         [HttpGet]
         [ValidateInput(false)]
-        public ViewResultBase Edit(int id)
+        [ActionName("Edit")]
+        public ViewResultBase Edit_Get(Widget widget)
         {
-            var widget = _widgetService.GetWidget<Widget>(id);
-
             widget.SetDropdownData(ViewData, _session);
 
             return View(widget);
@@ -100,38 +103,30 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ValidateInput(false)]
-        public ActionResult AddPageWidget(int pageId, int layoutAreaId)
+        public ActionResult AddPageWidget(LayoutArea layoutArea, int pageId, string returnUrl = null)
         {
-            var types = WidgetHelper.WidgetTypes.BuildSelectItemList(type => type.Name.BreakUpString(),
-                                                                     type => type.Name,
-                                                                     emptyItemText: "Select widget type...");
-
-            return PartialView(new AddPageWidgetModel(types, layoutAreaId, pageId, ""));
+            TempData["returnUrl"] = returnUrl;
+            var model = new AddWidgetModel
+            {
+                LayoutArea = layoutArea,
+                Webpage = _documentService.GetDocument<Webpage>(pageId)
+            };
+            return PartialView(model);
         }
 
         [HttpPost]
         [ActionName("AddPageWidget")]
         [ValidateInput(false)]
-        public ActionResult AddPageWidget_POST(int pageId, int layoutAreaId, string widgetType, bool isRecursive, string returnUrl = null, string name = "")
+        public ActionResult AddPageWidget_POST([IoCModelBinder(typeof(AddWidgetModelBinder))] Widget widget, string returnUrl = null)
         {
-            Widget newWidget = WidgetHelper.GetNewWidget(widgetType);
-            var webpage = _documentService.GetDocument<Webpage>(pageId);
-            LayoutArea layoutArea = _layoutAreaService.GetArea(layoutAreaId);
 
-            newWidget.LayoutArea = layoutArea;
-            newWidget.Name = name;
-            newWidget.Webpage = webpage;
-            newWidget.IsRecursive = isRecursive;
-            layoutArea.AddWidget(newWidget);
-
-            _widgetService.SaveWidget(newWidget);
-            _layoutAreaService.SaveArea(layoutArea);
+            _widgetService.SaveWidget(widget);
 
             return !string.IsNullOrWhiteSpace(returnUrl)
                        ? (ActionResult)Redirect(returnUrl)
-                       : newWidget.HasProperties
-                             ? RedirectToAction("Edit", "Widget", new { id = newWidget.Id })
-                             : RedirectToAction("Edit", "Webpage", new { id = pageId, layoutAreaId = layoutAreaId });
+                       : widget.HasProperties
+                             ? RedirectToAction("Edit", "Widget", new { id = widget.Id })
+                             : RedirectToAction("Edit", "Webpage", new { id = widget.Webpage.Id, layoutAreaId = widget.LayoutArea.Id });
         }
     }
 }
