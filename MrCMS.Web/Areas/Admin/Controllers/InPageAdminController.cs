@@ -7,6 +7,7 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
 using MrCMS.Website;
+using MrCMS.Website.Controllers;
 using NHibernate;
 using System.Linq;
 
@@ -47,7 +48,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ValidateInput(false)]
         public JsonResult SaveBodyContent(string content, int id, string type, string property)
         {
-            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<BaseEntity>();
+            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
             var entityType = types.FirstOrDefault(t => t.Name == type);
             if (entityType == null)
                 return Json(new SaveResult(false, string.Format("Could not find entity type '{0}'", type)));
@@ -88,7 +89,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ValidateInput(false)]
         public string GetUnformattedBodyContent(int id, string type, string property)
         {
-            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<BaseEntity>();
+            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
             var entityType = types.FirstOrDefault(t => t.Name == type);
             if (entityType == null)
                 return string.Empty;
@@ -104,7 +105,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ValidateInput(false)]
         public string GetFormattedBodyContent(int id, string type, string property)
         {
-            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<BaseEntity>();
+            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
             var entityType = types.FirstOrDefault(t => t.Name == type);
             if (entityType == null)
                 return string.Empty;

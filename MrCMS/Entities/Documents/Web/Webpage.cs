@@ -68,6 +68,10 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
 
+        [AllowHtml]
+        [DisplayName("Body Content")]
+        public virtual string BodyContent { get; set; }
+
         public virtual IEnumerable<Webpage> ActivePages
         {
             get

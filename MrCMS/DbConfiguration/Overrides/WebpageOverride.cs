@@ -18,6 +18,7 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(webpage => webpage.SendFormTo).CustomType<VarcharMax>().Length(4001);
             mapping.Map(webpage => webpage.FormMessage).CustomType<VarcharMax>().Length(4001);
             mapping.Map(webpage => webpage.FormSubmittedMessage).CustomType<VarcharMax>().Length(4001);
+            mapping.Map(webpage => webpage.BodyContent).CustomType<VarcharMax>().Length(4001);
         }
     }
 

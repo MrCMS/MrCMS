@@ -9,7 +9,7 @@ namespace MrCMS.Web.Application.DbConfiguration
     {
         public void Override(AutoMapping<TextPage> mapping)
         {
-            mapping.Map(page => page.BodyContent).CustomType<VarcharMax>().Length(4001);
+            //mapping.Map(page => page.BodyContent).CustomType<VarcharMax>().Length(4001);
         }
     }
 }

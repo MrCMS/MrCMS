@@ -43,7 +43,7 @@ namespace MrCMS.Website
             }
         }
 
-        public MvcHtmlString Editable<T>(T model, Expression<Func<T, string>> method, bool isHtml = false) where T : BaseEntity
+        public MvcHtmlString Editable<T>(T model, Expression<Func<T, string>> method, bool isHtml = false) where T : SystemEntity
         {
             if (model == null)
                 return MvcHtmlString.Empty;
