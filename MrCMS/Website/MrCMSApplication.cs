@@ -267,5 +267,9 @@ namespace MrCMS.Website
             }
             set { _databaseIsInstalled = value; }
         }
+
+
+        public const string AssemblyVersion = "0.1.1.*";
+        public const string AssemblyFileVersion = "0.1.1.0";
     }
 }
