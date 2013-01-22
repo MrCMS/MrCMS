@@ -9,9 +9,21 @@ using NHibernate;
 
 namespace MrCMS.Website.Binders
 {
+    public class AddDocumentGetModelBinder : DocumentModelBinder
+    {
+        public AddDocumentGetModelBinder(ISession session, IDocumentService documentService) : base(session, documentService)
+        {
+        }
+
+        public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        {
+            var model = CreateModel(controllerContext, bindingContext, bindingContext.ModelType);
+            return model;
+        }
+    }
+
     public class AddDocumentModelBinder : DocumentModelBinder
     {
-
         public AddDocumentModelBinder(ISession session, IDocumentService documentService)
             : base(session, documentService)
         {
@@ -35,7 +47,7 @@ namespace MrCMS.Website.Binders
                 (document as Webpage).RevealInNavigation = true;
 
                 var pages = (document.Parent == null
-                                 ? MrCMSApplication.RootChildren((document as Webpage).Site)
+                                 ? MrCMSApplication.RootChildren()
                                  : document.Parent.Children.OfType<Webpage>()).ToList();
                 document.DisplayOrder = pages.Any() ? pages.Max(x => x.DisplayOrder) + 1 : 0;
             }

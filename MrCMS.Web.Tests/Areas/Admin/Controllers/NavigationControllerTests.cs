@@ -39,29 +39,29 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void NavigationController_WebsiteTree_ShouldReturnWebsiteTreeListModelAsModel()
+        public void NavigationController_WebsiteTree_ShouldReturnWebsiteTreeAsModel()
         {
             NavigationController navigationController = GetNavigationController();
             var site = new Site();
             A.CallTo(() => _siteService.GetCurrentSite()).Returns(site);
-            A.CallTo(() => navigationService.GetWebsiteTree(site, null)).Returns(new SiteTree<Webpage>());
+            A.CallTo(() => navigationService.GetWebsiteTree(null)).Returns(new SiteTree<Webpage>());
 
             PartialViewResult partialViewResult = navigationController.WebSiteTree();
 
-            partialViewResult.Model.Should().BeOfType<WebsiteTreeListModel>();
+            partialViewResult.Model.Should().BeOfType<SiteTree<Webpage>>();
         }
 
         [Fact]
-        public void NavigationController_LayoutTree_ShouldReturnLayoutTreeListModel()
+        public void NavigationController_LayoutTree_ShouldReturnLayoutTreeAsModel()
         {
             NavigationController navigationController = GetNavigationController();
             var site = new Site();
             A.CallTo(() => _siteService.GetCurrentSite()).Returns(site);
-            A.CallTo(() => navigationService.GetLayoutList(site)).Returns(new SiteTree<Layout>());
+            A.CallTo(() => navigationService.GetLayoutList()).Returns(new SiteTree<Layout>());
 
             PartialViewResult partialViewResult = navigationController.LayoutTree();
 
-            partialViewResult.Model.Should().BeOfType<LayoutTreeListModel>();
+            partialViewResult.Model.Should().BeOfType<SiteTree<Layout>>();
         }
 
         [Fact]
@@ -105,13 +105,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             PartialViewResult result = navigationController.UserList();
 
             result.Model.Should().Be(siteTree);
-        }
-
-        [Fact]
-        public void NavigationController_LoggedInAs_ShouldCallGetEmailByName()
-        {
-            NavigationController navigationController = GetNavigationController();
-            navigationController.LoggedInAs();
         }
 
         [Fact]

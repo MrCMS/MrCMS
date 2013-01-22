@@ -22,27 +22,22 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void LayoutController_AddGet_ShouldReturnAddPageModel()
         {
             LayoutController layoutController = GetLayoutController();
+            var parent = new Layout();
 
-            var actionResult = layoutController.Add(1, 2) as ViewResult;
+            var actionResult = layoutController.Add_Get(parent) as ViewResult;
 
             actionResult.Model.Should().BeOfType<AddPageModel>();
-        }
-
-        private LayoutController GetLayoutController()
-        {
-            documentService = A.Fake<IDocumentService>();
-            _siteService = A.Fake<ISiteService>();
-            var layoutController = new LayoutController(documentService, _siteService);
-            return layoutController;
         }
 
         [Fact]
         public void LayoutController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
         {
             LayoutController layoutController = GetLayoutController();
-            A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(new TextPage {Id = 1, Site = new Site()});
-
-            var actionResult = layoutController.Add(1, 2) as ViewResult;
+            var parent = new Layout() {Id = 1, Site = layoutController.CurrentSite};
+            A.CallTo(() => documentService.GetDocument<Document>(1))
+             .Returns(parent);
+            
+            var actionResult = layoutController.Add_Get(parent) as ViewResult;
 
             (actionResult.Model as AddPageModel).ParentId.Should().Be(1);
         }
@@ -120,20 +115,22 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void LayoutController_Sort_ShouldCallGetDocumentsByParentId()
         {
             LayoutController layoutController = GetLayoutController();
+            var parent = new Layout();
 
-            layoutController.Sort(1);
+            layoutController.Sort(parent);
 
-            A.CallTo(() => documentService.GetDocumentsByParentId<Layout>(1, null)).MustHaveHappened();
+            A.CallTo(() => documentService.GetDocumentsByParent(parent)).MustHaveHappened();
         }
 
         [Fact]
         public void LayoutController_Sort_ShouldUseTheResultOfDocumentsByParentIdsAsModel()
         {
             LayoutController layoutController = GetLayoutController();
+            var layout = new Layout();
             var layouts = new List<Layout> {new Layout()};
-            A.CallTo(() => documentService.GetDocumentsByParentId<Layout>(1, null)).Returns(layouts);
+            A.CallTo(() => documentService.GetDocumentsByParent(layout)).Returns(layouts);
 
-            var viewResult = layoutController.Sort(1).As<ViewResult>();
+            var viewResult = layoutController.Sort(layout).As<ViewResult>();
 
             viewResult.Model.As<List<Layout>>().Should().BeEquivalentTo(layouts);
         }
@@ -165,6 +162,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             ViewResult actionResult = layoutController.Index();
 
             actionResult.Should().NotBeNull();
+        }
+
+        private LayoutController GetLayoutController()
+        {
+            documentService = A.Fake<IDocumentService>();
+            var layoutController = new LayoutController(documentService) {CurrentSite = new Site()};
+            return layoutController;
         }
     }
 }

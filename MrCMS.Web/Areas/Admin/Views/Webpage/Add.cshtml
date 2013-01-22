@@ -38,7 +38,6 @@
         </div>
     </div>
     @Html.HiddenFor(x => x.Parent.Id)
-    @Html.HiddenFor(x => x.Site.Id)
     @Html.LabelFor(x => x.Name, "Page Name")
     @Html.TextBoxFor(x => x.Name, new { @class = "span12 required", autocomplete="off" })
 

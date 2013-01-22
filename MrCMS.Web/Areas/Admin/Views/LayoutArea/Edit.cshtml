@@ -69,7 +69,7 @@
 
 
                 <div class="btn-group">
-                    <a href="@Url.Action("Add", "Widget", new { layoutAreaId = Model.Id })" class="btn" data-toggle="modal">Add widget</a>
+                    <a href="@Url.Action("Add", "Widget", new { id = Model.Id })" class="btn" data-toggle="modal">Add widget</a>
                     @{
                         if (Model.GetWidgets().Any())
                         {

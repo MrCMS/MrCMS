@@ -305,7 +305,7 @@ namespace MrCMS.Helpers
                 return htmlContent;
 
             var sb = new StringBuilder();
-            sb.Append("<div contenteditable='true' class='editable'>" + htmlContent + "</div>");
+            sb.Append("<div class='editable'>" + htmlContent + "</div>");
 
             return new HtmlString(sb.ToString());
         }

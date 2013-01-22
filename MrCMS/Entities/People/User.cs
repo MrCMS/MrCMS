@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace MrCMS.Entities.People
 {
-    public class User : BaseEntity
+    public class User : SystemEntity
     {
         [Required]
         [DisplayName("First Name")]

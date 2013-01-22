@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using MrCMS.Entities.Documents;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Website.Controllers;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -15,9 +17,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _tagService = tagService;
         }
 
-        public JsonResult Search(string term, int documentId)
+        public JsonResult Search(Document document, string term)
         {
-            IEnumerable<AutoCompleteResult> result = _tagService.Search(term, documentId);
+            IEnumerable<AutoCompleteResult> result = _tagService.Search(document, term);
 
             return Json(result);
         }

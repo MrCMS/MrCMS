@@ -6,10 +6,11 @@ using System.Web.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class RoleController : AdminController
+    public class RoleController : SystemController
     {
         private readonly IRoleService _roleService;
 

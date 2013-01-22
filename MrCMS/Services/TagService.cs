@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using NHibernate;
@@ -19,12 +20,12 @@ namespace MrCMS.Services
             _session = session;
         }
 
-        public IEnumerable<AutoCompleteResult> Search(string term, int documentId)
+        public IEnumerable<AutoCompleteResult> Search(Document document, string term)
         {
-            var categories = GetCategories(documentId);
+            var categories = GetCategories(document);
 
             return
-                _session.QueryOver<Tag>().Where(x => x.Name.IsLike(term, MatchMode.Start)).List().Select(
+                _session.QueryOver<Tag>().Where(x => x.Site == document.Site && x.Name.IsLike(term, MatchMode.Start)).List().Select(
                     tag =>
                     new AutoCompleteResult
                         {
@@ -34,10 +35,8 @@ namespace MrCMS.Services
                         });
         }
 
-        public IEnumerable<Tag> GetCategories(int documentId)
+        public IEnumerable<Tag> GetCategories(Document document)
         {
-            var document = _session.Get<Document>(documentId);
-
             IList<Tag> parentCategories = new List<Tag>();
 
             if (document != null)

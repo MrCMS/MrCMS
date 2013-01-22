@@ -3,6 +3,7 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Widget;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
 using MrCMS.Web.Application.Widgets;
@@ -18,31 +19,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private static IDocumentService _documentService;
 
         [Fact]
-        public void WidgetController_EditGet_ShouldCallWidgetServiceGetWidget()
-        {
-            WidgetController widgetController = GetWidgetController();
-
-            widgetController.Edit(1);
-
-            A.CallTo(() => _widgetService.GetWidget<Widget>(1)).MustHaveHappened();
-        }
-
-        private static WidgetController GetWidgetController()
-        {
-            _documentService = A.Fake<IDocumentService>();
-            _widgetService = A.Fake<IWidgetService>();
-            var layoutAreaService = A.Fake<ILayoutAreaService>();
-            return new WidgetController(_documentService, _widgetService, layoutAreaService, A.Fake<ISession>());
-        }
-
-        [Fact]
-        public void WidgetController_EditGet_ShouldReturnTheResultOfTheCallToWidgetService()
+        public void WidgetController_EditGet_ShouldReturnThePassedWidget()
         {
             WidgetController widgetController = GetWidgetController();
             var textWidget = new TextWidget();
-            A.CallTo(() => _widgetService.GetWidget<Widget>(1)).Returns(textWidget);
 
-            ViewResultBase result = widgetController.Edit(1);
+            ViewResultBase result = widgetController.Edit_Get(textWidget);
 
             result.Model.Should().Be(textWidget);
         }
@@ -160,21 +142,29 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WidgetController_Add_ReturnsPartialViewResult()
+        public void WidgetController_AddGet_ReturnsPartialViewResult()
         {
             WidgetController widgetController = GetWidgetController();
 
-            widgetController.Add(1, null).Should().BeOfType<PartialViewResult>();
+            widgetController.Add(new LayoutArea(), null).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
-        public void WidgetController_Add_CallsGetAddWidgetModelWithArguments()
+        public void WidgetController_Add_ReturnsAnAddWidgetModel()
         {
             WidgetController widgetController = GetWidgetController();
+            var layoutArea = new LayoutArea();
+            
+            var result = widgetController.Add(layoutArea, "return-url");
 
-            widgetController.Add(1, "return-url");
+            result.Model.Should().BeOfType<AddWidgetModel>();
+        }
 
-            A.CallTo(() => _widgetService.GetAddWidgetModel(1, "return-url")).MustHaveHappened();
+        private static WidgetController GetWidgetController()
+        {
+            _documentService = A.Fake<IDocumentService>();
+            _widgetService = A.Fake<IWidgetService>();
+            return new WidgetController(_documentService, _widgetService, A.Fake<ISession>());
         }
     }
 }

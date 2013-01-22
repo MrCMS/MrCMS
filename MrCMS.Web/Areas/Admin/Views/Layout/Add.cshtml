@@ -33,7 +33,6 @@
 @using (Html.BeginForm("Add", "Layout", new { id = "" }, FormMethod.Post, new { id = "add-layout" }))
 {
     @Html.HiddenFor(x => x.Parent.Id)
-    @Html.HiddenFor(x => x.Site.Id)
     @Html.LabelFor(x => x.Name, "Name")
     @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
     @Html.ValidationMessageFor(x => x.Name)

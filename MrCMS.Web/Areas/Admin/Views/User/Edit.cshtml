@@ -6,7 +6,6 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var onlyAdmin = Convert.ToBoolean(ViewData["OnlyAdmin"]);
     var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
-    var sites = ViewData["AvailableSites"] as IEnumerable<Site>;
 }
 <div class="row-fluid">
     <div class="span4">
@@ -33,7 +32,6 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
             <li><a href="#roles" data-toggle="tab">Roles</a></li>
-            <li><a href="#sites" data-toggle="tab">Sites</a></li>
         </ul>
         <div class="tab-content">
             <div id="properties" class="tab-pane active">
@@ -65,23 +63,6 @@
                         @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
                         @:&nbsp;
                         @Html.Label("Role-" + role.Id, role.Name)
-                        <br />
-                        }
-                    }
-                </div>
-            </div>
-            <div id="sites" class="tab-pane">
-                <div class="form-inline">
-                    @if (sites != null)
-                    {
-                        foreach (var site in sites)
-                        {
-                            bool isChecked = Model.Sites.Any(x => x.Id == site.Id) || Model.IsAdmin;
-                            bool isEnabled = !Model.IsAdmin;
-
-                        @Html.CheckBox("Site-" + site.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
-                        @:&nbsp;
-                        @Html.Label("Site-" + site.Id, site.Name)
                         <br />
                         }
                     }

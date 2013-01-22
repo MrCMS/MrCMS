@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace MrCMS.Entities.Documents
 {
-    public class Tag : BaseEntity
+    public class Tag : SiteEntity
     {
         private IList<Document> _documents = new List<Document>();
         public virtual string Name { get; set; }

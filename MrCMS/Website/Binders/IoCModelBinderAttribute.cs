@@ -5,9 +5,9 @@ using Ninject;
 
 namespace MrCMS.Website.Binders
 {
-    public class SessionModelBinderAttribute : CustomModelBinderAttribute
+    public class IoCModelBinderAttribute : CustomModelBinderAttribute
     {
-        public SessionModelBinderAttribute(Type type)
+        public IoCModelBinderAttribute(Type type)
         {
             if (type == null)
             {

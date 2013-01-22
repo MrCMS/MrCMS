@@ -6,6 +6,7 @@ using FluentAssertions;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Tests.Stubs;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -18,9 +19,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var tagService = A.Fake<ITagService>();
             var tagController = new TagController(tagService);
 
-            tagController.Search("test", 1);
+            var stubDocument = new StubDocument();
+            tagController.Search(stubDocument, "test");
 
-            A.CallTo(() => tagService.Search("test", 1)).MustHaveHappened();
+            A.CallTo(() => tagService.Search(stubDocument, "test")).MustHaveHappened();
         }
 
         [Fact]
@@ -29,9 +31,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var tagService = A.Fake<ITagService>();
             var tagController = new TagController(tagService);
             IEnumerable<AutoCompleteResult> results = Enumerable.Empty<AutoCompleteResult>();
-            A.CallTo(() => tagService.Search("test", 1)).Returns(results);
+            var stubDocument = new StubDocument();
+            A.CallTo(() => tagService.Search(stubDocument, "test")).Returns(results);
 
-            JsonResult result = tagController.Search("test", 1);
+            JsonResult result = tagController.Search(stubDocument, "test");
             result.Data.As<IEnumerable<AutoCompleteResult>>().Should().BeEquivalentTo(results);
         }
     }

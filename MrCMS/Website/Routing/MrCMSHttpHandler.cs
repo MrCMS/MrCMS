@@ -166,10 +166,17 @@ namespace MrCMS.Website.Routing
 
         public bool RequiresSSLRedirect(HttpContextBase context)
         {
-            var scheme = context.Request.Url.Scheme;
-            if (Webpage.RequiresSSL && scheme != "https" && _siteSettings.SiteIsLive)
+            var url = context.Request.Url;
+            var scheme = url.Scheme;
+            if (Webpage.RequiresSSL && scheme != "https" && SiteSettings.SiteIsLive)
             {
-                var redirectUrl = context.Request.Url.ToString().Replace(scheme + "://", "https://");
+                var redirectUrl = url.ToString().Replace(scheme + "://", "https://");
+                context.Response.RedirectPermanent(redirectUrl);
+                return true;
+            }
+            if (!Webpage.RequiresSSL && scheme != "http")
+            {
+                var redirectUrl = url.ToString().Replace(scheme + "://", "http://");
                 context.Response.RedirectPermanent(redirectUrl);
                 return true;
             }
@@ -338,16 +345,14 @@ namespace MrCMS.Website.Routing
 
         private Webpage GetWebpage()
         {
-            var site = SiteSettings.Site;
-
             Webpage webpage;
             if (string.IsNullOrWhiteSpace(Data))
             {
                 if (!MrCMSApplication.UserLoggedIn)
-                    webpage = MrCMSApplication.PublishedRootChildren(site).FirstOrDefault();
-                else webpage = MrCMSApplication.RootChildren(site).FirstOrDefault();
+                    webpage = MrCMSApplication.PublishedRootChildren().FirstOrDefault();
+                else webpage = MrCMSApplication.RootChildren().FirstOrDefault();
             }
-            else webpage = DocumentService.GetDocumentByUrl<Webpage>(Data, site);
+            else webpage = DocumentService.GetDocumentByUrl<Webpage>(Data);
 
             MrCMSApplication.CurrentPage = webpage;
             _webpageLookedUp = true;

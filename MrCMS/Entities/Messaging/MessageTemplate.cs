@@ -1,6 +1,6 @@
 ﻿namespace MrCMS.Entities.Messaging
 {
-    public class MessageTemplate : BaseEntity
+    public class MessageTemplate : SiteEntity
     {
         //public virtual MessageTemplateHeader Header { get; set; }
         public virtual string TemplateName { get; set; }

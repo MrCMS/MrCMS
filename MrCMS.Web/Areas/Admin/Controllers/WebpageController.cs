@@ -20,8 +20,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         private readonly IFormService _formService;
         private readonly ISession _session;
 
-        public WebpageController(IDocumentService documentService, ISiteService siteService, IFormService formService, ISession session)
-            : base(documentService, siteService)
+        public WebpageController(IDocumentService documentService, IFormService formService, ISession session)
+            : base(documentService)
         {
             _formService = formService;
             _session = session;
@@ -42,10 +42,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             }
         }
 
-        protected override void PopulateEditDropdownLists(Webpage doc, Site site)
+        protected override void PopulateEditDropdownLists(Webpage doc)
         {
             IEnumerable<Layout> layouts =
-                _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false && x.Site == doc.Site);
+                _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false && x.Site == CurrentSite);
 
             ViewData["Layout"] = layouts.BuildSelectItemList(layout => layout.Name,
                                                              layout => layout.Id.ToString(CultureInfo.InvariantCulture),
@@ -55,7 +55,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                                              SelectListItemHelper.EmptyItem("Default Layout"));
 
             var documentTypeDefinitions =
-                (doc.Parent as Webpage).GetValidWebpageDocumentTypes(_documentService, site).ToList();
+                (doc.Parent as Webpage).GetValidWebpageDocumentTypes(_documentService, CurrentSite).ToList();
             ViewData["DocumentTypes"] = documentTypeDefinitions;
 
             doc.AdminViewData(ViewData, _session);
@@ -144,9 +144,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(data);
         }
 
-        public string SuggestDocumentUrl(int? parentId, string pageName, int? siteId)
+        public string SuggestDocumentUrl(Webpage parent, string pageName)
         {
-            return _documentService.GetDocumentUrl(pageName, parentId, _siteService.GetSite(siteId.GetValueOrDefault()), true);
+            return _documentService.GetDocumentUrl(pageName, parent, true);
         }
     }
 }

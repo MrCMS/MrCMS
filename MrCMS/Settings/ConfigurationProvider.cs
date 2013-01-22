@@ -11,10 +11,12 @@ namespace MrCMS.Settings
     public class ConfigurationProvider : IConfigurationProvider
     {
         private readonly ISettingService _settingService;
+        private readonly CurrentSite _currentSite;
 
-        public ConfigurationProvider(ISettingService settingService)
+        public ConfigurationProvider(ISettingService settingService, CurrentSite currentSite)
         {
             _settingService = settingService;
+            _currentSite = currentSite;
         }
 
 
@@ -41,7 +43,7 @@ namespace MrCMS.Settings
             }
         }
 
-        public void DeleteSettings(Site site, SiteSettingsBase settings)
+        public void DeleteSettings(SiteSettingsBase settings)
         {
             var type = settings.GetType();
             IEnumerable<PropertyInfo> properties = from prop in type.GetProperties()
@@ -49,24 +51,24 @@ namespace MrCMS.Settings
 
             List<Setting> settingList =
                 properties.Select(prop => type.FullName + "." + prop.Name)
-                          .Select(key => _settingService.GetSettingByKey(site, key))
+                          .Select(key => _settingService.GetSettingByKey(_currentSite.Site, key))
                           .Where(setting => setting != null).ToList();
 
             foreach (Setting setting in settingList)
                 _settingService.DeleteSetting(setting);
         }
 
-        public List<SiteSettingsBase> GetAllSiteSettings(Site site)
+        public List<SiteSettingsBase> GetAllSiteSettings()
         {
-            var methodInfo = GetType().GetMethodExt("GetSettings", typeof (Site));
+            var methodInfo = GetType().GetMethodExt("GetSiteSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()
-                             .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] {site}))
+                             .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] {  }))
                              .OfType<SiteSettingsBase>().ToList();
 
         }
 
-        public TSettings GetSettings<TSettings>() where TSettings : GlobalSettingsBase, new()
+        public TSettings GetGlobalSettings<TSettings>() where TSettings : GlobalSettingsBase, new()
         {
             var settings = Activator.CreateInstance<TSettings>();
 
@@ -127,14 +129,14 @@ namespace MrCMS.Settings
 
         public List<GlobalSettingsBase> GetAllGlobalSettings()
         {
-            var methodInfo = GetType().GetMethodExt("GetSettings");
+            var methodInfo = GetType().GetMethodExt("GetGlobalSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<GlobalSettingsBase>()
                              .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
                              .OfType<GlobalSettingsBase>().ToList();
         }
 
-        public TSettings GetSettings<TSettings>(Site currentSite) where TSettings : SiteSettingsBase, new()
+        public TSettings GetSiteSettings<TSettings>() where TSettings : SiteSettingsBase, new()
         {
             var settings = Activator.CreateInstance<TSettings>();
 
@@ -143,7 +145,7 @@ namespace MrCMS.Settings
                              where prop.CanWrite && prop.CanRead
                              where prop.Name != "Site"
                              let setting =
-                                 _settingService.GetSettingValueByKey<string>(currentSite,
+                                 _settingService.GetSettingValueByKey<string>(_currentSite.Site,
                                  string.Format("{0}.{1}", typeof(TSettings).FullName, prop.Name))
                              where setting != null
                              where prop.PropertyType.GetCustomTypeConverter().CanConvertFrom(typeof(string))
@@ -153,7 +155,7 @@ namespace MrCMS.Settings
 
             // assign properties
             properties.ToList().ForEach(p => p.prop.SetValue(settings, p.value, null));
-            settings.Site = currentSite;
+            settings.Site = _currentSite.Site;
 
             return settings;
         }

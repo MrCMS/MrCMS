@@ -1,6 +1,6 @@
 namespace MrCMS.Entities.Messaging
 {
-    public class QueuedMessageAttachment : BaseEntity
+    public class QueuedMessageAttachment : SiteEntity
     {
         public virtual QueuedMessage QueuedMessage { get; set; }
 

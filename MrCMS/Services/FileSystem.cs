@@ -32,6 +32,15 @@ namespace MrCMS.Services
             return path;
         }
 
+        public void CreateDirectory(string filePath)
+        {
+            var path = GetPath(filePath);
+
+            var directoryInfo = new DirectoryInfo(path);
+            if (!directoryInfo.Exists)
+                directoryInfo.Create();
+        }
+
         public void Delete(string filePath)
         {
             var path = GetPath(filePath);

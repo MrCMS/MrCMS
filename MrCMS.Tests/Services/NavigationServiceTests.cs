@@ -27,25 +27,24 @@ namespace MrCMS.Tests.Services
 
         private NavigationService GetDefaultNavigationService()
         {
-            return new NavigationService(_documentService, null);
+            return new NavigationService(_documentService, null, new CurrentSite(CurrentSite));
         }
 
         [Fact]
         public void NavigationService_WebpageTree_WithRootShouldReturnASiteTree()
         {
             var navigationService = GetDefaultNavigationService();
-            var websiteTree = navigationService.GetWebsiteTree(A.Fake<Site>());
+            var websiteTree = navigationService.GetWebsiteTree();
             websiteTree.Should().BeOfType<SiteTree<Webpage>>();
         }
 
         [Fact]
         public void NavigationService_WebpageTree_SiteTreeShouldRecursivelyReturnNodesToMirrorTheSavedWebpages()
         {
-            var site = new Site();
-            var page1 = new BasicMappedWebpage { Parent = null, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = site };
-            var page2 = new BasicMappedWebpage { Parent = page1, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = site };
-            var page3 = new BasicMappedWebpage { Parent = page2, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = site };
-            var page4 = new BasicMappedWebpage { Parent = page2, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = site };
+            var page1 = new BasicMappedWebpage { Parent = null, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
+            var page2 = new BasicMappedWebpage { Parent = page1, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
+            var page3 = new BasicMappedWebpage { Parent = page2, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
+            var page4 = new BasicMappedWebpage { Parent = page2, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
             page2.Children.Add(page3);
             page2.Children.Add(page4);
             page1.Children.Add(page2);
@@ -56,11 +55,11 @@ namespace MrCMS.Tests.Services
                                      session.SaveOrUpdate(page2);
                                      session.SaveOrUpdate(page3);
                                      session.SaveOrUpdate(page4);
-                                     session.SaveOrUpdate(site);
                                  });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), new SiteService(Session, A.Fake<HttpRequestBase>())), null);
-            var websiteTree = navigationService.GetWebsiteTree(site);
+            var currentSite = new CurrentSite(CurrentSite);
+            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), currentSite), null, currentSite);
+            var websiteTree = navigationService.GetWebsiteTree();
 
             websiteTree.Children.Should().HaveCount(1);
             websiteTree.Children.First().Children.Should().HaveCount(1);
@@ -78,10 +77,10 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void NavigationService_MediaTree_SiteTreeShouldRecursivelyReturnNodesToMirrorTheSavedMediaCategories()
         {
-            var category1 = new MediaCategory { Parent = null };
-            var category2 = new MediaCategory { Parent = category1 };
-            var category3 = new MediaCategory { Parent = category2 };
-            var category4 = new MediaCategory { Parent = category2 };
+            var category1 = new MediaCategory { Parent = null, Site = CurrentSite };
+            var category2 = new MediaCategory { Parent = category1, Site = CurrentSite };
+            var category3 = new MediaCategory { Parent = category2, Site = CurrentSite };
+            var category4 = new MediaCategory { Parent = category2, Site = CurrentSite };
             category2.Children.Add(category3);
             category2.Children.Add(category4);
             category1.Children.Add(category2);
@@ -94,7 +93,7 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(category4);
             });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), new SiteService(Session, A.Fake<HttpRequestBase>())), null);
+            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings { Site = CurrentSite }, new CurrentSite(CurrentSite)), null, null);
             var mediaTree = navigationService.GetMediaTree();
 
             mediaTree.Children.Should().HaveCount(1);
@@ -106,18 +105,17 @@ namespace MrCMS.Tests.Services
         public void NavigationService_LayoutList_WithRootShouldReturnASiteTree()
         {
             var navigationService = GetDefaultNavigationService();
-            var layoutList = navigationService.GetLayoutList(new Site());
+            var layoutList = navigationService.GetLayoutList();
             layoutList.Should().BeOfType<SiteTree<Layout>>();
         }
 
         [Fact]
         public void NavigationService_LayoutList_SiteTreeShouldBeFlatListOfLayouts()
         {
-            var site = new Site();
-            var layout1 = new Layout { Site = site };
-            var layout2 = new Layout { Site = site };
-            var layout3 = new Layout { Site = site };
-            var layout4 = new Layout { Site = site };
+            var layout1 = new Layout { Site = CurrentSite };
+            var layout2 = new Layout { Site = CurrentSite };
+            var layout3 = new Layout { Site = CurrentSite };
+            var layout4 = new Layout { Site = CurrentSite };
 
             Session.Transact(session =>
             {
@@ -127,8 +125,10 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(layout4);
             });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), new SiteService(Session, A.Fake<HttpRequestBase>())), null);
-            var layoutList = navigationService.GetLayoutList(site);
+            var currentSite = new CurrentSite(CurrentSite);
+            var navigationService = new NavigationService(
+                new DocumentService(Session, new SiteSettings(), currentSite), null, currentSite);
+            var layoutList = navigationService.GetLayoutList();
 
             layoutList.Children.Should().HaveCount(4);
         }

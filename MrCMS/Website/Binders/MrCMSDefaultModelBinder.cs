@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Website.Controllers;
 using NHibernate;
 
 namespace MrCMS.Website.Binders
@@ -24,8 +26,13 @@ namespace MrCMS.Website.Binders
         }
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
+            if (controllerContext.Controller is AdminController &&
+                typeof (SystemEntity).IsAssignableFrom(bindingContext.ModelType) &&
+                (CreateModel(controllerContext, bindingContext, bindingContext.ModelType) == null || ShouldReturnNull(controllerContext,bindingContext)))
+                return null;
+
             var bindModel = base.BindModel(controllerContext, bindingContext);
-            if (bindModel is BaseEntity)
+            if (bindModel is SiteEntity)
             {
                 var model = bindModel;
                 bindingContext.ModelMetadata =
@@ -33,16 +40,23 @@ namespace MrCMS.Website.Binders
                             () => CreateModel(controllerContext, bindingContext, model.GetType()), bindModel.GetType());
                 bindingContext.ModelMetadata.Model = bindModel;
                 bindModel = base.BindModel(controllerContext, bindingContext);
-                var baseEntity = bindModel as BaseEntity;
+                var baseEntity = bindModel as SiteEntity;
                 if (baseEntity != null)
-                    baseEntity.CustomBinding(controllerContext,Session);
+                {
+                    baseEntity.CustomBinding(controllerContext, Session);
+                }
             }
             return bindModel;
         }
 
+        protected virtual bool ShouldReturnNull(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        {
+            return false;
+        }
+
         protected override object GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
-            if (propertyDescriptor.PropertyType.IsSubclassOf(typeof(BaseEntity)))
+            if (propertyDescriptor.PropertyType.IsSubclassOf(typeof(SiteEntity)))
             {
                 var id = controllerContext.HttpContext.Request[bindingContext.ModelName + ".Id"];
                 int idVal;
@@ -51,47 +65,50 @@ namespace MrCMS.Website.Binders
                                                                idVal)
                            : null;
             }
-            if (typeof(IEnumerable<BaseEntity>).IsAssignableFrom(propertyDescriptor.PropertyType))
+            if (typeof(IEnumerable<SiteEntity>).IsAssignableFrom(propertyDescriptor.PropertyType))
             {
                 var baseValue = base.GetPropertyValue(controllerContext, bindingContext, propertyDescriptor, propertyBinder);
 
-                var retrievedValue = baseValue as IEnumerable<BaseEntity>;
-                
-                var baseEntities = retrievedValue as BaseEntity[] ?? retrievedValue.ToArray();
-                for (int i = 0; i < baseEntities.Count(); i++)
+                var retrievedValue = baseValue as IEnumerable<SiteEntity>;
+
+                if (retrievedValue != null)
                 {
-                    var deletedKey = propertyDescriptor.Name + "[" + i + "].Deleted";
-
-                    var isDeleted =
-                        Convert.ToString(controllerContext.RouteData.Values[deletedKey] ??
-                                         controllerContext.HttpContext.Request[deletedKey]).Contains("true");
-
-                    if (isDeleted)
+                    var baseEntities = retrievedValue as SiteEntity[] ?? retrievedValue.ToArray();
+                    for (int i = 0; i < baseEntities.Count(); i++)
                     {
-                        var baseEntity = baseEntities.ElementAt(i);
+                        var deletedKey = propertyDescriptor.Name + "[" + i + "].Deleted";
 
-                        foreach (var property in baseEntity.GetType().GetProperties().Where(info => info.PropertyType.IsSubclassOf(typeof(BaseEntity))))
+                        var isDeleted =
+                            Convert.ToString(controllerContext.RouteData.Values[deletedKey] ??
+                                             controllerContext.HttpContext.Request[deletedKey]).Contains("true");
+
+                        if (isDeleted)
                         {
-                            var parent = property.GetValue(baseEntity, null) as BaseEntity;
+                            var baseEntity = baseEntities.ElementAt(i);
 
-                            if (parent == null)
-                                continue;
-                            var makeGenericType = typeof(IList<>).MakeGenericType(baseEntity.GetType());
-                            var lists =
-                                parent.GetType().GetProperties().Where(
-                                    info => makeGenericType.IsAssignableFrom(info.PropertyType));
-
-                            foreach (var info in lists)
+                            foreach (var property in baseEntity.GetType().GetProperties().Where(info => info.PropertyType.IsSubclassOf(typeof(SiteEntity))))
                             {
-                                var infoValue = info.GetValue(parent, null);
-                                var methodInfo = info.PropertyType.GetMethodExt("Remove", new[] { baseEntity.GetType() });
+                                var parent = property.GetValue(baseEntity, null) as SiteEntity;
 
-                                methodInfo.Invoke(infoValue, new[] { baseEntity });
+                                if (parent == null)
+                                    continue;
+                                var makeGenericType = typeof(IList<>).MakeGenericType(baseEntity.GetType());
+                                var lists =
+                                    parent.GetType().GetProperties().Where(
+                                        info => makeGenericType.IsAssignableFrom(info.PropertyType));
+
+                                foreach (var info in lists)
+                                {
+                                    var infoValue = info.GetValue(parent, null);
+                                    var methodInfo = info.PropertyType.GetMethodExt("Remove", new[] { baseEntity.GetType() });
+
+                                    methodInfo.Invoke(infoValue, new[] { baseEntity });
+                                }
+
+                                property.SetValue(baseEntity, null, null);
                             }
-
-                            property.SetValue(baseEntity, null, null);
+                            Session.Delete(baseEntity);
                         }
-                        Session.Delete(baseEntity);
                     }
                 }
 
@@ -109,13 +126,19 @@ namespace MrCMS.Website.Binders
 
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
         {
-            return GetModelFromSession(controllerContext, bindingContext.ModelName, modelType)
-                   ?? base.CreateModel(controllerContext, bindingContext, modelType);
+            var modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
+            if (modelFromSession != null)
+                return modelFromSession;
+            if (modelType == typeof (Webpage))
+                return null;
+            var model = base.CreateModel(controllerContext, bindingContext, modelType);
+
+            return model;
         }
 
         public object GetModelFromSession(ControllerContext controllerContext, string modelName, Type modelType)
         {
-            if (typeof (BaseEntity).IsAssignableFrom(modelType))
+            if (typeof(SystemEntity).IsAssignableFrom(modelType))
             {
                 var subItem = string.Format("{0}.Id", modelName);
 
@@ -131,9 +154,8 @@ namespace MrCMS.Website.Binders
                 }
 
                 const string baseId = "Id";
-                id =
-                    Convert.ToString(controllerContext.RouteData.Values[baseId] ??
-                                     controllerContext.HttpContext.Request[baseId]);
+                id = Convert.ToString(controllerContext.RouteData.Values[baseId] ??
+                                      controllerContext.HttpContext.Request[baseId]);
 
                 if (int.TryParse(id, out intId))
                 {

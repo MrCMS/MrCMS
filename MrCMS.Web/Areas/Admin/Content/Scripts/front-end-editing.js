@@ -73,7 +73,7 @@ function inlineEditing() {
                             type: el.data('type'),
                             content: el.html()
                         },
-                        success: function (msg) {
+                        success: function(msg) {
                             if (isHtml)
                                 showLiveForm(el);
                         }

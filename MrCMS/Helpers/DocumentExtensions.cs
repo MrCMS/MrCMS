@@ -28,11 +28,7 @@ namespace MrCMS.Helpers
 
         private static T DeserializeVersion<T>(DocumentVersion version, T doc) where T : Document
         {
-            var deserializeObject = JsonConvert.DeserializeObject(version.Data, doc.GetType()) as T;
-            deserializeObject.Id = version.Id;
-            deserializeObject.CreatedOn = version.CreatedOn;
-            return deserializeObject;
-
+            return JsonConvert.DeserializeObject(version.Data, doc.GetType()) as T;
         }
 
         public static List<VersionChange> GetComparison(this Document currentVersion, int verisonId)
@@ -52,8 +48,8 @@ namespace MrCMS.Helpers
             var propertyInfos =
                 currentVersion.GetType().GetProperties()
                     .Where(info =>
-                           info.CanWrite && !info.PropertyType.IsGenericType && !typeof(BaseEntity).IsAssignableFrom(info.PropertyType) &&
-                           info.DeclaringType != typeof(BaseEntity))
+                           info.CanWrite && !info.PropertyType.IsGenericType && !typeof(SiteEntity).IsAssignableFrom(info.PropertyType) &&
+                           info.DeclaringType != typeof(SiteEntity))
                     .ToList();
 
             changes.AddRange(from propertyInfo in propertyInfos
