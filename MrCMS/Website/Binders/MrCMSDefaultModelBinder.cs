@@ -28,7 +28,7 @@ namespace MrCMS.Website.Binders
         {
             if (controllerContext.Controller is AdminController &&
                 typeof (SystemEntity).IsAssignableFrom(bindingContext.ModelType) &&
-                CreateModel(controllerContext, bindingContext, bindingContext.ModelType) == null)
+                (CreateModel(controllerContext, bindingContext, bindingContext.ModelType) == null || ShouldReturnNull(controllerContext,bindingContext)))
                 return null;
 
             var bindModel = base.BindModel(controllerContext, bindingContext);
@@ -47,6 +47,11 @@ namespace MrCMS.Website.Binders
                 }
             }
             return bindModel;
+        }
+
+        protected virtual bool ShouldReturnNull(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        {
+            return false;
         }
 
         protected override object GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)

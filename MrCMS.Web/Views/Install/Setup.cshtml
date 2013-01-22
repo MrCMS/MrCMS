@@ -19,7 +19,7 @@
         });
 
         $(document).ready(function() {
-            $('input:radio[name=DataProvider]').click(toggleProvider);
+            $('input:radio[name=DatabaseType]').click(toggleProvider);
             $('input:radio[name=SqlConnectionInfo]').click(toggleSqlConnectionInfo);
             $('input:radio[name=SqlAuthenticationType]').click(toggleSqlAuthenticationType);
 
@@ -30,7 +30,7 @@
 
 
         function toggleProvider() {
-            var selectedProvider = $("input[name=DataProvider]:checked").attr('id');
+            var selectedProvider = $("input[name=DatabaseType]:checked").attr('id');
             if (selectedProvider == 'provider_sqlite') {
                 $('#sqlConnectionInfo').hide();
             } else {

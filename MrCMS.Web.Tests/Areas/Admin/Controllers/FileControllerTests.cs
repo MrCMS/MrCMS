@@ -9,6 +9,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Tests.Stubs;
+using MrCMS.Website.Controllers;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -71,11 +72,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void FileController_Files_ReturnsAJsonResult()
+        public void FileController_Files_ReturnsAJsonNetResult()
         {
             FileController fileController = GetFileController();
 
-            fileController.Files(new MediaCategory()).Should().BeOfType<JsonResult>();
+            fileController.Files(new MediaCategory()).Should().BeOfType<JsonNetResult>();
         }
 
         [Fact]
@@ -90,12 +91,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void FileController_FilesPost_ReturnsJsonResult()
+        public void FileController_FilesPost_ReturnsJsonNetResult()
         {
             FileController fileController = GetFileController();
             fileController.RequestMock = A.Fake<HttpRequestBase>();
 
-            fileController.Files_Post(new MediaCategory()).Should().BeOfType<JsonResult>();
+            fileController.Files_Post(new MediaCategory()).Should().BeOfType<JsonNetResult>();
         }
 
         [Fact]
