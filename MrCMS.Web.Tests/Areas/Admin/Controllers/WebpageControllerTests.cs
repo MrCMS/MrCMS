@@ -199,15 +199,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WebpageController_SortAction_ShouldCallSortOrderOnTheDocumentServiceWithTheRelevantValues()
-        {
-            WebpageController webpageController = GetWebpageController();
-            webpageController.SortAction(1, 2);
-
-            A.CallTo(() => documentService.SetOrder(1, 2)).MustHaveHappened();
-        }
-
-        [Fact]
         public void WebpageController_View_InvalidIdReturnsRedirectToIndex()
         {
             WebpageController webpageController = GetWebpageController();

@@ -136,15 +136,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void LayoutController_SortAction_ShouldCallSortOrderOnTheDocumentServiceWithTheRelevantValues()
-        {
-            LayoutController layoutController = GetLayoutController();
-            layoutController.SortAction(1, 2);
-
-            A.CallTo(() => documentService.SetOrder(1, 2)).MustHaveHappened();
-        }
-
-        [Fact]
         public void LayoutController_View_InvalidIdReturnsRedirectToIndex()
         {
             LayoutController layoutController = GetLayoutController();
