@@ -315,7 +315,10 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
                             label: b.lang.common.browseServer,
                             hidden: false,
                             onLoad: function () {
-                                $(this.getInputElement().$).attr("href", null).attr("data-link", "/Admin/MediaCategory/MediaSelector").click(function () {
+                                $(this.getInputElement().$).attr("href", null).click(function () {
+                                    var selectorUrl = "/Admin/MediaCategory/MediaSelector?v=" + new Date().getTime();
+                                    $(this).attr("data-link", selectorUrl);
+                                    $(this).data("link", selectorUrl);
                                     launchModal($(this), function (element, value) {
                                         $('.image-url').val(value);
                                         $('#' + B).attr('src', value);
