@@ -47,15 +47,17 @@ namespace MrCMS.Services
             if (resizePart == null) return false;
 
             int val;
-            return new List<char> { 'w', 'h' }.Contains(resizePart[0]) && Int32.TryParse(resizePart.Substring(1), out val);
+            var parts = resizePart.Split('_');
+            return parts.Count() == 2 && parts[0].StartsWith("w") && parts[1].StartsWith("h") &&
+                   int.TryParse(parts[0].Substring(1), out val) && int.TryParse(parts[1].Substring(1), out val);
         }
 
         private static string GetResizePart(string imageUrl)
         {
-            if (imageUrl.LastIndexOf('_') == -1 || imageUrl.LastIndexOf('.') == -1)
+            if (imageUrl.LastIndexOf("_w") == -1 || imageUrl.LastIndexOf('.') == -1)
                 return null;
 
-            var startIndex = imageUrl.LastIndexOf('_') + 1;
+            var startIndex = imageUrl.LastIndexOf("_w") + 1;
             var length = imageUrl.LastIndexOf('.') - startIndex;
             if (length < 2) return null;
             var resizePart = imageUrl.Substring(startIndex, length);

@@ -186,7 +186,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WebpageController_Sort_ShouldUseTheResultOfDocumentsByParentIdsAsModel()
+        public void WebpageController_Sort_ShouldBeAListOfSortItems()
         {
             WebpageController webpageController = GetWebpageController();
             var textPage = new TextPage();
@@ -195,7 +195,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             var viewResult = webpageController.Sort(textPage).As<ViewResult>();
 
-            viewResult.Model.As<List<Webpage>>().Should().BeEquivalentTo(webpages);
+            viewResult.Model.Should().BeOfType<List<SortItem>>();
         }
 
         [Fact]
