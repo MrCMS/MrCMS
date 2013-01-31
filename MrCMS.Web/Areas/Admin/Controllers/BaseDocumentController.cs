@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Multisite;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
@@ -79,16 +80,23 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
         public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))]T parent)
         {
-            List<T> categories = _documentService.GetDocumentsByParent(parent).ToList();
+            var sortItems =
+                _documentService.GetDocumentsByParent(parent).OrderBy(arg => arg.DisplayOrder)
+                                .Select(
+                                    arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
+                                .ToList();
 
-            return View(categories);
+            return View(sortItems);
         }
 
-        public void SortAction(int documentId, int order)
+        [HttpPost]
+        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))]T parent, List<SortItem> items)
         {
-            _documentService.SetOrder(documentId, order);
+            _documentService.SetOrders(items);
+            return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
         }
 
         public abstract ActionResult Show(T document);

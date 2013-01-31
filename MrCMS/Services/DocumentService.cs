@@ -349,6 +349,16 @@ namespace MrCMS.Services
                                   });
         }
 
+        public void SetOrders(List<SortItem> items)
+        {
+            _session.Transact(session => items.ForEach(item =>
+                                                           {
+                                                               var document = session.Get<Document>(item.Id);
+                                                               document.DisplayOrder = item.Order;
+                                                               session.Update(document);
+                                                           }));
+        }
+
         public bool AnyPublishedWebpages()
         {
             return _session.QueryOver<Webpage>().Where(webpage => webpage.Published).Cacheable().RowCount() > 0;

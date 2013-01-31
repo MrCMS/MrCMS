@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
@@ -119,7 +120,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_Sort_ShouldUseTheResultOfDocumentsByParentIdsAsModel()
+        public void MediaCategoryController_Sort_ShouldBeAListOfSortItems()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
             var mediaCategory = new MediaCategory();
@@ -128,16 +129,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             var viewResult = mediaCategoryController.Sort(mediaCategory).As<ViewResult>();
 
-            viewResult.Model.As<List<MediaCategory>>().Should().BeEquivalentTo(mediaCategories);
-        }
-
-        [Fact]
-        public void MediaCategoryController_SortAction_ShouldCallSortOrderOnTheDocumentServiceWithTheRelevantValues()
-        {
-            MediaCategoryController mediaCategoryController = GetMediaCategoryController();
-            mediaCategoryController.SortAction(1, 2);
-
-            A.CallTo(() => _documentService.SetOrder(1, 2)).MustHaveHappened();
+            viewResult.Model.Should().BeOfType<List<SortItem>>();
         }
 
         [Fact]

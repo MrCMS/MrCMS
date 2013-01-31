@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Multisite;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
@@ -123,7 +124,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void LayoutController_Sort_ShouldUseTheResultOfDocumentsByParentIdsAsModel()
+        public void LayoutController_Sort_ShouldBeAListOfSortItems()
         {
             LayoutController layoutController = GetLayoutController();
             var layout = new Layout();
@@ -132,16 +133,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             var viewResult = layoutController.Sort(layout).As<ViewResult>();
 
-            viewResult.Model.As<List<Layout>>().Should().BeEquivalentTo(layouts);
-        }
-
-        [Fact]
-        public void LayoutController_SortAction_ShouldCallSortOrderOnTheDocumentServiceWithTheRelevantValues()
-        {
-            LayoutController layoutController = GetLayoutController();
-            layoutController.SortAction(1, 2);
-
-            A.CallTo(() => documentService.SetOrder(1, 2)).MustHaveHappened();
+            viewResult.Model.Should().BeOfType<List<SortItem>>();
         }
 
         [Fact]
