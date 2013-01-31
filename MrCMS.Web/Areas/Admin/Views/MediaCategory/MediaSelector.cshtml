@@ -23,7 +23,7 @@
                         }
                     </div>
                     <div class="clearfix"></div>
-                    @Html.Pager(Model, "MediaSelector", i => new { page = i })
+                    @Html.Pager(Model, "MediaSelector", i => new { page = i, categoryId = Model.CategoryId })
                 </div>
             </div>
             <div class="tab-pane" id="upload">
