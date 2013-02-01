@@ -17,11 +17,11 @@ CKEDITOR.editorConfig = function( config ) {
     config.toolbar_Full =
     [
         { name: 'document', items: ['Source', '-', 'Templates'] },
+        { name: 'styles', items: ['Format', 'Styles'] },
         { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-        { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt'] },
+         ['Scayt'],
         { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
-        { name: 'styles', items: ['Format', 'FontSize'] },
-        { name: 'colors', items: ['TextColor', 'BGColor'] },
+        
         { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
         {
             name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv',
