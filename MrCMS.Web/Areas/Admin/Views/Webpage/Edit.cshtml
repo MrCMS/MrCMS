@@ -79,6 +79,7 @@
                         @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
                         @Html.ValidationMessageFor(x => x.Name)
                         <br />
+                        <br />
                         <div class="display-inline mar">
                             <strong>Permalink:</strong> /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
                             <button id="change-url" class="btn btn-mini">Change Url</button>
@@ -98,6 +99,9 @@
 
                 @if (!(Model is Redirect))
                 {
+                    @Html.LabelFor(x => x.ShortTitle)
+                    @Html.TextBoxFor(x => x.ShortTitle, new { @class = "span12" })
+                    @Html.ValidationMessageFor(x => x.ShortTitle)
                     @Html.LabelFor(x => x.MetaTitle, "Meta Title")
                     @Html.TextBoxFor(x => x.MetaTitle, new { @class = "span12" })
                     @Html.ValidationMessageFor(x => x.MetaTitle)

@@ -25,19 +25,19 @@
 
     $("#my-form-builder ul").sortable({ opacity: 0.6, cursor: 'move', handle: 'strong' });
 
-    if ($.cookie('selected-layout-area')) {
+    if ($.cookie('selected-layout-area-' + location.pathname)) {
         $('#accordion-layout-areas a[href="#' + $.cookie('selected-layout-area') + '"]').click();
     }
 
     $('#accordion-layout-areas').on('shown', function (e) {
-        $.cookie('selected-layout-area', e.target.id, { expires: 1, path: location.pathname });
+        $.cookie('selected-layout-area-' + location.pathname, e.target.id, { expires: 1 });
     });
 
     $('#accordion-layout-areas').on('hidden', function (e) {
-        $.cookie('selected-layout-area', '', { expires: 1, path: location.pathname });
+        $.cookie('selected-layout-area' + location.pathname, '', { expires: 1 });
     });
 
-    $('#PublishOn').change(function() {
+    $('#PublishOn').change(function () {
         $('#publish-on-hidden').val($(this).val());
     });
 });

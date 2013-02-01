@@ -15,6 +15,7 @@ namespace MrCMS.Settings
         private Size _largeSize;
         private Size _mediumSize;
         private Size _smallSize;
+        private Size _maxSize;
 
         [DisplayName("Thumbnail Image Height")]
         public int ThumbnailImageHeight { get; set; }
@@ -35,7 +36,6 @@ namespace MrCMS.Settings
         public int SmallImageHeight { get; set; }
         [DisplayName("Small Image Width")]
         public int SmallImageWidth { get; set; }
-
 
         public Size ThumbnailSize
         {
@@ -108,6 +108,29 @@ namespace MrCMS.Settings
                     yield return new ImageSize("Small", SmallSize);
                 if (ThumbnailSize != Size.Empty)
                     yield return new ImageSize("Thumbnail", ThumbnailSize);
+            }
+        }
+
+
+
+
+        [DisplayName("Enforce Max Image Size")]
+        public bool EnforceMaxImageSize { get; set; }
+        [DisplayName("Max Image Size Height")]
+        public int MaxImageSizeHeight { get; set; }
+        [DisplayName("Max Image Size Width")]
+        public int MaxImageSizeWidth { get; set; }
+
+
+        public Size MaxSize
+        {
+            get
+            {
+                if (_maxSize == Size.Empty)
+                {
+                    _maxSize = new Size(MaxImageSizeHeight, MaxImageSizeWidth);
+                }
+                return _maxSize;
             }
         }
     }

@@ -66,6 +66,7 @@ namespace MrCMS.Services
 
             if (mediaFile.IsImage)
             {
+                _imageProcessor.EnforceMaxSize(ref stream, mediaFile, _mediaSettings);
                 _imageProcessor.SetFileDimensions(mediaFile, stream);
             }
 

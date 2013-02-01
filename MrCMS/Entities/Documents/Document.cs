@@ -16,6 +16,9 @@ namespace MrCMS.Entities.Documents
         [Required]
         public virtual string Name { get; set; }
 
+        [DisplayName("Short Title")]
+        public virtual string ShortTitle { get; set; }
+
         public virtual Document Parent { get; set; }
         [Required]
         [DisplayName("Display Order")]

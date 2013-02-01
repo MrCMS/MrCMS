@@ -4,6 +4,8 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
 (function () {
+    var altTextInput,
+        titleTextInput;
     var a = function (b, c) {
         var d = 1, e = 2, f = 4, g = 8, h = /^\s*(\d+)((px)|\%)?\s*$/i, i = /(^\s*(\d+)((px)|\%)?\s*$)|^$/i, j = /^\d+px$/, k = function () {
             var C = this.getValue(), D = this.getDialog(), E = C.match(h);
@@ -323,7 +325,10 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
                                         $('.image-url').val(value);
                                         $('#' + B).attr('src', value);
                                         $('#' + B).show();
-
+                                        $.get('/Admin/Image/GetImageData', { url: value, v: new Date().getTime() }, function (response) {
+                                            altTextInput.setValue(response.alt);
+                                            titleTextInput.setValue(response.title);
+                                        });
                                     });
                                 });
                             }
@@ -337,6 +342,9 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
                             if (E.getValue() || E.isChanged()) D.setAttribute('alt', E.getValue());
                         } else if (C == f) D.setAttribute('alt', E.getValue());
                         else if (C == g) D.removeAttribute('alt');
+                    },
+                    onLoad: function () {
+                        altTextInput = this.getInputElement();
                     }
                 }, {
                     type: 'hbox',
@@ -630,6 +638,9 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
                                 if (E.getValue() || E.isChanged()) D.setAttribute('title', E.getValue());
                             } else if (C == f) D.setAttribute('title', E.getValue());
                             else if (C == g) D.removeAttribute('title');
+                        },
+                        onLoad: function() {
+                            titleTextInput = this.getInputElement();
                         }
                     }]
                 }, {

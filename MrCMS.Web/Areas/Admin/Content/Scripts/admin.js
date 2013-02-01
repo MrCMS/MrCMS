@@ -5,16 +5,17 @@
         $("#nav-tabs li:eq(" + getTabNumber() + ") a").tab('show');
     }
 
+    var currentTab = $.cookie('selected-tab-' + location.pathname);
     if (location.hash !== '') {
         $('.inner-content a[href="' + location.hash + '"]').tab('show');
-    } else if ($.cookie('selected-tab')) {
-        $('.inner-content a[href="' + $.cookie('selected-tab') + '"]').tab('show');
-    } else if ($('.inner-content li a[data-toggle="tab"]').length > 0 && $('.inner-content li.active a[data-toggle="tab"]').length ==0) {
+    } else if (currentTab) {
+        $('.inner-content a[href="' + currentTab + '"]').tab('show');
+    } else if ($('.inner-content li a[data-toggle="tab"]').length > 0 && $('.inner-content li.active a[data-toggle="tab"]').length == 0) {
         $('.inner-content a[data-toggle="tab"]').eq(0).click();
     }
 
     $('.inner-content a[data-toggle="tab"]').on('shown', function (e) {
-        $.cookie('selected-tab', e.target.hash, { expires: 1, path: location.pathname });
+        $.cookie('selected-tab-' + location.pathname, e.target.hash, { expires: 1 });
     });
 
     $(".datepicker").datepicker();
@@ -96,7 +97,7 @@
         }
     });
 
-    $(document).on('click', '.date-time-picker', function() {
+    $(document).on('click', '.date-time-picker', function () {
         var that = $(this);
         if (!that.hasClass('hasDatepicker')) {
             that.datetimepicker({
