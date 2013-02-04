@@ -52,10 +52,11 @@ namespace MrCMS.Website
                 TaskExecutor.SessionFactory = Get<ISessionFactory>();
 
             EndRequest += (sender, args) =>
-                              {
-                                  AppendScheduledTasks();
-                                  TaskExecutor.StartExecuting();
-                              };
+            {
+                if (DatabaseIsInstalled)
+                    AppendScheduledTasks();
+                TaskExecutor.StartExecuting();
+            };
         }
 
         protected void AppendScheduledTasks()
@@ -224,7 +225,7 @@ namespace MrCMS.Website
 
         public static Site CurrentSite
         {
-            get {  return OverriddenSite?? Get<ISiteService>().GetCurrentSite(); }
+            get { return OverriddenSite ?? Get<ISiteService>().GetCurrentSite(); }
         }
 
         public static Site OverriddenSite { get; set; }

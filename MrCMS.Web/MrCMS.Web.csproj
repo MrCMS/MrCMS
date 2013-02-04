@@ -605,6 +605,7 @@
     <Content Include="Areas\Admin\Views\Task\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Task\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Task\Delete.cshtml" />
+    <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
   </ItemGroup>
   <ItemGroup>
