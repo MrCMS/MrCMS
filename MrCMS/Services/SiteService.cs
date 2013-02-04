@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using MrCMS.Entities.Multisite;
@@ -69,13 +70,20 @@ namespace MrCMS.Services
 
         public Site GetCurrentSite()
         {
-            return _currentSite ?? (_currentSite = GetSiteFromRequest());
+            return _currentSite ?? (_currentSite = GetSiteFromSettingForDebugging() ?? GetSiteFromRequest());
+        }
+
+        private Site GetSiteFromSettingForDebugging()
+        {
+            var appSetting = ConfigurationManager.AppSettings["debugSiteId"];
+
+            int id;
+            return int.TryParse(appSetting, out id) ? _session.Get<Site>(id) : null;
         }
 
         private Site GetSiteFromRequest()
         {
             var authority = _requestBase.Url.Authority;
-
 
             var allSites = GetAllSites();
             var site = allSites.FirstOrDefault(s => s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase));
