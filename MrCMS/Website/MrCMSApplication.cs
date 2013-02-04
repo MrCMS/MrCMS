@@ -51,7 +51,18 @@ namespace MrCMS.Website
             if (DatabaseIsInstalled)
                 TaskExecutor.SessionFactory = Get<ISessionFactory>();
 
-            EndRequest += (sender, args) => TaskExecutor.StartExecuting();
+            EndRequest += (sender, args) =>
+                              {
+                                  AppendScheduledTasks();
+                                  TaskExecutor.StartExecuting();
+                              };
+        }
+
+        protected void AppendScheduledTasks()
+        {
+            var scheduledTaskManager = Get<IScheduledTaskManager>();
+            foreach (var scheduledTask in scheduledTaskManager.GetDueTasks())
+                TaskExecutor.ExecuteLater(scheduledTaskManager.GetTask(scheduledTask));
         }
 
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)

@@ -147,6 +147,7 @@
     <Compile Include="Areas\Admin\Controllers\SettingsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SitesController.cs" />
     <Compile Include="Areas\Admin\Controllers\TagController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TaskController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageController.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
@@ -600,6 +601,10 @@
     </Content>
     <Content Include="Areas\Admin\Views\Log\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Log\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\Task\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Task\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Task\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Task\Delete.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
   </ItemGroup>
   <ItemGroup>

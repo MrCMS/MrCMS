@@ -273,6 +273,8 @@
     <Compile Include="Shortcodes\IFormElementRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
     <Compile Include="Tasks\BackgroundTask.cs" />
+    <Compile Include="Tasks\IScheduledTaskManager.cs" />
+    <Compile Include="Tasks\ScheduledTask.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />
