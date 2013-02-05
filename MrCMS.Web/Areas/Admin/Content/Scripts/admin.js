@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
     $().dropdown();
+    $("[rel='tooltip']").tooltip();
 
     if ($('#nav-tabs').length) {
         $("#nav-tabs li:eq(" + getTabNumber() + ") a").tab('show');

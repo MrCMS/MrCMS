@@ -79,11 +79,6 @@
                         @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
                         @Html.ValidationMessageFor(x => x.Name)
                         <br />
-                        <br />
-                        <div class="display-inline mar">
-                            <strong>Permalink:</strong> /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
-                            <button id="change-url" class="btn btn-mini">Change Url</button>
-                        </div>
                         @Html.ValidationMessageFor(x => x.UrlSegment)
 
                         @{ Html.RenderPartial("Content", Model);}
@@ -98,7 +93,13 @@
             <div class="tab-pane" id="edit-seo">
 
                 @if (!(Model is Redirect))
-                {
+                {       
+                    <div class="display-inline">
+                        <i class="icon-exclamation-sign" rel="tooltip" data-placement="top" data-original-title="The permalink should not be changed after the page is created. If you change the URL, make sure to make a redirect from the old URL to the new URL for search engines to still find your page." ></i><i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar. For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>Permalink: /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
+                        <button id="change-url" class="btn btn-mini">Change</button>
+                        
+                    </div>
+                    <hr />
                     @Html.LabelFor(x => x.MetaTitle, "Meta Title")
                     @Html.TextBoxFor(x => x.MetaTitle, new { @class = "span12" })
                     @Html.ValidationMessageFor(x => x.MetaTitle)
