@@ -40,7 +40,7 @@
         },
         enable: function () {
             setEditingEnabled(true);
-            $("#enable-editing").text("Editing: On");
+            $("#enable-editing").text("Inline Editing: On");
 
             $(settings.editableSelector).each(function (index, element) {
                 var el = $(element);
@@ -98,19 +98,18 @@
                 }
             });
             //foreach widget add the HTML code
-            $("div[data-widget-id]").each(function () {
+            $("div[data-layout-area-id]").each(function () {
                 $(this).prepend("<div class='edit-indicator'><img src='/Areas/Admin/Content/Images/pencil.png' /></div>");
             });
 
             $('.edit-indicator').click(function () {
                 //what is the layout area?
-                var layoutAreaContainerId = $(this).parentsUntil(".layout-area").parent().data('layout-area-id');
+                var layoutAreaContainerId = $(this).parent().data('layout-area-id');
                 //the widget?
-                var widgetId = $(this).parent().data('widget-id');
 
-                var menu = '<div class="admin-tools edit-widget gradient-bg" style="background:#ffffff;"><ul><li><a id="" href="/Admin/Widget/Edit/' + widgetId + '" target="_parent" class="btn btn-mini" style="color:#333;text-decoration:none;">Edit this widget</a></li><li><a href="/Admin/Widget/AddPageWidget?pageId=' + $('#Id').val() + '&layoutAreaId=' + layoutAreaContainerId + '" data-toggle="modal" class="btn btn-mini" style="color:#333;text-decoration:none;">Add new widget here</a></li><li><a href="/Admin/Widget/Delete/' + widgetId + '" data-toggle="modal" class="btn btn-mini" style="color:#333;text-decoration:none;">Delete this widget</a></li></ul></div>';
+                var menu = '<div class="admin-tools edit-widget gradient-bg" style="background:#ffffff;"><ul><li><a href="/Admin/Widget/AddPageWidget?pageId=' + $('#Id').val() + '&layoutAreaId=' + layoutAreaContainerId + '" data-toggle="modal" class="btn btn-mini" style="color:#333;text-decoration:none;">Add new widget here</a></li></ul></div>';
 
-                $(this).parent().prepend(menu.replace('#widget-id#', widgetId).replace('#layoutid#', layoutAreaContainerId));
+                $(this).parent().prepend(menu);
 
                 //if click outside hide the menu
                 $(document).mouseup(function (e) {
