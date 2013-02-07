@@ -89,18 +89,6 @@ namespace MrCMS.Website.Routing
             context.Response.AppendHeader("X-Built-With", "Mr CMS - http://mrcms.codeplex.com");
         }
 
-        public bool IsHeadRequest(HttpContextBase context)
-        {
-            if (HttpMethod == "HEAD" && Webpage != null)
-            {
-		context.Response.ClearContent();
-                context.Response.AppendHeader("Content-Type", "text/html; charset=utf-8");
-		context.Response.StatusCode = 200;
-                return true;
-            }
-            return false;
-        }
-
         public void SetViewModel(Controller controller)
         {
             if (HttpMethod == "GET" && Webpage != null)
