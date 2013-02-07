@@ -1,7 +1,7 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Models.AddWidgetModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 <div class="modal-header">
-    <a class="close" data-dismiss="modal">×</a>
     <h3>Add widget</h3>
 </div>
 @using (Html.BeginForm("AddPageWidget", "Widget", new { id = "", returnUrl = Request.UrlReferrer.ToString() }, FormMethod.Post))
@@ -20,7 +20,6 @@
         @Html.EditorFor(widget => widget.IsRecursive)
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
         <input type="submit" class="btn-success btn" value="Add widget" />
     </div>
 }

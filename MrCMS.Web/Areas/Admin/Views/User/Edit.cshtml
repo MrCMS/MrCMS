@@ -14,11 +14,11 @@
     <div class="span8">
         <div class="btn-group  display-inline  pull-right">
             @Html.ActionLink("Back to list", "Index", "User", null, new { @class = "btn" })
-            <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn" data-toggle="modal">Reset Password</a>
+            <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn" data-toggle="fb-modal">Reset Password</a>
 
             @if (onlyAdmin)
             {
-                <a href="@Url.Action("Delete", "User", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
+                <a href="@Url.Action("Delete", "User", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
             }
             <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-user">
                 Save</button>

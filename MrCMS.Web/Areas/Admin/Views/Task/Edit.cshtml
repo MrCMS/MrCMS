@@ -4,7 +4,6 @@
 @using (Html.BeginForm("Edit", "Task", FormMethod.Post))
 {
     <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
         <h3>Edit Task</h3>
     </div>
     <div class="modal-body">
@@ -15,7 +14,6 @@
         @Html.ValidationMessageFor(task => task.EveryXMinutes)
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
         <input type="submit" class="btn-primary btn" value="Add task" />
     </div>
 }

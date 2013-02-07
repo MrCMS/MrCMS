@@ -1,12 +1,9 @@
 ﻿@model MrCMS.Entities.People.UserRole
 
-@{
-    Layout = null;
-}
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 @using (Html.BeginForm("Delete", "Role", FormMethod.Post))
 {
     <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
         <h3>Delete Role</h3>
     </div>
     <div class="modal-body">
@@ -14,7 +11,6 @@
         <br />
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
         <input type="submit" class="btn-primary btn" value="Delete role" />
     </div>
 }

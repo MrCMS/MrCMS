@@ -19,7 +19,7 @@
             {
                 @Html.ActionLink("Back to layout area", "Edit", "LayoutArea", new { id = Model.LayoutArea.Id }, new { @class = "btn" })
             }
-            <a href="@Url.Action("Delete", "Widget", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete Widget</a>
+            <a href="@Url.Action("Delete", "Widget", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete Widget</a>
             <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-document">
                 Save</button>
         </div>

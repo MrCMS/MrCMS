@@ -1,22 +1,23 @@
 ﻿@model MrCMS.Web.Areas.Admin.Models.AddPageModel
 @{
     ViewBag.Title = "Add Layout";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
 }
 @section JavaScriptBlock
 {
     <script type="text/javascript">
-        $("#suggest-url").click(function (e) {
-            e.preventDefault();
-            var pageName = $("#Name").val(),
-                parentId = $("#ParentId").val();
-            if (pageName == "")
-                alert("Please enter a name to suggest a URL");
-            else {
-                $.get('/Admin/Layout/SuggestDocumentUrl', { pageName: pageName, parentId: parentId }, function (data) {
-                    $("#UrlSegment").val(data);
-                });
-            }
-        });
+    	$("#suggest-url").click(function (e) {
+    		e.preventDefault();
+    		var pageName = $("#Name").val(),
+		    parentId = $("#ParentId").val();
+    		if (pageName == "")
+    			alert("Please enter a name to suggest a URL");
+    		else {
+    			$.get('/Admin/Layout/SuggestDocumentUrl', { pageName: pageName, parentId: parentId }, function (data) {
+    				$("#UrlSegment").val(data);
+    			});
+    		}
+    	});
     </script>
 }
 <section class="admin-header">

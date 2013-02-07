@@ -23,7 +23,7 @@
             <div class="btn-group  display-inline  pull-right">
                 @if (Model.CanDelete)
                 {
-                    <a href="@Url.Action("Delete", "MediaCategory", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete Category</a>
+                    <a href="@Url.Action("Delete", "MediaCategory", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete Category</a>
                 }
                 <button class="btn btn-primary" id="save-edit" data-form-id="edit-media" data-action="save">
                     Save</button>
