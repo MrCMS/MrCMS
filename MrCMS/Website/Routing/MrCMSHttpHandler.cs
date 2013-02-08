@@ -66,8 +66,6 @@ namespace MrCMS.Website.Routing
 
             if (!IsAllowed(context)) return;
 
-        //if(IsHeadRequest(context))return;
-
             var controller = GetController();
 
             SetViewModel(controller);
