@@ -28,6 +28,7 @@ namespace MrCMS.Services
         Layout GetDefaultLayout(Webpage currentPage);
         void SetTags(string taglist, Document document);
         void SetOrder(int documentId, int order);
+        void SetOrders(List<SortItem> items);
         bool AnyPublishedWebpages();
         bool AnyWebpages();
         IEnumerable<Webpage> GetWebPagesByParentIdForNav(int parentId);

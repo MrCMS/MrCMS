@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Settings;
 using NHibernate;
 
 namespace MrCMS.Services
@@ -47,27 +48,30 @@ namespace MrCMS.Services
             if (resizePart == null) return false;
 
             int val;
-            return new List<char> { 'w', 'h' }.Contains(resizePart[0]) && Int32.TryParse(resizePart.Substring(1), out val);
+            var parts = resizePart.Split('_');
+            return parts.Count() == 2 && parts[0].StartsWith("w") && parts[1].StartsWith("h") &&
+                   int.TryParse(parts[0].Substring(1), out val) && int.TryParse(parts[1].Substring(1), out val);
         }
 
         private static string GetResizePart(string imageUrl)
         {
-            if (imageUrl.LastIndexOf('_') == -1 || imageUrl.LastIndexOf('.') == -1)
+            if (imageUrl.LastIndexOf("_w") == -1 || imageUrl.LastIndexOf('.') == -1)
                 return null;
 
-            var startIndex = imageUrl.LastIndexOf('_') + 1;
+            var startIndex = imageUrl.LastIndexOf("_w") + 1;
             var length = imageUrl.LastIndexOf('.') - startIndex;
             if (length < 2) return null;
             var resizePart = imageUrl.Substring(startIndex, length);
             return resizePart;
         }
 
-        public void SetFileDimensions(MediaFile mediaFile, Stream stream)
+        public void SetFileDimensions(MediaFile file, Stream stream)
         {
             using (var b = new Bitmap(stream))
             {
-                mediaFile.Width = b.Size.Width;
-                mediaFile.Height = b.Size.Height;
+                file.Width = b.Size.Width;
+                file.Height = b.Size.Height;
+                file.ContentLength = Convert.ToInt32(stream.Length);
             }
         }
 
@@ -98,6 +102,36 @@ namespace MrCMS.Services
                                              ?? GetImageCodecInfoFromMimeType("image/jpeg");
                         newBitMap.Save(filePath, ici, ep);
                     }
+                }
+            }
+        }
+
+        public void EnforceMaxSize(ref Stream stream, MediaFile file, MediaSettings mediaSettings)
+        {
+            if (!mediaSettings.EnforceMaxImageSize)
+                return;
+
+
+            using (var original = new Bitmap(stream))
+            {
+                var newSize = CalculateDimensions(original.Size, mediaSettings.MaxSize);
+
+                using (var newBitMap = new Bitmap(newSize.Width, newSize.Height))
+                {
+                    var g = Graphics.FromImage(newBitMap);
+                    g.SmoothingMode = SmoothingMode.HighQuality;
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.CompositingQuality = CompositingQuality.HighQuality;
+                    g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    g.DrawImage(original, 0, 0, newSize.Width, newSize.Height);
+                    var ep = new EncoderParameters();
+                    ep.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
+                    ImageCodecInfo ici = GetImageCodecInfoFromExtension(file.FileExtension)
+                                         ?? GetImageCodecInfoFromMimeType("image/jpeg");
+                    var memoryStream = new MemoryStream();
+                    newBitMap.Save(memoryStream, ici, ep);
+
+                    stream = memoryStream;
                 }
             }
         }
@@ -141,7 +175,7 @@ namespace MrCMS.Services
         public static Size CalculateDimensions(Size originalSize, Size targetSize)
         {
             // If the target image is bigger than the source
-            if (!RequiresResize(originalSize, targetSize)|| targetSize== Size.Empty)
+            if (!RequiresResize(originalSize, targetSize) || targetSize == Size.Empty)
             {
                 return originalSize;
             }
@@ -149,10 +183,10 @@ namespace MrCMS.Services
             double ratio = 0;
 
             // What ratio should we resize it by
-            double? widthRatio = targetSize.Width == 0 ? (double?) null : originalSize.Width/(double) targetSize.Width;
+            double? widthRatio = targetSize.Width == 0 ? (double?)null : originalSize.Width / (double)targetSize.Width;
             double? heightRatio = targetSize.Height == 0
-                                      ? (double?) null
-                                      : originalSize.Height/(double) targetSize.Height;
+                                      ? (double?)null
+                                      : originalSize.Height / (double)targetSize.Height;
             ratio = widthRatio.GetValueOrDefault() > heightRatio.GetValueOrDefault()
                         ? originalSize.Width / (double)targetSize.Width
                         : originalSize.Height / (double)targetSize.Height;
@@ -185,7 +219,7 @@ namespace MrCMS.Services
             var fileLocation = file.FileLocation;
 
             var temp = fileLocation.Replace(file.FileExtension, "");
-            if(size.Width != 0)
+            if (size.Width != 0)
                 temp += "_w" + size.Width;
             if (size.Height != 0)
                 temp += "_h" + size.Height;

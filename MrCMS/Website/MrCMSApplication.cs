@@ -51,7 +51,19 @@ namespace MrCMS.Website
             if (DatabaseIsInstalled)
                 TaskExecutor.SessionFactory = Get<ISessionFactory>();
 
-            EndRequest += (sender, args) => TaskExecutor.StartExecuting();
+            EndRequest += (sender, args) =>
+            {
+                if (DatabaseIsInstalled)
+                    AppendScheduledTasks();
+                TaskExecutor.StartExecuting();
+            };
+        }
+
+        protected void AppendScheduledTasks()
+        {
+            var scheduledTaskManager = Get<IScheduledTaskManager>();
+            foreach (var scheduledTask in scheduledTaskManager.GetDueTasks())
+                TaskExecutor.ExecuteLater(scheduledTaskManager.GetTask(scheduledTask));
         }
 
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
@@ -213,7 +225,7 @@ namespace MrCMS.Website
 
         public static Site CurrentSite
         {
-            get {  return OverriddenSite?? Get<ISiteService>().GetCurrentSite(); }
+            get { return OverriddenSite ?? Get<ISiteService>().GetCurrentSite(); }
         }
 
         public static Site OverriddenSite { get; set; }
@@ -267,5 +279,9 @@ namespace MrCMS.Website
             }
             set { _databaseIsInstalled = value; }
         }
+
+
+        public const string AssemblyVersion = "0.1.1.*";
+        public const string AssemblyFileVersion = "0.1.1.0";
     }
 }

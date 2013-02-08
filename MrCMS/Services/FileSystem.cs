@@ -23,6 +23,8 @@ namespace MrCMS.Services
                 stream.Position = 0;
                 stream.CopyTo(file);
             }
+            stream.Close();
+            stream.Dispose();
         }
 
         private string GetPath(string relativeFilePath)

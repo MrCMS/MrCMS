@@ -10,7 +10,7 @@
         <div class="span6">
             <div class="btn-group  display-inline  pull-right">
                 @Html.ActionLink("Back to Layout", "Edit", "Layout", new { id = Model.Layout.Id }, new { @class = "btn" })
-                <a href="@Url.Action("Delete", "LayoutArea", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete</a>
+                <a href="@Url.Action("Delete", "LayoutArea", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                 <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-document">
                     Save</button>
             </div>
@@ -54,7 +54,7 @@
                                         </td>
                                         <td>
                                             @Html.ActionLink("Edit", "Edit", "Widget", new {id = widget.Id}, new {@class = "btn"})
-                                            <a href="@Url.Action("Delete", "Widget", new {id = widget.Id})" class="btn btn-danger" data-toggle="modal">Delete</a>
+                                            <a href="@Url.Action("Delete", "Widget", new {id = widget.Id})" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                                         </td>
                                     </tr>
                                 }
@@ -69,7 +69,7 @@
 
 
                 <div class="btn-group">
-                    <a href="@Url.Action("Add", "Widget", new { id = Model.Id })" class="btn" data-toggle="modal">Add widget</a>
+                    <a href="@Url.Action("Add", "Widget", new { id = Model.Id })" class="btn" data-toggle="fb-modal">Add widget</a>
                     @{
                         if (Model.GetWidgets().Any())
                         {

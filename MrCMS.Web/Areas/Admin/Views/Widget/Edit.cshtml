@@ -19,7 +19,7 @@
             {
                 @Html.ActionLink("Back to layout area", "Edit", "LayoutArea", new { id = Model.LayoutArea.Id }, new { @class = "btn" })
             }
-            <a href="@Url.Action("Delete", "Widget", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete Widget</a>
+            <a href="@Url.Action("Delete", "Widget", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete Widget</a>
             <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-document">
                 Save</button>
         </div>
@@ -30,24 +30,12 @@
     @Html.Hidden("ReturnUrl", Request.UrlReferrer)
     @Html.HiddenFor(widget => widget.Id)
     @Html.Hidden("returnUrl", ViewData["return-url"])
-    <div class="accordion" id="accordion-page-edit">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-page-edit" href="#main">Main</a>
-            </div>
-            <div id="main" class="accordion-body collapse">
-                <div class="accordion-inner">
-                    @Html.LabelFor(widget => widget.Name)
-                    @Html.EditorFor(widget => widget.Name)
-                    @if (Model.Webpage != null)
-                    {
-                        @Html.LabelFor(widget => widget.IsRecursive)
-                        @Html.EditorFor(widget => widget.IsRecursive)
-                    }
-
-                </div>
-            </div>
-        </div>
-        @Html.RenderCustomAdminProperties()
-    </div>
+    @Html.LabelFor(widget => widget.Name)
+    @Html.EditorFor(widget => widget.Name)
+    if (Model.Webpage != null)
+    {
+        @Html.LabelFor(widget => widget.IsRecursive)
+        @Html.EditorFor(widget => widget.IsRecursive)
+    }
+    @Html.RenderCustomAdminProperties()
 }

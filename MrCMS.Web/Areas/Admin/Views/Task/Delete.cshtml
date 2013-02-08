@@ -1,0 +1,16 @@
+﻿@model MrCMS.Tasks.ScheduledTask
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+
+@using (Html.BeginForm("Delete", "Task", FormMethod.Post))
+{
+    <div class="modal-header">
+        <h3>Delete task</h3>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to delete the task @Model.Type? Deleting this site will delete all associated pages and settings and can not be undone.
+        <br />
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn-primary btn" value="Delete task" />
+    </div>
+}

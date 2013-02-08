@@ -1,0 +1,19 @@
+﻿@model MrCMS.Tasks.ScheduledTask
+
+
+@using (Html.BeginForm("Edit", "Task", FormMethod.Post))
+{
+    <div class="modal-header">
+        <h3>Edit Task</h3>
+    </div>
+    <div class="modal-body">
+        @Html.LabelFor(task => task.Type)
+        @Html.DisplayFor(task => task.Type)
+        @Html.LabelFor(task => task.EveryXMinutes)
+        @Html.TextBoxFor(task => task.EveryXMinutes)
+        @Html.ValidationMessageFor(task => task.EveryXMinutes)
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn-primary btn" value="Add task" />
+    </div>
+}

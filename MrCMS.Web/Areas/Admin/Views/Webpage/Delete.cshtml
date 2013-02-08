@@ -1,13 +1,12 @@
 ﻿@model MrCMS.Entities.Documents.Web.Webpage
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel">Confirm delete</h3>
 </div>
 <div class="modal-body">
     <p>Deleting this webpage can not be undone.</p>
 </div>
 <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     @using (Html.BeginForm("Delete", "Webpage", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
     {
         <input type="submit" class="btn btn-primary" value="Confirm Delete Webpage" />

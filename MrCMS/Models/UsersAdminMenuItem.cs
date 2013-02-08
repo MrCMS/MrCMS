@@ -21,6 +21,7 @@ namespace MrCMS.Models
                             new ChildMenuItem("Settings", "/Admin/Settings"),
                             new ChildMenuItem("Sites", "/Admin/Sites"),
                             new ChildMenuItem("Logs", "/Admin/Log"),
+                            new ChildMenuItem("Tasks", "/Admin/Task"),
                             new ChildMenuItem("Logout", "/Logout"),
                         });
             }

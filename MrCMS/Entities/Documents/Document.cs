@@ -15,7 +15,7 @@ namespace MrCMS.Entities.Documents
     {
         [Required]
         public virtual string Name { get; set; }
-
+        
         public virtual Document Parent { get; set; }
         [Required]
         [DisplayName("Display Order")]
