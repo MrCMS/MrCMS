@@ -129,8 +129,10 @@
     <Compile Include="Application\DbConfiguration\PlainTextWidgetOveride.cs" />
     <Compile Include="Application\DbConfiguration\TextPageOverride.cs" />
     <Compile Include="Application\DbConfiguration\TextWidgetOveride.cs" />
+    <Compile Include="Application\Models\NavigationRecord.cs" />
     <Compile Include="Application\Pages\SearchPage.cs" />
     <Compile Include="Application\Pages\TextPage.cs" />
+    <Compile Include="Application\Widgets\Navigation.cs" />
     <Compile Include="Application\Widgets\PlainTextWidget.cs" />
     <Compile Include="Application\Widgets\TextWidget.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
@@ -429,8 +431,6 @@
     <Content Include="Content\bootstrap\img\glyphicons-halflings.png" />
     <Content Include="Content\bootstrap\js\bootstrap.js" />
     <Content Include="Content\bootstrap\js\bootstrap.min.js" />
-    <Content Include="Content\images\footer-bg.jpg" />
-    <Content Include="Content\images\header-bg.jpg" />
     <Content Include="Content\images\install-synchronizing.gif" />
     <Content Include="Content\images\mrcms-logo.png" />
     <Content Include="Content\install\images\bg.gif" />
@@ -632,12 +632,14 @@
     <Content Include="Areas\Admin\Views\Task\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Task\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutPopup.cshtml" />
+    <Content Include="Areas\Admin\Views\Log\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Log\DeleteLog.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
+    <Content Include="Views\Widget\Navigation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Entities\" />
-    <Folder Include="Application\Models\" />
     <Folder Include="Application\Services\" />
     <Folder Include="Application\Settings\" />
     <Folder Include="App_Data\" />

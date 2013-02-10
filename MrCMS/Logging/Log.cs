@@ -7,7 +7,7 @@ using MrCMS.Entities;
 
 namespace MrCMS.Logging
 {
-    public class LogEntry : SiteEntity
+    public class Log : SiteEntity
     {
         public virtual LogEntryType Type { get; set; }
         public virtual Guid Guid { get; set; }
@@ -22,9 +22,9 @@ namespace MrCMS.Logging
         Audit
     }
 
-    public class LogEntryOverride : IAutoMappingOverride<LogEntry>
+    public class LogEntryOverride : IAutoMappingOverride<Log>
     {
-        public void Override(AutoMapping<LogEntry> mapping)
+        public void Override(AutoMapping<Log> mapping)
         {
             mapping.Map(entry => entry.Error).CustomType<BinaryData>().Length(4001);
             mapping.Map(entry => entry.Message).CustomType<VarcharMax>().Length(4001);

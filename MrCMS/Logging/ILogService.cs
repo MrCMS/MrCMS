@@ -8,10 +8,12 @@ namespace MrCMS.Logging
 {
     public interface ILogService
     {
-        IList<LogEntry> GetAllLogEntries();
-        IPagedList<LogEntry> GetAllEntriesPaged(int pageNum, int pageSize=10);
-        IPagedList<LogEntry> GetAllErrors(int pageNum, int pageSize = 10);
-        IPagedList<LogEntry> GetAllAudits(int pageNum, int pageSize = 10);
+        IList<Log> GetAllLogEntries();
+        IPagedList<Log> GetAllEntriesPaged(int pageNum, int pageSize=10);
+        IPagedList<Log> GetAllErrors(int pageNum, int pageSize = 10);
+        IPagedList<Log> GetAllAudits(int pageNum, int pageSize = 10);
+        void DeleteAllLogs();
+        void DeleteLog(Log log);
     }
 
     public class LogService : ILogService
@@ -23,30 +25,40 @@ namespace MrCMS.Logging
             _session = session;
         }
 
-        public IList<LogEntry> GetAllLogEntries()
+        public IList<Log> GetAllLogEntries()
         {
             return BaseQuery().Cacheable().List();
         }
 
-        public IPagedList<LogEntry> GetAllEntriesPaged(int pageNum, int pageSize = 10)
+        public void DeleteAllLogs()
+        {
+            _session.CreateQuery("delete Log l").ExecuteUpdate();
+        }
+
+        public void DeleteLog(Log log)
+        {
+            _session.Transact(session => session.Delete(log));
+        }
+
+        public IPagedList<Log> GetAllEntriesPaged(int pageNum, int pageSize = 10)
         {
             return BaseQuery().Paged(pageNum, pageSize);
         }
 
-        public IPagedList<LogEntry> GetAllErrors(int pageNum, int pageSize = 10)
+        public IPagedList<Log> GetAllErrors(int pageNum, int pageSize = 10)
         {
             return BaseQuery().Where(entry => entry.Type == LogEntryType.Error).Paged(pageNum, pageSize);
         }
 
-        public IPagedList<LogEntry> GetAllAudits(int pageNum, int pageSize = 10)
+        public IPagedList<Log> GetAllAudits(int pageNum, int pageSize = 10)
         {
             return BaseQuery().Where(entry => entry.Type == LogEntryType.Audit).Paged(pageNum, pageSize);
         }
 
-        private IQueryOver<LogEntry, LogEntry> BaseQuery()
+        private IQueryOver<Log, Log> BaseQuery()
         {
             return
-                _session.QueryOver<LogEntry>()
+                _session.QueryOver<Log>()
                         .Where(entry => entry.Site == MrCMSApplication.CurrentSite)
                         .OrderBy(entry => entry.CreatedOn)
                         .Desc;

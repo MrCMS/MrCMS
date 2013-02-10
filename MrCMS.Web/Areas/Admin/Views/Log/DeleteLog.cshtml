@@ -1,0 +1,14 @@
+﻿@model MrCMS.Logging.Log
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+<div class="modal-header">
+    <h3 id="myModalLabel">Confirm delete</h3>
+</div>
+<div class="modal-body">
+    <p>Are you sure?</p>
+</div>
+<div class="modal-footer">
+    @using (Html.BeginForm("DeleteLog", "Log", new {id = Model.Id}, FormMethod.Post, new { style = "display:inline;" }))
+    {
+        <input type="submit" class="btn btn-primary" value="Delete log" />
+    }
+</div>

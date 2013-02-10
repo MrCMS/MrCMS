@@ -31,7 +31,7 @@ namespace MrCMS.Logging
             var newGuid = Guid.NewGuid();
 
             if (_session != null)
-                _session.Transact(session => session.Save(new LogEntry
+                _session.Transact(session => session.Save(new Log
                                                               {
                                                                   Error = error,
                                                                   Guid = newGuid,
@@ -50,7 +50,7 @@ namespace MrCMS.Logging
                 throw new ArgumentOutOfRangeException("pageSize", pageSize, null);
 
             var errorLogEntries =
-                _session.QueryOver<LogEntry>()
+                _session.QueryOver<Log>()
                         .Where(entry => entry.Type == LogEntryType.Error)
                         .OrderBy(entry => entry.CreatedOn).Desc
                         .Paged(pageIndex + 1, pageSize,
@@ -75,7 +75,7 @@ namespace MrCMS.Logging
 
             try
             {
-                var logEntry = _session.QueryOver<LogEntry>().Where(entry => entry.Guid == guid).Cacheable().SingleOrDefault();
+                var logEntry = _session.QueryOver<Log>().Where(entry => entry.Guid == guid).Cacheable().SingleOrDefault();
                 return new ErrorLogEntry((ErrorLog)this, id, logEntry.Error);
             }
             finally

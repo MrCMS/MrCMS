@@ -20,40 +20,59 @@
 </head>
 <body>
 
-    <div class="logo-container">
-        <div class="container">
-            <a href="/" style="margin: 0; padding: 0">
-                <img src="@Url.Content("~/Content/images/mrcms-logo.png")"></a>
-        </div>
-    </div>
-
-    <div class="navbar navbar-inverse navbar-fixed-top nav-container">
-        <div class="navbar-inner">
-            <div class="container">
-                <a href="/" data-toggle="collapse" data-target=".nav-collapse" class="logo-small"></a>
-                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <div class="nav-collapse collapse">
-                    @RenderZone("Main Navigation")
+    <div class="container">
+        <div class="masthead">
+            <h3 class="muted">Project name</h3>
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="container">
+                        @RenderZone("Main Navigation")
+                    </div>
                 </div>
             </div>
+            <!-- /.navbar -->
         </div>
-    </div>
 
-    <div class="container">
         @RenderZone("Before Content")
         @RenderBody()
         @RenderZone("After Content")
-    </div>
 
-    <footer>
-        <div class="container">
-            Mr CMS @DateTime.Now.Year
+        <!-- Jumbotron -->
+        <div class="jumbotron">
+            <h1>Marketing stuff!</h1>
+            <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+            <a class="btn btn-large btn-success" href="#">Get started today</a>
         </div>
-    </footer>
+
+        <hr>
+
+        <!-- Example row of columns -->
+        <div class="row-fluid">
+            <div class="span4">
+                <h2>Heading</h2>
+                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                <p><a class="btn" href="#">View details &raquo;</a></p>
+            </div>
+            <div class="span4">
+                <h2>Heading</h2>
+                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                <p><a class="btn" href="#">View details &raquo;</a></p>
+            </div>
+            <div class="span4">
+                <h2>Heading</h2>
+                <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.</p>
+                <p><a class="btn" href="#">View details &raquo;</a></p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="footer">
+            <p>&copy; Company 2013</p>
+        </div>
+
+
+    </div>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Content/Scripts/jquery.validate.min.js")" type="text/javascript"></script>

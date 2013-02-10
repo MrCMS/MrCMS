@@ -18,7 +18,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ViewResult Index(LogEntryType? type, int page = 1)
         {
-            IPagedList<LogEntry> model;
+            IPagedList<Log> model;
             if (type == null)
                 model = _service.GetAllEntriesPaged(page);
             else
@@ -45,9 +45,39 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Index", new {type});
         }
 
-        public ViewResult Show(LogEntry entry)
+        public ViewResult Show(Log entry)
         {
             return View(entry);
+        }
+
+        [HttpGet]
+        [ActionName("Delete")]
+        public ActionResult Delete_Get()
+        {
+            return PartialView();
+        }
+
+        [HttpPost]
+        public ActionResult Delete()
+        {
+            _service.DeleteAllLogs();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [ActionName("DeleteLog")]
+        public ActionResult DeleteLog_Get(Log log)
+        {
+            return PartialView(log);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteLog(Log log)
+        {
+            _service.DeleteLog(log);
+
+            return RedirectToAction("Index");
         }
     }
 }
