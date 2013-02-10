@@ -51,7 +51,7 @@
                                                     }
                                                     else
                                                     {
-                                                        <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-mini btn-danger" data-toggle="modal">Delete Widget</a>
+                                                        <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete Widget</a>
                                                     }
 
                                                     @Html.ActionLink("Edit Widget", "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
@@ -63,7 +63,7 @@
                             </table>
                         }
                         <div class="btn-group">
-                            <a href="@Url.Action("AddPageWidget", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-mini btn-primary" data-toggle="modal">Add widget to area
+                            <a href="@Url.Action("AddPageWidget", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-mini btn-primary" data-toggle="fb-modal">Add widget to area
                             </a>
                             @if (widgets.Any())
                             {

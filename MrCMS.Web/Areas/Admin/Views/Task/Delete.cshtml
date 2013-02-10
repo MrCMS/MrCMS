@@ -1,9 +1,9 @@
 ﻿@model MrCMS.Tasks.ScheduledTask
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 
 @using (Html.BeginForm("Delete", "Task", FormMethod.Post))
 {
     <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
         <h3>Delete task</h3>
     </div>
     <div class="modal-body">
@@ -11,7 +11,6 @@
         <br />
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
         <input type="submit" class="btn-primary btn" value="Delete task" />
     </div>
 }

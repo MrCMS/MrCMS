@@ -1,8 +1,8 @@
 ﻿@model MrCMS.Entities.People.UserRole
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 @using (Html.BeginForm("Add", "Role", FormMethod.Post))
 {
     <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
         <h3>Add Role</h3>
     </div>
     <div class="modal-body">
@@ -12,7 +12,6 @@
         <br />
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
         <input type="submit" class="btn-primary btn" value="Add role" />
     </div>
 }

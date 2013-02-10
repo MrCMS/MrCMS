@@ -1,13 +1,12 @@
 ﻿@model MrCMS.Entities.Documents.Media.MediaCategory
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel">Confirm delete</h3>
 </div>
 <div class="modal-body">
     <p>Deleting this category can not be undone and will delete all images within the category.</p>
 </div>
 <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     @using (Html.BeginForm("Delete", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
     {
         <input type="submit" class="btn btn-primary" value="Confirm Delete Category" />

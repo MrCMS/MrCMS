@@ -50,6 +50,8 @@ namespace MrCMS.Website.Routing
 
         public void ProcessRequest(HttpContextBase context)
         {
+            SetCustomHeaders(context);
+
             if (!CheckIsInstalled(context)) return;
 
             if (CheckIsFile(context)) return;
@@ -78,6 +80,11 @@ namespace MrCMS.Website.Routing
             {
                 Handle500(context, exception);
             }
+        }
+
+        private void SetCustomHeaders(HttpContextBase context)
+        {
+            context.Response.AppendHeader("X-Built-With", "Mr CMS - http://mrcms.codeplex.com");
         }
 
         public void SetViewModel(Controller controller)
@@ -275,6 +282,7 @@ namespace MrCMS.Website.Routing
             switch (HttpMethod)
             {
                 case "GET":
+                case "HEAD":
                     return definition.WebGetAction;
                 case "POST":
                     return definition.WebPostAction;
@@ -316,6 +324,7 @@ namespace MrCMS.Website.Routing
             switch (HttpMethod)
             {
                 case "GET":
+                case "HEAD":
                     controllerName = definition.WebGetController;
                     break;
                 case "POST":
@@ -348,9 +357,9 @@ namespace MrCMS.Website.Routing
             Webpage webpage;
             if (string.IsNullOrWhiteSpace(Data))
             {
-                if (!MrCMSApplication.UserLoggedIn)
-                    webpage = MrCMSApplication.PublishedRootChildren().FirstOrDefault();
-                else webpage = MrCMSApplication.RootChildren().FirstOrDefault();
+                webpage = !MrCMSApplication.CurrentUserIsAdmin
+                              ? MrCMSApplication.PublishedRootChildren().FirstOrDefault()
+                              : MrCMSApplication.RootChildren().FirstOrDefault();
             }
             else webpage = DocumentService.GetDocumentByUrl<Webpage>(Data);
 

@@ -1,13 +1,12 @@
 ﻿@model MrCMS.Entities.Widget.Widget
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel">Confirm delete</h3>
 </div>
 <div class="modal-body">
     <p>Deleting this widget can not be undone.</p>
 </div>
 <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     @using (Html.BeginForm("Delete", "Widget", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
     {
         if (Request.UrlReferrer != null)

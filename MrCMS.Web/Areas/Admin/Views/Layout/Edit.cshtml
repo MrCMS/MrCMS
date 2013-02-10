@@ -20,7 +20,7 @@
             <div class="btn-group  display-inline  pull-right">
                 @if (Model.CanDelete)
                 {
-                    <a href="@Url.Action("Delete", "Layout", new { id = Model.Id })" class="btn btn-danger" data-toggle="modal">Delete Layout</a>
+                    <a href="@Url.Action("Delete", "Layout", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete Layout</a>
                 }
                 <button class="btn btn-primary" id="save-edit" data-form-id="edit-document" data-action="save">Save</button>
 
@@ -72,7 +72,7 @@
                                         </td>
                                         <td>
                                             @Html.ActionLink("Edit", "Edit", "LayoutArea", new {id = area.Id}, new {@class = "btn"})
-                                            <a href="@Url.Action("Delete", "LayoutArea", new {id = area.Id})" class="btn btn-danger" data-toggle="modal">Delete</a>
+                                            <a href="@Url.Action("Delete", "LayoutArea", new {id = area.Id})" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                                         </td>
                                     </tr>
                                 }
@@ -81,7 +81,7 @@
                     }
                 }
 
-                    <a href="@Url.Action("Add", "LayoutArea", new { id = Model.Id })" class="btn" data-toggle="modal">Add layout area</a>
+                    <a href="@Url.Action("Add", "LayoutArea", new { id = Model.Id })" class="btn" data-toggle="fb-modal">Add layout area</a>
             </div>
         </div>
     </div>

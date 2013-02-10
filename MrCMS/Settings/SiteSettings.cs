@@ -34,6 +34,8 @@ namespace MrCMS.Settings
         [DisplayName("Site name")]
         public string SiteName { get; set; }
 
+        [DisplayName("Enable inline editing")]
+        public bool EnableInlineEditing { get; set; }
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
