@@ -11,8 +11,8 @@ namespace MrCMS.Settings
         private Guid _siteId = Guid.NewGuid();
         private readonly SiteSettingsOptionGenerator _siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-        [ReadOnly(true)]
-        public Guid SiteId { get { return _siteId; } set { _siteId = value; } }
+        //[ReadOnly(true)]
+        //public Guid SiteId { get { return _siteId; } set { _siteId = value; } }
 
         [DisplayName("Default Layout")]
         [DropDownSelection("DefaultLayoutOptions")]
@@ -24,16 +24,10 @@ namespace MrCMS.Settings
         [DropDownSelection("500Options")]
         [DisplayName("500 Page")]
         public virtual int Error500PageId { get; set; }
-
-        [DisplayName("System Email Address")]
-        public string SystemEmailAddress { get; set; }
-
+        
         [DisplayName("Site is live")]
         public bool SiteIsLive { get; set; }
-
-        [DisplayName("Site name")]
-        public string SiteName { get; set; }
-
+        
         [DisplayName("Enable inline editing")]
         public bool EnableInlineEditing { get; set; }
 

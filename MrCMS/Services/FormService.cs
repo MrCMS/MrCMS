@@ -95,7 +95,7 @@ namespace MrCMS.Services
                                                                        {
                                                                            Subject = formTitle,
                                                                            Body = formMessage,
-                                                                           FromAddress = _siteSettings.SystemEmailAddress,
+                                                                           FromAddress = _mailSettings.SystemEmailAddress,
                                                                            ToAddress = email,
                                                                            IsHtml = true
                                                                        });
