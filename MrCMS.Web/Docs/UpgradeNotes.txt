@@ -1,3 +1,3 @@
 ﻿0.1 -> 0.1.1
 -------------------------------------
-Google analytics deprecated in favour of trcking scripts. Make sure to have @Html.Raw(SiteSettings<SEOSettings>().TrackingScripts) before </head> and make sure the TrackingScripts field is populated in settings->seo settings
+Google analytics deprecated in favor of trcking scripts. Make sure to have @Html.Raw(SiteSettings<SEOSettings>().TrackingScripts) before </head> and make sure the TrackingScripts field is populated in settings->seo settings
