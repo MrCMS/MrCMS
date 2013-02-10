@@ -12,11 +12,8 @@ namespace MrCMS.Settings
         [TextArea]
         public string RobotsText { get; set; }
 
-        [DisplayName("Google Analytics Account Number")]
-        public string GoogleAnalytics { get; set; }
-
-        [DisplayName("Tracking Scripts")]
+        [DisplayName("Tracking Scripts (head)")]
         [TextArea]
         public string TrackingScripts { get; set; }
     }
-}
+} 

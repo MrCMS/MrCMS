@@ -70,6 +70,7 @@ namespace MrCMS.Web.Controllers
                 {
                     Name = "404",
                     UrlSegment = "404",
+                    BodyContent = "Sorry, this page cannot be found.",
                     RevealInNavigation = false,
                     PublishOn = DateTime.UtcNow,
                 };
@@ -77,6 +78,7 @@ namespace MrCMS.Web.Controllers
                 {
                     Name = "500",
                     UrlSegment = "500",
+                    BodyContent = "Sorry, there has been an error.",
                     RevealInNavigation = false,
                     PublishOn = DateTime.Now,
                 };

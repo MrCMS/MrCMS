@@ -461,6 +461,7 @@
     <Content Include="Areas\Admin\Content\Styles\themes\base\jquery.ui.slider.css" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\jquery.ui.tabs.css" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\jquery.ui.theme.css" />
+    <Content Include="Docs\UpgradeNotes.txt" />
     <Content Include="Global.asax" />
     <Content Include="Areas\Admin\Content\Scripts\edit-slider.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery-ui-timepicker-addon.js" />
