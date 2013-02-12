@@ -154,6 +154,8 @@ namespace MrCMS.DbConfiguration.Configuration
 
         private User GetUser(ISession session)
         {
+            if (MrCMSApplication.OverriddenUser != null)
+                return MrCMSApplication.OverriddenUser;
             if (MrCMSApplication.CurrentContext != null && MrCMSApplication.CurrentContext.User != null)
             {
                 var currentUser =

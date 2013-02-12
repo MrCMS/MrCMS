@@ -27,7 +27,7 @@
         <label class="control-label">
             Page Type</label>
         <div class="controls">
-            @foreach (var documentType in ViewData["DocumentTypes"] as List<DocumentTypeDefinition>)
+            @foreach (var documentType in ViewData["DocumentTypes"] as List<DocumentMetadata>)
             {
                 <label class="radio">
                     <i class="@documentType.IconClass">&nbsp;</i>

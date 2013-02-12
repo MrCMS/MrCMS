@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Elmah;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+using MrCMS.Apps;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
@@ -34,6 +35,7 @@ namespace MrCMS.Website
     {
         protected void Application_Start()
         {
+            MrCMSApp.RegisterAllApps();
             AreaRegistration.RegisterAllAreas();
 
             RegisterGlobalFilters(GlobalFilters.Filters);
@@ -42,6 +44,9 @@ namespace MrCMS.Website
             RegisterServices(bootstrapper.Kernel);
 
             ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
+
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
         }
 
         public static User OverriddenUser { get; set; }
@@ -281,7 +286,7 @@ namespace MrCMS.Website
         }
 
 
-        public const string AssemblyVersion = "0.1.1.*";
-        public const string AssemblyFileVersion = "0.1.1.0";
+        public const string AssemblyVersion = "0.2.0.*";
+        public const string AssemblyFileVersion = "0.2.0.0";
     }
 }

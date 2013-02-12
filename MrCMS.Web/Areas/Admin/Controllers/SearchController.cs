@@ -61,7 +61,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (!string.IsNullOrWhiteSpace(type))
             {
-                var typeByName = DocumentTypeHelper.GetTypeByName(type);
+                var typeByName = DocumentMetadataHelper.GetTypeByName(type);
                 var searchResults = _documentService.GetType()
                                                     .GetMethodExt("SearchDocumentsDetailed", typeof(string),
                                                                   typeof(int?), typeof(int));
@@ -80,7 +80,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (!string.IsNullOrWhiteSpace(type))
             {
-                var typeByName = DocumentTypeHelper.GetTypeByName(type);
+                var typeByName = DocumentMetadataHelper.GetTypeByName(type);
                 var searchResults = _documentService.GetType().GetMethodExt("SearchDocuments", typeof(string));
                 var method = searchResults.MakeGenericMethod(typeByName);
                 return (method.Invoke(_documentService, new object[] { term }) as IEnumerable<SearchResultModel>).ToList();

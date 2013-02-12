@@ -26,7 +26,7 @@ using MrCMS.Helpers;
 
 namespace MrCMS.DbConfiguration
 {
-    public class NHibernateConfigurator : IGetAllMappedClasses
+    public class NHibernateConfigurator
     {
         private List<Assembly> _manuallyAddedAssemblies = new List<Assembly>();
         public DatabaseType DatabaseType { get; set; }
@@ -35,15 +35,6 @@ namespace MrCMS.DbConfiguration
 
         public IPersistenceConfigurer PersistenceOverride { get; set; }
 
-        public List<Type> MappedClasses
-        {
-            get
-            {
-                var configuration = GetConfiguration();
-
-                return configuration.ClassMappings.Select(@class => @class.MappedClass).ToList();
-            }
-        }
 
         public ISessionFactory CreateSessionFactory()
         {

@@ -7,7 +7,7 @@ using NHibernate;
 
 namespace MrCMS.Entities.Documents.Layout
 {
-    [DocumentTypeDefinition(ChildrenListType.WhiteList, Name = "Layout", IconClass = "icon-th", DisplayOrder = 1, Type = typeof(Layout), WebGetAction = "View", WebGetController = "Layout")]
+    //[DocumentTypeDefinition(ChildrenListType.WhiteList, Name = "Layout", IconClass = "icon-th", DisplayOrder = 1, Type = typeof(Layout), WebGetAction = "View", WebGetController = "Layout")]
     public class Layout : Document
     {
         //todo this can't be protected, required in admin on layoput edit

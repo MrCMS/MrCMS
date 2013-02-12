@@ -369,6 +369,7 @@ namespace MrCMS.Installation
             authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
             authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
             session.Transact(sess => sess.Save(user));
+            MrCMSApplication.OverriddenUser = user;
 
             var layout = new Layout
                 {

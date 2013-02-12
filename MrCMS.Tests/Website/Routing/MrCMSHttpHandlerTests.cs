@@ -176,7 +176,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_GetControllerName_HttpMethodIsGETReturnsWebGetController()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
+            var documentTypeDefinition = new DocumentMetadata
             {
                 WebGetController = "test-controller"
             };
@@ -191,7 +191,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_GetControllerName_HttpMethodIsPOSTReturnsWebGetController()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
+            var documentTypeDefinition = new DocumentMetadata
             {
                 WebPostController = "test-controller"
             };
@@ -206,7 +206,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_GetControllerName_HttpMethodIsAnotherTypeReturnsNull()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
+            var documentTypeDefinition = new DocumentMetadata
             {
                 WebPostController = "test-controller"
             };
@@ -375,7 +375,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_PageIsRedirect_RedirectWithPermanentCallsResponseRedirectPermanentForTheRedirectUrl()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            mrCMSHttpHandler.Webpage = new Redirect {RedirectUrl = "test-redirect", Permanent = true};
+            mrCMSHttpHandler.Webpage = new Redirect { RedirectUrl = "test-redirect", Permanent = true };
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.PageIsRedirect(httpContext);
@@ -397,7 +397,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_PageIsRedirect_IfRedirectIsAbsoluteUrlAndIsPermanentShouldBe301()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            mrCMSHttpHandler.Webpage = new Redirect {RedirectUrl = "http://www.example.com", Permanent = true};
+            mrCMSHttpHandler.Webpage = new Redirect { RedirectUrl = "http://www.example.com", Permanent = true };
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.PageIsRedirect(httpContext);
@@ -448,7 +448,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_GetActionName_ReturnsDefinitionWebGetActionIfHttpMethodIsGET()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
+            var documentTypeDefinition = new DocumentMetadata
             {
                 WebGetAction = "test-get-action"
             };
@@ -463,7 +463,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_GetActionName_ReturnsDefinitionWebGetActionIfHttpMethodIsPOST()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
+            var documentTypeDefinition = new DocumentMetadata
             {
                 WebPostAction = "test-post-action"
             };
@@ -478,7 +478,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_GetActionName_ReturnsNullIfHttpMethodIsSomethingElse()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            var documentTypeDefinition = new DocumentTypeDefinition(ChildrenListType.WhiteList)
+            var documentTypeDefinition = new DocumentMetadata
             {
                 WebPostAction = "test-post-action"
             };

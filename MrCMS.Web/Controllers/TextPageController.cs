@@ -4,11 +4,11 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Controllers
 {
-    public class TextPageController : MrCMSController
+    public class TextPageController : MrCMSUIController
     {
-        public ActionResult View(TextPage page)
+        public ActionResult Show(TextPage page)
         {
-            return View("~/Views/Pages/TextPage.cshtml", page.CurrentLayout.UrlSegment, page);
+            return View(page);
         }
     }
 }

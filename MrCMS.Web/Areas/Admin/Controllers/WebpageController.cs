@@ -85,17 +85,17 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Edit", new { id = webpage.Id });
         }
         [HttpPost]
-        public ActionResult HideWidget(int id, int widgetId, int layoutAreaId)
+        public ActionResult HideWidget(Webpage document, int widgetId, int layoutAreaId)
         {
-            _documentService.HideWidget(id, widgetId);
-            return RedirectToAction("Edit", new { id, layoutAreaId });
+            _documentService.HideWidget(document, widgetId);
+            return RedirectToAction("Edit", new { id = document.Id, layoutAreaId });
         }
 
         [HttpPost]
-        public ActionResult ShowWidget(int id, int widgetId, int layoutAreaId)
+        public ActionResult ShowWidget(Webpage document, int widgetId, int layoutAreaId)
         {
-            _documentService.ShowWidget(id, widgetId);
-            return RedirectToAction("Edit", new { id, layoutAreaId });
+            _documentService.ShowWidget(document, widgetId);
+            return RedirectToAction("Edit", new { id = document.Id, layoutAreaId });
         }
 
         [HttpPost]
@@ -111,14 +111,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public void SaveForm(int id, string data)
+        public void SaveForm(Webpage webpage, string data)
         {
-            _formService.SaveFormStructure(id, data);
+            _formService.SaveFormStructure(webpage, data);
         }
 
-        public ActionResult ViewChanges(int id)
+        public ActionResult ViewChanges(DocumentVersion documentVersion)
         {
-            var documentVersion = _documentService.GetDocumentVersion(id);
             if (documentVersion == null)
                 return RedirectToAction("Index");
 
@@ -132,9 +131,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(data);
         }
 
-        public ActionResult ViewPosting(int id)
+        public ActionResult ViewPosting(FormPosting formPosting)
         {
-            return PartialView(_formService.GetFormPosting(id));
+            return PartialView(formPosting);
         }
 
         public ActionResult Versions(Document doc, int page = 1)

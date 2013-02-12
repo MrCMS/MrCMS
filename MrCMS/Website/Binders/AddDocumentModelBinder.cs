@@ -65,7 +65,7 @@ namespace MrCMS.Website.Binders
 
         private static Type GetTypeByName(ControllerContext controllerContext)
         {
-            return DocumentTypeHelper.GetTypeByName(GetValueFromContext(controllerContext, "DocumentType"));
+            return DocumentMetadataHelper.GetTypeByName(GetValueFromContext(controllerContext, "DocumentType"));
         }
     }
 }

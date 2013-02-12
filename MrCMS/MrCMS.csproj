@@ -106,6 +106,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\MrCMSApp.cs" />
+    <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
     <Compile Include="DbConfiguration\Configuration\DatabaseType.cs" />
     <Compile Include="DbConfiguration\Configuration\SaveOrUpdateListener.cs" />
@@ -113,7 +115,6 @@
     <Compile Include="DbConfiguration\Conventions\ForeignKeyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
-    <Compile Include="DbConfiguration\IGetAllMappedClasses.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCMSMapClassAttribute.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCmsMappingConfiguration.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
@@ -134,9 +135,13 @@
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />
     <Compile Include="Entities\Assets\EventDates.cs" />
+    <Compile Include="Entities\Documents\Metadata\DefaultDocumentMetadata.cs" />
+    <Compile Include="Entities\Documents\Metadata\DocumentMetadataMap.cs" />
+    <Compile Include="Entities\Documents\Metadata\IGetDocumentMetadata.cs" />
+    <Compile Include="Entities\Documents\Metadata\RedirectMetadata.cs" />
     <Compile Include="Entities\SiteEntity.cs" />
     <Compile Include="Entities\Documents\Document.cs" />
-    <Compile Include="Entities\Documents\DocumentTypeDefinition.cs" />
+    <Compile Include="Entities\Documents\DocumentMetadata.cs" />
     <Compile Include="Entities\Documents\DocumentVersion.cs" />
     <Compile Include="Entities\Documents\Layout\Layout.cs" />
     <Compile Include="Entities\Documents\Layout\LayoutArea.cs" />
@@ -169,7 +174,7 @@
     <Compile Include="Entities\Widget\Widget.cs" />
     <Compile Include="Helpers\ConversionHelper.cs" />
     <Compile Include="Helpers\DocumentExtensions.cs" />
-    <Compile Include="Helpers\DocumentTypeHelper.cs" />
+    <Compile Include="Helpers\DocumentMetadataHelper.cs" />
     <Compile Include="Helpers\EnumerableHelper.cs" />
     <Compile Include="Helpers\MrCMSHtmlHelper.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
@@ -298,6 +303,7 @@
     <Compile Include="Website\Controllers\SystemController.cs" />
     <Compile Include="Website\MrCMSApplication.cs" />
     <Compile Include="Website\MrCMSAuthorizeAttribute.cs" />
+    <Compile Include="Website\MrCMSViewEngine.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandler.cs" />
     <Compile Include="Website\MrCMSPage.cs" />

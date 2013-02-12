@@ -36,7 +36,8 @@ namespace MrCMS.Logging
                                                                   Error = error,
                                                                   Guid = newGuid,
                                                                   Message = error.Message,
-                                                                  Detail = error.Detail
+                                                                  Detail = error.Detail,
+                                                                  Site = MrCMSApplication.CurrentSite
                                                               }));
 
             return newGuid.ToString();

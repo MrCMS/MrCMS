@@ -94,7 +94,7 @@ namespace MrCMS.Services
 
             if (document != null)
             {
-                var documentTypeDefinition = document.GetDefinition();
+                var documentTypeDefinition = document.GetMetadata();
                 if (documentTypeDefinition != null)
                 {
                     return Sort(documentTypeDefinition, children);
@@ -110,7 +110,7 @@ namespace MrCMS.Services
 
             if (parent != null)
             {
-                var documentTypeDefinition = parent.GetDefinition();
+                var documentTypeDefinition = parent.GetMetadata();
                 if (documentTypeDefinition != null)
                 {
                     return Sort(documentTypeDefinition, children);
@@ -124,12 +124,9 @@ namespace MrCMS.Services
             IEnumerable<T> children =
                 _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).List();
 
-            //children =
-            //    children.Where(arg => arg.IsAllowedForAdmin(MrCMSApplication.CurrentUser));
-
             if (parent != null)
             {
-                var documentTypeDefinition = parent.GetDefinition();
+                var documentTypeDefinition = parent.GetMetadata();
                 if (documentTypeDefinition != null)
                 {
                     return Sort(documentTypeDefinition, children);
@@ -138,16 +135,13 @@ namespace MrCMS.Services
             return children.OrderBy(arg => arg.DisplayOrder);
         }
 
-        private static IOrderedEnumerable<T> Sort<T>(DocumentTypeDefinition documentTypeDefinition, IEnumerable<T> children) where T : Document
+        private static IEnumerable<T> Sort<T>(DocumentMetadata documentMetadata, IEnumerable<T> children) where T : Document
         {
             var childrenSortedNull =
-                children.OrderByDescending(
-                    doc => doc.GetType().GetProperty(documentTypeDefinition.SortBy).GetValue(doc, null) == null);
-            return documentTypeDefinition.SortByDesc
-                       ? childrenSortedNull.ThenByDescending(
-                           doc => doc.GetType().GetProperty(documentTypeDefinition.SortBy).GetValue(doc, null))
-                       : childrenSortedNull.ThenBy(
-                           doc => doc.GetType().GetProperty(documentTypeDefinition.SortBy).GetValue(doc, null));
+                children.OrderByDescending(arg => documentMetadata.SortBy(arg) == null);
+            return documentMetadata.SortByDesc
+                       ? childrenSortedNull.ThenByDescending(documentMetadata.SortBy)
+                       : childrenSortedNull.ThenBy(documentMetadata.SortBy);
         }
 
 
@@ -282,7 +276,7 @@ namespace MrCMS.Services
         {
             if (currentPage != null)
             {
-                string defaultLayoutName = currentPage.GetDefinition().DefaultLayoutName;
+                string defaultLayoutName = currentPage.GetMetadata().DefaultLayoutName;
                 if (!String.IsNullOrEmpty(defaultLayoutName))
                 {
                     var layout = _session.QueryOver<Layout>().Where(x => x.Name == defaultLayoutName).Cacheable().Take(1).SingleOrDefault();
@@ -404,9 +398,8 @@ namespace MrCMS.Services
             SaveDocument(document);
         }
 
-        public void HideWidget(int id, int widgetId)
+        public void HideWidget(Webpage document, int widgetId)
         {
-            var document = GetDocument<Webpage>(id);
             var widget = _session.Get<Widget>(widgetId);
 
             if (document == null || widget == null) return;
@@ -418,9 +411,8 @@ namespace MrCMS.Services
             SaveDocument(document);
         }
 
-        public void ShowWidget(int id, int widgetId)
+        public void ShowWidget(Webpage document, int widgetId)
         {
-            var document = GetDocument<Webpage>(id);
             var widget = _session.Get<Widget>(widgetId);
 
             if (document == null || widget == null) return;
@@ -476,9 +468,9 @@ namespace MrCMS.Services
             }
         }
 
-        public DocumentTypeDefinition GetDefinitionByType(Type type)
+        public DocumentMetadata GetDefinitionByType(Type type)
         {
-            return DocumentTypeHelper.GetDefinitionByType(type);
+            return DocumentMetadataHelper.GetMetadataByType(type);
         }
     }
 }

@@ -318,7 +318,7 @@ namespace MrCMS.Helpers
 
             ViewEngineResult viewEngineResult =
                 ViewEngines.Engines.FindView(
-                    new ControllerContext(htmlHelper.ViewContext.RequestContext, new MrCMSController()),
+                    new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller),
                     model.GetType().Name, "");
             return viewEngineResult.View != null ? htmlHelper.Partial(model.GetType().Name, model) : MvcHtmlString.Empty;
         }

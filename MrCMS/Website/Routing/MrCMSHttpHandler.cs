@@ -347,9 +347,9 @@ namespace MrCMS.Website.Routing
             }
         }
 
-        public DocumentTypeDefinition WebpageDefinition
+        public DocumentMetadata WebpageDefinition
         {
-            get { return Webpage == null ? null : Webpage.GetDefinition(); }
+            get { return Webpage == null ? null : Webpage.GetMetadata(); }
         }
 
         private Webpage GetWebpage()

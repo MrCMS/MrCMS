@@ -133,6 +133,14 @@
     <Compile Include="Application\Pages\TextPage.cs" />
     <Compile Include="Application\Widgets\PlainTextWidget.cs" />
     <Compile Include="Application\Widgets\TextWidget.cs" />
+    <Compile Include="Apps\Blog\Areas\Admin\Controllers\PostController.cs" />
+    <Compile Include="Apps\Blog\BlogApp.cs" />
+    <Compile Include="Apps\Blog\Controllers\BlogController.cs" />
+    <Compile Include="Apps\Blog\Controllers\PostController.cs" />
+    <Compile Include="Apps\Blog\Metadata\BlogMetadata.cs" />
+    <Compile Include="Apps\Blog\Metadata\PostMetadata.cs" />
+    <Compile Include="Apps\Blog\Pages\Blog.cs" />
+    <Compile Include="Apps\Blog\Pages\Post.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
@@ -510,6 +518,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\readme.md" />
+    <Content Include="Apps\Blog\Areas\Admin\Views\Post\Show.cshtml" />
+    <Content Include="Apps\Blog\Areas\Admin\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Apps\Blog\Views\Post\Show.cshtml" />
+    <Content Include="Apps\Blog\Views\Pages\Blog.cshtml" />
+    <Content Include="Apps\Blog\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
@@ -639,6 +656,12 @@
     <Folder Include="Application\Models\" />
     <Folder Include="Application\Services\" />
     <Folder Include="Application\Settings\" />
+    <Folder Include="Apps\Blog\DbConfiguration\" />
+    <Folder Include="Apps\Blog\Entities\" />
+    <Folder Include="Apps\Blog\Models\" />
+    <Folder Include="Apps\Blog\Services\" />
+    <Folder Include="Apps\Blog\Settings\" />
+    <Folder Include="Apps\Blog\Widgets\" />
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using MrCMS.DbConfiguration;
+using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.IoC;
@@ -18,7 +19,7 @@ namespace MrCMS.Helpers
     {
         private static List<Type> _alltypes;
 
-        public static List<Type> MappedClasses { get { return MrCMSApplication.Get<IGetAllMappedClasses>().MappedClasses; } }
+        public static List<Type> MappedClasses { get { return GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type => !type.GetCustomAttributes(typeof(DoNotMapAttribute),true).Any()); } }
 
         public static List<Type> GetAllTypes()
         {
@@ -43,6 +44,16 @@ namespace MrCMS.Helpers
         public static List<Type> GetAllConcreteTypesAssignableFrom<T>()
         {
             return GetAllTypesAssignableFrom<T>().FindAll(type => !type.IsAbstract);
+        }
+
+        public static List<Type> GetAllTypesAssignableFrom(Type type)
+        {
+            return GetAllTypes().FindAll(type.IsAssignableFrom);
+        }
+
+        public static List<Type> GetAllConcreteTypesAssignableFrom(Type t)
+        {
+            return GetAllTypesAssignableFrom(t).FindAll(type => !type.IsAbstract);
         }
 
         private static List<Type> GetLoadableTypes(this Assembly assembly)

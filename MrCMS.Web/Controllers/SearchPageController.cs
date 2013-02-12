@@ -15,7 +15,7 @@ namespace MrCMS.Web.Controllers
             _documentService = documentService;
         }
 
-        public ActionResult View(SearchPage page)
+        public ActionResult Show(SearchPage page)
         {
             int pageVal;
             ViewData["term"] = Request["q"];
