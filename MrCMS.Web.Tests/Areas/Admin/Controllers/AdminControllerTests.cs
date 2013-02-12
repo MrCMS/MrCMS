@@ -14,7 +14,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void AdminController_Json_ObjectStringEncodingReturnsJsonNetResult()
         {
-            var controller = new StubAdminController();
+            var controller = new StubMrCMSAdminController();
 
             var data = new object();
             JsonResult jsonResult = controller.Json(data, "test/content-type", Encoding.ASCII);
@@ -25,7 +25,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void AdminController_Request_IfRequestMockIsSetReturnsThat()
         {
-            var controller = new StubAdminController();
+            var controller = new StubMrCMSAdminController();
 
             var httpRequestBase = A.Fake<HttpRequestBase>();
             controller.RequestMock = httpRequestBase;
@@ -34,7 +34,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
     }
 
-    public class StubAdminController : AdminController
+    public class StubMrCMSAdminController : MrCMSAdminController
     {
         public new JsonResult Json(object data, string contentType, Encoding contentEncoding)
         {

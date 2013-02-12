@@ -3,10 +3,8 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Blog.Controllers
 {
-    public class BlogController : MrCMSUIController
+    public class BlogController : MrCMSAppUIController<BlogApp>
     {
-        public BlogController() : base("Blog") { }
-
         public ActionResult Show(Pages.Blog page)
         {
             return View(page);

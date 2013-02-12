@@ -20,8 +20,10 @@ namespace MrCMS.Entities.Documents.Metadata
             get { return document => document.DisplayOrder; }
         }
 
+        public virtual string App { get { return null; } }
+
         public virtual int MaxChildNodes { get { return 15; } }
-	
+
         public virtual bool SortByDesc { get { return false; } }
         public virtual bool Sortable { get { return true; } }
 

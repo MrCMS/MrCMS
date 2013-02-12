@@ -7,7 +7,7 @@ namespace MrCMS.Web.Apps.Blog
 {
     public class BlogApp : MrCMSApp
     {
-        protected override string AppName
+        public override string AppName
         {
             get { return "Blog"; }
         }

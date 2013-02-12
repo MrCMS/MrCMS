@@ -61,7 +61,7 @@
 
     @if (MrCMSApplication.CurrentUserIsAdmin && SiteSettings<SiteSettings>().EnableInlineEditing)
     {
-        Html.RenderAction("InPageEditor", "InPageAdmin", new { id = Model.Id, area = "Admin" });
+        Html.RenderAction("InPageEditor", "InPageMrCMSAdmin", new { id = Model.Id, area = "Admin" });
     }
 
     @if (IsSectionDefined("JavascriptBlockInclude"))

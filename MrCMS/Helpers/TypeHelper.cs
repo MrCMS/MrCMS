@@ -19,7 +19,7 @@ namespace MrCMS.Helpers
     {
         private static List<Type> _alltypes;
 
-        public static List<Type> MappedClasses { get { return GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type => !type.GetCustomAttributes(typeof(DoNotMapAttribute),true).Any()); } }
+        public static List<Type> MappedClasses { get { return GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type => !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any()); } }
 
         public static List<Type> GetAllTypes()
         {
@@ -48,7 +48,18 @@ namespace MrCMS.Helpers
 
         public static List<Type> GetAllTypesAssignableFrom(Type type)
         {
-            return GetAllTypes().FindAll(type.IsAssignableFrom);
+            return GetAllTypes().FindAll(t =>
+                                             {
+                                                 if (type.IsGenericTypeDefinition)
+                                                 {
+                                                     return t.GetBaseTypes()
+                                                             .Any(
+                                                                 t2 =>
+                                                                 t2.IsGenericType &&
+                                                                 t2.GetGenericTypeDefinition() == type);
+                                                 }
+                                                 return type.IsAssignableFrom(t);
+                                             });
         }
 
         public static List<Type> GetAllConcreteTypesAssignableFrom(Type t)
@@ -244,6 +255,21 @@ namespace MrCMS.Helpers
                               : (type == typeof(List<string>)
                                      ? new GenericListTypeConverter<string>()
                                      : TypeDescriptor.GetConverter(type)));
+        }
+
+        public static IEnumerable<Type> GetBaseTypes(this Type type)
+        {
+            var baseType = type.BaseType;
+            while (baseType != null)
+            {
+                yield return baseType;
+                baseType = baseType.BaseType;
+            }
+        }
+
+        public static IEnumerable<Type> GetBaseTypes(this Type type, Func<Type, bool> filter)
+        {
+            return type.GetBaseTypes().Where(filter);
         }
     }
 }

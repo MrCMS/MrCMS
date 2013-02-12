@@ -7,7 +7,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class UserController : SystemController
+    public class UserController : MrCMSAdminController
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;

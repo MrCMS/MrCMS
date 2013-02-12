@@ -297,9 +297,11 @@
     <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
     <Compile Include="Website\Caching\CacheManager.cs" />
     <Compile Include="Website\Caching\ICacheManager.cs" />
-    <Compile Include="Website\Controllers\AdminController.cs" />
+    <Compile Include="Website\Controllers\MrCMSAdminController.cs" />
     <Compile Include="Website\Controllers\JsonNetResult.cs" />
+    <Compile Include="Website\Controllers\MrCMSAppAdminController.cs" />
     <Compile Include="Website\Controllers\MrCMSController.cs" />
+    <Compile Include="Website\Controllers\MrCMSUIController.cs" />
     <Compile Include="Website\Controllers\SystemController.cs" />
     <Compile Include="Website\MrCMSApplication.cs" />
     <Compile Include="Website\MrCMSAuthorizeAttribute.cs" />

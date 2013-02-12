@@ -10,7 +10,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class RoleController : SystemController
+    public class RoleController : MrCMSAdminController
     {
         private readonly IRoleService _roleService;
 

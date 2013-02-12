@@ -12,16 +12,14 @@ using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class NavigationController : SystemController
+    public class NavigationController : MrCMSAdminController
     {
         private readonly INavigationService _service;
-        private readonly IUserService _userService;
         private readonly ISiteService _siteService;
 
-        public NavigationController(INavigationService service, IUserService userService, ISiteService siteService)
+        public NavigationController(INavigationService service, ISiteService siteService)
         {
             _service = service;
-            _userService = userService;
             _siteService = siteService;
         }
 

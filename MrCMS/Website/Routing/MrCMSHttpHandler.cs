@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.SessionState;
+using MrCMS.Apps;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -294,7 +295,7 @@ namespace MrCMS.Website.Routing
         public Controller GetController()
         {
             var controllerName = GetControllerName();
-
+	    
             var controller = ControllerBuilder.Current.GetControllerFactory().CreateController(RequestContext, controllerName ?? "MrCMS") as Controller;
             controller.ControllerContext = new ControllerContext(RequestContext, controller) { RouteData = RequestContext.RouteData };
 
@@ -365,6 +366,12 @@ namespace MrCMS.Website.Routing
 
             MrCMSApplication.CurrentPage = webpage;
             _webpageLookedUp = true;
+
+	    if (webpage != null)
+	    {
+	        if (MrCMSApp.AppWebpages.ContainsKey(webpage.GetType()))
+	            RequestContext.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[webpage.GetType()];
+	    }
             return webpage;
         }
 

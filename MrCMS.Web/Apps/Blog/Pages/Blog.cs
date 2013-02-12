@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Apps;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Web.Apps.Blog.Pages

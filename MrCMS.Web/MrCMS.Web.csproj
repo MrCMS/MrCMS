@@ -165,7 +165,7 @@
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Areas\Admin\Controllers\InPageAdminController.cs" />
+    <Compile Include="Areas\Admin\Controllers\InPageMrCMSAdminController.cs" />
     <Compile Include="Controllers\SearchPageController.cs" />
     <Compile Include="Controllers\SEOController.cs" />
     <Compile Include="Controllers\TextPageController.cs" />
@@ -522,11 +522,11 @@
     <Content Include="Apps\Blog\Areas\Admin\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Apps\Blog\Views\Post\Show.cshtml" />
     <Content Include="Apps\Blog\Views\Pages\Blog.cshtml" />
     <Content Include="Apps\Blog\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Apps\Blog\Views\Pages\Post.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />

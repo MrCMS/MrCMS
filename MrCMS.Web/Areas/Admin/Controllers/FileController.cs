@@ -8,7 +8,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class FileController : AdminController
+    public class FileController : MrCMSAdminController
     {
         private readonly IFileService _fileService;
 

@@ -3,7 +3,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Blog.Areas.Admin.Controllers
 {
-    public class PostController : AdminController
+    public class PostController : MrCMSAppAdminController<BlogApp>
     {
         public ViewResult Show()
         {

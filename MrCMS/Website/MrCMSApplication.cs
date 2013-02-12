@@ -14,12 +14,14 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.IoC;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Controllers;
 using MrCMS.Website.Routing;
 using NHibernate;
 using Ninject;
@@ -47,6 +49,8 @@ namespace MrCMS.Website
 
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
+
+            ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
         }
 
         public static User OverriddenUser { get; set; }
@@ -288,5 +292,66 @@ namespace MrCMS.Website
 
         public const string AssemblyVersion = "0.2.0.*";
         public const string AssemblyFileVersion = "0.2.0.0";
+    }
+
+    public class MrCMSControllerFactory : DefaultControllerFactory
+    {
+        private Dictionary<string, List<Type>> _appUiControllers;
+        private Dictionary<string, List<Type>> _appAdminControllers;
+        private List<Type> _uiControllers;
+        private List<Type> _adminControllers;
+
+        public MrCMSControllerFactory()
+        {
+            _appUiControllers =
+                TypeHelper.GetAllConcreteTypesAssignableFrom(typeof (MrCMSAppUIController<>))
+                          .GroupBy(
+                              type =>
+                              ((MrCMSApp) Activator.CreateInstance(
+                                  type.GetBaseTypes(
+                                      type1 =>
+                                      type1.IsGenericType &&
+                                      type1.GetGenericTypeDefinition() == typeof(MrCMSAppUIController<>))
+                                      .First()
+                                      .GetGenericArguments()[0])).AppName)
+                          .ToDictionary(types => types.Key, types => types.ToList());
+            _appAdminControllers = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof (MrCMSAppAdminController<>))
+                                             .GroupBy(
+                                                 type =>
+                                                 ((MrCMSApp) Activator.CreateInstance(
+                                                     type.GetBaseTypes(
+                                                         type1 =>
+                                                         type1.IsGenericType &&
+                                                         type1.GetGenericTypeDefinition() ==
+                                                         typeof (MrCMSAppAdminController<>))
+                                                         .First()
+                                                         .GetGenericArguments()[0])).AppName)
+                                             .ToDictionary(types => types.Key, types => types.ToList());
+            _uiControllers = TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSUIController>();
+            _adminControllers = TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSAdminController>();
+        }
+        protected override Type GetControllerType(RequestContext requestContext, string controllerName)
+        {
+            if (requestContext.RouteData.DataTokens["app"] != null)
+            {
+                if ("admin".Equals(Convert.ToString(requestContext.RouteData.DataTokens["area"]),
+                                   StringComparison.OrdinalIgnoreCase))
+                    return _appAdminControllers[requestContext.RouteData.DataTokens["app"].ToString()].SingleOrDefault(
+                        type =>
+                        type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
+                else
+                    return _appUiControllers[requestContext.RouteData.DataTokens["app"].ToString()].SingleOrDefault(
+                        type =>
+                        type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
+            }
+
+            if ("admin".Equals(Convert.ToString(requestContext.RouteData.DataTokens["area"]),
+                               StringComparison.OrdinalIgnoreCase))
+                return _adminControllers.SingleOrDefault(
+                    type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
+            else
+                return _uiControllers.SingleOrDefault(
+                    type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
+        }
     }
 }

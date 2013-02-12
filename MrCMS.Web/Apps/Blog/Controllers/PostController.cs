@@ -8,10 +8,8 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Blog.Controllers
 {
-    public class PostController : MrCMSUIController
+    public class PostController : MrCMSAppUIController<BlogApp>
     {
-        public PostController() : base("Blog") { }
-
         public ActionResult Show(Post page)
         {
             return View("Post", page.CurrentLayout.UrlSegment, page);

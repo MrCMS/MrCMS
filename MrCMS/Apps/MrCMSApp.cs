@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Website.Controllers;
+using System.Linq;
 
 namespace MrCMS.Apps
 {
     public abstract class MrCMSApp
     {
         protected abstract void RegisterApp(MrCMSAppRegistrationContext context);
-
-        private const string _typeCacheName = "MVC-AreaRegistrationTypeCache.xml";
 
         /// <summary>
         /// Gets the name of the area to register.
@@ -18,7 +20,9 @@ namespace MrCMS.Apps
         /// <returns>
         /// The name of the area to register.
         /// </returns>
-        protected abstract string AppName { get; }
+        public abstract string AppName { get; }
+
+        public static readonly Dictionary<Type, string> AppWebpages = new Dictionary<Type, string>();
 
         internal void CreateContextAndRegister(RouteCollection routes, object state)
         {
@@ -27,12 +31,8 @@ namespace MrCMS.Apps
             if (@namespace != null)
                 context.Namespaces.Add(@namespace + ".*");
             this.RegisterApp(context);
-        }
-
-        private static bool IsAppRegistrationType(Type type)
-        {
-            return typeof(MrCMSApp).IsAssignableFrom(type) &&
-                   type.GetConstructor(Type.EmptyTypes) != null;
+            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<Webpage>().FindAll(type => type.Namespace.StartsWith(this.GetType().Namespace));
+            types.ForEach(type => AppWebpages[type] = AppName);
         }
 
         /// <summary>

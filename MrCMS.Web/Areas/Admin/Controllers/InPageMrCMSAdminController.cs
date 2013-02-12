@@ -13,12 +13,12 @@ using System.Linq;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class InPageAdminController : AdminController
+    public class InPageMrCMSAdminController : MrCMSAdminController
     {
         private readonly IDocumentService _documentService;
         private readonly ISession _session;
 
-        public InPageAdminController(IDocumentService documentService, ISession session)
+        public InPageMrCMSAdminController(IDocumentService documentService, ISession session)
         {
             _documentService = documentService;
             _session = session;

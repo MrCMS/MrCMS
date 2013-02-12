@@ -4,7 +4,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class ImageController : AdminController
+    public class ImageController : MrCMSAdminController
     {
         private readonly IImageProcessor _imageProcessor;
 

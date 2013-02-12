@@ -12,7 +12,7 @@ using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class SearchController : AdminController
+    public class SearchController : MrCMSAdminController
     {
         private readonly IDocumentService _documentService;
         private readonly INavigationService _navigationService;

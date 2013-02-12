@@ -8,7 +8,7 @@ using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class SettingsController : AdminController
+    public class SettingsController : MrCMSAdminController
     {
         private readonly IConfigurationProvider _configurationProvider;
         private readonly ISession _session;

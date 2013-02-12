@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Web.Mvc;
 using System.Xml;
+using MrCMS.Apps;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
