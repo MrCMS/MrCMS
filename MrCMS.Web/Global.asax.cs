@@ -2,6 +2,7 @@
 using System.Web.Routing;
 using MrCMS.Web.Controllers;
 using MrCMS.Website;
+using MrCMS.Website.Controllers;
 using Ninject;
 
 namespace MrCMS.Web

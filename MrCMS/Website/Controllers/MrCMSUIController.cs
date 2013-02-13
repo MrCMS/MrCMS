@@ -6,7 +6,6 @@ namespace MrCMS.Website.Controllers
 {
     public abstract class MrCMSUIController : MrCMSController
     {
-
         protected override ViewResult View(string viewName, string masterName, object model)
         {
             if (!(model is Webpage) && !(model is Widget))

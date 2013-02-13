@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Website.ActionResults;
 using MrCMS.Website.Controllers;
 using Xunit;
 

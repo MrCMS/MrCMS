@@ -3,7 +3,7 @@ using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 
-namespace MrCMS.Website.Controllers
+namespace MrCMS.Website.ActionResults
 {
     public class JsonNetResult : JsonResult
     {

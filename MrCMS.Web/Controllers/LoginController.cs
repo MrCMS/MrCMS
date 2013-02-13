@@ -3,10 +3,11 @@ using System.Web.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : MrCMSUIController
     {
         private readonly AuthorisationService _authorisationService;
         private readonly IUserService _userService;

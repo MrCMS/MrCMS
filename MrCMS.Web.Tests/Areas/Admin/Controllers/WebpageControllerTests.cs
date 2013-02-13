@@ -14,7 +14,7 @@ using MrCMS.Web.Application.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Tests.Stubs;
-using MrCMS.Website.Controllers;
+using MrCMS.Website.ActionResults;
 using NHibernate;
 using Xunit;
 

@@ -18,29 +18,21 @@ namespace MrCMS.Website.Routing
 {
     public sealed class MrCMSHttpHandler : IHttpHandler, IRequiresSessionState
     {
-        private readonly RequestContext _requestContext;
-        private readonly Func<ISession> _getSession;
-        private readonly Func<IDocumentService> _getDocumentService;
-        private readonly Func<SiteSettings> _getSiteSettings;
-        private IDocumentService _documentService;
-        private SiteSettings _siteSettings;
-        private string _httpMethod;
+
+        private readonly IDocumentService _documentService;
+        private readonly SiteSettings _siteSettings;
         private Webpage _webpage;
         private bool _webpageLookedUp;
-        private ISession _session;
+        private readonly ISession _session;
+        private readonly IControllerManager _controllerManager;
 
-        public MrCMSHttpHandler(RequestContext requestContext, Func<ISession> getSession, Func<IDocumentService> getDocumentService, Func<SiteSettings> getSiteSettings)
-        {
-            _requestContext = requestContext;
-            _getSession = getSession;
-            _getDocumentService = getDocumentService;
-            _getSiteSettings = getSiteSettings;
-        }
 
-        public string HttpMethod
+        public MrCMSHttpHandler(ISession session, IDocumentService documentService, IControllerManager controllerManager, SiteSettings siteSettings)
         {
-            get { return _httpMethod ?? RequestContext.HttpContext.Request.HttpMethod; }
-            set { _httpMethod = value; }
+            _session = session;
+            _documentService = documentService;
+            _controllerManager = controllerManager;
+            _siteSettings = siteSettings;
         }
 
         public void ProcessRequest(HttpContext context)
@@ -67,11 +59,11 @@ namespace MrCMS.Website.Routing
 
             if (!IsAllowed(context)) return;
 
-            var controller = GetController();
+            var controller = _controllerManager.GetController(RequestContext, Webpage, context.Request.HttpMethod);
 
-            SetViewModel(controller);
+            _controllerManager.SetViewData(Webpage, controller, _session);
 
-            SetFormData(controller);
+            _controllerManager.SetFormData(Webpage, controller, context.Request.Form);
 
             try
             {
@@ -88,63 +80,9 @@ namespace MrCMS.Website.Routing
             context.Response.AppendHeader("X-Built-With", "Mr CMS - http://mrcms.codeplex.com");
         }
 
-        public void SetViewModel(Controller controller)
-        {
-            if (HttpMethod == "GET" && Webpage != null)
-            {
-                Webpage.UiViewData(controller.ViewData, Session, controller.Request);
-            }
-        }
-
-        public bool RedirectsToHomePage(HttpContextBase context)
-        {
-            if (Webpage.LiveUrlSegment != Webpage.UrlSegment && context.Request.Url.AbsolutePath != "/")
-            {
-                context.Response.Redirect("~/" + Webpage.LiveUrlSegment);
-                return true;
-            }
-            return false;
-        }
-
-        public void SetFormData(Controller controller)
-        {
-            if (HttpMethod == "POST" && RequestContext.HttpContext.Request.Form != null)
-            {
-                var formCollection = new FormCollection(RequestContext.HttpContext.Request.Form);
-                if (WebpageDefinition != null && WebpageDefinition.PostTypes != null && WebpageDefinition.PostTypes.Any())
-                {
-                    foreach (var type in WebpageDefinition.PostTypes)
-                    {
-                        var modelBinder = ModelBinders.Binders.GetBinder(type) as MrCMSDefaultModelBinder;
-                        if (modelBinder != null)
-                        {
-                            var modelBindingContext = new ModelBindingContext
-                                                          {
-                                                              ValueProvider =
-                                                                  formCollection,
-                                                              ModelMetadata =
-                                                                  ModelMetadataProviders.Current.GetMetadataForType(
-                                                                      () =>
-                                                                      modelBinder.GetModelFromSession(
-                                                                          controller.ControllerContext,
-                                                                          string.Empty, type), type)
-                                                          };
-
-                            var model = modelBinder.BindModel(controller.ControllerContext, modelBindingContext);
-                            controller.RouteData.Values[type.Name.ToLower()] = model;
-                        }
-                    }
-                }
-                else
-                {
-                    controller.RouteData.Values["form"] = formCollection;
-                }
-            }
-        }
-
         public void Handle500(HttpContextBase context, Exception exception)
         {
-            HandleError(context, 500, SiteSettings.Error500PageId, new HttpException(500, exception.Message, exception));
+            HandleError(context, 500, _siteSettings.Error500PageId, new HttpException(500, exception.Message, exception));
         }
 
         private void HandleExceptionWithElmah(Exception exception)
@@ -166,7 +104,7 @@ namespace MrCMS.Website.Routing
         {
             if (Webpage == null)
             {
-                HandleError(context, 404, SiteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data));
+                HandleError(context, 404, _siteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data));
                 return true;
             }
             return false;
@@ -176,7 +114,7 @@ namespace MrCMS.Website.Routing
         {
             var url = context.Request.Url;
             var scheme = url.Scheme;
-            if (Webpage.RequiresSSL && scheme != "https" && SiteSettings.SiteIsLive)
+            if (Webpage.RequiresSSL && scheme != "https" && _siteSettings.SiteIsLive)
             {
                 var redirectUrl = url.ToString().Replace(scheme + "://", "https://");
                 context.Response.RedirectPermanent(redirectUrl);
@@ -191,10 +129,20 @@ namespace MrCMS.Website.Routing
             return false;
         }
 
+        public bool RedirectsToHomePage(HttpContextBase context)
+        {
+            if (Webpage.LiveUrlSegment != Webpage.UrlSegment && context.Request.Url.AbsolutePath != "/")
+            {
+                context.Response.Redirect("~/" + Webpage.LiveUrlSegment);
+                return true;
+            }
+            return false;
+        }
+
         private void HandleError(HttpContextBase context, int code, int pageId, HttpException exception)
         {
             HandleExceptionWithElmah(exception);
-            var webpage = DocumentService.GetDocument<Webpage>(pageId);
+            var webpage = _documentService.GetDocument<Webpage>(pageId);
             if (webpage != null)
             {
                 context.ClearError();
@@ -206,7 +154,7 @@ namespace MrCMS.Website.Routing
                 data.Values["data"] = webpage.LiveUrlSegment;
 
                 Webpage = webpage;
-                var controller = GetController();
+                var controller = _controllerManager.GetController(RequestContext, webpage, context.Request.HttpMethod);
                 (controller as IController).Execute(new RequestContext(context, controller.RouteData));
             }
             else
@@ -268,76 +216,6 @@ namespace MrCMS.Website.Routing
             return true;
         }
 
-        public string GetActionName()
-        {
-            if (Webpage == null)
-                return null;
-
-            if (!Webpage.Published && !Webpage.IsAllowedForAdmin(MrCMSApplication.CurrentUser))
-                return null;
-
-            var definition = DocumentService.GetDefinitionByType(Webpage.GetType());
-
-            if (definition == null) return null;
-
-            switch (HttpMethod)
-            {
-                case "GET":
-                case "HEAD":
-                    return definition.WebGetAction;
-                case "POST":
-                    return definition.WebPostAction;
-                default:
-                    return null;
-            }
-        }
-
-        public Controller GetController()
-        {
-            var controllerName = GetControllerName();
-	    
-            var controller = ControllerBuilder.Current.GetControllerFactory().CreateController(RequestContext, controllerName ?? "MrCMS") as Controller;
-            controller.ControllerContext = new ControllerContext(RequestContext, controller) { RouteData = RequestContext.RouteData };
-
-            var routeValueDictionary = new RouteValueDictionary();
-            routeValueDictionary["controller"] = controllerName;
-            routeValueDictionary["action"] = GetActionName();
-            routeValueDictionary["page"] = Webpage;
-            controller.RouteData.Values.Merge(routeValueDictionary);
-
-            return controller;
-        }
-
-        public string GetControllerName()
-        {
-            if (Webpage == null)
-                return null;
-
-            if (!Webpage.Published && !Webpage.IsAllowedForAdmin(MrCMSApplication.CurrentUser))
-                return null;
-
-            var definition = DocumentService.GetDefinitionByType(Webpage.GetType());
-
-            if (definition == null) return null;
-
-            string controllerName;
-
-            switch (HttpMethod)
-            {
-                case "GET":
-                case "HEAD":
-                    controllerName = definition.WebGetController;
-                    break;
-                case "POST":
-                    controllerName = definition.WebPostController;
-                    break;
-                default:
-                    return null;
-            }
-
-            return controllerName;
-        }
-
         public Webpage Webpage
         {
             get { return _webpage ?? (!_webpageLookedUp ? (_webpage = GetWebpage()) : null); }
@@ -346,11 +224,6 @@ namespace MrCMS.Website.Routing
                 _webpage = value;
                 _webpageLookedUp = true;
             }
-        }
-
-        public DocumentMetadata WebpageDefinition
-        {
-            get { return Webpage == null ? null : Webpage.GetMetadata(); }
         }
 
         private Webpage GetWebpage()
@@ -362,16 +235,16 @@ namespace MrCMS.Website.Routing
                               ? MrCMSApplication.PublishedRootChildren().FirstOrDefault()
                               : MrCMSApplication.RootChildren().FirstOrDefault();
             }
-            else webpage = DocumentService.GetDocumentByUrl<Webpage>(Data);
+            else webpage = _documentService.GetDocumentByUrl<Webpage>(Data);
 
             MrCMSApplication.CurrentPage = webpage;
             _webpageLookedUp = true;
 
-	    if (webpage != null)
-	    {
-	        if (MrCMSApp.AppWebpages.ContainsKey(webpage.GetType()))
-	            RequestContext.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[webpage.GetType()];
-	    }
+            if (webpage != null)
+            {
+                if (MrCMSApp.AppWebpages.ContainsKey(webpage.GetType()))
+                    RequestContext.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[webpage.GetType()];
+            }
             return webpage;
         }
 
@@ -385,34 +258,10 @@ namespace MrCMS.Website.Routing
             get { return false; }
         }
 
-        public ISession Session
+        public RequestContext RequestContext { get; private set; }
+        public void SetRequestContext(RequestContext requestContext)
         {
-            get { return _session ?? (_session = _getSession.Invoke()); }
-        }
-
-        public IDocumentService DocumentService
-        {
-            get { return _documentService ?? (_documentService = GetDocumentService.Invoke()); }
-        }
-
-        public Func<IDocumentService> GetDocumentService
-        {
-            get { return _getDocumentService; }
-        }
-
-        public SiteSettings SiteSettings
-        {
-            get { return _siteSettings ?? (_siteSettings = GetSiteSettings.Invoke()); }
-        }
-
-        public Func<SiteSettings> GetSiteSettings
-        {
-            get { return _getSiteSettings; }
-        }
-
-        public RequestContext RequestContext
-        {
-            get { return _requestContext; }
+            RequestContext = requestContext;
         }
     }
 }

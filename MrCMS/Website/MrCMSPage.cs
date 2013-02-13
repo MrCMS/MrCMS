@@ -64,10 +64,7 @@ namespace MrCMS.Website
 
                 return MvcHtmlString.Create(tagBuilder.ToString());
             }
-            else
-            {
-                return MvcHtmlString.Create(value);
-            }
+            return MvcHtmlString.Create(value);
         }
 
         public MvcHtmlString RenderZone(string areaName)
@@ -93,7 +90,7 @@ namespace MrCMS.Website
 
                     try
                     {
-                        stringBuilder.Append(Html.Action("Show", "Widget", new { id = widget.Id, page }).ToHtmlString());
+                        stringBuilder.Append(Html.Action("Show", "Widget", new { widget }).ToHtmlString());
                     }
                     catch (Exception ex)
                     {

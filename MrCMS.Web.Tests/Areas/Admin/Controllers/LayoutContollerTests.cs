@@ -16,7 +16,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class LayoutContollerTests
     {
-        private ISiteService _siteService;
         private IDocumentService documentService;
 
         [Fact]

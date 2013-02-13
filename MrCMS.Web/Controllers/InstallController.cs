@@ -6,10 +6,11 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Installation;
 using MrCMS.Web.Application.Pages;
 using MrCMS.Website;
+using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Controllers
 {
-    public class InstallController : Controller
+    public class InstallController : MrCMSUIController
     {
         private readonly IInstallationService _installationService;
 

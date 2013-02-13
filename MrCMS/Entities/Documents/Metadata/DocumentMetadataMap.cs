@@ -10,7 +10,7 @@ namespace MrCMS.Entities.Documents.Metadata
         public virtual string Name { get { return typeof(T).Name.BreakUpString(); } }
         public virtual string IconClass { get { return "icon-file"; } }
 
-        public virtual string WebGetController { get { return typeof(T).Name; } }
+        public virtual string WebGetController { get { return "Webpage"; } }
         public virtual string WebGetAction { get { return "Show"; } }
         public virtual string WebPostController { get { return typeof(T).Name; } }
         public virtual string WebPostAction { get { return "Post"; } }

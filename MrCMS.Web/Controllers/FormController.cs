@@ -5,7 +5,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Controllers
 {
-    public class FormController : MrCMSController
+    public class FormController : MrCMSUIController
     {
         private readonly IFormService _formService;
 
