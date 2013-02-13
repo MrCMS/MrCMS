@@ -208,7 +208,7 @@ namespace MrCMS.Website.Routing
 
         public bool CheckIsInstalled(HttpContextBase context)
         {
-            if (!MrCMSApplication.DatabaseIsInstalled)
+            if (!CurrentRequestData.DatabaseIsInstalled)
             {
                 context.Response.Redirect("~/Install");
                 return false;

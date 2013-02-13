@@ -22,7 +22,7 @@ namespace MrCMS.Logging
 
         public MrCMSErrorLog(IDictionary config)
         {
-            if (MrCMSApplication.DatabaseIsInstalled)
+            if (CurrentRequestData.DatabaseIsInstalled)
                 _session = MrCMSApplication.Get<ISession>();
         }
 

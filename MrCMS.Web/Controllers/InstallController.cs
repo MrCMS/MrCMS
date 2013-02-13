@@ -23,7 +23,7 @@ namespace MrCMS.Web.Controllers
         [HttpGet]
         public ActionResult Setup_Get(InstallModel installModel)
         {
-            if (MrCMSApplication.DatabaseIsInstalled)
+            if (CurrentRequestData.DatabaseIsInstalled)
                 return Redirect("~");
 
             //set page timeout to 5 minutes
@@ -47,7 +47,7 @@ namespace MrCMS.Web.Controllers
         [HttpPost]
         public ActionResult Setup(InstallModel model)
         {
-            if (MrCMSApplication.DatabaseIsInstalled)
+            if (CurrentRequestData.DatabaseIsInstalled)
                 return Redirect("~");
 
             //set page timeout to 5 minutes

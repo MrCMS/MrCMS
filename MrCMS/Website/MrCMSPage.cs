@@ -36,7 +36,7 @@ namespace MrCMS.Website
         {
             base.InitHelpers();
 
-            if (MrCMSApplication.DatabaseIsInstalled)
+            if (CurrentRequestData.DatabaseIsInstalled)
             {
                 _configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
                 _imageProcessor = MrCMSApplication.Get<IImageProcessor>();

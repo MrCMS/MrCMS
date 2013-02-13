@@ -1,4 +1,8 @@
-﻿using System.Web;
+﻿using System;
+using System.Configuration;
+using System.IO;
+using System.Web;
+using System.Web.Hosting;
 using Elmah;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
@@ -49,6 +53,32 @@ namespace MrCMS.Website
         public static bool CurrentUserIsAdmin
         {
             get { return CurrentUser != null && CurrentUser.IsAdmin; }
+        }
+
+        private static bool? _databaseIsInstalled;
+
+        public static bool DatabaseIsInstalled
+        {
+            get
+            {
+                if (!_databaseIsInstalled.HasValue)
+                {
+                    var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath;
+
+                    var connectionStrings = Path.Combine(applicationPhysicalPath, "ConnectionStrings.config");
+
+                    if (!File.Exists(connectionStrings))
+                    {
+                        File.WriteAllText(connectionStrings, "<connectionStrings></connectionStrings>");
+                    }
+
+                    var connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
+                    _databaseIsInstalled = connectionString != null &&
+                                           !String.IsNullOrEmpty(connectionString.ConnectionString);
+                }
+                return _databaseIsInstalled.Value;
+            }
+            set { _databaseIsInstalled = value; }
         }
     }
 }

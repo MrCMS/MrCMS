@@ -55,7 +55,7 @@ namespace MrCMS.Website
 
         public override void Init()
         {
-            if (DatabaseIsInstalled)
+            if (CurrentRequestData.DatabaseIsInstalled)
                 TaskExecutor.SessionFactory = Get<ISessionFactory>();
             BeginRequest += (sender, args) =>
                                 {
@@ -71,7 +71,7 @@ namespace MrCMS.Website
 
             EndRequest += (sender, args) =>
             {
-                if (DatabaseIsInstalled)
+                if (CurrentRequestData.DatabaseIsInstalled)
                     AppendScheduledTasks();
                 TaskExecutor.StartExecuting();
             };
@@ -87,32 +87,6 @@ namespace MrCMS.Website
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
-        }
-
-        private static bool? _databaseIsInstalled;
-
-        public static bool DatabaseIsInstalled
-        {
-            get
-            {
-                if (!_databaseIsInstalled.HasValue)
-                {
-                    var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath;
-
-                    var connectionStrings = Path.Combine(applicationPhysicalPath, "ConnectionStrings.config");
-
-                    if (!File.Exists(connectionStrings))
-                    {
-                        File.WriteAllText(connectionStrings, "<connectionStrings></connectionStrings>");
-                    }
-
-                    var connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
-                    _databaseIsInstalled = connectionString != null &&
-                                           !String.IsNullOrEmpty(connectionString.ConnectionString);
-                }
-                return _databaseIsInstalled.Value;
-            }
-            set { _databaseIsInstalled = value; }
         }
 
         public abstract string RootNamespace { get; }

@@ -29,7 +29,7 @@ namespace MrCMS.Tests.Website.Routing
 
         public MrCMSHttpHandlerTests()
         {
-            MrCMSApplication.DatabaseIsInstalled = true;
+            CurrentRequestData.DatabaseIsInstalled = true;
             CurrentRequestData.CurrentUser = new User();
             MrCMSApplication.OverridenRootChildren = new List<Webpage>();
         }
@@ -37,7 +37,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_CheckIsInstalled_DatabaseIsNotInstalledRedirectsToInstall()
         {
-            MrCMSApplication.DatabaseIsInstalled = false;
+            CurrentRequestData.DatabaseIsInstalled = false;
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var httpContext = A.Fake<HttpContextBase>();
 
