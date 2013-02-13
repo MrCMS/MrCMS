@@ -47,9 +47,9 @@ namespace MrCMS.Shortcodes
                                                 {
                                                     var formData =
                                                         _formService.GetFormStructure(
-                                                            MrCMSApplication.CurrentPage);
+                                                            CurrentRequestData.CurrentPage);
                                                     return GetForm(htmlHelper, formData,
-                                                                   MrCMSApplication.CurrentPage);
+                                                                   CurrentRequestData.CurrentPage);
                                                 });
 
             return current;

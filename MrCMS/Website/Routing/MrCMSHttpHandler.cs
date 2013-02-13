@@ -87,12 +87,12 @@ namespace MrCMS.Website.Routing
 
         private void HandleExceptionWithElmah(Exception exception)
         {
-            MrCMSApplication.ErrorSignal.Raise(exception);
+            CurrentRequestData.ErrorSignal.Raise(exception);
         }
 
         public bool IsAllowed(HttpContextBase context)
         {
-            if (!Webpage.IsAllowed(MrCMSApplication.CurrentUser))
+            if (!Webpage.IsAllowed(CurrentRequestData.CurrentUser))
             {
                 context.Response.Redirect("~");
                 return false;
@@ -231,13 +231,13 @@ namespace MrCMS.Website.Routing
             Webpage webpage;
             if (string.IsNullOrWhiteSpace(Data))
             {
-                webpage = !MrCMSApplication.CurrentUserIsAdmin
+                webpage = !CurrentRequestData.CurrentUserIsAdmin
                               ? MrCMSApplication.PublishedRootChildren().FirstOrDefault()
                               : MrCMSApplication.RootChildren().FirstOrDefault();
             }
             else webpage = _documentService.GetDocumentByUrl<Webpage>(Data);
 
-            MrCMSApplication.CurrentPage = webpage;
+            CurrentRequestData.CurrentPage = webpage;
             _webpageLookedUp = true;
 
             if (webpage != null)

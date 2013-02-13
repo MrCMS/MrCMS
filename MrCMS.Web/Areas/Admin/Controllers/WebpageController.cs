@@ -35,7 +35,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (!string.IsNullOrWhiteSpace(Convert.ToString(id)) && int.TryParse(Convert.ToString(id), out idVal))
             {
                 var document = _documentService.GetDocument<Webpage>(idVal);
-                if (document != null && !document.IsAllowedForAdmin(MrCMSApplication.CurrentUser))
+                if (document != null && !document.IsAllowedForAdmin(CurrentRequestData.CurrentUser))
                 {
                     filterContext.Result = new RedirectResult("~/admin");
                 }

@@ -77,7 +77,7 @@ namespace MrCMS.DbConfiguration.Configuration
                 SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
                 SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
                 if (systemEntity is SiteEntity && (systemEntity as SiteEntity).Site == null)
-                    SetSite(@event.Persister, @event.State, systemEntity as SiteEntity, MrCMSApplication.CurrentSite);
+                    SetSite(@event.Persister, @event.State, systemEntity as SiteEntity, CurrentRequestData.CurrentSite);
             }
             return false;
         }
@@ -127,7 +127,7 @@ namespace MrCMS.DbConfiguration.Configuration
                                                       User = GetUser(session),
                                                       CreatedOn = DateTime.UtcNow,
                                                       UpdatedOn = DateTime.UtcNow,
-                                                      Site = session.Get<Site>( MrCMSApplication.CurrentSite.Id)
+                                                      Site = session.Get<Site>( CurrentRequestData.CurrentSite.Id)
                                                   };
                         document.Versions.Add(documentVersion);
                         using (var transaction = session.BeginTransaction())
@@ -141,7 +141,7 @@ namespace MrCMS.DbConfiguration.Configuration
             }
             catch (Exception exception)
             {
-                MrCMSApplication.ErrorSignal.Raise(exception);
+                CurrentRequestData.ErrorSignal.Raise(exception);
             }
         }
 
@@ -154,13 +154,13 @@ namespace MrCMS.DbConfiguration.Configuration
 
         private User GetUser(ISession session)
         {
-            if (MrCMSApplication.OverriddenUser != null)
-                return MrCMSApplication.OverriddenUser;
-            if (MrCMSApplication.CurrentContext != null && MrCMSApplication.CurrentContext.User != null)
+            if (CurrentRequestData.CurrentUser != null)
+                return session.Load<User>(CurrentRequestData.CurrentUser.Id);
+            if (CurrentRequestData.CurrentContext != null && CurrentRequestData.CurrentContext.User != null)
             {
                 var currentUser =
                     session.QueryOver<User>().Where(
-                        user => user.Email == MrCMSApplication.CurrentContext.User.Identity.Name).
+                        user => user.Email == CurrentRequestData.CurrentContext.User.Identity.Name).
                         SingleOrDefault();
                 return currentUser;
             }

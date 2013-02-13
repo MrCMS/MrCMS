@@ -32,7 +32,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (!string.IsNullOrWhiteSpace(Convert.ToString(id)) && int.TryParse(Convert.ToString(id), out idVal))
             {
                 var document = _documentService.GetDocument<Webpage>(idVal);
-                if (document != null && !document.IsAllowedForAdmin(MrCMSApplication.CurrentUser))
+                if (document != null && !document.IsAllowedForAdmin(CurrentRequestData.CurrentUser))
                 {
                     filterContext.Result = new EmptyResult();
                 }
@@ -120,7 +120,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (!typeof (Webpage).IsAssignableFrom(entityType))
                 return content;
             
-            MrCMSApplication.CurrentPage = entity as Webpage;
+            CurrentRequestData.CurrentPage = entity as Webpage;
             var htmlHelper = MrCMSHtmlHelper.GetHtmlHelper(this);
             return htmlHelper.ParseShortcodes(content).ToHtmlString();
         }

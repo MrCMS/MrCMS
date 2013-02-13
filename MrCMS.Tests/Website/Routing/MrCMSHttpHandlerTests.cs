@@ -19,7 +19,7 @@ using Xunit;
 
 namespace MrCMS.Tests.Website.Routing
 {
-    public class MrCMSHttpHandlerTests
+    public class MrCMSHttpHandlerTests : MrCMSTest
     {
         private SiteSettings siteSettings;
         private IDocumentService documentService;
@@ -30,8 +30,7 @@ namespace MrCMS.Tests.Website.Routing
         public MrCMSHttpHandlerTests()
         {
             MrCMSApplication.DatabaseIsInstalled = true;
-            MrCMSApplication.OverriddenUser = new User();
-            MrCMSApplication.OverridenContext = A.Fake<HttpContextBase>();
+            CurrentRequestData.CurrentUser = new User();
             MrCMSApplication.OverridenRootChildren = new List<Webpage>();
         }
 
@@ -149,7 +148,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_MustCallSiteSettings404PageId()
         {
-            MrCMSApplication.OverridenSignal = new ErrorSignal();
+            CurrentRequestData.ErrorSignal = new ErrorSignal();
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
             var stubAllowedWebpage = new StubAllowedWebpage { UrlSegment = "test-404" };
@@ -171,7 +170,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_MustCallDocumentServiceWithTheResultOfThe404()
         {
-            MrCMSApplication.OverridenSignal = new ErrorSignal();
+            CurrentRequestData.ErrorSignal = new ErrorSignal();
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
             var stubAllowedWebpage = new StubAllowedWebpage { UrlSegment = "test-404" };
@@ -193,7 +192,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_StatusCode404()
         {
-            MrCMSApplication.OverridenSignal = new ErrorSignal();
+            CurrentRequestData.ErrorSignal = new ErrorSignal();
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
             var stubAllowedWebpage = new StubAllowedWebpage { UrlSegment = "test-404" };
@@ -214,7 +213,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void MrCMSHttpHandler_Handle404_WebpageSetReturnsFalse()
         {
-            MrCMSApplication.OverridenSignal = new ErrorSignal();
+            CurrentRequestData.ErrorSignal = new ErrorSignal();
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
             var stubAllowedWebpage = new StubAllowedWebpage { UrlSegment = "test-404" };
@@ -383,7 +382,7 @@ namespace MrCMS.Tests.Website.Routing
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => requestContext.HttpContext.Request.Url.ToString()).Returns("test-page");
 
-            mrCMSHttpHandler.CheckIsFile(MrCMSApplication.CurrentContext).Should().BeFalse();
+            mrCMSHttpHandler.CheckIsFile(CurrentRequestData.CurrentContext).Should().BeFalse();
         }
 
         [Fact]
@@ -396,7 +395,7 @@ namespace MrCMS.Tests.Website.Routing
             A.CallTo(() => httpContextBase.Request).Returns(httpRequestBase);
             A.CallTo(() => httpRequestBase.Url).Returns(new Uri("/test-page.jpg", UriKind.Relative));
 
-            mrCMSHttpHandler.CheckIsFile(MrCMSApplication.CurrentContext).Should().BeTrue();
+            mrCMSHttpHandler.CheckIsFile(CurrentRequestData.CurrentContext).Should().BeTrue();
         }
 
 

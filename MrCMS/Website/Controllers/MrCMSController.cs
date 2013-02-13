@@ -43,7 +43,7 @@ namespace MrCMS.Website.Controllers
 
         public Site CurrentSite
         {
-            get { return _currentSite ?? MrCMSApplication.CurrentSite; }
+            get { return _currentSite ?? CurrentRequestData.CurrentSite; }
             set { _currentSite = value; }
         }
 

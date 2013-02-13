@@ -17,7 +17,7 @@ namespace MrCMS.Website.Routing
 
         private void HandleExceptionWithElmah(Exception exception)
         {
-            MrCMSApplication.ErrorSignal.Raise(exception);
+            CurrentRequestData.ErrorSignal.Raise(exception);
         }
 
         public void HandleError(Webpage webpage, RequestContext requestContext, HttpContextBase context, int code,  HttpException exception)

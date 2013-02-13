@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Tests.Stubs;
+using MrCMS.Website;
 using MrCMS.Website.Routing;
 using Xunit;
 using MrCMS.Helpers;
 
 namespace MrCMS.Tests.Website.Routing
 {
-    public class ControllerManagerTests
+    public class ControllerManagerTests : MrCMSTest
     {
         [Fact]
         public void ControllerManager_GetControllerName_NullWebpageReturnsNull()

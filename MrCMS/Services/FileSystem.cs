@@ -71,7 +71,7 @@ namespace MrCMS.Services
 
         public string MapPath(string path)
         {
-            return MrCMSApplication.CurrentContext.Server.MapPath(path);
+            return CurrentRequestData.CurrentContext.Server.MapPath(path);
         }
     }
 }

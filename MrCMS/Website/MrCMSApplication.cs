@@ -14,14 +14,12 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
-using MrCMS.Helpers;
 using MrCMS.IoC;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
-using MrCMS.Website.Controllers;
 using MrCMS.Website.Routing;
 using NHibernate;
 using Ninject;
@@ -53,12 +51,23 @@ namespace MrCMS.Website
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
         }
 
-        public static User OverriddenUser { get; set; }
+        //public static User OverriddenUser { get; set; }
 
         public override void Init()
         {
             if (DatabaseIsInstalled)
                 TaskExecutor.SessionFactory = Get<ISessionFactory>();
+            BeginRequest += (sender, args) =>
+                                {
+                                    CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
+                                    CurrentRequestData.CurrentSite = Get<ISiteService>().GetCurrentSite();
+                                    CurrentRequestData.SiteSettings = Get<SiteSettings>();
+                                };
+            AuthenticateRequest += (sender, args) =>
+                                       {
+                                           CurrentRequestData.CurrentUser =
+                                               Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
+                                       };
 
             EndRequest += (sender, args) =>
             {
@@ -80,12 +89,31 @@ namespace MrCMS.Website
             filters.Add(new HandleErrorAttribute());
         }
 
-        public static ErrorSignal ErrorSignal
-        {
-            get { return OverridenSignal ?? Elmah.ErrorSignal.FromCurrentContext(); }
-        }
+        private static bool? _databaseIsInstalled;
 
-        public static ErrorSignal OverridenSignal { get; set; }
+        public static bool DatabaseIsInstalled
+        {
+            get
+            {
+                if (!_databaseIsInstalled.HasValue)
+                {
+                    var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath;
+
+                    var connectionStrings = Path.Combine(applicationPhysicalPath, "ConnectionStrings.config");
+
+                    if (!File.Exists(connectionStrings))
+                    {
+                        File.WriteAllText(connectionStrings, "<connectionStrings></connectionStrings>");
+                    }
+
+                    var connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
+                    _databaseIsInstalled = connectionString != null &&
+                                           !String.IsNullOrEmpty(connectionString.ConnectionString);
+                }
+                return _databaseIsInstalled.Value;
+            }
+            set { _databaseIsInstalled = value; }
+        }
 
         public abstract string RootNamespace { get; }
 
@@ -144,21 +172,11 @@ namespace MrCMS.Website
 
         protected abstract void RegisterAppSpecificRoutes(RouteCollection routes);
 
-        public static Layout OverridenDefaultLayout { get; set; }
-        public static Layout GetDefaultLayout(Webpage page)
-        {
-            return OverridenDefaultLayout ?? Get<IDocumentService>().GetDefaultLayout(page);
-        }
-
-        public static User CurrentUser
-        {
-            get { return OverriddenUser ?? Get<IUserService>().GetCurrentUser(CurrentContext); }
-        }
-
-        public static bool UserLoggedIn
-        {
-            get { return CurrentUser != null; }
-        }
+        //public static Layout OverridenDefaultLayout { get; set; }
+        //public static Layout GetDefaultLayout(Webpage page)
+        //{
+        //    return OverridenDefaultLayout ?? Get<IDocumentService>().GetDefaultLayout(page);
+        //}
 
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
 
@@ -226,132 +244,13 @@ namespace MrCMS.Website
             return OverridenRootChildren ??
                    Get<ISession>()
                        .QueryOver<Webpage>()
-                       .Where(document => document.Parent == null && document.Site == CurrentSite)
+                       .Where(document => document.Parent == null && document.Site == CurrentRequestData.CurrentSite)
                        .OrderBy(x => x.DisplayOrder)
                        .Asc.Cacheable()
                        .List();
         }
 
-        public static Site CurrentSite
-        {
-            get { return OverriddenSite ?? Get<ISiteService>().GetCurrentSite(); }
-        }
-
-        public static Site OverriddenSite { get; set; }
-
-        public static Webpage CurrentPage
-        {
-            get { return (Webpage)CurrentContext.Items["current.webpage"]; }
-            set { CurrentContext.Items["current.webpage"] = value; }
-        }
-
-        public static HttpContextBase CurrentContext
-        {
-            get { return OverridenContext ?? new HttpContextWrapper(HttpContext.Current); }
-        }
-
-        public static HttpContextBase OverridenContext { get; set; }
-
-        public static bool CurrentUserIsAdmin
-        {
-            get { return CurrentUser != null && CurrentUser.IsAdmin; }
-        }
-
-        public static SiteSettings OverriddenSiteSettings { get; set; }
-        public static SiteSettings SiteSettings
-        {
-            get { return OverriddenSiteSettings ?? Get<SiteSettings>(); }
-        }
-
-        private static bool? _databaseIsInstalled;
-
-        public static bool DatabaseIsInstalled
-        {
-            get
-            {
-                if (!_databaseIsInstalled.HasValue)
-                {
-                    var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath;
-
-                    var connectionStrings = Path.Combine(applicationPhysicalPath, "ConnectionStrings.config");
-
-                    if (!File.Exists(connectionStrings))
-                    {
-                        File.WriteAllText(connectionStrings, "<connectionStrings></connectionStrings>");
-                    }
-
-                    var connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
-                    _databaseIsInstalled = connectionString != null &&
-                                           !String.IsNullOrEmpty(connectionString.ConnectionString);
-                }
-                return _databaseIsInstalled.Value;
-            }
-            set { _databaseIsInstalled = value; }
-        }
-
-
         public const string AssemblyVersion = "0.2.0.*";
         public const string AssemblyFileVersion = "0.2.0.0";
-    }
-
-    public class MrCMSControllerFactory : DefaultControllerFactory
-    {
-        private Dictionary<string, List<Type>> _appUiControllers;
-        private Dictionary<string, List<Type>> _appAdminControllers;
-        private List<Type> _uiControllers;
-        private List<Type> _adminControllers;
-
-        public MrCMSControllerFactory()
-        {
-            _appUiControllers =
-                TypeHelper.GetAllConcreteTypesAssignableFrom(typeof (MrCMSAppUIController<>))
-                          .GroupBy(
-                              type =>
-                              ((MrCMSApp) Activator.CreateInstance(
-                                  type.GetBaseTypes(
-                                      type1 =>
-                                      type1.IsGenericType &&
-                                      type1.GetGenericTypeDefinition() == typeof(MrCMSAppUIController<>))
-                                      .First()
-                                      .GetGenericArguments()[0])).AppName)
-                          .ToDictionary(types => types.Key, types => types.ToList());
-            _appAdminControllers = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof (MrCMSAppAdminController<>))
-                                             .GroupBy(
-                                                 type =>
-                                                 ((MrCMSApp) Activator.CreateInstance(
-                                                     type.GetBaseTypes(
-                                                         type1 =>
-                                                         type1.IsGenericType &&
-                                                         type1.GetGenericTypeDefinition() ==
-                                                         typeof (MrCMSAppAdminController<>))
-                                                         .First()
-                                                         .GetGenericArguments()[0])).AppName)
-                                             .ToDictionary(types => types.Key, types => types.ToList());
-            _uiControllers = TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSUIController>();
-            _adminControllers = TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSAdminController>();
-        }
-        protected override Type GetControllerType(RequestContext requestContext, string controllerName)
-        {
-            if (requestContext.RouteData.DataTokens["app"] != null)
-            {
-                if ("admin".Equals(Convert.ToString(requestContext.RouteData.DataTokens["area"]),
-                                   StringComparison.OrdinalIgnoreCase))
-                    return _appAdminControllers[requestContext.RouteData.DataTokens["app"].ToString()].SingleOrDefault(
-                        type =>
-                        type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
-                else
-                    return _appUiControllers[requestContext.RouteData.DataTokens["app"].ToString()].SingleOrDefault(
-                        type =>
-                        type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
-            }
-
-            if ("admin".Equals(Convert.ToString(requestContext.RouteData.DataTokens["area"]),
-                               StringComparison.OrdinalIgnoreCase))
-                return _adminControllers.SingleOrDefault(
-                    type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
-            else
-                return _uiControllers.SingleOrDefault(
-                    type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
-        }
     }
 }

@@ -90,7 +90,7 @@ namespace MrCMS.Services
 
             children =
                 children.Where(
-                    arg => !(arg is Webpage) || (arg as Webpage).IsAllowed(MrCMSApplication.CurrentUser));
+                    arg => !(arg is Webpage) || (arg as Webpage).IsAllowed(CurrentRequestData.CurrentUser));
 
             if (document != null)
             {

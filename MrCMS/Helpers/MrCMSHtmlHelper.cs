@@ -301,7 +301,7 @@ namespace MrCMS.Helpers
         {
             var htmlContent = htmlHelper.ParseShortcodes(content);
 
-            if (!MrCMSApplication.CurrentUserIsAdmin)
+            if (!CurrentRequestData.CurrentUserIsAdmin)
                 return htmlContent;
 
             var sb = new StringBuilder();
@@ -481,8 +481,6 @@ namespace MrCMS.Helpers
             }
             return url;
         }
-
-
 
         public static string AssemblyVersion(this HtmlHelper html)
         {

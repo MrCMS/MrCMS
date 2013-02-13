@@ -305,8 +305,10 @@
     <Compile Include="Website\Controllers\SystemController.cs" />
     <Compile Include="Website\Controllers\WebpageController.cs" />
     <Compile Include="Website\Controllers\WidgetController.cs" />
+    <Compile Include="Website\CurrentRequestData.cs" />
     <Compile Include="Website\MrCMSApplication.cs" />
     <Compile Include="Website\MrCMSAuthorizeAttribute.cs" />
+    <Compile Include="Website\MrCMSControllerFactory.cs" />
     <Compile Include="Website\MrCMSViewEngine.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
     <Compile Include="Website\Routing\ErrorHandler.cs" />

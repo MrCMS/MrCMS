@@ -100,7 +100,7 @@ namespace MrCMS.Website.Routing
             if (webpage == null)
                 return null;
 
-            if (!webpage.Published && !webpage.IsAllowedForAdmin(MrCMSApplication.CurrentUser))
+            if (!webpage.Published && !webpage.IsAllowedForAdmin(CurrentRequestData.CurrentUser))
                 return null;
 
             var metadata = GetMetadata(webpage);
@@ -144,7 +144,7 @@ namespace MrCMS.Website.Routing
             if (webpage == null)
                 return null;
 
-            if (!webpage.Published && !webpage.IsAllowedForAdmin(MrCMSApplication.CurrentUser))
+            if (!webpage.Published && !webpage.IsAllowedForAdmin(CurrentRequestData.CurrentUser))
                 return null;
 
             var metadata = GetMetadata(webpage);
