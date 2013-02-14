@@ -75,43 +75,21 @@ namespace MrCMS.Website.Bundling
         private static readonly object s_lock = new object();
         public MvcHtmlString GetScripts()
         {
+
+            var result = new StringBuilder();
             if (_seoSettings.EnableJsBundling)
             {
-                var result = new StringBuilder();
                 foreach (var key in ScriptData.Keys)
                 {
-                    var partsToBundle = ScriptData[key]
-                        .Where(x => !x.IsRemote)
-                        .Select(x => x.Url)
-                        .Distinct()
-                        .ToArray();
-                    var partsToDontBundle = ScriptData[key]
-                        .Where(x => x.IsRemote)
-                        .Select(x => x.Url)
-                        .Distinct()
-                        .ToArray();
+                    var partsToBundle = ScriptData[key].Where(x => !x.IsRemote).Select(x => x.Url).Distinct().ToArray();
 
-
+                    var partsToNotBundle =
+                        ScriptData[key].Where(x => x.IsRemote).Select(x => x.Url).Distinct().ToArray();
 
                     if (partsToBundle.Any())
                     {
-                        //IMPORTANT: Do not use bundling in web farms or Windows Azure
                         string bundleVirtualPath = GetBundleVirtualPath("~/bundles/scripts/", ".js", partsToBundle);
-                        //System.Web.Optimization library does not support dynamic bundles yet.
-                        //But we know how System.Web.Optimization library stores cached results.
-                        //so let's clear the cache because we add new file references dynamically based on a page
-                        //until it's officially supported in System.Web.Optimization we have to "workaround" it manually
-                        //var cacheKey = (string)typeof(Bundle)
-                        //    .GetMethod("GetCacheKey", BindingFlags.Static | BindingFlags.NonPublic)
-                        //    .Invoke(null, new object[] { bundleVirtualPath });
-                        //or use the code below
-                        //TODO: ...but periodically ensure that cache key which we use is valid (decompile Bundle.GetCacheKey method)
-                        //var cacheKey = "System.Web.Optimization.Bundle:" + bundleVirtualPath;
 
-                        //if (_httpContext.Cache[cacheKey] != null)
-                        //    _httpContext.Cache.Remove(cacheKey);
-
-                        //create bundle
                         lock (s_lock)
                         {
                             var bundleFor = BundleTable.Bundles.GetBundleFor(bundleVirtualPath);
@@ -122,88 +100,43 @@ namespace MrCMS.Website.Bundling
                                                      Orderer = new AsIsBundleOrderer(),
                                                      EnableFileExtensionReplacements = false
                                                  };
-
-                                //"As is" ordering
-                                //disable file extension replacements. renders scripts which were specified by a developer
                                 bundle.Include(partsToBundle);
                                 BundleTable.Bundles.Add(bundle);
-                                //we clear ignore list because System.Web.Optimization library adds ignore patterns such as "*.min", "*.debug".
-                                //we think it's bad decision and should be disabled by default
                                 BundleTable.Bundles.IgnoreList.Clear();
                             }
                         }
 
-                        //parts to bundle
-                        result.AppendFormat("<script src=\"{0}\" type=\"text/javascript\"></script>",
-                                            bundleVirtualPath.Substring(1));
-                        result.AppendLine();
+                        result.AppendLine(string.Format("<script src=\"{0}\" type=\"text/javascript\"></script>",
+                                                        bundleVirtualPath.Substring(1)));
                     }
 
-                    //parts to do not bundle
-                    foreach (var path in partsToDontBundle)
-                    {
-                        result.AppendFormat("<script src=\"{0}\" type=\"text/javascript\"></script>", path);
-                        result.Append(Environment.NewLine);
-                    }
-
-
+                    foreach (var path in partsToNotBundle)
+                        result.AppendLine(string.Format("<script src=\"{0}\" type=\"text/javascript\"></script>", path));
                 }
                 return MvcHtmlString.Create(result.ToString());
 
             }
-            else
+            foreach (var path in ScriptData.Values.SelectMany(x => x).Select(data => data.Url).Distinct())
             {
-                //bundling is disabled
-                var result = new StringBuilder();
-                foreach (var path in ScriptData.Values.SelectMany(x => x).Select(data => data.Url).Distinct())
-                {
-                    result.AppendFormat("<script src=\"{0}\" type=\"text/javascript\"></script>",
-                                        path.StartsWith("~") ? path.Substring(1) : path);
-                    result.Append(Environment.NewLine);
-                }
-                return MvcHtmlString.Create(result.ToString());
+                result.AppendLine(string.Format("<script src=\"{0}\" type=\"text/javascript\"></script>",
+                                                path.StartsWith("~") ? path.Substring(1) : path));
             }
+            return MvcHtmlString.Create(result.ToString());
         }
 
         public MvcHtmlString GetCss()
         {
+            var result = new StringBuilder();
             if (_seoSettings.EnableCssBundling)
             {
-                var result = new StringBuilder();
                 foreach (var key in CssData.Keys)
                 {
-                    var partsToBundle = CssData[key]
-                        .Where(x => !x.IsRemote)
-                        .Select(x => x.Url)
-                        .Distinct()
-                        .ToArray();
-                    var partsToDontBundle = CssData[key]
-                        .Where(x => x.IsRemote)
-                        .Select(x => x.Url)
-                        .Distinct()
-                        .ToArray();
-
-
+                    var partsToBundle = CssData[key].Where(x => !x.IsRemote).Select(x => x.Url).Distinct().ToArray();
+                    var partsToDontBundle = CssData[key].Where(x => x.IsRemote).Select(x => x.Url).Distinct().ToArray();
 
                     if (partsToBundle.Any())
                     {
-                        //IMPORTANT: Do not use bundling in web farms or Windows Azure
                         string bundleVirtualPath = GetBundleVirtualPath("~/bundles/styles/", ".css", partsToBundle);
-                        //System.Web.Optimization library does not support dynamic bundles yet.
-                        //But we know how System.Web.Optimization library stores cached results.
-                        //so let's clear the cache because we add new file references dynamically based on a page
-                        //until it's officially supported in System.Web.Optimization we have to "workaround" it manually
-                        //var cacheKey = (string)typeof(Bundle)
-                        //    .GetMethod("GetCacheKey", BindingFlags.Static | BindingFlags.NonPublic)
-                        //    .Invoke(null, new object[] { bundleVirtualPath });
-                        //or use the code below
-                        //TODO: ...but periodically ensure that cache key which we use is valid (decompile Bundle.GetCacheKey method)
-                        //var cacheKey = "System.Web.Optimization.Bundle:" + bundleVirtualPath;
-
-                        //if (_httpContext.Cache[cacheKey] != null)
-                        //    _httpContext.Cache.Remove(cacheKey);
-
-                        //create bundle
                         lock (s_lock)
                         {
                             var bundleFor = BundleTable.Bundles.GetBundleFor(bundleVirtualPath);
@@ -214,44 +147,27 @@ namespace MrCMS.Website.Bundling
                                                      Orderer = new AsIsBundleOrderer(),
                                                      EnableFileExtensionReplacements = false
                                                  };
-
-                                //"As is" ordering
-                                //disable file extension replacements. renders scripts which were specified by a developer
                                 bundle.Include(partsToBundle);
                                 BundleTable.Bundles.Add(bundle);
-                                //we clear ignore list because System.Web.Optimization library adds ignore patterns such as "*.min", "*.debug".
-                                //we think it's bad decision and should be disabled by default
                                 BundleTable.Bundles.IgnoreList.Clear();
                             }
                         }
 
-                        //parts to bundle
-                        result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
-                                            bundleVirtualPath.Substring(1));
-                        result.AppendLine();
+                        result.AppendLine(string.Format("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
+                                                        bundleVirtualPath.Substring(1)));
                     }
 
-                    //parts to do not bundle
                     foreach (var path in partsToDontBundle)
-                    {
-                        result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />", path);
-                        result.Append(Environment.NewLine);
-                    }
+                        result.AppendLine(string.Format("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
+                                                        path));
                 }
                 return MvcHtmlString.Create(result.ToString());
             }
-            else
-            {
-                //bundling is disabled
-                var result = new StringBuilder();
-                foreach (var path in ScriptData.Values.SelectMany(x => x).Select(x => x.Url).Distinct())
-                {
-                    result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
-                                        path.StartsWith("~") ? path.Substring(1) : path);
-                    result.Append(Environment.NewLine);
-                }
-                return MvcHtmlString.Create(result.ToString());
-            }
+
+            foreach (var path in ScriptData.Values.SelectMany(x => x).Select(x => x.Url).Distinct())
+                result.AppendLine(string.Format("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
+                                                path.StartsWith("~") ? path.Substring(1) : path));
+            return MvcHtmlString.Create(result.ToString());
         }
 
         protected virtual string GetBundleVirtualPath(string prefix, string postfix, string[] parts)
