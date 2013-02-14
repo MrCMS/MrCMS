@@ -30,7 +30,6 @@ namespace MrCMS.Membership
 
         public override bool IsUserInRole(string username, string roleName)
         {
-
             var user = UserService.GetUserByEmail(username);
             if (user != null)
             {

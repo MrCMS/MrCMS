@@ -5,21 +5,21 @@ using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Website.ActionResults;
 
 namespace MrCMS.Website.Controllers
 {
     [MrCMSAuthorize(Roles = UserRole.Administrator)]
     [ValidateInput(false)]
-    public abstract class AdminController : MrCMSController
+    public abstract class MrCMSAdminController : MrCMSController
     {
-       
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             ViewData["controller-name"] = ControllerContext.RouteData.Values["controller"];
             base.OnActionExecuting(filterContext);
         }
 
-        protected override RedirectResult RedirectResult()
+        protected override RedirectResult AuthenticationFailureRedirect()
         {
             return new RedirectResult("~/admin");
         }

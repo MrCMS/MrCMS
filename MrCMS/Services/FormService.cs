@@ -37,19 +37,17 @@ namespace MrCMS.Services
                        : webpage.FormData ?? Newtonsoft.Json.JsonConvert.SerializeObject(new object());
         }
 
-        public void SaveFormStructure(int id, string data)
+        public void SaveFormStructure(Webpage webpage, string data)
         {
-            var document = _documentService.GetDocument<Webpage>(id);
-            if (document == null) return;
-            document.FormData = data;
-            _documentService.SaveDocument(document);
+            if (webpage == null) return;
+            webpage.FormData = data;
+            _documentService.SaveDocument(webpage);
         }
 
-        public void SaveFormData(int id, FormCollection formCollection)
+        public void SaveFormData(Webpage webpage, FormCollection formCollection)
         {
             _session.Transact(session =>
                                                    {
-                                                       var webpage = _documentService.GetDocument<Webpage>(id);
                                                        if (webpage == null) return;
                                                        var formPosting = new FormPosting
                                                                              {

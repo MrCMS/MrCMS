@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class SitesController : AdminController
+    public class SitesController : MrCMSAdminController
     {
         private readonly ISiteService _siteService;
         private readonly IUserService _userService;

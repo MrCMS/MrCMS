@@ -20,7 +20,7 @@ namespace MrCMS.Website.Binders
 
             var objects = settingTypes.Select(type =>
                                                   {
-                                                      var configurationProvider = MrCMSApplication.Get<ConfigurationProvider>();
+                                                      var configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
 
                                                       var methodInfo = GetGetSettingsMethod();
 

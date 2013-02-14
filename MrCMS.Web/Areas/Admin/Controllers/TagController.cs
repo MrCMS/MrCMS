@@ -8,7 +8,7 @@ using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class TagController : AdminController
+    public class TagController : MrCMSAdminController
     {
         private readonly ITagService _tagService;
 

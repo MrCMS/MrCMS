@@ -1,12 +1,22 @@
 ﻿using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MrCMS.Apps;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Website.Controllers
 {
-    public class MrCMSController : Controller
+    public abstract class MrCMSAppUIController<T> : MrCMSUIController where T : MrCMSApp, new()
+    {
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            RouteData.DataTokens["app"] = new T().AppName;
+            base.OnActionExecuting(filterContext);
+        }
+    }
+
+    public abstract class MrCMSController : Controller
     {
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -20,7 +30,7 @@ namespace MrCMS.Website.Controllers
 
             if (entities.Any(entity => entity.Site != CurrentSite && entity.Id != 0))
             {
-                filterContext.Result = RedirectResult();
+                filterContext.Result = AuthenticationFailureRedirect();
             }
         }
         public string ReferrerOverride { get; set; }
@@ -33,7 +43,7 @@ namespace MrCMS.Website.Controllers
 
         public Site CurrentSite
         {
-            get { return _currentSite ?? MrCMSApplication.CurrentSite; }
+            get { return _currentSite ?? CurrentRequestData.CurrentSite; }
             set { _currentSite = value; }
         }
 
@@ -44,7 +54,7 @@ namespace MrCMS.Website.Controllers
 
         public HttpRequestBase RequestMock { get; set; }
 
-        protected virtual RedirectResult RedirectResult()
+        protected virtual RedirectResult AuthenticationFailureRedirect()
         {
             return Redirect("~");
         }

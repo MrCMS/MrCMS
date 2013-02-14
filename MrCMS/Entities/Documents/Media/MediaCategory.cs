@@ -7,7 +7,7 @@ using NHibernate;
 
 namespace MrCMS.Entities.Documents.Media
 {
-    [DocumentTypeDefinition(ChildrenListType.WhiteList, Name = "Media Category", IconClass = "icon-film", DisplayOrder = 1, Type = typeof(MediaCategory), WebGetAction = "View", WebGetController = "MediaCategory")]
+    //[DocumentTypeDefinition(ChildrenListType.WhiteList, Name = "Media Category", IconClass = "icon-film", DisplayOrder = 1, Type = typeof(MediaCategory), WebGetAction = "View", WebGetController = "MediaCategory")]
     public class MediaCategory : Document
     {
         public virtual string MetaTitle { get; set; }

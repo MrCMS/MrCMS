@@ -37,7 +37,7 @@ namespace MrCMS.Services
         {
             _session.Transact(session =>
                                   {
-                                      var user = MrCMSApplication.CurrentUser;
+                                      var user = CurrentRequestData.CurrentUser;
 
                                       if (user.Sites != null)
                                           user.Sites.Add(site);

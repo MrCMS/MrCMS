@@ -4,7 +4,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class TaskController : AdminController
+    public class TaskController : MrCMSAdminController
     {
         private readonly IScheduledTaskManager _scheduledTaskManager;
 

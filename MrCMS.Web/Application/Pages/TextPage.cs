@@ -8,7 +8,7 @@ using MrCMS.Helpers;
 
 namespace MrCMS.Web.Application.Pages
 {
-    [DocumentTypeDefinition(ChildrenListType.BlackList, Name = "Text Page", IconClass = "icon-file", DisplayOrder = 1, Type = typeof(TextPage), WebGetAction = "View", WebGetController = "TextPage", DefaultLayoutName = "Three Column")]
+    //[DocumentTypeDefinition(ChildrenListType.BlackList, Name = "Text Page", IconClass = "icon-file", DisplayOrder = 1, Type = typeof(TextPage), WebGetAction = "View", WebGetController = "TextPage", DefaultLayoutName = "Three Column")]
     [MrCMSMapClass]
     public class TextPage : Webpage
     {

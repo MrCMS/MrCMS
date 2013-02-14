@@ -1,12 +1,10 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
-using MrCMS.Website;
-using MrCMS.Website.Controllers;
 
-namespace MrCMS.Web.Controllers
+namespace MrCMS.Website.Controllers
 {
-    public class WidgetController : MrCMSController
+    public class WidgetController : MrCMSUIController
     {
         private readonly IWidgetService _widgetService;
 
@@ -15,10 +13,8 @@ namespace MrCMS.Web.Controllers
             _widgetService = widgetService;
         }
 
-        public PartialViewResult Show(int id)
+        public PartialViewResult Show(Widget widget)
         {
-            var widget = _widgetService.GetWidget<Widget>(id);
-
             return PartialView(!string.IsNullOrWhiteSpace(widget.CustomLayout) ? widget.CustomLayout : widget.WidgetType, _widgetService.GetModel(widget));
         }
     }

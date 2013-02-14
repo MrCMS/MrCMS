@@ -26,7 +26,7 @@ namespace MrCMS.Website.Binders
         }
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            if (controllerContext.Controller is AdminController &&
+            if (controllerContext.Controller is MrCMSAdminController &&
                 typeof (SystemEntity).IsAssignableFrom(bindingContext.ModelType) &&
                 (CreateModel(controllerContext, bindingContext, bindingContext.ModelType) == null || ShouldReturnNull(controllerContext,bindingContext)))
                 return null;

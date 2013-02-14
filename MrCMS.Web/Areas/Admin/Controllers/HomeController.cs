@@ -5,7 +5,7 @@ using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class HomeController : AdminController
+    public class HomeController : MrCMSAdminController
     {
         //
         // GET: /Admin/Home/

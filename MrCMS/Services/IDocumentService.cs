@@ -35,12 +35,12 @@ namespace MrCMS.Services
         void DeleteDocument<T>(T document) where T : Document;
         void PublishNow(Webpage document);
         void Unpublish(Webpage document);
-        void HideWidget(int id, int widgetId);
-        void ShowWidget(int id, int widgetId);
+        void HideWidget(Webpage document, int widgetId);
+        void ShowWidget(Webpage document, int widgetId);
         Document Get404Page();
         Document Get500Page();
         DocumentVersion GetDocumentVersion(int id);
         void SetParent(Document document, int? parentId);
-        DocumentTypeDefinition GetDefinitionByType(Type type);
+        DocumentMetadata GetDefinitionByType(Type type);
     }
 }

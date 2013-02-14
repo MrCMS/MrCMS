@@ -33,10 +33,10 @@ namespace MrCMS.IoC
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
 
             //Kernel.Bind<HttpContextBase>().ToMethod(context => MrCMSApplication.CurrentContext);
-            Kernel.Bind<HttpRequestBase>().ToMethod(context => MrCMSApplication.CurrentContext.Request);
-            Kernel.Bind<HttpSessionStateBase>().ToMethod(context => MrCMSApplication.CurrentContext.Session);
+            Kernel.Bind<HttpRequestBase>().ToMethod(context => CurrentRequestData.CurrentContext.Request);
+            Kernel.Bind<HttpSessionStateBase>().ToMethod(context => CurrentRequestData.CurrentContext.Session);
             Kernel.Bind<ObjectCache>().ToMethod(context => MemoryCache.Default);
-            Kernel.Bind<Cache>().ToMethod(context => MrCMSApplication.CurrentContext.Cache);
+            Kernel.Bind<Cache>().ToMethod(context => CurrentRequestData.CurrentContext.Cache);
             Kernel.Rebind<CurrentSite>()
                   .ToMethod(context => new CurrentSite(context.Kernel.Get<ISiteService>().GetCurrentSite()))
                   .InRequestScope();

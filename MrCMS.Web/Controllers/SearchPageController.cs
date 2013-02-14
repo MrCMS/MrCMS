@@ -6,7 +6,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Controllers
 {
-    public class SearchPageController : MrCMSController
+    public class SearchPageController : MrCMSUIController
     {
         private readonly IDocumentService _documentService;
 
@@ -15,7 +15,7 @@ namespace MrCMS.Web.Controllers
             _documentService = documentService;
         }
 
-        public ActionResult View(SearchPage page)
+        public ActionResult Show(SearchPage page)
         {
             int pageVal;
             ViewData["term"] = Request["q"];
@@ -26,7 +26,7 @@ namespace MrCMS.Web.Controllers
                                      : (int?) null;
             ViewData["searchResults"] = _documentService.SiteSearch(Request["q"], pageNum);
 
-            return View("~/Views/Pages/SearchPage.cshtml", page.CurrentLayout.UrlSegment, page);
+            return View(page);
         }
 
         public ActionResult Post(SearchPage page, FormCollection form)

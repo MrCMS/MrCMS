@@ -36,7 +36,7 @@ namespace MrCMS.Website
         {
             base.InitHelpers();
 
-            if (MrCMSApplication.DatabaseIsInstalled)
+            if (CurrentRequestData.DatabaseIsInstalled)
             {
                 _configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
                 _imageProcessor = MrCMSApplication.Get<IImageProcessor>();
@@ -52,7 +52,7 @@ namespace MrCMS.Website
             var value = Html.ParseShortcodes(method.Compile().Invoke(model)).ToHtmlString();
             var typeName = typeof(T).Name;
 
-            if (MrCMSApplication.CurrentUserIsAdmin && propertyInfo != null)
+            if (CurrentRequestData.CurrentUserIsAdmin && propertyInfo != null)
             {
                 var tagBuilder = new TagBuilder("div");
                 tagBuilder.AddCssClass("editable");
@@ -64,10 +64,7 @@ namespace MrCMS.Website
 
                 return MvcHtmlString.Create(tagBuilder.ToString());
             }
-            else
-            {
-                return MvcHtmlString.Create(value);
-            }
+            return MvcHtmlString.Create(value);
         }
 
         public MvcHtmlString RenderZone(string areaName)
@@ -83,28 +80,28 @@ namespace MrCMS.Website
                 if (layoutArea == null) return MvcHtmlString.Empty;
 
                 var stringBuilder = new StringBuilder();
-                if (MrCMSApplication.CurrentUserIsAdmin)
+                if (CurrentRequestData.CurrentUserIsAdmin)
                     stringBuilder.AppendFormat("<div data-layout-area-id=\"{0}\" class=\"layout-area\"> ", layoutArea.Id);
 
                 foreach (var widget in layoutArea.GetWidgets(page))
                 {
-                    if (MrCMSApplication.CurrentUserIsAdmin)
+                    if (CurrentRequestData.CurrentUserIsAdmin)
                         stringBuilder.AppendFormat("<div data-widget-id=\"{0}\" class=\"widget\"> ", widget.Id);
 
                     try
                     {
-                        stringBuilder.Append(Html.Action("Show", "Widget", new { id = widget.Id, page }).ToHtmlString());
+                        stringBuilder.Append(Html.Action("Show", "Widget", new { widget }).ToHtmlString());
                     }
                     catch (Exception ex)
                     {
-                        MrCMSApplication.ErrorSignal.Raise(ex);
+                        CurrentRequestData.ErrorSignal.Raise(ex);
                     }
 
-                    if (MrCMSApplication.CurrentUserIsAdmin)
+                    if (CurrentRequestData.CurrentUserIsAdmin)
                         stringBuilder.Append("</div>");
                 }
 
-                if (MrCMSApplication.CurrentUserIsAdmin)
+                if (CurrentRequestData.CurrentUserIsAdmin)
                     stringBuilder.Append("</div>");
 
                 return MvcHtmlString.Create(stringBuilder.ToString());

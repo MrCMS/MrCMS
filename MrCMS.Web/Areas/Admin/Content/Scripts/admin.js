@@ -124,14 +124,14 @@
 	});
 
 	// Show menu when an ahref is click
-	$(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-custom-sort=True]').contextMenu({
+	$(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-sortable=False]').contextMenu({
 		menu: 'edit-no-sort-menu'
 	}, function (action, el, pos) {
 		processMenuAction(action, el, pos);
 	});
 
 	// Show menu when an ahref is click
-	$(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-can-add-child=False]').filter('li[data-custom-sort=True]').contextMenu({
+	$(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-can-add-child=False]').filter('li[data-custom-sortable=False]').contextMenu({
 		menu: 'edit-no-add-no-sort-menu'
 	}, function (action, el, pos) {
 		processMenuAction(action, el, pos);
@@ -152,14 +152,14 @@
 	});
 
 	// Show menu when an ahref is click
-	$(".browser li").not(".browser > li").has('ul').filter('li[data-custom-sort=True]').contextMenu({
+	$(".browser li").not(".browser > li").has('ul').filter('li[data-sortable=False]').contextMenu({
 		menu: 'edit-no-delete-no-sort-menu'
 	}, function (action, el, pos) {
 		processMenuAction(action, el, pos);
 	});
 
 	// Show menu when an ahref is click
-	$(".browser li").not(".browser > li").has('ul').filter('li[data-can-add-child=False]').filter('li[data-custom-sort=True]').contextMenu({
+	$(".browser li").not(".browser > li").has('ul').filter('li[data-can-add-child=False]').filter('li[data-sortable=False]').contextMenu({
 		menu: 'edit-no-add-no-delete-no-sort-menu'
 	}, function (action, el, pos) {
 		processMenuAction(action, el, pos);

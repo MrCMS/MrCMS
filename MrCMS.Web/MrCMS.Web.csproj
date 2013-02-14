@@ -133,6 +133,8 @@
     <Compile Include="Application\Pages\TextPage.cs" />
     <Compile Include="Application\Widgets\PlainTextWidget.cs" />
     <Compile Include="Application\Widgets\TextWidget.cs" />
+    <Compile Include="Apps\Example\ExampleApp.cs" />
+    <Compile Include="Apps\Example\Pages\HelloPage.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
@@ -157,12 +159,10 @@
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Areas\Admin\Controllers\InPageAdminController.cs" />
+    <Compile Include="Areas\Admin\Controllers\InPageMrCMSAdminController.cs" />
     <Compile Include="Controllers\SearchPageController.cs" />
     <Compile Include="Controllers\SEOController.cs" />
     <Compile Include="Controllers\TextPageController.cs" />
-    <Compile Include="Controllers\ViewController.cs" />
-    <Compile Include="Controllers\WidgetController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -510,6 +510,14 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\readme.md" />
+    <Content Include="Apps\Example\Areas\Admin\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Apps\Example\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Apps\Example\Areas\Admin\Views\Webpage\HelloPage.cshtml" />
+    <Content Include="Apps\Example\Views\Pages\HelloPage.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
@@ -639,6 +647,16 @@
     <Folder Include="Application\Models\" />
     <Folder Include="Application\Services\" />
     <Folder Include="Application\Settings\" />
+    <Folder Include="Apps\Example\Areas\Admin\Controllers\" />
+    <Folder Include="Apps\Example\Controllers\" />
+    <Folder Include="Apps\Example\DbConfiguration\" />
+    <Folder Include="Apps\Example\Entities\" />
+    <Folder Include="Apps\Example\Metadata\" />
+    <Folder Include="Apps\Example\Models\" />
+    <Folder Include="Apps\Example\Services\" />
+    <Folder Include="Apps\Example\Settings\" />
+    <Folder Include="Apps\Example\Views\Widgets\" />
+    <Folder Include="Apps\Example\Widgets\" />
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>

@@ -22,7 +22,7 @@ namespace MrCMS.Logging
 
         public MrCMSErrorLog(IDictionary config)
         {
-            if (MrCMSApplication.DatabaseIsInstalled)
+            if (CurrentRequestData.DatabaseIsInstalled)
                 _session = MrCMSApplication.Get<ISession>();
         }
 
@@ -36,7 +36,8 @@ namespace MrCMS.Logging
                                                                   Error = error,
                                                                   Guid = newGuid,
                                                                   Message = error.Message,
-                                                                  Detail = error.Detail
+                                                                  Detail = error.Detail,
+                                                                  Site = CurrentRequestData.CurrentSite
                                                               }));
 
             return newGuid.ToString();

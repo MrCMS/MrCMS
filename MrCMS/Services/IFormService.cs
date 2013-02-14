@@ -8,9 +8,8 @@ namespace MrCMS.Services
     public interface IFormService
     {
         string GetFormStructure(Webpage webpage);
-        void SaveFormStructure(int id, string data);
-        void SaveFormData(int id, FormCollection formCollection);
-        FormPosting GetFormPosting(int id);
+        void SaveFormStructure(Webpage webpage, string data);
+        void SaveFormData(Webpage webpage, FormCollection formCollection);
         PostingsModel GetFormPostings(Webpage webpage, int page, string search);
     }
 }

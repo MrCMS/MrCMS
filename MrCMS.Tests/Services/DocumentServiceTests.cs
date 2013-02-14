@@ -659,7 +659,7 @@ namespace MrCMS.Tests.Services
             var textWidget = new BasicMappedWidget();
             widgetService.SaveWidget(textWidget);
 
-            documentService.HideWidget(textPage.Id, textWidget.Id);
+            documentService.HideWidget(textPage, textWidget.Id);
 
             textPage.HiddenWidgets.Should().Contain(textWidget);
         }
@@ -680,7 +680,7 @@ namespace MrCMS.Tests.Services
             };
             documentService.SaveDocument(textPage);
 
-            documentService.HideWidget(textPage.Id, textWidget.Id);
+            documentService.HideWidget(textPage, textWidget.Id);
 
             textPage.ShownWidgets.Should().NotContain(textWidget);
         }
@@ -701,7 +701,7 @@ namespace MrCMS.Tests.Services
             };
             documentService.SaveDocument(textPage);
 
-            documentService.HideWidget(textPage.Id, -1);
+            documentService.HideWidget(textPage, -1);
 
             textPage.ShownWidgets.Should().Contain(textWidget);
         }
@@ -719,7 +719,7 @@ namespace MrCMS.Tests.Services
             var textWidget = new BasicMappedWidget();
             widgetService.SaveWidget(textWidget);
 
-            documentService.ShowWidget(textPage.Id, textWidget.Id);
+            documentService.ShowWidget(textPage, textWidget.Id);
 
             textPage.ShownWidgets.Should().Contain(textWidget);
         }
@@ -740,7 +740,7 @@ namespace MrCMS.Tests.Services
             };
             documentService.SaveDocument(textPage);
 
-            documentService.ShowWidget(textPage.Id, textWidget.Id);
+            documentService.ShowWidget(textPage, textWidget.Id);
 
             textPage.HiddenWidgets.Should().NotContain(textWidget);
         }
@@ -761,7 +761,7 @@ namespace MrCMS.Tests.Services
             };
             documentService.SaveDocument(textPage);
 
-            documentService.ShowWidget(textPage.Id, -1);
+            documentService.ShowWidget(textPage, -1);
 
             textPage.HiddenWidgets.Should().Contain(textWidget);
         }

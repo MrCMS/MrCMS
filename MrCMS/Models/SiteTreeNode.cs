@@ -30,7 +30,7 @@ namespace MrCMS.Models
             }
         }
 
-        public bool CustomSort { get; set; }
+        public bool Sortable { get; set; }
         public bool CanAddChild { get; set; }
         public bool IsPublished { get; set; }
         public bool RevealInNavigation { get; set; }

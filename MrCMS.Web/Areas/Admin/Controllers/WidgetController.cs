@@ -12,7 +12,7 @@ using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class WidgetController : AdminController
+    public class WidgetController : MrCMSAdminController
     {
         private readonly IDocumentService _documentService;
         private readonly IWidgetService _widgetService;

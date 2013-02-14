@@ -6,10 +6,11 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Installation;
 using MrCMS.Web.Application.Pages;
 using MrCMS.Website;
+using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Controllers
 {
-    public class InstallController : Controller
+    public class InstallController : MrCMSUIController
     {
         private readonly IInstallationService _installationService;
 
@@ -22,7 +23,7 @@ namespace MrCMS.Web.Controllers
         [HttpGet]
         public ActionResult Setup_Get(InstallModel installModel)
         {
-            if (MrCMSApplication.DatabaseIsInstalled)
+            if (CurrentRequestData.DatabaseIsInstalled)
                 return Redirect("~");
 
             //set page timeout to 5 minutes
@@ -46,7 +47,7 @@ namespace MrCMS.Web.Controllers
         [HttpPost]
         public ActionResult Setup(InstallModel model)
         {
-            if (MrCMSApplication.DatabaseIsInstalled)
+            if (CurrentRequestData.DatabaseIsInstalled)
                 return Redirect("~");
 
             //set page timeout to 5 minutes

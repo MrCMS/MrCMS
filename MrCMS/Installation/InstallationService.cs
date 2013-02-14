@@ -352,7 +352,7 @@ namespace MrCMS.Installation
 
             var site = new Site { Name = model.SiteName, BaseUrl = model.SiteUrl };
             session.Transact(sess => sess.Save(site));
-            MrCMSApplication.OverriddenSite = site;
+            CurrentRequestData.CurrentSite = site;
             var currentSite = new CurrentSite(site);
 
             var siteSettings = new SiteSettings { Site = site };
@@ -369,6 +369,7 @@ namespace MrCMS.Installation
             authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
             authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
             session.Transact(sess => sess.Save(user));
+            CurrentRequestData.CurrentUser = user;
 
             var layout = new Layout
                 {

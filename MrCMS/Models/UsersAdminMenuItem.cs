@@ -44,13 +44,13 @@ namespace MrCMS.Models
                         {
                             new ChildMenuItem("Users", "/Admin/User"),
                             new ChildMenuItem("Roles", "/Admin/Role"),
-                            new ChildMenuItem("Your Account", "/Admin/User/Edit/" + MrCMSApplication.Get<IUserService>().GetCurrentUser(MrCMSApplication.CurrentContext).Id)
+                            new ChildMenuItem("Your Account", "/Admin/User/Edit/" + CurrentRequestData.CurrentUser.Id)
                         });
             }
         }
         public int DisplayOrder { get { return 99; } }
     }
-    
+
     public interface ISystemAdminMenuItem : IAdminMenuItem
     {
     }

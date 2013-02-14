@@ -11,7 +11,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public abstract class BaseDocumentController<T> : AdminController where T : Document
+    public abstract class BaseDocumentController<T> : MrCMSAdminController where T : Document
     {
         protected readonly IDocumentService _documentService;
 

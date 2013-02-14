@@ -39,7 +39,7 @@ namespace MrCMS.Services
                                Name = "Root",
                                NodeType = "Webpage",
                                SiteId = _currentSite.Id,
-                               CanAddChild = DocumentTypeHelper.GetValidWebpageDocumentTypes(null, _documentService, _currentSite.Site).Any()
+                               CanAddChild = DocumentMetadataHelper.GetValidWebpageDocumentTypes(null, _documentService, _currentSite.Site).Any()
                            };
             tree.Children = GetNodes(tree, _documentService.GetAdminDocumentsByParent<Webpage>(null), null, maxDepth: depth);
 
@@ -156,7 +156,7 @@ namespace MrCMS.Services
 
         public IEnumerable<SelectListItem> GetDocumentTypes(string type)
         {
-            return DocumentTypeHelper.DocumentTypeDefinitions
+            return DocumentMetadataHelper.DocumentMetadatas
                                    .BuildSelectItemList(definition => definition.Name, definition => definition.TypeName,
                                                         definition => definition.TypeName == type, "Select type");
         }
@@ -211,12 +211,12 @@ namespace MrCMS.Services
                                                          {
                                                              Total =
                                                                  count,
-                                                             IconClass = DocumentTypeHelper.GetIconClass(document),
+                                                             IconClass = DocumentMetadataHelper.GetIconClass(document),
                                                              Id = document.Id,
                                                              ParentId = parentId,
                                                              Name = document.Name,
                                                              NodeType = GetNodeType(document),
-                                                             CustomSort = IsCustomSort(document.Id),
+                                                             Sortable = IsSortable(document.Id),
                                                              CanAddChild =
                                                                  !(document is Webpage) ||
                                                                  (document as Webpage).GetValidWebpageDocumentTypes(_documentService, (document as Webpage).Site).
@@ -245,14 +245,14 @@ namespace MrCMS.Services
             return list;
         }
 
-        private bool IsCustomSort(int? documentId)
+        private bool IsSortable(int? documentId)
         {
             if (documentId.HasValue)
             {
                 var document = _documentService.GetDocument<Document>(documentId.Value);
-                var documentTypeDefinition = DocumentTypeHelper.GetDefinitionByType(document.GetType());
+                var documentTypeDefinition = DocumentMetadataHelper.GetMetadataByType(document.GetType());
                 if (documentTypeDefinition != null)
-                    return documentTypeDefinition.CustomSort;
+                    return documentTypeDefinition.Sortable;
             }
             return false;
         }

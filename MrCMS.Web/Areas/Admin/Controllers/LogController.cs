@@ -6,7 +6,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class LogController : AdminController
+    public class LogController : MrCMSAdminController
     {
         private readonly ILogService _service;
 
