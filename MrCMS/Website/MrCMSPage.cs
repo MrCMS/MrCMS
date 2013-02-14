@@ -14,13 +14,14 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Helpers;
+using MrCMS.Website.Bundling;
 
 namespace MrCMS.Website
 {
     public abstract class MrCMSPage<TModel> : System.Web.Mvc.WebViewPage<TModel>
     {
         private IConfigurationProvider _configurationProvider;
-        private IImageProcessor _imageProcessor;
+        private IResourceBundler _resourceBundler;
 
         public T SiteSettings<T>() where T : SiteSettingsBase, new()
         {
@@ -39,7 +40,7 @@ namespace MrCMS.Website
             if (CurrentRequestData.DatabaseIsInstalled)
             {
                 _configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
-                _imageProcessor = MrCMSApplication.Get<IImageProcessor>();
+                _resourceBundler = MrCMSApplication.Get<IResourceBundler>();
             }
         }
 
@@ -52,7 +53,7 @@ namespace MrCMS.Website
             var value = Html.ParseShortcodes(method.Compile().Invoke(model)).ToHtmlString();
             var typeName = typeof(T).Name;
 
-            if (CurrentRequestData.CurrentUserIsAdmin && propertyInfo != null)
+            if (EditingEnabled  && propertyInfo != null)
             {
                 var tagBuilder = new TagBuilder("div");
                 tagBuilder.AddCssClass("editable");
@@ -65,6 +66,11 @@ namespace MrCMS.Website
                 return MvcHtmlString.Create(tagBuilder.ToString());
             }
             return MvcHtmlString.Create(value);
+        }
+
+        private bool EditingEnabled
+        {
+            get { return CurrentRequestData.CurrentUserIsAdmin && _configurationProvider.GetSiteSettings<SiteSettings>().EnableInlineEditing; }
         }
 
         public MvcHtmlString RenderZone(string areaName)
@@ -80,12 +86,12 @@ namespace MrCMS.Website
                 if (layoutArea == null) return MvcHtmlString.Empty;
 
                 var stringBuilder = new StringBuilder();
-                if (CurrentRequestData.CurrentUserIsAdmin)
+                if (EditingEnabled)
                     stringBuilder.AppendFormat("<div data-layout-area-id=\"{0}\" class=\"layout-area\"> ", layoutArea.Id);
 
                 foreach (var widget in layoutArea.GetWidgets(page))
                 {
-                    if (CurrentRequestData.CurrentUserIsAdmin)
+                    if (EditingEnabled)
                         stringBuilder.AppendFormat("<div data-widget-id=\"{0}\" class=\"widget\"> ", widget.Id);
 
                     try
@@ -97,11 +103,11 @@ namespace MrCMS.Website
                         CurrentRequestData.ErrorSignal.Raise(ex);
                     }
 
-                    if (CurrentRequestData.CurrentUserIsAdmin)
+                    if (EditingEnabled)
                         stringBuilder.Append("</div>");
                 }
 
-                if (CurrentRequestData.CurrentUserIsAdmin)
+                if (EditingEnabled)
                     stringBuilder.Append("</div>");
 
                 return MvcHtmlString.Create(stringBuilder.ToString());
@@ -118,6 +124,12 @@ namespace MrCMS.Website
         {
             return Html.RenderImage(imageUrl, size, alt, title, attributes);
         }
+
+        public override System.Web.WebPages.HelperResult RenderPage(string path, params object[] data)
+        {
+            return base.RenderPage(path, data);
+        }
+
     }
 
     public abstract class MrCMSPage : MrCMSPage<dynamic>

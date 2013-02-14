@@ -103,6 +103,18 @@ namespace MrCMS.Services
 
             name = name.Replace("&", " and ");
 
+            var name2 = RemoveInvalidUrlCharacters(name);
+            name2 = name2.Replace(" ", "-");
+            name2 = name2.Replace("_", "-");
+            while (name2.Contains("--"))
+                name2 = name2.Replace("--", "-");
+            return extension != null
+                       ? name2.ToLowerInvariant() + extension.ToLower()
+                       : name2.ToLowerInvariant();
+        }
+
+        public static string RemoveInvalidUrlCharacters(string name)
+        {
             const string okChars = "abcdefghijklmnopqrstuvwxyz1234567890 _-";
             name = name.Trim().ToLowerInvariant();
 
@@ -114,13 +126,7 @@ namespace MrCMS.Services
                     sb.Append(c2);
             }
             string name2 = sb.ToString();
-            name2 = name2.Replace(" ", "-");
-            name2 = name2.Replace("_", "-");
-            while (name2.Contains("--"))
-                name2 = name2.Replace("--", "-");
-            return extension != null
-                       ? name2.ToLowerInvariant() + extension.ToLower()
-                       : name2.ToLowerInvariant();
+            return name2;
         }
 
         public virtual byte[] LoadFile(MediaFile file)

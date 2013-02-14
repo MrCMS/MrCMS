@@ -1,5 +1,5 @@
 ﻿html, body {background: #f6f6f6; font-family:helvetica, arial, verdana, sans-serif;}
-.logo-container {background: #212121 url('../images/header-bg.jpg') fixed;height: 130px; }
+.logo-container {background: #212121 url('/Content/images/header-bg.jpg') fixed;height: 130px; }
 .nav-container { position:relative;}
 
 footer {background: #2c2c2c;margin-top: 20px;min-height: 300px;padding-top: 20px;color:white;}
@@ -14,4 +14,4 @@ footer ul.footer-twitter a { color:#00addf; }
 footer ul.footer-twitter a:hover { color:white; }
 
 
-footer {background: #000 url('../images/footer-bg.jpg') center no-repeat;}
+footer {background: #000 url('/Content/images/footer-bg.jpg') center no-repeat;}

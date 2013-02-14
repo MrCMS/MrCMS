@@ -18,5 +18,11 @@ namespace MrCMS.Settings
         [DisplayName("Tracking Scripts")]
         [TextArea]
         public string TrackingScripts { get; set; }
+
+        [DisplayName("Enable css bundling")]
+        public bool EnableCssBundling { get; set; }
+
+        [DisplayName("Enable javascript bundling")]
+        public bool EnableJsBundling { get; set; }
     }
 }

@@ -1,12 +1,15 @@
 ﻿@using MrCMS.Entities.Documents
+@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 @{
     ViewBag.Title = "Add Webpage";
 }
-@section JavaScriptBlock
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/add-webpage.js");}
+@*@section JavaScriptBlock
 {
+
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/add-webpage.js")"></script>
-}
+}*@
 
 @using (Html.BeginForm("Add", "Webpage", new { id = "" }, FormMethod.Post))
 {
