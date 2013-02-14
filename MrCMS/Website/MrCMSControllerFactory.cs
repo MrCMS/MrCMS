@@ -46,26 +46,32 @@ namespace MrCMS.Website
         }
         protected override Type GetControllerType(RequestContext requestContext, string controllerName)
         {
-            if (requestContext.RouteData.DataTokens["app"] != null)
+            Type controllerType = null;
+            if (_appUiControllers.ContainsKey(Convert.ToString(requestContext.RouteData.DataTokens["app"])))
             {
                 if ("admin".Equals(Convert.ToString(requestContext.RouteData.DataTokens["area"]),
                                    StringComparison.OrdinalIgnoreCase))
-                    return _appAdminControllers[requestContext.RouteData.DataTokens["app"].ToString()].SingleOrDefault(
+                {
+                    controllerType = _appAdminControllers[requestContext.RouteData.DataTokens["app"].ToString()].SingleOrDefault(
                         type =>
                         type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
+                }
                 else
-                    return _appUiControllers[requestContext.RouteData.DataTokens["app"].ToString()].SingleOrDefault(
+                    controllerType = _appUiControllers[requestContext.RouteData.DataTokens["app"].ToString()].SingleOrDefault(
                         type =>
                         type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
             }
-
-            if ("admin".Equals(Convert.ToString(requestContext.RouteData.DataTokens["area"]),
-                               StringComparison.OrdinalIgnoreCase))
-                return _adminControllers.SingleOrDefault(
-                    type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
-            else
-                return _uiControllers.SingleOrDefault(
-                    type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
+            if (controllerType == null)
+            {
+                if ("admin".Equals(Convert.ToString(requestContext.RouteData.DataTokens["area"]),
+                                   StringComparison.OrdinalIgnoreCase))
+                    controllerType = _adminControllers.SingleOrDefault(
+                        type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
+                else
+                    controllerType = _uiControllers.SingleOrDefault(
+                        type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
+            }
+            return controllerType;
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.Routing;
+using MrCMS.Apps;
 using MrCMS.Services;
 using MrCMS.Shortcodes;
 using MrCMS.Website;
@@ -315,6 +316,8 @@ namespace MrCMS.Helpers
             T model = htmlHelper.ViewData.Model;
             if (model == null)
                 return MvcHtmlString.Empty;
+            if (MrCMSApp.AppWebpages.ContainsKey(model.GetType()))
+                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[model.GetType()];
 
             ViewEngineResult viewEngineResult =
                 ViewEngines.Engines.FindView(
