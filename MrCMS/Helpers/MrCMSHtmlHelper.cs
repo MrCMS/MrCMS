@@ -20,8 +20,8 @@ using MrCMS.Apps;
 using MrCMS.Services;
 using MrCMS.Shortcodes;
 using MrCMS.Website;
-using MrCMS.Website.Bundling;
 using MrCMS.Website.Controllers;
+using MrCMS.Website.Optimization;
 using Newtonsoft.Json;
 using Ninject;
 

@@ -24,5 +24,8 @@ namespace MrCMS.Settings
 
         [DisplayName("Enable javascript bundling")]
         public bool EnableJsBundling { get; set; }
+
+        [DisplayName("Enable HTML Minification")]
+        public bool EnableHtmlMinification { get; set; }
     }
 }

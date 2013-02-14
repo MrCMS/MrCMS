@@ -20,6 +20,7 @@ using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Optimization;
 using MrCMS.Website.Routing;
 using NHibernate;
 using Ninject;
@@ -62,6 +63,8 @@ namespace MrCMS.Website
                                     CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
                                     CurrentRequestData.CurrentSite = Get<ISiteService>().GetCurrentSite();
                                     CurrentRequestData.SiteSettings = Get<SiteSettings>();
+                                    if (Get<SEOSettings>().EnableHtmlMinification)
+                                        Response.Filter = new WhitespaceFilter(Response.Filter);
                                 };
             AuthenticateRequest += (sender, args) =>
                                        {

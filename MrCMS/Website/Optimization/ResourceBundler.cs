@@ -9,16 +9,8 @@ using System.Web.Optimization;
 using MrCMS.Services;
 using MrCMS.Settings;
 
-namespace MrCMS.Website.Bundling
+namespace MrCMS.Website.Optimization
 {
-    public interface IResourceBundler
-    {
-        void AddScript(string virtualPath, string url);
-        void AddCss(string virtualPath, string url);
-        MvcHtmlString GetScripts();
-        MvcHtmlString GetCss();
-    }
-
     public class ResourceBundler : IResourceBundler
     {
         private readonly SEOSettings _seoSettings;
@@ -197,38 +189,6 @@ namespace MrCMS.Website.Bundling
             sb.Append(hash);
             sb.Append(postfix);
             return sb.ToString();
-        }
-    }
-
-    public class BundleData
-    {
-        public BundleData(string name, IEnumerable<string> files)
-        {
-            Name = name;
-            Files = files;
-        }
-
-        public string Name { get; set; }
-        public IEnumerable<string> Files { get; set; }
-    }
-
-    public class ResourceData
-    {
-        public ResourceData(bool isRemote, string url)
-        {
-            IsRemote = isRemote;
-            Url = url;
-        }
-
-        public bool IsRemote { get; set; }
-        public string Url { get; set; }
-    }
-
-    public partial class AsIsBundleOrderer : IBundleOrderer
-    {
-        public virtual IEnumerable<System.IO.FileInfo> OrderFiles(BundleContext context, IEnumerable<System.IO.FileInfo> files)
-        {
-            return files;
         }
     }
 }

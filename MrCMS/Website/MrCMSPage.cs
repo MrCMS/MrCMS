@@ -14,7 +14,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Helpers;
-using MrCMS.Website.Bundling;
+using MrCMS.Website.Optimization;
 
 namespace MrCMS.Website
 {
@@ -124,12 +124,6 @@ namespace MrCMS.Website
         {
             return Html.RenderImage(imageUrl, size, alt, title, attributes);
         }
-
-        public override System.Web.WebPages.HelperResult RenderPage(string path, params object[] data)
-        {
-            return base.RenderPage(path, data);
-        }
-
     }
 
     public abstract class MrCMSPage : MrCMSPage<dynamic>
