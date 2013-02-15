@@ -46,8 +46,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentNHibernate.1.3.0.733\lib\FluentNHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net">
+      <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -120,6 +126,7 @@
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
     <Compile Include="DbConfiguration\Configuration\DatabaseType.cs" />
     <Compile Include="DbConfiguration\Configuration\SaveOrUpdateListener.cs" />
+    <Compile Include="DbConfiguration\Configuration\UpdateIndexesListener.cs" />
     <Compile Include="DbConfiguration\Conventions\CacheConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ForeignKeyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
@@ -194,6 +201,16 @@
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\TypeHelper.cs" />
     <Compile Include="Helpers\WidgetHelper.cs" />
+    <Compile Include="Indexing\Management\FSDirectoryIndexManager.cs" />
+    <Compile Include="Indexing\Management\IIndexDefinition.cs" />
+    <Compile Include="Indexing\Management\IIndexManager.cs" />
+    <Compile Include="Indexing\Management\IndexCreationResult.cs" />
+    <Compile Include="Indexing\Management\IndexManager.cs" />
+    <Compile Include="Indexing\Management\IndexResult.cs" />
+    <Compile Include="Indexing\Querying\FSDirectorySearcher.cs" />
+    <Compile Include="Indexing\Querying\ISearcher.cs" />
+    <Compile Include="Indexing\Querying\Searcher.cs" />
+    <Compile Include="Indexing\Utils\DocumentExtensions.cs" />
     <Compile Include="Installation\IInstallationService.cs" />
     <Compile Include="Installation\InstallationResult.cs" />
     <Compile Include="Installation\InstallationService.cs" />
@@ -218,6 +235,7 @@
     <Compile Include="Models\ImageSize.cs" />
     <Compile Include="Models\IAdminMenuItem.cs" />
     <Compile Include="Models\IMenuItem.cs" />
+    <Compile Include="Models\ISystemAdminMenuItem.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
     <Compile Include="Models\PageWidgetSortModel.cs" />
     <Compile Include="Models\PostingsModel.cs" />
@@ -226,6 +244,7 @@
     <Compile Include="Models\SearchResult.cs" />
     <Compile Include="Models\SearchResultModel.cs" />
     <Compile Include="Models\SortItem.cs" />
+    <Compile Include="Models\SystemAdminMenuItem.cs" />
     <Compile Include="Models\UsersAdminMenuItem.cs" />
     <Compile Include="Models\VersionsModel.cs" />
     <Compile Include="Models\ViewDataUploadFilesResult.cs" />
@@ -249,9 +268,11 @@
     <Compile Include="Services\IFileSystem.cs" />
     <Compile Include="Services\IFormService.cs" />
     <Compile Include="Services\IImageProcessor.cs" />
+    <Compile Include="Services\IIndexService.cs" />
     <Compile Include="Services\ILayoutAreaService.cs" />
     <Compile Include="Services\ImageProcessor.cs" />
     <Compile Include="Services\INavigationService.cs" />
+    <Compile Include="Entities\Indexes\WebpageIndexDefinition.cs" />
     <Compile Include="Services\IRoleService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
     <Compile Include="Services\ISiteService.cs" />

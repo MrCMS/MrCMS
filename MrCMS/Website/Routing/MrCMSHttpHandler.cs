@@ -12,6 +12,7 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Optimization;
 using NHibernate;
 
 namespace MrCMS.Website.Routing
@@ -21,18 +22,20 @@ namespace MrCMS.Website.Routing
 
         private readonly IDocumentService _documentService;
         private readonly SiteSettings _siteSettings;
+        private readonly SEOSettings _seoSettings;
         private Webpage _webpage;
         private bool _webpageLookedUp;
         private readonly ISession _session;
         private readonly IControllerManager _controllerManager;
 
 
-        public MrCMSHttpHandler(ISession session, IDocumentService documentService, IControllerManager controllerManager, SiteSettings siteSettings)
+        public MrCMSHttpHandler(ISession session, IDocumentService documentService, IControllerManager controllerManager, SiteSettings siteSettings, SEOSettings seoSettings)
         {
             _session = session;
             _documentService = documentService;
             _controllerManager = controllerManager;
             _siteSettings = siteSettings;
+            _seoSettings = seoSettings;
         }
 
         public void ProcessRequest(HttpContext context)
@@ -67,6 +70,8 @@ namespace MrCMS.Website.Routing
 
             try
             {
+                if (_seoSettings.EnableHtmlMinification)
+                    context.Response.Filter = new WhitespaceFilter(context.Response.Filter);
                 (controller as IController).Execute(RequestContext);
             }
             catch (Exception exception)

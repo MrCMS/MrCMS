@@ -70,7 +70,6 @@ namespace MrCMS.Entities.Documents.Web
             get { return _page; }
         }
 
-        public string BodyContent { get { return _container.BodyContent; } }
         public int PageSize { get { return _container.PageSize; } }
         public bool AllowPaging { get { return _container.AllowPaging; } }
 

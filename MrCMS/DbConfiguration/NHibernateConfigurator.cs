@@ -161,6 +161,8 @@ namespace MrCMS.DbConfiguration
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)
         {
             var saveOrUpdateListener = new SaveOrUpdateListener();
+            var updateIndexesListener = new UpdateIndexesListener();
+            var postCommitEventListener = new PostCommitEventListener();
             configuration.EventListeners.SaveOrUpdateEventListeners =
                  new ISaveOrUpdateEventListener[]
                       {
@@ -173,14 +175,23 @@ namespace MrCMS.DbConfiguration
                                                   saveOrUpdateListener
                                               });
             configuration.AppendListeners(ListenerType.PreUpdate,
-                                          new[]
+                                          new IPreUpdateEventListener[]
                                               {
                                                   saveOrUpdateListener
                                               });
 
-            configuration.AppendListeners(ListenerType.PostCommitUpdate, new[]
+            configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
                                                                              {
-                                                                                 new PostCommitEventListener()
+                                                                                 postCommitEventListener,
+                                                                                 updateIndexesListener
+                                                                             });
+            configuration.AppendListeners(ListenerType.PostCommitInsert, new IPostInsertEventListener[]
+                                                                             {
+                                                                                 updateIndexesListener
+                                                                             });
+            configuration.AppendListeners(ListenerType.PostCommitDelete, new IPostDeleteEventListener[]
+                                                                             {
+                                                                                 updateIndexesListener
                                                                              });
         }
     }

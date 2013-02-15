@@ -63,8 +63,6 @@ namespace MrCMS.Website
                                     CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
                                     CurrentRequestData.CurrentSite = Get<ISiteService>().GetCurrentSite();
                                     CurrentRequestData.SiteSettings = Get<SiteSettings>();
-                                    if (Get<SEOSettings>().EnableHtmlMinification)
-                                        Response.Filter = new WhitespaceFilter(Response.Filter);
                                 };
             AuthenticateRequest += (sender, args) =>
                                        {

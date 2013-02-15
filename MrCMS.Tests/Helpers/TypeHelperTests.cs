@@ -31,16 +31,33 @@ namespace MrCMS.Tests.Helpers
         [Fact]
         public void GenericTypeAssignableFromLogicConfirmed()
         {
-            typeof (MrCMSAppAdminController<>).IsGenericTypeDefinition.Should().BeTrue();
-            typeof (MrCMSAppAdminController<TestApp>).IsGenericTypeDefinition.Should().BeFalse();
+            typeof(MrCMSAppAdminController<>).IsGenericTypeDefinition.Should().BeTrue();
+            typeof(MrCMSAppAdminController<TestApp>).IsGenericTypeDefinition.Should().BeFalse();
 
-            typeof (TestAdminController).GetBaseTypes()
+            typeof(TestAdminController).GetBaseTypes()
                                         .Any(
                                             type =>
                                             type.IsGenericType &&
-                                            type.GetGenericTypeDefinition() == typeof (MrCMSAppAdminController<>))
+                                            type.GetGenericTypeDefinition() == typeof(MrCMSAppAdminController<>))
                                         .Should()
                                         .BeTrue();
+        }
+
+        [Fact]
+        public void GenericTypeAssignableFromForInterfaces()
+        {
+            typeof(GenericInterface<>).IsGenericTypeDefinition.Should().BeTrue();
+
+            var types = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(GenericInterface<>));
+            
+            types.Should().Contain(typeof (ImplementationOfGenericInterface));
+            //typeof(ImplementationOfGenericInterface).GetBaseTypes()
+            //                            .Any(
+            //                                type =>
+            //                                type.IsGenericType &&
+            //                                type.GetGenericTypeDefinition() == typeof(GenericInterface<>))
+            //                            .Should()
+            //                            .BeTrue();
         }
 
         [Fact]
@@ -49,6 +66,19 @@ namespace MrCMS.Tests.Helpers
             var types = typeof (TestAdminController).GetBaseTypes(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof (MrCMSAppAdminController<>));
 
             types.FirstOrDefault().Should().Be(typeof (MrCMSAppAdminController<TestApp>));
+        }
+
+        [Fact]
+        public void GetDateFromLucene()
+        {
+            long date = 1360931406192;
+            var fromBinary = DateTime.FromBinary(date);
+            var fromFileTime = DateTime.FromFileTime(date);
+            var fromFileTimeUtc = DateTime.FromFileTimeUtc(date);
+            var dateTime = new DateTime(date, DateTimeKind.Local);
+            var addMilliseconds = new DateTime(1970, 1, 1).AddMilliseconds(date);
+
+            var test = "";
         }
 
 
@@ -60,6 +90,16 @@ namespace MrCMS.Tests.Helpers
             public int DisplayOrder { get; private set; }
         }
     }
+
+    public interface GenericInterface<T>
+    {
+        T Test { get; }
+    }
+    public class ImplementationOfGenericInterface : GenericInterface<string>
+    {
+        public string Test { get { return "Test"; } }
+    }
+
 
     public class TestAdminController : MrCMSAppAdminController<TestApp>
     {

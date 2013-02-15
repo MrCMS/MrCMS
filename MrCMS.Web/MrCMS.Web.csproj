@@ -140,6 +140,7 @@
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImageController.cs" />
+    <Compile Include="Areas\Admin\Controllers\IndexesController.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutController.cs" />
     <Compile Include="Areas\Admin\Controllers\LogController.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaCategoryController.cs" />
@@ -639,6 +640,7 @@
     <Content Include="Areas\Admin\Views\Task\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Task\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutPopup.cshtml" />
+    <Content Include="Areas\Admin\Views\Indexes\Index.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
   </ItemGroup>
