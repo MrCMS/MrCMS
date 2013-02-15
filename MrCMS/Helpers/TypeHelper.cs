@@ -52,11 +52,19 @@ namespace MrCMS.Helpers
                                              {
                                                  if (type.IsGenericTypeDefinition)
                                                  {
-                                                     return t.GetBaseTypes()
-                                                             .Any(
-                                                                 t2 =>
-                                                                 t2.IsGenericType &&
-                                                                 t2.GetGenericTypeDefinition() == type);
+                                                     return type.IsInterface
+                                                                ? t.GetBaseTypes(true)
+                                                                   .Any(
+                                                                       t2 => t2.GetInterfaces().Any(
+                                                                           tInt => tInt.IsGenericType
+                                                                                   &&
+                                                                                   tInt.GetGenericTypeDefinition() ==
+                                                                                   type))
+                                                                : t.GetBaseTypes()
+                                                                   .Any(
+                                                                       t2 =>
+                                                                       t2.IsGenericType &&
+                                                                       t2.GetGenericTypeDefinition() == type);
                                                  }
                                                  return type.IsAssignableFrom(t);
                                              });
@@ -257,8 +265,10 @@ namespace MrCMS.Helpers
                                      : TypeDescriptor.GetConverter(type)));
         }
 
-        public static IEnumerable<Type> GetBaseTypes(this Type type)
+        public static IEnumerable<Type> GetBaseTypes(this Type type, bool includeSelf = false)
         {
+            if (includeSelf)
+                yield return type;
             var baseType = type.BaseType;
             while (baseType != null)
             {
@@ -270,6 +280,11 @@ namespace MrCMS.Helpers
         public static IEnumerable<Type> GetBaseTypes(this Type type, Func<Type, bool> filter)
         {
             return type.GetBaseTypes().Where(filter);
+        }
+
+        public static Type GetTypeByName(string typeName)
+        {
+            return _alltypes.FirstOrDefault(type => type.FullName == typeName);
         }
     }
 }

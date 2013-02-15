@@ -26,6 +26,7 @@ namespace MrCMS.Tests.Website.Routing
         private ISession session;
         private RequestContext requestContext;
         private IControllerManager controllerManager;
+        private SEOSettings seoSettings;
 
         public MrCMSHttpHandlerTests()
         {
@@ -404,9 +405,10 @@ namespace MrCMS.Tests.Website.Routing
             requestContext = A.Fake<RequestContext>();
             session = A.Fake<ISession>();
             siteSettings = A.Fake<SiteSettings>();
+            seoSettings = A.Fake<SEOSettings>();
             documentService = A.Fake<IDocumentService>();
             controllerManager = A.Fake<IControllerManager>();
-            var mrCMSHttpHandler = new MrCMSHttpHandler(session, documentService, controllerManager, siteSettings);
+            var mrCMSHttpHandler = new MrCMSHttpHandler(session, documentService, controllerManager, siteSettings,seoSettings);
             mrCMSHttpHandler.SetRequestContext(requestContext);
             return mrCMSHttpHandler;
         }
