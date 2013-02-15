@@ -187,9 +187,9 @@ namespace MrCMS.DbConfiguration
             if (!InDevelopment)
             {
                 configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
-                                                                             {
+                                                                                 {
                                                                                      updateIndexesListener
-                                                                             });
+                                                                                 });
                 configuration.AppendListeners(ListenerType.PostCommitInsert, new IPostInsertEventListener[]
                                                                                  {
                                                                                      updateIndexesListener

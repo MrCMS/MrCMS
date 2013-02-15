@@ -36,7 +36,7 @@ namespace MrCMS.Tests
         public virtual void Dispose()
         {
             CurrentRequestData.OverridenContext = null;
-	    _listDictionary.Clear();
+            _listDictionary.Clear();
         }
     }
 
@@ -133,7 +133,7 @@ namespace MrCMS.Tests
                     Session.Dispose();
                     Session = null;
                 }
-		base.Dispose();
+                base.Dispose();
             }
         }
     }
