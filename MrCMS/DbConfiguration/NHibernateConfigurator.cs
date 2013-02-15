@@ -182,17 +182,23 @@ namespace MrCMS.DbConfiguration
 
             configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
                                                                              {
-                                                                                 postCommitEventListener,
-                                                                                 updateIndexesListener
+                                                                                 postCommitEventListener
                                                                              });
-            configuration.AppendListeners(ListenerType.PostCommitInsert, new IPostInsertEventListener[]
+            if (!InDevelopment)
+            {
+                configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
                                                                              {
-                                                                                 updateIndexesListener
+                                                                                     updateIndexesListener
                                                                              });
-            configuration.AppendListeners(ListenerType.PostCommitDelete, new IPostDeleteEventListener[]
-                                                                             {
-                                                                                 updateIndexesListener
-                                                                             });
+                configuration.AppendListeners(ListenerType.PostCommitInsert, new IPostInsertEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
+                configuration.AppendListeners(ListenerType.PostCommitDelete, new IPostDeleteEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
+            }
         }
     }
 }
