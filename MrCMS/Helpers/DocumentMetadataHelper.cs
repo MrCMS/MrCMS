@@ -21,28 +21,28 @@ namespace MrCMS.Helpers
 
         public static List<DocumentMetadata> DocumentMetadatas
         {
-            get { return _documentMetadatas ??(_documentMetadatas = GetDocumentMetadata()); }
+            get { return _documentMetadatas ?? (_documentMetadatas = GetDocumentMetadata()); }
         }
 
         private static List<DocumentMetadata> GetDocumentMetadata()
         {
             var list = new List<DocumentMetadata>();
 
-            foreach (var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Document>().Where(type => !type.ContainsGenericParameters))
+            foreach (var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>().Where(type => !type.ContainsGenericParameters))
             {
-                var types = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof (DocumentMetadataMap<>).MakeGenericType(type));
-		if (types.Any())
-		{
-		    var definition = Activator.CreateInstance(types.First()) as IGetDocumentMetadata;
-		    list.Add(definition.Metadata);
-		}
-		else
-		{
-		    var definition =
-		        Activator.CreateInstance(typeof (DefaultDocumentMetadata<>).MakeGenericType(type)) as
-		        IGetDocumentMetadata;
-		    list.Add(definition.Metadata);
-		}
+                var types = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(DocumentMetadataMap<>).MakeGenericType(type));
+                if (types.Any())
+                {
+                    var definition = Activator.CreateInstance(types.First()) as IGetDocumentMetadata;
+                    list.Add(definition.Metadata);
+                }
+                else
+                {
+                    var definition =
+                        Activator.CreateInstance(typeof(DefaultDocumentMetadata<>).MakeGenericType(type)) as
+                        IGetDocumentMetadata;
+                    list.Add(definition.Metadata);
+                }
             }
             return list.OrderBy(x => x.DisplayOrder).ToList();
         }
@@ -100,7 +100,7 @@ namespace MrCMS.Helpers
 
             documentTypeDefinitions =
                 documentTypeDefinitions.FindAll(
-                    definition => !typeof (UniquePage).IsAssignableFrom(definition.Type) ||
+                    definition => !typeof(UniquePage).IsAssignableFrom(definition.Type) ||
                                   !documentService.ExistAny(definition.Type));
 
             return documentTypeDefinitions;
@@ -111,7 +111,7 @@ namespace MrCMS.Helpers
             var documentTypeDefinition = document.GetMetadata();
             return documentTypeDefinition != null && documentTypeDefinition.MaxChildNodes > 0
                        ? documentTypeDefinition.MaxChildNodes
-                       : (int?) null;
+                       : (int?)null;
         }
     }
 }

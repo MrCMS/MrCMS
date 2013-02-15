@@ -124,7 +124,7 @@ namespace MrCMS.Services
             IEnumerable<T> children =
                 _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).List();
 
-            if (parent != null)
+            if (parent is Webpage)
             {
                 var documentTypeDefinition = parent.GetMetadata();
                 if (documentTypeDefinition != null)
