@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using MrCMS.Entities.Documents.Metadata;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Web.Apps.Example.Pages
@@ -8,4 +9,5 @@ namespace MrCMS.Web.Apps.Example.Pages
         [DisplayName("Hello to")]
         public virtual string HelloTo { get; set; }
     }
+
 }

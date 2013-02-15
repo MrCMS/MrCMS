@@ -17,7 +17,7 @@ namespace MrCMS.Entities.Documents
 
         public bool Sortable { get; set; }
 	
-	public Func<Document, object> SortBy { get; set; }
+	    public Func<Document, object> SortBy { get; set; }
 
         public bool SortByDesc { get; set; }
 
