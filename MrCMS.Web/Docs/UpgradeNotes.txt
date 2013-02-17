@@ -3,3 +3,7 @@
 1) Google analytics deprecated in favor of trcking scripts. Make sure to have @Html.Raw(SiteSettings<SEOSettings>().TrackingScripts) before </head> and make sure the TrackingScripts field is populated in settings->seo settings
 2) Enable inline editing - this now needs to be selected for inline editing on the front end to work - settings -> site settings -> enable inline editing
 3) Removed - public string SiteName { get; set; } - Use site name from sites
+
+
+0.1.1 -> 0.2
+1) DocumentTypeAttribute no longer exists. See Document Meta Data.
