@@ -11,7 +11,6 @@ using MrCMS.DbConfiguration.Conventions;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Website;
