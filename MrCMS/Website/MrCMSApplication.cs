@@ -57,25 +57,27 @@ namespace MrCMS.Website
         public override void Init()
         {
             if (CurrentRequestData.DatabaseIsInstalled)
-                TaskExecutor.SessionFactory = Get<ISessionFactory>();
-            BeginRequest += (sender, args) =>
-                                {
-                                    CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
-                                    CurrentRequestData.CurrentSite = Get<ISiteService>().GetCurrentSite();
-                                    CurrentRequestData.SiteSettings = Get<SiteSettings>();
-                                };
-            AuthenticateRequest += (sender, args) =>
-                                       {
-                                           CurrentRequestData.CurrentUser =
-                                               Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
-                                       };
-
-            EndRequest += (sender, args) =>
             {
-                if (CurrentRequestData.DatabaseIsInstalled)
-                    AppendScheduledTasks();
-                TaskExecutor.StartExecuting();
-            };
+                TaskExecutor.SessionFactory = Get<ISessionFactory>();
+                BeginRequest += (sender, args) =>
+                                    {
+                                        CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
+                                        CurrentRequestData.CurrentSite = Get<ISiteService>().GetCurrentSite();
+                                        CurrentRequestData.SiteSettings = Get<SiteSettings>();
+                                    };
+                AuthenticateRequest += (sender, args) =>
+                                           {
+                                               CurrentRequestData.CurrentUser =
+                                                   Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
+                                           };
+
+                EndRequest += (sender, args) =>
+                                  {
+                                      if (CurrentRequestData.DatabaseIsInstalled)
+                                          AppendScheduledTasks();
+                                      TaskExecutor.StartExecuting();
+                                  };
+            }
         }
 
         protected void AppendScheduledTasks()

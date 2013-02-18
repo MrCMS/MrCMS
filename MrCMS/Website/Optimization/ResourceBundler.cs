@@ -156,7 +156,7 @@ namespace MrCMS.Website.Optimization
                 return MvcHtmlString.Create(result.ToString());
             }
 
-            foreach (var path in ScriptData.Values.SelectMany(x => x).Select(x => x.Url).Distinct())
+            foreach (var path in CssData.Values.SelectMany(x => x).Select(x => x.Url).Distinct())
                 result.AppendLine(string.Format("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
                                                 path.StartsWith("~") ? path.Substring(1) : path));
             return MvcHtmlString.Create(result.ToString());

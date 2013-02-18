@@ -48,8 +48,6 @@ namespace MrCMS.Website.Routing
         {
             SetCustomHeaders(context);
 
-            if (!CheckIsInstalled(context)) return;
-
             if (CheckIsFile(context)) return;
 
             if (Handle404(context)) return;
@@ -209,16 +207,6 @@ namespace MrCMS.Website.Routing
                 return true;
             }
             return false;
-        }
-
-        public bool CheckIsInstalled(HttpContextBase context)
-        {
-            if (!CurrentRequestData.DatabaseIsInstalled)
-            {
-                context.Response.Redirect("~/Install");
-                return false;
-            }
-            return true;
         }
 
         public Webpage Webpage

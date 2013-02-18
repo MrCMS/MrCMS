@@ -36,27 +36,6 @@ namespace MrCMS.Tests.Website.Routing
         }
 
         [Fact]
-        public void MrCMSHttpHandler_CheckIsInstalled_DatabaseIsNotInstalledRedirectsToInstall()
-        {
-            CurrentRequestData.DatabaseIsInstalled = false;
-            var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            var httpContext = A.Fake<HttpContextBase>();
-
-            mrCMSHttpHandler.CheckIsInstalled(httpContext).Should().BeFalse();
-
-            A.CallTo(() => httpContext.Response.Redirect("~/Install")).MustHaveHappened();
-        }
-
-        [Fact]
-        public void MrCMSHttpHandler_CheckIsInstalled_DatabaseIsInstalledReturnsTrue()
-        {
-            var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            var httpContext = A.Fake<HttpContextBase>();
-
-            mrCMSHttpHandler.CheckIsInstalled(httpContext).Should().BeTrue();
-        }
-
-        [Fact]
         public void MrCMSHttpHandler_IsReusable_IsFalse()
         {
             IHttpHandler mrCMSHttpHandler = GetMrCMSHttpHandler();

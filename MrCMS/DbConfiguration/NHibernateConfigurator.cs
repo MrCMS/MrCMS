@@ -14,6 +14,7 @@ using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
+using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Caches.SysCache2;
@@ -184,7 +185,7 @@ namespace MrCMS.DbConfiguration
                                                                              {
                                                                                  postCommitEventListener
                                                                              });
-            if (!InDevelopment)
+            if (!InDevelopment && CurrentRequestData.DatabaseIsInstalled)
             {
                 configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
                                                                                  {
