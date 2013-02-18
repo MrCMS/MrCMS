@@ -36,6 +36,7 @@ namespace MrCMS.Services
             var sameParentDocs =
                 GetDocumentsByParent(document.Parent as T);
             document.DisplayOrder = sameParentDocs.Any() ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1 : 0;
+            document.CustomInitialization(this, _session);
             _session.Transact(session => session.SaveOrUpdate(document));
         }
 

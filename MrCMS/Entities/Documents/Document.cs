@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Paging;
+using MrCMS.Services;
 using MrCMS.Website;
 using MrCMS.Helpers;
 using NHibernate;
@@ -15,7 +16,7 @@ namespace MrCMS.Entities.Documents
     {
         [Required]
         public virtual string Name { get; set; }
-        
+
         public virtual Document Parent { get; set; }
         [Required]
         [DisplayName("Display Order")]
@@ -71,7 +72,7 @@ namespace MrCMS.Entities.Documents
             base.OnDeleting(session);
         }
 
-        public virtual void OnSaving(ISession session)  
+        public virtual void OnSaving(ISession session)
         {
 
         }
@@ -91,5 +92,7 @@ namespace MrCMS.Entities.Documents
                    new PagedList<DocumentVersion>(
                        documentVersions, page, 10), Id);
         }
+
+        protected internal virtual void CustomInitialization(IDocumentService service, ISession session) { }
     }
 }
