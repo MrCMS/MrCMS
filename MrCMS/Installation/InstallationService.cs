@@ -371,7 +371,6 @@ namespace MrCMS.Installation
             session.Transact(sess => sess.Save(user));
 
             documentService.AddDocument(model.BaseLayout);
-
             var layoutAreas = new List<LayoutArea>
                                   {
                                       new LayoutArea
