@@ -44,7 +44,8 @@ namespace MrCMS.Services
             return _session.Get<T>(id);
         }
 
-        public T GetUniquePage<T>() where T : UniquePage
+        public T GetUniquePage<T>()
+            where T : Document, IUniquePage
         {
             return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite.Site).Take(1).Cacheable().SingleOrDefault();
         }

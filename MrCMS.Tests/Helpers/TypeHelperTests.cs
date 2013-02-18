@@ -68,19 +68,6 @@ namespace MrCMS.Tests.Helpers
             types.FirstOrDefault().Should().Be(typeof (MrCMSAppAdminController<TestApp>));
         }
 
-        [Fact]
-        public void GetDateFromLucene()
-        {
-            long date = 1360931406192;
-            var fromBinary = DateTime.FromBinary(date);
-            var fromFileTime = DateTime.FromFileTime(date);
-            var fromFileTimeUtc = DateTime.FromFileTimeUtc(date);
-            var dateTime = new DateTime(date, DateTimeKind.Local);
-            var addMilliseconds = new DateTime(1970, 1, 1).AddMilliseconds(date);
-
-            var test = "";
-        }
-
 
         private class TestAdminMenuItem : IAdminMenuItem
         {

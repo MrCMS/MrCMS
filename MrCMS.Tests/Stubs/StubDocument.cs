@@ -23,7 +23,7 @@ namespace MrCMS.Tests.Stubs
         }
     }
     [MrCMSMapClass]
-    public class StubUniquePage : UniquePage
+    public class StubUniquePage : IUniquePage
     {
     }
 }

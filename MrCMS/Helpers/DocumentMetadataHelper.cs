@@ -100,7 +100,7 @@ namespace MrCMS.Helpers
 
             documentTypeDefinitions =
                 documentTypeDefinitions.FindAll(
-                    definition => !typeof(UniquePage).IsAssignableFrom(definition.Type) ||
+                    definition => !typeof(IUniquePage).IsAssignableFrom(definition.Type) ||
                                   !documentService.ExistAny(definition.Type));
 
             return documentTypeDefinitions;

@@ -175,7 +175,7 @@
     <Compile Include="Entities\Documents\Web\IDocumentContainer.cs" />
     <Compile Include="Entities\Documents\Web\IRole.cs" />
     <Compile Include="Entities\Documents\Web\PageWidgetSort.cs" />
-    <Compile Include="Entities\Documents\Web\UniquePage.cs" />
+    <Compile Include="Entities\Documents\Web\IUniquePage.cs" />
     <Compile Include="Entities\Documents\Web\Redirect.cs" />
     <Compile Include="Entities\Documents\Web\RoleStatus.cs" />
     <Compile Include="Entities\Documents\Web\Webpage.cs" />
