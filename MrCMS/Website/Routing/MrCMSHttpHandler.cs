@@ -105,7 +105,7 @@ namespace MrCMS.Website.Routing
 
         public bool Handle404(HttpContextBase context)
         {
-            if (Webpage == null || (!Webpage.Published) && !MrCMSApplication.CurrentUserIsAdmin)
+            if (Webpage == null || (!Webpage.Published) && !CurrentRequestData.CurrentUserIsAdmin)
             {
                 HandleError(context, 404, _siteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data));
                 return true;
