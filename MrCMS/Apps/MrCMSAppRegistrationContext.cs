@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Website.Routing;
 
 namespace MrCMS.Apps
 {
@@ -28,51 +29,22 @@ namespace MrCMS.Apps
         public RouteCollection Routes { get; private set; }
         public object State { get; private set; }
 
-        public Route MapRoute(string name, string url, object defaults = null)
-        {
-            return MapRoute(name, url, defaults, (object)null);
-        }
-
-        public Route MapRoute(string name, string url, string[] namespaces)
-        {
-            return MapRoute(name, url, null, namespaces);
-        }
-
-        public Route MapRoute(string name, string url, object defaults, string[] namespaces)
-        {
-            return MapRoute(name, url, defaults, null, namespaces);
-        }
-
-        public Route MapRoute(string name, string url, object defaults, object constraints, string[] namespaces = null)
+        public Route MapRoute(string name, string url, object defaults = null, string[] namespaces = null)
         {
             if (namespaces == null && Namespaces != null)
                 namespaces = Namespaces.ToArray();
-            Route route = Routes.MapRoute(name, url, defaults, constraints, namespaces);
+            Route route = Routes.MapRoute(name, url, defaults, new { controller = new AppRouteConstraint(AppName, null) }, namespaces);
             route.DataTokens["app"] = AppName;
             bool flag = namespaces == null || namespaces.Length == 0;
             route.DataTokens["UseNamespaceFallback"] = (flag ? 1 : 0);
             return route;
         }
-        public Route MapAreaRoute(string name, string areaName, string url, object defaults = null)
-        {
-            return MapAreaRoute(name, areaName, url, defaults, (object)null);
-        }
 
-        public Route MapAreaRoute(string name, string areaName, string url, string[] namespaces)
-        {
-            return MapAreaRoute(name, areaName, url, null, namespaces);
-        }
-
-        public Route MapAreaRoute(string name, string areaName, string url, object defaults, string[] namespaces)
-        {
-            return MapAreaRoute(name, areaName, url, defaults, null, namespaces);
-        }
-
-        public Route MapAreaRoute(string name, string areaName, string url, object defaults, object constraints, string[] namespaces = null)
+        public Route MapAreaRoute(string name, string areaName, string url, object defaults = null, string[] namespaces = null)
         {
             if (namespaces == null && Namespaces != null)
                 namespaces = Namespaces.ToArray();
-            Route route = Routes.MapRoute(name, url, defaults, constraints, namespaces);
+            Route route = Routes.MapRoute(name, url, defaults, new { controller = new AppRouteConstraint(AppName, areaName) }, namespaces);
             route.DataTokens["app"] = AppName;
             route.DataTokens["area"] = areaName;
             bool flag = namespaces == null || namespaces.Length == 0;

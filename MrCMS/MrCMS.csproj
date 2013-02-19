@@ -345,6 +345,7 @@
     <Compile Include="Website\Optimization\ResourceBundler.cs" />
     <Compile Include="Website\Optimization\ResourceData.cs" />
     <Compile Include="Website\Optimization\WhitespaceFilter.cs" />
+    <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
     <Compile Include="Website\Routing\ErrorHandler.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />

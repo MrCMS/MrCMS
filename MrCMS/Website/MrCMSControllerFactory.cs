@@ -73,5 +73,24 @@ namespace MrCMS.Website
             }
             return controllerType;
         }
+
+        public bool IsValidControllerType(string appName, string controllerName, bool isAdmin)
+        {
+            string typeName = controllerName + "Controller";
+            if (!string.IsNullOrWhiteSpace(appName))
+            {
+                return isAdmin
+                           ? _appAdminControllers.ContainsKey(appName) && _appAdminControllers[appName].Any(
+                               type => type.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase))
+                           : _appUiControllers.ContainsKey(appName) && _appUiControllers[appName].Any(
+                               type => type.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase));
+            }
+            return isAdmin
+                       ? _adminControllers.Any(
+                           type => type.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase))
+                       : _uiControllers.Any(
+                           type => type.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase));
+
+        }
     }
 }
