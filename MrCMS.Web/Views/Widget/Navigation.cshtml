@@ -2,7 +2,7 @@
 @using MrCMS.Helpers
 @model MrCMS.Web.Application.Models.NavigationList
 @{
-    var currentPage = MrCMSApplication.CurrentPage;
+    var currentPage = CurrentRequestData.CurrentPage;
     var activePages = currentPage.ActivePages.Select(webpage => "/" + webpage.LiveUrlSegment).ToList();
 }
     <ul class="nav">
