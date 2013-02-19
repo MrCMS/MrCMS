@@ -196,7 +196,7 @@ namespace MrCMS.Tests.Website.Routing
             CurrentRequestData.ErrorSignal = new ErrorSignal();
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
             A.CallTo(() => siteSettings.Error404PageId).Returns(1);
-            var stubAllowedWebpage = new StubAllowedWebpage { UrlSegment = "test-404" };
+            var stubAllowedWebpage = new StubAllowedWebpage { UrlSegment = "test-404",PublishOn = DateTime.Today.AddDays(-1)};
             var httpContext = A.Fake<HttpContextBase>();
             mrCMSHttpHandler.Webpage = stubAllowedWebpage;
 
