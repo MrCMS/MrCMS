@@ -63,7 +63,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                     Json(new SaveResult(false,
                                         string.Format("Could not find entity of type '{0}' with id {1}", type, id)));
             propertyInfo.SetValue(entity, content, null);
-            _session.Transact(session => session.Save(entity));
+            _session.Transact(session => session.SaveOrUpdate(entity));
 
             return Json(new SaveResult());
         }

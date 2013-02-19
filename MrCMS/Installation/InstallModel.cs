@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using MrCMS.DbConfiguration.Configuration;
+using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Installation
@@ -45,7 +46,12 @@ namespace MrCMS.Installation
         public string SiteUrl { get; set; }
 
         public Webpage HomePage { get; set; }
+        public Webpage Page2 { get; set; }
+        public Webpage Page3 { get; set; }
         public Webpage Error404 { get; set; }
         public Webpage Error500 { get; set; }
+
+        public Layout BaseLayout { get; set; }
+
     }
 }

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Web.Mvc;
 using MrCMS.Entities.Multisite;
 using NHibernate;
@@ -7,6 +8,9 @@ namespace MrCMS.Settings
 {
     public class MailSettings : SiteSettingsBase
     {
+        [DisplayName("System Email Address")]
+        public string SystemEmailAddress { get; set; }
+
         public string Host { get; set; }
 
         public bool UseSSL { get; set; }

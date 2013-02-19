@@ -87,7 +87,7 @@ namespace MrCMS.Website
 
                 var stringBuilder = new StringBuilder();
                 if (EditingEnabled)
-                    stringBuilder.AppendFormat("<div data-layout-area-id=\"{0}\" class=\"layout-area\"> ", layoutArea.Id);
+                    stringBuilder.AppendFormat("<div data-layout-area-id=\"{0}\" data-layout-area-name=\"{1}\" class=\"layout-area\"> ", layoutArea.Id, layoutArea.AreaName);
 
                 foreach (var widget in layoutArea.GetWidgets(page))
                 {

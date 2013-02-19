@@ -1,4 +1,4 @@
-﻿@model MrCMS.Logging.LogEntry
+﻿@model MrCMS.Logging.Log
 @{
     ViewBag.Title = "View Log #" + Model.Id;
 }
@@ -9,6 +9,7 @@
     <div class="span8">
         <div class="btn-group display-inline  pull-right">
             @Html.ActionLink("Back to list", "Index", null, new { @class = "btn " })
+            <a href="@Url.Action("DeleteLog", "Log", new {Model.Id})" class="btn btn-danger" data-toggle="fb-modal">Delete log</a>
         </div>
     </div>
 </div>

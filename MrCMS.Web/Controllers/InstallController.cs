@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.DbConfiguration.Configuration;
+using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Installation;
+using MrCMS.Services;
 using MrCMS.Web.Application.Pages;
+using MrCMS.Web.Application.Widgets;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 
@@ -54,6 +58,18 @@ namespace MrCMS.Web.Controllers
             Server.ScriptTimeout = 300;
             SetInitialWebpages(model);
             InstallationResult installationResult = _installationService.Install(model);
+
+            // add navigation
+            //var navigation = new Navigation
+            //                     {
+            //                         Name = "Main Navigation",
+            //                         LayoutArea =
+            //                             model.BaseLayout.LayoutAreas.FirstOrDefault(
+            //                                 x => x.AreaName == "Main Navigation")
+            //                     };
+
+            //var widgetService = MrCMSApplication.Get<IWidgetService>().AddWidget(navigation);
+
             if (!installationResult.Success)
                 return View(model);
             else return Redirect("~");
@@ -61,26 +77,61 @@ namespace MrCMS.Web.Controllers
 
         private void SetInitialWebpages(InstallModel model)
         {
+            model.BaseLayout = new Layout
+                                   {
+                                       Name = "Base Layout",
+                                       UrlSegment = "~/Views/Shared/_BaseLayout.cshtml",
+                                       LayoutAreas = new List<LayoutArea>()
+                                   };
             model.HomePage = new TextPage
                 {
                     Name = "Home",
                     UrlSegment = "home",
-                    RevealInNavigation = true
+                    BodyContent = "Welcome to Mr CMS",
+                    RevealInNavigation = true,
+                    PublishOn = DateTime.Now,
+                    Layout = model.BaseLayout
                 };
             model.Error404 = new TextPage
                 {
                     Name = "404",
                     UrlSegment = "404",
+                    BodyContent = "Sorry, this page cannot be found.",
                     RevealInNavigation = false,
                     PublishOn = DateTime.UtcNow,
+                    Layout = model.BaseLayout
                 };
             model.Error500 = new TextPage
                 {
                     Name = "500",
                     UrlSegment = "500",
+                    BodyContent = "Sorry, there has been an error.",
                     RevealInNavigation = false,
                     PublishOn = DateTime.Now,
+                    Layout = model.BaseLayout
                 };
+
+            model.Page2 = new TextPage
+            {
+                Name = "Page 2",
+                UrlSegment = "page-2",
+                BodyContent = "Just another page!",
+                RevealInNavigation = true,
+                PublishOn = DateTime.Now,
+                Layout = model.BaseLayout
+            };
+
+            model.Page3 = new TextPage
+            {
+                Name = "Contact us",
+                UrlSegment = "contact-us",
+                BodyContent = "Contact us at www.mrcms.co.uk.",
+                RevealInNavigation = true,
+                PublishOn = DateTime.Now,
+                Layout = model.BaseLayout
+            };
+
+            
         }
     }
 }

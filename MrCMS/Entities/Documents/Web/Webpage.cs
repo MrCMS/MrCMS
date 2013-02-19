@@ -42,7 +42,7 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual bool Published
         {
-            get { return PublishOn != null; }
+            get { return PublishOn != null && PublishOn <= DateTime.UtcNow; }
         }
 
         public virtual string LiveUrlSegment

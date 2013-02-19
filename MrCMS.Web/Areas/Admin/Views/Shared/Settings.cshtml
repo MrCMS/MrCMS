@@ -23,7 +23,8 @@
         }
         else if (textAreaAttribute != null)
         {
-        @Html.TextArea(name, Convert.ToString(property.GetValue(Model, null)), textAreaAttribute.CKEnabled ? new { @class = "ckedit-enabled" } : null)
+            var cssClass = textAreaAttribute.CKEnabled ? "ckedit-enabled settings-textarea" : "settings-textarea";
+        @Html.TextArea(name, Convert.ToString(property.GetValue(Model, null)), new { @class = cssClass })
         }
         else if (dropDownSelectionAttribute != null)
         {

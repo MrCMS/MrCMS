@@ -27,13 +27,5 @@ namespace MrCMS.Web.Controllers
         {
             return Content(_seoSettings.RobotsText, "text/plain", Encoding.UTF8);
         }
-
-        public ActionResult RenderAnalytics()
-        {
-            if (string.IsNullOrWhiteSpace(_seoSettings.GoogleAnalytics))
-                return new EmptyResult();
-
-            return Content(_seoSettings.GoogleAnalytics);
-        }
     }
 }
