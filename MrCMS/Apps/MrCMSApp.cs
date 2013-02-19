@@ -6,6 +6,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Website.Controllers;
 using System.Linq;
+using Ninject;
 
 namespace MrCMS.Apps
 {
@@ -49,5 +50,13 @@ namespace MrCMS.Apps
             foreach (Type type in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>())
                 ((MrCMSApp)Activator.CreateInstance(type)).CreateContextAndRegister(routes, state);
         }
+
+        public static void RegisterAllServices(IKernel kernel)
+        {
+            foreach (Type type in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>())
+                ((MrCMSApp) Activator.CreateInstance(type)).RegisterServices(kernel);
+        }
+
+        protected abstract void RegisterServices(IKernel kernel);
     }
 }

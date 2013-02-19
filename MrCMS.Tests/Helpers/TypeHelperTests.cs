@@ -5,6 +5,7 @@ using MrCMS.Apps;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Website.Controllers;
+using Ninject;
 using Xunit;
 using System.Linq;
 
@@ -103,6 +104,11 @@ namespace MrCMS.Tests.Helpers
         public override string AppName
         {
             get { return "Test"; }
+        }
+
+        protected override void RegisterServices(IKernel kernel)
+        {
+            
         }
     }
 }

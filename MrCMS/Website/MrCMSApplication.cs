@@ -43,6 +43,7 @@ namespace MrCMS.Website
             RegisterRoutes(RouteTable.Routes);
 
             RegisterServices(bootstrapper.Kernel);
+            MrCMSApp.RegisterAllServices(bootstrapper.Kernel);
 
             ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
 
