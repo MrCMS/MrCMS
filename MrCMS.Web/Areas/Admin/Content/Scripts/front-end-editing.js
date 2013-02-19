@@ -98,7 +98,11 @@
             //create menu for widget editing
             $('.edit-indicator-widget').click(function () {
                 var widgetId = $(this).parent().data('widget-id');
-                var menu = '<div class="edit-widget-menu"><ul><li><a id="" href="/Admin/Widget/Edit/' + widgetId + '" target="_parent" class="btn btn-mini" style="color:#333;text-decoration:none;">Edit this widget</a></li><li></div>';
+                var menu = '<div class="edit-widget-menu">' +
+                    '<ul>' +
+                    '<li><a id="" href="/Admin/Widget/Edit/' + widgetId + '" target="_parent" class="btn btn-mini" style="color:#333;text-decoration:none;">Edit this widget</a></li>' +
+                    '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Delete/' + widgetId + '" target="_parent" class="btn btn-mini" style="color:#333;text-decoration:none;">Delete this widget</a></li>' +
+                    '</ul></div>';
                 $(this).parent().prepend(menu);
                 $(".edit-widget-menu").fadeIn(400);
 
@@ -115,7 +119,8 @@
             $('.edit-indicator-layout').click(function () {
                 var areaId = $(this).parent().data('layout-area-id');
                 var areaName = $(this).parent().data('layout-area-name');
-                var menu = '<div class="edit-layout-area-menu"><h4>Layout area: <br /> ' + areaName + '</h4><ul><li><a tab-index="1" href="/Admin/Widget/AddPageWidget?pageId=' + $('#Id').val() + '&id=' + areaId + '" data-toggle="fb-modal" class="btn btn-mini" style="color:#333;text-decoration:none;">Add new widget here</a></li>' +
+                var menu = '<div class="edit-layout-area-menu"><h4>Layout area: <br /> ' + areaName +
+                    '</h4><ul><li><a tab-index="1" href="/Admin/Widget/AddPageWidget?pageId=' + $('#Id').val() + '&id=' + areaId + '" data-toggle="fb-modal" class="btn btn-mini" style="color:#333;text-decoration:none;">Add new widget here</a></li>' +
                     '<li><a tab-index="1" href="/Admin/Webpage/Edit/' + $('#Id').val()+ '" class="btn btn-mini" style="color:#333;text-decoration:none;">Manage page widgets</a>' +
                     '</li><li><a tab-index="1" href="/Admin/LayoutArea/Edit/' + areaId + '" class="btn btn-mini" style="color:#333;text-decoration:none;">Manage global widgets</a></li></ul></div>';
 

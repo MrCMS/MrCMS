@@ -377,6 +377,7 @@
       <DependentUpon>variables.less</DependentUpon>
     </Content>
     <Content Include="Areas\Admin\Content\Scripts\admin.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\add-page-widget.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-webpage.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-category.js" />

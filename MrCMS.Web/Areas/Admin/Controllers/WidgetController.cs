@@ -119,7 +119,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ValidateInput(false)]
         public ActionResult AddPageWidget_POST([IoCModelBinder(typeof(AddWidgetModelBinder))] Widget widget, string returnUrl = null)
         {
-
             _widgetService.SaveWidget(widget);
 
             return !string.IsNullOrWhiteSpace(returnUrl)
