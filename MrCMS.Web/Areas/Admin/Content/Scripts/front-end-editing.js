@@ -110,7 +110,7 @@
                 $(document).mouseup(function (e) {
                     var container = $(".edit-widget-menu");
                     if (container.has(e.target).length === 0) {
-                        container.hide();
+                        container.remove();
                     }
                 });
             });
@@ -130,7 +130,7 @@
                 $(document).mouseup(function (e) {
                     var container = $(".edit-layout-area-menu");
                     if (container.has(e.target).length === 0) {
-                        container.hide();
+                        container.remove();
                     }
                 });
             });
