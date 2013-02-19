@@ -163,7 +163,7 @@ namespace MrCMS.Website.Routing
 
         public bool Handle404(HttpContextBase context)
         {
-            if (Webpage == null)
+            if (Webpage == null || (!Webpage.Published) && !MrCMSApplication.CurrentUserIsAdmin)
             {
                 HandleError(context, 404, SiteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data));
                 return true;
