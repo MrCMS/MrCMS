@@ -64,7 +64,8 @@
                         original = el.html();
                     });
                     el.blur(function () {
-                        if (original != el.html()) {
+                        var html = stripHtml(el.html());
+                        if (original != html) {
                             $.ajax({
                                 type: "POST",
                                 url: "/Admin/InPageAdmin/SaveBodyContent",
@@ -72,7 +73,7 @@
                                     id: el.data('id'),
                                     property: el.data('property'),
                                     type: el.data('type'),
-                                    content: el.html()
+                                    content: html
                                 },
                                 success: function (msg) {
                                     showLiveForm(el);
@@ -192,6 +193,9 @@
 
     function setEditingEnabled(value) {
         return $.cookie('mrcms-inline-edit', value, { expires: 1 });
+    }
+    function stripHtml(str) {
+        return jQuery('<div />', { html: str }).text();
     }
 })(jQuery);
 
