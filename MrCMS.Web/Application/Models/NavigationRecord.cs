@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web.Mvc;
 
 namespace MrCMS.Web.Application.Models
 {
@@ -8,9 +9,9 @@ namespace MrCMS.Web.Application.Models
         {
             Children = new List<NavigationRecord>();
         }
-        public string Text { get; set; }
+        public MvcHtmlString Text { get; set; }
 
-        public string Url { get; set; }
+        public MvcHtmlString Url { get; set; }
 
         public List<NavigationRecord> Children { get; set; }
     }
