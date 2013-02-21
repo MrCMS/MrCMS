@@ -1,0 +1,12 @@
+﻿@model MrCMS.Entities.Documents.Web.Webpage
+<div class="tab-pane" id="form-message-tab">
+    <h4>Message Settings</h4>
+    @Html.LabelFor(webpage => webpage.FormSubmittedMessage)
+    @Html.TextBoxFor(webpage => webpage.FormSubmittedMessage, new { @class = "span11" })
+    @Html.LabelFor(webpage => webpage.FormEmailTitle)
+    @Html.TextBoxFor(webpage => webpage.FormEmailTitle, new { @class = "span11" })
+    @Html.LabelFor(webpage => webpage.SendFormTo)
+    @Html.TextBoxFor(webpage => webpage.SendFormTo, new { @class = "span11" })
+    @Html.LabelFor(webpage => webpage.FormMessage)
+    @Html.TextAreaFor(x => x.FormMessage, new { @class = "ckedit-enabled" })
+</div>

@@ -1,0 +1,32 @@
+﻿@model MrCMS.Entities.Documents.Web.Webpage
+<div class="tab-pane" id="permissions-front-end">
+    <h4>Front End</h4>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Role
+                </th>
+                <th>Available
+                </th>
+                <th>Is recursive?
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var role in Model.GetFrontEndRoles())
+            {
+                <tr>
+                    <td>
+                        @role.Name
+                    </td>
+                    <td>
+                        @Html.DropDownList("role." + role.Name + ".FrontEnd.Status", role.GetStatusOptions)
+                    </td>
+                    <td>
+                        @Html.DropDownList("role." + role.Name + ".FrontEnd.Recursive", role.GetRecursiveOptions)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

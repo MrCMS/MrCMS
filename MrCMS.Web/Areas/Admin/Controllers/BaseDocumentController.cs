@@ -34,7 +34,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             {
                 Parent = parent
             };
-            PopulateEditDropdownLists(model as T);
+            DocumentTypeSetup(model as T);
             return View(model);
         }
 
@@ -49,11 +49,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Edit")]
         public ActionResult Edit_Get(T doc)
         {
-            PopulateEditDropdownLists(doc);
+            DocumentTypeSetup(doc);
             return View(doc);
         }
 
-        protected virtual void PopulateEditDropdownLists(T doc)
+        protected virtual void DocumentTypeSetup(T doc)
         {
         }
 

@@ -646,6 +646,17 @@
     <Content Include="Areas\Admin\Views\Indexes\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Log\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Log\DeleteLog.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\DefaultEdit.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\Properties.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\SEO.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormBuilder.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormPostings.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormMessage.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\PageVersions.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\PermissionsFrontEnd.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\PermissionsAdmin.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\Preview.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\RedirectEdit.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Views\Widget\Navigation.cshtml" />

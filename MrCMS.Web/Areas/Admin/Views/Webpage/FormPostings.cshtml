@@ -1,0 +1,5 @@
+﻿@model MrCMS.Entities.Documents.Web.Webpage
+<div class="tab-pane" id="postings-tab">
+    <h4>Entries (@Model.FormPostings.Count)</h4>
+    @Html.Action("Postings", new { id = Model.Id })
+</div>

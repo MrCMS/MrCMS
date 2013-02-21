@@ -42,7 +42,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             }
         }
 
-        protected override void PopulateEditDropdownLists(Webpage doc)
+        protected override void DocumentTypeSetup(Webpage doc)
         {
             IEnumerable<Layout> layouts =
                 _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false && x.Site == CurrentSite);
@@ -59,6 +59,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             ViewData["DocumentTypes"] = documentTypeDefinitions;
 
             doc.AdminViewData(ViewData, _session);
+
+            var documentMetadata = doc.GetMetadata();
+            if (documentMetadata != null)
+                ViewData["EditView"] = documentMetadata.EditPartialView;
         }
 
         public override ActionResult Show(Webpage document)

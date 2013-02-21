@@ -103,6 +103,11 @@ namespace MrCMS.Entities.Documents.Metadata
         /// </summary>
         public virtual string DefaultLayoutName { get { return "Default Layout"; } }
 
+        /// <summary>
+        /// Specifies the partial view used to render the View
+        /// </summary>
+        public virtual string EditPartialView { get { return "DefaultEdit"; } }
+
         public DocumentMetadata Metadata
         {
             get
@@ -126,7 +131,8 @@ namespace MrCMS.Entities.Documents.Metadata
                                ChildrenList = ChildrenList,
                                AutoBlacklist = AutoBlacklist,
                                RequiresParent = RequiresParent,
-                               DefaultLayoutName = DefaultLayoutName
+                               DefaultLayoutName = DefaultLayoutName,
+                               EditPartialView = EditPartialView
                            };
             }
         }

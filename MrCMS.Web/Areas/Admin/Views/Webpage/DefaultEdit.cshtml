@@ -1,0 +1,42 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@model Webpage
+<ul class="nav nav-tabs margin-top-10">
+    <li class="active"><a href="#edit-content" data-toggle="tab">Edit</a></li>
+    <li><a href="#edit-seo" data-toggle="tab">SEO</a></li>
+    <li><a href="#layout-content" data-toggle="tab">Layout</a></li>
+    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Form&nbsp;<b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a href="#form-builder-tab" data-toggle="tab">Design</a></li>
+            <li><a href="#postings-tab" data-toggle="tab">Entries (@Model.FormPostings.Count)</a></li>
+            <li><a href="#form-message-tab" data-toggle="tab">Message Settings</a></li>
+        </ul>
+    </li>
+    <li><a href="#versions" data-toggle="tab">Versions</a></li>
+    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Permissions&nbsp;<b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a href="#permissions-front-end" data-toggle="tab">Front end</a></li>
+            <li><a href="#permissions-admin" data-toggle="tab">Admin</a></li>
+        </ul>
+    </li>
+    <li><a href="#preview" data-toggle="tab">Preview</a></li>
+</ul>
+<div class="row-fluid">
+
+    @using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document" }))
+    {
+        <div class="tab-content">
+            @{Html.RenderPartial("Properties", Model);}
+            @{Html.RenderPartial("SEO", Model);}
+            @{Html.RenderPartial("Layout", Model); }
+            @{Html.RenderPartial("FormBuilder", Model);}
+            @{Html.RenderPartial("FormPostings", Model);}
+            @{Html.RenderPartial("FormMessage", Model);}
+            @{Html.RenderPartial("PageVersions", Model);}
+            @{Html.RenderPartial("PermissionsFrontEnd", Model);}
+            @{Html.RenderPartial("PermissionsAdmin", Model);}
+            @{Html.RenderPartial("Preview", Model);}
+        </div>
+    }
+</div>
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/edit-webpage.js"); }

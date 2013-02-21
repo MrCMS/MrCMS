@@ -10,18 +10,19 @@
         $("#url-span").text('');
         $("#UrlSegment").show();
     });
-
-    $('#my-form-builder').formbuilder({
-        'save_url': '/Admin/Webpage/SaveForm/' + $('#Id').val(),
-        'load_url': '/Admin/Webpage/GetForm/' + $('#Id').val(),
-        'useJson': true,
-        on_saved: function () {
-            $('#my-form-builder').before($('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">×</button>Form Saved</div>'));
-        },
-        get_object_id: function () {
-            return $('#Id').val();
-        }
-    });
+    if ($('#my-form-builder').formbuilder) {
+        $('#my-form-builder').formbuilder({
+            'save_url': '/Admin/Webpage/SaveForm/' + $('#Id').val(),
+            'load_url': '/Admin/Webpage/GetForm/' + $('#Id').val(),
+            'useJson': true,
+            on_saved: function() {
+                $('#my-form-builder').before($('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">×</button>Form Saved</div>'));
+            },
+            get_object_id: function() {
+                return $('#Id').val();
+            }
+        });
+    }
 
     $("#my-form-builder ul").sortable({ opacity: 0.6, cursor: 'move', handle: 'strong' });
 

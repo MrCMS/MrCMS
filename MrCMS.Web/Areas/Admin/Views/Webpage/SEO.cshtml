@@ -1,0 +1,29 @@
+﻿@using MrCMS.Entities.Documents.Web
+@model Webpage
+<div class="tab-pane" id="edit-seo">
+    <div class="display-inline">
+        <i class="icon-exclamation-sign" rel="tooltip" data-placement="top" data-original-title="The permalink should not be changed after the page is created. If you change the URL, make sure to make a redirect from the old URL to the new URL for search engines to still find your page."></i><i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar. For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>Permalink: /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
+        <button id="change-url" class="btn btn-mini">Change</button>
+    </div>
+    @if (!(Model is Redirect))
+    {       
+        <hr />
+        @Html.LabelFor(x => x.MetaTitle, "Meta Title")
+        @Html.TextBoxFor(x => x.MetaTitle, new { @class = "span12" })
+        @Html.ValidationMessageFor(x => x.MetaTitle)
+        @Html.LabelFor(x => x.MetaDescription, "Meta Description")
+        @Html.TextBoxFor(x => x.MetaDescription, new { @class = "span12" })
+        @Html.ValidationMessageFor(x => x.MetaDescription)
+        @Html.LabelFor(x => x.MetaKeywords, "Meta Keywords")
+        @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "span12" })
+        @Html.ValidationMessageFor(x => x.MetaKeywords)
+        <div class="form-inline">
+            @Html.CheckBoxFor(x => x.RevealInNavigation)
+            @Html.LabelFor(x => x.RevealInNavigation, "Include in navigation")
+        </div>
+        @Html.ValidationMessageFor(x => x.RevealInNavigation)
+        <label>
+            @Html.CheckBoxFor(webpage => webpage.RequiresSSL) Requires SSL
+        </label>
+    }
+</div>
