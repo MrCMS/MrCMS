@@ -26,7 +26,7 @@ namespace MrCMS.Logging
     {
         public void Override(AutoMapping<Log> mapping)
         {
-            mapping.Map(entry => entry.Error).CustomType<BinaryData>().Length(4001);
+            mapping.Map(entry => entry.Error).CustomType<BinaryData>().Length(9999);
             mapping.Map(entry => entry.Message).CustomType<VarcharMax>().Length(4001);
             mapping.Map(entry => entry.Detail).CustomType<VarcharMax>().Length(4001);
         }

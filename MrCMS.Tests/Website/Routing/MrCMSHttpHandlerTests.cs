@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Elmah;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
@@ -257,7 +258,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_Handle404_WebpageSetReturnsFalse()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            mrCMSHttpHandler.Webpage = new BasicMappedWebpage();
+            mrCMSHttpHandler.Webpage = new BasicMappedWebpage {PublishOn = DateTime.Today.AddDays(-1)};
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.Handle404(httpContext).Should().BeFalse();
@@ -375,7 +376,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_PageIsRedirect_RedirectWithPermanentCallsResponseRedirectPermanentForTheRedirectUrl()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            mrCMSHttpHandler.Webpage = new Redirect {RedirectUrl = "test-redirect", Permanent = true};
+            mrCMSHttpHandler.Webpage = new Redirect { RedirectUrl = "test-redirect", Permanent = true };
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.PageIsRedirect(httpContext);
@@ -397,7 +398,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_PageIsRedirect_IfRedirectIsAbsoluteUrlAndIsPermanentShouldBe301()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            mrCMSHttpHandler.Webpage = new Redirect {RedirectUrl = "http://www.example.com", Permanent = true};
+            mrCMSHttpHandler.Webpage = new Redirect { RedirectUrl = "http://www.example.com", Permanent = true };
             var httpContext = A.Fake<HttpContextBase>();
 
             mrCMSHttpHandler.PageIsRedirect(httpContext);
