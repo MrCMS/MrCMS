@@ -13,10 +13,10 @@
 
 div.layout-area, div.widget { position: relative; }
 .edit-widget-menu { position: absolute; left: 0; padding: 5px; z-index: 10000; border: 1px solid #d0d0d0;background: white;display:none;}
-    .edit-widget-menu a { color: white; font-family: arial; padding: 3px; display: block; }
+    .edit-widget-menu a { color: #000; font-family: arial; padding: 3px; display: block; }
 
 .edit-layout-area-menu { position: absolute; right: 0; padding: 5px; z-index: 10000; border: 1px solid #d0d0d0;background: white;display:none;}
-    .edit-layout-area-menu a { color: white!important; font-family: arial!important; padding: 3px; display: block!important; }
+    .edit-layout-area-menu a {color: #000; font-family: arial!important; padding: 3px; display: block!important; }
     .edit-layout-area-menu h4 { font-size: 12px!important;font-family: arial!important;margin: 5px!important;padding: 0;}
 
 .edit-widget-menu ul , .edit-layout-area-menu ul { margin: 0!important; padding: 0; list-style-type: none; }
