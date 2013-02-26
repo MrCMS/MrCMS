@@ -324,7 +324,7 @@
         source: function (request, response) {
             $.getJSON("/Admin/Tag/Search", {
                 term: extractLast(request.term),
-                documentId: $('#Id').val()
+                id: $('#Id').val()
             }, response);
         },
         search: function () {
