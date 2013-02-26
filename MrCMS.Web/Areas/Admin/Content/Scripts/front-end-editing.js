@@ -157,12 +157,16 @@
                 var instance = CKEDITOR.instances[k];
                 instance.destroy(true);
             }
+            $(settings.editableSelector).each(function (index, element) {
+                var el = $(element);
+                if (el.data("is-html") == true) {
+                    showLiveForm(el);
+                }
+            });
             $(settings.editableSelector).attr("contenteditable", "false");
         }
     };
-
-
-
+    
     $.fn.mrcmsinline = function (method) {
         // Method calling logic
         if (methods[method]) {
@@ -194,10 +198,7 @@
 
 $(function () {
     $().mrcmsinline();
-    $("div.edit-widget").on("focusin", function () {
-
-    });
-
+    
     $(document).on('click', '[data-toggle="fb-modal"]', function () {
         var clone = $(this).clone();
         clone.attr('data-toggle', '');
