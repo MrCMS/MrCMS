@@ -53,11 +53,11 @@
                 return a.lockRatio;
             }, x = function (a) {
                 var b = a.originalElement;
-                if ("true" == b.getCustomData("isReady")) {
-                    var d = a.getContentElement("info", "txtWidth"), e = a.getContentElement("info", "txtHeight");
-                    d && d.setValue(b.$.width);
-                    e && e.setValue(b.$.height);
-                }
+                //if ("true" == b.getCustomData("isReady")) {
+                //    var d = a.getContentElement("info", "txtWidth"), e = a.getContentElement("info", "txtHeight");
+                //    d && d.setValue(b.$.width);
+                //    e && e.setValue(b.$.height);
+                //}
                 g(a);
             }, y = function (a, b) {
 
