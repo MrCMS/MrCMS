@@ -195,7 +195,7 @@ namespace MrCMS.Tests.Website.Routing
         {
             CurrentRequestData.ErrorSignal = new ErrorSignal();
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            A.CallTo(() => siteSettings.Error404PageId).Returns(1);
+            mrCMSHttpHandler.Webpage = new BasicMappedWebpage {PublishOn = DateTime.Today.AddDays(-1)};
             var stubAllowedWebpage = new StubAllowedWebpage { UrlSegment = "test-404",PublishOn = DateTime.Today.AddDays(-1)};
             var httpContext = A.Fake<HttpContextBase>();
             mrCMSHttpHandler.Webpage = stubAllowedWebpage;
@@ -360,7 +360,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_CheckIsFile_UrlEndsWithoutExtensionReturnsFalse()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            A.CallTo(() => requestContext.HttpContext.Request.Url.ToString()).Returns("test-page");
+            A.CallTo(() => requestContext.HttpContext.Request.Url).Returns(new Uri("http://www.example.com/test-page"));
 
             mrCMSHttpHandler.CheckIsFile(CurrentRequestData.CurrentContext).Should().BeFalse();
         }
@@ -369,11 +369,7 @@ namespace MrCMS.Tests.Website.Routing
         public void MrCMSHttpHandler_CheckIsFile_UrlEndsWithExtensionReturnsTrue()
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            var httpContextBase = A.Fake<HttpContextBase>();
-            var httpRequestBase = A.Fake<HttpRequestBase>();
-            A.CallTo(() => requestContext.HttpContext).Returns(httpContextBase);
-            A.CallTo(() => httpContextBase.Request).Returns(httpRequestBase);
-            A.CallTo(() => httpRequestBase.Url).Returns(new Uri("/test-page.jpg", UriKind.Relative));
+            A.CallTo(() => requestContext.HttpContext.Request.Url).Returns(new Uri("http://www.example.com/test-page.jpg"));
 
             mrCMSHttpHandler.CheckIsFile(CurrentRequestData.CurrentContext).Should().BeTrue();
         }

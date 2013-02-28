@@ -120,9 +120,11 @@
             $('.edit-indicator-layout').click(function () {
                 var areaId = $(this).parent().data('layout-area-id');
                 var areaName = $(this).parent().data('layout-area-name');
+                var pageId = $('#Id').val();
+
                 var menu = '<div class="edit-layout-area-menu"><h4>Layout area: <br /> ' + areaName +
-                    '</h4><ul><li><a tab-index="1" href="/Admin/Widget/AddPageWidget?pageId=' + $('#Id').val() + '&id=' + areaId + '" data-toggle="fb-modal" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;">Add new widget here</a></li>' +
-                    '<li><a tab-index="1" href="/Admin/Webpage/Edit/' + $('#Id').val() + '" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;">Manage page widgets</a>' +
+                    '</h4><ul><li><a tab-index="1" href="/Admin/Widget/AddPageWidget?pageId=' + pageId + '&id=' + areaId + '" data-toggle="fb-modal" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;">Add new widget here</a></li>' +
+                    '<li><a tab-index="1" href="/Admin/Webpage/Edit/' + pageId + '" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;" id="mrcms-manage-page-widgets">Manage page widgets</a>' +
                     '</li><li><a tab-index="1" href="/Admin/LayoutArea/Edit/' + areaId + '" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;">Manage global widgets</a></li></ul></div>';
 
                 $(this).parent().prepend(menu);
@@ -134,25 +136,14 @@
                         container.remove();
                     }
                 });
+
+
             });
 
-
-            //$('.edit-indicator').click(function () {
-            //    var areaId = $(this).parent().data('layout-area-id');
-
-            //    var menu = '<div class="admin-tools edit-widget gradient-bg" style="background:#ffffff;"><ul><li><a id="" href="/Admin/Widget/Edit/' + widgetId + '" target="_parent" class="btn btn-mini" style="color:#333;text-decoration:none;">Edit this widget</a></li><li><a href="/Admin/Widget/AddPageWidget?pageId=' + $('#Id').val() + '&layoutAreaId=' + layoutAreaContainerId + '" data-toggle="modal" class="btn btn-mini" style="color:#333;text-decoration:none;">Add new widget here</a></li><li><a href="/Admin/Widget/Delete/' + widgetId + '" data-toggle="modal" class="btn btn-mini" style="color:#333;text-decoration:none;">Delete this widget</a></li></ul></div>';
-
-
-            //    $(this).parent().prepend(menu);
-
-            //    //if click outside hide the menu
-            //    $(document).mouseup(function (e) {
-            //        var container = $(".edit-widget");
-            //        if (container.has(e.target).length === 0) {
-            //            container.hide();
-            //        }
-            //    });
-            //});
+            //set active tab for layout
+            $(document).on('click', '#mrcms-manage-page-widgets', function () {
+                $.cookie('selected-tab-/Admin/Webpage/Edit/' + $('#Id').val(), '#layout-content');
+            });
         },
         disable: function () {
             setEditingEnabled(false);
@@ -166,10 +157,16 @@
                 var instance = CKEDITOR.instances[k];
                 instance.destroy(true);
             }
+            $(settings.editableSelector).each(function (index, element) {
+                var el = $(element);
+                if (el.data("is-html") == true) {
+                    showLiveForm(el);
+                }
+            });
             $(settings.editableSelector).attr("contenteditable", "false");
         }
     };
-
+    
     $.fn.mrcmsinline = function (method) {
         // Method calling logic
         if (methods[method]) {
@@ -201,10 +198,7 @@
 
 $(function () {
     $().mrcmsinline();
-    $("div.edit-widget").on("focusin", function () {
-
-    });
-
+    
     $(document).on('click', '[data-toggle="fb-modal"]', function () {
         var clone = $(this).clone();
         clone.attr('data-toggle', '');

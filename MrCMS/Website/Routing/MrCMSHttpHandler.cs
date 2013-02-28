@@ -197,7 +197,7 @@ namespace MrCMS.Website.Routing
 
         public bool CheckIsFile(HttpContextBase context)
         {
-            var path = RequestContext.HttpContext.Request.Url.ToString();
+            var path = RequestContext.HttpContext.Request.Url.AbsolutePath;
             var extension = Path.GetExtension(path);
             if (!string.IsNullOrWhiteSpace(extension))
             {

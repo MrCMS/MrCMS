@@ -32,7 +32,11 @@ namespace MrCMS.Tasks
 
         public IEnumerable<ScheduledTask> GetDueTasks()
         {
-            var scheduledTasks = GetAllTasks().Where(task => task.LastRun < DateTime.UtcNow.AddMinutes(-task.EveryXMinutes) || task.LastRun == null);
+            var scheduledTasks =
+                GetAllTasks()
+                    .Where(
+                        task => task.LastRun < DateTime.UtcNow.AddMinutes(-task.EveryXMinutes) || task.LastRun == null)
+                    .ToList();
             _session.Transact(session =>
                                   {
                                       foreach (var task in scheduledTasks)
