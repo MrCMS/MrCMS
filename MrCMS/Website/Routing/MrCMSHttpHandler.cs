@@ -6,12 +6,9 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.SessionState;
 using MrCMS.Apps;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
-using MrCMS.Website.Binders;
 using MrCMS.Website.Optimization;
 using NHibernate;
 
@@ -19,7 +16,6 @@ namespace MrCMS.Website.Routing
 {
     public sealed class MrCMSHttpHandler : IHttpHandler, IRequiresSessionState
     {
-
         private readonly IDocumentService _documentService;
         private readonly SiteSettings _siteSettings;
         private readonly SEOSettings _seoSettings;

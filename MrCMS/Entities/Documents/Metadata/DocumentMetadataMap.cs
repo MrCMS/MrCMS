@@ -77,7 +77,6 @@ namespace MrCMS.Entities.Documents.Metadata
         /// </summary>
         public Type Type { get { return typeof(T); } }
 
-
         /// <summary>
         /// Determines the allowed children for the Document. 
         /// </summary>
@@ -108,6 +107,11 @@ namespace MrCMS.Entities.Documents.Metadata
         /// </summary>
         public virtual string EditPartialView { get { return "DefaultEdit"; } }
 
+        /// <summary>
+        /// Specifies whether the children of the page are shown in the navigation tree
+        /// </summary>
+        public virtual bool ShowChildrenInAdminNav { get { return true; } }
+
         public DocumentMetadata Metadata
         {
             get
@@ -132,7 +136,8 @@ namespace MrCMS.Entities.Documents.Metadata
                                AutoBlacklist = AutoBlacklist,
                                RequiresParent = RequiresParent,
                                DefaultLayoutName = DefaultLayoutName,
-                               EditPartialView = EditPartialView
+                               EditPartialView = EditPartialView,
+                               ShowChildrenInAdminNav = ShowChildrenInAdminNav
                            };
             }
         }

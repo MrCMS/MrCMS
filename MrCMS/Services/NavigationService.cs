@@ -229,20 +229,47 @@ namespace MrCMS.Services
                                                                  (document as Webpage).RevealInNavigation,
                                                              Item = document
                                                          };
-                                  siteTreeNode.Children =
-                                      maxDepth.HasValue
-                                          ? maxDepth.Value == 0
-                                                ? new List<SiteTreeNode<T>>()
-                                                : GetNodes(siteTreeNode,
-                                                    _documentService.GetDocumentsByParent(document), document.Id,
-                                                    document.GetMaxChildNodes(), maxDepth - 1)
-                                          : GetNodes(siteTreeNode,
-                                              _documentService.GetDocumentsByParent(document), document.Id,
-                                              document.GetMaxChildNodes());
+                                  if (ShowChildrenInAdminNav(document))
+                                  {
+                                      if (maxDepth.HasValue)
+                                      {
+                                          if (maxDepth.Value == 0)
+                                          {
+                                              siteTreeNode.Children = new List<SiteTreeNode<T>>();
+                                          }
+                                          else
+                                          {
+                                              siteTreeNode.Children = GetNodes(siteTreeNode,
+                                                                               _documentService.GetDocumentsByParent(
+                                                                                   document), document.Id,
+                                                                               document.GetMaxChildNodes(), maxDepth - 1);
+                                          }
+                                      }
+                                      else
+                                      {
+                                          siteTreeNode.Children = GetNodes(siteTreeNode,
+                                                                           _documentService.GetDocumentsByParent(
+                                                                               document),
+                                                                           document.Id,
+                                                                           document.GetMaxChildNodes());
+                                      }
+                                  }
+                                  else
+                                  {
+                                      siteTreeNode.Children = new List<SiteTreeNode<T>>();
+                                  }
                                   siteTreeNode.Parent = parent;
                                   list.Add(siteTreeNode);
                               });
             return list;
+        }
+
+        private bool ShowChildrenInAdminNav(Document document)
+        {
+            var documentTypeDefinition = DocumentMetadataHelper.GetMetadataByType(document.GetType());
+            if (documentTypeDefinition != null)
+                return documentTypeDefinition.ShowChildrenInAdminNav;
+            return true;
         }
 
         private bool IsSortable(int? documentId)
