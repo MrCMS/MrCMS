@@ -8,7 +8,7 @@
         public string LastUpdated { get; set; }
         public string DisplayName { get; set; }
     }
-    public class DetailedSearchResultModel:SearchResultModel
+    public class DetailedSearchResultModel : SearchResultModel
     {
         public string CreatedOn { get; set; }
         public string EditUrl { get; set; }
