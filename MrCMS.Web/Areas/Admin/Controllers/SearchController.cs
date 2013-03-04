@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
@@ -8,7 +7,6 @@ using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Website.Controllers;
-using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -16,13 +14,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IDocumentService _documentService;
         private readonly INavigationService _navigationService;
-        private readonly ISiteService _siteService;
 
-        public SearchController(IDocumentService documentService, INavigationService navigationService, ISiteService siteService)
+        public SearchController(IDocumentService documentService, INavigationService navigationService)
         {
             _documentService = documentService;
             _navigationService = navigationService;
-            _siteService = siteService;
         }
 
         [HttpGet]

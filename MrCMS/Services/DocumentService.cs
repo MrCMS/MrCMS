@@ -195,7 +195,8 @@ namespace MrCMS.Services
                                   DocumentId = x.Id.ToString(),
                                   Name = x.Name,
                                   LastUpdated = x.UpdatedOn.ToShortDateString(),
-                                  DocumentType = x.DocumentType
+                                  DocumentType = x.DocumentType.BreakUpString(),
+                                  DisplayName = x.Name + " (" + x.DocumentType.BreakUpString() + ")",
                               });
         }
 
@@ -247,8 +248,9 @@ namespace MrCMS.Services
                                        {
                                            DocumentId = arg.Id.ToString(),
                                            Name = arg.Name,
+                                           DisplayName = arg.Name + " (" + arg.DocumentType.BreakUpString() + ")",
                                            LastUpdated = arg.UpdatedOn.ToShortDateString(),
-                                           DocumentType = arg.DocumentType,
+                                           DocumentType = arg.DocumentType.BreakUpString(),
                                            CreatedOn = arg.CreatedOn.ToShortDateString(),
                                            EditUrl =
                                                string.Format("/Admin/{0}/Edit/{1}",

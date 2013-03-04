@@ -34,8 +34,6 @@
                     return 1;
                 case 'layout':
                     return 2;
-                case 'category':
-                    return 3;
                 case 'webpage':
                 default:
                     return 0;
@@ -264,7 +262,7 @@
                     doctype = "Layout";
 
                 results = results + "<li>" +
-				    "<a href='/Admin/" + doctype + "/Edit/" + value.DocumentId + "'>" + value.Name +
+				    "<a href='/Admin/" + doctype + "/Edit/" + value.DocumentId + "'>" + value.DisplayName +
 				    "</a><br /><span class='grey font-small'>Updated: " + value.LastUpdated + "</span></li>";
             });
             var position = $("#term").offset();
@@ -383,7 +381,12 @@
             resizeModal($(element));
         });
     });
-    $('#move-to').draggable({ revert: "invalid", opacity: 0.5, distance: 50, helper: "clone" });
+    $('#move-to').draggable({
+        revert: "invalid",
+        opacity: 0.5,
+        distance: 50,
+        helper: "clone"
+    });
     $('#web a').droppable({
         activeClass: "ui-state-hover",
         hoverClass: "ui-state-active",

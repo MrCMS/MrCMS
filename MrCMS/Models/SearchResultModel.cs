@@ -6,6 +6,7 @@
         public string DocumentId { get; set; }
         public string DocumentType { get; set; }
         public string LastUpdated { get; set; }
+        public string DisplayName { get; set; }
     }
     public class DetailedSearchResultModel:SearchResultModel
     {

@@ -27,8 +27,8 @@ namespace MrCMS.Website.Binders
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             if (controllerContext.Controller is MrCMSAdminController &&
-                typeof (SystemEntity).IsAssignableFrom(bindingContext.ModelType) &&
-                (CreateModel(controllerContext, bindingContext, bindingContext.ModelType) == null || ShouldReturnNull(controllerContext,bindingContext)))
+                typeof(SystemEntity).IsAssignableFrom(bindingContext.ModelType) &&
+                (CreateModel(controllerContext, bindingContext, bindingContext.ModelType) == null || ShouldReturnNull(controllerContext, bindingContext)))
                 return null;
 
             var bindModel = base.BindModel(controllerContext, bindingContext);
@@ -86,7 +86,7 @@ namespace MrCMS.Website.Binders
                         {
                             var baseEntity = baseEntities.ElementAt(i);
 
-                            foreach (var property in baseEntity.GetType().GetProperties().Where(info => info.PropertyType.IsSubclassOf(typeof(SiteEntity))))
+                            foreach (var property in baseEntity.GetType().GetProperties().Where(info => info.CanWrite && info.PropertyType.IsSubclassOf(typeof(SiteEntity))))
                             {
                                 var parent = property.GetValue(baseEntity, null) as SiteEntity;
 
@@ -129,7 +129,7 @@ namespace MrCMS.Website.Binders
             var modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
             if (modelFromSession != null)
                 return modelFromSession;
-            if (modelType == typeof (Webpage))
+            if (modelType == typeof(Webpage))
                 return null;
             var model = base.CreateModel(controllerContext, bindingContext, modelType);
 
