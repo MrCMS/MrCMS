@@ -48,7 +48,7 @@ namespace MrCMS.Services
             var adminRole = GetRoleByName(UserRole.Administrator);
 
             var users = adminRole.Users.Where(user1 => user1.IsActive).ToList();
-            return users.Count() != 1 || users.First() != user;
+            return users.Count() == 1 && users.First() == user;
         }
     }
 }

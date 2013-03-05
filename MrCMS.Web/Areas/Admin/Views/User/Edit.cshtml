@@ -16,7 +16,7 @@
             @Html.ActionLink("Back to list", "Index", "User", null, new { @class = "btn" })
             <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn" data-toggle="fb-modal">Reset Password</a>
 
-            @if (onlyAdmin)
+            @if (!onlyAdmin)
             {
                 <a href="@Url.Action("Delete", "User", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
             }
@@ -58,7 +58,7 @@
                         foreach (var role in userRoles)
                         {
                             bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
-                            bool isEnabled = onlyAdmin;
+                            bool isEnabled = !onlyAdmin;
 
                         @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
                         @:&nbsp;
