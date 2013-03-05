@@ -36,6 +36,8 @@ namespace MrCMS.Entities.Documents
         public string EditPartialView { get; set; }
 
         public bool ShowChildrenInAdminNav { get; set; }
+
+        public string App { get; set; }
     }
 
     public enum ChildrenListType

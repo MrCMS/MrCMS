@@ -108,6 +108,11 @@ namespace MrCMS.Entities.Documents.Metadata
         public virtual string EditPartialView { get { return "DefaultEdit"; } }
 
         /// <summary>
+        /// Specifies the app that the document is a part of
+        /// </summary>
+        public virtual string App { get { return null; } }
+
+        /// <summary>
         /// Specifies whether the children of the page are shown in the navigation tree
         /// </summary>
         public virtual bool ShowChildrenInAdminNav { get { return true; } }
@@ -137,7 +142,8 @@ namespace MrCMS.Entities.Documents.Metadata
                                RequiresParent = RequiresParent,
                                DefaultLayoutName = DefaultLayoutName,
                                EditPartialView = EditPartialView,
-                               ShowChildrenInAdminNav = ShowChildrenInAdminNav
+                               ShowChildrenInAdminNav = ShowChildrenInAdminNav,
+                               App = App
                            };
             }
         }
