@@ -38,8 +38,6 @@ namespace MrCMS.Entities.People
         public virtual DateTime? LastLoginDate { get; set; }
         public virtual int LoginAttempts { get; set; }
 
-        //public virtual MediaImage Avatar { get; set; }
-
         public virtual Guid? ResetPasswordGuid { get; set; }
         public virtual DateTime? ResetPasswordExpiry { get; set; }
 

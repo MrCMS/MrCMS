@@ -131,6 +131,7 @@
     <Compile Include="Stubs\StubDisallowedWebpage.cs" />
     <Compile Include="Stubs\StubDocument.cs" />
     <Compile Include="Stubs\StubWebpage.cs" />
+    <Compile Include="Website\CurrentRequestDataTests.cs" />
     <Compile Include="Website\Routing\ControllerManagerTests.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandlerTests.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandlerTests.cs" />

@@ -80,5 +80,15 @@ namespace MrCMS.Website
             }
             set { _databaseIsInstalled = value; }
         }
+
+        public static Guid UserGuid
+        {
+            get
+            {
+                if (CurrentUser != null) return CurrentUser.Guid;
+                var o = CurrentContext.Session["current.usersessionGuid"];
+                return (Guid) (o != null ? (Guid) o : (CurrentContext.Session["current.usersessionGuid"] = Guid.NewGuid()));
+            }
+        }
     }
 }
