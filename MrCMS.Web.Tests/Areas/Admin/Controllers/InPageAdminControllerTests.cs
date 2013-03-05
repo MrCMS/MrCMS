@@ -13,11 +13,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private IDocumentService documentService;
         private ISession session;
         
-        InPageMrCMSAdminController GetInPageAdminController()
+        InPageAdminController GetInPageAdminController()
         {
             documentService = A.Fake<IDocumentService>();
             session = A.Fake<ISession>();
-            return new InPageMrCMSAdminController(documentService, session);
+            return new InPageAdminController(documentService, session);
         }
     }
 }

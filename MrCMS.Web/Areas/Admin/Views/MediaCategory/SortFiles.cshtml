@@ -1,0 +1,66 @@
+﻿@using System.Drawing
+@using MrCMS.Helpers
+@model List<MrCMS.Models.ImageSortItem>
+@{
+    ViewBag.Title = "Sort Catgeories";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section JavaScriptBlock
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sortable").sortable({
+                update: function (event, ui) {
+                    $('#sortable li').each(function (index, domElement) {
+                        $(domElement).find('[name*="Order"]').val(index);
+                    });
+                }
+            });
+        });
+    </script>
+}
+<div class="row-fluid">
+    <div class="span7">
+        <h3>Sort</h3>
+    </div>
+    <div class="span5">
+        <div class="row-fluid">
+            <div class="span7" style="margin: 0; padding: 0;">
+            </div>
+            <div class="span5">
+                <div class="btn-group pull-right">
+                    @Html.ActionLink("Back to category", "Edit", new { id = ViewData["categoryId"] }, new { @class = "btn" })
+                    <button class="btn btn-primary" id="save" data-form-id="sort-media-category" data-action="save">
+                        Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr class="small-margin" />
+<form method="POST" id="sort-media-category">
+    <ul id="sortable">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <li>
+                <div class="row-fluid">
+                    <div class="span12">
+                        @Html.HiddenFor(model => model[i].Id)
+                        @Html.HiddenFor(model => model[i].Order)
+                        <i class="icon-resize-full"></i>&nbsp;&nbsp;
+                    @Model[i].Name
+                        <div class="pull-right">
+                            @if (Model[i].IsImage)
+                            {
+                                @Html.RenderImage(Model[i].ImageUrl, new Size(100, 100))
+                            }
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</form>
+<div class="alert alert-info">
+    Drag items in to the order you would like then click save.
+</div>

@@ -61,7 +61,8 @@ namespace MrCMS.Services
                                     ContentLength = contentLength,
                                     MediaCategory = mediaCategory,
                                     FileExtension = _fileSystem.GetExtension(fileName),
-                                    FileLocation = fileLocation
+                                    FileLocation = fileLocation,
+                                    DisplayOrder = mediaCategory.Files.Count
                                 };
 
             if (mediaFile.IsImage)
@@ -163,8 +164,13 @@ namespace MrCMS.Services
         public ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory)
         {
             return
-                _session.QueryOver<MediaFile>().Where(file => file.MediaCategory == mediaCategory).List().Select(
-                    GetUploadFilesResult).ToArray();
+                _session.QueryOver<MediaFile>()
+                        .Where(file => file.MediaCategory == mediaCategory)
+                        .OrderBy(file => file.DisplayOrder)
+                        .Asc.Cacheable()
+                        .List()
+                        .Select(
+                            GetUploadFilesResult).ToArray();
         }
 
         public MediaFile GetFile(int id)
@@ -257,6 +263,16 @@ namespace MrCMS.Services
 
             _fileSystem.CreateDirectory(folderLocation);
 
+        }
+
+        public void SetOrders(List<SortItem> items)
+        {
+            _session.Transact(session => items.ForEach(item =>
+                                                           {
+                                                               var mediaFile = session.Get<MediaFile>(item.Id);
+                                                               mediaFile.DisplayOrder = item.Order;
+                                                               session.Update(mediaFile);
+                                                           }));
         }
     }
 }

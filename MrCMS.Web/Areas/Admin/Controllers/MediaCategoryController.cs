@@ -1,5 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Website.Binders;
 using System.Linq;
@@ -83,6 +85,26 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult RemoveMedia()
         {
             return PartialView();
+        }
+
+        [HttpGet]
+        public ActionResult SortFiles(MediaCategory parent)
+        {
+            ViewData["categoryId"] = parent.Id;
+            var sortItems =
+            _fileService.GetFiles(parent).OrderBy(arg => arg.display_order)
+                                .Select(
+                                    arg => new ImageSortItem { Order = arg.display_order, Id = arg.Id, Name = arg.name, ImageUrl = arg.url, IsImage=arg.is_image})
+                                .ToList();
+
+            return View(sortItems);
+        }
+
+        [HttpPost]
+        public ActionResult SortFiles(MediaCategory parent, List<SortItem> items)
+        {
+            _fileService.SetOrders(items);
+            return RedirectToAction("SortFiles", new { id = parent.Id });
         }
     }
 }

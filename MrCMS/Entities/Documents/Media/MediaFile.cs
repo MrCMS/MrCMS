@@ -21,6 +21,8 @@ namespace MrCMS.Entities.Documents.Media
         public virtual int ContentLength { get; set; }
         public virtual string FileName { get; set; }
 
+        public virtual int DisplayOrder { get; set; }
+
         [DisplayName("Alt")]
         public virtual string Title { get; set; }
         [DisplayName("Title")]
@@ -54,5 +56,6 @@ namespace MrCMS.Entities.Documents.Media
                 }
             }
         }
+
     }
 }
