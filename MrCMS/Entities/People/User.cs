@@ -12,6 +12,11 @@ namespace MrCMS.Entities.People
 {
     public class User : SystemEntity
     {
+        public User()
+        {
+            Guid = Guid.NewGuid();
+        }
+
         [Required]
         [DisplayName("First Name")]
         public virtual string FirstName { get; set; }
@@ -20,6 +25,8 @@ namespace MrCMS.Entities.People
         public virtual string Name { get { return string.IsNullOrWhiteSpace(string.Format("{0} {1}", FirstName, LastName)) ? Email : string.Format("{0} {1}", FirstName, LastName); } }
         public virtual byte[] PasswordHash { get; set; }
         public virtual byte[] PasswordSalt { get; set; }
+
+        public virtual Guid Guid { get; set; }
 
         [Required]
         public virtual string Email { get; set; }
