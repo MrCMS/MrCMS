@@ -18,8 +18,7 @@ namespace MrCMS.Tests.Website
     {
         public CurrentRequestDataTests()
         {
-            A.CallTo(() => CurrentRequestData.CurrentContext.Session)
-             .Returns(new FakeHttpSessionState());
+            A.CallTo(() => CurrentRequestData.CurrentContext.Session).Returns(new FakeHttpSessionState());
         }
         [Fact]
         public void CurrentRequestData_UserGuid_ReturnsTheUserGuidIfTheUserIsLoggedIn()
@@ -62,20 +61,6 @@ namespace MrCMS.Tests.Website
             _store = new SortedList();
         }
 
-        public override void Add(string name, object value)
-        {
-            _store[name] = value;
-        }
-
-        public override object this[int index]
-        {
-            get { return _store[_store.GetKey(index)]; }
-            set
-            {
-                _store[_store.GetKey(index)] = value;
-            }
-        }
-
         public override object this[string name]
         {
             get
@@ -87,17 +72,6 @@ namespace MrCMS.Tests.Website
                 _store[name] = value;
             }
         }
-
-        private HttpStaticObjectsCollectionBase _staticObjects;
-        private SortedList _store;
-
-        public override HttpStaticObjectsCollectionBase StaticObjects
-        {
-            get
-            {
-                return _staticObjects ??
-                       (_staticObjects = new HttpStaticObjectsCollectionWrapper(new HttpStaticObjectsCollection()));
-            }
-        }
+        private readonly SortedList _store;
     }
 }
