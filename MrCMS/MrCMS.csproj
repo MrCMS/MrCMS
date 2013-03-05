@@ -223,6 +223,7 @@
     <Compile Include="IoC\ServiceModule.cs" />
     <Compile Include="Logging\ILogService.cs" />
     <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\LogService.cs" />
     <Compile Include="Logging\MrCMSErrorLog.cs" />
     <Compile Include="Membership\MrCmsMembershipProvider.cs" />
     <Compile Include="Membership\MrCmsRoleProvider.cs" />

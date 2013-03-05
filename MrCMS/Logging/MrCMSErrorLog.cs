@@ -71,13 +71,13 @@ namespace MrCMS.Logging
             }
             catch (FormatException ex)
             {
-                throw new ArgumentException(ex.Message, id, (Exception)ex);
+                throw new ArgumentException(ex.Message, id, ex);
             }
 
             try
             {
                 var logEntry = _session.QueryOver<Log>().Where(entry => entry.Guid == guid).Cacheable().SingleOrDefault();
-                return new ErrorLogEntry((ErrorLog)this, id, logEntry.Error);
+                return new ErrorLogEntry(this, id, logEntry.Error);
             }
             finally
             {

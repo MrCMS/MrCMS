@@ -104,6 +104,7 @@
     <Compile Include="Entities\MediaFileTests.cs" />
     <Compile Include="Helpers\TypeHelperTests.cs" />
     <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
+    <Compile Include="Logging\LogServiceTests.cs" />
     <Compile Include="Services\AuthorisationServiceTests.cs" />
     <Compile Include="Services\DocumentServiceTests.cs" />
     <Compile Include="InMemoryDatabaseTest.cs" />
