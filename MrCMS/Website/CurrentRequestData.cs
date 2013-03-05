@@ -89,6 +89,7 @@ namespace MrCMS.Website
                 var o = CurrentContext.Session["current.usersessionGuid"];
                 return (Guid) (o != null ? (Guid) o : (CurrentContext.Session["current.usersessionGuid"] = Guid.NewGuid()));
             }
+            set { CurrentContext.Session["current.usersessionGuid"] = value; }
         }
     }
 }
