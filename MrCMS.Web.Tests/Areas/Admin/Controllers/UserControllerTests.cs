@@ -17,7 +17,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private static IUserService _userService;
         private static IAuthorisationService _authorisationService;
         private static IRoleService _roleService;
-        private static ISiteService _siteService;
 
         [Fact]
         public void UserController_Index_ShouldReturnViewResult()
@@ -30,8 +29,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         private static UserController GetUserController(IUserService userService = null, IRoleService roleService = null,
-                                                        IAuthorisationService authorisationService = null,
-                                                        ISiteService siteService = null)
+                                                        IAuthorisationService authorisationService = null)
         {
             _userService = userService ?? A.Fake<IUserService>();
             _roleService = roleService ?? A.Fake<IRoleService>();
