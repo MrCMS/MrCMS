@@ -13,7 +13,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         private readonly IRoleService _roleService;
         private readonly IAuthorisationService _authorisationService;
 
-        public UserController(IUserService userService, IRoleService roleService, IAuthorisationService authorisationService, ISiteService siteService)
+        public UserController(IUserService userService, IRoleService roleService, IAuthorisationService authorisationService)
         {
             _userService = userService;
             _roleService = roleService;

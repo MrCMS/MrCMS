@@ -36,8 +36,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             _userService = userService ?? A.Fake<IUserService>();
             _roleService = roleService ?? A.Fake<IRoleService>();
             _authorisationService = authorisationService ?? A.Fake<IAuthorisationService>();
-            _siteService = siteService ?? A.Fake<ISiteService>();
-            var userController = new UserController(_userService, _roleService, _authorisationService, _siteService);
+            var userController = new UserController(_userService, _roleService, _authorisationService);
             return userController;
         }
 
