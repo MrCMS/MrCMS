@@ -658,9 +658,11 @@
     <Content Include="Areas\Admin\Views\Webpage\Preview.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\RedirectEdit.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\SortFiles.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\TextPage.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Views\Widget\Navigation.cshtml" />
+    <None Include="Properties\PublishProfiles\v0.2.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Entities\" />
