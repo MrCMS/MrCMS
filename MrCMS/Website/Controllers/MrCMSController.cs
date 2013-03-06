@@ -1,21 +1,11 @@
 ﻿using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using MrCMS.Apps;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Website.Controllers
 {
-    public abstract class MrCMSAppUIController<T> : MrCMSUIController where T : MrCMSApp, new()
-    {
-        protected override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            RouteData.DataTokens["app"] = new T().AppName;
-            base.OnActionExecuting(filterContext);
-        }
-    }
-
     public abstract class MrCMSController : Controller
     {
         protected override void OnActionExecuting(ActionExecutingContext filterContext)

@@ -326,6 +326,7 @@
     <Compile Include="Website\Binders\NullableEntityModelBinder.cs" />
     <Compile Include="Website\Binders\SettingModelBinder.cs" />
     <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
+    <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
     <Compile Include="Website\Optimization\AsIsBundleOrderer.cs" />
     <Compile Include="Website\Optimization\IResourceBundler.cs" />
     <Compile Include="Website\Caching\CacheManager.cs" />
