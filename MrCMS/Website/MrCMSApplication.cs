@@ -157,6 +157,7 @@ namespace MrCMS.Website
         //}
 
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
+        private static IKernel _kernel;
 
         /// <summary>
         /// Starts the application
@@ -198,17 +199,26 @@ namespace MrCMS.Website
 
         public static IEnumerable<T> GetAll<T>()
         {
-            return bootstrapper.Kernel.GetAll<T>();
+            return Kernel.GetAll<T>();
+        }
+
+        public static void OverrideKernel(IKernel kernel)
+        {
+            _kernel = kernel;
+        }
+        private static IKernel Kernel
+        {
+            get { return _kernel ?? bootstrapper.Kernel; }
         }
 
         public static T Get<T>()
         {
-            return bootstrapper.Kernel.Get<T>();
+            return Kernel.Get<T>();
         }
 
         public static object Get(Type type)
         {
-            return bootstrapper.Kernel.Get(type);
+            return Kernel.Get(type);
         }
 
         public static IEnumerable<Webpage> PublishedRootChildren()

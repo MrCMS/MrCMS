@@ -3,7 +3,7 @@ using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Shortcodes
 {
-    public class FormElementRenderer : IFormElementRenderer
+    public class DynamicFormElementRenderer //: IFormElementRenderer
     {
         public virtual void AppendTextBox(dynamic element, TagBuilder formBuilder)
         {
@@ -154,6 +154,16 @@ namespace MrCMS.Shortcodes
             submitBuilder.AddCssClass("btn btn-primary");
 
             formBuilder.InnerHtml += string.Format("<div>{0}</div>", submitBuilder);
+        }
+
+        public void AppendLabel(FormProperty formProperty)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void AppendElement(FormProperty formProperty)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

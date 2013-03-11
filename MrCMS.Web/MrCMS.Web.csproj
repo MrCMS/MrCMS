@@ -157,6 +157,7 @@
     <Compile Include="Areas\Admin\Controllers\WebpageController.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaController.cs" />
+    <Compile Include="Areas\Admin\FormController.cs" />
     <Compile Include="Areas\Admin\Models\AddPageModel.cs" />
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
     <Compile Include="Controllers\FormController.cs" />
@@ -383,6 +384,7 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\add-layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\edit-webpage.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\gallery.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\slider.js" />
@@ -649,7 +651,7 @@
     <Content Include="Areas\Admin\Views\Webpage\DefaultEdit.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Properties.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\SEO.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\FormBuilder.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormProperties.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\FormPostings.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\FormMessage.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\PageVersions.cshtml" />
@@ -659,6 +661,15 @@
     <Content Include="Areas\Admin\Views\Webpage\RedirectEdit.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\SortFiles.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\TextPage.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormProperty.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormPropertyOptions.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\AddProperty.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\EditProperty.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\DeleteProperty.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\AddOption.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\EditOption.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\DeleteOption.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormDesign.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Views\Widget\Navigation.cshtml" />

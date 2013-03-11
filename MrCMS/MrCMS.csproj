@@ -135,6 +135,7 @@
     <Compile Include="DbConfiguration\Mapping\MrCmsMappingConfiguration.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\FormPropertyOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\LayoutAreaOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\LayoutOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaCategoryOverride.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="Entities\Documents\Metadata\DocumentMetadataMap.cs" />
     <Compile Include="Entities\Documents\Metadata\IGetDocumentMetadata.cs" />
     <Compile Include="Entities\Documents\Metadata\RedirectMetadata.cs" />
+    <Compile Include="Entities\Documents\Web\FormProperty.cs" />
     <Compile Include="Entities\SiteEntity.cs" />
     <Compile Include="Entities\Documents\Document.cs" />
     <Compile Include="Entities\Documents\DocumentMetadata.cs" />
@@ -304,9 +306,14 @@
     <Compile Include="Settings\SiteSettings.cs" />
     <Compile Include="Settings\SiteSettingsOptionGenerator.cs" />
     <Compile Include="Settings\TextAreaAttribute.cs" />
-    <Compile Include="Shortcodes\FormElementRenderer.cs" />
+    <Compile Include="Shortcodes\DefaultFormRenderer.cs" />
+    <Compile Include="Shortcodes\DynamicFormElementRenderer.cs" />
+    <Compile Include="Shortcodes\FormRenderingManager.cs" />
     <Compile Include="Shortcodes\FormShortcodeParser.cs" />
+    <Compile Include="Shortcodes\ICustomFormRenderer.cs" />
+    <Compile Include="Shortcodes\IDefaultFormRenderer.cs" />
     <Compile Include="Shortcodes\IFormElementRenderer.cs" />
+    <Compile Include="Shortcodes\IFormRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
     <Compile Include="Tasks\BackgroundTask.cs" />
     <Compile Include="Tasks\IScheduledTaskManager.cs" />
@@ -314,6 +321,7 @@
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />
+    <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\AddWidgetModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />

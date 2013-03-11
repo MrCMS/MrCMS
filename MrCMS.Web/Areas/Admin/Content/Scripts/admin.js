@@ -283,19 +283,24 @@
     if ($().mediaselector) {
         $('.media-selector').mediaselector();
     }
-
-    $('[data-toggle="fb-modal"]').fancybox({
-        type: 'iframe',
-        padding: 0,
-        height: 0,
-        onComplete: function () {
-            $('#fancybox-frame').load(function () { // wait for frame to load and then gets it's height
-                $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
-                $('#fancybox-content').height($(this).contents()[0].documentElement.scrollHeight);
-                $.fancybox.center();
-            });
-        }
-    });
+    $(document).on('click', '[data-toggle="fb-modal"]', function () {
+            var clone = $(this).clone();
+            clone.attr('data-toggle', '');
+            clone.hide();
+            clone.fancybox({
+                type: 'iframe',
+                padding: 0,
+                height: 0,
+                'onComplete': function() {
+                    $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+                        $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
+                        $('#fancybox-content').height($(this).contents()[0].documentElement.scrollHeight);
+                        $.fancybox.center();
+                    });
+                }
+            }).click().remove();
+        return false;
+        });
 
     // Support for AJAX loaded modal window.
     // Focuses on first input textbox after it loads the window.

@@ -22,8 +22,7 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(webpage => webpage.MetaTitle).CustomType<VarcharMax>().Length(1000);
             mapping.Map(webpage => webpage.MetaKeywords).CustomType<VarcharMax>().Length(4001);
             mapping.Map(webpage => webpage.MetaDescription).CustomType<VarcharMax>().Length(4001);
-
-
+            mapping.Map(webpage => webpage.FormDesign).CustomType<VarcharMax>().Length(4001);
         }
     }
 

@@ -1,0 +1,6 @@
+﻿@model MrCMS.Entities.Documents.Web.Webpage
+
+<div id="form-design-tab" class="tab-pane">
+    <h4>Form Design</h4>
+    @Html.TextAreaFor(webpage => webpage.FormDesign, new{@class = "ckedit-enabled" })
+</div>

@@ -1,0 +1,30 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@model Webpage
+<div class="tab-pane" id="form-properties-tab">
+    <div id="form-data" class="row-fluid">
+        <div class="span12">
+            <div class="row-fluid">
+                <div class="span7">
+                    <h4>Properties</h4>
+                </div>
+                <div class="span5">
+                    <div class="pull-right">
+                        @Html.ActionLink("Add Property", "AddProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-primary btn-mini", data_toggle = "fb-modal" })
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    @*<div id="my-form-builder"></div>*@
+                    @foreach (var property in Model.FormProperties)
+                    {
+                        <div class="row-fluid">
+                            @{ Html.RenderPartial("FormProperty", property); }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

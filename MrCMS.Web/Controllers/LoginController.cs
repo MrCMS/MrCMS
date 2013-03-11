@@ -9,11 +9,11 @@ namespace MrCMS.Web.Controllers
 {
     public class LoginController : MrCMSUIController
     {
-        private readonly AuthorisationService _authorisationService;
+        private readonly IAuthorisationService _authorisationService;
         private readonly IUserService _userService;
         private readonly IResetPasswordService _resetPasswordService;
 
-        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, AuthorisationService authorisationService)
+        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, IAuthorisationService authorisationService)
         {
             _userService = userService;
             _resetPasswordService = resetPasswordService;
@@ -22,7 +22,7 @@ namespace MrCMS.Web.Controllers
 
         [HttpGet]
         [ActionName("Login")]
-        public ActionResult Get(LoginModel loginModel)
+        public ViewResult Get(LoginModel loginModel)
         {
             return View(loginModel);
         }

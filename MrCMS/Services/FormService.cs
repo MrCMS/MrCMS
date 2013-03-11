@@ -47,30 +47,33 @@ namespace MrCMS.Services
         public void SaveFormData(Webpage webpage, FormCollection formCollection)
         {
             _session.Transact(session =>
-                                                   {
-                                                       if (webpage == null) return;
-                                                       var formPosting = new FormPosting
-                                                                             {
-                                                                                 Webpage = webpage,
-                                                                                 FormValues = new List<FormValue>()
-                                                                             };
-                                                       formCollection.AllKeys.ForEach(s =>
-                                                                                          {
-                                                                                              var formValue = new FormValue
-                                                                                                                  {
-                                                                                                                      Key = s,
-                                                                                                                      Value = formCollection[s],
-                                                                                                                      FormPosting = formPosting,
-                                                                                                                  };
-                                                                                              formPosting.FormValues.Add(formValue);
-                                                                                              session.SaveOrUpdate(formValue);
-                                                                                          });
+                                  {
+                                      if (webpage == null) return;
+                                      var formPosting = new FormPosting
+                                                            {
+                                                                Webpage = webpage,
+                                                                FormValues = new List<FormValue>()
+                                                            };
+                                      formCollection.AllKeys.ForEach(s =>
+                                                                         {
+                                                                             var formValue = new FormValue
+                                                                                                 {
+                                                                                                     Key = s,
+                                                                                                     Value =
+                                                                                                         formCollection[
+                                                                                                             s],
+                                                                                                     FormPosting =
+                                                                                                         formPosting,
+                                                                                                 };
+                                                                             formPosting.FormValues.Add(formValue);
+                                                                             session.SaveOrUpdate(formValue);
+                                                                         });
 
-                                                       webpage.FormPostings.Add(formPosting);
-                                                       session.SaveOrUpdate(formPosting);
+                                      webpage.FormPostings.Add(formPosting);
+                                      session.SaveOrUpdate(formPosting);
 
-                                                       SendFormMessages(webpage, formPosting);
-                                                   });
+                                      SendFormMessages(webpage, formPosting);
+                                  });
         }
 
         private void SendFormMessages(Webpage webpage, FormPosting formPosting)
@@ -178,6 +181,38 @@ namespace MrCMS.Services
             }
 
             return new PostingsModel(new PagedList<FormPosting>(formPostings, page, 10), webpage.Id);
+        }
+
+        public void AddFormProperty(FormProperty property)
+        {
+            _session.Transact(session => session.Save(property));
+        }
+        public void SaveFormProperty(FormProperty property)
+        {
+            _session.Transact(session => session.Update(property));
+        }
+
+        public void DeleteFormProperty(FormProperty property)
+        {
+            _session.Transact(session => session.Delete(property));
+        }
+
+        public void SaveFormListOption(FormListOption formListOption)
+        {
+            var formProperty = formListOption.FormProperty;
+            if (formProperty != null)
+                formProperty.Options.Add(formListOption);
+            _session.Transact(session => session.Save(formListOption));
+        }
+
+        public void UpdateFormListOption(FormListOption formListOption)
+        {
+            _session.Transact(session => session.Update(formListOption));
+        }
+
+        public void DeleteFormListOption(FormListOption formListOption)
+        {
+            _session.Transact(session => session.Delete(formListOption));
         }
     }
 }

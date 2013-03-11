@@ -15,6 +15,7 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.HasMany(document => document.Versions).KeyColumn("DocumentId").Cascade.All();
         }
     }
+
     public class DocumentVersionOverride : IAutoMappingOverride<DocumentVersion>
     {
         public void Override(AutoMapping<DocumentVersion> mapping)

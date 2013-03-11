@@ -7,7 +7,8 @@
     <li><a href="#layout-content" data-toggle="tab">Layout</a></li>
     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Form&nbsp;<b class="caret"></b></a>
         <ul class="dropdown-menu">
-            <li><a href="#form-builder-tab" data-toggle="tab">Design</a></li>
+            <li><a href="#form-properties-tab" data-toggle="tab">Properties</a></li>
+            <li><a href="#form-design-tab" data-toggle="tab">Design</a></li>
             <li><a href="#postings-tab" data-toggle="tab">Entries (@Model.FormPostings.Count)</a></li>
             <li><a href="#form-message-tab" data-toggle="tab">Message Settings</a></li>
         </ul>
@@ -29,7 +30,8 @@
             @{Html.RenderPartial("Properties", Model);}
             @{Html.RenderPartial("SEO", Model);}
             @{Html.RenderPartial("Layout", Model); }
-            @{Html.RenderPartial("FormBuilder", Model);}
+            @{Html.RenderPartial("FormProperties", Model);}
+            @{Html.RenderPartial("FormDesign", Model);}
             @{Html.RenderPartial("FormPostings", Model);}
             @{Html.RenderPartial("FormMessage", Model);}
             @{Html.RenderPartial("PageVersions", Model);}

@@ -49,3 +49,5 @@ section.admin-header h3 { margin: 0px; }
 #changes-table tr.unchanged { background-color: rgb(203, 255, 203); }
 #changes-table tr.changed { background-color: rgb(255, 209, 209); }
 #changes-table pre { font-size: 0.6em; }
+
+.form-item{ padding: 10px;}

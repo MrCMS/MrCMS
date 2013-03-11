@@ -189,6 +189,8 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Form Data")]
         public virtual string FormData { get; set; }
 
+        public virtual IList<FormProperty> FormProperties { get; set; } 
+
         public virtual IList<FormPosting> FormPostings { get; set; }
 
         [DisplayName("Form Submitted Message")]
@@ -228,6 +230,8 @@ namespace MrCMS.Entities.Documents.Web
                 return string.Format("{0}{1}/{2}", scheme, authority, LiveUrlSegment);
             }
         }
+
+        public virtual string FormDesign { get; set; }
 
 
         public virtual IEnumerable<RoleModel> GetFrontEndRoles()

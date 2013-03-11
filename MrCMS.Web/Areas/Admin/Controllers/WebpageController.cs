@@ -151,5 +151,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             return _documentService.GetDocumentUrl(pageName, parent, true);
         }
+
+        [HttpGet]
+        public PartialViewResult FormProperties(Webpage webpage)
+        {
+            return PartialView(webpage);
+        }
     }
 }
