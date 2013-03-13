@@ -14,6 +14,7 @@ namespace MrCMS.Tests.Settings
         private IDocumentService _documentService;
         private SiteSettings _siteSettings;
         private MailSettings _mailSettings;
+        private IFileService _fileService;
 
         [Fact]
         public void FormService_GetFormPosting_CallsSessionGetFormPosting()
@@ -39,9 +40,10 @@ namespace MrCMS.Tests.Settings
         {
             _session = session ?? Session;
             _documentService = documentService ?? A.Fake<IDocumentService>();
+            _fileService = A.Fake<IFileService>();
             _siteSettings = new SiteSettings();
             _mailSettings = new MailSettings();
-            return new FormService(_session, _documentService, _siteSettings, _mailSettings);
+            return new FormService(_session, _documentService, _fileService, _siteSettings, _mailSettings);
         }
     }
 }

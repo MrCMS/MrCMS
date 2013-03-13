@@ -1,6 +1,6 @@
 using MrCMS.Entities.Documents.Web;
 
-namespace MrCMS.Shortcodes
+namespace MrCMS.Shortcodes.Forms
 {
     public class FormRenderingManager : IFormRenderer
     {
@@ -13,15 +13,13 @@ namespace MrCMS.Shortcodes
             _customFormRenderer = customFormRenderer;
         }
 
-        public string RenderForm(Webpage webpage)
+        public string RenderForm(Webpage webpage, FormSubmittedStatus submitted)
         {
             if (webpage == null)
                 return string.Empty;
-            if (string.IsNullOrWhiteSpace(webpage.FormDesign))
-            {
-                return _defaultFormRenderer.GetDefault(webpage);
-            }
-            return _customFormRenderer.GetForm(webpage);
+            return string.IsNullOrWhiteSpace(webpage.FormDesign)
+                       ? _defaultFormRenderer.GetDefault(webpage, submitted)
+                       : _customFormRenderer.GetForm(webpage, submitted);
         }
     }
 }

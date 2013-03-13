@@ -14,11 +14,12 @@ namespace MrCMS.Web.Controllers
             _formService = formService;
         }
 
-        public ActionResult Save(Webpage webpage, FormCollection collection)
+        public ActionResult Save(Webpage webpage)
         {
-            _formService.SaveFormData(webpage, collection);
+            var saveFormData = _formService.SaveFormData(webpage, Request);
 
             TempData["form-submitted"] = true;
+            TempData["form-submitted-message"] = saveFormData;
             return Redirect(Referrer);
         }
     }

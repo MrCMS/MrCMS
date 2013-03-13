@@ -3,7 +3,9 @@ using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
+using MrCMS.Shortcodes.Forms;
 using MrCMS.Website;
+using NHibernate.Criterion;
 using Newtonsoft.Json;
 
 namespace MrCMS.Shortcodes
@@ -27,6 +29,9 @@ namespace MrCMS.Shortcodes
             var otherPageFormMatch = new Regex(@"\[form-[\d+]\]");
             var thisPageFormMatch = new Regex(@"\[form\]");
 
+            var submitted = true.Equals(htmlHelper.ViewContext.TempData["form-submitted"]);
+            var error = Convert.ToString(htmlHelper.ViewContext.TempData["form-submitted-message"]);
+            var status = new FormSubmittedStatus(submitted, error);
             current = otherPageFormMatch.Replace(current,
                                                  match =>
                                                  {
@@ -35,11 +40,11 @@ namespace MrCMS.Shortcodes
                                                      var document = _documentService.GetDocument<Webpage>(pageId);
                                                      return document == null
                                                                 ? string.Empty
-                                                                : _formRenderer.RenderForm(document);
+                                                                : _formRenderer.RenderForm(document, status);
                                                  });
 
             current = thisPageFormMatch.Replace(current,
-                                                match => _formRenderer.RenderForm(CurrentRequestData.CurrentPage));
+                                                match => _formRenderer.RenderForm(CurrentRequestData.CurrentPage, status));
 
             return current;
         }

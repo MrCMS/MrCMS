@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Xml;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;

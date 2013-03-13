@@ -1,14 +1,40 @@
 ﻿@model MrCMS.Entities.Documents.Web.FormPosting
+
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 <div class="modal-header">
     <h3>View Entry</h3>
 </div>
 <div class="modal-body">
-    <ul>
-        @foreach (var value in Model.FormValues)
-        {
-            <li>
-                <b>@value.Key:</b> @value.Value
-            </li>
-        }
-    </ul>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Value
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var value in Model.FormValues)
+            {
+                <tr>
+                    <td>
+                        @value.Key
+                    </td>
+                    <td>
+                        @if (value.IsFile)
+                        {
+                            <a href="/@value.Value" download>Download</a>
+                        }
+                        else
+                        {
+                            @value.Value
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

@@ -1,6 +1,6 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
-@model FormProperty
+@model MrCMS.Entities.Documents.Web.FormProperties.FormProperty
 <div class="form-item well">
     <div class="span7">
         <h4>@Model.GetType().Name.BreakUpString()</h4>
@@ -27,14 +27,14 @@
                         <td>Required</td>
                         <td>@Model.Required</td>
                     </tr>
-                    <tr>
+@*                    <tr>
                         <td>CSS Class</td>
                         <td>@Model.CssClass</td>
                     </tr>
                     <tr>
                         <td>HTML Id</td>
                         <td>@Model.HtmlId</td>
-                    </tr>
+                    </tr>*@
                 </tbody>
             </table>
             @if (Model.HasOptions)

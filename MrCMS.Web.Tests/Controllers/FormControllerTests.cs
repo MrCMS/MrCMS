@@ -24,20 +24,18 @@ namespace MrCMS.Web.Tests.Controllers
         public void FormController_Save_CallsFormServiceSaveFormDataWithPassedObjects()
         {
             var stubWebpage = new StubWebpage();
-            var formCollection = new FormCollection();
 
-            var result = _formController.Save(stubWebpage, formCollection);
+            var result = _formController.Save(stubWebpage);
 
-            A.CallTo(() => _formService.SaveFormData(stubWebpage, formCollection)).MustHaveHappened();
+            A.CallTo(() => _formService.SaveFormData(stubWebpage, _formController.Request)).MustHaveHappened();
         }
 
         [Fact]
         public void FormController_Save_SetsTempDataFormSubmittedToTrue()
         {
             var stubWebpage = new StubWebpage();
-            var formCollection = new FormCollection();
 
-            var result = _formController.Save(stubWebpage, formCollection);
+            var result = _formController.Save(stubWebpage);
 
             _formController.TempData["form-submitted"].Should().Be(true);
         }
@@ -46,9 +44,8 @@ namespace MrCMS.Web.Tests.Controllers
         public void FormController_Save_ReturnsRedirectToTheReferrer()
         {
             var stubWebpage = new StubWebpage();
-            var formCollection = new FormCollection();
 
-            var result = _formController.Save(stubWebpage, formCollection);
+            var result = _formController.Save(stubWebpage);
 
             result.Should().BeOfType<RedirectResult>();
             result.As<RedirectResult>().Url.Should().Be("test-redirect");

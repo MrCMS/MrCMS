@@ -1,7 +1,8 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Documents.Web.FormProperties;
 
-namespace MrCMS.Shortcodes
+namespace MrCMS.Shortcodes.Forms
 {
     public class DynamicFormElementRenderer //: IFormElementRenderer
     {

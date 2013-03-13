@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Website.Binders;

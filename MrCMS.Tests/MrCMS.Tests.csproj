@@ -79,6 +79,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -129,9 +130,12 @@
     <Compile Include="Settings\SettingServiceTests.cs" />
     <Compile Include="Settings\SiteSettingsOptionGeneratorTests.cs" />
     <Compile Include="Settings\SiteSettingsTests.cs" />
-    <Compile Include="Shortcodes\DefaultFormRendererTests.cs" />
-    <Compile Include="Shortcodes\ElementRendererManagerTests.cs" />
-    <Compile Include="Shortcodes\FormRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\DefaultFormRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\ElementRendererManagerTests.cs" />
+    <Compile Include="Shortcodes\Forms\FormRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\LabelRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\TextAreaRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\TextBoxRendererTests.cs" />
     <Compile Include="Stubs\BasicMappedWebpage.cs" />
     <Compile Include="Stubs\BasicMappedWidget.cs" />
     <Compile Include="Stubs\StubAllowedWebpage.cs" />

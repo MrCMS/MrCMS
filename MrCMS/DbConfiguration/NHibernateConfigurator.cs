@@ -12,6 +12,7 @@ using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.Widget;
 using MrCMS.Website;
 using NHibernate;

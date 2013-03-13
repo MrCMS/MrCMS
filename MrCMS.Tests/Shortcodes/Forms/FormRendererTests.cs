@@ -1,10 +1,10 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Shortcodes;
+using MrCMS.Shortcodes.Forms;
 using MrCMS.Tests.Stubs;
 using Xunit;
 
-namespace MrCMS.Tests.Shortcodes
+namespace MrCMS.Tests.Shortcodes.Forms
 {
     public class FormRenderingManagerTests
     {
@@ -23,9 +23,9 @@ namespace MrCMS.Tests.Shortcodes
         public void FormRenderer_RenderForm_WhenFormDesignIsEmptyReturnsResultOfIDefaultFormRenderer()
         {
             var stubWebpage = new StubWebpage();
-            A.CallTo(() => _defaultFormRenderer.GetDefault(stubWebpage)).Returns("test-default");
+            A.CallTo(() => _defaultFormRenderer.GetDefault(stubWebpage, new FormSubmittedStatus(false, null))).Returns("test-default");
 
-            var renderForm = _formRenderingManager.RenderForm(stubWebpage);
+            var renderForm = _formRenderingManager.RenderForm(stubWebpage, new FormSubmittedStatus(false, null));
 
             renderForm.Should().Be("test-default");
         }
@@ -33,7 +33,7 @@ namespace MrCMS.Tests.Shortcodes
         [Fact]
         public void FormRenderer_RenderForm_IfWebpageIsNullReturnsEmptyString()
         {
-            var renderForm = _formRenderingManager.RenderForm(null);
+            var renderForm = _formRenderingManager.RenderForm(null, new FormSubmittedStatus(false, null));
 
             renderForm.Should().Be("");
         }
@@ -42,9 +42,9 @@ namespace MrCMS.Tests.Shortcodes
         public void FormRenderer_RenderForm_IfFormDesignHasValueReturnResultCustomRendererGetForm()
         {
             var stubWebpage = new StubWebpage {FormDesign = "form-design-data"};
-            A.CallTo(() => _customFormRenderer.GetForm(stubWebpage)).Returns("custom-form");
+            A.CallTo(() => _customFormRenderer.GetForm(stubWebpage, new FormSubmittedStatus(false, null))).Returns("custom-form");
 
-            var renderForm = _formRenderingManager.RenderForm(stubWebpage);
+            var renderForm = _formRenderingManager.RenderForm(stubWebpage, new FormSubmittedStatus(false, null));
 
             renderForm.Should().Be("custom-form");
         }

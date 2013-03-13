@@ -1,12 +1,13 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Shortcodes;
+using MrCMS.Entities.Documents.Web.FormProperties;
+using MrCMS.Shortcodes.Forms;
 using MrCMS.Website;
 using Ninject.MockingKernel;
 using Xunit;
 
-namespace MrCMS.Tests.Shortcodes
+namespace MrCMS.Tests.Shortcodes.Forms
 {
     public class ElementRendererManagerTests
     {
@@ -18,7 +19,7 @@ namespace MrCMS.Tests.Shortcodes
         }
 
         [Fact]
-        public void DefaultFormRenderer_GetElementRenderer_ShouldReturnTheResultOfTheTypeOfAPropertyFromTheKernel()
+        public void ElementRendererManager_GetElementRenderer_ShouldReturnTheResultOfTheTypeOfAPropertyFromTheKernel()
         {
             var mockingKernel = new MockingKernel();
             var formElementRenderer = A.Fake<IFormElementRenderer<TextBox>>();

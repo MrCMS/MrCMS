@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
-using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -19,13 +21,15 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
         private readonly IDocumentService _documentService;
+        private readonly IFileService _fileService;
         private readonly SiteSettings _siteSettings;
         private readonly MailSettings _mailSettings;
 
-        public FormService(ISession session, IDocumentService documentService, SiteSettings siteSettings, MailSettings mailSettings)
+        public FormService(ISession session, IDocumentService documentService, IFileService fileService, SiteSettings siteSettings, MailSettings mailSettings)
         {
             _session = session;
             _documentService = documentService;
+            _fileService = fileService;
             _siteSettings = siteSettings;
             _mailSettings = mailSettings;
         }
@@ -42,6 +46,91 @@ namespace MrCMS.Services
             if (webpage == null) return;
             webpage.FormData = data;
             _documentService.SaveDocument(webpage);
+        }
+
+        public string SaveFormData(Webpage webpage, HttpRequestBase request)
+        {
+            var formProperties = webpage.FormProperties;
+
+            var formPosting = new FormPosting { Webpage = webpage };
+            _session.Transact(session =>
+                                  {
+                                      webpage.FormPostings.Add(formPosting);
+                                      session.SaveOrUpdate(formPosting);
+                                  });
+            try
+            {
+                _session.Transact(session =>
+                                      {
+                                          foreach (var formProperty in formProperties)
+                                          {
+                                              if (formProperty is FileUpload)
+                                              {
+                                                  var file = request.Files[formProperty.Name];
+
+                                                  if (file == null && formProperty.Required)
+                                                      throw new RequiredFieldException("No file was attached to the " +
+                                                                                       formProperty.Name + "field");
+
+                                                  if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
+                                                  {
+                                                      var value = SaveFile(webpage, formPosting, file);
+
+                                                      formPosting.FormValues.Add(new FormValue
+                                                                                     {
+                                                                                         Key = formProperty.Name,
+                                                                                         Value = value,
+                                                                                         IsFile = true,
+                                                                                         FormPosting = formPosting
+                                                                                     });
+                                                  }
+                                              }
+                                              else
+                                              {
+                                                  var value = request.Form[formProperty.Name];
+
+                                                  if (value == null && formProperty.Required)
+                                                      throw new RequiredFieldException("No value was posted for the " +
+                                                                                       formProperty.Name + "field");
+
+                                                  formPosting.FormValues.Add(new FormValue
+                                                                                 {
+                                                                                     Key = formProperty.Name,
+                                                                                     Value = value,
+                                                                                     FormPosting = formPosting
+                                                                                 });
+                                              }
+                                          }
+
+                                          formPosting.FormValues.ForEach(value => session.Save(value));
+                                      });
+
+                SendFormMessages(webpage, formPosting);
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _session.Transact(session => session.Delete(formPosting));
+                return ex.Message;
+            }
+        }
+
+        private string SaveFile(Webpage webpage, FormPosting formPosting, HttpPostedFileBase file)
+        {
+            var mediaCategory = _documentService.GetDocumentByUrl<MediaCategory>("file-uploads") ??
+                                CreateFileUploadMediaCategory();
+
+            var result = _fileService.AddFile(file.InputStream, webpage.Id + "-" + formPosting.Id + "-" + file.FileName, file.ContentType, file.ContentLength, mediaCategory);
+
+            return result.Path;
+        }
+
+        private MediaCategory CreateFileUploadMediaCategory()
+        {
+            var mediaCategory = new MediaCategory { UrlSegment = "file-uploads", Name = "File Uploads" };
+            _documentService.AddDocument(mediaCategory);
+            return mediaCategory;
         }
 
         public void SaveFormData(Webpage webpage, FormCollection formCollection)
@@ -213,6 +302,15 @@ namespace MrCMS.Services
         public void DeleteFormListOption(FormListOption formListOption)
         {
             _session.Transact(session => session.Delete(formListOption));
+        }
+    }
+
+    public class RequiredFieldException : Exception
+    {
+        public RequiredFieldException(string message)
+            : base(message)
+        {
+
         }
     }
 }
