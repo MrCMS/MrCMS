@@ -62,7 +62,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             var documentMetadata = doc.GetMetadata();
             if (documentMetadata != null)
+            {
                 ViewData["EditView"] = documentMetadata.EditPartialView;
+                if (!string.IsNullOrWhiteSpace(documentMetadata.App))
+                    RouteData.DataTokens["app"] = documentMetadata.App;
+            }
         }
 
         public override ActionResult Show(Webpage document)
