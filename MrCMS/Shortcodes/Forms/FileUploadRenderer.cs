@@ -6,7 +6,7 @@ namespace MrCMS.Shortcodes.Forms
 {
     public class FileUploadRenderer : IFormElementRenderer<FileUpload>
     {
-        public TagBuilder AppendElement(FormProperty formProperty)
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
         {
             var tagBuilder = new TagBuilder("input");
             tagBuilder.Attributes["type"] = "file";

@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Web;
+using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Services;
@@ -16,7 +17,7 @@ namespace MrCMS.Web.Tests.Controllers
         public FormControllerTests()
         {
             _formService = A.Fake<IFormService>();
-            _formController = new FormController(_formService);
+            _formController = new FormController(_formService) {RequestMock = A.Fake<HttpRequestBase>()};
             _formController.ReferrerOverride = "test-redirect";
         }
 

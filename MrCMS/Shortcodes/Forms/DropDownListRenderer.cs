@@ -7,7 +7,7 @@ namespace MrCMS.Shortcodes.Forms
 {
     public class DropDownListRenderer : IFormElementRenderer<DropDownList>
     {
-        public TagBuilder AppendElement(FormProperty formProperty)
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
         {
             var tagBuilder = new TagBuilder("select");
             tagBuilder.Attributes["name"] = formProperty.Name;
@@ -25,18 +25,22 @@ namespace MrCMS.Shortcodes.Forms
 
             foreach (var option in formProperty.Options)
             {
-                tagBuilder.InnerHtml += GetOption(option);
+                tagBuilder.InnerHtml += GetOption(option, existingValue);
             }
-
             return tagBuilder;
         }
 
-        private TagBuilder GetOption(FormListOption option)
+        private TagBuilder GetOption(FormListOption option, string existingValue)
         {
             var tagBuilder = new TagBuilder("option");
             tagBuilder.Attributes["value"] = option.Value;
             tagBuilder.InnerHtml += option.Value;
-            if (option.Selected)
+            if (!string.IsNullOrWhiteSpace(existingValue))
+            {
+                if (option.Value == existingValue)
+                    tagBuilder.Attributes["selected"] = "selected";
+            }
+            else if (option.Selected)
                 tagBuilder.Attributes["selected"] = "selected";
             return tagBuilder;
         }

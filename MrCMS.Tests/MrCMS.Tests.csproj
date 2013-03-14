@@ -134,6 +134,7 @@
     <Compile Include="Shortcodes\Forms\ElementRendererManagerTests.cs" />
     <Compile Include="Shortcodes\Forms\FormRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\LabelRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\SubmittedMessageRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\TextAreaRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\TextBoxRendererTests.cs" />
     <Compile Include="Stubs\BasicMappedWebpage.cs" />

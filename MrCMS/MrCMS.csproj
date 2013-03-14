@@ -325,9 +325,11 @@
     <Compile Include="Shortcodes\Forms\FormSubmittedStatus.cs" />
     <Compile Include="Shortcodes\Forms\IElementRendererManager.cs" />
     <Compile Include="Shortcodes\Forms\ILabelRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\ISubmittedMessageRenderer.cs" />
     <Compile Include="Shortcodes\Forms\IValidationMessaageRenderer.cs" />
     <Compile Include="Shortcodes\Forms\LabelRenderer.cs" />
     <Compile Include="Shortcodes\Forms\RadioButtonListRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\SubmittedMessageRenderer.cs" />
     <Compile Include="Shortcodes\Forms\TextAreaRenderer.cs" />
     <Compile Include="Shortcodes\Forms\TextBoxRenderer.cs" />
     <Compile Include="Shortcodes\Forms\ICustomFormRenderer.cs" />

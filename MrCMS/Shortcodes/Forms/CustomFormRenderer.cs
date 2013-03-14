@@ -13,12 +13,14 @@ namespace MrCMS.Shortcodes.Forms
         private readonly IElementRendererManager _elementRendererManager;
         private readonly ILabelRenderer _labelRenderer;
         private readonly IValidationMessaageRenderer _validationMessaageRenderer;
+        private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
 
-        public CustomFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer, IValidationMessaageRenderer validationMessaageRenderer)
+        public CustomFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer, IValidationMessaageRenderer validationMessaageRenderer,ISubmittedMessageRenderer submittedMessageRenderer)
         {
             _elementRendererManager = elementRendererManager;
             _labelRenderer = labelRenderer;
             _validationMessaageRenderer = validationMessaageRenderer;
+            _submittedMessageRenderer = submittedMessageRenderer;
         }
         public string GetForm(Webpage webpage, FormSubmittedStatus submittedStatus)
         {
@@ -33,7 +35,7 @@ namespace MrCMS.Shortcodes.Forms
 
             var formDesign = webpage.FormDesign;
             formDesign = Regex.Replace(formDesign, "{label:([^}]+)}", AddLabel(formProperties));
-            formDesign = Regex.Replace(formDesign, "{input:([^}]+)}", AddElement(formProperties));
+            formDesign = Regex.Replace(formDesign, "{input:([^}]+)}", AddElement(formProperties, submittedStatus));
             formDesign = Regex.Replace(formDesign, "{validation:([^}]+)}", AddValidation(formProperties));
             formDesign = Regex.Replace(formDesign, "{submitted-message}", AddSubmittedMessage(webpage, submittedStatus));
             form.InnerHtml = formDesign;
@@ -58,18 +60,7 @@ namespace MrCMS.Shortcodes.Forms
         {
             if (!submittedStatus.Submitted) return string.Empty;
 
-            var message = new TagBuilder("div");
-            message.AddCssClass("alert");
-            message.AddCssClass(submittedStatus.Success ? "alert-success" : "alert-error");
-            message.InnerHtml +=
-                "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">x</button>" +
-                (!string.IsNullOrWhiteSpace(submittedStatus.Error)
-                     ? submittedStatus.Error
-                     : (!string.IsNullOrWhiteSpace(webpage.FormSubmittedMessage)
-                            ? webpage.FormSubmittedMessage
-                            : "Form submitted"));
-
-            return message.ToString();
+            return _submittedMessageRenderer.AppendSubmittedMessage(webpage, submittedStatus).ToString();
         }
 
         private MatchEvaluator AddLabel(IList<FormProperty> formProperties)
@@ -84,7 +75,7 @@ namespace MrCMS.Shortcodes.Forms
                                       : _labelRenderer.AppendLabel(formProperty).ToString();
                        };
         }
-        private MatchEvaluator AddElement(IList<FormProperty> formProperties)
+        private MatchEvaluator AddElement(IList<FormProperty> formProperties, FormSubmittedStatus submittedStatus)
         {
             return match =>
                        {
@@ -94,11 +85,12 @@ namespace MrCMS.Shortcodes.Forms
                                    property => property.Name.Equals(match.Groups[1].Value, StringComparison.OrdinalIgnoreCase));
                            if (formProperty == null)
                                return string.Empty;
+                           var existingValue = submittedStatus.Data[formProperty.Name];
 
                            var renderer = _elementRendererManager.GetElementRenderer(formProperty);
 
                            return
-                               renderer.AppendElement(formProperty)
+                               renderer.AppendElement(formProperty, existingValue)
                                        .ToString(renderer.IsSelfClosing
                                                      ? TagRenderMode.SelfClosing
                                                      : TagRenderMode.Normal);

@@ -20,6 +20,7 @@ namespace MrCMS.Web.Controllers
 
             TempData["form-submitted"] = true;
             TempData["form-submitted-message"] = saveFormData;
+            TempData["form-data"] = Request.Form;
             return Redirect(Referrer);
         }
     }

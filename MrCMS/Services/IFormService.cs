@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
@@ -11,7 +12,7 @@ namespace MrCMS.Services
     {
         string GetFormStructure(Webpage webpage);
         void SaveFormStructure(Webpage webpage, string data);
-        string SaveFormData(Webpage webpage, HttpRequestBase request);
+        List<string> SaveFormData(Webpage webpage, HttpRequestBase request);
         PostingsModel GetFormPostings(Webpage webpage, int page, string search);
         void AddFormProperty(FormProperty formProperty);
         void SaveFormProperty(FormProperty property);

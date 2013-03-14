@@ -1,5 +1,4 @@
 using System.Web.Mvc;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 
 namespace MrCMS.Shortcodes.Forms
@@ -10,7 +9,7 @@ namespace MrCMS.Shortcodes.Forms
 
     public interface IFormElementRenderer
     {
-        TagBuilder AppendElement(FormProperty formProperty);
+        TagBuilder AppendElement(FormProperty formProperty, string existingValue);
         bool IsSelfClosing { get; }
     }
 }

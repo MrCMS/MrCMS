@@ -1,13 +1,22 @@
+using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using System.Linq;
 
 namespace MrCMS.Shortcodes.Forms
 {
     public class CheckBoxListRenderer : IFormElementRenderer<CheckboxList>
     {
-        public TagBuilder AppendElement(FormProperty formProperty)
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
         {
+            var values = existingValue == null
+                             ? new List<string>()
+                             : existingValue.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
+                                            .Select(s => s.Trim())
+                                            .ToList();
+
             var tagBuilder = new TagBuilder("div");
             foreach (var checkbox in formProperty.Options)
             {
@@ -15,13 +24,18 @@ namespace MrCMS.Shortcodes.Forms
                 cbLabelBuilder.Attributes["for"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
                 cbLabelBuilder.InnerHtml = checkbox.Value;
                 cbLabelBuilder.AddCssClass("checkbox");
-                
+
                 var checkboxBuilder = new TagBuilder("input");
                 checkboxBuilder.Attributes["type"] = "checkbox";
                 checkboxBuilder.Attributes["value"] = checkbox.Value;
                 checkboxBuilder.AddCssClass(formProperty.CssClass);
 
-                if (checkbox.Selected)
+                if (existingValue != null)
+                {
+                    if (values.Contains(checkbox.Value))
+                        checkboxBuilder.Attributes["checked"] = "checked";
+                }
+                else if (checkbox.Selected)
                     checkboxBuilder.Attributes["checked"] = "checked";
 
                 checkboxBuilder.Attributes["name"] = formProperty.Name;
@@ -30,12 +44,6 @@ namespace MrCMS.Shortcodes.Forms
                 tagBuilder.InnerHtml += cbLabelBuilder.ToString();
             }
             return tagBuilder;
-        }
-
-        public string GetId(FormProperty formProperty)
-        {
-            var s = string.IsNullOrWhiteSpace(formProperty.HtmlId) ? formProperty.Name : formProperty.HtmlId;
-            return TagBuilder.CreateSanitizedId(s);
         }
 
         public bool IsSelfClosing { get { return false; } }

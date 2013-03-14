@@ -48,7 +48,7 @@ namespace MrCMS.Services
             _documentService.SaveDocument(webpage);
         }
 
-        public string SaveFormData(Webpage webpage, HttpRequestBase request)
+        public List<string> SaveFormData(Webpage webpage, HttpRequestBase request)
         {
             var formProperties = webpage.FormProperties;
 
@@ -58,62 +58,65 @@ namespace MrCMS.Services
                                       webpage.FormPostings.Add(formPosting);
                                       session.SaveOrUpdate(formPosting);
                                   });
-            try
+            var errors = new List<string>();
+            foreach (var formProperty in formProperties)
             {
-                _session.Transact(session =>
-                                      {
-                                          foreach (var formProperty in formProperties)
-                                          {
-                                              if (formProperty is FileUpload)
-                                              {
-                                                  var file = request.Files[formProperty.Name];
+                try
+                {
+                    if (formProperty is FileUpload)
+                    {
+                        var file = request.Files[formProperty.Name];
 
-                                                  if (file == null && formProperty.Required)
-                                                      throw new RequiredFieldException("No file was attached to the " +
-                                                                                       formProperty.Name + " field");
+                        if (file == null && formProperty.Required)
+                            throw new RequiredFieldException("No file was attached to the " +
+                                                             formProperty.Name + " field");
 
-                                                  if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
-                                                  {
-                                                      var value = SaveFile(webpage, formPosting, file);
+                        if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
+                        {
+                            var value = SaveFile(webpage, formPosting, file);
 
-                                                      formPosting.FormValues.Add(new FormValue
-                                                                                     {
-                                                                                         Key = formProperty.Name,
-                                                                                         Value = value,
-                                                                                         IsFile = true,
-                                                                                         FormPosting = formPosting
-                                                                                     });
-                                                  }
-                                              }
-                                              else
-                                              {
-                                                  var value = request.Form[formProperty.Name];
+                            formPosting.FormValues.Add(new FormValue
+                                                           {
+                                                               Key = formProperty.Name,
+                                                               Value = value,
+                                                               IsFile = true,
+                                                               FormPosting = formPosting
+                                                           });
+                        }
+                    }
+                    else
+                    {
+                        var value = request.Form[formProperty.Name];
 
-                                                  if (value == null && formProperty.Required)
-                                                      throw new RequiredFieldException("No value was posted for the " +
-                                                                                       formProperty.Name + " field");
+                        if (value == null && formProperty.Required)
+                            throw new RequiredFieldException("No value was posted for the " +
+                                                             formProperty.Name + " field");
 
-                                                  formPosting.FormValues.Add(new FormValue
-                                                                                 {
-                                                                                     Key = formProperty.Name,
-                                                                                     Value = value,
-                                                                                     FormPosting = formPosting
-                                                                                 });
-                                              }
-                                          }
-
-                                          formPosting.FormValues.ForEach(value => session.Save(value));
-                                      });
-
-                SendFormMessages(webpage, formPosting);
-
-                return null;
+                        formPosting.FormValues.Add(new FormValue
+                                                       {
+                                                           Key = formProperty.Name,
+                                                           Value = value,
+                                                           FormPosting = formPosting
+                                                       });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errors.Add(ex.Message);
+                }
             }
-            catch (Exception ex)
+
+            if (errors.Any())
             {
                 _session.Transact(session => session.Delete(formPosting));
-                return ex.Message;
             }
+            else
+            {
+                _session.Transact(session => formPosting.FormValues.ForEach(value => session.Save(value)));
+
+                SendFormMessages(webpage, formPosting);
+            }
+            return errors;
         }
 
         private string SaveFile(Webpage webpage, FormPosting formPosting, HttpPostedFileBase file)

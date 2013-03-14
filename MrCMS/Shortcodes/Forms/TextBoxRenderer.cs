@@ -6,7 +6,7 @@ namespace MrCMS.Shortcodes.Forms
 {
     public class TextBoxRenderer : IFormElementRenderer<TextBox>
     {
-        public TagBuilder AppendElement(FormProperty formProperty)
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
         {
             var tagBuilder = new TagBuilder("input");
             tagBuilder.Attributes["type"] = "text";
@@ -22,6 +22,7 @@ namespace MrCMS.Shortcodes.Forms
                                       ? formProperty.Name
                                       : formProperty.LabelText);
             }
+            tagBuilder.Attributes["value"] = existingValue;
             return tagBuilder;
         }
 

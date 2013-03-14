@@ -1,12 +1,11 @@
 using System.Web.Mvc;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 
 namespace MrCMS.Shortcodes.Forms
 {
     public class TextAreaRenderer : IFormElementRenderer<TextArea>
     {
-        public TagBuilder AppendElement(FormProperty formProperty)
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
         {
             var tagBuilder = new TagBuilder("textarea");
             tagBuilder.Attributes["name"] = formProperty.Name;
@@ -21,6 +20,7 @@ namespace MrCMS.Shortcodes.Forms
                                       ? formProperty.Name
                                       : formProperty.LabelText);
             }
+            tagBuilder.InnerHtml = existingValue;
             return tagBuilder;
         }
 

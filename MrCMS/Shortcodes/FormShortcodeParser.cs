@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
@@ -30,8 +32,9 @@ namespace MrCMS.Shortcodes
             var thisPageFormMatch = new Regex(@"\[form\]");
 
             var submitted = true.Equals(htmlHelper.ViewContext.TempData["form-submitted"]);
-            var error = Convert.ToString(htmlHelper.ViewContext.TempData["form-submitted-message"]);
-            var status = new FormSubmittedStatus(submitted, error);
+            var errors = htmlHelper.ViewContext.TempData["form-submitted-message"] as List<string>;
+            var data = htmlHelper.ViewContext.TempData["form-data"] as NameValueCollection;
+            var status = new FormSubmittedStatus(submitted, errors, data);
             current = otherPageFormMatch.Replace(current,
                                                  match =>
                                                  {

@@ -1,14 +1,20 @@
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+
 namespace MrCMS.Shortcodes.Forms
 {
     public struct FormSubmittedStatus
     {
         private readonly bool _submitted;
-        private readonly string _error;
+        private readonly List<string> _errors;
+        private readonly NameValueCollection _data;
 
-        public FormSubmittedStatus(bool submitted, string error)
+        public FormSubmittedStatus(bool submitted, List<string> errors, NameValueCollection data)
         {
             _submitted = submitted;
-            _error = error;
+            _errors = errors ?? new List<string>();
+            _data = data ?? new NameValueCollection();
         }
 
         public bool Submitted
@@ -16,14 +22,19 @@ namespace MrCMS.Shortcodes.Forms
             get { return _submitted; }
         }
 
-        public string Error
+        public List<string> Errors
         {
-            get { return _error; }
+            get { return _errors; }
         }
 
         public bool Success
         {
-            get { return Submitted && string.IsNullOrWhiteSpace(Error); }
+            get { return Submitted && !Errors.Any(); }
+        }
+
+        public NameValueCollection Data
+        {
+            get { return _data; }
         }
     }
 }

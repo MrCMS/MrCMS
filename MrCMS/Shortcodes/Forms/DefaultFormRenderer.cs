@@ -9,12 +9,14 @@ namespace MrCMS.Shortcodes.Forms
         private readonly IElementRendererManager _elementRendererManager;
         private readonly ILabelRenderer _labelRenderer;
         private readonly IValidationMessaageRenderer _validationMessaageRenderer;
+        private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
 
-        public DefaultFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer, IValidationMessaageRenderer validationMessaageRenderer)
+        public DefaultFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer, IValidationMessaageRenderer validationMessaageRenderer, ISubmittedMessageRenderer submittedMessageRenderer)
         {
             _elementRendererManager = elementRendererManager;
             _labelRenderer = labelRenderer;
             _validationMessaageRenderer = validationMessaageRenderer;
+            _submittedMessageRenderer = submittedMessageRenderer;
         }
 
         public string GetDefault(Webpage webpage, FormSubmittedStatus submittedStatus)
@@ -31,7 +33,8 @@ namespace MrCMS.Shortcodes.Forms
             {
                 IFormElementRenderer renderer = _elementRendererManager.GetElementRenderer(property);
                 form.InnerHtml += _labelRenderer.AppendLabel(property);
-                form.InnerHtml += renderer.AppendElement(property)
+                var existingValue = submittedStatus.Data[property.Name];
+                form.InnerHtml += renderer.AppendElement(property, existingValue)
                                           .ToString(renderer.IsSelfClosing
                                                         ? TagRenderMode.SelfClosing
                                                         : TagRenderMode.Normal);
@@ -41,27 +44,11 @@ namespace MrCMS.Shortcodes.Forms
             var div = new TagBuilder("div");
             div.InnerHtml += GetSubmitButton().ToString(TagRenderMode.SelfClosing);
             form.InnerHtml += div;
-            
+
             if (submittedStatus.Submitted)
-                form.InnerHtml += GetSubmittedMessage(webpage,submittedStatus);
+                form.InnerHtml += _submittedMessageRenderer.AppendSubmittedMessage(webpage, submittedStatus);
 
             return form.ToString();
-        }
-
-        public TagBuilder GetSubmittedMessage(Webpage webpage, FormSubmittedStatus submittedStatus)
-        {
-            var message = new TagBuilder("div");
-            message.AddCssClass("alert");
-            message.AddCssClass(submittedStatus.Success ? "alert-success" : "alert-error");
-            message.InnerHtml +=
-                "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">x</button>" +
-                (!string.IsNullOrWhiteSpace(submittedStatus.Error)
-                     ? submittedStatus.Error
-                     : (!string.IsNullOrWhiteSpace(webpage.FormSubmittedMessage)
-                            ? webpage.FormSubmittedMessage
-                            : "Form submitted"));
-
-            return message;
         }
 
         public TagBuilder GetSubmitButton()
