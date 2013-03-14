@@ -12,6 +12,7 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Settings;
+using MrCMS.Shortcodes.Forms;
 using MrCMS.Tasks;
 using NHibernate;
 
@@ -86,7 +87,7 @@ namespace MrCMS.Services
                     }
                     else
                     {
-                        var value = request.Form[formProperty.Name];
+                        var value = SanitizeValue(formProperty, request.Form[formProperty.Name]);
 
                         if (value == null && formProperty.Required)
                             throw new RequiredFieldException("No value was posted for the " +
@@ -117,6 +118,21 @@ namespace MrCMS.Services
                 SendFormMessages(webpage, formPosting);
             }
             return errors;
+        }
+
+        private string SanitizeValue(FormProperty formProperty, string value)
+        {
+            if (formProperty is CheckboxList)
+            {
+                if (value != null)
+                {
+                    var list = value.Split(',').ToList();
+                    list.Remove(CheckBoxListRenderer.CbHiddenValue);
+                    return !list.Any() ? null : string.Join(",", list);
+                }
+                return value;
+            }
+            return value;
         }
 
         private string SaveFile(Webpage webpage, FormPosting formPosting, HttpPostedFileBase file)

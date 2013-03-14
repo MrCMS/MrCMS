@@ -9,6 +9,8 @@ namespace MrCMS.Shortcodes.Forms
 {
     public class CheckBoxListRenderer : IFormElementRenderer<CheckboxList>
     {
+        public const string CbHiddenValue = "cb-hidden-value";
+
         public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
         {
             var values = existingValue == null
@@ -16,6 +18,7 @@ namespace MrCMS.Shortcodes.Forms
                              : existingValue.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
                                             .Select(s => s.Trim())
                                             .ToList();
+            values.Remove(CbHiddenValue);
 
             var tagBuilder = new TagBuilder("div");
             foreach (var checkbox in formProperty.Options)
@@ -43,6 +46,13 @@ namespace MrCMS.Shortcodes.Forms
                 cbLabelBuilder.InnerHtml += checkboxBuilder.ToString();
                 tagBuilder.InnerHtml += cbLabelBuilder.ToString();
             }
+
+            var cbHiddenBuilder = new TagBuilder("input");
+            cbHiddenBuilder.Attributes["type"] = "hidden";
+            cbHiddenBuilder.Attributes["name"] = formProperty.Name;
+            cbHiddenBuilder.Attributes["value"] = CbHiddenValue;
+            tagBuilder.InnerHtml += cbHiddenBuilder.ToString();
+
             return tagBuilder;
         }
 
