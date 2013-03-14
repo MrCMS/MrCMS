@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Website.Controllers;
@@ -20,7 +21,8 @@ namespace MrCMS.Web.Controllers
 
             TempData["form-submitted"] = true;
             TempData["form-submitted-message"] = saveFormData;
-            TempData["form-data"] = Request.Form;
+            // if any errors add form data to be renderered, otherwise form should be empty
+            TempData["form-data"] = saveFormData.Any() ? Request.Form : null;
             return Redirect(Referrer);
         }
     }
