@@ -12,7 +12,7 @@ namespace MrCMS.Shortcodes.Forms
     {
         private readonly IElementRendererManager _elementRendererManager;
         private readonly ILabelRenderer _labelRenderer;
-        private IValidationMessaageRenderer _validationMessaageRenderer;
+        private readonly IValidationMessaageRenderer _validationMessaageRenderer;
 
         public CustomFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer, IValidationMessaageRenderer validationMessaageRenderer)
         {
@@ -48,10 +48,9 @@ namespace MrCMS.Shortcodes.Forms
                 var formProperty =
                     formProperties.FirstOrDefault(
                         property => property.Name.Equals(match.Groups[1].Value, StringComparison.OrdinalIgnoreCase));
-                if (formProperty == null)
-                    return string.Empty;
-
-                return _validationMessaageRenderer.AppendRequiredMessage(formProperty).ToString();
+                return formProperty == null
+                           ? string.Empty
+                           : _validationMessaageRenderer.AppendRequiredMessage(formProperty).ToString();
             };
         }
 
@@ -77,14 +76,12 @@ namespace MrCMS.Shortcodes.Forms
         {
             return match =>
                        {
-
                            var formProperty =
                                formProperties.FirstOrDefault(
                                    property => property.Name.Equals(match.Groups[1].Value, StringComparison.OrdinalIgnoreCase));
-                           if (formProperty == null)
-                               return string.Empty;
-
-                           return _labelRenderer.AppendLabel(formProperty).ToString();
+                           return formProperty == null
+                                      ? string.Empty
+                                      : _labelRenderer.AppendLabel(formProperty).ToString();
                        };
         }
         private MatchEvaluator AddElement(IList<FormProperty> formProperties)
