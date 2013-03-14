@@ -70,7 +70,7 @@ namespace MrCMS.Services
 
                                                   if (file == null && formProperty.Required)
                                                       throw new RequiredFieldException("No file was attached to the " +
-                                                                                       formProperty.Name + "field");
+                                                                                       formProperty.Name + " field");
 
                                                   if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
                                                   {
@@ -91,7 +91,7 @@ namespace MrCMS.Services
 
                                                   if (value == null && formProperty.Required)
                                                       throw new RequiredFieldException("No value was posted for the " +
-                                                                                       formProperty.Name + "field");
+                                                                                       formProperty.Name + " field");
 
                                                   formPosting.FormValues.Add(new FormValue
                                                                                  {

@@ -64,9 +64,11 @@ namespace MrCMS.Shortcodes.Forms
             message.AddCssClass(submittedStatus.Success ? "alert-success" : "alert-error");
             message.InnerHtml +=
                 "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">x</button>" +
-                (submittedStatus.Error ?? (!string.IsNullOrWhiteSpace(webpage.FormSubmittedMessage)
-                                               ? webpage.FormSubmittedMessage
-                                               : "Form submitted"));
+                (!string.IsNullOrWhiteSpace(submittedStatus.Error)
+                     ? submittedStatus.Error
+                     : (!string.IsNullOrWhiteSpace(webpage.FormSubmittedMessage)
+                            ? webpage.FormSubmittedMessage
+                            : "Form submitted"));
 
             return message.ToString();
         }
