@@ -9,7 +9,7 @@ namespace MrCMS.Shortcodes.Forms
         {
             var tagBuilder = new TagBuilder("span");
             tagBuilder.AddCssClass("field-validation-valid");
-            tagBuilder.Attributes["data-valmsg-for"] = formProperty.GetHtmlId();
+            tagBuilder.Attributes["data-valmsg-for"] = formProperty.Name;//.GetHtmlId();
             tagBuilder.Attributes["data-valmsg-replace"] = "true";
             //data-valmsg-for="LastName" data-valmsg-replace="true"
             return tagBuilder;
