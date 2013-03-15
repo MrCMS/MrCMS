@@ -7,8 +7,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Installation;
 using MrCMS.Services;
-using MrCMS.Web.Application.Pages;
-using MrCMS.Web.Application.Widgets;
+using MrCMS.Web.Apps.CoreApp.Pages;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 
