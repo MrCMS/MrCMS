@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
@@ -32,14 +33,14 @@ namespace MrCMS.Helpers
         public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
                                                               Expression<Func<TModel, object>> expression)
         {
-            return DeleteCheckBoxFor(htmlHelper, expression, new RouteValueDictionary());
+            return DeleteCheckBoxFor(htmlHelper, expression, new {});
         }
 
         public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
                                                               Expression<Func<TModel, object>> expression,
                                                               object htmlAttributes)
         {
-            return DeleteCheckBoxFor(htmlHelper, expression, new RouteValueDictionary(htmlAttributes));
+            return DeleteCheckBoxFor(htmlHelper, expression, AnonymousObjectToHtmlAttributes(htmlAttributes));
         }
 
         public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
@@ -214,8 +215,9 @@ namespace MrCMS.Helpers
                                              string controllerName, object routeValues, object htmlAttributes)
         {
             var routeValuesDictionary = new RouteValueDictionary(routeValues);
-            IDictionary<string, object> htmlAttributeDictionary = new RouteValueDictionary(htmlAttributes);
-            htmlAttributeDictionary.Add("data-action", "post-link");
+            var htmlAttributeDictionary = new RouteValueDictionary(htmlAttributes);
+            
+            htmlAttributeDictionary["data-action"] = "post-link";
             return htmlHelper.ActionLink(linkText, actionName, controllerName, routeValuesDictionary,
                                          htmlAttributeDictionary);
         }
@@ -224,7 +226,7 @@ namespace MrCMS.Helpers
                                                  string controllerName, object routeValues, object htmlAttributes)
         {
             var routeValuesDictionary = new RouteValueDictionary(routeValues);
-            IDictionary<string, object> htmlAttributeDictionary = new RouteValueDictionary(htmlAttributes);
+            IDictionary<string, object> htmlAttributeDictionary = AnonymousObjectToHtmlAttributes(htmlAttributes);
             htmlAttributeDictionary.Add("data-action", "post-link-ajax");
             return htmlHelper.ActionLink(linkText, actionName, controllerName, routeValuesDictionary,
                                          htmlAttributeDictionary);
@@ -248,7 +250,7 @@ namespace MrCMS.Helpers
                                                      string text = null)
         {
             return LabelHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData),
-                               ExpressionHelper.GetExpressionText(expression), new RouteValueDictionary(htmlAttributes),
+                               ExpressionHelper.GetExpressionText(expression), AnonymousObjectToHtmlAttributes(htmlAttributes),
                                text);
         }
 
@@ -358,7 +360,7 @@ namespace MrCMS.Helpers
         {
             // generates <form action="{current url}" method="post">...</form> 
             string formAction = htmlHelper.ViewContext.HttpContext.Request.RawUrl;
-            return FormHelper(htmlHelper, formAction, formMethod, new RouteValueDictionary(htmlAttributes));
+            return FormHelper(htmlHelper, formAction, formMethod, AnonymousObjectToHtmlAttributes(htmlAttributes));
         }
 
 
@@ -417,7 +419,7 @@ namespace MrCMS.Helpers
             tagBuilder.Attributes.Add("title", title ?? image.Description);
             if (attributes != null)
             {
-                var routeValueDictionary = new RouteValueDictionary(attributes);
+                var routeValueDictionary = AnonymousObjectToHtmlAttributes(attributes);
                 foreach (var kvp in routeValueDictionary)
                 {
                     tagBuilder.Attributes.Add(kvp.Key, kvp.Value.ToString());
@@ -452,7 +454,7 @@ namespace MrCMS.Helpers
             tagBuilder.Attributes.Add("title", title ?? image.Description);
             if (attributes != null)
             {
-                var routeValueDictionary = new RouteValueDictionary(attributes);
+                var routeValueDictionary = AnonymousObjectToHtmlAttributes(attributes);
                 foreach (var kvp in routeValueDictionary)
                 {
                     tagBuilder.Attributes.Add(kvp.Key, kvp.Value.ToString());
@@ -467,7 +469,7 @@ namespace MrCMS.Helpers
             tagBuilder.Attributes.Add("href", ParseUrl(url));
             if (htmlAttributes != null)
             {
-                var dictionary = new RouteValueDictionary(htmlAttributes);
+                var dictionary = AnonymousObjectToHtmlAttributes(htmlAttributes);
                 dictionary.ForEach(pair => tagBuilder.Attributes.Add(pair.Key, Convert.ToString(pair.Value)));
             }
             tagBuilder.InnerHtml = text;
@@ -521,8 +523,6 @@ namespace MrCMS.Helpers
             return baseDictionary;
         }
 
-
-
         public static void IncludeScript(this HtmlHelper helper, string url)
         {
             var webPage = helper.ViewDataContainer as WebPageBase;
@@ -545,6 +545,17 @@ namespace MrCMS.Helpers
         public static MvcHtmlString RenderCss(this HtmlHelper helper)
         {
             return MrCMSApplication.Get<IResourceBundler>().GetCss();
+        }
+
+        public static RouteValueDictionary AnonymousObjectToHtmlAttributes(object htmlAttributes)
+        {
+            RouteValueDictionary routeValueDictionary = new RouteValueDictionary();
+            if (htmlAttributes != null)
+            {
+                foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(htmlAttributes))
+                    routeValueDictionary.Add(propertyDescriptor.Name.Replace('_', '-'), propertyDescriptor.GetValue(htmlAttributes));
+            }
+            return routeValueDictionary;
         }
     }
 }

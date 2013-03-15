@@ -122,14 +122,14 @@
     });
 
     // Show menu when an ahref is click
-	$(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-sortable=False]').contextMenu({
+    $(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-sortable=False]').contextMenu({
         menu: 'edit-no-sort-menu'
     }, function (action, el, pos) {
         processMenuAction(action, el, pos);
     });
 
     // Show menu when an ahref is click
-	$(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-can-add-child=False]').filter('li[data-custom-sortable=False]').contextMenu({
+    $(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-can-add-child=False]').filter('li[data-custom-sortable=False]').contextMenu({
         menu: 'edit-no-add-no-sort-menu'
     }, function (action, el, pos) {
         processMenuAction(action, el, pos);
@@ -150,14 +150,14 @@
     });
 
     // Show menu when an ahref is click
-	$(".browser li").not(".browser > li").has('ul').filter('li[data-sortable=False]').contextMenu({
+    $(".browser li").not(".browser > li").has('ul').filter('li[data-sortable=False]').contextMenu({
         menu: 'edit-no-delete-no-sort-menu'
     }, function (action, el, pos) {
         processMenuAction(action, el, pos);
     });
 
     // Show menu when an ahref is click
-	$(".browser li").not(".browser > li").has('ul').filter('li[data-can-add-child=False]').filter('li[data-sortable=False]').contextMenu({
+    $(".browser li").not(".browser > li").has('ul').filter('li[data-can-add-child=False]').filter('li[data-sortable=False]').contextMenu({
         menu: 'edit-no-add-no-delete-no-sort-menu'
     }, function (action, el, pos) {
         processMenuAction(action, el, pos);
@@ -284,23 +284,23 @@
         $('.media-selector').mediaselector();
     }
     $(document).on('click', '[data-toggle="fb-modal"]', function () {
-            var clone = $(this).clone();
-            clone.attr('data-toggle', '');
-            clone.hide();
-            clone.fancybox({
-                type: 'iframe',
-                padding: 0,
-                height: 0,
-                'onComplete': function() {
-                    $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
-                        $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
-                        $('#fancybox-content').height($(this).contents()[0].documentElement.scrollHeight);
-                        $.fancybox.center();
-                    });
-                }
-            }).click().remove();
+        var clone = $(this).clone();
+        clone.attr('data-toggle', '');
+        clone.hide();
+        clone.fancybox({
+            type: 'iframe',
+            padding: 0,
+            height: 0,
+            'onComplete': function () {
+                $('#fancybox-frame').load(function () { // wait for frame to load and then gets it's height
+                    $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
+                    $('#fancybox-content').height($(this).contents()[0].documentElement.scrollHeight);
+                    $.fancybox.center();
+                });
+            }
+        }).click().remove();
         return false;
-        });
+    });
 
     // Support for AJAX loaded modal window.
     // Focuses on first input textbox after it loads the window.
@@ -363,23 +363,22 @@
     $('[data-action=post-link]').click(function (e) {
         e.preventDefault();
         var self = $(this);
-
-        saveForm(self);
-
         var url = self.attr('href') || self.data('link');
         if (url != null) {
             post_to_url(url, {});
         }
     });
-
-    function saveForm(element) {
-        var form = element.parents('form');
-        if (form != null) {
-            for (instance in CKEDITOR.instances)
-                CKEDITOR.instances[instance].updateElement();
-            $.post($(form).attr('action'), $(form).serialize());
+    $('#publish-status-change').click(function (e) {
+        e.preventDefault();
+        var self = $(this);
+        var url = self.attr('href') || self.data('link');
+        if (url != null) {
+            post_to_url_ajax(url, {}, 'POST', function () {
+                $('#edit-document').submit();
+            });
         }
-    }
+        return false;
+    });
 
     $(window).resize(function () {
         $('.modal').each(function (index, element) {
@@ -417,7 +416,6 @@
             return any;
         },
         drop: function (event, ui) {
-            saveForm($(ui.draggable));
             $.post('/Admin/Webpage/SetParent', { id: $('#Id').val(), parentId: $(this).parent().data('id') }, function () {
                 window.location.reload();
             });

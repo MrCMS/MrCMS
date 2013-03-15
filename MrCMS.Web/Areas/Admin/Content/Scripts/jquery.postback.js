@@ -53,7 +53,7 @@ function post_to_url(path, params, method) {
 }
 
 
-function post_to_url_ajax(path, params, method) {
+function post_to_url_ajax(path, params, method, callback) {
     method = method || "post"; // Set method to post by default, if not specified.
 
     // The rest of this code assumes you are not using a library.
@@ -73,10 +73,10 @@ function post_to_url_ajax(path, params, method) {
     }
 
     document.body.appendChild(form);
-    form.submit();
     var serialize = $('#ajax-form-post').serialize();
-    $.get(path, serialize, function(response) {
+    $.post(path, serialize, function(response) {
         $('#ajax-form-post').remove();
+        callback();
     });
 }
 

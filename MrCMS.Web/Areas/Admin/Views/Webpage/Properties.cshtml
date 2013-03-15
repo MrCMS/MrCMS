@@ -2,7 +2,6 @@
 @model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane active" id="edit-content">
     <div class="span12">
-        @Html.HiddenFor(webpage => webpage.PublishOn, new { id = "publish-on-hidden" })
         @Html.HiddenFor(x => x.LiveUrlSegment)
         @Html.HiddenFor(x => x.DocumentType)
         @Html.HiddenFor(x => x.Id)

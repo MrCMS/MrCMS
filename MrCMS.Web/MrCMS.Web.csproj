@@ -171,9 +171,7 @@
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\InPageMrCMSAdminController.cs" />
-    <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
     <Compile Include="Controllers\SEOController.cs" />
-    <Compile Include="Apps\Core\Controllers\TextPageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
