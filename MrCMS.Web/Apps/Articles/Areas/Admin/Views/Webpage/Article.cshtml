@@ -1,0 +1,7 @@
+﻿@model MrCMS.Web.Apps.Articles.Pages.Article 
+<hr />
+@Html.LabelFor(model => model.Abstract, "Abstract")
+@Html.TextAreaFor(model => model.Abstract, new {@rows="4", @class="span12"})
+
+@Html.LabelFor(x => x.TagList, "Categories / Tags")
+@Html.TextBoxFor(x => x.TagList, new { @class = "span12" })

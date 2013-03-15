@@ -110,7 +110,7 @@ namespace MrCMS.Entities.Documents.Metadata
         /// <summary>
         /// Specifies the app that the document is a part of
         /// </summary>
-        public virtual string App { get { return null; } }
+        public virtual string App { get { return MrCMS.Apps.MrCMSApp.AppWebpages.ContainsKey(typeof(T)) ? MrCMS.Apps.MrCMSApp.AppWebpages[typeof(T)] : null; } }
 
         /// <summary>
         /// Specifies whether the children of the page are shown in the navigation tree

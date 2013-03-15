@@ -1,0 +1,10 @@
+﻿@model MrCMS.Entities.Documents.Web.IDocumentContainer<MrCMS.Entities.Documents.Web.IContainerItem>
+@if (Model != null)
+{
+    <ul class="nav nav-pills nav-stacked">
+        @foreach (var category in Model.Tags)
+        {
+            <li><a href="/@Model.LiveUrlSegment?category=@category.Name"><span>\\</span>@category.Name (@Model.ChildItems.Count(page => page.Tags.Contains(category)))<span>.</span></a></li>
+        }
+    </ul>
+}

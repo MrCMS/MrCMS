@@ -10,9 +10,9 @@
     <meta name="keywords" content="@Model.MetaKeywords" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @{
-        Html.IncludeCss("~/Content/bootstrap/css/bootstrap.css");
-        Html.IncludeCss("~/Content/bootstrap/css/bootstrap-responsive.css");
-        Html.IncludeCss("~/Content/Styles/style.css");
+        Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap.css");
+        Html.IncludeCss("~/Apps/Core/Content/css/bootstrap-responsive.css");
+        Html.IncludeCss("~/Apps/Core/Content/Styles/style.css");
     }
     @Html.RenderCss()
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -38,15 +38,15 @@
 
         <hr>
 
-        <div class="footer">
+        <footer>
             <p>&copy; Mr CMS 2013</p>
-        </div>
+        </footer>
 
     </div>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    @{ Html.IncludeScript("~/Content/bootstrap/js/bootstrap.min.js");
-       Html.IncludeScript("~/Content/Scripts/jquery.validate.min.js");
-       Html.IncludeScript("~/Content/Scripts/jquery.validate.unobtrusive.min.js");}
+    @{ Html.IncludeScript("~/Apps/Core/Content/bootstrap/js/bootstrap.min.js");
+       Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.min.js");
+       Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.unobtrusive.min.js");}
     @Html.RenderScripts()
     @if (CurrentRequestData.CurrentUserIsAdmin && SiteSettings<SiteSettings>().EnableInlineEditing)
     {
