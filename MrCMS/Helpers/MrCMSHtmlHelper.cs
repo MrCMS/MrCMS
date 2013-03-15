@@ -324,6 +324,8 @@ namespace MrCMS.Helpers
                 return MvcHtmlString.Empty;
             if (MrCMSApp.AppWebpages.ContainsKey(model.GetType()))
                 htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[model.GetType()];
+            if (MrCMSApp.AppWidgets.ContainsKey(model.GetType()))
+                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWidgets[model.GetType()];
 
             ViewEngineResult viewEngineResult =
                 ViewEngines.Engines.FindView(
