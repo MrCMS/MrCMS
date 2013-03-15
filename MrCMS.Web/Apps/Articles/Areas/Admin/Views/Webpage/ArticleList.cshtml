@@ -1,0 +1,11 @@
+﻿@model MrCMS.Web.Apps.Articles.Pages.ArticleList
+           <hr />
+@Html.LabelFor(model => model.PageSize)
+@Html.EditorFor(model => model.PageSize)
+
+@Html.LabelFor(model => model.AllowPaging)
+@Html.EditorFor(model => model.AllowPaging)
+
+@Html.LabelFor(x => x.TagList, "Categories")
+@Html.TextBoxFor(x => x.TagList, new { @class = "span12" })
+

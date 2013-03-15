@@ -126,6 +126,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
     <Compile Include="Apps\Core\DbConfiguration\PlainTextWidgetOveride.cs" />
     <Compile Include="Apps\Core\DbConfiguration\TextWidgetOveride.cs" />
     <Compile Include="Apps\Core\Models\NavigationList.cs" />
@@ -136,6 +137,13 @@
     <Compile Include="Apps\Core\Widgets\PlainTextWidget.cs" />
     <Compile Include="Apps\Core\Widgets\TextWidget.cs" />
     <Compile Include="Apps\Core\CoreApp.cs" />
+    <Compile Include="Apps\Articles\Controllers\ArticleListController.cs" />
+    <Compile Include="Apps\Articles\DbConfiguration\ArticleOverride.cs" />
+    <Compile Include="Apps\Articles\Metadata\ArticleListMetaData.cs" />
+    <Compile Include="Apps\Articles\ArticlesApp.cs" />
+    <Compile Include="Apps\Articles\Pages\Article.cs" />
+    <Compile Include="Apps\Articles\Pages\ArticleList.cs" />
+    <Compile Include="Apps\Articles\Widgets\ArticleCategories.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
@@ -425,14 +433,14 @@
     <Content Include="Areas\Admin\Content\Styles\Images\jquerytree\treeview-red-line.gif" />
     <Content Include="Areas\Admin\Content\Styles\Images\jquerytree\treeview-red.gif" />
     <Content Include="Areas\Admin\Content\Styles\jquery.mrcms-mediaselector.css" />
-    <Content Include="Content\bootstrap\css\bootstrap-responsive.css" />
-    <Content Include="Content\bootstrap\css\bootstrap-responsive.min.css" />
-    <Content Include="Content\bootstrap\css\bootstrap.css" />
-    <Content Include="Content\bootstrap\css\bootstrap.min.css" />
-    <Content Include="Content\bootstrap\img\glyphicons-halflings-white.png" />
-    <Content Include="Content\bootstrap\img\glyphicons-halflings.png" />
-    <Content Include="Content\bootstrap\js\bootstrap.js" />
-    <Content Include="Content\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-responsive.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-responsive.min.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.min.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\img\glyphicons-halflings-white.png" />
+    <Content Include="Apps\Core\Content\Bootstrap\img\glyphicons-halflings.png" />
+    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.js" />
+    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
     <Content Include="Content\images\install-synchronizing.gif" />
     <Content Include="Content\images\mrcms-logo.png" />
     <Content Include="Content\install\images\bg.gif" />
@@ -456,11 +464,11 @@
       <DependentUpon>mixins.less</DependentUpon>
     </Content>
     <Content Include="Areas\Admin\Content\Scripts\front-end-editing.js" />
-    <Content Include="Content\Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Content\Scripts\jquery.validate.min.js" />
-    <Content Include="Content\Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Content\Scripts\respond.min.js" />
-    <Content Include="Content\Styles\style.css" />
+    <Content Include="Apps\Core\Content\Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Apps\Core\Content\Scripts\jquery.validate.min.js" />
+    <Content Include="Apps\Core\Content\Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Apps\Core\Content\Scripts\respond.min.js" />
+    <Content Include="Apps\Core\Content\Styles\style.css" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -519,6 +527,14 @@
     <Content Include="Apps\Core\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Apps\Articles\Areas\Admin\Views\Web.config" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\Article.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleList.cshtml" />
+    <Content Include="Apps\Articles\Views\Pages\Article.cshtml" />
+    <Content Include="Apps\Articles\Views\Pages\ArticleList.cshtml" />
+    <Content Include="Apps\Articles\Views\Shared\ShowCategories.cshtml" />
+    <Content Include="Apps\Articles\Views\Web.config" />
+    <Content Include="Apps\Articles\Views\Widgets\ArticleCategories.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
@@ -672,7 +688,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
-    <Folder Include="Apps\Core\Controllers\" />
+    <Folder Include="Apps\Core\Content\Images\" />
     <Folder Include="Apps\Core\Entities\" />
     <Folder Include="Apps\Core\Metadata\" />
     <Folder Include="Apps\Core\Services\" />

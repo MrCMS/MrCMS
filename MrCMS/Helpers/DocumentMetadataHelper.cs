@@ -55,7 +55,7 @@ namespace MrCMS.Helpers
         public static string GetIconClass(Document document)
         {
             var documentTypeDefinition =
-                DocumentMetadatas.FirstOrDefault(x => document.GetType().Name.StartsWith(x.TypeName));
+                DocumentMetadatas.FirstOrDefault(x => document.GetType().Name.Equals(x.TypeName, StringComparison.OrdinalIgnoreCase));
 
             return documentTypeDefinition != null ? documentTypeDefinition.IconClass : null;
         }
