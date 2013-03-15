@@ -1,7 +1,0 @@
-﻿@model MrCMS.Web.Application.Pages.TextPage
-<h1>@Editable(Model, page => page.Name) </h1>
-<div class="right">
-    @RenderImage(Model.FeatureImage)
-</div>
-
-@Editable(Model, page => page.BodyContent, true)

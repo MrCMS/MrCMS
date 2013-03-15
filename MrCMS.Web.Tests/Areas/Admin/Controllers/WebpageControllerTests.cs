@@ -10,7 +10,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
-using MrCMS.Web.Application.Pages;
+using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Tests.Stubs;

@@ -1,0 +1,37 @@
+﻿@using MrCMS.Website
+@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Core.Models.NavigationList
+@{
+    var currentPage = CurrentRequestData.CurrentPage;
+    var activePages = currentPage.ActivePages.Select(webpage => "/" + webpage.LiveUrlSegment).ToList();
+}
+    <ul class="nav">
+        @foreach (var page in Model)
+        {
+            if (@page.Children.Any())
+            {
+            <li class="dropdown @(activePages.Any(s => s == page.Url.ToString()) ? "active" : "")">
+                <a href="@page.Url" class="dropdown-toggle" data-toggle="dropdown">@page.Text</a>
+                @if (page.Children.Any())
+                {
+                    <ul class="dropdown-menu">
+                        @foreach (var record in page.Children)
+                        {
+                            <li class="@(activePages.Contains(record.Url.ToString(), StringComparer.OrdinalIgnoreCase) ? "active" : "")">
+
+                               <a href="@record.Url">@record.Text</a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </li> 
+            }
+            else
+            {
+            <li class="@(activePages.Any(s => s == page.Url.ToString()) ? "active" : "")">
+               <a href="@page.Url">@page.Text</a>
+            </li>      
+            }
+
+        }
+    </ul>

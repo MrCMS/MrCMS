@@ -7,8 +7,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Installation;
 using MrCMS.Services;
-using MrCMS.Web.Application.Pages;
-using MrCMS.Web.Application.Widgets;
+using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 
@@ -59,17 +58,6 @@ namespace MrCMS.Web.Controllers
             SetInitialWebpages(model);
             InstallationResult installationResult = _installationService.Install(model);
 
-            // add navigation
-            //var navigation = new Navigation
-            //                     {
-            //                         Name = "Main Navigation",
-            //                         LayoutArea =
-            //                             model.BaseLayout.LayoutAreas.FirstOrDefault(
-            //                                 x => x.AreaName == "Main Navigation")
-            //                     };
-
-            //var widgetService = MrCMSApplication.Get<IWidgetService>().AddWidget(navigation);
-
             if (!installationResult.Success)
                 return View(model);
             else return Redirect("~");
@@ -80,7 +68,7 @@ namespace MrCMS.Web.Controllers
             model.BaseLayout = new Layout
                                    {
                                        Name = "Base Layout",
-                                       UrlSegment = "~/Views/Shared/_BaseLayout.cshtml",
+                                       UrlSegment = "~/Apps/CoreApp/Views/Shared/_BaseLayout.cshtml",
                                        LayoutAreas = new List<LayoutArea>()
                                    };
             model.HomePage = new TextPage

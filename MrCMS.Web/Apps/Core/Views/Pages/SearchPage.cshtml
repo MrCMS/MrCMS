@@ -1,0 +1,29 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Models
+@using MrCMS.Paging
+@model MrCMS.Web.Apps.Core.Pages.SearchPage
+<h1>@Model.Name</h1>
+@Html.RenderBodyContent(Model.BodyContent)
+@using (Html.BeginForm())
+{
+    @Html.Label("term", "Search")
+    @Html.TextBox("term", ViewData["term"])
+    <div>
+        <input type="submit" value="Search" class="btn btn-primary" />
+    </div>
+}
+
+@{
+    var results = ViewData["searchResults"] as IPagedList<SearchResult>;
+}
+
+<ul>
+    @foreach(var result in results)
+    {
+        <li>
+            <a href="/@result.Url">@result.Name</a>
+        </li>
+    }
+</ul>
+
+@Html.PageCurrentPage(results, i => new { p = i }, PagedListRenderOptions.PageNumbersOnly)

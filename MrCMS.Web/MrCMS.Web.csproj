@@ -126,17 +126,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\DbConfiguration\PlainTextWidgetOveride.cs" />
-    <Compile Include="Application\DbConfiguration\TextPageOverride.cs" />
-    <Compile Include="Application\DbConfiguration\TextWidgetOveride.cs" />
-    <Compile Include="Application\Models\NavigationRecord.cs" />
-    <Compile Include="Application\Pages\SearchPage.cs" />
-    <Compile Include="Application\Pages\TextPage.cs" />
-    <Compile Include="Application\Widgets\Navigation.cs" />
-    <Compile Include="Application\Widgets\PlainTextWidget.cs" />
-    <Compile Include="Application\Widgets\TextWidget.cs" />
-    <Compile Include="Apps\Example\ExampleApp.cs" />
-    <Compile Include="Apps\Example\Pages\HelloPage.cs" />
+    <Compile Include="Apps\Core\DbConfiguration\PlainTextWidgetOveride.cs" />
+    <Compile Include="Apps\Core\DbConfiguration\TextWidgetOveride.cs" />
+    <Compile Include="Apps\Core\Models\NavigationList.cs" />
+    <Compile Include="Apps\Core\Models\NavigationRecord.cs" />
+    <Compile Include="Apps\Core\Pages\SearchPage.cs" />
+    <Compile Include="Apps\Core\Pages\TextPage.cs" />
+    <Compile Include="Apps\Core\Widgets\Navigation.cs" />
+    <Compile Include="Apps\Core\Widgets\PlainTextWidget.cs" />
+    <Compile Include="Apps\Core\Widgets\TextWidget.cs" />
+    <Compile Include="Apps\Core\CoreApp.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
@@ -164,9 +163,9 @@
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\InPageMrCMSAdminController.cs" />
-    <Compile Include="Controllers\SearchPageController.cs" />
+    <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
     <Compile Include="Controllers\SEOController.cs" />
-    <Compile Include="Controllers\TextPageController.cs" />
+    <Compile Include="Apps\Core\Controllers\TextPageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -516,14 +515,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\readme.md" />
-    <Content Include="Apps\Example\Areas\Admin\Views\Web.config">
+    <Content Include="Apps\Core\Areas\Admin\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Apps\Example\Views\Web.config">
+    <Content Include="Apps\Core\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Apps\Example\Areas\Admin\Views\Webpage\HelloPage.cshtml" />
-    <Content Include="Apps\Example\Views\Pages\HelloPage.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
@@ -549,7 +546,7 @@
     <Content Include="Areas\Admin\Views\Layout\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Redirect.cshtml" />
-    <Content Include="Views\Widget\PlainTextWidget.cshtml" />
+    <Content Include="Apps\Core\Views\Widgets\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Add.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Sizes.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\MiniUploader.cshtml" />
@@ -616,7 +613,7 @@
     <Content Include="Areas\Admin\Views\Webpage\ViewPosting.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Versions.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\RemoveMedia.cshtml" />
-    <Content Include="Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widgets\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Settings.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\SiteList.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
@@ -626,8 +623,8 @@
     <Content Include="Areas\Admin\Views\Sites\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\NavLinks.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\InPageEditor.cshtml" />
-    <Content Include="Views\Shared\_BaseLayout.cshtml" />
-    <Content Include="Views\Pages\SearchPage.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\_BaseLayout.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\SearchPage.cshtml" />
     <Content Include="Views\Login\ForgottenPassword.cshtml" />
     <Content Include="Views\Login\ForgottenPasswordSent.cshtml" />
     <Content Include="Views\Login\PasswordReset.cshtml" />
@@ -660,7 +657,7 @@
     <Content Include="Areas\Admin\Views\Webpage\Preview.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\RedirectEdit.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\SortFiles.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\TextPage.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Webpage\TextPage.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\FormProperty.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\FormPropertyOptions.cshtml" />
     <Content Include="Areas\Admin\Views\Form\AddProperty.cshtml" />
@@ -672,23 +669,15 @@
     <Content Include="Areas\Admin\Views\Webpage\FormDesign.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
-    <Content Include="Views\Widget\Navigation.cshtml" />
+    <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
     <None Include="Properties\PublishProfiles\v0.2.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Application\Entities\" />
-    <Folder Include="Application\Services\" />
-    <Folder Include="Application\Settings\" />
-    <Folder Include="Apps\Example\Areas\Admin\Controllers\" />
-    <Folder Include="Apps\Example\Controllers\" />
-    <Folder Include="Apps\Example\DbConfiguration\" />
-    <Folder Include="Apps\Example\Entities\" />
-    <Folder Include="Apps\Example\Metadata\" />
-    <Folder Include="Apps\Example\Models\" />
-    <Folder Include="Apps\Example\Services\" />
-    <Folder Include="Apps\Example\Settings\" />
-    <Folder Include="Apps\Example\Views\Widgets\" />
-    <Folder Include="Apps\Example\Widgets\" />
+    <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
+    <Folder Include="Apps\Core\Entities\" />
+    <Folder Include="Apps\Core\Metadata\" />
+    <Folder Include="Apps\Core\Services\" />
+    <Folder Include="Apps\Core\Settings\" />
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
@@ -733,7 +722,7 @@
     <Content Include="Areas\Admin\Views\Webpage\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Show.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Widget\TextWidget.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widgets\TextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
   </ItemGroup>
@@ -753,11 +742,11 @@
     <Content Include="Areas\Admin\Views\MediaCategory\ImageSelector.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImageList.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImagePreview.cshtml" />
-    <Content Include="Views\Pages\TextPage.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\TextPage.cshtml" />
     <Content Include="Views\Install\Setup.cshtml" />
     <Content Include="Views\Shared\_Installation.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
-    <Content Include="Views\Widget\TextWidget.cshtml" />
+    <Content Include="Apps\Core\Views\Widgets\TextWidget.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
