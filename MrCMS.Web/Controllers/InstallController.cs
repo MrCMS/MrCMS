@@ -68,7 +68,7 @@ namespace MrCMS.Web.Controllers
             model.BaseLayout = new Layout
                                    {
                                        Name = "Base Layout",
-                                       UrlSegment = "~/Apps/CoreApp/Views/Shared/_BaseLayout.cshtml",
+                                       UrlSegment = "~/Apps/Core/Views/Shared/_BaseLayout.cshtml",
                                        LayoutAreas = new List<LayoutArea>()
                                    };
             model.HomePage = new TextPage

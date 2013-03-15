@@ -1,5 +1,4 @@
 ﻿@using MrCMS.Entities.Documents.Web
-@using MrCMS.Helpers
 @model Webpage
 @{
     ViewBag.Title = "Edit | " + Model.Name;
@@ -21,8 +20,8 @@
         <div class="btn-group display-inline pull-right">
             @Html.EditorFor(x => x.PublishOn)
             @(Model.PublishOn == null
-                ? Html.FormLink("Publish", "PublishNow", new { id = Model.Id }, new { @class = "btn  btn-warning" })
-                : Html.FormLink("Unpublish", "Unpublish", new { id = Model.Id }, new { @class = "btn  btn-success" }))
+                ? Html.ActionLink("Publish", "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id="publish-status-change" })
+                : Html.ActionLink("Unpublish", "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id="publish-status-change" }))
             @Html.ValidationMessageFor(x => x.PublishOn)
 
             <a href="/@Model.LiveUrlSegment" class="btn">View</a>

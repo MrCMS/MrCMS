@@ -163,9 +163,7 @@
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\InPageMrCMSAdminController.cs" />
-    <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
     <Compile Include="Controllers\SEOController.cs" />
-    <Compile Include="Apps\Core\Controllers\TextPageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -674,6 +672,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
+    <Folder Include="Apps\Core\Controllers\" />
     <Folder Include="Apps\Core\Entities\" />
     <Folder Include="Apps\Core\Metadata\" />
     <Folder Include="Apps\Core\Services\" />
