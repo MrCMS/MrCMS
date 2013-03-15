@@ -146,6 +146,9 @@
     <Compile Include="Apps\Articles\Pages\Article.cs" />
     <Compile Include="Apps\Articles\Pages\ArticleList.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleCategories.cs" />
+    <Compile Include="Apps\Galleries\Metadata\GalleryMetaData.cs" />
+    <Compile Include="Apps\Galleries\Pages\GalleryList.cs" />
+    <Compile Include="Apps\Galleries\Pages\Gallery.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
@@ -545,6 +548,9 @@
     </Content>
     <Content Include="Apps\Articles\Views\Widgets\ArticleCategories.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Widget\TopXArticles.cshtml" />
+    <Content Include="Apps\Galleries\Views\Pages\Gallery.cshtml" />
+    <Content Include="Apps\Galleries\Views\Pages\GalleryList.cshtml" />
+    <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\Gallery.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
@@ -704,17 +710,13 @@
     <Folder Include="Apps\Core\Services\" />
     <Folder Include="Apps\Core\Settings\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Controllers\" />
-    <Folder Include="Apps\Galleries\Areas\Admin\Views\Webpage\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Views\Widgets\" />
     <Folder Include="Apps\Galleries\Content\" />
     <Folder Include="Apps\Galleries\DbConfiguration\" />
     <Folder Include="Apps\Galleries\Entities\" />
-    <Folder Include="Apps\Galleries\Metadata\" />
     <Folder Include="Apps\Galleries\Models\" />
-    <Folder Include="Apps\Galleries\Pages\" />
     <Folder Include="Apps\Galleries\Services\" />
     <Folder Include="Apps\Galleries\Settings\" />
-    <Folder Include="Apps\Galleries\Views\Pages\" />
     <Folder Include="Apps\Galleries\Views\Shared\" />
     <Folder Include="Apps\Galleries\Views\Widgets\" />
     <Folder Include="Apps\Galleries\Widgets\" />

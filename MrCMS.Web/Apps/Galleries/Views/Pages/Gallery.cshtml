@@ -1,0 +1,16 @@
+﻿@model MrCMS.Web.Apps.Galleries.Pages.Gallery
+           
+
+@Model.BodyContent
+
+<div class="row">
+    @foreach (var result in Model.MediaGallery.Files.Where(file => file.IsImage))
+    {
+        <div class="span4">
+            <a href="/@result.FileLocation" title="@result.Title" alt="@result.Description">
+                <img src="/@result.FileLocation" title="@result.Title" alt="@result.Description"/>
+            </a>
+        </div>
+    }
+
+</div>

@@ -33,6 +33,9 @@ namespace MrCMS.Website.Binders
         {
             var type = GetTypeByName(controllerContext);
 
+            if (type == null)
+                type = bindingContext.ModelType;
+
             bindingContext.ModelMetadata =
                 ModelMetadataProviders.Current.GetMetadataForType(
                     () => CreateModel(controllerContext, bindingContext, type), type);
@@ -60,6 +63,9 @@ namespace MrCMS.Website.Binders
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
         {
             var type = GetTypeByName(controllerContext);
+            if (type == null)
+                type = modelType;
+
             return Activator.CreateInstance(type);
         }
 
