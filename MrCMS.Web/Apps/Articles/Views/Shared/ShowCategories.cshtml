@@ -4,7 +4,7 @@
     <ul class="nav nav-pills nav-stacked">
         @foreach (var category in Model.Tags)
         {
-            <li><a href="/@Model.LiveUrlSegment?category=@category.Name"><span>\\</span>@category.Name (@Model.ChildItems.Count(page => page.Tags.Contains(category)))<span>.</span></a></li>
+            <li><a href="/@Model.LiveUrlSegment?category=@category.Name">@category.Name (@Model.ChildItems.Count(page => page.Tags.Contains(category)))</a></li>
         }
     </ul>
 }

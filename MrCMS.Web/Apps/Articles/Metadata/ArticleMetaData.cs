@@ -18,6 +18,17 @@ namespace MrCMS.Web.Apps.Articles.Metadata
             get { return true; }
         }
 
+        public override bool AutoBlacklist
+        {
+            get { return true; }
+        }
+
+        
+        public override bool Sortable
+        {
+            get { return false; }
+        }
+
         public override IEnumerable<Type> ChildrenList
         {
             get { yield break; }

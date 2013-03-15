@@ -1,0 +1,9 @@
+﻿@model IList<MrCMS.Web.Apps.Articles.Pages.Article>
+
+@if (Model != null)
+{
+    foreach (var article in Model)
+    {
+        <h3><a href="/@article.LiveUrlSegment">@article.Name</a></h3>
+    }
+}

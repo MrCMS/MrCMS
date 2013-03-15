@@ -23,6 +23,24 @@ namespace MrCMS.Web.Apps.Articles.Metadata
             get { yield return typeof(Pages.Article); }
         }
 
+        public override bool SortByDesc
+        {
+            get { return true; }
+        }
+
+        public override Func<Document, object> SortBy
+        {
+            get
+            {
+                return document => document.CreatedOn;
+            }
+        }
+
+        public override int MaxChildNodes
+        {
+            get { return 5; }
+        }
+
         public override string WebGetController
         {
             get { return "ArticleList"; }

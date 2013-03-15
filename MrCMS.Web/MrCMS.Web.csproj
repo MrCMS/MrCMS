@@ -127,6 +127,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
+    <Compile Include="Apps\Articles\Widgets\TopXArticles.cs" />
+    <Compile Include="Apps\Galleries\GalleriesApp.cs" />
     <Compile Include="Apps\Core\DbConfiguration\PlainTextWidgetOveride.cs" />
     <Compile Include="Apps\Core\DbConfiguration\TextWidgetOveride.cs" />
     <Compile Include="Apps\Core\Models\NavigationList.cs" />
@@ -534,7 +536,15 @@
     <Content Include="Apps\Articles\Views\Pages\ArticleList.cshtml" />
     <Content Include="Apps\Articles\Views\Shared\ShowCategories.cshtml" />
     <Content Include="Apps\Articles\Views\Web.config" />
+    <Content Include="Apps\Articles\Views\Widgets\TopXArticles.cshtml" />
+    <Content Include="Apps\Galleries\Areas\Admin\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Apps\Galleries\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Apps\Articles\Views\Widgets\ArticleCategories.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\TopXArticles.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
@@ -693,6 +703,21 @@
     <Folder Include="Apps\Core\Metadata\" />
     <Folder Include="Apps\Core\Services\" />
     <Folder Include="Apps\Core\Settings\" />
+    <Folder Include="Apps\Galleries\Areas\Admin\Controllers\" />
+    <Folder Include="Apps\Galleries\Areas\Admin\Views\Webpage\" />
+    <Folder Include="Apps\Galleries\Areas\Admin\Views\Widgets\" />
+    <Folder Include="Apps\Galleries\Content\" />
+    <Folder Include="Apps\Galleries\DbConfiguration\" />
+    <Folder Include="Apps\Galleries\Entities\" />
+    <Folder Include="Apps\Galleries\Metadata\" />
+    <Folder Include="Apps\Galleries\Models\" />
+    <Folder Include="Apps\Galleries\Pages\" />
+    <Folder Include="Apps\Galleries\Services\" />
+    <Folder Include="Apps\Galleries\Settings\" />
+    <Folder Include="Apps\Galleries\Views\Pages\" />
+    <Folder Include="Apps\Galleries\Views\Shared\" />
+    <Folder Include="Apps\Galleries\Views\Widgets\" />
+    <Folder Include="Apps\Galleries\Widgets\" />
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
