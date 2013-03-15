@@ -121,10 +121,10 @@ namespace MrCMS.DbConfiguration
             var finalAssemblies = new List<Assembly>();
 
             assemblies.ForEach(assembly =>
-                {
-                    if (finalAssemblies.All(a => a.FullName != assembly.FullName))
-                        finalAssemblies.Add(assembly);
-                });
+            {
+                if (finalAssemblies.All(a => a.FullName != assembly.FullName))
+                    finalAssemblies.Add(assembly);
+            });
 
             var iPersistenceConfigurer = GetPersistenceConfigurer();
             var config = Fluently.Configure()
@@ -132,22 +132,22 @@ namespace MrCMS.DbConfiguration
                 .Mappings(m => m.AutoMappings.Add(AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
                                                 .IgnoreBase<SystemEntity>().IgnoreBase<SiteEntity>()
                                                 .IncludeBase<Document>().IncludeBase<Webpage>()
-                                                .IncludeBase<Widget>()
-                                                .IncludeBase<FormProperty>()
+                                                .IncludeBase<Widget>().IncludeBase<FormProperty>()
+                                                .IncludeAppBases()
                                                 .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
                                                 .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()))
                 .Cache(builder =>
-                           {
-                               if (CacheEnabled)
-                                   builder.UseSecondLevelCache().UseQueryCache().ProviderClass<SysCacheProvider>().
-                                       QueryCacheFactory<StandardQueryCacheFactory>();
-                           })
+                {
+                    if (CacheEnabled)
+                        builder.UseSecondLevelCache().UseQueryCache().ProviderClass<SysCacheProvider>().
+                            QueryCacheFactory<StandardQueryCacheFactory>();
+                })
                 .ExposeConfiguration(AppendListeners)
                 .ExposeConfiguration(c =>
-                                         {
-                                             c.SetProperty(Environment.GenerateStatistics, "true");
-                                             c.SetProperty(Environment.Hbm2ddlKeyWords, "auto-quote");
-                                         })
+                {
+                    c.SetProperty(Environment.GenerateStatistics, "true");
+                    c.SetProperty(Environment.Hbm2ddlKeyWords, "auto-quote");
+                })
                 .BuildConfiguration();
 
 
