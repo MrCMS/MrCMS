@@ -26,6 +26,7 @@ namespace MrCMS.Apps
 
         public static readonly Dictionary<Type, string> AppWebpages = new Dictionary<Type, string>();
         public static readonly Dictionary<Type, string> AppWidgets = new Dictionary<Type, string>();
+        public virtual IEnumerable<Type> BaseTypes { get { yield break; } }
 
         internal void CreateContextAndRegister(RouteCollection routes, object state)
         {
