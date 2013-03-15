@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Website.Controllers;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace MrCMS.Apps
         public abstract string AppName { get; }
 
         public static readonly Dictionary<Type, string> AppWebpages = new Dictionary<Type, string>();
+        public static readonly Dictionary<Type, string> AppWidgets = new Dictionary<Type, string>();
 
         internal void CreateContextAndRegister(RouteCollection routes, object state)
         {
@@ -32,8 +34,10 @@ namespace MrCMS.Apps
             if (@namespace != null)
                 context.Namespaces.Add(@namespace + ".*");
             this.RegisterApp(context);
-            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<Webpage>().FindAll(type => type.Namespace.StartsWith(this.GetType().Namespace));
-            types.ForEach(type => AppWebpages[type] = AppName);
+            var webpageTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<Webpage>().FindAll(type => type.Namespace.StartsWith(this.GetType().Namespace));
+            webpageTypes.ForEach(type => AppWebpages[type] = AppName);
+            var widgetTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<Widget>().FindAll(type => type.Namespace.StartsWith(this.GetType().Namespace));
+            widgetTypes.ForEach(type => AppWidgets[type] = AppName);
         }
 
         /// <summary>
