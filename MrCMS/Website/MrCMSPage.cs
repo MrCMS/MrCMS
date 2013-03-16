@@ -51,7 +51,11 @@ namespace MrCMS.Website
 
             var propertyInfo = PropertyFinder.GetProperty(method);
             var value = Html.ParseShortcodes(method.Compile().Invoke(model)).ToHtmlString();
-            var typeName = typeof(T).Name;
+            var typeName = "";
+            if (model is Webpage) //get base document type as using generic interfaces cause issues using Editable I.E DocumentContainer
+                typeName = (model as Webpage).DocumentType;
+            else
+                typeName = model.GetType().Name;
 
             if (EditingEnabled  && propertyInfo != null)
             {
