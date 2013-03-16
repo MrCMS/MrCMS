@@ -7,18 +7,19 @@
 {
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/add-category.js")"></script>
 }
-<div class="row-fluid">
-    <div class="span10">
-        <h3>Add Media Category</h3>
-    </div>
-    <div class="span2">
-        <button class="btn pull-right" data-form-id="add-media-category" data-action="save">
-            Save & Continue</button>
-    </div>
-</div>
-<hr class="small-margin" />
+
 @using (Html.BeginForm("Add", "MediaCategory", new { id = "" }, FormMethod.Post, new { id = "add-media-category" }))
 {
+    <div class="row-fluid">
+        <div class="span10">
+            <h3>Add Folder</h3>
+        </div>
+        <div class="span2">
+            <button class="btn pull-right btn-primary" data-form-id="add-media-category" data-action="save">
+               Continue</button>
+        </div>
+    </div>
+    
     @Html.HiddenFor(x => x.Parent.Id)
     @Html.LabelFor(x => x.Name, "Category Name")
     @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
