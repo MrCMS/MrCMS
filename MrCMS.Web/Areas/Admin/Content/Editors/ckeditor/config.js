@@ -10,7 +10,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.filebrowserImageBrowseUrl = '#';
     config.height = '300px';
 
-    config.contentsCss = ['/Content/bootstrap/css/bootstrap.min.css', '/Content/Styles/style.css'];
+    config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.min.css', '/Apps/Core/Content/Styles/style.css'];
 
     config.toolbar = 'Full';
 

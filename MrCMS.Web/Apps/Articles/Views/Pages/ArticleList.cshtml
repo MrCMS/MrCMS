@@ -5,7 +5,7 @@
 {
     <div class="row-fluid">
         <div class="span12">
-            <h3 class="margin-top-0"><a href="/@page.LiveUrlSegment" class="margin-top-0">@page.Name</a> </h3>
+            <h3 class="margin-top-0"><a href="/@page.LiveUrlSegment" class="margin-top-0">@page.Name </a></h3>
             @page.CreatedOn.Day @page.CreatedOn.ToString("MMMMM") @page.CreatedOn.Year
 
             @if (!String.IsNullOrEmpty(page.FeatureImage))
@@ -16,7 +16,6 @@
             @Editable(page, p => p.Abstract)
         </div>
     </div>
-    <hr />
 }
 @if (Model.AllowPaging)
 {

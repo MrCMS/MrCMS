@@ -20,11 +20,12 @@
             <h3>Edit - @Model.Name</h3>
         </div>
         <div class="span8">
+
             <div class="btn-group  display-inline  pull-right">
-                    <a href="@Url.Action("SortFiles", "MediaCategory", new { id = Model.Id })" class="btn ">Sort</a>
+                <a href="@Url.Action("SortFiles", "MediaCategory", new { id = Model.Id })" class="btn ">Sort</a>
                 @if (Model.CanDelete)
                 {
-                    <a href="@Url.Action("Delete", "MediaCategory", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete Category</a>
+                    <a href="@Url.Action("Delete", "MediaCategory", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                 }
                 <button class="btn btn-primary" id="save-edit" data-form-id="edit-media" data-action="save">
                     Save</button>
@@ -46,20 +47,20 @@
                 @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
                 @Html.LabelFor(x => x.UrlSegment, "Path")
                 @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12", disabled = "true" })
-                @Html.LabelFor(x => x.IsGallery)
-                @Html.CheckBoxFor(x => x.IsGallery)
-                <p>
-                    Created on: @Model.CreatedOn.ToShortDateString()
-                </p>
-                <p>
+                <label class="checkbox">
+                    @Html.CheckBoxFor(x => x.IsGallery) Allow use as gallery?
+                </label>
+                
+                <p class="font-small">
+                    Created on: @Model.CreatedOn.ToShortDateString()<br />
                     Last Updated on: @Model.UpdatedOn.ToShortDateString()
                 </p>
             }
         </div>
         <div id="media" class="tab-pane active">
-            <h4>Add Files</h4>
-            <br />
-            <p id="dragdropsupported">To upload files please drag files them here.</p>
+            
+            <h4 style="margin-top: 0;">Add Files</h4>
+            <p id="dragdropsupported" style="border: 2px dotted #808080; height: 30px; line-height: 30px;" onmouseover="$(this).css('background','#e7e7e7')" onmouseout="$(this).css('background','#fff')">&nbsp;Drag files here to upload.</p>
 
             @{ Html.RenderPartial("Upload", Model); }
 
