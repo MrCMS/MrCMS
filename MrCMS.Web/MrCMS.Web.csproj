@@ -660,8 +660,6 @@
     <Content Include="Apps\Core\Views\Pages\SearchPage.cshtml" />
     <Content Include="Views\Login\ForgottenPassword.cshtml" />
     <Content Include="Views\Login\ForgottenPasswordSent.cshtml" />
-    <Content Include="Views\Login\PasswordReset.cshtml" />
-    <Content Include="Views\Login\ResetComplete.cshtml" />
     <Content Include="Areas\Admin\Views\User\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\SiteList.cshtml" />
@@ -704,6 +702,8 @@
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
     <None Include="Properties\PublishProfiles\v0.2.pubxml" />
+    <Content Include="Views\Login\PasswordReset.cshtml" />
+    <Content Include="Views\Login\ResetComplete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
