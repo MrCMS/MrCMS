@@ -29,9 +29,9 @@ namespace MrCMS.Paging
         protected internal BasePagedList(int pageNumber, int pageSize, int totalItemCount)
         {
             if (pageNumber < 1)
-                throw new ArgumentOutOfRangeException("pageNumber", pageNumber, "PageNumber cannot be below 1.");
-            if (pageSize < 1)
-                throw new ArgumentOutOfRangeException("pageSize", pageSize, "PageSize cannot be less than 1.");
+                pageNumber = 1; //throw new ArgumentOutOfRangeException("pageNumber", pageNumber, "PageNumber cannot be below 1.");
+            if (pageSize <= 1)
+                pageSize = 10;
 
             // set source to blank list if superset is null to prevent exceptions
             TotalItemCount = totalItemCount;
