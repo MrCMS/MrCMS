@@ -6,22 +6,28 @@
         <div class="span12">
             <div class="row-fluid">
                 <div class="span7">
-                    <h4>Properties</h4>
+                    <h4>Form Fields</h4>
                 </div>
                 <div class="span5">
                     <div class="pull-right">
-                        @Html.ActionLink("Add Property", "AddProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-primary btn-mini", data_toggle = "fb-modal" })
+                        @Html.ActionLink("Add Field", "AddProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-primary btn-mini", data_toggle = "fb-modal" })
                     </div>
                 </div>
             </div>
             <div class="row-fluid">
                 <div class="span12">
-                    @*<div id="my-form-builder"></div>*@
-                    @foreach (var property in Model.FormProperties)
+                    @if (Model.FormProperties.Any())
                     {
-                        <div class="row-fluid">
-                            @{ Html.RenderPartial("FormProperty", property); }
-                        </div>
+                        foreach (var property in Model.FormProperties)
+                        {
+                            <div class="row-fluid">
+                                @{ Html.RenderPartial("FormProperty", property); }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        @:No form fields added.
                     }
                 </div>
             </div>
