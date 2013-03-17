@@ -13,6 +13,6 @@ namespace MrCMS.Web.Apps.Articles.Pages
         [DisplayName("Allow Paging")]
         public virtual bool AllowPaging { get; set; }
 
-        public virtual IEnumerable<Article> ChildItems { get { return PublishedChildren.OfType<Article>().OrderByDescending(page => page.CreatedOn); } }
+        public virtual IEnumerable<Article> ChildItems { get { return PublishedChildren.OfType<Article>().OrderByDescending(page => page.DisplayOrder); } }
     }
 }

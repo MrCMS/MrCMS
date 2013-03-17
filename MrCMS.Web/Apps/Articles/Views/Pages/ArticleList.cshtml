@@ -1,5 +1,8 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Articles.Pages
 @model MrCMS.Entities.Documents.Web.CategoryContainer<MrCMS.Web.Apps.Articles.Pages.Article>
+           
+@Editable(Model, p=>p.BodyContent, true)
 
 @foreach (var page in Model.ChildItemsPaged)
 {

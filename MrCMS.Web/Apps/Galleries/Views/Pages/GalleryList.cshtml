@@ -1,1 +1,21 @@
-﻿
+﻿@using System.Drawing
+@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Articles.Pages
+@model MrCMS.Entities.Documents.Web.CategoryContainer<MrCMS.Web.Apps.Galleries.Pages.Gallery>
+           
+@Editable(Model, p=>p.BodyContent, true)
+
+@foreach (var page in Model.ChildItemsPaged)
+{
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="margin-top-0"><a href="/@page.LiveUrlSegment" class="margin-top-0">@page.Name </a></h3>
+            @Html.RenderImage(page.ThumbnailImage, new Size{Width = 100, Height = 100})
+        </div>
+    </div>
+}
+@if (Model.AllowPaging)
+{
+    @Html.PageCurrentPage(Model.ChildItemsPaged, i => new { p = i }, PagedListRenderOptions.PageNumbersOnly)
+}
+

@@ -1,0 +1,11 @@
+﻿@model MrCMS.Web.Apps.Galleries.Pages.GalleryList 
+           <hr />
+@Html.LabelFor(model => model.PageSize)
+@Html.EditorFor(model => model.PageSize)
+
+@Html.LabelFor(model => model.AllowPaging)
+@Html.EditorFor(model => model.AllowPaging)
+
+@Html.LabelFor(x => x.TagList, "Tags")
+@Html.TextBoxFor(x => x.TagList, new { @class = "span12" })
+
