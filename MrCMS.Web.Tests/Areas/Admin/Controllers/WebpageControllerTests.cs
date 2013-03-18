@@ -263,9 +263,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_Delete_ReturnsRedirectToIndex()
         {
             WebpageController webpageController = GetWebpageController();
+            var stubWebpage = new StubWebpage();    
 
-            webpageController.Delete(null).Should().BeOfType<RedirectToRouteResult>();
-            webpageController.Delete(null).As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
+            webpageController.Delete(stubWebpage).Should().BeOfType<RedirectToRouteResult>();
+            webpageController.Delete(stubWebpage).As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
 
         [Fact]

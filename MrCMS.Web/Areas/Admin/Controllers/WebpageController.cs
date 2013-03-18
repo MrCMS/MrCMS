@@ -79,7 +79,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult PublishNow(Webpage webpage)
         {
             _documentService.PublishNow(webpage);
-
+            
             return RedirectToAction("Edit", new { id = webpage.Id });
         }
 

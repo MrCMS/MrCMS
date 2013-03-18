@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -49,6 +50,21 @@ namespace MrCMS.Website.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 JsonData = data
             };
+        }
+
+        protected void SetSuccessMessage(string message)
+        {
+            TempData["success-message"] = message;
+        }
+
+        protected void SetErrorMessage(string message)
+        {
+            TempData["error-message"] = message;
+        }
+
+        protected void SetInfoMessage(string message)
+        {
+            TempData["info-message"] = message;
         }
     }
 }

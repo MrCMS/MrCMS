@@ -5,15 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.formbuilder.css")" rel="stylesheet" type="text/css" />
-<section class="admin-header">
-    @if (TempData["saved"] != null)
-    {
-        <div class="alert alert-success">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            @TempData["saved"]
-        </div>
-    }
-</section>
+
 <div class="row-fluid">
     <div class="span12">
         <a id="move-to" class="btn btn-info" title="Drag on to new page to relocate" href="#" style="cursor: move">Move to...</a>
