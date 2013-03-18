@@ -147,6 +147,7 @@ namespace MrCMS.Services
         }
 
 
+
         public T GetDocumentByUrl<T>(string url) where T : Document
         {
             return
@@ -174,7 +175,7 @@ namespace MrCMS.Services
 
             //make sure the URL is unique
 
-            if (GetDocumentByUrl<Webpage>(stringBuilder.ToString()) != null)
+            if (!IsValidForNewWebpage(stringBuilder.ToString()))
             {
                 var counter = 1;
 
@@ -475,6 +476,11 @@ namespace MrCMS.Services
         public DocumentMetadata GetDefinitionByType(Type type)
         {
             return DocumentMetadataHelper.GetMetadataByType(type);
+        }
+
+        public bool IsValidForNewWebpage(string url)
+        {
+            return GetDocumentByUrl<Webpage>(url) == null;
         }
     }
 }
