@@ -20,7 +20,8 @@ namespace MrCMS.Website.Binders
 
             var objects = settingTypes.Select(type =>
                                                   {
-                                                      var configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
+                                                      var configurationProvider =
+                                                          MrCMSApplication.Get<IConfigurationProvider>();
 
                                                       var methodInfo = GetGetSettingsMethod();
 
@@ -28,7 +29,7 @@ namespace MrCMS.Website.Binders
                                                           methodInfo.MakeGenericMethod(type)
                                                                     .Invoke(configurationProvider,
                                                                             new object[] {});
-                                                  }).OfType<T>().ToList();
+                                                  }).OfType<T>().Where(arg => arg.RenderInSettings).ToList();
 
             foreach (var settings in objects)
             {

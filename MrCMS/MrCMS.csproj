@@ -302,6 +302,7 @@
     <Compile Include="Settings\ConfigurationProvider.cs" />
     <Compile Include="Settings\DropDownSelectionAttribute.cs" />
     <Compile Include="Settings\GenericListTypeConverter.cs" />
+    <Compile Include="Settings\GlobalSettingsBase.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />
     <Compile Include="Settings\ISiteSettings.cs" />
     <Compile Include="Settings\ISettingService.cs" />
@@ -311,6 +312,7 @@
     <Compile Include="Settings\SeoSettings.cs" />
     <Compile Include="Settings\SettingService.cs" />
     <Compile Include="Settings\SiteSettings.cs" />
+    <Compile Include="Settings\SiteSettingsBase.cs" />
     <Compile Include="Settings\SiteSettingsOptionGenerator.cs" />
     <Compile Include="Settings\TextAreaAttribute.cs" />
     <Compile Include="Shortcodes\Forms\CheckBoxListRenderer.cs" />
