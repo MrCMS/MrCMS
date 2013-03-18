@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Settings;
 using MrCMS.Website.Binders;
@@ -21,7 +22,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public ViewResult Index()
         {
-            var settings = _configurationProvider.GetAllSiteSettings();
+            var settings = _configurationProvider.GetAllSiteSettings().FindAll(arg => arg.RenderInSettings);
             settings.ForEach(@base => @base.SetViewData(_session,ViewData));
             return View(settings);
         }

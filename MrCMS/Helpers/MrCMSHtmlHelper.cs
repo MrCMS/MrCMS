@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
@@ -21,10 +19,8 @@ using MrCMS.Apps;
 using MrCMS.Services;
 using MrCMS.Shortcodes;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
 using MrCMS.Website.Optimization;
 using Newtonsoft.Json;
-using Ninject;
 
 namespace MrCMS.Helpers
 {
