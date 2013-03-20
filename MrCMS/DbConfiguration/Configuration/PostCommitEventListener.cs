@@ -48,7 +48,7 @@ namespace MrCMS.DbConfiguration.Configuration
                     if (anyChanges)
                     {
                         var document = GetDocument(session, @event.Entity as Document);
-
+ 
                         var documentVersion = new DocumentVersion
                                                   {
                                                       Document = document,
