@@ -164,11 +164,11 @@ namespace MrCMS.Services
 
             //make sure the URL is unique
 
-            if (!IsValidForNewWebpage(stringBuilder.ToString(),0))
+            if (!IsValidForWebpage(stringBuilder.ToString(), null))
             {
                 var counter = 1;
 
-                while (GetDocumentByUrl<Webpage>(string.Format("{0}-{1}", stringBuilder, counter)) != null)
+                while (!IsValidForWebpage(string.Format("{0}-{1}", stringBuilder, counter), null))
                     counter++;
 
                 stringBuilder.AppendFormat("-{0}", counter);
@@ -322,7 +322,7 @@ namespace MrCMS.Services
 
             //NEWBIE
 
-            if (IsValidForNewWebpage(document.UrlSegment,0))
+            if (IsValidForWebpage(document.UrlSegment, 0))
             {
                 _session.SaveOrUpdate(document);
             }
@@ -473,45 +473,40 @@ namespace MrCMS.Services
             return DocumentMetadataHelper.GetMetadataByType(type);
         }
 
-
-        //NEWBIE
-        public bool IsValidForNewWebpage(string url, int id)
+        public bool IsValidForWebpage(string url, int? id)
         {
-            if (id != 0)
+            if (id.HasValue)
             {
-                Document currentDoc = GetDocumentByIdAndUrl<Document>(id, url);
-                if (currentDoc != null)
-                    return true;
+                var document = GetDocument<Webpage>(id.Value);
+                return document != null && document.UrlSegment == url;
             }
 
-                if (GetDocumentByUrl<Webpage>(url) != null || GetUrlHistoryByUrl<UrlHistory>(url).Count > 0)
-                    return false;
-                else
-                    return true;
+            return !ExistsInWebpageList(url) && !ExistsInUrlHistory(url);
         }
-        public UrlHistory GetUrlHistory(int id)
-        {
-            return _session.Get<UrlHistory>(id);
-        }
+
         public T GetDocumentByUrl<T>(string url) where T : Document
         {
             return _session.QueryOver<T>()
                         .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
-                        .Take(1)
+                        .Take(1).Cacheable()
                         .SingleOrDefault();
         }
-        public T GetDocumentByIdAndUrl<T>(int id,string url) where T : Document
+
+        private bool ExistsInWebpageList(string url) 
         {
-            return _session.QueryOver<T>()
-                        .Where(doc => doc.Id == id && doc.UrlSegment == url)
-                        .SingleOrDefault();
-        }
-        public IList<T> GetUrlHistoryByUrl<T>(string url) where T : UrlHistory
-        {
-            return 
-                _session.QueryOver<T>()
+            return _session.QueryOver<Webpage>()
                         .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
-                        .List();
+                        .Cacheable()
+                        .RowCount() > 0;
+        }
+
+        private bool ExistsInUrlHistory(string url)
+        {
+            return
+                _session.QueryOver<UrlHistory>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Cacheable()
+                        .RowCount() > 0;
         }
     }
 }

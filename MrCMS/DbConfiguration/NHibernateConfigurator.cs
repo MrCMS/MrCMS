@@ -166,7 +166,6 @@ namespace MrCMS.DbConfiguration
             var saveOrUpdateListener = new SaveOrUpdateListener();
             var updateIndexesListener = new UpdateIndexesListener();
             var postCommitEventListener = new PostCommitEventListener();
-            //NEWBIE
             var urlHistoryListener = new UrlHistoryListener();
             configuration.EventListeners.SaveOrUpdateEventListeners =
                  new ISaveOrUpdateEventListener[]

@@ -65,6 +65,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             WebpageController webpageController = GetWebpageController();
             var webpage = new TextPage { Site = new Site() };
+            A.CallTo(() => documentService.IsValidForWebpage(null, null)).Returns(true);
 
             webpageController.Add(webpage);
 
@@ -72,15 +73,40 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WebpageController_AddPost_ShouldRedirectToView()
+        public void WebpageController_AddPost_ShouldRedirectToEdit()
         {
             WebpageController webpageController = GetWebpageController();
-
             var webpage = new TextPage { Id = 1 };
+            A.CallTo(() => documentService.IsValidForWebpage(null, null)).Returns(true);
+
             var result = webpageController.Add(webpage) as RedirectToRouteResult;
 
             result.RouteValues["action"].Should().Be("Edit");
             result.RouteValues["id"].Should().Be(1);
+        }
+
+        [Fact]
+        public void WebpageController_AddPost_IfIsValidForWebpageIsFalseShouldReturnViewResult()
+        {
+            WebpageController webpageController = GetWebpageController();
+            var webpage = new TextPage { Id = 1 };
+            A.CallTo(() => documentService.IsValidForWebpage(null, null)).Returns(false);
+
+            var result = webpageController.Add(webpage);
+
+            result.Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void WebpageController_AddPost_IfIsValidForWebpageIsFalseShouldReturnPassedObjectAsModel()
+        {
+            WebpageController webpageController = GetWebpageController();
+            var webpage = new TextPage { Id = 1 };
+            A.CallTo(() => documentService.IsValidForWebpage(null, null)).Returns(false);
+
+            var result = webpageController.Add(webpage);
+
+            result.As<ViewResult>().Model.Should().Be(webpage);
         }
 
         [Fact]
@@ -154,6 +180,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_EditPost_ShouldCallSaveDocument()
         {
             WebpageController webpageController = GetWebpageController();
+            A.CallTo(() => documentService.IsValidForWebpage(null, 1)).Returns(true);
             Webpage textPage = new TextPage { Id = 1 };
 
             webpageController.Edit(textPage);
@@ -165,6 +192,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_EditPost_ShouldRedirectToEdit()
         {
             WebpageController webpageController = GetWebpageController();
+            A.CallTo(() => documentService.IsValidForWebpage(null, 1)).Returns(true);
             var textPage = new TextPage { Id = 1 };
 
             ActionResult actionResult = webpageController.Edit(textPage);

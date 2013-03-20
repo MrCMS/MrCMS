@@ -42,6 +42,6 @@ namespace MrCMS.Services
         DocumentVersion GetDocumentVersion(int id);
         void SetParent(Document document, int? parentId);
         DocumentMetadata GetDefinitionByType(Type type);
-        bool IsValidForNewWebpage(string url, int id);
+        bool IsValidForWebpage(string url, int? id);
     }
 }

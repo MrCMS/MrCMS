@@ -190,7 +190,7 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Form Data")]
         public virtual string FormData { get; set; }
 
-        public virtual IList<FormProperty> FormProperties { get; set; } 
+        public virtual IList<FormProperty> FormProperties { get; set; }
 
         public virtual IList<FormPosting> FormPostings { get; set; }
 
@@ -315,13 +315,11 @@ namespace MrCMS.Entities.Documents.Web
 
 
 
-        //NEWBIE
-
         private IList<UrlHistory> _urls = new List<UrlHistory>();
 
         public virtual IList<UrlHistory> Urls
         {
-            get { return _urls.OrderByDescending(x=>x.CreatedOn).ToList(); }
+            get { return _urls.OrderByDescending(x => x.CreatedOn).ToList(); }
             protected internal set { _urls = value; }
         }
 

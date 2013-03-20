@@ -24,7 +24,6 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(webpage => webpage.MetaDescription).CustomType<VarcharMax>().Length(4001);
             mapping.Map(webpage => webpage.FormDesign).CustomType<VarcharMax>().Length(4001);
 
-            //NEWBIE
             mapping.HasMany(posting => posting.Urls).Cascade.Delete();
         }
     }

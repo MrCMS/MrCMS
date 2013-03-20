@@ -41,21 +41,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public virtual ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] T doc)
         {
-            //NEWBIE
-            if (_documentService.IsValidForNewWebpage(doc.UrlSegment,0))
-            {
-                _documentService.AddDocument(doc);
-                TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
-                return RedirectToAction("Edit", new { id = doc.Id });
-            }
-
-            TempData.ErrorMessages().Add("Url is already used for another webpage. Please change it to something else.");
-            var model = new AddPageModel
-            {
-                Parent = doc
-            };
-            DocumentTypeSetup(model as T);
-            return View(model);
+            _documentService.AddDocument(doc);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
+            return RedirectToAction("Edit", new { id = doc.Id });
         }
 
         [HttpGet]
@@ -72,19 +60,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] T doc)
+        public virtual ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] T doc)
         {
-            //NEWBIE
-            if (_documentService.IsValidForNewWebpage(doc.UrlSegment,doc.Id))
-            {
-                _documentService.SaveDocument(doc);
-                TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
-                return RedirectToAction("Edit", new { id = doc.Id });
-            }
-
-            TempData.ErrorMessages().Add("Url is already used for another webpage. Please change it to something else.");
-            DocumentTypeSetup(doc);
-            return View(doc);
+            _documentService.SaveDocument(doc);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
+            return RedirectToAction("Edit", new { id = doc.Id });
         }
 
         [HttpGet]

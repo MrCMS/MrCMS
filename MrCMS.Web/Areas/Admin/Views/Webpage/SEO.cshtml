@@ -14,32 +14,31 @@
 
         <br />
         <br />
-      <p>Url History</p>
+        <p>Url History</p>
 
         <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>
-                    Created On
-                </th>
-                <th>Url Segment
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var url in Model.Urls)
-            {
+            <thead>
                 <tr>
-                    <td>
-                        @url.CreatedOn
-                    </td>
-                    <td>
-                        @url.UrlSegment
-                    </td>
+                    <th>Created On
+                    </th>
+                    <th>Url Segment
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var url in Model.Urls)
+                {
+                    <tr>
+                        <td>
+                            @url.CreatedOn
+                        </td>
+                        <td>
+                            @url.UrlSegment
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
     </div>
 
