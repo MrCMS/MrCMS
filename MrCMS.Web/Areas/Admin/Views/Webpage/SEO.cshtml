@@ -2,9 +2,47 @@
 @model Webpage
 <div class="tab-pane" id="edit-seo">
     <div class="display-inline">
-        <i class="icon-exclamation-sign" rel="tooltip" data-placement="top" data-original-title="The permalink should not be changed after the page is created. If you change the URL, make sure to make a redirect from the old URL to the new URL for search engines to still find your page."></i><i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar. For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>Permalink: /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
+        <i class="icon-exclamation-sign" rel="tooltip" data-placement="top" data-original-title="The permalink should not be changed after the page is created. 
+            If you change the URL, make sure to make a redirect from the old URL to the new URL for search engines to still find your page."></i>
+        <i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar. 
+            For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>
+
+        Permalink: /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
         <button id="change-url" class="btn btn-mini">Change</button>
+
+        @* NEWBIE *@
+
+        <br />
+        <br />
+        <p>Url History</p>
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Created On
+                    </th>
+                    <th>Url Segment
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var url in Model.Urls)
+                {
+                    <tr>
+                        <td>
+                            @url.CreatedOn
+                        </td>
+                        <td>
+                            @url.UrlSegment
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
     </div>
+
+
     @if (!(Model is Redirect))
     {       
         <hr />
@@ -26,4 +64,5 @@
             @Html.CheckBoxFor(webpage => webpage.RequiresSSL) Requires SSL
         </label>
     }
+
 </div>

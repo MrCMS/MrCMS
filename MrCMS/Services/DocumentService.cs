@@ -146,16 +146,6 @@ namespace MrCMS.Services
                        : childrenSortedNull.ThenBy(documentMetadata.SortBy);
         }
 
-
-        public T GetDocumentByUrl<T>(string url) where T : Document
-        {
-            return
-                _session.QueryOver<T>()
-                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
-                        .Take(1)
-                        .SingleOrDefault();
-        }
-
         public string GetDocumentUrl(string pageName, Webpage parent, bool useHierarchy = false)
         {
             var stringBuilder = new StringBuilder();
@@ -174,11 +164,11 @@ namespace MrCMS.Services
 
             //make sure the URL is unique
 
-            if (GetDocumentByUrl<Webpage>(stringBuilder.ToString()) != null)
+            if (!IsValidForWebpage(stringBuilder.ToString(), null))
             {
                 var counter = 1;
 
-                while (GetDocumentByUrl<Webpage>(string.Format("{0}-{1}", stringBuilder, counter)) != null)
+                while (!IsValidForWebpage(string.Format("{0}-{1}", stringBuilder, counter), null))
                     counter++;
 
                 stringBuilder.AppendFormat("-{0}", counter);
@@ -329,7 +319,13 @@ namespace MrCMS.Services
                                          tag.Documents.Remove(document);
                                          _session.SaveOrUpdate(tag);
                                      });
-            _session.SaveOrUpdate(document);
+
+            //NEWBIE
+
+            if (IsValidForWebpage(document.UrlSegment, 0))
+            {
+                _session.SaveOrUpdate(document);
+            }
         }
 
         private Tag GetTag(string name)
@@ -475,6 +471,42 @@ namespace MrCMS.Services
         public DocumentMetadata GetDefinitionByType(Type type)
         {
             return DocumentMetadataHelper.GetMetadataByType(type);
+        }
+
+        public bool IsValidForWebpage(string url, int? id)
+        {
+            if (id.HasValue)
+            {
+                var document = GetDocument<Webpage>(id.Value);
+                return document != null && document.UrlSegment == url;
+            }
+
+            return !ExistsInWebpageList(url) && !ExistsInUrlHistory(url);
+        }
+
+        public T GetDocumentByUrl<T>(string url) where T : Document
+        {
+            return _session.QueryOver<T>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Take(1).Cacheable()
+                        .SingleOrDefault();
+        }
+
+        private bool ExistsInWebpageList(string url) 
+        {
+            return _session.QueryOver<Webpage>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Cacheable()
+                        .RowCount() > 0;
+        }
+
+        private bool ExistsInUrlHistory(string url)
+        {
+            return
+                _session.QueryOver<UrlHistory>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Cacheable()
+                        .RowCount() > 0;
         }
     }
 }

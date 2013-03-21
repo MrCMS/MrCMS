@@ -29,7 +29,7 @@ namespace MrCMS.Helpers
         public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
                                                               Expression<Func<TModel, object>> expression)
         {
-            return DeleteCheckBoxFor(htmlHelper, expression, new {});
+            return DeleteCheckBoxFor(htmlHelper, expression, new { });
         }
 
         public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
@@ -212,7 +212,7 @@ namespace MrCMS.Helpers
         {
             var routeValuesDictionary = new RouteValueDictionary(routeValues);
             var htmlAttributeDictionary = new RouteValueDictionary(htmlAttributes);
-            
+
             htmlAttributeDictionary["data-action"] = "post-link";
             return htmlHelper.ActionLink(linkText, actionName, controllerName, routeValuesDictionary,
                                          htmlAttributeDictionary);
@@ -554,6 +554,33 @@ namespace MrCMS.Helpers
                     routeValueDictionary.Add(propertyDescriptor.Name.Replace('_', '-'), propertyDescriptor.GetValue(htmlAttributes));
             }
             return routeValueDictionary;
+        }
+
+        public static List<string> SuccessMessages(this TempDataDictionary tempData)
+        {
+            if (!tempData.ContainsKey("success-message"))
+            {
+                tempData["success-message"] = new List<string>();
+            }
+            return tempData["success-message"] as List<string>;
+        }
+
+        public static List<string> ErrorMessages(this TempDataDictionary tempData)
+        {
+            if (!tempData.ContainsKey("error-message"))
+            {
+                tempData["error-message"] = new List<string>();
+            }
+            return tempData["error-message"] as List<string>;
+        }
+
+        public static List<string> InfoMessages(this TempDataDictionary tempData)
+        {
+            if (!tempData.ContainsKey("info-message"))
+            {
+                tempData["info-message"] = new List<string>();
+            }
+            return tempData["info-message"] as List<string>;
         }
     }
 }

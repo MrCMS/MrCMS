@@ -7,6 +7,7 @@ using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
+using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -41,6 +42,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public virtual ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] T doc)
         {
             _documentService.AddDocument(doc);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
             return RedirectToAction("Edit", new { id = doc.Id });
         }
 
@@ -54,13 +56,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         protected virtual void DocumentTypeSetup(T doc)
         {
+
         }
 
         [HttpPost]
-        public ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] T doc)
+        public virtual ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] T doc)
         {
             _documentService.SaveDocument(doc);
-            TempData["saved"] = string.Format("{0} successfully saved", doc.Name);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
             return RedirectToAction("Edit", new { id = doc.Id });
         }
 
@@ -75,7 +78,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Delete(T document)
         {
             _documentService.DeleteDocument(document);
-
+            TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
             return RedirectToAction("Index");
         }
 
