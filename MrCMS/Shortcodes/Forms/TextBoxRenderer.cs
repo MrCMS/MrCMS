@@ -22,6 +22,9 @@ namespace MrCMS.Shortcodes.Forms
                                       ? formProperty.Name
                                       : formProperty.LabelText);
             }
+            if (!string.IsNullOrWhiteSpace(formProperty.CssClass))
+                tagBuilder.AddCssClass(formProperty.CssClass);
+
             tagBuilder.Attributes["value"] = existingValue;
             return tagBuilder;
         }

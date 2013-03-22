@@ -8,15 +8,18 @@ namespace MrCMS.Web.Controllers
 {
     public class FormController : MrCMSUIController
     {
+        private readonly IDocumentService _documentService;
         private readonly IFormService _formService;
 
-        public FormController(IFormService formService)
+        public FormController(IDocumentService documentService, IFormService formService)
         {
+            _documentService = documentService;
             _formService = formService;
         }
 
-        public ActionResult Save(Webpage webpage)
+        public ActionResult Save(int id)
         {
+            var webpage = _documentService.GetDocument<Webpage>(id);
             var saveFormData = _formService.SaveFormData(webpage, Request);
 
             TempData["form-submitted"] = true;

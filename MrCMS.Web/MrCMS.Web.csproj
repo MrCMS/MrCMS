@@ -128,6 +128,8 @@
   <ItemGroup>
     <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
+    <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
+    <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
     <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Galleries\Controllers\GalleryListController.cs" />
     <Compile Include="Apps\Galleries\GalleriesApp.cs" />
@@ -649,7 +651,7 @@
     <Content Include="Areas\Admin\Views\Webpage\ViewPosting.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Versions.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\RemoveMedia.cshtml" />
-    <Content Include="Apps\Core\Areas\Admin\Views\Widgets\PlainTextWidget.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Settings.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\SiteList.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
@@ -712,11 +714,10 @@
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Core\Content\Images\" />
     <Folder Include="Apps\Core\Entities\" />
-    <Folder Include="Apps\Core\Metadata\" />
     <Folder Include="Apps\Core\Services\" />
     <Folder Include="Apps\Core\Settings\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Controllers\" />
-    <Folder Include="Apps\Galleries\Areas\Admin\Views\Widgets\" />
+    <Folder Include="Apps\Galleries\Areas\Admin\Views\Widget\" />
     <Folder Include="Apps\Galleries\Content\" />
     <Folder Include="Apps\Galleries\DbConfiguration\" />
     <Folder Include="Apps\Galleries\Entities\" />
@@ -770,7 +771,7 @@
     <Content Include="Areas\Admin\Views\Webpage\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Show.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Edit.cshtml" />
-    <Content Include="Apps\Core\Areas\Admin\Views\Widgets\TextWidget.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\TextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
   </ItemGroup>
