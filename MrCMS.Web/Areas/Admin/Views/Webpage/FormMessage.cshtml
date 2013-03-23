@@ -1,12 +1,22 @@
 ﻿@model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane" id="form-message-tab">
-    <h4>Message Settings</h4>
+    
+    <h4>Message to show after form is submitted</h4>
+
     @Html.LabelFor(webpage => webpage.FormSubmittedMessage)
     @Html.TextBoxFor(webpage => webpage.FormSubmittedMessage, new { @class = "span11" })
-    @Html.LabelFor(webpage => webpage.FormEmailTitle)
+    
+    <h4>Email Settings</h4>
+    @Html.LabelFor(webpage => webpage.FormEmailTitle, "Subject")
     @Html.TextBoxFor(webpage => webpage.FormEmailTitle, new { @class = "span11" })
-    @Html.LabelFor(webpage => webpage.SendFormTo)
+    @Html.LabelFor(webpage => webpage.SendFormTo, "To")
     @Html.TextBoxFor(webpage => webpage.SendFormTo, new { @class = "span11" })
-    @Html.LabelFor(webpage => webpage.FormMessage)
+    @Html.LabelFor(webpage => webpage.FormMessage, "Message")
     @Html.TextAreaFor(x => x.FormMessage, new { @class = "ckedit-enabled" })
+    
+    <div class="alert alert-info">
+        <strong>Heads up!</strong> Use [form] in the message body to embded the form result in the email.
+    </div>
+
+    
 </div>

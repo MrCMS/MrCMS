@@ -3,91 +3,89 @@
 @using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane " id="layout-content">
-    <div class="well">
-        @Html.LabelFor(x => x.Layout)
-        @Html.DropDownListFor(webpage => webpage.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
-        <div id="custom-layout">
-            <h4>Layout Areas</h4>
-            <div class="accordion" id="accordion-layout-areas">
-                @{
-                    if (Model.CurrentLayout.GetLayoutAreas().Any())
+    @Html.LabelFor(x => x.Layout)
+    @Html.DropDownListFor(webpage => webpage.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
+    <div id="custom-layout">
+        <label>Layout Areas</label>
+        <div class="accordion" id="accordion-layout-areas">
+            @{
+                if (Model.CurrentLayout.GetLayoutAreas().Any())
+                {
+                    foreach (LayoutArea layoutArea in Model.CurrentLayout.GetLayoutAreas())
                     {
-                        foreach (LayoutArea layoutArea in Model.CurrentLayout.GetLayoutAreas())
-                        {
-                            List<Widget> widgets = layoutArea.GetWidgets(Model, true);
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-layout-areas" href="#collapse-@layoutArea.Id.ToString()">
-                                @layoutArea.AreaName (@widgets.Count(widget => !Model.IsHidden(widget)) Shown Widgets, @widgets.Count(widget => Model.IsHidden(widget)) Hidden Widgets)
-                            </a>
-                        </div>
-                        <div id="collapse-@layoutArea.Id.ToString()" class="accordion-body collapse @(Request.QueryString["layoutAreaId"] == layoutArea.Id.ToString() ? "in" : "")">
-                            <div class="accordion-inner">
+                        List<Widget> widgets = layoutArea.GetWidgets(Model, true);
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-layout-areas" href="#collapse-@layoutArea.Id.ToString()">
+                            @layoutArea.AreaName (@widgets.Count(widget => !Model.IsHidden(widget)) Shown Widgets, @widgets.Count(widget => Model.IsHidden(widget)) Hidden Widgets)
+                        </a>
+                    </div>
+                    <div id="collapse-@layoutArea.Id.ToString()" class="accordion-body collapse @(Request.QueryString["layoutAreaId"] == layoutArea.Id.ToString() ? "in" : "")">
+                        <div class="accordion-inner">
 
-                                @if (widgets.Any())
-                                {
-                                    <table class="table table-striped">
-                                        <thead>
+                            @if (widgets.Any())
+                            {
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Widgets
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Widget widget in widgets)
+                                        {
                                             <tr>
-                                                <th>Widgets
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (Widget widget in widgets)
-                                            {
-                                                <tr>
-                                                    <td>
-                                                        @(!string.IsNullOrWhiteSpace(widget.Name) ? string.Format("{0} ({1})", widget.Name, widget.WidgetTypeFormatted) : widget.WidgetTypeFormatted)
+                                                <td>
+                                                    @(!string.IsNullOrWhiteSpace(widget.Name) ? string.Format("{0} ({1})", widget.Name, widget.WidgetTypeFormatted) : widget.WidgetTypeFormatted)
 
-                                                        <div class="btn-group">
-                                                            @if (widget.Webpage != Model)
+                                                    <div class="btn-group">
+                                                        @if (widget.Webpage != Model)
+                                                        {
+                                                            if (!Model.IsHidden(widget))
                                                             {
-                                                                if (!Model.IsHidden(widget))
-                                                                {
-                                                                @Html.FormLink("Hide Widget", "HideWidget", "Webpage", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
-                                                                }
-                                                                else
-                                                                {
-                                                                @Html.FormLink("Show Widget", "ShowWidget", "Webpage", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
-                                                                }
+                                                            @Html.FormLink("Hide Widget", "HideWidget", "Webpage", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
                                                             }
                                                             else
                                                             {
-                                                                <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete Widget</a>
+                                                            @Html.FormLink("Show Widget", "ShowWidget", "Webpage", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
                                                             }
-                                                            @Html.ActionLink("Edit Widget", "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                }
-                                <div class="btn-group">
-                                    <a href="@Url.Action("AddPageWidget", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-mini btn-primary" data-toggle="fb-modal">Add widget to area
-                                    </a>
-                                    @if (widgets.Any())
-                                    {
-                                        @Html.ActionLink("Re-order widgets", "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })
-                                        if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == Model))
-                                        {
-                                        @Html.FormLink("Reset sorting", "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete Widget</a>
+                                                        }
+                                                        @Html.ActionLink("Edit Widget", "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         }
+                                    </tbody>
+                                </table>
+                            }
+                            <div class="btn-group">
+                                <a href="@Url.Action("AddPageWidget", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-mini btn-primary" data-toggle="fb-modal">Add widget to area
+                                </a>
+                                @if (widgets.Any())
+                                {
+                                    @Html.ActionLink("Re-order widgets", "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })
+                                    if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == Model))
+                                    {
+                                    @Html.FormLink("Reset sorting", "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })
                                     }
+                                }
 
-                                </div>
                             </div>
                         </div>
                     </div>
-                        }
-                    }
-                    else
-                    {
-                    <text>No layout areas available.</text>
+                </div>
                     }
                 }
-            </div>
+                else
+                {
+                <text>No layout areas available.</text>
+                }
+            }
         </div>
     </div>
 </div>
