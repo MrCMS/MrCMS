@@ -43,5 +43,7 @@ namespace MrCMS.Services
         void SetParent(Document document, int? parentId);
         DocumentMetadata GetDefinitionByType(Type type);
         bool IsValidForWebpage(string url, int? id);
+        void SetFrontEndRoles(string frontEndRoles, Webpage webpage);
+        void SetAdminRoles(string adminRoles, Webpage webpage);
     }
 }

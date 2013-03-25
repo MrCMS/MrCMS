@@ -35,20 +35,6 @@ namespace MrCMS.Services
             _mailSettings = mailSettings;
         }
 
-        public string GetFormStructure(Webpage webpage)
-        {
-            return webpage == null
-                       ? Newtonsoft.Json.JsonConvert.SerializeObject(new object())
-                       : webpage.FormData ?? Newtonsoft.Json.JsonConvert.SerializeObject(new object());
-        }
-
-        public void SaveFormStructure(Webpage webpage, string data)
-        {
-            if (webpage == null) return;
-            webpage.FormData = data;
-            _documentService.SaveDocument(webpage);
-        }
-
         public List<string> SaveFormData(Webpage webpage, HttpRequestBase request)
         {
             var formProperties = webpage.FormProperties;

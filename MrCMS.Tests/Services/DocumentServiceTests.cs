@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -106,8 +107,7 @@ namespace MrCMS.Tests.Services
             var parent = new BasicMappedWebpage
             {
                 Name = "Parent",
-                AdminAllowedRoles = new List<AdminAllowedRole>(),
-                AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                AdminAllowedRoles = new List<UserRole>()
             };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
@@ -118,9 +118,7 @@ namespace MrCMS.Tests.Services
                                                                            Name = String.Format("Page {0}", (object)i),
                                                                            Parent = parent,
                                                                            AdminAllowedRoles =
-                                                                               new List<AdminAllowedRole>(),
-                                                                           AdminDisallowedRoles =
-                                                                               new List<AdminDisallowedRole>(),
+                                                                               new List<UserRole>(),
                                                                            Site = CurrentSite
                                                                        };
                                                     parent.Children.Add(textPage);
@@ -141,8 +139,7 @@ namespace MrCMS.Tests.Services
             var parent = new BasicMappedWebpage
                              {
                                  Name = "Parent",
-                                 AdminAllowedRoles = new List<AdminAllowedRole>(),
-                                 AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                                 AdminAllowedRoles = new List<UserRole>(),
                              };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
@@ -154,8 +151,7 @@ namespace MrCMS.Tests.Services
                                                                       {
                                                                           Name = String.Format("Page {0}", i),
                                                                           Parent = parent,
-                                                                          AdminAllowedRoles = new List<AdminAllowedRole>(),
-                                                                          AdminDisallowedRoles = new List<AdminDisallowedRole>(),
+                                                                          AdminAllowedRoles = new List<UserRole>(),
                                                                           Site = CurrentSite
                                                                       }
                                                                     : new Layout { Parent = parent };
@@ -177,8 +173,7 @@ namespace MrCMS.Tests.Services
             var parent = new BasicMappedWebpage
                              {
                                  Name = "Parent",
-                                 AdminAllowedRoles = new List<AdminAllowedRole>(),
-                                 AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                                 AdminAllowedRoles = new List<UserRole>(),
                              };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
@@ -189,10 +184,7 @@ namespace MrCMS.Tests.Services
                                                                           Name = String.Format("Page {0}", i),
                                                                           Parent = parent,
                                                                           DisplayOrder = 4 - i,
-                                                                          AdminAllowedRoles =
-                                                                              new List<AdminAllowedRole>(),
-                                                                          AdminDisallowedRoles =
-                                                                              new List<AdminDisallowedRole>(),
+                                                                          AdminAllowedRoles = new List<UserRole>(),
                                                                           Site = CurrentSite
                                                                       };
                                                    parent.Children.Add(textPage);

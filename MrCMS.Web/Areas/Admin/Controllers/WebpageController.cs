@@ -8,7 +8,6 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using NHibernate;
@@ -37,6 +36,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 var document = _documentService.GetDocument<Webpage>(idVal);
                 if (document != null && !document.IsAllowedForAdmin(CurrentRequestData.CurrentUser))
                 {
+                    TempData.ErrorMessages().Add("You are not allowed to view that page");
                     filterContext.Result = new RedirectResult("~/admin");
                 }
             }
@@ -45,9 +45,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] Webpage doc)
         {
             if (_documentService.IsValidForWebpage(doc.UrlSegment, null))
-            {
                 return base.Add(doc);
-            }
 
             TempData.ErrorMessages().Add("Url is already used for another webpage. Please change it to something else.");
             DocumentTypeSetup(doc);
@@ -57,9 +55,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public override ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] Webpage doc)
         {
             if (_documentService.IsValidForWebpage(doc.UrlSegment, doc.Id))
-            {
                 return base.Edit(doc);
-            }
 
             TempData.ErrorMessages().Add("Url is already used for another webpage. Please change it to something else.");
             return Edit_Get(doc);
@@ -133,18 +129,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public void SetParent(Webpage webpage, int? parentId)
         {
             _documentService.SetParent(webpage, parentId);
-        }
-
-        [HttpGet]
-        public JsonResult GetForm(Webpage webpage)
-        {
-            return Json(_formService.GetFormStructure(webpage));
-        }
-
-        [HttpPost]
-        public void SaveForm(Webpage webpage, string data)
-        {
-            _formService.SaveFormStructure(webpage, data);
         }
 
         public ActionResult ViewChanges(DocumentVersion documentVersion)

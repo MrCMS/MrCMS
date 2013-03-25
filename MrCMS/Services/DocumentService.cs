@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -320,12 +320,7 @@ namespace MrCMS.Services
                                          _session.SaveOrUpdate(tag);
                                      });
 
-            //NEWBIE
-
-            if (IsValidForWebpage(document.UrlSegment, 0))
-            {
-                _session.SaveOrUpdate(document);
-            }
+            _session.SaveOrUpdate(document);
         }
 
         private Tag GetTag(string name)
@@ -484,6 +479,106 @@ namespace MrCMS.Services
             return !ExistsInWebpageList(url) && !ExistsInUrlHistory(url);
         }
 
+        public void SetFrontEndRoles(string frontEndRoles, Webpage webpage)
+        {
+            if (webpage == null) throw new ArgumentNullException("webpage");
+
+            if (frontEndRoles == null)
+                frontEndRoles = string.Empty;
+
+            var roleNames =
+                frontEndRoles.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
+                    x => !string.IsNullOrWhiteSpace(x));
+
+            var roles = webpage.FrontEndAllowedRoles.ToList();
+
+            _session.Transact(session =>
+                                  {
+                                      if (webpage.InheritFrontEndRolesFromParent)
+                                      {
+                                          roles.ForEach(role =>
+                                                            {
+                                                                role.FrontEndWebpages.Remove(webpage);
+                                                                webpage.FrontEndAllowedRoles.Remove(role);
+                                                            });
+                                      }
+                                      else
+                                      {
+                                          roleNames.ForEach(name =>
+                                                                {
+                                                                    var role = GetRole(name);
+                                                                    if (!webpage.FrontEndAllowedRoles.Contains(role))
+                                                                    {
+                                                                        webpage.FrontEndAllowedRoles.Add(role);
+                                                                        role.FrontEndWebpages.Add(webpage);
+                                                                    }
+                                                                    roles.Remove(role);
+                                                                });
+
+                                          roles.ForEach(role =>
+                                                            {
+                                                                webpage.FrontEndAllowedRoles.Remove(role);
+                                                                role.FrontEndWebpages.Remove(webpage);
+                                                                session.SaveOrUpdate(role);
+                                                            });
+                                      }
+
+                                      session.SaveOrUpdate(webpage);
+                                  });
+        }
+
+        private UserRole GetRole(string name)
+        {
+            return _session.QueryOver<UserRole>().Where(role => role.Name.IsInsensitiveLike(name, MatchMode.Exact)).SingleOrDefault();
+        }
+
+        public void SetAdminRoles(string adminRoles, Webpage webpage)
+        {
+            if (webpage == null) throw new ArgumentNullException("webpage");
+
+            if (adminRoles == null)
+                adminRoles = string.Empty;
+
+            var roleNames =
+                adminRoles.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
+                    x => !string.IsNullOrWhiteSpace(x));
+
+            var roles = webpage.AdminAllowedRoles.ToList();
+
+            _session.Transact(session =>
+                                  {
+                                      if (webpage.InheritAdminRolesFromParent)
+                                      {
+                                          roles.ForEach(role =>
+                                                            {
+                                                                role.AdminWebpages.Remove(webpage);
+                                                                webpage.AdminAllowedRoles.Remove(role);
+                                                            });
+                                      }
+                                      else
+                                      {
+                                          roleNames.ForEach(name =>
+                                                                {
+                                                                    var role = GetRole(name);
+                                                                    if (!webpage.AdminAllowedRoles.Contains(role))
+                                                                    {
+                                                                        webpage.AdminAllowedRoles.Add(role);
+                                                                        role.AdminWebpages.Add(webpage);
+                                                                    }
+                                                                    roles.Remove(role);
+                                                                });
+
+                                          roles.ForEach(role =>
+                                                            {
+                                                                webpage.AdminAllowedRoles.Remove(role);
+                                                                role.AdminWebpages.Remove(webpage);
+                                                                session.SaveOrUpdate(role);
+                                                            });
+                                      }
+                                      session.SaveOrUpdate(webpage);
+                                  });
+        }
+
         public T GetDocumentByUrl<T>(string url) where T : Document
         {
             return _session.QueryOver<T>()
@@ -492,7 +587,7 @@ namespace MrCMS.Services
                         .SingleOrDefault();
         }
 
-        private bool ExistsInWebpageList(string url) 
+        private bool ExistsInWebpageList(string url)
         {
             return _session.QueryOver<Webpage>()
                         .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)

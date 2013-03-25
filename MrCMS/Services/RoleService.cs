@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using MrCMS.Entities.Documents;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
+using MrCMS.Models;
 using NHibernate;
 using NHibernate.Criterion;
 using System.Linq;
@@ -49,6 +51,19 @@ namespace MrCMS.Services
 
             var users = adminRole.Users.Where(user1 => user1.IsActive).ToList();
             return users.Count() == 1 && users.First() == user;
+        }
+
+        public IEnumerable<AutoCompleteResult> Search(Document document, string term)
+        {
+            return
+                _session.QueryOver<UserRole>().Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start)).List().Select(
+                    tag =>
+                    new AutoCompleteResult
+                        {
+                            id = tag.Id,
+                            label = string.Format("{0}", tag.Name),
+                            value = tag.Name
+                        });
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using MrCMS.Entities.Documents;
 using MrCMS.Entities.People;
+using MrCMS.Models;
 using MrCMS.Services;
-using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -72,6 +70,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (role != null) _roleService.DeleteRole(role);
             return RedirectToAction("Index");
+        }
+
+        public JsonResult Search(Document document, string term)
+        {
+            IEnumerable<AutoCompleteResult> result = _roleService.Search(document, term);
+
+            return Json(result);
         }
     }
 }

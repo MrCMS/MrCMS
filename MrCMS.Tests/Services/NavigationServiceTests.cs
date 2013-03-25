@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
@@ -41,10 +42,30 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void NavigationService_WebpageTree_SiteTreeShouldRecursivelyReturnNodesToMirrorTheSavedWebpages()
         {
-            var page1 = new BasicMappedWebpage { Parent = null, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
-            var page2 = new BasicMappedWebpage { Parent = page1, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
-            var page3 = new BasicMappedWebpage { Parent = page2, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
-            var page4 = new BasicMappedWebpage { Parent = page2, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
+            var page1 = new BasicMappedWebpage
+            {
+                Parent = null,
+                AdminAllowedRoles = new List<UserRole>(),
+                Site = CurrentSite
+            };
+            var page2 = new BasicMappedWebpage
+            {
+                Parent = page1,
+                AdminAllowedRoles = new List<UserRole>(),
+                Site = CurrentSite
+            };
+            var page3 = new BasicMappedWebpage
+            {
+                Parent = page2,
+                AdminAllowedRoles = new List<UserRole>(),
+                Site = CurrentSite
+            };
+            var page4 = new BasicMappedWebpage
+            {
+                Parent = page2,
+                AdminAllowedRoles = new List<UserRole>(),
+                Site = CurrentSite
+            };
             page2.Children.Add(page3);
             page2.Children.Add(page4);
             page1.Children.Add(page2);
@@ -138,10 +159,30 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void NavigationService_WebpageTree_WhenShowChildrenInAdminNavIsFalseReturnNoChildren()
         {
-            var page1 = new BasicMappedNoChildrenInNavWebpage { Parent = null, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
-            var page2 = new BasicMappedWebpage { Parent = page1, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
-            var page3 = new BasicMappedWebpage { Parent = page1, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
-            var page4 = new BasicMappedWebpage { Parent = page1, AdminAllowedRoles = new List<AdminAllowedRole>(), AdminDisallowedRoles = new List<AdminDisallowedRole>(), Site = CurrentSite };
+            var page1 = new BasicMappedNoChildrenInNavWebpage
+            {
+                Parent = null,
+                AdminAllowedRoles = new List<UserRole>(),
+                Site = CurrentSite
+            };
+            var page2 = new BasicMappedWebpage
+            {
+                Parent = page1,
+                AdminAllowedRoles = new List<UserRole>(),
+                Site = CurrentSite
+            };
+            var page3 = new BasicMappedWebpage
+            {
+                Parent = page1,
+                AdminAllowedRoles = new List<UserRole>(),
+                Site = CurrentSite
+            };
+            var page4 = new BasicMappedWebpage
+            {
+                Parent = page1,
+                AdminAllowedRoles = new List<UserRole>(),
+                Site = CurrentSite
+            };
             page1.Children.Add(page3);
             page1.Children.Add(page4);
             page1.Children.Add(page2);

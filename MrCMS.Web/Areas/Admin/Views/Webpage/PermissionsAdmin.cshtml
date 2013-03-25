@@ -1,32 +1,10 @@
 ﻿@model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane" id="permissions-admin">
     <h4>Admin</h4>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Role
-                </th>
-                <th>Available
-                </th>
-                <th>Is recursive?
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var role in Model.GetAdminRoles())
-            {
-                <tr>
-                    <td>
-                        @role.Name
-                    </td>
-                    <td>
-                        @Html.DropDownList("role." + role.Name + ".Admin.Status", role.GetStatusOptions)
-                    </td>
-                    <td>
-                        @Html.DropDownList("role." + role.Name + ".Admin.Recursive", role.GetRecursiveOptions)
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @Html.LabelFor(webpage => webpage.InheritAdminRolesFromParent)
+    @Html.CheckBoxFor(webpage => webpage.InheritAdminRolesFromParent)
+    <div id="admin-roles" style="display: @(Model.InheritAdminRolesFromParent ? "none" : "block")">
+        @Html.LabelFor(webpage => webpage.AdminRoles)
+        @Html.TextBoxFor(webpage => webpage.AdminRoles)
+    </div>
 </div>

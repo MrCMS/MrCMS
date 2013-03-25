@@ -393,36 +393,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WebpageController_GetForm_ShouldReturnAJsonNetResult()
-        {
-            WebpageController webpageController = GetWebpageController();
-
-            webpageController.GetForm(new TextPage()).Should().BeOfType<JsonNetResult>();
-        }
-
-        [Fact]
-        public void WebpageController_GetForm_ShouldCallFormServiceGetFormStructure()
-        {
-            WebpageController webpageController = GetWebpageController();
-
-            var page = new StubWebpage();
-            webpageController.GetForm(page);
-
-            A.CallTo(() => formService.GetFormStructure(page)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void WebpageController_SaveForm_ShouldCallFormServiceSaveFormStructure()
-        {
-            WebpageController webpageController = GetWebpageController();
-
-            var page = new StubWebpage();
-            webpageController.SaveForm(page, "data");
-
-            A.CallTo(() => formService.SaveFormStructure(page, "data")).MustHaveHappened();
-        }
-
-        [Fact]
         public void WebpageController_ViewPosting_ShouldReturnAPartialViewResult()
         {
             WebpageController webpageController = GetWebpageController();

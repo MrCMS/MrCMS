@@ -25,7 +25,7 @@ namespace MrCMS.Services
             var categories = GetCategories(document);
 
             return
-                _session.QueryOver<Tag>().Where(x => x.Site == document.Site && x.Name.IsLike(term, MatchMode.Start)).List().Select(
+                _session.QueryOver<Tag>().Where(x => x.Site == document.Site && x.Name.IsInsensitiveLike(term, MatchMode.Start)).List().Select(
                     tag =>
                     new AutoCompleteResult
                         {

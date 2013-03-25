@@ -137,6 +137,7 @@
     <Compile Include="DbConfiguration\Mapping\MrCmsMappingConfiguration.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\DocumentVersionOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\FormPropertyOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\LayoutAreaOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\LayoutOverride.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SiteOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\UserRoleOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WidgetOverride.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
@@ -237,6 +239,8 @@
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\LogService.cs" />
     <Compile Include="Logging\MrCMSErrorLog.cs" />
+    <Compile Include="Membership\Internals\IRoleProvider.cs" />
+    <Compile Include="Membership\Internals\RoleProvider.cs" />
     <Compile Include="Membership\MrCmsMembershipProvider.cs" />
     <Compile Include="Membership\MrCmsRoleProvider.cs" />
     <Compile Include="Models\AddPageWidgetModel.cs" />
@@ -269,13 +273,11 @@
     <Compile Include="Paging\PagedListMetaData.cs" />
     <Compile Include="Paging\StaticPagedList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AdminRoleUpdater.cs" />
     <Compile Include="Services\AuthorisationService.cs" />
     <Compile Include="Services\DocumentService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\FileSystem.cs" />
     <Compile Include="Services\FormService.cs" />
-    <Compile Include="Services\FrontEndRoleUpdater.cs" />
     <Compile Include="Services\IDocumentService.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IFileSystem.cs" />

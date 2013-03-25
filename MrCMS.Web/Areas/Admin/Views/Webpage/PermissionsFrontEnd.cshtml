@@ -1,32 +1,10 @@
 ﻿@model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane" id="permissions-front-end">
     <h4>Front End</h4>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Role
-                </th>
-                <th>Available
-                </th>
-                <th>Is recursive?
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var role in Model.GetFrontEndRoles())
-            {
-                <tr>
-                    <td>
-                        @role.Name
-                    </td>
-                    <td>
-                        @Html.DropDownList("role." + role.Name + ".FrontEnd.Status", role.GetStatusOptions)
-                    </td>
-                    <td>
-                        @Html.DropDownList("role." + role.Name + ".FrontEnd.Recursive", role.GetRecursiveOptions)
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @Html.LabelFor(webpage => webpage.InheritFrontEndRolesFromParent)
+    @Html.CheckBoxFor(webpage => webpage.InheritFrontEndRolesFromParent)
+    <div id="front-end-roles" style="display: @(Model.InheritFrontEndRolesFromParent ? "none" : "block")">
+        @Html.LabelFor(webpage => webpage.FrontEndRoles)
+        @Html.TextBoxFor(webpage => webpage.FrontEndRoles)
+    </div>
 </div>

@@ -10,8 +10,6 @@ namespace MrCMS.Services
 {
     public interface IFormService
     {
-        string GetFormStructure(Webpage webpage);
-        void SaveFormStructure(Webpage webpage, string data);
         List<string> SaveFormData(Webpage webpage, HttpRequestBase request);
         PostingsModel GetFormPostings(Webpage webpage, int page, string search);
         void AddFormProperty(FormProperty formProperty);
