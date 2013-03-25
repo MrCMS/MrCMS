@@ -27,9 +27,8 @@
 </div>
 @using (Html.BeginForm("Edit", "Widget", new { }, FormMethod.Post, new { id = "edit-document" }))
 {
-    @Html.Hidden("ReturnUrl", Request.UrlReferrer)
     @Html.HiddenFor(widget => widget.Id)
-    @Html.Hidden("returnUrl", ViewData["return-url"])
+    @Html.Hidden("ReturnUrl", ViewData["return-url"])
     @Html.LabelFor(widget => widget.Name)
     @Html.EditorFor(widget => widget.Name)
     if (Model.Webpage != null)

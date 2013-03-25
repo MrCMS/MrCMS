@@ -89,6 +89,15 @@ namespace MrCMS.Web.Controllers
                     PublishOn = DateTime.UtcNow,
                     Layout = model.BaseLayout
                 };
+            model.Error403 = new TextPage
+                {
+                    Name = "403",
+                    UrlSegment = "403",
+                    BodyContent = "Sorry, you are not authorized to view this page.",
+                    RevealInNavigation = false,
+                    PublishOn = DateTime.UtcNow,
+                    Layout = model.BaseLayout
+                };
             model.Error500 = new TextPage
                 {
                     Name = "500",

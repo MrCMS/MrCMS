@@ -403,6 +403,7 @@ namespace MrCMS.Installation
             documentService.AddDocument(model.HomePage);
             documentService.AddDocument(model.Page2);
             documentService.AddDocument(model.Page3);
+            documentService.AddDocument(model.Error403);
             documentService.AddDocument(model.Error404);
 
             documentService.AddDocument(model.Error500);
@@ -416,6 +417,7 @@ namespace MrCMS.Installation
             documentService.AddDocument(defaultMediaCategory);
 
             siteSettings.DefaultLayoutId = model.BaseLayout.Id;
+            siteSettings.Error403PageId = model.Error403.Id;
             siteSettings.Error404PageId = model.Error404.Id;
             siteSettings.Error500PageId = model.Error500.Id;
 

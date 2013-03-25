@@ -93,7 +93,7 @@ namespace MrCMS.Website.Routing
         {
             if (!Webpage.IsAllowed(CurrentRequestData.CurrentUser))
             {
-                context.Response.Redirect("~");
+                HandleError(context, 403, _siteSettings.Error403PageId, new HttpException(403, "Not allowed to view " + Data));
                 return false;
             }
             return true;

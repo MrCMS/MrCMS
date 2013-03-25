@@ -18,6 +18,9 @@ namespace MrCMS.Settings
         [DropDownSelection("DefaultLayoutOptions")]
         public int DefaultLayoutId { get; set; }
 
+        [DisplayName("Unauthorised Page")]
+        [DropDownSelection("403Options")]
+        public virtual int Error403PageId { get; set; }
         [DisplayName("404 Page")]
         [DropDownSelection("404Options")]
         public virtual int Error404PageId { get; set; }
@@ -34,6 +37,7 @@ namespace MrCMS.Settings
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
             viewDataDictionary["DefaultLayoutOptions"] = _siteSettingsOptionGenerator.GetLayoutOptions(session, Site, DefaultLayoutId);
+            viewDataDictionary["403Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error403PageId);
             viewDataDictionary["404Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error404PageId);
             viewDataDictionary["500Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error500PageId);
         }
