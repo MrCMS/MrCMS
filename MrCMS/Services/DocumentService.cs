@@ -320,7 +320,10 @@ namespace MrCMS.Services
                                          _session.SaveOrUpdate(tag);
                                      });
 
-            _session.SaveOrUpdate(document);
+            if (IsValidForWebpage(document.UrlSegment, document.Id))
+            {
+                _session.SaveOrUpdate(document);
+            }
         }
 
         private Tag GetTag(string name)

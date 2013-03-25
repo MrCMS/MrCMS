@@ -51,8 +51,6 @@ namespace MrCMS.Website.Binders
                                  : document.Parent.Children.OfType<Webpage>()).ToList();
                 document.DisplayOrder = pages.Any() ? pages.Max(x => x.DisplayOrder) + 1 : 0;
             }
-            var taglist = GetValueFromContext(controllerContext, "TagList");
-            DocumentService.SetTags(taglist, document);
 
             return document;
         }
