@@ -5,6 +5,8 @@ using MrCMS.Website;
 using NHibernate;
 using NHibernate.Event;
 using System;
+using System.Linq;
+using MrCMS.Helpers;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
@@ -19,12 +21,14 @@ namespace MrCMS.DbConfiguration.Configuration
                 {
                     var webpage = GetWebpage(session, @event.Entity as Webpage);
 
-                    if (!CheckUrlExistence(session, @event.Entity as Webpage))
+                    var indexOf = @event.Persister.PropertyNames.ToList().IndexOf("UrlSegment");
+
+                    if (@event.OldState[indexOf] != @event.State[indexOf] && !CheckUrlExistence(session, @event.Entity as Webpage))
                     {
                         var urlHistory = new UrlHistory
                         {
                             Webpage = webpage,
-                            UrlSegment = webpage.UrlSegment,
+                            UrlSegment = Convert.ToString(@event.OldState[indexOf]),
                             CreatedOn = DateTime.UtcNow,
                             UpdatedOn = DateTime.UtcNow,
                             Site = session.Get<Site>(CurrentRequestData.CurrentSite.Id)

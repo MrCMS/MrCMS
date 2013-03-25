@@ -46,6 +46,8 @@ namespace MrCMS.Website.Routing
 
             if (CheckIsFile(context)) return;
 
+            if (HandleUrlHistory(context)) return;
+
             if (Handle404(context)) return;
 
             if (PageIsRedirect(context)) return;
@@ -72,6 +74,17 @@ namespace MrCMS.Website.Routing
             {
                 Handle500(context, exception);
             }
+        }
+
+        private bool HandleUrlHistory(HttpContextBase context)
+        {
+            var historyItemByUrl = _documentService.GetHistoryItemByUrl(Data);
+            if (historyItemByUrl != null)
+            {
+                context.Response.RedirectPermanent("~/" + historyItemByUrl.Webpage.LiveUrlSegment);
+                return true;
+            }
+            return false;
         }
 
         private void SetCustomHeaders(HttpContextBase context)

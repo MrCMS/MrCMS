@@ -590,6 +590,14 @@ namespace MrCMS.Services
                         .SingleOrDefault();
         }
 
+        public UrlHistory GetHistoryItemByUrl(string url) 
+        {
+            return _session.QueryOver<UrlHistory>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Take(1).Cacheable()
+                        .SingleOrDefault();
+        }
+
         private bool ExistsInWebpageList(string url)
         {
             return _session.QueryOver<Webpage>()
