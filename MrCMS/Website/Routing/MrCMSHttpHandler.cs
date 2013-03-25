@@ -93,7 +93,10 @@ namespace MrCMS.Website.Routing
         {
             if (!Webpage.IsAllowed(CurrentRequestData.CurrentUser))
             {
-                HandleError(context, 403, _siteSettings.Error403PageId, new HttpException(403, "Not allowed to view " + Data));
+                if (CurrentRequestData.CurrentUser != null)
+                    HandleError(context, 403, _siteSettings.Error403PageId, new HttpException(403, "Not allowed to view " + Data));
+                else
+                    HandleError(context, 401, _siteSettings.Error403PageId, new HttpException(401, "Not allowed to view " + Data));
                 return false;
             }
             return true;

@@ -74,7 +74,7 @@ namespace MrCMS.Tests.Website.Routing
         }
 
         [Fact]
-        public void MrCMSHttpHandler_IsAllowed_ShouldReturn403StatusCode()
+        public void MrCMSHttpHandler_IsAllowed_HasUserLoggedInShouldReturn403StatusCode()
         {
             CurrentRequestData.ErrorSignal = new ErrorSignal();
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
@@ -91,8 +91,31 @@ namespace MrCMS.Tests.Website.Routing
             mrCMSHttpHandler.Webpage = new StubDisallowedWebpage();
 
             mrCMSHttpHandler.IsAllowed(httpContext);
-            
+
             httpContext.Response.StatusCode.Should().Be(403);
+        }
+
+        [Fact]
+        public void MrCMSHttpHandler_IsAllowed_NoUserLoggedInShouldReturn401StatusCode()
+        {
+            CurrentRequestData.CurrentUser = null;
+            CurrentRequestData.ErrorSignal = new ErrorSignal();
+            var mrCMSHttpHandler = GetMrCMSHttpHandler();
+            A.CallTo(() => siteSettings.Error403PageId).Returns(1);
+            var stubAllowedWebpage = new StubAllowedWebpage { UrlSegment = "test-403" };
+            A.CallTo(() => documentService.GetDocument<Webpage>(1)).Returns(stubAllowedWebpage);
+            var httpContext = A.Fake<HttpContextBase>();
+
+            var controller = A.Fake<Controller>();
+            var routeData = new RouteData();
+            controller.ControllerContext = new ControllerContext { RouteData = routeData };
+            A.CallTo(() => controllerManager.GetController(requestContext, stubAllowedWebpage, ""))
+             .Returns(controller);
+            mrCMSHttpHandler.Webpage = new StubDisallowedWebpage();
+
+            mrCMSHttpHandler.IsAllowed(httpContext);
+
+            httpContext.Response.StatusCode.Should().Be(401);
         }
 
         [Fact(Skip = "Needs GetController() to be refactored to be able to run")]
