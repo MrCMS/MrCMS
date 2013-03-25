@@ -26,10 +26,6 @@
 
     $("#my-form-builder ul").sortable({ opacity: 0.6, cursor: 'move', handle: 'strong' });
 
-    if ($.cookie('selected-layout-area-' + location.pathname)) {
-        $('#accordion-layout-areas a[href="#' + $.cookie('selected-layout-area') + '"]').click();
-    }
-
     $('#accordion-layout-areas').on('shown', function (e) {
         $.cookie('selected-layout-area-' + location.pathname, e.target.id, { expires: 1 });
     });
@@ -43,6 +39,11 @@
     });
 });
 
+$(window).load(function () {
+    if ($.cookie('selected-layout-area-' + location.pathname)) {
+        $('#accordion-layout-areas a[href="#' + $.cookie('selected-layout-area-' + location.pathname) + '"]').click();
+    }
+});
 
 // lazy load iframe preview when tab is selected
 // needs to be before shown from hash/cookie
