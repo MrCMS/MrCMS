@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
@@ -24,6 +25,18 @@ namespace MrCMS.Web.Areas.Admin
         [HttpGet]
         public ViewResult AddProperty(Webpage webpage)
         {
+            ViewData["property-types"] = new List<Type>
+                                             {
+                                                 typeof (TextBox),
+                                                 typeof (DropDownList),
+                                                 typeof (TextArea),
+                                                 typeof (CheckboxList),
+                                                 typeof (RadioButtonList),
+                                                 typeof (FileUpload)
+                                             }
+                .BuildSelectItemList(type => type.Name.BreakUpString(),
+                                     type => type.Name,
+                                     emptyItemText: null);
             return View(new TextBox { Webpage = webpage });
         }
 

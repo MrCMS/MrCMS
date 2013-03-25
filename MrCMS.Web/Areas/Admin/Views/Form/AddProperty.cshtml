@@ -10,10 +10,7 @@
     </div>
     <div class="modal-body">
         @Html.HiddenFor(x => x.Webpage.Id)
-        @Html.DropDownList("type", TypeHelper.GetAllConcreteTypesAssignableFrom<FormProperty>()
-                                            .BuildSelectItemList(type => type.Name.BreakUpString(),
-                                                                 type => type.Name,
-                                                                 emptyItemText: null))
+        @Html.DropDownList("type", ViewData["property-types"] as IEnumerable<SelectListItem>)
                                                                  
         @Html.LabelFor(property => property.Name)
         @Html.TextBoxFor(property => property.Name)
