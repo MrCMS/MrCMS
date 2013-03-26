@@ -24,7 +24,7 @@ namespace MrCMS.Web.Tests.Controllers
                                   {
                                       RequestMock =
                                           A.Fake<HttpRequestBase>(),
-                                      ReferrerOverride = "test-redirect"
+                                      ReferrerOverride = "http://www.example.com/test-redirect"
                                   };
         }
 
@@ -58,7 +58,7 @@ namespace MrCMS.Web.Tests.Controllers
             var result = _formController.Save(1);
 
             result.Should().BeOfType<RedirectResult>();
-            result.As<RedirectResult>().Url.Should().Be("test-redirect");
+            result.As<RedirectResult>().Url.Should().Be("http://www.example.com/test-redirect");
         }
     }
 }

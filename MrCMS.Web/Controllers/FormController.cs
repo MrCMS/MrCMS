@@ -26,7 +26,7 @@ namespace MrCMS.Web.Controllers
             TempData["form-submitted-message"] = saveFormData;
             // if any errors add form data to be renderered, otherwise form should be empty
             TempData["form-data"] = saveFormData.Any() ? Request.Form : null;
-            return Redirect(Referrer);
+            return Redirect(Referrer.ToString());
         }
     }
 }

@@ -58,6 +58,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             widget.SetDropdownData(ViewData, _session);
 
+            if (Referrer.Authority.Equals(widget.Site.BaseUrl, StringComparison.OrdinalIgnoreCase) &&
+                !Referrer.PathAndQuery.StartsWith("/admin", StringComparison.OrdinalIgnoreCase))
+                ViewData["return-url"] = Referrer;
+
             return View(widget);
         }
 

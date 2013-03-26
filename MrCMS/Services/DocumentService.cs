@@ -479,7 +479,7 @@ namespace MrCMS.Services
                 return document != null && document.UrlSegment == url;
             }
 
-            return !ExistsInWebpageList(url) && !ExistsInUrlHistory(url);
+            return !WebpageExists(url) && !ExistsInUrlHistory(url);
         }
 
         public void SetFrontEndRoles(string frontEndRoles, Webpage webpage)
@@ -598,7 +598,7 @@ namespace MrCMS.Services
                         .SingleOrDefault();
         }
 
-        private bool ExistsInWebpageList(string url)
+        private bool WebpageExists(string url)
         {
             return _session.QueryOver<Webpage>()
                         .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)

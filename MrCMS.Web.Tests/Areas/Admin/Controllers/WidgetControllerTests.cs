@@ -2,7 +2,7 @@
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Widget;
+using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
@@ -22,7 +22,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WidgetController_EditGet_ShouldReturnThePassedWidget()
         {
             WidgetController widgetController = GetWidgetController();
-            var textWidget = new TextWidget();
+            var textWidget = new TextWidget {Site = new Site()};
 
             ViewResultBase result = widgetController.Edit_Get(textWidget);
 
@@ -164,7 +164,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             _documentService = A.Fake<IDocumentService>();
             _widgetService = A.Fake<IWidgetService>();
-            return new WidgetController(_documentService, _widgetService, A.Fake<ISession>());
+            return new WidgetController(_documentService, _widgetService, A.Fake<ISession>()) {ReferrerOverride = "http://www.example.com/"};
         }
     }
 }

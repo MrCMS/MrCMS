@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MrCMS.Entities;
@@ -24,9 +25,14 @@ namespace MrCMS.Website.Controllers
             }
         }
         public string ReferrerOverride { get; set; }
-        protected string Referrer
+        protected Uri Referrer
         {
-            get { return ReferrerOverride ?? HttpContext.Request.UrlReferrer.ToString(); }
+            get
+            {
+                return !string.IsNullOrWhiteSpace(ReferrerOverride)
+                           ? new Uri(ReferrerOverride)
+                           : HttpContext.Request.UrlReferrer;
+            }
         }
 
         private Site _currentSite;
