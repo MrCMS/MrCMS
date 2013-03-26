@@ -78,11 +78,14 @@ namespace MrCMS.Website.Routing
 
         private bool HandleUrlHistory(HttpContextBase context)
         {
-            var historyItemByUrl = _documentService.GetHistoryItemByUrl(Data);
-            if (historyItemByUrl != null)
+            if (Webpage == null)
             {
-                context.Response.RedirectPermanent("~/" + historyItemByUrl.Webpage.LiveUrlSegment);
-                return true;
+                var historyItemByUrl = _documentService.GetHistoryItemByUrl(Data);
+                if (historyItemByUrl != null)
+                {
+                    context.Response.RedirectPermanent("~/" + historyItemByUrl.Webpage.LiveUrlSegment);
+                    return true;
+                }
             }
             return false;
         }
