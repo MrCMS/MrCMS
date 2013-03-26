@@ -39,11 +39,14 @@
                 @Html.TextBoxFor(x => x.FirstName, new { @class = "span12" })
                 @Html.LabelFor(x => x.LastName)
                 @Html.TextBoxFor(x => x.LastName, new { @class = "span12" })
-                <div class="form-inline">
-                    <label>
-                        @Html.CheckBoxFor(x => x.IsActive, onlyAdmin ? null : new { disabled = "disabled" }) Is Active
-                    </label>
-                </div>
+                @if (!onlyAdmin)
+                {
+                    <div class="form-inline">
+                        <label>
+                            @Html.CheckBoxFor(x => x.IsActive) Is Active
+                        </label>
+                    </div>
+                }
                 <hr />
                 <p>
                     Created on: @Model.CreatedOn.ToShortDateString()
@@ -58,7 +61,7 @@
                         foreach (var role in userRoles)
                         {
                             bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
-                            bool isEnabled = !onlyAdmin;
+                            bool isEnabled = !role.IsAdmin || !onlyAdmin;
 
                         @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
                         @:&nbsp;

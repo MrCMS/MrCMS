@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Apps;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -135,6 +136,7 @@ namespace MrCMS.Website.Routing
             routeValueDictionary["action"] = GetActionName(webpage, httpMethod);
             routeValueDictionary["page"] = webpage;
             controller.RouteData.Values.Merge(routeValueDictionary);
+            controller.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[webpage.GetType()];
 
             return controller;
         }

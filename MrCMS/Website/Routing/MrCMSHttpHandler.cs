@@ -110,12 +110,17 @@ namespace MrCMS.Website.Routing
             if (!Webpage.IsAllowed(CurrentRequestData.CurrentUser))
             {
                 if (CurrentRequestData.CurrentUser != null)
-                    HandleError(context, 403, _siteSettings.Error403PageId, new HttpException(403, "Not allowed to view " + Data));
+                    Handle403(context);
                 else
                     HandleError(context, 401, _siteSettings.Error403PageId, new HttpException(401, "Not allowed to view " + Data));
                 return false;
             }
             return true;
+        }
+
+        public void Handle403(HttpContextBase context)
+        {
+            HandleError(context, 403, _siteSettings.Error403PageId, new HttpException(403, "Not allowed to view " + Data));
         }
 
         public bool Handle404(HttpContextBase context)
@@ -172,6 +177,7 @@ namespace MrCMS.Website.Routing
                 data.Values["data"] = webpage.LiveUrlSegment;
 
                 Webpage = webpage;
+                CurrentRequestData.CurrentPage = webpage;
                 var controller = _controllerManager.GetController(RequestContext, webpage, context.Request.HttpMethod);
                 (controller as IController).Execute(new RequestContext(context, controller.RouteData));
             }
