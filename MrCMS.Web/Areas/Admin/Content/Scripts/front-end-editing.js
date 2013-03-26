@@ -18,7 +18,7 @@
             $("#enable-editing").click(function () {
                 $(this).mrcmsinline(!getEditingEnabled() ? 'enable' : 'disable');
             });
-            $(this).mrcmsinline(getEditingEnabled() ? 'enable' : 'disable');
+            $(this).mrcmsinline(getEditingEnabled() ? 'enable' : 'disable', true);
 
             return this;
         },
@@ -145,7 +145,7 @@
                 $.cookie('selected-tab-/Admin/Webpage/Edit/' + $('#Id').val(), '#layout-content');
             });
         },
-        disable: function () {
+        disable: function (init) {
             setEditingEnabled(false);
             $("#enable-editing").text("Inline Editing: Off");
             //remove all edit tools
@@ -159,7 +159,7 @@
             }
             $(settings.editableSelector).each(function (index, element) {
                 var el = $(element);
-                if (el.data("is-html") == true) {
+                if (el.data("is-html") == true && !init) {
                     showLiveForm(el);
                 }
             });
@@ -181,6 +181,7 @@
     function showLiveForm(el) {
         $.get('/Admin/InPageAdmin/GetFormattedBodyContent/', { id: el.data('id'), property: el.data('property'), type: el.data('type') }, function (response) {
             el.html(response);
+            $.validator.unobtrusive.parse(el.find('form'));
         });
     };
 
@@ -197,7 +198,7 @@
 })(jQuery);
 
 $(function () {
-    $().mrcmsinline();
+    $('.editable').mrcmsinline();
     
     $(document).on('click', '[data-toggle="fb-modal"]', function () {
         var clone = $(this).clone();

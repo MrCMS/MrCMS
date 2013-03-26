@@ -77,7 +77,7 @@ namespace MrCMS.Services
                                               {
                                                   var value = SanitizeValue(formProperty, request.Form[formProperty.Name]);
 
-                                                  if (value == null && formProperty.Required)
+                                                  if (string.IsNullOrWhiteSpace(value) && formProperty.Required)
                                                       throw new RequiredFieldException("No value was posted for the " +
                                                                                        formProperty.Name + " field");
 
