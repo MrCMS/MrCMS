@@ -46,63 +46,66 @@ namespace MrCMS.Services
                                       session.SaveOrUpdate(formPosting);
                                   });
             var errors = new List<string>();
-            foreach (var formProperty in formProperties)
-            {
-                try
-                {
-                    if (formProperty is FileUpload)
-                    {
-                        var file = request.Files[formProperty.Name];
+            _session.Transact(session =>
+                                  {
+                                      foreach (var formProperty in formProperties)
+                                      {
+                                          try
+                                          {
+                                              if (formProperty is FileUpload)
+                                              {
+                                                  var file = request.Files[formProperty.Name];
 
-                        if (file == null && formProperty.Required)
-                            throw new RequiredFieldException("No file was attached to the " +
-                                                             formProperty.Name + " field");
+                                                  if (file == null && formProperty.Required)
+                                                      throw new RequiredFieldException("No file was attached to the " +
+                                                                                       formProperty.Name + " field");
 
-                        if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
-                        {
-                            var value = SaveFile(webpage, formPosting, file);
+                                                  if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
+                                                  {
+                                                      var value = SaveFile(webpage, formPosting, file);
 
-                            formPosting.FormValues.Add(new FormValue
-                                                           {
-                                                               Key = formProperty.Name,
-                                                               Value = value,
-                                                               IsFile = true,
-                                                               FormPosting = formPosting
-                                                           });
-                        }
-                    }
-                    else
-                    {
-                        var value = SanitizeValue(formProperty, request.Form[formProperty.Name]);
+                                                      formPosting.FormValues.Add(new FormValue
+                                                                                     {
+                                                                                         Key = formProperty.Name,
+                                                                                         Value = value,
+                                                                                         IsFile = true,
+                                                                                         FormPosting = formPosting
+                                                                                     });
+                                                  }
+                                              }
+                                              else
+                                              {
+                                                  var value = SanitizeValue(formProperty, request.Form[formProperty.Name]);
 
-                        if (value == null && formProperty.Required)
-                            throw new RequiredFieldException("No value was posted for the " +
-                                                             formProperty.Name + " field");
+                                                  if (value == null && formProperty.Required)
+                                                      throw new RequiredFieldException("No value was posted for the " +
+                                                                                       formProperty.Name + " field");
 
-                        formPosting.FormValues.Add(new FormValue
-                                                       {
-                                                           Key = formProperty.Name,
-                                                           Value = value,
-                                                           FormPosting = formPosting
-                                                       });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    errors.Add(ex.Message);
-                }
-            }
+                                                  formPosting.FormValues.Add(new FormValue
+                                                                                 {
+                                                                                     Key = formProperty.Name,
+                                                                                     Value = value,
+                                                                                     FormPosting = formPosting
+                                                                                 });
+                                              }
+                                          }
+                                          catch (Exception ex)
+                                          {
+                                              errors.Add(ex.Message);
+                                          }
+                                      }
 
-            if (errors.Any())
-            {
-                _session.Transact(session => session.Delete(formPosting));
-            }
-            else
-            {
-                _session.Transact(session => formPosting.FormValues.ForEach(value => session.Save(value)));
+                                      if (errors.Any())
+                                      {
+                                          session.Delete(formPosting);
+                                      }
+                                      else
+                                      {
+                                          formPosting.FormValues.ForEach(value => session.Save(value));
 
-                SendFormMessages(webpage, formPosting);
-            }
+                                          SendFormMessages(webpage, formPosting);
+                                      }
+                                  });
             return errors;
         }
 
