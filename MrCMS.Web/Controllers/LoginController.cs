@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Models;
@@ -39,7 +40,14 @@ namespace MrCMS.Web.Controllers
                     if (_authorisationService.ValidateUser(user, loginModel.Password))
                     {
                         _authorisationService.SetAuthCookie(loginModel.Email, loginModel.RememberMe);
-                        return Redirect(loginModel.ReturnUrl ?? "~/admin");
+                        if (user.IsAdmin)
+                        {
+                            return Redirect(loginModel.ReturnUrl ?? "~/admin");
+                        }
+                        else
+                        {
+                            return Redirect(loginModel.ReturnUrl ?? "~/");
+                        }
                     }
                 }
             }
