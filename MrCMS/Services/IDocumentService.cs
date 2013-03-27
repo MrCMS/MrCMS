@@ -23,9 +23,6 @@ namespace MrCMS.Services
         T GetDocumentByUrl<T>(string url) where T : Document;
         UrlHistory GetHistoryItemByUrl(string url);
         string GetDocumentUrl(string pageName, Webpage parent, bool useHierarchy = false);
-        IEnumerable<SearchResultModel> SearchDocuments<T>(string searchTerm) where T : Document;
-        IPagedList<DetailedSearchResultModel> SearchDocumentsDetailed<T>(string searchTerm, int? parentId, int page = 1) where T : Document;
-        IPagedList<SearchResult> SiteSearch(string query, int? page, int pageSize = 10);
         Layout GetDefaultLayout(Webpage currentPage);
         void SetTags(string taglist, Document document);
         void SetOrder(int documentId, int order);

@@ -12,10 +12,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class SearchController : MrCMSAdminController
     {
-        private readonly IDocumentService _documentService;
+        private readonly ISearchService _documentService;
         private readonly INavigationService _navigationService;
 
-        public SearchController(IDocumentService documentService, INavigationService navigationService)
+        public SearchController(ISearchService documentService, INavigationService navigationService)
         {
             _documentService = documentService;
             _navigationService = navigationService;
