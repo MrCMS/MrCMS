@@ -35,6 +35,8 @@
         </ul>
         <div class="tab-content">
             <div id="properties" class="tab-pane active">
+                @Html.LabelFor(x => x.Email)
+                @Html.TextBoxFor(x => x.Email, new { @class = "span12" })
                 @Html.LabelFor(x => x.FirstName)
                 @Html.TextBoxFor(x => x.FirstName, new { @class = "span12" })
                 @Html.LabelFor(x => x.LastName)

@@ -39,7 +39,7 @@ namespace MrCMS.Web.Controllers
                     if (_authorisationService.ValidateUser(user, loginModel.Password))
                     {
                         _authorisationService.SetAuthCookie(loginModel.Email, loginModel.RememberMe);
-                        return Redirect(loginModel.ReturnUrl ?? "~/admin");
+                        return Redirect(loginModel.ReturnUrl ?? "~/");
                     }
                 }
             }
