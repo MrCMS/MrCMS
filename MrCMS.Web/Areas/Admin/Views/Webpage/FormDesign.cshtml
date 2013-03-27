@@ -1,6 +1,47 @@
 ﻿@model MrCMS.Entities.Documents.Web.Webpage
-
 <div id="form-design-tab" class="tab-pane">
     <h4>Form Design</h4>
-    @Html.TextAreaFor(webpage => webpage.FormDesign, new{@class = "ckedit-enabled" })
+    <div class="alert alert-info">
+        <strong>Heads up!</strong> By default, Mr CMS creates the for HTML form you. However if you want a custom form design then you can manually create the form using {lable:Name}, {input:Name}, {validtion:Name} and {submitted-message} where 'Name' is the name of the field provided by yourself and {submitted-message} is where you would like to see the success message. Note you do need a button element but there is no need to open or close the form.
+    </div>
+
+    @Html.TextAreaFor(webpage => webpage.FormDesign, new { @style = "width: 98%; height: 200px;" })
+
+    
+    <h5>Example</h5>
+    <textarea style="width: 98%; height: 200px;">
+<table>
+        <tbody>
+            <tr>
+                <td>{label:Name}</td>
+                <td>{input:Name}</td>
+            </tr>
+            <tr>
+                <td colspan="2">{validation:Name}</td>
+            </tr>
+            <tr>
+                <td>{label:Company Name}</td>
+                <td>{input:Company Name}</td>
+            </tr>
+            <tr>
+                <td colspan="2">{validation:Company Name}</td>
+            </tr>
+            <tr>
+                <td colspan="2"><button>Submit</button></td>
+            </tr>
+            <tr>
+                <td colspan="2">{submitted-message}</td>
+            </tr>
+        </tbody>
+    </table>
+</textarea>
+
+
+
+
+
+
+
+
+
 </div>

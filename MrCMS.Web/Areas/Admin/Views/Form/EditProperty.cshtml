@@ -5,7 +5,7 @@
 @using (Html.BeginForm("EditProperty", "Form", new { id = Model.Id }, FormMethod.Post, new { @class = "form-update-form" }))
 {
     <div class="modal-header">
-        <h3>Edit form property</h3>
+        <h3>Edit field</h3>
     </div>
     <div class="modal-body">
         @Html.LabelFor(property => property.Name)

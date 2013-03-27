@@ -4,7 +4,7 @@
 @using (Html.BeginForm("AddProperty", "Form", new { id = "" }, FormMethod.Post, new { @class = "form-update-form" }))
 {
     <div class="modal-header">
-        <h3>Add form property</h3>
+        <h3>Add field</h3>
     </div>
     <div class="modal-body">
         @Html.HiddenFor(x => x.Webpage.Id)
@@ -14,12 +14,14 @@
         @Html.TextBoxFor(property => property.Name)
         @Html.LabelFor(property => property.LabelText)
         @Html.TextBoxFor(property => property.LabelText)
-        @Html.LabelFor(property => property.Required)
-        @Html.CheckBoxFor(property => property.Required)
         @Html.LabelFor(property => property.CssClass)
         @Html.TextBoxFor(property => property.CssClass)
         @Html.LabelFor(property => property.HtmlId)
         @Html.TextBoxFor(property => property.HtmlId)
+        
+        <div class="form-inline">
+            @Html.InlineCheckboxFor(x => x.Required, new { }, new { }, "Field is Required")
+        </div>
     </div>
 }
 <div class="modal-footer">
