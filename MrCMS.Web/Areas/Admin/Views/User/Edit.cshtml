@@ -1,12 +1,30 @@
-﻿@using MrCMS.Entities.Multisite
+﻿@using System.ComponentModel
+@using System.Diagnostics
+@using System.Diagnostics.CodeAnalysis
+@using System.Drawing
+@using System.Globalization
+@using System.Linq.Expressions
+@using System.Reflection
+@using System.Text
+@using System.Text.RegularExpressions
+@using MrCMS.Apps
+@using MrCMS.Entities.Multisite
 @using MrCMS.Entities.People
+@using MrCMS.Helpers
+@using MrCMS.Services
+@using MrCMS.Shortcodes
+@using MrCMS.Website
+@using MrCMS.Website.Optimization
+@using Newtonsoft.Json
 @model User
 @{
     ViewBag.Title = "Edit | " + Model.Name;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var onlyAdmin = Convert.ToBoolean(ViewData["OnlyAdmin"]);
     var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
+    
 }
+
 <div class="row-fluid">
     <div class="span4">
         <h4>Edit - @Model.Name</h4>
@@ -44,9 +62,7 @@
                 @if (!onlyAdmin)
                 {
                     <div class="form-inline">
-                        <label>
-                            @Html.CheckBoxFor(x => x.IsActive) Is Active
-                        </label>
+                        @Html.InlineCheckboxFor(x => x.IsActive, new { }, new { }, "Is Active")
                     </div>
                 }
                 <hr />

@@ -180,7 +180,7 @@ namespace MrCMS.Helpers
             if (htmlAttributes != null)
                 tag.MergeAttributes(htmlAttributes);
 
-            tag.SetInnerText(resolvedLabelText);
+            tag.InnerHtml = resolvedLabelText;
             return tag.ToMvcHtmlString(TagRenderMode.Normal);
         }
 
@@ -248,6 +248,23 @@ namespace MrCMS.Helpers
             return LabelHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData),
                                ExpressionHelper.GetExpressionText(expression), AnonymousObjectToHtmlAttributes(htmlAttributes),
                                text);
+        }
+
+        public static MvcHtmlString InlineCheckboxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
+                                                     Expression<Func<TModel, bool>> expression, object labelAttributes, object checkboxAttributes,
+                                                     string text = null)
+        {
+            var checkbox = (CheckBoxHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData), ExpressionHelper.GetExpressionText(expression), expression.Compile()(htmlHelper.ViewData.Model), AnonymousObjectToHtmlAttributes(checkboxAttributes)).ToHtmlString());
+            var labelHtmlAttributes = AnonymousObjectToHtmlAttributes(labelAttributes);
+            // add checkbox style to label, for Bootstrap
+            if (labelHtmlAttributes.ContainsKey("class"))
+                labelHtmlAttributes["class"] += " checkbox";
+            else
+                labelHtmlAttributes["class"] = "checkbox";
+            return LabelHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData),
+                               ExpressionHelper.GetExpressionText(expression),
+                               labelHtmlAttributes,
+                               checkbox + text);
         }
 
         public static MvcHtmlString Label(this HtmlHelper htmlHelper, string labelFor, object htmlAttributes,
