@@ -31,7 +31,7 @@
     });
 
     $('#accordion-layout-areas').on('hidden', function (e) {
-        $.cookie('selected-layout-area' + location.pathname, '', { expires: 1 });
+        $.cookie('selected-layout-area-' + location.pathname, '', { expires: 1 });
     });
 
     $('#PublishOn').change(function () {
