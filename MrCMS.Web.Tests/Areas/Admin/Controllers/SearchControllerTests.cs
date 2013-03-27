@@ -13,7 +13,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class SearchControllerTests
     {
-        private static IDocumentService documentService;
+        private static ISearchService searchService;
         private static INavigationService navigationService;
 
         [Fact]
@@ -28,9 +28,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
         private static SearchController GetSearchController()
         {
-            documentService = A.Fake<IDocumentService>();
+            searchService = A.Fake<ISearchService>();
             navigationService = A.Fake<INavigationService>();
-            var searchController = new SearchController(documentService, navigationService);
+            var searchController = new SearchController(searchService, navigationService);
             return searchController;
         }
 
@@ -61,7 +61,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             searchController.GetSearchResults("test", null);
 
-            A.CallTo(() => documentService.SearchDocuments<Document>("test")).MustHaveHappened();
+            A.CallTo(() => searchService.SearchDocuments<Document>("test")).MustHaveHappened();
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             SearchController searchController = GetSearchController();
 
             IEnumerable<SearchResultModel> searchResultModels = A.CollectionOfFake<SearchResultModel>(1);
-            A.CallTo(() => documentService.SearchDocuments<Document>("test")).Returns(
+            A.CallTo(() => searchService.SearchDocuments<Document>("test")).Returns(
                 searchResultModels);
 
             JsonResult searchResults = searchController.GetSearchResults("test", null);
@@ -85,7 +85,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             searchController.GetSearchResults("test", "TextPage");
 
-            A.CallTo(() => documentService.SearchDocuments<TextPage>("test")).MustHaveHappened();
+            A.CallTo(() => searchService.SearchDocuments<TextPage>("test")).MustHaveHappened();
         }
 
         [Fact]
@@ -123,7 +123,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             searchController.Index("searchterm", "TextPage", 1, 1).As<ViewResult>();
 
-            A.CallTo(() => documentService.SearchDocumentsDetailed<TextPage>("searchterm", 1, 1)).MustHaveHappened();
+            A.CallTo(() => searchService.SearchDocumentsDetailed<TextPage>("searchterm", 1, 1)).MustHaveHappened();
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             searchController.Index("searchterm", "", 1, 1).As<ViewResult>();
 
-            A.CallTo(() => documentService.SearchDocumentsDetailed<Document>("searchterm", 1, 1)).MustHaveHappened();
+            A.CallTo(() => searchService.SearchDocumentsDetailed<Document>("searchterm", 1, 1)).MustHaveHappened();
         }
 
         [Fact]

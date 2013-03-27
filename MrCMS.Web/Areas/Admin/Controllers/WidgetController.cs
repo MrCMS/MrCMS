@@ -44,10 +44,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             var newWidget = _widgetService.AddWidget(widget);
 
-            return !string.IsNullOrWhiteSpace(returnUrl)
-                       ? (ActionResult)Redirect(returnUrl)
-                       : newWidget.HasProperties
-                             ? RedirectToAction("Edit", "Widget", new { id = newWidget.Id })
+            return newWidget.HasProperties
+                       ? RedirectToAction("Edit", "Widget", new { id = newWidget.Id })
+                       : !string.IsNullOrWhiteSpace(returnUrl)
+                             ? (ActionResult)Redirect(returnUrl)
                              : RedirectToAction("Edit", "LayoutArea", new { id = newWidget.LayoutArea.Id });
         }
 
@@ -58,9 +58,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             widget.SetDropdownData(ViewData, _session);
 
-            if (Referrer.Authority.Equals(widget.Site.BaseUrl, StringComparison.OrdinalIgnoreCase) &&
-                !Referrer.PathAndQuery.StartsWith("/admin", StringComparison.OrdinalIgnoreCase))
-                ViewData["return-url"] = Referrer;
+            ViewData["return-url"] = Referrer;
 
             return View(widget);
         }
@@ -125,11 +123,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _widgetService.SaveWidget(widget);
 
-            return !string.IsNullOrWhiteSpace(returnUrl)
-                       ? (ActionResult)Redirect(returnUrl)
-                       : widget.HasProperties
-                             ? RedirectToAction("Edit", "Widget", new { id = widget.Id })
-                             : RedirectToAction("Edit", "Webpage", new { id = widget.Webpage.Id, layoutAreaId = widget.LayoutArea.Id });
+            return widget.HasProperties
+                       ? RedirectToAction("Edit", "Widget", new {id = widget.Id})
+                       : !string.IsNullOrWhiteSpace(returnUrl)
+                             ? (ActionResult) Redirect(returnUrl)
+                             : RedirectToAction("Edit", "Webpage",
+                                                new {id = widget.Webpage.Id, layoutAreaId = widget.LayoutArea.Id});
         }
     }
 }

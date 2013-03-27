@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
@@ -28,6 +29,9 @@ namespace MrCMS.Indexing.Querying
 
         public IPagedList<TEntity> Search(Query query, int pageNumber, int pageSize, Filter filter = null)
         {
+            var rewrite = query.Rewrite(_searcher.IndexReader);
+            var s = rewrite.ToString();
+            Debug.WriteLine(s);
             var topDocs = _searcher.Search(query, filter, pageNumber*pageSize);
 
             var entities =

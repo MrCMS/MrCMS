@@ -169,6 +169,7 @@
     <Compile Include="Entities\Documents\Web\FormProperties\TextArea.cs" />
     <Compile Include="Entities\Documents\Web\FormProperties\TextBox.cs" />
     <Compile Include="Entities\Documents\Web\UrlHistory.cs" />
+    <Compile Include="Entities\Indexes\DocumentIndexDefinition.cs" />
     <Compile Include="Entities\SiteEntity.cs" />
     <Compile Include="Entities\Documents\Document.cs" />
     <Compile Include="Entities\Documents\DocumentMetadata.cs" />
@@ -289,6 +290,7 @@
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Entities\Indexes\WebpageIndexDefinition.cs" />
     <Compile Include="Services\IRoleService.cs" />
+    <Compile Include="Services\ISearchService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
     <Compile Include="Services\ISiteService.cs" />
     <Compile Include="Services\ITagService.cs" />

@@ -208,7 +208,7 @@ namespace MrCMS.Web.Tests.Controllers
         }
 
         [Fact]
-        public void LoginController_Post_IfActiveUserIsLoadedIfValidateUserIsTrueRedirectsToAdminRootIfReturnUrlIsNotSet()
+        public void LoginController_Post_IfActiveUserIsLoadedIfValidateUserIsTrueRedirectsToRootIfReturnUrlIsNotSet()
         {
             var loginModel = new LoginController.LoginModel
             {
@@ -223,7 +223,7 @@ namespace MrCMS.Web.Tests.Controllers
 
             var actionResult = _loginController.Post(loginModel);
 
-            actionResult.As<RedirectResult>().Url.Should().Be("~/admin");
+            actionResult.As<RedirectResult>().Url.Should().Be("~/");
         }
     }
 }

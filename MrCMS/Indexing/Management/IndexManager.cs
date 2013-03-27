@@ -51,7 +51,7 @@ namespace MrCMS.Indexing.Management
             }
         }
 
-        public string IndexName { get { return Definition.Name; } }
+        public string IndexName { get { return Definition.IndexName; } }
 
         private void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
         {

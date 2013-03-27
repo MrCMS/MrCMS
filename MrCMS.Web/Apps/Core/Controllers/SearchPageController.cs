@@ -11,9 +11,9 @@ namespace MrCMS.Web.Apps.Core.Controllers
 {
     public class SearchPageController : MrCMSAppUIController<CoreApp>
     {
-        private readonly IDocumentService _documentService;
+        private readonly ISearchService _documentService;
 
-        public SearchPageController(IDocumentService documentService)
+        public SearchPageController(ISearchService documentService)
         {
             _documentService = documentService;
         }
@@ -22,11 +22,11 @@ namespace MrCMS.Web.Apps.Core.Controllers
         {
             int pageVal;
             ViewData["term"] = Request["q"];
-            int? pageNum = string.IsNullOrWhiteSpace(Request["p"])
-                               ? null
+            int pageNum = string.IsNullOrWhiteSpace(Request["p"])
+                               ? 1
                                : int.TryParse(Request["p"], out pageVal)
                                      ? pageVal
-                                     : (int?)null;
+                                     : 1;
             ViewData["searchResults"] = _documentService.SiteSearch(Request["q"], pageNum);
 
             return View(page);

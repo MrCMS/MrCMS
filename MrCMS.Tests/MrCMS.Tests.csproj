@@ -119,6 +119,7 @@
     <Compile Include="Services\NavigationServiceTests.cs" />
     <Compile Include="Services\ResetPasswordServiceTests.cs" />
     <Compile Include="Services\RoleServiceTests.cs" />
+    <Compile Include="Services\SearchServiceTests.cs" />
     <Compile Include="Services\SitesServiceTests.cs" />
     <Compile Include="Services\TagServiceTests.cs" />
     <Compile Include="Services\UserServiceTests.cs" />

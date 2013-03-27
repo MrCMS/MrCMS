@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Lucene.Net.Documents;
 using MrCMS.Helpers;
+using MrCMS.Indexing.Management;
 
 namespace MrCMS.Indexing.Utils
 {
@@ -9,6 +11,12 @@ namespace MrCMS.Indexing.Utils
     /// </summary>
     public static class DocumentExtensions
     {
+        public static Document SetFields<T>(this Document document, IEnumerable<FieldDefinition<T>> definitions, T obj)
+        {
+            definitions.ForEach(definition => document.AddField(definition, obj));
+            return document;
+        }
+        
         /// <summary>
         /// Allows method chaining of add field
         /// </summary>
@@ -19,6 +27,13 @@ namespace MrCMS.Indexing.Utils
         {
             if (document != null)
                 document.Add(field);
+            return document;
+        }
+        public static Document AddField<T>(this Document document, FieldDefinition<T> definition, T obj)
+        {
+            if (document != null)
+                document.Add(new Field(definition.FieldName, definition.GetValue(obj), definition.Store,
+                                       definition.Index));
             return document;
         }
         public static Document AddField(this Document document, string name, string value, Field.Store store, Field.Index index)
