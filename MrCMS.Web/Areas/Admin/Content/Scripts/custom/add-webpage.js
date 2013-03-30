@@ -10,11 +10,6 @@
     return $(this);
 };
 $(function () {
-    $("#suggest-url").click(function (e) {
-        e.preventDefault();
-        suggestUrl();
-    });
-
     $("#Name").blur(function () {
         if ($("#mode").is(':checked')) {
             suggestUrl();
@@ -37,7 +32,7 @@ $(function () {
 
     function suggestUrl() {
         var pageName = $("#Name").val(),
-            parentId = $("#Parent_Id").val()
+            parentId = $("#Parent_Id").val();
         if (pageName != "") {
             $.get('/Admin/Webpage/SuggestDocumentUrl', { pageName: pageName, id: parentId}, function (data) {
                 $("#UrlSegment").val(data);

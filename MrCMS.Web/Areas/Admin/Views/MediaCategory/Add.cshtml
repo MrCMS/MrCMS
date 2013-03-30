@@ -8,27 +8,32 @@
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/add-category.js")"></script>
 }
 
-
-<div class="row-fluid">
-    <div class="span10">
-        <h3>Add Folder</h3>
+@using (Html.BeginForm("Add", "MediaCategory", new {id = ""}, FormMethod.Post, new {id = "add-media-category"}))
+{
+    <div class="row-fluid">
+        <div class="span10">
+            <h3>Add Folder</h3>
+        </div>
+        <div class="span2">
+            <button class="btn pull-right btn-primary">
+                Add</button>
+        </div>
     </div>
-    <div class="span2">
-        <button class="btn pull-right btn-primary" data-form-id="add-media-category" data-action="save">
-            Continue</button>
+
+    <div class="row-fluid">
+        <div class="span12">
+         
+            @Html.HiddenFor(x => x.Parent.Id)
+            @Html.LabelFor(x => x.Name, "Folder Name")
+            @Html.TextBoxFor(x => x.Name, new {@class = "span12"})
+            @Html.ValidationMessageFor(x => x.Name, "", new {@class = "error"})
+
+            @Html.LabelFor(x => x.UrlSegment, "Path")
+            @Html.TextBoxFor(x => x.UrlSegment, new {@class = "span12"})
+            @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class = "error"})
+            <br />
+            @Html.Hidden("DocumentType", "MediaCategory")
+        
+        </div>
     </div>
-</div>
-
-@using (Html.BeginForm("Add", "MediaCategory", new { id = "" }, FormMethod.Post, new { id = "add-media-category" }))
-{  
-    @Html.HiddenFor(x => x.Parent.Id)
-    @Html.LabelFor(x => x.Name, "Folder Name")
-    @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
-    @Html.ValidationMessageFor(x => x.Name, "", new {@class="error"})
-
-    @Html.LabelFor(x => x.UrlSegment, "Path")
-    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
-    @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class="error"})
-    <br />
-    @Html.Hidden("DocumentType", "MediaCategory")
 }

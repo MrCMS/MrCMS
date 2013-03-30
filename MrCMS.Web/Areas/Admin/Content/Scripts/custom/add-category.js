@@ -10,10 +10,6 @@
     return $(this);
 };
 $(function () {
-    $("#suggest-url").click(function(e) {
-        e.preventDefault();
-        suggestUrl();
-    });
 
     $("#Name").delayKeyup(function() {
         setStandardUrl();
