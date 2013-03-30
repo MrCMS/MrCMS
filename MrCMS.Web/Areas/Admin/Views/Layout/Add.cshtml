@@ -2,26 +2,8 @@
 @{
     ViewBag.Title = "Add Layout";
 }
-@section JavaScriptBlock
-{
-    <script type="text/javascript">
-        $("#suggest-url").click(function (e) {
-            e.preventDefault();
-            var pageName = $("#Name").val(),
-		    parentId = $("#ParentId").val();
-            if (pageName == "")
-                alert("Please enter a name to suggest a URL");
-            else {
-                $.get('/Admin/Layout/SuggestDocumentUrl', { pageName: pageName, parentId: parentId }, function (data) {
-                    $("#UrlSegment").val(data);
-                });
-            }
-        });
-    </script>
-}
 @using (Html.BeginForm("Add", "Layout", new { id = "" }, FormMethod.Post, new { id = "add-layout" }))
 {
-    
     <section class="admin-header">
         <div class="row-fluid">
             <div class="span10">
@@ -46,6 +28,5 @@
             @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
             @Html.Hidden("DocumentType", "Layout")
         </div>
-    </div>
-    
+    </div>   
 }
