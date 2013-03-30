@@ -23,12 +23,24 @@ namespace MrCMS.Web.Areas.Admin.Controllers
          * Need to do media category specific stuff before generic stuff. In this case
          * create a directory for media files.
          */
-
         public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] MediaCategory doc)
         {
             var actionResult = base.Add(doc);
             _fileService.CreateFolder(doc);
             return actionResult;
+        }
+
+        [HttpGet]
+        [ActionName("Add")]
+        public override ActionResult Add_Get(MediaCategory parent = null)
+        {
+            //Build list 
+            var model = new MediaCategory()
+            {
+                Parent = parent
+            };
+
+            return View(model);
         }
 
         public override ActionResult Show(MediaCategory document)
@@ -105,6 +117,17 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _fileService.SetOrders(items);
             return RedirectToAction("SortFiles", new { id = parent.Id });
+        }
+
+        /// <summary>
+        /// Finds out if the URL entered is valid.
+        /// </summary>
+        /// <param name="UrlSegment">The URL Segment entered</param>
+        /// <param name="DocumentType">The type of document</param>
+        /// <returns></returns>
+        public ActionResult ValidateUrlIsAllowed(string UrlSegment, int? Id)
+        {
+            return !_documentService.UrlIsValidForMediaCategory(UrlSegment, Id) ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
     }
 }

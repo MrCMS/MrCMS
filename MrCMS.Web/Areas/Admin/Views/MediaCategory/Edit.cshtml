@@ -43,7 +43,7 @@
         <div id="properties" class="tab-pane">
             @using (Html.BeginForm("Edit", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { id = "edit-media" }))
             {
-                @Html.LabelFor(x => x.Name)
+                @Html.LabelFor(x => x.Name, "Folder Name")
                 @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
                 @Html.LabelFor(x => x.UrlSegment, "Path")
                 @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12", disabled = "true" })

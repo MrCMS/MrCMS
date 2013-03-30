@@ -1,4 +1,4 @@
-﻿@model MrCMS.Web.Areas.Admin.Models.AddPageModel
+﻿@model MrCMS.Entities.Documents.Layout.Layout
 @{
     ViewBag.Title = "Add Layout";
 }
@@ -35,10 +35,10 @@
     @Html.HiddenFor(x => x.Parent.Id)
     @Html.LabelFor(x => x.Name, "Name")
     @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
-    @Html.ValidationMessageFor(x => x.Name)
+    @Html.ValidationMessageFor(x => x.Name, "", new {@class="error"})
 
     @Html.LabelFor(x => x.UrlSegment, "Path")
     @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
-    @Html.ValidationMessageFor(x => x.UrlSegment)
+    @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class="error"})
     @Html.Hidden("DocumentType", "Layout")
 }

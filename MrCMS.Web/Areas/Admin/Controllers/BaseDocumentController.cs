@@ -102,5 +102,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         public abstract ActionResult Show(T document);
+
+        
     }
 }

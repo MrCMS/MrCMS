@@ -1,4 +1,4 @@
-﻿@model MrCMS.Web.Areas.Admin.Models.AddPageModel
+﻿@model MrCMS.Entities.Documents.Media.MediaCategory 
 @{
     ViewBag.Title = "Add media category";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -22,13 +22,13 @@
 @using (Html.BeginForm("Add", "MediaCategory", new { id = "" }, FormMethod.Post, new { id = "add-media-category" }))
 {  
     @Html.HiddenFor(x => x.Parent.Id)
-    @Html.LabelFor(x => x.Name, "Category Name")
+    @Html.LabelFor(x => x.Name, "Folder Name")
     @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
-    @Html.ValidationMessageFor(x => x.Name)
+    @Html.ValidationMessageFor(x => x.Name, "", new {@class="error"})
 
     @Html.LabelFor(x => x.UrlSegment, "Path")
     @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
-    @Html.ValidationMessageFor(x => x.UrlSegment)
+    @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class="error"})
     <br />
     @Html.Hidden("DocumentType", "MediaCategory")
 }

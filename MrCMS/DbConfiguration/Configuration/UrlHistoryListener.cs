@@ -23,7 +23,7 @@ namespace MrCMS.DbConfiguration.Configuration
 
                     var indexOf = @event.Persister.PropertyNames.ToList().IndexOf("UrlSegment");
 
-                    if (@event.OldState[indexOf] != @event.State[indexOf] && webpage.UrlSegment != Convert.ToString(@event.State[indexOf]) && !CheckUrlExistence(session, @event.Entity as Webpage))
+                    if (@event.OldState[indexOf] != @event.State[indexOf] && webpage.UrlSegment != Convert.ToString(@event.OldState[indexOf]) && !CheckUrlExistence(session, @event.Entity as Webpage))
                     {
                         var urlHistory = new UrlHistory
                         {

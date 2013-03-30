@@ -6,6 +6,8 @@
 }
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.formbuilder.css")" rel="stylesheet" type="text/css" />
 
+
+
 <div class="row-fluid">
     <div class="span12">
         <a id="move-to" class="btn btn-info" title="Drag on to new page to relocate" href="#" style="cursor: move">Move to...</a>
@@ -27,7 +29,6 @@
         <div class="display-inline pull-right" style="margin-top: 5px;">Publish on &nbsp; </div>
     </div>
 </div>
-@Html.ValidationSummary()
 
 @{ Html.RenderPartial(Convert.ToString(ViewData["EditView"]));}
 <p style="margin-top: 10px; font-size: 11px;">

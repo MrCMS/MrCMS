@@ -44,20 +44,26 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] Webpage doc)
         {
-            if (_documentService.IsValidForWebpage(doc.UrlSegment, null))
+            if (_documentService.UrlIsValidForWebpage(doc.UrlSegment, null))
                 return base.Add(doc);
 
-            TempData.ErrorMessages().Add("Url is already used for another webpage. Please change it to something else.");
             DocumentTypeSetup(doc);
             return View(doc);
         }
 
+        [HttpPost]
         public override ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] Webpage doc)
         {
-            if (_documentService.IsValidForWebpage(doc.UrlSegment, doc.Id))
+            if (ModelState.IsValid)
+            {
                 return base.Edit(doc);
+            }
+            else //hack to stop all further response if JS is turned off.
+            {
+                HttpContext.Response.End();
+                return null;
+            }
 
-            TempData.ErrorMessages().Add("Url is already used for another webpage. Please change it to something else.");
             return Edit_Get(doc);
         }
 
@@ -167,6 +173,17 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult FormProperties(Webpage webpage)
         {
             return PartialView(webpage);
+        }
+
+        /// <summary>
+        /// Finds out if the URL entered is valid for a webpage
+        /// </summary>
+        /// <param name="UrlSegment">The URL Segment entered</param>
+        /// <param name="DocumentType">The type of document</param>
+        /// <returns></returns>
+        public ActionResult ValidateUrlIsAllowed(string UrlSegment, int? Id)
+        {
+            return !_documentService.UrlIsValidForWebpage(UrlSegment, Id) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
     }
 }

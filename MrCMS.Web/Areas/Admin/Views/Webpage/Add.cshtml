@@ -5,15 +5,11 @@
     ViewBag.Title = "Add Webpage";
 }
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/add-webpage.js");}
-@*@section JavaScriptBlock
-{
-
-    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/add-webpage.js")"></script>
-}*@
 
 @using (Html.BeginForm("Add", "Webpage", new { id = "" }, FormMethod.Post))
 {
-    
+    @Html.ValidationSummary()
+
     <section class="admin-header">
         <div class="row-fluid" style="margin-bottom: 10px;">
             <div class="span4">
@@ -44,7 +40,7 @@
             {
                 <label class="radio">
                     <i class="@documentType.IconClass">&nbsp;</i>
-                    <input id="DocumentType" name="DocumentType" type="radio" value="@documentType.TypeName" required @(count == 1 ? "checked" : "")>
+                    <input id="DocumentType" name="DocumentType" type="radio" value="@documentType.TypeName" required  @(count == 1 ? "checked" : "")>
                     @documentType.Name
                 </label>
             }
@@ -52,10 +48,10 @@
     </div>
     @Html.HiddenFor(x => x.Parent.Id)
     @Html.LabelFor(x => x.Name, "Page Name")
-    @Html.TextBoxFor(x => x.Name, new { @class = "span12 required", autocomplete="off" })
+    @Html.TextBoxFor(x => x.Name, new { @class = "span12", autocomplete="off" })
     
     @Html.LabelFor(x => x.UrlSegment, "Url")
-    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12 required" })
+    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
     
     <label class="checkbox">
         <input type="checkbox" name="mode" id="mode" value="1" checked />  Maintain Hierarchy

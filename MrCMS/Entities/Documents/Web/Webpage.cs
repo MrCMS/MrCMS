@@ -26,6 +26,12 @@ namespace MrCMS.Entities.Documents.Web
         }
         private Layout.Layout _layout;
 
+        [Required]
+        [Remote("ValidateUrlIsAllowed", "Webpage", AdditionalFields = "Id")]
+        [RegularExpression("[a-zA-Z0-9\\-\\.\\~\\/_\\\\]+$", ErrorMessage = "Url must alphanumeric characters only with dashes or underscore for spaces.")]
+        [DisplayName("Url Segment")]
+        public override string UrlSegment { get; set; }
+
         [DisplayName("Meta Title")]
         public virtual string MetaTitle { get; set; }
         [DisplayName("Meta Description")]

@@ -599,5 +599,6 @@ namespace MrCMS.Helpers
             }
             return tempData["info-message"] as List<string>;
         }
+        
     }
 }

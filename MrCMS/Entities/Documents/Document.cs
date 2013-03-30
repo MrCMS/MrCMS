@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Paging;
@@ -21,9 +22,8 @@ namespace MrCMS.Entities.Documents
         [Required]
         [DisplayName("Display Order")]
         public virtual int DisplayOrder { get; set; }
-        [Required]
-        [DisplayName("Url Segment")]
-        public virtual string UrlSegment { get; set; }
+
+        public abstract string UrlSegment { get; set; }
 
         private IList<Document> _children = new List<Document>();
         private IList<Tag> _tags = new List<Tag>();

@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -7,9 +10,13 @@ using NHibernate;
 
 namespace MrCMS.Entities.Documents.Layout
 {
-    //[DocumentTypeDefinition(ChildrenListType.WhiteList, Name = "Layout", IconClass = "icon-th", DisplayOrder = 1, Type = typeof(Layout), WebGetAction = "View", WebGetController = "Layout")]
     public class Layout : Document
     {
+        [Required]
+        [Remote("ValidateUrlIsAllowed", "Layout", AdditionalFields = "Id")]
+        [DisplayName("Path")]
+        public override string UrlSegment { get; set; }
+
         //todo this can't be protected, required in admin on layoput edit
         public virtual IList<LayoutArea> LayoutAreas { get; set; }
 

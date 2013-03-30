@@ -1,15 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web.Mvc;
 using MrCMS.Services;
 using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Entities.Documents.Media
 {
-    //[DocumentTypeDefinition(ChildrenListType.WhiteList, Name = "Media Category", IconClass = "icon-film", DisplayOrder = 1, Type = typeof(MediaCategory), WebGetAction = "View", WebGetController = "MediaCategory")]
     public class MediaCategory : Document
     {
+        [Required]
+        [Remote("ValidateUrlIsAllowed", "MediaCategory", AdditionalFields = "Id")]
+        [RegularExpression("[a-zA-Z0-9\\-\\.\\~\\/_\\\\]+$", ErrorMessage = "Path must alphanumeric characters only with dashes or underscore for spaces.")]
+        [DisplayName("Path")]
+        public override string UrlSegment { get; set; }
+
         public virtual string MetaTitle { get; set; }
         public virtual string MetaDescription { get; set; }
 

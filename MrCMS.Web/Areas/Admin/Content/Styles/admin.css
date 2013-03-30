@@ -51,3 +51,6 @@ section.admin-header h3 { margin: 0px; }
 #changes-table pre { font-size: 0.6em; }
 
 .form-item{ padding: 10px;}
+
+.validation-summary-errors { color: red;}
+.error span { color: red; }
