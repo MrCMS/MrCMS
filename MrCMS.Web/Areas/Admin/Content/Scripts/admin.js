@@ -1,4 +1,12 @@
 ﻿$(document).ready(function () {
+    $("#loading").ajaxStart(function () {
+        $(this).show();
+    });
+
+    $("#loading").ajaxStop(function () {
+        $(this).hide();
+    });
+    
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 
