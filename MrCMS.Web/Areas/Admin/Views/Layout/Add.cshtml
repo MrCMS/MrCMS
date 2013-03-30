@@ -5,40 +5,47 @@
 @section JavaScriptBlock
 {
     <script type="text/javascript">
-    	$("#suggest-url").click(function (e) {
-    		e.preventDefault();
-    		var pageName = $("#Name").val(),
+        $("#suggest-url").click(function (e) {
+            e.preventDefault();
+            var pageName = $("#Name").val(),
 		    parentId = $("#ParentId").val();
-    		if (pageName == "")
-    			alert("Please enter a name to suggest a URL");
-    		else {
-    			$.get('/Admin/Layout/SuggestDocumentUrl', { pageName: pageName, parentId: parentId }, function (data) {
-    				$("#UrlSegment").val(data);
-    			});
-    		}
-    	});
+            if (pageName == "")
+                alert("Please enter a name to suggest a URL");
+            else {
+                $.get('/Admin/Layout/SuggestDocumentUrl', { pageName: pageName, parentId: parentId }, function (data) {
+                    $("#UrlSegment").val(data);
+                });
+            }
+        });
     </script>
 }
-<section class="admin-header">
-    <div class="row-fluid">
-        <div class="span10">
-            <h3>Add Layout</h3>
-        </div>
-        <div class="span2">
-            <button class="btn pull-right" data-form-id="add-layout" data-action="save">Save & Continue</button>
-        </div>
-    </div>
-</section>
-<hr class="small-margin" />
 @using (Html.BeginForm("Add", "Layout", new { id = "" }, FormMethod.Post, new { id = "add-layout" }))
 {
-    @Html.HiddenFor(x => x.Parent.Id)
-    @Html.LabelFor(x => x.Name, "Name")
-    @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
-    @Html.ValidationMessageFor(x => x.Name, "", new {@class="error"})
+    
+    <section class="admin-header">
+        <div class="row-fluid">
+            <div class="span10">
+                <h3>Add Layout</h3>
+            </div>
+            <div class="span2">
+                <button class="btn pull-right">Add</button>
+            </div>
+        </div>
+    </section>
+    
+    <div class="row-fluid">
+        <div class="span12">
 
-    @Html.LabelFor(x => x.UrlSegment, "Path")
-    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
-    @Html.ValidationMessageFor(x => x.UrlSegment, "", new {@class="error"})
-    @Html.Hidden("DocumentType", "Layout")
+            @Html.HiddenFor(x => x.Parent.Id)
+            @Html.LabelFor(x => x.Name, "Name")
+            @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
+            @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
+
+            @Html.LabelFor(x => x.UrlSegment, "Path")
+            @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
+            @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+            @Html.Hidden("DocumentType", "Layout")
+        </div>
+    </div>
+    
 }
