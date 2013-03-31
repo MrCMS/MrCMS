@@ -122,10 +122,14 @@ namespace MrCMS.Entities.Documents.Web
         public virtual IList<FormPosting> FormPostings { get; set; }
 
         [DisplayName("Form Submitted Message")]
+        [AllowHtml]
+        [StringLength(500, ErrorMessage = "Form submitted messsage cannot be longer than 500 characters.")]
         public virtual string FormSubmittedMessage { get; set; }
-        [DisplayName("Form Email Title")]
+        [DisplayName("Subject")]
+        [StringLength(250, ErrorMessage = "Subject cannot be longer than 250 characters.")]
         public virtual string FormEmailTitle { get; set; }
         [DisplayName("Send Form To")]
+        [StringLength(500, ErrorMessage = "Send to cannot be longer than 500 characters.")]
         public virtual string SendFormTo { get; set; }
         [DisplayName("Form Email Message")]
         public virtual string FormMessage { get; set; }
