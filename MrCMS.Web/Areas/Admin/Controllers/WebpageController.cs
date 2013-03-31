@@ -66,7 +66,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             return Edit_Get(doc);
         }
-
         protected override void DocumentTypeSetup(Webpage doc)
         {
             IEnumerable<Layout> layouts =

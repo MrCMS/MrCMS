@@ -496,8 +496,10 @@ namespace MrCMS.Services
             if (id.HasValue)
             {
                 var document = GetDocument<Webpage>(id.Value);
-                if (url.Trim() == document.UrlSegment.Trim())
+                var documentHistory = document.Urls.Any(x => x.UrlSegment == url);
+                if (url.Trim() == document.UrlSegment.Trim() || documentHistory) //if url is the same or has been used for the same page before lets go
                     return true;
+
                 return !WebpageExists(url) && !ExistsInUrlHistory(url);
             }
 
