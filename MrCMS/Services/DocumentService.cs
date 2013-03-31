@@ -231,8 +231,8 @@ namespace MrCMS.Services
                                          _session.SaveOrUpdate(tag);
                                      });
 
-             _session.SaveOrUpdate(document);
-            
+            _session.SaveOrUpdate(document);
+
         }
 
         private Tag GetTag(string name)
@@ -379,7 +379,7 @@ namespace MrCMS.Services
         {
             return DocumentMetadataHelper.GetMetadataByType(type);
         }
-        
+
         public void SetFrontEndRoles(string frontEndRoles, Webpage webpage)
         {
             if (webpage == null) throw new ArgumentNullException("webpage");
@@ -408,12 +408,16 @@ namespace MrCMS.Services
                                           roleNames.ForEach(name =>
                                                                 {
                                                                     var role = GetRole(name);
-                                                                    if (!webpage.FrontEndAllowedRoles.Contains(role))
+                                                                    if (role != null)
                                                                     {
-                                                                        webpage.FrontEndAllowedRoles.Add(role);
-                                                                        role.FrontEndWebpages.Add(webpage);
+                                                                        if (!webpage.FrontEndAllowedRoles.Contains(role))
+                                                                        {
+                                                                            webpage.FrontEndAllowedRoles.Add(role);
+                                                                            role.FrontEndWebpages.Add(webpage);
+                                                                        }
+                                                                        roles.Remove(role);
                                                                     }
-                                                                    roles.Remove(role);
+
                                                                 });
 
                                           roles.ForEach(role =>
@@ -549,14 +553,14 @@ namespace MrCMS.Services
             return !LayoutExists(url);
         }
 
-        public UrlHistory GetHistoryItemByUrl(string url) 
+        public UrlHistory GetHistoryItemByUrl(string url)
         {
             return _session.QueryOver<UrlHistory>()
                         .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
                         .Take(1).Cacheable()
                         .SingleOrDefault();
         }
-        
+
         /// <summary>
         /// Checks to see if the supplied url is unique for media category / folder.
         /// </summary>
@@ -590,7 +594,7 @@ namespace MrCMS.Services
         /// <returns>bool</returns>
         private bool WebpageExists(string url)
         {
-            return _session.QueryOver<Webpage>() 
+            return _session.QueryOver<Webpage>()
                         .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
                         .Cacheable()
                         .RowCount() > 0;
