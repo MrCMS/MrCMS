@@ -43,7 +43,7 @@
         <br />
 
         <!-- The table listing the files available for upload/download -->
-        <table class="table table-striped" id="file-items-table">
+        <table class="table table-striped" id="file-items-table" style="margin-top:-20px;">
             <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
                 @{ Html.RenderAction("Thumbnails", "MediaCategory", Model); }
             </tbody>
