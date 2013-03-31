@@ -402,18 +402,7 @@
             post_to_url(url, {});
         }
     });
-    $('#publish-status-change').click(function (e) {
-        e.preventDefault();
-        var self = $(this);
-        var url = self.attr('href') || self.data('link');
-        if (url != null) {
-            post_to_url_ajax(url, {}, 'POST', function () {
-                $('#edit-document').submit();
-            });
-        }
-        return false;
-    });
-
+    
     $(window).resize(function () {
         $('.modal').each(function (index, element) {
             resizeModal($(element));

@@ -6,33 +6,37 @@
 }
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.formbuilder.css")" rel="stylesheet" type="text/css" />
 
+@using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document" }))
+{
+    
+    @Html.ValidationSummary()
 
+    <div class="row-fluid">
+        <div class="span12">
+            <a id="move-to" class="btn btn-info" title="Drag on to new page to relocate" href="#" style="cursor: move">Move to...</a>
+            <div class="btn-group display-inline pull-right">
+                @Html.EditorFor(x => x.PublishOn)
+                @(Model.PublishOn == null
+                      ? Html.ActionLink("Publish", "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" })
+                      : Html.ActionLink("Unpublish", "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
+                @Html.ValidationMessageFor(x => x.PublishOn)
 
-<div class="row-fluid">
-    <div class="span12">
-        <a id="move-to" class="btn btn-info" title="Drag on to new page to relocate" href="#" style="cursor: move">Move to...</a>
-        <div class="btn-group display-inline pull-right">
-            @Html.EditorFor(x => x.PublishOn)
-            @(Model.PublishOn == null
-                ? Html.ActionLink("Publish", "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id="publish-status-change" })
-                : Html.ActionLink("Unpublish", "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id="publish-status-change" }))
-            @Html.ValidationMessageFor(x => x.PublishOn)
-
-            <a href="/@Model.LiveUrlSegment" class="btn">View</a>
-            @if (Model.CanDelete)
-            {
-                <a href="@Url.Action("Delete", "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
-            }
-            <button class="btn btn-primary" id="save-edit" data-form-id="edit-document" data-action="save">
-                Save</button>
+                <a href="/@Model.LiveUrlSegment" class="btn">View</a>
+                @if (Model.CanDelete)
+                {
+                    <a href="@Url.Action("Delete", "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
+                }
+                <button class="btn btn-primary">Save</button>
+            </div>
+            <div class="display-inline pull-right" style="margin-top: 5px;">Publish on &nbsp; </div>
         </div>
-        <div class="display-inline pull-right" style="margin-top: 5px;">Publish on &nbsp; </div>
     </div>
-</div>
 
-@{ Html.RenderPartial(Convert.ToString(ViewData["EditView"]));}
-<p style="margin-top: 10px; font-size: 11px;">
-    Created on: @Model.CreatedOn.ToShortDateString()
-    <br />
-    Last Updated on: @Model.UpdatedOn.ToShortDateString()
-</p>
+                Html.RenderPartial(Convert.ToString(ViewData["EditView"]));
+
+    <p style="margin-top: 10px; font-size: 11px;">
+        Created on: @Model.CreatedOn.ToShortDateString()
+        <br />
+        Last Updated on: @Model.UpdatedOn.ToShortDateString()
+    </p>
+}
