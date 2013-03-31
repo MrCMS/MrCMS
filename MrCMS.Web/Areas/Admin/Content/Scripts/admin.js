@@ -42,6 +42,8 @@
                     return 1;
                 case 'layout':
                     return 2;
+                case 'layoutarea':
+                    return 2;
                 case 'webpage':
                 default:
                     return 0;

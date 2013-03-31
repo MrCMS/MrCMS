@@ -25,13 +25,7 @@
 
                             @if (widgets.Any())
                             {
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Widgets
-                                            </th>
-                                        </tr>
-                                    </thead>
+                                <table class="table table-striped table-condensed">
                                     <tbody>
                                         @foreach (Widget widget in widgets)
                                         {
@@ -39,6 +33,9 @@
                                                 <td>
                                                     @(!string.IsNullOrWhiteSpace(widget.Name) ? string.Format("{0} ({1})", widget.Name, widget.WidgetTypeFormatted) : widget.WidgetTypeFormatted)
 
+                                                    
+                                                </td>
+                                                <td>
                                                     <div class="btn-group">
                                                         @if (widget.Webpage != Model)
                                                         {

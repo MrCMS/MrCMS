@@ -58,7 +58,7 @@
         }
         
         <div class="btn-group">
-            <a href="@Url.Action("Add", "Widget", new {id = Model.Id})" class="btn btn-mini" data-toggle="fb-modal">Add widget</a>
+            <a href="@Url.Action("Add", "Widget", new {id = Model.Id, returnUrl = Request.Url})" class="btn btn-mini" data-toggle="fb-modal">Add widget</a>
             @{
                 if (Model.GetWidgets().Any())
                 {

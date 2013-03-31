@@ -7,7 +7,19 @@
 @using (Html.BeginForm("Edit", "Layout", FormMethod.Post, new { id = "edit-document" }))
 {
     
-    <section class="admin-header">
+    <fieldset>
+        <legend>@Model.Name
+
+            <span class="btn-group  display-inline  pull-right">
+                @if (Model.CanDelete)
+                {
+                    <a href="@Url.Action("Delete", "Layout", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
+                }
+                <button class="btn btn-primary" id="save-edit">Save</button>
+
+            </span>
+        </legend>
+
         @if (TempData["saved"] != null)
         {
             <div class="alert alert-success">
@@ -15,84 +27,52 @@
                 @TempData["saved"]
             </div>
         }
-        <div class="row-fluid" style="margin-bottom: 10px;">
-            <div class="span4">
-                <h3>@Model.Name</h3>
-            </div>
-            <div class="span8">
-                <div class="btn-group  display-inline  pull-right">
-                    @if (Model.CanDelete)
-                    {
-                        <a href="@Url.Action("Delete", "Layout", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
-                    }
-                    <button class="btn btn-primary" id="save-edit">Save</button>
 
-                </div>
-            </div>
-        </div>
-    </section>
+        @Html.HiddenFor(x => x.Id)
+        <div class="row-fluid">
+            <div class="span12">
+                @Html.LabelFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
 
-    @Html.HiddenFor(x => x.Id)
-    <div id="tabs">
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
-            <li><a href="#zones" data-toggle="tab">Layout areas</a></li>
-        </ul>
-        <div class="tab-content">
-            <div id="properties" class="tab-pane active">
-                <div class="row-fluid">
-                    <div class="span12">
-                        @Html.LabelFor(x => x.Name)
-                        @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
-                        @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
-
-                        @Html.LabelFor(x => x.UrlSegment, "Path")
-                        @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
-                        @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
-                        <label class="checkbox">
-                            @Html.CheckBoxFor(x => x.Hidden)  Hidden
-                        </label>
-                        <br />
-                        <br />
-                        <p class="font-small">
-                            Created on: @Model.CreatedOn.ToShortDateString()<br />
-                            Last Updated on: @Model.UpdatedOn.ToShortDateString()
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div id="zones" class="tab-pane">
-
-                @{
-                    if (Model.LayoutAreas.Any())
-                    {
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Layout area name</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (LayoutArea area in Model.LayoutAreas)
-                            {
-                                <tr>
-                                    <td>
-                                        @area.AreaName
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Edit", "Edit", "LayoutArea", new { id = area.Id }, new { @class = "btn" })
-                                        <a href="@Url.Action("Delete", "LayoutArea", new { id = area.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    }
-                }
-
-                <a href="@Url.Action("Add", "LayoutArea", new { id = Model.Id })" class="btn" data-toggle="fb-modal">Add layout area</a>
+                @Html.LabelFor(x => x.UrlSegment, "Path")
+                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+                <label class="checkbox">
+                    @Html.CheckBoxFor(x => x.Hidden)  Hidden
+                </label>
             </div>
         </div>
-    </div>
+        <hr />
+        <h4 class="light">Areas</h4>
+        @{
+        if (Model.LayoutAreas.Any())
+        {
+            <table class="table table-condensed table-striped">
+                <tbody>
+                    @foreach (LayoutArea area in Model.LayoutAreas)
+                    {
+                        <tr>
+                            <td>
+                                @area.AreaName
+                                (@area.GetWidgets().Count())
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", "LayoutArea", new { id = area.Id }, new { @class = "btn btn-mini" })
+                                <a href="@Url.Action("Delete", "LayoutArea", new { id = area.Id })" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+  @:Click Add layout area to add the first area to this layout.
+        }
+        }
+
+        <a href="@Url.Action("Add", "LayoutArea", new { id = Model.Id })" class="btn btn-mini" data-toggle="fb-modal">Add layout area</a>
+
+    </fieldset>
 }

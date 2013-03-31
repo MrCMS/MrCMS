@@ -45,7 +45,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             var newWidget = _widgetService.AddWidget(widget);
 
             return newWidget.HasProperties
-                       ? RedirectToAction("Edit", "Widget", new { id = newWidget.Id })
+                       ? RedirectToAction("Edit", "Widget", new { id = newWidget.Id, returnUrl = returnUrl })
                        : !string.IsNullOrWhiteSpace(returnUrl)
                              ? (ActionResult)Redirect(returnUrl)
                              : RedirectToAction("Edit", "LayoutArea", new { id = newWidget.LayoutArea.Id });
@@ -54,11 +54,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         [ValidateInput(false)]
         [ActionName("Edit")]
-        public ViewResultBase Edit_Get(Widget widget)
+        public ViewResultBase Edit_Get(Widget widget, string returnUrl)
         {
             widget.SetDropdownData(ViewData, _session);
 
-            ViewData["return-url"] = Referrer;
+            if (!string.IsNullOrEmpty(returnUrl))
+                ViewData["return-url"] = Referrer;
+            else
+                ViewData["return-url"] = returnUrl;
 
             return View(widget);
         }
