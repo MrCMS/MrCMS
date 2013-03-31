@@ -78,4 +78,8 @@
         });
     });
     
+    $("#MetaKeywords").tagit({
+        tagLimit: 15
+    });
+    
 });

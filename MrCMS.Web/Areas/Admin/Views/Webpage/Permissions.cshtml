@@ -7,6 +7,8 @@
     <div class="form-inline">
         @Html.InlineCheckboxFor(webpage => webpage.InheritFrontEndRolesFromParent, null, null, "Same as parent?")
     </div>
+    
+    <hr class="small-margin"/>
 
     <div id="front-end-roles" style="display: @(Model.InheritFrontEndRolesFromParent ? "none" : "block")">
         @Html.LabelFor(webpage => webpage.FrontEndRoles)
