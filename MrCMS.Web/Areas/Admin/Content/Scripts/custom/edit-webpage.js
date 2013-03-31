@@ -1,7 +1,7 @@
 ﻿$(function () {
     $("#UrlSegment").blur(function (e) {
         var that = $(this);
-        that.val(that.val().trim().replace(/[\s]/g, '-').replace(/[^a-zA-Z0-9-/]/g, ''));
+        that.val(that.val().trim().replace(/[^a-zA-Z0-9-/]/g, '-'));
     });
     
     $('#publish-status-change').click(function (e) {

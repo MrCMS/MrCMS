@@ -170,6 +170,7 @@
     <Compile Include="Areas\Admin\Controllers\SitesController.cs" />
     <Compile Include="Areas\Admin\Controllers\TagController.cs" />
     <Compile Include="Areas\Admin\Controllers\TaskController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UrlHistoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageController.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
@@ -704,6 +705,8 @@
     <Content Include="Areas\Admin\Views\Form\EditOption.cshtml" />
     <Content Include="Areas\Admin\Views\Form\DeleteOption.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\FormDesign.cshtml" />
+    <Content Include="Areas\Admin\Views\UrlHistory\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\UrlHistory\Add.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />

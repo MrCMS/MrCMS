@@ -10,6 +10,11 @@
     return $(this);
 };
 $(function () {
+    $("#suggest-url").click(function (e) {
+        e.preventDefault();
+        suggestUrl();
+    });
+
     $("#Name").blur(function () {
         if ($("#mode").is(':checked')) {
             suggestUrl();
@@ -27,12 +32,12 @@ $(function () {
     }, 200);
 
     function setStandardUrl() {
-        $("#UrlSegment").val($("#Name").val().trim().replace(/\W/g, '-').toLowerCase());
+        $("#UrlSegment").val($("#Name").val().trim().replace(/[^a-zA-Z0-9-/]/g, '-').toLowerCase());
     }
 
     function suggestUrl() {
         var pageName = $("#Name").val(),
-            parentId = $("#Parent_Id").val();
+            parentId = $("#Parent_Id").val()
         if (pageName != "") {
             $.get('/Admin/Webpage/SuggestDocumentUrl', { pageName: pageName, id: parentId}, function (data) {
                 $("#UrlSegment").val(data);

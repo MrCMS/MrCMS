@@ -1,0 +1,15 @@
+﻿@model MrCMS.Entities.Documents.Web.UrlHistory
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Delete", "UrlHistory", FormMethod.Post))
+{
+    <div class="modal-header">
+        <h3>Delete Url</h3>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to delete the url "@Model.UrlSegment" ? Deleting cannot be undone.
+        <br />
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn-primary btn" value="Delete" />
+    </div>
+}

@@ -506,6 +506,17 @@ namespace MrCMS.Services
             return !WebpageExists(url) && !ExistsInUrlHistory(url);
         }
 
+        /// <summary>
+        /// Check to see if the supplied URL is ok to be added to the URL history table
+        /// </summary>
+        public bool UrlIsValidForWebpageUrlHistory(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return false;
+
+            return !WebpageExists(url) && !ExistsInUrlHistory(url);
+        }
+
         public bool UrlIsValidForMediaCategory(string url, int? id)
         {
             if (string.IsNullOrEmpty(url))

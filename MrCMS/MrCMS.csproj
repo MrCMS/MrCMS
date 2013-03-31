@@ -275,6 +275,7 @@
     <Compile Include="Paging\StaticPagedList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthorisationService.cs" />
+    <Compile Include="Services\IUrlHistoryService.cs" />
     <Compile Include="Services\DocumentService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\FileSystem.cs" />
@@ -304,6 +305,7 @@
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SiteService.cs" />
     <Compile Include="Services\TagService.cs" />
+    <Compile Include="Services\UrlHistoryService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\WidgetService.cs" />
     <Compile Include="Settings\ConfigurationProvider.cs" />
