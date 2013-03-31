@@ -19,9 +19,9 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(webpage => webpage.FormMessage).CustomType<VarcharMax>().Length(4001);
             mapping.Map(webpage => webpage.FormSubmittedMessage).CustomType<VarcharMax>().Length(4001);
             mapping.Map(webpage => webpage.BodyContent).CustomType<VarcharMax>().Length(4001);
-            mapping.Map(webpage => webpage.MetaTitle).CustomType<VarcharMax>().Length(1000);
-            mapping.Map(webpage => webpage.MetaKeywords).CustomType<VarcharMax>().Length(4001);
-            mapping.Map(webpage => webpage.MetaDescription).CustomType<VarcharMax>().Length(4001);
+            mapping.Map(webpage => webpage.MetaTitle).CustomType<VarcharMax>().Length(250);
+            mapping.Map(webpage => webpage.MetaKeywords).CustomType<VarcharMax>().Length(250);
+            mapping.Map(webpage => webpage.MetaDescription).CustomType<VarcharMax>().Length(250);
             mapping.Map(webpage => webpage.FormDesign).CustomType<VarcharMax>().Length(4001);
 
             mapping.HasMany(posting => posting.Urls).Cascade.Delete();

@@ -40,13 +40,13 @@
         <hr />
         @Html.LabelFor(x => x.MetaTitle, "Meta Title")
         @Html.TextBoxFor(x => x.MetaTitle, new { @class = "span12" })
-        @Html.ValidationMessageFor(x => x.MetaTitle)
+        @Html.ValidationMessageFor(x => x.MetaTitle, "", new { @class = "error" })
         @Html.LabelFor(x => x.MetaDescription, "Meta Description")
         @Html.TextBoxFor(x => x.MetaDescription, new { @class = "span12" })
-        @Html.ValidationMessageFor(x => x.MetaDescription)
+        @Html.ValidationMessageFor(x => x.MetaDescription, "", new { @class = "error" })
         @Html.LabelFor(x => x.MetaKeywords, "Meta Keywords")
         @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "span12" })
-        @Html.ValidationMessageFor(x => x.MetaKeywords)
+        @Html.ValidationMessageFor(x => x.MetaKeywords, "", new { @class = "error" })
         <hr />
         <div class="form-inline">
             <i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="If ticked, the page will be included in any navigation widgets"></i>

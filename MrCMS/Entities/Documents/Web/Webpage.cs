@@ -33,10 +33,13 @@ namespace MrCMS.Entities.Documents.Web
         public override string UrlSegment { get; set; }
 
         [DisplayName("Meta Title")]
+        [StringLength(250, ErrorMessage = "Meta title cannot be longer than 250 characters.")]
         public virtual string MetaTitle { get; set; }
         [DisplayName("Meta Description")]
+        [StringLength(250, ErrorMessage = "Meta description cannot be longer than 250 characters.")]
         public virtual string MetaDescription { get; set; }
         [DisplayName("Meta Keywords")]
+        [StringLength(250, ErrorMessage = "Meta keywords cannot be longer than 250 characters.")]
         public virtual string MetaKeywords { get; set; }
         [DisplayName("Reveal in navigation")]
         public virtual bool RevealInNavigation { get; set; }
