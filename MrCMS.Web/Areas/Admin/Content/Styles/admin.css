@@ -18,6 +18,7 @@ hr.small-margin { margin: 5px 0; }
 .font-small { font-size: 0.8em; }
 .red { color: red; }
 .nav select { margin: 5px 15px; }
+h1,h2,h3,h4 { font-weight: normal!important;}
 .settings-textarea { width: 300px;height: 150px;}
 /*Navigation*/
 #browser { padding-left: 10px; }

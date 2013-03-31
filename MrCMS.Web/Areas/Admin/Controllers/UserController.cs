@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
@@ -56,8 +57,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Edit([IoCModelBinder(typeof (EditUserModelBinder))] User user)
         {
             _userService.SaveUser(user);
-
-            return RedirectToAction("Index");
+            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", user.Name));
+            return RedirectToAction("Edit", "User", new{Id = user.Id});
         }
 
         [HttpGet]

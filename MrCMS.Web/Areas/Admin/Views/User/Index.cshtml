@@ -6,36 +6,39 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
 }
-<h2>
-    Users</h2>
-@Html.ActionLink("Add", "Add", null, new {@class = "btn btn-success", data_toggle = "fb-modal"})
-<br />
-<br />
-<table class="table table-striped table-bordered">
-    <tr>
-        <th>
-            Email
-        </th>
-        <th>
-            Name
-        </th>
-        <th>
-            Created On
-        </th>
-    </tr>
-    @foreach (User user in Model)
-    {
-        <tr>
-            <td>
-                @Html.ActionLink(user.Email, "Edit", new {id = user.Id})
-            </td>
-            <td>
-                @user.Name
-            </td>
-            <td>
-                @user.CreatedOn
-            </td>
-        </tr>
-    }
-</table>
-@Html.Pager(Model, "Index", page => new { page })
+<form>
+    <fieldset>
+        <legend>Users
+
+            <span class="btn-group  display-inline  pull-right">
+                @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-success", data_toggle = "fb-modal" })
+            </span>
+        </legend>
+        
+        <table class="table table-condensed table-striped">
+            <tr>
+                <th>Email
+                </th>
+                <th>Name
+                </th>
+                <th>Created On
+                </th>
+            </tr>
+            @foreach (User user in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink(user.Email, "Edit", new { id = user.Id })
+                    </td>
+                    <td>
+                        @user.Name
+                    </td>
+                    <td>
+                        @user.CreatedOn
+                    </td>
+                </tr>
+            }
+        </table>
+        @Html.Pager(Model, "Index", page => new { page })
+    </fieldset>
+</form>

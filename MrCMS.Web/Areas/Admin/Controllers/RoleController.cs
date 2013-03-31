@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Website.Controllers;
@@ -34,7 +35,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Add(UserRole model)
         {
-            _roleService.SaveRole(model);
+            if (ModelState.IsValid)
+            {
+                if (_roleService.GetRoleByName(model.Name) == null)
+                    _roleService.SaveRole(model);
+                else
+                    TempData.ErrorMessages().Add(string.Format("{0} already exists.", model.Name));
+            }
 
             return RedirectToAction("Index");
         }
