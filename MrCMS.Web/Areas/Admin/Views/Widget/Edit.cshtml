@@ -5,36 +5,38 @@
     ViewBag.Title = "Edit | " + Model.WidgetType.BreakUpString();
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-<div class="row-fluid" style="margin-bottom: 10px;">
-    <div class="span4">
-        <h3>Edit - @Model.WidgetType.BreakUpString()</h3>
-    </div>
-    <div class="span8">
-        <div class="btn-group  display-inline  pull-right">
-            @if (Request.UrlReferrer != null)
-            {
-                <a class="btn" href="@Request.UrlReferrer">Back</a>
-            }
-            else
-            {
-                @Html.ActionLink("Back to layout area", "Edit", "LayoutArea", new { id = Model.LayoutArea.Id }, new { @class = "btn" })
-            }
-            <a href="@Url.Action("Delete", "Widget", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete Widget</a>
-            <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-document">
-                Save</button>
-        </div>
-    </div>
-</div>
 @using (Html.BeginForm("Edit", "Widget", new { }, FormMethod.Post, new { id = "edit-document" }))
 {
-    @Html.HiddenFor(widget => widget.Id)
-    @Html.Hidden("ReturnUrl", ViewData["return-url"])
-    @Html.LabelFor(widget => widget.Name)
-    @Html.EditorFor(widget => widget.Name)
-    if (Model.Webpage != null)
-    {
-        @Html.LabelFor(widget => widget.IsRecursive)
-        @Html.EditorFor(widget => widget.IsRecursive)
-    }
-    @Html.RenderCustomAdminProperties()
+    <fieldset>
+        <legend>@Model.WidgetType.BreakUpString()
+
+            <span class="btn-group  display-inline  pull-right">
+                @if (Request.UrlReferrer != null)
+                {
+                    <a class="btn" href="@Request.UrlReferrer">Back</a>
+                }
+                else
+                {
+                    @Html.ActionLink("Back to layout area", "Edit", "LayoutArea", new { id = Model.LayoutArea.Id }, new { @class = "btn" })
+                }
+                <a href="@Url.Action("Delete", "Widget", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete Widget</a>
+                <button class="btn btn-primary">
+                    Save</button>
+            </span>
+        </legend>
+
+        @Html.HiddenFor(widget => widget.Id)
+        @Html.Hidden("ReturnUrl", ViewData["return-url"])
+        @Html.LabelFor(widget => widget.Name)
+        @Html.EditorFor(widget => widget.Name)
+        @if (Model.Webpage != null)
+        {
+            @Html.LabelFor(widget => widget.IsRecursive)
+            @Html.EditorFor(widget => widget.IsRecursive)
+        }
+        @Html.RenderCustomAdminProperties()
+
+    </fieldset>
+    
+    <hr />
 }
