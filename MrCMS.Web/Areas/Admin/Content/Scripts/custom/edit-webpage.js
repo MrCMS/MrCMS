@@ -16,12 +16,14 @@
         return false;
     });
 
+    //Show box for chaging the URL which is hidden by default.
     $("#change-url").click(function (e) {
         e.preventDefault();
         $(this).hide();
         $("#url-span").text('');
         $("#UrlSegment").show();
     });
+    
     if ($('#my-form-builder').formbuilder) {
         $('#my-form-builder').formbuilder({
             'save_url': '/Admin/Webpage/SaveForm/' + $('#Id').val(),
