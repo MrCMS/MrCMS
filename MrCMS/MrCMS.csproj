@@ -155,7 +155,6 @@
     <Compile Include="DbConfiguration\Types\VarCharMax.cs" />
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />
-    <Compile Include="Entities\Assets\EventDates.cs" />
     <Compile Include="Entities\Documents\Metadata\DefaultDocumentMetadata.cs" />
     <Compile Include="Entities\Documents\Metadata\DocumentMetadataMap.cs" />
     <Compile Include="Entities\Documents\Metadata\IGetDocumentMetadata.cs" />
@@ -194,7 +193,6 @@
     <Compile Include="Entities\Documents\Web\Redirect.cs" />
     <Compile Include="Entities\Documents\Web\RoleStatus.cs" />
     <Compile Include="Entities\Documents\Web\Webpage.cs" />
-    <Compile Include="Entities\Interaction\ContactUs.cs" />
     <Compile Include="Entities\Messaging\MessageTemplate.cs" />
     <Compile Include="Entities\Messaging\QueuedMessage.cs" />
     <Compile Include="Entities\Messaging\QueuedMessageAttachment.cs" />
