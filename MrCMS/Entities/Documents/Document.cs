@@ -23,7 +23,7 @@ namespace MrCMS.Entities.Documents
         [DisplayName("Display Order")]
         public virtual int DisplayOrder { get; set; }
 
-        public abstract string UrlSegment { get; set; }
+        public virtual string UrlSegment { get; set; }
 
         private IList<Document> _children = new List<Document>();
         private IList<Tag> _tags = new List<Tag>();

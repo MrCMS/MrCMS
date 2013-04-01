@@ -149,14 +149,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void UserController_EditPost_ShouldReturnRedirectToIndex()
+        public void UserController_EditPost_ShouldReturnRedirectToEdit()
         {
             UserController userController = GetUserController();
-            var user = new User();
+            var user = new User{Id = 123};
 
             ActionResult result = userController.Edit(user);
 
-            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
+            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
+            result.As<RedirectToRouteResult>().RouteValues["id"].Should().Be(123);
         }
 
         [Fact]

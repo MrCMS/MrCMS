@@ -72,7 +72,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void RoleController_AddPost_ShouldCallSaveRoleWithPassedRole()
         {
             RoleController roleController = GetRoleController();
-            var userRole = new UserRole();
+            var userRole = new UserRole {Name = "test"};
+            A.CallTo(() => roleService.GetRoleByName("test")).Returns(null);
 
             roleController.Add(userRole);
 

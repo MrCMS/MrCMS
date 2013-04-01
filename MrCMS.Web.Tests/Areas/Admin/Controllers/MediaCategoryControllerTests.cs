@@ -19,25 +19,24 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private IFileService _fileService;
 
         [Fact]
-        public void MediaCategoryController_AddGet_ShouldReturnAddPageModel()
+        public void MediaCategoryController_AddGet_ShouldReturnAMediaCategory()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
 
             var actionResult = mediaCategoryController.Add_Get(new MediaCategory()) as ViewResult;
 
-            actionResult.Model.Should().BeOfType<AddPageModel>();
+            actionResult.Model.Should().BeOfType<MediaCategory>();
         }
 
         [Fact]
-        public void MediaCategoryController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
+        public void MediaCategoryController_AddGet_ShouldSetParentOfModelToModelInMethod()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
             var mediaCategory = new MediaCategory {Id = 1};
-            A.CallTo(() => _documentService.GetDocument<Document>(1)).Returns(mediaCategory);
 
             var actionResult = mediaCategoryController.Add_Get(mediaCategory) as ViewResult;
 
-            (actionResult.Model as AddPageModel).ParentId.Should().Be(1);
+            actionResult.Model.As<MediaCategory>().Parent.Should().Be(mediaCategory);
         }
 
         [Fact]
