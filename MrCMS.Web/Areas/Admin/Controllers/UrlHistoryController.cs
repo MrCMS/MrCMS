@@ -6,19 +6,17 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Website.Controllers;
-using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class UrlHistoryController : MrCMSAdminController
     {
-        private readonly IUrlHistoryService _urlHistroyService;
+        private readonly IUrlHistoryService _urlHistoryService;
         private readonly IDocumentService _documentService;
-        private readonly ISession _session;
 
-        public UrlHistoryController(IUrlHistoryService urlHistoryService, IDocumentService documentService, ISession session)
+        public UrlHistoryController(IUrlHistoryService urlHistoryService, IDocumentService documentService)
         {
-            _urlHistroyService = urlHistoryService;
+            _urlHistoryService = urlHistoryService;
             _documentService = documentService;
         }
 
@@ -32,7 +30,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Delete(UrlHistory history)
         {
-            _urlHistroyService.Delete(history);
+            _urlHistoryService.Delete(history);
 
             return RedirectToAction("Edit", "Webpage", new { id = history.Webpage.Id });
         }
@@ -52,7 +50,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Add(UrlHistory history)
         {
-            _urlHistroyService.Add(history);
+            _urlHistoryService.Add(history);
 
             return RedirectToAction("Edit", "Webpage", new { id = history.Webpage.Id });
         }

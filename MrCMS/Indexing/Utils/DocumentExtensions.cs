@@ -32,7 +32,7 @@ namespace MrCMS.Indexing.Utils
         public static Document AddField<T>(this Document document, FieldDefinition<T> definition, T obj)
         {
             if (document != null)
-                document.Add(new Field(definition.FieldName, definition.GetValue(obj), definition.Store,
+                document.Add(new Field(definition.FieldName, definition.GetValue(obj) ?? string.Empty, definition.Store,
                                        definition.Index));
             return document;
         }

@@ -19,10 +19,20 @@ namespace MrCMS.Entities.Indexes
     public class DocumentIndexDefinition : IIndexDefinition<Documents.Document>
     {
         private Analyzer _analyser;
-        private FieldDefinition<Documents.Document> _id;
-        private FieldDefinition<Documents.Document> _name;
-        private FieldDefinition<Documents.Document> _type;
-        private FieldDefinition<Documents.Document> _urlSegment;
+        private static readonly FieldDefinition<Documents.Document> _id =
+            new FieldDefinition<Documents.Document>("id", webpage => webpage.Id.ToString(), Field.Store.YES,
+                                         Field.Index.NOT_ANALYZED);
+
+        private static readonly FieldDefinition<Documents.Document> _name =
+            new FieldDefinition<Documents.Document>("name", webpage => webpage.Name, Field.Store.YES,
+                                         Field.Index.ANALYZED);
+        private static readonly FieldDefinition<Documents.Document> _urlSegment =
+            new FieldDefinition<Documents.Document>("urlsegment", webpage => webpage.UrlSegment, Field.Store.NO,
+                                         Field.Index.ANALYZED);
+
+        private static readonly FieldDefinition<Documents.Document> _type =
+            new FieldDefinition<Documents.Document>("type", webpage => webpage.GetType().FullName, Field.Store.NO,
+                                         Field.Index.ANALYZED);
 
         public Documents.Document Convert(ISession session, Document document)
         {
