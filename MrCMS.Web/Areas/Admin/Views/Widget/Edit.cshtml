@@ -24,17 +24,20 @@
                     Save</button>
             </span>
         </legend>
-
-        @Html.HiddenFor(widget => widget.Id)
-        @Html.Hidden("ReturnUrl", ViewData["return-url"])
-        @Html.LabelFor(widget => widget.Name)
-        @Html.EditorFor(widget => widget.Name)
-        @if (Model.Webpage != null)
-        {
-            @Html.LabelFor(widget => widget.IsRecursive)
-            @Html.EditorFor(widget => widget.IsRecursive)
-        }
-        @Html.RenderCustomAdminProperties()
+        <div class="row-fluid">
+            <div class="span12">
+                @Html.HiddenFor(widget => widget.Id)
+                @Html.Hidden("ReturnUrl", ViewData["return-url"])
+                @Html.LabelFor(widget => widget.Name)
+                @Html.TextBoxFor(widget => widget.Name, new { @class = "span12" })
+                @if (Model.Webpage != null)
+                {
+                    @Html.InlineCheckboxFor(widget => widget.IsRecursive, null, null, "Is Recursive (shows on child pages)")
+                }
+                <hr class="small-margin" />
+                @Html.RenderCustomAdminProperties()
+            </div>
+        </div>
 
     </fieldset>
     
