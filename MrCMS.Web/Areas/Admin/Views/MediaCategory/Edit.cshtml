@@ -7,8 +7,6 @@
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/media-category.js")"></script>
 }
 
-
-
 @if (TempData["saved"] != null)
 {
     <div class="alert alert-success">
@@ -16,8 +14,6 @@
         @TempData["saved"]
     </div>
 }
-
-
 
 @using (Html.BeginForm("Edit", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { id = "edit-media" }))
 {
