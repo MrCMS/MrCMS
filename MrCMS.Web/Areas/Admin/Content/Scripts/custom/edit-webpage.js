@@ -48,13 +48,11 @@
         $.cookie('selected-layout-area-' + location.pathname, '', { expires: 1 });
     });
 
+    
+    
     $('#PublishOn').change(function () {
         $('#publish-on-hidden').val($(this).val());
     });
-
-    if ($.cookie('selected-layout-area-' + location.pathname)) {
-        $('#accordion-layout-areas a[href="#' + $.cookie('selected-layout-area-' + location.pathname) + '"]').click();
-    }
 
     // lazy load iframe preview when tab is selected
     // needs to be before shown from hash/cookie
@@ -81,5 +79,10 @@
     $("#MetaKeywords").tagit({
         tagLimit: 15
     });
-    
+});
+//Show the accordion which was last shown for layout areas.
+$(window).load(function () {
+    if ($.cookie('selected-layout-area-' + location.pathname)) {
+        $('#accordion-layout-areas a[href="#' + $.cookie('selected-layout-area-' + location.pathname) + '"]').click();
+    }
 });
