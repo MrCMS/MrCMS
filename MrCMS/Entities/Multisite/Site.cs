@@ -1,12 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using MrCMS.DbConfiguration.Mapping;
-using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
-using MrCMS.Entities.Settings;
-using MrCMS.Helpers;
 
 namespace MrCMS.Entities.Multisite
 {
@@ -18,6 +13,12 @@ namespace MrCMS.Entities.Multisite
         public virtual string BaseUrl { get; set; }
 
         public virtual IList<User> Users { get; set; }
+
+
+        public virtual bool IsValidForSite(SiteEntity entity)
+        {
+            return entity.Site != null && entity.Site.Id == Id;
+        }
     }
 
     [DoNotMap]

@@ -215,7 +215,6 @@ namespace MrCMS.Services
             tagNames.ForEach(name =>
                                  {
                                      var tag = GetTag(name) ?? new Tag { Name = name };
-                                     _session.SaveOrUpdate(tag);
                                      if (!document.Tags.Contains(tag))
                                      {
                                          document.Tags.Add(tag);
@@ -228,11 +227,7 @@ namespace MrCMS.Services
                                      {
                                          document.Tags.Remove(tag);
                                          tag.Documents.Remove(document);
-                                         _session.SaveOrUpdate(tag);
                                      });
-
-            _session.SaveOrUpdate(document);
-
         }
 
         private Tag GetTag(string name)
@@ -393,8 +388,6 @@ namespace MrCMS.Services
 
             var roles = webpage.FrontEndAllowedRoles.ToList();
 
-            _session.Transact(session =>
-                                  {
                                       if (webpage.InheritFrontEndRolesFromParent)
                                       {
                                           roles.ForEach(role =>
@@ -424,12 +417,9 @@ namespace MrCMS.Services
                                                             {
                                                                 webpage.FrontEndAllowedRoles.Remove(role);
                                                                 role.FrontEndWebpages.Remove(webpage);
-                                                                session.SaveOrUpdate(role);
                                                             });
                                       }
 
-                                      session.SaveOrUpdate(webpage);
-                                  });
         }
 
         private UserRole GetRole(string name)
@@ -450,8 +440,6 @@ namespace MrCMS.Services
 
             var roles = webpage.AdminAllowedRoles.ToList();
 
-            _session.Transact(session =>
-                                  {
                                       if (webpage.InheritAdminRolesFromParent)
                                       {
                                           roles.ForEach(role =>
@@ -477,11 +465,8 @@ namespace MrCMS.Services
                                                             {
                                                                 webpage.AdminAllowedRoles.Remove(role);
                                                                 role.AdminWebpages.Remove(webpage);
-                                                                session.SaveOrUpdate(role);
                                                             });
                                       }
-                                      session.SaveOrUpdate(webpage);
-                                  });
         }
 
         public T GetDocumentByUrl<T>(string url) where T : Document

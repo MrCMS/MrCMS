@@ -363,14 +363,14 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void DocumentService_SetTags_ShouldSaveGeneratedTags()
+        public void DocumentService_SetTags_ShouldAddTagsToDocument()
         {
             var documentService = GetDocumentService();
             var textPage = new BasicMappedWebpage();
 
             documentService.SetTags("test 1, test 2", textPage);
 
-            Session.QueryOver<Tag>().RowCount().Should().Be(2);
+            textPage.Tags.Should().HaveCount(2);
         }
 
         [Fact]
@@ -443,13 +443,11 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
             var textPage = new BasicMappedWebpage();
-
             Session.Transact(session => session.SaveOrUpdate(textPage));
 
             documentService.SetTags("test 1", textPage);
 
-            var tags = Session.QueryOver<Tag>().List();
-
+            var tags = textPage.Tags;
             tags.Should().HaveCount(1);
             tags.First().Documents.Should().HaveCount(1);
         }
@@ -488,7 +486,6 @@ namespace MrCMS.Tests.Services
             documentService.SetTags("test 1,,test 2", textPage);
 
             textPage.Tags.Should().HaveCount(2);
-            Session.QueryOver<Tag>().List().Should().HaveCount(2);
         }
 
         [Fact]
@@ -500,7 +497,6 @@ namespace MrCMS.Tests.Services
             documentService.SetTags("test 1, test 2, ", textPage);
 
             textPage.Tags.Should().HaveCount(2);
-            Session.QueryOver<Tag>().List().Should().HaveCount(2);
         }
 
         [Fact]
