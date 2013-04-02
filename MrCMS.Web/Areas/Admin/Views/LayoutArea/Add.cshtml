@@ -9,7 +9,7 @@
         <div class="row-fluid">
             <div class="span12">
                 @Html.HiddenFor(x => x.Layout.Id)
-                @Html.LabelFor(x => x.AreaName, "Area Name")
+                @Html.LabelFor(x => x.AreaName)
                 @Html.EditorFor(x => x.AreaName, new{@class="span12"})
                 @Html.ValidationMessageFor(x => x.AreaName, "", new { @class = "error" })
             </div>

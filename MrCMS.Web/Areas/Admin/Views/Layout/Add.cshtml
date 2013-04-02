@@ -19,7 +19,7 @@
         <div class="span12">
 
             @Html.HiddenFor(x => x.Parent.Id)
-            @Html.LabelFor(x => x.Name, "Name")
+            @Html.LabelFor(x => x.Name)
             @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
             @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
 
