@@ -34,15 +34,6 @@ namespace MrCMS.Web.Apps.Galleries.Metadata
             }
         }
 
-        public override string WebGetController
-        {
-            get { return "GalleryList"; }
-        }
-        public override string WebGetAction
-        {
-            get { return "View"; }
-        }
-
     }
 }
 

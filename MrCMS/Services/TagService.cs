@@ -22,7 +22,7 @@ namespace MrCMS.Services
 
         public IEnumerable<AutoCompleteResult> Search(Document document, string term)
         {
-            var categories = GetCategories(document);
+            var tags = GetTags(document);
 
             return
                 _session.QueryOver<Tag>().Where(x => x.Site == document.Site && x.Name.IsInsensitiveLike(term, MatchMode.Start)).List().Select(
@@ -30,18 +30,18 @@ namespace MrCMS.Services
                     new AutoCompleteResult
                         {
                             id = tag.Id,
-                            label = string.Format("{0}{1}", tag.Name, (categories.Contains(tag) ? " (Category)" : string.Empty)),
+                            label = string.Format("{0}{1}", tag.Name, (tags.Contains(tag) ? " (Category)" : string.Empty)),
                             value = tag.Name
                         });
         }
 
-        public IEnumerable<Tag> GetCategories(Document document)
+        public IEnumerable<Tag> GetTags(Document document)
         {
             IList<Tag> parentCategories = new List<Tag>();
 
             if (document != null)
             {
-                if (document.Parent != null && document.Parent.Unproxy() is IDocumentContainer)
+                if (document.Parent != null)
                     parentCategories = document.Parent.Tags;
             }
 

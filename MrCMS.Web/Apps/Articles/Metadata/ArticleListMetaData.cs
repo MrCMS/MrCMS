@@ -40,15 +40,6 @@ namespace MrCMS.Web.Apps.Articles.Metadata
         {
             get { return 5; }
         }
-
-        public override string WebGetController
-        {
-            get { return "ArticleList"; }
-        }
-        public override string WebGetAction
-        {
-            get { return "View"; }
-        }
     }
 }
 

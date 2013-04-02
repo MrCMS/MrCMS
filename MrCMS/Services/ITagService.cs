@@ -7,6 +7,6 @@ namespace MrCMS.Services
     public interface ITagService
     {
         IEnumerable<AutoCompleteResult> Search(Document document, string term);
-        IEnumerable<Tag> GetCategories(Document document);
+        IEnumerable<Tag> GetTags(Document document);
     }
 }

@@ -6,13 +6,11 @@ using MrCMS.Web.Apps.Core.Pages;
 
 namespace MrCMS.Web.Apps.Articles.Pages
 {
-    public class ArticleList : TextPage, IDocumentContainer<Article>
+    public class ArticleList : TextPage
     {
         [DisplayName("Page Size")]
         public virtual int PageSize { get; set; }
         [DisplayName("Allow Paging")]
         public virtual bool AllowPaging { get; set; }
-
-        public virtual IEnumerable<Article> ChildItems { get { return PublishedChildren.OfType<Article>().OrderByDescending(page => page.DisplayOrder); } }
     }
 }

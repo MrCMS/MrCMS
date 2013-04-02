@@ -180,13 +180,10 @@
     <Compile Include="Entities\Documents\Tag.cs" />
     <Compile Include="Entities\Documents\Web\AdminAllowedRole.cs" />
     <Compile Include="Entities\Documents\Web\AdminDisallowedRole.cs" />
-    <Compile Include="Entities\Documents\Web\CategoryContainer.cs" />
     <Compile Include="Entities\Documents\Web\FormPosting.cs" />
     <Compile Include="Entities\Documents\Web\FormValue.cs" />
     <Compile Include="Entities\Documents\Web\FrontEndAllowedRole.cs" />
     <Compile Include="Entities\Documents\Web\FrontEndDisallowedRole.cs" />
-    <Compile Include="Entities\Documents\Web\IContainerItem.cs" />
-    <Compile Include="Entities\Documents\Web\IDocumentContainer.cs" />
     <Compile Include="Entities\Documents\Web\IRole.cs" />
     <Compile Include="Entities\Documents\Web\PageWidgetSort.cs" />
     <Compile Include="Entities\Documents\Web\IUniquePage.cs" />
