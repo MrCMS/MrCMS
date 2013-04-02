@@ -8,55 +8,57 @@
 
 @using (Html.BeginForm("Add", "Webpage", new { id = "" }, FormMethod.Post))
 {
-    @Html.ValidationSummary()
+    <fieldset>
+        <legend>Add page
 
-    <section class="admin-header">
-        <div class="row-fluid" style="margin-bottom: 10px;">
-            <div class="span4">
-                <h3>Add page</h3>
-            </div>
-            <div class="span8">
-                <div class="btn-group display-inline pull-right">
-                    <input type="submit" class="btn-primary btn" value="Save and continue" />
-                </div>
-            </div>
-        </div>
-    </section>
-    <div class="control-group">
-        <label class="control-label">
-            Page Type</label>
-        <div class="controls">
-            @{ //pre select radio if there is only one option
-                var count = 0;
-                var documentMetadatas = ViewData["DocumentTypes"] as List<DocumentMetadata>;
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-primary btn" value="Save and continue" />
+            </span>
+        </legend>
 
-                if (documentMetadatas != null)
-                {
-                    count = documentMetadatas.Count;
+        @Html.ValidationSummary()
+
+        <div class="row-fluid">
+            <div class="span2">
+                @{ //pre select radio if there is only one option
+                    var count = 0;
+                    var documentMetadatas = ViewData["DocumentTypes"] as List<DocumentMetadata>;
+
+                    if (documentMetadatas != null)
+                    {
+                        count = documentMetadatas.Count;
+                    }
                 }
-            }
 
-            @foreach (var documentType in documentMetadatas)
-            {
-                <label class="radio">
-                    <i class="@documentType.IconClass">&nbsp;</i>
-                    <input id="DocumentType" name="DocumentType" type="radio" value="@documentType.TypeName" required  @(count == 1 ? "checked" : "")>
-                    @documentType.Name
+                @foreach (var documentType in documentMetadatas)
+                {
+                    <label class="radio">
+                        <i class="@documentType.IconClass">&nbsp;</i>
+                        <input id="DocumentType" name="DocumentType" type="radio" value="@documentType.TypeName" required  @(count == 1 ? "checked" : "")>
+                        @documentType.Name
+                    </label>
+                }
+            </div>
+            <div class="span10">
+                @Html.HiddenFor(x => x.Parent.Id)
+                @Html.LabelFor(x => x.Name, "Page Name")
+                @Html.TextBoxFor(x => x.Name, new { @class = "span12", autocomplete = "off" })
+
+                @Html.LabelFor(x => x.UrlSegment, "Url")
+                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
+
+                <label class="checkbox">
+                    <input type="checkbox" name="mode" id="mode" value="1" checked />
+                    Maintain Hierarchy
                 </label>
-            }
+                @Html.LabelFor(x => x.Layout)
+                @Html.DropDownListFor(x => x.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
+            </div>
         </div>
-    </div>
-    @Html.HiddenFor(x => x.Parent.Id)
-    @Html.LabelFor(x => x.Name, "Page Name")
-    @Html.TextBoxFor(x => x.Name, new { @class = "span12", autocomplete="off" })
-    
-    @Html.LabelFor(x => x.UrlSegment, "Url")
-    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
-    
-    <label class="checkbox">
-        <input type="checkbox" name="mode" id="mode" value="1" checked />  Maintain Hierarchy
-    </label>
-    <br />
-    @Html.LabelFor(x => x.Layout)
-    @Html.DropDownListFor(x => x.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
+        
+        <hr />
+
+
+
+    </fieldset>
 }

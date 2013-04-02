@@ -9,7 +9,7 @@
     var category = Request["Category"];
     
     var query = QueryOver.Of<Article>()
-                                     .Where(a => a.Parent == Model.Parent && a.Published)
+                                     .Where(a => a.Parent == Model && a.Published)
                                      .ThenBy(arg => arg.PublishOn)
                                      .Desc;
 
@@ -19,9 +19,9 @@
     }
 
 
-    var pagedList = Model.PagedChildren<Article>(pageNum: Request["p"].GetIntValue(1), query: query);
+    var pagedList = Model.PagedChildren<Article>(pageNum: Request["p"].GetIntValue(1), query: query, pageSize: Model.PageSize);
 }
-
+@Model.Name
 @foreach (var page in pagedList)
 {
     <div class="row-fluid">

@@ -8,7 +8,7 @@ namespace MrCMS.Web.Apps.Articles.DbConfiguration
     {
         public void Override(AutoMapping<Pages.Article> mapping)
         {
-            mapping.Map(item => item.Abstract).CustomType<VarcharMax>().Length(4001);
+            mapping.Map(item => item.Abstract).Length(500);
         }
     }
 }

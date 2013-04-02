@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
@@ -29,6 +30,7 @@ namespace MrCMS.Entities.People
         public virtual Guid Guid { get; set; }
 
         [Required]
+        [Remote("IsUniqueEmail", "User")]
         public virtual string Email { get; set; }
 
         [Required]
