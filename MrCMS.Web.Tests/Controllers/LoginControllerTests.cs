@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.People;
@@ -224,6 +225,59 @@ namespace MrCMS.Web.Tests.Controllers
             var actionResult = _loginController.Post(loginModel);
 
             actionResult.As<RedirectResult>().Url.Should().Be("~/");
+        }
+
+        [Fact]
+        public void LoginController_Post_IfActiveUserIsLoadedAndAdminIfValidateUserIsTrueRedirectsToAdminRootIfReturnUrlIsNotSet()
+        {
+            var loginModel = new LoginController.LoginModel
+            {
+                Email = "test@example.com",
+                Password = "test-pass",
+                RememberMe = true,
+                ReturnUrl = null
+            };
+            var user = new User
+                           {
+                               IsActive = true,
+                               Roles = new List<UserRole> {new UserRole {Name = UserRole.Administrator}}
+                           };
+            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
+            A.CallTo(() => _authorisationService.ValidateUser(user, "test-pass")).Returns(true);
+
+            var actionResult = _loginController.Post(loginModel);
+
+            actionResult.As<RedirectResult>().Url.Should().Be("~/admin");
+        }
+
+        [Fact]
+        public void LoginController_Logout_CallsAuthorisationServiceLogout()
+        {
+            _loginController.Logout();
+
+            A.CallTo(() => _authorisationService.Logout()).MustHaveHappened();
+        }
+
+        [Fact]
+        public void LoginController_Logout_RedirectsToRoute()
+        {
+            var result = _loginController.Logout();
+
+            result.Url.Should().Be("~");
+        }
+
+        [Fact]
+        public void LoginController_ForgottenPasswordGET_ShouldReturnAView()
+        {
+            _loginController.ForgottenPassword().Should().NotBeNull();
+        }
+
+        [Fact]
+        public void LoginController_ForgottenPasswordPOST_ShouldCallGetUserByEmailWithPassedEmail()
+        {
+            var forgottenPassword = _loginController.ForgottenPassword("test@example.com");
+
+            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).MustHaveHappened();
         }
     }
 }

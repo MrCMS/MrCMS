@@ -59,14 +59,14 @@ namespace MrCMS.Web.Controllers
         }
 
 
-        public ActionResult Logout()
+        public RedirectResult Logout()
         {
             _authorisationService.Logout();
             return Redirect("~");
         }
 
         [HttpGet]
-        public ActionResult ForgottenPassword()
+        public ViewResult ForgottenPassword()
         {
             return View();
         }

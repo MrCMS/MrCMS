@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Elmah;
+using MrCMS.Entities.Multisite;
 using MrCMS.Website;
 using NHibernate;
 using MrCMS.Helpers;
@@ -37,7 +38,7 @@ namespace MrCMS.Logging
                                                                   Guid = newGuid,
                                                                   Message = error.Message,
                                                                   Detail = error.Detail,
-                                                                  Site = CurrentRequestData.CurrentSite
+                                                                  Site = _session.Get<Site>(CurrentRequestData.CurrentSite.Id)
                                                               }));
 
             return newGuid.ToString();
