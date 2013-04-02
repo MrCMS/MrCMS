@@ -51,21 +51,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View(doc);
         }
 
-        [HttpPost]
-        public override ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] Webpage doc)
-        {
-            if (ModelState.IsValid)
-            {
-                return base.Edit(doc);
-            }
-            else //hack to stop all further response if JS is turned off.
-            {
-                HttpContext.Response.End();
-                return null;
-            }
-
-            return Edit_Get(doc);
-        }
         protected override void DocumentTypeSetup(Webpage doc)
         {
             IEnumerable<Layout> layouts =
