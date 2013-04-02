@@ -9,13 +9,11 @@ using MrCMS.Web.Apps.Core.Pages;
 
 namespace MrCMS.Web.Apps.Galleries.Pages
 {
-    public class GalleryList : TextPage, IDocumentContainer<Gallery>
+    public class GalleryList : TextPage
     {
         [DisplayName("Page Size")]
         public virtual int PageSize { get; set; }
         [DisplayName("Allow Paging")]
         public virtual bool AllowPaging { get; set; }
-        
-        public virtual IEnumerable<Gallery> ChildItems { get { return PublishedChildren.OfType<Gallery>().OrderByDescending(page => page.DisplayOrder); } }
     }
 }

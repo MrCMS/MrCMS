@@ -9,11 +9,13 @@ using System.Xml;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Models;
+using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Website;
 using MrCMS.Helpers;
 using System.Linq;
 using NHibernate;
+using NHibernate.Criterion;
 
 namespace MrCMS.Entities.Documents.Web
 {
@@ -218,6 +220,25 @@ namespace MrCMS.Entities.Documents.Web
             if (!AdminAllowedRoles.Any()) return true;
             if (AdminAllowedRoles.Any() && currentUser == null) return false;
             return currentUser != null && currentUser.Roles.Intersect(AdminAllowedRoles).Any();
+        }
+
+        /// <summary>
+        /// Method to page child items with default filter and ordering implementation
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="pageNum"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public virtual IPagedList<T> PagedChildren<T>(QueryOver<T> query = null, int pageNum = 1, int pageSize = 10) where T : Webpage
+        {
+            query = query ??
+                    QueryOver.Of<T>()
+                             .Where(a => a.Parent == this && a.Published)
+                             .ThenBy(arg => arg.PublishOn)
+                             .Desc;
+
+            return MrCMSApplication.Get<ISession>().Paged(query, pageNum, pageSize);
         }
     }
 }

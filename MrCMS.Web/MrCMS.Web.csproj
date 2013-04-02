@@ -131,7 +131,6 @@
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
     <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
     <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
-    <Compile Include="Apps\Galleries\Controllers\GalleryListController.cs" />
     <Compile Include="Apps\Galleries\GalleriesApp.cs" />
     <Compile Include="Apps\Core\DbConfiguration\PlainTextWidgetOveride.cs" />
     <Compile Include="Apps\Core\DbConfiguration\TextWidgetOveride.cs" />
@@ -143,7 +142,6 @@
     <Compile Include="Apps\Core\Widgets\PlainTextWidget.cs" />
     <Compile Include="Apps\Core\Widgets\TextWidget.cs" />
     <Compile Include="Apps\Core\CoreApp.cs" />
-    <Compile Include="Apps\Articles\Controllers\ArticleListController.cs" />
     <Compile Include="Apps\Articles\DbConfiguration\ArticleOverride.cs" />
     <Compile Include="Apps\Articles\Metadata\ArticleListMetaData.cs" />
     <Compile Include="Apps\Articles\ArticlesApp.cs" />
@@ -735,6 +733,7 @@
     <Content Include="Views\Login\ResetComplete.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Apps\Articles\Controllers\" />
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Core\Content\Images\" />
     <Folder Include="Apps\Core\Entities\" />
@@ -743,6 +742,7 @@
     <Folder Include="Apps\Galleries\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Views\Widget\" />
     <Folder Include="Apps\Galleries\Content\" />
+    <Folder Include="Apps\Galleries\Controllers\" />
     <Folder Include="Apps\Galleries\DbConfiguration\" />
     <Folder Include="Apps\Galleries\Entities\" />
     <Folder Include="Apps\Galleries\Models\" />

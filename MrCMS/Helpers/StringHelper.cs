@@ -23,6 +23,14 @@ namespace MrCMS.Helpers
                              .ToList();
         }
 
+        public static int GetIntValue(this string value, int defaultValue = 0)
+        {
+            int val;
+            return string.IsNullOrWhiteSpace(value)
+                       ? defaultValue
+                       : int.TryParse(value, out val) ? val : defaultValue;
+        }
+
         public static string ToString(this IEnumerable<int> value)
         {
             if (value == null || !value.Any())
