@@ -6,9 +6,11 @@ using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Tests.Stubs;
 using NHibernate;
+using NHibernate.Criterion;
 using NHibernate.Transform;
 using Xunit;
 using MrCMS.Helpers;
+using System.Linq;
 
 namespace MrCMS.Tests.Entities
 {
@@ -99,8 +101,8 @@ namespace MrCMS.Tests.Entities
         [Fact]
         public void Document_Grouping_CanGroupByDocumentType()
         {
-            var document1 = new StubDocument();
-            var document2 = new StubDocument();
+            var document1 = new BasicMappedNoChildrenInNavWebpage();
+            var document2 = new BasicMappedNoChildrenInNavWebpage {PublishOn = DateTime.Today.AddDays(-1)};
             var document3 = new BasicMappedWebpage();
 
             Session.Transact(session =>
@@ -110,25 +112,30 @@ namespace MrCMS.Tests.Entities
                     session.Save(document3);
                 });
 
-            DocumentTypeCount alias = null;
+            Webpage webpageAlias = null;
+            DocumentTypeCount countAlias = null;
             var list =
-                Session.QueryOver<Document>()
+                Session.QueryOver(()=>webpageAlias)
                        .SelectList(
                            builder =>
-                           builder.SelectGroup(document => document.DocumentType)
-                                  .WithAlias(() => alias.DocumentType)
-                                  .SelectCount(document => document.Id)
-                                  .WithAlias(() => alias.Count))
+                           builder.SelectGroup(() => webpageAlias.DocumentType)
+                                  .WithAlias(() => countAlias.DocumentType)
+                                  .SelectCount(() => webpageAlias.Id)
+                                  .WithAlias(() => countAlias.Total)
+                                  .SelectSubQuery(QueryOver.Of<Webpage>().Where(webpage => webpage.DocumentType == webpageAlias.DocumentType && !webpage.Published).ToRowCountQuery())
+                                  .WithAlias(() => countAlias.Unpublished))
                        .TransformUsing(Transformers.AliasToBean<DocumentTypeCount>())
                        .List<DocumentTypeCount>();
 
             list.Should().HaveCount(2);
-            
+            list.Sum(count => count.Unpublished).Should().Be(2);
+
         }
     }
     public class DocumentTypeCount
     {
         public string DocumentType { get; set; }
-        public int Count { get; set; }
+        public int Total { get; set; }
+        public int Unpublished { get; set; }
     }
 }
