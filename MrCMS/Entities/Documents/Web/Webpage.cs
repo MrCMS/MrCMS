@@ -51,7 +51,7 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual bool Published
         {
-            get { return PublishOn != null && PublishOn <= DateTime.UtcNow; }
+            get { return PublishOn != null && PublishOn <= DateTime.Now; }
         }
 
         public virtual string LiveUrlSegment
