@@ -39,7 +39,7 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void TagService_GetCategories_ShouldReturnTheTagsOfAParent()
+        public void TagService_GetTags_ShouldReturnTheTagsOfAParent()
         {
             var fakeSession = A.Fake<ISession>();
 
@@ -52,15 +52,15 @@ namespace MrCMS.Tests.Services
             container.SetTags(new List<Tag> { tag1 });
             var containerItem = new FakeContainerItem { Parent = container, Site = CurrentSite };
 
-            tagService.GetCategories(containerItem).Should().HaveCount(1);
+            tagService.GetTags(containerItem).Should().HaveCount(1);
         }
 
-        public class FakeContainerItem : Document, IContainerItem
+        public class FakeContainerItem : Document
         {
             public string ContainerUrl { get; private set; }
         }
 
-        public class FakeContainer : Document, IDocumentContainer<FakeContainerItem>
+        public class FakeContainer : Document
         {
             public void SetTags(IList<Tag> tags)
             {
