@@ -9,10 +9,10 @@
 
 @{
     var category = Request["Category"];
-    
+
     var query = QueryOver.Of<Gallery>()
-                                     .Where(a => a.Parent == Model && a.Published)
-                                     .ThenBy(arg => arg.PublishOn)
+                                     .Where(gallery => gallery.Parent == Model && gallery.Published)
+                                     .ThenBy(gallery => gallery.DisplayOrder)
                                      .Desc;
 
     if (!String.IsNullOrEmpty(category))
@@ -21,7 +21,7 @@
     }
 
 
-    var pagedList = Model.PagedChildren<Gallery>(pageNum: Request["p"].GetIntValue(1), query: query);
+    var pagedList = Model.PagedChildren<Gallery>(pageNum: Request["p"].GetIntValue(1), query: query, pageSize: Model.PageSize);
 }
 
 

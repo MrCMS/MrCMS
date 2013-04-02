@@ -600,5 +600,22 @@ namespace MrCMS.Helpers
             return tempData["info-message"] as List<string>;
         }
         
+        public static MvcHtmlString InfoBlock(this HtmlHelper helper, string boldText, string text)
+        {
+            var tagBulder = new TagBuilder("div");
+            tagBulder.AddCssClass("alert alert-info");
+
+            if (!string.IsNullOrEmpty(boldText))
+            {
+                var strongText = new TagBuilder("strong");
+                strongText.SetInnerText(boldText);
+
+                tagBulder.InnerHtml += strongText.ToString() + text;
+
+                return MvcHtmlString.Create(tagBulder.ToString());
+            }
+            tagBulder.SetInnerText(text);
+            return MvcHtmlString.Create(tagBulder.ToString());
+        }
     }
 }

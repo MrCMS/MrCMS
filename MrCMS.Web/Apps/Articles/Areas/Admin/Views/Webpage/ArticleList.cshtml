@@ -1,11 +1,18 @@
-﻿@model MrCMS.Web.Apps.Articles.Pages.ArticleList
-           <hr />
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Articles.Pages.ArticleList
+@{ Html.IncludeScript("~/Apps/Artciles/Areas/Admin/Content/Scripts/articles.js"); }
+
+<hr />
 @Html.LabelFor(model => model.PageSize)
 @Html.EditorFor(model => model.PageSize)
+@Html.ValidationMessageFor(model => model.PageSize)
 
-@Html.LabelFor(model => model.AllowPaging)
-@Html.EditorFor(model => model.AllowPaging)
+@Html.InlineCheckboxFor(model => model.AllowPaging, null, null, "Allow paging?")
 
-@Html.LabelFor(x => x.TagList, "Categories")
+
+@Html.LabelFor(x => x.TagList, "Tags")
 @Html.TextBoxFor(x => x.TagList, new { @class = "span12" })
+
+
+@Html.InfoBlock("Heads up! ", "Set the tags here you would like to use as your categories for the articles above.")
 

@@ -21,7 +21,6 @@
 
     var pagedList = Model.PagedChildren<Article>(pageNum: Request["p"].GetIntValue(1), query: query, pageSize: Model.PageSize);
 }
-@Model.Name
 @foreach (var page in pagedList)
 {
     <div class="row-fluid">

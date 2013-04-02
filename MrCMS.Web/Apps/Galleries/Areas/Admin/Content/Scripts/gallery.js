@@ -10,6 +10,8 @@ window.onload = function () {
     } else {
         $("#manage-media").html('');
     }
+    
+    $("#TagList").tagit();
 };
 
 function setManageUrl(id) {
