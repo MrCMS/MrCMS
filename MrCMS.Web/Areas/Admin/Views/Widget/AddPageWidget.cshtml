@@ -23,7 +23,7 @@
         @Html.LabelFor(model => model.Name)
         @Html.EditorFor(model => model.Name, Model.Name)
         <div id="show-recursive">
-            @Html.LabelFor(widget => widget.IsRecursive, "Is Recursive")
+            @Html.LabelFor(widget => widget.IsRecursive)
             @Html.EditorFor(widget => widget.IsRecursive)
         </div>
     </div>

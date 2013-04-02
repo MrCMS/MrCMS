@@ -42,20 +42,20 @@
     @if (!(Model is Redirect))
     {       
         <hr />
-        @Html.LabelFor(x => x.MetaTitle, "Meta Title")
+        @Html.LabelFor(x => x.MetaTitle)
         @Html.TextBoxFor(x => x.MetaTitle, new { @class = "span12" })
         @Html.ValidationMessageFor(x => x.MetaTitle, "", new { @class = "error" })
-        @Html.LabelFor(x => x.MetaDescription, "Meta Description")
+        @Html.LabelFor(x => x.MetaDescription)
         @Html.TextBoxFor(x => x.MetaDescription, new { @class = "span12" })
         @Html.ValidationMessageFor(x => x.MetaDescription, "", new { @class = "error" })
-        @Html.LabelFor(x => x.MetaKeywords, "Meta Keywords")
+        @Html.LabelFor(x => x.MetaKeywords)
         @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "span12" })
         @Html.ValidationMessageFor(x => x.MetaKeywords, "", new { @class = "error" })
         <hr />
         <div class="form-inline">
             <i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="If ticked, the page will be included in any navigation widgets"></i>
             @Html.CheckBoxFor(x => x.RevealInNavigation)
-            @Html.LabelFor(x => x.RevealInNavigation, "Include in navigation")
+            @Html.LabelFor(x => x.RevealInNavigation)
         </div>
         @Html.ValidationMessageFor(x => x.RevealInNavigation)
         <label>
