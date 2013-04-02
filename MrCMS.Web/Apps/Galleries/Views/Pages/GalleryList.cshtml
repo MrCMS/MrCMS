@@ -11,7 +11,7 @@
     var category = Request["Category"];
     
     var query = QueryOver.Of<Gallery>()
-                                     .Where(a => a.Parent == Model.Parent && a.Published)
+                                     .Where(a => a.Parent == Model && a.Published)
                                      .ThenBy(arg => arg.PublishOn)
                                      .Desc;
 
