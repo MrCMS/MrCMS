@@ -1,9 +1,59 @@
-﻿@{
-    ViewBag.Title = "Index";
+﻿@using MrCMS.Website
+@model MrCMS.Web.Areas.Admin.Models.Dashboard 
+@{
+    ViewBag.Title = "Dashboard";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-<div>
-    <p>
-        Please choose a page from the left to start editing.
-    </p>
-</div>
+<form>
+    <fieldset>
+        <legend>Dashboard</legend>
+
+        <p>Hello @Model.LoggedInName, you are currently administering web site "@Model.SiteName."</p>
+        
+        <hr />
+
+        <div class="row-fluid">
+            <div class="span6">
+                <h4>Page stats</h4>
+                <table class="table table-striped table-condensed" style="overflow: scroll">
+                    <tr>
+                        <th>Page type
+                        </th>
+                        <th>Total
+                        </th>
+                        <th>Unpublished
+                        </th>
+                    </tr>
+                    @if (Model.Stats.Any())
+                    {
+                        foreach (var stat in Model.Stats)
+                        {
+                            <tr>
+                                <td>@stat.DocumentType.Substring(stat.DocumentType.LastIndexOf('.') + 1)</td>
+                                <td>@stat.NumberOfPages
+                                </td>
+                                <td>@stat.NumberOfUnPublishedPages
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+            <div class="span6">
+                <h4>User stats</h4>
+                <table class="table table-striped table-condensed" style="overflow: scroll">
+                    <tr>
+                        <th>Registered</th>
+                        <th>None active</th>
+                    </tr>
+                    <tr>
+                        <td>@Model.ActiveUsers</td>
+                        <td>@Model.NoneActiveUsers</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <hr />
+    </fieldset>
+</form>

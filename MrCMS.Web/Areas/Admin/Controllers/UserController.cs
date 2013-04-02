@@ -89,5 +89,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _userService.SaveUser(user);
             return RedirectToAction("Edit", new {user.Id});
         }
+
+        public JsonResult IsUniqueEmail(string email)
+        {
+            if (_userService.IsUniqueEmail(email))
+                return Json(true, JsonRequestBehavior.AllowGet);
+
+            return Json("Email already registered.", JsonRequestBehavior.AllowGet);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model MrCMS.Web.Areas.Admin.Models.AddUserModel
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Areas.Admin.Models.AddUserModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 @using (Html.BeginForm("Add", "User", FormMethod.Post))
 {
@@ -6,6 +7,8 @@
         <h3>Add user</h3>
     </div>
     <div class="modal-body">
+        @Html.ValidationSummary()
+
         @Html.LabelFor(x => x.Email)
         @Html.TextBoxFor(x => x.Email)
         @Html.ValidationMessageFor(x => x.Email)
@@ -26,8 +29,7 @@
         @Html.PasswordFor(x => x.ConfirmPassword)
         @Html.ValidationMessageFor(x => x.ConfirmPassword)
         <br />
-        @Html.LabelFor(x => x.IsActive)
-        @Html.CheckBoxFor(x => x.IsActive)
+        @Html.InlineCheckboxFor(x => x.IsActive, null, null, "User is active")
         @Html.ValidationMessageFor(x => x.IsActive)
         <br />
         

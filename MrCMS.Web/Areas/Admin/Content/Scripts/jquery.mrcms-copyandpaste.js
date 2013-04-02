@@ -32,4 +32,4 @@
 })( jQuery );
 
 // calls the init method
-$('.context-menu').copyandpaste(); 
+//$('.context-menu').copyandpaste(); 
