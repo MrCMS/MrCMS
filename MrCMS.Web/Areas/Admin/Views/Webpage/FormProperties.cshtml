@@ -2,9 +2,7 @@
 @using MrCMS.Helpers
 @model Webpage
 <div class="tab-pane" id="form-properties-tab">
-    <div class="alert alert-info">
-        <strong>Heads up!</strong> Start by adding fields to your form using the Add Field button. Once all fields are added, use [form] in the page body content to embded the form where you would like it.
-    </div>
+    @Html.InfoBlock("Heads up! ", "Start by adding fields to your form using the Add Field button. Once all fields are added, use [form] in the page body content to embded the form where you would like it.")
 
     <div id="form-data" class="row-fluid">
         <div class="span12">
