@@ -32,12 +32,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Add")]
-        public override ActionResult Add_Get(MediaCategory parent = null)
+        public override ActionResult Add_Get(int? id)
         {
             //Build list 
             var model = new MediaCategory()
             {
-                Parent = parent
+                Parent = id.HasValue ? _documentService.GetDocument<MediaCategory>(id.Value) : null
             };
 
             return View(model);
