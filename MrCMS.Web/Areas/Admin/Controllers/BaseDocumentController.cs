@@ -27,12 +27,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Add")]
-        public virtual ActionResult Add_Get(T parent)
+        public virtual ActionResult Add_Get(int? id)
         {
             //Build list 
             var model = new AddPageModel
             {
-                Parent = parent
+                Parent = id.HasValue ? _documentService.GetDocument<Document>(id.Value) : null
             };
             DocumentTypeSetup(model as T);
             return View(model);

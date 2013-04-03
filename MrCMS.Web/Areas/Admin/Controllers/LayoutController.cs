@@ -16,12 +16,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Add")]
-        public override ActionResult Add_Get(Layout parent)
+        public override ActionResult Add_Get(int? id)
         {
             //Build list 
             var model = new Layout()
             {
-                Parent = parent
+                Parent = id.HasValue ? _documentService.GetDocument<Layout>(id.Value) : null
             };
 
             return View(model);

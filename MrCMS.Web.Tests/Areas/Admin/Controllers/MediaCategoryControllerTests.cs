@@ -23,7 +23,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
 
-            var actionResult = mediaCategoryController.Add_Get(new MediaCategory()) as ViewResult;
+            var actionResult = mediaCategoryController.Add_Get(null) as ViewResult;
 
             actionResult.Model.Should().BeOfType<MediaCategory>();
         }
@@ -32,9 +32,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void MediaCategoryController_AddGet_ShouldSetParentOfModelToModelInMethod()
         {
             MediaCategoryController mediaCategoryController = GetMediaCategoryController();
-            var mediaCategory = new MediaCategory {Id = 1};
+            var mediaCategory = new MediaCategory { Id = 1 };
+            A.CallTo(() => _documentService.GetDocument<MediaCategory>(1)).Returns(mediaCategory);
 
-            var actionResult = mediaCategoryController.Add_Get(mediaCategory) as ViewResult;
+            var actionResult = mediaCategoryController.Add_Get(1) as ViewResult;
 
             actionResult.Model.As<MediaCategory>().Parent.Should().Be(mediaCategory);
         }

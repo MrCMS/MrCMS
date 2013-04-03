@@ -23,7 +23,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             LayoutController layoutController = GetLayoutController();
             var parent = new Layout();
 
-            var actionResult = layoutController.Add_Get(parent) as ViewResult;
+            var actionResult = layoutController.Add_Get(null) as ViewResult;
 
             actionResult.Model.Should().BeOfType<Layout>();
         }
@@ -33,8 +33,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             LayoutController layoutController = GetLayoutController();
             var parent = new Layout() {Id = 1, Site = layoutController.CurrentSite};
+            A.CallTo(() => documentService.GetDocument<Layout>(1)).Returns(parent);
             
-            var actionResult = layoutController.Add_Get(parent) as ViewResult;
+            var actionResult = layoutController.Add_Get(1) as ViewResult;
 
             actionResult.Model.As<Layout>().Parent.Should().Be(parent);
         }

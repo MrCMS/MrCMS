@@ -31,7 +31,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             WebpageController webpageController = GetWebpageController();
 
-            var actionResult = webpageController.Add_Get(new TextPage { Site = webpageController.CurrentSite }) as ViewResult;
+            var actionResult = webpageController.Add_Get(1) as ViewResult;
 
             actionResult.Model.Should().BeOfType<AddPageModel>();
         }
@@ -43,7 +43,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var textPage = new TextPage {Site = webpageController.CurrentSite, Id = 1};
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(textPage);
 
-            var actionResult = webpageController.Add_Get(textPage) as ViewResult;
+            var actionResult = webpageController.Add_Get(1) as ViewResult;
 
             (actionResult.Model as AddPageModel).ParentId.Should().Be(1);
         }
@@ -55,7 +55,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var textPage = new TextPage {Site = webpageController.CurrentSite};
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(textPage);
 
-            var result = webpageController.Add_Get(textPage) as ViewResult;
+            var result = webpageController.Add_Get(1) as ViewResult;
 
             webpageController.ViewData["Layout"].Should().BeAssignableTo<IEnumerable<SelectListItem>>();
         }
