@@ -583,6 +583,7 @@
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryList.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\SearchPage.cshtml" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.mrcms-copyandpaste.js" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleCategories.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />

@@ -1,6 +1,6 @@
 ﻿/// <reference path="../admin.js" />
 $(function() {
-    $("#TagList").tagit({
+    $(".system-tagging").tagit({
         autocomplete: {
             delay: 0,
             minLength: 0,

@@ -4,6 +4,14 @@
 }
 @using (Html.BeginForm("Add", "Layout", new { id = "" }, FormMethod.Post, new { id = "add-layout" }))
 {
+    <fieldset>
+        <legend>Add Layout
+        <button class="btn pull-right btn-primary">
+            Add</button>
+        </legend>
+
+        <div class="row-fluid">
+            <div class="span12">
     <section class="admin-header">
         <div class="row-fluid">
             <div class="span10">
@@ -17,15 +25,16 @@
     
     <div class="row-fluid">
         <div class="span12">
-            @Html.HiddenFor(x => x.Parent.Id)
-            @Html.LabelFor(x => x.Name)
-            @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
-            @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
+                @Html.HiddenFor(x => x.Parent.Id)
+                @Html.LabelFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
 
-            @Html.LabelFor(x => x.UrlSegment, "Path")
-            @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
-            @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
-            @Html.Hidden("DocumentType", "Layout")
+                @Html.LabelFor(x => x.UrlSegment, "Path")
+                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+                @Html.Hidden("DocumentType", "Layout")
+            </div>
         </div>
-    </div>   
+    </fieldset>
 }

@@ -1,4 +1,5 @@
 ﻿@using System.Drawing
+@using MrCMS.Entities.Documents
 @using MrCMS.Helpers
 @using MrCMS.Web.Apps.Articles.Pages
 @using MrCMS.Web.Apps.Galleries.Pages
@@ -14,12 +15,6 @@
                                      .Where(gallery => gallery.Parent == Model && gallery.PublishOn != null && gallery.PublishOn <= DateTime.Now)
                                      .ThenBy(gallery => gallery.DisplayOrder)
                                      .Desc;
-
-    if (!String.IsNullOrEmpty(category))
-    {
-        query = query.And(doc => doc.Tags.Any(x => x.Name == category));
-    }
-
 
     var pagedList = Model.PagedChildren<Gallery>(pageNum: Request["p"].GetIntValue(1), query: query, pageSize: Model.PageSize);
 }

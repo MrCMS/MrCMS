@@ -1,3 +1,10 @@
-﻿@model MrCMS.Web.Apps.Articles.Pages.ArticleList 
+﻿@using MrCMS.Web.Apps.Articles.Pages
+@using NHibernate.Criterion
+@model MrCMS.Web.Apps.Articles.Pages.ArticleList 
 
-@{ Html.RenderPartial("ShowCategories", Model); }
+<ul class="nav nav-pills nav-stacked">
+    @foreach (var category in Model.Tags)
+    {
+        <li><a href="/@Model.LiveUrlSegment?category=@category.Name">@category.Name</a></li>
+    }
+</ul>

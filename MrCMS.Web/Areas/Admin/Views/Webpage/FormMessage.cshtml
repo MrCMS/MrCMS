@@ -1,4 +1,5 @@
-﻿@model MrCMS.Entities.Documents.Web.Webpage
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane" id="form-message-tab">
     <div class="row-fluid margin-top-0">
         <div class="span12">
@@ -20,9 +21,8 @@
             @Html.LabelFor(webpage => webpage.FormMessage, "Message")
             @Html.TextAreaFor(x => x.FormMessage, new { @class = "ckedit-enabled" })
 
-            <div class="alert alert-info margin-top-10">
-                <strong>Heads up!</strong> Use [form] in the message body to embded the form result in the email.
-            </div>
+             @Html.InfoBlock("Heads up! ", "Use [form] in the message body to embded the form result in the email.")
+
         </div>
     </div>
 </div>

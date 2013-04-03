@@ -55,6 +55,7 @@ section.admin-header h3 { margin: 0px; }
 .form-item{ padding: 10px;}
 
 .validation-summary-errors { color: red;}
-.error span { color: red; }
+.error, .error span { color: red; }
+
 
 #loading { position: fixed;top: 5px;right: 5px;z-index: 999999;}
