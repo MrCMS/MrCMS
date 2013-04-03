@@ -54,10 +54,17 @@ namespace MrCMS.Services
                          .FirstOrDefault(
                              type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IIndexDefinition<>));
             var indexManagerBase =
-                MrCMSApplication.Get(
-                    typeof(FSDirectoryIndexManager<,>).MakeGenericType(indexDefinitionInterface.GetGenericArguments()[0],
-                                                                        indexType)) as IIndexManagerBase;
+                (GetIndexManagerOverride ?? DefaultGetIndexManager())(indexType, indexDefinitionInterface);
             return indexManagerBase;
+        }
+
+        public static Func<Type, Type, IIndexManagerBase> GetIndexManagerOverride = null;
+
+        private static Func<Type, Type, IIndexManagerBase> DefaultGetIndexManager()
+        {
+            return (indexType, indexDefinitionInterface) => MrCMSApplication.Get(
+                typeof (FSDirectoryIndexManager<,>).MakeGenericType(indexDefinitionInterface.GetGenericArguments()[0],
+                                                                    indexType)) as IIndexManagerBase;
         }
 
         public void Reindex(string typeName)
