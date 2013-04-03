@@ -234,7 +234,7 @@ namespace MrCMS.Entities.Documents.Web
         {
             query = query ??
                     QueryOver.Of<T>()
-                             .Where(a => a.Parent == this && a.Published)
+                             .Where(a => a.Parent == this && a.PublishOn != null && a.PublishOn <= DateTime.Now)
                              .ThenBy(arg => arg.PublishOn)
                              .Desc;
 

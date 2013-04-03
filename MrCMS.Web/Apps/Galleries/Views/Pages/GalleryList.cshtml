@@ -11,7 +11,7 @@
     var category = Request["Category"];
 
     var query = QueryOver.Of<Gallery>()
-                                     .Where(gallery => gallery.Parent == Model && gallery.Published)
+                                     .Where(gallery => gallery.Parent == Model && gallery.PublishOn != null && gallery.PublishOn <= DateTime.Now)
                                      .ThenBy(gallery => gallery.DisplayOrder)
                                      .Desc;
 

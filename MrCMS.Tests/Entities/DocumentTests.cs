@@ -122,7 +122,7 @@ namespace MrCMS.Tests.Entities
                                   .WithAlias(() => countAlias.DocumentType)
                                   .SelectCount(() => webpageAlias.Id)
                                   .WithAlias(() => countAlias.Total)
-                                  .SelectSubQuery(QueryOver.Of<Webpage>().Where(webpage => webpage.DocumentType == webpageAlias.DocumentType && !webpage.Published).ToRowCountQuery())
+                                  .SelectSubQuery(QueryOver.Of<Webpage>().Where(webpage => webpage.DocumentType == webpageAlias.DocumentType && (webpage.PublishOn == null || webpage.PublishOn > DateTime.Now)).ToRowCountQuery())
                                   .WithAlias(() => countAlias.Unpublished))
                        .TransformUsing(Transformers.AliasToBean<DocumentTypeCount>())
                        .List<DocumentTypeCount>();

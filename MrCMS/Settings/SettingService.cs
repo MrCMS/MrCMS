@@ -139,9 +139,9 @@ namespace MrCMS.Settings
         private IDictionary<string, KeyValuePair<int, string>> GetAllSettings(Site site)
         {
             var settings =
-                _session.QueryOver<Setting>()
-                        .Where(setting => setting.Site.Id == site.Id).Cacheable()
-                        .List();
+                _session.QueryOver<Setting>().Cacheable()
+                        .List()
+                        .Where(setting => setting.Site == site);
             //format: <name, <id, value>>
             var dictionary = new Dictionary<string, KeyValuePair<int, string>>();
             foreach (var s in settings)

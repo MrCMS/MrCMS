@@ -9,7 +9,7 @@
     var category = Request["Category"];
     
     var query = QueryOver.Of<Article>()
-                                     .Where(a => a.Parent == Model && a.Published)
+                                     .Where(a => a.Parent == Model && a.PublishOn != null && a.PublishOn <= DateTime.Now)
                                      .ThenBy(arg => arg.PublishOn)
                                      .Desc;
 

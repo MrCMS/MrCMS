@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Articles.Pages;
@@ -21,7 +22,7 @@ namespace MrCMS.Web.Apps.Articles.Widgets
             return new LatestXArticlesViewModel
                        {
                            Articles = session.QueryOver<Article>()
-                                           .Where(article => article.Parent.Id == RelatedNewsList.Id && article.Published)
+                                           .Where(article => article.Parent.Id == RelatedNewsList.Id && article.PublishOn != null && article.PublishOn <= DateTime.Now)
                                            .Take(NumberOfArticles)
                                            .Cacheable()
                                            .List(),
@@ -33,7 +34,7 @@ namespace MrCMS.Web.Apps.Articles.Widgets
         public override void SetDropdownData(System.Web.Mvc.ViewDataDictionary viewData, NHibernate.ISession session)
         {
             viewData["newsList"] = session.QueryOver<ArticleList>()
-                                                .Where(article => article.Published)
+                                                .Where(article => article.PublishOn != null && article.PublishOn <= DateTime.Now)
                                                 .Cacheable()
                                                 .List()
                                                 .BuildSelectItemList(item => item.Name,

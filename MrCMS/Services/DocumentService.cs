@@ -257,7 +257,7 @@ namespace MrCMS.Services
 
         public bool AnyPublishedWebpages()
         {
-            return _session.QueryOver<Webpage>().Where(webpage => webpage.Published).Cacheable().RowCount() > 0;
+            return _session.QueryOver<Webpage>().Where(webpage => webpage.PublishOn != null && webpage.PublishOn <= DateTime.Now).Cacheable().RowCount() > 0;
         }
 
         public bool AnyWebpages()
@@ -269,7 +269,7 @@ namespace MrCMS.Services
         {
             return
                 _session.QueryOver<Webpage>().Where(
-                    x => x.Parent.Id == parentId && x.Published && x.PublishOn < DateTime.Now && x.RevealInNavigation).
+                    x => x.Parent.Id == parentId && x.PublishOn != null && x.PublishOn <= DateTime.Now && x.PublishOn < DateTime.Now && x.RevealInNavigation).
                     List();
         }
 

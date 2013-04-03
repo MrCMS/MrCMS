@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
@@ -13,9 +14,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class HomeController : MrCMSAdminController
     {
-        private IUserService _userServices;
-        private ISiteService _siteService;
-        private ISession _session;
+        private readonly IUserService _userServices;
+        private readonly ISiteService _siteService;
+        private readonly ISession _session;
 
         public HomeController(ISiteService siteService, IUserService userServices, ISession session)
         {
@@ -35,7 +36,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                   .WithAlias(() => countAlias.DocumentType)
                                   .SelectCount(() => webpageAlias.Id)
                                   .WithAlias(() => countAlias.NumberOfPages)
-                                  .SelectSubQuery(QueryOver.Of<Webpage>().Where(webpage => webpage.DocumentType == webpageAlias.DocumentType && !webpage.Published).ToRowCountQuery())
+                                  .SelectSubQuery(QueryOver.Of<Webpage>().Where(webpage => webpage.DocumentType == webpageAlias.DocumentType && (webpage.PublishOn == null || webpage.PublishOn > DateTime.Now)).ToRowCountQuery())
                                   .WithAlias(() => countAlias.NumberOfUnPublishedPages))
                        .TransformUsing(Transformers.AliasToBean<WebpageStats>())
                        .List<WebpageStats>();

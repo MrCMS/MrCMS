@@ -464,6 +464,10 @@ namespace MrCMS.Installation
             //                        EveryXMinutes = 1,
             //                        Site = site
             //                    });
+            //var service = new IndexService(session);
+            //var mrCMSIndices = service.GetIndexes();
+            //mrCMSIndices.ForEach(index => service.Reindex(index.TypeName));
+            //mrCMSIndices.ForEach(index => service.Optimise(index.TypeName));
         }
 
         public virtual void RestartAppDomain()

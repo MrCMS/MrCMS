@@ -9,7 +9,6 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<Webpage> mapping)
         {
-            mapping.Map(x => x.Published).Formula("case when PublishOn is not null and PublishOn <= CURRENT_TIMESTAMP then 1 else 0 end").Access.ReadOnly();
             mapping.HasManyToMany(webpage => webpage.HiddenWidgets).Table("HiddenWidgets").Cache.ReadWrite();
             mapping.HasManyToMany(webpage => webpage.ShownWidgets).Table("ShownWidgets").Cache.ReadWrite();
             mapping.HasMany(webpage => webpage.Widgets).KeyColumn("WebpageId").Cascade.Delete();
