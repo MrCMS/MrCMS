@@ -12,7 +12,7 @@
             var d1 = new Date();
             $("#PublishOn").val($.datepicker.formatDate('yy/mm/dd', new Date()) + " " + d1.getHours() + ":" + d1.getMinutes());
         }
-        $("form").submit();
+        $("#edit-document").submit();
         return false;
     });
 

@@ -18,8 +18,8 @@ namespace MrCMS.Web.Apps.Core.Widgets
         {
             var navigationRecords =
                 session.QueryOver<Webpage>().Where(
-                    webpage => webpage.Parent == null && webpage.Published && webpage.RevealInNavigation)
-                       .OrderBy(webpage => webpage.DisplayOrder).Asc.List()
+                    webpage => webpage.Parent == null && webpage.Published && webpage.RevealInNavigation).Cacheable()
+                       .List().OrderBy(webpage => webpage.DisplayOrder)
                        .Select(webpage => new NavigationRecord
                        {
                            Text = MvcHtmlString.Create(webpage.Name),

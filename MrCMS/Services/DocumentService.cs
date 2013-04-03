@@ -109,7 +109,7 @@ namespace MrCMS.Services
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
             IEnumerable<T> children =
-                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).List();
+                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).Cacheable().List();
 
             if (parent != null)
             {

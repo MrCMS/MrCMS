@@ -8,8 +8,9 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<UserRole> mapping)
         {
-            mapping.HasManyToMany(role => role.FrontEndWebpages).Inverse().Table("FrontEndWebpageRoles");
-            mapping.HasManyToMany(role => role.AdminWebpages).Inverse().Table("AdminWebpageRoles");
+            mapping.HasManyToMany(role => role.FrontEndWebpages).Inverse().Table("FrontEndWebpageRoles").Cache.ReadWrite();
+            mapping.HasManyToMany(role => role.AdminWebpages).Inverse().Table("AdminWebpageRoles").Cache.ReadWrite();
+            mapping.HasManyToMany(role => role.Users).Cascade.SaveUpdate().Cache.ReadWrite();
         }
     }
 }

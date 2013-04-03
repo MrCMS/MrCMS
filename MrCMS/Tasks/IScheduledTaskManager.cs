@@ -57,7 +57,7 @@ namespace MrCMS.Tasks
         public List<ScheduledTask> GetAllTasks()
         {
             return
-                _session.QueryOver<ScheduledTask>().Where(task => task.Site == _currentSite).Cacheable().List().ToList();
+                _session.QueryOver<ScheduledTask>().Where(task => task.Site.Id == _currentSite.Id).Cacheable().List().ToList();
         }
 
         public void Add(ScheduledTask scheduledTask)

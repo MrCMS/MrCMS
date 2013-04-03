@@ -140,9 +140,7 @@ namespace MrCMS.Settings
         {
             var settings =
                 _session.QueryOver<Setting>()
-                        .Where(setting => setting.Site == site)
-                        .OrderBy(s => s.Name)
-                        .Asc.Cacheable()
+                        .Where(setting => setting.Site.Id == site.Id).Cacheable()
                         .List();
             //format: <name, <id, value>>
             var dictionary = new Dictionary<string, KeyValuePair<int, string>>();

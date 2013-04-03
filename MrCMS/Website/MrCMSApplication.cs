@@ -55,6 +55,17 @@ namespace MrCMS.Website
 
         //public static User OverriddenUser { get; set; }
 
+
+        private static bool IsFileRequest(Uri uri)
+        {
+            var absolutePath = uri.AbsolutePath;
+            if (string.IsNullOrWhiteSpace(absolutePath))
+                return false;
+            var extension = Path.GetExtension(absolutePath);
+
+            return !string.IsNullOrWhiteSpace(extension);
+        }
+
         public override void Init()
         {
             if (CurrentRequestData.DatabaseIsInstalled)
@@ -62,21 +73,31 @@ namespace MrCMS.Website
                 TaskExecutor.SessionFactory = Get<ISessionFactory>();
                 BeginRequest += (sender, args) =>
                                     {
-                                        CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
-                                        CurrentRequestData.CurrentSite = Get<ISiteService>().GetCurrentSite();
-                                        CurrentRequestData.SiteSettings = Get<SiteSettings>();
+                                        if (!IsFileRequest(Request.Url))
+                                        {
+                                            CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
+                                            CurrentRequestData.CurrentSite = Get<ISiteService>().GetCurrentSite();
+                                            CurrentRequestData.SiteSettings = Get<SiteSettings>();
+                                        }
                                     };
                 AuthenticateRequest += (sender, args) =>
                                            {
-                                               CurrentRequestData.CurrentUser =
-                                                   Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
+                                               if (!IsFileRequest(Request.Url))
+                                               {
+                                                   CurrentRequestData.CurrentUser =
+                                                       Get<IUserService>()
+                                                           .GetCurrentUser(CurrentRequestData.CurrentContext);
+                                               }
                                            };
 
                 EndRequest += (sender, args) =>
                                   {
-                                      if (CurrentRequestData.DatabaseIsInstalled)
-                                          AppendScheduledTasks();
-                                      TaskExecutor.StartExecuting();
+                                      if (!IsFileRequest(Request.Url))
+                                      {
+                                          if (CurrentRequestData.DatabaseIsInstalled)
+                                              AppendScheduledTasks();
+                                          TaskExecutor.StartExecuting();
+                                      }
                                   };
             }
         }
@@ -232,10 +253,10 @@ namespace MrCMS.Website
             return OverridenRootChildren ??
                    Get<ISession>()
                        .QueryOver<Webpage>()
-                       .Where(document => document.Parent == null && document.Site == CurrentRequestData.CurrentSite)
-                       .OrderBy(x => x.DisplayOrder)
-                       .Asc.Cacheable()
-                       .List();
+                       .Where(
+                           document => document.Parent == null && document.Site.Id == CurrentRequestData.CurrentSite.Id)
+                       .Cacheable()
+                       .List().OrderBy(x => x.DisplayOrder);
         }
 
         public const string AssemblyVersion = "0.2.0.*";
