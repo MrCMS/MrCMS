@@ -5,6 +5,6 @@
 <ul class="nav nav-pills nav-stacked">
     @foreach (var category in Model.Tags)
     {
-        <li><a href="/@Model.LiveUrlSegment?category=@category.Name"><span>\\</span>@category.Name <span>.</span></a></li>
+        <li><a href="/@Model.LiveUrlSegment?category=@category.Name">@category.Name</a></li>
     }
 </ul>

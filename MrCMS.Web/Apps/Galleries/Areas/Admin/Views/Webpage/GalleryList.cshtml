@@ -7,7 +7,3 @@
 
 @Html.InlineCheckboxFor(model => model.AllowPaging, null, null, "Allow paging")
 
-@Html.LabelFor(x => x.TagList, "Tags")
-@Html.TextBoxFor(x => x.TagList, new { @class = "span12 system-tagging" })
-
-@Html.InfoBlock("Heads up! ", "Set the tags above you would like to use as your categories for the galleries added to this page.")
