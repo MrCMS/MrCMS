@@ -6,7 +6,7 @@
     $("#loading").ajaxStop(function () {
         $(this).hide();
     });
-    
+
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 
@@ -320,76 +320,6 @@
         return false;
     });
 
-    function split(val) {
-        return val.split(/,\s*/);
-    }
-
-    function extractLast(term) {
-        return split(term).pop();
-    }
-
-    $("#TagList").bind("keydown", function (event) {
-        if (event.keyCode === $.ui.keyCode.TAB &&
-		    $(this).data("autocomplete").menu.active) {
-            event.preventDefault();
-        }
-    }).autocomplete(autoCompleteSettings("/Admin/Tag/Search"));
-
-    $(document).on('click', '#InheritFrontEndRolesFromParent', function() {
-        $('#front-end-roles').toggle(!$('#InheritFrontEndRolesFromParent').is(':checked'));
-    });
-
-    $(document).on('click', '#InheritAdminRolesFromParent', function() {
-        $('#admin-roles').toggle(!$('#InheritAdminRolesFromParent').is(':checked'));
-    });
-
-    $("#FrontEndRoles").bind("keydown", function (event) {
-        if (event.keyCode === $.ui.keyCode.TAB &&
-		    $(this).data("autocomplete").menu.active) {
-            event.preventDefault();
-        }
-    }).autocomplete(autoCompleteSettings("/Admin/Role/Search"));
-
-    $("#AdminRoles").bind("keydown", function (event) {
-        if (event.keyCode === $.ui.keyCode.TAB &&
-		    $(this).data("autocomplete").menu.active) {
-            event.preventDefault();
-        }
-    }).autocomplete(autoCompleteSettings("/Admin/Role/Search"));
-    
-    function autoCompleteSettings(url) {
-        return {
-            source: function(request, response) {
-                $.getJSON(url, {
-                    term: extractLast(request.term),
-                    id: $('#Id').val()
-                }, response);
-            },
-            search: function() {
-                // custom minLength
-                var term = extractLast(this.value);
-                if (term.length < 2) {
-                    return false;
-                }
-            },
-            focus: function() {
-                // prevent value inserted on focus
-                return false;
-            },
-            select: function(event, ui) {
-                var terms = split(this.value);
-                // remove the current input
-                terms.pop();
-                // add the selected item
-                terms.push(ui.item.value);
-                // add placeholder to get the comma-and-space at the end
-                terms.push("");
-                this.value = terms.join(", ");
-                return false;
-            }
-        };
-    }
-
     $('[data-action=save]').click(function (e) {
         e.preventDefault();
         var formId = $(this).data('form-id');
@@ -404,7 +334,7 @@
             post_to_url(url, {});
         }
     });
-    
+
     $(window).resize(function () {
         $('.modal').each(function (index, element) {
             resizeModal($(element));
@@ -524,6 +454,15 @@ function setCookie(name, value) {
 function getCookie(cookieName) {
     return $.cookie(cookieName);
 }
+
+function split(val) {
+    return val.split(/,\s*/);
+}
+
+function extractLast(term) {
+    return split(term).pop();
+}
+
 CKEDITOR.config.toolbar = 'Basic';
 CKEDITOR.replaceAll('ckedit-enabled');
 CKEDITOR.on('instanceReady', function () { $(window).resize(); });
