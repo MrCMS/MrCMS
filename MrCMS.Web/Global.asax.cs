@@ -2,6 +2,7 @@
 using System.Web.Routing;
 using MrCMS.Web.Controllers;
 using MrCMS.Website;
+using MrCMS.Website.Controllers;
 using Ninject;
 
 namespace MrCMS.Web
@@ -18,7 +19,6 @@ namespace MrCMS.Web
 
         protected override void RegisterAppSpecificRoutes(RouteCollection routes)
         {
-            routes.MapRoute("newsletter signup", "newsletter/post-signup", new { controller = "Newsletter", action = "Signup" });
         }
 
         protected override void RegisterServices(IKernel kernel)

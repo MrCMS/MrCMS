@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using MrCMS.DbConfiguration;
+using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.IoC;
@@ -18,7 +19,7 @@ namespace MrCMS.Helpers
     {
         private static List<Type> _alltypes;
 
-        public static List<Type> MappedClasses { get { return MrCMSApplication.Get<IGetAllMappedClasses>().MappedClasses; } }
+        public static List<Type> MappedClasses { get { return GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type => !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any()); } }
 
         public static List<Type> GetAllTypes()
         {
@@ -43,6 +44,35 @@ namespace MrCMS.Helpers
         public static List<Type> GetAllConcreteTypesAssignableFrom<T>()
         {
             return GetAllTypesAssignableFrom<T>().FindAll(type => !type.IsAbstract);
+        }
+
+        public static List<Type> GetAllTypesAssignableFrom(Type type)
+        {
+            return GetAllTypes().FindAll(t =>
+                                             {
+                                                 if (type.IsGenericTypeDefinition)
+                                                 {
+                                                     return type.IsInterface
+                                                                ? t.GetBaseTypes(true)
+                                                                   .Any(
+                                                                       t2 => t2.GetInterfaces().Any(
+                                                                           tInt => tInt.IsGenericType
+                                                                                   &&
+                                                                                   tInt.GetGenericTypeDefinition() ==
+                                                                                   type))
+                                                                : t.GetBaseTypes()
+                                                                   .Any(
+                                                                       t2 =>
+                                                                       t2.IsGenericType &&
+                                                                       t2.GetGenericTypeDefinition() == type);
+                                                 }
+                                                 return type.IsAssignableFrom(t);
+                                             });
+        }
+
+        public static List<Type> GetAllConcreteTypesAssignableFrom(Type t)
+        {
+            return GetAllTypesAssignableFrom(t).FindAll(type => !type.IsAbstract);
         }
 
         private static List<Type> GetLoadableTypes(this Assembly assembly)
@@ -233,6 +263,28 @@ namespace MrCMS.Helpers
                               : (type == typeof(List<string>)
                                      ? new GenericListTypeConverter<string>()
                                      : TypeDescriptor.GetConverter(type)));
+        }
+
+        public static IEnumerable<Type> GetBaseTypes(this Type type, bool includeSelf = false)
+        {
+            if (includeSelf)
+                yield return type;
+            var baseType = type.BaseType;
+            while (baseType != null)
+            {
+                yield return baseType;
+                baseType = baseType.BaseType;
+            }
+        }
+
+        public static IEnumerable<Type> GetBaseTypes(this Type type, Func<Type, bool> filter)
+        {
+            return type.GetBaseTypes().Where(filter);
+        }
+
+        public static Type GetTypeByName(string typeName)
+        {
+            return _alltypes.FirstOrDefault(type => type.FullName == typeName);
         }
     }
 }

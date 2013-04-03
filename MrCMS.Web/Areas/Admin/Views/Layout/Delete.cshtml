@@ -1,6 +1,6 @@
 ﻿@model MrCMS.Entities.Documents.Layout.Layout
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel">Confirm delete</h3>
 </div>
 <div class="modal-body">
@@ -8,7 +8,6 @@
     <p>This will also revert any pages that were using this layout to the site default</p>
 </div>
 <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     @using (Html.BeginForm("Delete", "Layout", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
     {
         <input type="submit" class="btn btn-primary" value="Confirm Delete Layout" />

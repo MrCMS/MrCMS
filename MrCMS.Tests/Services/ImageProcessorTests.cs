@@ -7,7 +7,7 @@ using Xunit.Extensions;
 
 namespace MrCMS.Tests.Services
 {
-    public class ImageProcessorTests : InMemoryDatabaseTest
+    public class ImageProcessorTests 
     {
         [Fact]
         public void ImageProcessor_RequiresResize_IfTargetSizeIsEqualToOriginalSizeReturnFalse()

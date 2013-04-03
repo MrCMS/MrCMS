@@ -93,6 +93,7 @@
     <Compile Include="Areas\Admin\Controllers\AdminControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\FileControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeControllerTests.cs" />
+    <Compile Include="Areas\Admin\Controllers\InPageAdminControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutContollerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaCategoryControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\NavigationControllerTests.cs" />
@@ -104,6 +105,8 @@
     <Compile Include="Areas\Admin\Controllers\WebpageControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaControllerTests.cs" />
+    <Compile Include="Controllers\FormControllerTests.cs" />
+    <Compile Include="Controllers\LoginControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stubs\FakeHttpFileCollectionBase.cs" />
     <Compile Include="Stubs\FakeHttpPostedFileBase.cs" />

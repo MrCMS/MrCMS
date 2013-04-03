@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
@@ -14,12 +14,13 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.Routing;
+using System.Web.WebPages;
+using MrCMS.Apps;
 using MrCMS.Services;
 using MrCMS.Shortcodes;
 using MrCMS.Website;
-using MrCMS.Website.Controllers;
+using MrCMS.Website.Optimization;
 using Newtonsoft.Json;
-using Ninject;
 
 namespace MrCMS.Helpers
 {
@@ -28,14 +29,14 @@ namespace MrCMS.Helpers
         public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
                                                               Expression<Func<TModel, object>> expression)
         {
-            return DeleteCheckBoxFor(htmlHelper, expression, new RouteValueDictionary());
+            return DeleteCheckBoxFor(htmlHelper, expression, new { });
         }
 
         public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
                                                               Expression<Func<TModel, object>> expression,
                                                               object htmlAttributes)
         {
-            return DeleteCheckBoxFor(htmlHelper, expression, new RouteValueDictionary(htmlAttributes));
+            return DeleteCheckBoxFor(htmlHelper, expression, AnonymousObjectToHtmlAttributes(htmlAttributes));
         }
 
         public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
@@ -179,7 +180,7 @@ namespace MrCMS.Helpers
             if (htmlAttributes != null)
                 tag.MergeAttributes(htmlAttributes);
 
-            tag.SetInnerText(resolvedLabelText);
+            tag.InnerHtml = resolvedLabelText;
             return tag.ToMvcHtmlString(TagRenderMode.Normal);
         }
 
@@ -210,8 +211,9 @@ namespace MrCMS.Helpers
                                              string controllerName, object routeValues, object htmlAttributes)
         {
             var routeValuesDictionary = new RouteValueDictionary(routeValues);
-            IDictionary<string, object> htmlAttributeDictionary = new RouteValueDictionary(htmlAttributes);
-            htmlAttributeDictionary.Add("data-action", "post-link");
+            var htmlAttributeDictionary = new RouteValueDictionary(htmlAttributes);
+
+            htmlAttributeDictionary["data-action"] = "post-link";
             return htmlHelper.ActionLink(linkText, actionName, controllerName, routeValuesDictionary,
                                          htmlAttributeDictionary);
         }
@@ -220,7 +222,7 @@ namespace MrCMS.Helpers
                                                  string controllerName, object routeValues, object htmlAttributes)
         {
             var routeValuesDictionary = new RouteValueDictionary(routeValues);
-            IDictionary<string, object> htmlAttributeDictionary = new RouteValueDictionary(htmlAttributes);
+            IDictionary<string, object> htmlAttributeDictionary = AnonymousObjectToHtmlAttributes(htmlAttributes);
             htmlAttributeDictionary.Add("data-action", "post-link-ajax");
             return htmlHelper.ActionLink(linkText, actionName, controllerName, routeValuesDictionary,
                                          htmlAttributeDictionary);
@@ -238,13 +240,31 @@ namespace MrCMS.Helpers
             return FormLink(htmlHelper, linkText, actionName, null, routeValues, htmlAttributes);
         }
 
+
         public static MvcHtmlString LabelFor<TModel>(this HtmlHelper<TModel> htmlHelper,
                                                      Expression<Func<TModel, object>> expression, object htmlAttributes,
                                                      string text = null)
         {
             return LabelHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData),
-                               ExpressionHelper.GetExpressionText(expression), new RouteValueDictionary(htmlAttributes),
+                               ExpressionHelper.GetExpressionText(expression), AnonymousObjectToHtmlAttributes(htmlAttributes),
                                text);
+        }
+
+        public static MvcHtmlString InlineCheckboxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
+                                                     Expression<Func<TModel, bool>> expression, object labelAttributes, object checkboxAttributes,
+                                                     string text = null)
+        {
+            var checkbox = (CheckBoxHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData), ExpressionHelper.GetExpressionText(expression), expression.Compile()(htmlHelper.ViewData.Model), AnonymousObjectToHtmlAttributes(checkboxAttributes)).ToHtmlString());
+            var labelHtmlAttributes = AnonymousObjectToHtmlAttributes(labelAttributes);
+            // add checkbox style to label, for Bootstrap
+            if (labelHtmlAttributes.ContainsKey("class"))
+                labelHtmlAttributes["class"] += " checkbox";
+            else
+                labelHtmlAttributes["class"] = "checkbox";
+            return LabelHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData),
+                               ExpressionHelper.GetExpressionText(expression),
+                               labelHtmlAttributes,
+                               checkbox + text);
         }
 
         public static MvcHtmlString Label(this HtmlHelper htmlHelper, string labelFor, object htmlAttributes,
@@ -301,7 +321,7 @@ namespace MrCMS.Helpers
         {
             var htmlContent = htmlHelper.ParseShortcodes(content);
 
-            if (!MrCMSApplication.CurrentUserIsAdmin)
+            if (!CurrentRequestData.CurrentUserIsAdmin)
                 return htmlContent;
 
             var sb = new StringBuilder();
@@ -315,10 +335,14 @@ namespace MrCMS.Helpers
             T model = htmlHelper.ViewData.Model;
             if (model == null)
                 return MvcHtmlString.Empty;
+            if (MrCMSApp.AppWebpages.ContainsKey(model.GetType()))
+                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[model.GetType()];
+            if (MrCMSApp.AppWidgets.ContainsKey(model.GetType()))
+                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWidgets[model.GetType()];
 
             ViewEngineResult viewEngineResult =
                 ViewEngines.Engines.FindView(
-                    new ControllerContext(htmlHelper.ViewContext.RequestContext, new MrCMSController()),
+                    new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller),
                     model.GetType().Name, "");
             return viewEngineResult.View != null ? htmlHelper.Partial(model.GetType().Name, model) : MvcHtmlString.Empty;
         }
@@ -351,7 +375,7 @@ namespace MrCMS.Helpers
         {
             // generates <form action="{current url}" method="post">...</form> 
             string formAction = htmlHelper.ViewContext.HttpContext.Request.RawUrl;
-            return FormHelper(htmlHelper, formAction, formMethod, new RouteValueDictionary(htmlAttributes));
+            return FormHelper(htmlHelper, formAction, formMethod, AnonymousObjectToHtmlAttributes(htmlAttributes));
         }
 
 
@@ -410,7 +434,7 @@ namespace MrCMS.Helpers
             tagBuilder.Attributes.Add("title", title ?? image.Description);
             if (attributes != null)
             {
-                var routeValueDictionary = new RouteValueDictionary(attributes);
+                var routeValueDictionary = AnonymousObjectToHtmlAttributes(attributes);
                 foreach (var kvp in routeValueDictionary)
                 {
                     tagBuilder.Attributes.Add(kvp.Key, kvp.Value.ToString());
@@ -445,7 +469,7 @@ namespace MrCMS.Helpers
             tagBuilder.Attributes.Add("title", title ?? image.Description);
             if (attributes != null)
             {
-                var routeValueDictionary = new RouteValueDictionary(attributes);
+                var routeValueDictionary = AnonymousObjectToHtmlAttributes(attributes);
                 foreach (var kvp in routeValueDictionary)
                 {
                     tagBuilder.Attributes.Add(kvp.Key, kvp.Value.ToString());
@@ -460,7 +484,7 @@ namespace MrCMS.Helpers
             tagBuilder.Attributes.Add("href", ParseUrl(url));
             if (htmlAttributes != null)
             {
-                var dictionary = new RouteValueDictionary(htmlAttributes);
+                var dictionary = AnonymousObjectToHtmlAttributes(htmlAttributes);
                 dictionary.ForEach(pair => tagBuilder.Attributes.Add(pair.Key, Convert.ToString(pair.Value)));
             }
             tagBuilder.InnerHtml = text;
@@ -482,13 +506,11 @@ namespace MrCMS.Helpers
             return url;
         }
 
-
-
         public static string AssemblyVersion(this HtmlHelper html)
         {
             var fileVersion =
                 typeof(MrCMSApplication)
-                    .Assembly.GetCustomAttributes(typeof (AssemblyFileVersionAttribute), true)
+                    .Assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true)
                     .OfType<AssemblyFileVersionAttribute>()
                     .FirstOrDefault();
             return fileVersion != null ? fileVersion.Version : null;
@@ -514,6 +536,86 @@ namespace MrCMS.Helpers
                 baseDictionary[key.Key] = key.Value;
 
             return baseDictionary;
+        }
+
+        public static void IncludeScript(this HtmlHelper helper, string url)
+        {
+            var webPage = helper.ViewDataContainer as WebPageBase;
+            var virtualPath = webPage == null ? string.Empty : webPage.VirtualPath;
+            MrCMSApplication.Get<IResourceBundler>().AddScript(virtualPath, url);
+        }
+
+        public static MvcHtmlString RenderScripts(this HtmlHelper helper)
+        {
+            return MrCMSApplication.Get<IResourceBundler>().GetScripts();
+        }
+
+        public static void IncludeCss(this HtmlHelper helper, string url)
+        {
+            var webPage = helper.ViewDataContainer as WebPageBase;
+            var virtualPath = webPage == null ? string.Empty : webPage.VirtualPath;
+            MrCMSApplication.Get<IResourceBundler>().AddCss(virtualPath, url);
+        }
+
+        public static MvcHtmlString RenderCss(this HtmlHelper helper)
+        {
+            return MrCMSApplication.Get<IResourceBundler>().GetCss();
+        }
+
+        public static RouteValueDictionary AnonymousObjectToHtmlAttributes(object htmlAttributes)
+        {
+            RouteValueDictionary routeValueDictionary = new RouteValueDictionary();
+            if (htmlAttributes != null)
+            {
+                foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(htmlAttributes))
+                    routeValueDictionary.Add(propertyDescriptor.Name.Replace('_', '-'), propertyDescriptor.GetValue(htmlAttributes));
+            }
+            return routeValueDictionary;
+        }
+
+        public static List<string> SuccessMessages(this TempDataDictionary tempData)
+        {
+            if (!tempData.ContainsKey("success-message"))
+            {
+                tempData["success-message"] = new List<string>();
+            }
+            return tempData["success-message"] as List<string>;
+        }
+
+        public static List<string> ErrorMessages(this TempDataDictionary tempData)
+        {
+            if (!tempData.ContainsKey("error-message"))
+            {
+                tempData["error-message"] = new List<string>();
+            }
+            return tempData["error-message"] as List<string>;
+        }
+
+        public static List<string> InfoMessages(this TempDataDictionary tempData)
+        {
+            if (!tempData.ContainsKey("info-message"))
+            {
+                tempData["info-message"] = new List<string>();
+            }
+            return tempData["info-message"] as List<string>;
+        }
+        
+        public static MvcHtmlString InfoBlock(this HtmlHelper helper, string boldText, string text)
+        {
+            var tagBulder = new TagBuilder("div");
+            tagBulder.AddCssClass("alert alert-info");
+
+            if (!string.IsNullOrEmpty(boldText))
+            {
+                var strongText = new TagBuilder("strong");
+                strongText.SetInnerText(boldText);
+
+                tagBulder.InnerHtml += strongText.ToString() + text;
+
+                return MvcHtmlString.Create(tagBulder.ToString());
+            }
+            tagBulder.SetInnerText(text);
+            return MvcHtmlString.Create(tagBulder.ToString());
         }
     }
 }

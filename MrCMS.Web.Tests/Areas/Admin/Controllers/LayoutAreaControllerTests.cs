@@ -7,7 +7,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Models;
 using MrCMS.Services;
-using MrCMS.Web.Application.Pages;
+using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
 using Xunit;
 

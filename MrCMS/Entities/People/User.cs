@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
@@ -12,6 +13,11 @@ namespace MrCMS.Entities.People
 {
     public class User : SystemEntity
     {
+        public User()
+        {
+            Guid = Guid.NewGuid();
+        }
+
         [Required]
         [DisplayName("First Name")]
         public virtual string FirstName { get; set; }
@@ -21,7 +27,10 @@ namespace MrCMS.Entities.People
         public virtual byte[] PasswordHash { get; set; }
         public virtual byte[] PasswordSalt { get; set; }
 
+        public virtual Guid Guid { get; set; }
+
         [Required]
+        [Remote("IsUniqueEmail", "User")]
         public virtual string Email { get; set; }
 
         [Required]
@@ -30,8 +39,6 @@ namespace MrCMS.Entities.People
 
         public virtual DateTime? LastLoginDate { get; set; }
         public virtual int LoginAttempts { get; set; }
-
-        //public virtual MediaImage Avatar { get; set; }
 
         public virtual Guid? ResetPasswordGuid { get; set; }
         public virtual DateTime? ResetPasswordExpiry { get; set; }

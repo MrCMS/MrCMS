@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Website.ActionResults;
 
 namespace MrCMS.Website.Controllers
 {

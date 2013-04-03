@@ -53,7 +53,7 @@ namespace MrCMS.Tests.Settings
             var site2 = new Site();
             var textPage2 = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 2", Site = site2 };
 
-            MrCMSApplication.OverriddenSite = site2;
+            CurrentRequestData.CurrentSite = site2;
             Session.Transact(session =>
                 {
                     session.Save(textPage2);
@@ -168,7 +168,7 @@ namespace MrCMS.Tests.Settings
 
             var site2 = new Site();
             var layout2 = new Layout { Name = "Test Layout 2", Site = site2 };
-            MrCMSApplication.OverriddenSite = site2;
+            CurrentRequestData.CurrentSite = site2;
             Session.Transact(session =>
             {
                 session.Save(layout2);

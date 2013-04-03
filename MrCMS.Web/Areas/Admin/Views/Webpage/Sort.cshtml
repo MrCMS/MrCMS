@@ -1,4 +1,5 @@
-﻿@model List<MrCMS.Models.SortItem>
+﻿@using MrCMS.Helpers
+@model List<MrCMS.Models.SortItem>
 @{
     ViewBag.Title = "Sort Pages";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -46,6 +47,4 @@
         }
     </ul>
 </form>
-<div class="alert alert-info">
-    Drag items in to the order you would like then click save.
-</div>
+@Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")

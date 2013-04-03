@@ -9,6 +9,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Tests.Stubs;
+using MrCMS.Website.ActionResults;
 using MrCMS.Website.Controllers;
 using Xunit;
 
@@ -17,12 +18,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     public class FileControllerTests
     {
         private static IFileService fileService;
-        private static IDocumentService documentService;
 
         private static FileController GetFileController()
         {
             fileService = A.Fake<IFileService>();
-            documentService = A.Fake<IDocumentService>();
             var fileController = new FileController(fileService);
             return fileController;
         }

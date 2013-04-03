@@ -50,9 +50,9 @@ namespace MrCMS.Services
 
             var queuedMessage = new QueuedMessage
                                     {
-                                        FromAddress = _siteSettings.SystemEmailAddress,
+                                        FromAddress = _mailSettings.SystemEmailAddress,
                                         ToAddress = user.Email,
-                                        Subject = _siteSettings.SiteName + " Password reset",
+                                        Subject = "Password reset",
                                         Body =
                                             string.Format(
                                                 "To reset your password please click <a href=\"{0}\">here</a>", resetUrl),
@@ -61,6 +61,8 @@ namespace MrCMS.Services
 
             _session.Transact(session => session.SaveOrUpdate(queuedMessage));
 
+            //to do - is this needed with new task system?
+            
             TaskExecutor.ExecuteLater(new SendQueuedMessagesTask(_mailSettings, _siteSettings));
         }
 

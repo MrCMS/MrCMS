@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -36,6 +37,7 @@ namespace MrCMS.Services
             var sameParentDocs =
                 GetDocumentsByParent(document.Parent as T);
             document.DisplayOrder = sameParentDocs.Any() ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1 : 0;
+            document.CustomInitialization(this, _session);
             _session.Transact(session => session.SaveOrUpdate(document));
         }
 
@@ -44,7 +46,8 @@ namespace MrCMS.Services
             return _session.Get<T>(id);
         }
 
-        public T GetUniquePage<T>() where T : UniquePage
+        public T GetUniquePage<T>()
+            where T : Document, IUniquePage
         {
             return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite.Site).Take(1).Cacheable().SingleOrDefault();
         }
@@ -90,11 +93,11 @@ namespace MrCMS.Services
 
             children =
                 children.Where(
-                    arg => !(arg is Webpage) || (arg as Webpage).IsAllowed(MrCMSApplication.CurrentUser));
+                    arg => !(arg is Webpage) || (arg as Webpage).IsAllowed(CurrentRequestData.CurrentUser));
 
             if (document != null)
             {
-                var documentTypeDefinition = document.GetDefinition();
+                var documentTypeDefinition = document.GetMetadata();
                 if (documentTypeDefinition != null)
                 {
                     return Sort(documentTypeDefinition, children);
@@ -106,11 +109,11 @@ namespace MrCMS.Services
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
             IEnumerable<T> children =
-                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).List();
+                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).Cacheable().List();
 
             if (parent != null)
             {
-                var documentTypeDefinition = parent.GetDefinition();
+                var documentTypeDefinition = parent.GetMetadata();
                 if (documentTypeDefinition != null)
                 {
                     return Sort(documentTypeDefinition, children);
@@ -124,12 +127,9 @@ namespace MrCMS.Services
             IEnumerable<T> children =
                 _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).List();
 
-            //children =
-            //    children.Where(arg => arg.IsAllowedForAdmin(MrCMSApplication.CurrentUser));
-
-            if (parent != null)
+            if (parent is Webpage)
             {
-                var documentTypeDefinition = parent.GetDefinition();
+                var documentTypeDefinition = parent.GetMetadata();
                 if (documentTypeDefinition != null)
                 {
                     return Sort(documentTypeDefinition, children);
@@ -138,26 +138,13 @@ namespace MrCMS.Services
             return children.OrderBy(arg => arg.DisplayOrder);
         }
 
-        private static IOrderedEnumerable<T> Sort<T>(DocumentTypeDefinition documentTypeDefinition, IEnumerable<T> children) where T : Document
+        private static IEnumerable<T> Sort<T>(DocumentMetadata documentMetadata, IEnumerable<T> children) where T : Document
         {
             var childrenSortedNull =
-                children.OrderByDescending(
-                    doc => doc.GetType().GetProperty(documentTypeDefinition.SortBy).GetValue(doc, null) == null);
-            return documentTypeDefinition.SortByDesc
-                       ? childrenSortedNull.ThenByDescending(
-                           doc => doc.GetType().GetProperty(documentTypeDefinition.SortBy).GetValue(doc, null))
-                       : childrenSortedNull.ThenBy(
-                           doc => doc.GetType().GetProperty(documentTypeDefinition.SortBy).GetValue(doc, null));
-        }
-
-
-        public T GetDocumentByUrl<T>(string url) where T : Document
-        {
-            return
-                _session.QueryOver<T>()
-                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
-                        .Take(1)
-                        .SingleOrDefault();
+                children.OrderByDescending(arg => documentMetadata.SortBy(arg) == null);
+            return documentMetadata.SortByDesc
+                       ? childrenSortedNull.ThenByDescending(documentMetadata.SortBy)
+                       : childrenSortedNull.ThenBy(documentMetadata.SortBy);
         }
 
         public string GetDocumentUrl(string pageName, Webpage parent, bool useHierarchy = false)
@@ -178,11 +165,11 @@ namespace MrCMS.Services
 
             //make sure the URL is unique
 
-            if (GetDocumentByUrl<Webpage>(stringBuilder.ToString()) != null)
+            if (!UrlIsValidForWebpage(stringBuilder.ToString(), null))
             {
                 var counter = 1;
 
-                while (GetDocumentByUrl<Webpage>(string.Format("{0}-{1}", stringBuilder, counter)) != null)
+                while (!UrlIsValidForWebpage(string.Format("{0}-{1}", stringBuilder, counter), null))
                     counter++;
 
                 stringBuilder.AppendFormat("-{0}", counter);
@@ -190,99 +177,11 @@ namespace MrCMS.Services
             return stringBuilder.ToString();
         }
 
-        public IEnumerable<SearchResultModel> SearchDocuments<T>(string searchTerm) where T : Document
-        {
-            return
-                GetSearchResults<T>(searchTerm).Select
-                    (x => new SearchResultModel
-                              {
-                                  DocumentId = x.Id.ToString(),
-                                  Name = x.Name,
-                                  LastUpdated = x.UpdatedOn.ToShortDateString(),
-                                  DocumentType = x.DocumentType
-                              });
-        }
-
-        private IList<T> GetSearchResults<T>(string searchTerm, int? parentId = null) where T : Document
-        {
-            return SearchResults<T>(searchTerm, parentId);
-        }
-
-        private IList<T> SearchResults<T>(string searchTerm, int? parentId) where T : Document
-        {
-            var queryOver = _session.QueryOver<T>().Where(x => x.Site == _currentSite.Site && x.Name.IsLike(searchTerm, MatchMode.Anywhere));
-            if (parentId.HasValue)
-            {
-                queryOver = queryOver.Where(arg => arg.Parent.Id == parentId);
-            }
-            return queryOver.List();
-        }
-
-        public IPagedList<DetailedSearchResultModel> SearchDocumentsDetailed<T>(string searchTerm, int? parentId, int page = 1) where T : Document
-        {
-            var searchResults = GetSearchResults<T>(searchTerm, parentId);
-            return GetDetailedSearchResultModel(searchResults, page);
-        }
-
-        public IPagedList<SearchResult> SiteSearch(string query, int? page, int pageSize = 10)
-        {
-            page = page ?? 1;
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                return new StaticPagedList<SearchResult>(new SearchResult[0], page.Value, pageSize, 0);
-
-            }
-            return
-                _session.QueryOver<Webpage>().Where(x => x.Published && x.Name.IsLike(query, MatchMode.Anywhere)).Paged(
-                    page.Value, pageSize, webpages => webpages.Select(webpage =>
-                                                                new SearchResult
-                                                                    {
-                                                                        Name = webpage.Name,
-                                                                        Url = webpage.LiveUrlSegment,
-                                                                        PublishedOn =
-                                                                            webpage.PublishOn.GetValueOrDefault()
-                                                                    }));
-        }
-
-        private IPagedList<DetailedSearchResultModel> GetDetailedSearchResultModel<T>(IEnumerable<T> args, int page) where T : Document
-        {
-            return new PagedList<DetailedSearchResultModel>(
-                args.Select(arg => new DetailedSearchResultModel
-                                       {
-                                           DocumentId = arg.Id.ToString(),
-                                           Name = arg.Name,
-                                           LastUpdated = arg.UpdatedOn.ToShortDateString(),
-                                           DocumentType = arg.DocumentType,
-                                           CreatedOn = arg.CreatedOn.ToShortDateString(),
-                                           EditUrl =
-                                               string.Format("/Admin/{0}/Edit/{1}",
-                                                             GetDocumentEditType(arg),
-                                                             arg.Id),
-                                           ViewUrl =
-                                               (arg is Webpage)
-                                                   ? "/" + (arg as Webpage).LiveUrlSegment
-                                                   : null
-                                       }), page, 10);
-        }
-
-        private string GetDocumentEditType(Document document)
-        {
-            switch (document.Unproxy().GetType().Name)
-            {
-                case "Layout":
-                    return "Layout";
-                case "MediaCategory":
-                    return "MediaCategory";
-                default:
-                    return "Webpage";
-            }
-        }
-
         public Layout GetDefaultLayout(Webpage currentPage)
         {
             if (currentPage != null)
             {
-                string defaultLayoutName = currentPage.GetDefinition().DefaultLayoutName;
+                string defaultLayoutName = currentPage.GetMetadata().DefaultLayoutName;
                 if (!String.IsNullOrEmpty(defaultLayoutName))
                 {
                     var layout = _session.QueryOver<Layout>().Where(x => x.Name == defaultLayoutName).Cacheable().Take(1).SingleOrDefault();
@@ -316,7 +215,6 @@ namespace MrCMS.Services
             tagNames.ForEach(name =>
                                  {
                                      var tag = GetTag(name) ?? new Tag { Name = name };
-                                     _session.SaveOrUpdate(tag);
                                      if (!document.Tags.Contains(tag))
                                      {
                                          document.Tags.Add(tag);
@@ -329,9 +227,7 @@ namespace MrCMS.Services
                                      {
                                          document.Tags.Remove(tag);
                                          tag.Documents.Remove(document);
-                                         _session.SaveOrUpdate(tag);
                                      });
-            _session.SaveOrUpdate(document);
         }
 
         private Tag GetTag(string name)
@@ -361,7 +257,7 @@ namespace MrCMS.Services
 
         public bool AnyPublishedWebpages()
         {
-            return _session.QueryOver<Webpage>().Where(webpage => webpage.Published).Cacheable().RowCount() > 0;
+            return _session.QueryOver<Webpage>().Where(webpage => webpage.PublishOn != null && webpage.PublishOn <= DateTime.Now).Cacheable().RowCount() > 0;
         }
 
         public bool AnyWebpages()
@@ -373,7 +269,7 @@ namespace MrCMS.Services
         {
             return
                 _session.QueryOver<Webpage>().Where(
-                    x => x.Parent.Id == parentId && x.Published && x.PublishOn < DateTime.Now && x.RevealInNavigation).
+                    x => x.Parent.Id == parentId && x.PublishOn != null && x.PublishOn <= DateTime.Now && x.PublishOn < DateTime.Now && x.RevealInNavigation).
                     List();
         }
 
@@ -404,9 +300,8 @@ namespace MrCMS.Services
             SaveDocument(document);
         }
 
-        public void HideWidget(int id, int widgetId)
+        public void HideWidget(Webpage document, int widgetId)
         {
-            var document = GetDocument<Webpage>(id);
             var widget = _session.Get<Widget>(widgetId);
 
             if (document == null || widget == null) return;
@@ -418,9 +313,8 @@ namespace MrCMS.Services
             SaveDocument(document);
         }
 
-        public void ShowWidget(int id, int widgetId)
+        public void ShowWidget(Webpage document, int widgetId)
         {
-            var document = GetDocument<Webpage>(id);
             var widget = _session.Get<Widget>(widgetId);
 
             if (document == null || widget == null) return;
@@ -476,9 +370,233 @@ namespace MrCMS.Services
             }
         }
 
-        public DocumentTypeDefinition GetDefinitionByType(Type type)
+        public DocumentMetadata GetDefinitionByType(Type type)
         {
-            return DocumentTypeHelper.GetDefinitionByType(type);
+            return DocumentMetadataHelper.GetMetadataByType(type);
+        }
+
+        public void SetFrontEndRoles(string frontEndRoles, Webpage webpage)
+        {
+            if (webpage == null) throw new ArgumentNullException("webpage");
+
+            if (frontEndRoles == null)
+                frontEndRoles = string.Empty;
+
+            var roleNames =
+                frontEndRoles.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
+                    x => !string.IsNullOrWhiteSpace(x));
+
+            var roles = webpage.FrontEndAllowedRoles.ToList();
+
+                                      if (webpage.InheritFrontEndRolesFromParent)
+                                      {
+                                          roles.ForEach(role =>
+                                                            {
+                                                                role.FrontEndWebpages.Remove(webpage);
+                                                                webpage.FrontEndAllowedRoles.Remove(role);
+                                                            });
+                                      }
+                                      else
+                                      {
+                                          roleNames.ForEach(name =>
+                                                                {
+                                                                    var role = GetRole(name);
+                                                                    if (role != null)
+                                                                    {
+                                                                        if (!webpage.FrontEndAllowedRoles.Contains(role))
+                                                                        {
+                                                                            webpage.FrontEndAllowedRoles.Add(role);
+                                                                            role.FrontEndWebpages.Add(webpage);
+                                                                        }
+                                                                        roles.Remove(role);
+                                                                    }
+
+                                                                });
+
+                                          roles.ForEach(role =>
+                                                            {
+                                                                webpage.FrontEndAllowedRoles.Remove(role);
+                                                                role.FrontEndWebpages.Remove(webpage);
+                                                            });
+                                      }
+
+        }
+
+        private UserRole GetRole(string name)
+        {
+            return _session.QueryOver<UserRole>().Where(role => role.Name.IsInsensitiveLike(name, MatchMode.Exact)).SingleOrDefault();
+        }
+
+        public void SetAdminRoles(string adminRoles, Webpage webpage)
+        {
+            if (webpage == null) throw new ArgumentNullException("webpage");
+
+            if (adminRoles == null)
+                adminRoles = string.Empty;
+
+            var roleNames =
+                adminRoles.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
+                    x => !string.IsNullOrWhiteSpace(x));
+
+            var roles = webpage.AdminAllowedRoles.ToList();
+
+                                      if (webpage.InheritAdminRolesFromParent)
+                                      {
+                                          roles.ForEach(role =>
+                                                            {
+                                                                role.AdminWebpages.Remove(webpage);
+                                                                webpage.AdminAllowedRoles.Remove(role);
+                                                            });
+                                      }
+                                      else
+                                      {
+                                          roleNames.ForEach(name =>
+                                                                {
+                                                                    var role = GetRole(name);
+                                                                    if (!webpage.AdminAllowedRoles.Contains(role))
+                                                                    {
+                                                                        webpage.AdminAllowedRoles.Add(role);
+                                                                        role.AdminWebpages.Add(webpage);
+                                                                    }
+                                                                    roles.Remove(role);
+                                                                });
+
+                                          roles.ForEach(role =>
+                                                            {
+                                                                webpage.AdminAllowedRoles.Remove(role);
+                                                                role.AdminWebpages.Remove(webpage);
+                                                            });
+                                      }
+        }
+
+        public T GetDocumentByUrl<T>(string url) where T : Document
+        {
+            return _session.QueryOver<T>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Take(1).Cacheable()
+                        .SingleOrDefault();
+        }
+
+        public bool UrlIsValidForWebpage(string url, int? id)
+        {
+            if (string.IsNullOrEmpty(url))
+                return false;
+
+            if (id.HasValue)
+            {
+                var document = GetDocument<Webpage>(id.Value);
+                var documentHistory = document.Urls.Any(x => x.UrlSegment == url);
+                if (url.Trim() == document.UrlSegment.Trim() || documentHistory) //if url is the same or has been used for the same page before lets go
+                    return true;
+
+                return !WebpageExists(url) && !ExistsInUrlHistory(url);
+            }
+
+            return !WebpageExists(url) && !ExistsInUrlHistory(url);
+        }
+
+        /// <summary>
+        /// Check to see if the supplied URL is ok to be added to the URL history table
+        /// </summary>
+        public bool UrlIsValidForWebpageUrlHistory(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return false;
+
+            return !WebpageExists(url) && !ExistsInUrlHistory(url);
+        }
+
+        public bool UrlIsValidForMediaCategory(string url, int? id)
+        {
+            if (string.IsNullOrEmpty(url))
+                return false;
+
+            if (id.HasValue)
+            {
+                var document = GetDocument<MediaCategory>(id.Value);
+                if (url.Trim() == document.UrlSegment.Trim())
+                    return true;
+                return !MediaCtegoryExists(url);
+            }
+
+            return !MediaCtegoryExists(url);
+        }
+
+        public bool UrlIsValidForLayout(string url, int? id)
+        {
+            if (string.IsNullOrEmpty(url))
+                return false;
+
+            if (id.HasValue)
+            {
+                var document = GetDocument<Layout>(id.Value);
+                if (url.Trim() == document.UrlSegment.Trim())
+                    return true;
+                return !LayoutExists(url);
+            }
+
+            return !LayoutExists(url);
+        }
+
+        public UrlHistory GetHistoryItemByUrl(string url)
+        {
+            return _session.QueryOver<UrlHistory>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Take(1).Cacheable()
+                        .SingleOrDefault();
+        }
+
+        /// <summary>
+        /// Checks to see if the supplied url is unique for media category / folder.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns>bool</returns>
+        private bool MediaCtegoryExists(string url)
+        {
+            return _session.QueryOver<MediaCategory>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Cacheable()
+                        .RowCount() > 0;
+        }
+
+        /// <summary>
+        /// Checks to see if the supplied url is unique for layouts
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private bool LayoutExists(string url)
+        {
+            return _session.QueryOver<Layout>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Cacheable()
+                        .RowCount() > 0;
+        }
+
+        /// <summary>
+        /// Checks to see if a webpage exists with the supplied URL
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns>bool</returns>
+        private bool WebpageExists(string url)
+        {
+            return _session.QueryOver<Webpage>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Cacheable()
+                        .RowCount() > 0;
+        }
+
+        /// <summary>
+        /// Checks to see if the supplied URL exists in webpage URL history table
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns>bool</returns>
+        private bool ExistsInUrlHistory(string url)
+        {
+            return
+                _session.QueryOver<UrlHistory>()
+                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
+                        .Cacheable()
+                        .RowCount() > 0;
         }
     }
 }

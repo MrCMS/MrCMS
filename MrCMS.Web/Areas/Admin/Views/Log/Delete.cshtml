@@ -1,0 +1,13 @@
+﻿@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+<div class="modal-header">
+    <h3 id="myModalLabel">Confirm delete</h3>
+</div>
+<div class="modal-body">
+    <p>Delete all logs?</p>
+</div>
+<div class="modal-footer">
+    @using (Html.BeginForm("Delete", "Log", FormMethod.Post, new { style = "display:inline;" }))
+    {
+        <input type="submit" class="btn btn-primary" value="Delete logs" />
+    }
+</div>

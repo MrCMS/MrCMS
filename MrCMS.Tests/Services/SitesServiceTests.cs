@@ -51,7 +51,7 @@ namespace MrCMS.Tests.Services
             var sitesService = GetSitesService();
             var user = new User();
             Session.Transact(session => session.Save(user));
-            MrCMSApplication.OverriddenUser = user;
+            CurrentRequestData.CurrentUser = user;
             var site = new Site();
 
             sitesService.AddSite(site);
@@ -78,7 +78,7 @@ namespace MrCMS.Tests.Services
             var sitesService = GetSitesService();
             var user = new User();
             Session.Transact(session => session.Save(user));
-            MrCMSApplication.OverriddenUser = user;
+            CurrentRequestData.CurrentUser = user;
             var site = new Site();
 
             sitesService.AddSite(site);
@@ -92,7 +92,7 @@ namespace MrCMS.Tests.Services
             var sitesService = GetSitesService();
             var user = new User();
             Session.Transact(session => session.Save(user));
-            MrCMSApplication.OverriddenUser = user;
+            CurrentRequestData.CurrentUser = user;
             var site = new Site();
 
             sitesService.AddSite(site);

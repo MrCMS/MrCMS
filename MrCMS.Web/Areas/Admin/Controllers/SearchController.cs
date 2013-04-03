@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
@@ -8,21 +7,18 @@ using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Website.Controllers;
-using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class SearchController : AdminController
+    public class SearchController : MrCMSAdminController
     {
-        private readonly IDocumentService _documentService;
+        private readonly ISearchService _documentService;
         private readonly INavigationService _navigationService;
-        private readonly ISiteService _siteService;
 
-        public SearchController(IDocumentService documentService, INavigationService navigationService, ISiteService siteService)
+        public SearchController(ISearchService documentService, INavigationService navigationService)
         {
             _documentService = documentService;
             _navigationService = navigationService;
-            _siteService = siteService;
         }
 
         [HttpGet]
@@ -61,7 +57,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (!string.IsNullOrWhiteSpace(type))
             {
-                var typeByName = DocumentTypeHelper.GetTypeByName(type);
+                var typeByName = DocumentMetadataHelper.GetTypeByName(type);
                 var searchResults = _documentService.GetType()
                                                     .GetMethodExt("SearchDocumentsDetailed", typeof(string),
                                                                   typeof(int?), typeof(int));
@@ -80,7 +76,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (!string.IsNullOrWhiteSpace(type))
             {
-                var typeByName = DocumentTypeHelper.GetTypeByName(type);
+                var typeByName = DocumentMetadataHelper.GetTypeByName(type);
                 var searchResults = _documentService.GetType().GetMethodExt("SearchDocuments", typeof(string));
                 var method = searchResults.MakeGenericMethod(typeByName);
                 return (method.Invoke(_documentService, new object[] { term }) as IEnumerable<SearchResultModel>).ToList();

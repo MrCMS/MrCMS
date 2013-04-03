@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Entities.Widget
+@using MrCMS.Helpers
 @model List<Widget>
 @{
     ViewBag.Title = "Sort Webpage";
@@ -33,35 +34,32 @@
         });
     </script>
 }
-<div class="row-fluid">
-    <div class="span7">
-        <h3>Sort</h3>
-    </div>
-    <div class="span5">
-        <div class="row-fluid">
-            <div class="span10" style="margin: 0; padding: 0;">
-                <div id="loading" style="padding-top: 5px;">
-                    <div class="progress progress-striped" style="margin-bottom: 0px;">
-                        <div class="bar">
-                        </div>
-                    </div>
-                </div>
-                &nbsp;
-            </div>
-            <div class="span2">
-                <button class="btn pull-right" id="save">
-                    Save</button>
-            </div>
-        </div>
-    </div>
-</div>
-<hr class="small-margin" />
-<ul id="sortable">
-    @foreach (Widget d in Model)
+@{
+    var widget = Model.FirstOrDefault();
+    var Id = 0;
+    if (widget != null)
     {
-        <li id="@d.Id"><i class="icon-resize-full"></i>&nbsp;&nbsp;@d.Name (@d.WidgetTypeFormatted)</li>
+        Id = widget.LayoutArea.Id;
     }
-</ul>
-<div class="alert alert-info">
-    Drag items in to the order you would like then click save.
-</div>
+}
+<form>
+    <fieldset>
+        <legend>Sort
+            <span class="btn-group  display-inline  pull-right">
+                <a href="/Admin/LayoutArea/Edit/@Id  " class="btn">Back</a>
+                <button class="btn btn-primary" id="save">
+                    Save</button>
+
+            </span>
+        </legend>
+
+        <ul id="sortable">
+            @foreach (Widget d in Model)
+            {
+                <li id="@d.Id"><i class="icon-resize-full"></i>&nbsp;&nbsp;@d.Name (@d.WidgetTypeFormatted)</li>
+            }
+        </ul>
+
+        @Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")
+    </fieldset>
+</form>

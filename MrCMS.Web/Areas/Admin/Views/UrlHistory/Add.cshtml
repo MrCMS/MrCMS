@@ -1,0 +1,50 @@
+﻿@model MrCMS.Entities.Documents.Web.UrlHistory
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@section JavaScriptBlock{
+    <script>
+    $.fn.delayKeyup = function (callback, ms) {
+    var timer = 0;
+    var el = $(this);
+    $(this).keyup(function () {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            callback(el);
+        }, ms);
+    });
+    return $(this);
+};
+$(function () {
+    $("#UrlSegment").blur(function () {
+            setStandardUrl();
+    });
+
+    $("#UrlSegment").delayKeyup(function () {
+        setStandardUrl();
+    }, 200);
+
+    function setStandardUrl() {
+        $("#UrlSegment").val($("#UrlSegment").val().trim().replace(/[^a-zA-Z0-9-/]/g, '-').toLowerCase());
+    }
+});
+</script>
+}
+
+@using (Html.BeginForm("Add", "UrlHistory", FormMethod.Post))
+{
+    <div class="modal-header">
+        <h3>Add Url</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row-fluid">
+            <div class="span12">
+                @Html.HiddenFor(x => x.Webpage.Id)
+                @Html.LabelFor(x => x.UrlSegment, "Url")
+                @Html.TextBoxFor(x => x.UrlSegment, new{@class="span12"})
+                @Html.ValidationMessageFor(x => x.UrlSegment, "", new{@class="error"})
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn-primary btn" value="Add" />
+    </div>
+}

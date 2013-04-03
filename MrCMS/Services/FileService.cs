@@ -61,11 +61,13 @@ namespace MrCMS.Services
                                     ContentLength = contentLength,
                                     MediaCategory = mediaCategory,
                                     FileExtension = _fileSystem.GetExtension(fileName),
-                                    FileLocation = fileLocation
+                                    FileLocation = fileLocation,
+                                    DisplayOrder = mediaCategory.Files.Count
                                 };
 
             if (mediaFile.IsImage)
             {
+                _imageProcessor.EnforceMaxSize(ref stream, mediaFile, _mediaSettings);
                 _imageProcessor.SetFileDimensions(mediaFile, stream);
             }
 
@@ -102,6 +104,18 @@ namespace MrCMS.Services
 
             name = name.Replace("&", " and ");
 
+            var name2 = RemoveInvalidUrlCharacters(name);
+            name2 = name2.Replace(" ", "-");
+            name2 = name2.Replace("_", "-");
+            while (name2.Contains("--"))
+                name2 = name2.Replace("--", "-");
+            return extension != null
+                       ? name2.ToLowerInvariant() + extension.ToLower()
+                       : name2.ToLowerInvariant();
+        }
+
+        public static string RemoveInvalidUrlCharacters(string name)
+        {
             const string okChars = "abcdefghijklmnopqrstuvwxyz1234567890 _-";
             name = name.Trim().ToLowerInvariant();
 
@@ -113,13 +127,7 @@ namespace MrCMS.Services
                     sb.Append(c2);
             }
             string name2 = sb.ToString();
-            name2 = name2.Replace(" ", "-");
-            name2 = name2.Replace("_", "-");
-            while (name2.Contains("--"))
-                name2 = name2.Replace("--", "-");
-            return extension != null
-                       ? name2.ToLowerInvariant() + extension.ToLower()
-                       : name2.ToLowerInvariant();
+            return name2;
         }
 
         public virtual byte[] LoadFile(MediaFile file)
@@ -156,8 +164,13 @@ namespace MrCMS.Services
         public ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory)
         {
             return
-                _session.QueryOver<MediaFile>().Where(file => file.MediaCategory == mediaCategory).List().Select(
-                    GetUploadFilesResult).ToArray();
+                _session.QueryOver<MediaFile>()
+                        .Where(file => file.MediaCategory == mediaCategory)
+                        .OrderBy(file => file.DisplayOrder)
+                        .Asc.Cacheable()
+                        .List()
+                        .Select(
+                            GetUploadFilesResult).ToArray();
         }
 
         public MediaFile GetFile(int id)
@@ -250,6 +263,16 @@ namespace MrCMS.Services
 
             _fileSystem.CreateDirectory(folderLocation);
 
+        }
+
+        public void SetOrders(List<SortItem> items)
+        {
+            _session.Transact(session => items.ForEach(item =>
+                                                           {
+                                                               var mediaFile = session.Get<MediaFile>(item.Id);
+                                                               mediaFile.DisplayOrder = item.Order;
+                                                               session.Update(mediaFile);
+                                                           }));
         }
     }
 }

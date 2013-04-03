@@ -1,0 +1,35 @@
+﻿@model MrCMS.Entities.Documents.Web.FormProperties.FormProperty
+<div class="row-fluid">
+    <div class="span7">
+    <h5>Options</h5>
+    </div>
+    <div class="span5">
+        <div class="pull-right btn-group">
+            @Html.ActionLink("Add Option", "AddOption", "Form", new { id = Model.Id }, new { @class = "btn btn-mini btn-primary", data_toggle = "fb-modal" })
+        </div>
+    </div>
+    <table class="table table-condensed table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Value</th>
+                <th>Selected</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var option in Model.Options)
+            {
+                <tr>
+                    <td>@option.Value</td>
+                    <td>@option.Selected</td>
+                    <td>
+                        <div class="btn-group">
+                            @Html.ActionLink("Edit", "EditOption", "Form", new { id = option.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+                            @Html.ActionLink("Delete", "DeleteOption", "Form", new { id = option.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

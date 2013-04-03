@@ -1,0 +1,20 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@model Webpage
+<ul class="nav nav-tabs margin-top-10">
+    <li class="active"><a href="#edit-content" data-toggle="tab">Edit</a></li>
+    <li><a href="#edit-seo" data-toggle="tab">SEO</a></li>
+    <li><a href="#versions" data-toggle="tab">Versions</a></li>
+</ul>
+<div class="row-fluid">
+
+    @using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document" }))
+    {
+        <div class="tab-content">
+            @{Html.RenderPartial("Properties", Model);}
+            @{Html.RenderPartial("SEO", Model);}
+            @{Html.RenderPartial("PageVersions", Model);}
+        </div>
+    }
+</div>
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/edit-webpage.js"); }

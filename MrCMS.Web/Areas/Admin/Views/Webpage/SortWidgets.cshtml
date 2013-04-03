@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Entities.Widget
+@using MrCMS.Helpers
 @model List<Widget>
 @{
     ViewBag.Title = "Sort Webpage";
@@ -62,6 +63,4 @@
         <li id="@d.Id"><i class="icon-resize-full"></i>&nbsp;&nbsp;@d.Name (@d.WidgetTypeFormatted)</li>
     }
 </ul>
-<div class="alert alert-info">
-    Drag items in to the order you would like then click save.
-</div>
+@Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")

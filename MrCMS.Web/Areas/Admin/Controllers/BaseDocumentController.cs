@@ -2,16 +2,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
+using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public abstract class BaseDocumentController<T> : AdminController where T : Document
+    public abstract class BaseDocumentController<T> : MrCMSAdminController where T : Document
     {
         protected readonly IDocumentService _documentService;
 
@@ -27,14 +27,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Add")]
-        public virtual ActionResult Add_Get(T parent)
+        public virtual ActionResult Add_Get(int? id)
         {
             //Build list 
             var model = new AddPageModel
             {
-                Parent = parent
+                Parent = id.HasValue ? _documentService.GetDocument<Document>(id.Value) : null
             };
-            PopulateEditDropdownLists(model as T);
+            DocumentTypeSetup(model as T);
             return View(model);
         }
 
@@ -42,6 +42,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public virtual ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] T doc)
         {
             _documentService.AddDocument(doc);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
             return RedirectToAction("Edit", new { id = doc.Id });
         }
 
@@ -49,19 +50,20 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Edit")]
         public ActionResult Edit_Get(T doc)
         {
-            PopulateEditDropdownLists(doc);
+            DocumentTypeSetup(doc);
             return View(doc);
         }
 
-        protected virtual void PopulateEditDropdownLists(T doc)
+        protected virtual void DocumentTypeSetup(T doc)
         {
+
         }
 
         [HttpPost]
-        public ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] T doc)
+        public virtual ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] T doc)
         {
             _documentService.SaveDocument(doc);
-            TempData["saved"] = string.Format("{0} successfully saved", doc.Name);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
             return RedirectToAction("Edit", new { id = doc.Id });
         }
 
@@ -76,7 +78,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Delete(T document)
         {
             _documentService.DeleteDocument(document);
-
+            TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
             return RedirectToAction("Index");
         }
 
@@ -100,5 +102,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         public abstract ActionResult Show(T document);
+
+        
     }
 }

@@ -6,35 +6,44 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Xml;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Models;
+using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Website;
 using MrCMS.Helpers;
 using System.Linq;
 using NHibernate;
+using NHibernate.Criterion;
 
 namespace MrCMS.Entities.Documents.Web
 {
     public abstract class Webpage : Document
     {
-        private Layout.Layout _layout;
-        private readonly AdminRoleUpdater _adminRoleUpdater;
-        private readonly FrontEndRoleUpdater _frontEndRoleUpdater;
-
         protected Webpage()
         {
-            _adminRoleUpdater = new AdminRoleUpdater(this);
-            _frontEndRoleUpdater = new FrontEndRoleUpdater(this);
+            InheritAdminRolesFromParent = true;
+            InheritFrontEndRolesFromParent = true;
         }
+        private Layout.Layout _layout;
+
+        [Required]
+        [Remote("ValidateUrlIsAllowed", "Webpage", AdditionalFields = "Id")]
+        [RegularExpression("[a-zA-Z0-9\\-\\.\\~\\/_\\\\]+$", ErrorMessage = "Url must alphanumeric characters only with dashes or underscore for spaces.")]
+        [DisplayName("Url Segment")]
+        public override string UrlSegment { get; set; }
 
         [DisplayName("Meta Title")]
+        [StringLength(250, ErrorMessage = "Meta title cannot be longer than 250 characters.")]
         public virtual string MetaTitle { get; set; }
         [DisplayName("Meta Description")]
+        [StringLength(250, ErrorMessage = "Meta description cannot be longer than 250 characters.")]
         public virtual string MetaDescription { get; set; }
         [DisplayName("Meta Keywords")]
+        [StringLength(250, ErrorMessage = "Meta keywords cannot be longer than 250 characters.")]
         public virtual string MetaKeywords { get; set; }
-        [DisplayName("Reveal in navigation")]
+        [DisplayName("Include in navigation")]
         public virtual bool RevealInNavigation { get; set; }
 
         [DisplayName("Requires SSL")]
@@ -42,7 +51,7 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual bool Published
         {
-            get { return PublishOn != null; }
+            get { return PublishOn != null && PublishOn <= DateTime.Now; }
         }
 
         public virtual string LiveUrlSegment
@@ -58,7 +67,7 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual Layout.Layout CurrentLayout
         {
-            get { return _layout ?? (_layout = Layout ?? MrCMSApplication.GetDefaultLayout(this)); }
+            get { return _layout ?? (_layout = Layout ?? MrCMSApplication.Get<IDocumentService>().GetDefaultLayout(this)); }
         }
 
         public virtual IList<Widget.Widget> ShownWidgets { get; set; }
@@ -67,6 +76,10 @@ namespace MrCMS.Entities.Documents.Web
         public virtual IList<Widget.Widget> Widgets { get; set; }
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
+
+        [AllowHtml]
+        [DisplayName("Body Content")]
+        public virtual string BodyContent { get; set; }
 
         public virtual IEnumerable<Webpage> ActivePages
         {
@@ -100,116 +113,46 @@ namespace MrCMS.Entities.Documents.Web
             return false;
         }
 
-        public virtual bool IsAllowedForAdmin(User user)
-        {
-            var userRoles = user == null ? new List<UserRole>() : user.Roles;
-            var anyRoles = false;
-            foreach (var item in ActivePages)
-            {
-                if (item.AdminDisallowedRoles
-                    .Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault())
-                    .Any(role => userRoles.Contains(role.UserRole)))
-                    return false;
-                if (item.AdminAllowedRoles
-                    .Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault())
-                    .Any(role => userRoles.Contains(role.UserRole)))
-                    return true;
-
-                anyRoles = anyRoles || item.AdminDisallowedRoles.Any() || item.AdminAllowedRoles.Any();
-            }
-            return !AnyRoles(webpage => webpage.AdminAllowedRoles, webpage => webpage.AdminDisallowedRoles) && !BlockAnonymousAccess;
-        }
-
-        public virtual bool IsAllowed(User user)
-        {
-            var userRoles = user == null ? new List<UserRole>() : user.Roles;
-            var anyRoles = false;
-            foreach (var item in ActivePages)
-            {
-                if (item.FrontEndDisallowedRoles
-                    .Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault())
-                    .Any(role => userRoles.Contains(role.UserRole)))
-                    return false;
-                if (item.FrontEndAllowedRoles
-                    .Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault())
-                    .Any(role => userRoles.Contains(role.UserRole)))
-                    return true;
-
-                anyRoles = anyRoles || item.FrontEndDisallowedRoles.Any() || item.FrontEndAllowedRoles.Any();
-            }
-            return !AnyRoles(webpage => webpage.FrontEndAllowedRoles, webpage => webpage.FrontEndDisallowedRoles) && !BlockAnonymousAccess;
-        }
-
-        public virtual bool IsAllowed(string roleName)
-        {
-            var userRoles = Roles.GetAllRoles().Where(s => s == roleName).ToList();
-            var anyRoles = false;
-            foreach (var item in ActivePages)
-            {
-                if (item.FrontEndDisallowedRoles.Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault()).Any(role => userRoles.Contains(role.UserRole.Name)))
-                    return false;
-                if (item.FrontEndAllowedRoles.Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault()).Any(role => userRoles.Contains(role.UserRole.Name)))
-                    return true;
-
-                anyRoles = anyRoles || item.FrontEndDisallowedRoles.Any() || item.FrontEndAllowedRoles.Any();
-            }
-            return !AnyRoles(webpage => webpage.FrontEndAllowedRoles, webpage => webpage.FrontEndDisallowedRoles) || !BlockAnonymousAccess;
-        }
-
-        public virtual bool IsAllowedForAdmin(string roleName)
-        {
-            var userRoles = Roles.GetAllRoles().Where(s => s == roleName).ToList();
-            var anyRoles = false;
-            foreach (var item in ActivePages)
-            {
-                if (item.AdminDisallowedRoles.Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault()).Any(role => userRoles.Contains(role.UserRole.Name)))
-                    return false;
-                if (item.AdminAllowedRoles.Where(role => role.Webpage == this || role.IsRecursive.GetValueOrDefault()).Any(role => userRoles.Contains(role.UserRole.Name)))
-                    return true;
-
-                anyRoles = anyRoles || item.AdminDisallowedRoles.Any() || item.AdminAllowedRoles.Any();
-            }
-            return !AnyRoles(webpage => webpage.AdminAllowedRoles, webpage => webpage.AdminDisallowedRoles) || !BlockAnonymousAccess;
-        }
-
-        protected bool AnyRoles(Func<Webpage, IEnumerable<IRole>> getAllowedRoles, Func<Webpage, IEnumerable<IRole>> getDisallowedRoles)
-        {
-            return ActivePages.Aggregate(false,
-                                         (current, item) =>
-                                         current || getAllowedRoles(item).Any() || getDisallowedRoles(item).Any());
-        }
-
         [DisplayName("Block Anonymous Access")]
         public virtual bool BlockAnonymousAccess { get; set; }
 
         [DisplayName("Form Data")]
         public virtual string FormData { get; set; }
 
+        public virtual IList<FormProperty> FormProperties { get; set; }
+
         public virtual IList<FormPosting> FormPostings { get; set; }
 
         [DisplayName("Form Submitted Message")]
+        [AllowHtml]
+        [StringLength(500, ErrorMessage = "Form submitted messsage cannot be longer than 500 characters.")]
         public virtual string FormSubmittedMessage { get; set; }
-        [DisplayName("Form Email Title")]
+        [DisplayName("Subject")]
+        [StringLength(250, ErrorMessage = "Subject cannot be longer than 250 characters.")]
         public virtual string FormEmailTitle { get; set; }
         [DisplayName("Send Form To")]
+        [StringLength(500, ErrorMessage = "Send to cannot be longer than 500 characters.")]
         public virtual string SendFormTo { get; set; }
         [DisplayName("Form Email Message")]
         public virtual string FormMessage { get; set; }
 
-        public virtual IList<FrontEndAllowedRole> FrontEndAllowedRoles { get; set; }
-        public virtual IList<FrontEndDisallowedRole> FrontEndDisallowedRoles { get; set; }
+        [DisplayName("Same as parent")]
+        public virtual bool InheritFrontEndRolesFromParent { get; set; }
+        public virtual IList<UserRole> FrontEndAllowedRoles { get; set; }
+        [DisplayName("Same as parent")]
+        public virtual bool InheritAdminRolesFromParent { get; set; }
+        public virtual IList<UserRole> AdminAllowedRoles { get; set; }
 
-        public virtual IList<AdminAllowedRole> AdminAllowedRoles { get; set; }
-        public virtual IList<AdminDisallowedRole> AdminDisallowedRoles { get; set; }
-
-        public virtual AdminRoleUpdater AdminRoleUpdater
+        [DisplayName("Roles")]
+        public virtual string FrontEndRoles
         {
-            get { return _adminRoleUpdater; }
+            get { return string.Join(", ", FrontEndAllowedRoles.Select(x => x.Name)); }
         }
 
-        public virtual FrontEndRoleUpdater FrontEndRoleUpdater
+        [DisplayName("Roles")]
+        public virtual string AdminRoles
         {
-            get { return _frontEndRoleUpdater; }
+            get { return string.Join(", ", AdminAllowedRoles.Select(x => x.Name)); }
         }
 
         public virtual string AbsoluteUrl
@@ -225,71 +168,10 @@ namespace MrCMS.Entities.Documents.Web
             }
         }
 
-
-        public virtual IEnumerable<RoleModel> GetFrontEndRoles()
-        {
-            return Roles.Provider.GetAllRoles().Select(roleName =>
-                                                       new RoleModel
-                                                           {
-                                                               Name = roleName,
-                                                               Status = GetRoleStatus(
-                                                                   webpage => webpage.FrontEndAllowedRoles,
-                                                                   webpage => webpage.FrontEndDisallowedRoles,
-                                                                   (webpage, s) => webpage.IsAllowed(roleName),
-                                                                   roleName),
-                                                               Recursive = GetRoleIsRecursive(
-                                                                   webpage => webpage.FrontEndAllowedRoles,
-                                                                   webpage => webpage.FrontEndDisallowedRoles,
-                                                                   roleName)
-                                                           });
-        }
-        public virtual IEnumerable<RoleModel> GetAdminRoles()
-        {
-            return Roles.Provider.GetAllRoles().Select(roleName =>
-                                                       new RoleModel
-                                                           {
-                                                               Name = roleName,
-                                                               Status =
-                                                                   GetRoleStatus(
-                                                                       webpage => webpage.AdminAllowedRoles,
-                                                                       webpage => webpage.AdminDisallowedRoles,
-                                                                       (webpage, s) =>
-                                                                       webpage.IsAllowedForAdmin(roleName),
-                                                                       roleName),
-                                                               Recursive = GetRoleIsRecursive(
-                                                                   webpage => webpage.AdminAllowedRoles,
-                                                                   webpage => webpage.AdminDisallowedRoles, roleName)
-                                                           });
-        }
-
-        private bool? GetRoleIsRecursive(Func<Webpage, IEnumerable<IRole>> allowedRoles, Func<Webpage, IEnumerable<IRole>> disallowedRoles, string roleName)
-        {
-            return allowedRoles(this).Any(role => role.UserRole.Name == roleName)
-                       ? allowedRoles(this).First(role => role.UserRole.Name == roleName).IsRecursive
-                       : (disallowedRoles(this).Any(role => role.UserRole.Name == roleName)
-                              ? disallowedRoles(this).First(role => role.UserRole.Name == roleName).IsRecursive
-                              : null);
-        }
-
-        private RoleStatus GetRoleStatus(Func<Webpage, IEnumerable<IRole>> allowedRoles, Func<Webpage, IEnumerable<IRole>> disallowedRoles,
-            Func<Webpage, string, bool> func, string roleName)
-        {
-            return !AnyRoles(allowedRoles, disallowedRoles)
-                       ? RoleStatus.Any
-                       : (func(this, roleName)
-                              ? RoleStatus.Allowed
-                              : RoleStatus.Disallowed);
-        }
+        public virtual string FormDesign { get; set; }
 
         public override void CustomBinding(ControllerContext controllerContext, ISession session)
         {
-            FrontEndRoleUpdater.UpdateFrontEndRoleStatuses(controllerContext, session);
-
-            FrontEndRoleUpdater.UpdateFrontEndRoleRecursive(controllerContext, session);
-
-            AdminRoleUpdater.UpdateAdminRoleStatuses(controllerContext, session);
-
-            AdminRoleUpdater.UpdateAdminRoleRecursive(controllerContext, session);
         }
 
         public virtual void AdminViewData(ViewDataDictionary viewData, ISession session)
@@ -302,6 +184,61 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual void UiViewData(ViewDataDictionary viewData, ISession session, HttpRequestBase request)
         {
+        }
+
+        private IList<UrlHistory> _urls = new List<UrlHistory>();
+
+        public virtual IList<UrlHistory> Urls
+        {
+            get { return _urls.OrderByDescending(x => x.CreatedOn).ToList(); }
+            protected internal set { _urls = value; }
+        }
+
+        public virtual bool IsAllowed(User currentUser)
+        {
+            if (currentUser != null && currentUser.IsAdmin) return true;
+            if (InheritFrontEndRolesFromParent)
+            {
+                if (Parent is Webpage)
+                    return (Parent as Webpage).IsAllowed(currentUser);
+                return true;
+            }
+            if (!FrontEndAllowedRoles.Any()) return true;
+            if (FrontEndAllowedRoles.Any() && currentUser == null) return false;
+            return currentUser != null && currentUser.Roles.Intersect(FrontEndAllowedRoles).Any();
+        }
+
+        public virtual bool IsAllowedForAdmin(User currentUser)
+        {
+            if (currentUser != null && currentUser.IsAdmin) return true;
+            if (InheritAdminRolesFromParent)
+            {
+                if (Parent is Webpage)
+                    return (Parent as Webpage).IsAllowedForAdmin(currentUser);
+                return true;
+            }
+            if (!AdminAllowedRoles.Any()) return true;
+            if (AdminAllowedRoles.Any() && currentUser == null) return false;
+            return currentUser != null && currentUser.Roles.Intersect(AdminAllowedRoles).Any();
+        }
+
+        /// <summary>
+        /// Method to page child items with default filter and ordering implementation
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="pageNum"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public virtual IPagedList<T> PagedChildren<T>(QueryOver<T> query = null, int pageNum = 1, int pageSize = 10) where T : Webpage
+        {
+            query = query ??
+                    QueryOver.Of<T>()
+                             .Where(a => a.Parent == this && a.PublishOn != null && a.PublishOn <= DateTime.Now)
+                             .ThenBy(arg => arg.PublishOn)
+                             .Desc;
+
+            return MrCMSApplication.Get<ISession>().Paged(query, pageNum, pageSize);
         }
     }
 }

@@ -1,0 +1,17 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.Webpage
+<div class="tab-pane" id="permissions">
+    
+    @Html.InfoBlock("Heads up! ", "You can restrict who views this page by assigning user roles. Once a role is assigned, a visitor must be logged in with the correct user role to access this page. If you have not already, first <a href='/Admin/Role'>add a new role</a>.")
+
+    <div class="form-inline">
+        @Html.InlineCheckboxFor(webpage => webpage.InheritFrontEndRolesFromParent, null, null, "Same as parent?")
+    </div>
+    
+    <hr class="small-margin"/>
+
+    <div id="front-end-roles" style="display: @(Model.InheritFrontEndRolesFromParent ? "none" : "block")">
+        @Html.LabelFor(webpage => webpage.FrontEndRoles)
+        @Html.TextBoxFor(webpage => webpage.FrontEndRoles)
+    </div>
+</div>

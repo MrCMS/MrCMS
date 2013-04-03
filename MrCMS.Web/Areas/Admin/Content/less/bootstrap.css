@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Bootstrap v2.1.1
  *
  * Copyright 2012 Twitter, Inc
@@ -2279,7 +2279,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 1000;
+  z-index: 100000;
   display: none;
   float: left;
   min-width: 160px;
@@ -2363,9 +2363,9 @@
   cursor: default;
 }
 .admin-tools .open {
-  *z-index: 1000;
+  *z-index: 100000;
 }
-.admin-tools .open  > .dropdown-menu {
+.admin-tools .open > .dropdown-menu {
   display: block;
 }
 .admin-tools .pull-right > .dropdown-menu {
@@ -3624,7 +3624,7 @@
   position: fixed;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 100030;
   margin-bottom: 0;
 }
 .admin-tools .navbar-fixed-top .navbar-inner,
@@ -4096,16 +4096,16 @@
   cursor: default;
 }
 .admin-tools .modal-open .modal .dropdown-menu {
-  z-index: 2050;
+  z-index: 200050;
 }
 .admin-tools .modal-open .modal .dropdown.open {
-  *z-index: 2050;
+  *z-index: 200050;
 }
 .admin-tools .modal-open .modal .popover {
-  z-index: 2060;
+  z-index: 200060;
 }
 .admin-tools .modal-open .modal .tooltip {
-  z-index: 2080;
+  z-index: 200080;
 }
 .admin-tools .modal-backdrop {
   position: fixed;
@@ -4113,7 +4113,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1040;
+  z-index: 100040;
   background-color: #000000;
 }
 .admin-tools .modal-backdrop.fade {
@@ -4128,7 +4128,7 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 1050;
+  z-index: 100050;
   overflow: auto;
   width: 560px;
   margin: 0;
@@ -4209,7 +4209,7 @@
 }
 .admin-tools .tooltip {
   position: absolute;
-  z-index: 1030;
+  z-index: 100030;
   display: block;
   visibility: visible;
   padding: 5px;
@@ -4283,7 +4283,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1010;
+  z-index: 100010;
   display: none;
   width: 236px;
   padding: 1px;

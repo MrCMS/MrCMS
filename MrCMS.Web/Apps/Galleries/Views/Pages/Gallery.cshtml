@@ -1,0 +1,26 @@
+﻿@using System.Drawing
+@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Galleries.Pages.Gallery
+           
+@Editable(Model, page => page.BodyContent, true)
+
+<div class="row margin-top-10">
+    @{
+        var count = 1;
+        foreach (var result in Model.MediaGallery.Files.Where(file => file.IsImage).OrderBy(x => x.DisplayOrder))
+        {
+            <div class="span4">
+                <a href="/@result.FileLocation">
+                    @Html.RenderImage(result.FileLocation, new Size {Width = 800, Height = 800})
+                </a>
+            </div>
+            if (count == 3)
+            {
+                @:</div><div class="row" style="margin-top: 20px;">
+                
+                count = 0;
+            }
+            count++;
+        }
+    }
+</div>

@@ -90,5 +90,33 @@ namespace MrCMS.Services
                                       session.Delete(user);
                                   });
         }
+
+        /// <summary>
+        /// Checks to see if the supplied email address is unique
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public bool IsUniqueEmail(string email)
+        {
+            return _session.QueryOver<User>().Where(u => u.Email == email).RowCount() == 0;
+        }
+
+        /// <summary>
+        /// Gets a count of active users
+        /// </summary>
+        /// <returns></returns>
+        public int ActiveUsers()
+        {
+            return _session.QueryOver<User>().Where(x=>x.IsActive).Cacheable().RowCount();
+        }
+
+        /// <summary>
+        /// Gets a count of none active users
+        /// </summary>
+        /// <returns></returns>
+        public int NoneActiveUsers()
+        {
+            return _session.QueryOver<User>().WhereNot(x => x.IsActive).Cacheable().RowCount();
+        }
     }
 }

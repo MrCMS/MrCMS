@@ -10,11 +10,11 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
-using MrCMS.Web.Application.Pages;
+using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Tests.Stubs;
-using MrCMS.Website.Controllers;
+using MrCMS.Website.ActionResults;
 using NHibernate;
 using Xunit;
 
@@ -31,7 +31,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             WebpageController webpageController = GetWebpageController();
 
-            var actionResult = webpageController.Add_Get(new TextPage { Site = webpageController.CurrentSite }) as ViewResult;
+            var actionResult = webpageController.Add_Get(1) as ViewResult;
 
             actionResult.Model.Should().BeOfType<AddPageModel>();
         }
@@ -43,7 +43,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var textPage = new TextPage {Site = webpageController.CurrentSite, Id = 1};
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(textPage);
 
-            var actionResult = webpageController.Add_Get(textPage) as ViewResult;
+            var actionResult = webpageController.Add_Get(1) as ViewResult;
 
             (actionResult.Model as AddPageModel).ParentId.Should().Be(1);
         }
@@ -55,7 +55,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var textPage = new TextPage {Site = webpageController.CurrentSite};
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(textPage);
 
-            var result = webpageController.Add_Get(textPage) as ViewResult;
+            var result = webpageController.Add_Get(1) as ViewResult;
 
             webpageController.ViewData["Layout"].Should().BeAssignableTo<IEnumerable<SelectListItem>>();
         }
@@ -65,6 +65,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             WebpageController webpageController = GetWebpageController();
             var webpage = new TextPage { Site = new Site() };
+            A.CallTo(() => documentService.UrlIsValidForWebpage(null, null)).Returns(true);
 
             webpageController.Add(webpage);
 
@@ -72,15 +73,40 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WebpageController_AddPost_ShouldRedirectToView()
+        public void WebpageController_AddPost_ShouldRedirectToEdit()
         {
             WebpageController webpageController = GetWebpageController();
-
             var webpage = new TextPage { Id = 1 };
+            A.CallTo(() => documentService.UrlIsValidForWebpage(null, null)).Returns(true);
+
             var result = webpageController.Add(webpage) as RedirectToRouteResult;
 
             result.RouteValues["action"].Should().Be("Edit");
             result.RouteValues["id"].Should().Be(1);
+        }
+
+        [Fact]
+        public void WebpageController_AddPost_IfIsValidForWebpageIsFalseShouldReturnViewResult()
+        {
+            WebpageController webpageController = GetWebpageController();
+            var webpage = new TextPage { Id = 1 };
+            A.CallTo(() => documentService.UrlIsValidForWebpage(null, null)).Returns(false);
+
+            var result = webpageController.Add(webpage);
+
+            result.Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void WebpageController_AddPost_IfIsValidForWebpageIsFalseShouldReturnPassedObjectAsModel()
+        {
+            WebpageController webpageController = GetWebpageController();
+            var webpage = new TextPage { Id = 1 };
+            A.CallTo(() => documentService.UrlIsValidForWebpage(null, null)).Returns(false);
+
+            var result = webpageController.Add(webpage);
+
+            result.As<ViewResult>().Model.Should().Be(webpage);
         }
 
         [Fact]
@@ -154,6 +180,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_EditPost_ShouldCallSaveDocument()
         {
             WebpageController webpageController = GetWebpageController();
+            A.CallTo(() => documentService.UrlIsValidForWebpage(null, 1)).Returns(true);
             Webpage textPage = new TextPage { Id = 1 };
 
             webpageController.Edit(textPage);
@@ -165,6 +192,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_EditPost_ShouldRedirectToEdit()
         {
             WebpageController webpageController = GetWebpageController();
+            A.CallTo(() => documentService.UrlIsValidForWebpage(null, 1)).Returns(true);
             var textPage = new TextPage { Id = 1 };
 
             ActionResult actionResult = webpageController.Edit(textPage);
@@ -263,9 +291,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_Delete_ReturnsRedirectToIndex()
         {
             WebpageController webpageController = GetWebpageController();
+            var stubWebpage = new StubWebpage();    
 
-            webpageController.Delete(null).Should().BeOfType<RedirectToRouteResult>();
-            webpageController.Delete(null).As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
+            webpageController.Delete(stubWebpage).Should().BeOfType<RedirectToRouteResult>();
+            webpageController.Delete(stubWebpage).As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
 
         [Fact]
@@ -347,18 +376,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_ViewChanges_ShouldReturnPartialViewResult()
         {
             WebpageController webpageController = GetWebpageController();
+            var documentVersion = new DocumentVersion();
 
-            webpageController.ViewChanges(1).Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void WebpageController_ViewChanges_ShouldCallDocumentServiceGetDocumentVersion()
-        {
-            WebpageController webpageController = GetWebpageController();
-
-            webpageController.ViewChanges(1);
-
-            A.CallTo(() => documentService.GetDocumentVersion(1)).MustHaveHappened();
+            webpageController.ViewChanges(documentVersion).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
@@ -366,52 +386,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             WebpageController webpageController = GetWebpageController();
 
-            A.CallTo(() => documentService.GetDocumentVersion(1)).Returns(null);
-
-            ActionResult result = webpageController.ViewChanges(1);
+            ActionResult result = webpageController.ViewChanges(null);
 
             result.Should().BeOfType<RedirectToRouteResult>();
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
-        }
-
-        [Fact]
-        public void WebpageController_GetForm_ShouldReturnAJsonNetResult()
-        {
-            WebpageController webpageController = GetWebpageController();
-
-            webpageController.GetForm(new TextPage()).Should().BeOfType<JsonNetResult>();
-        }
-
-        [Fact]
-        public void WebpageController_GetForm_ShouldCallFormServiceGetFormStructure()
-        {
-            WebpageController webpageController = GetWebpageController();
-
-            var textPage = new TextPage();
-            webpageController.GetForm(textPage);
-
-            A.CallTo(() => formService.GetFormStructure(textPage)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void WebpageController_SaveForm_ShouldCallFormServiceSaveFormStructure()
-        {
-            WebpageController webpageController = GetWebpageController();
-
-            webpageController.SaveForm(1, "data");
-
-            A.CallTo(() => formService.SaveFormStructure(1, "data")).MustHaveHappened();
-        }
-
-        [Fact]
-        public void WebpageController_GetUnformattedBodyContent_ReturnsBodyContentOfPassedTextPage()
-        {
-            WebpageController webpageController = GetWebpageController();
-
-            var textpage = new TextPage { BodyContent = "test body content" };
-            string unformattedBodyContent = webpageController.GetUnformattedBodyContent(textpage);
-
-            unformattedBodyContent.Should().Be("test body content");
         }
 
         [Fact]
@@ -419,17 +397,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             WebpageController webpageController = GetWebpageController();
 
-            webpageController.ViewPosting(1).Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void WebpageController_ViewPosting_ShouldCallGetFormPostingForPassedId()
-        {
-            WebpageController webpageController = GetWebpageController();
-
-            webpageController.ViewPosting(1);
-
-            A.CallTo(() => formService.GetFormPosting(1)).MustHaveHappened();
+            webpageController.ViewPosting(new FormPosting()).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
@@ -438,8 +406,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             WebpageController webpageController = GetWebpageController();
 
             var formPosting = new FormPosting();
-            A.CallTo(() => formService.GetFormPosting(1)).Returns(formPosting);
-            webpageController.ViewPosting(1).As<PartialViewResult>().Model.Should().Be(formPosting);
+            webpageController.ViewPosting(formPosting).As<PartialViewResult>().Model.Should().Be(formPosting);
         }
 
         [Fact]
@@ -510,29 +477,32 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_HideWidget_CallsDocumentServiceHideWidgetWithPassedArguments()
         {
             WebpageController webpageController = GetWebpageController();
+            var stubWebpage = new StubWebpage();
 
-            webpageController.HideWidget(1, 2, 3);
+            webpageController.HideWidget(stubWebpage, 2, 3);
 
-            A.CallTo(() => documentService.HideWidget(1, 2)).MustHaveHappened();
+            A.CallTo(() => documentService.HideWidget(stubWebpage, 2)).MustHaveHappened();
         }
 
         [Fact]
         public void WebpageController_HideWidget_ReturnsARedirectToRouteResult()
         {
             WebpageController webpageController = GetWebpageController();
+            var stubWebpage = new StubWebpage();
 
-            webpageController.HideWidget(1, 2, 3).Should().BeOfType<RedirectToRouteResult>();
+            webpageController.HideWidget(stubWebpage, 2, 3).Should().BeOfType<RedirectToRouteResult>();
         }
 
         [Fact]
         public void WebpageController_HideWidget_SetsRouteValuesForIdAndLayoutAreaId()
         {
             WebpageController webpageController = GetWebpageController();
+            var stubWebpage = new StubWebpage {Id = 1};
 
-            var redirectToRouteResult = webpageController.HideWidget(1, 2, 3).As<RedirectToRouteResult>();
+            var redirectToRouteResult = webpageController.HideWidget(stubWebpage, 2, 3).As<RedirectToRouteResult>();
 
             redirectToRouteResult.RouteValues["action"].Should().Be("Edit");
-            redirectToRouteResult.RouteValues["id"].Should().Be(1);
+            redirectToRouteResult.RouteValues["id"].Should().Be(stubWebpage.Id);
             redirectToRouteResult.RouteValues["layoutAreaId"].Should().Be(3);
         }
 
@@ -540,29 +510,32 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_ShowWidget_CallsDocumentServiceShowWidgetWithPassedArguments()
         {
             WebpageController webpageController = GetWebpageController();
+            var stubWebpage = new StubWebpage();
 
-            webpageController.ShowWidget(1, 2, 3);
+            webpageController.ShowWidget(stubWebpage, 2, 3);
 
-            A.CallTo(() => documentService.ShowWidget(1, 2)).MustHaveHappened();
+            A.CallTo(() => documentService.ShowWidget(stubWebpage, 2)).MustHaveHappened();
         }
 
         [Fact]
         public void WebpageController_ShowWidget_ReturnsARedirectToRouteResult()
         {
             WebpageController webpageController = GetWebpageController();
+            var stubWebpage = new StubWebpage();
 
-            webpageController.ShowWidget(1, 2, 3).Should().BeOfType<RedirectToRouteResult>();
+            webpageController.ShowWidget(stubWebpage, 2, 3).Should().BeOfType<RedirectToRouteResult>();
         }
 
         [Fact]
         public void WebpageController_ShowWidget_SetsRouteValuesForIdAndLayoutAreaId()
         {
             WebpageController webpageController = GetWebpageController();
+            var stubWebpage = new StubWebpage {Id = 1};
 
-            var redirectToRouteResult = webpageController.ShowWidget(1, 2, 3).As<RedirectToRouteResult>();
+            var redirectToRouteResult = webpageController.ShowWidget(stubWebpage, 2, 3).As<RedirectToRouteResult>();
 
             redirectToRouteResult.RouteValues["action"].Should().Be("Edit");
-            redirectToRouteResult.RouteValues["id"].Should().Be(1);
+            redirectToRouteResult.RouteValues["id"].Should().Be(stubWebpage.Id);
             redirectToRouteResult.RouteValues["layoutAreaId"].Should().Be(3);
         }
 

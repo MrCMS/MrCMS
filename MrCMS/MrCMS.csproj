@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\WebGrease.1.1.0\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.0.0.4001\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
@@ -43,8 +46,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentNHibernate.1.3.0.733\lib\FluentNHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net">
+      <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -95,6 +104,9 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.0.0\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -104,20 +116,30 @@
     <Reference Include="WebActivator">
       <HintPath>..\packages\WebActivator.1.5\lib\net40\WebActivator.dll</HintPath>
     </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.1.0\lib\WebGrease.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\MrCMSApp.cs" />
+    <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
     <Compile Include="DbConfiguration\Configuration\DatabaseType.cs" />
+    <Compile Include="DbConfiguration\Configuration\PostCommitEventListener.cs" />
     <Compile Include="DbConfiguration\Configuration\SaveOrUpdateListener.cs" />
+    <Compile Include="DbConfiguration\Configuration\UpdateIndexesListener.cs" />
+    <Compile Include="DbConfiguration\Configuration\UrlHistoryListener.cs" />
     <Compile Include="DbConfiguration\Conventions\CacheConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ForeignKeyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
-    <Compile Include="DbConfiguration\IGetAllMappedClasses.cs" />
+    <Compile Include="DbConfiguration\LogEntryOverride.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCMSMapClassAttribute.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCmsMappingConfiguration.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\DocumentVersionOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\FormPropertyOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\LayoutAreaOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\LayoutOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaCategoryOverride.cs" />
@@ -126,16 +148,32 @@
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SiteOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\UserOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\UserRoleOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WidgetOverride.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
+    <Compile Include="DbConfiguration\Types\BinaryData.cs" />
     <Compile Include="DbConfiguration\Types\VarCharMax.cs" />
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />
-    <Compile Include="Entities\Assets\EventDates.cs" />
+    <Compile Include="Entities\Documents\Metadata\DefaultDocumentMetadata.cs" />
+    <Compile Include="Entities\Documents\Metadata\DocumentMetadataMap.cs" />
+    <Compile Include="Entities\Documents\Metadata\IGetDocumentMetadata.cs" />
+    <Compile Include="Entities\Documents\Metadata\RedirectMetadata.cs" />
+    <Compile Include="Entities\Documents\Web\FormProperties\CheckboxList.cs" />
+    <Compile Include="Entities\Documents\Web\FormProperties\DropDownList.cs" />
+    <Compile Include="Entities\Documents\Web\FormProperties\FileUpload.cs" />
+    <Compile Include="Entities\Documents\Web\FormProperties\FormListOption.cs" />
+    <Compile Include="Entities\Documents\Web\FormProperties\FormProperty.cs" />
+    <Compile Include="Entities\Documents\Web\FormProperties\RadioButtonList.cs" />
+    <Compile Include="Entities\Documents\Web\FormProperties\TextArea.cs" />
+    <Compile Include="Entities\Documents\Web\FormProperties\TextBox.cs" />
+    <Compile Include="Entities\Documents\Web\UrlHistory.cs" />
+    <Compile Include="Entities\Indexes\DocumentIndexDefinition.cs" />
     <Compile Include="Entities\SiteEntity.cs" />
     <Compile Include="Entities\Documents\Document.cs" />
-    <Compile Include="Entities\Documents\DocumentTypeDefinition.cs" />
+    <Compile Include="Entities\Documents\DocumentMetadata.cs" />
     <Compile Include="Entities\Documents\DocumentVersion.cs" />
     <Compile Include="Entities\Documents\Layout\Layout.cs" />
     <Compile Include="Entities\Documents\Layout\LayoutArea.cs" />
@@ -144,21 +182,16 @@
     <Compile Include="Entities\Documents\Tag.cs" />
     <Compile Include="Entities\Documents\Web\AdminAllowedRole.cs" />
     <Compile Include="Entities\Documents\Web\AdminDisallowedRole.cs" />
-    <Compile Include="Entities\Documents\Web\CategoryContainer.cs" />
     <Compile Include="Entities\Documents\Web\FormPosting.cs" />
     <Compile Include="Entities\Documents\Web\FormValue.cs" />
     <Compile Include="Entities\Documents\Web\FrontEndAllowedRole.cs" />
     <Compile Include="Entities\Documents\Web\FrontEndDisallowedRole.cs" />
-    <Compile Include="Entities\Documents\Web\IContainerItem.cs" />
-    <Compile Include="Entities\Documents\Web\IDocumentContainer.cs" />
     <Compile Include="Entities\Documents\Web\IRole.cs" />
-    <Compile Include="Entities\Documents\Web\ITextPage.cs" />
     <Compile Include="Entities\Documents\Web\PageWidgetSort.cs" />
-    <Compile Include="Entities\Documents\Web\UniquePage.cs" />
+    <Compile Include="Entities\Documents\Web\IUniquePage.cs" />
     <Compile Include="Entities\Documents\Web\Redirect.cs" />
     <Compile Include="Entities\Documents\Web\RoleStatus.cs" />
     <Compile Include="Entities\Documents\Web\Webpage.cs" />
-    <Compile Include="Entities\Interaction\ContactUs.cs" />
     <Compile Include="Entities\Messaging\MessageTemplate.cs" />
     <Compile Include="Entities\Messaging\QueuedMessage.cs" />
     <Compile Include="Entities\Messaging\QueuedMessageAttachment.cs" />
@@ -169,7 +202,7 @@
     <Compile Include="Entities\Widget\Widget.cs" />
     <Compile Include="Helpers\ConversionHelper.cs" />
     <Compile Include="Helpers\DocumentExtensions.cs" />
-    <Compile Include="Helpers\DocumentTypeHelper.cs" />
+    <Compile Include="Helpers\DocumentMetadataHelper.cs" />
     <Compile Include="Helpers\EnumerableHelper.cs" />
     <Compile Include="Helpers\MrCMSHtmlHelper.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
@@ -180,6 +213,16 @@
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\TypeHelper.cs" />
     <Compile Include="Helpers\WidgetHelper.cs" />
+    <Compile Include="Indexing\Management\FSDirectoryIndexManager.cs" />
+    <Compile Include="Indexing\Management\IIndexDefinition.cs" />
+    <Compile Include="Indexing\Management\IIndexManager.cs" />
+    <Compile Include="Indexing\Management\IndexCreationResult.cs" />
+    <Compile Include="Indexing\Management\IndexManager.cs" />
+    <Compile Include="Indexing\Management\IndexResult.cs" />
+    <Compile Include="Indexing\Querying\FSDirectorySearcher.cs" />
+    <Compile Include="Indexing\Querying\ISearcher.cs" />
+    <Compile Include="Indexing\Querying\Searcher.cs" />
+    <Compile Include="Indexing\Utils\DocumentExtensions.cs" />
     <Compile Include="Installation\IInstallationService.cs" />
     <Compile Include="Installation\InstallationResult.cs" />
     <Compile Include="Installation\InstallationService.cs" />
@@ -190,6 +233,13 @@
     <Compile Include="IoC\NinjectServiceToInterfaceBinder.cs" />
     <Compile Include="IoC\NinjectSiteSettingsBinder.cs" />
     <Compile Include="IoC\ServiceModule.cs" />
+    <Compile Include="Logging\ILogService.cs" />
+    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\LogEntryType.cs" />
+    <Compile Include="Logging\LogService.cs" />
+    <Compile Include="Logging\MrCMSErrorLog.cs" />
+    <Compile Include="Membership\Internals\IRoleProvider.cs" />
+    <Compile Include="Membership\Internals\RoleProvider.cs" />
     <Compile Include="Membership\MrCmsMembershipProvider.cs" />
     <Compile Include="Membership\MrCmsRoleProvider.cs" />
     <Compile Include="Models\AddPageWidgetModel.cs" />
@@ -201,6 +251,7 @@
     <Compile Include="Models\ImageSize.cs" />
     <Compile Include="Models\IAdminMenuItem.cs" />
     <Compile Include="Models\IMenuItem.cs" />
+    <Compile Include="Models\ISystemAdminMenuItem.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
     <Compile Include="Models\PageWidgetSortModel.cs" />
     <Compile Include="Models\PostingsModel.cs" />
@@ -209,6 +260,7 @@
     <Compile Include="Models\SearchResult.cs" />
     <Compile Include="Models\SearchResultModel.cs" />
     <Compile Include="Models\SortItem.cs" />
+    <Compile Include="Models\SystemAdminMenuItem.cs" />
     <Compile Include="Models\UsersAdminMenuItem.cs" />
     <Compile Include="Models\VersionsModel.cs" />
     <Compile Include="Models\ViewDataUploadFilesResult.cs" />
@@ -220,22 +272,24 @@
     <Compile Include="Paging\PagedListMetaData.cs" />
     <Compile Include="Paging\StaticPagedList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AdminRoleUpdater.cs" />
     <Compile Include="Services\AuthorisationService.cs" />
+    <Compile Include="Services\IUrlHistoryService.cs" />
     <Compile Include="Services\DocumentService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\FileSystem.cs" />
     <Compile Include="Services\FormService.cs" />
-    <Compile Include="Services\FrontEndRoleUpdater.cs" />
     <Compile Include="Services\IDocumentService.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IFileSystem.cs" />
     <Compile Include="Services\IFormService.cs" />
     <Compile Include="Services\IImageProcessor.cs" />
+    <Compile Include="Services\IIndexService.cs" />
     <Compile Include="Services\ILayoutAreaService.cs" />
     <Compile Include="Services\ImageProcessor.cs" />
     <Compile Include="Services\INavigationService.cs" />
+    <Compile Include="Entities\Indexes\WebpageIndexDefinition.cs" />
     <Compile Include="Services\IRoleService.cs" />
+    <Compile Include="Services\ISearchService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
     <Compile Include="Services\ISiteService.cs" />
     <Compile Include="Services\ITagService.cs" />
@@ -249,11 +303,13 @@
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SiteService.cs" />
     <Compile Include="Services\TagService.cs" />
+    <Compile Include="Services\UrlHistoryService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\WidgetService.cs" />
     <Compile Include="Settings\ConfigurationProvider.cs" />
     <Compile Include="Settings\DropDownSelectionAttribute.cs" />
     <Compile Include="Settings\GenericListTypeConverter.cs" />
+    <Compile Include="Settings\GlobalSettingsBase.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />
     <Compile Include="Settings\ISiteSettings.cs" />
     <Compile Include="Settings\ISettingService.cs" />
@@ -263,16 +319,41 @@
     <Compile Include="Settings\SeoSettings.cs" />
     <Compile Include="Settings\SettingService.cs" />
     <Compile Include="Settings\SiteSettings.cs" />
+    <Compile Include="Settings\SiteSettingsBase.cs" />
     <Compile Include="Settings\SiteSettingsOptionGenerator.cs" />
     <Compile Include="Settings\TextAreaAttribute.cs" />
-    <Compile Include="Shortcodes\FormElementRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\CheckBoxListRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\CustomFormRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\DefaultFormRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\DropDownListRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\DynamicFormElementRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\ElementRendererManager.cs" />
+    <Compile Include="Shortcodes\Forms\FileUploadRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\FormRenderingManager.cs" />
     <Compile Include="Shortcodes\FormShortcodeParser.cs" />
-    <Compile Include="Shortcodes\IFormElementRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\FormSubmittedStatus.cs" />
+    <Compile Include="Shortcodes\Forms\IElementRendererManager.cs" />
+    <Compile Include="Shortcodes\Forms\ILabelRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\ISubmittedMessageRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\IValidationMessaageRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\LabelRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\RadioButtonListRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\SubmittedMessageRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\TextAreaRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\TextBoxRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\ICustomFormRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\IDefaultFormRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\IFormElementRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\IFormRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\ValidationMessaageRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
     <Compile Include="Tasks\BackgroundTask.cs" />
+    <Compile Include="Tasks\IScheduledTaskManager.cs" />
+    <Compile Include="Tasks\ScheduledTask.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />
+    <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\AddWidgetModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
@@ -285,14 +366,30 @@
     <Compile Include="Website\Binders\NullableEntityModelBinder.cs" />
     <Compile Include="Website\Binders\SettingModelBinder.cs" />
     <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
+    <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
+    <Compile Include="Website\Optimization\AsIsBundleOrderer.cs" />
+    <Compile Include="Website\Optimization\IResourceBundler.cs" />
     <Compile Include="Website\Caching\CacheManager.cs" />
     <Compile Include="Website\Caching\ICacheManager.cs" />
-    <Compile Include="Website\Controllers\AdminController.cs" />
-    <Compile Include="Website\Controllers\JsonNetResult.cs" />
+    <Compile Include="Website\Controllers\MrCMSAdminController.cs" />
+    <Compile Include="Website\ActionResults\JsonNetResult.cs" />
+    <Compile Include="Website\Controllers\MrCMSAppAdminController.cs" />
     <Compile Include="Website\Controllers\MrCMSController.cs" />
+    <Compile Include="Website\Controllers\MrCMSUIController.cs" />
     <Compile Include="Website\Controllers\SystemController.cs" />
+    <Compile Include="Website\Controllers\WebpageController.cs" />
+    <Compile Include="Website\Controllers\WidgetController.cs" />
+    <Compile Include="Website\CurrentRequestData.cs" />
     <Compile Include="Website\MrCMSApplication.cs" />
     <Compile Include="Website\MrCMSAuthorizeAttribute.cs" />
+    <Compile Include="Website\MrCMSControllerFactory.cs" />
+    <Compile Include="Website\MrCMSViewEngine.cs" />
+    <Compile Include="Website\Optimization\ResourceBundler.cs" />
+    <Compile Include="Website\Optimization\ResourceData.cs" />
+    <Compile Include="Website\Optimization\WhitespaceFilter.cs" />
+    <Compile Include="Website\Routing\AppRouteConstraint.cs" />
+    <Compile Include="Website\Routing\ControllerManager.cs" />
+    <Compile Include="Website\Routing\ErrorHandler.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandler.cs" />
     <Compile Include="Website\MrCMSPage.cs" />

@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class LayoutAreaController : AdminController
+    public class LayoutAreaController : MrCMSAdminController
     {
         private readonly IDocumentService _documentService;
         private readonly ILayoutAreaService _layoutAreaService;

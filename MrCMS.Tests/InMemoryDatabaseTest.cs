@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Reflection;
+using System.Web;
 using Elmah;
+using FakeItEasy;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
@@ -18,7 +21,26 @@ using NHibernate.Tool.hbm2ddl;
 
 namespace MrCMS.Tests
 {
-    public abstract class InMemoryDatabaseTest : IDisposable
+    public abstract class MrCMSTest : IDisposable
+    {
+        private readonly ListDictionary _listDictionary;
+
+        protected MrCMSTest()
+        {
+            var httpContextWrapper = A.Fake<HttpContextBase>();
+            _listDictionary = new ListDictionary();
+            A.CallTo(() => httpContextWrapper.Items).Returns(_listDictionary);
+            CurrentRequestData.OverridenContext = httpContextWrapper;
+        }
+
+        public virtual void Dispose()
+        {
+            CurrentRequestData.OverridenContext = null;
+            _listDictionary.Clear();
+        }
+    }
+
+    public abstract class InMemoryDatabaseTest : MrCMSTest
     {
         private static Configuration Configuration;
         private static ISessionFactory SessionFactory;
@@ -56,14 +78,14 @@ namespace MrCMS.Tests
             CurrentSite = Session.Transact(session =>
                 {
                     var site = new Site { Name = "Current Site", BaseUrl = "www.currentsite.com" };
-                    MrCMSApplication.OverriddenSite = site;
+                    CurrentRequestData.CurrentSite = site;
                     session.SaveOrUpdate(site);
                     return site;
                 });
 
             TaskExecutor.Discard();
 
-            MrCMSApplication.OverridenSignal = new ErrorSignal();
+            CurrentRequestData.ErrorSignal = new ErrorSignal();
         }
 
         protected Site CurrentSite { get; set; }
@@ -92,10 +114,10 @@ namespace MrCMS.Tests
             user.Roles = new List<UserRole> { adminUserRole };
             adminUserRole.Users = new List<User> { user };
 
-            MrCMSApplication.OverriddenUser = user;
+            CurrentRequestData.CurrentUser = user;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             Dispose(true);
         }
@@ -111,6 +133,7 @@ namespace MrCMS.Tests
                     Session.Dispose();
                     Session = null;
                 }
+                base.Dispose();
             }
         }
     }

@@ -1,0 +1,36 @@
+﻿@using System.Drawing
+@using MrCMS.Entities.Documents
+@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Articles.Pages
+@using MrCMS.Web.Apps.Galleries.Pages
+@using NHibernate.Criterion
+@model MrCMS.Web.Apps.Galleries.Pages.GalleryList 
+           
+@Editable(Model, p=>p.BodyContent, true)
+
+@{
+    var category = Request["Category"];
+
+    var query = QueryOver.Of<Gallery>()
+                                     .Where(gallery => gallery.Parent == Model && gallery.PublishOn != null && gallery.PublishOn <= DateTime.Now)
+                                     .ThenBy(gallery => gallery.DisplayOrder)
+                                     .Desc;
+
+    var pagedList = Model.PagedChildren<Gallery>(pageNum: Request["p"].GetIntValue(1), query: query, pageSize: Model.PageSize);
+}
+
+
+@foreach (var page in pagedList)
+{
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="margin-top-0"><a href="/@page.LiveUrlSegment" class="margin-top-0">@page.Name </a></h3>
+            @Html.RenderImage(page.ThumbnailImage, new Size{Width = 100, Height = 100})
+        </div>
+    </div>
+}
+@if (Model.AllowPaging)
+{
+    @Html.PageCurrentPage(pagedList, i => new { p = i }, PagedListRenderOptions.PageNumbersOnly)
+}
+

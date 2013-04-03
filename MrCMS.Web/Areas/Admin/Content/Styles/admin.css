@@ -13,11 +13,13 @@ footer { clear: left; padding-top: 10px; }
 .margin-top-0 { margin-top: 0px; }
 .display-inline { display: inline; }
 hr.small-margin { margin: 5px 0; }
+.light { font-weight: normal;}
 .grey { color: darkgrey; }
 .font-small { font-size: 0.8em; }
 .red { color: red; }
 .nav select { margin: 5px 15px; }
-
+h1,h2,h3,h4 { font-weight: normal!important;}
+.settings-textarea { width: 300px;height: 150px;}
 /*Navigation*/
 #browser { padding-left: 10px; }
     #browser li { cursor: pointer; }
@@ -40,12 +42,7 @@ section.admin-header h3 { margin: 0px; }
 #PublishOn { margin: 0; }
 .page-name-edit { white-space: nowrap; overflow: hidden; font-size: 18px; }
 .accordion-toggle { background-color: #f5f5f5; }
-.file-result { float: left; width: 99%; border: 1px solid #e7e7e7; border-top: none; }
-    .file-result .header { cursor: pointer; padding: 5px; }
-    .file-result .content { padding: 5px; border-top: 1px solid #e7e7e7; }
-    .file-result:first-child { border-top: 1px solid #e7e7e7; }
-#media-selector .modal-body { max-height: none; }
-#media-selector label { display: inline; }
+
 .modal { -webkit-transition: opacity .3s linear, top .3s ease-out; -moz-transition: opacity .3s linear, top .3s ease-out; -o-transition: opacity .3s linear, top .3s ease-out; transition: opacity .3s linear, top .3s ease-out; margin: 0; }
 .modal { z-index: 100000; }
 #left-menu { position: absolute; width: 300px; background: white; z-index: 9999; box-shadow: 3px 3px 3px #e7e7e7; padding: 5px; }
@@ -54,3 +51,11 @@ section.admin-header h3 { margin: 0px; }
 #changes-table tr.unchanged { background-color: rgb(203, 255, 203); }
 #changes-table tr.changed { background-color: rgb(255, 209, 209); }
 #changes-table pre { font-size: 0.6em; }
+
+.form-item{ padding: 10px;}
+
+.validation-summary-errors { color: red;}
+.error, .error span { color: red; }
+
+
+#loading { position: fixed;top: 5px;right: 5px;z-index: 999999;}

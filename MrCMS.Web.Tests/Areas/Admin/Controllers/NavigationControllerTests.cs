@@ -17,7 +17,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private ISiteService _siteService;
         private INavigationService navigationService;
-        private IUserService userService;
 
         [Fact]
         public void NavigationController_WebsiteTree_ShouldReturnPartialView()
@@ -32,9 +31,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private NavigationController GetNavigationController()
         {
             navigationService = A.Fake<INavigationService>();
-            userService = A.Fake<IUserService>();
             _siteService = A.Fake<ISiteService>();
-            var navigationController = new NavigationController(navigationService, userService, _siteService);
+            var navigationController = new NavigationController(navigationService,  _siteService);
             return navigationController;
         }
 

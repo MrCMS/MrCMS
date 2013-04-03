@@ -52,8 +52,8 @@ namespace MrCMS.Helpers
 
         private static string GetCurrentPath()
         {
-            if (MrCMSApplication.CurrentContext.Request.Url != null)
-                return MrCMSApplication.CurrentContext.Request.Url.GetComponents(UriComponents.Path,
+            if (CurrentRequestData.CurrentContext.Request.Url != null)
+                return CurrentRequestData.CurrentContext.Request.Url.GetComponents(UriComponents.Path,
                                                                                  UriFormat.SafeUnescaped);
             throw new InvalidOperationException("Request does not have a URL");
         }

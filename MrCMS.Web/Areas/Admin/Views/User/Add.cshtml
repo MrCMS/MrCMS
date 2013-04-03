@@ -1,20 +1,23 @@
-﻿@model MrCMS.Web.Areas.Admin.Models.AddUserModel
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Areas.Admin.Models.AddUserModel
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 @using (Html.BeginForm("Add", "User", FormMethod.Post))
 {
     <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
         <h3>Add user</h3>
     </div>
     <div class="modal-body">
+        @Html.ValidationSummary()
+
         @Html.LabelFor(x => x.Email)
         @Html.TextBoxFor(x => x.Email)
         @Html.ValidationMessageFor(x => x.Email)
         <br />
-        @Html.LabelFor(x => x.FirstName, "First Name")
+        @Html.LabelFor(x => x.FirstName)
         @Html.TextBoxFor(x => x.FirstName)
         @Html.ValidationMessageFor(x => x.FirstName)
         <br />
-        @Html.LabelFor(x => x.LastName, "Last Name")
+        @Html.LabelFor(x => x.LastName)
         @Html.TextBoxFor(x => x.LastName)
         @Html.ValidationMessageFor(x => x.LastName)
         <br />
@@ -22,18 +25,16 @@
         @Html.PasswordFor(x => x.Password)
         @Html.ValidationMessageFor(x => x.Password)
         <br />
-        @Html.LabelFor(x => x.ConfirmPassword, "Confirm Password")
+        @Html.LabelFor(x => x.ConfirmPassword)
         @Html.PasswordFor(x => x.ConfirmPassword)
         @Html.ValidationMessageFor(x => x.ConfirmPassword)
         <br />
-        @Html.LabelFor(x => x.IsActive, "Is Active")
-        @Html.CheckBoxFor(x => x.IsActive)
+        @Html.InlineCheckboxFor(x => x.IsActive, null, null, "User is active")
         @Html.ValidationMessageFor(x => x.IsActive)
         <br />
         
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
         <input type="submit" class="btn-primary btn" value="Add user" />
     </div>
 }

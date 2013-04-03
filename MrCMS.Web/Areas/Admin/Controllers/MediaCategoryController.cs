@@ -1,5 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Website.Binders;
 using System.Linq;
@@ -21,12 +23,24 @@ namespace MrCMS.Web.Areas.Admin.Controllers
          * Need to do media category specific stuff before generic stuff. In this case
          * create a directory for media files.
          */
-
         public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] MediaCategory doc)
         {
             var actionResult = base.Add(doc);
             _fileService.CreateFolder(doc);
             return actionResult;
+        }
+
+        [HttpGet]
+        [ActionName("Add")]
+        public override ActionResult Add_Get(int? id)
+        {
+            //Build list 
+            var model = new MediaCategory()
+            {
+                Parent = id.HasValue ? _documentService.GetDocument<MediaCategory>(id.Value) : null
+            };
+
+            return View(model);
         }
 
         public override ActionResult Show(MediaCategory document)
@@ -83,6 +97,37 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult RemoveMedia()
         {
             return PartialView();
+        }
+
+        [HttpGet]
+        public ActionResult SortFiles(MediaCategory parent)
+        {
+            ViewData["categoryId"] = parent.Id;
+            var sortItems =
+            _fileService.GetFiles(parent).OrderBy(arg => arg.display_order)
+                                .Select(
+                                    arg => new ImageSortItem { Order = arg.display_order, Id = arg.Id, Name = arg.name, ImageUrl = arg.url, IsImage=arg.is_image})
+                                .ToList();
+
+            return View(sortItems);
+        }
+
+        [HttpPost]
+        public ActionResult SortFiles(MediaCategory parent, List<SortItem> items)
+        {
+            _fileService.SetOrders(items);
+            return RedirectToAction("SortFiles", new { id = parent.Id });
+        }
+
+        /// <summary>
+        /// Finds out if the URL entered is valid.
+        /// </summary>
+        /// <param name="UrlSegment">The URL Segment entered</param>
+        /// <param name="DocumentType">The type of document</param>
+        /// <returns></returns>
+        public ActionResult ValidateUrlIsAllowed(string UrlSegment, int? Id)
+        {
+            return !_documentService.UrlIsValidForMediaCategory(UrlSegment, Id) ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
     }
 }

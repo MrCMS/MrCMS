@@ -51,8 +51,6 @@ namespace MrCMS.Website.Binders
                                  : document.Parent.Children.OfType<Webpage>()).ToList();
                 document.DisplayOrder = pages.Any() ? pages.Max(x => x.DisplayOrder) + 1 : 0;
             }
-            var taglist = GetValueFromContext(controllerContext, "TagList");
-            DocumentService.SetTags(taglist, document);
 
             return document;
         }
@@ -65,7 +63,9 @@ namespace MrCMS.Website.Binders
 
         private static Type GetTypeByName(ControllerContext controllerContext)
         {
-            return DocumentTypeHelper.GetTypeByName(GetValueFromContext(controllerContext, "DocumentType"));
+            string valueFromContext = GetValueFromContext(controllerContext, "DocumentType");
+            return DocumentMetadataHelper.GetTypeByName(valueFromContext)
+                ?? TypeHelper.MappedClasses.FirstOrDefault(x => x.Name == valueFromContext);
         }
     }
 }

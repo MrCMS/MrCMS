@@ -1,6 +1,5 @@
 ﻿using FluentNHibernate.Automapping;
 using FluentNHibernate.Automapping.Alterations;
-using MrCMS.DbConfiguration.Types;
 using MrCMS.Entities.Documents;
 
 namespace MrCMS.DbConfiguration.Overrides
@@ -11,16 +10,10 @@ namespace MrCMS.DbConfiguration.Overrides
         {
             mapping.DiscriminateSubClassesOnColumn("DocumentType");
             mapping.HasMany(x => x.Children).KeyColumn("ParentId");
-
-            mapping.HasManyToMany(document => document.Tags).Table("DocumentTags");
+            mapping.HasManyToMany(document => document.Tags).Table("DocumentTags").Cascade.SaveUpdate();
             mapping.HasMany(document => document.Versions).KeyColumn("DocumentId").Cascade.All();
-        }
-    }
-    public class DocumentVersionOverride : IAutoMappingOverride<DocumentVersion>
-    {
-        public void Override(AutoMapping<DocumentVersion> mapping)
-        {
-            mapping.Map(version => version.Data).CustomType<VarcharMax>().Length(4001);
+            mapping.IgnoreProperty(x=>x.UrlSegment);
+            mapping.Map(x => x.DocumentType).Formula("DocumentType").Access.ReadOnly();
         }
     }
 }

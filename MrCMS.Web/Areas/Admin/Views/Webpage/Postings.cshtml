@@ -28,14 +28,21 @@
                     @foreach (var heading in Model.Headings)
                     {
                         <td>
-                            @posting[heading]
+                            @if (posting.Get(heading) != null && posting.Get(heading).IsFile)
+                            {
+                                <a href="/@posting.Get(heading).Value" download>Download</a>
+                            }
+                            else
+                            {
+                                @posting[heading]
+                            }
                         </td>
                     }
                     <td>
                         @posting.CreatedOn
                     </td>
                     <td>
-                        @Html.ActionLink("View full entry", "ViewPosting", new { id = posting.Id }, new { data_toggle = "modal" })
+                        @Html.ActionLink("View full entry", "ViewPosting", new { id = posting.Id }, new { data_toggle = "fb-modal" })
                     </td>
                 </tr>
             }

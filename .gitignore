@@ -80,3 +80,5 @@ packages/
 #Media files
 MrCMS.Web/media*
 MrCMS.Web/content/upload*
+*.orig
+MrCMS.Web/App_Data/*

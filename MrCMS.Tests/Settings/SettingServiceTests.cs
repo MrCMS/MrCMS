@@ -76,7 +76,7 @@ namespace MrCMS.Tests.Settings
         {
             var settingService = GetSettingService();
             var site = new Site();
-            MrCMSApplication.OverriddenSite = site;
+            CurrentRequestData.CurrentSite = site;
             Session.Transact(session => session.Save(site));
             Session.Transact(session => session.Save(new Setting {Name = "test", Value = "value", Site = site}));
             settingService.SetSetting(site, "test", "value2");

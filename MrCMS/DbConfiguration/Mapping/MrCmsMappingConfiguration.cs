@@ -1,9 +1,6 @@
 using System;
 using System.Linq;
-using FluentNHibernate;
 using FluentNHibernate.Automapping;
-using FluentNHibernate.Automapping.Alterations;
-using FluentNHibernate.Utils;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 

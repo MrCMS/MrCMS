@@ -20,7 +20,10 @@ namespace MrCMS.Models
             seo_url = string.Format("/admin/File/UpdateSEO/{0}", file.Id);
             title = file.Title ?? string.Empty;
             description = file.Description ?? string.Empty;
+            display_order = file.DisplayOrder;
+            is_image = file.IsImage;
         }
+
 
 
         public int Id { get; set; }
@@ -35,5 +38,7 @@ namespace MrCMS.Models
         public string seo_url { get; set; }
         public string title { get; set; }
         public string description { get; set; }
+        public int display_order { get; set; }
+        public bool is_image { get; set; }
     }
 }

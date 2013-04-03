@@ -19,8 +19,10 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
+using MrCMS.Indexing.Management;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Tasks;
 using MrCMS.Website;
 using MySql.Data.MySqlClient;
 using NHibernate;
@@ -281,9 +283,7 @@ namespace MrCMS.Installation
 
                     //save settings
                     SetUpInitialData(model, connectionString, model.DatabaseType);
-
-
-
+                    
                     var connectionStringSettings = new ConnectionStringSettings("mrcms", connectionString)
                         {
                             ProviderName = GetProviderName(model.DatabaseType)
@@ -352,12 +352,13 @@ namespace MrCMS.Installation
 
             var site = new Site { Name = model.SiteName, BaseUrl = model.SiteUrl };
             session.Transact(sess => sess.Save(site));
-            MrCMSApplication.OverriddenSite = site;
+            CurrentRequestData.CurrentSite = site;
             var currentSite = new CurrentSite(site);
 
             var siteSettings = new SiteSettings { Site = site };
 
             var documentService = new DocumentService(session, siteSettings, currentSite);
+            var layoutAreaService = new LayoutAreaService(session);
 
             var user = new User
                 {
@@ -369,18 +370,41 @@ namespace MrCMS.Installation
             authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
             authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
             session.Transact(sess => sess.Save(user));
+            CurrentRequestData.CurrentUser = user;
 
-            var layout = new Layout
-                {
-                    Name = "Base Layout",
-                    Site = site,
-                    UrlSegment = "~/Views/Shared/_Layout.cshtml"
-                };
-            documentService.AddDocument(layout);
+            documentService.AddDocument(model.BaseLayout);
+            var layoutAreas = new List<LayoutArea>
+                                  {
+                                      new LayoutArea
+                                          {
+                                              AreaName = "Main Navigation",
+                                              CreatedOn = DateTime.Now,
+                                              Layout = model.BaseLayout,
+                                              Site = site
+                                          },
+                                      new LayoutArea
+                                          {
+                                              AreaName = "Before Content",
+                                              CreatedOn = DateTime.Now,
+                                              Layout = model.BaseLayout,
+                                              Site = site
+                                          },
+                                      new LayoutArea
+                                          {
+                                              AreaName = "After Content",
+                                              CreatedOn = DateTime.Now,
+                                              Layout = model.BaseLayout,
+                                              Site = site
+                                          }
+                                  };
+
+            foreach (LayoutArea l in layoutAreas)
+                layoutAreaService.SaveArea(l);
 
             documentService.AddDocument(model.HomePage);
-
-            
+            documentService.AddDocument(model.Page2);
+            documentService.AddDocument(model.Page3);
+            documentService.AddDocument(model.Error403);
             documentService.AddDocument(model.Error404);
 
             documentService.AddDocument(model.Error500);
@@ -393,10 +417,14 @@ namespace MrCMS.Installation
                 };
             documentService.AddDocument(defaultMediaCategory);
 
-            siteSettings.DefaultLayoutId = layout.Id;
+            siteSettings.DefaultLayoutId = model.BaseLayout.Id;
+            siteSettings.Error403PageId = model.Error403.Id;
             siteSettings.Error404PageId = model.Error404.Id;
             siteSettings.Error500PageId = model.Error500.Id;
 
+            siteSettings.EnableInlineEditing = true;
+            siteSettings.SiteIsLive = true;
+            
             mediaSettings.ThumbnailImageHeight = 50;
             mediaSettings.ThumbnailImageWidth = 50;
             mediaSettings.LargeImageHeight = 800;
@@ -428,6 +456,25 @@ namespace MrCMS.Installation
 
             authorisationService.Logout();
             authorisationService.SetAuthCookie(user.Email, false);
+
+            //set up system tasks
+            //var taskService = MrCMSApplication.Get<IScheduledTaskManager>();
+            //taskService.Add(new ScheduledTask
+            //                    {
+            //                        Type = "MrCMS.Tasks.SendQueuedMessagesTask",
+            //                        EveryXMinutes = 1,
+            //                        Site = site
+            //                    });
+
+            var service = new IndexService(session);
+            IndexService.GetIndexManagerOverride = (indexType, indexDefinitionInterface) => Activator.CreateInstance(
+                typeof (FSDirectoryIndexManager<,>).MakeGenericType(
+                    indexDefinitionInterface.GetGenericArguments()[0],
+                    indexType), currentSite) as IIndexManagerBase;
+            var mrCMSIndices = service.GetIndexes();
+            mrCMSIndices.ForEach(index => service.Reindex(index.TypeName));
+            mrCMSIndices.ForEach(index => service.Optimise(index.TypeName));
+            IndexService.GetIndexManagerOverride = null;
         }
 
         public virtual void RestartAppDomain()

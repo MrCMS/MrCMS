@@ -1,10 +1,8 @@
-using System;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
-using MrCMS.Helpers;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using NHibernate;
-using Ninject;
 
 namespace MrCMS.Website.Binders
 {
@@ -20,6 +18,15 @@ namespace MrCMS.Website.Binders
 
             var taglist = GetValueFromContext(controllerContext, "TagList");
             DocumentService.SetTags(taglist, document);
+
+            if (document is Webpage)
+            {
+                var frontEndRoles = GetValueFromContext(controllerContext, "FrontEndRoles");
+                DocumentService.SetFrontEndRoles(frontEndRoles, document as Webpage);
+
+                var adminRoles = GetValueFromContext(controllerContext, "AdminRoles");
+                DocumentService.SetAdminRoles(adminRoles, document as Webpage);
+            }
 
             return document;
         }

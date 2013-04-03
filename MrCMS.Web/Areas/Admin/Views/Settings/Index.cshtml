@@ -11,31 +11,31 @@
         </div>
     }
 </section>
-<div class="row-fluid">
-    <div class="span4">
-        <h4>Edit Settings</h4>
-    </div>
-    <div class="span8">
-        <div class="btn-group  display-inline  pull-right">
-            <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-settings">
-                Save</button>
-        </div>
-    </div>
-</div>
+
 @using (Html.BeginForm("Index", "Settings", FormMethod.Post, new { id = "edit-settings" }))
 {
-    <div id="tabs">
-        <ul class="nav nav-tabs">
-            @foreach (var settingType in Model)
-            {
-                <li><a href="#@settingType.DivId" data-toggle="tab">@settingType.TypeName</a></li>
-            }
-        </ul>
-        <div class="tab-content">
-            @foreach (var settingType in Model)
-            {
-                Html.RenderPartial("Settings", settingType);
-            }
+    <fieldset>
+        <legend>Global Settings
+
+        <span class="btn-group  display-inline  pull-right">
+            <button class="btn btn-primary">
+                Save</button>
+        </span>
+        </legend>
+
+        <div id="tabs">
+            <ul class="nav nav-tabs">
+                @foreach (var settingType in Model)
+                {
+                    <li><a href="#@settingType.DivId" data-toggle="tab">@settingType.TypeName</a></li>
+                }
+            </ul>
+            <div class="tab-content">
+                @foreach (var settingType in Model)
+                {
+                    Html.RenderPartial("Settings", settingType);
+                }
+            </div>
         </div>
-    </div>
+    </fieldset>
 }

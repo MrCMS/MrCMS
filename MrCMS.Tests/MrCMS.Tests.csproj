@@ -59,6 +59,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NHibernate.3.3.2.4000\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Ninject.3.0.1.10\lib\net40\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.MockingKernel">
+      <HintPath>..\packages\Ninject.MockingKernel.3.0.0.5\lib\net40-full\Ninject.MockingKernel.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.82.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -72,6 +79,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -100,6 +108,7 @@
     <Compile Include="Entities\MediaFileTests.cs" />
     <Compile Include="Helpers\TypeHelperTests.cs" />
     <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
+    <Compile Include="Logging\LogServiceTests.cs" />
     <Compile Include="Services\AuthorisationServiceTests.cs" />
     <Compile Include="Services\DocumentServiceTests.cs" />
     <Compile Include="InMemoryDatabaseTest.cs" />
@@ -110,6 +119,7 @@
     <Compile Include="Services\NavigationServiceTests.cs" />
     <Compile Include="Services\ResetPasswordServiceTests.cs" />
     <Compile Include="Services\RoleServiceTests.cs" />
+    <Compile Include="Services\SearchServiceTests.cs" />
     <Compile Include="Services\SitesServiceTests.cs" />
     <Compile Include="Services\TagServiceTests.cs" />
     <Compile Include="Services\UserServiceTests.cs" />
@@ -121,12 +131,21 @@
     <Compile Include="Settings\SettingServiceTests.cs" />
     <Compile Include="Settings\SiteSettingsOptionGeneratorTests.cs" />
     <Compile Include="Settings\SiteSettingsTests.cs" />
+    <Compile Include="Shortcodes\Forms\DefaultFormRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\ElementRendererManagerTests.cs" />
+    <Compile Include="Shortcodes\Forms\FormRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\LabelRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\SubmittedMessageRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\TextAreaRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\TextBoxRendererTests.cs" />
     <Compile Include="Stubs\BasicMappedWebpage.cs" />
     <Compile Include="Stubs\BasicMappedWidget.cs" />
     <Compile Include="Stubs\StubAllowedWebpage.cs" />
     <Compile Include="Stubs\StubDisallowedWebpage.cs" />
     <Compile Include="Stubs\StubDocument.cs" />
     <Compile Include="Stubs\StubWebpage.cs" />
+    <Compile Include="Website\CurrentRequestDataTests.cs" />
+    <Compile Include="Website\Routing\ControllerManagerTests.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandlerTests.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandlerTests.cs" />
   </ItemGroup>

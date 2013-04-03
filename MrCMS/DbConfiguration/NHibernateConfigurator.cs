@@ -11,9 +11,10 @@ using MrCMS.DbConfiguration.Conventions;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.Widget;
+using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Caches.SysCache2;
@@ -26,7 +27,7 @@ using MrCMS.Helpers;
 
 namespace MrCMS.DbConfiguration
 {
-    public class NHibernateConfigurator : IGetAllMappedClasses
+    public class NHibernateConfigurator
     {
         private List<Assembly> _manuallyAddedAssemblies = new List<Assembly>();
         public DatabaseType DatabaseType { get; set; }
@@ -35,15 +36,6 @@ namespace MrCMS.DbConfiguration
 
         public IPersistenceConfigurer PersistenceOverride { get; set; }
 
-        public List<Type> MappedClasses
-        {
-            get
-            {
-                var configuration = GetConfiguration();
-
-                return configuration.ClassMappings.Select(@class => @class.MappedClass).ToList();
-            }
-        }
 
         public ISessionFactory CreateSessionFactory()
         {
@@ -129,31 +121,33 @@ namespace MrCMS.DbConfiguration
             var finalAssemblies = new List<Assembly>();
 
             assemblies.ForEach(assembly =>
-                {
-                    if (finalAssemblies.All(a => a.FullName != assembly.FullName))
-                        finalAssemblies.Add(assembly);
-                });
+            {
+                if (finalAssemblies.All(a => a.FullName != assembly.FullName))
+                    finalAssemblies.Add(assembly);
+            });
 
             var iPersistenceConfigurer = GetPersistenceConfigurer();
             var config = Fluently.Configure()
                 .Database(iPersistenceConfigurer)
                 .Mappings(m => m.AutoMappings.Add(AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
-                                                .IgnoreBase<SystemEntity>().IgnoreBase<SiteEntity>().IncludeBase<Document>().IncludeBase<Webpage>()
-                                                .IncludeBase<Widget>()
+                                                .IgnoreBase<SystemEntity>().IgnoreBase<SiteEntity>()
+                                                .IncludeBase<Document>().IncludeBase<Webpage>()
+                                                .IncludeBase<Widget>().IncludeBase<FormProperty>()
+                                                .IncludeAppBases()
                                                 .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
                                                 .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()))
                 .Cache(builder =>
-                           {
-                               if (CacheEnabled)
-                                   builder.UseSecondLevelCache().UseQueryCache().ProviderClass<SysCacheProvider>().
-                                       QueryCacheFactory<StandardQueryCacheFactory>();
-                           })
+                {
+                    if (CacheEnabled)
+                        builder.UseSecondLevelCache().UseQueryCache().ProviderClass<SysCacheProvider>().
+                            QueryCacheFactory<StandardQueryCacheFactory>();
+                })
                 .ExposeConfiguration(AppendListeners)
                 .ExposeConfiguration(c =>
-                                         {
-                                             c.SetProperty(Environment.GenerateStatistics, "true");
-                                             c.SetProperty(Environment.Hbm2ddlKeyWords, "auto-quote");
-                                         })
+                {
+                    c.SetProperty(Environment.GenerateStatistics, "true");
+                    c.SetProperty(Environment.Hbm2ddlKeyWords, "auto-quote");
+                })
                 .BuildConfiguration();
 
 
@@ -170,6 +164,9 @@ namespace MrCMS.DbConfiguration
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)
         {
             var saveOrUpdateListener = new SaveOrUpdateListener();
+            var updateIndexesListener = new UpdateIndexesListener();
+            var postCommitEventListener = new PostCommitEventListener();
+            var urlHistoryListener = new UrlHistoryListener();
             configuration.EventListeners.SaveOrUpdateEventListeners =
                  new ISaveOrUpdateEventListener[]
                       {
@@ -182,15 +179,31 @@ namespace MrCMS.DbConfiguration
                                                   saveOrUpdateListener
                                               });
             configuration.AppendListeners(ListenerType.PreUpdate,
-                                          new[]
+                                          new IPreUpdateEventListener[]
                                               {
                                                   saveOrUpdateListener
                                               });
 
-            configuration.AppendListeners(ListenerType.PostCommitUpdate, new[]
+            configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
                                                                              {
-                                                                                 new PostCommitEventListener()
+                                                                                 postCommitEventListener,
+                                                                                 urlHistoryListener
                                                                              });
+            if (!InDevelopment && CurrentRequestData.DatabaseIsInstalled)
+            {
+                configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
+                configuration.AppendListeners(ListenerType.PostCommitInsert, new IPostInsertEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
+                configuration.AppendListeners(ListenerType.PostCommitDelete, new IPostDeleteEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
+            }
         }
     }
 }

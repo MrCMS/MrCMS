@@ -14,9 +14,9 @@ namespace MrCMS.Settings
     {
         public List<SelectListItem> GetErrorPageOptions(ISession session, Site site, int pageId)
         {
-            var queryOver = session.QueryOver<Webpage>().Where(webpage => webpage.Site == site).Cacheable().List();
+            var list = session.QueryOver<Webpage>().Where(webpage => webpage.Site == site).Cacheable().List();
             return
-                queryOver.Where(page => page.Published)
+                list.Where(page => page.Published)
                          .BuildSelectItemList(
                              page => page.Name,
                              page => page.Id.ToString(CultureInfo.InvariantCulture),

@@ -68,7 +68,11 @@ namespace MrCMS.Helpers
                                                   int pageSize) where T : SystemEntity
         {
             IEnumerable<T> values =
-                query.GetExecutableQueryOver(session).Skip((pageNumber - 1) * pageSize).Take(pageSize).List<T>();
+                query.GetExecutableQueryOver(session)
+                     .Skip((pageNumber - 1)*pageSize)
+                     .Take(pageSize)
+                     .Cacheable()
+                     .List<T>();
 
             var rowCount = query.GetExecutableQueryOver(session).ToRowCountQuery().SingleOrDefault<int>();
 

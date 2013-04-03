@@ -35,6 +35,10 @@ namespace MrCMS.Website.Binders
                     widget.LayoutArea.AddWidget(widget);
                 if (widget.Webpage != null)
                     widget.Webpage.Widgets.Add(widget);
+                if (GetValueFromContext(controllerContext, "AddType") == "global")
+                {
+                    widget.Webpage = null;
+                }
             }
             return widget;
         }

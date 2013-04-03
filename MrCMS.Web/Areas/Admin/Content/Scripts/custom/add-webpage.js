@@ -12,35 +12,34 @@
 $(function () {
     $("#suggest-url").click(function (e) {
         e.preventDefault();
-        SuggestUrl();
+        suggestUrl();
     });
 
     $("#Name").blur(function () {
         if ($("#mode").is(':checked')) {
-            SuggestUrl();
+            suggestUrl();
         } else {
-            SetStandardUrl();
+            setStandardUrl();
         }
     });
 
     $("#Name").delayKeyup(function () {
         if ($("#mode").is(':checked')) {
-            SuggestUrl();
+            suggestUrl();
         } else {
-            SetStandardUrl();
+            setStandardUrl();
         }
     }, 200);
 
-    function SetStandardUrl() {
-        $("#UrlSegment").val($("#Name").val().trim().replace(/\W/g, '-').toLowerCase());
+    function setStandardUrl() {
+        $("#UrlSegment").val($("#Name").val().trim().replace(/[^a-zA-Z0-9-/]/g, '-').toLowerCase());
     }
 
-    function SuggestUrl() {
+    function suggestUrl() {
         var pageName = $("#Name").val(),
-            parentId = $("#Parent_Id").val(),
-            siteId = $("#Site_Id").val();
+            parentId = $("#Parent_Id").val()
         if (pageName != "") {
-            $.get('/Admin/Webpage/SuggestDocumentUrl', { pageName: pageName, parentId: parentId, siteId: siteId }, function (data) {
+            $.get('/Admin/Webpage/SuggestDocumentUrl', { pageName: pageName, id: parentId}, function (data) {
                 $("#UrlSegment").val(data);
             });
         }

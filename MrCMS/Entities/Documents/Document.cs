@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Paging;
+using MrCMS.Services;
 using MrCMS.Website;
 using MrCMS.Helpers;
 using NHibernate;
@@ -20,8 +22,7 @@ namespace MrCMS.Entities.Documents
         [Required]
         [DisplayName("Display Order")]
         public virtual int DisplayOrder { get; set; }
-        [Required]
-        [DisplayName("Url Segment")]
+
         public virtual string UrlSegment { get; set; }
 
         private IList<Document> _children = new List<Document>();
@@ -71,7 +72,7 @@ namespace MrCMS.Entities.Documents
             base.OnDeleting(session);
         }
 
-        public virtual void OnSaving(ISession session)  
+        public virtual void OnSaving(ISession session)
         {
 
         }
@@ -91,5 +92,7 @@ namespace MrCMS.Entities.Documents
                    new PagedList<DocumentVersion>(
                        documentVersions, page, 10), Id);
         }
+
+        protected internal virtual void CustomInitialization(IDocumentService service, ISession session) { }
     }
 }

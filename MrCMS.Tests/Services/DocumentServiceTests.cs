@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -106,8 +107,7 @@ namespace MrCMS.Tests.Services
             var parent = new BasicMappedWebpage
             {
                 Name = "Parent",
-                AdminAllowedRoles = new List<AdminAllowedRole>(),
-                AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                AdminAllowedRoles = new List<UserRole>()
             };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
@@ -118,9 +118,7 @@ namespace MrCMS.Tests.Services
                                                                            Name = String.Format("Page {0}", (object)i),
                                                                            Parent = parent,
                                                                            AdminAllowedRoles =
-                                                                               new List<AdminAllowedRole>(),
-                                                                           AdminDisallowedRoles =
-                                                                               new List<AdminDisallowedRole>(),
+                                                                               new List<UserRole>(),
                                                                            Site = CurrentSite
                                                                        };
                                                     parent.Children.Add(textPage);
@@ -141,8 +139,7 @@ namespace MrCMS.Tests.Services
             var parent = new BasicMappedWebpage
                              {
                                  Name = "Parent",
-                                 AdminAllowedRoles = new List<AdminAllowedRole>(),
-                                 AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                                 AdminAllowedRoles = new List<UserRole>(),
                              };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
@@ -154,8 +151,7 @@ namespace MrCMS.Tests.Services
                                                                       {
                                                                           Name = String.Format("Page {0}", i),
                                                                           Parent = parent,
-                                                                          AdminAllowedRoles = new List<AdminAllowedRole>(),
-                                                                          AdminDisallowedRoles = new List<AdminDisallowedRole>(),
+                                                                          AdminAllowedRoles = new List<UserRole>(),
                                                                           Site = CurrentSite
                                                                       }
                                                                     : new Layout { Parent = parent };
@@ -177,8 +173,7 @@ namespace MrCMS.Tests.Services
             var parent = new BasicMappedWebpage
                              {
                                  Name = "Parent",
-                                 AdminAllowedRoles = new List<AdminAllowedRole>(),
-                                 AdminDisallowedRoles = new List<AdminDisallowedRole>()
+                                 AdminAllowedRoles = new List<UserRole>(),
                              };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
@@ -189,10 +184,7 @@ namespace MrCMS.Tests.Services
                                                                           Name = String.Format("Page {0}", i),
                                                                           Parent = parent,
                                                                           DisplayOrder = 4 - i,
-                                                                          AdminAllowedRoles =
-                                                                              new List<AdminAllowedRole>(),
-                                                                          AdminDisallowedRoles =
-                                                                              new List<AdminDisallowedRole>(),
+                                                                          AdminAllowedRoles = new List<UserRole>(),
                                                                           Site = CurrentSite
                                                                       };
                                                    parent.Children.Add(textPage);
@@ -371,14 +363,14 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void DocumentService_SetTags_ShouldSaveGeneratedTags()
+        public void DocumentService_SetTags_ShouldAddTagsToDocument()
         {
             var documentService = GetDocumentService();
             var textPage = new BasicMappedWebpage();
 
             documentService.SetTags("test 1, test 2", textPage);
 
-            Session.QueryOver<Tag>().RowCount().Should().Be(2);
+            textPage.Tags.Should().HaveCount(2);
         }
 
         [Fact]
@@ -451,13 +443,11 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
             var textPage = new BasicMappedWebpage();
-
             Session.Transact(session => session.SaveOrUpdate(textPage));
 
             documentService.SetTags("test 1", textPage);
 
-            var tags = Session.QueryOver<Tag>().List();
-
+            var tags = textPage.Tags;
             tags.Should().HaveCount(1);
             tags.First().Documents.Should().HaveCount(1);
         }
@@ -496,7 +486,6 @@ namespace MrCMS.Tests.Services
             documentService.SetTags("test 1,,test 2", textPage);
 
             textPage.Tags.Should().HaveCount(2);
-            Session.QueryOver<Tag>().List().Should().HaveCount(2);
         }
 
         [Fact]
@@ -508,7 +497,6 @@ namespace MrCMS.Tests.Services
             documentService.SetTags("test 1, test 2, ", textPage);
 
             textPage.Tags.Should().HaveCount(2);
-            Session.QueryOver<Tag>().List().Should().HaveCount(2);
         }
 
         [Fact]
@@ -522,83 +510,6 @@ namespace MrCMS.Tests.Services
             documentService.SetOrder(textPage.Id, 2);
 
             textPage.DisplayOrder.Should().Be(2);
-        }
-
-        [Fact]
-        public void DocumentService_SearchDocuments_ReturnsAnIEnumerableOfSearchResultModelsWhereTheNameMatches()
-        {
-            var doc1 = new BasicMappedWebpage { Name = "Test" };
-            var doc2 = new BasicMappedWebpage { Name = "Different Name" };
-            Session.Transact(session =>
-            {
-                session.SaveOrUpdate(doc1);
-                session.SaveOrUpdate(doc2);
-            });
-            var documentService = GetDocumentService();
-
-            var searchResultModels = documentService.SearchDocuments<BasicMappedWebpage>("Test");
-
-            searchResultModels.Should().HaveCount(1);
-            searchResultModels.First().Name.Should().Be("Test");
-        }
-
-        [Fact]
-        public void DocumentService_SearchDocumentsDetailed_ReturnsAnIEnumerableOfSearchResultModelsWhereTheNameMatches()
-        {
-            var doc1 = new BasicMappedWebpage { Name = "Test" };
-            var doc2 = new BasicMappedWebpage { Name = "Different Name" };
-            Session.Transact(session =>
-            {
-                session.SaveOrUpdate(doc1);
-                session.SaveOrUpdate(doc2);
-            });
-            var documentService = GetDocumentService();
-
-            var searchResultModels = documentService.SearchDocumentsDetailed<BasicMappedWebpage>("Test", null);
-
-            searchResultModels.Should().HaveCount(1);
-            searchResultModels.First().Name.Should().Be("Test");
-        }
-
-        [Fact]
-        public void DocumentService_SearchDocumentsDetailed_FiltersByParentIfIdIsSet()
-        {
-            var doc1 = new BasicMappedWebpage { Name = "Test" };
-            var doc2 = new BasicMappedWebpage { Name = "Different Name" };
-            var doc3 = new BasicMappedWebpage { Name = "Another Name" };
-            Session.Transact(session =>
-                                 {
-                                     doc1.Parent = doc2;
-                                     session.SaveOrUpdate(doc1);
-                                     session.SaveOrUpdate(doc2);
-                                     session.SaveOrUpdate(doc3);
-                                 });
-            var documentService = GetDocumentService();
-
-            var searchResultModels = documentService.SearchDocumentsDetailed<BasicMappedWebpage>("Test", doc3.Id);
-
-            searchResultModels.Should().HaveCount(0);
-        }
-
-        [Fact]
-        public void DocumentService_SearchDocumentsDetailed_FiltersByParentIfIdIsSetReturnsIfItIsCorrect()
-        {
-            var doc1 = new BasicMappedWebpage { Name = "Test" };
-            var doc2 = new BasicMappedWebpage { Name = "Different Name" };
-            var doc3 = new BasicMappedWebpage { Name = "Another Name" };
-            Session.Transact(session =>
-                                 {
-                                     doc1.Parent = doc2;
-                                     session.SaveOrUpdate(doc1);
-                                     session.SaveOrUpdate(doc2);
-                                     session.SaveOrUpdate(doc3);
-                                 });
-            var documentService = GetDocumentService();
-
-            var searchResultModels = documentService.SearchDocumentsDetailed<BasicMappedWebpage>("Test", doc2.Id);
-
-            searchResultModels.Should().HaveCount(1);
-            searchResultModels.First().Name.Should().Be("Test");
         }
 
         [Fact]
@@ -659,7 +570,7 @@ namespace MrCMS.Tests.Services
             var textWidget = new BasicMappedWidget();
             widgetService.SaveWidget(textWidget);
 
-            documentService.HideWidget(textPage.Id, textWidget.Id);
+            documentService.HideWidget(textPage, textWidget.Id);
 
             textPage.HiddenWidgets.Should().Contain(textWidget);
         }
@@ -680,7 +591,7 @@ namespace MrCMS.Tests.Services
             };
             documentService.SaveDocument(textPage);
 
-            documentService.HideWidget(textPage.Id, textWidget.Id);
+            documentService.HideWidget(textPage, textWidget.Id);
 
             textPage.ShownWidgets.Should().NotContain(textWidget);
         }
@@ -701,7 +612,7 @@ namespace MrCMS.Tests.Services
             };
             documentService.SaveDocument(textPage);
 
-            documentService.HideWidget(textPage.Id, -1);
+            documentService.HideWidget(textPage, -1);
 
             textPage.ShownWidgets.Should().Contain(textWidget);
         }
@@ -719,7 +630,7 @@ namespace MrCMS.Tests.Services
             var textWidget = new BasicMappedWidget();
             widgetService.SaveWidget(textWidget);
 
-            documentService.ShowWidget(textPage.Id, textWidget.Id);
+            documentService.ShowWidget(textPage, textWidget.Id);
 
             textPage.ShownWidgets.Should().Contain(textWidget);
         }
@@ -740,7 +651,7 @@ namespace MrCMS.Tests.Services
             };
             documentService.SaveDocument(textPage);
 
-            documentService.ShowWidget(textPage.Id, textWidget.Id);
+            documentService.ShowWidget(textPage, textWidget.Id);
 
             textPage.HiddenWidgets.Should().NotContain(textWidget);
         }
@@ -761,7 +672,7 @@ namespace MrCMS.Tests.Services
             };
             documentService.SaveDocument(textPage);
 
-            documentService.ShowWidget(textPage.Id, -1);
+            documentService.ShowWidget(textPage, -1);
 
             textPage.HiddenWidgets.Should().Contain(textWidget);
         }

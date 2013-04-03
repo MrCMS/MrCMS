@@ -10,18 +10,18 @@ CKEDITOR.editorConfig = function( config ) {
     config.filebrowserImageBrowseUrl = '#';
     config.height = '300px';
 
-    config.contentsCss = '/Content/Styles/style.css';
+    config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.min.css', '/Apps/Core/Content/Styles/style.css'];
 
     config.toolbar = 'Full';
 
     config.toolbar_Full =
     [
         { name: 'document', items: ['Source', '-', 'Templates'] },
+        { name: 'styles', items: ['Format', 'Styles'] },
         { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-        { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt'] },
+         ['Scayt'],
         { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
-        { name: 'styles', items: ['Format', 'FontSize'] },
-        { name: 'colors', items: ['TextColor', 'BGColor'] },
+        
         { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
         {
             name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv',
@@ -34,7 +34,7 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.toolbar_Basic =
     [
-        ['Templates', 'Bold', 'Italic', 'RemoveFormat', 'Outdent', 'Indent', '-', 'Blockquote', 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-', 'Flash', 'Table', 'HorizontalRule', 'Format']
+        ['Templates', 'Bold', 'Italic', 'RemoveFormat', 'Outdent', 'Indent', '-', 'Blockquote', 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-', 'Image', 'Flash', 'Table', 'HorizontalRule', 'Format']
     ];
 
     

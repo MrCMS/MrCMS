@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using MrCMS.Entities.Documents.Media;
@@ -19,5 +20,6 @@ namespace MrCMS.Services
         string MediaDirectory { get; }
         void RemoveFolder(MediaCategory mediaCategory);
         void CreateFolder(MediaCategory mediaCategory);
+        void SetOrders(List<SortItem> items);
     }
 }

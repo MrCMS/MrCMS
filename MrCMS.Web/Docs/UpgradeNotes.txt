@@ -1,0 +1,12 @@
+﻿0.1 -> 0.1.1
+-------------------------------------
+1) Google analytics deprecated in favor of trcking scripts. Make sure to have @Html.Raw(SiteSettings<SEOSettings>().TrackingScripts) before </head> and make sure the TrackingScripts field is populated in settings->seo settings
+2) Enable inline editing - this now needs to be selected for inline editing on the front end to work - settings -> site settings -> enable inline editing
+3) Removed - public string SiteName { get; set; } - Use site name from sites
+4) Set MetaKeywords	to nvarchar(MAX)	
+5) Form values need to be nvarcahr max
+6) @Html.RenderBodyContent(Model.BodyContent) depricated for @Editable(Model, page => page.BodyContent, true)
+7) Use @Editable(Model, widget => widget.Text, true) for widget text
+
+0.1.1 -> 0.2
+1) DocumentTypeAttribute no longer exists. See Document Meta Data.

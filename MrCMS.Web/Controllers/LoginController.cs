@@ -1,18 +1,20 @@
 using System;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : MrCMSUIController
     {
-        private readonly AuthorisationService _authorisationService;
+        private readonly IAuthorisationService _authorisationService;
         private readonly IUserService _userService;
         private readonly IResetPasswordService _resetPasswordService;
 
-        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, AuthorisationService authorisationService)
+        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, IAuthorisationService authorisationService)
         {
             _userService = userService;
             _resetPasswordService = resetPasswordService;
@@ -21,7 +23,7 @@ namespace MrCMS.Web.Controllers
 
         [HttpGet]
         [ActionName("Login")]
-        public ActionResult Get(LoginModel loginModel)
+        public ViewResult Get(LoginModel loginModel)
         {
             return View(loginModel);
         }
@@ -38,28 +40,33 @@ namespace MrCMS.Web.Controllers
                     if (_authorisationService.ValidateUser(user, loginModel.Password))
                     {
                         _authorisationService.SetAuthCookie(loginModel.Email, loginModel.RememberMe);
-                        return Redirect(loginModel.ReturnUrl ?? "~/admin");
+                        if (user.IsAdmin)
+                        {
+                            return Redirect(loginModel.ReturnUrl ?? "~/admin");
+                        }
+                        else
+                        {
+                            return Redirect(loginModel.ReturnUrl ?? "~/");
+                        }
+                    }
+                    else
+                    {
+                        loginModel.Message = "Incorrect email or password.";
                     }
                 }
             }
-            loginModel = loginModel ?? new LoginModel();
-            return View(new LoginModel()
-                {
-                    Email = loginModel.Email,
-                    RememberMe = loginModel.RememberMe,
-                    ReturnUrl = loginModel.ReturnUrl,
-                });
+            return View(loginModel ?? new LoginModel());
         }
 
 
-        public ActionResult Logout()
+        public RedirectResult Logout()
         {
             _authorisationService.Logout();
             return Redirect("~");
         }
 
         [HttpGet]
-        public ActionResult ForgottenPassword()
+        public ViewResult ForgottenPassword()
         {
             return View();
         }
@@ -90,6 +97,7 @@ namespace MrCMS.Web.Controllers
             public string Password { get; set; }
             public bool RememberMe { get; set; }
             public string ReturnUrl { get; set; }
+            public string Message { get; set; }
         }
 
         #endregion

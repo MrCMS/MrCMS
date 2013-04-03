@@ -126,18 +126,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\DbConfiguration\PlainTextWidgetOveride.cs" />
-    <Compile Include="Application\DbConfiguration\TextPageOverride.cs" />
-    <Compile Include="Application\DbConfiguration\TextWidgetOveride.cs" />
-    <Compile Include="Application\Pages\SearchPage.cs" />
-    <Compile Include="Application\Pages\TextPage.cs" />
-    <Compile Include="Application\Widgets\PlainTextWidget.cs" />
-    <Compile Include="Application\Widgets\TextWidget.cs" />
+    <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
+    <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
+    <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
+    <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
+    <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
+    <Compile Include="Apps\Galleries\GalleriesApp.cs" />
+    <Compile Include="Apps\Core\DbConfiguration\PlainTextWidgetOveride.cs" />
+    <Compile Include="Apps\Core\DbConfiguration\TextWidgetOveride.cs" />
+    <Compile Include="Apps\Core\Models\NavigationList.cs" />
+    <Compile Include="Apps\Core\Models\NavigationRecord.cs" />
+    <Compile Include="Apps\Core\Pages\SearchPage.cs" />
+    <Compile Include="Apps\Core\Pages\TextPage.cs" />
+    <Compile Include="Apps\Core\Widgets\Navigation.cs" />
+    <Compile Include="Apps\Core\Widgets\PlainTextWidget.cs" />
+    <Compile Include="Apps\Core\Widgets\TextWidget.cs" />
+    <Compile Include="Apps\Core\CoreApp.cs" />
+    <Compile Include="Apps\Articles\DbConfiguration\ArticleOverride.cs" />
+    <Compile Include="Apps\Articles\Metadata\ArticleListMetaData.cs" />
+    <Compile Include="Apps\Articles\ArticlesApp.cs" />
+    <Compile Include="Apps\Articles\Pages\Article.cs" />
+    <Compile Include="Apps\Articles\Pages\ArticleList.cs" />
+    <Compile Include="Apps\Articles\Widgets\ArticleCategories.cs" />
+    <Compile Include="Apps\Galleries\Metadata\GalleryListMetaData.cs" />
+    <Compile Include="Apps\Galleries\Metadata\GalleryMetaData.cs" />
+    <Compile Include="Apps\Galleries\Pages\GalleryList.cs" />
+    <Compile Include="Apps\Galleries\Pages\Gallery.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ImageController.cs" />
+    <Compile Include="Areas\Admin\Controllers\IndexesController.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutController.cs" />
+    <Compile Include="Areas\Admin\Controllers\LogController.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaCategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\NavigationController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
@@ -145,31 +167,34 @@
     <Compile Include="Areas\Admin\Controllers\SettingsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SitesController.cs" />
     <Compile Include="Areas\Admin\Controllers\TagController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TaskController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UrlHistoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageController.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaController.cs" />
+    <Compile Include="Areas\Admin\FormController.cs" />
     <Compile Include="Areas\Admin\Models\AddPageModel.cs" />
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
+    <Compile Include="Areas\Admin\Models\Dashboard.cs" />
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Controllers\AdminToolsController.cs" />
-    <Compile Include="Controllers\SearchPageController.cs" />
+    <Compile Include="Areas\Admin\Controllers\InPageMrCMSAdminController.cs" />
     <Compile Include="Controllers\SEOController.cs" />
-    <Compile Include="Controllers\TextPageController.cs" />
-    <Compile Include="Controllers\ViewController.cs" />
-    <Compile Include="Controllers\WidgetController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Apps\Articles\Areas\Admin\Content\Scripts\articles.js" />
+    <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\build-config.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\ckeditor.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\config.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\contents.css" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\lang\en-gb.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\lang\en.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\a11yhelp.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\ar.js" />
@@ -314,37 +339,6 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\templates\templates\images\template1.gif" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\templates\templates\images\template2.gif" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\templates\templates\images\template3.gif" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\ajax.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\api.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\appendto.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\assets\inlineall\logo.png" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\assets\outputxhtml\outputxhtml.css" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\assets\sample.css" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\assets\sample.jpg" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\assets\uilanguages\languages.js" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\divreplace.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\index.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\inlineall.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\inlinebycode.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\dialog\assets\my_dialog.js" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\dialog\dialog.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\enterkey\enterkey.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.swf" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\swfobject.js" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\htmlwriter\outputforflash.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\htmlwriter\outputhtml.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\magicline\magicline.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\toolbar\toolbar.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\wysiwygarea\fullpage.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\readonly.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\replacebyclass.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\replacebycode.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\sample.css" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\sample.js" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\tabindex.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\uicolor.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\uilanguages.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\xhtmlstyle.html" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\dialog.css" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\dialog_ie.css" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\dialog_ie7.css" />
@@ -360,23 +354,63 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\images\close.png" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\images\mini.png" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\styles.js" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\blank.gif" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancybox-x.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancybox-y.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancybox.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_close.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_loading.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_nav_left.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_nav_right.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_shadow_e.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_shadow_n.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_shadow_ne.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_shadow_nw.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_shadow_s.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_shadow_se.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_shadow_sw.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_shadow_w.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_title_left.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_title_main.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_title_over.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\fancy_title_right.png" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\jquery.easing-1.3.pack.js" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\jquery.fancybox-1.3.4.css" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\jquery.fancybox-1.3.4.js" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\jquery.fancybox-1.3.4.pack.js" />
+    <Content Include="Areas\Admin\Content\Editors\fancybox\jquery.mousewheel-3.0.4.pack.js" />
+    <Content Include="Areas\Admin\Content\Images\ajax-loader.gif" />
+    <Content Include="Areas\Admin\Content\Images\layout-area-menu.png" />
     <Content Include="Areas\Admin\Content\Images\button-left.png" />
     <Content Include="Areas\Admin\Content\Images\button-right.png" />
     <Content Include="Areas\Admin\Content\Images\no-image.gif" />
     <Content Include="Areas\Admin\Content\Images\no-image.jpg" />
     <Content Include="Areas\Admin\Content\Images\no-media-selected.jpg" />
     <Content Include="Areas\Admin\Content\Images\pencil.png" />
+    <Content Include="Areas\Admin\Content\less\bootstrap.min.css">
+      <DependentUpon>bootstrap.less</DependentUpon>
+    </Content>
+    <Content Include="Areas\Admin\Content\less\variables.css">
+      <DependentUpon>variables.less</DependentUpon>
+    </Content>
+    <Content Include="Areas\Admin\Content\less\variables.min.css">
+      <DependentUpon>variables.less</DependentUpon>
+    </Content>
     <Content Include="Areas\Admin\Content\Scripts\admin.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\add-page-widget.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-webpage.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\edit-webpage.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\gallery.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\slider.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\portfolio-item.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.formbuilder.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.mrcms-mediaselector.js" />
+    <Content Include="Areas\Admin\Content\Scripts\tag-it.min.js" />
     <Content Include="Areas\Admin\Content\Styles\admin.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.min.css" />
@@ -390,6 +424,24 @@
     <Content Include="Areas\Admin\Content\Styles\fileUpload.css" />
     <Content Include="Areas\Admin\Content\Styles\Images\glyphicons-halflings-white.png" />
     <Content Include="Areas\Admin\Content\Styles\Images\glyphicons-halflings.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-bg_glass_75_ffffff_1x400.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-bg_inset-soft_95_fef1ec_1x100.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_222222_256x240.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_454545_256x240.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_888888_256x240.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_f6cf3b_256x240.png" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery-ui-1.10.0.custom.css" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery-ui-1.9.2.custom.css" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery.ui.1.10.0.ie.css" />
+    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery.ui.1.9.2.ie.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.formbuilder.css" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\cut.png" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\door.png" />
@@ -413,16 +465,16 @@
     <Content Include="Areas\Admin\Content\Styles\Images\jquerytree\treeview-gray.gif" />
     <Content Include="Areas\Admin\Content\Styles\Images\jquerytree\treeview-red-line.gif" />
     <Content Include="Areas\Admin\Content\Styles\Images\jquerytree\treeview-red.gif" />
-    <Content Include="Content\bootstrap\css\bootstrap-responsive.css" />
-    <Content Include="Content\bootstrap\css\bootstrap-responsive.min.css" />
-    <Content Include="Content\bootstrap\css\bootstrap.css" />
-    <Content Include="Content\bootstrap\css\bootstrap.min.css" />
-    <Content Include="Content\bootstrap\img\glyphicons-halflings-white.png" />
-    <Content Include="Content\bootstrap\img\glyphicons-halflings.png" />
-    <Content Include="Content\bootstrap\js\bootstrap.js" />
-    <Content Include="Content\bootstrap\js\bootstrap.min.js" />
-    <Content Include="Content\images\footer-bg.jpg" />
-    <Content Include="Content\images\header-bg.jpg" />
+    <Content Include="Areas\Admin\Content\Styles\jquery.mrcms-mediaselector.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-responsive.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-responsive.min.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.min.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\img\glyphicons-halflings-white.png" />
+    <Content Include="Apps\Core\Content\Bootstrap\img\glyphicons-halflings.png" />
+    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.js" />
+    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
+    <Content Include="Areas\Admin\Content\Styles\jquery.tagit.css" />
     <Content Include="Content\images\install-synchronizing.gif" />
     <Content Include="Content\images\mrcms-logo.png" />
     <Content Include="Content\install\images\bg.gif" />
@@ -445,12 +497,12 @@
     <Content Include="Areas\Admin\Content\less\mixins.css">
       <DependentUpon>mixins.less</DependentUpon>
     </Content>
-    <Content Include="Content\Scripts\front-end-editing.js" />
-    <Content Include="Content\Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Content\Scripts\jquery.validate.min.js" />
-    <Content Include="Content\Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Content\Scripts\respond.min.js" />
-    <Content Include="Content\Styles\style.css" />
+    <Content Include="Areas\Admin\Content\Scripts\front-end-editing.js" />
+    <Content Include="Apps\Core\Content\Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Apps\Core\Content\Scripts\jquery.validate.min.js" />
+    <Content Include="Apps\Core\Content\Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Apps\Core\Content\Scripts\respond.min.js" />
+    <Content Include="Apps\Core\Content\Styles\style.css" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -478,6 +530,7 @@
     <Content Include="Areas\Admin\Content\Styles\themes\base\jquery.ui.slider.css" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\jquery.ui.tabs.css" />
     <Content Include="Areas\Admin\Content\Styles\themes\base\jquery.ui.theme.css" />
+    <Content Include="Docs\UpgradeNotes.txt" />
     <Content Include="Global.asax" />
     <Content Include="Areas\Admin\Content\Scripts\edit-slider.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery-ui-timepicker-addon.js" />
@@ -501,20 +554,40 @@
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\CHANGES.md" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\LICENSE.md" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\README.md" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\assets\posteddata.php" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\sample_posteddata.php" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\readme.md" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Apps\Core\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Apps\Articles\Areas\Admin\Views\Web.config" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\Article.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleList.cshtml" />
+    <Content Include="Apps\Articles\Views\Pages\Article.cshtml" />
+    <Content Include="Apps\Articles\Views\Pages\ArticleList.cshtml" />
+    <Content Include="Apps\Articles\Views\Shared\ShowCategories.cshtml" />
+    <Content Include="Apps\Articles\Views\Web.config" />
+    <Content Include="Apps\Articles\Views\Widgets\LatestXArticles.cshtml" />
+    <Content Include="Apps\Galleries\Areas\Admin\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Apps\Galleries\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Apps\Articles\Views\Widgets\ArticleCategories.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\LatestXArticles.cshtml" />
+    <Content Include="Apps\Galleries\Views\Pages\Gallery.cshtml" />
+    <Content Include="Apps\Galleries\Views\Pages\GalleryList.cshtml" />
+    <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\Gallery.cshtml" />
+    <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryList.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Webpage\SearchPage.cshtml" />
+    <Content Include="Areas\Admin\Content\Scripts\jquery.mrcms-copyandpaste.js" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleCategories.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\tmpl.min.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\less.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -536,7 +609,7 @@
     <Content Include="Areas\Admin\Views\Layout\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Redirect.cshtml" />
-    <Content Include="Views\Widget\PlainTextWidget.cshtml" />
+    <Content Include="Apps\Core\Views\Widgets\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Add.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Sizes.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\MiniUploader.cshtml" />
@@ -545,7 +618,6 @@
     <Content Include="Areas\Admin\Views\User\SetPassword.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\FileList.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\FileSelector.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\CustomLayout.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\AddPageWidget.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\SortWidgets.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\SortWidgets.cshtml" />
@@ -603,7 +675,7 @@
     <Content Include="Areas\Admin\Views\Webpage\ViewPosting.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Versions.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\RemoveMedia.cshtml" />
-    <Content Include="Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Settings.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\SiteList.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
@@ -612,33 +684,83 @@
     <Content Include="Areas\Admin\Views\Sites\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\NavLinks.cshtml" />
-    <Content Include="Views\Shared\AdminEditor.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Pages\SearchPage.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\InPageEditor.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\_BaseLayout.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\SearchPage.cshtml" />
     <Content Include="Views\Login\ForgottenPassword.cshtml" />
     <Content Include="Views\Login\ForgottenPasswordSent.cshtml" />
-    <Content Include="Views\Login\PasswordReset.cshtml" />
-    <Content Include="Views\Login\ResetComplete.cshtml" />
     <Content Include="Areas\Admin\Views\User\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\SiteList.cshtml" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\js\bootstrap.min.js.map">
       <DependentUpon>bootstrap.js</DependentUpon>
     </Content>
+    <Content Include="Areas\Admin\Views\Log\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Log\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\Task\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Task\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Task\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Task\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_LayoutPopup.cshtml" />
+    <Content Include="Areas\Admin\Views\Indexes\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Log\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Log\DeleteLog.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\DefaultEdit.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\Properties.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\SEO.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormProperties.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormPostings.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormMessage.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\PageVersions.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\Permissions.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\PermissionsAdmin.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\Preview.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\RedirectEdit.cshtml" />
+    <Content Include="Areas\Admin\Views\MediaCategory\SortFiles.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Webpage\TextPage.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormProperty.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormPropertyOptions.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\AddProperty.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\EditProperty.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\DeleteProperty.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\AddOption.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\EditOption.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\DeleteOption.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\FormDesign.cshtml" />
+    <Content Include="Areas\Admin\Views\UrlHistory\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\UrlHistory\Add.cshtml" />
+    <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
+    <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
+    <None Include="Properties\PublishProfiles\v0.2.pubxml" />
+    <Content Include="Views\Login\PasswordReset.cshtml" />
+    <Content Include="Views\Login\ResetComplete.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Application\Entities\" />
-    <Folder Include="Application\Models\" />
-    <Folder Include="Application\Services\" />
-    <Folder Include="Application\Settings\" />
+    <Folder Include="Apps\Articles\Controllers\" />
+    <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
+    <Folder Include="Apps\Core\Content\Images\" />
+    <Folder Include="Apps\Core\Entities\" />
+    <Folder Include="Apps\Core\Services\" />
+    <Folder Include="Apps\Core\Settings\" />
+    <Folder Include="Apps\Galleries\Areas\Admin\Controllers\" />
+    <Folder Include="Apps\Galleries\Areas\Admin\Views\Widget\" />
+    <Folder Include="Apps\Galleries\Content\" />
+    <Folder Include="Apps\Galleries\Controllers\" />
+    <Folder Include="Apps\Galleries\DbConfiguration\" />
+    <Folder Include="Apps\Galleries\Entities\" />
+    <Folder Include="Apps\Galleries\Models\" />
+    <Folder Include="Apps\Galleries\Services\" />
+    <Folder Include="Apps\Galleries\Settings\" />
+    <Folder Include="Apps\Galleries\Views\Shared\" />
+    <Folder Include="Apps\Galleries\Views\Widgets\" />
+    <Folder Include="Apps\Galleries\Widgets\" />
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\ckeditor\plugins\showblocks\" />
-    <Folder Include="Scripts\ckeditor\plugins\uicolor\yui\" />
-    <Folder Include="Scripts\ckeditor\themes\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
@@ -650,7 +772,6 @@
     <Content Include="Areas\Admin\Views\Layout\Show.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Add.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\GetTabs.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Media.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Sort.cshtml" />
@@ -678,7 +799,7 @@
     <Content Include="Areas\Admin\Views\Webpage\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Show.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Widget\TextWidget.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\TextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
   </ItemGroup>
@@ -698,11 +819,11 @@
     <Content Include="Areas\Admin\Views\MediaCategory\ImageSelector.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImageList.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImagePreview.cshtml" />
-    <Content Include="Views\Pages\TextPage.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\TextPage.cshtml" />
     <Content Include="Views\Install\Setup.cshtml" />
     <Content Include="Views\Shared\_Installation.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
-    <Content Include="Views\Widget\TextWidget.cshtml" />
+    <Content Include="Apps\Core\Views\Widgets\TextWidget.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -728,7 +849,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>36181</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:36177</IISUrl>
+          <IISUrl>http://localhost:36170</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

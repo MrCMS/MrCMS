@@ -1,0 +1,20 @@
+﻿@model MrCMS.Tasks.ScheduledTask
+	   
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+@using (Html.BeginForm("Add", "Task", FormMethod.Post))
+{
+    <div class="modal-header">
+        <h3>Add Task</h3>
+    </div>
+    <div class="modal-body">
+        @Html.LabelFor(task => task.Type)
+        @Html.DropDownListFor(task => task.Type, Model.GetTypeOptions(), new { data_val = "true", data_val_required = "Please select a task type" })
+        @Html.ValidationMessageFor(task => task.Type)
+        @Html.LabelFor(task => task.EveryXMinutes)
+        @Html.TextBoxFor(task => task.EveryXMinutes)
+        @Html.ValidationMessageFor(task => task.EveryXMinutes)
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn-primary btn" value="Add task" />
+    </div>
+}

@@ -12,11 +12,17 @@ namespace MrCMS.Settings
         [TextArea]
         public string RobotsText { get; set; }
 
-        [DisplayName("Google Analytics Account Number")]
-        public string GoogleAnalytics { get; set; }
-
-        [DisplayName("Tracking Scripts")]
+        [DisplayName("Tracking Scripts (head)")]
         [TextArea]
         public string TrackingScripts { get; set; }
+
+        [DisplayName("Enable css bundling")]
+        public bool EnableCssBundling { get; set; }
+
+        [DisplayName("Enable javascript bundling")]
+        public bool EnableJsBundling { get; set; }
+
+        [DisplayName("Enable HTML Minification")]
+        public bool EnableHtmlMinification { get; set; }
     }
-}
+} 

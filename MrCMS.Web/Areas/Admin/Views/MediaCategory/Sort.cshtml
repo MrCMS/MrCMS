@@ -1,4 +1,5 @@
-﻿@model List<MrCMS.Models.SortItem>
+﻿@using MrCMS.Helpers
+@model List<MrCMS.Models.SortItem>
 @{
     ViewBag.Title = "Sort Catgeories";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -17,35 +18,26 @@
         });
     </script>
 }
-<div class="row-fluid">
-    <div class="span7">
-        <h3>Sort</h3>
-    </div>
-    <div class="span5">
-        <div class="row-fluid">
-            <div class="span10" style="margin: 0; padding: 0;">
-            </div>
-            <div class="span2">
-                <button class="btn btn-primary" id="save" data-form-id="sort-media-category" data-action="save">
-                    Save</button>
-            </div>
-        </div>
-    </div>
-</div>
-<hr class="small-margin" />
 <form method="POST" id="sort-media-category">
-    <ul id="sortable">
-        @for (int i = 0; i < Model.Count; i++)
-        {
-            <li>
-                @Html.HiddenFor(model => model[i].Id)
-                @Html.HiddenFor(model => model[i].Order)
-                <i class="icon-resize-full"></i>&nbsp;&nbsp;
+    <fieldset>
+        <legend>Sort
+        <span class="btn-group  display-inline  pull-right">
+            <button class="btn btn-primary" id="save" data-form-id="sort-media-category" data-action="save">
+                Save</button>
+        </span>
+        </legend>
+
+        <ul id="sortable">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <li>
+                    @Html.HiddenFor(model => model[i].Id)
+                    @Html.HiddenFor(model => model[i].Order)
+                    <i class="icon-resize-full"></i>&nbsp;&nbsp;
                 @Model[i].Name
-            </li>
-        }
-    </ul>
+                </li>
+            }
+        </ul>
+    </fieldset>
 </form>
-<div class="alert alert-info">
-    Drag items in to the order you would like then click save.
-</div>
+@Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")

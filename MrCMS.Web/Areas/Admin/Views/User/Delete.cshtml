@@ -1,11 +1,8 @@
 ﻿@model MrCMS.Entities.People.User
-@{
-    Layout = null;
-}
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 @using (Html.BeginForm("Delete", "User", new { id = Model.Id }, FormMethod.Post))
 {
     <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
         <h3>Delete User</h3>
     </div>
     <div class="modal-body">
@@ -13,7 +10,6 @@
         <br />
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
         <input type="submit" class="btn-primary btn" value="Delete User" />
     </div>
 }

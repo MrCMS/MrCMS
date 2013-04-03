@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Elmah;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+using MrCMS.Apps;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
@@ -19,6 +20,7 @@ using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Optimization;
 using MrCMS.Website.Routing;
 using NHibernate;
 using Ninject;
@@ -34,37 +36,83 @@ namespace MrCMS.Website
     {
         protected void Application_Start()
         {
+            MrCMSApp.RegisterAllApps();
             AreaRegistration.RegisterAllAreas();
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
             RegisterServices(bootstrapper.Kernel);
+            MrCMSApp.RegisterAllServices(bootstrapper.Kernel);
 
             ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
+
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
+
+            ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
         }
 
-        public static User OverriddenUser { get; set; }
+        //public static User OverriddenUser { get; set; }
+
+
+        private static bool IsFileRequest(Uri uri)
+        {
+            var absolutePath = uri.AbsolutePath;
+            if (string.IsNullOrWhiteSpace(absolutePath))
+                return false;
+            var extension = Path.GetExtension(absolutePath);
+
+            return !string.IsNullOrWhiteSpace(extension);
+        }
 
         public override void Init()
         {
-            if (DatabaseIsInstalled)
+            if (CurrentRequestData.DatabaseIsInstalled)
+            {
                 TaskExecutor.SessionFactory = Get<ISessionFactory>();
+                BeginRequest += (sender, args) =>
+                                    {
+                                        if (!IsFileRequest(Request.Url))
+                                        {
+                                            CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
+                                            CurrentRequestData.CurrentSite = Get<ISiteService>().GetCurrentSite();
+                                            CurrentRequestData.SiteSettings = Get<SiteSettings>();
+                                        }
+                                    };
+                AuthenticateRequest += (sender, args) =>
+                                           {
+                                               if (!IsFileRequest(Request.Url))
+                                               {
+                                                   CurrentRequestData.CurrentUser =
+                                                       Get<IUserService>()
+                                                           .GetCurrentUser(CurrentRequestData.CurrentContext);
+                                               }
+                                           };
 
-            EndRequest += (sender, args) => TaskExecutor.StartExecuting();
+                EndRequest += (sender, args) =>
+                                  {
+                                      if (!IsFileRequest(Request.Url))
+                                      {
+                                          if (CurrentRequestData.DatabaseIsInstalled)
+                                              AppendScheduledTasks();
+                                          TaskExecutor.StartExecuting();
+                                      }
+                                  };
+            }
+        }
+
+        protected void AppendScheduledTasks()
+        {
+            var scheduledTaskManager = Get<IScheduledTaskManager>();
+            foreach (var scheduledTask in scheduledTaskManager.GetDueTasks())
+                TaskExecutor.ExecuteLater(scheduledTaskManager.GetTask(scheduledTask));
         }
 
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
         }
-
-        public static ErrorSignal ErrorSignal
-        {
-            get { return OverridenSignal ?? Elmah.ErrorSignal.FromCurrentContext(); }
-        }
-
-        public static ErrorSignal OverridenSignal { get; set; }
 
         public abstract string RootNamespace { get; }
 
@@ -101,7 +149,7 @@ namespace MrCMS.Website
             RegisterAppSpecificRoutes(routes);
 
             routes.Add(new Route("{*data}", new RouteValueDictionary(), new RouteValueDictionary(), GetConstraints(),
-                                 new MrCMSRouteHandler(Get<ISession>, Get<IDocumentService>, Get<SiteSettings>)));
+                                 new MrCMSRouteHandler()));
         }
 
         protected virtual RouteValueDictionary GetConstraints()
@@ -123,23 +171,14 @@ namespace MrCMS.Website
 
         protected abstract void RegisterAppSpecificRoutes(RouteCollection routes);
 
-        public static Layout OverridenDefaultLayout { get; set; }
-        public static Layout GetDefaultLayout(Webpage page)
-        {
-            return OverridenDefaultLayout ?? Get<IDocumentService>().GetDefaultLayout(page);
-        }
-
-        public static User CurrentUser
-        {
-            get { return OverriddenUser ?? Get<IUserService>().GetCurrentUser(CurrentContext); }
-        }
-
-        public static bool UserLoggedIn
-        {
-            get { return CurrentUser != null; }
-        }
+        //public static Layout OverridenDefaultLayout { get; set; }
+        //public static Layout GetDefaultLayout(Webpage page)
+        //{
+        //    return OverridenDefaultLayout ?? Get<IDocumentService>().GetDefaultLayout(page);
+        //}
 
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
+        private static IKernel _kernel;
 
         /// <summary>
         /// Starts the application
@@ -181,17 +220,26 @@ namespace MrCMS.Website
 
         public static IEnumerable<T> GetAll<T>()
         {
-            return bootstrapper.Kernel.GetAll<T>();
+            return Kernel.GetAll<T>();
+        }
+
+        public static void OverrideKernel(IKernel kernel)
+        {
+            _kernel = kernel;
+        }
+        private static IKernel Kernel
+        {
+            get { return _kernel ?? bootstrapper.Kernel; }
         }
 
         public static T Get<T>()
         {
-            return bootstrapper.Kernel.Get<T>();
+            return Kernel.Get<T>();
         }
 
         public static object Get(Type type)
         {
-            return bootstrapper.Kernel.Get(type);
+            return Kernel.Get(type);
         }
 
         public static IEnumerable<Webpage> PublishedRootChildren()
@@ -205,67 +253,13 @@ namespace MrCMS.Website
             return OverridenRootChildren ??
                    Get<ISession>()
                        .QueryOver<Webpage>()
-                       .Where(document => document.Parent == null && document.Site == CurrentSite)
-                       .OrderBy(x => x.DisplayOrder)
-                       .Asc.Cacheable()
-                       .List();
+                       .Where(
+                           document => document.Parent == null && document.Site.Id == CurrentRequestData.CurrentSite.Id)
+                       .Cacheable()
+                       .List().OrderBy(x => x.DisplayOrder);
         }
 
-        public static Site CurrentSite
-        {
-            get {  return OverriddenSite?? Get<ISiteService>().GetCurrentSite(); }
-        }
-
-        public static Site OverriddenSite { get; set; }
-
-        public static Webpage CurrentPage
-        {
-            get { return (Webpage)CurrentContext.Items["current.webpage"]; }
-            set { CurrentContext.Items["current.webpage"] = value; }
-        }
-
-        public static HttpContextBase CurrentContext
-        {
-            get { return OverridenContext ?? new HttpContextWrapper(HttpContext.Current); }
-        }
-
-        public static HttpContextBase OverridenContext { get; set; }
-
-        public static bool CurrentUserIsAdmin
-        {
-            get { return CurrentUser != null && CurrentUser.IsAdmin; }
-        }
-
-        public static SiteSettings OverriddenSiteSettings { get; set; }
-        public static SiteSettings SiteSettings
-        {
-            get { return OverriddenSiteSettings ?? Get<SiteSettings>(); }
-        }
-
-        private static bool? _databaseIsInstalled;
-
-        public static bool DatabaseIsInstalled
-        {
-            get
-            {
-                if (!_databaseIsInstalled.HasValue)
-                {
-                    var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath;
-
-                    var connectionStrings = Path.Combine(applicationPhysicalPath, "ConnectionStrings.config");
-
-                    if (!File.Exists(connectionStrings))
-                    {
-                        File.WriteAllText(connectionStrings, "<connectionStrings></connectionStrings>");
-                    }
-
-                    var connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
-                    _databaseIsInstalled = connectionString != null &&
-                                           !String.IsNullOrEmpty(connectionString.ConnectionString);
-                }
-                return _databaseIsInstalled.Value;
-            }
-            set { _databaseIsInstalled = value; }
-        }
+        public const string AssemblyVersion = "0.2.0.*";
+        public const string AssemblyFileVersion = "0.2.0.0";
     }
 }

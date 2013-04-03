@@ -6,7 +6,7 @@
     using (Html.BeginForm("Files", "File", new { Id = Model.Id }, FormMethod.Post, new { id = "fileupload", enctype = "multipart/form-data", @class = "form-fileUpload" }))
     {
         <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-        <div class="row-fluid fileupload-buttonbar">
+        <div class="row-fluid fileupload-buttonbar margin0">
             <div class="span7">
                 <!-- The fileinput-button span is used to style the file input field as button -->
                 <span class="btn btn-success fileinput-button"><i class="icon-plus icon-white"></i><span>
@@ -43,7 +43,7 @@
         <br />
 
         <!-- The table listing the files available for upload/download -->
-        <table class="table table-striped" id="file-items-table">
+        <table class="table table-striped" id="file-items-table" style="margin-top:-20px;">
             <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
                 @{ Html.RenderAction("Thumbnails", "MediaCategory", Model); }
             </tbody>

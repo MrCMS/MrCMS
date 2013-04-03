@@ -10,31 +10,13 @@
     return $(this);
 };
 $(function () {
-    $("#suggest-url").click(function(e) {
-        e.preventDefault();
-        SuggestUrl();
-    });
-
-    $("#Name").blur(function() {
-        SetStandardUrl();
-    });
 
     $("#Name").delayKeyup(function() {
-        SetStandardUrl();
-    }, 200);
+        setStandardUrl();
+    }, 100);
 
-    function SetStandardUrl() {
+    function setStandardUrl() {
         $("#UrlSegment").val($("#Name").val().trim().replace(/\W/g, '-').toLowerCase());
-    }
-
-    function SuggestUrl() {
-        var pageName = $("#Name").val(),
-            parentId = $("#Parent_Id").val();
-        if (pageName != "") {
-            $.get('/Admin/Webpage/SuggestDocumentUrl', { pageName: pageName, parentId: parentId }, function(data) {
-                $("#UrlSegment").val(data);
-            });
-        }
     }
     
     $("form").validate();

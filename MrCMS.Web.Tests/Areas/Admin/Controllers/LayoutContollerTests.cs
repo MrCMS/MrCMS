@@ -7,7 +7,6 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
-using MrCMS.Web.Application.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
 using Xunit;
@@ -16,31 +15,29 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class LayoutContollerTests
     {
-        private ISiteService _siteService;
         private IDocumentService documentService;
 
         [Fact]
-        public void LayoutController_AddGet_ShouldReturnAddPageModel()
+        public void LayoutController_AddGet_ShouldReturnANewLayoutObject()
         {
             LayoutController layoutController = GetLayoutController();
             var parent = new Layout();
 
-            var actionResult = layoutController.Add_Get(parent) as ViewResult;
+            var actionResult = layoutController.Add_Get(null) as ViewResult;
 
-            actionResult.Model.Should().BeOfType<AddPageModel>();
+            actionResult.Model.Should().BeOfType<Layout>();
         }
 
         [Fact]
-        public void LayoutController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
+        public void LayoutController_AddGet_ShouldSetParentOfModelToParentInMethod()
         {
             LayoutController layoutController = GetLayoutController();
             var parent = new Layout() {Id = 1, Site = layoutController.CurrentSite};
-            A.CallTo(() => documentService.GetDocument<Document>(1))
-             .Returns(parent);
+            A.CallTo(() => documentService.GetDocument<Layout>(1)).Returns(parent);
             
-            var actionResult = layoutController.Add_Get(parent) as ViewResult;
+            var actionResult = layoutController.Add_Get(1) as ViewResult;
 
-            (actionResult.Model as AddPageModel).ParentId.Should().Be(1);
+            actionResult.Model.As<Layout>().Parent.Should().Be(parent);
         }
 
         [Fact]

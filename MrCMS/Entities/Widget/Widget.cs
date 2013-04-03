@@ -15,6 +15,9 @@ namespace MrCMS.Entities.Widget
 
         public virtual string Name { get; set; }
 
+        [DisplayName("Custom Layout (leave blank to use default)")]
+        public virtual string CustomLayout { get; set; }
+
         public virtual string WidgetType { get { return GetType().Name; } }
         public virtual string WidgetTypeFormatted { get { return WidgetType.BreakUpString(); } }
 
@@ -26,10 +29,7 @@ namespace MrCMS.Entities.Widget
         public virtual bool IsRecursive { get; set; }
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
-
-        [DisplayName("Custom Layout (leave blank to use default)")]
-        public virtual string CustomLayout { get; set; }
-
+	
         public virtual object GetModel(ISession session)
         {
             return this;
