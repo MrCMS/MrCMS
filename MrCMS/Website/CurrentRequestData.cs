@@ -7,6 +7,7 @@ using Elmah;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Services;
 using MrCMS.Settings;
 
 namespace MrCMS.Website
@@ -27,7 +28,11 @@ namespace MrCMS.Website
 
         public static Site CurrentSite
         {
-            get { return (Site)CurrentContext.Items["current.site"]; }
+            get
+            {
+                return (Site) CurrentContext.Items["current.site"] ??
+                       (CurrentSite = MrCMSApplication.Get<ISiteService>().GetCurrentSite());
+            }
             set { CurrentContext.Items["current.site"] = value; }
         }
 
@@ -87,7 +92,7 @@ namespace MrCMS.Website
             {
                 if (CurrentUser != null) return CurrentUser.Guid;
                 var o = CurrentContext.Session["current.usersessionGuid"];
-                return (Guid) (o != null ? (Guid) o : (CurrentContext.Session["current.usersessionGuid"] = Guid.NewGuid()));
+                return (Guid)(o != null ? (Guid)o : (CurrentContext.Session["current.usersessionGuid"] = Guid.NewGuid()));
             }
             set { CurrentContext.Session["current.usersessionGuid"] = value; }
         }
