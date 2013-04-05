@@ -13,6 +13,7 @@ $(function() {
         },
         showAutocompleteOnFocus: true,
         singleField: true,
-        placeholderText: "Start typing to add tags."
+        placeholderText: "Start typing to add tags.",
+        allowSpaces: true
     });
 });

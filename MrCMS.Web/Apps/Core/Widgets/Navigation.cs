@@ -19,7 +19,7 @@ namespace MrCMS.Web.Apps.Core.Widgets
         {
             var navigationRecords =
                 session.QueryOver<Webpage>().Where(
-                    webpage => webpage.Parent == null && webpage.PublishOn != null && webpage.PublishOn <= DateTime.Now && webpage.RevealInNavigation).Cacheable()
+                    webpage => webpage.Parent == null && webpage.PublishOn != null && webpage.PublishOn <= DateTime.Now && webpage.RevealInNavigation && webpage.Site == Site).Cacheable()
                        .List().OrderBy(webpage => webpage.DisplayOrder)
                        .Select(webpage => new NavigationRecord
                        {
