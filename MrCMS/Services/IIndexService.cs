@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Website;
 using System.Linq;
 using NHibernate;
+using NHibernate.Criterion;
 
 namespace MrCMS.Services
 {
@@ -18,10 +20,12 @@ namespace MrCMS.Services
     public class IndexService : IIndexService
     {
         private readonly ISession _session;
+        private readonly CurrentSite _site;
 
-        public IndexService(ISession session)
+        public IndexService(ISession session, CurrentSite site)
         {
             _session = session;
+            _site = site;
         }
 
         public List<MrCMSIndex> GetIndexes()
@@ -72,7 +76,7 @@ namespace MrCMS.Services
             var definitionType = TypeHelper.GetTypeByName(typeName);
             var indexManagerBase = GetIndexManagerBase(definitionType);
 
-            var list = _session.CreateCriteria(indexManagerBase.GetEntityType()).List();
+            var list = _session.CreateCriteria(indexManagerBase.GetEntityType()).Add(Restrictions.Eq("SiteId", _site.Id) ).List();
 
             var listInstance =
                 Activator.CreateInstance(typeof(List<>).MakeGenericType(indexManagerBase.GetEntityType()));
