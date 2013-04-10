@@ -30,6 +30,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             WebpageStats countAlias = null;
             Webpage webpageAlias = null;
             var list = _session.QueryOver(() => webpageAlias)
+                .Where(x => x.Site == _siteService.GetCurrentSite())
                        .SelectList(
                            builder =>
                            builder.SelectGroup(() => webpageAlias.DocumentType)

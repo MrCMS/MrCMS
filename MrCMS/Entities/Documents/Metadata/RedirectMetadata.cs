@@ -6,7 +6,6 @@ namespace MrCMS.Entities.Documents.Metadata
     {
         public override string IconClass { get { return "icon-forward"; } }
         public override int DisplayOrder { get { return 6; } }
-        public override ChildrenListType ChildrenListType { get { return ChildrenListType.WhiteList; } }
         public override string EditPartialView { get { return "RedirectEdit"; } }
     }
 }

@@ -12,19 +12,6 @@
 
         <div class="row-fluid">
             <div class="span12">
-    <section class="admin-header">
-        <div class="row-fluid">
-            <div class="span10">
-                <h3>Add Layout</h3>
-            </div>
-            <div class="span2">
-                <button class="btn btn-primary pull-right">Add</button>
-            </div>
-        </div>
-    </section>
-    
-    <div class="row-fluid">
-        <div class="span12">
                 @Html.HiddenFor(x => x.Parent.Id)
                 @Html.LabelFor(x => x.Name)
                 @Html.TextBoxFor(x => x.Name, new { @class = "span12" })

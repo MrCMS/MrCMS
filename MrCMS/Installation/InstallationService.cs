@@ -466,7 +466,7 @@ namespace MrCMS.Installation
             //                        Site = site
             //                    });
 
-            var service = new IndexService(session);
+            var service = new IndexService(session, currentSite);
             IndexService.GetIndexManagerOverride = (indexType, indexDefinitionInterface) => Activator.CreateInstance(
                 typeof (FSDirectoryIndexManager<,>).MakeGenericType(
                     indexDefinitionInterface.GetGenericArguments()[0],
