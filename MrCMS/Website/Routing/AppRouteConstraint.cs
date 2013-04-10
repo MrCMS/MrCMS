@@ -22,6 +22,7 @@ namespace MrCMS.Website.Routing
             if (mrCMSControllerFactory != null)
             {
                 return mrCMSControllerFactory.IsValidControllerType(_appName, values["controller"].ToString(),
+                                                                    !string.IsNullOrWhiteSpace(_area) &&
                                                                     _area.Equals("Admin",
                                                                                  StringComparison.OrdinalIgnoreCase));
             }
