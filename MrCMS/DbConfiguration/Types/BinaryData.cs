@@ -15,8 +15,15 @@ namespace MrCMS.DbConfiguration.Types
             var o = NHibernateUtil.BinaryBlob.NullSafeGet(rs, names[0]) as byte[];
             using (var memoryStream = new MemoryStream(o))
             {
-                var deserialize = binaryFormatter.Deserialize(memoryStream);
-                return deserialize;
+                try
+                {
+                    var deserialize = binaryFormatter.Deserialize(memoryStream);
+                    return deserialize;
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
 
