@@ -118,8 +118,8 @@ namespace MrCMS.Entities.Indexes
             new FieldDefinition<Webpage>("urlsegment", webpage => webpage.UrlSegment, Field.Store.NO,
                                          Field.Index.ANALYZED);
 
-        private static readonly FieldDefinition<Documents.Document> _type =
-            new FieldDefinition<Documents.Document>("type",
+        private static readonly FieldDefinition<Webpage> _type =
+            new FieldDefinition<Webpage>("type",
              webpage => GetAllTypeNames(webpage), Field.Store.NO,
                                          Field.Index.NOT_ANALYZED);
 
@@ -132,20 +132,14 @@ namespace MrCMS.Entities.Indexes
 
         private static IEnumerable<string> GetAllTypeNames(Documents.Document document)
         {
-            if (document is Layout)
-                yield return typeof(Layout).FullName;
-            else if (document is MediaCategory)
-                yield return typeof(MediaCategory).FullName;
-            else
+            var type = document.Unproxy().GetType();
+            while (type != typeof(Webpage))
             {
-                var type = document.Unproxy().GetType();
-                while (type != typeof(Webpage))
-                {
-                    yield return type.FullName;
-                    type = type.BaseType;
-                }
+                yield return type.FullName;
+                type = type.BaseType;
             }
-            yield return typeof(Documents.Document).FullName;
+
+            yield return typeof(Webpage).FullName;
         }
     }
 }
