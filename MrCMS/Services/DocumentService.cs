@@ -11,7 +11,6 @@ using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Paging;
 using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
@@ -34,8 +33,7 @@ namespace MrCMS.Services
 
         public void AddDocument<T>(T document) where T : Document
         {
-            var sameParentDocs =
-                GetDocumentsByParent(document.Parent as T);
+            var sameParentDocs = GetDocumentsByParent(document.Parent as T).ToList();
             document.DisplayOrder = sameParentDocs.Any() ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1 : 0;
             document.CustomInitialization(this, _session);
             _session.Transact(session => session.SaveOrUpdate(document));
@@ -55,10 +53,10 @@ namespace MrCMS.Services
         public T SaveDocument<T>(T document) where T : Document
         {
             _session.Transact(session =>
-                                  {
-                                      document.OnSaving(session);
-                                      session.SaveOrUpdate(document);
-                                  });
+            {
+                document.OnSaving(session);
+                session.SaveOrUpdate(document);
+            });
             return document;
         }
 
@@ -72,7 +70,7 @@ namespace MrCMS.Services
             var uniqueResult =
                 _session.CreateCriteria(type)
                         .Add(Restrictions.Eq(Projections.Property("Site"), _currentSite.Site))
-                        .SetProjection(Projections.RowCount())
+                        .SetProjection(Projections.RowCount()).SetCacheable(true)
                         .UniqueResult<int>();
             return uniqueResult != 0;
         }
@@ -108,8 +106,14 @@ namespace MrCMS.Services
 
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
+            var queryOver = _session.QueryOver<T>().Where(arg => arg.Site.Id == _currentSite.Id);
+
+            queryOver = parent != null
+                            ? queryOver.Where(arg => arg.Parent.Id == parent.Id)
+                            : queryOver.Where(arg => arg.Parent == null);
+
             IEnumerable<T> children =
-                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).Cacheable().List();
+                queryOver.Cacheable().List();
 
             if (parent != null)
             {
@@ -124,8 +128,14 @@ namespace MrCMS.Services
 
         public IEnumerable<T> GetAdminDocumentsByParent<T>(T parent) where T : Document
         {
+            var queryOver = _session.QueryOver<T>().Where(arg => arg.Site.Id == _currentSite.Id);
+
+            queryOver = parent != null
+                            ? queryOver.Where(arg => arg.Parent.Id == parent.Id)
+                            : queryOver.Where(arg => arg.Parent == null);
+
             IEnumerable<T> children =
-                _session.QueryOver<T>().Where(arg => arg.Parent == parent && arg.Site == _currentSite.Site).List();
+                queryOver.Cacheable().List();
 
             if (parent is Webpage)
             {
@@ -213,21 +223,21 @@ namespace MrCMS.Services
             var existingTags = document.Tags.ToList();
 
             tagNames.ForEach(name =>
-                                 {
-                                     var tag = GetTag(name) ?? new Tag { Name = name };
-                                     if (!document.Tags.Contains(tag))
-                                     {
-                                         document.Tags.Add(tag);
-                                         tag.Documents.Add(document);
-                                     }
-                                     existingTags.Remove(tag);
-                                 });
+            {
+                var tag = GetTag(name) ?? new Tag { Name = name };
+                if (!document.Tags.Contains(tag))
+                {
+                    document.Tags.Add(tag);
+                    tag.Documents.Add(document);
+                }
+                existingTags.Remove(tag);
+            });
 
             existingTags.ForEach(tag =>
-                                     {
-                                         document.Tags.Remove(tag);
-                                         tag.Documents.Remove(document);
-                                     });
+            {
+                document.Tags.Remove(tag);
+                tag.Documents.Remove(document);
+            });
         }
 
         private Tag GetTag(string name)
@@ -238,21 +248,21 @@ namespace MrCMS.Services
         public void SetOrder(int documentId, int order)
         {
             _session.Transact(session =>
-                                  {
-                                      var document = session.Get<Document>(documentId);
-                                      document.DisplayOrder = order;
-                                      session.SaveOrUpdate(document);
-                                  });
+            {
+                var document = session.Get<Document>(documentId);
+                document.DisplayOrder = order;
+                session.SaveOrUpdate(document);
+            });
         }
 
         public void SetOrders(List<SortItem> items)
         {
             _session.Transact(session => items.ForEach(item =>
-                                                           {
-                                                               var document = session.Get<Document>(item.Id);
-                                                               document.DisplayOrder = item.Order;
-                                                               session.Update(document);
-                                                           }));
+            {
+                var document = session.Get<Document>(item.Id);
+                document.DisplayOrder = item.Order;
+                session.Update(document);
+            }));
         }
 
         public bool AnyPublishedWebpages()
@@ -278,10 +288,10 @@ namespace MrCMS.Services
             if (document != null)
             {
                 _session.Transact(session =>
-                                      {
-                                          document.OnDeleting(session);
-                                          session.Delete(document);
-                                      });
+                {
+                    document.OnDeleting(session);
+                    session.Delete(document);
+                });
             }
         }
 
@@ -388,37 +398,37 @@ namespace MrCMS.Services
 
             var roles = webpage.FrontEndAllowedRoles.ToList();
 
-                                      if (webpage.InheritFrontEndRolesFromParent)
-                                      {
-                                          roles.ForEach(role =>
-                                                            {
-                                                                role.FrontEndWebpages.Remove(webpage);
-                                                                webpage.FrontEndAllowedRoles.Remove(role);
-                                                            });
-                                      }
-                                      else
-                                      {
-                                          roleNames.ForEach(name =>
-                                                                {
-                                                                    var role = GetRole(name);
-                                                                    if (role != null)
-                                                                    {
-                                                                        if (!webpage.FrontEndAllowedRoles.Contains(role))
-                                                                        {
-                                                                            webpage.FrontEndAllowedRoles.Add(role);
-                                                                            role.FrontEndWebpages.Add(webpage);
-                                                                        }
-                                                                        roles.Remove(role);
-                                                                    }
+            if (webpage.InheritFrontEndRolesFromParent)
+            {
+                roles.ForEach(role =>
+                {
+                    role.FrontEndWebpages.Remove(webpage);
+                    webpage.FrontEndAllowedRoles.Remove(role);
+                });
+            }
+            else
+            {
+                roleNames.ForEach(name =>
+                {
+                    var role = GetRole(name);
+                    if (role != null)
+                    {
+                        if (!webpage.FrontEndAllowedRoles.Contains(role))
+                        {
+                            webpage.FrontEndAllowedRoles.Add(role);
+                            role.FrontEndWebpages.Add(webpage);
+                        }
+                        roles.Remove(role);
+                    }
 
-                                                                });
+                });
 
-                                          roles.ForEach(role =>
-                                                            {
-                                                                webpage.FrontEndAllowedRoles.Remove(role);
-                                                                role.FrontEndWebpages.Remove(webpage);
-                                                            });
-                                      }
+                roles.ForEach(role =>
+                {
+                    webpage.FrontEndAllowedRoles.Remove(role);
+                    role.FrontEndWebpages.Remove(webpage);
+                });
+            }
 
         }
 
@@ -440,33 +450,33 @@ namespace MrCMS.Services
 
             var roles = webpage.AdminAllowedRoles.ToList();
 
-                                      if (webpage.InheritAdminRolesFromParent)
-                                      {
-                                          roles.ForEach(role =>
-                                                            {
-                                                                role.AdminWebpages.Remove(webpage);
-                                                                webpage.AdminAllowedRoles.Remove(role);
-                                                            });
-                                      }
-                                      else
-                                      {
-                                          roleNames.ForEach(name =>
-                                                                {
-                                                                    var role = GetRole(name);
-                                                                    if (!webpage.AdminAllowedRoles.Contains(role))
-                                                                    {
-                                                                        webpage.AdminAllowedRoles.Add(role);
-                                                                        role.AdminWebpages.Add(webpage);
-                                                                    }
-                                                                    roles.Remove(role);
-                                                                });
+            if (webpage.InheritAdminRolesFromParent)
+            {
+                roles.ForEach(role =>
+                {
+                    role.AdminWebpages.Remove(webpage);
+                    webpage.AdminAllowedRoles.Remove(role);
+                });
+            }
+            else
+            {
+                roleNames.ForEach(name =>
+                {
+                    var role = GetRole(name);
+                    if (!webpage.AdminAllowedRoles.Contains(role))
+                    {
+                        webpage.AdminAllowedRoles.Add(role);
+                        role.AdminWebpages.Add(webpage);
+                    }
+                    roles.Remove(role);
+                });
 
-                                          roles.ForEach(role =>
-                                                            {
-                                                                webpage.AdminAllowedRoles.Remove(role);
-                                                                role.AdminWebpages.Remove(webpage);
-                                                            });
-                                      }
+                roles.ForEach(role =>
+                {
+                    webpage.AdminAllowedRoles.Remove(role);
+                    role.AdminWebpages.Remove(webpage);
+                });
+            }
         }
 
         public T GetDocumentByUrl<T>(string url) where T : Document

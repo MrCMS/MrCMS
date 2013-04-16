@@ -5,14 +5,15 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Util;
+using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Utils;
 using MrCMS.Website;
 using NHibernate;
-using NHibernate.Criterion;
-using EnumerableHelper = MrCMS.Helpers.EnumerableHelper;
 
 namespace MrCMS.Entities.Indexes
 {
@@ -31,8 +32,42 @@ namespace MrCMS.Entities.Indexes
                                          Field.Index.ANALYZED);
 
         private static readonly FieldDefinition<Documents.Document> _type =
-            new FieldDefinition<Documents.Document>("type", webpage => webpage.GetType().FullName, Field.Store.NO,
-                                         Field.Index.ANALYZED);
+            new FieldDefinition<Documents.Document>("type",
+             webpage => GetAllTypeNames(webpage), Field.Store.NO,
+                                         Field.Index.NOT_ANALYZED);
+
+
+        private static readonly FieldDefinition<Documents.Document> _parentId =
+            new FieldDefinition<Documents.Document>("parentid", webpage => GetParentIds(webpage), Field.Store.NO,
+                                         Field.Index.NOT_ANALYZED);
+
+        private static IEnumerable<string> GetAllTypeNames(Documents.Document document)
+        {
+            if (document is Layout)
+                yield return typeof(Layout).FullName;
+            else if (document is MediaCategory)
+                yield return typeof(MediaCategory).FullName;
+            else
+            {
+                var type = document.Unproxy().GetType();
+                while (type != typeof(Webpage))
+                {
+                    yield return type.FullName;
+                    type = type.BaseType;
+                }
+            }
+            yield return typeof(Documents.Document).FullName;
+        }
+
+        private static IEnumerable<string> GetParentIds(Documents.Document webpage)
+        {
+            var parent = webpage.Parent;
+            while (parent != null)
+            {
+                yield return parent.Id.ToString();
+                parent = parent.Parent;
+            }
+        }
 
         public Documents.Document Convert(ISession session, Document document)
         {
@@ -41,12 +76,7 @@ namespace MrCMS.Entities.Indexes
 
         public IEnumerable<Documents.Document> Convert(ISession session, IEnumerable<Document> documents)
         {
-            List<int> ids = documents.Select(document => document.GetValue<int>("id")).ToList();
-            return
-                EnumerableHelper.Chunk(ids, 100)
-                   .SelectMany(
-                       ints =>
-                       session.QueryOver<Documents.Document>().Where(webpage => webpage.Id.IsIn(ints.ToList())).List());
+            return documents.Select(document => Convert(session, document));
         }
 
         public string GetLocation(CurrentSite currentSite)
@@ -69,13 +99,15 @@ namespace MrCMS.Entities.Indexes
                 yield return Name;
                 yield return Type;
                 yield return UrlSegment;
+                yield return ParentId;
             }
         }
 
-        public FieldDefinition<Documents.Document> Id { get { return _id; } }
-        public FieldDefinition<Documents.Document> Name { get { return _name; } }
-        public FieldDefinition<Documents.Document> Type { get { return _type; } }
-        public FieldDefinition<Documents.Document> UrlSegment { get { return _urlSegment; } }
+        public static FieldDefinition<Documents.Document> Id { get { return _id; } }
+        public static FieldDefinition<Documents.Document> Name { get { return _name; } }
+        public static FieldDefinition<Documents.Document> Type { get { return _type; } }
+        public static FieldDefinition<Documents.Document> UrlSegment { get { return _urlSegment; } }
+        public static FieldDefinition<Documents.Document> ParentId { get { return _parentId; } }
 
 
 
@@ -92,19 +124,6 @@ namespace MrCMS.Entities.Indexes
         public Term GetIndex(Documents.Document entity)
         {
             return new Term("id", entity.Id.ToString());
-        }
-
-        private string GetDocumentType(Documents.Document document)
-        {
-            switch (document.Unproxy().GetType().Name)
-            {
-                case "Layout":
-                    return "Layout";
-                case "MediaCategory":
-                    return "MediaCategory";
-                default:
-                    return "Webpage";
-            }
         }
     }
 }

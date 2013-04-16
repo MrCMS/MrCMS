@@ -34,16 +34,23 @@ namespace MrCMS.Indexing.Management
         public Field.Store Store { get; set; }
         public Field.Index Index { get; set; }
     }
-    public class FieldDefinition<T> :FieldDefinition
+    public class FieldDefinition<T> : FieldDefinition
     {
-        public FieldDefinition(string fieldName, Func<T, string> getValue, Field.Store store, Field.Index index)
+        public FieldDefinition(string fieldName, Func<T, IEnumerable<string>> getValues, Field.Store store, Field.Index index)
         {
             FieldName = fieldName;
-            GetValue = getValue;
+            GetValues = getValues;
             Store = store;
             Index = index;
         }
-        
-        public Func<T, string> GetValue { get; set; }
+        public FieldDefinition(string fieldName, Func<T, string> getValue, Field.Store store, Field.Index index)
+        {
+            FieldName = fieldName;
+            GetValues = arg => new List<string> {getValue(arg)};
+            Store = store;
+            Index = index;
+        }
+
+        public Func<T, IEnumerable<string>> GetValues { get; set; }
     }
 }
