@@ -86,6 +86,15 @@ namespace MrCMS.Website.Routing
                     context.Response.RedirectPermanent("~/" + historyItemByUrl.Webpage.LiveUrlSegment);
                     return true;
                 }
+                if (context.Request.Url != null)
+                {
+                    var historyItemByUrlContent = _documentService.GetHistoryItemByUrl(context.Request.Url.PathAndQuery.TrimStart('/'));
+                    if (historyItemByUrlContent != null)
+                    {
+                        context.Response.RedirectPermanent("~/" + historyItemByUrlContent.Webpage.LiveUrlSegment);
+                        return true;
+                    }
+                }
             }
             return false;
         }

@@ -13,19 +13,7 @@
     });
     return $(this);
 };
-$(function () {
-    $("#UrlSegment").blur(function () {
-            setStandardUrl();
-    });
 
-    $("#UrlSegment").delayKeyup(function () {
-        setStandardUrl();
-    }, 200);
-
-    function setStandardUrl() {
-        $("#UrlSegment").val($("#UrlSegment").val().trim().replace(/[^a-zA-Z0-9-/]/g, '-').toLowerCase());
-    }
-});
 </script>
 }
 
