@@ -77,7 +77,8 @@
     });
     
     $("#MetaKeywords").tagit({
-        tagLimit: 15
+        tagLimit: 15,
+        allowSpaces: true
     });
 });
 //Show the accordion which was last shown for layout areas.
