@@ -76,7 +76,7 @@ namespace MrCMS.Services
             var definitionType = TypeHelper.GetTypeByName(typeName);
             var indexManagerBase = GetIndexManagerBase(definitionType);
 
-            var list = _session.CreateCriteria(indexManagerBase.GetEntityType()).Add(Restrictions.Eq("SiteId", _site.Id) ).List();
+            var list = _session.CreateCriteria(indexManagerBase.GetEntityType()).Add(Restrictions.Eq("Site.Id", _site.Id) ).List();
 
             var listInstance =
                 Activator.CreateInstance(typeof(List<>).MakeGenericType(indexManagerBase.GetEntityType()));
