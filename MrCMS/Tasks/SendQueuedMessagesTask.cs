@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Mail;
 using Elmah;
 using MrCMS.Entities.Messaging;
+using MrCMS.Logging;
 using MrCMS.Settings;
 using MrCMS.Website;
 
@@ -68,7 +69,16 @@ namespace MrCMS.Tasks
             catch (Exception exception)
             {
                 // TODO: Make this work without HTTP context
-                Elmah.ErrorLog.GetDefault(null).Log(new Error(exception));
+                //Elmah.ErrorLog.GetDefault(null).Log(new Error(exception));
+                var error = new Error(exception);
+                Session.SaveOrUpdate(new Log
+                    {
+                        Error = error,
+                        Type = LogEntryType.Error,
+                        Site = queuedMessage.Site,
+                        Message = error.Message,
+                        Detail = error.Detail
+                    });
                 queuedMessage.Tries++;
             }
         }
