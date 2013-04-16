@@ -18,7 +18,6 @@ namespace MrCMS.Entities.People
             Guid = Guid.NewGuid();
         }
 
-        [Required]
         [DisplayName("First Name")]
         public virtual string FirstName { get; set; }
         [DisplayName("Last Name")]

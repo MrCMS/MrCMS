@@ -28,6 +28,7 @@ namespace MrCMS.Website
                     mrCMSHttpHandler.SetRequestContext(new RequestContext(filterContext.HttpContext,
                                                                           routeData));
                     mrCMSHttpHandler.Handle403(filterContext.HttpContext);
+                    filterContext.Result = new EmptyResult();
                 }
                 else
                 {
