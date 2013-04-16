@@ -13,7 +13,6 @@ namespace MrCMS.Entities.Documents.Web
         [Required]
         [DisplayName("Url Segment")]
         [Remote("ValidateUrlIsAllowed", "UrlHistory")]
-        [RegularExpression("[a-zA-Z0-9\\-\\.\\~\\/_\\\\]+$", ErrorMessage = "Url must alphanumeric characters only with dashes or underscore for spaces.")]
         public virtual string UrlSegment { get; set; }
 
         public virtual Webpage Webpage { get; set; }
