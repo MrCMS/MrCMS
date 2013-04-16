@@ -55,6 +55,7 @@ namespace MrCMS.Entities.Indexes
                     yield return type.FullName;
                     type = type.BaseType;
                 }
+                yield return typeof(Webpage).FullName;
             }
             yield return typeof(Documents.Document).FullName;
         }
