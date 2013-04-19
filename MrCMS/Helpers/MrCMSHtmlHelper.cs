@@ -344,7 +344,21 @@ namespace MrCMS.Helpers
                 ViewEngines.Engines.FindView(
                     new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller),
                     model.GetType().Name, "");
-            return viewEngineResult.View != null ? htmlHelper.Partial(model.GetType().Name, model) : MvcHtmlString.Empty;
+            if (viewEngineResult.View != null)
+            {
+                try
+                {
+                    return htmlHelper.Partial(model.GetType().Name, model);
+                }
+                catch (Exception exception)
+                {
+                    CurrentRequestData.ErrorSignal.Raise(exception);
+                    return
+                        MvcHtmlString.Create(
+                            "We tried to load a view for the admin properties but an error occurred, which has been logged.");
+                }
+            }
+            return MvcHtmlString.Empty;
         }
 
         public static MvcHtmlString RenderValue(this HtmlHelper htmlHelper, object value)
@@ -599,7 +613,7 @@ namespace MrCMS.Helpers
             }
             return tempData["info-message"] as List<string>;
         }
-        
+
         public static MvcHtmlString InfoBlock(this HtmlHelper helper, string boldText, string text)
         {
             var tagBulder = new TagBuilder("div");
