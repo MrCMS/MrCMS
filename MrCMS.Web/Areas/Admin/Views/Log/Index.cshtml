@@ -1,33 +1,23 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Logging
-@model MrCMS.Paging.IPagedList<MrCMS.Logging.Log>
+@model MrCMS.Paging.IPagedList<Log>
 @{
     ViewBag.Title = "Logs";
 }
-
 @using (Html.BeginForm())
 {
     <fieldset>
-        <legend>Logs
-
+        <legend>Logs 
             <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Back to list", "Index", "Sites", null, new { @class = "btn" })
-                <button class="btn btn-primary">
-                    Save</button>
+                <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">
+                    Delete logs</a>
+                <input class="btn btn-primary" type="submit" value="Update" />
             </span>
         </legend>
-
+        @Html.Label("type", "Filter logs")
         @Html.DropDownList("type", Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type.ToString() == Request["type"], "All"))
-        <p></p>
-
-        <div class="btn-group">
-            <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">Delete logs</a>
-            <input class="btn btn-primary" type="submit" value="Update" />
-        </div>
     </fieldset>
-            
 }
-
 @if (Model.Count == 0)
 {
     @:No logs.
@@ -36,13 +26,17 @@ else
 {
     <table class="table table-striped table-condensed" style="overflow: scroll">
         <tr>
-            <th>Date
+            <th>
+                Date
             </th>
-            <th>Message
+            <th>
+                Message
             </th>
-            <th>Type 
+            <th>
+                Type
             </th>
-            <th>Actions
+            <th>
+                Actions
             </th>
         </tr>
         @foreach (var entry in Model)
@@ -64,5 +58,4 @@ else
         }
     </table>
 }
-
 @Html.Pager(Model, "Index", i => new { page = i })

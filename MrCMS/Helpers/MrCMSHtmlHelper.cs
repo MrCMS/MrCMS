@@ -254,15 +254,19 @@ namespace MrCMS.Helpers
                                                      Expression<Func<TModel, bool>> expression, object labelAttributes, object checkboxAttributes,
                                                      string text = null)
         {
-            var checkbox = (CheckBoxHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData), ExpressionHelper.GetExpressionText(expression), expression.Compile()(htmlHelper.ViewData.Model), AnonymousObjectToHtmlAttributes(checkboxAttributes)).ToHtmlString());
+            var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+            var htmlFieldName = ExpressionHelper.GetExpressionText(expression);
+            var checkbox = (CheckBoxHelper(htmlHelper, metadata, htmlFieldName, expression.Compile()(htmlHelper.ViewData.Model), AnonymousObjectToHtmlAttributes(checkboxAttributes)).ToHtmlString());
             var labelHtmlAttributes = AnonymousObjectToHtmlAttributes(labelAttributes);
             // add checkbox style to label, for Bootstrap
             if (labelHtmlAttributes.ContainsKey("class"))
                 labelHtmlAttributes["class"] += " checkbox";
             else
                 labelHtmlAttributes["class"] = "checkbox";
-            return LabelHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData),
-                               ExpressionHelper.GetExpressionText(expression),
+
+            text = text ?? metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
+            return LabelHelper(htmlHelper, metadata,
+                               htmlFieldName,
                                labelHtmlAttributes,
                                checkbox + text);
         }
@@ -344,7 +348,21 @@ namespace MrCMS.Helpers
                 ViewEngines.Engines.FindView(
                     new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller),
                     model.GetType().Name, "");
-            return viewEngineResult.View != null ? htmlHelper.Partial(model.GetType().Name, model) : MvcHtmlString.Empty;
+            if (viewEngineResult.View != null)
+            {
+                try
+                {
+                    return htmlHelper.Partial(model.GetType().Name, model);
+                }
+                catch (Exception exception)
+                {
+                    CurrentRequestData.ErrorSignal.Raise(exception);
+                    return
+                        MvcHtmlString.Create(
+                            "We tried to load a view for the admin properties but an error occurred, which has been logged.");
+                }
+            }
+            return MvcHtmlString.Empty;
         }
 
         public static MvcHtmlString RenderValue(this HtmlHelper htmlHelper, object value)
@@ -599,7 +617,7 @@ namespace MrCMS.Helpers
             }
             return tempData["info-message"] as List<string>;
         }
-        
+
         public static MvcHtmlString InfoBlock(this HtmlHelper helper, string boldText, string text)
         {
             var tagBulder = new TagBuilder("div");
