@@ -254,15 +254,19 @@ namespace MrCMS.Helpers
                                                      Expression<Func<TModel, bool>> expression, object labelAttributes, object checkboxAttributes,
                                                      string text = null)
         {
-            var checkbox = (CheckBoxHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData), ExpressionHelper.GetExpressionText(expression), expression.Compile()(htmlHelper.ViewData.Model), AnonymousObjectToHtmlAttributes(checkboxAttributes)).ToHtmlString());
+            var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+            var htmlFieldName = ExpressionHelper.GetExpressionText(expression);
+            var checkbox = (CheckBoxHelper(htmlHelper, metadata, htmlFieldName, expression.Compile()(htmlHelper.ViewData.Model), AnonymousObjectToHtmlAttributes(checkboxAttributes)).ToHtmlString());
             var labelHtmlAttributes = AnonymousObjectToHtmlAttributes(labelAttributes);
             // add checkbox style to label, for Bootstrap
             if (labelHtmlAttributes.ContainsKey("class"))
                 labelHtmlAttributes["class"] += " checkbox";
             else
                 labelHtmlAttributes["class"] = "checkbox";
-            return LabelHelper(htmlHelper, ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData),
-                               ExpressionHelper.GetExpressionText(expression),
+
+            text = text ?? metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
+            return LabelHelper(htmlHelper, metadata,
+                               htmlFieldName,
                                labelHtmlAttributes,
                                checkbox + text);
         }
