@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Settings;
 
 namespace MrCMS.Website
 {
@@ -23,6 +24,8 @@ namespace MrCMS.Website
         public MrCMSRazorViewEngine(IViewPageActivator viewPageActivator)
         {
             _viewPageActivator = viewPageActivator;
+
+            //Apps
             AppViewLocationFormats = new[] {
                 "~/Apps/{3}/Areas/{2}/Views/{1}/{0}.cshtml", 
                 "~/Apps/{3}/Areas/{2}/Views/{1}/{0}.vbhtml",
@@ -58,8 +61,31 @@ namespace MrCMS.Website
                 "~/Apps/{3}/Views/Widgets/{0}.vbhtml"
             };
 
+            //Themes
+            ThemeViewLocationFormats = new[] {
+                "~/Themes/{4}/Views/{1}/{0}.cshtml",
+                "~/Themes/{4}/Views/{1}/{0}.vbhtml", 
+                "~/Themes/{4}/Views/Shared/{0}.cshtml", 
+                "~/Themes/{4}/Views/Shared/{0}.vbhtml",
+                "~/Themes/{4}/Views/Pages/{0}.cshtml",
+                "~/Themes/{4}/Views/Pages/{0}.vbhtml"
+            };
+            ThemeMasterLocationFormats = new[] { 
+                "~/Themes/{4}/Views/{1}/{0}.cshtml",
+                "~/Themes/{4}/Views/{1}/{0}.vbhtml", 
+                "~/Themes/{4}/Views/Shared/{0}.cshtml", 
+                "~/Themes/{4}/Views/Shared/{0}.vbhtml"
+            };
+            ThemePartialViewLocationFormats = new[] {
+                "~/Themes/{4}/Views/{1}/{0}.cshtml",
+                "~/Themes/{4}/Views/{1}/{0}.vbhtml", 
+                "~/Themes/{4}/Views/Shared/{0}.cshtml", 
+                "~/Themes/{4}/Views/Shared/{0}.vbhtml",
+                "~/Themes/{4}/Views/Widgets/{0}.cshtml",
+                "~/Themes/{4}/Views/Widgets/{0}.vbhtml"
+            };
 
-
+            //MVC Default
             AreaViewLocationFormats = new[] {
                 "~/Areas/{2}/Views/{1}/{0}.cshtml", 
                 "~/Areas/{2}/Views/{1}/{0}.vbhtml",
@@ -165,7 +191,7 @@ namespace MrCMS.Website
     public abstract class MrCMSVirtualPathProviderViewEngine : IViewEngine
     {
         // format is ":ViewCacheEntry:{cacheType}:{prefix}:{name}:{controllerName}:{areaName}:"
-        private const string _cacheKeyFormat = ":ViewCacheEntry:{0}:{1}:{2}:{3}:{4}:";
+        private const string _cacheKeyFormat = ":ViewCacheEntry:{0}:{1}:{2}:{3}:{4}:{5}:{6}:";
         private const string _cacheKeyPrefix_Master = "Master";
         private const string _cacheKeyPrefix_Partial = "Partial";
         private const string _cacheKeyPrefix_View = "View";
@@ -175,95 +201,50 @@ namespace MrCMS.Website
         internal Func<string, string> GetExtensionThunk = VirtualPathUtility.GetExtension;
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] AppMasterLocationFormats
-        {
-            get;
-            set;
-        }
+        public string[] AppMasterLocationFormats { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] AreaMasterLocationFormats
-        {
-            get;
-            set;
-        }
+        public string[] AppPartialViewLocationFormats { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] AppPartialViewLocationFormats
-        {
-            get;
-            set;
-        }
+        public string[] AppViewLocationFormats { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] AreaPartialViewLocationFormats
-        {
-            get;
-            set;
-        }
+        public string[] ThemeMasterLocationFormats { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] AppViewLocationFormats
-        {
-            get;
-            set;
-        }
+        public string[] ThemePartialViewLocationFormats { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] AreaViewLocationFormats
-        {
-            get;
-            set;
-        }
+        public string[] ThemeViewLocationFormats { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] FileExtensions
-        {
-            get;
-            set;
-        }
+        public string[] AreaMasterLocationFormats { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] MasterLocationFormats
-        {
-            get;
-            set;
-        }
+        public string[] AreaPartialViewLocationFormats { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] PartialViewLocationFormats
-        {
-            get;
-            set;
-        }
-
-        public IViewLocationCache ViewLocationCache
-        {
-            get;
-            set;
-        }
+        public string[] AreaViewLocationFormats { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] ViewLocationFormats
-        {
-            get;
-            set;
-        }
+        public string[] FileExtensions { get; set; }
+
+        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
+        public string[] MasterLocationFormats { get; set; }
+
+        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
+        public string[] PartialViewLocationFormats { get; set; }
+
+        public IViewLocationCache ViewLocationCache { get; set; }
+
+        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
+        public string[] ViewLocationFormats { get; set; }
 
         protected VirtualPathProvider VirtualPathProvider
         {
-            get
-            {
-                if (_vpp == null)
-                {
-                    _vpp = HostingEnvironment.VirtualPathProvider;
-                }
-                return _vpp;
-            }
-            set
-            {
-                _vpp = value;
-            }
+            get { return _vpp ?? (_vpp = HostingEnvironment.VirtualPathProvider); }
+            set { _vpp = value; }
         }
 
         protected MrCMSVirtualPathProviderViewEngine()
@@ -278,10 +259,11 @@ namespace MrCMS.Website
             }
         }
 
-        private string CreateCacheKey(string prefix, string name, string controllerName, string areaName)
+        private string CreateCacheKey(string prefix, string name, string controllerName, string areaName, string appName, string themeName)
         {
-            return String.Format(CultureInfo.InvariantCulture, _cacheKeyFormat,
-                GetType().AssemblyQualifiedName, prefix, name, controllerName, areaName);
+            return string.Format(CultureInfo.InvariantCulture, _cacheKeyFormat,
+                                 GetType().AssemblyQualifiedName, prefix, name, controllerName, areaName, appName,
+                                 themeName);
         }
 
         protected abstract IView CreatePartialView(ControllerContext controllerContext, string partialPath);
@@ -299,16 +281,16 @@ namespace MrCMS.Website
             {
                 throw new ArgumentNullException("controllerContext");
             }
-            if (String.IsNullOrEmpty(partialViewName))
+            if (string.IsNullOrEmpty(partialViewName))
             {
                 throw new ArgumentException("Argument null or empty", "partialViewName");
             }
 
             string[] searched;
             string controllerName = controllerContext.RouteData.GetRequiredString("controller");
-            string partialPath = GetPath(controllerContext, PartialViewLocationFormats, AreaPartialViewLocationFormats, AppPartialViewLocationFormats, "PartialViewLocationFormats", partialViewName, controllerName, _cacheKeyPrefix_Partial, useCache, out searched);
+            string partialPath = GetPath(controllerContext, PartialViewLocationFormats, AreaPartialViewLocationFormats, AppPartialViewLocationFormats, ThemePartialViewLocationFormats, "PartialViewLocationFormats", partialViewName, controllerName, _cacheKeyPrefix_Partial, useCache, out searched);
 
-            if (String.IsNullOrEmpty(partialPath))
+            if (string.IsNullOrEmpty(partialPath))
             {
                 return new ViewEngineResult(searched);
             }
@@ -322,7 +304,7 @@ namespace MrCMS.Website
             {
                 throw new ArgumentNullException("controllerContext");
             }
-            if (String.IsNullOrEmpty(viewName))
+            if (string.IsNullOrEmpty(viewName))
             {
                 throw new ArgumentException("Argument null or empty", "viewName");
             }
@@ -331,10 +313,10 @@ namespace MrCMS.Website
             string[] masterLocationsSearched;
 
             string controllerName = controllerContext.RouteData.GetRequiredString("controller");
-            string viewPath = GetPath(controllerContext, ViewLocationFormats, AreaViewLocationFormats, AppViewLocationFormats, "ViewLocationFormats", viewName, controllerName, _cacheKeyPrefix_View, useCache, out viewLocationsSearched);
-            string masterPath = GetPath(controllerContext, MasterLocationFormats, AreaMasterLocationFormats, AppMasterLocationFormats, "MasterLocationFormats", masterName, controllerName, _cacheKeyPrefix_Master, useCache, out masterLocationsSearched);
+            string viewPath = GetPath(controllerContext, ViewLocationFormats, AreaViewLocationFormats, AppViewLocationFormats, ThemeViewLocationFormats, "ViewLocationFormats", viewName, controllerName, _cacheKeyPrefix_View, useCache, out viewLocationsSearched);
+            string masterPath = GetPath(controllerContext, MasterLocationFormats, AreaMasterLocationFormats, AppMasterLocationFormats, ThemeMasterLocationFormats, "MasterLocationFormats", masterName, controllerName, _cacheKeyPrefix_Master, useCache, out masterLocationsSearched);
 
-            if (String.IsNullOrEmpty(viewPath) || (String.IsNullOrEmpty(masterPath) && !String.IsNullOrEmpty(masterName)))
+            if (string.IsNullOrEmpty(viewPath) || (string.IsNullOrEmpty(masterPath) && !string.IsNullOrEmpty(masterName)))
             {
                 return new ViewEngineResult(viewLocationsSearched.Union(masterLocationsSearched));
             }
@@ -342,47 +324,49 @@ namespace MrCMS.Website
             return new ViewEngineResult(CreateView(controllerContext, viewPath, masterPath), this);
         }
 
-        private string GetPath(ControllerContext controllerContext, string[] locations, string[] areaLocations, string[] appLocations, string locationsPropertyName, string name, string controllerName, string cacheKeyPrefix, bool useCache, out string[] searchedLocations)
+        private string GetPath(ControllerContext controllerContext, string[] locations, string[] areaLocations, string[] appLocations, string[] themeLocations, string locationsPropertyName, string name, string controllerName, string cacheKeyPrefix, bool useCache, out string[] searchedLocations)
         {
             searchedLocations = _emptyLocations;
 
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
-                return String.Empty;
+                return string.Empty;
             }
 
             string areaName = GetAreaName(controllerContext.RouteData);
             string appName = GetAppName(controllerContext.RouteData);
-            bool usingAreas = !String.IsNullOrEmpty(areaName);
-            bool usingApps = !String.IsNullOrEmpty(appName);
-            List<ViewLocation> viewLocations = GetViewLocations(locations, (usingAreas) ? areaLocations : null,
-                                                                (usingApps) ? appLocations : null);
+            string themeName = GetThemeName();
+            bool usingAreas = !string.IsNullOrEmpty(areaName);
+            bool usingApps = !string.IsNullOrEmpty(appName);
+            bool usingTheme = !string.IsNullOrEmpty(themeName);
+            List<ViewLocation> viewLocations = GetViewLocations(locations, (usingAreas) ? areaLocations : null, (usingApps) ? appLocations : null, (usingTheme) ? themeLocations : null);
 
             if (viewLocations.Count == 0)
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
                                                                   "Property {0} cannot be null or empty",
                                                                   locationsPropertyName));
 
             bool nameRepresentsPath = IsSpecificPath(name);
-            string cacheKey = CreateCacheKey(cacheKeyPrefix, name, (nameRepresentsPath) ? String.Empty : controllerName, areaName);
+            string cacheKey = CreateCacheKey(cacheKeyPrefix, name, (nameRepresentsPath) ? string.Empty : controllerName,
+                                             areaName, appName, themeName);
 
             return useCache
                        ? ViewLocationCache.GetViewLocation(controllerContext.HttpContext, cacheKey)
                        : ((nameRepresentsPath)
                               ? GetPathFromSpecificName(controllerContext, name, cacheKey, ref searchedLocations)
                               : GetPathFromGeneralName(controllerContext, viewLocations, name, controllerName, areaName,
-                                                       appName, cacheKey, ref searchedLocations));
+                                                       appName, themeName, cacheKey, ref searchedLocations));
         }
 
-        private string GetPathFromGeneralName(ControllerContext controllerContext, List<ViewLocation> locations, string name, string controllerName, string areaName, string appName, string cacheKey, ref string[] searchedLocations)
+        private string GetPathFromGeneralName(ControllerContext controllerContext, List<ViewLocation> locations, string name, string controllerName, string areaName, string appName, string themeName, string cacheKey, ref string[] searchedLocations)
         {
-            string result = String.Empty;
+            string result = string.Empty;
             searchedLocations = new string[locations.Count];
 
             for (int i = 0; i < locations.Count; i++)
             {
                 ViewLocation location = locations[i];
-                string virtualPath = location.Format(name, controllerName, areaName, appName);
+                string virtualPath = location.Format(name, controllerName, areaName, appName, themeName);
 
                 if (FileExists(controllerContext, virtualPath))
                 {
@@ -404,7 +388,7 @@ namespace MrCMS.Website
 
             if (!(FilePathIsSupported(name) && FileExists(controllerContext, name)))
             {
-                result = String.Empty;
+                result = string.Empty;
                 searchedLocations = new[] { name };
             }
 
@@ -425,9 +409,14 @@ namespace MrCMS.Website
             return FileExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
         }
 
-        private static List<ViewLocation> GetViewLocations(string[] viewLocationFormats, string[] areaViewLocationFormats, string[] appViewLocationFormats)
+        private static List<ViewLocation> GetViewLocations(string[] viewLocationFormats, string[] areaViewLocationFormats, string[] appViewLocationFormats, string[] themeViewLocationFormats)
         {
             List<ViewLocation> allLocations = new List<ViewLocation>();
+
+            if (themeViewLocationFormats != null)
+            {
+                allLocations.AddRange(themeViewLocationFormats.Select(themeViewLocationFormat => new ViewLocation(themeViewLocationFormat)));
+            }
 
             if (appViewLocationFormats != null)
             {
@@ -464,16 +453,16 @@ namespace MrCMS.Website
 
         private class ViewLocation
         {
-            protected readonly string _virtualPathFormatString;
+            protected readonly string _virtualPathFormatstring;
 
-            public ViewLocation(string virtualPathFormatString)
+            public ViewLocation(string virtualPathFormatstring)
             {
-                _virtualPathFormatString = virtualPathFormatString;
+                _virtualPathFormatstring = virtualPathFormatstring;
             }
 
-            public virtual string Format(string viewName, string controllerName, string areaName, string appName)
+            public virtual string Format(string viewName, string controllerName, string areaName, string appName, string themeName)
             {
-                return String.Format(CultureInfo.InvariantCulture, _virtualPathFormatString, viewName, controllerName);
+                return string.Format(CultureInfo.InvariantCulture, _virtualPathFormatstring, viewName, controllerName, null, null, themeName);
             }
 
         }
@@ -481,14 +470,15 @@ namespace MrCMS.Website
         private class AreaAwareViewLocation : ViewLocation
         {
 
-            public AreaAwareViewLocation(string virtualPathFormatString)
-                : base(virtualPathFormatString)
+            public AreaAwareViewLocation(string virtualPathFormatstring)
+                : base(virtualPathFormatstring)
             {
             }
 
-            public override string Format(string viewName, string controllerName, string areaName, string appName)
+            public override string Format(string viewName, string controllerName, string areaName, string appName, string themeName)
             {
-                return String.Format(CultureInfo.InvariantCulture, _virtualPathFormatString, viewName, controllerName, areaName);
+                return string.Format(CultureInfo.InvariantCulture, _virtualPathFormatstring, viewName, controllerName,
+                                     areaName, null, themeName);
             }
 
         }
@@ -496,15 +486,15 @@ namespace MrCMS.Website
         private class AppAwareViewLocation : ViewLocation
         {
 
-            public AppAwareViewLocation(string virtualPathFormatString)
-                : base(virtualPathFormatString)
+            public AppAwareViewLocation(string virtualPathFormatstring)
+                : base(virtualPathFormatstring)
             {
             }
 
-            public override string Format(string viewName, string controllerName, string areaName, string appName)
+            public override string Format(string viewName, string controllerName, string areaName, string appName, string themeName)
             {
-                return String.Format(CultureInfo.InvariantCulture, _virtualPathFormatString, viewName, controllerName,
-                                     areaName, appName);
+                return string.Format(CultureInfo.InvariantCulture, _virtualPathFormatstring, viewName, controllerName,
+                                     areaName, appName, themeName);
             }
 
         }
@@ -533,6 +523,13 @@ namespace MrCMS.Website
             object obj;
             return routeData.DataTokens.TryGetValue("app", out obj)
                        ? obj as string
+                       : null;
+        }
+
+        private static string GetThemeName()
+        {
+            return !string.IsNullOrWhiteSpace(MrCMSApplication.Get<SiteSettings>().ThemeName)
+                       ? MrCMSApplication.Get<SiteSettings>().ThemeName
                        : null;
         }
     }

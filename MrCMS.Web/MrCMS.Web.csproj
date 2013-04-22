@@ -735,6 +735,9 @@
     <None Include="Properties\PublishProfiles\v0.2.pubxml" />
     <Content Include="Views\Login\PasswordReset.cshtml" />
     <Content Include="Views\Login\ResetComplete.cshtml" />
+    <Content Include="Themes\Default\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apps\Articles\Controllers\" />
@@ -756,6 +759,10 @@
     <Folder Include="Apps\Galleries\Views\Widgets\" />
     <Folder Include="Apps\Galleries\Widgets\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Themes\Default\Content\" />
+    <Folder Include="Themes\Default\Shared\" />
+    <Folder Include="Themes\Default\Views\Pages\" />
+    <Folder Include="Themes\Default\Views\Widgets\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

@@ -41,5 +41,7 @@ namespace MrCMS.Settings
             viewDataDictionary["404Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error404PageId);
             viewDataDictionary["500Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site, Error500PageId);
         }
+
+        public string ThemeName { get; set; }
     }
 }
