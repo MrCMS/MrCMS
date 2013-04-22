@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using NHibernate;
 
 namespace MrCMS.Settings
@@ -36,6 +38,12 @@ namespace MrCMS.Settings
                               layout => layout.Id.ToString(CultureInfo.InvariantCulture),
                               layout => layout.Id == selectedLayoutId,
                               includeDefault ? selectListItem : null);
+        }
+
+        public List<SelectListItem> GetThemeNames(string themeName, string appPath)
+        {
+            return Directory.GetDirectories(appPath + "\\Themes\\", "*").Select(x=> new DirectoryInfo(x.ToString()).Name).ToList()
+                .BuildSelectItemList(s => s, s => s, s => s == themeName, SelectListItemHelper.EmptyItem("No Theme"));
         }
     }
 }
