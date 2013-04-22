@@ -43,7 +43,7 @@ namespace MrCMS.Settings
         public List<SelectListItem> GetThemeNames(string themeName, string appPath)
         {
             return Directory.GetDirectories(appPath + "\\Themes\\", "*").Select(x=> new DirectoryInfo(x.ToString()).Name).ToList()
-                .BuildSelectItemList(s => s, s => s, s => s == themeName, SelectListItemHelper.EmptyItem("No Theme"));
+                .BuildSelectItemList(s => s, s => s, s => s == themeName, emptyItem:null);
         }
     }
 }
