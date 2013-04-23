@@ -685,7 +685,7 @@
     <Content Include="Areas\Admin\Views\Sites\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\NavLinks.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\InPageEditor.cshtml" />
-    <Content Include="Apps\Core\Views\Shared\_BaseLayouts.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\_BaseLayout.cshtml" />
     <Content Include="Apps\Core\Views\Pages\SearchPage.cshtml" />
     <Content Include="Views\Login\ForgottenPassword.cshtml" />
     <Content Include="Views\Login\ForgottenPasswordSent.cshtml" />
