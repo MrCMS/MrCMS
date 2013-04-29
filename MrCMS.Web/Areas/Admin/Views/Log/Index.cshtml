@@ -9,8 +9,7 @@
     <fieldset>
         <legend>Logs 
             <span class="btn-group  display-inline  pull-right">
-                <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">
-                    Delete logs</a>
+                <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">Delete logs</a>
                 <input class="btn btn-primary" type="submit" value="Update" />
             </span>
         </legend>
@@ -25,37 +24,37 @@
 else
 {
     <table class="table table-striped table-condensed" style="overflow: scroll">
-        <tr>
-            <th>
-                Date
-            </th>
-            <th>
-                Message
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Actions
-            </th>
-        </tr>
-        @foreach (var entry in Model)
-        {
+        <thead>
             <tr>
-                <td>
-                    @entry.CreatedOn.ToString("dd/MM/yyyy HH:mm")
-                </td>
-                <td>
-                    @entry.Message
-                </td>
-                <td>
-                    @entry.Type
-                </td>
-                <td>
-                    @Html.ActionLink("Show", "Show", new { id = entry.Id })
-                </td>
+                <th>Date
+                </th>
+                <th>Message
+                </th>
+                <th>Type
+                </th>
+                <th>Actions
+                </th>
             </tr>
-        }
+        </thead>
+        <tbody>
+            @foreach (var entry in Model)
+            {
+                <tr>
+                    <td>
+                        @entry.CreatedOn.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+                    <td>
+                        @entry.Message
+                    </td>
+                    <td>
+                        @entry.Type
+                    </td>
+                    <td>
+                        @Html.ActionLink("Show", "Show", new { id = entry.Id })
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
 }
 @Html.Pager(Model, "Index", i => new { page = i })

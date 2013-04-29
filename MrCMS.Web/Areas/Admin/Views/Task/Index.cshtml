@@ -11,38 +11,44 @@
                 @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-success", data_toggle = "fb-modal" })
             </span>
         </legend>
-        
+
         @if (Model.Any())
         {
             <div class="row-fluid margin-top-0">
                 <table class="table table-striped table-condensed margin-top-0">
-                    <tr>
-                        <th>Type
-                        </th>
-                        <th>Every X Minutes
-                        </th>
-                        <th>Last Run
-                        </th>
-                        <th></th>
-                    </tr>
-                    @foreach (var task in Model)
-                    {
+                    <thead>
                         <tr>
-                            <td>
-                                @task.Type
-                            </td>
-                            <td>
-                                @task.EveryXMinutes
-                            </td>
-                            <td>
-                                @(task.LastRun.HasValue ? task.LastRun.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-")
-                            </td>
-                            <td>
-                                @Html.ActionLink("Edit", "Edit", new {id = task.Id}, new {@class = "btn btn-mini", data_toggle = "fb-modal"})
-                                @Html.ActionLink("Delete", "Delete", new {id = task.Id}, new {@class = "btn btn-danger btn-mini", data_toggle = "fb-modal"})
-                            </td>
+                            <th>Type
+                            </th>
+                            <th>Every X Minutes
+                            </th>
+                            <th>Last Run
+                            </th>
+                            <th></th>
                         </tr>
-                    }
+                    </thead>
+                    <tbody>
+                        @foreach (var task in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @task.Type
+                                </td>
+                                <td>
+                                    @task.EveryXMinutes
+                                </td>
+                                <td>
+                                    @(task.LastRun.HasValue ? task.LastRun.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-")
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        @Html.ActionLink("Edit", "Edit", new { id = task.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+                                        @Html.ActionLink("Delete", "Delete", new { id = task.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "fb-modal" })
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
                 </table>
             </div>
         }
