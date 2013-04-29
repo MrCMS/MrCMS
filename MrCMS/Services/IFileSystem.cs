@@ -8,9 +8,8 @@ namespace MrCMS.Services
         void CreateDirectory(string filePath);
         void Delete(string filePath);
         bool Exists(string filePath);
-        string ApplicationPath { get; }
         string GetExtension(string fileName);
-        byte[] ReadAllBytes(string location);
+        byte[] ReadAllBytes(string filePath);
         string MapPath(string path);
     }
 }

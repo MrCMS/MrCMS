@@ -55,23 +55,15 @@ namespace MrCMS.Services
 
         public bool Exists(string filePath)
         {
-            return File.Exists(filePath);
+            return File.Exists(GetPath(filePath));
         }
 
         public string ApplicationPath { get { return HostingEnvironment.ApplicationPhysicalPath; } }
-        public string GetExtension(string fileName)
-        {
-            return Path.GetExtension(fileName);
-        }
 
-        public byte[] ReadAllBytes(string location)
-        {
-            return File.ReadAllBytes(location);
-        }
+        public string GetExtension(string fileName) { return Path.GetExtension(fileName); }
 
-        public string MapPath(string path)
-        {
-            return CurrentRequestData.CurrentContext.Server.MapPath(path);
-        }
+        public byte[] ReadAllBytes(string filePath) { return File.ReadAllBytes(GetPath(filePath)); }
+
+        public string MapPath(string path) { return CurrentRequestData.CurrentContext.Server.MapPath(path); }
     }
 }

@@ -14,10 +14,12 @@ namespace MrCMS.Services
     public class ImageProcessor : IImageProcessor
     {
         private readonly ISession _session;
+        private readonly IFileSystem _fileSystem;
 
-        public ImageProcessor(ISession session)
+        public ImageProcessor(ISession session, IFileSystem fileSystem)
         {
             _session = session;
+            _fileSystem = fileSystem;
         }
 
         public MediaFile GetImage(string imageUrl)
@@ -100,7 +102,12 @@ namespace MrCMS.Services
                         ep.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
                         ImageCodecInfo ici = GetImageCodecInfoFromExtension(file.FileExtension)
                                              ?? GetImageCodecInfoFromMimeType("image/jpeg");
-                        newBitMap.Save(filePath, ici, ep);
+
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            newBitMap.Save(memoryStream, ici, ep);
+                            _fileSystem.SaveFile(memoryStream,filePath);
+                        }
                     }
                 }
             }

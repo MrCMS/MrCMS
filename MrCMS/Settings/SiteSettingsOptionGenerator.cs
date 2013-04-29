@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
@@ -14,7 +16,7 @@ namespace MrCMS.Settings
 {
     public class SiteSettingsOptionGenerator
     {
-        public List<SelectListItem> GetErrorPageOptions(ISession session, Site site, int pageId)
+        public virtual List<SelectListItem> GetErrorPageOptions(ISession session, Site site, int pageId)
         {
             var list = session.QueryOver<Webpage>().Where(webpage => webpage.Site == site).Cacheable().List();
             return
@@ -25,10 +27,8 @@ namespace MrCMS.Settings
                              page => page.Id == pageId, (string) null);
         }
 
-        public List<SelectListItem> GetLayoutOptions(ISession session, Site site, int? selectedLayoutId, bool includeDefault = false)
+        public virtual List<SelectListItem> GetLayoutOptions(ISession session, Site site, int? selectedLayoutId)
         {
-            var selectListItem = SelectListItemHelper.EmptyItem("Default Layout");
-            selectListItem.Selected = !selectedLayoutId.HasValue;
             return session.QueryOver<Layout>()
                           .Where(layout => layout.Site == site)
                           .Cacheable()
@@ -37,13 +37,16 @@ namespace MrCMS.Settings
                               layout => layout.Name,
                               layout => layout.Id.ToString(CultureInfo.InvariantCulture),
                               layout => layout.Id == selectedLayoutId,
-                              includeDefault ? selectListItem : null);
+                              emptyItem: null);
         }
 
-        public List<SelectListItem> GetThemeNames(string themeName, string appPath)
+        public virtual List<SelectListItem> GetThemeNames(string themeName)
         {
-            return Directory.GetDirectories(appPath + "\\Themes\\", "*").Select(x=> new DirectoryInfo(x.ToString()).Name).ToList()
-                .BuildSelectItemList(s => s, s => s, s => s == themeName, emptyItem:null);
+            var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath + "\\Themes\\";
+            return Directory.GetDirectories(applicationPhysicalPath , "*")
+                            .Select(x => new DirectoryInfo(x.ToString()).Name)
+                            .ToList()
+                            .BuildSelectItemList(s => s, s => s, s => s == themeName, emptyItem: null);
         }
     }
 }

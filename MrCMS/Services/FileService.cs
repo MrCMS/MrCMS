@@ -46,7 +46,7 @@ namespace MrCMS.Services
 
             //check for duplicates
             int i = 1;
-            while (_fileSystem.Exists(_fileSystem.ApplicationPath + folderLocation + fileName))
+            while (_fileSystem.Exists(folderLocation + fileName))
             {
                 fileName = fileNameOriginal.Replace(_fileSystem.GetExtension(fileName), "") + i + _fileSystem.GetExtension(fileName);
                 i++;
@@ -132,11 +132,9 @@ namespace MrCMS.Services
 
         public virtual byte[] LoadFile(MediaFile file)
         {
-            var location = _fileSystem.ApplicationPath + file.FileLocation;
-
-            if (!_fileSystem.Exists(location))
+            if (!_fileSystem.Exists(file.FileLocation))
                 return new byte[0];
-            return _fileSystem.ReadAllBytes(location);
+            return _fileSystem.ReadAllBytes(file.FileLocation);
         }
 
 
@@ -148,7 +146,7 @@ namespace MrCMS.Services
             //check to see if the image already exists, if it does simply return it
             var requestedFileLocation = ImageProcessor.RequestedImageFileLocation(file, size);
 
-            if (_fileSystem.Exists(_fileSystem.ApplicationPath + requestedFileLocation))
+            if (_fileSystem.Exists(requestedFileLocation))
                 return requestedFileLocation;
 
             //if we have got this far the image doesn't exist yet so we need to create the image at the requested size
@@ -156,7 +154,7 @@ namespace MrCMS.Services
             if (fileBytes.Length == 0)
                 return "";
 
-            _imageProcessor.SaveResizedImage(file, size, fileBytes, _fileSystem.ApplicationPath + requestedFileLocation);
+            _imageProcessor.SaveResizedImage(file, size, fileBytes, requestedFileLocation);
 
             return requestedFileLocation;
         }
@@ -188,9 +186,7 @@ namespace MrCMS.Services
             foreach (var imageUrl in
                 GetImageSizes()
                     .Select(imageSize => GetUrl(mediaFile, imageSize.Size))
-                    .Select(imageUrl => new { imageUrl, file = _fileSystem.ApplicationPath + imageUrl })
-                    .Where(@t => _fileSystem.Exists(@t.file))
-                    .Select(@t => @t.imageUrl))
+                    .Where(path => _fileSystem.Exists(path)))
             {
                 _fileSystem.Delete(imageUrl);
             }

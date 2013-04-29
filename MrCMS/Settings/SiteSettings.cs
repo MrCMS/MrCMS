@@ -1,17 +1,15 @@
 using System;
 using System.ComponentModel;
 using System.Web.Mvc;
-using MrCMS.Entities.Multisite;
-using MrCMS.Services;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Settings
 {
     public class SiteSettings : SiteSettingsBase
     {
-        private Guid _siteId = Guid.NewGuid();
         private readonly SiteSettingsOptionGenerator _siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
+        protected SiteSettingsOptionGenerator SiteSettingsOptionGenerator{get { return SiteSettingsOptionGeneratorOverride ?? _siteSettingsOptionGenerator; }}
+        public SiteSettingsOptionGenerator SiteSettingsOptionGeneratorOverride { get; set; }
 
         [DropDownSelection("Themes")]
         [DisplayName("Theme")]
@@ -40,17 +38,15 @@ namespace MrCMS.Settings
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-            viewDataDictionary["DefaultLayoutOptions"] = _siteSettingsOptionGenerator.GetLayoutOptions(session, Site,
+            viewDataDictionary["DefaultLayoutOptions"] = SiteSettingsOptionGenerator.GetLayoutOptions(session, Site,
                                                                                                        DefaultLayoutId);
-            viewDataDictionary["403Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
+            viewDataDictionary["403Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
                                                                                                 Error403PageId);
-            viewDataDictionary["404Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
+            viewDataDictionary["404Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
                                                                                                 Error404PageId);
-            viewDataDictionary["500Options"] = _siteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
+            viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
                                                                                                 Error500PageId);
-            viewDataDictionary["Themes"] = _siteSettingsOptionGenerator.GetThemeNames(ThemeName,
-                                                                                      MrCMSApplication.Get<IFileSystem>()
-                                                                                                      .ApplicationPath);
+            viewDataDictionary["Themes"] = SiteSettingsOptionGenerator.GetThemeNames(ThemeName);
         }
 
     }

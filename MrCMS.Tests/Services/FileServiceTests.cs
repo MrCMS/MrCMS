@@ -31,7 +31,6 @@ namespace MrCMS.Tests.Services
         private FileService GetFileService(ISession session = null, IFileSystem fileSystem = null)
         {
             _fileSystem = A.Fake<IFileSystem>();
-            A.CallTo(() => _fileSystem.ApplicationPath).Returns("C:\\temp\\");
             A.CallTo(() => _fileSystem.GetExtension(A<string>.Ignored))
              .ReturnsLazily(call =>
                                 {

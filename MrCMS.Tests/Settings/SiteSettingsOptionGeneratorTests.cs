@@ -107,19 +107,6 @@ namespace MrCMS.Tests.Settings
         }
 
         [Fact]
-        public void SiteSettingsOptionGenerator_GetLayoutOptions_WithDefaultIncludedIncludesDefaultLayout()
-        {
-            var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
-
-            var site = new Site();
-            Session.Transact(session => session.Save(site));
-            var errorPageOptions = siteSettingsOptionGenerator.GetLayoutOptions(Session, site, -1, true);
-
-            errorPageOptions.Should().HaveCount(1);
-            errorPageOptions[0].Text.Should().Be("Default Layout");
-        }
-
-        [Fact]
         public void SiteSettingsOptionGenerator_GetLayoutOptions_IncludesLayouts()
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
