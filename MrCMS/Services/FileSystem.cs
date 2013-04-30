@@ -6,7 +6,10 @@ namespace MrCMS.Services
 {
     public class FileSystem : IFileSystem
     {
-        public void SaveFile(Stream stream, string filePath)
+        private const string _mediaDirectory = "/content/upload/";
+        public string MediaDirectory { get { return _mediaDirectory; } }
+
+        public string SaveFile(Stream stream, string filePath, string contentType)
         {
             var path = GetPath(filePath);
 
@@ -25,13 +28,24 @@ namespace MrCMS.Services
             }
             stream.Close();
             stream.Dispose();
+
+            var relativeFilePath = GetRelativeFilePath(filePath);
+            return relativeFilePath;
         }
 
         private string GetPath(string relativeFilePath)
         {
+            relativeFilePath = GetRelativeFilePath(relativeFilePath);
             var baseDirectory = ApplicationPath.Substring(0, ApplicationPath.Length - 1);
-            var path = Path.Combine(baseDirectory, relativeFilePath);
+            var path = Path.Combine(baseDirectory, relativeFilePath.Substring(1));
             return path;
+        }
+
+        private static string GetRelativeFilePath(string relativeFilePath)
+        {
+            if (!relativeFilePath.StartsWith(_mediaDirectory) && !relativeFilePath.StartsWith("/" + _mediaDirectory))
+                relativeFilePath = Path.Combine(_mediaDirectory, relativeFilePath);
+            return relativeFilePath;
         }
 
         public void CreateDirectory(string filePath)
@@ -60,9 +74,9 @@ namespace MrCMS.Services
 
         public string ApplicationPath { get { return HostingEnvironment.ApplicationPhysicalPath; } }
 
-        public string GetExtension(string fileName) { return Path.GetExtension(fileName); }
 
         public byte[] ReadAllBytes(string filePath) { return File.ReadAllBytes(GetPath(filePath)); }
+
 
         public string MapPath(string path) { return CurrentRequestData.CurrentContext.Server.MapPath(path); }
     }

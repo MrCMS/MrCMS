@@ -14,7 +14,7 @@ namespace MrCMS.Tests.Settings
         {
             _siteSettings = new SiteSettings();
             _siteSettingsOptionGenerator = A.Fake<SiteSettingsOptionGenerator>();
-            _siteSettings.SiteSettingsOptionGeneratorOverride = _siteSettingsOptionGenerator;
+            _siteSettings.SetSiteSettingsOptionGeneratorOverride(_siteSettingsOptionGenerator);
         }
 
         private readonly SiteSettings _siteSettings;

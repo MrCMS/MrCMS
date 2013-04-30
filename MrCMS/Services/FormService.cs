@@ -131,7 +131,7 @@ namespace MrCMS.Services
 
             var result = _fileService.AddFile(file.InputStream, webpage.Id + "-" + formPosting.Id + "-" + file.FileName, file.ContentType, file.ContentLength, mediaCategory);
 
-            return result.Path;
+            return result.url;
         }
 
         private MediaCategory CreateFileUploadMediaCategory()

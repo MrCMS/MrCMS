@@ -11,7 +11,7 @@ namespace MrCMS.Services
         MediaFile GetImage(string imageUrl);
 
         void SetFileDimensions(MediaFile file, Stream stream);
-        void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string filePath);
+        void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl);
         void EnforceMaxSize(ref Stream stream, MediaFile file, MediaSettings mediaSettings);
     }
 }

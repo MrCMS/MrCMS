@@ -15,9 +15,8 @@ namespace MrCMS.Services
         void SaveFile(MediaFile mediaFile);
         string GetFileLocation(MediaFile mediaFile, Size imageSize);
         FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1, int pageSize = 10);
-        MediaFile GetFileByLocation(string value);
+        MediaFile GetFileByUrl(string value);
         string GetFileUrl(string value);
-        string MediaDirectory { get; }
         void RemoveFolder(MediaCategory mediaCategory);
         void CreateFolder(MediaCategory mediaCategory);
         void SetOrders(List<SortItem> items);

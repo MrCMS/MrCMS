@@ -31,12 +31,6 @@ namespace MrCMS.Tests.Services
         private FileService GetFileService(ISession session = null, IFileSystem fileSystem = null)
         {
             _fileSystem = A.Fake<IFileSystem>();
-            A.CallTo(() => _fileSystem.GetExtension(A<string>.Ignored))
-             .ReturnsLazily(call =>
-                                {
-                                    var o = call.Arguments[0];
-                                    return Path.GetExtension(o.ToString());
-                                });
 
             mediaSettings = new MediaSettings
                                 {
@@ -130,11 +124,13 @@ namespace MrCMS.Tests.Services
             var mediaCategory = GetDefaultMediaCategory();
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
             Stream stream = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+            A.CallTo(() => _fileSystem.SaveFile(stream, "1/test-category/test.txt", "text/plain"))
+             .Returns("/content/upload/1/test-category/test.txt");
 
             fileService.AddFile(stream, "test.txt", "text/plain", 1234, mediaCategory);
 
             var file = Session.Get<MediaFile>(1);
-            file.FileLocation.Should().Be("content/upload/1/test-category/test.txt");
+            file.FileUrl.Should().Be("/content/upload/1/test-category/test.txt");
         }
 
         [Fact]
@@ -167,7 +163,7 @@ namespace MrCMS.Tests.Services
 
             fileService.AddFile(stream, "test.txt", "text/plain", 10, mediaCategory);
 
-            A.CallTo(() => _fileSystem.SaveFile(stream, "content/upload/1/test-category/test.txt")).MustHaveHappened();
+            A.CallTo(() => _fileSystem.SaveFile(stream, "1/test-category/test.txt", "text/plain")).MustHaveHappened();
         }
 
         [Fact]
@@ -175,9 +171,9 @@ namespace MrCMS.Tests.Services
         {
             var mediaCategory = GetDefaultMediaCategory();
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
-            var file1 = new MediaFile { MediaCategory = mediaCategory, FileLocation = "/test1.txt" };
-            var file2 = new MediaFile { MediaCategory = mediaCategory, FileLocation = "/test2.txt" };
-            var file3 = new MediaFile { FileLocation = "/test3.txt" };
+            var file1 = new MediaFile { MediaCategory = mediaCategory, FileUrl = "/test1.txt" };
+            var file2 = new MediaFile { MediaCategory = mediaCategory, FileUrl = "/test2.txt" };
+            var file3 = new MediaFile { FileUrl = "/test3.txt" };
             mediaCategory.Files.Add(file1);
             mediaCategory.Files.Add(file2);
             Session.Transact(session =>
@@ -213,14 +209,14 @@ namespace MrCMS.Tests.Services
         {
             var fileService = GetFileService();
 
-            const string fileLocation = "location.jpg";
+            const string fileUrl = "location.jpg";
             var mediaFile = new MediaFile
                                 {
-                                    FileLocation = fileLocation
+                                    FileUrl = fileUrl
                                 };
             Session.Transact(session => session.Save(mediaFile));
 
-            var fileByLocation = fileService.GetFileByLocation(fileLocation);
+            var fileByLocation = fileService.GetFileByUrl(fileUrl);
 
             fileByLocation.Should().Be(mediaFile);
         }

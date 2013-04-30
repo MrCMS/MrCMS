@@ -22,7 +22,6 @@ namespace MrCMS.Services
         private readonly IImageProcessor _imageProcessor;
         private readonly MediaSettings _mediaSettings;
         private readonly CurrentSite _currentSite;
-        private const string _mediaDirectory = "content/upload";
 
         public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings, CurrentSite currentSite)
         {
@@ -42,17 +41,17 @@ namespace MrCMS.Services
             fileName = GetFileSeName(fileName);
             var fileNameOriginal = GetFileSeName(fileName);
 
-            string folderLocation = string.Format("{0}/{1}/{2}", MediaDirectory, _currentSite.Site.Id, mediaCategory.UrlSegment);
+            string folderLocation = string.Format("{0}/{1}/", _currentSite.Site.Id, mediaCategory.UrlSegment);
 
             //check for duplicates
             int i = 1;
             while (_fileSystem.Exists(folderLocation + fileName))
             {
-                fileName = fileNameOriginal.Replace(_fileSystem.GetExtension(fileName), "") + i + _fileSystem.GetExtension(fileName);
+                fileName = fileNameOriginal.Replace(Path.GetExtension(fileName), "") + i + Path.GetExtension(fileName);
                 i++;
             }
 
-            string fileLocation = string.Format("{0}/{1}/{2}/{3}", MediaDirectory, _currentSite.Site.Id, mediaCategory.UrlSegment, fileName);
+            string fileLocation = string.Format("{0}/{1}/{2}", _currentSite.Site.Id, mediaCategory.UrlSegment, fileName);
 
             var mediaFile = new MediaFile
                                 {
@@ -60,8 +59,7 @@ namespace MrCMS.Services
                                     ContentType = contentType,
                                     ContentLength = contentLength,
                                     MediaCategory = mediaCategory,
-                                    FileExtension = _fileSystem.GetExtension(fileName),
-                                    FileLocation = fileLocation,
+                                    FileExtension = Path.GetExtension(fileName),
                                     DisplayOrder = mediaCategory.Files.Count
                                 };
 
@@ -71,7 +69,7 @@ namespace MrCMS.Services
                 _imageProcessor.SetFileDimensions(mediaFile, stream);
             }
 
-            _fileSystem.SaveFile(stream, mediaFile.FileLocation);
+            mediaFile.FileUrl = _fileSystem.SaveFile(stream, fileLocation, contentType);
 
             mediaCategory.Files.Add(mediaFile);
             _session.Transact(session =>
@@ -97,7 +95,7 @@ namespace MrCMS.Services
             if (String.IsNullOrEmpty(name))
                 return name;
 
-            var extension = _fileSystem.GetExtension(name);
+            var extension = Path.GetExtension(name);
 
             if (!string.IsNullOrWhiteSpace(extension))
                 name = name.Replace(extension, "");
@@ -132,31 +130,30 @@ namespace MrCMS.Services
 
         public virtual byte[] LoadFile(MediaFile file)
         {
-            if (!_fileSystem.Exists(file.FileLocation))
+            if (!_fileSystem.Exists(file.FileUrl))
                 return new byte[0];
-            return _fileSystem.ReadAllBytes(file.FileLocation);
+            return _fileSystem.ReadAllBytes(file.FileUrl);
         }
-
 
         public virtual string GetUrl(MediaFile file, Size size)
         {
             if (!file.IsImage)
-                return file.FileLocation;
+                return file.FileUrl;
 
             //check to see if the image already exists, if it does simply return it
-            var requestedFileLocation = ImageProcessor.RequestedImageFileLocation(file, size);
+            var requestedImageFileUrl = ImageProcessor.RequestedImageFileUrl(file, size);
 
-            if (_fileSystem.Exists(requestedFileLocation))
-                return requestedFileLocation;
+            if (_fileSystem.Exists(requestedImageFileUrl))
+                return requestedImageFileUrl;
 
             //if we have got this far the image doesn't exist yet so we need to create the image at the requested size
             var fileBytes = LoadFile(file);
             if (fileBytes.Length == 0)
                 return "";
 
-            _imageProcessor.SaveResizedImage(file, size, fileBytes, requestedFileLocation);
+            _imageProcessor.SaveResizedImage(file, size, fileBytes, requestedImageFileUrl);
 
-            return requestedFileLocation;
+            return requestedImageFileUrl;
         }
 
         public ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory)
@@ -167,8 +164,7 @@ namespace MrCMS.Services
                         .OrderBy(file => file.DisplayOrder)
                         .Asc.Cacheable()
                         .List()
-                        .Select(
-                            GetUploadFilesResult).ToArray();
+                        .Select(GetUploadFilesResult).ToArray();
         }
 
         public MediaFile GetFile(int id)
@@ -182,7 +178,7 @@ namespace MrCMS.Services
             if (mediaFile.MediaCategory != null)
                 mediaFile.MediaCategory.Files.Remove(mediaFile);
 
-            _fileSystem.Delete(mediaFile.FileLocation);
+            _fileSystem.Delete(mediaFile.FileUrl);
             foreach (var imageUrl in
                 GetImageSizes()
                     .Select(imageSize => GetUrl(mediaFile, imageSize.Size))
@@ -223,30 +219,28 @@ namespace MrCMS.Services
             return new FilesPagedResult(mediaFiles, mediaFiles.GetMetaData(), categoryId, imagesOnly);
         }
 
-        public MediaFile GetFileByLocation(string value)
+        public MediaFile GetFileByUrl(string value)
         {
-            return _session.QueryOver<MediaFile>().Where(file => file.FileLocation == value).Take(1).Cacheable().SingleOrDefault();
+            return _session.QueryOver<MediaFile>().Where(file => file.FileUrl== value).Take(1).Cacheable().SingleOrDefault();
         }
 
         public string GetFileUrl(string value)
         {
-            var mediaFile = GetFileByLocation(value);
+            var mediaFile = GetFileByUrl(value);
             if (mediaFile != null)
-                return "/" + mediaFile.FileLocation;
+                return mediaFile.FileUrl;
 
             var split = value.Split('-');
             var id = Convert.ToInt32(split[0]);
             var file = GetFile(id);
             var imageSize =
                 file.Sizes.FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
-            return "/" + GetFileLocation(file, imageSize.Size);
+            return GetFileLocation(file, imageSize.Size);
         }
-
-        public string MediaDirectory { get { return _mediaDirectory; } }
 
         public void RemoveFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/{2}/", MediaDirectory, _currentSite.Site.Id,
+            string folderLocation = string.Format("{0}/{1}/", _currentSite.Site.Id,
                                                   mediaCategory.UrlSegment);
 
             _fileSystem.Delete(folderLocation);
@@ -254,7 +248,7 @@ namespace MrCMS.Services
 
         public void CreateFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/{2}/", MediaDirectory, _currentSite.Site.Id,
+            string folderLocation = string.Format("{0}/{1}/", _currentSite.Site.Id,
                                                   mediaCategory.UrlSegment);
 
             _fileSystem.CreateDirectory(folderLocation);

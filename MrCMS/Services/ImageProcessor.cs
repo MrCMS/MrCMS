@@ -24,10 +24,6 @@ namespace MrCMS.Services
 
         public MediaFile GetImage(string imageUrl)
         {
-            if (imageUrl.StartsWith("/"))
-            {
-                imageUrl = imageUrl.Substring(1);
-            }
             if (IsResized(imageUrl))
             {
                 var resizePart = GetResizePart(imageUrl);
@@ -36,7 +32,7 @@ namespace MrCMS.Services
             }
             var fileByLocation =
                 _session.QueryOver<MediaFile>()
-                        .Where(file => file.FileLocation == imageUrl)
+                        .Where(file => file.FileUrl == imageUrl)
                         .Take(1)
                         .Cacheable()
                         .SingleOrDefault();
@@ -77,7 +73,7 @@ namespace MrCMS.Services
             }
         }
 
-        public void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string filePath)
+        public void SaveResizedImage(MediaFile file, Size size, byte[] fileBytes, string fileUrl)
         {
             using (var stream = new MemoryStream(fileBytes))
             {
@@ -106,7 +102,7 @@ namespace MrCMS.Services
                         using (var memoryStream = new MemoryStream())
                         {
                             newBitMap.Save(memoryStream, ici, ep);
-                            _fileSystem.SaveFile(memoryStream,filePath);
+                            _fileSystem.SaveFile(memoryStream, fileUrl, file.ContentType);
                         }
                     }
                 }
@@ -218,12 +214,12 @@ namespace MrCMS.Services
         /// <summary>
         /// Returns the name and full path of the requested file
         /// </summary>
-        public static string RequestedImageFileLocation(MediaFile file, Size size)
+        public static string RequestedImageFileUrl(MediaFile file, Size size)
         {
             if (file.Size == size)
-                return file.FileLocation;
+                return file.FileUrl;
 
-            var fileLocation = file.FileLocation;
+            var fileLocation = file.FileUrl;
 
             var temp = fileLocation.Replace(file.FileExtension, "");
             if (size.Width != 0)

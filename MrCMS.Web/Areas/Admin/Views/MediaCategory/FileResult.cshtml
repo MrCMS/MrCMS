@@ -5,7 +5,7 @@
     <div class="header">
         @if (Model.IsImage)
         {
-            @Html.RenderImage(Model.FileLocation,new Size(25,25))
+            @Html.RenderImage(Model.FileUrl,new Size(25,25))
         }
         @Model.FileName - @Model.ContentLength bytes
                                     <a href="#" class="pull-right show-hide-file-result">Show</a>
@@ -17,7 +17,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            @Html.RenderImage(Model.FileLocation,new Size(64,64))
+                            @Html.RenderImage(Model.FileUrl,new Size(64,64))
                             
                         </td>
                         <td>
@@ -36,7 +36,7 @@
         }
         else
         {
-            @Html.RadioButton("SelectedFile", Model.FileLocation, new { @class = "selected-file", id = ViewData["upload"] + "SelectedFile-" + Model.Id }) @Html.Label(ViewData["upload"] + "SelectedFile-" + Model.Id, "Select file")
+            @Html.RadioButton("SelectedFile", Model.FileUrl, new { @class = "selected-file", id = ViewData["upload"] + "SelectedFile-" + Model.Id }) @Html.Label(ViewData["upload"] + "SelectedFile-" + Model.Id, "Select file")
             
             <input type="button" class="btn-primary btn set-file" data-action="select" disabled="disabled" value="Choose file" />
         }

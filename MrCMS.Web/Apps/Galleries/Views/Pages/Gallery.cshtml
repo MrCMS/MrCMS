@@ -10,8 +10,8 @@
         foreach (var result in Model.MediaGallery.Files.Where(file => file.IsImage).OrderBy(x => x.DisplayOrder))
         {
             <div class="span4">
-                <a href="/@result.FileLocation">
-                    @Html.RenderImage(result.FileLocation, new Size {Width = 800, Height = 800})
+                <a href="@result.FileUrl">
+                    @Html.RenderImage(result.FileUrl, new Size {Width = 800, Height = 800})
                 </a>
             </div>
             if (count == 3)
