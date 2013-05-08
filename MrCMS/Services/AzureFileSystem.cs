@@ -10,23 +10,23 @@ namespace MrCMS.Services
 {
     public class AzureFileSystem : IFileSystem
     {
-        private readonly SiteSettings _siteSettings;
+        private readonly FileSystemSettings _fileSystemSettings;
         private readonly CloudBlobContainer _container;
 
-        public AzureFileSystem(SiteSettings siteSettings)
+        public AzureFileSystem(FileSystemSettings fileSystemSettings)
         {
-            _siteSettings = siteSettings;
+            _fileSystemSettings = fileSystemSettings;
 
-            string connectionString = _siteSettings.AzureUsingEmulator
+            string connectionString = _fileSystemSettings.AzureUsingEmulator
                                           ? string.Format("UseDevelopmentStorage=true;")
                                           : string.Format(
                                               "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}",
-                                              _siteSettings.AzureAccountName, _siteSettings.AzureAccountKey);
+                                              _fileSystemSettings.AzureAccountName, _fileSystemSettings.AzureAccountKey);
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
             var cloudBlobClient = storageAccount.CreateCloudBlobClient();
             var container =
                 cloudBlobClient.GetContainerReference(
-                    SeoHelper.TidyUrl(FileService.RemoveInvalidUrlCharacters(_siteSettings.AzureContainerName)));
+                    SeoHelper.TidyUrl(FileService.RemoveInvalidUrlCharacters(_fileSystemSettings.AzureContainerName)));
             if (container.CreateIfNotExists())
             {
                 container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });

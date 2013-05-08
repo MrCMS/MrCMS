@@ -402,6 +402,7 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\add-layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\edit-webpage.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\file-system-settings.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\gallery.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
@@ -729,6 +730,7 @@
     <Content Include="Areas\Admin\Views\Webpage\FormDesign.cshtml" />
     <Content Include="Areas\Admin\Views\UrlHistory\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\UrlHistory\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Settings\FileSystem.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
@@ -759,6 +761,7 @@
     <Folder Include="Apps\Galleries\Views\Widgets\" />
     <Folder Include="Apps\Galleries\Widgets\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Themes\Default\Apps\" />
     <Folder Include="Themes\Default\Content\" />
     <Folder Include="Themes\Default\Shared\" />
     <Folder Include="Themes\Default\Views\Pages\" />

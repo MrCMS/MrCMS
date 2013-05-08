@@ -328,6 +328,7 @@
     <Compile Include="Services\WidgetService.cs" />
     <Compile Include="Settings\ConfigurationProvider.cs" />
     <Compile Include="Settings\DropDownSelectionAttribute.cs" />
+    <Compile Include="Settings\FileSystemSettings.cs" />
     <Compile Include="Settings\GenericListTypeConverter.cs" />
     <Compile Include="Settings\GlobalSettingsBase.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />

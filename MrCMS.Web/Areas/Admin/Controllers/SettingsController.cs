@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Settings;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
-using MrCMS.Helpers;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -20,6 +18,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _session = session;
         }
 
+        [HttpGet]
         public ViewResult Index()
         {
             var settings = _configurationProvider.GetAllSiteSettings().FindAll(arg => arg.RenderInSettings);
@@ -34,6 +33,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             settings.ForEach(s => _configurationProvider.SaveSettings(s));
             TempData["settings-saved"] = true;
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ViewResult FileSystem()
+        {
+            return View(_configurationProvider.GetSiteSettings<FileSystemSettings>());
+        }
+
+        [HttpPost]
+        public RedirectToRouteResult FileSystem(FileSystemSettings settings)
+        {
+            _configurationProvider.SaveSettings(settings);
+            return RedirectToAction("FileSystem");
         }
     }
 }

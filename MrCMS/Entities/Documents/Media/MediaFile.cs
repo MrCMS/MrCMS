@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using MrCMS.Models;
 using MrCMS.Services;
@@ -57,6 +55,5 @@ namespace MrCMS.Entities.Documents.Media
                 }
             }
         }
-
     }
 }

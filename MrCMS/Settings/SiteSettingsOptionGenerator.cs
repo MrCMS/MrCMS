@@ -48,13 +48,5 @@ namespace MrCMS.Settings
                             .ToList()
                             .BuildSelectItemList(s => s, s => s, s => s == themeName, emptyItem: null);
         }
-
-        public virtual List<SelectListItem> GetFileSystemTypes(string storageType)
-        {
-            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<IFileSystem>();
-
-            return types.BuildSelectItemList(type => type.Name, type => type.FullName, type => type.FullName == storageType,
-                                      emptyItem: null);
-        }
     }
 }

@@ -436,8 +436,10 @@ namespace MrCMS.Installation
 
             var configurationProvider = new ConfigurationProvider(new SettingService(session),
                                                                   currentSite);
+            var fileSystemSettings = new FileSystemSettings {StorageType = typeof (FileSystem).FullName};
             configurationProvider.SaveSettings(siteSettings);
             configurationProvider.SaveSettings(mediaSettings);
+            configurationProvider.SaveSettings(fileSystemSettings);
 
 
             var adminUserRole = new UserRole

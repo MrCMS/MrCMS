@@ -48,7 +48,7 @@ namespace MrCMS.IoC
             Kernel.Rebind<IFileSystem>().ToMethod(context =>
                                                       {
                                                           var storageType =
-                                                              context.Kernel.Get<SiteSettings>().StorageType;
+                                                              context.Kernel.Get<FileSystemSettings>().StorageType;
                                                           if (!string.IsNullOrWhiteSpace(storageType))
                                                           {
                                                               return context.Kernel.Get(

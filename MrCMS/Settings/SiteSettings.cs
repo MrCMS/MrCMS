@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Web.Mvc;
-using MrCMS.Services;
 using NHibernate;
 
 namespace MrCMS.Settings
@@ -10,8 +9,8 @@ namespace MrCMS.Settings
     {
         private readonly SiteSettingsOptionGenerator _siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
         private SiteSettingsOptionGenerator _siteSettingsOptionGeneratorOverride;
-        protected SiteSettingsOptionGenerator SiteSettingsOptionGenerator{get { return _siteSettingsOptionGeneratorOverride ?? _siteSettingsOptionGenerator; }}
-        public void SetSiteSettingsOptionGeneratorOverride (SiteSettingsOptionGenerator siteSettingsOptionGenerator)
+        protected SiteSettingsOptionGenerator SiteSettingsOptionGenerator { get { return _siteSettingsOptionGeneratorOverride ?? _siteSettingsOptionGenerator; } }
+        public void SetSiteSettingsOptionGeneratorOverride(SiteSettingsOptionGenerator siteSettingsOptionGenerator)
         {
             _siteSettingsOptionGeneratorOverride = siteSettingsOptionGenerator;
         }
@@ -33,25 +32,12 @@ namespace MrCMS.Settings
         [DropDownSelection("500Options")]
         [DisplayName("500 Page")]
         public virtual int Error500PageId { get; set; }
-        
+
         [DisplayName("Site is live")]
         public bool SiteIsLive { get; set; }
-        
+
         [DisplayName("Enable inline editing")]
         public bool EnableInlineEditing { get; set; }
-
-        [DisplayName("Storage Type")]
-        [DropDownSelection("FileSystemTypes")]
-        public string StorageType { get; set; }
-
-        [DisplayName("Azure Storage Account Name")]
-        public string AzureAccountName { get; set; }
-        [DisplayName("Azure Storage Account Key")]
-        public string AzureAccountKey { get; set; }
-        [DisplayName("Azure Storage Container Name")]
-        public string AzureContainerName { get; set; }
-        [DisplayName("Azure is using Emulator")]
-        public bool AzureUsingEmulator { get; set; }
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
@@ -64,7 +50,6 @@ namespace MrCMS.Settings
             viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
                                                                                                 Error500PageId);
             viewDataDictionary["Themes"] = SiteSettingsOptionGenerator.GetThemeNames(ThemeName);
-            viewDataDictionary["FileSystemTypes"] = SiteSettingsOptionGenerator.GetFileSystemTypes(StorageType);
         }
 
     }

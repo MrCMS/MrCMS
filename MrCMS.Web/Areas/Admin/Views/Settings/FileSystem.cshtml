@@ -1,0 +1,33 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Settings.FileSystemSettings
+@{ ViewBag.Title = "File System Settings";}
+
+
+@using (Html.BeginForm("FileSystem", "Settings", FormMethod.Post, new {id = "edit-settings"}))
+{
+    <fieldset>
+        <legend>Global Settings
+
+        <span class="btn-group  display-inline  pull-right">
+            <button class="btn btn-primary">
+                Save</button>
+        </span>
+        </legend>
+        <div class="row-fluid">
+            @Html.LabelFor(settings => settings.StorageType)
+            @Html.DropDownListFor(settings=>settings.StorageType,Model.StorageTypeOptions)
+            
+            <div id="azure-settings">
+                @Html.LabelFor(settings => settings.AzureAccountName)
+                @Html.TextBoxFor(settings => settings.AzureAccountName)
+                @Html.LabelFor(settings => settings.AzureAccountKey)
+                @Html.TextBoxFor(settings => settings.AzureAccountKey)
+                @Html.LabelFor(settings => settings.AzureContainerName)
+                @Html.TextBoxFor(settings => settings.AzureContainerName)
+                @Html.LabelFor(settings => settings.AzureUsingEmulator)
+                @Html.CheckBoxFor(settings => settings.AzureUsingEmulator)
+            </div>
+        </div>
+    </fieldset>
+}
+@{Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/file-system-settings.js");}

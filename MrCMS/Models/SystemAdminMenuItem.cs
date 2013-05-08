@@ -18,7 +18,8 @@ namespace MrCMS.Models
                                                 "",
                                                 new List<IMenuItem>
                                                     {
-                                                        new ChildMenuItem("Settings", "/Admin/Settings"),
+                                                        new ChildMenuItem("Site Settings", "/Admin/Settings"),
+                                                        new ChildMenuItem("Filesystem Settings", "/Admin/Settings/FileSystem"),
                                                         new ChildMenuItem("Sites", "/Admin/Sites"),
                                                         new ChildMenuItem("Logs", "/Admin/Log"),
                                                         new ChildMenuItem("Tasks", "/Admin/Task"),
