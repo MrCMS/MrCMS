@@ -6,13 +6,16 @@
 
     $('#publish-status-change').click(function (e) {
         e.preventDefault();
-        if ($("#PublishOn").val().length > 0)
+        var form = $("#edit-document");
+        if ($("#PublishOn").val().length > 0) {
             $("#PublishOn").val('');
-        else {
-            var d1 = new Date();
-            $("#PublishOn").val($.datepicker.formatDate('yy/mm/dd', new Date()) + " " + d1.getHours() + ":" + d1.getMinutes());
+            form.submit();
+        } else {
+            $.get('/Admin/Webpage/GetServerDate', function(response) {
+                $("#PublishOn").val(response);
+                form.submit();
+            });
         }
-        $("#edit-document").submit();
         return false;
     });
 

@@ -169,5 +169,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             return !_documentService.UrlIsValidForWebpage(UrlSegment, Id) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Returns server date used for publishing (can't use JS date as can be out compared to server date)
+        /// </summary>
+        /// <returns>Date</returns>
+        public DateTime GetServerDate()
+        {
+            return DateTime.Now;
+        }
     }
 }
