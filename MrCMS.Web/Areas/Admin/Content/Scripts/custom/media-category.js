@@ -45,7 +45,7 @@ $(function () {
         return false;
     });
 
-    $('#file-items-table').on('click', '.btn-seo-update', function () {
+    $('#file-items-table').on('click', '.btn-seo-update', function (event) {
         event.preventDefault();
         var form = $(this).parents('.seo-update-form');
         console.log(form.find(':input').serialize());
