@@ -448,8 +448,8 @@ namespace MrCMS.Helpers
 
             var tagBuilder = new TagBuilder("img");
             tagBuilder.Attributes.Add("src", imageUrl);
-            tagBuilder.Attributes.Add("alt", alt ?? image.Title);
-            tagBuilder.Attributes.Add("title", title ?? image.Description);
+            tagBuilder.Attributes.Add("alt", alt ?? image.Description);
+            tagBuilder.Attributes.Add("title", title ?? image.Title);
             if (attributes != null)
             {
                 var routeValueDictionary = AnonymousObjectToHtmlAttributes(attributes);
