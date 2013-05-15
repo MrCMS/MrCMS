@@ -91,40 +91,40 @@ namespace MrCMS.Entities.Indexes
         }
 
         private static readonly FieldDefinition<Webpage> _id =
-            new FieldDefinition<Webpage>("id", webpage => webpage.Id.ToString(), Field.Store.YES,
+            new StringFieldDefinition<Webpage>("id", webpage => webpage.Id.ToString(), Field.Store.YES,
                                          Field.Index.NOT_ANALYZED);
 
         private static readonly FieldDefinition<Webpage> _name =
-            new FieldDefinition<Webpage>("name", webpage => webpage.Name, Field.Store.YES,
+            new StringFieldDefinition<Webpage>("name", webpage => webpage.Name, Field.Store.YES,
                                          Field.Index.ANALYZED);
 
         private static readonly FieldDefinition<Webpage> _bodyContent =
-            new FieldDefinition<Webpage>("bodycontent", webpage => webpage.BodyContent, Field.Store.NO,
+            new StringFieldDefinition<Webpage>("bodycontent", webpage => webpage.BodyContent, Field.Store.NO,
                                          Field.Index.ANALYZED);
 
         private static readonly FieldDefinition<Webpage> _metaTitle =
-            new FieldDefinition<Webpage>("metatitle", webpage => webpage.MetaTitle, Field.Store.NO,
+            new StringFieldDefinition<Webpage>("metatitle", webpage => webpage.MetaTitle, Field.Store.NO,
                                          Field.Index.ANALYZED);
 
         private static readonly FieldDefinition<Webpage> _metaKeywords =
-            new FieldDefinition<Webpage>("metakeywords", webpage => webpage.MetaKeywords, Field.Store.NO,
+            new StringFieldDefinition<Webpage>("metakeywords", webpage => webpage.MetaKeywords, Field.Store.NO,
                                          Field.Index.ANALYZED);
 
         private static readonly FieldDefinition<Webpage> _metaDescription =
-            new FieldDefinition<Webpage>("metadescription",
+            new StringFieldDefinition<Webpage>("metadescription",
                                          webpage => webpage.MetaDescription, Field.Store.NO, Field.Index.ANALYZED);
 
         private static readonly FieldDefinition<Webpage> _urlSegment =
-            new FieldDefinition<Webpage>("urlsegment", webpage => webpage.UrlSegment, Field.Store.NO,
+            new StringFieldDefinition<Webpage>("urlsegment", webpage => webpage.UrlSegment, Field.Store.NO,
                                          Field.Index.ANALYZED);
 
         private static readonly FieldDefinition<Webpage> _type =
-            new FieldDefinition<Webpage>("type",
+            new StringFieldDefinition<Webpage>("type",
              webpage => GetAllTypeNames(webpage), Field.Store.NO,
                                          Field.Index.NOT_ANALYZED);
 
         private static readonly FieldDefinition<Webpage> _publishOn =
-            new FieldDefinition<Webpage>("publishOn",
+            new StringFieldDefinition<Webpage>("publishOn",
                                          webpage =>
                                          DateTools.DateToString(webpage.PublishOn.GetValueOrDefault(DateTime.MaxValue),
                                                                 DateTools.Resolution.SECOND), Field.Store.NO,

@@ -21,24 +21,24 @@ namespace MrCMS.Entities.Indexes
     {
         private Analyzer _analyser;
         private static readonly FieldDefinition<Documents.Document> _id =
-            new FieldDefinition<Documents.Document>("id", webpage => webpage.Id.ToString(), Field.Store.YES,
+            new StringFieldDefinition<Documents.Document>("id", webpage => webpage.Id.ToString(), Field.Store.YES,
                                          Field.Index.NOT_ANALYZED);
 
         private static readonly FieldDefinition<Documents.Document> _name =
-            new FieldDefinition<Documents.Document>("name", webpage => webpage.Name, Field.Store.YES,
+            new StringFieldDefinition<Documents.Document>("name", webpage => webpage.Name, Field.Store.YES,
                                          Field.Index.ANALYZED);
         private static readonly FieldDefinition<Documents.Document> _urlSegment =
-            new FieldDefinition<Documents.Document>("urlsegment", webpage => webpage.UrlSegment, Field.Store.NO,
+            new StringFieldDefinition<Documents.Document>("urlsegment", webpage => webpage.UrlSegment, Field.Store.NO,
                                          Field.Index.ANALYZED);
 
         private static readonly FieldDefinition<Documents.Document> _type =
-            new FieldDefinition<Documents.Document>("type",
+            new StringFieldDefinition<Documents.Document>("type",
              webpage => GetAllTypeNames(webpage), Field.Store.NO,
                                          Field.Index.NOT_ANALYZED);
 
 
         private static readonly FieldDefinition<Documents.Document> _parentId =
-            new FieldDefinition<Documents.Document>("parentid", webpage => GetParentIds(webpage), Field.Store.NO,
+            new StringFieldDefinition<Documents.Document>("parentid", webpage => GetParentIds(webpage), Field.Store.NO,
                                          Field.Index.NOT_ANALYZED);
 
         private static IEnumerable<string> GetAllTypeNames(Documents.Document document)

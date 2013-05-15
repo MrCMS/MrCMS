@@ -157,7 +157,7 @@ namespace MrCMS.Services
             if (!string.IsNullOrWhiteSpace(_searchTerm))
             {
                 var multiFieldQueryParser = new MultiFieldQueryParser(Version.LUCENE_30,
-                                                                      FieldDefinition.GetFields(
+                                                                      FieldDefinition.GetFieldNames(
                                                                           WebpageIndexDefinition.Name,
                                                                           WebpageIndexDefinition.BodyContent,
                                                                           WebpageIndexDefinition.MetaTitle,

@@ -12,6 +12,7 @@ namespace MrCMS.Indexing.Querying
         where TDefinition : IIndexDefinition<TEntity>, new()
     {
         IPagedList<TEntity> Search(Query query, int pageNumber, int pageSize, Filter filter = null);
+        int Total(Query query, Filter filter = null);
         IList<TEntity> GetAll(Query query = null, Filter filter = null);
     }
 }

@@ -30,14 +30,13 @@ namespace MrCMS.Indexing.Utils
                 document.Add(field);
             return document;
         }
+
         public static Document AddField<T>(this Document document, FieldDefinition<T> definition, T obj)
         {
             if (document != null)
             {
-                var values = definition.GetValues(obj);
-                values.ForEach(s => document.Add(new Field(definition.FieldName, s ?? string.Empty, definition.Store,
-                                                           definition.Index)));
-
+                var fields = definition.GetFields(obj);
+                fields.ForEach(document.Add);
             }
             return document;
         }

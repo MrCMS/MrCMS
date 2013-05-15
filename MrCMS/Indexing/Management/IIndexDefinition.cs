@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using NHibernate;
-using System.Linq;
 
 namespace MrCMS.Indexing.Management
 {
@@ -22,35 +20,5 @@ namespace MrCMS.Indexing.Management
         IEnumerable<FieldDefinition<T>> Definitions { get; }
 
         string IndexName { get; }
-    }
-
-    public class FieldDefinition
-    {
-        public static string[] GetFields(params FieldDefinition[] definitions)
-        {
-            return definitions.Select(definition => definition.FieldName).ToArray();
-        }
-        public string FieldName { get; set; }
-        public Field.Store Store { get; set; }
-        public Field.Index Index { get; set; }
-    }
-    public class FieldDefinition<T> : FieldDefinition
-    {
-        public FieldDefinition(string fieldName, Func<T, IEnumerable<string>> getValues, Field.Store store, Field.Index index)
-        {
-            FieldName = fieldName;
-            GetValues = getValues;
-            Store = store;
-            Index = index;
-        }
-        public FieldDefinition(string fieldName, Func<T, string> getValue, Field.Store store, Field.Index index)
-        {
-            FieldName = fieldName;
-            GetValues = arg => new List<string> {getValue(arg)};
-            Store = store;
-            Index = index;
-        }
-
-        public Func<T, IEnumerable<string>> GetValues { get; set; }
     }
 }
