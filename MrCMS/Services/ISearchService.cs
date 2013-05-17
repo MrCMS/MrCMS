@@ -90,7 +90,10 @@ namespace MrCMS.Services
                     ViewUrl =
                         (arg is Webpage)
                             ? "/" + (arg as Webpage).LiveUrlSegment
-                            : null
+                            : null,
+                    AddChildUrl = (arg is Webpage) ?
+                        string.Format("/Admin/Webpage/Add/{0}",
+                                      arg.Id) : null,
                 }), args.GetMetaData());
         }
 

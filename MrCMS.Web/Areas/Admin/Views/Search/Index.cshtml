@@ -29,6 +29,10 @@
                 {
                     <a href="@result.ViewUrl" target="_blank">(View)</a>
                 }
+                @if (!string.IsNullOrWhiteSpace(result.AddChildUrl))
+                {
+                    <a href="@result.AddChildUrl">(Add a child page)</a>
+                }
                 <p>Last updated on @result.LastUpdated</p>
             </div>
         </div>

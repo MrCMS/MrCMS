@@ -13,5 +13,6 @@
         public string CreatedOn { get; set; }
         public string EditUrl { get; set; }
         public string ViewUrl { get; set; }
+        public string AddChildUrl { get; set; }
     }
 }
