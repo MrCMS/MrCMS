@@ -16,8 +16,8 @@ namespace MrCMS.Entities.Documents
         public int MaxChildNodes { get; set; }
 
         public bool Sortable { get; set; }
-	
-	    public Func<Document, object> SortBy { get; set; }
+
+        public Func<Document, object> SortBy { get; set; }
 
         public bool SortByDesc { get; set; }
 
@@ -38,6 +38,8 @@ namespace MrCMS.Entities.Documents
         public bool ShowChildrenInAdminNav { get; set; }
 
         public bool ChildrenMaintainHierarchy { get; set; }
+
+        public bool HasBodyContent { get; set; }
 
         public string App { get; set; }
     }

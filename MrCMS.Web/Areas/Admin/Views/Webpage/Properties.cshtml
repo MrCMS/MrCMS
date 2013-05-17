@@ -9,8 +9,10 @@
             @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
             @Html.ValidationMessageFor(x => x.Name)
 
-            @{ Html.RenderPartial("Content", Model);}
-
+            @if (Model.GetMetadata().HasBodyContent)
+            {
+                    Html.RenderPartial("Content", Model);
+            }
             @Html.RenderCustomAdminProperties()
         </div>
     </div>

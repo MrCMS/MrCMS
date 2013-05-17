@@ -122,6 +122,11 @@ namespace MrCMS.Entities.Documents.Metadata
         /// </summary>
         public virtual bool ChildrenMaintainHierarchy { get { return true; } }
 
+        /// <summary>
+        /// Specifies whether the page type is able to have body content
+        /// </summary>
+        public virtual bool HasBodyContent { get { return true; } }
+
         public DocumentMetadata Metadata
         {
             get
@@ -149,7 +154,8 @@ namespace MrCMS.Entities.Documents.Metadata
                                EditPartialView = EditPartialView,
                                ShowChildrenInAdminNav = ShowChildrenInAdminNav,
                                App = App,
-                               ChildrenMaintainHierarchy = ChildrenMaintainHierarchy
+                               ChildrenMaintainHierarchy = ChildrenMaintainHierarchy,
+                               HasBodyContent = HasBodyContent
                            };
             }
         }
