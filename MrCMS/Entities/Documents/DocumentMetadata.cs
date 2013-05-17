@@ -37,6 +37,8 @@ namespace MrCMS.Entities.Documents
 
         public bool ShowChildrenInAdminNav { get; set; }
 
+        public bool ChildrenMaintainHierarchy { get; set; }
+
         public string App { get; set; }
     }
 
