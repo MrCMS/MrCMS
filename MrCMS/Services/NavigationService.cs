@@ -206,62 +206,74 @@ namespace MrCMS.Services
             }
             nodes.ForEach(document =>
                               {
-                                  var count = _documentService.GetDocumentsByParent<T>(document).Count();
-                                  var siteTreeNode = new SiteTreeNode<T>
-                                                         {
-                                                             Total =
-                                                                 count,
-                                                             IconClass = DocumentMetadataHelper.GetIconClass(document),
-                                                             Id = document.Id,
-                                                             ParentId = parentId,
-                                                             Name = document.Name,
-                                                             NodeType = GetNodeType(document),
-                                                             Sortable = IsSortable(document.Id),
-                                                             CanAddChild =
-                                                                 !(document is Webpage) ||
-                                                                 (document as Webpage).GetValidWebpageDocumentTypes(_documentService, (document as Webpage).Site).
-                                                                     Any(),
-                                                             IsPublished =
-                                                                 !(document is Webpage) ||
-                                                                 (document as Webpage).Published,
-                                                             RevealInNavigation =
-                                                                 (document is Webpage) &&
-                                                                 (document as Webpage).RevealInNavigation,
-                                                             Item = document
-                                                         };
-                                  if (ShowChildrenInAdminNav(document))
+                                  if (ShowInNav(document))
                                   {
-                                      if (maxDepth.HasValue)
+                                      var count = _documentService.GetDocumentsByParent<T>(document).Count();
+                                      var siteTreeNode = new SiteTreeNode<T>
+                                                             {
+                                                                 Total =
+                                                                     count,
+                                                                 IconClass =
+                                                                     DocumentMetadataHelper.GetIconClass(document),
+                                                                 Id = document.Id,
+                                                                 ParentId = parentId,
+                                                                 Name = document.Name,
+                                                                 NodeType = GetNodeType(document),
+                                                                 Sortable = IsSortable(document.Id),
+                                                                 CanAddChild =
+                                                                     !(document is Webpage) ||
+                                                                     (document as Webpage).GetValidWebpageDocumentTypes(
+                                                                         _documentService, (document as Webpage).Site).
+                                                                                           Any(),
+                                                                 IsPublished =
+                                                                     !(document is Webpage) ||
+                                                                     (document as Webpage).Published,
+                                                                 RevealInNavigation =
+                                                                     (document is Webpage) &&
+                                                                     (document as Webpage).RevealInNavigation,
+                                                                 Item = document
+                                                             };
+                                      if (ShowChildrenInAdminNav(document))
                                       {
-                                          if (maxDepth.Value == 0)
+                                          if (maxDepth.HasValue)
                                           {
-                                              siteTreeNode.Children = new List<SiteTreeNode<T>>();
+                                              if (maxDepth.Value == 0)
+                                              {
+                                                  siteTreeNode.Children = new List<SiteTreeNode<T>>();
+                                              }
+                                              else
+                                              {
+                                                  siteTreeNode.Children = GetNodes(siteTreeNode,
+                                                                                   _documentService.GetDocumentsByParent
+                                                                                       (
+                                                                                           document), document.Id,
+                                                                                   document.GetMaxChildNodes(),
+                                                                                   maxDepth - 1);
+                                              }
                                           }
                                           else
                                           {
                                               siteTreeNode.Children = GetNodes(siteTreeNode,
                                                                                _documentService.GetDocumentsByParent(
-                                                                                   document), document.Id,
-                                                                               document.GetMaxChildNodes(), maxDepth - 1);
+                                                                                   document),
+                                                                               document.Id,
+                                                                               document.GetMaxChildNodes());
                                           }
                                       }
                                       else
                                       {
-                                          siteTreeNode.Children = GetNodes(siteTreeNode,
-                                                                           _documentService.GetDocumentsByParent(
-                                                                               document),
-                                                                           document.Id,
-                                                                           document.GetMaxChildNodes());
+                                          siteTreeNode.Children = new List<SiteTreeNode<T>>();
                                       }
+                                      siteTreeNode.Parent = parent;
+                                      list.Add(siteTreeNode);
                                   }
-                                  else
-                                  {
-                                      siteTreeNode.Children = new List<SiteTreeNode<T>>();
-                                  }
-                                  siteTreeNode.Parent = parent;
-                                  list.Add(siteTreeNode);
                               });
             return list;
+        }
+
+        private bool ShowInNav(Document document)
+        {
+            return !(document is MediaCategory) || !(document as MediaCategory).HideInAdminNav;
         }
 
         private bool ShowChildrenInAdminNav(Document document)
