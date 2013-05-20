@@ -32,6 +32,7 @@ namespace MrCMS.Tests
             _listDictionary = new ListDictionary();
             A.CallTo(() => httpContextWrapper.Items).Returns(_listDictionary);
             CurrentRequestData.OverridenContext = httpContextWrapper;
+            CurrentRequestData.SiteSettings = new SiteSettings();
         }
 
         public virtual void Dispose()

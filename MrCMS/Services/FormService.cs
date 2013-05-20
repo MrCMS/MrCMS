@@ -223,7 +223,7 @@ namespace MrCMS.Services
                                                                      var title = new TagBuilder("b");
                                                                      title.InnerHtml += formValue.Key + ":";
                                                                      listItem.InnerHtml += title.ToString() + " " +
-                                                                                           formValue.Value;
+                                                                                           formValue.GetMessageValue();
 
                                                                      list.InnerHtml += listItem.ToString();
                                                                  }
@@ -256,7 +256,7 @@ namespace MrCMS.Services
                                                                              OrdinalIgnoreCase));
                                                              return formValue == null
                                                                         ? string.Empty
-                                                                        : formValue.Value;
+                                                                        : formValue.GetMessageValue();
                                                          });
         }
 

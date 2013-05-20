@@ -41,7 +41,7 @@ namespace MrCMS.IoC
             Kernel.Bind<Cache>().ToMethod(context => CurrentRequestData.CurrentContext.Cache);
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(FSDirectorySearcher<,>)).InRequestScope();
             Kernel.Rebind<CurrentSite>()
-                  .ToMethod(context => new CurrentSite(context.Kernel.Get<ISiteService>().GetCurrentSite()))
+                  .ToMethod(context => new CurrentSite(CurrentRequestData.CurrentSite))
                   .InRequestScope();
 
             // Allowing IFileSystem implementation to be set in the site settings

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -45,7 +47,7 @@ namespace MrCMS.Website
 
         public static SiteSettings SiteSettings
         {
-            get { return (SiteSettings)CurrentContext.Items["current.sitesettings"]; }
+            get { return (SiteSettings) CurrentContext.Items["current.sitesettings"]; }
             set { CurrentContext.Items["current.sitesettings"] = value; }
         }
 
@@ -66,12 +68,17 @@ namespace MrCMS.Website
 
         public static DateTime Now
         {
-            get { return DateTime.UtcNow.Add(TimeZoneInfo.BaseUtcOffset); }
+            get { return TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo); }
         }
 
         public static HttpContextBase CurrentContext
         {
-            get { return OverridenContext ?? new HttpContextWrapper(HttpContext.Current); }
+            get
+            {
+                return OverridenContext ?? (HttpContext.Current == null
+                                                ? (HttpContextBase)new OutOfContext()
+                                                : new HttpContextWrapper(HttpContext.Current));
+            }
         }
 
         public static HttpContextBase OverridenContext { get; set; }
@@ -82,6 +89,7 @@ namespace MrCMS.Website
         }
 
         private static bool? _databaseIsInstalled;
+        private static Site _taskSite;
 
         public static bool DatabaseIsInstalled
         {
@@ -116,6 +124,21 @@ namespace MrCMS.Website
                 return (Guid)(o != null ? (Guid)o : (CurrentContext.Session["current.usersessionGuid"] = Guid.NewGuid()));
             }
             set { CurrentContext.Session["current.usersessionGuid"] = value; }
+        }
+
+        public static void SetTaskSite(Site site)
+        {
+            _taskSite = site;
+        }
+    }
+
+    public class OutOfContext : HttpContextBase
+    {
+        private readonly IDictionary _items = new Dictionary<string, object>();
+
+        public override IDictionary Items
+        {
+            get { return _items; }
         }
     }
 }

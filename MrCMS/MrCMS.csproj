@@ -175,6 +175,9 @@
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
     <Compile Include="DbConfiguration\Types\BinaryData.cs" />
     <Compile Include="DbConfiguration\Types\DateTimeData.cs" />
+    <Compile Include="DbConfiguration\Types\LocalDateTimeData.cs" />
+    <Compile Include="DbConfiguration\Types\LocalNullableDateTimeData.cs" />
+    <Compile Include="DbConfiguration\Types\NullableDateTimeData.cs" />
     <Compile Include="DbConfiguration\Types\VarCharMax.cs" />
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />

@@ -1,6 +1,4 @@
 ﻿using System;
-using MrCMS.Settings;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Tasks
