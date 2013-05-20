@@ -8,6 +8,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Settings;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using NHibernate;
@@ -18,12 +19,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IFormService _formService;
         private readonly ISession _session;
+        private readonly SiteSettings _siteSettings;
 
-        public WebpageController(IDocumentService documentService, IFormService formService, ISession session)
+        public WebpageController(IDocumentService documentService, IFormService formService, ISession session, SiteSettings siteSettings)
             : base(documentService)
         {
             _formService = formService;
             _session = session;
+            _siteSettings = siteSettings;
         }
 
         protected override void OnAuthorization(AuthorizationContext filterContext)
@@ -115,10 +118,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Edit", new { id = document.Id, layoutAreaId });
         }
 
-        [HttpPost]
-        public void SetParent(Webpage webpage, int? parentId)
+        [HttpGet]
+        public PartialViewResult SetParent(Webpage webpag)
         {
-            _documentService.SetParent(webpage, parentId);
+            return PartialView();
         }
 
         public ActionResult ViewChanges(DocumentVersion documentVersion)
@@ -173,9 +176,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// Returns server date used for publishing (can't use JS date as can be out compared to server date)
         /// </summary>
         /// <returns>Date</returns>
-        public DateTime GetServerDate()
+        public string GetServerDate()
         {
-            return DateTime.Now;
+            return DateTime.Now.ToString(_siteSettings.CultureInfo);
         }
     }
 }

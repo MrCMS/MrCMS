@@ -48,5 +48,19 @@ namespace MrCMS.Settings
                             .ToList()
                             .BuildSelectItemList(s => s, s => s, s => s == themeName, emptyItem: null);
         }
+
+        public virtual List<SelectListItem> GetUiCultures(string uiCulture)
+        {
+            return CultureInfo.GetCultures(CultureTypes.AllCultures).OrderBy(info => info.DisplayName)
+                              .BuildSelectItemList(info => info.DisplayName, info => info.Name,
+                                                   info => info.Name == uiCulture, emptyItem: null);
+        }
+
+        public virtual List<SelectListItem> GetTimeZones(string timeZone)
+        {
+            return TimeZoneInfo.GetSystemTimeZones().BuildSelectItemList(info => info.DisplayName,
+                                                                  info => info.Id, info => info.Id == timeZone,
+                                                                  emptyItem: null);
+        }
     }
 }

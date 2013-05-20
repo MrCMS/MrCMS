@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Web.Mvc;
 using NHibernate;
 
@@ -39,6 +40,16 @@ namespace MrCMS.Settings
         [DisplayName("Enable inline editing")]
         public bool EnableInlineEditing { get; set; }
 
+        [DisplayName("Site UI Culture")]
+        [DropDownSelection("UiCultures")]
+        public string UICulture { get; set; }
+        public CultureInfo CultureInfo { get { return CultureInfo.GetCultureInfo(UICulture); } }
+
+        [DisplayName("Time zones")]
+        [DropDownSelection("TimeZones")]
+        public string TimeZone { get; set; }
+        public TimeZoneInfo TimeZoneInfo { get { return TimeZoneInfo.FindSystemTimeZoneById(TimeZone); } }
+
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
             viewDataDictionary["DefaultLayoutOptions"] = SiteSettingsOptionGenerator.GetLayoutOptions(session, Site,
@@ -50,6 +61,10 @@ namespace MrCMS.Settings
             viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
                                                                                                 Error500PageId);
             viewDataDictionary["Themes"] = SiteSettingsOptionGenerator.GetThemeNames(ThemeName);
+
+            viewDataDictionary["UiCultures"] = SiteSettingsOptionGenerator.GetUiCultures(UICulture);
+
+            viewDataDictionary["TimeZones"] = SiteSettingsOptionGenerator.GetTimeZones(TimeZone);
         }
 
     }

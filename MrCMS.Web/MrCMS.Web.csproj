@@ -406,6 +406,7 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\gallery.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\set-parent.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\slider.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\portfolio-item.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
@@ -731,6 +732,7 @@
     <Content Include="Areas\Admin\Views\UrlHistory\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\UrlHistory\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\FileSystem.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\SetParent.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
@@ -740,6 +742,7 @@
     <Content Include="Themes\Default\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="Properties\PublishProfiles\v0.3.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apps\Articles\Controllers\" />

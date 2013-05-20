@@ -12,8 +12,23 @@
     @Html.ValidationSummary()
 
     <div class="row-fluid">
-        <div class="span12">
-            <a id="move-to" class="btn btn-info" title="Drag on to new page to relocate" href="#" style="cursor: move">Move to...</a>
+        <div class="span1">
+            <div class="btn-group">
+                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        @Html.ActionLink("Set parent", "SetParent", "Webpage", new { Model.Id }, new { data_toggle = "fb-modal" })
+                        <a href="">Set parent</a>
+                    </li>
+                    <li>
+                        @Html.ActionLink("Add a child page", "Add", new { Model.Id })
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="span11">
             <div class="btn-group display-inline pull-right">
                 @Html.EditorFor(x => x.PublishOn)
                 @(Model.PublishOn == null
