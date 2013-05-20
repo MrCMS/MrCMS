@@ -77,7 +77,6 @@ namespace MrCMS.Web.Controllers
                     UrlSegment = "home",
                     BodyContent = "Welcome to Mr CMS",
                     RevealInNavigation = true,
-                    PublishOn = DateTime.Now,
                     Layout = model.BaseLayout
                 };
             model.Error404 = new TextPage
@@ -86,7 +85,6 @@ namespace MrCMS.Web.Controllers
                     UrlSegment = "404",
                     BodyContent = "Sorry, this page cannot be found.",
                     RevealInNavigation = false,
-                    PublishOn = DateTime.UtcNow,
                     Layout = model.BaseLayout
                 };
             model.Error403 = new TextPage
@@ -95,7 +93,6 @@ namespace MrCMS.Web.Controllers
                     UrlSegment = "403",
                     BodyContent = "Sorry, you are not authorized to view this page.",
                     RevealInNavigation = false,
-                    PublishOn = DateTime.UtcNow,
                     Layout = model.BaseLayout
                 };
             model.Error500 = new TextPage
@@ -104,7 +101,6 @@ namespace MrCMS.Web.Controllers
                     UrlSegment = "500",
                     BodyContent = "Sorry, there has been an error.",
                     RevealInNavigation = false,
-                    PublishOn = DateTime.Now,
                     Layout = model.BaseLayout
                 };
 
@@ -114,7 +110,6 @@ namespace MrCMS.Web.Controllers
                 UrlSegment = "page-2",
                 BodyContent = "Just another page!",
                 RevealInNavigation = true,
-                PublishOn = DateTime.Now,
                 Layout = model.BaseLayout
             };
 
@@ -124,11 +119,8 @@ namespace MrCMS.Web.Controllers
                 UrlSegment = "contact-us",
                 BodyContent = "Contact us at www.mrcms.co.uk.",
                 RevealInNavigation = true,
-                PublishOn = DateTime.Now,
                 Layout = model.BaseLayout
             };
-
-            
         }
     }
 }

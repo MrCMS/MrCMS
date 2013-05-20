@@ -16,6 +16,7 @@ using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Querying;
 using MrCMS.Models;
 using MrCMS.Paging;
+using MrCMS.Website;
 using Document = MrCMS.Entities.Documents.Document;
 using Version = Lucene.Net.Util.Version;
 
@@ -176,7 +177,7 @@ namespace MrCMS.Services
 
         public Filter GetFilter()
         {
-            var dateValue = DateTools.DateToString(DateTime.UtcNow, DateTools.Resolution.SECOND);
+            var dateValue = DateTools.DateToString(CurrentRequestData.Now, DateTools.Resolution.SECOND);
             var filter = FieldCacheRangeFilter.NewStringRange(WebpageIndexDefinition.PublishOn.FieldName, null,
                                                               dateValue, false, true);
             return filter;

@@ -85,7 +85,7 @@ namespace MrCMS.Tasks
 
         private static void MarkAsSent(QueuedMessage queuedMessage)
         {
-            queuedMessage.SentOn = DateTime.UtcNow;
+            queuedMessage.SentOn = CurrentRequestData.Now;
         }
 
         public const int MAX_TRIES = 5;

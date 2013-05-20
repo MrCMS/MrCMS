@@ -36,7 +36,7 @@ namespace MrCMS.Tests.Website.Routing
         public void ControllerManager_GetControllerName_NullDocumentMetadataReturnsNull()
         {
             var controllerManager = GetControllerManager();
-            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
             controllerManager.GetMetadata = document => null;
 
             controllerManager.GetControllerName(stubAllowedWebpage, "GET").Should().BeNull();
@@ -50,7 +50,7 @@ namespace MrCMS.Tests.Website.Routing
                                              {
                                                  WebGetController = "test-controller"
                                              };
-            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
             controllerManager.GetMetadata = document => metadata;
 
             controllerManager.GetControllerName(stubAllowedWebpage, "GET").Should().Be("test-controller");
@@ -64,7 +64,7 @@ namespace MrCMS.Tests.Website.Routing
                                              {
                                                  WebPostController = "test-controller"
                                              };
-            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
             controllerManager.GetMetadata = document => metadata;
 
             controllerManager.GetControllerName(stubAllowedWebpage, "POST").Should().Be("test-controller");
@@ -78,7 +78,7 @@ namespace MrCMS.Tests.Website.Routing
                                              {
                                                  WebPostController = "test-controller"
                                              };
-            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
             controllerManager.GetMetadata = document => metadata;
 
 
@@ -107,7 +107,7 @@ namespace MrCMS.Tests.Website.Routing
         public void ControllerManager_GetActionName_NullDocumentMetadataReturnsNull()
         {
             var controllerManager = GetControllerManager();
-            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
             controllerManager.GetMetadata = document => null;
 
             controllerManager.GetActionName(stubAllowedWebpage, "GET").Should().BeNull();
@@ -121,7 +121,7 @@ namespace MrCMS.Tests.Website.Routing
             {
                 WebGetAction = "test-get-action"
             };
-            var webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            var webpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
 
             controllerManager.GetMetadata = document => metadata;
 
@@ -136,7 +136,7 @@ namespace MrCMS.Tests.Website.Routing
             {
                 WebPostAction = "test-post-action"
             };
-            var webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            var webpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
 
             controllerManager.GetMetadata = document => metadata;
 
@@ -151,7 +151,7 @@ namespace MrCMS.Tests.Website.Routing
             {
                 WebPostAction = "test-post-action"
             };
-            var webpage = new StubAllowedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1) };
+            var webpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
 
             controllerManager.GetMetadata = document => metadata;
 

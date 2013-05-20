@@ -8,6 +8,7 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
 using MrCMS.Tasks;
+using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Services
@@ -39,7 +40,7 @@ namespace MrCMS.Services
 
         public void SetResetPassword(User user)
         {
-            user.ResetPasswordExpiry = DateTime.UtcNow.AddDays(1);
+            user.ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1);
             user.ResetPasswordGuid = Guid.NewGuid();
             _userService.SaveUser(user);
 
@@ -70,7 +71,7 @@ namespace MrCMS.Services
         {
             var user = _userService.GetUserByEmail(model.Email);
 
-            if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > DateTime.UtcNow)
+            if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > CurrentRequestData.Now)
             {
                 _authorisationService.SetPassword(user, model.Password, model.ConfirmPassword);
 

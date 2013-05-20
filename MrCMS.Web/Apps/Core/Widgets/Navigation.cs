@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Web.Apps.Core.Widgets
@@ -19,7 +20,7 @@ namespace MrCMS.Web.Apps.Core.Widgets
         {
             var navigationRecords =
                 session.QueryOver<Webpage>().Where(
-                    webpage => webpage.Parent == null && webpage.PublishOn != null && webpage.PublishOn <= DateTime.Now && webpage.RevealInNavigation && webpage.Site == Site).Cacheable()
+                    webpage => webpage.Parent == null && webpage.PublishOn != null && webpage.PublishOn <= CurrentRequestData.Now && webpage.RevealInNavigation && webpage.Site == Site).Cacheable()
                        .List().OrderBy(webpage => webpage.DisplayOrder)
                        .Select(webpage => new NavigationRecord
                        {

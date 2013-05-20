@@ -35,13 +35,13 @@ namespace MrCMS.Tasks
             var scheduledTasks =
                 GetAllTasks()
                     .Where(
-                        task => task.LastRun < DateTime.UtcNow.AddMinutes(-task.EveryXMinutes) || task.LastRun == null)
+                        task => task.LastRun < CurrentRequestData.Now.AddMinutes(-task.EveryXMinutes) || task.LastRun == null)
                     .ToList();
             _session.Transact(session =>
                                   {
                                       foreach (var task in scheduledTasks)
                                       {
-                                          task.LastRun = DateTime.UtcNow;
+                                          task.LastRun = CurrentRequestData.Now;
                                           _session.Update(task);
                                       }
                                   });

@@ -48,15 +48,15 @@ namespace MrCMS.DbConfiguration.Configuration
                     if (anyChanges)
                     {
                         var document = GetDocument(session, @event.Entity as Document);
- 
+
                         var documentVersion = new DocumentVersion
                                                   {
                                                       Document = document,
                                                       Data = JsonConvert.SerializeObject(jObject),
                                                       User = GetUser(session),
-                                                      CreatedOn = DateTime.UtcNow,
-                                                      UpdatedOn = DateTime.UtcNow,
-                                                      Site = session.Get<Site>( CurrentRequestData.CurrentSite.Id)
+                                                      CreatedOn = CurrentRequestData.Now,
+                                                      UpdatedOn = CurrentRequestData.Now,
+                                                      Site = session.Get<Site>(CurrentRequestData.CurrentSite.Id)
                                                   };
                         document.Versions.Add(documentVersion);
                         using (var transaction = session.BeginTransaction())

@@ -149,6 +149,7 @@
     <Compile Include="DbConfiguration\Configuration\UpdateIndexesListener.cs" />
     <Compile Include="DbConfiguration\Configuration\UrlHistoryListener.cs" />
     <Compile Include="DbConfiguration\Conventions\CacheConvention.cs" />
+    <Compile Include="DbConfiguration\Conventions\DateTimeConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ForeignKeyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
@@ -172,7 +173,8 @@
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WidgetOverride.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
-    <Compile Include="DbConfiguration\Types\BinaryErrorData.cs" />
+    <Compile Include="DbConfiguration\Types\BinaryData.cs" />
+    <Compile Include="DbConfiguration\Types\DateTimeData.cs" />
     <Compile Include="DbConfiguration\Types\VarCharMax.cs" />
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />

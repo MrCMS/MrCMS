@@ -36,8 +36,8 @@ namespace MrCMS.DbConfiguration.Configuration
                         {
                             Webpage = webpage,
                             UrlSegment = Convert.ToString(@event.OldState[indexOf]),
-                            CreatedOn = DateTime.UtcNow,
-                            UpdatedOn = DateTime.UtcNow,
+                            CreatedOn = CurrentRequestData.Now,
+                            UpdatedOn = CurrentRequestData.Now,
                             Site = session.Get<Site>(CurrentRequestData.CurrentSite.Id)
                         };
 

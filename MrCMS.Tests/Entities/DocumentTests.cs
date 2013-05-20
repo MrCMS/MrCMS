@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Tests.Stubs;
+using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Transform;
@@ -51,7 +52,7 @@ namespace MrCMS.Tests.Entities
         {
             var doc = new StubDocument();
 
-            var document = new BasicMappedWebpage {PublishOn = DateTime.UtcNow.AddDays(-1)};
+            var document = new BasicMappedWebpage {PublishOn = CurrentRequestData.Now.AddDays(-1)};
             doc.SetChildren(new List<Document> {document});
 
             doc.PublishedChildren.Should().Contain(document);
@@ -85,8 +86,8 @@ namespace MrCMS.Tests.Entities
         public void Document_GetVersions_ReturnsVersionsInDescendingCreatedOnOrder()
         {
             var document = new StubDocument();
-            var version1 = new DocumentVersion {CreatedOn = DateTime.UtcNow};
-            var version2 = new DocumentVersion {CreatedOn = DateTime.UtcNow.AddDays(1)};
+            var version1 = new DocumentVersion {CreatedOn = CurrentRequestData.Now};
+            var version2 = new DocumentVersion {CreatedOn = CurrentRequestData.Now.AddDays(1)};
             document.SetVersions(new List<DocumentVersion>
                 {
                     version1,
@@ -122,7 +123,7 @@ namespace MrCMS.Tests.Entities
                                   .WithAlias(() => countAlias.DocumentType)
                                   .SelectCount(() => webpageAlias.Id)
                                   .WithAlias(() => countAlias.Total)
-                                  .SelectSubQuery(QueryOver.Of<Webpage>().Where(webpage => webpage.DocumentType == webpageAlias.DocumentType && (webpage.PublishOn == null || webpage.PublishOn > DateTime.Now)).ToRowCountQuery())
+                                  .SelectSubQuery(QueryOver.Of<Webpage>().Where(webpage => webpage.DocumentType == webpageAlias.DocumentType && (webpage.PublishOn == null || webpage.PublishOn > CurrentRequestData.Now)).ToRowCountQuery())
                                   .WithAlias(() => countAlias.Unpublished))
                        .TransformUsing(Transformers.AliasToBean<DocumentTypeCount>())
                        .List<DocumentTypeCount>();

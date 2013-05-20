@@ -12,6 +12,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Tests.Stubs;
 using MrCMS.Website;
@@ -82,6 +83,8 @@ namespace MrCMS.Tests
                     session.SaveOrUpdate(site);
                     return site;
                 });
+
+            CurrentRequestData.SiteSettings = new SiteSettings {TimeZone = TimeZoneInfo.Local.Id};
 
             TaskExecutor.Discard();
 

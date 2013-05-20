@@ -165,6 +165,22 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td nowrap="nowrap" align="left">
+                                                @Html.LabelFor(model => model.UiCulture)
+                                            </td>
+                                            <td width="100%">
+                                                @Html.DropDownListFor(x => x.UiCulture, Model.CultureOptions)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td nowrap="nowrap" align="left">
+                                                @Html.LabelFor(model => model.TimeZone)
+                                            </td>
+                                            <td width="100%">
+                                                @Html.DropDownListFor(x => x.TimeZone, Model.TimeZoneOptions)
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td colspan="2" align="left">
                                                 <h3>Database information</h3>
                                                 <hr />

@@ -17,7 +17,7 @@ namespace MrCMS.DbConfiguration.Configuration
             var systemEntity = @event.Entity as SystemEntity;
             if (systemEntity != null)
             {
-                var now = DateTime.UtcNow;
+                var now = CurrentRequestData.Now;
                 if (!DbHasSetCreatedOn(@event.Persister, @event.State))
                     SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
                 SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
@@ -67,7 +67,7 @@ namespace MrCMS.DbConfiguration.Configuration
             var systemEntity = @event.Entity as SystemEntity;
             if (systemEntity != null)
             {
-                var now = DateTime.UtcNow;
+                var now = CurrentRequestData.Now;
                 SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
                 SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
                 if (systemEntity is SiteEntity && (systemEntity as SiteEntity).Site == null)

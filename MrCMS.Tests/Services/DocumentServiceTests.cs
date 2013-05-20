@@ -553,7 +553,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            documentService.AddDocument(new BasicMappedWebpage { Site = CurrentSite, PublishOn = DateTime.UtcNow.AddDays(-1) });
+            documentService.AddDocument(new BasicMappedWebpage { Site = CurrentSite, PublishOn = CurrentRequestData.Now.AddDays(-1) });
 
             documentService.AnyPublishedWebpages().Should().BeTrue();
         }
@@ -696,7 +696,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            var publishOn = DateTime.Now.AddDays(-1);
+            var publishOn = CurrentRequestData.Now.AddDays(-1);
             var textPage = new BasicMappedWebpage { PublishOn = publishOn };
 
             Session.Transact(session => session.Save(textPage));
@@ -712,7 +712,7 @@ namespace MrCMS.Tests.Services
         {
             var documentService = GetDocumentService();
 
-            var publishOn = DateTime.Now.AddDays(-1);
+            var publishOn = CurrentRequestData.Now.AddDays(-1);
             var textPage = new BasicMappedWebpage { PublishOn = publishOn };
 
             Session.Transact(session => session.Save(textPage));

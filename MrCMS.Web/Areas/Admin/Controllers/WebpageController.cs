@@ -19,14 +19,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IFormService _formService;
         private readonly ISession _session;
-        private readonly SiteSettings _siteSettings;
 
-        public WebpageController(IDocumentService documentService, IFormService formService, ISession session, SiteSettings siteSettings)
+        public WebpageController(IDocumentService documentService, IFormService formService, ISession session)
             : base(documentService)
         {
             _formService = formService;
             _session = session;
-            _siteSettings = siteSettings;
         }
 
         protected override void OnAuthorization(AuthorizationContext filterContext)
@@ -178,7 +176,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// <returns>Date</returns>
         public string GetServerDate()
         {
-            return DateTime.Now.ToString(_siteSettings.CultureInfo);
+            return CurrentRequestData.Now.ToString(CurrentRequestData.CultureInfo);
         }
     }
 }

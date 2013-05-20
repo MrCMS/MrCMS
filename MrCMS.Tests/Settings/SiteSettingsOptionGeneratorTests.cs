@@ -30,7 +30,7 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1), Name = "Test 1", Site = CurrentSite };
             Session.Transact(session => session.Save(textPage));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, CurrentSite, -1);
@@ -45,13 +45,13 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1), Name = "Test 1", Site = CurrentSite };
             Session.Transact(session =>
                                  {
                                      session.Save(textPage);
                                  });
             var site2 = new Site();
-            var textPage2 = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 2", Site = site2 };
+            var textPage2 = new BasicMappedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1), Name = "Test 2", Site = site2 };
 
             CurrentRequestData.CurrentSite = site2;
             Session.Transact(session =>
@@ -85,7 +85,7 @@ namespace MrCMS.Tests.Settings
         {
             var siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
 
-            var textPage = new BasicMappedWebpage { PublishOn = DateTime.UtcNow.AddDays(-1), Name = "Test 1", Site = CurrentSite };
+            var textPage = new BasicMappedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1), Name = "Test 1", Site = CurrentSite };
             Session.Transact(session => session.Save(textPage));
 
             var errorPageOptions = siteSettingsOptionGenerator.GetErrorPageOptions(Session, CurrentSite, textPage.Id);

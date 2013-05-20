@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -16,6 +17,7 @@ using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -355,7 +357,13 @@ namespace MrCMS.Installation
             CurrentRequestData.CurrentSite = site;
             var currentSite = new CurrentSite(site);
 
-            var siteSettings = new SiteSettings { Site = site };
+            var siteSettings = new SiteSettings
+                                   {
+                                       Site = site,
+                                       TimeZone = model.TimeZone,
+                                       UICulture = model.UiCulture
+                                   };
+            CurrentRequestData.SiteSettings = siteSettings;
 
             var documentService = new DocumentService(session, siteSettings, currentSite);
             var layoutAreaService = new LayoutAreaService(session);
@@ -378,21 +386,21 @@ namespace MrCMS.Installation
                                       new LayoutArea
                                           {
                                               AreaName = "Main Navigation",
-                                              CreatedOn = DateTime.Now,
+                                              CreatedOn = CurrentRequestData.Now,
                                               Layout = model.BaseLayout,
                                               Site = site
                                           },
                                       new LayoutArea
                                           {
                                               AreaName = "Before Content",
-                                              CreatedOn = DateTime.Now,
+                                              CreatedOn = CurrentRequestData.Now,
                                               Layout = model.BaseLayout,
                                               Site = site
                                           },
                                       new LayoutArea
                                           {
                                               AreaName = "After Content",
-                                              CreatedOn = DateTime.Now,
+                                              CreatedOn = CurrentRequestData.Now,
                                               Layout = model.BaseLayout,
                                               Site = site
                                           }
@@ -406,8 +414,10 @@ namespace MrCMS.Installation
             documentService.AddDocument(model.Page3);
             documentService.AddDocument(model.Error403);
             documentService.AddDocument(model.Error404);
-
             documentService.AddDocument(model.Error500);
+            var webpages = session.QueryOver<Webpage>().List();
+            webpages.ForEach(documentService.PublishNow);
+
 
             var defaultMediaCategory = new MediaCategory
                 {
@@ -516,7 +526,7 @@ namespace MrCMS.Installation
             {
                 // In medium trust, "UnloadAppDomain" is not supported. Touch web.config
                 // to force an AppDomain restart.
-                File.SetLastWriteTimeUtc(MapPath("~/web.config"), DateTime.UtcNow);
+                File.SetLastWriteTimeUtc(MapPath("~/web.config"), CurrentRequestData.Now);
                 return true;
             }
             catch

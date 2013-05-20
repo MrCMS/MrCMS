@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Web;
 using System.Web.Hosting;
@@ -30,7 +31,7 @@ namespace MrCMS.Website
         {
             get
             {
-                return (Site) CurrentContext.Items["current.site"] ??
+                return (Site)CurrentContext.Items["current.site"] ??
                        (CurrentSite = MrCMSApplication.Get<ISiteService>().GetCurrentSite());
             }
             set { CurrentContext.Items["current.site"] = value; }
@@ -46,6 +47,26 @@ namespace MrCMS.Website
         {
             get { return (SiteSettings)CurrentContext.Items["current.sitesettings"]; }
             set { CurrentContext.Items["current.sitesettings"] = value; }
+        }
+
+        public static CultureInfo CultureInfo
+        {
+            get { return SiteSettings != null ? SiteSettings.CultureInfo : null; }
+        }
+
+        public static TimeZoneInfo TimeZoneInfo
+        {
+            get
+            {
+                return SiteSettings != null
+                           ? (SiteSettings.TimeZoneInfo ?? TimeZoneInfo.Local)
+                           : TimeZoneInfo.Local;
+            }
+        }
+
+        public static DateTime Now
+        {
+            get { return DateTime.UtcNow.Add(TimeZoneInfo.BaseUtcOffset); }
         }
 
         public static HttpContextBase CurrentContext

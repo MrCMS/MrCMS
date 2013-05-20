@@ -48,7 +48,7 @@ namespace MrCMS.Settings
         [DisplayName("Time zones")]
         [DropDownSelection("TimeZones")]
         public string TimeZone { get; set; }
-        public TimeZoneInfo TimeZoneInfo { get { return TimeZoneInfo.FindSystemTimeZoneById(TimeZone); } }
+        public TimeZoneInfo TimeZoneInfo { get { return !string.IsNullOrWhiteSpace(TimeZone) ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone) : null; } }
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {

@@ -7,6 +7,7 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
+using MrCMS.Website;
 using Xunit;
 using FluentAssertions;
 using System.Linq;
@@ -90,7 +91,7 @@ namespace MrCMS.Tests.Services
             var guid = Guid.NewGuid();
             var user = new User
             {
-                ResetPasswordExpiry = DateTime.UtcNow.AddDays(1),
+                ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1),
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };
@@ -120,7 +121,7 @@ namespace MrCMS.Tests.Services
             var guid = Guid.NewGuid();
             var user = new User
             {
-                ResetPasswordExpiry = DateTime.UtcNow.AddDays(1),
+                ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1),
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };
@@ -150,7 +151,7 @@ namespace MrCMS.Tests.Services
             var guid = Guid.NewGuid();
             var user = new User
             {
-                ResetPasswordExpiry = DateTime.UtcNow.AddDays(1),
+                ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1),
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };

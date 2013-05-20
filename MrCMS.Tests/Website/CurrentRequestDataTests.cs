@@ -8,6 +8,7 @@ using System.Web.SessionState;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.People;
+using MrCMS.Settings;
 using MrCMS.Website;
 using Xunit;
 using MrCMS.Helpers;
@@ -51,6 +52,23 @@ namespace MrCMS.Tests.Website
             var userGuid = CurrentRequestData.UserGuid;
 
             userGuid.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public void CurrentRequestData_Now_ShouldBeUTCOffsetByTimeZone()
+        {
+            CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.GetSystemTimeZones().First().Id };
+
+            var time = DateTime.UtcNow.AddHours(-12);
+            CurrentRequestData.Now.Should().BeAfter(time.AddSeconds(-1)).And.BeBefore(time.AddSeconds(1));
+        }
+
+        [Fact]
+        public void CurrentRequestData_TimeZoneInfo_ShouldBeLocalTimeZoneIfNotSet()
+        {
+            CurrentRequestData.SiteSettings = new SiteSettings();
+
+            CurrentRequestData.TimeZoneInfo.Should().Be(TimeZoneInfo.Local);
         }
     }
 

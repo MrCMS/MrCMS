@@ -380,15 +380,14 @@ namespace MrCMS.Website
         {
             List<ViewLocation> allLocations = new List<ViewLocation>();
 
-            if (!string.IsNullOrWhiteSpace(themeName))
+            foreach (var location in locationsByPriority)
             {
-                allLocations.AddRange(
-                    locationsByPriority.Select(
-                        location =>
-                        string.Format("{0}Themes/{1}/{2}", location.Substring(0, 2), themeName, location.Substring(2)))
-                                       .Select(themeLocation => new ViewLocation(themeLocation)));
+                if (!string.IsNullOrWhiteSpace(themeName))
+                    allLocations.Add(
+                        new ViewLocation(string.Format("{0}Themes/{1}/{2}", location.Substring(0, 2), themeName,
+                                                       location.Substring(2))));
+                allLocations.Add(new ViewLocation(location));
             }
-            allLocations.AddRange(locationsByPriority.Select(location => new ViewLocation(location)));
 
             return allLocations;
         }

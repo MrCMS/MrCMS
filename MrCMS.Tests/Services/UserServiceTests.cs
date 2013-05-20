@@ -9,6 +9,7 @@ using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Website;
 using NHibernate;
 using Xunit;
 
@@ -154,7 +155,7 @@ namespace MrCMS.Tests.Services
                 LastName = "User",
                 Email = "test@example.com",
                 ResetPasswordGuid = resetPasswordGuid,
-                ResetPasswordExpiry = DateTime.UtcNow.AddDays(-2)
+                ResetPasswordExpiry = CurrentRequestData.Now.AddDays(-2)
             };
             Session.Transact(session => Session.Save(user));
 
@@ -173,7 +174,7 @@ namespace MrCMS.Tests.Services
                 LastName = "User",
                 Email = "test@example.com",
                 ResetPasswordGuid = resetPasswordGuid,
-                ResetPasswordExpiry = DateTime.UtcNow.AddDays(1)
+                ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1)
             };
             Session.Transact(session => Session.Save(user));
 

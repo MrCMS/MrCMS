@@ -3,6 +3,7 @@
 @using MrCMS.Helpers
 @using MrCMS.Web.Apps.Articles.Pages
 @using MrCMS.Web.Apps.Galleries.Pages
+@using MrCMS.Website
 @using NHibernate.Criterion
 @model MrCMS.Web.Apps.Galleries.Pages.GalleryList 
            
@@ -12,7 +13,7 @@
     var category = Request["Category"];
 
     var query = QueryOver.Of<Gallery>()
-                                     .Where(gallery => gallery.Parent == Model && gallery.PublishOn != null && gallery.PublishOn <= DateTime.Now)
+                                     .Where(gallery => gallery.Parent == Model && gallery.PublishOn != null && gallery.PublishOn <= CurrentRequestData.Now)
                                      .ThenBy(gallery => gallery.DisplayOrder)
                                      .Desc;
 

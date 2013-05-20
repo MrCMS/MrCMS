@@ -1,6 +1,7 @@
 ﻿@using MrCMS.Entities.Documents
 @using MrCMS.Helpers
 @using MrCMS.Web.Apps.Articles.Pages
+@using MrCMS.Website
 @using NHibernate.Criterion
 @model ArticleList
            
@@ -10,7 +11,7 @@
     var category = Request["Category"];
     
     var query = QueryOver.Of<Article>()
-                                     .Where(a => a.Parent == Model && a.PublishOn != null && a.PublishOn <= DateTime.Now)
+                                     .Where(a => a.Parent == Model && a.PublishOn != null && a.PublishOn <= CurrentRequestData.Now)
                                      .ThenBy(arg => arg.PublishOn)
                                      .Desc;
 

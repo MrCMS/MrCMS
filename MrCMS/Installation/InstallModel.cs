@@ -1,9 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Web.Mvc;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
+using System.Linq;
 
 namespace MrCMS.Installation
 {
@@ -53,5 +58,37 @@ namespace MrCMS.Installation
         public Webpage Error500 { get; set; }
 
         public Layout BaseLayout { get; set; }
+
+        [DisplayName("UI Culture")]
+        public string UiCulture { get; set; }
+        [DisplayName("Time Zone")]
+        public string TimeZone { get; set; }
+
+        public IEnumerable<SelectListItem> CultureOptions
+        {
+            get
+            {
+                return CultureInfo.GetCultures(CultureTypes.AllCultures).OrderBy(info => info.DisplayName)
+                           .BuildSelectItemList(info => info.DisplayName, info => info.Name,
+                                                info =>
+                                                string.IsNullOrWhiteSpace(UiCulture)
+                                                    ? Equals(info, CultureInfo.CurrentCulture)
+                                                    : info.Name == UiCulture,
+                                                emptyItem: null);
+            }
+        }
+
+        public IEnumerable<SelectListItem> TimeZoneOptions
+        {
+            get
+            {
+                return TimeZoneInfo.GetSystemTimeZones()
+                                   .BuildSelectItemList(info => info.DisplayName, info => info.Id,
+                                                        info =>
+                                                        string.IsNullOrWhiteSpace(TimeZone)
+                                                            ? Equals(info, TimeZoneInfo.Local)
+                                                            : info.Id == TimeZone, emptyItem: null);
+            }
+        }
     }
 }

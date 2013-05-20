@@ -5,6 +5,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Paging;
+using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
 
@@ -73,7 +74,7 @@ namespace MrCMS.Services
         {
             return
                 _session.QueryOver<User>()
-                    .Where(user => user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= DateTime.UtcNow)
+                    .Where(user => user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= CurrentRequestData.Now)
                     .Cacheable().SingleOrDefault();
         }
 

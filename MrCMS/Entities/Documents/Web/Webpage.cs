@@ -51,7 +51,7 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual bool Published
         {
-            get { return PublishOn != null && PublishOn <= DateTime.Now; }
+            get { return PublishOn != null && PublishOn <= CurrentRequestData.Now; }
         }
 
         public virtual string LiveUrlSegment
@@ -234,11 +234,16 @@ namespace MrCMS.Entities.Documents.Web
         {
             query = query ??
                     QueryOver.Of<T>()
-                             .Where(a => a.Parent == this && a.PublishOn != null && a.PublishOn <= DateTime.Now)
+                             .Where(a => a.Parent == this && a.PublishOn != null && a.PublishOn <= CurrentRequestData.Now)
                              .ThenBy(arg => arg.PublishOn)
                              .Desc;
 
             return MrCMSApplication.Get<ISession>().Paged(query, pageNum, pageSize);
+        }
+
+        public virtual string GetPageTitle()
+        {
+            return !string.IsNullOrWhiteSpace(MetaTitle) ? MetaTitle : Name;
         }
     }
 }
