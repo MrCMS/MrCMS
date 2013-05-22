@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
 
-CKEDITOR.editorConfig = function( config ) {
-	// Define changes to default configuration here. For example:
-	// config.language = 'fr';
+CKEDITOR.editorConfig = function (config) {
+    // Define changes to default configuration here. For example:
+    // config.language = 'fr';
     // config.uiColor = '#AADC6E';
-    config.filebrowserImageBrowseUrl = '#';
+    config.extraPlugins = 'justify';
+
     config.height = '300px';
 
     config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.min.css', '/Apps/Core/Content/Styles/style.css'];
@@ -21,15 +22,14 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
          ['Scayt'],
         { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
-        
+
         { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
         {
-            name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv',
-            '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl']
+            name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl']
         },
         { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
         { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] }
-        
+
     ];
 
     config.toolbar_Basic =
@@ -37,5 +37,5 @@ CKEDITOR.editorConfig = function( config ) {
         ['Templates', 'Bold', 'Italic', 'RemoveFormat', 'Outdent', 'Indent', '-', 'Blockquote', 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-', 'Image', 'Flash', 'Table', 'HorizontalRule', 'Format']
     ];
 
-    
+
 };
