@@ -42,7 +42,7 @@
                     Save</button>
             </span>
         </legend>
-
+        
         @Html.HiddenFor(x => x.Id)
         <div id="tabs">
             <ul class="nav nav-tabs">
@@ -74,16 +74,18 @@
                                 bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
                                 bool isEnabled = !role.IsAdmin || !onlyAdmin;
 
-                            @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
-                            @:&nbsp;
-                            @Html.Label("Role-" + role.Id, role.Name)
-                            <br />
+                                @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
+                                @:&nbsp;
+                                @Html.Label("Role-" + role.Id, role.Name)
+                                <br />
                             }
                         }
                     </div>
                 </div>
             </div>
         </div>
+        
+        @Html.ValidationSummary()
 
     </fieldset>
 }

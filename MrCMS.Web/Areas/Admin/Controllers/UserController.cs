@@ -90,9 +90,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Edit", new {user.Id});
         }
 
-        public JsonResult IsUniqueEmail(string email)
+        public JsonResult IsUniqueEmail(string email, string id)
         {
-            if (_userService.IsUniqueEmail(email))
+            if (_userService.IsUniqueEmail(email, id))
                 return Json(true, JsonRequestBehavior.AllowGet);
 
             return Json("Email already registered.", JsonRequestBehavior.AllowGet);

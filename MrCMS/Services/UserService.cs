@@ -91,14 +91,21 @@ namespace MrCMS.Services
                                       session.Delete(user);
                                   });
         }
-
+        
         /// <summary>
         /// Checks to see if the supplied email address is unique
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public bool IsUniqueEmail(string email)
+        public bool IsUniqueEmail(string email, string id)
         {
+            var userId = 0;
+            int.TryParse(id, out userId);
+
+            if (userId > 0)
+            {
+                return _session.QueryOver<User>().Where(u => u.Email == email && u.Id != userId).RowCount() == 0;
+            }
             return _session.QueryOver<User>().Where(u => u.Email == email).RowCount() == 0;
         }
 

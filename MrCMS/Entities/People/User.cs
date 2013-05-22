@@ -29,7 +29,7 @@ namespace MrCMS.Entities.People
         public virtual Guid Guid { get; set; }
 
         [Required]
-        [Remote("IsUniqueEmail", "User")]
+        [Remote("IsUniqueEmail", "User", AdditionalFields = "Id")]
         public virtual string Email { get; set; }
 
         [Required]

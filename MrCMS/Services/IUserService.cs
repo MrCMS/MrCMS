@@ -17,7 +17,7 @@ namespace MrCMS.Services
         User GetUserByResetGuid(Guid resetGuid);
         User GetCurrentUser(HttpContextBase context);
         void DeleteUser(User user);
-        bool IsUniqueEmail(string email);
+        bool IsUniqueEmail(string email, string id);
         int ActiveUsers();
         int NoneActiveUsers();
     }

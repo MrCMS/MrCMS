@@ -2,7 +2,6 @@
 @model MrCMS.Web.Apps.Articles.Pages.ArticleList
 @{ Html.IncludeScript("~/Apps/Articles/Areas/Admin/Content/Scripts/articles.js"); }
 
-<hr />
 @Html.LabelFor(model => model.PageSize)
 @Html.EditorFor(model => model.PageSize)
 @Html.ValidationMessageFor(model => model.PageSize)
