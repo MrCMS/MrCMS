@@ -15,11 +15,13 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
         private readonly IFileSystem _fileSystem;
+        private readonly MediaSettings _mediaSettings;
 
-        public ImageProcessor(ISession session, IFileSystem fileSystem)
+        public ImageProcessor(ISession session, IFileSystem fileSystem, MediaSettings mediaSettings)
         {
             _session = session;
             _fileSystem = fileSystem;
+            _mediaSettings = mediaSettings;
         }
 
         public MediaFile GetImage(string imageUrl)
@@ -95,7 +97,7 @@ namespace MrCMS.Services
                         g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                         g.DrawImage(b, 0, 0, newSize.Width, newSize.Height);
                         var ep = new EncoderParameters();
-                        ep.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
+                        ep.Param[0] = new EncoderParameter(Encoder.Quality, _mediaSettings.ResizeQuality ?? 90L);
                         ImageCodecInfo ici = GetImageCodecInfoFromExtension(file.FileExtension)
                                              ?? GetImageCodecInfoFromMimeType("image/jpeg");
 
@@ -128,7 +130,7 @@ namespace MrCMS.Services
                     g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                     g.DrawImage(original, 0, 0, newSize.Width, newSize.Height);
                     var ep = new EncoderParameters();
-                    ep.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
+                    ep.Param[0] = new EncoderParameter(Encoder.Quality, _mediaSettings.ResizeQuality ?? 90L);
                     ImageCodecInfo ici = GetImageCodecInfoFromExtension(file.FileExtension)
                                          ?? GetImageCodecInfoFromMimeType("image/jpeg");
                     var memoryStream = new MemoryStream();

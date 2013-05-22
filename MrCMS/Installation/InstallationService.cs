@@ -443,6 +443,7 @@ namespace MrCMS.Installation
             mediaSettings.MediumImageWidth = 500;
             mediaSettings.SmallImageHeight = 200;
             mediaSettings.SmallImageWidth = 200;
+            mediaSettings.ResizeQuality = 90;
 
             var configurationProvider = new ConfigurationProvider(new SettingService(session),
                                                                   currentSite);

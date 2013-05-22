@@ -133,5 +133,7 @@ namespace MrCMS.Settings
                 return _maxSize;
             }
         }
+
+        public int? ResizeQuality { get; set; }
     }
 }
