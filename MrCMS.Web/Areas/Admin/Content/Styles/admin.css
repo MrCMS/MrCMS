@@ -70,9 +70,9 @@ section.admin-header h3 { margin: 0px; }
 
 /*CKEditor hide bottom bar*/
 #cke_bottom_detail,.cke_bottom{ display: none!important;}
+#cke_BodyContent { margin-bottom: 10px;}
 
 /*So the tabbed menu and web tree don't have a massive gap underneath'*/
-
 ul.nav { margin-bottom: 10px;}
 
 .main-content legend { line-height: 37px;}
