@@ -289,7 +289,7 @@ namespace MrCMS.Services
         {
             if (document.PublishOn == null)
             {
-                document.PublishOn = DateTime.Now;
+                document.PublishOn = CurrentRequestData.Now;
                 SaveDocument(document);
             }
         }

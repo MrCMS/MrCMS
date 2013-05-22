@@ -19,7 +19,7 @@
                 <a href="/@Model.LiveUrlSegment" class="btn">View</a>
                 
                 @Html.ActionLink("Move", "SetParent", "Webpage", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn" })
-                @if (Model.GetMetadata().ValidChildrenTypes.Any())
+                @if (Model.CanAddChildren())
                 {
                     @Html.ActionLink("Add a child page", "Add", new {Model.Id}, new {@class = "btn"})
                 }

@@ -242,5 +242,10 @@ namespace MrCMS.Entities.Documents.Web
         {
             return !string.IsNullOrWhiteSpace(MetaTitle) ? MetaTitle : Name;
         }
+
+        public virtual bool CanAddChildren()
+        {
+            return this.GetMetadata().ValidChildrenTypes.Any();
+        }
     }
 }

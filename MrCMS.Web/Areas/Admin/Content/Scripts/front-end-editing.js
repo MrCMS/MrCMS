@@ -218,4 +218,17 @@ $(function () {
         }).click().remove();
         return false;
     });
+
+    $("#unpublish-now").click(function () {
+        $.post('/admin/webpage/unpublish', { id: $('#Id').val() }, function (response) {
+            location.reload();
+        });
+        return false;
+    });
+    $("#publish-now").click(function () {
+        $.post('/admin/webpage/publishnow', { id: $('#Id').val() }, function (response) {
+            location.reload();
+        });
+        return false;
+    });
 });
