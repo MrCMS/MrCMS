@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using MrCMS.Helpers;
+using System.Linq;
 
 namespace MrCMS.Entities.Documents
 {
@@ -42,6 +44,25 @@ namespace MrCMS.Entities.Documents
         public bool HasBodyContent { get; set; }
 
         public string App { get; set; }
+
+        public IEnumerable<Type> ValidChildrenTypes
+        {
+            get
+            {
+                switch (ChildrenListType)
+                {
+                    case ChildrenListType.BlackList:
+                        return
+                            DocumentMetadataHelper.DocumentMetadatas.Where(
+                                metadata => !ChildrenList.Contains(metadata.Type) && !metadata.AutoBlacklist)
+                                                  .Select(metadata => metadata.Type)
+                                                  .ToList();
+                    case ChildrenListType.WhiteList:
+                        return ChildrenList;
+                }
+                return new List<Type>();
+            }
+        }
     }
 
     public enum ChildrenListType

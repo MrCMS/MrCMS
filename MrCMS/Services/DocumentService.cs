@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -367,6 +368,7 @@ namespace MrCMS.Services
                 existingParent.Children.Remove(document);
                 SaveDocument(existingParent);
             }
+            SaveDocument(document);
         }
 
         public DocumentMetadata GetDefinitionByType(Type type)
@@ -503,6 +505,26 @@ namespace MrCMS.Services
                 return false;
 
             return !WebpageExists(url) && !ExistsInUrlHistory(url);
+        }
+
+        public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
+        {
+            var validParentTypes = DocumentMetadataHelper.GetValidParentTypes(webpage);
+            var potentialParents = new List<Webpage>();
+
+            foreach (var metadata in validParentTypes)
+            {
+                potentialParents.AddRange(_session.CreateCriteria(metadata.Type).SetCacheable(true).List<Webpage>());
+            }
+
+            var result = potentialParents.FindAll(page => !page.ActivePages.Contains(webpage))
+                                                        .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
+                                                                             page => page.Id.ToString(), emptyItem: null);
+
+            if (!webpage.GetMetadata().RequiresParent)
+                result.Insert(0, SelectListItemHelper.EmptyItem("Root"));
+
+            return result;
         }
 
         public bool UrlIsValidForMediaCategory(string url, int? id)
