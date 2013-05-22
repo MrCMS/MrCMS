@@ -1,6 +1,5 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
-
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("SetParent", "Webpage", new { id = "" }, FormMethod.Post, new { @class = "update-parent-form" }))
 {
@@ -9,10 +8,11 @@
     </div>
     <div class="modal-body">
         @Html.HiddenFor(x => x.Id)
-        
+        @Html.Label("parent", "Page")
+        @Html.DropDownList("parent", ViewData["valid-parents"] as IEnumerable<SelectListItem>)
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn-primary btn submit-form-btn" value="Set parent" />
     </div>
 }
-<div class="modal-footer">
-    <input type="button" class="btn-primary btn submit-form-btn" value="Set parent" />
-</div>
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/set-parent.js"); }

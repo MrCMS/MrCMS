@@ -113,5 +113,11 @@ namespace MrCMS.Helpers
                        ? documentTypeDefinition.MaxChildNodes
                        : (int?)null;
         }
+
+        public static List<DocumentMetadata> GetValidParentTypes(Webpage webpage)
+        {
+            var type = webpage.Unproxy().GetType();
+            return DocumentMetadatas.FindAll(metadata => metadata.ValidChildrenTypes.Contains(type));
+        }
     }
 }

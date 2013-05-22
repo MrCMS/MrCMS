@@ -117,9 +117,18 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult SetParent(Webpage webpag)
+        public PartialViewResult SetParent(Webpage webpage)
         {
-            return PartialView();
+            ViewData["valid-parents"] = _documentService.GetValidParents(webpage);
+            return PartialView(webpage);
+        }
+
+        [HttpPost]
+        public RedirectToRouteResult SetParent(Webpage webpage, int? parent)
+        {
+            _documentService.SetParent(webpage, parent);
+
+            return RedirectToAction("Edit", new {id = webpage.Id});
         }
 
         public ActionResult ViewChanges(DocumentVersion documentVersion)

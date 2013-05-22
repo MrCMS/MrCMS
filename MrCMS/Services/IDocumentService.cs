@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
@@ -46,5 +47,6 @@ namespace MrCMS.Services
         bool UrlIsValidForLayout(string urlSegment, int? id);
         bool UrlIsValidForWebpage(string url, int? id);
         bool UrlIsValidForWebpageUrlHistory(string url);
+        IEnumerable<SelectListItem> GetValidParents(Webpage webpage);
     }
 }
