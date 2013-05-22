@@ -5,10 +5,10 @@
         @Html.LabelFor(model => model.Search)
         @Html.TextBoxFor(model => model.Search)
         <p>
-            <button class="btn btn-primary" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">Update</button>
+            <button class="btn btn-mini" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">Search</button>
         </p>
     </div>
-    <table class="table table-bordered table-striped">
+    <table class="table table-condensed table-striped">
         <thead>
             <tr>
                 @foreach (var heading in Model.Headings)

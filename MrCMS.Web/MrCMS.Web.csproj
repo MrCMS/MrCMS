@@ -851,6 +851,7 @@
     <Content Include="Areas\Admin\Views\UrlHistory\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\FileSystem.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\SetParent.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\Sort.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />

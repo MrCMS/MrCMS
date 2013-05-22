@@ -11,7 +11,8 @@
                     <h4>Form Fields</h4>
                 </div>
                 <div class="span5">
-                    <div class="pull-right">
+                    <div class="pull-right btn-group">
+                        @*@Html.ActionLink("Sort Fields", "Sort", "Form", new { id = Model.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })*@
                         @Html.ActionLink("Add Field", "AddProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-primary btn-mini", data_toggle = "fb-modal" })
                     </div>
                 </div>

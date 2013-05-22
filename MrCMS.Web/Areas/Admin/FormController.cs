@@ -114,6 +114,13 @@ namespace MrCMS.Web.Areas.Admin
             _formService.DeleteFormListOption(formListOption);
             return Json(new FormActionResult { success = true });
         }
+
+        //todo implement sorting of form field properties
+        [HttpGet]
+        public ActionResult Sort(int WebPageId)
+        {
+            return View();
+        }
     }
 
     public class FormActionResult
