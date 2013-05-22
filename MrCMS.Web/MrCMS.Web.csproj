@@ -240,6 +240,8 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\_translationstatus.txt" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\about\dialogs\about.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\about\dialogs\logo_ckeditor.png" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\autogrow\plugin.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\autogrow\samples\autogrow.html" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\clipboard\dialogs\paste.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\colordialog\dialogs\colordialog.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\dialog\dialogDefinition.js" />
@@ -906,11 +908,10 @@
     <Content Include="Areas\Admin\Views\MediaCategory\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\AdminNavigation.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\EditorTemplates\DateTime.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\LayoutTree.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\MediaTree.cshtml" />
+    <Content Include="Areas\Admin\Views\Navigation\LayoutTree.cshtml" />
+    <Content Include="Areas\Admin\Views\Navigation\MediaTree.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Navbar.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\UserList.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\WebSiteTree.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\User\Add.cshtml" />
     <Content Include="Areas\Admin\Views\User\Edit.cshtml" />

@@ -43,12 +43,12 @@ namespace MrCMS.Settings
         [DisplayName("Site UI Culture")]
         [DropDownSelection("UiCultures")]
         public string UICulture { get; set; }
-        public CultureInfo CultureInfo { get { return CultureInfo.GetCultureInfo(UICulture); } }
+        public CultureInfo CultureInfo { get { return !string.IsNullOrWhiteSpace(UICulture) ? CultureInfo.GetCultureInfo(UICulture) : CultureInfo.CurrentCulture; } }
 
         [DisplayName("Time zones")]
         [DropDownSelection("TimeZones")]
         public string TimeZone { get; set; }
-        public TimeZoneInfo TimeZoneInfo { get { return !string.IsNullOrWhiteSpace(TimeZone) ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone) : null; } }
+        public TimeZoneInfo TimeZoneInfo { get { return !string.IsNullOrWhiteSpace(TimeZone) ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone) : TimeZoneInfo.Local; } }
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {

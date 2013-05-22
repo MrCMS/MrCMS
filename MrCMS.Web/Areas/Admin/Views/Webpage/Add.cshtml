@@ -10,24 +10,35 @@
 {
     <fieldset>
         <legend>Add page
-
             <span class="btn-group  display-inline  pull-right">
                 <input type="submit" class="btn-primary btn" value="Save and continue" />
             </span>
         </legend>
-
-        @Html.ValidationSummary()
-
         <div class="row-fluid">
             <div class="span2">
-                @{ //pre select radio if there is only one option
-                    var count = 0;
-                    var documentMetadatas = ViewData["DocumentTypes"] as List<DocumentMetadata>;
+                <strong>Location:</strong><br />
+                @if (Model.Parent != null)
+                {
+                    @Model.Parent.Name
+                    <br />
+                    @:&nbsp;&nbsp;--[Your new page]
+                    
 
-                    if (documentMetadatas != null)
-                    {
-                        count = documentMetadatas.Count;
-                    }
+                }
+                else
+                {
+                    @:Root <br />
+                    @:&nbsp;&nbsp;--[Your new page]
+                }
+                <hr class="small-margin" />
+                @{ //pre select radio if there is only one option
+                var count = 0;
+                var documentMetadatas = ViewData["DocumentTypes"] as List<DocumentMetadata>;
+
+                if (documentMetadatas != null)
+                {
+                    count = documentMetadatas.Count;
+                }
                 }
 
                 @foreach (var documentType in documentMetadatas)
@@ -62,7 +73,9 @@
                 @Html.DropDownListFor(x => x.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
             </div>
         </div>
-        
+
+        @Html.ValidationSummary()
+
         <hr />
 
 

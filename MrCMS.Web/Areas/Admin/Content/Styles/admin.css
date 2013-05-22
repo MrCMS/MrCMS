@@ -17,6 +17,7 @@ hr.small-margin { margin: 5px 0; }
 .grey { color: darkgrey; }
 .font-small { font-size: 0.8em; }
 .red { color: red; }
+.orange { color: orange;}
 .nav select { margin: 5px 15px; }
 h1, h2, h3, h4 { font-weight: normal!important; }
 .settings-textarea { width: 300px; height: 150px; }
@@ -24,6 +25,8 @@ h1, h2, h3, h4 { font-weight: normal!important; }
 #browser { padding-left: 10px; }
     #browser li { cursor: pointer; }
 .user-list li { list-style: none; }
+
+.sidebar-nav{ padding: 10px;}
 
 /*Right click context menu*/
 .context-menu { background: #fff; border: solid 1px #CCC; border-radius: 4px; display: none; margin: 0px; padding: 5px; position: absolute; width: 120px; z-index: 99999; }
@@ -67,3 +70,9 @@ section.admin-header h3 { margin: 0px; }
 
 /*CKEditor hide bottom bar*/
 #cke_bottom_detail,.cke_bottom{ display: none!important;}
+
+/*So the tabbed menu and web tree don't have a massive gap underneath'*/
+
+ul.nav { margin-bottom: 10px;}
+
+.main-content legend { line-height: 37px;}

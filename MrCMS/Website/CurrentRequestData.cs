@@ -53,7 +53,7 @@ namespace MrCMS.Website
 
         public static CultureInfo CultureInfo
         {
-            get { return SiteSettings != null ? SiteSettings.CultureInfo : null; }
+            get { return SiteSettings != null ? SiteSettings.CultureInfo : CultureInfo.CurrentCulture; }
         }
 
         public static TimeZoneInfo TimeZoneInfo

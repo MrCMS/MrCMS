@@ -1,6 +1,6 @@
 ﻿@model MrCMS.Models.SiteTree<MrCMS.Entities.Documents.Web.Webpage>
 <div id="web" class="tab-pane">
-    <div class="well sidebar-nav">
+    <div class="sidebar-nav">
         <ul data-site-id="@Model.SiteId" data-href="@Url.Action("Sort", "Webpage", new { siteId = Model.SiteId })" class="filetree collapsable browser web-tree"  >
             <li data-id="@Model.Id" data-sort-id="@Model.ParentId" data-controller="@Model.NodeType" ><i class="@Model.IconClass">&nbsp;</i>
                 @Html.ActionLink(Model.Name, "Edit", Model.NodeType, new { id = Model.Children.Any() ? Model.Children.FirstOrDefault().Id : 1 }, null)
@@ -9,5 +9,5 @@
         </ul>
     </div>
     <span class="grey">Grey = Not included in site navigation</span><br />
-    <span class="red">Red = Not published</span><br />
+    <span class="orange">Orange = Not published</span><br />
 </div>

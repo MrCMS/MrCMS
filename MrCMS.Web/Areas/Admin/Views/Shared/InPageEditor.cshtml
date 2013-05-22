@@ -4,27 +4,24 @@
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css" />
 <link href="@Url.Content("~/Areas/Admin/Content/Editors/fancybox/jquery.fancybox-1.3.4.css")" rel="stylesheet" type="text/css" />
 <div class="mrcms-admin-nav-bar">
-   
+
     <ul>
         <li>
             <a href="@Url.Action("Index", "Home")" target="_parent" class="btn btn-mini">Admin</a>
         </li>
         <li>
-            <a href="@Url.Action("Edit", "Webpage", new { Model.Id })" target="_parent" class="btn btn-mini">Edit page</a>
-        </li>
-        <li>
-            <a id="enable-editing" class="btn btn-mini">Inline Editing: On</a>
+            <a href="@Url.Action("Edit", "Webpage", new { Model.Id })" target="_parent" class="btn btn-mini">Edit</a>
         </li>
         @if (Model.Published)
         {
             <li>
-                <a id="unpublish-now" class="btn btn-mini">Unpublish now</a>
+                <a id="unpublish-now" class="btn btn-mini">Unpublish</a>
             </li>
         }
         else
         {
             <li>
-                <a id="publish-now" class="btn btn-mini">Publish now</a>
+                <a id="publish-now" class="btn btn-mini">Publish</a>
             </li>
         }
         @if (Model.CanAddChildren())
@@ -34,7 +31,10 @@
             </li>
         }
         <li>
-            @Html.ActionLink("Add page at same level", "Add", "Webpage", new { id = Model.Parent == null ? (int?)null : Model.Parent.Id }, new { @class = "btn btn-mini" })
+            @Html.ActionLink("Add page", "Add", "Webpage", new { id = Model.Parent == null ? (int?)null : Model.Parent.Id }, new { @class = "btn btn-mini" })
+        </li>
+        <li>
+            <a id="enable-editing" class="btn btn-mini">Inline Editing: On</a>
         </li>
     </ul>
 </div>
