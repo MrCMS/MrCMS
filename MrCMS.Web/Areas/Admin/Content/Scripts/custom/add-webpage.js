@@ -28,7 +28,7 @@ $(function () {
             setStandardUrl();
         }
 
-    }, 200);
+    }, 100);
 
     function setStandardUrl() {
         $("#UrlSegment").val($("#Name").val().trim().replace(/[^a-zA-Z0-9-/]/g, '-').toLowerCase());
