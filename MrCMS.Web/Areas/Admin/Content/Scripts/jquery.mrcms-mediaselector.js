@@ -161,7 +161,7 @@ $(function () {
         $(".set-file").removeAttr('disabled');
     }).on('click', '#media-selector .show-hide-file-result', function () {
         var self = $(this);
-        $('.show-hide-file-result').not(self).html('Show').parent().siblings('.content').slideUp();
+        $('.show-hide-file-result').not(self).html('Show').parent().siblings('.content').hide(0);
         $('.selected-file').removeAttr('checked');
         if (self.parent().siblings('.content').is(':hidden')) {
             self.html('Hide').parent().siblings('.content').show(0, function () {
@@ -207,6 +207,9 @@ $(function () {
 						                var attr = $(element).attr('for');
 						                $(element).attr('for', attr + "-upload");
 						            });
+						            setTimeout(function() {
+						                resizeModal();
+						            }, 15);
 						        });
 						    });
                     },
