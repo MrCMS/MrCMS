@@ -18,33 +18,24 @@
         });
     </script>
 }
-<div class="row-fluid">
-    <div class="span7">
-        <h3>Sort</h3>
-    </div>
-    <div class="span5">
-        <div class="row-fluid">
-            <div class="span10" style="margin: 0; padding: 0;">
-            </div>
-            <div class="span2">
-                <button class="btn btn-primary" id="save" data-form-id="sort-webpage" data-action="save">
-                    Save</button>
-            </div>
-        </div>
-    </div>
-</div>
-<hr class="small-margin" />
 <form method="POST" id="sort-webpage">
-    <ul id="sortable">
-        @for (int i = 0; i < Model.Count; i++)
-        {
-            <li>
-                @Html.HiddenFor(model => model[i].Id)
-                @Html.HiddenFor(model => model[i].Order)
-                <i class="icon-resize-full"></i>&nbsp;&nbsp;
-                @Model[i].Name
-            </li>
-        }
-    </ul>
+    <fieldset>
+        <legend>Sort pages
+     <span class="btn-group  display-inline  pull-right">
+         <input type="submit" class="btn btn-primary" value="save" />
+     </span>
+        </legend>
+        <ul id="sortable">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <li>
+                    @Html.HiddenFor(model => model[i].Id)
+                    @Html.HiddenFor(model => model[i].Order)
+                    <i class="icon-resize-full"></i>&nbsp;&nbsp;
+             @Model[i].Name
+                </li>
+            }
+        </ul>
+    </fieldset>
 </form>
 @Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")
