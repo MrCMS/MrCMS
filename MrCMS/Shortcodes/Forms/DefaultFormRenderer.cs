@@ -24,7 +24,7 @@ namespace MrCMS.Shortcodes.Forms
             if (webpage == null)
                 return string.Empty;
 
-            var formProperties = webpage.FormProperties;
+            var formProperties = webpage.FormProperties.OrderBy(x=>x.DisplayOrder);
             if (!formProperties.Any())
                 return string.Empty;
 

@@ -311,6 +311,16 @@ namespace MrCMS.Services
         {
             _session.Transact(session => session.Delete(formListOption));
         }
+
+        public void SetOrders(List<SortItem> items)
+        {
+            _session.Transact(session => items.ForEach(item =>
+            {
+                var formItem = session.Get<FormProperty>(item.Id);
+                formItem.DisplayOrder = item.Order;
+                session.Update(formItem);
+            }));
+        }
     }
 
     public class RequiredFieldException : Exception

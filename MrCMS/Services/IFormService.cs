@@ -18,5 +18,6 @@ namespace MrCMS.Services
         void SaveFormListOption(FormListOption formListOption);
         void UpdateFormListOption(FormListOption formListOption);
         void DeleteFormListOption(FormListOption formListOption);
+        void SetOrders(List<SortItem> items);
     }
 }

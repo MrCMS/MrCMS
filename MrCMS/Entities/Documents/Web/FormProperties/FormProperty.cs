@@ -14,6 +14,7 @@ namespace MrCMS.Entities.Documents.Web.FormProperties
         public virtual Webpage Webpage { get; set; }
         public virtual IList<FormListOption> Options { get; set; }
         public abstract bool HasOptions { get; }
+        public virtual int DisplayOrder { get; set; }
 
         public virtual string GetHtmlId()
         {

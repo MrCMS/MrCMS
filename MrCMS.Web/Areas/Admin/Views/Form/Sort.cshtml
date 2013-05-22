@@ -1,6 +1,72 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Entities.Documents.Web.FormProperties.FormListOption
-
+﻿@model List<MrCMS.Models.SortItem>
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
-//Todo implement sorting for form fields
+
+@section JavaScriptBlock
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sortable").sortable({
+                update: function (event, ui) {
+                    $('#sortable li').each(function (index, domElement) {
+                        $(domElement).find('[name*="Order"]').val(index);
+                    });
+                }
+            });
+
+            $("#submit").click(function(e) {
+                e.preventDefault();
+                var form = $('#sort-fields-form');
+                $.ajax({
+                    data: form.serialize(),
+                    dataType: "json",
+                    url: "/Admin/Form/Sort",
+                    type: "POST",
+                    beforeSend: function () {
+                    },
+                    complete: function () {
+                        window.parent.location.href = window.parent.location.href;
+                    },
+                    success: function (result) {
+                    },
+                    error: function (result) {
+                        alert("Could not sort fields");
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<form method="POST" action="/Admin/Form/Sort" id="sort-fields-form">
+    <div class="modal-header">
+        <h3>Sort fields</h3>
+    </div>
+    <div class="modal-body">
+        <ul id="sortable">
+            @if (Model.Any())
+            {
+                for (int i = 0; i < Model.Count; i++)
+                {
+                <li>
+                    @Html.HiddenFor(model => model[i].Id)
+                    @Html.HiddenFor(model => model[i].Order)
+                    <i class="icon-resize-full"></i>&nbsp;&nbsp;
+                    @Model[i].Name
+                </li>
+                }
+
+            }
+            else
+            {
+                <li>No form fields added.</li>
+            }
+        </ul>
+    </div>
+
+
+<div class="modal-footer">
+    <button class="btn btn-primary" id="submit">
+        Save & Close</button>
+</div>
+</form>

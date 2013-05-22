@@ -12,7 +12,7 @@
                 </div>
                 <div class="span5">
                     <div class="pull-right btn-group">
-                        @*@Html.ActionLink("Sort Fields", "Sort", "Form", new { id = Model.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })*@
+                        @Html.ActionLink("Sort Fields", "Sort", "Form", new { id = Model.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
                         @Html.ActionLink("Add Field", "AddProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-primary btn-mini", data_toggle = "fb-modal" })
                     </div>
                 </div>
@@ -21,7 +21,7 @@
                 <div class="span12">
                     @if (Model.FormProperties.Any())
                     {
-                        foreach (var property in Model.FormProperties)
+                        foreach (var property in Model.FormProperties.OrderBy(x=>x.DisplayOrder))
                         {
                             <div class="row-fluid">
                                 @{ Html.RenderPartial("FormProperty", property); }
