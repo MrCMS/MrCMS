@@ -19,16 +19,25 @@
                 <strong>Location:</strong><br />
                 @if (Model.Parent != null)
                 {
-                    @Model.Parent.Name
-                    <br />
-                    @:&nbsp;&nbsp;--[Your new page]
-                    
-
+                    <ul class="filetree filetree  web-tree">
+                            <ul>
+                                <li><i class="@Model.Parent.GetMetadata().IconClass">&nbsp;</i> @Model.Parent.Name
+                                    <ul>
+                                        <li><i class="@Model.Parent.GetMetadata().IconClass">&nbsp;</i> <span style="font-style: italic" id="new-page">[Your new page]</span></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                    </ul>
                 }
                 else
                 {
-                    @:Root <br />
-                    @:&nbsp;&nbsp;--[Your new page]
+                    <ul class="filetree filetree  web-tree">
+                        <li><i class="icon-asterisk">&nbsp;</i> Root
+                                    <ul>
+                                        <li><i class="icon-file">&nbsp;</i> <span style="font-style: italic" id="new-page">[Your new page]</span></li>
+                                    </ul>
+                        </li>
+                    </ul>
                 }
                 <hr class="small-margin" />
                 @{ //pre select radio if there is only one option

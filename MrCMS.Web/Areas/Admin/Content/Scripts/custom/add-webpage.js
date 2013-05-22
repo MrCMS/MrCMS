@@ -10,11 +10,6 @@
     return $(this);
 };
 $(function () {
-    $("#suggest-url").click(function (e) {
-        e.preventDefault();
-        suggestUrl();
-    });
-
     $("#Name").blur(function () {
         if ($("#mode").is(':checked')) {
             suggestUrl();
@@ -24,11 +19,15 @@ $(function () {
     });
 
     $("#Name").delayKeyup(function () {
+
+        $("#new-page").text($("#Name").val());
+        
         if ($("#mode").is(':checked')) {
             suggestUrl();
         } else {
             setStandardUrl();
         }
+
     }, 200);
 
     function setStandardUrl() {
