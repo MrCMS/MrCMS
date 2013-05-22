@@ -96,6 +96,7 @@ namespace MrCMS.Services
         /// Checks to see if the supplied email address is unique
         /// </summary>
         /// <param name="email"></param>
+        /// <param name="id">The id of user to exlcude from check. Has to be string because of AdditionFields on Remote property</param>
         /// <returns></returns>
         public bool IsUniqueEmail(string email, string id)
         {
