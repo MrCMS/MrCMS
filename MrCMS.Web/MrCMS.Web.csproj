@@ -493,6 +493,7 @@
     <Content Include="Areas\Admin\Content\Images\layout-area-menu.png" />
     <Content Include="Areas\Admin\Content\Images\button-left.png" />
     <Content Include="Areas\Admin\Content\Images\button-right.png" />
+    <Content Include="Areas\Admin\Content\Images\logo.png" />
     <Content Include="Areas\Admin\Content\Images\no-image.gif" />
     <Content Include="Areas\Admin\Content\Images\no-image.jpg" />
     <Content Include="Areas\Admin\Content\Images\no-media-selected.jpg" />

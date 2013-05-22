@@ -1,7 +1,6 @@
 ﻿<div class="navbar navbar-fixed-top navbar-inverse">
     <div class="navbar-inner">
         <div class="container-fluid">
-            <a class="brand" href="/Admin">Mr CMS</a>
             <div class="nav-collapse">
                 @{ Html.RenderAction("Navlinks", "Navigation");}
                 <form class="navbar-search pull-left" action="@Url.Action("Index", "Search")" method="POST">

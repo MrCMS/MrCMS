@@ -2,42 +2,43 @@
 @using MrCMS.Models
 @model IEnumerable<IAdminMenuItem>
 <ul class="nav">
+    <li><a href="/" style="padding-left: 0;">Dashboard</a></li>
     <li><a href="/">Home</a></li>
     @foreach (var item in Model)
     {
         if (item.Children.Any())
         {
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@item.Text
-                <b class="caret"></b></a>
-            <ul class="dropdown-menu">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">@item.Text
+                    <b class="caret"></b></a>
+                <ul class="dropdown-menu">
 
-                @{
-            var keys = item.Children.Keys.ToList();
-                }
+                    @{
+                        var keys = item.Children.Keys.ToList();
+                    }
 
-                @for (int index = 0; index < keys.Count; index++)
-                {
-                    var headerName = keys[index];
-                    if (!string.IsNullOrWhiteSpace(headerName))
+                    @for (int index = 0; index < keys.Count; index++)
                     {
-                    <li class="nav-header">@headerName</li>
+                        var headerName = keys[index];
+                        if (!string.IsNullOrWhiteSpace(headerName))
+                        {
+                            <li class="nav-header">@headerName</li>
+                        }
+                        foreach (var child in item.Children[headerName])
+                        {
+                            <li><a href="@child.Url">@child.Text</a></li>
+                        }
+                        if (index != keys.Count - 1)
+                        {
+                            <li class="divider"></li>
+                        }
                     }
-                    foreach (var child in item.Children[headerName])
-                    {
-                    <li><a href="@child.Url">@child.Text</a></li>
-                    }
-                    if (index != keys.Count - 1)
-                    {
-                        <li class="divider"></li>
-                    }
-                }
-            </ul>
-        </li>
+                </ul>
+            </li>
         }
         else
         {
-        <li><a href="@item.Url">@item.Text</a></li>
+            <li><a href="@item.Url">@item.Text</a></li>
         }
     }
 
