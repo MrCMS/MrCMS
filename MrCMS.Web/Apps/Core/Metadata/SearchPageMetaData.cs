@@ -10,6 +10,10 @@ namespace MrCMS.Web.Apps.Core.Metadata
 {
     public class SearchPageMetaData : DocumentMetadataMap<SearchPage>
     {
+        public override string IconClass
+        {
+            get { return "icon-search";}
+        }
         public override string WebGetController
         {
             get { return "SearchPage"; }
