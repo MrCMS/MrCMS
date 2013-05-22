@@ -12,8 +12,4 @@
 1) DocumentTypeAttribute no longer exists. See Document Meta Data.
 
 0.2.1 -> 0.3
-1) Run '0.3 upgrade script.sql'
-2) Now have Azure based file storage as an option
-3) Themes now included
-4) Lucene searching update to include ints
-5) Break Change: [Bug] RenderImage alt now uses description and title uses title.
+https://docs.google.com/document/d/1zD778pAW6jHkOR7n9jbdTnP5IfILkd1RTdTIfalqgeo/edit?usp=sharing
