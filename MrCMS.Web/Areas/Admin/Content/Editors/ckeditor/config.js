@@ -8,7 +8,7 @@ CKEDITOR.editorConfig = function (config) {
     // config.language = 'fr';
     // config.uiColor = '#AADC6E';
     config.extraPlugins = 'justify';
-
+    config.removePlugins = 'elementspath';
     config.height = '300px';
 
     config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.min.css', '/Apps/Core/Content/Styles/style.css'];

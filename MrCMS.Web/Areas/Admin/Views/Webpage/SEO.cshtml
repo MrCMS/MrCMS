@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
 @using MrCMS.Website
 @model Webpage
 <div class="tab-pane" id="edit-seo">
@@ -64,5 +65,14 @@
 
         </label>
     }
+    
+    <hr />
+    <strong>Page type:</strong> @Model.GetMetadata().Name
+    <br />
+    <strong>Created On: </strong> @Model.CreatedOn
+    <br />
+    <strong>Last Updated: </strong> @Model.UpdatedOn
+
+            
 
 </div>

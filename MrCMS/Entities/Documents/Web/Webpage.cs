@@ -115,10 +115,7 @@ namespace MrCMS.Entities.Documents.Web
 
         [DisplayName("Block Anonymous Access")]
         public virtual bool BlockAnonymousAccess { get; set; }
-
-        [DisplayName("Form Data")]
-        public virtual string FormData { get; set; }
-
+        
         public virtual IList<FormProperty> FormProperties { get; set; }
 
         public virtual IList<FormPosting> FormPostings { get; set; }

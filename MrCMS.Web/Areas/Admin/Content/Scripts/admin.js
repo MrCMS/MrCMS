@@ -312,13 +312,6 @@
         return false;
     });
 
-    // Support for AJAX loaded modal window.
-    // Focuses on first input textbox after it loads the window.
-    $(document).on('click', '[data-toggle="modal"]', function (e) {
-        e.preventDefault();
-        launchModal($(this));
-        return false;
-    });
 
     $('[data-action=save]').click(function (e) {
         e.preventDefault();
@@ -417,33 +410,21 @@ function resizeModal(jqElement) {
     modal.css('top', top).css('left', left);
 }
 
-function launchModal(element, callback) {
-    var elId = element.attr('id');
-    var href = element.attr('href') || element.data('link');
-    if (href.indexOf('#') == 0) {
-        $(href).modal('open').on('hidden', function () {
-            $(this).remove();
-        });
-    } else {
-        getRemoteModel(href, elId, callback);
-    }
-}
-function getRemoteModel(href, elId, callback) {
-    var div = null;
-    $.get(href, function (data) {
-        div = $('<div class="modal">' + data + '</div>');
-        div.modal({ elementId: elId, callback: callback })
-		    .on('shown', function () {
-		    })
-		    .on('hidden', function () {
-		        $(this).remove();
-		    });
-        $.validator.unobtrusive.parse('.modal form');
-    }).success(function () {
-        $('input:text:visible:first').focus();
-        resizeModal(div);
-        div.wrap('<div class="admin-tools" />');
-    });
+function getRemoteModel(href) {
+    var link = $("<a>");
+    link.attr('href', href);
+    link.fancybox({
+        type: 'iframe',
+        padding: 0,
+        height: 0,
+        'onComplete': function() {
+            $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+                $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
+                $('#fancybox-content').height($(this).contents()[0].documentElement.scrollHeight);
+                $.fancybox.center();
+            });
+        }
+    }).click();
 }
 
 //general functions

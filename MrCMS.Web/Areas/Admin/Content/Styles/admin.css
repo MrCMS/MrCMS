@@ -13,13 +13,13 @@ footer { clear: left; padding-top: 10px; }
 .margin-top-0 { margin-top: 0px; }
 .display-inline { display: inline; }
 hr.small-margin { margin: 5px 0; }
-.light { font-weight: normal;}
+.light { font-weight: normal; }
 .grey { color: darkgrey; }
 .font-small { font-size: 0.8em; }
 .red { color: red; }
 .nav select { margin: 5px 15px; }
-h1,h2,h3,h4 { font-weight: normal!important;}
-.settings-textarea { width: 300px;height: 150px;}
+h1, h2, h3, h4 { font-weight: normal!important; }
+.settings-textarea { width: 300px; height: 150px; }
 /*Navigation*/
 #browser { padding-left: 10px; }
     #browser li { cursor: pointer; }
@@ -52,10 +52,18 @@ section.admin-header h3 { margin: 0px; }
 #changes-table tr.changed { background-color: rgb(255, 209, 209); }
 #changes-table pre { font-size: 0.6em; }
 
-.form-item{ padding: 10px;}
+.form-item { padding: 10px; }
 
-.validation-summary-errors { color: red;}
+.validation-summary-errors { color: red; }
 .error, .error span { color: red; }
 
 
-#loading { position: fixed;top: 5px;right: 5px;z-index: 999999;}
+#loading { position: fixed; top: 5px; right: 5px; z-index: 999999; }
+
+/*page versions*/
+#changes-table tr.unchanged { background-color: rgb(203, 255, 203); }
+#changes-table tr.changed { background-color: rgb(255, 209, 209); }
+#changes-table pre { font-size: 0.6em; }
+
+/*CKEditor hide bottom bar*/
+#cke_bottom_detail,.cke_bottom{ display: none!important;}

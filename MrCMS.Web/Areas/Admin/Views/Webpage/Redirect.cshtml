@@ -1,17 +1,8 @@
 ﻿@model MrCMS.Entities.Documents.Web.Redirect
-<div class="accordion-group">
-    <div class="accordion-heading">
-        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-page-edit" href="#redirect">Redirect Properties</a>
-    </div>
-    <div id="redirect" class="accordion-body collapse in">
-        <div class="accordion-inner">
-            @Html.LabelFor(redirect => redirect.RedirectUrl)
-            @Html.TextBoxFor(redirect => redirect.RedirectUrl, new { @class = "span12" })
-            @Html.ValidationMessageFor(redirect => redirect.RedirectUrl)
-            <label class="checkbox" for="Permanent">
-                @Html.CheckBoxFor(redirect => redirect.Permanent) 301 Pemanent
-            </label>
-            @Html.ValidationMessageFor(redirect => redirect.Permanent)
-        </div>
-    </div>
-</div>
+@Html.LabelFor(redirect => redirect.RedirectUrl)
+@Html.TextBoxFor(redirect => redirect.RedirectUrl, new { @class = "span12" })
+@Html.ValidationMessageFor(redirect => redirect.RedirectUrl)
+<label class="checkbox" for="Permanent">
+    @Html.CheckBoxFor(redirect => redirect.Permanent) 301 Pemanent
+</label>
+@Html.ValidationMessageFor(redirect => redirect.Permanent)

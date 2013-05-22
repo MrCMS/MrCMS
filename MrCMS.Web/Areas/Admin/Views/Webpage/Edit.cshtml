@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
 @model Webpage
 @{
     ViewBag.Title = "Edit | " + Model.Name;
@@ -12,41 +13,33 @@
     @Html.ValidationSummary()
 
     <div class="row-fluid">
-        <div class="span1">
-            <div class="btn-group">
-                <button class="btn dropdown-toggle" data-toggle="dropdown">
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li>
-                        @Html.ActionLink("Set parent", "SetParent", "Webpage", new { Model.Id }, new { data_toggle = "fb-modal" })
-                    </li>
-                    <li>
-                        @Html.ActionLink("Add a child page", "Add", new { Model.Id })
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="span11">
-            <div class="btn-group display-inline pull-right">
-                @Html.EditorFor(x => x.PublishOn)
-                @(Model.PublishOn == null
-                      ? Html.ActionLink("Publish", "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" })
-                      : Html.ActionLink("Unpublish", "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
-                @Html.ValidationMessageFor(x => x.PublishOn)
-
+        <div class="span12">
+            <div class="btn-group display-inline">
+                <button class="btn btn-primary">Save</button>
                 <a href="/@Model.LiveUrlSegment" class="btn">View</a>
+                
+                @Html.ActionLink("Move", "SetParent", "Webpage", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn" })
+                @if (Model.GetMetadata().ValidChildrenTypes.Any())
+                {
+                    @Html.ActionLink("Add a child page", "Add", new {Model.Id}, new {@class = "btn"})
+                }
                 @if (Model.CanDelete)
                 {
                     <a href="@Url.Action("Delete", "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                 }
-                <button class="btn btn-primary">Save</button>
+
+                @(Model.PublishOn == null
+                      ? Html.ActionLink("Publish", "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" })
+                      : Html.ActionLink("Unpublish", "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
+
+                @Html.EditorFor(x => x.PublishOn)
+                @Html.ValidationMessageFor(x => x.PublishOn)
+                
             </div>
-            <div class="display-inline pull-right" style="margin-top: 5px;">Publish on &nbsp; </div>
         </div>
     </div>
 
-                Html.RenderPartial(Convert.ToString(ViewData["EditView"]));
+    Html.RenderPartial(Convert.ToString(ViewData["EditView"]));
 
 }
 

@@ -18,7 +18,6 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(webpage => webpage.MetaDescription).Length(250);
 
             //Form Mappings
-            mapping.Map(webpage => webpage.FormData).CustomType<VarcharMax>().Length(4001);
             mapping.HasMany(webpage => webpage.FormPostings).Cascade.Delete();
             mapping.Map(webpage => webpage.SendFormTo).Length(500);
             mapping.Map(webpage => webpage.FormMessage).CustomType<VarcharMax>().Length(4001);

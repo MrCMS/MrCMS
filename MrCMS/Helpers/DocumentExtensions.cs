@@ -41,6 +41,11 @@ namespace MrCMS.Helpers
         private static List<VersionChange> GetVersionChanges(Document currentVersion, Document previousVersion)
         {
             var changes = new List<VersionChange>();
+            
+            var ignorePropertyNames = new[]
+                        {
+                            "UpdatedOn", "Id", "CreatedOn"
+                        };
 
             if (previousVersion == null)
                 return changes;
@@ -49,7 +54,7 @@ namespace MrCMS.Helpers
                 currentVersion.GetType().GetProperties()
                     .Where(info =>
                            info.CanWrite && !info.PropertyType.IsGenericType && !typeof(SiteEntity).IsAssignableFrom(info.PropertyType) &&
-                           info.DeclaringType != typeof(SiteEntity))
+                           info.DeclaringType != typeof(SiteEntity) && !ignorePropertyNames.Contains(info.Name))
                     .ToList();
 
             changes.AddRange(from propertyInfo in propertyInfos

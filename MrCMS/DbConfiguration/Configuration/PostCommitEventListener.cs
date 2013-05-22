@@ -21,11 +21,15 @@ namespace MrCMS.DbConfiguration.Configuration
                 var session = @event.Session.SessionFactory.OpenSession();
                 if (@event.Entity is Document)
                 {
+                    var ignorePropertyNames = new[]
+                        {
+                            "UpdatedOn", "Id", "CreatedOn"
+                        };
                     var propertyInfos =
                         @event.Entity.GetType().GetProperties().Where(
                             info =>
                             info.CanWrite && !typeof(SystemEntity).IsAssignableFrom(info.PropertyType) &&
-                            !info.PropertyType.IsGenericType).ToList();
+                            !info.PropertyType.IsGenericType && !ignorePropertyNames.Contains(info.Name)).ToList();
 
                     var propertyNames = @event.Persister.PropertyNames;
 
