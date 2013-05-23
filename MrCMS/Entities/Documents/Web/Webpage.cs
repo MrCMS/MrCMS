@@ -116,10 +116,7 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Block Anonymous Access")]
         public virtual bool BlockAnonymousAccess { get; set; }
         
-        public virtual IList<FormProperty> FormProperties { get; set; }
-
-        public virtual IList<FormPosting> FormPostings { get; set; }
-
+        //forms
         [DisplayName("Form Submitted Message")]
         [AllowHtml]
         [StringLength(500, ErrorMessage = "Form submitted messsage cannot be longer than 500 characters.")]
@@ -132,6 +129,15 @@ namespace MrCMS.Entities.Documents.Web
         public virtual string SendFormTo { get; set; }
         [DisplayName("Form Email Message")]
         public virtual string FormMessage { get; set; }
+        public virtual IList<FormProperty> FormProperties { get; set; }
+        public virtual IList<FormPosting> FormPostings { get; set; }
+        public virtual string FormDesign { get; set; }
+        [StringLength(100)]
+        public virtual string SubmitButtonCssClass { get; set; }
+        [StringLength(100)]
+        public virtual string SubmitButtonText { get; set; }
+
+       
 
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }
@@ -164,25 +170,7 @@ namespace MrCMS.Entities.Documents.Web
                 return string.Format("{0}{1}/{2}", scheme, authority, LiveUrlSegment);
             }
         }
-
-        public virtual string FormDesign { get; set; }
-
-        public override void CustomBinding(ControllerContext controllerContext, ISession session)
-        {
-        }
-
-        public virtual void AdminViewData(ViewDataDictionary viewData, ISession session)
-        {
-        }
-
-        public virtual void AddCustomSitemapData(UrlHelper urlHelper, XmlNode url, XmlDocument xmlDocument)
-        {
-        }
-
-        public virtual void UiViewData(ViewDataDictionary viewData, ISession session, HttpRequestBase request)
-        {
-        }
-
+        
         private IList<UrlHistory> _urls = new List<UrlHistory>();
 
         public virtual IList<UrlHistory> Urls
@@ -247,5 +235,22 @@ namespace MrCMS.Entities.Documents.Web
         {
             return this.GetMetadata().ValidChildrenTypes.Any();
         }
+        
+        public override void CustomBinding(ControllerContext controllerContext, ISession session)
+        {
+        }
+
+        public virtual void AdminViewData(ViewDataDictionary viewData, ISession session)
+        {
+        }
+
+        public virtual void AddCustomSitemapData(UrlHelper urlHelper, XmlNode url, XmlDocument xmlDocument)
+        {
+        }
+
+        public virtual void UiViewData(ViewDataDictionary viewData, ISession session, HttpRequestBase request)
+        {
+        }
+
     }
 }

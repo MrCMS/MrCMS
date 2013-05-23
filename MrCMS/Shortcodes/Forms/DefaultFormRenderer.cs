@@ -42,7 +42,7 @@ namespace MrCMS.Shortcodes.Forms
             }
 
             var div = new TagBuilder("div");
-            div.InnerHtml += GetSubmitButton().ToString(TagRenderMode.SelfClosing);
+            div.InnerHtml += GetSubmitButton(webpage).ToString(TagRenderMode.SelfClosing);
             form.InnerHtml += div;
 
             if (submittedStatus.Submitted)
@@ -51,14 +51,12 @@ namespace MrCMS.Shortcodes.Forms
             return form.ToString();
         }
 
-        public TagBuilder GetSubmitButton()
+        public TagBuilder GetSubmitButton(Webpage webpage)
         {
             var tagBuilder = new TagBuilder("input");
             tagBuilder.Attributes["type"] = "submit";
-            tagBuilder.Attributes["value"] = "Submit";
-            tagBuilder.AddCssClass("btn");
-            tagBuilder.AddCssClass("btn-primary");
-
+            tagBuilder.Attributes["value"] = !string.IsNullOrWhiteSpace(webpage.SubmitButtonText) ? webpage.SubmitButtonText : "Submit";
+            tagBuilder.AddCssClass(!string.IsNullOrWhiteSpace(webpage.SubmitButtonCssClass) ? webpage.SubmitButtonCssClass : "btn btn-primary");
             return tagBuilder;
         }
 

@@ -164,7 +164,9 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DefaultFormRenderer_GetSubmitButton_ShouldReturnAnInput()
         {
-            var submitButton = _defaultFormRenderer.GetSubmitButton();
+            var submitButton = _defaultFormRenderer.GetSubmitButton(new StubWebpage
+            {
+            });
 
             submitButton.TagName.Should().Be("input");
         }
@@ -172,7 +174,9 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DefaultFormRenderer_GetSubmitButton_ShouldBeOfTypeSubmit()
         {
-            var submitButton = _defaultFormRenderer.GetSubmitButton();
+            var submitButton = _defaultFormRenderer.GetSubmitButton(new StubWebpage
+            {
+            });
 
             submitButton.Attributes["type"].Should().Be("submit");
         }
@@ -180,9 +184,22 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DefaultFormRenderer_GetSubmitButton_ValueShouldBeSubmitForm()
         {
-            var submitButton = _defaultFormRenderer.GetSubmitButton();
+            var submitButton = _defaultFormRenderer.GetSubmitButton(new StubWebpage
+            {
+            });
 
             submitButton.Attributes["value"].Should().Be("Submit");
+        }
+
+        [Fact]
+        public void DefaultFormRenderer_GetSubmitButton_CssClassShouldBeCustomIfSet()
+        {
+            var submitButton = _defaultFormRenderer.GetSubmitButton(new StubWebpage
+            {
+                SubmitButtonCssClass = "my-css-button-class"
+            });
+
+            submitButton.Attributes["class"].Should().Be("my-css-button-class");
         }
     }
 }
