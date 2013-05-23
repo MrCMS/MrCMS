@@ -133,8 +133,10 @@ namespace MrCMS.Entities.Documents.Web
         public virtual IList<FormPosting> FormPostings { get; set; }
         public virtual string FormDesign { get; set; }
         [StringLength(100)]
+        [DisplayName("Submit Button Css Class")]
         public virtual string SubmitButtonCssClass { get; set; }
         [StringLength(100)]
+        [DisplayName("Submit button custom CSS class")]
         public virtual string SubmitButtonText { get; set; }
 
        
