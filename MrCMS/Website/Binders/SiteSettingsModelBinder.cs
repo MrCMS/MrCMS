@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Web.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -12,6 +13,14 @@ namespace MrCMS.Website.Binders
         protected override MethodInfo GetGetSettingsMethod()
         {
             return typeof(ConfigurationProvider).GetMethodExt("GetSiteSettings");
+        }
+    }
+
+    public class FileSystemSettingsModelBinder : DefaultModelBinder
+    {
+        protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
+        {
+            return MrCMSApplication.Get<FileSystemSettings>();
         }
     }
 }

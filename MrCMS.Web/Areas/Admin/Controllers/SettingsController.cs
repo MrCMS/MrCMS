@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Web.Mvc;
 using MrCMS.Settings;
 using MrCMS.Website.Binders;
@@ -42,7 +43,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToRouteResult FileSystem(FileSystemSettings settings)
+        public RedirectToRouteResult FileSystem([ModelBinder(typeof(FileSystemSettingsModelBinder))]FileSystemSettings settings)
         {
             _configurationProvider.SaveSettings(settings);
             return RedirectToAction("FileSystem");
