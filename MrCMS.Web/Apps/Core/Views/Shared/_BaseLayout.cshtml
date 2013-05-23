@@ -19,6 +19,7 @@
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><script src="/Apps/Core/Content/Scripts/respond.min.js"></script><![endif]-->
     
     @Html.Raw(SiteSettings<SEOSettings>().TrackingScripts)
+    @Html.Raw(Model.CustomHeaderScripts)
 </head>
 <body>
     <div class="container">
@@ -56,5 +57,6 @@
     {
         @RenderSection("JavascriptBlockInclude")
     }
+    @Html.Raw(Model.CustomFooterScripts)
 </body>
 </html>

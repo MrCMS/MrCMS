@@ -17,6 +17,9 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(webpage => webpage.MetaKeywords).Length(250);
             mapping.Map(webpage => webpage.MetaDescription).Length(250);
 
+            mapping.Map(webpage => webpage.CustomFooterScripts).Length(8000);
+            mapping.Map(webpage => webpage.CustomHeaderScripts).Length(8000);
+
             //Form Mappings
             mapping.HasMany(webpage => webpage.FormPostings).Cascade.Delete();
             mapping.Map(webpage => webpage.SendFormTo).Length(500);
@@ -25,6 +28,7 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(webpage => webpage.FormDesign).CustomType<VarcharMax>().Length(4001);
             mapping.Map(webpage => webpage.SubmitButtonCssClass).Length(100);
             mapping.Map(webpage => webpage.SubmitButtonText).Length(100);
+            
             mapping.HasMany(posting => posting.Urls).Cascade.Delete();
 
             //Permission mappings

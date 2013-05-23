@@ -45,6 +45,13 @@ namespace MrCMS.Entities.Documents.Web
         public virtual string MetaKeywords { get; set; }
         [DisplayName("Include in navigation")]
         public virtual bool RevealInNavigation { get; set; }
+        [DisplayName("Custom header scripts")]
+        [StringLength(8000)]
+        public virtual string CustomHeaderScripts { get; set; }
+        [DisplayName("Custom footer scripts")]
+        [StringLength(8000)]
+        public virtual string CustomFooterScripts { get; set; }
+
 
         [DisplayName("Requires SSL")]
         public virtual bool RequiresSSL { get; set; }
@@ -138,8 +145,7 @@ namespace MrCMS.Entities.Documents.Web
         [StringLength(100)]
         [DisplayName("Submit button custom CSS class")]
         public virtual string SubmitButtonText { get; set; }
-
-       
+        
 
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }
