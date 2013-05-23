@@ -10,6 +10,9 @@
             @Html.ValidationMessageFor(x => x.FormSubmittedMessage, "", new { @class = "error" })
             
             <h4 class="margin-top-0">Submit Button settings</h4>
+            
+            @Html.InfoBlock("Heads up! ", "If you are using a custom design these properties will be ignored.")
+
             @Html.LabelFor(webpage => webpage.SubmitButtonText)
             @Html.TextBoxFor(webpage => webpage.SubmitButtonText, new { @class = "span4" })
             @Html.ValidationMessageFor(x => x.SubmitButtonText, "", new { @class = "error" })
@@ -18,6 +21,7 @@
             @Html.TextBoxFor(webpage => webpage.SubmitButtonCssClass, new { @class = "span4" })
             @Html.ValidationMessageFor(x => x.SubmitButtonCssClass, "", new { @class = "error" })
 
+            
 
             <h4>Email Settings</h4>
             @Html.LabelFor(webpage => webpage.FormEmailTitle, "Subject")
