@@ -46,17 +46,23 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.mrcms-mediaselector.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/tag-it.min.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.mrcms-copyandpaste.js");
-
+        
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.globalize/globalize.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.globalize/cultures/globalize.culture." + CurrentRequestData.CultureInfo.Name + ".js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/i18n/jquery.ui.datepicker-" + CurrentRequestData.CultureInfo.Name + ".js");
+        
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/admin.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/tagging.js");
 
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/i18n/jquery.ui.datepicker-" + CurrentRequestData.CultureInfo.Name + ".js");
-            
+        
+        
     }
     @Html.RenderScripts()
     @if (IsSectionDefined("JavaScriptBlock"))
     {
         @RenderSection("JavaScriptBlock")
     }
+    
+    @Html.Hidden("UICulture", CurrentRequestData.CultureInfo.Name)
 </body>
 </html>

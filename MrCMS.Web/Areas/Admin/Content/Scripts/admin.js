@@ -2,10 +2,20 @@
     $("#loading").ajaxStart(function () {
         $(this).show();
     });
-
     $("#loading").ajaxStop(function () {
         $(this).hide();
     });
+    
+    $.validator.methods.number = function (value, element) {
+        return this.optional(element) ||
+            !isNaN(Globalize.parseFloat(value));
+    }
+
+    $.validator.methods.date = function (value, element) {
+        return this.optional(element) ||
+            !isNaN(Globalize.parseDate(value));
+    }
+    Globalize.culture($("#UICulture").val());
 
     $().dropdown();
     $("[rel='tooltip']").tooltip();
