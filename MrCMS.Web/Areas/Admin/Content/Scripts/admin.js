@@ -110,7 +110,6 @@
         var that = $(this);
         if (!that.hasClass('hasDatepicker')) {
             that.datetimepicker({
-                dateFormat: 'dd/mm/yy',
                 timeFormat: 'hh:mm'
             }).blur().focus();
         }

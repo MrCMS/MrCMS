@@ -1,3 +1,4 @@
-﻿@model DateTime?
+﻿@using MrCMS.Website
+@model DateTime?
 
-@Html.TextBox("", (Model.HasValue ? Model.Value.ToString("dd/MM/yyyy HH:mm") : string.Empty), new {@class = "date-time-picker"})
+@Html.TextBox("", (Model.HasValue ? Model.Value.ToString() : string.Empty), new {@class = "date-time-picker"})

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -73,6 +75,8 @@ namespace MrCMS.Website
                                             CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
                                             CurrentRequestData.CurrentSite = Get<ISiteService>().GetCurrentSite();
                                             CurrentRequestData.SiteSettings = Get<SiteSettings>();
+                                            Thread.CurrentThread.CurrentCulture = CurrentRequestData.SiteSettings.CultureInfo;
+                                            Thread.CurrentThread.CurrentUICulture = CurrentRequestData.SiteSettings.CultureInfo;
                                         }
                                     };
                 AuthenticateRequest += (sender, args) =>
