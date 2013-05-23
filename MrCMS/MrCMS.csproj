@@ -331,6 +331,7 @@
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\ResetPasswordService.cs" />
     <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\SearchService.cs" />
     <Compile Include="Services\SiteService.cs" />
     <Compile Include="Services\TagService.cs" />
     <Compile Include="Services\UrlHistoryService.cs" />
