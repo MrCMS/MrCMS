@@ -1305,9 +1305,6 @@
     <Folder Include="Apps\Galleries\Views\Widgets\" />
     <Folder Include="Apps\Galleries\Widgets\" />
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\ckeditor\plugins\showblocks\" />
-    <Folder Include="Scripts\ckeditor\plugins\uicolor\yui\" />
-    <Folder Include="Scripts\ckeditor\themes\" />
     <Folder Include="Themes\Default\Apps\" />
     <Folder Include="Themes\Default\Content\" />
     <Folder Include="Themes\Default\Shared\" />
