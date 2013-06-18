@@ -33,7 +33,7 @@ namespace MrCMS.Website
         {
             get
             {
-                return (Site)CurrentContext.Items["current.site"] ??
+                return _taskSite ?? (Site)CurrentContext.Items["current.site"] ??
                        (CurrentSite = MrCMSApplication.Get<ISiteService>().GetCurrentSite());
             }
             set { CurrentContext.Items["current.site"] = value; }
@@ -47,7 +47,7 @@ namespace MrCMS.Website
 
         public static SiteSettings SiteSettings
         {
-            get { return (SiteSettings) CurrentContext.Items["current.sitesettings"]; }
+            get { return (SiteSettings)CurrentContext.Items["current.sitesettings"]; }
             set { CurrentContext.Items["current.sitesettings"] = value; }
         }
 
@@ -135,10 +135,18 @@ namespace MrCMS.Website
     public class OutOfContext : HttpContextBase
     {
         private readonly IDictionary _items = new Dictionary<string, object>();
+        private readonly OOCServerUtility _oocServerUtility = new OOCServerUtility();
 
-        public override IDictionary Items
+        public override IDictionary Items { get { return _items; } }
+
+        public override HttpServerUtilityBase Server { get { return _oocServerUtility; } }
+    }
+
+    public class OOCServerUtility : HttpServerUtilityBase
+    {
+        public override string MapPath(string path)
         {
-            get { return _items; }
+            return HostingEnvironment.MapPath(path);
         }
     }
 }

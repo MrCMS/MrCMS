@@ -9,8 +9,8 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<Webpage> mapping)
         {
-            mapping.HasManyToMany(webpage => webpage.HiddenWidgets).Table("HiddenWidgets").Cache.ReadWrite();
-            mapping.HasManyToMany(webpage => webpage.ShownWidgets).Table("ShownWidgets").Cache.ReadWrite();
+            mapping.HasManyToMany(webpage => webpage.HiddenWidgets).Table("HiddenWidgets").ParentKeyColumn("WebpageId").Cache.ReadWrite();
+            mapping.HasManyToMany(webpage => webpage.ShownWidgets).Table("ShownWidgets").ParentKeyColumn("WebpageId").Cache.ReadWrite();
             mapping.HasMany(webpage => webpage.Widgets).KeyColumn("WebpageId").Cascade.Delete();
             mapping.Map(webpage => webpage.BodyContent).CustomType<VarcharMax>().Length(4001);
             mapping.Map(webpage => webpage.MetaTitle).Length(250);
@@ -28,12 +28,12 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(webpage => webpage.FormDesign).CustomType<VarcharMax>().Length(4001);
             mapping.Map(webpage => webpage.SubmitButtonCssClass).Length(100);
             mapping.Map(webpage => webpage.SubmitButtonText).Length(100);
-            
+
             mapping.HasMany(posting => posting.Urls).Cascade.Delete();
 
             //Permission mappings
-            mapping.HasManyToMany(webpage => webpage.FrontEndAllowedRoles).Table("FrontEndWebpageRoles");
-            mapping.HasManyToMany(webpage => webpage.AdminAllowedRoles).Table("AdminWebpageRoles");
+            mapping.HasManyToMany(webpage => webpage.FrontEndAllowedRoles).Table("FrontEndWebpageRoles").ParentKeyColumn("WebpageId");
+            mapping.HasManyToMany(webpage => webpage.AdminAllowedRoles).Table("AdminWebpageRoles").ParentKeyColumn("WebpageId");
         }
     }
 
