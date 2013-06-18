@@ -380,10 +380,14 @@
     <Compile Include="Shortcodes\Forms\ValidationMessaageRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
     <Compile Include="Tasks\BackgroundTask.cs" />
+    <Compile Include="Tasks\DeleteIndexesTask.cs" />
+    <Compile Include="Tasks\IndexManagementTask.cs" />
+    <Compile Include="Tasks\InsertIndexesTask.cs" />
     <Compile Include="Tasks\IScheduledTaskManager.cs" />
     <Compile Include="Tasks\ScheduledTask.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Tasks\UpdateIndexesTask.cs" />
     <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
