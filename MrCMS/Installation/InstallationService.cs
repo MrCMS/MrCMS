@@ -13,6 +13,7 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Hosting;
 using FluentNHibernate.Cfg.Db;
+using MrCMS.Apps;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
@@ -349,145 +350,11 @@ namespace MrCMS.Installation
             ISession session = sessionFactory.OpenSession();
 
             var siteService = new SiteService(session, _context.Request);
-            //settings
-            var mediaSettings = new MediaSettings();
 
             var site = new Site { Name = model.SiteName, BaseUrl = model.SiteUrl };
-            session.Transact(sess => sess.Save(site));
-            CurrentRequestData.CurrentSite = site;
-            var currentSite = new CurrentSite(site);
-
-            var siteSettings = new SiteSettings
-                                   {
-                                       Site = site,
-                                       TimeZone = model.TimeZone,
-                                       UICulture = model.UiCulture
-                                   };
-            CurrentRequestData.SiteSettings = siteSettings;
-
-            var documentService = new DocumentService(session, siteSettings, currentSite);
-            var layoutAreaService = new LayoutAreaService(session);
-
-            var user = new User
-                {
-                    Email = model.AdminEmail,
-                    IsActive = true
-                };
-
-            var authorisationService = new AuthorisationService();
-            authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
-            authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
-            session.Transact(sess => sess.Save(user));
-            CurrentRequestData.CurrentUser = user;
-
-            documentService.AddDocument(model.BaseLayout);
-            var layoutAreas = new List<LayoutArea>
-                                  {
-                                      new LayoutArea
-                                          {
-                                              AreaName = "Main Navigation",
-                                              CreatedOn = CurrentRequestData.Now,
-                                              Layout = model.BaseLayout,
-                                              Site = site
-                                          },
-                                      new LayoutArea
-                                          {
-                                              AreaName = "Before Content",
-                                              CreatedOn = CurrentRequestData.Now,
-                                              Layout = model.BaseLayout,
-                                              Site = site
-                                          },
-                                      new LayoutArea
-                                          {
-                                              AreaName = "After Content",
-                                              CreatedOn = CurrentRequestData.Now,
-                                              Layout = model.BaseLayout,
-                                              Site = site
-                                          }
-                                  };
-
-            foreach (LayoutArea l in layoutAreas)
-                layoutAreaService.SaveArea(l);
-
-            documentService.AddDocument(model.HomePage);
-            documentService.AddDocument(model.Page2);
-            documentService.AddDocument(model.Page3);
-            documentService.AddDocument(model.Error403);
-            documentService.AddDocument(model.Error404);
-            documentService.AddDocument(model.Error500);
-            var webpages = session.QueryOver<Webpage>().List();
-            webpages.ForEach(documentService.PublishNow);
-
-
-            var defaultMediaCategory = new MediaCategory
-                {
-                    Name = "Default",
-                    UrlSegment = "default",
-                    Site = site
-                };
-            documentService.AddDocument(defaultMediaCategory);
-
-            siteSettings.DefaultLayoutId = model.BaseLayout.Id;
-            siteSettings.Error403PageId = model.Error403.Id;
-            siteSettings.Error404PageId = model.Error404.Id;
-            siteSettings.Error500PageId = model.Error500.Id;
-
-            siteSettings.EnableInlineEditing = true;
-            siteSettings.SiteIsLive = true;
-            
-            mediaSettings.ThumbnailImageHeight = 50;
-            mediaSettings.ThumbnailImageWidth = 50;
-            mediaSettings.LargeImageHeight = 800;
-            mediaSettings.LargeImageWidth = 800;
-            mediaSettings.MediumImageHeight = 500;
-            mediaSettings.MediumImageWidth = 500;
-            mediaSettings.SmallImageHeight = 200;
-            mediaSettings.SmallImageWidth = 200;
-            mediaSettings.ResizeQuality = 90;
-
-            var configurationProvider = new ConfigurationProvider(new SettingService(session),
-                                                                  currentSite);
-            var fileSystemSettings = new FileSystemSettings {StorageType = typeof (FileSystem).FullName};
-            configurationProvider.SaveSettings(siteSettings);
-            configurationProvider.SaveSettings(mediaSettings);
-            configurationProvider.SaveSettings(fileSystemSettings);
-
-
-            var adminUserRole = new UserRole
-                {
-                    Name = UserRole.Administrator
-                };
-
-            user.Roles = new List<UserRole> { adminUserRole };
-            adminUserRole.Users = new List<User> { user };
-            var roleService = new RoleService(session);
-            roleService.SaveRole(adminUserRole);
-
-            user.Sites = new List<Site> { site };
-            site.Users = new List<User> { user };
             siteService.SaveSite(site);
 
-            authorisationService.Logout();
-            authorisationService.SetAuthCookie(user.Email, false);
-
-            //set up system tasks
-            //var taskService = MrCMSApplication.Get<IScheduledTaskManager>();
-            //taskService.Add(new ScheduledTask
-            //                    {
-            //                        Type = "MrCMS.Tasks.SendQueuedMessagesTask",
-            //                        EveryXMinutes = 1,
-            //                        Site = site
-            //                    });
-
-            var service = new IndexService(session, currentSite);
-            IndexService.GetIndexManagerOverride = (indexType, indexDefinitionInterface) => Activator.CreateInstance(
-                typeof (FSDirectoryIndexManager<,>).MakeGenericType(
-                    indexDefinitionInterface.GetGenericArguments()[0],
-                    indexType), currentSite) as IIndexManagerBase;
-            var mrCMSIndices = service.GetIndexes();
-            mrCMSIndices.ForEach(index => service.Reindex(index.TypeName));
-            mrCMSIndices.ForEach(index => service.Optimise(index.TypeName));
-            IndexService.GetIndexManagerOverride = null;
+            MrCMSApp.InstallApps(session, model, site);
         }
 
         public virtual void RestartAppDomain()

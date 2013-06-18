@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using MrCMS.Apps;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Installation;
 using MrCMS.Models;
 using MrCMS.Website.Controllers;
+using NHibernate;
 using Ninject;
 using Xunit;
 using System.Linq;
@@ -109,6 +112,11 @@ namespace MrCMS.Tests.Helpers
         protected override void RegisterServices(IKernel kernel)
         {
             
+        }
+
+        protected override void OnInstallation(ISession session, InstallModel model, Site site)
+        {
+            throw new NotImplementedException();
         }
     }
 }
