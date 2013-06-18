@@ -20,7 +20,6 @@ namespace MrCMS.Web.Apps.Galleries
 
         protected override void OnInstallation(ISession session, InstallModel model, Site site)
         {
-            throw new System.NotImplementedException();
         }
 
         protected override void RegisterApp(MrCMSAppRegistrationContext context)
