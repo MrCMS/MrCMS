@@ -163,15 +163,6 @@ namespace MrCMS.Web.Apps.Core
             //                        Site = site
             //                    });
 
-            var service = new IndexService(session, currentSite);
-            IndexService.GetIndexManagerOverride = (indexType, indexDefinitionInterface) => Activator.CreateInstance(
-                typeof(FSDirectoryIndexManager<,>).MakeGenericType(
-                    indexDefinitionInterface.GetGenericArguments()[0],
-                    indexType), currentSite) as IIndexManagerBase;
-            var mrCMSIndices = service.GetIndexes();
-            mrCMSIndices.ForEach(index => service.Reindex(index.TypeName));
-            mrCMSIndices.ForEach(index => service.Optimise(index.TypeName));
-            IndexService.GetIndexManagerOverride = null;
         }
 
         protected override void RegisterApp(MrCMSAppRegistrationContext context)
