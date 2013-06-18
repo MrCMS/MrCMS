@@ -2,11 +2,21 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
+using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
+using MrCMS.Indexing.Management;
+using MrCMS.Installation;
+using MrCMS.Services;
+using MrCMS.Settings;
+using MrCMS.Website;
 using MrCMS.Website.Controllers;
 using System.Linq;
+using NHibernate;
 using Ninject;
 
 namespace MrCMS.Apps
@@ -62,6 +72,20 @@ namespace MrCMS.Apps
                 ((MrCMSApp) Activator.CreateInstance(type)).RegisterServices(kernel);
         }
 
+        public static void InstallApps(ISession session, InstallModel model, Site site)
+        {
+            foreach (
+                var  app in
+                    TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>()
+                              .Select(type => ((MrCMSApp) Activator.CreateInstance(type)))
+                              .OrderBy(app => app.InstallOrder))
+                app.OnInstallation(session, model, site);
+        }
+
+        protected virtual int InstallOrder { get { return 10; } }
+
         protected abstract void RegisterServices(IKernel kernel);
+
+        protected abstract void OnInstallation(ISession session, InstallModel model, Site site);
     }
 }

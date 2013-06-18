@@ -50,15 +50,6 @@ namespace MrCMS.Installation
         public string SiteName { get; set; }
         public string SiteUrl { get; set; }
 
-        public Webpage HomePage { get; set; }
-        public Webpage Page2 { get; set; }
-        public Webpage Page3 { get; set; }
-        public Webpage Error403 { get; set; }
-        public Webpage Error404 { get; set; }
-        public Webpage Error500 { get; set; }
-
-        public Layout BaseLayout { get; set; }
-
         [DisplayName("UI Culture")]
         public string UiCulture { get; set; }
         [DisplayName("Time Zone")]
@@ -90,5 +81,13 @@ namespace MrCMS.Installation
                                                             : info.Id == TimeZone, emptyItem: null);
             }
         }
+
+        public Webpage HomePage { get; set; }
+        public Webpage Page2 { get; set; }
+        public Webpage Page3 { get; set; }
+        public Webpage Error403 { get; set; }
+        public Webpage Error404 { get; set; }
+        public Webpage Error500 { get; set; }
+        public Layout BaseLayout { get; set; }
     }
 }
