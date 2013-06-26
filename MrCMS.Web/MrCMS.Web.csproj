@@ -210,6 +210,7 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\fa.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\fi.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\fr.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\gl.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\gu.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\he.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\hi.js" />
@@ -229,6 +230,7 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\pt.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\ro.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\ru.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\si.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\sk.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\sl.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\a11yhelp\dialogs\lang\tr.js" />
@@ -376,6 +378,7 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\smiley\images\tounge_smile.gif" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\smiley\images\whatchutalkingabout_smile.gif" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\smiley\images\wink_smile.gif" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\bg.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\ca.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\cs.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\cy.js" />
@@ -387,8 +390,10 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\fa.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\fi.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\fr.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\gl.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\he.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\hr.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\hu.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\it.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\ku.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\lv.js" />
@@ -396,6 +401,8 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\nl.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\no.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\pt-br.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\ru.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\si.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\sk.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\tr.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\specialchar\dialogs\lang\ug.js" />
@@ -411,9 +418,11 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\templates\templates\images\template2.gif" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\templates\templates\images\template3.gif" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\dialogs\ciframe.html" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\dialogs\tmp.html" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\dialogs\tmpFrameset.html" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\dialogs\wsc.css" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\dialogs\wsc.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\dialogs\wsc_ie.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\ajax.html" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\api.html" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\appendto.html" />
