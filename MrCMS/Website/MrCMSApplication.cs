@@ -36,7 +36,6 @@ namespace MrCMS.Website
             MrCMSApp.RegisterAllApps();
             AreaRegistration.RegisterAllAreas();
 
-            RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
             RegisterServices(bootstrapper.Kernel);
@@ -49,9 +48,6 @@ namespace MrCMS.Website
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
         }
-
-        //public static User OverriddenUser { get; set; }
-
 
         private static bool IsFileRequest(Uri uri)
         {

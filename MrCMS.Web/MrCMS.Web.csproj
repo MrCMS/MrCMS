@@ -1146,7 +1146,6 @@
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Layout\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Delete.cshtml" />
