@@ -9,26 +9,28 @@ namespace MrCMS.Indexing.Management
     {
         public Func<T, IEnumerable<string>> GetValues { get; set; }
 
-        public StringFieldDefinition(string fieldName, Func<T, IEnumerable<string>> getValues, Field.Store store, Field.Index index)
+        public StringFieldDefinition(string fieldName, Func<T, IEnumerable<string>> getValues, Field.Store store, Field.Index index, float boost = 1)
         {
             FieldName = fieldName;
             GetValues = getValues;
             Store = store;
             Index = index;
+            Boost = boost;
         }
 
-        public StringFieldDefinition(string fieldName, Func<T, string> getValue, Field.Store store, Field.Index index)
+        public StringFieldDefinition(string fieldName, Func<T, string> getValue, Field.Store store, Field.Index index, float boost = 1)
         {
             FieldName = fieldName;
             GetValues = arg => new List<string> { getValue(arg) };
             Store = store;
             Index = index;
+            Boost = boost;
         }
 
         public override IEnumerable<AbstractField> GetFields(T obj)
         {
             var values = GetValues(obj);
-            return values.Select(s => new Field(FieldName, s ?? string.Empty, Store, Index));
+            return values.Select(s => new Field(FieldName, s ?? string.Empty, Store, Index) { Boost = Boost });
         }
     }
 }

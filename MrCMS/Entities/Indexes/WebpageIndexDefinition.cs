@@ -70,7 +70,12 @@ namespace MrCMS.Entities.Indexes
             return
                 ids.Chunk(100)
                    .SelectMany(
-                       ints => session.QueryOver<Webpage>().Where(webpage => webpage.Id.IsIn(ints.ToList())).List());
+                       ints =>
+                       session.QueryOver<Webpage>()
+                              .Where(webpage => webpage.Id.IsIn(ints.ToList()))
+                              .Cacheable()
+                              .List()
+                              .OrderBy(webpage => ids.IndexOf(webpage.Id)));
         }
 
         public string GetLocation(CurrentSite currentSite)
