@@ -111,6 +111,7 @@
     <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
     <Compile Include="Logging\LogServiceTests.cs" />
     <Compile Include="Helpers\SessionHelperTests.cs" />
+    <Compile Include="Optimization\ResourceDataTests.cs" />
     <Compile Include="Services\AuthorisationServiceTests.cs" />
     <Compile Include="Services\DocumentServiceTests.cs" />
     <Compile Include="InMemoryDatabaseTest.cs" />
