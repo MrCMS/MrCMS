@@ -358,6 +358,7 @@
     <Compile Include="Shortcodes\Forms\CheckBoxListRenderer.cs" />
     <Compile Include="Shortcodes\Forms\CustomFormRenderer.cs" />
     <Compile Include="Shortcodes\Forms\DefaultFormRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\DropDownListOptionRenderer.cs" />
     <Compile Include="Shortcodes\Forms\DropDownListRenderer.cs" />
     <Compile Include="Shortcodes\Forms\DynamicFormElementRenderer.cs" />
     <Compile Include="Shortcodes\Forms\ElementRendererManager.cs" />
@@ -365,6 +366,7 @@
     <Compile Include="Shortcodes\Forms\FormRenderingManager.cs" />
     <Compile Include="Shortcodes\FormShortcodeParser.cs" />
     <Compile Include="Shortcodes\Forms\FormSubmittedStatus.cs" />
+    <Compile Include="Shortcodes\Forms\IDropDownListOptionRenderer.cs" />
     <Compile Include="Shortcodes\Forms\IElementRendererManager.cs" />
     <Compile Include="Shortcodes\Forms\ILabelRenderer.cs" />
     <Compile Include="Shortcodes\Forms\ISubmittedMessageRenderer.cs" />

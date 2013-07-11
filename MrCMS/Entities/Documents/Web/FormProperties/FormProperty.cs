@@ -5,6 +5,10 @@ namespace MrCMS.Entities.Documents.Web.FormProperties
 {
     public abstract class FormProperty : SiteEntity
     {
+        protected FormProperty()
+        {
+            Options = new List<FormListOption>();
+        }
         public virtual string Name { get; set; }
         public virtual string LabelText { get; set; }
         public virtual bool Required { get; set; }

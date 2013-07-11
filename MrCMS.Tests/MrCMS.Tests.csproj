@@ -135,6 +135,8 @@
     <Compile Include="Settings\SiteSettingsOptionGeneratorTests.cs" />
     <Compile Include="Settings\SiteSettingsTests.cs" />
     <Compile Include="Shortcodes\Forms\DefaultFormRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\DropDownListOptionRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\DropDownListRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\ElementRendererManagerTests.cs" />
     <Compile Include="Shortcodes\Forms\FormRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\LabelRendererTests.cs" />
