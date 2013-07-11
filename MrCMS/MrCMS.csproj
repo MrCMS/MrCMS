@@ -344,7 +344,7 @@
     <Compile Include="Settings\GenericListTypeConverter.cs" />
     <Compile Include="Settings\GlobalSettingsBase.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />
-    <Compile Include="Settings\ISiteSettings.cs" />
+    <Compile Include="Settings\SettingsBase.cs" />
     <Compile Include="Settings\ISettingService.cs" />
     <Compile Include="Settings\MailSettings.cs" />
     <Compile Include="Settings\MediaSelectorAttribute.cs" />
