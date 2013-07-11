@@ -124,6 +124,7 @@
     <Compile Include="Services\SearchServiceTests.cs" />
     <Compile Include="Services\SitesServiceTests.cs" />
     <Compile Include="Services\TagServiceTests.cs" />
+    <Compile Include="Services\UrlHistoryServiceTests.cs" />
     <Compile Include="Services\UserServiceTests.cs" />
     <Compile Include="Services\WidgetServiceTests.cs" />
     <Compile Include="Settings\FormServiceTests.cs" />
