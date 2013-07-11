@@ -8,7 +8,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
 {
     public class TextBoxRendererTests
     {
-        private TextBoxRenderer _textBoxRenderer;
+        private readonly TextBoxRenderer _textBoxRenderer;
         private string _existingValue = "";
 
         public TextBoxRendererTests()
@@ -87,10 +87,20 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextBoxRenderer_AppendElement_ShouldAppendNeitherDataAttributesIfRequiredIsFalse()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextBox{Required = false}, _existingValue);
+                new TextBox { Required = false }, _existingValue);
 
             appendElement.Attributes.ContainsKey("data-val").Should().BeFalse();
             appendElement.Attributes.ContainsKey("data-val-required").Should().BeFalse();
+        }
+
+        [Fact]
+        public void TextBoxRenderer_AppendElement_ShouldSetCssClassIfItIsSet()
+        {
+            var appendElement = _textBoxRenderer.AppendElement(
+                new TextBox {CssClass = "css-class"}, _existingValue);
+
+            appendElement.Attributes["class"].Should().Be("css-class");
+
         }
     }
 }
