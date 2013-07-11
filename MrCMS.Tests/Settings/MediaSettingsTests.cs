@@ -11,80 +11,11 @@ namespace MrCMS.Tests.Settings
 {
     public class MediaSettingsTests
     {
-        [Fact]
-        public void MediaSettings_GetTypeName_ReturnsMediaSettings()
+        private readonly MediaSettings _mediaSettings;
+
+        public MediaSettingsTests()
         {
-            var mediaSettings = GetMediaSettings();
-
-            mediaSettings.TypeName.Should().Be("Media Settings");
-        }
-
-        [Fact]
-        public void MediaSettings_GetDivId_ReturnsMediaDashSettings()
-        {
-            var mediaSettings = GetMediaSettings();
-
-            mediaSettings.DivId.Should().Be("media-settings");
-        }
-
-        [Fact]
-        public void MediaSettings_ThumbnailSize_ShouldBeCalculatedFromTheSettings()
-        {
-            var mediaSettings = GetMediaSettings();
-
-            mediaSettings.ThumbnailSize.Should().Be(new Size(64, 64));
-        }
-
-        [Fact]
-        public void MediaSettings_SmallSize_ShouldBeCalculatedFromTheSettings()
-        {
-            var mediaSettings = GetMediaSettings();
-
-            mediaSettings.SmallSize.Should().Be(new Size(200, 150));
-        }
-
-        [Fact]
-        public void MediaSettings_MediumSize_ShouldBeCalculatedFromTheSettings()
-        {
-            var mediaSettings = GetMediaSettings();
-
-            mediaSettings.MediumSize.Should().Be(new Size(320, 240));
-        }
-
-        [Fact]
-        public void MediaSettings_LargeSize_ShouldBeCalculatedFromTheSettings()
-        {
-            var mediaSettings = GetMediaSettings();
-
-            mediaSettings.LargeSize.Should().Be(new Size(640, 480));
-        }
-
-        [Fact]
-        public void MediaSettings_Sizes_ShouldContainTheCalculatedSizes()
-        {
-            var mediaSettings = GetMediaSettings();
-
-            mediaSettings.Sizes.Should()
-                         .ContainInOrder(new List<Size>
-                                             {
-                                                 mediaSettings.LargeSize,
-                                                 mediaSettings.MediumSize,
-                                                 mediaSettings.SmallSize,
-                                                 mediaSettings.ThumbnailSize
-                                             });
-        }
-
-        [Fact]
-        public void MediaSettings_SetViewData_ShouldNotThrow()
-        {
-            var mediaSettings = GetMediaSettings();
-            this.Invoking(tests =>
-                          mediaSettings.SetViewData(A.Fake<ISession>(), A.Fake<ViewDataDictionary>())).ShouldNotThrow();
-        }
-
-        private static MediaSettings GetMediaSettings()
-        {
-            var mediaSettings = new MediaSettings
+            _mediaSettings = new MediaSettings
                                     {
                                         ThumbnailImageHeight = 64,
                                         ThumbnailImageWidth = 64,
@@ -93,9 +24,73 @@ namespace MrCMS.Tests.Settings
                                         MediumImageHeight = 240,
                                         MediumImageWidth = 320,
                                         LargeImageHeight = 480,
-                                        LargeImageWidth = 640
+                                        LargeImageWidth = 640,
+                                        MaxImageSizeHeight = 1024,
+                                        MaxImageSizeWidth = 1024
                                     };
-            return mediaSettings;
         }
+        
+        [Fact]
+        public void MediaSettings_GetTypeName_ReturnsMediaSettings()
+        {
+            _mediaSettings.TypeName.Should().Be("Media Settings");
+        }
+
+        [Fact]
+        public void MediaSettings_GetDivId_ReturnsMediaDashSettings()
+        {
+            _mediaSettings.DivId.Should().Be("media-settings");
+        }
+
+        [Fact]
+        public void MediaSettings_ThumbnailSize_ShouldBeCalculatedFromTheSettings()
+        {
+            _mediaSettings.ThumbnailSize.Should().Be(new Size(64, 64));
+        }
+
+        [Fact]
+        public void MediaSettings_SmallSize_ShouldBeCalculatedFromTheSettings()
+        {
+            _mediaSettings.SmallSize.Should().Be(new Size(200, 150));
+        }
+
+        [Fact]
+        public void MediaSettings_MediumSize_ShouldBeCalculatedFromTheSettings()
+        {
+            _mediaSettings.MediumSize.Should().Be(new Size(320, 240));
+        }
+
+        [Fact]
+        public void MediaSettings_LargeSize_ShouldBeCalculatedFromTheSettings()
+        {
+            _mediaSettings.LargeSize.Should().Be(new Size(640, 480));
+        }
+
+        [Fact]
+        public void MediaSettings_MaxSize_ShouldBeCalculatedFromTheSettings()
+        {
+            _mediaSettings.MaxSize.Should().Be(new Size(1024, 1024));
+        }
+
+        [Fact]
+        public void MediaSettings_Sizes_ShouldContainTheCalculatedSizes()
+        {
+            _mediaSettings.Sizes.Should()
+                         .ContainInOrder(new List<Size>
+                                             {
+                                                 _mediaSettings.LargeSize,
+                                                 _mediaSettings.MediumSize,
+                                                 _mediaSettings.SmallSize,
+                                                 _mediaSettings.ThumbnailSize
+                                             });
+        }
+
+        [Fact]
+        public void MediaSettings_SetViewData_ShouldNotThrow()
+        {
+            this.Invoking(tests =>
+                          _mediaSettings.SetViewData(A.Fake<ISession>(), A.Fake<ViewDataDictionary>())).ShouldNotThrow();
+        }
+
     }
 }
