@@ -128,7 +128,6 @@
     <Compile Include="Services\UrlHistoryServiceTests.cs" />
     <Compile Include="Services\UserServiceTests.cs" />
     <Compile Include="Services\WidgetServiceTests.cs" />
-    <Compile Include="Settings\FormServiceTests.cs" />
     <Compile Include="Settings\MailSettingsTests.cs" />
     <Compile Include="Settings\MediaSettingsTests.cs" />
     <Compile Include="Settings\SEOSettingsTests.cs" />
