@@ -81,7 +81,7 @@ namespace MrCMS.Tests.Logging
         private static List<Log> CreateLogList()
         {
             var logList = Enumerable.Range(1, 20).Select(i => new Log {Message = i.ToString(), Error = new Error()}).ToList();
-            Session.Transact(session => logList.ForEach(log => session.Save(log)));
+            logList.ForEach(log => Session.Transact(session => session.Save(log)));
             return logList;
         }
 
