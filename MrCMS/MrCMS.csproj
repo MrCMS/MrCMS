@@ -244,6 +244,7 @@
     <Compile Include="Indexing\Management\IIndexDefinition.cs" />
     <Compile Include="Indexing\Management\IIndexManager.cs" />
     <Compile Include="Indexing\Management\IndexCreationResult.cs" />
+    <Compile Include="Indexing\Management\IndexDefinition.cs" />
     <Compile Include="Indexing\Management\IndexManager.cs" />
     <Compile Include="Indexing\Management\IndexResult.cs" />
     <Compile Include="Indexing\Management\IntegerFieldDefinition.cs" />

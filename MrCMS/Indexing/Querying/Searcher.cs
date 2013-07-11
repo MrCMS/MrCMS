@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
+using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Indexing.Management;
 using MrCMS.Paging;
@@ -12,7 +12,7 @@ using NHibernate;
 namespace MrCMS.Indexing.Querying
 {
     public abstract class Searcher<TEntity, TDefinition> : ISearcher<TEntity, TDefinition>
-        where TEntity : class
+        where TEntity : SystemEntity
         where TDefinition : IIndexDefinition<TEntity>, new()
     {
         private readonly ISession _session;

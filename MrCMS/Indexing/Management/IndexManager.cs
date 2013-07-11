@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
+using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using System.Linq;
 
 namespace MrCMS.Indexing.Management
 {
     public abstract class IndexManager<TEntity, TDefinition> : IIndexManager<TEntity, TDefinition>
-        where TEntity : class
-        where TDefinition : IIndexDefinition<TEntity>, new()
+        where TEntity : SystemEntity where TDefinition : IIndexDefinition<TEntity>, new()
     {
         protected readonly CurrentSite CurrentSite;
 

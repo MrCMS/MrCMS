@@ -1,13 +1,13 @@
 ﻿using System.IO;
 using Lucene.Net.Store;
+using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using Directory = Lucene.Net.Store.Directory;
 
 namespace MrCMS.Indexing.Management
 {
     public class FSDirectoryIndexManager<TEntity, TDefinition> : IndexManager<TEntity, TDefinition>
-        where TEntity : class
-        where TDefinition : IIndexDefinition<TEntity>, new()
+        where TEntity : SystemEntity where TDefinition : IIndexDefinition<TEntity>, new()
     {
         public FSDirectoryIndexManager(CurrentSite currentSite) : base(currentSite)
         {
