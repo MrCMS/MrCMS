@@ -18,23 +18,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ViewResult Index(LogEntryType? type, int page = 1)
         {
-            IPagedList<Log> model;
-            if (type == null)
-                model = _service.GetAllEntriesPaged(page);
-            else
-            {
-                switch (type.Value)
-                {
-                    case LogEntryType.Error:
-                        model = _service.GetAllErrors(page);
-                        break;
-                    case LogEntryType.Audit:
-                        model = _service.GetAllAudits(page);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
+            var model = _service.GetEntriesPaged(page, type);
             return View(model);
         }
 

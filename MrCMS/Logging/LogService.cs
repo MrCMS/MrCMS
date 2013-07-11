@@ -30,19 +30,12 @@ namespace MrCMS.Logging
             _session.Transact(session => session.Delete(log));
         }
 
-        public IPagedList<Log> GetAllEntriesPaged(int pageNum, int pageSize = 10)
+        public IPagedList<Log> GetEntriesPaged(int pageNum, LogEntryType? type = null, int pageSize = 10)
         {
-            return BaseQuery().Paged(pageNum, pageSize);
-        }
-
-        public IPagedList<Log> GetAllErrors(int pageNum, int pageSize = 10)
-        {
-            return BaseQuery().Where(entry => entry.Type == LogEntryType.Error).Paged(pageNum, pageSize);
-        }
-
-        public IPagedList<Log> GetAllAudits(int pageNum, int pageSize = 10)
-        {
-            return BaseQuery().Where(entry => entry.Type == LogEntryType.Audit).Paged(pageNum, pageSize);
+            var query = BaseQuery();
+            if (type.HasValue)
+                query = query.Where(log => log.Type == type);
+            return query.Paged(pageNum, pageSize);
         }
 
         private IQueryOver<Log, Log> BaseQuery()
