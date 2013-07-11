@@ -30,8 +30,8 @@ namespace MrCMS.Services
                             DocumentId = x.Id.ToString(),
                             Name = x.Name,
                             LastUpdated = x.UpdatedOn.ToShortDateString(),
-                            DocumentType = StringHelper.BreakUpString(x.DocumentType),
-                            DisplayName = x.Name + " (" + StringHelper.BreakUpString(x.DocumentType) + ")",
+                            DocumentType = x.DocumentType.BreakUpString(),
+                            DisplayName = x.Name + " (" + x.DocumentType.BreakUpString() + ")",
                         });
         }
 
