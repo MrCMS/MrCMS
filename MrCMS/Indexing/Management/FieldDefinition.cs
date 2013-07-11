@@ -11,6 +11,7 @@ namespace MrCMS.Indexing.Management
             return definitions.Select(definition => definition.FieldName).ToArray();
         }
         public string FieldName { get; set; }
+        public float Boost { get; set; }
         public Field.Store Store { get; set; }
         public Field.Index Index { get; set; }
     }
