@@ -4,9 +4,9 @@ using MrCMS.Services;
 
 namespace MrCMS.Tasks
 {
-    public class DeleteIndexesTask : IndexManagementTask
+    public class DeleteIndicesTask : IndexManagementTask
     {
-        public DeleteIndexesTask(SiteEntity entity)
+        public DeleteIndicesTask(SiteEntity entity)
             : base(entity)
         {
         }

@@ -146,7 +146,7 @@
     <Compile Include="DbConfiguration\Configuration\DatabaseType.cs" />
     <Compile Include="DbConfiguration\Configuration\PostCommitEventListener.cs" />
     <Compile Include="DbConfiguration\Configuration\SaveOrUpdateListener.cs" />
-    <Compile Include="DbConfiguration\Configuration\UpdateIndexesListener.cs" />
+    <Compile Include="DbConfiguration\Configuration\UpdateIndicesListener.cs" />
     <Compile Include="DbConfiguration\Configuration\UrlHistoryListener.cs" />
     <Compile Include="DbConfiguration\Conventions\CacheConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\DateTimeConvention.cs" />
@@ -380,14 +380,14 @@
     <Compile Include="Shortcodes\Forms\ValidationMessaageRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
     <Compile Include="Tasks\BackgroundTask.cs" />
-    <Compile Include="Tasks\DeleteIndexesTask.cs" />
+    <Compile Include="Tasks\DeleteIndicesTask.cs" />
     <Compile Include="Tasks\IndexManagementTask.cs" />
-    <Compile Include="Tasks\InsertIndexesTask.cs" />
+    <Compile Include="Tasks\InsertIndicesTask.cs" />
     <Compile Include="Tasks\IScheduledTaskManager.cs" />
     <Compile Include="Tasks\ScheduledTask.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
-    <Compile Include="Tasks\UpdateIndexesTask.cs" />
+    <Compile Include="Tasks\UpdateIndicesTask.cs" />
     <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />

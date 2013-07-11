@@ -164,7 +164,7 @@ namespace MrCMS.DbConfiguration
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)
         {
             var saveOrUpdateListener = new SaveOrUpdateListener();
-            var updateIndexesListener = new UpdateIndexesListener();
+            var updateIndexesListener = new UpdateIndicesListener();
             var postCommitEventListener = new PostCommitEventListener();
             var urlHistoryListener = new UrlHistoryListener();
             configuration.EventListeners.SaveOrUpdateEventListeners =
