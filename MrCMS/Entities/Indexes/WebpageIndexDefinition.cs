@@ -101,7 +101,7 @@ namespace MrCMS.Entities.Indexes
 
         private static readonly FieldDefinition<Webpage> _name =
             new StringFieldDefinition<Webpage>("name", webpage => webpage.Name, Field.Store.YES,
-                                         Field.Index.ANALYZED);
+                                               Field.Index.ANALYZED, 2f);
 
         private static readonly FieldDefinition<Webpage> _bodyContent =
             new StringFieldDefinition<Webpage>("bodycontent", webpage => webpage.BodyContent, Field.Store.NO,
