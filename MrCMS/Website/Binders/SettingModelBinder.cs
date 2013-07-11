@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using MrCMS.Helpers;
-using MrCMS.Services;
 using MrCMS.Settings;
-using Ninject;
 
 namespace MrCMS.Website.Binders
 {

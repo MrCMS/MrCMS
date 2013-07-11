@@ -1,7 +1,5 @@
 using System;
 using System.Web.Mvc;
-using NHibernate;
-using Ninject;
 
 namespace MrCMS.Website.Binders
 {
