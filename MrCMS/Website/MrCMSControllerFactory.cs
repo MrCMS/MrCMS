@@ -23,9 +23,9 @@ namespace MrCMS.Website
                           .GroupBy(
                               type =>
                               ((MrCMSApp)Activator.CreateInstance(
-                                  TypeHelper.GetBaseTypes(type, type1 =>
-                                      type1.IsGenericType &&
-                                      type1.GetGenericTypeDefinition() == typeof(MrCMSAppUIController<>))
+                                  type.GetBaseTypes(type1 =>
+                                            type1.IsGenericType &&
+                                            type1.GetGenericTypeDefinition() == typeof(MrCMSAppUIController<>))
                                       .First()
                                       .GetGenericArguments()[0])).AppName)
                           .ToDictionary(types => types.Key, types => types.ToList());
