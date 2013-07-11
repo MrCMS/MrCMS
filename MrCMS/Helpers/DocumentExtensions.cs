@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
-using MrCMS.Models;
-using MrCMS.Paging;
 using Newtonsoft.Json;
 
 namespace MrCMS.Helpers
