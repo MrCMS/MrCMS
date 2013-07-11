@@ -386,6 +386,7 @@
     <Compile Include="Tasks\InsertIndicesTask.cs" />
     <Compile Include="Tasks\IScheduledTaskManager.cs" />
     <Compile Include="Tasks\ScheduledTask.cs" />
+    <Compile Include="Tasks\ScheduledTaskManager.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />
