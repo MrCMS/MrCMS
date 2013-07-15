@@ -34,10 +34,15 @@ namespace MrCMS.Services
 
         public void AddDocument<T>(T document) where T : Document
         {
-            var sameParentDocs = GetDocumentsByParent(document.Parent as T).ToList();
-            document.DisplayOrder = sameParentDocs.Any() ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1 : 0;
-            document.CustomInitialization(this, _session);
-            _session.Transact(session => session.SaveOrUpdate(document));
+            _session.Transact(session =>
+            {
+                var sameParentDocs = GetDocumentsByParent(document.Parent as T).ToList();
+                document.DisplayOrder = sameParentDocs.Any()
+                                            ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1
+                                            : 0;
+                document.CustomInitialization(this, _session);
+                session.SaveOrUpdate(document);
+            });
         }
 
         public T GetDocument<T>(int id) where T : Document

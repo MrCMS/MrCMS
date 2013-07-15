@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Installation;
-using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
@@ -77,7 +73,6 @@ namespace MrCMS.Web.Controllers
                     UrlSegment = "home",
                     BodyContent = "Welcome to Mr CMS",
                     RevealInNavigation = true,
-                    Layout = model.BaseLayout
                 };
             model.Error404 = new TextPage
                 {
@@ -85,7 +80,6 @@ namespace MrCMS.Web.Controllers
                     UrlSegment = "404",
                     BodyContent = "Sorry, this page cannot be found.",
                     RevealInNavigation = false,
-                    Layout = model.BaseLayout
                 };
             model.Error403 = new TextPage
                 {
@@ -93,7 +87,6 @@ namespace MrCMS.Web.Controllers
                     UrlSegment = "403",
                     BodyContent = "Sorry, you are not authorized to view this page.",
                     RevealInNavigation = false,
-                    Layout = model.BaseLayout
                 };
             model.Error500 = new TextPage
                 {
@@ -101,7 +94,6 @@ namespace MrCMS.Web.Controllers
                     UrlSegment = "500",
                     BodyContent = "Sorry, there has been an error.",
                     RevealInNavigation = false,
-                    Layout = model.BaseLayout
                 };
 
             model.Page2 = new TextPage
@@ -110,7 +102,6 @@ namespace MrCMS.Web.Controllers
                 UrlSegment = "page-2",
                 BodyContent = "Just another page!",
                 RevealInNavigation = true,
-                Layout = model.BaseLayout
             };
 
             model.Page3 = new TextPage
@@ -119,7 +110,6 @@ namespace MrCMS.Web.Controllers
                 UrlSegment = "contact-us",
                 BodyContent = "Contact us at www.mrcms.co.uk.",
                 RevealInNavigation = true,
-                Layout = model.BaseLayout
             };
         }
     }
