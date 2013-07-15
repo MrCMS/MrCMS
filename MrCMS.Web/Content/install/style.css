@@ -1,55 +1,34 @@
-﻿body { height: 100%; margin: 0; padding: 0; }
+﻿h1,h4 { font-weight: normal;}
+body { padding-top: 20px;}
+hr {padding-top: 0;}
 
-.container-main { background-color: #f4f4f4; background-image: url(images/bodybg.gif); background-repeat: repeat-x; padding-top: 50px; text-align: center; }
+.field-validation-error { color: red;}
 
-.container-footer { margin: auto; width: 700px; }
+#throbber {
+    display: none;
+}
 
-.container-error { font-family: Arial; font-size: 12px; margin: auto; padding-top: 10px; text-align: center; width: 629px; }
+    #throbber .curtain {
+        background-color: #3e4d45;
+        filter: alpha(opacity=90);
+        height: 100%;
+        left: 0;
+        opacity: 0.9;
+        position: fixed;
+        top: 0;
+        width: 100%;
+    }
 
-.error-label { color: red; display: block; padding-bottom: 10px; text-align: left; }
+    #throbber .curtain-content {
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
 
-.wizard-step { height: 340px; margin: auto; padding: 10px; text-align: left; width: 600px; }
-
-    .wizard-step td { height: 20px; margin: 0; padding: 0; }
-
-.header-text { color: #ff5a00; font-size: 18px; padding-bottom: 10px; text-align: center; }
-
-.content { font-family: Arial; font-size: 12px; margin: auto; padding-top: 10px; text-align: center; width: 629px; }
-
-.textbox { width: 150px; }
-
-.title { font-weight: 700; }
-
-.log { height: 90px; margin: 0 auto; width: 600px; }
-
-.container-installer { margin: auto; }
-
-    .container-installer .top .left { background-image: url(images/topleft.gif); background-position: left top; background-repeat: no-repeat; height: 22px; width: 22px; }
-
-    .container-installer .top .center { background-image: url(images/top.gif); background-position: top; background-repeat: no-repeat; height: 22px; width: 699px; }
-
-    .container-installer .top .right { background-image: url(images/topright.gif); background-position: left top; background-repeat: no-repeat; height: 22px; width: 22px; }
-
-    .container-installer .Middle .left { background-image: url(images/left.gif); background-position: left top; background-repeat: no-repeat; height: 516px; width: 22px; }
-
-    .container-installer .Middle .center { background-image: url(images/bg.gif); background-position: top; background-repeat: repeat-y; text-align: center; vertical-align: top; }
-
-    .container-installer .Middle .right { background-image: url(images/right.gif); background-position: left top; background-repeat: no-repeat; height: 516px; width: 22px; }
-
-    .container-installer .Bottom .left { background-image: url(images/bottomleft.gif); background-position: left bottom; background-repeat: no-repeat; height: 22px; width: 22px; }
-
-    .container-installer .Bottom .center { background-image: url(images/bottom.gif); background-position: top; background-repeat: no-repeat; height: 22px; width: 699px; }
-
-    .container-installer .Bottom .right { background-image: url(images/bottomright.gif); background-position: left bottom; background-repeat: no-repeat; height: 22px; width: 22px; }
-
-.hint { font-size: 90%; font-style: italic; }
-
-#setUpHeader { font-size: 145%; }
-
-#throbber { display: none; }
-
-    #throbber .curtain { background-color: #3e4d45; filter: alpha(opacity=90); height: 100%; left: 0; opacity: 0.9; position: fixed; top: 0; width: 100%; }
-
-    #throbber .curtain-content { height: 100%; left: 0; position: absolute; top: 0; width: 100%; }
-
-        #throbber .curtain-content div { color: #FFF; padding: 250px; text-align: center; }
+        #throbber .curtain-content div {
+            color: #FFF;
+            padding: 250px;
+            text-align: center;
+        }

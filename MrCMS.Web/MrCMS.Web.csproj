@@ -664,18 +664,16 @@
     <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.js" />
     <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
     <Content Include="Areas\Admin\Content\Styles\jquery.tagit.css" />
-    <Content Include="Content\images\install-synchronizing.gif" />
+    <Content Include="Content\install\images\install-synchronizing.gif" />
     <Content Include="Content\images\mrcms-logo.png" />
-    <Content Include="Content\install\images\bg.gif" />
-    <Content Include="Content\install\images\bodybg.gif" />
-    <Content Include="Content\install\images\bottom.gif" />
-    <Content Include="Content\install\images\bottomleft.gif" />
-    <Content Include="Content\install\images\bottomright.gif" />
-    <Content Include="Content\install\images\left.gif" />
-    <Content Include="Content\install\images\right.gif" />
-    <Content Include="Content\install\images\top.gif" />
-    <Content Include="Content\install\images\topleft.gif" />
-    <Content Include="Content\install\images\topright.gif" />
+    <Content Include="Content\install\bootstrap\css\bootstrap-responsive.css" />
+    <Content Include="Content\install\bootstrap\css\bootstrap-responsive.min.css" />
+    <Content Include="Content\install\bootstrap\css\bootstrap.css" />
+    <Content Include="Content\install\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Content\install\bootstrap\img\glyphicons-halflings-white.png" />
+    <Content Include="Content\install\bootstrap\img\glyphicons-halflings.png" />
+    <Content Include="Content\install\bootstrap\js\bootstrap.js" />
+    <Content Include="Content\install\bootstrap\js\bootstrap.min.js" />
     <Content Include="Content\install\style.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.contextMenu.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.fileupload-ui.css" />
@@ -1091,6 +1089,8 @@
     <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zu.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.cultures.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\globalize.js" />
+    <Content Include="Content\install\scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Content\install\scripts\jquery.validate.min.js" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1282,6 +1282,7 @@
     <Content Include="Areas\Admin\Views\Settings\FileSystem.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\SetParent.cshtml" />
     <Content Include="Areas\Admin\Views\Form\Sort.cshtml" />
+    <Content Include="Content\install\images\mr-cms-thumb.jpg" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
@@ -1313,6 +1314,9 @@
     <Folder Include="Apps\Galleries\Views\Widgets\" />
     <Folder Include="Apps\Galleries\Widgets\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\ckeditor\plugins\showblocks\" />
+    <Folder Include="Scripts\ckeditor\plugins\uicolor\yui\" />
+    <Folder Include="Scripts\ckeditor\themes\" />
     <Folder Include="Themes\Default\Apps\" />
     <Folder Include="Themes\Default\Content\" />
     <Folder Include="Themes\Default\Shared\" />
