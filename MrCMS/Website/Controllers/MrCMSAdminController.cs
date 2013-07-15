@@ -7,7 +7,7 @@ using MrCMS.Website.ActionResults;
 
 namespace MrCMS.Website.Controllers
 {
-    [MrCMSAuthorize(Roles = UserRole.Administrator)]
+    [MrCMSAuthorize]
     [ValidateInput(false)]
     public abstract class MrCMSAdminController : MrCMSController
     {

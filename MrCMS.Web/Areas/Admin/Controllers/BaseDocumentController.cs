@@ -48,7 +48,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Edit")]
-        public ActionResult Edit_Get(T doc)
+        public virtual ActionResult Edit_Get(T doc)
         {
             DocumentTypeSetup(doc);
             return View(doc);
@@ -69,13 +69,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Delete")]
-        public ActionResult Delete_Get(T document)
+        public virtual ActionResult Delete_Get(T document)
         {
             return PartialView(document);
         }
 
         [HttpPost]
-        public ActionResult Delete(T document)
+        public virtual ActionResult Delete(T document)
         {
             _documentService.DeleteDocument(document);
             TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));

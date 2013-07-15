@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Web.Mvc;
+using MrCMS.ACL.Rules;
 using MrCMS.Settings;
+using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 using NHibernate;
@@ -20,6 +21,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [MrCMSACL(typeof(SiteSettingsACL),SiteSettingsACL.View)]
         public ViewResult Index()
         {
             var settings = _configurationProvider.GetAllSiteSettings().FindAll(arg => arg.RenderInSettings);
@@ -29,6 +31,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Index")]
+        [MrCMSACL(typeof(SiteSettingsACL), SiteSettingsACL.Save)]
         public RedirectToRouteResult Index_Post([ModelBinder(typeof(SiteSettingsModelBinder))]List<SiteSettingsBase> settings)
         {
             settings.ForEach(s => _configurationProvider.SaveSettings(s));

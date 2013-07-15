@@ -1,0 +1,27 @@
+﻿@model MrCMS.Models.ACLModel
+@{
+    ViewBag.Title = "ACL";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>ACL
+            <span class="btn-group display-inline pull-right">
+                <input class="btn btn-primary" type="submit" value="Update" />
+            </span>
+        </legend>
+    </fieldset>
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Features</h4>
+            @{ Html.RenderPartial("Group", new ViewDataDictionary(Model.Features) { { "roles", Model.Roles } });}
+            <hr />
+            <h4>Webpages</h4>
+            @{ Html.RenderPartial("Group", new ViewDataDictionary(Model.Webpages) { { "roles", Model.Roles } });}
+            <hr />
+            <h4>Widgets</h4>
+            @{ Html.RenderPartial("Group", new ViewDataDictionary(Model.Widgets) { { "roles", Model.Roles } });}
+        </div>
+    </div>
+}

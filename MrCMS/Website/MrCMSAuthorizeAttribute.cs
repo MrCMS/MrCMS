@@ -1,40 +1,36 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using System.Web.Routing;
-using MrCMS.Website.Routing;
-using Castle.Core.Internal;
+﻿using System;
+using System.Collections.Generic;
+using MrCMS.ACL;
+using MrCMS.ACL.Rules;
 
 namespace MrCMS.Website
 {
-    public class MrCMSAuthorizeAttribute : AuthorizeAttribute
+    public class MrCMSAuthorizeAttribute : MrCMSBaseAuthorizationAttribute
     {
         protected override bool AuthorizeCore(System.Web.HttpContextBase httpContext)
         {
-            return base.AuthorizeCore(httpContext) && CurrentRequestData.CurrentUser != null &&
-                   CurrentRequestData.CurrentUser.IsActive &&
-                   CurrentRequestData.CurrentUser.Email == httpContext.User.Identity.Name;
+            var currentUser = CurrentRequestData.CurrentUser;
+            return base.AuthorizeCore(httpContext) && currentUser != null &&
+                   currentUser.IsActive &&
+                   currentUser.Email == httpContext.User.Identity.Name &&
+                   currentUser.CanAccess<AdminAccessACL>("Allowed");
+        }
+    }
+    public class MrCMSACLAttribute : MrCMSBaseAuthorizationAttribute
+    {
+        private readonly Type _type;
+        private readonly string _operation;
+
+        public MrCMSACLAttribute(Type type, string operation)
+        {
+            _type = type;
+            _operation = operation;
         }
 
-        protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+        protected override bool AuthorizeCore(System.Web.HttpContextBase httpContext)
         {
-            if (filterContext.Controller.GetType().GetCustomAttributes(typeof (MrCMSAuthorizeAttribute), true).Any())
-            {
-                if (filterContext.HttpContext.User.Identity.IsAuthenticated)
-                {
-                    var mrCMSHttpHandler = MrCMSApplication.Get<MrCMSHttpHandler>();
-                    var routeData = filterContext.RouteData;
-                    routeData.Route = RouteTable.Routes.Last();
-                    routeData.DataTokens.Remove("area");
-                    mrCMSHttpHandler.SetRequestContext(new RequestContext(filterContext.HttpContext,
-                                                                          routeData));
-                    mrCMSHttpHandler.Handle403(filterContext.HttpContext);
-                    filterContext.Result = new EmptyResult();
-                }
-                else
-                {
-                    base.HandleUnauthorizedRequest(filterContext);
-                }
-            }
+            var aclRule = (Activator.CreateInstance(_type) as ACLRule);
+            return aclRule.CanAccess(CurrentRequestData.CurrentUser, _operation, null);
         }
     }
 }

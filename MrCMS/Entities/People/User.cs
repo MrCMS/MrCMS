@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using MrCMS.ACL;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
@@ -16,6 +17,7 @@ namespace MrCMS.Entities.People
         public User()
         {
             Guid = Guid.NewGuid();
+            Roles = new List<UserRole>();
         }
 
         [DisplayName("First Name")]
@@ -60,6 +62,11 @@ namespace MrCMS.Entities.People
             foreach (var site in Sites)
                 site.Users.Remove(this);
             Sites.Clear();
+        }
+
+        public virtual bool CanAccess<T>(string operation, IDictionary<string, string> customData = null) where T : ACLRule, new()
+        {
+            return new T().CanAccess(this, operation, customData);
         }
     }
 }

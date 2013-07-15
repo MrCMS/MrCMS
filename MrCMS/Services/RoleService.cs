@@ -49,7 +49,7 @@ namespace MrCMS.Services
         {
             var adminRole = GetRoleByName(UserRole.Administrator);
 
-            var users = adminRole.Users.Where(user1 => user1.IsActive).ToList();
+            var users = adminRole.Users.Where(user1 => user1.IsActive).Distinct().ToList();
             return users.Count() == 1 && users.First() == user;
         }
 

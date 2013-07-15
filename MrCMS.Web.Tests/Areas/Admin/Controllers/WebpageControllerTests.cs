@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
@@ -15,6 +16,7 @@ using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Tests.Stubs;
+using MrCMS.Website;
 using NHibernate;
 using Xunit;
 
@@ -29,6 +31,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
         public WebpageControllerTests()
         {
+            CurrentRequestData.OverridenContext = new OutOfContext();
+            CurrentRequestData.CurrentUser = new User();
             documentService = A.Fake<IDocumentService>();
             formService = A.Fake<IFormService>();
             session = A.Fake<ISession>();
@@ -49,7 +53,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
         {
-            var textPage = new TextPage {Site = webpageController.CurrentSite, Id = 1};
+            var textPage = new TextPage { Site = webpageController.CurrentSite, Id = 1 };
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(textPage);
 
             var actionResult = webpageController.Add_Get(1) as ViewResult;
@@ -60,7 +64,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldSetViewDataToSelectListItem()
         {
-            var textPage = new TextPage {Site = webpageController.CurrentSite};
+            var textPage = new TextPage { Site = webpageController.CurrentSite };
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(textPage);
 
             var result = webpageController.Add_Get(1) as ViewResult;
@@ -150,7 +154,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_EditGet_ShouldSetLayoutDetailsToSelectListItems()
         {
-            var layout = new Layout {Id = 1, Name = "Layout Name", Site = webpageController.CurrentSite};
+            var layout = new Layout { Id = 1, Name = "Layout Name", Site = webpageController.CurrentSite };
             A.CallTo(() => documentService.GetAllDocuments<Layout>()).Returns(new List<Layout> { layout });
 
             webpageController.Edit_Get(new TextPage());
@@ -274,7 +278,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_Delete_ReturnsRedirectToIndex()
         {
-            var stubWebpage = new StubWebpage();    
+            var stubWebpage = new StubWebpage();
 
             webpageController.Delete(stubWebpage).Should().BeOfType<RedirectToRouteResult>();
             webpageController.Delete(stubWebpage).As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
@@ -436,7 +440,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_HideWidget_SetsRouteValuesForIdAndLayoutAreaId()
         {
-            var stubWebpage = new StubWebpage {Id = 1};
+            var stubWebpage = new StubWebpage { Id = 1 };
 
             var redirectToRouteResult = webpageController.HideWidget(stubWebpage, 2, 3).As<RedirectToRouteResult>();
 
@@ -466,7 +470,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_ShowWidget_SetsRouteValuesForIdAndLayoutAreaId()
         {
-            var stubWebpage = new StubWebpage {Id = 1};
+            var stubWebpage = new StubWebpage { Id = 1 };
 
             var redirectToRouteResult = webpageController.ShowWidget(stubWebpage, 2, 3).As<RedirectToRouteResult>();
 

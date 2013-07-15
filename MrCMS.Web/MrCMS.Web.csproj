@@ -152,6 +152,7 @@
     <Compile Include="Apps\Galleries\Pages\GalleryList.cs" />
     <Compile Include="Apps\Galleries\Pages\Gallery.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\ACLController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
@@ -1282,6 +1283,8 @@
     <Content Include="Areas\Admin\Views\Settings\FileSystem.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\SetParent.cshtml" />
     <Content Include="Areas\Admin\Views\Form\Sort.cshtml" />
+    <Content Include="Areas\Admin\Views\ACL\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\ACL\Group.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />

@@ -1,0 +1,50 @@
+﻿@using MrCMS.Entities.People
+@using MrCMS.Models
+@model List<MrCMS.Models.ACLRuleModel>
+@{
+    var roles = ViewData["roles"] as List<ACLRoleModel>;
+}
+@foreach (var rule in Model)
+{
+    <h5>@rule.Name</h5>
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th>Operation
+                </th>
+                @foreach (var role in roles)
+                {
+                    <th>
+                        @role.Name
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var operation in rule.Operations)
+            {
+                <tr>
+                    <td>
+                        @operation.DisplayName
+                    </td>
+                    @foreach (var role in operation.Roles)
+                    {
+                        if (role.RoleName != UserRole.Administrator)
+                        {
+                        <td>
+                            @Html.CheckBox(string.Format("acl-{0}-{1}", role.Role.Name, operation.Key), role.IsAllowed)
+                        </td>
+                        }
+                        else
+                        {
+                        <td>
+                            <input type="checkbox" checked="checked" disabled="disabled" />
+                        </td>
+                        }
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}

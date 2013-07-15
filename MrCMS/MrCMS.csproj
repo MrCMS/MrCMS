@@ -140,6 +140,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ACL\ACLRule.cs" />
+    <Compile Include="ACL\Rules\AdminAccessACL.cs" />
+    <Compile Include="ACL\Rules\SiteSettingsACL.cs" />
+    <Compile Include="ACL\WebpageACL.cs" />
+    <Compile Include="ACL\WidgetACL.cs" />
     <Compile Include="Apps\MrCMSApp.cs" />
     <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
@@ -179,6 +184,7 @@
     <Compile Include="DbConfiguration\Types\LocalNullableDateTimeData.cs" />
     <Compile Include="DbConfiguration\Types\NullableDateTimeData.cs" />
     <Compile Include="DbConfiguration\Types\VarCharMax.cs" />
+    <Compile Include="Entities\ACL\ACLRole.cs" />
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />
     <Compile Include="Entities\Documents\Metadata\DefaultDocumentMetadata.cs" />
@@ -271,6 +277,12 @@
     <Compile Include="Membership\Internals\RoleProvider.cs" />
     <Compile Include="Membership\MrCmsMembershipProvider.cs" />
     <Compile Include="Membership\MrCmsRoleProvider.cs" />
+    <Compile Include="Models\ACLAvailableModel.cs" />
+    <Compile Include="Models\ACLModel.cs" />
+    <Compile Include="Models\ACLRoleModel.cs" />
+    <Compile Include="Models\ACLRuleModel.cs" />
+    <Compile Include="Models\ACLRuleOperationModel.cs" />
+    <Compile Include="Models\ACLUpdateRecord.cs" />
     <Compile Include="Models\AddPageWidgetModel.cs" />
     <Compile Include="Models\AddWidgetModel.cs" />
     <Compile Include="Models\AsyncListModel.cs" />
@@ -301,8 +313,10 @@
     <Compile Include="Paging\PagedListMetaData.cs" />
     <Compile Include="Paging\StaticPagedList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ACLService.cs" />
     <Compile Include="Services\AuthorisationService.cs" />
     <Compile Include="Services\AzureFileSystem.cs" />
+    <Compile Include="Services\IACLService.cs" />
     <Compile Include="Services\IUrlHistoryService.cs" />
     <Compile Include="Services\DocumentService.cs" />
     <Compile Include="Services\FileService.cs" />
@@ -388,6 +402,7 @@
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Tasks\UpdateIndexesTask.cs" />
+    <Compile Include="Website\Binders\ACLUpdateModelBinder.cs" />
     <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
@@ -403,6 +418,9 @@
     <Compile Include="Website\Binders\SettingModelBinder.cs" />
     <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
+    <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
+    <Compile Include="Website\MrCMSWebpageACLAttribute.cs" />
+    <Compile Include="Website\MrCMSWidgetACLAttribute.cs" />
     <Compile Include="Website\Optimization\AsIsBundleOrderer.cs" />
     <Compile Include="Website\Optimization\IResourceBundler.cs" />
     <Compile Include="Website\Caching\CacheManager.cs" />

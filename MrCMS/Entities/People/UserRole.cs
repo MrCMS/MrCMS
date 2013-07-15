@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using MrCMS.Entities.ACL;
 using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Entities.People
@@ -11,6 +12,7 @@ namespace MrCMS.Entities.People
         {
             FrontEndWebpages = new List<Webpage>();
             AdminWebpages = new List<Webpage>();
+            ACLRoles = new List<ACLRole>();
         }
         public const string Administrator = "Administrator";
 
@@ -24,5 +26,6 @@ namespace MrCMS.Entities.People
 
         public virtual IList<Webpage> FrontEndWebpages { get; set; }
         public virtual IList<Webpage> AdminWebpages { get; set; }
+        public virtual IList<ACLRole> ACLRoles { get; set; }
     }
 }
