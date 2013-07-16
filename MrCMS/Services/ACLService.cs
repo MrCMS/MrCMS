@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using MrCMS.ACL;
 using MrCMS.Entities.ACL;
-using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using NHibernate;

@@ -69,15 +69,15 @@ namespace MrCMS.Apps
         public static void RegisterAllServices(IKernel kernel)
         {
             foreach (Type type in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>())
-                ((MrCMSApp) Activator.CreateInstance(type)).RegisterServices(kernel);
+                ((MrCMSApp)Activator.CreateInstance(type)).RegisterServices(kernel);
         }
 
         public static void InstallApps(ISession session, InstallModel model, Site site)
         {
             foreach (
-                var  app in
+                var app in
                     TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>()
-                              .Select(type => ((MrCMSApp) Activator.CreateInstance(type)))
+                              .Select(type => ((MrCMSApp)Activator.CreateInstance(type)))
                               .OrderBy(app => app.InstallOrder))
                 app.OnInstallation(session, model, site);
         }
