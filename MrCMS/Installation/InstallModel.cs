@@ -15,14 +15,18 @@ namespace MrCMS.Installation
     public class InstallModel
     {
         [AllowHtml]
+        [Required]
         public string AdminEmail { get; set; }
 
         [AllowHtml]
         [DataType(DataType.Password)]
+        [Required]
+        [Compare("ConfirmPassword", ErrorMessage = "Passwords must match")]
         public string AdminPassword { get; set; }
 
         [AllowHtml]
         [DataType(DataType.Password)]
+        [Required]
         public string ConfirmPassword { get; set; }
 
         [AllowHtml]
@@ -47,7 +51,10 @@ namespace MrCMS.Installation
         public string SqlAuthenticationType { get; set; }
         public bool SqlServerCreateDatabase { get; set; }
 
+        [Required]
         public string SiteName { get; set; }
+
+        [Required]
         public string SiteUrl { get; set; }
 
         [DisplayName("UI Culture")]

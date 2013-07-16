@@ -1,352 +1,204 @@
 ﻿@using MrCMS.DbConfiguration.Configuration
 @model MrCMS.Installation.InstallModel
-
 @{
     ViewBag.Title = "Install MrCMS";
     Layout = "~/Views/Shared/_Installation.cshtml";
 }
 
-@using (Html.BeginForm("Setup", "Install", FormMethod.Post, new {id = "installationform"}))
+@using (Html.BeginForm("Setup", "Install", FormMethod.Post, new { id = "installationform", @class = "form-horizontal" }))
 {
-    //Contributor : The orchard project. Thanks a lot!
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#installationform').submit(function() {
-                if ($('form').valid()) {
-                    $('input[type=submit]', this).attr('disabled', 'disabled');
-                }
-            });
-        });
+    <div class="row-fluid">
+        <div class="span6">
+            <fieldset>
+                <h4>Site Information</h4>
+                <hr class="small-margin" />
 
-        $(document).ready(function() {
-            $('input:radio[name=DatabaseType]').click(toggleProvider);
-            $('input:radio[name=SqlConnectionInfo]').click(toggleSqlConnectionInfo);
-            $('input:radio[name=SqlAuthenticationType]').click(toggleSqlAuthenticationType);
-
-            toggleProvider();
-            toggleSqlConnectionInfo();
-            toggleSqlAuthenticationType();
-        });
-
-
-        function toggleProvider() {
-            var selectedProvider = $("input[name=DatabaseType]:checked").attr('id');
-            if (selectedProvider == 'provider_sqlite') {
-                $('#sqlConnectionInfo').hide();
-            } else {
-                $('#sqlConnectionInfo').show();
-            }
-        }
-
-        function toggleSqlConnectionInfo() {
-            var selectedProvider = $("input[name=SqlConnectionInfo]:checked").attr('id');
-            if (selectedProvider == 'sqlconnectioninfo_values') {
-                $('#sqlDatabaseInfo').show();
-                $('#sqlDatabaseConnectionString').hide();
-            } else if (selectedProvider == 'sqlconnectioninfo_raw') {
-                $('#sqlDatabaseInfo').hide();
-                $('#sqlDatabaseConnectionString').show();
-            }
-        }
-
-        function toggleSqlAuthenticationType() {
-            var selectedProvider = $("input[name=SqlAuthenticationType]:checked").attr('id');
-            if (selectedProvider == 'sqlauthenticationtype_sql') {
-                $('#pnlSqlServerUsername').show();
-                $('#pnlSqlServerPassword').show();
-            } else if (selectedProvider == 'sqlauthenticationtype_windows') {
-                $('#pnlSqlServerUsername').hide();
-                $('#pnlSqlServerPassword').hide();
-            }
-        }
-
-
-        (function() {
-
-            function show() {
-                window.setTimeout(function() {
-                    document.getElementById("throbber").style.display = "block";
-                }, 1000);
-            }
-
-            if (document.addEventListener) {
-                document.addEventListener("submit", show, false);
-            } else {
-                document.forms[0].attachEvent("onsubmit", show);
-            }
-        })();
-    </script>
-
-    <table border="0" cellpadding="0" cellspacing="0" class="container-installer">
-        <tr class="top">
-            <td class="left">
-                &nbsp;
-            </td>
-            <td class="center">
-                &nbsp;
-            </td>
-            <td class="right">
-                &nbsp;
-            </td>
-        </tr>
-        <tr class="Middle">
-            <td class="left">
-                &nbsp;
-            </td>
-            <td class="center">
-                <span class="header-text">MrCMS installation</span><br />
-                <div class="content">
-                    <table cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
-                        <tbody>
-                            <tr style="height: 100%;">
-                                <td>
-                                    <table class="wizard-step" border="0" cellpadding="0" cellspacing="10">
-                                        <tr>
-                                            <td colspan="2">
-                                                <p>
-                                                    To complete this wizard you must know some information regarding your database server
-                                                    ("connection string"). Please contact your ISP if necessary. If you're installing
-                                                    on a local machine or server you might need information from your System Admin.
-                                                    <br />
-                                                    <div style="color: Red;">
-                                                        @Html.ValidationSummary(false)
-                                                    </div>
-                                                </p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" align="left">
-                                                <h3>Site information</h3>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td nowrap="nowrap" align="left">
-                                                <label for="SiteName">
-                                                    Site Name:</label>
-                                            </td>
-                                            <td width="100%">
-                                                @Html.TextBoxFor(x => x.SiteName, new {@class = "textbox"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td nowrap="nowrap" align="left">
-                                                <label for="SiteUrl">
-                                                    Site Url:</label>
-                                            </td>
-                                            <td width="100%">
-                                                @Html.TextBoxFor(x => x.SiteUrl, new {@class = "textbox"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td nowrap="nowrap" align="left">
-                                                <label for="AdminEmail">
-                                                    Admin user email:</label>
-                                            </td>
-                                            <td width="100%">
-                                                @Html.TextBoxFor(x => x.AdminEmail, new {@class = "textbox"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td nowrap="nowrap" align="left">
-                                                <label for="AdminPassword">
-                                                    Admin user password:</label>
-                                            </td>
-                                            <td width="100%">
-                                                @Html.PasswordFor(x => x.AdminPassword, new {@class = "textbox"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td nowrap="nowrap" align="left">
-                                                <label for="ConfirmPassword">
-                                                    Confirm the password:</label>
-                                            </td>
-                                            <td width="100%">
-                                                @Html.PasswordFor(x => x.ConfirmPassword, new {@class = "textbox"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td nowrap="nowrap" align="left">
-                                                @Html.LabelFor(model => model.UiCulture)
-                                            </td>
-                                            <td width="100%">
-                                                @Html.DropDownListFor(x => x.UiCulture, Model.CultureOptions)
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td nowrap="nowrap" align="left">
-                                                @Html.LabelFor(model => model.TimeZone)
-                                            </td>
-                                            <td width="100%">
-                                                @Html.DropDownListFor(x => x.TimeZone, Model.TimeZoneOptions)
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" align="left">
-                                                <h3>Database information</h3>
-                                                <hr />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" align="left">
-                                                @Html.RadioButton("DatabaseType", DatabaseType.Sqlite, (Model.DatabaseType==DatabaseType.Sqlite), new {id = "provider_sqlite"})
-                                                <label for="provider_sqlite">
-                                                    Use built-in data storage (Sqlite) (limited compatibility).</label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                @Html.RadioButton("DatabaseType",  DatabaseType.MySQL, (Model.DatabaseType==DatabaseType.MySQL), new {id = "provider_mysql"})
-                                                <label for="provider_mysql">
-                                                    Use MySQL</label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" align="left">
-                                                @Html.RadioButton("DatabaseType", DatabaseType.MsSql, (Model.DatabaseType==DatabaseType.MsSql), new {id = "provider_sqlserver"})
-                                                <label for="provider_sqlserver">
-                                                    Use SQL Server (or SQL Express) database. <b>[Recommended]</b></label>
-                                                <br/>   
-                                                <div id="sqlConnectionInfo">
-                                                    <br />
-                                                    <hr />
-                                                    <br />
-                                                    <div>
-                                                        <table>
-                                                            <tr>
-                                                                <td nowrap="nowrap" align="left">
-                                                                    <label for="SqlServerCreateDatabase">
-                                                                        Create database if it doesn't exist:</label>
-                                                                </td>
-                                                                <td width="100%">
-                                                                    @Html.CheckBoxFor(x => x.SqlServerCreateDatabase)
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                    <br />
-                                                    @Html.RadioButton("SqlConnectionInfo", "sqlconnectioninfo_values", (Model.SqlConnectionInfo == "sqlconnectioninfo_values"), new {id = "sqlconnectioninfo_values"})
-                                                    <label for="sqlconnectioninfo_values">
-                                                        Enter SQL connection values</label>
-                                                    @Html.RadioButton("SqlConnectionInfo", "sqlconnectioninfo_raw", (Model.SqlConnectionInfo == "sqlconnectioninfo_raw"), new {id = "sqlconnectioninfo_raw"})
-                                                    <label for="sqlconnectioninfo_raw">
-                                                        Enter raw connection string (advanced)</label>
-                                                    <div id="sqlDatabaseInfo">
-                                                        <table>
-                                                            <tr>
-                                                                <td nowrap="nowrap" align="left">
-                                                                    <label for="SqlServerName">
-                                                                        SQL Server name:</label>
-                                                                </td>
-                                                                <td width="100%">
-                                                                    @Html.TextBoxFor(x => x.SqlServerName, new {@class = "textbox"})
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td nowrap="nowrap" align="left">
-                                                                    <label for="SqlDatabaseName">
-                                                                        Database name:</label>
-                                                                </td>
-                                                                <td width="100%">
-                                                                    @Html.TextBoxFor(x => x.SqlDatabaseName, new {@class = "textbox"})
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td align="left" colspan="2">
-                                                                    @Html.RadioButton("SqlAuthenticationType", "sqlauthentication", (Model.SqlAuthenticationType == "sqlauthentication"), new {id = "sqlauthenticationtype_sql"})
-                                                                    <label for="sqlauthenticationtype_sql">
-                                                                        Use SQL Server account</label>
-                                                                    @Html.RadioButton("SqlAuthenticationType", "windowsauthentication", (Model.SqlAuthenticationType == "windowsauthentication"), new {id = "sqlauthenticationtype_windows"})
-                                                                    <label for="sqlauthenticationtype_windows">
-                                                                        Use integrated Windows authentication</label>
-                                                                </td>
-                                                            </tr>
-                                                            <tr id="pnlSqlServerUsername">
-                                                                <td nowrap="nowrap" align="left">
-                                                                    <label for="SqlServerUsername">
-                                                                        SQL Username:</label>
-                                                                </td>
-                                                                <td width="100%">
-                                                                    @Html.TextBoxFor(x => x.SqlServerUsername, new {@class = "textbox"})
-                                                                </td>
-                                                            </tr>
-                                                            <tr id="pnlSqlServerPassword">
-                                                                <td nowrap="nowrap" align="left">
-                                                                    <label for="SqlServerPassword">
-                                                                        SQL Password:</label>
-                                                                </td>
-                                                                <td width="100%">
-                                                                    @Html.PasswordFor(x => x.SqlServerPassword, new {@class = "textbox"})
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                    <div id="sqlDatabaseConnectionString">
-                                                        <span style="white-space: nowrap;">
-                                                            <label for="DatabaseConnectionString">
-                                                                Connection string:</label>
-                                                            @Html.TextBoxFor(x => x.DatabaseConnectionString, new {@class = "textbox", style = "width:90%;"})
-                                                        </span>
-                                                        <br />
-                                                        <span class="hint">Example:<br />
-                                                            Data Source=sqlServerName;Initial Catalog=dbName;Persist Security Info=True;User
-                                                            ID=userName;Password=password
-                                                            <br />
-                                                            Find more info <a href="http://www.connectionstrings.com/" target="_blank">here</a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">
-                                                &nbsp;
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">
-                                    <div style="float: right; padding: 0px 10px 0px 0px;">
-                                        <input type="submit" value="Install" style="width: 100px;" />
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="control-group">
+                    <label class="control-label" for="SiteName">Site Name</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.SiteName)
+                        @Html.ValidationMessageFor(x => x.SiteName)
+                    </div>
                 </div>
-            </td>
-            <td class="right">
-            </td>
-        </tr>
-        <tr class="Bottom">
-            <td class="left">
-                &nbsp;
-            </td>
-            <td class="center">
-                &nbsp;
-            </td>
-            <td class="right">
-                &nbsp;
-            </td>
-        </tr>
-    </table>
-    <div class="container-footer">
-        <div style="color: #606060; float: right; padding: 0px 0px 0px 0px; text-align: right;">
-            All rights reserved
+
+                <div class="control-group">
+                    <label class="control-label" for="SiteUrl">Site Url</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.SiteUrl)
+                        @Html.ValidationMessageFor(x => x.SiteUrl)
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="AdminEmail">Admin Email</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.AdminEmail)
+                        @Html.ValidationMessageFor(x => x.AdminEmail)
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="AdminEmail">Admin Password</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.AdminPassword)
+                        @Html.ValidationMessageFor(x => x.AdminPassword)
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="AdminEmail">Confirm Password</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.ConfirmPassword)
+                        @Html.ValidationMessageFor(x => x.ConfirmPassword)
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="UiCulture">Ui Culture</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(x => x.UiCulture, Model.CultureOptions)
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="UiCulture">Time Zone</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(x => x.TimeZone, Model.TimeZoneOptions)
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="span6">
+            <fieldset>
+                <h4>Database information</h4>
+                <hr class="small-margin" />
+
+
+                <div class="control-group">
+                    <div class="">
+                        <label class="checkbox" for="provider_sqlite">
+                            @Html.RadioButton("DatabaseType", DatabaseType.Sqlite, (Model.DatabaseType == DatabaseType.Sqlite), new { id = "provider_sqlite" })
+                            Use built-in data storage (Sqlite) (limited compatibility).
+                        </label>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="">
+                        <label class="checkbox" for="provider_mysql">
+                            @Html.RadioButton("DatabaseType", DatabaseType.MySQL, (Model.DatabaseType == DatabaseType.MySQL), new { id = "provider_mysql" })
+                            Use MySQL
+                        </label>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="">
+                        <label class="checkbox" for="provider_sqlserver">
+                            @Html.RadioButton("DatabaseType", DatabaseType.MsSql, (Model.DatabaseType == DatabaseType.MsSql), new { id = "provider_sqlserver" })
+                            Use SQL Server (or SQL Express) database. <b>[Recommended]</b>
+                        </label>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div id="sqlConnectionInfo">
+
+                    <div class="control-group">
+                        <div class="" style="margin-left: 20px;">
+                            <label class="checkbox" for="SqlServerCreateDatabase">
+                                @Html.CheckBoxFor(x => x.SqlServerCreateDatabase)
+                                Create database if it doesn't exist
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="">
+                            <label class="checkbox" for="sqlconnectioninfo_values">
+                                @Html.RadioButton("SqlConnectionInfo", "sqlconnectioninfo_values", (Model.SqlConnectionInfo == "sqlconnectioninfo_values"), new { id = "sqlconnectioninfo_values" })
+                                Enter SQL connection values
+                            </label>
+                            <label class="checkbox" for="sqlconnectioninfo_raw">
+                                @Html.RadioButton("SqlConnectionInfo", "sqlconnectioninfo_raw", (Model.SqlConnectionInfo == "sqlconnectioninfo_raw"), new { id = "sqlconnectioninfo_raw" })
+                                Enter raw connection string (advanced)
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div id="sqlDatabaseInfo">
+                        <div class="control-group">
+                            <label class="control-label" for="SqlServerName">SQL Server Name </label>
+                            <div class="controls">
+                                @Html.TextBoxFor(x => x.SqlServerName)
+                                @Html.ValidationMessageFor(x => x.SqlServerName)
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="SqlDatabaseName">SQL Database Name</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(x => x.SqlDatabaseName)
+                                @Html.ValidationMessageFor(x => x.SqlDatabaseName)
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="">
+                                <label class="checkbox" for="sqlauthenticationtype_sql">
+                                    @Html.RadioButton("SqlAuthenticationType", "sqlauthentication", (Model.SqlAuthenticationType == "sqlauthentication"), new { id = "sqlauthenticationtype_sql" })
+                                    Use SQL Server account
+                                </label>
+                                <label class="checkbox" for="sqlauthenticationtype_windows">
+                                    @Html.RadioButton("SqlAuthenticationType", "windowsauthentication", (Model.SqlAuthenticationType == "windowsauthentication"), new { id = "sqlauthenticationtype_windows" })
+                                    Use integrated Windows authentication
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="pnlSqlServerUsername">
+                            <label class="control-label" for="SqlDatabaseName">SQL Server Username</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(x => x.SqlServerUsername)
+                                @Html.ValidationMessageFor(x => x.SqlServerUsername)
+                            </div>
+                        </div>
+
+                        <div class="control-group" id="pnlSqlServerPassword">
+                            <label class="control-label" for="SqlServerPassword">SQL Server Password</label>
+                            <div class="controls">
+                                @Html.PasswordFor(x => x.SqlServerPassword, new { @class = "textbox" })
+                                @Html.ValidationMessageFor(x => x.SqlServerPassword)
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="sqlDatabaseConnectionString">
+                        <span style="white-space: nowrap;">
+                            <label for="DatabaseConnectionString">
+                                Connection string:</label>
+                            @Html.TextBoxFor(x => x.DatabaseConnectionString, new { @class = "textbox", style = "width:90%;" })
+                        </span>
+                        <br />
+                        <span class="hint">Example:<br />
+                            Data Source=sqlServerName;Initial Catalog=dbName;Persist Security Info=True;User
+                            ID=userName;Password=password
+                            <br />
+                            Find more info <a href="http://www.connectionstrings.com/" target="_blank">here</a>
+                        </span>
+                    </div>
+                </div>
+
+
+            </fieldset>
         </div>
     </div>
-    <div id="throbber">
-        <div class="curtain">
-        </div>
-        <div class="curtain-content">
-            <div>
-                <h1 id="setUpHeader">
-                    Installing MrCMS...</h1>
-                <p>
-                    <img src="@Url.Content("~/content/images/install-synchronizing.gif")" alt="" />
-                </p>
-            </div>
-        </div>
+    <hr />
+    
+    <div class="text-center">
+        <input type="submit" value="Install" class="btn btn-primary btn-large" />
     </div>
+       
 }
