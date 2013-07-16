@@ -93,7 +93,6 @@
     <Compile Include="Areas\Admin\Controllers\AdminControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\FileControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeControllerTests.cs" />
-    <Compile Include="Areas\Admin\Controllers\InPageAdminControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutContollerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaCategoryControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\NavigationControllerTests.cs" />

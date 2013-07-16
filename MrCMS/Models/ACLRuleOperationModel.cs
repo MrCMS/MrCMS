@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MrCMS.ACL;
 
@@ -6,13 +7,13 @@ namespace MrCMS.Models
 {
     public class ACLRuleOperationModel
     {
-        public static ACLRuleOperationModel Create(List<ACLRoleModel> roles, ACLRule rule, ACLOperation operation, Dictionary<string, string> customData)
+        public static ACLRuleOperationModel Create(List<ACLRoleModel> roles, ACLRule rule, ACLOperation operation, Type type)
         {
             return new ACLRuleOperationModel
                        {
                            DisplayName = operation.Name,
-                           Key = operation.OperationKey,
-                           Roles = roles.Select(role => ACLAvailableModel.Create(role, rule, operation.Name, customData)).ToList()
+                           Key = operation.Key,
+                           Roles = roles.Select(role => ACLAvailableModel.Create(role, rule, operation.Name, type)).ToList()
                        };
         }
 
@@ -20,8 +21,8 @@ namespace MrCMS.Models
         {
 
         }
-        public string DisplayName { get; set; }
-        public List<ACLAvailableModel> Roles { get; set; }
-        public string Key { get; set; }
+        public string DisplayName { get; private set; }
+        public List<ACLAvailableModel> Roles { get; private set; }
+        public string Key { get; private set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Web.Mvc;
+using MrCMS.ACL.Rules;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -12,32 +13,16 @@ using System.Linq;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
+    [MrCMSACLRule(typeof(InlineEditingACL), InlineEditingACL.Allowed, ReturnEmptyResult = true)]
     public class InPageAdminController : MrCMSAdminController
     {
-        private readonly IDocumentService _documentService;
         private readonly ISession _session;
 
-        public InPageAdminController(IDocumentService documentService, ISession session)
+        public InPageAdminController(ISession session)
         {
-            _documentService = documentService;
             _session = session;
         }
-
-        protected override void OnAuthorization(AuthorizationContext filterContext)
-        {
-            base.OnAuthorization(filterContext);
-            var id = filterContext.RouteData.Values["id"];
-            int idVal;
-            if (!string.IsNullOrWhiteSpace(Convert.ToString(id)) && int.TryParse(Convert.ToString(id), out idVal))
-            {
-                var document = _documentService.GetDocument<Webpage>(idVal);
-                if (document != null && !document.IsAllowedForAdmin(CurrentRequestData.CurrentUser))
-                {
-                    filterContext.Result = new EmptyResult();
-                }
-            }
-        }
-
+        
         public PartialViewResult InPageEditor(Webpage page)
         {
             return PartialView("InPageEditor", page);
@@ -115,10 +100,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (propertyInfo == null)
                 return string.Empty;
             var content = Convert.ToString(propertyInfo.GetValue(entity, null));
-            
-            if (!typeof (Webpage).IsAssignableFrom(entityType))
+
+            if (!typeof(Webpage).IsAssignableFrom(entityType))
                 return content;
-            
+
             CurrentRequestData.CurrentPage = entity as Webpage;
             var htmlHelper = MrCMSHtmlHelper.GetHtmlHelper(this);
             return htmlHelper.ParseShortcodes(content).ToHtmlString();

@@ -30,7 +30,7 @@ namespace MrCMS.Services
         {
             return TypeHelper.GetAllConcreteTypesAssignableFrom<ACLRule>()
                              .Select(Activator.CreateInstance)
-                             .Cast<ACLRule>().Where(rule => !(rule is WidgetACL) && !(rule is WebpageACL)).ToList();
+                             .Cast<ACLRule>().Where(rule => !(rule is TypeACLRule)).ToList();
         }
 
         public void UpdateACL(List<ACLUpdateRecord> model)

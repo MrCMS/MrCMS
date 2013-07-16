@@ -18,7 +18,7 @@
             </div>
         </div>
         @Html.Label("WidgetType", "Widget Type")
-        @Html.DropDownList("WidgetType", WidgetHelper.WidgetTypeDropdownItems, new { data_val = "true", data_val_required = "Please select a widget type" })
+        @Html.DropDownList("WidgetType", WidgetHelper.AllowedWidgetTypeDropdownItems, new { data_val = "true", data_val_required = "Please select a widget type" })
         <br />
         @Html.LabelFor(model => model.Name)
         @Html.EditorFor(model => model.Name, Model.Name)

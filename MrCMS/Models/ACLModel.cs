@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MrCMS.ACL;
-using MrCMS.Helpers;
 using MrCMS.Services;
 
 namespace MrCMS.Models
@@ -15,42 +13,34 @@ namespace MrCMS.Models
             var roles = userRoles.Select(role => new ACLRoleModel { Name = role.Name, Role = role }).ToList();
             var featureRules = aclService.GetAllSystemRules()
                           .SelectMany(rule => rule.GetRules()
-                          .Select(pair => ACLRuleModel.Create(roles, rule, pair.Key, pair.Value, new Dictionary<string, string>())))
+                          .Select(aclGroup => ACLRuleModel.Create(roles, rule, aclGroup)))
                           .ToList();
-            var webpageACL = new WebpageACL();
-            var webpageRules = webpageACL.GetRules()
+
+            var typeACL = new TypeACLRule();
+
+            var webpageRules = typeACL.WebpageRules
                                          .Select(
-                                             pair =>
-                                             ACLRuleModel.Create(roles, webpageACL,
-                                                                 TypeHelper.GetTypeByName(pair.Key).Name,
-                                                                 pair.Value,
-                                                                 new Dictionary<string, string> { { "page-type", pair.Key } }))
-                                         .ToList();
-            var widgetACL= new WidgetACL();
-            var widgetRules = widgetACL.GetRules()
-                                         .Select(
-                                             pair =>
-                                             ACLRuleModel.Create(roles, widgetACL,
-                                                                 WidgetHelper.WidgetTypes.FirstOrDefault(type => type.FullName == pair.Key).Name,
-                                                                 pair.Value,
-                                                                 new Dictionary<string, string> { { "widget-type", pair.Key } }))
-                                         .ToList();
+                                             aclGroup =>
+                                             ACLRuleModel.Create(roles, typeACL, aclGroup)).ToList();
+            var widgetRules = typeACL.WidgetRules
+                                       .Select(
+                                           aclGroup =>
+                                           ACLRuleModel.Create(roles, typeACL, aclGroup)).ToList();
             return new ACLModel
                        {
                            Roles = roles,
                            Features = featureRules,
                            Webpages = webpageRules,
-                           Widgets = widgetRules
+                           Widgets = widgetRules,
                        };
         }
 
-        internal ACLModel()
+        private ACLModel()
         {
         }
-        public List<ACLRoleModel> Roles { get; internal set; }
-
-        public List<ACLRuleModel> Features { get; internal set; }
-        public List<ACLRuleModel> Webpages { get; internal set; }
-        public List<ACLRuleModel> Widgets { get; internal set; }
+        public List<ACLRoleModel> Roles { get; private set; }
+        public List<ACLRuleModel> Features { get; private set; }
+        public List<ACLRuleModel> Webpages { get; private set; }
+        public List<ACLRuleModel> Widgets { get; private set; }
     }
 }

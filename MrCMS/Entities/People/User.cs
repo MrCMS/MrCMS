@@ -64,9 +64,9 @@ namespace MrCMS.Entities.People
             Sites.Clear();
         }
 
-        public virtual bool CanAccess<T>(string operation, IDictionary<string, string> customData = null) where T : ACLRule, new()
+        public virtual bool CanAccess<T>(string operation, string type = null) where T : ACLRule, new()
         {
-            return new T().CanAccess(this, operation, customData);
+            return new T().CanAccess(this, operation, type);
         }
     }
 }

@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using MrCMS.ACL.Rules;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Website;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -19,13 +21,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _roleService = roleService;
         }
-        // GET: /Admin/Role/
+
+        [MrCMSACLRule(typeof(RoleACL),RoleACL.View)]
         public ActionResult Index()
         {
             return View(_roleService.GetAllRoles());
         }
 
         [HttpGet]
+        [MrCMSACLRule(typeof(RoleACL),RoleACL.Add)]
         public PartialViewResult Add()
         {
             var model = new UserRole();
@@ -33,6 +37,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [MrCMSACLRule(typeof(RoleACL),RoleACL.Add)]
         public ActionResult Add(UserRole model)
         {
             if (ModelState.IsValid)
@@ -48,6 +53,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Edit")]
+        [MrCMSACLRule(typeof(RoleACL),RoleACL.Edit)]
         public ActionResult Edit_Get(UserRole role)
         {
             if (role == null)
@@ -57,6 +63,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [MrCMSACLRule(typeof(RoleACL),RoleACL.Edit)]
         public ActionResult Edit(UserRole model)
         {
             _roleService.SaveRole(model);
@@ -66,6 +73,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Delete")]
+        [MrCMSACLRule(typeof(RoleACL),RoleACL.Delete)]
         public ActionResult Delete_Get(UserRole role)
         {
             if (role == null)
@@ -75,6 +83,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [MrCMSACLRule(typeof(RoleACL),RoleACL.Delete)]
         public ActionResult Delete(UserRole role)
         {
             if (role != null) _roleService.DeleteRole(role);

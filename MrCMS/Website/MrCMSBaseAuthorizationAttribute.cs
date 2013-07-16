@@ -7,24 +7,33 @@ namespace MrCMS.Website
 {
     public abstract class MrCMSBaseAuthorizationAttribute : AuthorizeAttribute
     {
+        public bool ReturnEmptyResult { get; set; }
+
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            if (filterContext.Controller.GetType().GetCustomAttributes(typeof(MrCMSAuthorizeAttribute), true).Any())
+            if (ReturnEmptyResult)
             {
-                if (filterContext.HttpContext.User.Identity.IsAuthenticated)
+                filterContext.Result = new EmptyResult();
+            }
+            else
+            {
+                if (filterContext.Controller.GetType().GetCustomAttributes(typeof (MrCMSAuthorizeAttribute), true).Any())
                 {
-                    var mrCMSHttpHandler = MrCMSApplication.Get<MrCMSHttpHandler>();
-                    var routeData = filterContext.RouteData;
-                    routeData.Route = RouteTable.Routes.Last();
-                    routeData.DataTokens.Remove("area");
-                    mrCMSHttpHandler.SetRequestContext(new RequestContext(filterContext.HttpContext,
-                                                                          routeData));
-                    mrCMSHttpHandler.Handle403(filterContext.HttpContext);
-                    filterContext.Result = new EmptyResult();
-                }
-                else
-                {
-                    base.HandleUnauthorizedRequest(filterContext);
+                    if (filterContext.HttpContext.User.Identity.IsAuthenticated)
+                    {
+                        var mrCMSHttpHandler = MrCMSApplication.Get<MrCMSHttpHandler>();
+                        var routeData = filterContext.RouteData;
+                        routeData.Route = RouteTable.Routes.Last();
+                        routeData.DataTokens.Remove("area");
+                        mrCMSHttpHandler.SetRequestContext(new RequestContext(filterContext.HttpContext,
+                                                                              routeData));
+                        mrCMSHttpHandler.Handle403(filterContext.HttpContext);
+                        filterContext.Result = new EmptyResult();
+                    }
+                    else
+                    {
+                        base.HandleUnauthorizedRequest(filterContext);
+                    }
                 }
             }
         }

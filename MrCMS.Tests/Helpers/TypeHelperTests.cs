@@ -77,6 +77,7 @@ namespace MrCMS.Tests.Helpers
         {
             public string Text { get; private set; }
             public string Url { get; private set; }
+            public bool CanShow { get; private set; }
             public IDictionary<string, List<IMenuItem>> Children { get; private set; }
             public int DisplayOrder { get; private set; }
         }

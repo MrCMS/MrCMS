@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Web.Mvc;
+using MrCMS.ACL;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 using NHibernate;
@@ -45,7 +47,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             var newWidget = _widgetService.AddWidget(widget);
 
             return newWidget.HasProperties
-                       ? RedirectToAction("Edit", "Widget", new { id = newWidget.Id, returnUrl = returnUrl })
+                       ? RedirectToAction("Edit", "Widget", new { id = newWidget.Id, returnUrl })
                        : !string.IsNullOrWhiteSpace(returnUrl)
                              ? (ActionResult)Redirect(returnUrl)
                              : RedirectToAction("Edit", "LayoutArea", new { id = newWidget.LayoutArea.Id });
@@ -54,6 +56,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         [ValidateInput(false)]
         [ActionName("Edit")]
+        [MrCMSTypeACL(typeof(Widget), TypeACLRule.Edit)]
         public ViewResultBase Edit_Get(Widget widget, string returnUrl = null)
         {
             widget.SetDropdownData(ViewData, _session);
@@ -68,6 +71,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
+        [MrCMSTypeACL(typeof(Widget), TypeACLRule.Edit)]
         public ActionResult Edit(Widget widget,
                                  string returnUrl = null)
         {
@@ -82,12 +86,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Delete")]
+        [MrCMSTypeACL(typeof(Widget), TypeACLRule.Delete)]
         public ActionResult Delete_Get(Widget widget)
         {
             return PartialView(widget);
         }
 
         [HttpPost]
+        [MrCMSTypeACL(typeof(Widget), TypeACLRule.Delete)]
         public ActionResult Delete(Widget widget, string returnUrl)
         {
             var webpageId = 0;

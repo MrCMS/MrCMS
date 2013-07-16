@@ -4,12 +4,15 @@
 @{
     var roles = ViewData["roles"] as List<ACLRoleModel>;
 }
-@foreach (var rule in Model)
+
+@foreach (var app in Model.GroupBy(model => model.AppName).OrderByDescending(models => models.Key == "System").ThenBy(model => model.Key))
 {
-    <h5>@rule.Name</h5>
+    <h5>@app.Key</h5>
     <table class="table table-condensed table-striped">
         <thead>
             <tr>
+                <th>Type
+                </th>
                 <th>Operation
                 </th>
                 @foreach (var role in roles)
@@ -21,9 +24,14 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var operation in rule.Operations)
+            @foreach (var rule in app.OrderBy(model => model.Name))
             {
+                foreach (var operation in rule.Operations.OrderBy(model => model.DisplayName))
+                {
                 <tr>
+                    <td>
+                        @rule.Name
+                    </td>
                     <td>
                         @operation.DisplayName
                     </td>
@@ -43,8 +51,8 @@
                         }
                     }
                 </tr>
+                }
             }
         </tbody>
     </table>
-
 }

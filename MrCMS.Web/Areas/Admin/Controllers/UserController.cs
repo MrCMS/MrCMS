@@ -1,8 +1,10 @@
 ﻿using System.Web.Mvc;
+using MrCMS.ACL.Rules;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 
@@ -21,12 +23,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _authorisationService = authorisationService;
         }
 
+        [MrCMSACLRule(typeof(UserACL), UserACL.View)]
         public ActionResult Index(int page = 1)
         {
             return View(_userService.GetAllUsersPaged(page));
         }
 
         [HttpGet]
+        [MrCMSACLRule(typeof(UserACL), UserACL.Add)]
         public PartialViewResult Add()
         {
             var model = new AddUserModel();
@@ -34,7 +38,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add([IoCModelBinder(typeof (AddUserModelBinder))] User user)
+        [MrCMSACLRule(typeof(UserACL), UserACL.Add)]
+        public ActionResult Add([IoCModelBinder(typeof(AddUserModelBinder))] User user)
         {
             _userService.AddUser(user);
 
@@ -43,32 +48,36 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Edit")]
+        [MrCMSACLRule(typeof(UserACL), UserACL.Edit)]
         public ActionResult Edit_Get(User user)
         {
             ViewData["AvailableRoles"] = _roleService.GetAllRoles();
             ViewData["OnlyAdmin"] = _roleService.IsOnlyAdmin(user);
 
             return user == null
-                       ? (ActionResult) RedirectToAction("Index")
+                       ? (ActionResult)RedirectToAction("Index")
                        : View(user);
         }
 
         [HttpPost]
-        public ActionResult Edit([IoCModelBinder(typeof (EditUserModelBinder))] User user)
+        [MrCMSACLRule(typeof(UserACL), UserACL.Edit)]
+        public ActionResult Edit([IoCModelBinder(typeof(EditUserModelBinder))] User user)
         {
             _userService.SaveUser(user);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", user.Name));
-            return RedirectToAction("Edit", "User", new{Id = user.Id});
+            return RedirectToAction("Edit", "User", new { Id = user.Id });
         }
 
         [HttpGet]
         [ActionName("Delete")]
+        [MrCMSACLRule(typeof(UserACL), UserACL.Delete)]
         public PartialViewResult Delete_Get(User user)
         {
             return PartialView(user);
         }
 
         [HttpPost]
+        [MrCMSACLRule(typeof(UserACL), UserACL.Delete)]
         public RedirectToRouteResult Delete(User user)
         {
             _userService.DeleteUser(user);
@@ -77,17 +86,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [MrCMSACLRule(typeof(UserACL), UserACL.SetPassword)]
         public ActionResult SetPassword(User user)
         {
             return PartialView(user);
         }
 
         [HttpPost]
+        [MrCMSACLRule(typeof(UserACL), UserACL.SetPassword)]
         public ActionResult SetPassword(User user, string password)
         {
             _authorisationService.SetPassword(user, password, password);
             _userService.SaveUser(user);
-            return RedirectToAction("Edit", new {user.Id});
+            return RedirectToAction("Edit", new { user.Id });
         }
 
         public JsonResult IsUniqueEmail(string email, string id)

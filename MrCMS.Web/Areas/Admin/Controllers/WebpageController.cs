@@ -50,12 +50,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             var documentTypeDefinitions =
                 (doc.Parent as Webpage).GetValidWebpageDocumentTypes(_documentService, CurrentSite)
                                        .Where(
-                                           metadata => CurrentRequestData.CurrentUser.CanAccess<WebpageACL>(WebpageACL.Add,
-                                                                                                new Dictionary
-                                                                                                    <string, string>
-                                                                                                    {
-                                                                                                       { "page-type", metadata .Type .FullName}
-                                                                                                    }))
+                                           metadata =>
+                                           CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Add,
+                                                                                             metadata.Type.FullName))
                                        .ToList();
             ViewData["DocumentTypes"] = documentTypeDefinitions;
 
@@ -69,25 +66,25 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                     RouteData.DataTokens["app"] = documentMetadata.App;
             }
         }
-        [MrCMSWebpageACL(WebpageACL.Edit)]
+        [MrCMSTypeACL(typeof(Webpage), TypeACLRule.Edit)]
         public override ActionResult Edit_Get(Webpage doc)
         {
             return base.Edit_Get(doc);
         }
 
-        [MrCMSWebpageACL(WebpageACL.Edit)]
+        [MrCMSTypeACL(typeof(Webpage), TypeACLRule.Edit)]
         public override ActionResult Edit(Webpage doc)
         {
             return base.Edit(doc);
         }
 
-        [MrCMSWebpageACL(WebpageACL.Delete)]
+        [MrCMSTypeACL(typeof(Webpage), TypeACLRule.Delete)]
         public override ActionResult Delete_Get(Webpage document)
         {
             return base.Delete_Get(document);
         }
 
-        [MrCMSWebpageACL(WebpageACL.Delete)]
+        [MrCMSTypeACL(typeof(Webpage), TypeACLRule.Delete)]
         public override ActionResult Delete(Webpage document)
         {
             return base.Delete(document);

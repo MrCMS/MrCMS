@@ -6,20 +6,22 @@ namespace MrCMS.Models
 {
     public class ACLRuleModel
     {
-        public static ACLRuleModel Create(List<ACLRoleModel> roles, ACLRule rule, string key, List<ACLOperation> operations, Dictionary<string, string> customData)
+        public static ACLRuleModel Create(List<ACLRoleModel> roles, ACLRule rule, ACLGroup group)
         {
             return new ACLRuleModel
                        {
-                           Name = key,
-                           Operations = operations.Select(operation => ACLRuleOperationModel.Create(roles, rule, operation,customData)).ToList()
+                           Name = group.Name,
+                           AppName = group.AppName,
+                           Operations = group.Operations.Select(operation => ACLRuleOperationModel.Create(roles, rule, operation, group.Type)).ToList()
                        };
         }
 
-        internal ACLRuleModel()
+        private ACLRuleModel()
         {
 
         }
-        public string Name { get; set; }
-        public List<ACLRuleOperationModel> Operations { get; set; }
+        public string Name { get; private set; }
+        public string AppName { get; private set; }
+        public List<ACLRuleOperationModel> Operations { get; private set; }
     }
 }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Web.Mvc;
+using MrCMS.ACL;
 using MrCMS.Entities;
 using MrCMS.Entities.Widget;
+using MrCMS.Website;
 
 namespace MrCMS.Helpers
 {
@@ -22,6 +24,18 @@ namespace MrCMS.Helpers
             get
             {
                 return WidgetTypes.BuildSelectItemList(type => type.Name.BreakUpString(), type => type.Name,
+                                                       emptyItemText: null);
+            }
+        }
+
+        public static List<SelectListItem> AllowedWidgetTypeDropdownItems
+        {
+            get
+            {
+                return WidgetTypes.Where(
+                    type =>
+                    CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Add, type.FullName))
+                                  .BuildSelectItemList(type => type.Name.BreakUpString(), type => type.Name,
                                                        emptyItemText: null);
             }
         }

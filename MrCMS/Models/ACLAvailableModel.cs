@@ -1,25 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using MrCMS.ACL;
 
 namespace MrCMS.Models
 {
     public class ACLAvailableModel
     {
-        public static ACLAvailableModel Create(ACLRoleModel role, ACLRule rule, string operation, Dictionary<string, string> customData)
+        public static ACLAvailableModel Create(ACLRoleModel role, ACLRule rule, string operation, Type type)
         {
             return new ACLAvailableModel
                        {
                            Role = role,
-                           IsAllowed = rule.CanAccess(role.Role, operation, customData)
+                           IsAllowed = rule.CanAccess(role.Role, operation, type == null ? null : type.FullName)
                        };
         }
 
-        internal ACLAvailableModel()
+        private ACLAvailableModel()
         {
 
         }
-        public ACLRoleModel Role { get; set; }
-        public bool IsAllowed { get; set; }
+        public ACLRoleModel Role { get; private set; }
+        public bool IsAllowed { get; private set; }
 
         public string RoleName
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MrCMS.Apps;
 using MrCMS.Entities.People;
 using System.Linq;
@@ -15,28 +16,30 @@ namespace MrCMS.ACL
 
         public abstract string DisplayName { get; }
 
-        public bool CanAccess(User user, string operation, IDictionary<string, string> customData)
+        public bool CanAccess(User user, string operation, string typeName = null)
         {
-            return user.IsAdmin || user.Roles.Any(role => CanAccessLogic(role, operation, customData));
+            return user.IsAdmin || user.Roles.Any(role => CanAccessLogic(role, operation, typeName));
         }
-        public bool CanAccess(UserRole userRole, string operation, IDictionary<string, string> customData)
+        public bool CanAccess(UserRole userRole, string operation, string typeName = null)
         {
-            return userRole.IsAdmin || CanAccessLogic(userRole, operation, customData);
+            return userRole.IsAdmin || CanAccessLogic(userRole, operation, typeName);
         }
 
-        private bool CanAccessLogic(UserRole userRole, string operation, IDictionary<string, string> customData)
+        private bool CanAccessLogic(UserRole userRole, string operation, string typeName)
         {
             var aclRoles = userRole.ACLRoles;
-            var b = GetKey(operation, customData);
+            var b = GetKey(operation, typeName);
             return aclRoles.Any(role => role.Name == b);
         }
 
-        public virtual string GetKey(string operation, IDictionary<string, string> customData)
+        protected string GetKey(string operation, string typeName)
         {
-            var b = !string.IsNullOrWhiteSpace(operation)
-                        ? string.Format("{0}.{1}", Name, operation)
-                        : string.Format("{0}", Name);
-            return b;
+            var start = !string.IsNullOrWhiteSpace(typeName)
+                            ? string.Format("{0}.{1}", Name, typeName)
+                            : Name;
+            return !string.IsNullOrWhiteSpace(operation)
+                        ? string.Format("{0}.{1}", start, operation)
+                        : start;
         }
 
         public List<string> Operations
@@ -46,32 +49,44 @@ namespace MrCMS.ACL
 
         protected abstract List<string> GetOperations();
 
-        public virtual IDictionary<string, List<ACLOperation>> GetRules()
+        public virtual List<ACLGroup> GetRules()
         {
-            return new Dictionary<string, List<ACLOperation>>
+            return new List<ACLGroup>
                        {
-                           {
-                               DisplayName, Operations.Select(s => new ACLOperation
-                                                                       {
-                                                                           Name = s,
-                                                                           OperationKey =
-                                                                               GetKey(s,
-                                                                                      new Dictionary<string, string>())
-                                                                       }).ToList()
-                           }
+                           new ACLGroup
+                               {
+                                   Name = DisplayName,
+                                   AppName = AppName,
+                                   Operations = Operations.Select(s => new ACLOperation
+                                                                           {
+                                                                               Name = s,
+                                                                               Key = GetKey(s, null),
+                                                                           }).ToList(),
+                                   Type = null
+                               }
                        };
         }
+    }
+
+    public abstract class ACLRule<T> : ACLRule where T : MrCMSApp, new()
+    {
+        protected override MrCMSApp App { get { return new T(); } }
+    }
+    public class ACLGroup
+    {
+        public string Name { get; set; }
+
+        public Type Type { get; set; }
+
+        public string AppName { get; set; }
+
+        public List<ACLOperation> Operations { get; set; }
     }
 
     public class ACLOperation
     {
         public string Name { get; set; }
 
-        public string OperationKey { get; set; }
-    }
-
-    public abstract class ACLRule<T> : ACLRule where T : MrCMSApp, new()
-    {
-        protected override MrCMSApp App { get { return new T(); } }
+        public string Key { get; set; }
     }
 }

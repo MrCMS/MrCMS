@@ -142,9 +142,13 @@
   <ItemGroup>
     <Compile Include="ACL\ACLRule.cs" />
     <Compile Include="ACL\Rules\AdminAccessACL.cs" />
+    <Compile Include="ACL\Rules\IndexACL.cs" />
+    <Compile Include="ACL\Rules\InlineEditingACL.cs" />
+    <Compile Include="ACL\Rules\RoleACL.cs" />
     <Compile Include="ACL\Rules\SiteSettingsACL.cs" />
-    <Compile Include="ACL\WebpageACL.cs" />
-    <Compile Include="ACL\WidgetACL.cs" />
+    <Compile Include="ACL\Rules\SystemAdminMenuACL.cs" />
+    <Compile Include="ACL\Rules\UserACL.cs" />
+    <Compile Include="ACL\TypeACLRule.cs" />
     <Compile Include="Apps\MrCMSApp.cs" />
     <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
@@ -418,9 +422,9 @@
     <Compile Include="Website\Binders\SettingModelBinder.cs" />
     <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
+    <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
-    <Compile Include="Website\MrCMSWebpageACLAttribute.cs" />
-    <Compile Include="Website\MrCMSWidgetACLAttribute.cs" />
+    <Compile Include="Website\MrCMSTypeACLAttribute.cs" />
     <Compile Include="Website\Optimization\AsIsBundleOrderer.cs" />
     <Compile Include="Website\Optimization\IResourceBundler.cs" />
     <Compile Include="Website\Caching\CacheManager.cs" />
