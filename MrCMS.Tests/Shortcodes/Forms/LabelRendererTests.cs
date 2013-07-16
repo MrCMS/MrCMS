@@ -7,7 +7,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
 {
     public class LabelRendererTests
     {
-        private LabelRenderer _labelRenderer;
+        private readonly LabelRenderer _labelRenderer;
 
         public LabelRendererTests()
         {

@@ -53,7 +53,7 @@ namespace MrCMS.Website.Optimization
             Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
             if (!ScriptData.ContainsKey(virtualPath))
                 ScriptData[virtualPath] = new List<ResourceData>();
-            ScriptData[virtualPath].Add(new ResourceData(uri.IsAbsoluteUri, url));
+            ScriptData[virtualPath].Add(ResourceData.Get(uri.IsAbsoluteUri, url));
         }
 
         public void AddCss(string virtualPath, string url)
@@ -61,7 +61,7 @@ namespace MrCMS.Website.Optimization
             Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
             if (!CssData.ContainsKey(virtualPath))
                 CssData[virtualPath] = new List<ResourceData>();
-            CssData[virtualPath].Add(new ResourceData(uri.IsAbsoluteUri, url));
+            CssData[virtualPath].Add(ResourceData.Get(uri.IsAbsoluteUri, url));
         }
 
         private static readonly object s_lock = new object();

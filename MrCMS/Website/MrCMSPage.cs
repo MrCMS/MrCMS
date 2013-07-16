@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
-using System.Web.Routing;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Helpers;
 using MrCMS.Website.Optimization;
@@ -21,7 +17,6 @@ namespace MrCMS.Website
     public abstract class MrCMSPage<TModel> : System.Web.Mvc.WebViewPage<TModel>
     {
         private IConfigurationProvider _configurationProvider;
-        private IResourceBundler _resourceBundler;
 
         public T SiteSettings<T>() where T : SiteSettingsBase, new()
         {
@@ -40,7 +35,6 @@ namespace MrCMS.Website
             if (CurrentRequestData.DatabaseIsInstalled)
             {
                 _configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
-                _resourceBundler = MrCMSApplication.Get<IResourceBundler>();
             }
         }
 

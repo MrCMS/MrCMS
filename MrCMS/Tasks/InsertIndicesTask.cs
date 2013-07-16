@@ -4,9 +4,9 @@ using MrCMS.Services;
 
 namespace MrCMS.Tasks
 {
-    public class UpdateIndexesTask : IndexManagementTask
+    public class InsertIndicesTask : IndexManagementTask
     {
-        public UpdateIndexesTask(SiteEntity entity)
+        public InsertIndicesTask(SiteEntity entity)
             : base(entity)
         {
         }
@@ -15,7 +15,7 @@ namespace MrCMS.Tasks
         {
             var definitionTypes = GetDefinitionTypes(Entity.GetType());
             foreach (var indexManagerBase in definitionTypes.Select(IndexService.GetIndexManagerBase))
-                indexManagerBase.Update(Entity);
+                indexManagerBase.Insert(Session.Get(Entity.GetType(), Entity.Id));
         }
     }
 }

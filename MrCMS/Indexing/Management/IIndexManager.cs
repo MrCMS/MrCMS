@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using MrCMS.Entities;
 
 namespace MrCMS.Indexing.Management
 {
     public interface IIndexManager<in TEntity, TDefinition> : IIndexManagerBase
-        where TEntity : class
-        where TDefinition : IIndexDefinition<TEntity>, new()
+        where TEntity : SystemEntity where TDefinition : IIndexDefinition<TEntity>, new()
     {
         IndexResult Insert(IEnumerable<TEntity> entities);
         IndexResult Insert(TEntity entity);

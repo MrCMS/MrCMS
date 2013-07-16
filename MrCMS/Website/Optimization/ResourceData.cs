@@ -1,11 +1,14 @@
 ﻿namespace MrCMS.Website.Optimization
 {
-    public class ResourceData
+    public struct ResourceData
     {
-        public ResourceData(bool isRemote, string url)
+        public static ResourceData Get(bool isRemote, string url)
         {
-            IsRemote = isRemote;
-            Url = url;
+            return new ResourceData
+                {
+                    IsRemote = isRemote,
+                    Url = url
+                };
         }
 
         public bool IsRemote { get; set; }

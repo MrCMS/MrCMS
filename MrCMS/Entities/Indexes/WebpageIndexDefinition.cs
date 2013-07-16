@@ -1,38 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
-using Lucene.Net.Index;
-using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
-using MrCMS.Indexing.Utils;
-using MrCMS.Website;
-using NHibernate;
-using NHibernate.Criterion;
-using Version = Lucene.Net.Util.Version;
 
 namespace MrCMS.Entities.Indexes
 {
-    public class WebpageIndexDefinition : IIndexDefinition<Webpage>
+    public class WebpageIndexDefinition : IndexDefinition<Webpage>
     {
-        private Analyzer _analyser;
 
-        public Document Convert(Webpage entity)
-        {
-            return new Document().SetFields(Definitions, entity);
-        }
-
-        public IEnumerable<FieldDefinition<Webpage>> Definitions
+        public override IEnumerable<FieldDefinition<Webpage>> Definitions
         {
             get
             {
-                yield return Id;
                 yield return Name;
                 yield return BodyContent;
                 yield return MetaTitle;
@@ -44,7 +25,6 @@ namespace MrCMS.Entities.Indexes
             }
         }
 
-        public static FieldDefinition<Webpage> Id { get { return _id; } }
         public static FieldDefinition<Webpage> Name { get { return _name; } }
         public static FieldDefinition<Webpage> BodyContent { get { return _bodyContent; } }
         public static FieldDefinition<Webpage> MetaTitle { get { return _metaTitle; } }
@@ -54,54 +34,19 @@ namespace MrCMS.Entities.Indexes
         public static FieldDefinition<Webpage> Type { get { return _type; } }
         public static FieldDefinition<Webpage> PublishOn { get { return _publishOn; } }
 
-        public Term GetIndex(Webpage entity)
+        protected override string IndexFolderName
         {
-            return new Term("id", entity.Id.ToString());
+            get { return "Webpages"; }
         }
 
-        public Webpage Convert(ISession session, Document document)
-        {
-            return session.Get<Webpage>(document.GetValue<int>("id"));
-        }
-
-        public IEnumerable<Webpage> Convert(ISession session, IEnumerable<Document> documents)
-        {
-            List<int> ids = documents.Select(document => document.GetValue<int>("id")).ToList();
-            return
-                ids.Chunk(100)
-                   .SelectMany(
-                       ints =>
-                       session.QueryOver<Webpage>()
-                              .Where(webpage => webpage.Id.IsIn(ints.ToList()))
-                              .Cacheable()
-                              .List()
-                              .OrderBy(webpage => ids.IndexOf(webpage.Id)));
-        }
-
-        public string GetLocation(CurrentSite currentSite)
-        {
-            string location = string.Format("~/App_Data/Indexes/{0}/Webpages/", currentSite.Id);
-            string mapPath = CurrentRequestData.CurrentContext.Server.MapPath(location);
-            return mapPath;
-        }
-
-        public Analyzer GetAnalyser()
-        {
-            return _analyser = _analyser ?? new StandardAnalyzer(Version.LUCENE_30);
-        }
-
-        public string IndexName
+        public override string IndexName
         {
             get { return "Default Webpage Index"; }
         }
 
-        private static readonly FieldDefinition<Webpage> _id =
-            new StringFieldDefinition<Webpage>("id", webpage => webpage.Id.ToString(), Field.Store.YES,
-                                         Field.Index.NOT_ANALYZED);
-
         private static readonly FieldDefinition<Webpage> _name =
             new StringFieldDefinition<Webpage>("name", webpage => webpage.Name, Field.Store.YES,
-                                         Field.Index.ANALYZED);
+                                               Field.Index.ANALYZED, 2f);
 
         private static readonly FieldDefinition<Webpage> _bodyContent =
             new StringFieldDefinition<Webpage>("bodycontent", webpage => webpage.BodyContent, Field.Store.NO,

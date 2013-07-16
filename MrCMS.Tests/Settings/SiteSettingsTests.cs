@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
@@ -97,6 +99,34 @@ namespace MrCMS.Tests.Settings
             _siteSettings.SetViewData(session, viewDataDictionary);
 
             viewDataDictionary["500Options"].Should().Be(items);
+        }
+
+        [Fact]
+        public void SiteSettings_CultureInfo_IfUICultureIsNotSetShouldBeSystemCulture()
+        {
+            _siteSettings.CultureInfo.Should().Be(CultureInfo.CurrentCulture);
+        }
+
+        [Fact]
+        public void SiteSettings_CultureInfo_IfUICultureIsSetShouldBeLoadedFromString()
+        {
+            _siteSettings.UICulture = "de";
+
+            _siteSettings.CultureInfo.Should().Be(CultureInfo.GetCultureInfo("de"));
+        }
+
+        [Fact]
+        public void SiteSettings_TimeZoneInfo_IfTimeZoneIsNotSetShouldBeTimeZoneLocal()
+        {
+            _siteSettings.TimeZoneInfo.Should().Be(TimeZoneInfo.Local);
+        }
+
+        [Fact]
+        public void SiteSettings_TimeZoneInfo_GetsOffsetFromTimeZoneId()
+        {
+            _siteSettings.TimeZone = "UTC+12";
+
+            _siteSettings.TimeZoneInfo.Should().Be(TimeZoneInfo.FindSystemTimeZoneById("UTC+12"));
         }
     }
 }

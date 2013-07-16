@@ -11,10 +11,10 @@ namespace MrCMS.Website
 {
     public class MrCMSControllerFactory : DefaultControllerFactory
     {
-        private Dictionary<string, List<Type>> _appUiControllers;
-        private Dictionary<string, List<Type>> _appAdminControllers;
-        private List<Type> _uiControllers;
-        private List<Type> _adminControllers;
+        private readonly Dictionary<string, List<Type>> _appUiControllers;
+        private readonly Dictionary<string, List<Type>> _appAdminControllers;
+        private readonly List<Type> _uiControllers;
+        private readonly List<Type> _adminControllers;
 
         public MrCMSControllerFactory()
         {
@@ -23,9 +23,9 @@ namespace MrCMS.Website
                           .GroupBy(
                               type =>
                               ((MrCMSApp)Activator.CreateInstance(
-                                  TypeHelper.GetBaseTypes(type, type1 =>
-                                      type1.IsGenericType &&
-                                      type1.GetGenericTypeDefinition() == typeof(MrCMSAppUIController<>))
+                                  type.GetBaseTypes(type1 =>
+                                            type1.IsGenericType &&
+                                            type1.GetGenericTypeDefinition() == typeof(MrCMSAppUIController<>))
                                       .First()
                                       .GetGenericArguments()[0])).AppName)
                           .ToDictionary(types => types.Key, types => types.ToList());

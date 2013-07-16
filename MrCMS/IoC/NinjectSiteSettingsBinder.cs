@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using MrCMS.Entities.Multisite;
-using MrCMS.Services;
 using MrCMS.Settings;
 using Ninject;
 using Ninject.Activation;

@@ -52,7 +52,7 @@ namespace MrCMS.Tests.Logging
         {
             var list = CreateLogList();
 
-            var allEntriesPaged = _logService.GetAllEntriesPaged(1);
+            var allEntriesPaged = _logService.GetEntriesPaged(1);
 
             allEntriesPaged.Should().HaveCount(10);
         }
@@ -62,7 +62,7 @@ namespace MrCMS.Tests.Logging
         {
             var list = CreateLogList();
 
-            var allEntriesPaged = _logService.GetAllEntriesPaged(1);
+            var allEntriesPaged = _logService.GetEntriesPaged(1);
 
             allEntriesPaged.Should().BeEquivalentTo(list.Take(10));
         }
@@ -72,57 +72,16 @@ namespace MrCMS.Tests.Logging
         {
             var list = CreateLogList();
 
-            var allEntriesPaged = _logService.GetAllEntriesPaged(2);
+            var allEntriesPaged = _logService.GetEntriesPaged(2);
 
             allEntriesPaged.Should().BeEquivalentTo(list.Skip(10).Take(10));
         }
 
-        [Fact]
-        public void LogService_GetAllErrors_ShouldOnlyReturnErrors()
-        {
-            var list =
-                Enumerable.Range(1, 20)
-                          .Select(
-                              i =>
-                              new Log
-                                  {
-                                      Message = i.ToString(),
-                                      Error = new Error(),
-                                      Type = i <= 5 ? LogEntryType.Error : LogEntryType.Audit
-                                  })
-                          .ToList();
-            Session.Transact(session => list.ForEach(log => session.Save(log)));
-
-            var allEntriesPaged = _logService.GetAllErrors(1);
-
-            allEntriesPaged.Should().BeEquivalentTo(list.Take(5));
-        }
-
-        [Fact]
-        public void LogService_GetAllAudits_ShouldOnlyReturnAudits()
-        {
-            var list =
-                Enumerable.Range(1, 20)
-                          .Select(
-                              i =>
-                              new Log
-                                  {
-                                      Message = i.ToString(),
-                                      Error = new Error(),
-                                      Type = i <= 5 ? LogEntryType.Audit : LogEntryType.Error
-                                  })
-                          .ToList();
-            Session.Transact(session => list.ForEach(log => session.Save(log)));
-
-            var allEntriesPaged = _logService.GetAllAudits(1);
-
-            allEntriesPaged.Should().BeEquivalentTo(list.Take(5));
-        }
 
         private static List<Log> CreateLogList()
         {
             var logList = Enumerable.Range(1, 20).Select(i => new Log {Message = i.ToString(), Error = new Error()}).ToList();
-            Session.Transact(session => logList.ForEach(log => session.Save(log)));
+            logList.ForEach(log => Session.Transact(session => session.Save(log)));
             return logList;
         }
 

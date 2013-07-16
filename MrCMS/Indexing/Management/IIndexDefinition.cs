@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
+using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using NHibernate;
 
 namespace MrCMS.Indexing.Management
 {
-    public interface IIndexDefinition<T> where T : class
+    public interface IIndexDefinition<T> where T : SystemEntity
     {
         /// <summary>
         /// Takes your entity, and convert a Lucene document for indexing

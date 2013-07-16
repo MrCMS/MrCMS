@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
+using MrCMS.Entities;
 using MrCMS.Indexing.Management;
 using MrCMS.Paging;
 
 namespace MrCMS.Indexing.Querying
 {
     public interface ISearcher<TEntity, TDefinition> : IDisposable
-        where TEntity : class
+        where TEntity : SystemEntity
         where TDefinition : IIndexDefinition<TEntity>, new()
     {
         IPagedList<TEntity> Search(Query query, int pageNumber, int pageSize, Filter filter = null);

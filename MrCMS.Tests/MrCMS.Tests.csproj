@@ -106,9 +106,12 @@
   <ItemGroup>
     <Compile Include="Entities\DocumentTests.cs" />
     <Compile Include="Entities\MediaFileTests.cs" />
+    <Compile Include="Helpers\DocumentExtensionsTests.cs" />
     <Compile Include="Helpers\TypeHelperTests.cs" />
     <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
     <Compile Include="Logging\LogServiceTests.cs" />
+    <Compile Include="Helpers\SessionHelperTests.cs" />
+    <Compile Include="Optimization\ResourceDataTests.cs" />
     <Compile Include="Services\AuthorisationServiceTests.cs" />
     <Compile Include="Services\DocumentServiceTests.cs" />
     <Compile Include="InMemoryDatabaseTest.cs" />
@@ -122,9 +125,9 @@
     <Compile Include="Services\SearchServiceTests.cs" />
     <Compile Include="Services\SitesServiceTests.cs" />
     <Compile Include="Services\TagServiceTests.cs" />
+    <Compile Include="Services\UrlHistoryServiceTests.cs" />
     <Compile Include="Services\UserServiceTests.cs" />
     <Compile Include="Services\WidgetServiceTests.cs" />
-    <Compile Include="Settings\FormServiceTests.cs" />
     <Compile Include="Settings\MailSettingsTests.cs" />
     <Compile Include="Settings\MediaSettingsTests.cs" />
     <Compile Include="Settings\SEOSettingsTests.cs" />
@@ -132,6 +135,8 @@
     <Compile Include="Settings\SiteSettingsOptionGeneratorTests.cs" />
     <Compile Include="Settings\SiteSettingsTests.cs" />
     <Compile Include="Shortcodes\Forms\DefaultFormRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\DropDownListOptionRendererTests.cs" />
+    <Compile Include="Shortcodes\Forms\DropDownListRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\ElementRendererManagerTests.cs" />
     <Compile Include="Shortcodes\Forms\FormRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\LabelRendererTests.cs" />

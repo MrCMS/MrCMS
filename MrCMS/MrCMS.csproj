@@ -155,7 +155,7 @@
     <Compile Include="DbConfiguration\Configuration\DatabaseType.cs" />
     <Compile Include="DbConfiguration\Configuration\PostCommitEventListener.cs" />
     <Compile Include="DbConfiguration\Configuration\SaveOrUpdateListener.cs" />
-    <Compile Include="DbConfiguration\Configuration\UpdateIndexesListener.cs" />
+    <Compile Include="DbConfiguration\Configuration\UpdateIndicesListener.cs" />
     <Compile Include="DbConfiguration\Configuration\UrlHistoryListener.cs" />
     <Compile Include="DbConfiguration\Conventions\CacheConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\DateTimeConvention.cs" />
@@ -254,6 +254,7 @@
     <Compile Include="Indexing\Management\IIndexDefinition.cs" />
     <Compile Include="Indexing\Management\IIndexManager.cs" />
     <Compile Include="Indexing\Management\IndexCreationResult.cs" />
+    <Compile Include="Indexing\Management\IndexDefinition.cs" />
     <Compile Include="Indexing\Management\IndexManager.cs" />
     <Compile Include="Indexing\Management\IndexResult.cs" />
     <Compile Include="Indexing\Management\IntegerFieldDefinition.cs" />
@@ -361,7 +362,7 @@
     <Compile Include="Settings\GenericListTypeConverter.cs" />
     <Compile Include="Settings\GlobalSettingsBase.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />
-    <Compile Include="Settings\ISiteSettings.cs" />
+    <Compile Include="Settings\SettingsBase.cs" />
     <Compile Include="Settings\ISettingService.cs" />
     <Compile Include="Settings\MailSettings.cs" />
     <Compile Include="Settings\MediaSelectorAttribute.cs" />
@@ -375,6 +376,7 @@
     <Compile Include="Shortcodes\Forms\CheckBoxListRenderer.cs" />
     <Compile Include="Shortcodes\Forms\CustomFormRenderer.cs" />
     <Compile Include="Shortcodes\Forms\DefaultFormRenderer.cs" />
+    <Compile Include="Shortcodes\Forms\DropDownListOptionRenderer.cs" />
     <Compile Include="Shortcodes\Forms\DropDownListRenderer.cs" />
     <Compile Include="Shortcodes\Forms\DynamicFormElementRenderer.cs" />
     <Compile Include="Shortcodes\Forms\ElementRendererManager.cs" />
@@ -382,6 +384,7 @@
     <Compile Include="Shortcodes\Forms\FormRenderingManager.cs" />
     <Compile Include="Shortcodes\FormShortcodeParser.cs" />
     <Compile Include="Shortcodes\Forms\FormSubmittedStatus.cs" />
+    <Compile Include="Shortcodes\Forms\IDropDownListOptionRenderer.cs" />
     <Compile Include="Shortcodes\Forms\IElementRendererManager.cs" />
     <Compile Include="Shortcodes\Forms\ILabelRenderer.cs" />
     <Compile Include="Shortcodes\Forms\ISubmittedMessageRenderer.cs" />
@@ -398,15 +401,16 @@
     <Compile Include="Shortcodes\Forms\ValidationMessaageRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
     <Compile Include="Tasks\BackgroundTask.cs" />
-    <Compile Include="Tasks\DeleteIndexesTask.cs" />
+    <Compile Include="Tasks\DeleteIndicesTask.cs" />
     <Compile Include="Tasks\IndexManagementTask.cs" />
-    <Compile Include="Tasks\InsertIndexesTask.cs" />
+    <Compile Include="Tasks\InsertIndicesTask.cs" />
     <Compile Include="Tasks\IScheduledTaskManager.cs" />
     <Compile Include="Tasks\ScheduledTask.cs" />
+    <Compile Include="Tasks\ScheduledTaskManager.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
-    <Compile Include="Tasks\UpdateIndexesTask.cs" />
     <Compile Include="Website\Binders\ACLUpdateModelBinder.cs" />
+    <Compile Include="Tasks\UpdateIndicesTask.cs" />
     <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
@@ -458,7 +462,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
