@@ -40,7 +40,7 @@
                 <div class="control-group">
                     <label class="control-label" for="AdminPassword">Admin Password</label>
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.AdminPassword)
+                        @Html.PasswordFor(x => x.AdminPassword)
                         @Html.ValidationMessageFor(x => x.AdminPassword)
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                 <div class="control-group">
                     <label class="control-label" for="ConfirmPassword">Confirm Password</label>
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.ConfirmPassword)
+                        @Html.PasswordFor(x => x.ConfirmPassword)
                         @Html.ValidationMessageFor(x => x.ConfirmPassword)
                     </div>
                 </div>
