@@ -6,6 +6,7 @@ using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
+using MrCMS.Models;
 
 namespace MrCMS.ACL
 {

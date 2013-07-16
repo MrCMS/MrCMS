@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MrCMS.Apps;
 using MrCMS.Entities.People;
 using System.Linq;
-using MrCMS.Settings;
+using MrCMS.Models;
 using MrCMS.Website;
 
 namespace MrCMS.ACL
@@ -22,12 +21,13 @@ namespace MrCMS.ACL
         {
             return user.IsAdmin || user.Roles.Any(role => CanAccessLogic(role, operation, typeName));
         }
+
         public bool CanAccess(UserRole userRole, string operation, string typeName = null)
         {
             return userRole.IsAdmin || CanAccessLogic(userRole, operation, typeName);
         }
 
-        private bool CanAccessLogic(UserRole userRole, string operation, string typeName)
+        private bool CanAccessLogic(UserRole userRole, string operation, string typeName = null)
         {
             if (!MrCMSApplication.Get<ACLSettings>().ACLEnabled)
                 return true;
@@ -36,7 +36,7 @@ namespace MrCMS.ACL
             return aclRoles.Any(role => role.Name == b);
         }
 
-        protected string GetKey(string operation, string typeName)
+        protected string GetKey(string operation, string typeName = null)
         {
             var start = !string.IsNullOrWhiteSpace(typeName)
                             ? string.Format("{0}.{1}", Name, typeName)
@@ -64,7 +64,7 @@ namespace MrCMS.ACL
                                    Operations = Operations.Select(s => new ACLOperation
                                                                            {
                                                                                Name = s,
-                                                                               Key = GetKey(s, null),
+                                                                               Key = GetKey(s),
                                                                            }).ToList(),
                                    Type = null
                                }
@@ -72,35 +72,8 @@ namespace MrCMS.ACL
         }
     }
 
-    public class ACLSettings : SiteSettingsBase
-    {
-        public override bool RenderInSettings
-        {
-            get { return false; }
-        }
-
-        public bool ACLEnabled { get; set; }
-    }
-
     public abstract class ACLRule<T> : ACLRule where T : MrCMSApp, new()
     {
         protected override MrCMSApp App { get { return new T(); } }
-    }
-    public class ACLGroup
-    {
-        public string Name { get; set; }
-
-        public Type Type { get; set; }
-
-        public string AppName { get; set; }
-
-        public List<ACLOperation> Operations { get; set; }
-    }
-
-    public class ACLOperation
-    {
-        public string Name { get; set; }
-
-        public string Key { get; set; }
     }
 }

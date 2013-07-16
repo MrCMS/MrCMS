@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ACL\ACLRule.cs" />
+    <Compile Include="ACL\ACLSettings.cs" />
     <Compile Include="ACL\Rules\AdminAccessACL.cs" />
     <Compile Include="ACL\Rules\IndexACL.cs" />
     <Compile Include="ACL\Rules\InlineEditingACL.cs" />
@@ -283,7 +284,9 @@
     <Compile Include="Membership\MrCmsMembershipProvider.cs" />
     <Compile Include="Membership\MrCmsRoleProvider.cs" />
     <Compile Include="Models\ACLAvailableModel.cs" />
+    <Compile Include="Models\ACLGroup.cs" />
     <Compile Include="Models\ACLModel.cs" />
+    <Compile Include="Models\ACLOperation.cs" />
     <Compile Include="Models\ACLRoleModel.cs" />
     <Compile Include="Models\ACLRuleModel.cs" />
     <Compile Include="Models\ACLRuleOperationModel.cs" />
