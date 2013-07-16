@@ -28,19 +28,22 @@ namespace MrCMS.Web.Controllers
             //set page timeout to 5 minutes
             Server.ScriptTimeout = 300;
 
-            InstallModel model = installModel.DatabaseType == DatabaseType.Auto
-                                     ? new InstallModel
-                                         {
-                                             SiteUrl = Request.Url.Authority,
-                                             AdminEmail = "admin@yoursite.com",
-                                             DatabaseConnectionString = "",
-                                             DatabaseType = DatabaseType.MsSql,
-                                             SqlAuthenticationType = "sqlauthentication",
-                                             SqlConnectionInfo = "sqlconnectioninfo_values",
-                                             SqlServerCreateDatabase = false,
-                                         }
-                                     : installModel;
-            return View(model);
+            // if it is a new setup
+            if (installModel.DatabaseType == DatabaseType.Auto)
+            {
+                ModelState.Clear();
+                installModel = new InstallModel
+                            {
+                                SiteUrl = Request.Url.Authority,
+                                AdminEmail = "admin@yoursite.com",
+                                DatabaseConnectionString = "",
+                                DatabaseType = DatabaseType.MsSql,
+                                SqlAuthenticationType = "sqlauthentication",
+                                SqlConnectionInfo = "sqlconnectioninfo_values",
+                                SqlServerCreateDatabase = false,
+                            };
+            }
+            return View(installModel);
         }
 
         [HttpPost]
