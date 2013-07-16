@@ -31,25 +31,16 @@ namespace MrCMS.Services
         public void DeleteWidget(Widget widget)
         {
             _session.Transact(session =>
-                                  {
-                                      widget.OnDeleting(session);
-                                      session.Delete(widget);
-                                  });
+                {
+                    widget.OnDeleting(session);
+                    session.Delete(widget);
+                });
         }
 
         public Widget AddWidget(Widget widget)
         {
             _session.Transact(session => session.SaveOrUpdate(widget));
             return widget;
-        }
-
-        public void DeleteWidget(int id)
-        {
-            var widget = GetWidget<Widget>(id);
-            if (widget != null)
-            {
-                DeleteWidget(widget);
-            }
         }
     }
 }

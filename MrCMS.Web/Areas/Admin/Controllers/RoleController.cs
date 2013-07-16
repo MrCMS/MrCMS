@@ -90,9 +90,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        public JsonResult Search(Document document, string term)
+        public JsonResult Search(string term)
         {
-            IEnumerable<AutoCompleteResult> result = _roleService.Search(document, term);
+            var result = _roleService.Search(term);
 
             return Json(result);
         }

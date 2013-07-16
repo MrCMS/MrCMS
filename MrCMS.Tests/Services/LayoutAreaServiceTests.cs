@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Tests.Stubs;
 using NHibernate;
 using Xunit;
 
@@ -12,10 +13,17 @@ namespace MrCMS.Tests.Services
 {
     public class LayoutAreaServiceTests : InMemoryDatabaseTest
     {
+        private readonly LayoutAreaService _layoutAreaService;
+
+        public LayoutAreaServiceTests()
+        {
+            _layoutAreaService = new LayoutAreaService(Session);
+        }
+
         [Fact]
         public void LayoutAreaService_GetArea_GetsTheAreaByName()
         {
-            var layoutAreaService = new LayoutAreaService(Session);
+            var layoutAreaService = _layoutAreaService;
             var layout = new Layout {Name = "Layout"};
             var layoutArea = new LayoutArea {Layout = layout, AreaName = "Area.Name"};
             Session.Transact(session =>
@@ -32,7 +40,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void LayoutAreaService_GetAreaWhereItDoesNotExist_ShouldReturnNull()
         {
-            var layoutAreaService = new LayoutAreaService(Session);
+            var layoutAreaService = _layoutAreaService;
             var layout = new Layout {Name = "Layout"};
             Session.Transact(session => session.SaveOrUpdate(layout));
 
@@ -42,26 +50,22 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void LayoutAreaService_SaveArea_CallsSessionSaveOnTheArea()
+        public void LayoutAreaService_SaveArea_SavesTheArea()
         {
             var layoutArea = new LayoutArea();
-            var session = A.Fake<ISession>();
-            var layoutAreaService = new LayoutAreaService(session);
 
-            layoutAreaService.SaveArea(layoutArea);
+            _layoutAreaService.SaveArea(layoutArea);
 
-            A.CallTo(() => session.SaveOrUpdate(layoutArea)).MustHaveHappened();
+            Session.QueryOver<LayoutArea>().RowCount().Should().Be(1);
         }
 
         [Fact]
         public void LayoutAreaService_SaveArea_IfLayoutIsSetAddLayoutAreaToLayoutAreasList()
         {
-            var layout = new Layout {LayoutAreas = new List<LayoutArea>()};
+            var layout = new Layout();
             var layoutArea = new LayoutArea{Layout = layout};
-            var session = A.Fake<ISession>();
-            var layoutAreaService = new LayoutAreaService(session);
 
-            layoutAreaService.SaveArea(layoutArea);
+            _layoutAreaService.SaveArea(layoutArea);
 
             layout.LayoutAreas.Should().Contain(layoutArea);
         }
@@ -69,7 +73,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void LayoutAreaService_GetArea_ShouldReturnNullForInvalidId()
         {
-            var layoutAreaService = new LayoutAreaService(Session);
+            var layoutAreaService = _layoutAreaService;
 
             var layoutArea = layoutAreaService.GetArea(-1);
 
@@ -81,7 +85,7 @@ namespace MrCMS.Tests.Services
         {
             var layoutArea = new LayoutArea();
             Session.Transact(session => session.SaveOrUpdate(layoutArea));
-            var layoutAreaService = new LayoutAreaService(Session);
+            var layoutAreaService = _layoutAreaService;
 
             var loadedLayoutArea = layoutAreaService.GetArea(layoutArea.Id);
 
@@ -89,28 +93,42 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void LayoutAreaService_DeleteArea_CallsSessionDeleteOnThePassedArea()
+        public void LayoutAreaService_DeleteArea_DeletesThePassedArea()
         {
-            var session = A.Fake<ISession>();
-            var layoutAreaService = new LayoutAreaService(session);
-
             var layoutArea = new LayoutArea();
-            layoutAreaService.DeleteArea(layoutArea);
+            Session.Transact(session => session.Save(layoutArea));
 
-            A.CallTo(() => session.Delete(layoutArea)).MustHaveHappened();
+            _layoutAreaService.DeleteArea(layoutArea);
+
+            Session.QueryOver<LayoutArea>().RowCount().Should().Be(0);
         }
 
         [Fact]
         public void LayoutAreaService_DeleteArea_AreaIsRemovedFromLayoutsLayoutAreaList()
         {
-            var layout = new Layout { LayoutAreas = new List<LayoutArea>() };
+            var layout = new Layout();
             var layoutArea = new LayoutArea { Layout = layout };
             layout.LayoutAreas.Add(layoutArea);
-            var layoutAreaService = new LayoutAreaService(Session);
 
-            layoutAreaService.DeleteArea(layoutArea);
+            _layoutAreaService.DeleteArea(layoutArea);
 
             layout.LayoutAreas.Should().NotContain(layoutArea);
+        }
+
+        [Fact]
+        public void LayoutAreaService_SetOrders_ShouldSetOrderToBeTheOrderOfTheWidgetIdInTheArgumentString()
+        {
+            var widgets = Enumerable.Range(1, 10).Select(i => new BasicMappedWidget()).ToList();
+            widgets.ForEach(widget => Session.Transact(session => session.Save(widget)));
+
+            _layoutAreaService.SetWidgetOrders("10,9,8,7,6,5,4,3,2,1");
+
+            for (int index = 0; index < widgets.Count; index++)
+            {
+                var widget = widgets[index];
+                // orders are zero-based
+                widget.DisplayOrder.Should().Be(9 - index);
+            }
         }
     }
 }

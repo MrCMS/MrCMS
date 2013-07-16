@@ -11,15 +11,20 @@ namespace MrCMS.Tests.Services
 {
     public class WidgetServiceTests : InMemoryDatabaseTest
     {
+        private WidgetService _widgetService;
+
+        public WidgetServiceTests()
+        {
+            _widgetService = new WidgetService(Session);
+        }
         [Fact]
         public void WidgetService_GetWidget_ReturnsAWidgetWhenIdExists()
         {
-            var widgetService = new WidgetService(Session);
 
             var textWidget = new BasicMappedWidget();
             Session.Transact(session => session.SaveOrUpdate(textWidget));
 
-            var loadedWidget = widgetService.GetWidget<BasicMappedWidget>(textWidget.Id);
+            var loadedWidget = _widgetService.GetWidget<BasicMappedWidget>(textWidget.Id);
 
             loadedWidget.Should().BeSameAs(textWidget);
         }
@@ -27,9 +32,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void WidgetService_GetWidget_WhenIdIsInvalidShouldReturnNull()
         {
-            var widgetService = new WidgetService(Session);
-
-            var loadedWidget = widgetService.GetWidget<BasicMappedWidget>(-1);
+            var loadedWidget = _widgetService.GetWidget<BasicMappedWidget>(-1);
 
             loadedWidget.Should().BeNull();
         }
@@ -37,9 +40,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void WidgetService_SaveWidget_ShouldAddWidgetToDb()
         {
-            var widgetService = new WidgetService(Session);
-
-            widgetService.SaveWidget(new BasicMappedWidget());
+            _widgetService.SaveWidget(new BasicMappedWidget());
 
             Session.QueryOver<Widget>().RowCount().Should().Be(1);
         }
@@ -47,55 +48,34 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void WidgetService_GetModel_CallsWidgetGetModelOfTheWidgetWithTheSessionOfTheService()
         {
-            var session = A.Fake<ISession>();
-            var widgetService = new WidgetService(session);
-
             var widget = A.Fake<Widget>();
 
-            widgetService.GetModel(widget);
+            _widgetService.GetModel(widget);
 
-            A.CallTo(() => widget.GetModel(session)).MustHaveHappened();
+            A.CallTo(() => widget.GetModel(Session)).MustHaveHappened();
         }
 
         [Fact]
-        public void WidgetService_DeleteModelWithWidget_CallsSessionDeleteOnTheWidget()
+        public void WidgetService_Delete_RemovesWidgetFromDatabase()
         {
+            var widget = new BasicMappedWidget();
+            Session.Transact(session => session.Save(widget));
+
+            _widgetService.DeleteWidget(widget);
+
+            Session.QueryOver<Widget>().RowCount().Should().Be(0);
+        }
+
+        [Fact]
+        public void WidgetService_Delete_CallsOnDeletingOnTheWidget()
+        {
+            var widget = A.Fake<Widget>();
             var session = A.Fake<ISession>();
             var widgetService = new WidgetService(session);
-            
-            var widget = A.Fake<Widget>();
 
             widgetService.DeleteWidget(widget);
 
-            A.CallTo(() => session.Delete(widget)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void WidgetService_DeleteModelWithId_LoadsWidgetFromSession()
-        {
-            var session = A.Fake<ISession>();
-            var widgetService = new WidgetService(session);
-
-            var widget = A.Fake<Widget>();
-
-            A.CallTo(() => session.Get<Widget>(1)).Returns(widget);
-            widgetService.DeleteWidget(1);
-
-            A.CallTo(() => session.Get<Widget>(1)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void WidgetService_DeleteModelWithId_CallsDeleteOnTheLoadedWidget()
-        {
-            var session = A.Fake<ISession>();
-            var widgetService = new WidgetService(session);
-
-            var widget = A.Fake<Widget>();
-
-            A.CallTo(() => session.Get<Widget>(1)).Returns(widget);
-            widgetService.DeleteWidget(1);
-
-            A.CallTo(() => session.Delete(widget)).MustHaveHappened();
+            A.CallTo(() => widget.OnDeleting(session)).MustHaveHappened();
         }
     }
 }

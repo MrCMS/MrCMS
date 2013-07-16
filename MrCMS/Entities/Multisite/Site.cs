@@ -7,6 +7,10 @@ namespace MrCMS.Entities.Multisite
 {
     public class Site : SystemEntity
     {
+        public Site()
+        {
+            Users = new List<User>();
+        }
         public virtual string Name { get; set; }
 
         [DisplayName("Base URL")]

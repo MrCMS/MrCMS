@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 using NHibernate;
 using MrCMS.Helpers;
 
@@ -11,6 +10,11 @@ namespace MrCMS.Entities.Widget
 {
     public abstract class Widget : SiteEntity
     {
+        protected Widget()
+        {
+            ShownOn = new List<Webpage>();
+            HiddenOn = new List<Webpage>();
+        }
         public virtual LayoutArea LayoutArea { get; set; }
 
         public virtual string Name { get; set; }
@@ -46,7 +50,7 @@ namespace MrCMS.Entities.Widget
         {
             ShownOn.ForEach(webpage => webpage.ShownWidgets.Remove(this));
             HiddenOn.ForEach(webpage => webpage.HiddenWidgets.Remove(this));
-            LayoutArea.Widgets.Remove(this); //required to clear cache
+            if (LayoutArea != null) LayoutArea.Widgets.Remove(this); //required to clear cache
             if (Webpage != null)
             {
                 Webpage.Widgets.Remove(this);

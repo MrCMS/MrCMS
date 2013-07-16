@@ -49,7 +49,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                 LoggedInName = _userServices.GetCurrentUser(HttpContext).FirstName,
                                 Stats = list,
                                 ActiveUsers = _userServices.ActiveUsers(),
-                                NoneActiveUsers = _userServices.NoneActiveUsers()
+                                NoneActiveUsers = _userServices.NonActiveUsers()
                             };
 
             return View(model);

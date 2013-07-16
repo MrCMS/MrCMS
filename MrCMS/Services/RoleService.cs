@@ -23,11 +23,6 @@ namespace MrCMS.Services
             _session.Transact(session => session.SaveOrUpdate(role));
         }
 
-        public UserRole GetRole(int id)
-        {
-            return _session.Get<UserRole>(id);
-        }
-
         public IEnumerable<UserRole> GetAllRoles()
         {
             return _session.QueryOver<UserRole>().Cacheable().List();
@@ -53,15 +48,16 @@ namespace MrCMS.Services
             return users.Count() == 1 && users.First() == user;
         }
 
-        public IEnumerable<AutoCompleteResult> Search(Document document, string term)
+        public IEnumerable<AutoCompleteResult> Search(string term)
         {
+            var userRoles = _session.QueryOver<UserRole>().Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start)).List();
             return
-                _session.QueryOver<UserRole>().Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start)).List().Select(
+                userRoles.Select(
                     tag =>
                     new AutoCompleteResult
                         {
                             id = tag.Id,
-                            label = string.Format("{0}", tag.Name),
+                            label = tag.Name,
                             value = tag.Name
                         });
         }

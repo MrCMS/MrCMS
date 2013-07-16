@@ -5,8 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.ACL;
-using MrCMS.Entities.Documents;
-using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using NHibernate;
 
@@ -18,6 +16,7 @@ namespace MrCMS.Entities.People
         {
             Guid = Guid.NewGuid();
             Roles = new List<UserRole>();
+            Sites = new List<Site>();
         }
 
         [DisplayName("First Name")]

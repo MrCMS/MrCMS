@@ -3,7 +3,6 @@ using MrCMS.Entities.Widget;
 
 namespace MrCMS.Tests.Stubs
 {
-    [MrCMSMapClass]
     public class BasicMappedWidget : Widget
     {
     }

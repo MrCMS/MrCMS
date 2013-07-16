@@ -12,6 +12,10 @@ namespace MrCMS.Entities.Documents.Layout
 {
     public class Layout : Document
     {
+        public Layout()
+        {
+            LayoutAreas = new List<LayoutArea>();
+        }
         [Required]
         [Remote("ValidateUrlIsAllowed", "Layout", AdditionalFields = "Id")]
         [DisplayName("Path")]

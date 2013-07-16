@@ -41,13 +41,9 @@ namespace MrCMS.Services
 
                                       if (user.Sites != null)
                                           user.Sites.Add(site);
-                                      else
-                                          user.Sites = new List<Site> { site };
 
                                       if (site.Users != null)
                                           site.Users.Add(user);
-                                      else
-                                          site.Users = new List<User> { user };
 
                                       session.Save(site);
                                       session.Update(user);

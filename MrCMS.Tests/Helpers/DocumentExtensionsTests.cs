@@ -32,6 +32,20 @@ namespace MrCMS.Tests.Helpers
         }
 
         [Fact]
+        public void DocumentExtensions_SetParent_RemovesTheChildFromTheOldParentsChildren()
+        {
+            var child = new StubDocument();
+            var parent = new StubDocument();
+            var oldParent = new StubDocument();
+            oldParent.SetChildren(new List<Document> { child });
+            child.Parent = oldParent;
+
+            child.SetParent(parent);
+
+            oldParent.Children.Should().NotContain(child);
+        }
+
+        [Fact]
         public void DocumentExtensions_GetVersion_ReturnsNullIfThereIsNoMatchingVersionInCollection()
         {
             var doc = new StubDocument();

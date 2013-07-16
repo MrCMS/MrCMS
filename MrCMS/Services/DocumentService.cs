@@ -359,20 +359,10 @@ namespace MrCMS.Services
         {
             if (document == null) return;
 
-            var existingParent = document.Parent;
             var parent = parentId.HasValue ? GetDocument<Webpage>(parentId.Value) : null;
 
-            document.Parent = parent;
-            if (parent != null)
-            {
-                parent.Children.Add(document);
-                SaveDocument(parent);
-            }
-            if (existingParent != null)
-            {
-                existingParent.Children.Remove(document);
-                SaveDocument(existingParent);
-            }
+            document.SetParent(parent);
+
             SaveDocument(document);
         }
 
@@ -542,10 +532,10 @@ namespace MrCMS.Services
                 var document = GetDocument<MediaCategory>(id.Value);
                 if (url.Trim() == document.UrlSegment.Trim())
                     return true;
-                return !MediaCtegoryExists(url);
+                return !MediaCategoryExists(url);
             }
 
-            return !MediaCtegoryExists(url);
+            return !MediaCategoryExists(url);
         }
 
         public bool UrlIsValidForLayout(string url, int? id)
@@ -577,7 +567,7 @@ namespace MrCMS.Services
         /// </summary>
         /// <param name="url"></param>
         /// <returns>bool</returns>
-        private bool MediaCtegoryExists(string url)
+        private bool MediaCategoryExists(string url)
         {
             return _session.QueryOver<MediaCategory>()
                         .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
