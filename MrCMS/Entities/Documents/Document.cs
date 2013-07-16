@@ -16,6 +16,7 @@ namespace MrCMS.Entities.Documents
     public abstract class Document : SiteEntity
     {
         [Required]
+        [StringLength(255)]
         public virtual string Name { get; set; }
 
         public virtual Document Parent { get; set; }
