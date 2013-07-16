@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -11,6 +12,7 @@ using MrCMS.Indexing.Management;
 using MrCMS.Installation;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Web.Apps.Core.Widgets;
 using MrCMS.Website;
 using NHibernate;
 using Ninject;
@@ -52,6 +54,7 @@ namespace MrCMS.Web.Apps.Core
 
             var documentService = new DocumentService(session, siteSettings, currentSite);
             var layoutAreaService = new LayoutAreaService(session);
+            var widgetService = new WidgetService(session);
 
             var user = new User
             {
@@ -93,6 +96,10 @@ namespace MrCMS.Web.Apps.Core
 
             foreach (LayoutArea l in layoutAreas)
                 layoutAreaService.SaveArea(l);
+
+            var navigationWidget = new Navigation();
+            navigationWidget.LayoutArea = layoutAreas.Single(x => x.AreaName == "Main Navigation");
+            widgetService.AddWidget(navigationWidget);
 
             documentService.AddDocument(model.HomePage);
             documentService.AddDocument(model.Page2);
