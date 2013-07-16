@@ -83,3 +83,4 @@ MrCMS.Web/content/upload*
 *.orig
 MrCMS.Web/App_Data/*
 *.jtconfig
+*.vspx
