@@ -25,26 +25,23 @@ namespace MrCMS.Settings
 
         public void SaveSettings(SiteSettingsBase settings)
         {
-            _session.Transact(session =>
-                                  {
-                                      var type = settings.GetType();
-                                      IEnumerable<PropertyInfo> properties = from prop in type.GetProperties()
-                                                                             where prop.CanWrite && prop.CanRead
-                                                                             where prop.Name != "Site"
-                                                                             where
-                                                                                 prop.PropertyType
-                                                                                     .GetCustomTypeConverter()
-                                                                                     .CanConvertFrom(typeof(string))
-                                                                             select prop;
+            var type = settings.GetType();
+            IEnumerable<PropertyInfo> properties = from prop in type.GetProperties()
+                                                   where prop.CanWrite && prop.CanRead
+                                                   where prop.Name != "Site"
+                                                   where
+                                                       prop.PropertyType
+                                                           .GetCustomTypeConverter()
+                                                           .CanConvertFrom(typeof(string))
+                                                   select prop;
 
-                                      foreach (PropertyInfo prop in properties)
-                                      {
-                                          string key = type.FullName + "." + prop.Name;
-                                          //Duck typing is not supported in C#. That's why we're using dynamic type
-                                          dynamic value = prop.GetValue(settings, null);
-                                          _settingService.SetSetting(settings.Site, key, value ?? "");
-                                      }
-                                  });
+            foreach (PropertyInfo prop in properties)
+            {
+                string key = type.FullName + "." + prop.Name;
+                //Duck typing is not supported in C#. That's why we're using dynamic type
+                dynamic value = prop.GetValue(settings, null);
+                _settingService.SetSetting(settings.Site, key, value ?? "");
+            }
         }
 
         public void DeleteSettings(SiteSettingsBase settings)

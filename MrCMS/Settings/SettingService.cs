@@ -16,6 +16,7 @@ namespace MrCMS.Settings
     public partial class SettingService : ISettingService
     {
         private readonly ISession _session;
+        private IDictionary<string, KeyValuePair<int, string>> _allSettings;
 
         /// <summary>
         /// Ctor
@@ -74,13 +75,9 @@ namespace MrCMS.Settings
 
             key = key.Trim().ToLowerInvariant();
 
-            var setting =
-                _session.QueryOver<Setting>()
-                        .Where(s => s.Name == key && s.Site.Id == site.Id)
-                        .Cacheable()
-                        .SingleOrDefault();
-            if (setting != null)
-                return setting.Value.To<T>();
+            var settings = GetAllSettings(site);
+            if (settings.ContainsKey(key))
+                return settings[key].Value.To<T>();
 
             return defaultValue;
         }
@@ -114,11 +111,11 @@ namespace MrCMS.Settings
             {
                 //insert
                 setting = new Setting
-                              {
-                                  Name = key,
-                                  Value = valueStr,
-                                  Site = site
-                              };
+                {
+                    Name = key,
+                    Value = valueStr,
+                    Site = site
+                };
             }
             _session.Transact(session => session.SaveOrUpdate(setting));
         }
@@ -142,10 +139,15 @@ namespace MrCMS.Settings
         /// <returns>Setting collection</returns>
         private IDictionary<string, KeyValuePair<int, string>> GetAllSettings(Site site)
         {
+            return _allSettings = _allSettings ?? GetAllSettingsInternal(site);
+        }
+
+        private IDictionary<string, KeyValuePair<int, string>> GetAllSettingsInternal(Site site)
+        {
             var settings =
                 _session.QueryOver<Setting>().Cacheable()
                         .List()
-                        .Where(setting => setting.Site == site);
+                        .Where(setting => setting.Site.Id == site.Id).ToList();
             //format: <name, <id, value>>
             var dictionary = new Dictionary<string, KeyValuePair<int, string>>();
             foreach (var s in settings)
