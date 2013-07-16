@@ -1,27 +1,59 @@
-﻿@model MrCMS.Models.ACLModel
+﻿@using MrCMS.ACL
+@model MrCMS.Models.ACLModel
 @{
     ViewBag.Title = "ACL";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var settings = ViewData["settings"] as ACLSettings;
 }
 @using (Html.BeginForm())
 {
     <fieldset>
         <legend>ACL
             <span class="btn-group display-inline pull-right">
+                @if (settings.ACLEnabled)
+                {
+                    @Html.ActionLink("Disable ACL", "Disable", "ACL", null, new { id = "disable-acl", @class = "btn" })
+                }
+                else
+                {
+                    @Html.ActionLink("Enable ACL", "Enable", "ACL", null, new { id = "enable-acl", @class = "btn" })
+                }
                 <input class="btn btn-primary" type="submit" value="Update" />
             </span>
         </legend>
     </fieldset>
     <div class="row-fluid">
         <div class="span12">
-            <h4>Features</h4>
-            @{ Html.RenderPartial("Group", new ViewDataDictionary(Model.Features) { { "roles", Model.Roles } });}
-            <hr />
-            <h4>Webpages</h4>
-            @{ Html.RenderPartial("Group", new ViewDataDictionary(Model.Webpages) { { "roles", Model.Roles } });}
-            <hr />
-            <h4>Widgets</h4>
-            @{ Html.RenderPartial("Group", new ViewDataDictionary(Model.Widgets) { { "roles", Model.Roles } });}
+            @if (settings.ACLEnabled)
+            {
+                <h4>Features</h4>
+                Html.RenderPartial("Group", new ViewDataDictionary(Model.Features) { { "roles", Model.Roles } });
+                <hr />
+                <h4>Webpages</h4>
+                Html.RenderPartial("Group", new ViewDataDictionary(Model.Webpages) { { "roles", Model.Roles } });
+                <hr />
+                <h4>Widgets</h4>
+                Html.RenderPartial("Group", new ViewDataDictionary(Model.Widgets) { { "roles", Model.Roles } });
+            }
+            else
+            {
+                <p>ACL is disabled.</p>
+            }
         </div>
     </div>
+}
+@section JavaScriptBlock
+{
+    <script>
+        $(function () {
+            $('#disable-acl').click(function () {
+                post_to_url($(this).attr('href'), {});
+                return false;
+            });
+            $('#enable-acl').click(function () {
+                post_to_url($(this).attr('href'), {});
+                return false;
+            });
+        })
+    </script>
 }

@@ -74,9 +74,13 @@ namespace MrCMS.Settings
 
             key = key.Trim().ToLowerInvariant();
 
-            var settings = GetAllSettings(site);
-            if (settings.ContainsKey(key))
-                return settings[key].Value.To<T>();
+            var setting =
+                _session.QueryOver<Setting>()
+                        .Where(s => s.Name == key && s.Site.Id == site.Id)
+                        .Cacheable()
+                        .SingleOrDefault();
+            if (setting != null)
+                return setting.Value.To<T>();
 
             return defaultValue;
         }

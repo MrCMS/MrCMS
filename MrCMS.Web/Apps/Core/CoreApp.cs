@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
@@ -8,7 +7,6 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
-using MrCMS.Indexing.Management;
 using MrCMS.Installation;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -138,7 +136,7 @@ namespace MrCMS.Web.Apps.Core
             mediaSettings.ResizeQuality = 90;
 
             var configurationProvider = new ConfigurationProvider(new SettingService(session),
-                                                                  currentSite);
+                                                                  currentSite, session);
             var fileSystemSettings = new FileSystemSettings { StorageType = typeof(FileSystem).FullName };
             configurationProvider.SaveSettings(siteSettings);
             configurationProvider.SaveSettings(mediaSettings);

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using MrCMS.Apps;
 using MrCMS.Entities.People;
 using System.Linq;
+using MrCMS.Settings;
+using MrCMS.Website;
 
 namespace MrCMS.ACL
 {
@@ -27,6 +29,8 @@ namespace MrCMS.ACL
 
         private bool CanAccessLogic(UserRole userRole, string operation, string typeName)
         {
+            if (!MrCMSApplication.Get<ACLSettings>().ACLEnabled)
+                return true;
             var aclRoles = userRole.ACLRoles;
             var b = GetKey(operation, typeName);
             return aclRoles.Any(role => role.Name == b);
@@ -66,6 +70,16 @@ namespace MrCMS.ACL
                                }
                        };
         }
+    }
+
+    public class ACLSettings : SiteSettingsBase
+    {
+        public override bool RenderInSettings
+        {
+            get { return false; }
+        }
+
+        public bool ACLEnabled { get; set; }
     }
 
     public abstract class ACLRule<T> : ACLRule where T : MrCMSApp, new()
