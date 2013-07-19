@@ -73,7 +73,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [MrCMSTypeACL(typeof(Webpage), TypeACLRule.Edit)]
-        public override ActionResult Edit(Webpage doc)
+        public override ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] Webpage doc)
         {
             return base.Edit(doc);
         }
