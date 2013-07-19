@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
+using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
 
@@ -46,6 +44,16 @@ namespace MrCMS.Services
             }
 
             return parentCategories;
+        }
+
+        public Tag GetByName(string name)
+        {
+            return _session.QueryOver<Tag>().Where(x => x.Site == CurrentRequestData.CurrentSite
+                && x.Name.IsInsensitiveLike(name, MatchMode.Exact)).SingleOrDefault();
+        }
+        public void Add(Tag tag)
+        {
+            _session.Transact(session => session.Save(tag));
         }
     }
 }

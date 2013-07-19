@@ -1,8 +1,5 @@
 using System.Collections.Generic;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.People;
-using MrCMS.Models;
 
 namespace MrCMS.Services
 {
@@ -10,5 +7,7 @@ namespace MrCMS.Services
     {
         void Delete(UrlHistory urlHistory);
         void Add(UrlHistory urlHistory);
+        IEnumerable<UrlHistory> GetAllNotForDocument(Webpage document);
+        UrlHistory GetByUrlSegment(string url);
     }
 }

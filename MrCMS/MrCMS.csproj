@@ -42,6 +42,9 @@
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\packages\EPPlus.3.1.3.3\lib\net35\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="FluentNHibernate, Version=1.3.0.733, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentNHibernate.1.3.0.733\lib\FluentNHibernate.dll</HintPath>
@@ -325,6 +328,23 @@
     <Compile Include="Services\AuthorisationService.cs" />
     <Compile Include="Services\AzureFileSystem.cs" />
     <Compile Include="Services\IACLService.cs" />
+    <Compile Include="Services\ImportExport\DTOs\DocumentImportDataTransferObject.cs" />
+    <Compile Include="Services\ImportExport\IImportExportManager.cs" />
+    <Compile Include="Services\ImportExport\IImportDocumentsService.cs" />
+    <Compile Include="Services\ImportExport\IImportDocumentsValidationService.cs" />
+    <Compile Include="Services\ImportExport\ImportExportManager.cs" />
+    <Compile Include="Services\ImportExport\ImportDocumentsService.cs" />
+    <Compile Include="Services\ImportExport\ImportDocumentsValidationService.cs" />
+    <Compile Include="Services\ImportExport\Rules\DocumentTypeIsValid.cs" />
+    <Compile Include="Services\ImportExport\Rules\DocumentUrlHistoryItemsAreValid.cs" />
+    <Compile Include="Services\ImportExport\Rules\DocumentMaxUrlSegmentLengthIs255.cs" />
+    <Compile Include="Services\ImportExport\Rules\IDocumentImportValidationRule.cs" />
+    <Compile Include="Services\ImportExport\Rules\DocumentMaxNameLengthIs255.cs" />
+    <Compile Include="Services\ImportExport\Rules\DocumentMaxStringLength.cs" />
+    <Compile Include="Services\ImportExport\Rules\DocumentMaxMetaDescriptionLengthIs250.cs" />
+    <Compile Include="Services\ImportExport\Rules\DocumentMaxMetaKeywordsLengthIs250.cs" />
+    <Compile Include="Services\ImportExport\Rules\DocumentMaxMetaTitleLengthIs250.cs" />
+    <Compile Include="Services\ImportExport\Rules\DocumentParentIsValid.cs" />
     <Compile Include="Services\IUrlHistoryService.cs" />
     <Compile Include="Services\DocumentService.cs" />
     <Compile Include="Services\FileService.cs" />

@@ -8,5 +8,7 @@ namespace MrCMS.Services
     {
         IEnumerable<AutoCompleteResult> Search(Document document, string term);
         IEnumerable<Tag> GetTags(Document document);
+        Tag GetByName(string name);
+        void Add(Tag tag);
     }
 }

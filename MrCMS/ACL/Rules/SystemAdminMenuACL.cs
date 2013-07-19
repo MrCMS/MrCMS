@@ -10,6 +10,7 @@ namespace MrCMS.ACL.Rules
         public const string Sites = "Sites";
         public const string Logs = "Logs";
         public const string Tasks = "Tasks";
+        public const string ImportExport = "Import/Export";
         public const string ACL = "ACL";
         public const string Indices = "Indices";
 
@@ -20,7 +21,7 @@ namespace MrCMS.ACL.Rules
 
         protected override List<string> GetOperations()
         {
-            return new List<string> { ShowMenu, SiteSettings, FileSystemSettings, Sites, Logs, Tasks, ACL, Indices };
+            return new List<string> { ShowMenu, SiteSettings, FileSystemSettings, Sites, Logs, Tasks, ImportExport, ACL, Indices };
         }
     }
 

@@ -41,6 +41,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\packages\EPPlus.3.1.3.3\lib\net35\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="FakeItEasy">
       <HintPath>..\packages\FakeItEasy.1.7.4507.61\lib\NET40\FakeItEasy.dll</HintPath>
     </Reference>
@@ -118,6 +121,9 @@
     <Compile Include="InMemoryDatabaseTest.cs" />
     <Compile Include="Services\FileServiceTests.cs" />
     <Compile Include="Services\ImageProcessorTests.cs" />
+    <Compile Include="Services\ImportExport\ImportExportManagerTests.cs" />
+    <Compile Include="Services\ImportExport\ImportDocumentsServiceTests.cs" />
+    <Compile Include="Services\ImportExport\ImportDocumentsValidationServiceTests.cs" />
     <Compile Include="Services\LayoutAreaServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\NavigationServiceTests.cs" />
@@ -156,6 +162,10 @@
     <Compile Include="Website\Routing\MrCMSRouteHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MrCMS.Web\MrCMS.Web.csproj">
+      <Project>{e64f6811-8373-4310-9cce-3fbca0d87826}</Project>
+      <Name>MrCMS.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MrCMS\MrCMS.csproj">
       <Project>{9D6ECC0F-CDA1-43E2-B88B-BC01299EB9CE}</Project>
       <Name>MrCMS</Name>

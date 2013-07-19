@@ -4,13 +4,9 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
-using MrCMS.Entities.Documents;
-using MrCMS.IoC;
 using MrCMS.Settings;
-using MrCMS.Website;
 using NHibernate.Proxy;
 
 namespace MrCMS.Helpers
@@ -285,6 +281,22 @@ namespace MrCMS.Helpers
         public static Type GetTypeByName(string typeName)
         {
             return _alltypes.FirstOrDefault(type => type.FullName == typeName);
+        }
+
+        public static bool IsValidInput<T>(this string value) where T : struct
+        {
+            try
+            {
+                if (value.HasValue())
+                {
+                    var convertedValue = Convert.ChangeType(value, typeof(T));
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

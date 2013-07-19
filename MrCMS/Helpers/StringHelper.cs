@@ -43,5 +43,10 @@ namespace MrCMS.Helpers
         {
             return source.IndexOf(toCheck, comp) >= 0;
         }
+
+        public static bool HasValue(this string value)
+        {
+            return !String.IsNullOrWhiteSpace(value);
+        }
     }
 }
