@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using MrCMS.Helpers;
 using MrCMS.Services.ImportExport.DTOs;
+using MrCMS.Website;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
@@ -69,11 +70,11 @@ namespace MrCMS.Services.ImportExport
                 wsInfo.Cells["C1"].Value = "Export Date";
                 wsInfo.Cells["D1"].Value = "Export Source";
 
-                wsInfo.Cells["A2"].Value = MrCMSHtmlHelper.AssemblyVersion(null);
+                wsInfo.Cells["A2"].Value = MrCMSApplication.AssemblyVersion;
                 wsInfo.Cells["B2"].Value = "Webpage";
                 wsInfo.Cells["C2"].Style.Numberformat.Format = "YYYY-MM-DDThh:mm:ss.sTZD";
                 wsInfo.Cells["C2"].Value = DateTime.UtcNow;
-                wsInfo.Cells["D2"].Value = "MrCMS " + MrCMSHtmlHelper.AssemblyVersion(null);
+                wsInfo.Cells["D2"].Value = string.Format("MrCMS {0}", MrCMSApplication.AssemblyVersion);
 
                 wsInfo.Cells["A:D"].AutoFitColumns();
                 wsInfo.Cells["A4"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
@@ -111,7 +112,6 @@ namespace MrCMS.Services.ImportExport
                     wsItems.Cells["D" + rowId].Value = items[i].Name;
                     wsItems.Cells["D" + rowId].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
                     wsItems.Cells["E" + rowId].Value = items[i].BodyContent;
-                    wsItems.Cells["E" + rowId].Style.HorizontalAlignment = ExcelHorizontalAlignment.Fill;
                     wsItems.Cells["F" + rowId].Value = items[i].MetaTitle;
                     wsItems.Cells["G" + rowId].Value = items[i].MetaDescription;
                     wsItems.Cells["G" + rowId].Style.HorizontalAlignment = ExcelHorizontalAlignment.Fill;

@@ -254,7 +254,7 @@ namespace MrCMS.Website
                        .List().OrderBy(x => x.DisplayOrder);
         }
 
-        public const string AssemblyVersion = "0.3.0.*";
-        public const string AssemblyFileVersion = "0.3.0.0";
+        public const string AssemblyVersion = "0.3.1.*";
+        public const string AssemblyFileVersion = "0.3.1.0";
     }
 }
