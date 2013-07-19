@@ -25,6 +25,7 @@ namespace MrCMS.Entities.Documents.Web
         {
             InheritAdminRolesFromParent = true;
             InheritFrontEndRolesFromParent = true;
+            Urls = new List<UrlHistory>();
         }
         private Layout.Layout _layout;
 
@@ -179,13 +180,7 @@ namespace MrCMS.Entities.Documents.Web
             }
         }
         
-        private IList<UrlHistory> _urls = new List<UrlHistory>();
-
-        public virtual IList<UrlHistory> Urls
-        {
-            get { return _urls.OrderByDescending(x => x.CreatedOn).ToList(); }
-            protected internal set { _urls = value; }
-        }
+        public virtual IList<UrlHistory> Urls { get; set; }
 
         public virtual bool IsAllowed(User currentUser)
         {

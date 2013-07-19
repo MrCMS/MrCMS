@@ -18,7 +18,7 @@
         {
             <table class="table table-striped table-condensed margin-top-10">
                 <tbody>
-                    @foreach (var url in Model.Urls)
+                    @foreach (var url in Model.Urls.OrderByDescending(history => history.CreatedOn))
                     {
                         <tr>
                             <td>
@@ -70,7 +70,7 @@
     @Html.LabelFor(x => x.CustomHeaderScripts)
     @Html.TextAreaFor(x => x.CustomHeaderScripts, new { @class = "span12" })
     @Html.ValidationMessageFor(x => x.CustomHeaderScripts, "", new { @class = "error" })
-    
+
     @Html.LabelFor(x => x.CustomFooterScripts)
     @Html.TextAreaFor(x => x.CustomFooterScripts, new { @class = "span12" })
     @Html.ValidationMessageFor(x => x.CustomFooterScripts, "", new { @class = "error" })

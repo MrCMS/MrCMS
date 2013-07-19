@@ -14,6 +14,7 @@ namespace MrCMS.Tests.Services.ImportExport
         private readonly IImportDocumentsService _importDocumentsService;
         private readonly IDocumentService _documentService;
         private readonly ImportExportManager _importExportManager;
+        private readonly IExportDocumentsService _exportDocumentsService;
 
         public ImportExportManagerTests()
         {
@@ -21,7 +22,8 @@ namespace MrCMS.Tests.Services.ImportExport
             _importDocumentsValidationService = A.Fake<IImportDocumentsValidationService>();
             _importDocumentsService = A.Fake<IImportDocumentsService>();
 
-            _importExportManager = new ImportExportManager(_importDocumentsValidationService, _importDocumentsService, _documentService);
+            _exportDocumentsService = A.Fake<IExportDocumentsService>();
+            _importExportManager = new ImportExportManager(_importDocumentsValidationService, _importDocumentsService, _exportDocumentsService, _documentService);
         }
 
         [Fact]
