@@ -1,0 +1,8 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Core.Pages.LoginPage
+           
+@Editable(Model, page => page.BodyContent)
+
+@{ Html.RenderPartial("LoginBox", ViewData["login-model"]);}
+
+@{ Html.IncludeScript("~/Apps/Core/Content/Scripts/login.js"); }

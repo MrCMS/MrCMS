@@ -1,35 +1,36 @@
 using System;
-using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website.Controllers;
 
-namespace MrCMS.Web.Controllers
+namespace MrCMS.Web.Apps.Core.Controllers
 {
-    public class LoginController : MrCMSUIController
+    public class LoginController : MrCMSAppUIController<CoreApp>
     {
         private readonly IAuthorisationService _authorisationService;
+        private readonly IDocumentService _documentService;
         private readonly IUserService _userService;
         private readonly IResetPasswordService _resetPasswordService;
 
-        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, IAuthorisationService authorisationService)
+        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, IAuthorisationService authorisationService, IDocumentService documentService)
         {
             _userService = userService;
             _resetPasswordService = resetPasswordService;
             _authorisationService = authorisationService;
+            _documentService = documentService;
         }
 
         [HttpGet]
-        [ActionName("Login")]
-        public ViewResult Get(LoginModel loginModel)
+        public ViewResult Show(LoginPage page)
         {
-            return View(loginModel);
+            ViewData["login-model"] = TempData["login-model"] as LoginModel ?? new LoginModel();
+            return View(page);
         }
 
         [HttpPost]
-        [ActionName("Login")]
         public ActionResult Post(LoginModel loginModel)
         {
             if (loginModel != null)
@@ -44,18 +45,14 @@ namespace MrCMS.Web.Controllers
                         {
                             return Redirect(loginModel.ReturnUrl ?? "~/admin");
                         }
-                        else
-                        {
-                            return Redirect(loginModel.ReturnUrl ?? "~/");
-                        }
+                        return Redirect(loginModel.ReturnUrl ?? "~/");
                     }
-                    else
-                    {
-                        loginModel.Message = "Incorrect email or password.";
-                    }
+                    loginModel.Message = "Incorrect email or password.";
                 }
             }
-            return View(loginModel ?? new LoginModel());
+            TempData["login-model"] = loginModel;
+
+            return Redirect("~/" + _documentService.GetUniquePage<LoginPage>().LiveUrlSegment);
         }
 
 
@@ -66,9 +63,10 @@ namespace MrCMS.Web.Controllers
         }
 
         [HttpGet]
-        public ViewResult ForgottenPassword()
+        public ViewResult ForgottenPassword(ForgottenPasswordPage page)
         {
-            return View();
+            ViewData["message"] = TempData["message"];
+            return View(page);
         }
 
         [HttpPost]
@@ -79,15 +77,18 @@ namespace MrCMS.Web.Controllers
             if (user != null)
             {
                 _resetPasswordService.SetResetPassword(user);
+                TempData["message"] =
+                "We have sent password reset details to you. Please check your spam folder if this is not received shortly.";
+            }
+            else
+            {
+                TempData["message"] = "Email not recognized.";
             }
 
-            return RedirectToAction("ForgottenPasswordSent");
+
+            return Redirect("~/" + _documentService.GetUniquePage<ForgottenPasswordPage>().LiveUrlSegment);
         }
 
-        public ActionResult ForgottenPasswordSent()
-        {
-            return View();
-        }
 
         #region Nested type: LoginModel
 
@@ -103,16 +104,16 @@ namespace MrCMS.Web.Controllers
         #endregion
 
         [HttpGet]
-        public ActionResult PasswordReset(Guid id)
+        public ActionResult PasswordReset(ForgottenPasswordPage page, Guid id)
         {
             var user = _userService.GetUserByResetGuid(id);
 
             if (user == null)
                 return Redirect("~");
 
-            var model = new ResetPasswordViewModel(id, user);
+            ViewData["ResetPasswordViewModel"] = new ResetPasswordViewModel(id, user);
 
-            return View(model);
+            return View(page);
         }
 
         [HttpPost]

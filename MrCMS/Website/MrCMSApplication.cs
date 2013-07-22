@@ -119,17 +119,7 @@ namespace MrCMS.Website
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
-
-            routes.MapRoute("Reset Complete", "reset-complete", new { controller = "Login", action = "ResetComplete" },
-                            new[] { RootNamespace });
-            routes.MapRoute("Reset Password", "reset-password", new { controller = "Login", action = "PasswordReset" },
-                            new[] { RootNamespace });
-            routes.MapRoute("Forgotten Password Sent", "forgotten-password-sent", new { controller = "Login", action = "ForgottenPasswordSent" },
-                            new[] { RootNamespace });
-            routes.MapRoute("Forgotten Password", "forgotten-password", new { controller = "Login", action = "ForgottenPassword" },
-                            new[] { RootNamespace });
-            routes.MapRoute("Login", "login", new { controller = "Login", action = "Login" },
-                            new[] { RootNamespace });
+            
             routes.MapRoute("Logout", "logout", new { controller = "Login", action = "Logout" },
                             new[] { RootNamespace });
 

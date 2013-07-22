@@ -131,7 +131,13 @@
     <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
+    <Compile Include="Apps\Core\Metadata\PasswordResetPageMetaData.cs" />
+    <Compile Include="Apps\Core\Metadata\ForgottenPasswordPage.cs" />
+    <Compile Include="Apps\Core\Metadata\LoginPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
+    <Compile Include="Apps\Core\Pages\PasswordResetPage.cs" />
+    <Compile Include="Apps\Core\Pages\ForgottenPasswordPage.cs" />
+    <Compile Include="Apps\Core\Pages\LoginPage.cs" />
     <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Galleries\GalleriesApp.cs" />
     <Compile Include="Apps\Core\DbConfiguration\PlainTextWidgetOveride.cs" />
@@ -183,7 +189,7 @@
     <Compile Include="Areas\Admin\Models\Dashboard.cs" />
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
-    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Apps\Core\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\InPageMrCMSAdminController.cs" />
     <Compile Include="Controllers\SEOController.cs" />
     <Compile Include="Global.asax.cs">
@@ -193,6 +199,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps\Articles\Areas\Admin\Content\Scripts\articles.js" />
+    <Content Include="Apps\Core\Content\Scripts\password-reset.js" />
+    <Content Include="Apps\Core\Content\Scripts\forgot-password.js" />
+    <Content Include="Apps\Core\Content\Scripts\login.js" />
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\build-config.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\ckeditor.js" />
@@ -1142,6 +1151,10 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\CHANGES.md" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\LICENSE.md" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\README.md" />
+    <Content Include="Apps\Core\Views\Pages\ForgottenPasswordPage.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\LoginPage.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\PasswordReset.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\LoginBox.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
@@ -1244,8 +1257,6 @@
     <Content Include="Areas\Admin\Views\Shared\InPageEditor.cshtml" />
     <Content Include="Apps\Core\Views\Shared\_BaseLayout.cshtml" />
     <Content Include="Apps\Core\Views\Pages\SearchPage.cshtml" />
-    <Content Include="Views\Login\ForgottenPassword.cshtml" />
-    <Content Include="Views\Login\ForgottenPasswordSent.cshtml" />
     <Content Include="Areas\Admin\Views\User\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\SiteList.cshtml" />
@@ -1297,8 +1308,6 @@
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
     <None Include="Properties\PublishProfiles\v0.2.pubxml" />
-    <Content Include="Views\Login\PasswordReset.cshtml" />
-    <Content Include="Views\Login\ResetComplete.cshtml" />
     <Content Include="Themes\Default\Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1397,7 +1406,6 @@
     <Content Include="Apps\Core\Views\Pages\TextPage.cshtml" />
     <Content Include="Views\Install\Setup.cshtml" />
     <Content Include="Views\Shared\_Installation.cshtml" />
-    <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Apps\Core\Views\Widgets\TextWidget.cshtml" />
   </ItemGroup>
   <PropertyGroup>

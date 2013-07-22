@@ -4,6 +4,7 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Core.Controllers;
 using MrCMS.Web.Controllers;
 using Xunit;
 
@@ -15,13 +16,15 @@ namespace MrCMS.Web.Tests.Controllers
         private IUserService _userService;
         private IResetPasswordService _resetPasswordService;
         private IAuthorisationService _authorisationService;
+        private IDocumentService _documentService;
 
         public LoginControllerTests()
         {
             _userService = A.Fake<IUserService>();
             _resetPasswordService = A.Fake<IResetPasswordService>();
             _authorisationService = A.Fake<IAuthorisationService>();
-            _loginController = new LoginController(_userService, _resetPasswordService, _authorisationService);
+            _documentService = A.Fake<IDocumentService>();
+            _loginController = new LoginController(_userService, _resetPasswordService, _authorisationService, _documentService);
         }
 
         [Fact]
@@ -36,7 +39,7 @@ namespace MrCMS.Web.Tests.Controllers
         public void LoginController_Get_ShouldReturnPassedModel()
         {
             var loginModel = new LoginController.LoginModel();
-            
+
             var result = _loginController.Get(loginModel);
 
             result.Model.Should().Be(loginModel);
@@ -92,7 +95,7 @@ namespace MrCMS.Web.Tests.Controllers
         public void LoginController_Post_IfModelIsSetAndGetUserByEmailIsInactiveUserlReturnsViewResult()
         {
             var loginModel = new LoginController.LoginModel { Email = "test@example.com" };
-            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(new User{IsActive=false});
+            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(new User { IsActive = false });
 
             var actionResult = _loginController.Post(loginModel);
 
@@ -121,8 +124,8 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfActiveUserIsLoadedIfValidateUserIsFalseReturnViewResult()
         {
-            var loginModel = new LoginController.LoginModel { Email = "test@example.com",Password = "test-pass"};
-            var user = new User {IsActive = true};
+            var loginModel = new LoginController.LoginModel { Email = "test@example.com", Password = "test-pass" };
+            var user = new User { IsActive = true };
             A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
             A.CallTo(() => _authorisationService.ValidateUser(user, "test-pass")).Returns(false);
 
@@ -141,7 +144,7 @@ namespace MrCMS.Web.Tests.Controllers
                                      ReturnUrl = "test-url",
                                      Password = "test-pass"
                                  };
-            var user = new User {IsActive = true};
+            var user = new User { IsActive = true };
             A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
             A.CallTo(() => _authorisationService.ValidateUser(user, "test-pass")).Returns(false);
 
@@ -240,7 +243,7 @@ namespace MrCMS.Web.Tests.Controllers
             var user = new User
                            {
                                IsActive = true,
-                               Roles = new List<UserRole> {new UserRole {Name = UserRole.Administrator}}
+                               Roles = new List<UserRole> { new UserRole { Name = UserRole.Administrator } }
                            };
             A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
             A.CallTo(() => _authorisationService.ValidateUser(user, "test-pass")).Returns(true);
