@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Controllers;
+using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Web.Controllers;
 using Xunit;
@@ -29,22 +30,22 @@ namespace MrCMS.Web.Tests.Controllers
         }
 
         [Fact]
-        public void LoginController_Get_ShouldReturnAViewResult()
+        public void LoginController_Show_ShouldReturnLoginPage()
         {
-            var result = _loginController.Get(null);
+            var result = _loginController.Show(new LoginPage());
 
-            result.Should().BeOfType<ViewResult>();
+            result.Should().BeOfType<LoginPage>();
         }
 
-        [Fact]
-        public void LoginController_Get_ShouldReturnPassedModel()
-        {
-            var loginModel = new LoginController.LoginModel();
+        //[Fact]
+        //public void LoginController_Get_ShouldReturnPassedModel()
+        //{
+        //    var loginModel = new LoginController.LoginModel();
 
-            var result = _loginController.Get(loginModel);
+        //    var result = _loginController.Get(loginModel);
 
-            result.Model.Should().Be(loginModel);
-        }
+        //    result.Model.Should().Be(loginModel);
+        //}
 
         [Fact]
         public void LoginController_Post_IfModelIsNullReturnsViewResult()
@@ -273,7 +274,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_ForgottenPasswordGET_ShouldReturnAView()
         {
-            _loginController.ForgottenPassword().Should().NotBeNull();
+            _loginController.ForgottenPassword("").Should().NotBeNull();
         }
 
         [Fact]
