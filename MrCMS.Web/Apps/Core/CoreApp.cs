@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
@@ -10,6 +11,7 @@ using MrCMS.Helpers;
 using MrCMS.Installation;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
 using MrCMS.Website;
 using NHibernate;
@@ -105,6 +107,44 @@ namespace MrCMS.Web.Apps.Core
             documentService.AddDocument(model.Error403);
             documentService.AddDocument(model.Error404);
             documentService.AddDocument(model.Error500);
+
+            var loginPage = new LoginPage
+            {
+                Name = "Login",
+                UrlSegment = "login",
+                CreatedOn = CurrentRequestData.Now,
+                Layout = model.BaseLayout,
+                Site = site,
+                PublishOn = CurrentRequestData.Now
+            };
+            documentService.AddDocument(loginPage);
+
+            var forgottenPassword = new ForgottenPasswordPage
+            {
+                Name = "Forgot Password",
+                UrlSegment = "forgot-password",
+                CreatedOn = CurrentRequestData.Now,
+                Layout = model.BaseLayout,
+                Site = site,
+                PublishOn = CurrentRequestData.Now,
+                Parent = loginPage,
+                DisplayOrder = 0
+            };
+            documentService.AddDocument(forgottenPassword);
+
+            var resetPassword = new ResetPasswordPage 
+            {
+                Name = "Reset Password",
+                UrlSegment = "reset-password",
+                CreatedOn = CurrentRequestData.Now,
+                Layout = model.BaseLayout,
+                Site = site,
+                PublishOn = CurrentRequestData.Now,
+                Parent = loginPage,
+                DisplayOrder = 1
+            };
+            documentService.AddDocument(resetPassword);
+
             var webpages = session.QueryOver<Webpage>().List();
             webpages.ForEach(documentService.PublishNow);
 
