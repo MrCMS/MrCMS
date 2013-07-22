@@ -115,7 +115,8 @@ namespace MrCMS.Web.Apps.Core
                 CreatedOn = CurrentRequestData.Now,
                 Layout = model.BaseLayout,
                 Site = site,
-                PublishOn = CurrentRequestData.Now
+                PublishOn = CurrentRequestData.Now,
+                DisplayOrder = 100
             };
             documentService.AddDocument(loginPage);
 

@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Controllers;
+using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Web.Controllers;
 using Xunit;
 

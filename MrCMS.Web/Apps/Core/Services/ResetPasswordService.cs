@@ -6,12 +6,15 @@ using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
+using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
+using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
 using NHibernate;
 
-namespace MrCMS.Services
+namespace MrCMS.Web.Apps.Core.Services
 {
     public interface IResetPasswordService
     {
@@ -26,9 +29,10 @@ namespace MrCMS.Services
         private readonly IUserService _userService;
         private readonly HttpRequestBase _httpRequest;
         private readonly IAuthorisationService _authorisationService;
+        private readonly IDocumentService _documentService;
         private readonly MailSettings _mailSettings;
 
-        public ResetPasswordService(ISession session, SiteSettings siteSettings, MailSettings mailSettings, IUserService userService, HttpRequestBase httpRequest, IAuthorisationService authorisationService)
+        public ResetPasswordService(ISession session, SiteSettings siteSettings, MailSettings mailSettings, IUserService userService, HttpRequestBase httpRequest, IAuthorisationService authorisationService, IDocumentService documentService)
         {
             _session = session;
             _siteSettings = siteSettings;
@@ -36,6 +40,7 @@ namespace MrCMS.Services
             _userService = userService;
             _httpRequest = httpRequest;
             _authorisationService = authorisationService;
+            _documentService = documentService;
         }
 
         public void SetResetPassword(User user)
@@ -46,8 +51,8 @@ namespace MrCMS.Services
 
 
             var urlHelper = new UrlHelper(_httpRequest.RequestContext, RouteTable.Routes);
-            var resetUrl = _httpRequest.Url.Scheme + "://" + _httpRequest.Url.Authority +
-                           urlHelper.Action("PasswordReset", "Login", new { id = user.ResetPasswordGuid });
+            var resetUrl = _httpRequest.Url.Scheme + "://" + _httpRequest.Url.Authority + "/" +
+                           _documentService.GetUniquePage<ResetPasswordPage>().LiveUrlSegment + "?id=" + user.ResetPasswordGuid;
 
             var queuedMessage = new QueuedMessage
                                     {

@@ -1,7 +1,7 @@
 using System;
 using MrCMS.Entities.People;
 
-namespace MrCMS.Models
+namespace MrCMS.Web.Apps.Core.Models
 {
     public class ResetPasswordViewModel
     {

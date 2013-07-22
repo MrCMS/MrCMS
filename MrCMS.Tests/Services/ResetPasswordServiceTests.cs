@@ -7,6 +7,7 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
+using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website;
 using Xunit;
 using FluentAssertions;

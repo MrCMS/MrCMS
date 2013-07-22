@@ -1,10 +1,13 @@
 using System;
 using System.Web.Mvc;
+using Elmah;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
+using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website.Controllers;
+using ResetPasswordViewModel = MrCMS.Web.Apps.Core.Models.ResetPasswordViewModel;
 
 namespace MrCMS.Web.Apps.Core.Controllers
 {
@@ -104,7 +107,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         #endregion
 
         [HttpGet]
-        public ActionResult PasswordReset(ForgottenPasswordPage page, Guid id)
+        public ActionResult PasswordReset(ResetPasswordPage page, Guid id)
         {
             var user = _userService.GetUserByResetGuid(id);
 
@@ -117,24 +120,18 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpPost]
-        public ActionResult PasswordReset(ResetPasswordViewModel model)
+        public RedirectResult PasswordReset(ResetPasswordViewModel model)
         {
             try
             {
                 _resetPasswordService.ResetPassword(model);
-                return RedirectToAction("ResetComplete");
+                return Redirect("~/" + _documentService.GetUniquePage<LoginPage>().LiveUrlSegment);
             }
             catch (Exception ex)
             {
-                TempData["message"] = ex.Message;
-                return RedirectToAction("PasswordReset", model.Id);
+                ErrorSignal.FromCurrentContext().Raise(ex);
+                return Redirect("~/" + _documentService.GetUniquePage<LoginPage>().LiveUrlSegment);
             }
         }
-
-        public ActionResult ResetComplete()
-        {
-            return View();
-        }
-
     }
 }

@@ -18,18 +18,17 @@ namespace MrCMS.Web.Apps.Core.Metadata
         {
             get { return "Login"; }
         }
-        public override string WebPostController
-        {
-            get { return "Login"; }
-        }
         public override string WebGetAction
         {
             get { return "PasswordReset"; }
+        }
+        public override string WebPostController
+        {
+            get { return "Login"; }
         }
         public override string WebPostAction
         {
             get { return "PasswordReset"; }
         }
-
     }
 }
