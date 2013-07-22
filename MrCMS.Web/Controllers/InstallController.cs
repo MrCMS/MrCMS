@@ -55,11 +55,12 @@ namespace MrCMS.Web.Controllers
             //set page timeout to 5 minutes
             Server.ScriptTimeout = 300;
             SetInitialWebpages(model);
-            InstallationResult installationResult = _installationService.Install(model);
+
+            var installationResult = _installationService.Install(model);
 
             if (!installationResult.Success)
                 return View(model);
-            else return Redirect("~");
+            return Redirect("~");
         }
 
         private void SetInitialWebpages(InstallModel model)

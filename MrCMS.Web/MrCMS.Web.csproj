@@ -154,6 +154,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\ACLController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MessageTemplateController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImageController.cs" />
@@ -1288,6 +1289,7 @@
     <Content Include="Areas\Admin\Views\ACL\Index.cshtml" />
     <Content Include="Content\install\images\mr-cms-thumb.jpg" />
     <Content Include="Areas\Admin\Views\ACL\Group.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\Index.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />

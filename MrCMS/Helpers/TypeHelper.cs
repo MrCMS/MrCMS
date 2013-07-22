@@ -286,5 +286,20 @@ namespace MrCMS.Helpers
         {
             return _alltypes.FirstOrDefault(type => type.FullName == typeName);
         }
+
+        public static string GetFriendlyName(this Type type)
+        {
+            return type.GetCustomAttributes(true).Any() ? (type.GetCustomAttributes(true).First() as FriendlyClassName).Name : type.Name;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class FriendlyClassName : System.Attribute
+    {
+        public string Name { get; set; }
+        public FriendlyClassName(string name)
+        {
+            Name = name;
+        }
     }
 }

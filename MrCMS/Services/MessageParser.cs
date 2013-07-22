@@ -5,10 +5,10 @@ namespace MrCMS.Services
 {
     public class MessageParser<T, T2> : IMessageParser<T, T2> where T : MessageTemplate, IMessageTemplate<T2>
     {
-        private readonly INotificationTemplateProcessor _notificationTemplateProcessor;
+        private readonly IMessageTemplateProcessor _notificationTemplateProcessor;
         private readonly ISession _session;
 
-        public MessageParser(INotificationTemplateProcessor notificationTemplateProcessor, ISession session)
+        public MessageParser(IMessageTemplateProcessor notificationTemplateProcessor, ISession session)
         {
             _notificationTemplateProcessor = notificationTemplateProcessor;
             _session = session;

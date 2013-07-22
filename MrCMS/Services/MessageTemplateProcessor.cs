@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace MrCMS.Services
 {
-    public class NotificationTemplateProcessor : INotificationTemplateProcessor
+    public class MessageTemplateProcessor : IMessageTemplateProcessor
     {
         public static List<string> GetTokens<T>()
         {
@@ -51,17 +51,16 @@ namespace MrCMS.Services
                         where method.GetParameters()[0].ParameterType == tokenProvider.GetType()
                         select method;
 
-            Dictionary<string, string> replacements = new Dictionary<string, string>();
+            var replacements = new Dictionary<string, string>();
 
             foreach (Match item in GetRegexMatches(template))
             {
-                if (item.Value.Contains("()"))
-                {
-                    string cleanMethodName = item.Value.Replace("{", "").Replace("}", "").Replace("(", "").Replace(")", ""); ;
-                    MethodInfo method = query.SingleOrDefault(x => x.Name.Contains(cleanMethodName));
-                    if (method != null)
-                        replacements.Add(method.Name + "()", method.Invoke(tokenProvider, new object[] { tokenProvider }).ToString());
-                }
+                if (!item.Value.Contains("()")) continue;
+
+                var cleanMethodName = item.Value.Replace("{", "").Replace("}", "").Replace("(", "").Replace(")", ""); ;
+                var method = query.SingleOrDefault(x => x.Name.Contains(cleanMethodName));
+                if (method != null)
+                    replacements.Add(method.Name + "()", method.Invoke(tokenProvider, new object[] { tokenProvider }).ToString());
             }
 
             return ReplaceTokensForString(template, replacements);
@@ -69,18 +68,17 @@ namespace MrCMS.Services
 
         public string ReplaceMethods<T>(T tokenProvider, string template)
         {
-            MethodInfo[] methods = tokenProvider.GetType().GetMethods();
-            Dictionary<string, string> replacements = new Dictionary<string, string>();
+            var methods = tokenProvider.GetType().GetMethods();
+            var replacements = new Dictionary<string, string>();
 
             foreach (Match item in GetRegexMatches(template))
             {
-                if (item.Value.Contains("()"))
-                {
-                    string cleanMethodName = item.Value.Replace("{", "").Replace("}", "").Replace("(", "").Replace(")", ""); ;
-                    MethodInfo method = methods.SingleOrDefault(x => x.Name.Contains(cleanMethodName));
-                    if (method != null)
-                        replacements.Add(method.Name + "()", method.Invoke(tokenProvider, null).ToString());
-                }
+                if (!item.Value.Contains("()")) continue;
+
+                var cleanMethodName = item.Value.Replace("{", "").Replace("}", "").Replace("(", "").Replace(")", ""); ;
+                var method = methods.SingleOrDefault(x => x.Name.Contains(cleanMethodName));
+                if (method != null)
+                    replacements.Add(method.Name + "()", method.Invoke(tokenProvider, null).ToString());
             }
 
             return ReplaceTokensForString(template, replacements);
@@ -89,16 +87,15 @@ namespace MrCMS.Services
         public string ReplaceTokens<T>(T tokenProvider, string template)
         {
             Type[] acceptedTypes = { typeof(String), typeof(Int32), typeof(Decimal), typeof(DateTime), typeof(Boolean), typeof(bool), typeof(float) };
-            Dictionary<string, string> replacements = new Dictionary<string, string>();
-            foreach (PropertyInfo item in tokenProvider.GetType().GetProperties())
+            var replacements = new Dictionary<string, string>();
+            foreach (var item in tokenProvider.GetType().GetProperties())
             {
-                if (acceptedTypes.Any(x => x == item.PropertyType))
+                if (!acceptedTypes.Any(x => x == item.PropertyType)) continue;
+
+                var value = item.GetValue(tokenProvider, null);
+                if (value != null)
                 {
-                    object value = item.GetValue(tokenProvider, null);
-                    if (value != null)
-                    {
-                        replacements.Add(item.Name, value.ToString());
-                    }
+                    replacements.Add(item.Name, value.ToString());
                 }
             }
 
@@ -110,8 +107,8 @@ namespace MrCMS.Services
             var regex = new Regex(@"\{([^}]+)}");
             return (regex.Replace(template, delegate(Match match)
                 {
-                    string key = match.Groups[1].Value;
-                    string replacement = replacements.ContainsKey(key) ? replacements[key] : match.Value;
+                    var key = match.Groups[1].Value;
+                    var replacement = replacements.ContainsKey(key) ? replacements[key] : match.Value;
                     return (replacement);
                 }));
         }
