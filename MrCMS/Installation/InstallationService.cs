@@ -359,7 +359,7 @@ namespace MrCMS.Installation
                     foreach (var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<MessageTemplate>())
                     {
                         var messageTemplate = Activator.CreateInstance(type) as MessageTemplate;
-                        if (messageTemplate != null) s.Save(messageTemplate.GetInitialTemplate());
+                        if (messageTemplate != null && messageTemplate.GetInitialTemplate()!=null) s.Save(messageTemplate.GetInitialTemplate());
                     }
                 });
             InitializeIndices(site, session);

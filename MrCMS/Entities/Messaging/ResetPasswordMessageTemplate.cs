@@ -9,10 +9,10 @@ namespace MrCMS.Entities.Messaging
     {
         public override MessageTemplate GetInitialTemplate()
         {
-            throw new NotImplementedException();
+            return null;
         }
 
-        public List<string> GetTokens()
+        public virtual List<string> GetTokens()
         {
             return NotificationTemplateProcessor.GetTokens<User>();
         }
