@@ -15,18 +15,18 @@ namespace MrCMS.Services
 
             // (simple) Properties
             Type[] acceptedTypes = { typeof(String), typeof(Int32), typeof(Decimal), typeof(DateTime), typeof(Boolean), typeof(bool), typeof(float) };
-            var list = (from item in type1.GetProperties() 
-                        where acceptedTypes.Any(x => x == item.PropertyType) 
+            var list = (from item in type1.GetProperties()
+                        where acceptedTypes.Any(x => x == item.PropertyType)
                         select item.Name).ToList();
             // Methods
-            list.AddRange(type1.GetMethods().Select(info => string.Format("{0}()", info.Name)));
-            
+            list.AddRange(type1.GetMethods().Where(info => !info.IsSpecialName).Select(info => string.Format("{0}()", info.Name)));
+
             // Extension Methods
             list.AddRange(from type in type1.Assembly.GetTypes()
                           where type.IsSealed && !type.IsGenericType && !type.IsNested
                           from method in type.GetMethods(BindingFlags.Static
                                                          | BindingFlags.Public | BindingFlags.NonPublic)
-                          where method.IsDefined(typeof (ExtensionAttribute), false)
+                          where method.IsDefined(typeof(ExtensionAttribute), false)
                           where method.GetParameters()[0].ParameterType == type1
                           select string.Format("{0}()", method.Name));
             return list;

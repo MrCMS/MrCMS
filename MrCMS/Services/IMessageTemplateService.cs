@@ -9,5 +9,7 @@ namespace MrCMS.Services
         IList<MessageTemplate> GetAll();
         void Save(MessageTemplate messageTemplate);
         Dictionary<Type, int> GetAllMessageTemplateTypesWithDetails();
+        MessageTemplate GetNew(string type);
+        void Reset(MessageTemplate messageTemplate);
     }
 }

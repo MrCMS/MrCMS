@@ -26,17 +26,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Add(string type)
         {
-            if (!String.IsNullOrWhiteSpace(type))
+            var template = _messageTemplateService.GetNew(type);
+            if (template != null)
             {
-                var newType = TypeHelper.GetTypeByClassName(type);
-                if (newType != null)
-                {
-                    var messageTemplate = Activator.CreateInstance(newType) as MessageTemplate;
-                    if (messageTemplate != null && messageTemplate as IMessageTemplate != null)
-                        ViewBag.AvailableTokens = (messageTemplate as IMessageTemplate).GetTokens();
-                    if (messageTemplate != null) return View(messageTemplate.GetInitialTemplate());
-                }
+                ViewBag.AvailableTokens = template.GetTokens();
+                return View(template);
             }
+     
             return RedirectToAction("Index");
         }
 
@@ -56,7 +52,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (messageTemplate != null)
             {
-                ViewBag.AvailableTokens = (messageTemplate as IMessageTemplate).GetTokens();
+                ViewBag.AvailableTokens = messageTemplate.GetTokens();
                 return View(messageTemplate);
             }
             return RedirectToAction("Index");
@@ -78,19 +74,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (messageTemplate != null)
             {
-                messageTemplate.FromAddress = messageTemplate.GetInitialTemplate().FromAddress;
-                messageTemplate.FromName = messageTemplate.GetInitialTemplate().FromName;
-                messageTemplate.ToAddress = messageTemplate.GetInitialTemplate().ToAddress;
-                messageTemplate.ToName = messageTemplate.GetInitialTemplate().ToName;
-                messageTemplate.Bcc = messageTemplate.GetInitialTemplate().Bcc;
-                messageTemplate.Cc = messageTemplate.GetInitialTemplate().Cc;
-                messageTemplate.Subject = messageTemplate.GetInitialTemplate().Subject;
-                messageTemplate.Body = messageTemplate.GetInitialTemplate().Body;
-                messageTemplate.IsHtml = messageTemplate.GetInitialTemplate().IsHtml;
-
-                _messageTemplateService.Save(messageTemplate);
-
-                ViewBag.AvailableTokens = (messageTemplate as IMessageTemplate).GetTokens();
+                _messageTemplateService.Reset(messageTemplate);
+                ViewBag.AvailableTokens = messageTemplate.GetTokens();
 
                 return View("Edit", messageTemplate);
             }

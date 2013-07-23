@@ -9,7 +9,7 @@ using MrCMS.Helpers;
 namespace MrCMS.Entities.Messaging
 {
     [FriendlyClassName("Reset Password Message Template")]
-    public class ResetPasswordMessageTemplate : MessageTemplate, IMessageTemplate
+    public class ResetPasswordMessageTemplate : MessageTemplate, IMessageTemplate<User>
     {
         public override MessageTemplate GetInitialTemplate()
         {
@@ -33,7 +33,7 @@ namespace MrCMS.Entities.Messaging
                 };
         }
 
-        public virtual List<string> GetTokens()
+        public override List<string> GetTokens()
         {
             return MessageTemplateProcessor.GetTokens<User>();
         }

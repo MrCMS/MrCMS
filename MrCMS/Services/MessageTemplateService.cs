@@ -30,7 +30,39 @@ namespace MrCMS.Services
                 messageTemplates.Add(messageTemplateType, existingMessageTemplate != null ? existingMessageTemplate.Id : 0);
             }
             return messageTemplates;
-        }   
+        }
+
+        public MessageTemplate GetNew(string type)
+        {
+            var newType = TypeHelper.GetTypeByClassName(type);
+            if (newType != null)
+            {
+                var messageTemplate = Activator.CreateInstance(newType) as MessageTemplate;
+                if (messageTemplate != null)
+                {
+                    return messageTemplate.GetInitialTemplate();
+                }
+            }
+            return null;
+        }
+
+        public void Reset(MessageTemplate messageTemplate)
+        {
+            var initialTemplate = messageTemplate.GetInitialTemplate();
+
+            messageTemplate.FromAddress = initialTemplate.FromAddress;
+            messageTemplate.FromName = initialTemplate.FromName;
+            messageTemplate.ToAddress = initialTemplate.ToAddress;
+            messageTemplate.ToName = initialTemplate.ToName;
+            messageTemplate.Bcc = initialTemplate.Bcc;
+            messageTemplate.Cc = initialTemplate.Cc;
+            messageTemplate.Subject = initialTemplate.Subject;
+            messageTemplate.Body = initialTemplate.Body;
+            messageTemplate.IsHtml = initialTemplate.IsHtml;
+
+            Save(messageTemplate);
+        }
+
         public void Save(MessageTemplate messageTemplate)
         {
             _session.Transact(session => session.SaveOrUpdate(messageTemplate));

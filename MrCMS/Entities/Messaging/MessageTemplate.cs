@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MrCMS.Entities.Messaging
 {
@@ -33,5 +34,7 @@ namespace MrCMS.Entities.Messaging
         public virtual bool IsHtml { get; set; }
 
         public abstract MessageTemplate GetInitialTemplate();
+        
+        public abstract List<string> GetTokens();
     }
 }

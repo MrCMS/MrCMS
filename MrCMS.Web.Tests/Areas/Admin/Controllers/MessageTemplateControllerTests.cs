@@ -4,7 +4,9 @@ using System.Web;
 using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
+using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Tests.Stubs;
@@ -32,7 +34,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MessageTemplateController_Index_ShouldReturnViewResult()
         {
-            var result=_messageTemplateController.Index();
+            var result = _messageTemplateController.Index();
 
             result.Should().BeOfType<ViewResult>();
         }
@@ -59,31 +61,33 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             result.As<ViewResult>().Model.Should().BeSameAs(items);
         }
 
-        //[Fact]
-        //public void MessageTemplateController_Add_ShouldReturnViewResult()
-        //{
-        //    var type = typeof(BasicMappedResetPasswordMessageTemplate);
-        //    A.CallTo(() => TypeHelper.GetTypeByClassName(type.ToString())).Returns(type);
+        [Fact]
+        public void MessageTemplateController_Add_IfTemplateIsFoundShouldReturnViewResult()
+        {
+            A.CallTo(() => _messageTemplateService.GetNew("test-type")).Returns(A.Fake<MessageTemplate>());
 
-        //    var result = _messageTemplateController.Add(type.ToString());
+            var result = _messageTemplateController.Add("test-type");
 
-        //    result.Should().BeOfType<ViewResult>();
-        //}
-
-        //[Fact]
-        //public void MessageTemplateController_Add_ShouldReturnTheResultOfServiceCallAsModel()
-        //{
-        //    var item = new BasicMappedResetPasswordMessageTemplate();
-
-        //    var result = _messageTemplateController.Add(typeof(BasicMappedResetPasswordMessageTemplate).ToString());
-
-        //    result.As<ViewResult>().Model.Should().BeSameAs(item);
-        //}
+            result.Should().BeOfType<ViewResult>();
+        }
 
         [Fact]
-        public void MessageTemplateController_Add_ShouldRedirectToIndex()
+        public void MessageTemplateController_Add_IfTemplateIsFoundShouldReturnTheResultOfServiceCallAsModel()
         {
-            var result = _messageTemplateController.Add(null);
+            var messageTemplate = A.Fake<MessageTemplate>();
+            A.CallTo(() => _messageTemplateService.GetNew("test-type")).Returns(messageTemplate);
+
+            var result = _messageTemplateController.Add("test-type");
+
+            result.As<ViewResult>().Model.Should().BeSameAs(messageTemplate);
+        }
+
+        [Fact]
+        public void MessageTemplateController_Add_IfTemplateIsNotFoundShouldRedirectToIndex()
+        {
+            A.CallTo(() => _messageTemplateService.GetNew("test-type")).Returns(null);
+
+            var result = _messageTemplateController.Add("test-type");
 
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }

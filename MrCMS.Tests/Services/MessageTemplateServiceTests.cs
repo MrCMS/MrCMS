@@ -2,6 +2,7 @@
 using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
+using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -15,29 +16,29 @@ namespace MrCMS.Tests.Services
 {
     public class MessageTemplateServiceTests : InMemoryDatabaseTest
     {
+        private MessageTemplateService _messageTemplateService;
+
+        public MessageTemplateServiceTests()
+        {
+            FakeCurrentRequestDataAndMockKernel();
+            _messageTemplateService = new MessageTemplateService(Session);
+        }
         [Fact]
         public void MessageTemplateService_Save_SavesAMessageTemplateToSession()
         {
-            FakeCurrentRequestDataAndMockKernel();
-            var session = A.Fake<ISession>();
-            var service = new MessageTemplateService(session);
-
             var messageTemplate = new BasicMappedResetPasswordMessageTemplate().GetInitialTemplate();
 
-            service.Save(messageTemplate);
+            _messageTemplateService.Save(messageTemplate);
 
-            A.CallTo(() => session.SaveOrUpdate(messageTemplate)).MustHaveHappened();
+            Session.QueryOver<MessageTemplate>().RowCount().Should().Be(1);
         }
 
         [Fact]
         public void MessageTemplateService_GetAll_ShouldReturnTheCollectionOfMessageTemplates()
         {
-            FakeCurrentRequestDataAndMockKernel();
-            var service = new MessageTemplateService(Session);
+            Enumerable.Range(1, 1).ForEach(i => Session.Transact(s => s.SaveOrUpdate(new BasicMappedResetPasswordMessageTemplate().GetInitialTemplate())));
 
-            Enumerable.Range(1, 1).ForEach(i =>Session.Transact(s => s.SaveOrUpdate(new BasicMappedResetPasswordMessageTemplate().GetInitialTemplate())));
-
-            var items = service.GetAll();
+            var items = _messageTemplateService.GetAll();
 
             items.Should().NotBeEmpty();
         }
@@ -45,12 +46,29 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void MessageTemplateService_GetAllMessageTemplateTypesWithDetails_ShouldReturnTheCollectionOfMessageTemplates()
         {
-            FakeCurrentRequestDataAndMockKernel();
-            var service = new MessageTemplateService(Session);
-
-            var items = service.GetAllMessageTemplateTypesWithDetails();
+            var items = _messageTemplateService.GetAllMessageTemplateTypesWithDetails();
 
             items.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public void MessageTemplateService_GetNew_IfTypeIsNullReturnNull()
+        {
+            var service = new MessageTemplateService(Session);
+
+            var messageTemplate = service.GetNew(null);
+
+            messageTemplate.Should().BeNull();
+        }
+
+        [Fact]
+        public void MessageTemplateService_GetNew_IfValidTypeIsPassedReturnsTemplate()
+        {
+            var service = new MessageTemplateService(Session);
+
+            var messageTemplate = service.GetNew(typeof(BasicMappedResetPasswordMessageTemplate).Name);
+
+            messageTemplate.Should().NotBeNull();
         }
 
         private static void FakeCurrentRequestDataAndMockKernel()

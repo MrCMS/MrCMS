@@ -33,7 +33,7 @@ namespace MrCMS.Tests.Stubs
             };
         }
 
-        public virtual List<string> GetTokens()
+        public override List<string> GetTokens()
         {
             return MessageTemplateProcessor.GetTokens<User>();
         }
