@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Controllers;
+using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Web.Controllers;
@@ -60,13 +61,13 @@ namespace MrCMS.Web.Tests.Controllers
         {
             var actionResult = _loginController.Post(null);
 
-            actionResult.As<ViewResult>().Model.Should().BeOfType<LoginController.LoginModel>();
+            actionResult.As<ViewResult>().Model.Should().BeOfType<LoginModel>();
         }
 
         [Fact]
         public void LoginController_Post_IfModelIsSetAndGetUserByEmailIsNullReturnsViewResult()
         {
-            var loginModel = new LoginController.LoginModel { Email = "test@example.com" };
+            var loginModel = new LoginModel { Email = "test@example.com" };
             A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(null);
 
             var actionResult = _loginController.Post(loginModel);
@@ -77,7 +78,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfModelIsSetAndGetUserByEmailIsNullPassesBackEmailRememberMeAndReturnUrl()
         {
-            var loginModel = new LoginController.LoginModel
+            var loginModel = new LoginModel
             {
                 Email = "test@example.com",
                 RememberMe = true,
@@ -87,7 +88,7 @@ namespace MrCMS.Web.Tests.Controllers
 
             var actionResult = _loginController.Post(loginModel);
 
-            var model = actionResult.As<ViewResult>().Model.As<LoginController.LoginModel>();
+            var model = actionResult.As<ViewResult>().Model.As<LoginModel>();
             model.Email.Should().Be("test@example.com");
             model.RememberMe.Should().BeTrue();
             model.ReturnUrl.Should().Be("test-url");
@@ -96,7 +97,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfModelIsSetAndGetUserByEmailIsInactiveUserlReturnsViewResult()
         {
-            var loginModel = new LoginController.LoginModel { Email = "test@example.com" };
+            var loginModel = new LoginModel { Email = "test@example.com" };
             A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(new User { IsActive = false });
 
             var actionResult = _loginController.Post(loginModel);
@@ -107,7 +108,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfModelIsSetAndGetUserByEmailIsInactiveUserPassesBackEmailRememberMeAndReturnUrl()
         {
-            var loginModel = new LoginController.LoginModel
+            var loginModel = new LoginModel
             {
                 Email = "test@example.com",
                 RememberMe = true,
@@ -117,7 +118,7 @@ namespace MrCMS.Web.Tests.Controllers
 
             var actionResult = _loginController.Post(loginModel);
 
-            var model = actionResult.As<ViewResult>().Model.As<LoginController.LoginModel>();
+            var model = actionResult.As<ViewResult>().Model.As<LoginModel>();
             model.Email.Should().Be("test@example.com");
             model.RememberMe.Should().BeTrue();
             model.ReturnUrl.Should().Be("test-url");
@@ -126,7 +127,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfActiveUserIsLoadedIfValidateUserIsFalseReturnViewResult()
         {
-            var loginModel = new LoginController.LoginModel { Email = "test@example.com", Password = "test-pass" };
+            var loginModel = new LoginModel { Email = "test@example.com", Password = "test-pass" };
             var user = new User { IsActive = true };
             A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
             A.CallTo(() => _authorisationService.ValidateUser(user, "test-pass")).Returns(false);
@@ -139,7 +140,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfActiveUserIsLoadedIfValidateUserIsFalsePassesBackEmailRememberMeAndReturnUrl()
         {
-            var loginModel = new LoginController.LoginModel
+            var loginModel = new LoginModel
                                  {
                                      Email = "test@example.com",
                                      RememberMe = true,
@@ -152,7 +153,7 @@ namespace MrCMS.Web.Tests.Controllers
 
             var actionResult = _loginController.Post(loginModel);
 
-            var model = actionResult.As<ViewResult>().Model.As<LoginController.LoginModel>();
+            var model = actionResult.As<ViewResult>().Model.As<LoginModel>();
             model.Email.Should().Be("test@example.com");
             model.RememberMe.Should().BeTrue();
             model.ReturnUrl.Should().Be("test-url");
@@ -161,7 +162,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfActiveUserIsLoadedIfValidateUserIsTrueCallSetAuthCookieWithEmailAndRememberMe()
         {
-            var loginModel = new LoginController.LoginModel
+            var loginModel = new LoginModel
             {
                 Email = "test@example.com",
                 Password = "test-pass",
@@ -179,7 +180,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfActiveUserIsLoadedIfValidateUserIsTrueReturnsRedirectResult()
         {
-            var loginModel = new LoginController.LoginModel
+            var loginModel = new LoginModel
             {
                 Email = "test@example.com",
                 Password = "test-pass",
@@ -197,7 +198,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfActiveUserIsLoadedIfValidateUserIsTrueRedirectsToReturnUrlIfSet()
         {
-            var loginModel = new LoginController.LoginModel
+            var loginModel = new LoginModel
             {
                 Email = "test@example.com",
                 Password = "test-pass",
@@ -216,7 +217,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfActiveUserIsLoadedIfValidateUserIsTrueRedirectsToRootIfReturnUrlIsNotSet()
         {
-            var loginModel = new LoginController.LoginModel
+            var loginModel = new LoginModel
             {
                 Email = "test@example.com",
                 Password = "test-pass",
@@ -235,7 +236,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Post_IfActiveUserIsLoadedAndAdminIfValidateUserIsTrueRedirectsToAdminRootIfReturnUrlIsNotSet()
         {
-            var loginModel = new LoginController.LoginModel
+            var loginModel = new LoginModel
             {
                 Email = "test@example.com",
                 Password = "test-pass",

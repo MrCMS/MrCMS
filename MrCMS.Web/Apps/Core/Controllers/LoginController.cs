@@ -4,6 +4,7 @@ using Elmah;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website.Controllers;
@@ -36,7 +37,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         [HttpPost]
         public ActionResult Post(LoginModel loginModel)
         {
-            if (loginModel != null)
+            if (loginModel != null && ModelState.IsValid)
             {
                 User user = _userService.GetUserByEmail(loginModel.Email);
                 if (user != null && user.IsActive)
@@ -93,18 +94,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
 
-        #region Nested type: LoginModel
-
-        public class LoginModel
-        {
-            public string Email { get; set; }
-            public string Password { get; set; }
-            public bool RememberMe { get; set; }
-            public string ReturnUrl { get; set; }
-            public string Message { get; set; }
-        }
-
-        #endregion
+        
 
         [HttpGet]
         public ActionResult PasswordReset(ResetPasswordPage page, Guid id)
