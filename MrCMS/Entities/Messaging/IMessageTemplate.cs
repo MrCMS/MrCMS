@@ -2,7 +2,7 @@
 
 namespace MrCMS.Entities.Messaging
 {
-    public interface IMessageTemplate<T>
+    public interface IMessageTemplate
     {
         List<string> GetTokens();
     }

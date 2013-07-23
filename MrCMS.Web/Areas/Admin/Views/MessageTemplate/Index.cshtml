@@ -1,9 +1,8 @@
 ﻿@using MrCMS.Helpers
-@model IList<Type>
+@model Dictionary<Type,int>
 @{
     ViewBag.Title = "Message Templates";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
 }
 <form>
     <fieldset>
@@ -21,10 +20,10 @@
             {
                 <tr>
                     <td>
-                        @item.GetFriendlyName()
+                        @item.Key.GetFriendlyName()
                     </td>
                     <td>
-                        asdf
+                        @(item.Value != 0 ? Html.ActionLink("Edit", "Edit", new {Id=item.Value}, new { @class = "btn btn-success" }) : Html.ActionLink("Add", "Add", new { type=item.Key.Name }, new { @class = "btn btn-primary"}))
                     </td>
                 </tr>
             }

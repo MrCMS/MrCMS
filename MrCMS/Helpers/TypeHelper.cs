@@ -4,13 +4,9 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
-using MrCMS.Entities.Documents;
-using MrCMS.IoC;
 using MrCMS.Settings;
-using MrCMS.Website;
 using NHibernate.Proxy;
 
 namespace MrCMS.Helpers
@@ -285,6 +281,11 @@ namespace MrCMS.Helpers
         public static Type GetTypeByName(string typeName)
         {
             return _alltypes.FirstOrDefault(type => type.FullName == typeName);
+        }
+
+        public static Type GetTypeByClassName(string typeName)
+        {
+            return _alltypes.FirstOrDefault(type => type.Name == typeName);
         }
 
         public static string GetFriendlyName(this Type type)

@@ -1,7 +1,9 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -18,12 +20,42 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            return View(TypeHelper.GetAllConcreteMappedClassesAssignableFrom<MessageTemplate>());
+            return View(_messageTemplateService.GetAllMessageTemplateTypesWithDetails());
+        }
+
+        [HttpGet]
+        public ActionResult Edit(MessageTemplate messageTemplate)
+        {
+            if(messageTemplate!=null)
+                return View(messageTemplate);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public ActionResult Edit(MessageTemplate messageTemplate)
+        [ActionName("Edit")]
+        public virtual ActionResult Edit_POST([IoCModelBinder(typeof(AddMessageTemplateModelBinder))] MessageTemplate messageTemplate)
         {
+            if (messageTemplate != null)
+            {
+                _messageTemplateService.Save(messageTemplate);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult Add(string type)
+        {
+            if (!String.IsNullOrWhiteSpace(type))
+            {
+                var newType = TypeHelper.GetTypeByClassName(type);
+                if (newType != null)
+                {
+                    var messageTemplate = Activator.CreateInstance(newType) as MessageTemplate;
+                    if (messageTemplate!=null && messageTemplate as IMessageTemplate != null)
+                        ViewBag.AvailableTokens = (messageTemplate as IMessageTemplate).GetTokens();
+                    if (messageTemplate != null) return View("Edit", messageTemplate.GetInitialTemplate());
+                }
+            }
             return RedirectToAction("Index");
         }
     }

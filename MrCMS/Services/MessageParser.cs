@@ -3,7 +3,7 @@ using NHibernate;
 
 namespace MrCMS.Services
 {
-    public class MessageParser<T, T2> : IMessageParser<T, T2> where T : MessageTemplate, IMessageTemplate<T2>
+    public class MessageParser<T, T2> : IMessageParser<T, T2> where T : MessageTemplate, IMessageTemplate
     {
         private readonly IMessageTemplateProcessor _notificationTemplateProcessor;
         private readonly ISession _session;

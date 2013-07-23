@@ -419,6 +419,8 @@
     <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\AddWidgetModelBinder.cs" />
+    <Compile Include="Website\Binders\AddMessageTemplateModelBinder.cs" />
+    <Compile Include="Website\Binders\MessageTemplateModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditSiteModelBinder.cs" />
