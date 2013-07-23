@@ -136,10 +136,12 @@
     <Compile Include="Apps\Core\Metadata\LoginPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
     <Compile Include="Apps\Core\Models\LoginModel.cs" />
+    <Compile Include="Apps\Core\Models\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Pages\ResetPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\ForgottenPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\LoginPage.cs" />
+    <Compile Include="Apps\Core\Services\ILoginService.cs" />
     <Compile Include="Apps\Core\Services\ResetPasswordService.cs" />
     <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Galleries\GalleriesApp.cs" />

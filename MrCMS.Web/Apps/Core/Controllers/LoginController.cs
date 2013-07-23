@@ -16,15 +16,18 @@ namespace MrCMS.Web.Apps.Core.Controllers
     {
         private readonly IAuthorisationService _authorisationService;
         private readonly IDocumentService _documentService;
+        private readonly ILoginService _loginService;
         private readonly IUserService _userService;
         private readonly IResetPasswordService _resetPasswordService;
 
-        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, IAuthorisationService authorisationService, IDocumentService documentService)
+        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, IAuthorisationService authorisationService, IDocumentService documentService,
+            ILoginService loginService)
         {
             _userService = userService;
             _resetPasswordService = resetPasswordService;
             _authorisationService = authorisationService;
             _documentService = documentService;
+            _loginService = loginService;
         }
 
         [HttpGet]
@@ -35,24 +38,14 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post(LoginModel loginModel)
+        public RedirectResult Post(LoginModel loginModel)
         {
             if (loginModel != null && ModelState.IsValid)
             {
-                User user = _userService.GetUserByEmail(loginModel.Email);
-                if (user != null && user.IsActive)
-                {
-                    if (_authorisationService.ValidateUser(user, loginModel.Password))
-                    {
-                        _authorisationService.SetAuthCookie(loginModel.Email, loginModel.RememberMe);
-                        if (user.IsAdmin)
-                        {
-                            return Redirect(loginModel.ReturnUrl ?? "~/admin");
-                        }
-                        return Redirect(loginModel.ReturnUrl ?? "~/");
-                    }
-                    loginModel.Message = "Incorrect email or password.";
-                }
+                var result = _loginService.AuthenticateUser(loginModel);
+                if (result.Success)
+                    return Redirect(result.RedirectUrl);
+                loginModel.Message = result.Message;
             }
             TempData["login-model"] = loginModel;
 
