@@ -30,7 +30,7 @@ namespace MrCMS.ACL
         private bool CanAccessLogic(UserRole userRole, string operation, string typeName = null)
         {
             if (!MrCMSApplication.Get<ACLSettings>().ACLEnabled)
-                return true;
+                return false;
             var aclRoles = userRole.ACLRoles;
             var b = GetKey(operation, typeName);
             return aclRoles.Any(role => role.Name == b);

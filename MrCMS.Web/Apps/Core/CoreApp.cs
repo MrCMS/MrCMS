@@ -116,7 +116,8 @@ namespace MrCMS.Web.Apps.Core
                 Layout = model.BaseLayout,
                 Site = site,
                 PublishOn = CurrentRequestData.Now,
-                DisplayOrder = 100
+                DisplayOrder = 100,
+                RevealInNavigation = false
             };
             documentService.AddDocument(loginPage);
 
@@ -129,7 +130,8 @@ namespace MrCMS.Web.Apps.Core
                 Site = site,
                 PublishOn = CurrentRequestData.Now,
                 Parent = loginPage,
-                DisplayOrder = 0
+                DisplayOrder = 0,
+                RevealInNavigation = false
             };
             documentService.AddDocument(forgottenPassword);
 
@@ -142,7 +144,8 @@ namespace MrCMS.Web.Apps.Core
                 Site = site,
                 PublishOn = CurrentRequestData.Now,
                 Parent = loginPage,
-                DisplayOrder = 1
+                DisplayOrder = 1,
+                RevealInNavigation = false
             };
             documentService.AddDocument(resetPassword);
 
