@@ -41,7 +41,7 @@ namespace MrCMS.Services.ImportExport
         {
             var document = _documentService.GetDocumentByUrl<Webpage>(dataTransferObject.UrlSegment) ?? (Webpage)Activator.CreateInstance(DocumentMetadataHelper.GetTypeByName(dataTransferObject.DocumentType));
 
-            if (dataTransferObject.ParentUrl != null)
+            if (!String.IsNullOrEmpty(dataTransferObject.ParentUrl))
                 document.SetParent(_documentService.GetDocumentByUrl<Webpage>(dataTransferObject.ParentUrl));
             if (dataTransferObject.UrlSegment != null)
                 document.UrlSegment = dataTransferObject.UrlSegment;
@@ -53,7 +53,7 @@ namespace MrCMS.Services.ImportExport
             document.RevealInNavigation = dataTransferObject.RevealInNavigation;
             document.RequiresSSL = dataTransferObject.RequireSSL;
             document.DisplayOrder = dataTransferObject.DisplayOrder;
-            if (dataTransferObject.ParentUrl != null)
+            if (dataTransferObject.PublishDate != null)
                 document.PublishOn = dataTransferObject.PublishDate;
 
             //Tags
