@@ -11,6 +11,7 @@
             Edit @Model.GetType().GetFriendlyName()
             <span class="pull-right">
                 @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn btn-mini" })
+                @Html.ActionLink("Reset", "Reset", "MessageTemplate", new {Id=Model.Id}, new { @class = "btn btn-mini" }) 
                 <input class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-message-template" type="submit" value="Save" /> 
             </span>
         </legend>

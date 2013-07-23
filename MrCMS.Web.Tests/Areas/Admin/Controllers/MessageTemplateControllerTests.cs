@@ -123,5 +123,34 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
+
+        //[Fact]
+        //public void MessageTemplateController_Reset_ShouldCallMessageTemplateServiceSave()
+        //{
+        //    var messageTemplate = new BasicMappedResetPasswordMessageTemplate();
+
+        //    _messageTemplateController.Reset(messageTemplate);
+
+        //    A.CallTo(() => _messageTemplateService.Save(messageTemplate)).MustHaveHappened();
+        //}
+
+        //[Fact]
+        //public void MessageTemplateController_Reset_ShouldResetMessageTemplate()
+        //{
+        //    var messageTemplate = new BasicMappedResetPasswordMessageTemplate().GetInitialTemplate();
+        //    var oldMessageTemplate = new BasicMappedResetPasswordMessageTemplate(){FromAddress = "mrcms@thought.co.uk"};
+
+        //    var result=_messageTemplateController.Reset(oldMessageTemplate);
+
+        //    result.As<ViewResult>().Model.Should().Be(messageTemplate);
+        //}
+
+        [Fact]
+        public void MessageTemplateController_Reset_ShouldRedirectToIndex()
+        {
+            var result = _messageTemplateController.Reset(null);
+
+            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
+        }
     }
 }
