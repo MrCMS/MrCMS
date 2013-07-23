@@ -1,20 +1,19 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Messaging.MessageTemplate
 @{
-    ViewBag.Title = "Edit Message Template";
+    ViewBag.Title = "Add Message Template";
 }
 
-@using (Html.BeginForm("Edit", "MessageTemplate", FormMethod.Post, new { id = "edit-message-template" }))
+@using (Html.BeginForm("Add", "MessageTemplate", FormMethod.Post, new { id = "edit-message-template" }))
 {
     <fieldset>
         <legend>
             Edit @Model.GetType().GetFriendlyName()
             <span class="pull-right">
                 @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn btn-mini" })
-                <input class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-message-template" type="submit" value="Save" /> 
+                <input class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-message-template" type="submit" value="Add Message Template" /> 
             </span>
         </legend>
-        @Html.HiddenFor(x => x.Id)
         @Html.HiddenFor(x => x.MessageTemplateType)
         <div class="row-fluid">
             <div class="span6">

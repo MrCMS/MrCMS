@@ -6,7 +6,6 @@ namespace MrCMS.Services
 {
     public interface IMessageTemplateService
     {
-        MessageTemplate Get(int id);
         IList<MessageTemplate> GetAll();
         void Save(MessageTemplate messageTemplate);
         Dictionary<Type, int> GetAllMessageTemplateTypesWithDetails();

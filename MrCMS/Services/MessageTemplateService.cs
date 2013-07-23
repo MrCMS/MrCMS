@@ -15,10 +15,6 @@ namespace MrCMS.Services
         {
             _session = session;
         }
-        public MessageTemplate Get(int id)
-        {
-            return _session.QueryOver<MessageTemplate>().Where(x => x.Id==id).Cacheable().SingleOrDefault();
-        }
         public IList<MessageTemplate> GetAll()
         {
             return _session.QueryOver<MessageTemplate>().Cacheable().List();

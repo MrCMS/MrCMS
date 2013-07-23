@@ -29,7 +29,7 @@ namespace MrCMS.Entities.Messaging
                     Cc = String.Empty,
                     Subject = String.Format("{0}Password Reset Request",CurrentRequestData.CurrentSite.Name+" - "),
                     Body = string.Format("To reset your password please click <a href=\"{0}\">here</a>", resetUrl),
-                    IsHtml = true
+                    IsHtml = false
                 };
         }
 

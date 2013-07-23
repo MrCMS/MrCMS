@@ -24,16 +24,25 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(MessageTemplate messageTemplate)
+        public ActionResult Add(string type)
         {
-            if(messageTemplate!=null)
-                return View(messageTemplate);
+            if (!String.IsNullOrWhiteSpace(type))
+            {
+                var newType = TypeHelper.GetTypeByClassName(type);
+                if (newType != null)
+                {
+                    var messageTemplate = Activator.CreateInstance(newType) as MessageTemplate;
+                    if (messageTemplate != null && messageTemplate as IMessageTemplate != null)
+                        ViewBag.AvailableTokens = (messageTemplate as IMessageTemplate).GetTokens();
+                    if (messageTemplate != null) return View(messageTemplate.GetInitialTemplate());
+                }
+            }
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        [ActionName("Edit")]
-        public virtual ActionResult Edit_POST([IoCModelBinder(typeof(AddMessageTemplateModelBinder))] MessageTemplate messageTemplate)
+        [ActionName("Add")]
+        public virtual ActionResult Add_POST([IoCModelBinder(typeof(AddMessageTemplateModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
@@ -43,18 +52,23 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Add(string type)
+        public ActionResult Edit(MessageTemplate messageTemplate)
         {
-            if (!String.IsNullOrWhiteSpace(type))
+            if (messageTemplate != null)
             {
-                var newType = TypeHelper.GetTypeByClassName(type);
-                if (newType != null)
-                {
-                    var messageTemplate = Activator.CreateInstance(newType) as MessageTemplate;
-                    if (messageTemplate!=null && messageTemplate as IMessageTemplate != null)
-                        ViewBag.AvailableTokens = (messageTemplate as IMessageTemplate).GetTokens();
-                    if (messageTemplate != null) return View("Edit", messageTemplate.GetInitialTemplate());
-                }
+                ViewBag.AvailableTokens = (messageTemplate as IMessageTemplate).GetTokens();
+                return View(messageTemplate);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ActionName("Edit")]
+        public virtual ActionResult Edit_POST([IoCModelBinder(typeof(EditMessageTemplateModelBinder))] MessageTemplate messageTemplate)
+        {
+            if (messageTemplate != null)
+            {
+                _messageTemplateService.Save(messageTemplate);
             }
             return RedirectToAction("Index");
         }

@@ -110,6 +110,7 @@
     <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
     <Compile Include="Logging\LogServiceTests.cs" />
     <Compile Include="Services\AuthorisationServiceTests.cs" />
+    <Compile Include="Services\MessageTemplateServiceTests.cs" />
     <Compile Include="Services\DocumentServiceTests.cs" />
     <Compile Include="InMemoryDatabaseTest.cs" />
     <Compile Include="Services\FileServiceTests.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Shortcodes\Forms\TextBoxRendererTests.cs" />
     <Compile Include="Stubs\BasicMappedWebpage.cs" />
     <Compile Include="Stubs\BasicMappedWidget.cs" />
+    <Compile Include="Stubs\BasicMappedResetPasswordMessageTemplate.cs" />
     <Compile Include="Stubs\StubAllowedWebpage.cs" />
     <Compile Include="Stubs\StubDisallowedWebpage.cs" />
     <Compile Include="Stubs\StubDocument.cs" />
