@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using MrCMS.Entities.People;
+using MrCMS.Settings;
 using MrCMS.Website.ActionResults;
 
 namespace MrCMS.Website.Controllers
@@ -52,6 +53,14 @@ namespace MrCMS.Website.Controllers
             }
 
             ViewData["controller-name"] = ControllerContext.RouteData.Values["controller"];
+
+            if (MrCMSApplication.Get<SiteSettings>().SSLAdmin)
+            {
+                if (!Request.IsSecureConnection && !Request.IsLocal)
+                {
+                    Response.Redirect(Request.Url.ToString().Replace("http", "https"));
+                }
+            }
 
             base.OnActionExecuting(filterContext);
         }

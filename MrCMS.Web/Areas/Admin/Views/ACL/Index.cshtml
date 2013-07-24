@@ -26,13 +26,13 @@
         <div class="span12">
             @if (settings.ACLEnabled)
             {
-                <h4>Features</h4>
+                <h3>Features</h3>
                 Html.RenderPartial("Group", new ViewDataDictionary(Model.Features) { { "roles", Model.Roles } });
                 <hr />
-                <h4>Webpages</h4>
+                <h2>Webpages</h2>
                 Html.RenderPartial("Group", new ViewDataDictionary(Model.Webpages) { { "roles", Model.Roles } });
                 <hr />
-                <h4>Widgets</h4>
+                <h2>Widgets</h2>
                 Html.RenderPartial("Group", new ViewDataDictionary(Model.Widgets) { { "roles", Model.Roles } });
             }
             else

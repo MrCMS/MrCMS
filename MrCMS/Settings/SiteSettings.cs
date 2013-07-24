@@ -40,6 +40,9 @@ namespace MrCMS.Settings
         [DisplayName("Enable inline editing")]
         public bool EnableInlineEditing { get; set; }
 
+        [DisplayName("Use SSL in Admin")]
+        public bool SSLAdmin { get; set; }
+
         [DisplayName("Site UI Culture")]
         [DropDownSelection("UiCultures")]
         public string UICulture { get; set; }
