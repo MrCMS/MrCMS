@@ -28,7 +28,7 @@ namespace MrCMS.Indexing.Management
         public override IEnumerable<AbstractField> GetFields(T obj)
         {
             var values = GetValues(obj);
-            return values.Select(value => new NumericField(FieldName) {Boost = Boost}.SetIntValue(value));
+            return values.Select(value => new NumericField(FieldName, Store, Index != Field.Index.NO) { Boost = Boost }.SetIntValue(value));
         }
     }
 }

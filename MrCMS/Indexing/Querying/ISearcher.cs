@@ -15,5 +15,6 @@ namespace MrCMS.Indexing.Querying
         IPagedList<TEntity> Search(Query query, int pageNumber, int pageSize, Filter filter = null);
         int Total(Query query, Filter filter = null);
         IList<TEntity> GetAll(Query query = null, Filter filter = null);
+        IndexSearcher IndexSearcher { get; }
     }
 }
