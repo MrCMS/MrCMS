@@ -140,7 +140,7 @@ namespace MrCMS.Services
                     return Sort(documentTypeDefinition, children);
                 }
             }
-            return children.OrderBy(arg => arg.DisplayOrder);
+            return children.Where(arg => arg.ShowInAdminNav).OrderBy(arg => arg.DisplayOrder);
         }
 
         private static IEnumerable<T> Sort<T>(DocumentMetadata documentMetadata, IEnumerable<T> children) where T : Document
