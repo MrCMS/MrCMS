@@ -166,17 +166,18 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MessageTemplateController_ResetPost_IfNoTemplateIsFoundShouldReturnViewResult()
+        public void MessageTemplateController_ResetPost_IfTemplateIsPassedShouldReturnRedirectToEdit()
         {
-            var messageTemplate = new BasicMappedResetPasswordMessageTemplate();
+            var messageTemplate = new BasicMappedResetPasswordMessageTemplate {Id = 123};
 
             var result = _messageTemplateController.Reset_POST(messageTemplate);
 
-            result.Should().BeOfType<ViewResult>();
+            result.RouteValues["action"].Should().Be("Edit");
+            result.RouteValues["id"].Should().Be(123);
         }
 
         [Fact]
-        public void MessageTemplateController_ResetPost_IfNoTemplateIsNotFoundShouldRedirectToIndex()
+        public void MessageTemplateController_ResetPost_IfNoTemplateIsFoundShouldRedirectToIndex()
         {
             var result = _messageTemplateController.Reset_POST(null);
 

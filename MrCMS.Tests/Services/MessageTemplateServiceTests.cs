@@ -20,7 +20,6 @@ namespace MrCMS.Tests.Services
 
         public MessageTemplateServiceTests()
         {
-            FakeCurrentRequestDataAndMockKernel();
             _messageTemplateService = new MessageTemplateService(Session);
         }
 
@@ -76,15 +75,6 @@ namespace MrCMS.Tests.Services
             var result=_messageTemplateService.Reset(messageTemplate);
 
             result.ToAddress.Should().Be("{Email}");
-        }
-
-        private static void FakeCurrentRequestDataAndMockKernel()
-        {
-            var mockingKernel = new MockingKernel();
-            var mailSettings = A.Fake<MailSettings>();
-            mockingKernel.Bind<MailSettings>().ToMethod(context => mailSettings).InSingletonScope();
-            MrCMSApplication.OverrideKernel(mockingKernel);
-            A.CallTo(() => CurrentRequestData.CurrentContext.Request.Url).Returns(new Uri("http://localhost:8888/"));
         }
     }
 }

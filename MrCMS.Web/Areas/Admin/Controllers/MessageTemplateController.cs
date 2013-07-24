@@ -30,7 +30,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 ViewBag.AvailableTokens = template.GetTokens();
                 return View(template);
             }
-     
+
             return RedirectToAction("Index");
         }
 
@@ -79,14 +79,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Reset")]
-        public ActionResult Reset_POST(MessageTemplate messageTemplate)
+        public RedirectToRouteResult Reset_POST(MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
                 _messageTemplateService.Reset(messageTemplate);
-                ViewBag.AvailableTokens = messageTemplate.GetTokens();
 
-                return View("Edit", messageTemplate.GetInitialTemplate());
+                return RedirectToAction("Edit", new { id = messageTemplate.Id });
             }
             return RedirectToAction("Index");
         }
