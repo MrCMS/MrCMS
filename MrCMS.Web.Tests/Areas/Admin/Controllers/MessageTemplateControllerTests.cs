@@ -6,7 +6,6 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
-using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Tests.Stubs;
@@ -128,31 +127,58 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
 
-        //[Fact]
-        //public void MessageTemplateController_Reset_ShouldCallMessageTemplateServiceSave()
-        //{
-        //    var messageTemplate = new BasicMappedResetPasswordMessageTemplate();
+        [Fact]
+        public void MessageTemplateController_Reset_ShouldReturnPartialView()
+        {
+            var messageTemplate = new BasicMappedResetPasswordMessageTemplate();
 
-        //    _messageTemplateController.Reset(messageTemplate);
+            var result = _messageTemplateController.Reset(messageTemplate);
 
-        //    A.CallTo(() => _messageTemplateService.Save(messageTemplate)).MustHaveHappened();
-        //}
-
-        //[Fact]
-        //public void MessageTemplateController_Reset_ShouldResetMessageTemplate()
-        //{
-        //    var messageTemplate = new BasicMappedResetPasswordMessageTemplate().GetInitialTemplate();
-        //    var oldMessageTemplate = new BasicMappedResetPasswordMessageTemplate(){FromAddress = "mrcms@thought.co.uk"};
-
-        //    var result=_messageTemplateController.Reset(oldMessageTemplate);
-
-        //    result.As<ViewResult>().Model.Should().Be(messageTemplate);
-        //}
+            result.Should().BeOfType<PartialViewResult>();
+        }
 
         [Fact]
-        public void MessageTemplateController_Reset_ShouldRedirectToIndex()
+        public void MessageTemplateController_Reset_ShouldReturnModelAsMessageTemplate()
+        {
+            var messageTemplate = new BasicMappedResetPasswordMessageTemplate();
+
+            var result = _messageTemplateController.Reset(messageTemplate);
+
+            result.As<PartialViewResult>().Model.Should().BeSameAs(messageTemplate);
+        }
+
+        [Fact]
+        public void MessageTemplateController_Reset_IfTemplateIsNotFoundShouldReturnRedirectToIndex()
         {
             var result = _messageTemplateController.Reset(null);
+
+            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
+        }
+
+        [Fact]
+        public void MessageTemplateController_ResetPost_ShouldCallMessageTemplateServiceReset()
+        {
+            var messageTemplate = new BasicMappedResetPasswordMessageTemplate();
+
+            _messageTemplateController.Reset_POST(messageTemplate);
+
+            A.CallTo(() => _messageTemplateService.Reset(messageTemplate)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void MessageTemplateController_ResetPost_IfNoTemplateIsFoundShouldReturnViewResult()
+        {
+            var messageTemplate = new BasicMappedResetPasswordMessageTemplate();
+
+            var result = _messageTemplateController.Reset_POST(messageTemplate);
+
+            result.Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void MessageTemplateController_ResetPost_IfNoTemplateIsNotFoundShouldRedirectToIndex()
+        {
+            var result = _messageTemplateController.Reset_POST(null);
 
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }

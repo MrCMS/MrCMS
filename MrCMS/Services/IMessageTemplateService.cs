@@ -10,6 +10,6 @@ namespace MrCMS.Services
         void Save(MessageTemplate messageTemplate);
         Dictionary<Type, int> GetAllMessageTemplateTypesWithDetails();
         MessageTemplate GetNew(string type);
-        void Reset(MessageTemplate messageTemplate);
+        MessageTemplate Reset(MessageTemplate messageTemplate);
     }
 }

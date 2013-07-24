@@ -46,7 +46,7 @@ namespace MrCMS.Services
             return null;
         }
 
-        public void Reset(MessageTemplate messageTemplate)
+        public MessageTemplate Reset(MessageTemplate messageTemplate)
         {
             var initialTemplate = messageTemplate.GetInitialTemplate();
 
@@ -61,6 +61,8 @@ namespace MrCMS.Services
             messageTemplate.IsHtml = initialTemplate.IsHtml;
 
             Save(messageTemplate);
+
+            return messageTemplate;
         }
 
         public void Save(MessageTemplate messageTemplate)

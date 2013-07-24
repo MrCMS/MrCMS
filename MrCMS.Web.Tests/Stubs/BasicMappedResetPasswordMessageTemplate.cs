@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Services;
-using MrCMS.Settings;
-using MrCMS.Website;
 
 namespace MrCMS.Web.Tests.Stubs
 {

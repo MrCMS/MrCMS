@@ -23,6 +23,7 @@ namespace MrCMS.Tests.Services
             FakeCurrentRequestDataAndMockKernel();
             _messageTemplateService = new MessageTemplateService(Session);
         }
+
         [Fact]
         public void MessageTemplateService_Save_SavesAMessageTemplateToSession()
         {
@@ -54,9 +55,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void MessageTemplateService_GetNew_IfTypeIsNullReturnNull()
         {
-            var service = new MessageTemplateService(Session);
-
-            var messageTemplate = service.GetNew(null);
+            var messageTemplate = _messageTemplateService.GetNew(null);
 
             messageTemplate.Should().BeNull();
         }
@@ -64,11 +63,19 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void MessageTemplateService_GetNew_IfValidTypeIsPassedReturnsTemplate()
         {
-            var service = new MessageTemplateService(Session);
-
-            var messageTemplate = service.GetNew(typeof(BasicMappedResetPasswordMessageTemplate).Name);
+            var messageTemplate = _messageTemplateService.GetNew(typeof(BasicMappedResetPasswordMessageTemplate).Name);
 
             messageTemplate.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void MessageTemplateService_Reset_ShouldResetMessageTemplateToInitialTemplate()
+        {
+            var messageTemplate = new BasicMappedResetPasswordMessageTemplate() { ToAddress = "info@thought.co.uk" };
+
+            var result=_messageTemplateService.Reset(messageTemplate);
+
+            result.ToAddress.Should().Be("{Email}");
         }
 
         private static void FakeCurrentRequestDataAndMockKernel()

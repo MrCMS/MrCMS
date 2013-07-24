@@ -1,7 +1,5 @@
-﻿using System;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using MrCMS.Entities.Messaging;
-using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
@@ -38,7 +36,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Add")]
-        public virtual ActionResult Add_POST([IoCModelBinder(typeof(AddMessageTemplateModelBinder))] MessageTemplate messageTemplate)
+        public ActionResult Add_POST([IoCModelBinder(typeof(AddMessageTemplateModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
@@ -60,7 +58,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Edit")]
-        public virtual ActionResult Edit_POST([IoCModelBinder(typeof(EditMessageTemplateModelBinder))] MessageTemplate messageTemplate)
+        public ActionResult Edit_POST([IoCModelBinder(typeof(EditMessageTemplateModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
@@ -70,7 +68,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public virtual ActionResult Reset(MessageTemplate messageTemplate)
+        public ActionResult Reset(MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
@@ -81,7 +79,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Reset")]
-        public virtual ActionResult Reset_POST(MessageTemplate messageTemplate)
+        public ActionResult Reset_POST(MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
