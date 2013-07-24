@@ -1293,6 +1293,7 @@
     <Content Include="Areas\Admin\Views\MessageTemplate\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\Reset.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />

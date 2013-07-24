@@ -74,10 +74,21 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (messageTemplate != null)
             {
+                return PartialView(messageTemplate);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ActionName("Reset")]
+        public virtual ActionResult Reset_POST(MessageTemplate messageTemplate)
+        {
+            if (messageTemplate != null)
+            {
                 _messageTemplateService.Reset(messageTemplate);
                 ViewBag.AvailableTokens = messageTemplate.GetTokens();
 
-                return View("Edit", messageTemplate);
+                return View("Edit", messageTemplate.GetInitialTemplate());
             }
             return RedirectToAction("Index");
         }

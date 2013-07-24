@@ -1,0 +1,15 @@
+﻿@model MrCMS.Entities.Messaging.MessageTemplate
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+@using (Html.BeginForm("Reset", "MessageTemplate", new { id = Model.Id }, FormMethod.Post))
+{
+    <div class="modal-header">
+        <h3>Reset Message Template</h3>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to reset this message template? This action cannot be undone.
+        <br />
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn-primary btn" value="Reset & Close" />
+    </div>
+}
