@@ -1,42 +1,70 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
+using MrCMS.Services;
 using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
-    public abstract class IndexManagementTask : BackgroundTask
+    public abstract class IndexManagementTask<T> : BackgroundTask where T : SiteEntity
     {
-        protected SiteEntity Entity;
+        protected T Entity;
 
-        protected IndexManagementTask(SiteEntity entity)
+        protected IndexManagementTask(T entity)
         {
             Entity = entity;
         }
-        protected List<Type> GetDefinitionTypes(Type entityType)
+        protected List<Type> GetDefinitionTypes()
         {
-            var indexDefinitionTypes = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IIndexDefinition<>));
-            var definitionTypes = indexDefinitionTypes.Where(type =>
+            var definitionTypes = IndexDefinitionTypes.Where(type =>
+            {
+                var indexDefinitionInterface =
+                    type.GetInterfaces()
+                        .FirstOrDefault(
+                            interfaceType =>
+                            interfaceType.IsGenericType &&
+                            interfaceType.GetGenericTypeDefinition() ==
+                            typeof(IIndexDefinition<>));
+                var genericArgument =
+                    indexDefinitionInterface.GetGenericArguments()[
+                        0];
+
+                return
+                    genericArgument.IsAssignableFrom(typeof(T));
+            }).ToList();
+            return definitionTypes;
+        }
+
+        protected List<Type> GetRelatedDefinitionTypes()
+        {
+            var definitionTypes = IndexDefinitionTypes.Where(type =>
                                                                  {
-                                                                     var indexDefinitionInterface =
+                                                                     var interfaces =
                                                                          type.GetInterfaces()
-                                                                             .FirstOrDefault(
+                                                                             .Where(
                                                                                  interfaceType =>
                                                                                  interfaceType.IsGenericType &&
                                                                                  interfaceType.GetGenericTypeDefinition() ==
-                                                                                 typeof(IIndexDefinition<>));
-                                                                     var genericArgument =
-                                                                         indexDefinitionInterface.GetGenericArguments()[
-                                                                             0];
+                                                                                 typeof (IRelatedItemIndexDefinition<,>));
 
                                                                      return
-                                                                         genericArgument.IsAssignableFrom(entityType);
+                                                                         interfaces.Any(
+                                                                             relatedDefinitionType =>
+                                                                             relatedDefinitionType.GetGenericArguments()
+                                                                                 [0].IsAssignableFrom(typeof (T)));
+
                                                                  }).ToList();
             return definitionTypes;
+        }
+
+        private static List<Type> IndexDefinitionTypes
+        {
+            get { return TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IIndexDefinition<>)); }
         }
 
         public override void Execute()
@@ -45,16 +73,31 @@ namespace MrCMS.Tasks
             {
                 Entity = GetObject();
                 CurrentRequestData.SetTaskSite(Session.Get<Site>(Entity.Site.Id));
-                ExecuteLogic();
+
+                var definitionTypes = GetDefinitionTypes();
+                foreach (var indexManagerBase in definitionTypes.Select(IndexService.GetIndexManagerBase))
+                    ExecuteLogic(indexManagerBase, Entity);
+                var relatedDefinitionTypes = GetRelatedDefinitionTypes();
+                foreach (var type in relatedDefinitionTypes)
+                {
+                    var instance = Activator.CreateInstance(type);
+                    var indexManagerBase = IndexService.GetIndexManagerBase(type);
+                    var methodInfo = type.GetMethodExt("GetEntitiesToUpdate", typeof (T));
+                    var toUpdate = methodInfo.Invoke(instance, new[] {Entity}) as IEnumerable;
+                    foreach (var entity in toUpdate)
+                    {
+                        indexManagerBase.Update(entity);
+                    }
+                }
                 CurrentRequestData.SetTaskSite(null);
             }
         }
 
-        protected virtual SiteEntity GetObject()
+        protected virtual T GetObject()
         {
-            return Session.Get(Entity.GetType(), Entity.Id) as SiteEntity;
+            return Session.Get(typeof(T), Entity.Id) as T;
         }
 
-        protected abstract void ExecuteLogic();
+        protected abstract void ExecuteLogic(IIndexManagerBase manager, T entity);
     }
 }

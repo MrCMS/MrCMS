@@ -1,21 +1,18 @@
-﻿using System.Linq;
-using MrCMS.Entities;
-using MrCMS.Services;
+﻿using MrCMS.Entities;
+using MrCMS.Indexing.Management;
 
 namespace MrCMS.Tasks
 {
-    public class UpdateIndicesTask : IndexManagementTask
+    public class UpdateIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
-        public UpdateIndicesTask(SiteEntity entity)
+        public UpdateIndicesTask(T entity)
             : base(entity)
         {
         }
 
-        protected override void ExecuteLogic()
+        protected override void ExecuteLogic(IIndexManagerBase manager, T entity)
         {
-            var definitionTypes = GetDefinitionTypes(Entity.GetType());
-            foreach (var indexManagerBase in definitionTypes.Select(IndexService.GetIndexManagerBase))
-                indexManagerBase.Update(Entity);
+            manager.Update(entity);
         }
     }
 }

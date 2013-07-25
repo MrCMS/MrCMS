@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Apps;
 using MrCMS.Settings;
 
 namespace MrCMS.Website
@@ -171,7 +172,7 @@ namespace MrCMS.Website
         private const string _cacheKeyPrefix_Master = "Master";
         private const string _cacheKeyPrefix_Partial = "Partial";
         private const string _cacheKeyPrefix_View = "View";
-        private static readonly string[] _emptyLocations = new string[0];
+        private static readonly List<string> _emptyLocations = new List<string>();
 
         private VirtualPathProvider _vpp;
         internal Func<string, string> GetExtensionThunk = VirtualPathUtility.GetExtension;
@@ -253,7 +254,7 @@ namespace MrCMS.Website
                 throw new ArgumentException("Argument null or empty", "partialViewName");
             }
 
-            string[] searched;
+            List<string> searched;
             string controllerName = controllerContext.RouteData.GetRequiredString("controller");
             string partialPath = GetPath(controllerContext, PartialViewLocationFormats, AreaPartialViewLocationFormats, AppPartialViewLocationFormats, "PartialViewLocationFormats", partialViewName, controllerName, _cacheKeyPrefix_Partial, useCache, out searched);
 
@@ -276,8 +277,8 @@ namespace MrCMS.Website
                 throw new ArgumentException("Argument null or empty", "viewName");
             }
 
-            string[] viewLocationsSearched;
-            string[] masterLocationsSearched;
+            List<string> viewLocationsSearched;
+            List<string> masterLocationsSearched;
 
             string controllerName = controllerContext.RouteData.GetRequiredString("controller");
             string viewPath = GetPath(controllerContext, ViewLocationFormats, AreaViewLocationFormats, AppViewLocationFormats, "ViewLocationFormats", viewName, controllerName, _cacheKeyPrefix_View, useCache, out viewLocationsSearched);
@@ -291,7 +292,7 @@ namespace MrCMS.Website
             return new ViewEngineResult(CreateView(controllerContext, viewPath, masterPath), this);
         }
 
-        private string GetPath(ControllerContext controllerContext, string[] locations, string[] areaLocations, string[] appLocations, string locationsPropertyName, string name, string controllerName, string cacheKeyPrefix, bool useCache, out string[] searchedLocations)
+        private string GetPath(ControllerContext controllerContext, string[] locations, string[] areaLocations, string[] appLocations, string locationsPropertyName, string name, string controllerName, string cacheKeyPrefix, bool useCache, out List<string> searchedLocations)
         {
             searchedLocations = _emptyLocations;
 
@@ -325,38 +326,41 @@ namespace MrCMS.Website
                                                        appName, themeName, cacheKey, ref searchedLocations));
         }
 
-        private string GetPathFromGeneralName(ControllerContext controllerContext, List<ViewLocation> locations, string name, string controllerName, string areaName, string appName, string themeName, string cacheKey, ref string[] searchedLocations)
+        private string GetPathFromGeneralName(ControllerContext controllerContext, List<ViewLocation> locations, string name, string controllerName, string areaName, string appName, string themeName, string cacheKey, ref List<string> searchedLocations)
         {
             string result = string.Empty;
-            searchedLocations = new string[locations.Count];
+            searchedLocations = new List<string>();
+            var appNames = MrCMSApp.AppNames.OrderBy(s => s == appName ? 0 : 1).ToList();
 
-            for (int i = 0; i < locations.Count; i++)
+            foreach (ViewLocation location in locations)
             {
-                ViewLocation location = locations[i];
-                string virtualPath = location.Format(name, controllerName, areaName, appName, themeName);
-
-                if (FileExists(controllerContext, virtualPath))
+                foreach (var app in appNames)
                 {
-                    searchedLocations = _emptyLocations;
-                    result = virtualPath;
-                    ViewLocationCache.InsertViewLocation(controllerContext.HttpContext, cacheKey, result);
-                    break;
-                }
+                    string virtualPath = location.Format(name, controllerName, areaName, app, themeName);
 
-                searchedLocations[i] = virtualPath;
+                    if (FileExists(controllerContext, virtualPath))
+                    {
+                        searchedLocations = _emptyLocations;
+                        result = virtualPath;
+                        ViewLocationCache.InsertViewLocation(controllerContext.HttpContext, cacheKey, result);
+                        break;
+                    }
+
+                    searchedLocations.Add(virtualPath);
+                }
             }
 
             return result;
         }
 
-        private string GetPathFromSpecificName(ControllerContext controllerContext, string name, string cacheKey, ref string[] searchedLocations)
+        private string GetPathFromSpecificName(ControllerContext controllerContext, string name, string cacheKey, ref List<string> searchedLocations)
         {
             string result = name;
 
             if (!(FilePathIsSupported(name) && FileExists(controllerContext, name)))
             {
                 result = string.Empty;
-                searchedLocations = new[] { name };
+                searchedLocations = new List<string> { name };
             }
 
             ViewLocationCache.InsertViewLocation(controllerContext.HttpContext, cacheKey, result);

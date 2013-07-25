@@ -1,21 +1,17 @@
-﻿using System.Linq;
-using MrCMS.Entities;
-using MrCMS.Services;
+﻿using MrCMS.Entities;
+using MrCMS.Indexing.Management;
 
 namespace MrCMS.Tasks
 {
-    public class InsertIndicesTask : IndexManagementTask
+    public class InsertIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
-        public InsertIndicesTask(SiteEntity entity)
+        public InsertIndicesTask(T entity)
             : base(entity)
         {
         }
-
-        protected override void ExecuteLogic()
+        protected override void ExecuteLogic(IIndexManagerBase manager, T entity)
         {
-            var definitionTypes = GetDefinitionTypes(Entity.GetType());
-            foreach (var indexManagerBase in definitionTypes.Select(IndexService.GetIndexManagerBase))
-                indexManagerBase.Insert(Session.Get(Entity.GetType(), Entity.Id));
+            manager.Insert(entity);
         }
     }
 }

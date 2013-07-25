@@ -4,12 +4,17 @@ using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using MrCMS.Entities;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using NHibernate;
 
 namespace MrCMS.Indexing.Management
 {
+    public interface IRelatedItemIndexDefinition<in T1, T2> : IIndexDefinition<T2>
+        where T2 : SystemEntity
+        where T1 : SystemEntity
+    {
+        new IEnumerable<T2> GetEntitiesToUpdate(T1 obj);
+    }
     public interface IIndexDefinition<T> where T : SystemEntity
     {
         /// <summary>

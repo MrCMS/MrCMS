@@ -36,6 +36,7 @@ namespace MrCMS.Apps
 
         public static readonly Dictionary<Type, string> AppWebpages = new Dictionary<Type, string>();
         public static readonly Dictionary<Type, string> AppWidgets = new Dictionary<Type, string>();
+        private static List<MrCMSApp> _allApps;
         public virtual IEnumerable<Type> BaseTypes { get { yield break; } }
 
         internal void CreateContextAndRegister(RouteCollection routes, object state)
@@ -62,27 +63,31 @@ namespace MrCMS.Apps
 
         private static void RegisterAllApps(RouteCollection routes, object state)
         {
-            foreach (Type type in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>())
-                ((MrCMSApp)Activator.CreateInstance(type)).CreateContextAndRegister(routes, state);
+            AllApps.ForEach(app => app.CreateContextAndRegister(routes, state));
         }
 
         public static void RegisterAllServices(IKernel kernel)
         {
-            foreach (Type type in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>())
-                ((MrCMSApp) Activator.CreateInstance(type)).RegisterServices(kernel);
+            AllApps.ForEach(app => app.RegisterServices(kernel));
         }
 
         public static void InstallApps(ISession session, InstallModel model, Site site)
         {
-            foreach (
-                var  app in
-                    TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>()
-                              .Select(type => ((MrCMSApp) Activator.CreateInstance(type)))
-                              .OrderBy(app => app.InstallOrder))
-                app.OnInstallation(session, model, site);
+            AllApps.OrderBy(app => app.InstallOrder).ForEach(app => app.OnInstallation(session, model, site));
+        }
+
+        private static List<MrCMSApp> AllApps
+        {
+            get
+            {
+                return _allApps = _allApps ?? TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>()
+                                                        .Select(type => ((MrCMSApp)Activator.CreateInstance(type))).ToList();
+            }
         }
 
         protected virtual int InstallOrder { get { return 10; } }
+
+        public static IEnumerable<string> AppNames { get { return AllApps.Select(app => app.AppName); } }
 
         protected abstract void RegisterServices(IKernel kernel);
 
