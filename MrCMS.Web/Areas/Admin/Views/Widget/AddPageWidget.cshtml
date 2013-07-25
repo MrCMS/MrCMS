@@ -11,21 +11,22 @@
         @Html.HiddenFor(model => model.Webpage.Id)
         <div class="row-fluid">
             <div class="span6">
-                <label class="radio">@Html.RadioButton("AddType", "page", true, new { id = "add-page" }) Page</label>
+                <label class="radio">@Html.RadioButton("AddType", "page", true, new { id = "add-page" }) This page</label>
+                <div id="show-recursive">
+                    @Html.InlineCheckboxFor(x=>x.IsRecursive, null, null, "And all child pages")
+                </div>
             </div>
             <div class="span6">
-                <label class="radio">@Html.RadioButton("AddType", "global", false, new { id = "add-global" }) All pages</label>
+                <label class="radio">@Html.RadioButton("AddType", "global", false, new { id = "add-global" }) All pages using this layout</label>
             </div>
         </div>
+    <hr class="small-margin" />
         @Html.Label("WidgetType", "Widget Type")
         @Html.DropDownList("WidgetType", WidgetHelper.AllowedWidgetTypeDropdownItems, new { data_val = "true", data_val_required = "Please select a widget type" })
         <br />
         @Html.LabelFor(model => model.Name)
         @Html.EditorFor(model => model.Name, Model.Name)
-        <div id="show-recursive">
-            @Html.LabelFor(widget => widget.IsRecursive)
-            @Html.EditorFor(widget => widget.IsRecursive)
-        </div>
+
     </div>
     <div class="modal-footer">
         <input type="submit" class="btn-success btn" value="Add widget" />

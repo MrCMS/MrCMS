@@ -29,7 +29,7 @@ namespace MrCMS.Entities.Widget
         public virtual int DisplayOrder { get; set; }
 
         [DefaultValue(true)]
-        [DisplayName("Is Recursive")]
+        [DisplayName("Show on child pages")]
         public virtual bool IsRecursive { get; set; }
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }

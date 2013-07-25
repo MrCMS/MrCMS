@@ -58,7 +58,7 @@ namespace MrCMS.Website.Controllers
             {
                 if (!Request.IsSecureConnection && !Request.IsLocal)
                 {
-                    Response.Redirect(Request.Url.ToString().Replace("http", "https"));
+                    Response.Redirect(Request.Url.ToString().Replace("http://", "https://"));
                 }
             }
 
