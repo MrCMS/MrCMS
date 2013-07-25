@@ -33,7 +33,7 @@ namespace MrCMS.Web.Apps.Core
 
         protected override void RegisterServices(IKernel kernel)
         {
-            
+
         }
 
         protected override void OnInstallation(ISession session, InstallModel model, Site site)
@@ -74,6 +74,20 @@ namespace MrCMS.Web.Apps.Core
                                       new LayoutArea
                                           {
                                               AreaName = "Main Navigation",
+                                              CreatedOn = CurrentRequestData.Now,
+                                              Layout = model.BaseLayout,
+                                              Site = site
+                                          },
+                                        new LayoutArea
+                                          {
+                                              AreaName = "Header Left",
+                                              CreatedOn = CurrentRequestData.Now,
+                                              Layout = model.BaseLayout,
+                                              Site = site
+                                          },
+                                        new LayoutArea
+                                          {
+                                              AreaName = "Header Right",
                                               CreatedOn = CurrentRequestData.Now,
                                               Layout = model.BaseLayout,
                                               Site = site
