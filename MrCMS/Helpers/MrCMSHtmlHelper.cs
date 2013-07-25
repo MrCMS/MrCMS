@@ -358,8 +358,7 @@ namespace MrCMS.Helpers
                 {
                     CurrentRequestData.ErrorSignal.Raise(exception);
                     return
-                        MvcHtmlString.Create(
-                            "We tried to load a view for the admin properties but an error occurred, which has been logged.");
+                        MvcHtmlString.Create("We could not find a custom admin view for this page. Either this page is bespoke or has no custom properties.");
                 }
             }
             return MvcHtmlString.Empty;

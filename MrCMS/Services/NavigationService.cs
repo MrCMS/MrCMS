@@ -57,7 +57,7 @@ namespace MrCMS.Services
                                NodeType = "MediaCategory",
                                CanAddChild = true
                            };
-            tree.Children = GetNodes(tree, _documentService.GetDocumentsByParent<MediaCategory>(null), null);
+            tree.Children = GetNodes(tree, _documentService.GetAdminDocumentsByParent<MediaCategory>(null), null);
 
             return tree;
         }

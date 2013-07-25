@@ -18,7 +18,7 @@ namespace MrCMS.Indexing.Querying
         private readonly ISession _session;
         protected readonly TDefinition Definition = new TDefinition();
         private IndexSearcher _searcher;
-        
+
         protected Searcher(CurrentSite currentSite, ISession session)
         {
             _session = session;
@@ -29,11 +29,11 @@ namespace MrCMS.Indexing.Querying
 
         public IPagedList<TEntity> Search(Query query, int pageNumber, int pageSize, Filter filter = null)
         {
-            var topDocs = _searcher.Search(query, filter, pageNumber*pageSize);
+            var topDocs = _searcher.Search(query, filter, pageNumber * pageSize);
 
             var entities =
                 Definition.Convert(_session,
-                                   topDocs.ScoreDocs.Skip((pageNumber - 1)*pageSize)
+                                   topDocs.ScoreDocs.Skip((pageNumber - 1) * pageSize)
                                           .Take(pageSize)
                                           .Select(doc => _searcher.Doc(doc.Doc)));
 
@@ -55,6 +55,8 @@ namespace MrCMS.Indexing.Querying
 
             return entities.ToList();
         }
+
+        public IndexSearcher IndexSearcher { get { return _searcher; } }
 
 
         private bool _disposed;

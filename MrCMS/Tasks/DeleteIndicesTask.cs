@@ -11,6 +11,11 @@ namespace MrCMS.Tasks
         {
         }
 
+        protected override SiteEntity GetObject()
+        {
+            return Entity;
+        }
+
         protected override void ExecuteLogic()
         {
             var definitionTypes = GetDefinitionTypes(Entity.GetType());
