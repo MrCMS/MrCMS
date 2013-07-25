@@ -33,7 +33,6 @@ namespace MrCMS.Services
                                       if (layout != null)
                                       {
                                           layout.LayoutAreas.Add(layoutArea);
-                                          session.SaveOrUpdate(layout);
                                       }
                                       session.SaveOrUpdate(layoutArea);
                                   });
