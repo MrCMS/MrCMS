@@ -130,14 +130,17 @@
   <ItemGroup>
     <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
+    <Compile Include="Apps\Core\Controllers\RegisterController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
     <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\ForgottenPasswordPage.cs" />
     <Compile Include="Apps\Core\Metadata\LoginPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
+    <Compile Include="Apps\Core\Models\RegisterModel.cs" />
     <Compile Include="Apps\Core\Models\LoginModel.cs" />
     <Compile Include="Apps\Core\Models\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\ResetPasswordViewModel.cs" />
+    <Compile Include="Apps\Core\Pages\RegisterPage.cs" />
     <Compile Include="Apps\Core\Pages\ResetPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\ForgottenPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\LoginPage.cs" />
@@ -1161,6 +1164,9 @@
     <Content Include="Apps\Core\Views\Pages\ResetPasswordPage.cshtml" />
     <Content Include="Apps\Core\Views\Shared\LoginBox.cshtml" />
     <Content Include="Apps\Core\Views\Shared\PasswordReset.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\RegisterPage.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\RegistrationDetails.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\RegisterForm.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
@@ -1324,6 +1330,7 @@
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Core\Content\Images\" />
     <Folder Include="Apps\Core\Entities\" />
+    <Folder Include="Apps\Core\Helpers\" />
     <Folder Include="Apps\Core\Settings\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Views\Widget\" />

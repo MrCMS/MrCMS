@@ -216,6 +216,8 @@ namespace MrCMS.Web.Apps.Core
 
         protected override void RegisterApp(MrCMSAppRegistrationContext context)
         {
+            context.MapRoute("User Registration", "Registration/RegistrationDetails", new { controller = "Registration", action = "RegistrationDetails" });
+            context.MapRoute("User Registration - check email", "Registration/CheckEmailIsNotRegistered", new { controller = "Registration", action = "CheckEmailIsNotRegistered" });
         }
     }
 }
