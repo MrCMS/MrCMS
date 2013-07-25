@@ -16,7 +16,7 @@ namespace MrCMS.Settings
     public partial class SettingService : ISettingService
     {
         private readonly ISession _session;
-        private IDictionary<string, KeyValuePair<int, string>> _allSettings;
+        private IList<Setting> _allSettings;
 
         /// <summary>
         /// Ctor
@@ -139,15 +139,7 @@ namespace MrCMS.Settings
         /// <returns>Setting collection</returns>
         private IDictionary<string, KeyValuePair<int, string>> GetAllSettings(Site site)
         {
-            return _allSettings = _allSettings ?? GetAllSettingsInternal(site);
-        }
-
-        private IDictionary<string, KeyValuePair<int, string>> GetAllSettingsInternal(Site site)
-        {
-            var settings =
-                _session.QueryOver<Setting>().Cacheable()
-                        .List()
-                        .Where(setting => setting.Site.Id == site.Id).ToList();
+            var settings = AllSettings.Where(setting => setting.Site.Id == site.Id).ToList();
             //format: <name, <id, value>>
             var dictionary = new Dictionary<string, KeyValuePair<int, string>>();
             foreach (var s in settings)
@@ -158,5 +150,11 @@ namespace MrCMS.Settings
             }
             return dictionary;
         }
+
+        private IList<Setting> AllSettings
+        {
+            get { return _allSettings = _allSettings ?? _session.QueryOver<Setting>().Cacheable().List(); }
+        }
+
     }
 }
