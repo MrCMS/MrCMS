@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
+    <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
     <Compile Include="Apps\Core\Controllers\RegisterController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
     <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetaData.cs" />
@@ -140,6 +141,8 @@
     <Compile Include="Apps\Core\Models\LoginModel.cs" />
     <Compile Include="Apps\Core\Models\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\ResetPasswordViewModel.cs" />
+    <Compile Include="Apps\Core\Models\UserAccountModel.cs" />
+    <Compile Include="Apps\Core\Pages\UserAccountPage.cs" />
     <Compile Include="Apps\Core\Pages\RegisterPage.cs" />
     <Compile Include="Apps\Core\Pages\ResetPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\ForgottenPasswordPage.cs" />
@@ -1166,7 +1169,9 @@
     <Content Include="Apps\Core\Views\Shared\PasswordReset.cshtml" />
     <Content Include="Apps\Core\Views\Pages\RegisterPage.cshtml" />
     <Content Include="Apps\Core\Views\Shared\RegistrationDetails.cshtml" />
-    <Content Include="Apps\Core\Views\Pages\RegisterForm.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\RegisterForm.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\UserAccountPage.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\UserAccountDetails.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
