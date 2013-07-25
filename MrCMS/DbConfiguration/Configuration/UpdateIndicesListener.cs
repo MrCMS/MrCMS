@@ -9,17 +9,20 @@ namespace MrCMS.DbConfiguration.Configuration
     {
         public void OnPostUpdate(PostUpdateEvent @event)
         {
-            TaskExecutor.ExecuteLater(Create(typeof (UpdateIndicesTask<>), (@event.Entity as SiteEntity)));
+            var siteEntity = @event.Entity as SiteEntity;
+            if (siteEntity != null) TaskExecutor.ExecuteLater(Create(typeof (UpdateIndicesTask<>), siteEntity));
         }
 
         public void OnPostInsert(PostInsertEvent @event)
         {
-            TaskExecutor.ExecuteLater(Create(typeof (InsertIndicesTask<>), (@event.Entity as SiteEntity)));
+            var siteEntity = @event.Entity as SiteEntity;
+            if (siteEntity != null) TaskExecutor.ExecuteLater(Create(typeof (InsertIndicesTask<>), siteEntity));
         }
 
         public void OnPostDelete(PostDeleteEvent @event)
         {
-            TaskExecutor.ExecuteLater(Create(typeof (DeleteIndicesTask<>), (@event.Entity as SiteEntity)));
+            var siteEntity = @event.Entity as SiteEntity;
+            if (siteEntity != null) TaskExecutor.ExecuteLater(Create(typeof (DeleteIndicesTask<>), siteEntity));
         }
 
         private BackgroundTask Create(Type type, SiteEntity siteEntity)
