@@ -33,6 +33,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         [HttpGet]
         public ViewResult Show(LoginPage page)
         {
+            ModelState.Clear();
             ViewData["login-model"] = TempData["login-model"] as LoginModel ?? new LoginModel();
             return View(page);
         }

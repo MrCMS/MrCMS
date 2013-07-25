@@ -170,8 +170,7 @@ namespace MrCMS.Web.Apps.Core
                 CreatedOn = CurrentRequestData.Now,
                 Layout = model.BaseLayout,
                 Site = site,
-                PublishOn = CurrentRequestData.Now,
-                RevealInNavigation = false
+                PublishOn = CurrentRequestData.Now
             };
             documentService.AddDocument(registerPage);
 
