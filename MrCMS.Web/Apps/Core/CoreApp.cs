@@ -135,7 +135,7 @@ namespace MrCMS.Web.Apps.Core
             };
             documentService.AddDocument(forgottenPassword);
 
-            var resetPassword = new ResetPasswordPage 
+            var resetPassword = new ResetPasswordPage
             {
                 Name = "Reset Password",
                 UrlSegment = "reset-password",
@@ -148,6 +148,32 @@ namespace MrCMS.Web.Apps.Core
                 RevealInNavigation = false
             };
             documentService.AddDocument(resetPassword);
+
+            var userAccountPage = new UserAccountPage
+            {
+                Name = "My Account",
+                UrlSegment = "my-account",
+                CreatedOn = CurrentRequestData.Now,
+                Layout = model.BaseLayout,
+                Site = site,
+                PublishOn = CurrentRequestData.Now,
+                Parent = loginPage,
+                DisplayOrder = 1,
+                RevealInNavigation = false
+            };
+            documentService.AddDocument(userAccountPage);
+
+            var registerPage = new RegisterPage()
+            {
+                Name = "Register",
+                UrlSegment = "register",
+                CreatedOn = CurrentRequestData.Now,
+                Layout = model.BaseLayout,
+                Site = site,
+                PublishOn = CurrentRequestData.Now,
+                RevealInNavigation = false
+            };
+            documentService.AddDocument(registerPage);
 
             var webpages = session.QueryOver<Webpage>().List();
             webpages.ForEach(documentService.PublishNow);
