@@ -298,5 +298,19 @@ namespace MrCMS.Helpers
                 return false;
             }
         }
+
+        public static bool IsValidInputDateTime(this string value)
+        {
+            try
+            {
+                DateTime result;
+                DateTime.TryParse(value, out result);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
