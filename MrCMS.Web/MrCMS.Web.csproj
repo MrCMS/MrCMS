@@ -128,6 +128,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\Articles\Areas\Admin\Controllers\ArticleController.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Controllers\AuthorInfoController.cs" />
     <Compile Include="Apps\Articles\DbConfiguration\AuthorInfoOverride.cs" />
     <Compile Include="Apps\Articles\Entities\AuthorInfo.cs" />
@@ -1185,6 +1186,8 @@
     <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Add.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Show.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Edit.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\User\Article.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Article\ForUser.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />

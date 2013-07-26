@@ -70,6 +70,10 @@
     @Html.ValidationSummary()
 }
 <hr />
+@foreach (var type in MrCMS.Entities.People.User.OwnedObjectTypes)
+{
+    @Html.RenderUserOwnedObjectProperties(type);
+}
 @foreach (var type in UserProfileData.Types)
 {
     @Html.RenderUserProfileProperties(type);

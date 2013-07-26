@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Entities;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
@@ -37,6 +38,7 @@ namespace MrCMS.Apps
         public static readonly Dictionary<Type, string> AppWebpages = new Dictionary<Type, string>();
         public static readonly Dictionary<Type, string> AppWidgets = new Dictionary<Type, string>();
         public static readonly Dictionary<Type, string> AppUserProfileDatas = new Dictionary<Type, string>();
+        public static readonly Dictionary<Type, string> AppTypes = new Dictionary<Type, string>();
         private static List<MrCMSApp> _allApps;
         public virtual IEnumerable<Type> BaseTypes { get { yield break; } }
 
@@ -53,6 +55,8 @@ namespace MrCMS.Apps
             widgetTypes.ForEach(type => AppWidgets[type] = AppName);
             var userProfileTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<UserProfileData>().FindAll(type => type.Namespace.StartsWith(this.GetType().Namespace));
             userProfileTypes.ForEach(type => AppUserProfileDatas[type] = AppName);
+            var types = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<SystemEntity>().FindAll(type => type.Namespace.StartsWith(this.GetType().Namespace));
+            types.ForEach(type => AppTypes[type] = AppName);
         }
 
         /// <summary>

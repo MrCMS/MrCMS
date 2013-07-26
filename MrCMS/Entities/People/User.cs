@@ -80,5 +80,10 @@ namespace MrCMS.Entities.People
         {
             return new T().CanAccess(this, operation, type);
         }
+
+        public static List<Type> OwnedObjectTypes
+        {
+            get { return TypeHelper.GetAllConcreteMappedClassesAssignableFrom<IBelongToUser>(); }
+        }
     }
 }

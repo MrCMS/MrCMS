@@ -365,6 +365,29 @@ namespace MrCMS.Helpers
             return MvcHtmlString.Empty;
         }
 
+        public static MvcHtmlString RenderUserOwnedObjectProperties(this HtmlHelper<User> htmlHelper, Type entityType)
+        {
+            var user = htmlHelper.ViewData.Model;
+            if (user == null)
+                return MvcHtmlString.Empty;
+            if (MrCMSApp.AppTypes.ContainsKey(entityType))
+                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppTypes[entityType];
+
+            ViewEngineResult viewEngineResult =
+                ViewEngines.Engines.FindView(new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller), entityType.Name, "");
+            if (viewEngineResult.View != null)
+            {
+                try
+                {
+                    return htmlHelper.Partial(entityType.Name, user);
+                }
+                catch (Exception exception)
+                {
+                    CurrentRequestData.ErrorSignal.Raise(exception);
+                }
+            }
+            return MvcHtmlString.Empty;
+        }
         public static MvcHtmlString RenderUserProfileProperties(this HtmlHelper<User> htmlHelper, Type userProfileType)
         {
             var user = htmlHelper.ViewData.Model;

@@ -210,6 +210,7 @@
     <Compile Include="Entities\Documents\Web\FormProperties\TextBox.cs" />
     <Compile Include="Entities\Documents\Web\UrlHistory.cs" />
     <Compile Include="Entities\Indexes\DocumentIndexDefinition.cs" />
+    <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Entities\SiteEntity.cs" />
     <Compile Include="Entities\Documents\Document.cs" />
