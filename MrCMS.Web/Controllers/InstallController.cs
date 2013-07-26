@@ -114,7 +114,7 @@ namespace MrCMS.Web.Controllers
             {
                 Name = "Contact us",
                 UrlSegment = "contact-us",
-                BodyContent = "<h1>Contact</h1>Contact us at www.mrcms.co.uk (coming soon).",
+                BodyContent = "<h1>Contact</h1>Contact us at www.mrcms.com (coming soon).",
                 RevealInNavigation = true,
             };
         }
