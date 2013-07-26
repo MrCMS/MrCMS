@@ -16,6 +16,7 @@ using System.Web.Mvc.Html;
 using System.Web.Routing;
 using System.Web.WebPages;
 using MrCMS.Apps;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Shortcodes;

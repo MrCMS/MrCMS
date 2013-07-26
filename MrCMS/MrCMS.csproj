@@ -245,6 +245,7 @@
     <Compile Include="Helpers\DocumentExtensions.cs" />
     <Compile Include="Helpers\DocumentMetadataHelper.cs" />
     <Compile Include="Helpers\EnumerableHelper.cs" />
+    <Compile Include="Helpers\ImportHelper.cs" />
     <Compile Include="Helpers\MrCMSHtmlHelper.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\PagingHelper.cs" />
