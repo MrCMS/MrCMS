@@ -77,28 +77,28 @@ namespace MrCMS.Web.Controllers
                 {
                     Name = "Home",
                     UrlSegment = "home",
-                    BodyContent = "Welcome to Mr CMS",
+                    BodyContent = "<h1>Mr CMS<h1> <p>Welcome to Mr CMS, the only CMS you will need.</p>",
                     RevealInNavigation = true,
                 };
             model.Error404 = new TextPage
                 {
                     Name = "404",
                     UrlSegment = "404",
-                    BodyContent = "Sorry, this page cannot be found.",
+                    BodyContent = "<h1>404</h1><p>Sorry, this page cannot be found.</p>",
                     RevealInNavigation = false,
                 };
             model.Error403 = new TextPage
                 {
                     Name = "403",
                     UrlSegment = "403",
-                    BodyContent = "Sorry, you are not authorized to view this page.",
+                    BodyContent = "<h1>403</h1><p>Sorry, you are not authorized to view this page.</p>",
                     RevealInNavigation = false,
                 };
             model.Error500 = new TextPage
                 {
                     Name = "500",
                     UrlSegment = "500",
-                    BodyContent = "Sorry, there has been an error.",
+                    BodyContent = "<h1>500</h1><p>Sorry, there has been an error.</p>",
                     RevealInNavigation = false,
                 };
 
@@ -106,7 +106,7 @@ namespace MrCMS.Web.Controllers
             {
                 Name = "Page 2",
                 UrlSegment = "page-2",
-                BodyContent = "Just another page!",
+                BodyContent = "<h1>Another page</h1><p>Just another page!</p>",
                 RevealInNavigation = true,
             };
 
@@ -114,7 +114,7 @@ namespace MrCMS.Web.Controllers
             {
                 Name = "Contact us",
                 UrlSegment = "contact-us",
-                BodyContent = "Contact us at www.mrcms.co.uk.",
+                BodyContent = "<h1>Contact</h1>Contact us at www.mrcms.co.uk (coming soon).",
                 RevealInNavigation = true,
             };
         }
