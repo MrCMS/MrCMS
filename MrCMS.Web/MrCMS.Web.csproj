@@ -366,6 +366,9 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\link\images\anchor.png" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\liststyle\dialogs\liststyle.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\magicline\images\icon.png" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\mediaembed\icons\hidpi\mediaembed.png" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\mediaembed\icons\mediaembed.png" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\mediaembed\plugin.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\pagebreak\images\pagebreak.gif" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\pastefromword\filter\default.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\preview\preview.html" />
@@ -451,6 +454,12 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\dialogs\wsc.css" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\dialogs\wsc.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\dialogs\wsc_ie.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\youtube\images\icon.png" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\youtube\lang\en.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\youtube\lang\hu.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\youtube\lang\ja.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\youtube\lang\pt.js" />
+    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\youtube\plugin.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\ajax.html" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\api.html" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\appendto.html" />
