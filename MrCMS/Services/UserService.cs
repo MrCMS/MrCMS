@@ -124,12 +124,12 @@ namespace MrCMS.Services
 
         public T Get<T>(User user) where T : SystemEntity, IBelongToUser
         {
-            return _session.QueryOver<T>().Where(arg => arg.User == user).Take(1).SingleOrDefault();
+            return _session.QueryOver<T>().Where(arg => arg.User == user).Take(1).Cacheable().SingleOrDefault();
         }
 
         public IList<T> GetAll<T>(User user) where T : SystemEntity, IBelongToUser
         {
-            return _session.QueryOver<T>().Where(arg => arg.User == user).List();
+            return _session.QueryOver<T>().Where(arg => arg.User == user).Cacheable().List();
         }
 
         public IPagedList<T> GetPaged<T>(User user, QueryOver<T> query = null, int page = 1, int pageSize = 10) where T : SystemEntity, IBelongToUser
