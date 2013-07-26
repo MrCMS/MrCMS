@@ -16,6 +16,7 @@ using System.Web.Mvc.Html;
 using System.Web.Routing;
 using System.Web.WebPages;
 using MrCMS.Apps;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 using MrCMS.Shortcodes;
 using MrCMS.Website;
@@ -441,11 +442,16 @@ namespace MrCMS.Helpers
                 return MvcHtmlString.Empty;
 
             var image = MrCMSApplication.Get<IImageProcessor>().GetImage(imageUrl);
-
-            if (image == null)
-                return MvcHtmlString.Empty;
-
             var tagBuilder = new TagBuilder("img");
+            if (image == null)
+            {
+                image = new MediaFile
+                    {
+                        Description = alt,
+                        Title = title
+                    };
+            }
+            
             tagBuilder.Attributes.Add("src", imageUrl);
             tagBuilder.Attributes.Add("alt", alt ?? image.Description);
             tagBuilder.Attributes.Add("title", title ?? image.Title);
