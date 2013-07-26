@@ -1,0 +1,24 @@
+﻿@using MrCMS.Web.Apps.Articles.Entities
+@model MrCMS.Entities.People.User
+@{
+    var authorInfo = Model.Get<AuthorInfo>();
+}
+<fieldset>
+    <legend>Author Info
+        <span class="btn-group display-inline pull-right">
+            @if (authorInfo == null)
+            {
+                @Html.ActionLink("Add", "Add", "AuthorInfo", new {id = Model.Id}, new {@class = "btn", data_toggle = "fb-modal"})
+            }
+            else
+            {
+                @Html.ActionLink("Edit", "Edit", "AuthorInfo", new {id = authorInfo.Id}, new {@class = "btn", data_toggle = "fb-modal"})
+            }
+        </span>
+    </legend>
+
+    @if (authorInfo != null)
+    {
+        Html.RenderAction("Show", "AuthorInfo", authorInfo);
+    }
+</fieldset>

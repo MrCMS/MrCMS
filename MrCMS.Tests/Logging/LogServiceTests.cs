@@ -74,7 +74,8 @@ namespace MrCMS.Tests.Logging
 
             var allEntriesPaged = _logService.GetEntriesPaged(2);
 
-            allEntriesPaged.Should().BeEquivalentTo(list.Skip(10).Take(10));
+            // comparing ids to more easily try and identify why this sporadically fails
+            allEntriesPaged.Select(log => log.Id).Should().BeEquivalentTo(list.Skip(10).Take(10).Select(log => log.Id));
         }
 
 

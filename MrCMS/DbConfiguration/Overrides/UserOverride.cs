@@ -9,6 +9,7 @@ namespace MrCMS.DbConfiguration.Overrides
         public void Override(AutoMapping<User> mapping)
         {
             mapping.HasManyToMany(user => user.Roles).Cascade.SaveUpdate().Cache.ReadWrite();
+            mapping.HasMany(user => user.UserProfileData).KeyColumn("UserId");
         }
     }
 }
