@@ -22,10 +22,10 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressSSLPort>44300</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -130,20 +130,30 @@
   <ItemGroup>
     <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
+    <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
+    <Compile Include="Apps\Core\Controllers\RegisterController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
+    <Compile Include="Apps\Core\Metadata\RegisterPageMedatData.cs" />
     <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetaData.cs" />
-    <Compile Include="Apps\Core\Metadata\ForgottenPasswordPage.cs" />
+    <Compile Include="Apps\Core\Metadata\ForgottenPasswordPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\LoginPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
+    <Compile Include="Apps\Core\Metadata\UserAccountMetaData.cs" />
+    <Compile Include="Apps\Core\Models\RegisterModel.cs" />
     <Compile Include="Apps\Core\Models\LoginModel.cs" />
     <Compile Include="Apps\Core\Models\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\ResetPasswordViewModel.cs" />
+    <Compile Include="Apps\Core\Models\UserAccountModel.cs" />
+    <Compile Include="Apps\Core\Pages\UserAccountPage.cs" />
+    <Compile Include="Apps\Core\Pages\RegisterPage.cs" />
     <Compile Include="Apps\Core\Pages\ResetPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\ForgottenPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\LoginPage.cs" />
     <Compile Include="Apps\Core\Services\ILoginService.cs" />
     <Compile Include="Apps\Core\Services\ResetPasswordService.cs" />
+    <Compile Include="Apps\Core\Widgets\LinkedImage.cs" />
     <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
+    <Compile Include="Apps\Core\Widgets\UserLinks.cs" />
     <Compile Include="Apps\Galleries\GalleriesApp.cs" />
     <Compile Include="Apps\Core\DbConfiguration\PlainTextWidgetOveride.cs" />
     <Compile Include="Apps\Core\DbConfiguration\TextWidgetOveride.cs" />
@@ -204,9 +214,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps\Articles\Areas\Admin\Content\Scripts\articles.js" />
-    <Content Include="Apps\Core\Content\Scripts\password-reset.js" />
+    <Content Include="Apps\Core\Content\Images\mrcms-logo.png" />
     <Content Include="Apps\Core\Content\Scripts\forgot-password.js" />
-    <Content Include="Apps\Core\Content\Scripts\login.js" />
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\build-config.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\ckeditor.js" />
@@ -1161,6 +1170,14 @@
     <Content Include="Apps\Core\Views\Pages\ResetPasswordPage.cshtml" />
     <Content Include="Apps\Core\Views\Shared\LoginBox.cshtml" />
     <Content Include="Apps\Core\Views\Shared\PasswordReset.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\RegisterPage.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\RegistrationDetails.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\RegisterForm.cshtml" />
+    <Content Include="Apps\Core\Views\Pages\UserAccountPage.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\UserAccountDetails.cshtml" />
+    <Content Include="Apps\Core\Views\Widgets\UserLinks.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\LinkedImage.cshtml" />
+    <Content Include="Apps\Core\Views\Widgets\LinkedImage.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
@@ -1322,8 +1339,8 @@
   <ItemGroup>
     <Folder Include="Apps\Articles\Controllers\" />
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
-    <Folder Include="Apps\Core\Content\Images\" />
     <Folder Include="Apps\Core\Entities\" />
+    <Folder Include="Apps\Core\Helpers\" />
     <Folder Include="Apps\Core\Settings\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Views\Widget\" />

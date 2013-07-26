@@ -33,6 +33,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         [HttpGet]
         public ViewResult Show(LoginPage page)
         {
+            ModelState.Clear();
             ViewData["login-model"] = TempData["login-model"] as LoginModel ?? new LoginModel();
             return View(page);
         }
@@ -69,6 +70,12 @@ namespace MrCMS.Web.Apps.Core.Controllers
         [HttpPost]
         public ActionResult ForgottenPassword(string email)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                TempData["message"] = "Email not recognized.";
+                return Redirect("~/" + _documentService.GetUniquePage<ForgottenPasswordPage>().LiveUrlSegment);
+            }
+
             var user = _userService.GetUserByEmail(email);
 
             if (user != null)
@@ -81,8 +88,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             {
                 TempData["message"] = "Email not recognized.";
             }
-
-
+            
             return Redirect("~/" + _documentService.GetUniquePage<ForgottenPasswordPage>().LiveUrlSegment);
         }
 

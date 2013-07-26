@@ -61,8 +61,9 @@ namespace MrCMS.Services
 
         public User GetUserByEmail(string email)
         {
+            string trim = email.Trim();
             return
-                _session.QueryOver<User>().Where(user => user.Email.IsLike(email, MatchMode.Exact)).Cacheable().
+                _session.QueryOver<User>().Where(user => user.Email==trim).Cacheable().
                     SingleOrDefault();
         }
 

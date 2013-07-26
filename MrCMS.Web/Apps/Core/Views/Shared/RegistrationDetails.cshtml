@@ -1,0 +1,67 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Core.Pages
+@model MrCMS.Web.Apps.Core.Models.RegisterModel
+
+    @using (Html.BeginForm("RegistrationDetails", "Registration", null, FormMethod.Post, new { @class = "" }))
+    {
+        @Html.HiddenFor(x=>x.ReturnUrl)
+        <p>&nbsp;</p>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="control-group">
+                    <label class="control-label" for="FirstName">First Name</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(model => model.FirstName)
+
+                        @Html.ValidationMessageFor(model => model.FirstName)
+                    </div>
+                </div>
+                 <div class="control-group">
+                    <label class="control-label" for="LastName">Last Name</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(model => model.LastName)
+                        @Html.ValidationMessageFor(model => model.LastName)
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="Email">Email</label>
+                    <div class="controls">
+                        @Html.TextBoxFor(model => model.Email)
+                        @Html.ValidationMessageFor(model => model.Email)
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="Password">
+                        Password</label>
+                    <div class="controls">
+                        @Html.PasswordFor(model => model.Password)
+                         @Html.ValidationMessageFor(model => model.Password)
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="ConfirmPassword">
+                        Confirm Password</label>
+                    <div class="controls">
+                        @Html.PasswordFor(model => model.ConfirmPassword)
+                        @Html.ValidationMessageFor(model => model.ConfirmPassword)
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input type="submit" value="Login" class="btn btn-info" />
+                    </div>
+                </div>
+
+                @if (!String.IsNullOrEmpty(ViewBag.Message))
+                {
+                    <div class="alert alert-error">
+                        @ViewBag.Message
+                    </div>
+                }
+                
+                <a href="@( UniquePageHelper.GetUrl<LoginPage>() )">Already Registered? Login here</a>
+
+            </div>
+        </div>
+    }
+

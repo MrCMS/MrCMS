@@ -1,0 +1,10 @@
+﻿@model MrCMS.Web.Apps.Core.Pages.RegisterPage
+
+<h1>@Editable(Model, page => page.Name) </h1>
+@if (!string.IsNullOrEmpty(Model.FeatureImage))
+{
+    @RenderImage(Model.FeatureImage, null, null, new { @class = "pull-right" })
+}
+@Editable(Model, page => page.BodyContent, true)
+
+@{Html.RenderAction("RegistrationDetails", "Registration");}
