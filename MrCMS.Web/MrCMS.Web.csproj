@@ -139,6 +139,7 @@
     <Compile Include="Apps\Core\Metadata\LoginPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\UserAccountMetaData.cs" />
+    <Compile Include="Apps\Core\Models\ChangePasswordModel.cs" />
     <Compile Include="Apps\Core\Models\RegisterModel.cs" />
     <Compile Include="Apps\Core\Models\LoginModel.cs" />
     <Compile Include="Apps\Core\Models\LoginResult.cs" />
@@ -1187,6 +1188,7 @@
     <Content Include="Apps\Core\Views\Widgets\UserLinks.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\LinkedImage.cshtml" />
     <Content Include="Apps\Core\Views\Widgets\LinkedImage.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\ChangePassword.cshtml" />
     <None Include="Areas\Admin\Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />

@@ -20,13 +20,15 @@ namespace MrCMS.Web.Apps.Core.Controllers
             _authorisationService = authorisationService;
         }
 
-        public ActionResult Show(UserAccountPage page, int pageNum = 1)
+        public ActionResult Show(UserAccountPage page)
         {
+            ViewData["message"] = TempData["message"];
+
             if (CurrentRequestData.CurrentUser != null)
             {
-                ViewBag.PageNum = pageNum;
                 return View(page);
             }
+
             return Redirect(UniquePageHelper.GetUrl<LoginPage>());
         }
 
@@ -72,6 +74,33 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 return Json(true, JsonRequestBehavior.AllowGet);
 
             return Json("Email already registered.", JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult ChangePassword(ChangePasswordModel model)
+        {
+            ModelState.Clear();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ActionName("ChangePassword")]
+        public RedirectResult ChangePassword_POST(ChangePasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = CurrentRequestData.CurrentUser;
+                _authorisationService.SetPassword(user, model.Password, model.ConfirmPassword);
+                model.Message = "Password updated.";
+
+            }
+            else
+            {
+                model.Message = "Please ensure both fields are filled out and valid";
+            }
+
+            TempData["message"] = model.Message;
+            return Redirect(UniquePageHelper.GetUrl<UserAccountPage>());
         }
     }
 }

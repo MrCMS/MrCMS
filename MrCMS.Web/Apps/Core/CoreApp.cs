@@ -105,6 +105,13 @@ namespace MrCMS.Web.Apps.Core
                                               CreatedOn = CurrentRequestData.Now,
                                               Layout = model.BaseLayout,
                                               Site = site
+                                          },
+                                       new LayoutArea
+                                          {
+                                              AreaName = "Footer",
+                                              CreatedOn = CurrentRequestData.Now,
+                                              Layout = model.BaseLayout,
+                                              Site = site
                                           }
                                   };
 
@@ -126,6 +133,13 @@ namespace MrCMS.Web.Apps.Core
             {
                 Name = "User Links",
                 LayoutArea = layoutAreas.Single(x => x.AreaName == "Header Right")
+            });
+
+            widgetService.AddWidget(new TextWidget
+            {
+                Name = "Footer text",
+                Text = "<p>© Mr CMS 2013</p>",
+                LayoutArea = layoutAreas.Single(x => x.AreaName == "Footer")
             });
 
             documentService.AddDocument(model.HomePage);
@@ -273,6 +287,8 @@ namespace MrCMS.Web.Apps.Core
 
             context.MapRoute("UserAccountController - account details", "UserAccount/UserAccountDetails", new { controller = "UserAccount", action = "UserAccountDetails" });
             context.MapRoute("UserAccountController - check email isn't already registered", "UserAccount/IsUniqueEmail", new { controller = "UserAccount", action = "IsUniqueEmail" });
+
+            context.MapRoute("UserAccountController - change password", "UserAccount/ChangePassword", new { controller = "UserAccount", action = "ChangePassword" });
         }
     }
 }
