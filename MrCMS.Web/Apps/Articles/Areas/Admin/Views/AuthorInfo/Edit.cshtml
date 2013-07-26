@@ -1,0 +1,16 @@
+﻿@model MrCMS.Web.Apps.Articles.Entities.AuthorInfo
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Edit", "AuthorInfo", FormMethod.Post))
+{
+    <div class="modal-header">
+        <h3>Edit Author Info</h3>
+    </div>
+    <div class="modal-body">
+        @Html.LabelFor(info => info.Bio)
+        @Html.TextAreaFor(info => info.Bio)
+        @Html.ValidationMessageFor(info => info.Bio)
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn-primary btn" value="Edit Author Info" />
+    </div>
+}

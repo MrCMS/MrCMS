@@ -137,7 +137,7 @@ namespace MrCMS.Services.ImportExport
 
                                 if (worksheet.GetValue<string>(rowId, 13).HasValue())
                                 {
-                                    if (!worksheet.GetValue<string>(rowId, 13).IsValidInput<DateTime>())
+                                    if (!worksheet.GetValue<string>(rowId, 13).IsValidInputDateTime())
                                         parseErrors[handle].Add("Publish Date is not a valid date.");
                                     else
                                         item.PublishDate = worksheet.GetValue<DateTime>(rowId, 13);

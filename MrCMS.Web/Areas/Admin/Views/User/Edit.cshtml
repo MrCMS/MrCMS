@@ -1,21 +1,5 @@
-﻿@using System.ComponentModel
-@using System.Diagnostics
-@using System.Diagnostics.CodeAnalysis
-@using System.Drawing
-@using System.Globalization
-@using System.Linq.Expressions
-@using System.Reflection
-@using System.Text
-@using System.Text.RegularExpressions
-@using MrCMS.Apps
-@using MrCMS.Entities.Multisite
-@using MrCMS.Entities.People
+﻿@using MrCMS.Entities.People
 @using MrCMS.Helpers
-@using MrCMS.Services
-@using MrCMS.Shortcodes
-@using MrCMS.Website
-@using MrCMS.Website.Optimization
-@using Newtonsoft.Json
 @model User
 @{
     ViewBag.Title = "Edit | " + Model.Name;
@@ -42,50 +26,56 @@
                     Save</button>
             </span>
         </legend>
-        
-        @Html.HiddenFor(x => x.Id)
-        <div id="tabs">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
-                <li><a href="#roles" data-toggle="tab">Roles</a></li>
-            </ul>
-            <div class="tab-content">
-                <div id="properties" class="tab-pane active">
-                    @Html.LabelFor(x => x.Email)
-                    @Html.TextBoxFor(x => x.Email, new { @class = "span12" })
-                    @Html.LabelFor(x => x.FirstName)
-                    @Html.TextBoxFor(x => x.FirstName, new { @class = "span12" })
-                    @Html.LabelFor(x => x.LastName)
-                    @Html.TextBoxFor(x => x.LastName, new { @class = "span12" })
-                    @if (!onlyAdmin)
-                    {
-                        <div class="form-inline">
-                            @Html.InlineCheckboxFor(x => x.IsActive, new { }, new { }, "Is Active")
-                        </div>
-                    }
-                    <hr />
-                </div>
-                <div id="roles" class="tab-pane">
-                    <div class="form-inline">
-                        @if (userRoles != null)
-                        {
-                            foreach (var role in userRoles)
-                            {
-                                bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
-                                bool isEnabled = !role.IsAdmin || !onlyAdmin;
 
-                                @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
-                                @:&nbsp;
-                                @Html.Label("Role-" + role.Id, role.Name)
-                                <br />
-                            }
-                        }
+        @Html.HiddenFor(x => x.Id)
+        <div class="row-fluid">
+            <div class="span6">
+                <h4>Properties</h4>
+                @Html.LabelFor(x => x.Email)
+                @Html.TextBoxFor(x => x.Email, new { @class = "span12" })
+                @Html.LabelFor(x => x.FirstName)
+                @Html.TextBoxFor(x => x.FirstName, new { @class = "span12" })
+                @Html.LabelFor(x => x.LastName)
+                @Html.TextBoxFor(x => x.LastName, new { @class = "span12" })
+                @if (!onlyAdmin)
+                {
+                    <div class="form-inline">
+                        @Html.InlineCheckboxFor(x => x.IsActive, new { }, new { }, "Is Active")
                     </div>
+                }
+
+            </div>
+            <div class="span6">
+                <h4>Roles</h4>
+                <div class="form-inline">
+                    @if (userRoles != null)
+                    {
+                        foreach (var role in userRoles)
+                        {
+                            bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
+                            bool isEnabled = !role.IsAdmin || !onlyAdmin;
+
+                        @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
+                        @:&nbsp;
+                        @Html.Label("Role-" + role.Id, role.Name)
+                        <br />
+                        }
+                    }
                 </div>
+
             </div>
         </div>
-        
-        @Html.ValidationSummary()
 
     </fieldset>
+    @Html.ValidationSummary()
 }
+<hr />
+@foreach (var type in MrCMS.Entities.People.User.OwnedObjectTypes)
+{
+    @Html.RenderUserOwnedObjectProperties(type);
+}
+@foreach (var type in UserProfileData.Types)
+{
+    @Html.RenderUserProfileProperties(type);
+}
+

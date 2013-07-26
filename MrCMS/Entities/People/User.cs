@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using MrCMS.ACL;
 using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
 using NHibernate;
 
 namespace MrCMS.Entities.People
@@ -17,6 +18,7 @@ namespace MrCMS.Entities.People
             Guid = Guid.NewGuid();
             Roles = new List<UserRole>();
             Sites = new List<Site>();
+            UserProfileData = new List<UserProfileData>();
         }
 
         [DisplayName("First Name")]
@@ -44,6 +46,16 @@ namespace MrCMS.Entities.People
         public virtual DateTime? ResetPasswordExpiry { get; set; }
 
         public virtual IList<UserRole> Roles { get; set; }
+        protected internal virtual IList<UserProfileData> UserProfileData { get; set; }
+
+        public virtual T Get<T>() where T : UserProfileData
+        {
+            return UserProfileData.OfType<T>().FirstOrDefault();
+        }
+        public virtual IEnumerable<T> GetAll<T>() where T : UserProfileData
+        {
+            return UserProfileData.OfType<T>();
+        }
 
         public virtual bool IsAdmin
         {
@@ -51,6 +63,7 @@ namespace MrCMS.Entities.People
         }
 
         public virtual IList<Site> Sites { get; set; }
+
 
         public override void OnDeleting(ISession session)
         {
@@ -66,6 +79,11 @@ namespace MrCMS.Entities.People
         public virtual bool CanAccess<T>(string operation, string type = null) where T : ACLRule, new()
         {
             return new T().CanAccess(this, operation, type);
+        }
+
+        public static List<Type> OwnedObjectTypes
+        {
+            get { return TypeHelper.GetAllConcreteMappedClassesAssignableFrom<IBelongToUser>(); }
         }
     }
 }

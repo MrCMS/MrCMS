@@ -39,7 +39,9 @@ namespace MrCMS.Services.ImportExport
         /// <param name="dataTransferObject"></param>
         public Webpage ImportDocument(DocumentImportDataTransferObject dataTransferObject)
         {
-            var document = _documentService.GetDocumentByUrl<Webpage>(dataTransferObject.UrlSegment) ?? (Webpage)Activator.CreateInstance(DocumentMetadataHelper.GetTypeByName(dataTransferObject.DocumentType));
+            var document = _documentService.GetDocumentByUrl<Webpage>(dataTransferObject.UrlSegment) ??
+                           (Webpage)
+                           Activator.CreateInstance(DocumentMetadataHelper.GetTypeByName(dataTransferObject.DocumentType));
 
             if (!String.IsNullOrEmpty(dataTransferObject.ParentUrl))
                 document.SetParent(_documentService.GetDocumentByUrl<Webpage>(dataTransferObject.ParentUrl));
@@ -57,17 +59,13 @@ namespace MrCMS.Services.ImportExport
                 document.PublishOn = dataTransferObject.PublishDate;
 
             //Tags
-            document.Tags.Clear();
             foreach (var item in dataTransferObject.Tags)
             {
                 var tag = _tagService.GetByName(item);
-                if (tag != null && document.Tags.All(x => x.Id != tag.Id))
-                    document.Tags.Add(tag);
-                else
+                if (tag == null)
                 {
-                    tag = new Tag { Name = item };
+                    tag = new Tag {Name = item};
                     _tagService.Add(tag);
-                    document.Tags.Add(tag);
                 }
             }
 
@@ -81,13 +79,12 @@ namespace MrCMS.Services.ImportExport
             document = _documentService.GetDocumentByUrl<Webpage>(document.UrlSegment);
 
             //Url History
-            document.Urls.Clear();
             foreach (var item in dataTransferObject.UrlHistory)
             {
                 if (!String.IsNullOrWhiteSpace(item) && document.Urls.All(x => x.UrlSegment != item))
                 {
                     if (_urlHistoryService.GetByUrlSegment(item) == null)
-                        _urlHistoryService.Add(new UrlHistory { UrlSegment = item, Webpage = document });
+                        _urlHistoryService.Add(new UrlHistory {UrlSegment = item, Webpage = document});
                 }
             }
 

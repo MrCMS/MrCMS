@@ -16,7 +16,7 @@ using System.Web.Mvc.Html;
 using System.Web.Routing;
 using System.Web.WebPages;
 using MrCMS.Apps;
-using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Shortcodes;
 using MrCMS.Website;
@@ -360,6 +360,53 @@ namespace MrCMS.Helpers
                     CurrentRequestData.ErrorSignal.Raise(exception);
                     return
                         MvcHtmlString.Create("We could not find a custom admin view for this page. Either this page is bespoke or has no custom properties.");
+                }
+            }
+            return MvcHtmlString.Empty;
+        }
+
+        public static MvcHtmlString RenderUserOwnedObjectProperties(this HtmlHelper<User> htmlHelper, Type entityType)
+        {
+            var user = htmlHelper.ViewData.Model;
+            if (user == null)
+                return MvcHtmlString.Empty;
+            if (MrCMSApp.AppTypes.ContainsKey(entityType))
+                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppTypes[entityType];
+
+            ViewEngineResult viewEngineResult =
+                ViewEngines.Engines.FindView(new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller), entityType.Name, "");
+            if (viewEngineResult.View != null)
+            {
+                try
+                {
+                    return htmlHelper.Partial(entityType.Name, user);
+                }
+                catch (Exception exception)
+                {
+                    CurrentRequestData.ErrorSignal.Raise(exception);
+                }
+            }
+            return MvcHtmlString.Empty;
+        }
+        public static MvcHtmlString RenderUserProfileProperties(this HtmlHelper<User> htmlHelper, Type userProfileType)
+        {
+            var user = htmlHelper.ViewData.Model;
+            if (user == null)
+                return MvcHtmlString.Empty;
+            if (MrCMSApp.AppUserProfileDatas.ContainsKey(userProfileType))
+                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppUserProfileDatas[userProfileType];
+
+            ViewEngineResult viewEngineResult =
+                ViewEngines.Engines.FindView(new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller), userProfileType.Name, "");
+            if (viewEngineResult.View != null)
+            {
+                try
+                {
+                    return htmlHelper.Partial(userProfileType.Name, user);
+                }
+                catch (Exception exception)
+                {
+                    CurrentRequestData.ErrorSignal.Raise(exception);
                 }
             }
             return MvcHtmlString.Empty;

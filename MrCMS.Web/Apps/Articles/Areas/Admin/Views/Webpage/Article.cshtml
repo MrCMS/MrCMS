@@ -1,8 +1,10 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Web.Apps.Articles.Pages.Article 
-
 @Html.LabelFor(model => model.Abstract)
-@Html.TextAreaFor(model => model.Abstract, new {@rows="4", @class="span12"})
+@Html.TextAreaFor(model => model.Abstract, new { @rows = "4", @class = "span12" })
+
+@Html.LabelFor(model => model.User.Id, "Author")
+@Html.DropDownListFor(model => model.User.Id, ViewData["users"] as IEnumerable<SelectListItem>)
 
 @Html.LabelFor(x => x.TagList, "Tags")
 @Html.TextBoxFor(x => x.TagList, new { @class = "span12 system-tagging" })

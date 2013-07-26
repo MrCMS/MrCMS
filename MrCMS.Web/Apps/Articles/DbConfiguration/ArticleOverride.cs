@@ -1,6 +1,5 @@
 ﻿using FluentNHibernate.Automapping;
 using FluentNHibernate.Automapping.Alterations;
-using MrCMS.DbConfiguration.Types;
 
 namespace MrCMS.Web.Apps.Articles.DbConfiguration
 {

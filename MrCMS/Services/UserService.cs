@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
-using MrCMS.Entities.Multisite;
+using MrCMS.Entities;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Paging;
@@ -120,6 +120,22 @@ namespace MrCMS.Services
         public int NonActiveUsers()
         {
             return _session.QueryOver<User>().WhereNot(x => x.IsActive).Cacheable().RowCount();
+        }
+
+        public T Get<T>(User user) where T : SystemEntity, IBelongToUser
+        {
+            return _session.QueryOver<T>().Where(arg => arg.User == user).Take(1).Cacheable().SingleOrDefault();
+        }
+
+        public IList<T> GetAll<T>(User user) where T : SystemEntity, IBelongToUser
+        {
+            return _session.QueryOver<T>().Where(arg => arg.User == user).Cacheable().List();
+        }
+
+        public IPagedList<T> GetPaged<T>(User user, QueryOver<T> query = null, int page = 1, int pageSize = 10) where T : SystemEntity, IBelongToUser
+        {
+            return _session.Paged(query ?? QueryOver.Of<T>(), page, pageSize);
+            
         }
     }
 }
