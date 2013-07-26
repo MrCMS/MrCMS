@@ -43,7 +43,7 @@ namespace MrCMS.Logging
             return
                 _session.QueryOver<Log>()
                         .Where(entry => entry.Site == CurrentRequestData.CurrentSite)
-                        .OrderBy(entry => entry.CreatedOn)
+                        .OrderBy(entry => entry.Id)
                         .Desc;
         }
     }

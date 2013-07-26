@@ -61,6 +61,7 @@ namespace MrCMS.Tests.Logging
         public void LogService_GetAllEntriesPaged_ShouldReturnTheFirst10Items()
         {
             var list = CreateLogList();
+            list.Reverse();
 
             var allEntriesPaged = _logService.GetEntriesPaged(1);
 
@@ -71,6 +72,7 @@ namespace MrCMS.Tests.Logging
         public void LogService_GetAllEntriesPaged_PageSelectedShouldPageTheResults()
         {
             var list = CreateLogList();
+            list.Reverse();
 
             var allEntriesPaged = _logService.GetEntriesPaged(2);
 
