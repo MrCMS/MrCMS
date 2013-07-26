@@ -115,6 +115,20 @@ namespace MrCMS.Web.Apps.Core
             navigationWidget.LayoutArea = layoutAreas.Single(x => x.AreaName == "Main Navigation");
             widgetService.AddWidget(navigationWidget);
 
+            widgetService.AddWidget(new LinkedImage
+            {
+                Name = "Mr CMS Logo",
+                Image = "/Apps/Core/Content/images/mrcms-logo.png",
+                Link = "/",
+                LayoutArea = layoutAreas.Single(x => x.AreaName == "Header Left")
+            });
+
+            widgetService.AddWidget(new UserLinks
+            {
+                Name = "User Links",
+                LayoutArea = layoutAreas.Single(x => x.AreaName == "Header Right")
+            });
+
             documentService.AddDocument(model.HomePage);
             documentService.AddDocument(model.Page2);
             documentService.AddDocument(model.Page3);

@@ -10,7 +10,7 @@ namespace MrCMS.Installation
             Errors = new List<string>();
         }
 
-        protected List<string> Errors { get; set; }
+        public List<string> Errors { get; set; }
 
         public bool Success
         {

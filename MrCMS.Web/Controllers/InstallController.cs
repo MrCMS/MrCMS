@@ -58,7 +58,10 @@ namespace MrCMS.Web.Controllers
             InstallationResult installationResult = _installationService.Install(model);
 
             if (!installationResult.Success)
+            {
+                ViewData["installationResult"] = installationResult;
                 return View(model);
+            }
             else return Redirect("~");
         }
 
