@@ -343,10 +343,11 @@ namespace MrCMS.Website
                         searchedLocations = _emptyLocations;
                         result = virtualPath;
                         ViewLocationCache.InsertViewLocation(controllerContext.HttpContext, cacheKey, result);
-                        break;
+                        return result;
                     }
 
-                    searchedLocations.Add(virtualPath);
+                    if (!searchedLocations.Contains(virtualPath))
+                        searchedLocations.Add(virtualPath);
                 }
             }
 
