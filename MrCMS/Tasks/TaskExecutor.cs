@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using NHibernate;
+using MrCMS.Helpers;
 
 namespace MrCMS.Tasks
 {
@@ -68,7 +69,7 @@ namespace MrCMS.Tasks
         {
             for (var i = 0; i < 10; i++)
             {
-                using (var session = _sessionFactory.OpenSession())
+                using (var session = _sessionFactory.OpenFilteredSession())
                 {
                     switch (task.Run(session))
                     {

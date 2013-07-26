@@ -1,15 +1,14 @@
 using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.Instances;
-using MrCMS.Entities;
-using MrCMS.Entities.Documents;
+using MrCMS.DbConfiguration.Filters;
 
 namespace MrCMS.DbConfiguration.Conventions
 {
-    public class CacheConvention : IClassConvention
+    public class DeletedFilterConvention : IClassConvention
     {
         public void Apply(IClassInstance instance)
         {
-            instance.Cache.ReadWrite();
+            instance.ApplyFilter<NotDeletedFilter>();
         }
     }
 }

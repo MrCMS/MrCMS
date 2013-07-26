@@ -347,7 +347,7 @@ namespace MrCMS.Installation
                 };
 
             ISessionFactory sessionFactory = configurator.CreateSessionFactory();
-            ISession session = sessionFactory.OpenSession();
+            ISession session = sessionFactory.OpenFilteredSession();
 
             var site = new Site { Name = model.SiteName, BaseUrl = model.SiteUrl };
             session.Transact(s => s.Save(site));

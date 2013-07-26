@@ -28,16 +28,15 @@ namespace MrCMS.IoC
         public override void Load()
         {
             Kernel.Bind<ISessionFactory>().ToMethod(context => _configurator.CreateSessionFactory()).InSingletonScope();
-            
+
             if (_forWebsite)
             {
                 Kernel.Bind<ISession>().ToMethod(
-                    context =>
-                    context.Kernel.Get<ISessionFactory>().OpenSession()).InRequestScope();
-            }   
+                    context => context.Kernel.Get<ISessionFactory>().OpenFilteredSession()).InRequestScope();
+            }
             else
             {
-                Kernel.Bind<ISession>().ToMethod(context => context.Kernel.Get<ISessionFactory>().OpenSession()).
+                Kernel.Bind<ISession>().ToMethod(context => context.Kernel.Get<ISessionFactory>().OpenFilteredSession()).
                     InThreadScope();
             }
         }

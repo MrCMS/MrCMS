@@ -64,9 +64,11 @@ namespace MrCMS.Services.ImportExport
                 var tag = _tagService.GetByName(item);
                 if (tag == null)
                 {
-                    tag = new Tag {Name = item};
+                    tag = new Tag { Name = item };
                     _tagService.Add(tag);
                 }
+                if (!document.Tags.Contains(tag))
+                    document.Tags.Add(tag);
             }
 
             if (document.Id == 0)
@@ -84,7 +86,7 @@ namespace MrCMS.Services.ImportExport
                 if (!String.IsNullOrWhiteSpace(item) && document.Urls.All(x => x.UrlSegment != item))
                 {
                     if (_urlHistoryService.GetByUrlSegment(item) == null)
-                        _urlHistoryService.Add(new UrlHistory {UrlSegment = item, Webpage = document});
+                        _urlHistoryService.Add(new UrlHistory { UrlSegment = item, Webpage = document });
                 }
             }
 
