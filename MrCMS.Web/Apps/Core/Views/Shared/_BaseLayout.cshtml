@@ -31,10 +31,12 @@
                 @RenderZone("Header Right")
             </div>
         </div>
-        <div class="navbar">
-            <div class="navbar-inner">
-                <div class="container">
-                    @RenderZone("Main Navigation")
+        <div class="container">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="container">
+                        @RenderZone("Main Navigation")
+                    </div>
                 </div>
             </div>
         </div>
@@ -42,7 +44,7 @@
         @RenderBody()
         @RenderZone("After Content")
 
-        <hr>
+        <hr />
 
         <footer>
             @RenderZone("Footer")
