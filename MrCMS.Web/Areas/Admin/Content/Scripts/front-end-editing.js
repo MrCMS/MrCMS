@@ -25,7 +25,7 @@
 
         enable: function () {
             setEditingEnabled(true);
-            $("#enable-editing").text("Inline Editing: On");
+            $("#enable-editing").text("Inline Editing: On").addClass("btn-primary");
 
             $(settings.editableSelector, top.document).each(function (index, element) {
                 var el = $(element);
@@ -146,7 +146,7 @@
         },
         disable: function (init) {
             setEditingEnabled(false);
-            $("#enable-editing").text("Inline Editing: Off");
+            $("#enable-editing").text("Inline Editing: Off").removeClass("btn-primary");;
             //remove all edit tools
             $(".edit-indicator-layout", top.document).remove();
             $(".edit-indicator-widget", top.document).remove();
@@ -199,34 +199,34 @@
 $(function () {
     $('.editable', top.document).mrcmsinline();
     
-    $(document).on('click', '[data-toggle="fb-modal"]', function () {
-        var clone = $(this).clone();
-        clone.attr('data-toggle', '');
-        clone.hide();
-        clone.fancybox({
-            type: 'iframe',
-            padding: 0,
-            height: 0,
-            'onComplete': function () {
-                $('#fancybox-frame').load(function () { // wait for frame to load and then gets it's height
-                    $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
-                    $('#fancybox-content').height($(this).contents()[0].documentElement.scrollHeight);
-                    $.fancybox.center();
-                });
-            }
-        }).click().remove();
-        return false;
-    });
+    //$(document).on('click', '[data-toggle="fb-modal"]', function () {
+    //    var clone = $(this).clone();
+    //    clone.attr('data-toggle', '');
+    //    clone.hide();
+    //    clone.fancybox({
+    //        type: 'iframe',
+    //        padding: 0,
+    //        height: 0,
+    //        'onComplete': function () {
+    //            $('#fancybox-frame').load(function () { // wait for frame to load and then gets it's height
+    //                $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
+    //                $('#fancybox-content').height($(this).contents()[0].documentElement.scrollHeight);
+    //                $.fancybox.center();
+    //            });
+    //        }
+    //    }).click().remove();
+    //    return false;
+    //});
 
     $("#unpublish-now").click(function () {
         $.post('/admin/webpage/unpublish', { id: $('#Id').val() }, function (response) {
-            location.reload();
+            window.top.location.reload();
         });
         return false;
     });
     $("#publish-now").click(function () {
         $.post('/admin/webpage/publishnow', { id: $('#Id').val() }, function (response) {
-            location.reload();
+            window.top.location.reload();
         });
         return false;
     });

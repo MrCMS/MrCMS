@@ -136,7 +136,7 @@
 }
 
 .fileupload-loading {
-    background: url(/Content/images/loading.gif) center no-repeat;
+    background: url(/Areas/Admin/Content/Images/ajax-loader.gif) center no-repeat;
     display: none;
     height: 128px;
     left: 50%;

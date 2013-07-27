@@ -7,18 +7,19 @@
     <div class="navbar-inner">
         <div class="container-fluid">
             <div class="nav-collapse">
-
+                <ul class="nav">
+                    <li><a href="@Url.Action("Index", "Home")" target="_parent" >Mr CMS Admin</a></li>
+                </ul>
                 <div style="padding-top: 5px;">
                     <div class="btn-group display-inline">
-                        <a href="@Url.Action("Index", "Home")" target="_parent" class="btn">Admin</a>
                         <a href="@Url.Action("Edit", "Webpage", new { Model.Id })" target="_parent" class="btn">Edit</a>
                         @if (Model.Published)
                         {
-                            <a id="unpublish-now" class="btn">Unpublish</a>
+                            <a id="unpublish-now" class="btn btn-success">Unpublish</a>
                         }
                         else
                         {
-                            <a id="publish-now" class="btn">Publish</a>
+                            <a id="publish-now" class="btn btn-warning">Publish</a>
                         }
                         @if (Model.CanAddChildren())
                         {
@@ -41,12 +42,3 @@
 @{ 
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/front-end-editing.js");
 }
-
-
-@*<script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.cookie.js")"></script>
-<script src="@Url.Content("~/Areas/Admin/Content/Styles/bootstrap/js/bootstrap.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/front-end-editing.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.mrcms-mediaselector.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/fancybox/jquery.easing-1.3.pack.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/fancybox/jquery.mousewheel-3.0.4.pack.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/fancybox/jquery.fancybox-1.3.4.pack.js")"></script>*@
