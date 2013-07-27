@@ -83,6 +83,11 @@
         tagLimit: 15,
         allowSpaces: true
     });
+    
+    $('input[name=InheritFrontEndRolesFromParent]').change(function () {
+        $("#edit-document").submit();
+    });
+    
 });
 //Show the accordion which was last shown for layout areas.
 $(window).load(function () {
