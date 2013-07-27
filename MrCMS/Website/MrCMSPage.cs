@@ -90,7 +90,9 @@ namespace MrCMS.Website
                 foreach (var widget in layoutArea.GetWidgets(page))
                 {
                     if (EditingEnabled)
-                        stringBuilder.AppendFormat("<div data-widget-id=\"{0}\" class=\"widget\"> ", widget.Id);
+                        stringBuilder.AppendFormat(
+                            "<div data-widget-id=\"{0}\" data-widget-name=\"{1}\" class=\"widget\"> ", widget.Id,
+                            widget.Name ?? widget.GetType().Name);
 
                     try
                     {

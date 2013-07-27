@@ -99,10 +99,11 @@
             //create menu for widget editing
             $('.edit-indicator-widget', top.document).click(function () {
                 var widgetId = $(this).parent().data('widget-id');
-                var menu = '<div class="edit-widget-menu">' +
+                var name = $(this).parent().data('widget-name');
+                var menu = '<div class="edit-widget-menu"><h4>'+name+'</h4>' +
                     '<ul>' +
-                    '<li><a id="" href="/Admin/Widget/Edit/' + widgetId + '" target="_parent" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;">Edit this widget</a></li>' +
-                    '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Delete/' + widgetId + '" target="_parent" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;">Delete this widget</a></li>' +
+                    '<li><a id="" href="/Admin/Widget/Edit/' + widgetId + '" target="_parent" class="btn btn-mini btn-primary">Edit</a></li>' +
+                    '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Delete/' + widgetId + '" target="_parent" class="btn btn-mini btn-danger">Delete</a></li>' +
                     '</ul></div>';
                 $(this).parent().prepend(menu);
                 $(".edit-widget-menu", top.document).fadeIn(400);
@@ -122,10 +123,10 @@
                 var areaName = $(this).parent().data('layout-area-name');
                 var pageId = $('#Id').val();
 
-                var menu = '<div class="edit-layout-area-menu"><h4>Layout area: <br /> ' + areaName +
-                    '</h4><ul><li><a tab-index="1" href="/Admin/Widget/AddPageWidget?pageId=' + pageId + '&id=' + areaId + '" data-toggle="fb-modal" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;">Add new widget here</a></li>' +
-                    '<li><a tab-index="1" href="/Admin/Webpage/Edit/' + pageId + '" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;" id="mrcms-manage-page-widgets">Manage page widgets</a>' +
-                    '</li><li><a tab-index="1" href="/Admin/LayoutArea/Edit/' + areaId + '" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;">Manage global widgets</a></li></ul></div>';
+                var menu = '<div class="edit-layout-area-menu"><h4>' + areaName +
+                    '</h4><ul><li><a tab-index="1" href="/Admin/Widget/AddPageWidget?pageId=' + pageId + '&id=' + areaId + '" data-toggle="fb-modal" class="btn btn-mini btn-primary">Add widget</a></li>' +
+                    '<li><a tab-index="1" href="/Admin/Webpage/Edit/' + pageId + '" class="btn btn-mini" id="mrcms-manage-page-widgets">Manage page widgets</a>' +
+                    '</li><li><a tab-index="1" href="/Admin/LayoutArea/Edit/' + areaId + '" class="btn btn-mini">Manage global widgets</a></li></ul></div>';
 
                 $(this).parent().prepend(menu);
                 $(".edit-layout-area-menu", top.document).fadeIn(400);
@@ -150,6 +151,8 @@
             //remove all edit tools
             $(".edit-indicator-layout", top.document).remove();
             $(".edit-indicator-widget", top.document).remove();
+            $(".edit-widget-menu", top.document).remove();
+            $(".edit-layout-area-menu", top.document).remove();
             
             $(settings.editableSelector, top.document).each(function (index, element) {
                 var el = $(element);
