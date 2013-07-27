@@ -12,7 +12,7 @@
                 </ul>
                 <div style="padding-top: 5px;">
                     <div class="btn-group display-inline">
-                        <a href="@Url.Action("Edit", "Webpage", new { Model.Id })" target="_parent" class="btn">Edit</a>
+                        <a href="@Url.Action("Edit", "Webpage", new { Model.Id })" target="_parent" class="btn btn-primary">Edit</a>
                         @if (Model.Published)
                         {
                             <a id="unpublish-now" class="btn btn-success">Unpublish</a>
@@ -27,6 +27,9 @@
                         }
                         @Html.ActionLink("Add page", "Add", "Webpage", new { id = Model.Parent == null ? (int?)null : Model.Parent.Id }, new { @class = "btn", @target = "_parent" })
                         <a id="enable-editing" class="btn" href="#">Inline Editing: On</a>
+                    </div>
+                    <div class="display-inline" style="margin-left: 20px; overflow:hidden;">
+                        @Model.Name
                     </div>
                 </div>
             </div>

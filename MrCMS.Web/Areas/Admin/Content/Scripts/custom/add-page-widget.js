@@ -1,4 +1,5 @@
 ﻿$(function () {
+    $('#show-recursive').hide();
     $('input[name=AddType]').change(function () {
         if ($("input[name=AddType]:checked").val() == 'page') {
             $('#show-recursive').show();

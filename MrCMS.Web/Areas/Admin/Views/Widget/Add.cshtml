@@ -12,14 +12,13 @@
         {
             @Html.HiddenFor(model => model.Webpage.Id);
             <div class="row-fluid">
-                <div class="span6">
-                    <label class="radio">@Html.RadioButton("AddType", "page", true, new { id = "add-page" }) This page</label>
+                <div class="span12">
+                    <label class="radio">@Html.RadioButton("AddType", "global", true, new { id = "add-global" }) all pages using this layout</label>
+
+                    <label class="radio">@Html.RadioButton("AddType", "page", false, new { id = "add-page" }) this page</label>
                     <div id="show-recursive">
-                        @Html.InlineCheckboxFor(x => x.IsRecursive, null, null, "And all child pages")
+                        @Html.InlineCheckboxFor(x => x.IsRecursive, null, null, "...and all child pages")
                     </div>
-                </div>
-                <div class="span6">
-                    <label class="radio">@Html.RadioButton("AddType", "global", false, new { id = "add-global" }) All pages using this layout</label>
                 </div>
             </div>
         }
