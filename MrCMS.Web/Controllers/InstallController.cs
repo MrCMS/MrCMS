@@ -77,7 +77,7 @@ namespace MrCMS.Web.Controllers
                 {
                     Name = "Home",
                     UrlSegment = "home",
-                    BodyContent = "<h1>Mr CMS</h1> <p>Welcome to Mr CMS, the only CMS you will need.</p>",
+                    BodyContent = "<h1>Mr CMS</h1> <p>Welcome to Mr CMS, the only CMS you will need.</p><p> Turn on inline editing above, then click here. Pretty cool huh? </p>",
                     RevealInNavigation = true,
                 };
             model.Error404 = new TextPage
