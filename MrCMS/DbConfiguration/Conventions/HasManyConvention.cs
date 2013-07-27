@@ -1,5 +1,6 @@
 using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.Instances;
+using MrCMS.DbConfiguration.Filters;
 
 namespace MrCMS.DbConfiguration.Conventions
 {
@@ -13,6 +14,7 @@ namespace MrCMS.DbConfiguration.Conventions
             instance.Fetch.Subselect();
             instance.Inverse();
             instance.Relationship.NotFound.Ignore();
+            instance.ApplyFilter<NotDeletedFilter>();
         }
     }
 }

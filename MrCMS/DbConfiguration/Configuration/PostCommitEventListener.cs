@@ -4,6 +4,7 @@ using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Event;
@@ -18,7 +19,7 @@ namespace MrCMS.DbConfiguration.Configuration
         {
             try
             {
-                var session = @event.Session.SessionFactory.OpenSession();
+                var session = @event.Session.SessionFactory.OpenFilteredSession();
                 if (@event.Entity is Document)
                 {
                     var ignorePropertyNames = new[]

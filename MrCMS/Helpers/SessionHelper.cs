@@ -10,6 +10,13 @@ namespace MrCMS.Helpers
 {
     public static class SessionHelper
     {
+        public static ISession OpenFilteredSession(this ISessionFactory sessionFactory)
+        {
+            var session = sessionFactory.OpenSession();
+            session.EnableFilter("NotDeletedFilter");
+            return session;
+        }
+        
         public static TResult Transact<TResult>(this ISession session, Func<ISession, TResult> func)
         {
             if (!session.Transaction.IsActive)

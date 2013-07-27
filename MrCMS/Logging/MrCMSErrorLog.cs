@@ -24,7 +24,7 @@ namespace MrCMS.Logging
         public MrCMSErrorLog(IDictionary config)
         {
             if (CurrentRequestData.DatabaseIsInstalled)
-                _session = MrCMSApplication.Get<ISessionFactory>().OpenSession();
+                _session = MrCMSApplication.Get<ISessionFactory>().OpenFilteredSession();
         }
 
         public override string Log(Error error)

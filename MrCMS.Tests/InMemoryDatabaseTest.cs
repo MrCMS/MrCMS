@@ -69,7 +69,7 @@ namespace MrCMS.Tests
                 }
             }
 
-            Session = SessionFactory.OpenSession();
+            Session = SessionFactory.OpenFilteredSession();
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 

@@ -14,10 +14,13 @@ namespace MrCMS.Entities
         [DisplayName("Updated On")]
         public virtual DateTime UpdatedOn { get; set; }
 
+        public virtual bool IsDeleted { get; set; }
+
         public virtual void OnDeleting(ISession session)
         {
         }
     }
+
     public abstract class SiteEntity : SystemEntity
     {
         public virtual void CustomBinding(ControllerContext controllerContext, ISession session) { }

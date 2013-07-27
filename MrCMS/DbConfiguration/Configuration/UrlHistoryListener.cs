@@ -19,7 +19,7 @@ namespace MrCMS.DbConfiguration.Configuration
         {
             try
             {
-                var session = @event.Session.SessionFactory.OpenSession();
+                var session = @event.Session.SessionFactory.OpenFilteredSession();
                 if (@event.Entity is Webpage)
                 {
                     var webpage = GetWebpage(session, @event.Entity as Webpage);
