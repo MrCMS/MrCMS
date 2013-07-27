@@ -17,46 +17,46 @@ namespace MrCMS.Indexing.Querying
     {
         private readonly ISession _session;
         protected readonly TDefinition Definition = new TDefinition();
-        private IndexSearcher _searcher;
+        private IndexSearcher _indexSearcher;
 
         protected Searcher(CurrentSite currentSite, ISession session)
         {
             _session = session;
-            _searcher = new IndexSearcher(GetDirectory(currentSite));
+            _indexSearcher = new IndexSearcher(GetDirectory(currentSite));
         }
 
         protected abstract Directory GetDirectory(CurrentSite currentSite);
 
-        public IPagedList<TEntity> Search(Query query, int pageNumber, int pageSize, Filter filter = null)
+        public IPagedList<TEntity> Search(Query query, int pageNumber, int pageSize, Filter filter = null, Sort sort = null)
         {
-            var topDocs = _searcher.Search(query, filter, pageNumber * pageSize);
+            var topDocs = IndexSearcher.Search(query, filter, pageNumber * pageSize, sort ?? Sort.RELEVANCE);
 
             var entities =
                 Definition.Convert(_session,
                                    topDocs.ScoreDocs.Skip((pageNumber - 1) * pageSize)
                                           .Take(pageSize)
-                                          .Select(doc => _searcher.Doc(doc.Doc)));
+                                          .Select(doc => IndexSearcher.Doc(doc.Doc)));
 
             return new StaticPagedList<TEntity>(entities, pageNumber, pageSize, topDocs.TotalHits);
         }
 
         public int Total(Query query, Filter filter = null)
         {
-            var topDocs = _searcher.Search(query, filter, int.MaxValue);
+            var topDocs = IndexSearcher.Search(query, filter, int.MaxValue);
 
             return topDocs.TotalHits;
         }
-
-        public IList<TEntity> GetAll(Query query = null, Filter filter = null)
+        
+        public IList<TEntity> GetAll(Query query = null, Filter filter = null, Sort sort = null)
         {
-            var topDocs = _searcher.Search(query, filter, int.MaxValue);
+            var topDocs = IndexSearcher.Search(query, filter, int.MaxValue, sort ?? Sort.RELEVANCE);
 
-            var entities = Definition.Convert(_session, topDocs.ScoreDocs.Select(doc => _searcher.Doc(doc.Doc)));
+            var entities = Definition.Convert(_session, topDocs.ScoreDocs.Select(doc => IndexSearcher.Doc(doc.Doc)));
 
             return entities.ToList();
         }
 
-        public IndexSearcher IndexSearcher { get { return _searcher; } }
+        public IndexSearcher IndexSearcher { get { return _indexSearcher; } }
 
 
         private bool _disposed;
@@ -77,12 +77,12 @@ namespace MrCMS.Indexing.Querying
             {
                 if (disposing)
                 {
-                    if (_searcher != null)
-                        _searcher.Dispose();
+                    if (IndexSearcher != null)
+                        IndexSearcher.Dispose();
                 }
 
                 // Indicate that the instance has been disposed.
-                _searcher = null;
+                _indexSearcher = null;
                 _disposed = true;
             }
         }
