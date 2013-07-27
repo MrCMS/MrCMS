@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Web;
 using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -55,7 +57,9 @@ namespace MrCMS.Web.Apps.Core
             var documentService = new DocumentService(session, siteSettings, currentSite);
             var layoutAreaService = new LayoutAreaService(session);
             var widgetService = new WidgetService(session);
-
+            var fileSystem = new FileSystem();
+            var imageProcessor = new ImageProcessor(session, fileSystem, mediaSettings);
+            var fileService = new FileService(session, fileSystem, imageProcessor, mediaSettings, currentSite);
             var user = new User
             {
                 Email = model.AdminEmail,
@@ -122,13 +126,7 @@ namespace MrCMS.Web.Apps.Core
             navigationWidget.LayoutArea = layoutAreas.Single(x => x.AreaName == "Main Navigation");
             widgetService.AddWidget(navigationWidget);
 
-            widgetService.AddWidget(new LinkedImage{
-                Name = "Mr CMS Logo",
-                Image = "/Apps/Core/Content/images/mrcms-logo.png", 
-                Link = "/",
-                LayoutArea = layoutAreas.Single(x => x.AreaName == "Header Left")
-            });
-
+            
             widgetService.AddWidget(new UserLinks
             {
                 Name = "User Links",
@@ -218,15 +216,7 @@ namespace MrCMS.Web.Apps.Core
             var webpages = session.QueryOver<Webpage>().List();
             webpages.ForEach(documentService.PublishNow);
 
-
-            var defaultMediaCategory = new MediaCategory
-            {
-                Name = "Default",
-                UrlSegment = "default",
-                Site = site
-            };
-            documentService.AddDocument(defaultMediaCategory);
-
+            
             siteSettings.DefaultLayoutId = model.BaseLayout.Id;
             siteSettings.Error403PageId = model.Error403.Id;
             siteSettings.Error404PageId = model.Error404.Id;
@@ -251,6 +241,27 @@ namespace MrCMS.Web.Apps.Core
             configurationProvider.SaveSettings(siteSettings);
             configurationProvider.SaveSettings(mediaSettings);
             configurationProvider.SaveSettings(fileSystemSettings);
+
+
+            var defaultMediaCategory = new MediaCategory
+            {
+                Name = "Default",
+                UrlSegment = "default",
+                Site = site
+            };
+            documentService.AddDocument(defaultMediaCategory);
+
+            var logoPath = HttpContext.Current.Server.MapPath("/Apps/Core/Content/images/mrcms-logo.png");
+            var fileStream = new FileStream(logoPath, FileMode.Open);
+            var dbFile = fileService.AddFile(fileStream, Path.GetFileName(logoPath), "image/png", Convert.ToInt32(fileStream.Length), defaultMediaCategory);
+
+            widgetService.AddWidget(new LinkedImage
+            {
+                Name = "Mr CMS Logo",
+                Image = dbFile.url,
+                Link = "/",
+                LayoutArea = layoutAreas.Single(x => x.AreaName == "Header Left")
+            });
 
 
             var adminUserRole = new UserRole
