@@ -100,7 +100,7 @@
             $('.edit-indicator-widget', top.document).click(function () {
                 var widgetId = $(this).parent().data('widget-id');
                 var name = $(this).parent().data('widget-name');
-                var menu = '<div class="edit-widget-menu"><h4>'+name+'</h4>' +
+                var menu = '<div class="edit-widget-menu"><h4>' + name + '</h4>' +
                     '<ul>' +
                     '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Edit/' + widgetId + '?returnUrl=' + window.top.location + '" target="_parent" class="btn btn-mini btn-primary">Edit</a></li>' +
                     '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Delete/' + widgetId + '" target="_parent" class="btn btn-mini btn-danger">Delete</a></li>' +
@@ -153,7 +153,7 @@
             $(".edit-indicator-widget", top.document).remove();
             $(".edit-widget-menu", top.document).remove();
             $(".edit-layout-area-menu", top.document).remove();
-            
+
             $(settings.editableSelector, top.document).each(function (index, element) {
                 var el = $(element);
                 if (el.data("is-html") == true && !init) {
@@ -168,7 +168,7 @@
             }
         }
     };
-    
+
     $.fn.mrcmsinline = function (method) {
         // Method calling logic
         if (methods[method]) {
@@ -201,23 +201,37 @@
 
 $(function () {
     $('.editable', top.document).mrcmsinline();
-    
-    //$(document).on('click', '[data-toggle="fb-modal"]', function () {
+
+    //$(top.document).on('click', '[data-toggle="fb-modal"]', function () {
     //    var clone = $(this).clone();
     //    clone.attr('data-toggle', '');
     //    clone.hide();
+    //    $("body", top.document).append(clone);
     //    clone.fancybox({
     //        type: 'iframe',
     //        padding: 0,
     //        height: 0,
+    //        context: top.document,
     //        'onComplete': function () {
     //            $('#fancybox-frame').load(function () { // wait for frame to load and then gets it's height
     //                $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
-    //                $('#fancybox-content').height($(this).contents()[0].documentElement.scrollHeight);
+    //                var additionalHeight = 0;
+    //                var ckeditor = $("#fancybox-frame").contents().find('.ckedit-enabled');
+    //                if (ckeditor.length > 0) {
+    //                    additionalHeight = 300;
+    //                }
+    //                var height = $("#fancybox-frame").contents().find('html').height() + additionalHeight;
+    //                var documentWidth = $('html').width() - 200;
+    //                if (documentWidth > 1000)
+    //                    documentWidth = 1000;
+    //                var width = (documentWidth);
+
+    //                $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height(height);
+    //                $('#fancybox-content, #fancybox-wrap, #fancybox-frame').width(width);
     //                $.fancybox.center();
     //            });
     //        }
-    //    }).click().remove();
+    //    }).click();//.remove();
     //    return false;
     //});
 

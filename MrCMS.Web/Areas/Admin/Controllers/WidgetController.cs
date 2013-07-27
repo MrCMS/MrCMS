@@ -35,14 +35,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             var model = new AddWidgetModel
                 {
                     LayoutArea = layoutArea,
-                    Webpage = _documentService.GetDocument<Webpage>(pageId) ?? null
+                    Webpage = _documentService.GetDocument<Webpage>(pageId)
                 };
             return PartialView(model);
         }
 
         [HttpPost]
         [ValidateInput(false)]
-        public JsonResult AddWidgetJson([IoCModelBinder(typeof(AddWidgetModelBinder))] Widget widget)
+        public JsonResult Add([IoCModelBinder(typeof(AddWidgetModelBinder))] Widget widget)
         {
             _widgetService.AddWidget(widget);
 

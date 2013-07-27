@@ -8,7 +8,7 @@
     });
 
     $("#add-widget-form").submit(function () {
-        $.post('/Admin/Widget/AddWidgetJson', $(this).serialize(), function (response) {
+        $.post('/Admin/Widget/Add', $(this).serialize(), function (response) {
             var link = $('<a class="btn btn-mini" id="temp-edit" data-toggle="fb-modal" href="/Admin/Widget/Edit/' + response + '?returnUrl='+window.top.location+'">Edit Widget</a>');
             parent.parent.$("body").append(link);
             parent.parent.$("#temp-edit").click().remove();
