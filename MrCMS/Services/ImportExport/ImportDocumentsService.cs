@@ -67,6 +67,8 @@ namespace MrCMS.Services.ImportExport
                     tag = new Tag {Name = item};
                     _tagService.Add(tag);
                 }
+                if (!document.Tags.Contains(tag))
+                    document.Tags.Add(tag);
             }
 
             if (document.Id == 0)
