@@ -492,14 +492,8 @@ namespace MrCMS.Helpers
             var image = MrCMSApplication.Get<IImageProcessor>().GetImage(imageUrl);
             var tagBuilder = new TagBuilder("img");
             if (image == null)
-            {
-                image = new MediaFile
-                    {
-                        Description = alt,
-                        Title = title
-                    };
-            }
-            
+                return MvcHtmlString.Empty;
+
             tagBuilder.Attributes.Add("src", imageUrl);
             tagBuilder.Attributes.Add("alt", alt ?? image.Description);
             tagBuilder.Attributes.Add("title", title ?? image.Title);
