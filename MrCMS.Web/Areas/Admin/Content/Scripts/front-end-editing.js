@@ -7,8 +7,8 @@
             if (options) {
                 $.extend(settings, options);
             }
-            CKEDITOR.disableAutoInline = true;
-            CKEDITOR.on('instanceCreated', function (event) {
+            parent.CKEDITOR.disableAutoInline = true;
+            parent.CKEDITOR.on('instanceCreated', function (event) {
                 var editor = event.editor;
                 editor.on('configLoaded', function () {
                     editor.config.toolbar = 'Basic';
@@ -32,7 +32,7 @@
                 if (el.attr('contenteditable') != 'true')
                     el.attr('contenteditable', 'true');
                 if (el.data("is-html") == true) {
-                    var editor = CKEDITOR.inline(element);
+                    var editor = parent.CKEDITOR.inline(element);
                     var original = null;
                     editor.on('focus', function (e) {
                         $.get('/Admin/InPageAdmin/GetUnformattedBodyContent/', { id: el.data('id'), property: el.data('property'), type: el.data('type') }, function (response) {
@@ -159,8 +159,8 @@
             });
             $(settings.editableSelector, top.document).attr("contenteditable", "false");
             //kill all ckeditors
-            for (k in CKEDITOR.instances) {
-                var instance = CKEDITOR.instances[k];
+            for (k in parent.CKEDITOR.instances) {
+                var instance = parent.CKEDITOR.instances[k];
                 instance.destroy(true);
             }
         }
