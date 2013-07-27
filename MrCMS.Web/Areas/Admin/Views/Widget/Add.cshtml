@@ -1,13 +1,29 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Models.AddWidgetModel
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 <div class="modal-header">
     <h3>Add widget</h3>
 </div>
-@using (Html.BeginForm("Add", "Widget", new { id = "", returnUrl = TempData["returnUrl"] }, FormMethod.Post))
+@using (Html.BeginForm("Add", "Widget", new { id = "" }, FormMethod.Post, new { id = "add-widget-form" }))
 {
     <div class="modal-body">
         @Html.HiddenFor(model => model.LayoutArea.Id)
+        @if (Model.Webpage != null)
+        {
+            @Html.HiddenFor(model => model.Webpage.Id);
+            <div class="row-fluid">
+                <div class="span6">
+                    <label class="radio">@Html.RadioButton("AddType", "page", true, new { id = "add-page" }) This page</label>
+                    <div id="show-recursive">
+                        @Html.InlineCheckboxFor(x => x.IsRecursive, null, null, "And all child pages")
+                    </div>
+                </div>
+                <div class="span6">
+                    <label class="radio">@Html.RadioButton("AddType", "global", false, new { id = "add-global" }) All pages using this layout</label>
+                </div>
+            </div>
+        }
+
         @Html.Label("WidgetType", "Widget Type")
         @Html.DropDownList("WidgetType", WidgetHelper.AllowedWidgetTypeDropdownItems, new { data_val = "true", data_val_required = "Please select a widget type" })
         @Html.ValidationMessage("WidgetType")
@@ -17,6 +33,8 @@
         @Html.ValidationMessageFor(model => model.Name)
     </div>
     <div class="modal-footer">
-        <input type="submit" class="btn-success btn" value="Add widget" />
+        <input type="submit" class="btn-success btn" value="Add widget" id="add-widget" />
     </div>
 }
+
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/add-page-widget.js"); }

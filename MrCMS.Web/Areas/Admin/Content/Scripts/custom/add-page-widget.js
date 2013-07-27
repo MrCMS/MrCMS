@@ -1,14 +1,18 @@
-﻿$(function() {
-    $('input[name=AddType]').change(function() {
+﻿$(function () {
+    $('input[name=AddType]').change(function () {
         if ($("input[name=AddType]:checked").val() == 'page') {
             $('#show-recursive').show();
         } else {
             $('#show-recursive').hide();
         }
-        resizeModal();
     });
-    function resizeModal() {
-        parent.$('#fancybox-content').height(parent.$('#fancybox-frame').contents()[0].documentElement.scrollHeight);
-        parent.$.fancybox.center();
-    }
+
+    $("#add-widget-form").submit(function () {
+        $.post('/Admin/Widget/AddWidgetJson', $(this).serialize(), function (response) {
+            var link = $('<a class="btn btn-mini" id="temp-edit" data-toggle="fb-modal" href="/Admin/Widget/Edit/' + response + '?returnUrl='+window.top.location+'">Edit Widget</a>');
+            parent.parent.$("body").append(link);
+            parent.parent.$("#temp-edit").click().remove();
+        });
+        return false;
+    });
 });

@@ -141,24 +141,24 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             result.RouteValues["id"].Should().Be(1);
         }
 
-        [Fact]
-        public void WidgetController_AddGet_ReturnsPartialViewResult()
-        {
-            WidgetController widgetController = GetWidgetController();
+        //[Fact]
+        //public void WidgetController_AddGet_ReturnsPartialViewResult()
+        //{
+        //    WidgetController widgetController = GetWidgetController();
 
-            widgetController.Add(new LayoutArea(), null).Should().BeOfType<PartialViewResult>();
-        }
+        //    widgetController.Add(new LayoutArea(), null).Should().BeOfType<PartialViewResult>();
+        //}
 
-        [Fact]
-        public void WidgetController_Add_ReturnsAnAddWidgetModel()
-        {
-            WidgetController widgetController = GetWidgetController();
-            var layoutArea = new LayoutArea();
+        //[Fact]
+        //public void WidgetController_Add_ReturnsAnAddWidgetModel()
+        //{
+        //    WidgetController widgetController = GetWidgetController();
+        //    var layoutArea = new LayoutArea();
             
-            var result = widgetController.Add(layoutArea, "return-url");
+        //    var result = widgetController.Add(layoutArea, "return-url");
 
-            result.Model.Should().BeOfType<AddWidgetModel>();
-        }
+        //    result.Model.Should().BeOfType<AddWidgetModel>();
+        //}
 
         private static WidgetController GetWidgetController()
         {

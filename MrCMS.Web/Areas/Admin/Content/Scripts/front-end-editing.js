@@ -102,7 +102,7 @@
                 var name = $(this).parent().data('widget-name');
                 var menu = '<div class="edit-widget-menu"><h4>'+name+'</h4>' +
                     '<ul>' +
-                    '<li><a id="" href="/Admin/Widget/Edit/' + widgetId + '" target="_parent" class="btn btn-mini btn-primary">Edit</a></li>' +
+                    '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Edit/' + widgetId + '?returnUrl=' + window.top.location + '" target="_parent" class="btn btn-mini btn-primary">Edit</a></li>' +
                     '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Delete/' + widgetId + '" target="_parent" class="btn btn-mini btn-danger">Delete</a></li>' +
                     '</ul></div>';
                 $(this).parent().prepend(menu);
@@ -124,7 +124,7 @@
                 var pageId = $('#Id').val();
 
                 var menu = '<div class="edit-layout-area-menu"><h4>' + areaName +
-                    '</h4><ul><li><a tab-index="1" href="/Admin/Widget/AddPageWidget?pageId=' + pageId + '&id=' + areaId + '" data-toggle="fb-modal" class="btn btn-mini btn-primary">Add widget</a></li>' +
+                    '</h4><ul><li><a tab-index="1" href="/Admin/Widget/Add?pageId=' + pageId + '&id=' + areaId + '" data-toggle="fb-modal" class="btn btn-mini btn-primary">Add widget</a></li>' +
                     '<li><a tab-index="1" href="/Admin/Webpage/Edit/' + pageId + '" class="btn btn-mini" id="mrcms-manage-page-widgets">Manage page widgets</a>' +
                     '</li><li><a tab-index="1" href="/Admin/LayoutArea/Edit/' + areaId + '" class="btn btn-mini">Manage global widgets</a></li></ul></div>';
 

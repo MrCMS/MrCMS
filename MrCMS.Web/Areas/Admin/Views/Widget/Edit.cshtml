@@ -3,27 +3,16 @@
 @model Widget
 @{
     ViewBag.Title = "Edit | " + Model.WidgetType.BreakUpString();
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
 }
 @using (Html.BeginForm("Edit", "Widget", new { }, FormMethod.Post, new { id = "edit-document" }))
 {
-    <fieldset>
-        <legend>@Model.WidgetType.BreakUpString()
-
-            <span class="btn-group  display-inline  pull-right">
-                @if (Request.UrlReferrer != null)
-                {
-                    <a class="btn" href="@Request.UrlReferrer">Back</a>
-                }
-                else
-                {
-                    @Html.ActionLink("Back to layout area", "Edit", "LayoutArea", new { id = Model.LayoutArea.Id }, new { @class = "btn" })
-                }
-                <a href="@Url.Action("Delete", "Widget", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete Widget</a>
-                <button class="btn btn-primary">
-                    Save</button>
-            </span>
-        </legend>
+    
+    <div class="modal-header">
+        <h3>@(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : Model.WidgetType.BreakUpString())</h3>
+    </div>
+    
+    <div class="modal-body">
         <div class="row-fluid">
             <div class="span12">
                 @Html.HiddenFor(widget => widget.Id)
@@ -39,7 +28,8 @@
             </div>
         </div>
 
-    </fieldset>
-    
-    <hr />
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn-success btn" value="Save widget" />
+    </div>
 }

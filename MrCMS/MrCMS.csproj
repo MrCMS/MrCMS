@@ -298,7 +298,6 @@
     <Compile Include="Models\ACLRuleModel.cs" />
     <Compile Include="Models\ACLRuleOperationModel.cs" />
     <Compile Include="Models\ACLUpdateRecord.cs" />
-    <Compile Include="Models\AddPageWidgetModel.cs" />
     <Compile Include="Models\AddWidgetModel.cs" />
     <Compile Include="Models\AsyncListModel.cs" />
     <Compile Include="Models\AutoCompleteResult.cs" />

@@ -1232,7 +1232,6 @@
     <Content Include="Areas\Admin\Views\User\SetPassword.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\FileList.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\FileSelector.cshtml" />
-    <Content Include="Areas\Admin\Views\Widget\AddPageWidget.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\SortWidgets.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\SortWidgets.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\SortWidgetsForPage.cshtml" />
