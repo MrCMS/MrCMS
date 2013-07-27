@@ -27,7 +27,7 @@
             setEditingEnabled(true);
             $("#enable-editing").text("Inline Editing: On");
 
-            $(settings.editableSelector).each(function (index, element) {
+            $(settings.editableSelector, top.document).each(function (index, element) {
                 var el = $(element);
                 if (el.attr('contenteditable') != 'true')
                     el.attr('contenteditable', 'true');
@@ -84,20 +84,20 @@
                 }
             });
             //foreach widget add edit indicator
-            $("div[data-widget-id]").each(function () {
+            $("div[data-widget-id]", top.document).each(function () {
                 $(this).prepend("<div class='edit-indicator-widget'><img src='/Areas/Admin/Content/Images/pencil.png' /></div>");
             });
             //foreach layout area add edit indicator
-            $("div[data-layout-area-id]").each(function () {
+            $("div[data-layout-area-id]", top.document).each(function () {
                 $(this).prepend("<div class='edit-indicator-layout'><img src='/Areas/Admin/Content/Images/layout-area-menu.png' /></div>");
 
             });
 
-            $(".edit-indicator-layout").fadeIn(800);
-            $(".edit-indicator-widget").fadeIn(800);
+            $(".edit-indicator-layout", top.document).fadeIn(800);
+            $(".edit-indicator-widget", top.document).fadeIn(800);
 
             //create menu for widget editing
-            $('.edit-indicator-widget').click(function () {
+            $('.edit-indicator-widget', top.document).click(function () {
                 var widgetId = $(this).parent().data('widget-id');
                 var menu = '<div class="edit-widget-menu">' +
                     '<ul>' +
@@ -105,11 +105,11 @@
                     '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Delete/' + widgetId + '" target="_parent" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;">Delete this widget</a></li>' +
                     '</ul></div>';
                 $(this).parent().prepend(menu);
-                $(".edit-widget-menu").fadeIn(400);
+                $(".edit-widget-menu", top.document).fadeIn(400);
 
                 //if click outside hide the menu
-                $(document).mouseup(function (e) {
-                    var container = $(".edit-widget-menu");
+                $(top.document).mouseup(function (e) {
+                    var container = $(".edit-widget-menu", top.document);
                     if (container.has(e.target).length === 0) {
                         container.remove();
                     }
@@ -117,7 +117,7 @@
             });
 
             //create menu for layout editing
-            $('.edit-indicator-layout').click(function () {
+            $('.edit-indicator-layout', top.document).click(function () {
                 var areaId = $(this).parent().data('layout-area-id');
                 var areaName = $(this).parent().data('layout-area-name');
                 var pageId = $('#Id').val();
@@ -128,20 +128,19 @@
                     '</li><li><a tab-index="1" href="/Admin/LayoutArea/Edit/' + areaId + '" class="mrcms-btn mrcms-btn-mini" style="color:#333;text-decoration:none;">Manage global widgets</a></li></ul></div>';
 
                 $(this).parent().prepend(menu);
-                $(".edit-layout-area-menu").fadeIn(400);
+                $(".edit-layout-area-menu", top.document).fadeIn(400);
                 //if click outside hide the menu
-                $(document).mouseup(function (e) {
-                    var container = $(".edit-layout-area-menu");
+                $(top.document).mouseup(function (e) {
+                    var container = $(".edit-layout-area-menu", top.document);
                     if (container.has(e.target).length === 0) {
                         container.remove();
                     }
                 });
 
-
             });
 
             //set active tab for layout
-            $(document).on('click', '#mrcms-manage-page-widgets', function () {
+            $(document, top.document).on('click', '#mrcms-manage-page-widgets', function () {
                 $.cookie('selected-tab-/Admin/Webpage/Edit/' + $('#Id').val(), '#layout-content');
             });
         },
@@ -149,21 +148,21 @@
             setEditingEnabled(false);
             $("#enable-editing").text("Inline Editing: Off");
             //remove all edit tools
-            $(".edit-indicator-layout").remove();
-            $(".edit-indicator-widget").remove();
-
-            //kill all ckeditors
-            for (k in CKEDITOR.instances) {
-                var instance = CKEDITOR.instances[k];
-                instance.destroy(true);
-            }
-            $(settings.editableSelector).each(function (index, element) {
+            $(".edit-indicator-layout", top.document).remove();
+            $(".edit-indicator-widget", top.document).remove();
+            
+            $(settings.editableSelector, top.document).each(function (index, element) {
                 var el = $(element);
                 if (el.data("is-html") == true && !init) {
                     showLiveForm(el);
                 }
             });
-            $(settings.editableSelector).attr("contenteditable", "false");
+            $(settings.editableSelector, top.document).attr("contenteditable", "false");
+            //kill all ckeditors
+            for (k in CKEDITOR.instances) {
+                var instance = CKEDITOR.instances[k];
+                instance.destroy(true);
+            }
         }
     };
     
@@ -198,7 +197,7 @@
 })(jQuery);
 
 $(function () {
-    $('.editable').mrcmsinline();
+    $('.editable', top.document).mrcmsinline();
     
     $(document).on('click', '[data-toggle="fb-modal"]', function () {
         var clone = $(this).clone();

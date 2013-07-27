@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    [MrCMSACLRule(typeof(InlineEditingACL), InlineEditingACL.Allowed, ReturnEmptyResult = true)]
+    [MrCMSACLRule(typeof (InlineEditingACL), InlineEditingACL.Allowed, ReturnEmptyResult = true)]
     public class InPageAdminController : MrCMSAdminController
     {
         private readonly ISession _session;
@@ -22,8 +22,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _session = session;
         }
-        
+
         public PartialViewResult InPageEditor(Webpage page)
+        {
+            return PartialView("InPageEditorContainer", page);
+        }
+
+        public ActionResult InPageEditorPage(Webpage page)
         {
             return PartialView("InPageEditor", page);
         }
@@ -65,6 +70,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 this.success = success;
                 this.message = message;
             }
+
             public bool success { get; set; }
             public string message { get; set; }
         }
@@ -101,12 +107,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 return string.Empty;
             var content = Convert.ToString(propertyInfo.GetValue(entity, null));
 
-            if (!typeof(Webpage).IsAssignableFrom(entityType))
+            if (!typeof (Webpage).IsAssignableFrom(entityType))
                 return content;
 
             CurrentRequestData.CurrentPage = entity as Webpage;
             var htmlHelper = MrCMSHtmlHelper.GetHtmlHelper(this);
             return htmlHelper.ParseShortcodes(content).ToHtmlString();
         }
+
     }
 }
