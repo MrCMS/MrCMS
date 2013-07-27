@@ -253,7 +253,7 @@ namespace MrCMS.Web.Apps.Core
 
             var logoPath = HttpContext.Current.Server.MapPath("/Apps/Core/Content/images/mrcms-logo.png");
             var fileStream = new FileStream(logoPath, FileMode.Open);
-            var dbFile = fileService.AddFile(fileStream, Path.GetFileName(logoPath), "image/png", Convert.ToInt32(fileStream.Length), defaultMediaCategory);
+            var dbFile = fileService.AddFile(fileStream, Path.GetFileName(logoPath), "image/png", fileStream.Length, defaultMediaCategory);
 
             widgetService.AddWidget(new LinkedImage
             {

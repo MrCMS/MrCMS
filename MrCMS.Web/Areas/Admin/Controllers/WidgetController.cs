@@ -42,25 +42,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public JsonResult Add([IoCModelBinder(typeof(AddWidgetModelBinder))] Widget widget)
+        [ActionName("Add")]
+        public JsonResult Add_POST([IoCModelBinder(typeof(AddWidgetModelBinder))] Widget widget)
         {
             _widgetService.AddWidget(widget);
 
             return Json(widget.Id);
-        }
-
-        [HttpPost]
-        [ActionName("Add")]
-        [ValidateInput(false)]
-        public ActionResult Add_POST([IoCModelBinder(typeof(AddWidgetModelBinder))] Widget widget, string returnUrl = null)
-        {
-            var newWidget = _widgetService.AddWidget(widget);
-
-            return newWidget.HasProperties
-                       ? RedirectToAction("Edit", "Widget", new { id = newWidget.Id, returnUrl })
-                       : !string.IsNullOrWhiteSpace(returnUrl)
-                             ? (ActionResult)Redirect(returnUrl)
-                             : RedirectToAction("Edit", "LayoutArea", new { id = newWidget.LayoutArea.Id });
         }
 
         [HttpGet]

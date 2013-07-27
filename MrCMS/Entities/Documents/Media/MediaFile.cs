@@ -17,7 +17,7 @@ namespace MrCMS.Entities.Documents.Media
         public virtual MediaCategory MediaCategory { get; set; }
         //public virtual string FileLocation { get; set; }
         public virtual string FileUrl { get; set; }
-        public virtual int ContentLength { get; set; }
+        public virtual long ContentLength { get; set; }
         public virtual string FileName { get; set; }
 
         public virtual int DisplayOrder { get; set; }

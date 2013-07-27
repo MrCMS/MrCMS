@@ -31,7 +31,7 @@ namespace MrCMS.Models
         public string thumbnail_url { get; set; }
         public string delete_type { get; set; }
         public string delete_url { get; set; }
-        public int size { get; set; }
+        public long size { get; set; }
         public string Type { get; set; }
         public string seo_url { get; set; }
         public string title { get; set; }

@@ -32,7 +32,7 @@ namespace MrCMS.Services
             _currentSite = currentSite;
         }
 
-        public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, int contentLength, MediaCategory mediaCategory)
+        public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory)
         {
             if (mediaCategory == null) throw new ArgumentNullException("mediaCategory");
 
