@@ -2,6 +2,6 @@
 @using MrCMS.Web.Apps.Core.Models
 @model MrCMS.Web.Apps.Core.Pages.LoginPage
            
-@Editable(Model, page => page.BodyContent)
+@Editable(Model, page => page.BodyContent, true)
 
 @{ Html.RenderPartial("LoginBox", ViewData["login-model"] as LoginModel);}

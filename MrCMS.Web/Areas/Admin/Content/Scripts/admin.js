@@ -319,6 +319,8 @@
                         additionalHeight = 300;
                     }
                     var height = $("#fancybox-frame").contents().find('html').height() + additionalHeight;
+                    if (height > $(top.window).height())
+                        height = $(top.window).height()-100;
                     var documentWidth = $('html').width() - 200;
                     if (documentWidth > 1000)
                         documentWidth = 1000;
