@@ -1,0 +1,37 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.Webpage
+<div style="position: fixed; top: 0; width: 100%">
+    <iframe src="/Admin/InPageAdmin/InPageEditorPage/@Model.Id" height="40" width="100%" frameborder="0" ></iframe>
+</div>
+<style>
+    html { margin-top: 40px; }
+    #cke_editor1 { z-index: 9999; }
+    .middle-col:focus { outline: none; background: #e7e7e7; }
+
+    .modal { z-index: 100000; }
+    .edit-indicator-widget { width: 20px; height: 20px; position: absolute; left: 5px; cursor: pointer; z-index: 9999; display: none; }
+    .edit-indicator-layout { width: 20px; height: 20px; position: absolute; right: 0; cursor: pointer; z-index: 9999; display: none; }
+
+    div.layout-area, div.widget { position: relative; }
+    .edit-widget-menu { position: absolute; left: 0; padding: 5px; z-index: 10000; border: 1px solid #d0d0d0; background: white; display: none; }
+    .edit-widget-menu a { color: #000; font-family: arial; padding: 3px; display: block; }
+
+    .edit-layout-area-menu { position: absolute; right: 0; padding: 5px; z-index: 10000; border: 1px solid #d0d0d0; background: white; display: none; }
+    .edit-layout-area-menu a { color: #000; font-family: arial!important; padding: 3px; display: block!important; }
+    .edit-layout-area-menu h4 { font-size: 12px!important; font-family: arial!important; margin: 5px!important; padding: 0; }
+
+    .edit-widget-menu ul, .edit-layout-area-menu ul { margin: 0!important; padding: 0; list-style-type: none; }
+    .edit-widget-menu ul li, .edit-layout-area-menu ul li { margin: 5px!important; }
+
+    .mrcms-btn { display: inline-block!important; text-decoration: none!important; padding: 4px 12px!important; margin-bottom: 0!important; font-size: 14px!important; line-height: 20px!important; color: #333!important; text-align: center; text-shadow: 0 1px 1px rgba(255,255,255,0.75); vertical-align: middle; cursor: pointer; background-color: #f5f5f5!important; background-image: -moz-linear-gradient(top,#fff,#e6e6e6)!important; background-image: -webkit-gradient(linear,0 0,0 100%,from(#fff),to(#e6e6e6)); background-image: -webkit-linear-gradient(top,#fff,#e6e6e6)!important; background-image: -o-linear-gradient(top,#fff,#e6e6e6)!important; background-image: linear-gradient(to bottom,#fff,#e6e6e6)!important; background-repeat: repeat-x!important; border: 1px solid #bbb!important; border-color: #e6e6e6 #e6e6e6 #bfbfbf!important; border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25)!important; border-bottom-color: #a2a2a2!important; -webkit-border-radius: 4px!important; -moz-border-radius: 4px!important; border-radius: 4px!important; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff',endColorstr='#ffe6e6e6',GradientType=0); filter: progid:DXImageTransform.Microsoft.gradient(enabled=false); -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05); -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05); box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05); }
+    .mrcms-btn-mini { padding: 0 6px!important; font-size: 10.5px!important; -webkit-border-radius: 3px!important; -moz-border-radius: 3px!important; border-radius: 3px!important; }
+    .mrcms-btn:hover, .mrcms-btn:active, .mrcms-btn.active, .mrcms-btn.disabled, .mrcms-btn[disabled] { color: #333!important; background-color: #e6e6e6!important; }
+    .mrcms-btn:hover { color: #333; text-decoration: none; background-position: 0 -15px; -webkit-transition: background-position .1s linear; -moz-transition: background-position .1s linear; -o-transition: background-position .1s linear; transition: background-position .1s linear; }
+</style>
+<link href="@Url.Content("~/Areas/Admin/Content/Editors/fancybox/jquery.fancybox-1.3.4.css")" rel="stylesheet" type="text/css" />
+   
+<script src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"> </script>
+<script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.mrcms-mediaselector.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/fancybox/jquery.easing-1.3.pack.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/fancybox/jquery.mousewheel-3.0.4.pack.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/fancybox/jquery.fancybox-1.3.4.pack.js")"></script>

@@ -15,7 +15,7 @@ namespace MrCMS.Tests.Services.ImportExport
     {
         private readonly IDocumentService _documentService;
         private readonly ITagService _tagService;
-        private readonly IImportDocumentsService _importDocumentsService;
+        private readonly ImportDocumentsService _importDocumentsService;
          private readonly IUrlHistoryService _urlHistoryService;
 
         public ImportDocumentsServiceTests()

@@ -214,7 +214,7 @@
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Apps\Core\Controllers\LoginController.cs" />
-    <Compile Include="Areas\Admin\Controllers\InPageMrCMSAdminController.cs" />
+    <Compile Include="Areas\Admin\Controllers\InPageAdminController.cs" />
     <Compile Include="Controllers\SEOController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -575,6 +575,7 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\slider.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\portfolio-item.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
+    <Content Include="Areas\Admin\Content\Scripts\front-end-editing.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery-ui-i18n.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-af.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-ar-DZ.js" />
@@ -732,7 +733,6 @@
     <Content Include="Areas\Admin\Content\less\mixins.css">
       <DependentUpon>mixins.less</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Content\Scripts\front-end-editing.js" />
     <Content Include="Apps\Core\Content\Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Apps\Core\Content\Scripts\jquery.validate.min.js" />
     <Content Include="Apps\Core\Content\Scripts\jquery.validate.unobtrusive.min.js" />
@@ -1353,6 +1353,7 @@
     <Content Include="Content\install\images\mr-cms-thumb.jpg" />
     <Content Include="Areas\Admin\Views\ACL\Group.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Documents.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\InPageEditorContainer.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
