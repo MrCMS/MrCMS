@@ -570,10 +570,7 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\edit-webpage.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\file-system-settings.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\gallery.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\slider.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\portfolio-item.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
     <Content Include="Areas\Admin\Content\Scripts\front-end-editing.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery-ui-i18n.js" />
