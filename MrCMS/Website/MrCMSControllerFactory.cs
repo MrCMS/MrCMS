@@ -11,10 +11,10 @@ namespace MrCMS.Website
 {
     public class MrCMSControllerFactory : DefaultControllerFactory
     {
-        private static readonly Dictionary<string, List<Type>> AppUiControllers;
-        private static readonly Dictionary<string, List<Type>> AppAdminControllers;
-        private static readonly List<Type> UiControllers;
-        private static readonly List<Type> AdminControllers;
+        public static readonly Dictionary<string, List<Type>> AppUiControllers;
+        public static readonly Dictionary<string, List<Type>> AppAdminControllers;
+        public static readonly List<Type> UiControllers;
+        public static readonly List<Type> AdminControllers;
 
         static MrCMSControllerFactory()
         {
