@@ -38,6 +38,7 @@ namespace MrCMS.Apps
         public static readonly Dictionary<Type, string> AppWebpages = new Dictionary<Type, string>();
         public static readonly Dictionary<Type, string> AppWidgets = new Dictionary<Type, string>();
         public static readonly Dictionary<Type, string> AppUserProfileDatas = new Dictionary<Type, string>();
+        public static readonly Dictionary<Type, string> AppEntities = new Dictionary<Type, string>();
         public static readonly Dictionary<Type, string> AppTypes = new Dictionary<Type, string>();
         private static List<MrCMSApp> _allApps;
         public virtual IEnumerable<Type> BaseTypes { get { yield break; } }
@@ -55,7 +56,9 @@ namespace MrCMS.Apps
             widgetTypes.ForEach(type => AppWidgets[type] = AppName);
             var userProfileTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<UserProfileData>().FindAll(type => type.Namespace.StartsWith(this.GetType().Namespace));
             userProfileTypes.ForEach(type => AppUserProfileDatas[type] = AppName);
-            var types = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<SystemEntity>().FindAll(type => type.Namespace.StartsWith(this.GetType().Namespace));
+            var entities = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<SystemEntity>().FindAll(type => type.Namespace.StartsWith(this.GetType().Namespace));
+            entities.ForEach(type => AppEntities[type] = AppName);
+            var types = TypeHelper.GetAllTypes().Where(type => !type.IsAbstract).Where(type => !string.IsNullOrWhiteSpace(type.Namespace) && type.Namespace.StartsWith(this.GetType().Namespace));
             types.ForEach(type => AppTypes[type] = AppName);
         }
 

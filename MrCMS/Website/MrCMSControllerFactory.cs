@@ -11,67 +11,65 @@ namespace MrCMS.Website
 {
     public class MrCMSControllerFactory : DefaultControllerFactory
     {
-        private readonly Dictionary<string, List<Type>> _appUiControllers;
-        private readonly Dictionary<string, List<Type>> _appAdminControllers;
-        private readonly List<Type> _uiControllers;
-        private readonly List<Type> _adminControllers;
+        private static readonly Dictionary<string, List<Type>> AppUiControllers;
+        private static readonly Dictionary<string, List<Type>> AppAdminControllers;
+        private static readonly List<Type> UiControllers;
+        private static readonly List<Type> AdminControllers;
 
-        public MrCMSControllerFactory()
+        static MrCMSControllerFactory()
         {
-            _appUiControllers =
-                TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(MrCMSAppUIController<>))
-                          .GroupBy(
-                              type =>
-                              ((MrCMSApp)Activator.CreateInstance(
-                                  type.GetBaseTypes(type1 =>
-                                            type1.IsGenericType &&
-                                            type1.GetGenericTypeDefinition() == typeof(MrCMSAppUIController<>))
-                                      .First()
-                                      .GetGenericArguments()[0])).AppName)
-                          .ToDictionary(types => types.Key, types => types.ToList());
-            _appAdminControllers = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(MrCMSAppAdminController<>))
-                                             .GroupBy(
-                                                 type =>
-                                                 ((MrCMSApp)Activator.CreateInstance(
-                                                     type.GetBaseTypes(
-                                                         type1 =>
-                                                         type1.IsGenericType &&
-                                                         type1.GetGenericTypeDefinition() ==
-                                                         typeof(MrCMSAppAdminController<>))
-                                                         .First()
-                                                         .GetGenericArguments()[0])).AppName)
-                                             .ToDictionary(types => types.Key, types => types.ToList());
-            _uiControllers = TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSUIController>();
-            _adminControllers = TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSAdminController>();
+            AppUiControllers =
+                MrCMSApp.AppTypes.Where(pair => typeof(MrCMSUIController).IsAssignableFrom(pair.Key))
+                        .GroupBy(pair => pair.Value)
+                        .ToDictionary(grouping => grouping.Key, grouping => grouping.Select(pair => pair.Key).ToList());
+            AppAdminControllers =
+                MrCMSApp.AppTypes.Where(pair => typeof(MrCMSAdminController).IsAssignableFrom(pair.Key))
+                        .GroupBy(pair => pair.Value)
+                        .ToDictionary(grouping => grouping.Key, grouping => grouping.Select(pair => pair.Key).ToList());
+            UiControllers =
+                TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSUIController>()
+                          .FindAll(type => !AppUiControllers.SelectMany(pair => pair.Value).Contains(type));
+            AdminControllers = TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSAdminController>()
+                          .FindAll(type => !AppAdminControllers.SelectMany(pair => pair.Value).Contains(type));
         }
+
         protected override Type GetControllerType(RequestContext requestContext, string controllerName)
         {
-            Type controllerType = null;
-            if (_appUiControllers.ContainsKey(Convert.ToString(requestContext.RouteData.DataTokens["app"])))
-            {
-                if ("admin".Equals(Convert.ToString(requestContext.RouteData.DataTokens["area"]),
-                                   StringComparison.OrdinalIgnoreCase))
-                {
-                    controllerType = _appAdminControllers[requestContext.RouteData.DataTokens["app"].ToString()].SingleOrDefault(
-                        type =>
-                        type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
-                }
-                else
-                    controllerType = _appUiControllers[requestContext.RouteData.DataTokens["app"].ToString()].SingleOrDefault(
-                        type =>
-                        type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
-            }
-            if (controllerType == null)
-            {
-                if ("admin".Equals(Convert.ToString(requestContext.RouteData.DataTokens["area"]),
-                                   StringComparison.OrdinalIgnoreCase))
-                    controllerType = _adminControllers.SingleOrDefault(
-                        type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
-                else
-                    controllerType = _uiControllers.SingleOrDefault(
-                        type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
-            }
+            string appName = Convert.ToString(requestContext.RouteData.DataTokens["app"]);
+            string areaName = Convert.ToString(requestContext.RouteData.DataTokens["area"]);
+
+            var listToCheck = "admin".Equals(areaName, StringComparison.OrdinalIgnoreCase)
+                                  ? GetAdminControllersToCheck(appName)
+                                  : GetUiControllersToCheck(appName);
+
+            Type controllerType = listToCheck.FirstOrDefault(type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
             return controllerType;
+        }
+
+        private List<Type> GetAdminControllersToCheck(string appName)
+        {
+            var types = new List<Type>();
+            if (!string.IsNullOrWhiteSpace(appName))
+                types.AddRange(AppAdminControllers[appName]);
+            types.AddRange(AdminControllers);
+            foreach (var key in AppAdminControllers.Keys.Where(s => !s.Equals(appName, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                types.AddRange(AppAdminControllers[key]);
+            }
+            return types;
+        }
+
+        private List<Type> GetUiControllersToCheck(string appName)
+        {
+            var types = new List<Type>();
+            if (!string.IsNullOrWhiteSpace(appName))
+                types.AddRange(AppUiControllers[appName]);
+            types.AddRange(UiControllers);
+            foreach (var key in AppUiControllers.Keys.Where(s => !s.Equals(appName, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                types.AddRange(AppUiControllers[key]);
+            }
+            return types;
         }
 
         public bool IsValidControllerType(string appName, string controllerName, bool isAdmin)
@@ -80,15 +78,15 @@ namespace MrCMS.Website
             if (!string.IsNullOrWhiteSpace(appName))
             {
                 return isAdmin
-                           ? _appAdminControllers.ContainsKey(appName) && _appAdminControllers[appName].Any(
+                           ? AppAdminControllers.ContainsKey(appName) && AppAdminControllers[appName].Any(
                                type => type.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase))
-                           : _appUiControllers.ContainsKey(appName) && _appUiControllers[appName].Any(
+                           : AppUiControllers.ContainsKey(appName) && AppUiControllers[appName].Any(
                                type => type.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase));
             }
             return isAdmin
-                       ? _adminControllers.Any(
+                       ? AdminControllers.Any(
                            type => type.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase))
-                       : _uiControllers.Any(
+                       : UiControllers.Any(
                            type => type.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase));
 
         }
