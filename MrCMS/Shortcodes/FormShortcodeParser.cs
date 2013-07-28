@@ -28,7 +28,7 @@ namespace MrCMS.Shortcodes
             if (current == null)
                 return null;
 
-            var otherPageFormMatch = new Regex(@"\[form-[\d+]\]");
+            var otherPageFormMatch = new Regex(@"\[form-(\d+)\]");
             var thisPageFormMatch = new Regex(@"\[form\]");
 
             var submitted = true.Equals(htmlHelper.ViewContext.TempData["form-submitted"]);
