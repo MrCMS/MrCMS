@@ -29,7 +29,13 @@
                         <a id="enable-editing" class="btn" href="#">Inline Editing: On</a>
                     </div>
                     <div class="display-inline" style="margin-left: 20px; overflow:hidden;">
-                        @Model.Name
+                        @if (Model.FormPostings.Any())
+                        {
+                            <a href="/Admin/Webpage/Edit/@Model.Id#postings-tab" target="_parent"> 
+                                @Model.FormPostings.Count 
+                                Form entry
+                            </a>
+                        }
                     </div>
                 </div>
             </div>

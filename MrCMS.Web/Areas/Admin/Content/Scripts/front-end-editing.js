@@ -25,7 +25,7 @@
 
         enable: function () {
             setEditingEnabled(true);
-            $("#enable-editing").text("Inline Editing: On").addClass("btn-primary");
+            $("#enable-editing").text("Inline Editing: On").addClass("btn-warning");
 
             $(settings.editableSelector, top.document).each(function (index, element) {
                 var el = $(element);
@@ -147,7 +147,7 @@
         },
         disable: function (init) {
             setEditingEnabled(false);
-            $("#enable-editing").text("Inline Editing: Off").removeClass("btn-primary");;
+            $("#enable-editing").text("Inline Editing: Off").removeClass("btn-warning");;
             //remove all edit tools
             $(".edit-indicator-layout", top.document).remove();
             $(".edit-indicator-widget", top.document).remove();

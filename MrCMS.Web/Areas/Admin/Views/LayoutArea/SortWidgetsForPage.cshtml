@@ -12,6 +12,7 @@
 <div class="modal-body">
     @using (Html.BeginForm("SortWidgetsForPage", "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
     {
+        @Html.Hidden("returnUrl", ViewData["returnUrl"])
         @Html.Hidden("LayoutAreaId", Model.LayoutAreaId)
         @Html.Hidden("WebpageId", Model.WebpageId)
         <ul id="sortable">
