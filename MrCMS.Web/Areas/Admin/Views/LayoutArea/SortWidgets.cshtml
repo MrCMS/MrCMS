@@ -1,65 +1,39 @@
 ﻿@using MrCMS.Entities.Widget
 @using MrCMS.Helpers
-@model List<Widget>
+@model MrCMS.Models.PageWidgetSortModel
 @{
     ViewBag.Title = "Sort Webpage";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+
+    var action = Model.WebpageId > 0 ? "SortWidgetsForPage" : "SortWidgetsAction";
+
 }
-@section JavaScriptBlock
-{
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#sortable").sortable();
-            $("#sortable").disableSelection();
-            $(".progress").hide();
-            $("#save").click(function () {
-                $(".progress").show();
-
-                var ids = $('#sortable li').map(function () {
-                    return this.id;
-                }).get().join(',');
-
-                $.ajax({
-                    url: '/Admin/LayoutArea/SortWidgetsAction',
-                    data: { orders: ids },
-                    success: function (data) {
-                        reload();
-                    }
-                });
-            });
-
-            function reload() {
-                window.location.href = window.location.href;
-            }
-        });
-    </script>
-}
-@{
-    var widget = Model.FirstOrDefault();
-    var Id = 0;
-    if (widget != null)
+@{Html.IncludeScript("~/Areas/Admin/Content/Scripts/Custom/sort.js");}
+<div class="modal-header">
+    <h3>Sort widgets</h3>
+</div>
+<div class="modal-body">
+    @using (Html.BeginForm(action, "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
     {
-        Id = widget.LayoutArea.Id;
-    }
-}
-<form>
-    <fieldset>
-        <legend>Sort
-            <span class="btn-group  display-inline  pull-right">
-                <a href="/Admin/LayoutArea/Edit/@Id  " class="btn">Back</a>
-                <button class="btn btn-primary" id="save">
-                    Save</button>
-
-            </span>
-        </legend>
-
+        @Html.Hidden("returnUrl", ViewData["returnUrl"])
+        @Html.Hidden("LayoutAreaId", Model.LayoutAreaId)
         <ul id="sortable">
-            @foreach (Widget d in Model)
+            @for (int i = 0; i < Model.Widgets.Count; i++)
             {
-                <li id="@d.Id"><i class="icon-resize-full"></i>&nbsp;&nbsp;@d.Name (@d.WidgetTypeFormatted)</li>
+                var widget = Model.Widgets[i];
+                <li>
+                    @Html.HiddenFor(model => model.Widgets[i].Id)
+                    @Html.HiddenFor(model => model.Widgets[i].Order)
+                    <i class="icon-resize-full"></i>&nbsp;&nbsp;
+                @widget.Name
+                </li>
             }
         </ul>
+    }
+    @Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")
 
-        @Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")
-    </fieldset>
-</form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" id="save" data-form-id="edit-sort" data-action="save">
+        Save</button>
+</div>

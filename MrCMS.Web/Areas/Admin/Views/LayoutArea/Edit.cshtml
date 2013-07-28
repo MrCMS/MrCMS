@@ -62,7 +62,7 @@
             @{
                 if (Model.GetWidgets().Any())
                 {
-                    @Html.ActionLink("Sort widgets", "SortWidgets", "LayoutArea", new {id = Model.Id}, new {@class = "btn btn-mini"})
+                    @Html.ActionLink("Sort widgets", "SortWidgets", "LayoutArea", new {id = Model.Id, returnUrl = Request.Url.ToString()}, new {@class = "btn btn-mini", @data_toggle="fb-modal"})
                 }
             }
 

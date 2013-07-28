@@ -71,28 +71,36 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult SortWidgets(LayoutArea area)
+        public ActionResult SortWidgets(LayoutArea area, string returnUrl = null)
         {
-            return View(area.GetWidgets());
-        }
-
-        public void SortWidgetsAction(string orders)
-        {
-            _layoutAreaService.SetWidgetOrders(orders);
-        }
-
-        [HttpGet]
-        public ActionResult SortWidgetsForPage(LayoutArea area, int pageId)
-        {
-            var webpage = _documentService.GetDocument<Webpage>(pageId);
-
-            return View(new PageWidgetSortModel(area.GetWidgets(webpage), webpage, area));
+            return View(new PageWidgetSortModel(area.GetWidgets(), area, null));
         }
 
         [HttpPost]
-        public ActionResult SortWidgetsForPage(PageWidgetSortModel pageWidgetSortModel)
+        public RedirectResult SortWidgetsAction(PageWidgetSortModel pageWidgetSortModel, string returnUrl = null)
+        {
+            _layoutAreaService.SetWidgetOrders(pageWidgetSortModel);
+
+            return Redirect(returnUrl ?? "/Admin/LayoutArea/Edit/" + pageWidgetSortModel.LayoutAreaId);
+        }
+
+        [HttpGet]
+        public ActionResult SortWidgetsForPage(LayoutArea area, int pageId, string returnUrl = null)
+        {
+            ViewData["returnUrl"] = returnUrl;
+            var webpage = _documentService.GetDocument<Webpage>(pageId);
+
+            return View(new PageWidgetSortModel(area.GetWidgets(webpage), area, webpage));
+        }
+
+        [HttpPost]
+        public ActionResult SortWidgetsForPage(PageWidgetSortModel pageWidgetSortModel, string returnUrl = null)
         {
             _layoutAreaService.SetWidgetForPageOrders(pageWidgetSortModel);
+
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+
             return RedirectToAction("Edit", "Webpage", new { id = pageWidgetSortModel.WebpageId });
         }
 

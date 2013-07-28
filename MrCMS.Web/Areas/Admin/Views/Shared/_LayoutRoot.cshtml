@@ -58,11 +58,13 @@
         
     }
     @Html.RenderScripts()
+    
+
+    @Html.Hidden("UICulture", CurrentRequestData.CultureInfo.Name)
+    
     @if (IsSectionDefined("JavaScriptBlock"))
     {
         @RenderSection("JavaScriptBlock")
     }
-    
-    @Html.Hidden("UICulture", CurrentRequestData.CultureInfo.Name)
 </body>
 </html>

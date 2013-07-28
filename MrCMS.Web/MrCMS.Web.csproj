@@ -571,6 +571,7 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\file-system-settings.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\sort.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
     <Content Include="Areas\Admin\Content\Scripts\front-end-editing.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery-ui-i18n.js" />
@@ -1235,7 +1236,6 @@
     <Content Include="Areas\Admin\Views\MediaCategory\FileList.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\FileSelector.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\SortWidgets.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\SortWidgets.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\SortWidgetsForPage.cshtml" />
     <Content Include="Areas\Admin\Views\Role\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Role\Add.cshtml" />

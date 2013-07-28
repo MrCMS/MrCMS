@@ -101,7 +101,7 @@
                 var widgetId = $(this).parent().data('widget-id');
                 var name = $(this).parent().data('widget-name');
                 var menu = '<div class="edit-widget-menu"><h4>' + name + '</h4>' +
-                    '<ul>' +
+                    '<ul>' +    
                     '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Edit/' + widgetId + '?returnUrl=' + window.top.location + '" target="_parent" class="btn btn-mini btn-primary">Edit</a></li>' +
                     '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Delete/' + widgetId + '" target="_parent" class="btn btn-mini btn-danger">Delete</a></li>' +
                     '</ul></div>';
@@ -125,8 +125,8 @@
 
                 var menu = '<div class="edit-layout-area-menu"><h4>' + areaName +
                     '</h4><ul><li><a tab-index="1" href="/Admin/Widget/Add?pageId=' + pageId + '&id=' + areaId + '" data-toggle="fb-modal" class="btn btn-mini btn-primary">Add widget</a></li>' +
-                    '<li><a tab-index="1" href="/Admin/Webpage/Edit/' + pageId + '" class="btn btn-mini" id="mrcms-manage-page-widgets">Manage page widgets</a>' +
-                    '</li><li><a tab-index="1" href="/Admin/LayoutArea/Edit/' + areaId + '" class="btn btn-mini">Manage global widgets</a></li></ul></div>';
+                    '<li><a tab-index="2" href="/Admin/LayoutArea/SortWidgetsForPage/' + areaId + '?pageId=' + pageId + '&returnUrl=' + top.location.href + '" class="btn btn-mini" data-toggle="fb-modal">Sort for page</a></li>' +
+                    '<li><a tab-index="3" href="/Admin/LayoutArea/SortWidgets/' + areaId +'?returnUrl='+top.location.href+'" class="btn btn-mini" data-toggle="fb-modal">Sort global widgets</a></li></ul></div>';
 
                 $(this).parent().prepend(menu);
                 $(".edit-layout-area-menu", top.document).fadeIn(400);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
@@ -53,18 +54,14 @@ namespace MrCMS.Services
                                   });
         }
 
-        public void SetWidgetOrders(string orders)
+        public void SetWidgetOrders(PageWidgetSortModel pageWidgetSortModel)
         {
-            _session.Transact(session =>
-                                  {
-                                      var widgetIds = orders.GetIntList();
-                                      foreach (var widgetId in widgetIds)
-                                      {
-                                          var widget = session.Get<Widget>(widgetId);
-                                          widget.DisplayOrder = widgetIds.IndexOf(widgetId);
-                                          session.SaveOrUpdate(widget);
-                                      }
-                                  });
+            _session.Transact(session => pageWidgetSortModel.Widgets.ForEach(model =>
+                                                                                 {
+                                                                                     var widget = _session.Get<Widget>(model.Id);
+                                                                                     widget.DisplayOrder = model.Order;
+                                                                                     session.SaveOrUpdate(widget);
+                                                                                 }));
         }
 
         public void SetWidgetForPageOrders(PageWidgetSortModel pageWidgetSortModel)

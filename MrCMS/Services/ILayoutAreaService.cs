@@ -10,7 +10,7 @@ namespace MrCMS.Services
         void SaveArea(LayoutArea layoutArea);
         LayoutArea GetArea(int layoutAreaId);
         void DeleteArea(LayoutArea area);
-        void SetWidgetOrders(string orders);
+        void SetWidgetOrders(PageWidgetSortModel pageWidgetSortModel);
         void SetWidgetForPageOrders(PageWidgetSortModel pageWidgetSortModel);
         void ResetSorting(LayoutArea area, Webpage webpage);
     }

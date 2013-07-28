@@ -27,7 +27,7 @@ namespace MrCMS.Models
         {
         }
 
-        public PageWidgetSortModel(List<Widget> widgets, Webpage webpage, LayoutArea area)
+        public PageWidgetSortModel(List<Widget> widgets, LayoutArea area, Webpage webpage = null)
         {
             Widgets =
                 widgets.Select(
@@ -41,7 +41,7 @@ namespace MrCMS.Models
                                      ? String.Format("{0} ({1})", widget.Name, widget.WidgetTypeFormatted)
                                      : widget.WidgetTypeFormatted)
                         }).ToList();
-            WebpageId = webpage.Id;
+            if (webpage != null) WebpageId = webpage.Id;
             LayoutAreaId = area.Id;
         }
     }
