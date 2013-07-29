@@ -183,7 +183,6 @@
     <Compile Include="Apps\Galleries\Metadata\GalleryMetaData.cs" />
     <Compile Include="Apps\Galleries\Pages\GalleryList.cs" />
     <Compile Include="Apps\Galleries\Pages\Gallery.cs" />
-    <Compile Include="App_Start\NHibernateProfilerBootstrapper.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\ACLController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
@@ -226,7 +225,6 @@
     <Content Include="Apps\Core\Content\Images\mrcms-logo.png" />
     <Content Include="Apps\Core\Content\Scripts\forgot-password.js" />
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
-    <Content Include="App_Start\NHibernateProfilerBootstrapper.vb" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\build-config.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\ckeditor.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\config.js" />
@@ -571,6 +569,7 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\file-system-settings.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\popup.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\sort.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
     <Content Include="Areas\Admin\Content\Scripts\front-end-editing.js" />
