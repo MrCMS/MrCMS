@@ -9,9 +9,18 @@
     <div class="modal-body">
         @Html.HiddenFor(x => x.Id)
         @Html.Label("parent", "Page")
-        @Html.DropDownList("parent", ViewData["valid-parents"] as IEnumerable<SelectListItem>)
+        @Html.DropDownList("parent", ViewData["valid-parents"] as IEnumerable<SelectListItem>, new{@class="input-xlarge select2"})
     </div>
     <div class="modal-footer">
         <input type="submit" class="btn-primary btn submit-form-btn" value="Set parent" />
     </div>
+    
 }
+@{
+    
+    Html.IncludeScript("/Areas/Admin/Content/Scripts/select2-3.4.1/select2.min.js");
+    Html.IncludeScript("/Areas/Admin/Content/Scripts/custom/move-webpage.js");
+    
+}
+
+<link href="/Areas/Admin/Content/Scripts/select2-3.4.1/select2.css" rel="stylesheet" />
