@@ -1,5 +1,5 @@
 ﻿$(document).ready(function() {
-    setInterval(resizeWindow, 1500);
+    setInterval(resizeWindow, 800);
 });
 
 function resizeWindow() {
