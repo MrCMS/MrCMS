@@ -28,9 +28,10 @@ namespace MrCMS.Services.ImportExport
             var errors = new Dictionary<string, List<string>>();
             var itemRules = MrCMSApplication.GetAll<IDocumentImportValidationRule>();
 
-            foreach (var item in items)
+            var documentImportDataTransferObjects = items as IList<DocumentImportDataTransferObject> ?? items.ToList();
+            foreach (var item in documentImportDataTransferObjects)
             {
-                var validationErrors = itemRules.SelectMany(rule => rule.GetErrors(item)).ToList();
+                var validationErrors = itemRules.SelectMany(rule => rule.GetErrors(item, documentImportDataTransferObjects)).ToList();
                 if (validationErrors.Any())
                     errors.Add(item.UrlSegment, validationErrors);
             }
@@ -67,6 +68,7 @@ namespace MrCMS.Services.ImportExport
                                 var handle = urlSegment.HasValue() ? urlSegment : name;
 
                                 if (items.Any(x => x.Name == name || x.UrlSegment == urlSegment)) continue;
+                                if (string.IsNullOrWhiteSpace(handle)) continue;
 
                                 if (!parseErrors.Any(x => x.Key == handle))
                                     parseErrors.Add(handle, new List<string>());

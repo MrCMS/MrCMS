@@ -47,7 +47,7 @@ namespace MrCMS.Tests.Services.ImportExport
 
             documentImportValidationRules.ForEach(
                 rule =>
-                EnumerableHelper.ForEach(documents, document => A.CallTo(() => rule.GetErrors(document)).MustHaveHappened()));
+                EnumerableHelper.ForEach(documents, document => A.CallTo(() => rule.GetErrors(document, documents)).MustHaveHappened()));
         }
 
         [Fact]

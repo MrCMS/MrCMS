@@ -39,12 +39,16 @@ namespace MrCMS.Services.ImportExport
         /// <param name="dataTransferObject"></param>
         public Webpage ImportDocument(DocumentImportDataTransferObject dataTransferObject)
         {
-            var document = _documentService.GetDocumentByUrl<Webpage>(dataTransferObject.UrlSegment) ??
+            var documentByUrl = _documentService.GetDocumentByUrl<Webpage>(dataTransferObject.UrlSegment);
+            var document = documentByUrl ??
                            (Webpage)
                            Activator.CreateInstance(DocumentMetadataHelper.GetTypeByName(dataTransferObject.DocumentType));
-
+            
             if (!String.IsNullOrEmpty(dataTransferObject.ParentUrl))
-                document.SetParent(_documentService.GetDocumentByUrl<Webpage>(dataTransferObject.ParentUrl));
+            {
+                var parent = _documentService.GetDocumentByUrl<Webpage>(dataTransferObject.ParentUrl);
+                document.SetParent(parent);
+            }
             if (dataTransferObject.UrlSegment != null)
                 document.UrlSegment = dataTransferObject.UrlSegment;
             document.Name = dataTransferObject.Name;
@@ -57,7 +61,7 @@ namespace MrCMS.Services.ImportExport
             document.DisplayOrder = dataTransferObject.DisplayOrder;
             if (dataTransferObject.PublishDate != null)
                 document.PublishOn = dataTransferObject.PublishDate;
-
+            
             //Tags
             foreach (var item in dataTransferObject.Tags)
             {
@@ -70,16 +74,6 @@ namespace MrCMS.Services.ImportExport
                 if (!document.Tags.Contains(tag))
                     document.Tags.Add(tag);
             }
-
-            if (document.Id == 0)
-            {
-                _documentService.AddDocument(document);
-            }
-            else
-                _documentService.SaveDocument(document);
-
-            document = _documentService.GetDocumentByUrl<Webpage>(document.UrlSegment);
-
             //Url History
             foreach (var item in dataTransferObject.UrlHistory)
             {
@@ -90,7 +84,11 @@ namespace MrCMS.Services.ImportExport
                 }
             }
 
-            _documentService.SaveDocument(document);
+            if (document.Id == 0)
+                _documentService.AddDocument(document);
+            else
+                _documentService.SaveDocument(document);
+
 
             return document;
         }

@@ -62,6 +62,11 @@ namespace MrCMS.Services
             {
                 document.OnSaving(session);
                 session.SaveOrUpdate(document);
+                if (document.IsDeleted)
+                {
+                    var test = "";
+                    test += "ba";
+                }
             });
             return document;
         }

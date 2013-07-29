@@ -371,8 +371,8 @@ namespace MrCMS.Helpers
             var user = htmlHelper.ViewData.Model;
             if (user == null)
                 return MvcHtmlString.Empty;
-            if (MrCMSApp.AppTypes.ContainsKey(entityType))
-                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppTypes[entityType];
+            if (MrCMSApp.AppEntities.ContainsKey(entityType))
+                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppEntities[entityType];
 
             ViewEngineResult viewEngineResult =
                 ViewEngines.Engines.FindView(new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller), entityType.Name, "");
