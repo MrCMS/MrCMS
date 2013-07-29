@@ -115,20 +115,20 @@ namespace MrCMS.Tests.Services
             layout.LayoutAreas.Should().NotContain(layoutArea);
         }
 
-        [Fact]
-        public void LayoutAreaService_SetOrders_ShouldSetOrderToBeTheOrderOfTheWidgetIdInTheArgumentString()
-        {
-            var widgets = Enumerable.Range(1, 10).Select(i => new BasicMappedWidget()).ToList();
-            widgets.ForEach(widget => Session.Transact(session => session.Save(widget)));
+        //[Fact]
+        //public void LayoutAreaService_SetOrders_ShouldSetOrderToBeTheOrderOfTheWidgetIdInTheArgumentString()
+        //{
+        //    var widgets = Enumerable.Range(1, 10).Select(i => new BasicMappedWidget()).ToList();
+        //    widgets.ForEach(widget => Session.Transact(session => session.Save(widget)));
 
-            _layoutAreaService.SetWidgetOrders("10,9,8,7,6,5,4,3,2,1");
+        //    _layoutAreaService.SetWidgetOrders("10,9,8,7,6,5,4,3,2,1");
 
-            for (int index = 0; index < widgets.Count; index++)
-            {
-                var widget = widgets[index];
-                // orders are zero-based
-                widget.DisplayOrder.Should().Be(9 - index);
-            }
-        }
+        //    for (int index = 0; index < widgets.Count; index++)
+        //    {
+        //        var widget = widgets[index];
+        //         orders are zero-based
+        //        widget.DisplayOrder.Should().Be(9 - index);
+        //    }
+        //}
     }
 }

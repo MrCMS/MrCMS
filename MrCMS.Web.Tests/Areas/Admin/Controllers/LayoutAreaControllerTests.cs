@@ -169,15 +169,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             layoutAreaController.SortWidgets(layoutArea).As<ViewResult>().Model.Should().Be(widgets);
         }
 
-        [Fact]
-        public void LayoutAreaController_SortWidgetsAction_CallsSetWidgetsOrderWithOrdersAsIntList()
-        {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
+        //[Fact]
+        //public void LayoutAreaController_SortWidgetsAction_CallsSetWidgetsOrderWithOrdersAsIntList()
+        //{
+        //    LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
-            layoutAreaController.SortWidgetsAction("1,2,3");
+        //    layoutAreaController.SortWidgetsAction("1,2,3");
 
-            A.CallTo(() => _layoutAreaService.SetWidgetOrders("1,2,3")).MustHaveHappened();
-        }
+        //    A.CallTo(() => _layoutAreaService.SetWidgetOrders("1,2,3")).MustHaveHappened();
+        //}
 
         [Fact]
         public void LayoutAreaController_SortWidgetsForPage_CallsDocumentServiceGetWebpageForPageId()

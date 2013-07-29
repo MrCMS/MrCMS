@@ -17,7 +17,7 @@ namespace MrCMS.Services.ImportExport.Rules
             Length = length;
         }
 
-        public IEnumerable<string> GetErrors(DocumentImportDataTransferObject item)
+        public IEnumerable<string> GetErrors(DocumentImportDataTransferObject item, IList<DocumentImportDataTransferObject> allItems)
         {
             var value = Selector(item);
             if (!String.IsNullOrWhiteSpace(value))
