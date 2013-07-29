@@ -22,33 +22,35 @@ namespace MrCMS.Web.Apps.Core.Widgets
             var loggedIn = CurrentRequestData.CurrentUser != null;
             if (loggedIn)
             {
-                navigationRecords.Add(new NavigationRecord
-                                          {
-                                              Text = MvcHtmlString.Create("My Account"),
-                                              Url =
-                                                  MvcHtmlString.Create("/" +
-                                                                       documentService.GetUniquePage<UserAccountPage>()
-                                                                                      .LiveUrlSegment)
-                                          });
+                var liveUrlSegment = documentService.GetUniquePage<UserAccountPage>().LiveUrlSegment;
+                if (liveUrlSegment != null)
+                    navigationRecords.Add(new NavigationRecord
+                    {
+                        Text = MvcHtmlString.Create("My Account"),
+                        Url =
+                            MvcHtmlString.Create(string.Format("/{0}", liveUrlSegment))
+                    });
             }
             else
             {
-                navigationRecords.Add(new NavigationRecord
+                var liveUrlSegment = documentService.GetUniquePage<LoginPage>().LiveUrlSegment;
+                if (liveUrlSegment != null)
                 {
-                    Text = MvcHtmlString.Create("Login"),
-                    Url =
-                        MvcHtmlString.Create("/" +
-                                             documentService.GetUniquePage<LoginPage>()
-                                                            .LiveUrlSegment)
-                });
-                navigationRecords.Add(new NavigationRecord
-                {
-                    Text = MvcHtmlString.Create("Register"),
-                    Url =
-                        MvcHtmlString.Create("/" +
-                                             documentService.GetUniquePage<RegisterPage>()
-                                                            .LiveUrlSegment)
-                });
+                    navigationRecords.Add(new NavigationRecord
+                    {
+                        Text = MvcHtmlString.Create("Login"),
+                        Url =
+                            MvcHtmlString.Create(string.Format("/{0}", liveUrlSegment))
+                    });
+                    var urlSegment = documentService.GetUniquePage<RegisterPage>().LiveUrlSegment;
+                    if (urlSegment != null)
+                        navigationRecords.Add(new NavigationRecord
+                        {
+                            Text = MvcHtmlString.Create("Register"),
+                            Url =
+                                MvcHtmlString.Create(string.Format("/{0}", urlSegment))
+                        });
+                }
             }
             return navigationRecords;
         }
