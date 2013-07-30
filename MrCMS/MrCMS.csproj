@@ -184,6 +184,8 @@
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SiteOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\SystemEntityOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\UrlHistoryOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\UserOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\UserProfileDataOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\UserRoleOverride.cs" />

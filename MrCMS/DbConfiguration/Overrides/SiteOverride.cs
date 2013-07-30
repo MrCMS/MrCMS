@@ -8,7 +8,7 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<Site> mapping)
         {
-            
+            mapping.Map(x => x.BaseUrl).Index("idx_Site_BaseUrl");
         }
     }
 }
