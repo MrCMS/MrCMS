@@ -6,6 +6,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Services.ImportExport;
 using MrCMS.Web.Apps.Core.Pages;
+using NHibernate;
 using Xunit;
 using MrCMS.Services.ImportExport.DTOs;
 using FluentAssertions;
@@ -17,14 +18,16 @@ namespace MrCMS.Tests.Services.ImportExport
         private readonly ITagService _tagService;
         private readonly ImportDocumentsService _importDocumentsService;
          private readonly IUrlHistoryService _urlHistoryService;
+        private ISession _session;
 
         public ImportDocumentsServiceTests()
         {
             _documentService = A.Fake<IDocumentService>();
             _tagService = A.Fake<ITagService>();
             _urlHistoryService = A.Fake<IUrlHistoryService>();
+            _session = A.Fake<ISession>();
 
-            _importDocumentsService = new ImportDocumentsService(_documentService,_tagService,_urlHistoryService);
+            _importDocumentsService = new ImportDocumentsService(_documentService,_tagService,_urlHistoryService, _session);
         }
 
         [Fact]
