@@ -1,0 +1,11 @@
+﻿@model MrCMS.Web.Apps.Core.Models.NavigationList
+@if (Model != null && Model.Any())
+{
+    <ul class="breadcrumb">
+        <li><a href="/Admin/Search?parent=0">Top</a> <span class="divider">/</span></li>
+        @foreach (var item in Model.ToList())
+        {
+            <li><a href="@item.Url&amp;type=@Request.QueryString["type"]">@item.Text</a> <span class="divider">/</span></li>
+        }
+    </ul>
+}

@@ -13,27 +13,67 @@
         </div>
     }
 </div>
+@if (ViewData["parent-val"] != null)
+{
+    Html.RenderAction("GetBreadCrumb", "Search", new { parentId = Convert.ToInt32(ViewData["parent-val"]) });
+}
+
+
 <div id="search-results">
     @if (!Model.Any())
     {
         <p>No documents could be found matching your search term</p>
     }
+    else
+    {
+        <div class="row-fluid">
+            <div class="span6">
+                <strong>Document</strong>
+            </div>
+            <div class="span2">
+                <strong>Type</strong>
+            </div>
+            <div class="span4">
+                <strong>Actions</strong>
+            </div>
+        </div>
+        <hr class="small-margin" />
+    }
     @foreach (var result in Model)
     {
         <div class="row-fluid">
-            <div class="span12">
-                <a href="@result.EditUrl">
+            <div class="span6">
+                <a href="@result.EditUrl" class="@(result.Webpage != null ? (!result.Webpage.Published ? "orange" : "") : "") @(result.Webpage != null ? (!result.Webpage.RevealInNavigation ? "grey" : "") : "")">
                     <strong>@result.Name</strong>
-                </a> - @result.DocumentType
-                @if (!string.IsNullOrWhiteSpace(result.ViewUrl))
+                </a>
+                <br />
+                @if (result.Webpage != null)
                 {
-                    <a href="@result.ViewUrl" target="_blank">(View)</a>
-                }
-                @if (!string.IsNullOrWhiteSpace(result.AddChildUrl))
-                {
-                    <a href="@result.AddChildUrl">(Add a child page)</a>
+                    if (result.Webpage.Parent != null)
+                    {
+                    @:Parent: @result.Webpage.Parent.Name
+                    }
                 }
                 <p>Last updated on @result.LastUpdated</p>
+            </div>
+            <div class="span2">
+                @result.DocumentType
+            </div>
+            <div class="span4">
+                <div class="btn-group display-inline">
+                    @if (!string.IsNullOrWhiteSpace(result.ViewUrl))
+                    {
+                        <a href="@result.ViewUrl" target="_blank" class="btn btn-mini">View</a>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(result.AddChildUrl))
+                    {
+                        <a href="@result.AddChildUrl" class="btn btn-mini">Add a child page</a>
+                    }
+                    @if (result.HasChildren)
+                    {
+                        <a href="/Admin/Search?parent=@result.DocumentId&type=@Request.QueryString["type"]" class="btn btn-mini">View Children</a>
+                    }
+                </div>
             </div>
         </div>
     }

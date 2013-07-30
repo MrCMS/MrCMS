@@ -96,7 +96,7 @@ namespace MrCMS.Services
 
         public IEnumerable<SelectListItem> GetParentsList()
         {
-            var selectListItems = GetPageListItems(GetWebsiteTree().Children, 1).ToList();
+            var selectListItems = GetPageListItems(GetWebsiteTree().Children, 2).ToList();
             selectListItems.Insert(0, new SelectListItem { Selected = false, Text = "Root", Value = "" });
             return selectListItems;
         }

@@ -73,9 +73,9 @@ namespace MrCMS.Services
                             (arg is Webpage)
                                 ? "/" + (arg as Webpage).LiveUrlSegment
                                 : null,
-                        AddChildUrl = (arg is Webpage) ?
-                                          string.Format("/Admin/Webpage/Add/{0}",
-                                                        arg.Id) : null,
+                        AddChildUrl = (arg is Webpage) ? ((arg as Webpage).CanAddChildren() ? string.Format("/Admin/Webpage/Add/{0}", arg.Id) : "") : null,
+                        HasChildren = arg.Children.Any(),
+                        Webpage = (arg is Webpage) ? arg as Webpage : null,
                     }), args.GetMetaData());
         }
 
