@@ -166,7 +166,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var widgets = new List<Widget>();
             A.CallTo(() => layoutArea.GetWidgets(null, false)).Returns(widgets);
 
-            layoutAreaController.SortWidgets(layoutArea).As<ViewResult>().Model.Should().Be(widgets);
+            layoutAreaController.SortWidgets(layoutArea)
+                                .Model.As<PageWidgetSortModel>()
+                                .Widgets.Should()
+                                .BeEquivalentTo(widgets);
         }
 
         //[Fact]

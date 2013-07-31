@@ -71,7 +71,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult SortWidgets(LayoutArea area, string returnUrl = null)
+        public ViewResult SortWidgets(LayoutArea area, string returnUrl = null)
         {
             return View(new PageWidgetSortModel(area.GetWidgets(), area, null));
         }
