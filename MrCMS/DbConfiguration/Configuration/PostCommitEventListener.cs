@@ -46,8 +46,14 @@ namespace MrCMS.DbConfiguration.Configuration
 
                         var oldValue = @event.OldState[i];
                         var newValue = @event.State[i];
-                        if (oldValue != newValue)
+
+                        if (oldValue != null)
+                            if (!oldValue.Equals(newValue))
+                                anyChanges = true;
+
+                        if (oldValue == null && newValue != null)
                             anyChanges = true;
+
                         jObject.Add(propertyName, new JRaw(JsonConvert.SerializeObject(oldValue)));
                     }
                     if (anyChanges)
