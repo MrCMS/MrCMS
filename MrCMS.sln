@@ -53,4 +53,7 @@ Global
 		{9D6ECC0F-CDA1-43E2-B88B-BC01299EB9CE} = {B7896D36-E008-46A6-877E-939F00D09DD1}
 		{E64F6811-8373-4310-9CCE-3FBCA0D87826} = {EB0C74A8-186F-40DE-96DF-E825DCFD7581}
 	EndGlobalSection
+	GlobalSection(NDepend) = preSolution
+		Project = ".\MrCMS.ndproj"
+	EndGlobalSection
 EndGlobal

@@ -407,7 +407,6 @@
     <Compile Include="Shortcodes\Forms\DefaultFormRenderer.cs" />
     <Compile Include="Shortcodes\Forms\DropDownListOptionRenderer.cs" />
     <Compile Include="Shortcodes\Forms\DropDownListRenderer.cs" />
-    <Compile Include="Shortcodes\Forms\DynamicFormElementRenderer.cs" />
     <Compile Include="Shortcodes\Forms\ElementRendererManager.cs" />
     <Compile Include="Shortcodes\Forms\FileUploadRenderer.cs" />
     <Compile Include="Shortcodes\Forms\FormRenderingManager.cs" />
