@@ -28,40 +28,6 @@ namespace MrCMS.Helpers
 {
     public static class MrCMSHtmlHelper
     {
-        public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
-                                                              Expression<Func<TModel, object>> expression)
-        {
-            return DeleteCheckBoxFor(htmlHelper, expression, new { });
-        }
-
-        public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
-                                                              Expression<Func<TModel, object>> expression,
-                                                              object htmlAttributes)
-        {
-            return DeleteCheckBoxFor(htmlHelper, expression, AnonymousObjectToHtmlAttributes(htmlAttributes));
-        }
-
-        public static MvcHtmlString DeleteCheckBoxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
-                                                              Expression<Func<TModel, object>> expression,
-                                                              IDictionary<string, object> htmlAttributes)
-        {
-            if (expression == null)
-                throw new ArgumentNullException("expression");
-
-            ModelMetadata metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
-            bool? isChecked = null;
-            if (metadata.Model != null)
-            {
-                bool modelChecked;
-                if (Boolean.TryParse(metadata.Model.ToString(), out modelChecked))
-                    isChecked = modelChecked;
-            }
-
-            return CheckBoxHelper(htmlHelper, metadata,
-                                  String.Format("{0}.Deleted", ExpressionHelper.GetExpressionText(expression)),
-                                  isChecked, htmlAttributes);
-        }
-
         private static MvcHtmlString CheckBoxHelper<TModel>(HtmlHelper<TModel> htmlHelper, ModelMetadata metadata,
                                                             string name, bool? isChecked,
                                                             IDictionary<string, object> htmlAttributes)
@@ -70,13 +36,12 @@ namespace MrCMS.Helpers
             if (explicitValue)
                 htmlAttributes.Remove("checked"); // Explicit value must override dictionary
 
-            return InputHelper(htmlHelper, InputType.CheckBox, metadata, name, "true", !explicitValue /* useViewData */,
-                               isChecked ?? false, true /* setId */, false /* isExplicitValue */, htmlAttributes);
+            return MakeCheckbox(htmlHelper, InputType.CheckBox, metadata, name, !explicitValue /* useViewData */,
+                               isChecked ?? false, htmlAttributes);
         }
 
-        private static MvcHtmlString InputHelper(HtmlHelper htmlHelper, InputType inputType, ModelMetadata metadata,
-                                                 string name, object value, bool useViewData, bool isChecked, bool setId,
-                                                 bool isExplicitValue, IDictionary<string, object> htmlAttributes)
+        private static MvcHtmlString MakeCheckbox(HtmlHelper htmlHelper, InputType inputType, ModelMetadata metadata,
+                                                 string name, bool useViewData, bool isChecked, IDictionary<string, object> htmlAttributes)
         {
             string fullName = htmlHelper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
 
@@ -85,54 +50,33 @@ namespace MrCMS.Helpers
             tagBuilder.MergeAttribute("type", HtmlHelper.GetInputTypeString(inputType));
             tagBuilder.MergeAttribute("name", fullName, true);
 
-            string valueParameter = Convert.ToString(value, CultureInfo.CurrentCulture);
+            string valueParameter = Convert.ToString("true", CultureInfo.CurrentCulture);
             bool usedModelState = false;
 
-            switch (inputType)
+            var modelStateWasChecked = htmlHelper.GetModelStateValue(fullName, typeof(bool)) as bool?;
+            if (modelStateWasChecked.HasValue)
             {
-                case InputType.CheckBox:
-                    var modelStateWasChecked = htmlHelper.GetModelStateValue(fullName, typeof(bool)) as bool?;
-                    if (modelStateWasChecked.HasValue)
-                    {
-                        isChecked = modelStateWasChecked.Value;
-                        usedModelState = true;
-                    }
-                    goto case InputType.Radio;
-                case InputType.Radio:
-                    if (!usedModelState)
-                    {
-                        var modelStateValue = htmlHelper.GetModelStateValue(fullName, typeof(string)) as string;
-                        if (modelStateValue != null)
-                        {
-                            isChecked = String.Equals(modelStateValue, valueParameter, StringComparison.Ordinal);
-                            usedModelState = true;
-                        }
-                    }
-                    if (!usedModelState && useViewData)
-                        isChecked = htmlHelper.EvalBoolean(fullName);
-
-                    if (isChecked)
-                        tagBuilder.MergeAttribute("checked", "checked");
-
-                    tagBuilder.MergeAttribute("value", valueParameter, isExplicitValue);
-                    break;
-                case InputType.Password:
-                    if (value != null)
-                        tagBuilder.MergeAttribute("value", valueParameter, isExplicitValue);
-                    break;
-                default:
-                    var attemptedValue = (string)htmlHelper.GetModelStateValue(fullName, typeof(string));
-                    tagBuilder.MergeAttribute("value",
-                                              attemptedValue ??
-                                              ((useViewData) ? htmlHelper.EvalString(fullName) : valueParameter),
-                                              isExplicitValue);
-                    break;
+                isChecked = modelStateWasChecked.Value;
+                usedModelState = true;
             }
-
-            if (setId)
+            if (!usedModelState)
             {
-                tagBuilder.GenerateId(fullName);
+                var modelStateValue = htmlHelper.GetModelStateValue(fullName, typeof(string)) as string;
+                if (modelStateValue != null)
+                {
+                    isChecked = String.Equals(modelStateValue, valueParameter, StringComparison.Ordinal);
+                    usedModelState = true;
+                }
             }
+            if (!usedModelState && useViewData)
+                isChecked = htmlHelper.EvalBoolean(fullName);
+
+            if (isChecked)
+                tagBuilder.MergeAttribute("checked", "checked");
+
+            tagBuilder.MergeAttribute("value", valueParameter, false);
+
+            tagBuilder.GenerateId(fullName);
 
             // If there are any errors for a named field, we add the css attribute.
             ModelState modelState;

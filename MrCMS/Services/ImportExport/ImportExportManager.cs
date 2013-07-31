@@ -52,8 +52,9 @@ namespace MrCMS.Services.ImportExport
         private List<DocumentImportDataTransferObject> GetDocumentsFromSpreadSheet(ExcelPackage spreadsheet, out Dictionary<string, List<string>> parseErrors)
         {
             parseErrors = _importDocumentsValidationService.ValidateImportFile(spreadsheet);
-
-            return _importDocumentsValidationService.ValidateAndImportDocuments(spreadsheet, ref parseErrors);
+            return parseErrors.Any()
+                       ? new List<DocumentImportDataTransferObject>()
+                       : _importDocumentsValidationService.ValidateAndImportDocuments(spreadsheet, ref parseErrors);
         }
 
         #endregion
