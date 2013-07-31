@@ -1,5 +1,7 @@
-﻿@{
+﻿@using MrCMS.Helpers
+@{
     Layout = "_LayoutRoot.cshtml";
+    Html.IncludeScript("/Areas/Admin/Content/Scripts/custom/popup.js");
 }
 @RenderBody()
 @if (IsSectionDefined("JavaScriptBlock"))
@@ -10,3 +12,4 @@
 <style type="text/css">
     body { padding-top: 0; }
 </style>
+

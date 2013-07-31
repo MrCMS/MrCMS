@@ -5,6 +5,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services.ImportExport.DTOs;
 using MrCMS.Entities.Documents;
+using NHibernate;
 
 namespace MrCMS.Services.ImportExport
 {
@@ -13,9 +14,11 @@ namespace MrCMS.Services.ImportExport
         private readonly IDocumentService _documentService;
         private readonly ITagService _tagService;
         private readonly IUrlHistoryService _urlHistoryService;
+        private readonly ISession _session;
 
-        public ImportDocumentsService(IDocumentService documentService, ITagService tagService, IUrlHistoryService urlHistoryService)
+        public ImportDocumentsService(IDocumentService documentService, ITagService tagService, IUrlHistoryService urlHistoryService, ISession session)
         {
+            _session = session;
             _documentService = documentService;
             _tagService = tagService;
             _urlHistoryService = urlHistoryService;
@@ -29,7 +32,11 @@ namespace MrCMS.Services.ImportExport
         {
             foreach (var dataTransferObject in items)
             {
-                ImportDocument(dataTransferObject);
+                DocumentImportDataTransferObject transferObject = dataTransferObject;
+                _session.Transact(session =>
+                    {
+                        ImportDocument(transferObject);
+                    });
             }
         }
 
@@ -43,10 +50,11 @@ namespace MrCMS.Services.ImportExport
             var document = documentByUrl ??
                            (Webpage)
                            Activator.CreateInstance(DocumentMetadataHelper.GetTypeByName(dataTransferObject.DocumentType));
-            
+
             if (!String.IsNullOrEmpty(dataTransferObject.ParentUrl))
             {
                 var parent = _documentService.GetDocumentByUrl<Webpage>(dataTransferObject.ParentUrl);
+                document.Parent = parent;
                 document.SetParent(parent);
             }
             if (dataTransferObject.UrlSegment != null)
@@ -61,7 +69,7 @@ namespace MrCMS.Services.ImportExport
             document.DisplayOrder = dataTransferObject.DisplayOrder;
             if (dataTransferObject.PublishDate != null)
                 document.PublishOn = dataTransferObject.PublishDate;
-            
+
             //Tags
             foreach (var item in dataTransferObject.Tags)
             {

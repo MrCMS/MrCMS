@@ -183,7 +183,6 @@
     <Compile Include="Apps\Galleries\Metadata\GalleryMetaData.cs" />
     <Compile Include="Apps\Galleries\Pages\GalleryList.cs" />
     <Compile Include="Apps\Galleries\Pages\Gallery.cs" />
-    <Compile Include="App_Start\NHibernateProfilerBootstrapper.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\ACLController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
@@ -226,7 +225,6 @@
     <Content Include="Apps\Core\Content\Images\mrcms-logo.png" />
     <Content Include="Apps\Core\Content\Scripts\forgot-password.js" />
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
-    <Content Include="App_Start\NHibernateProfilerBootstrapper.vb" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\build-config.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\ckeditor.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\config.js" />
@@ -562,18 +560,21 @@
     <Content Include="Areas\Admin\Content\less\variables.min.css">
       <DependentUpon>variables.less</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Content\Scripts\admin.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\admin.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-page-widget.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-webpage.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-category.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\move-webpage.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\edit-webpage.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\file-system-settings.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\popup.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\search.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\sort.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
-    <Content Include="Areas\Admin\Content\Scripts\front-end-editing.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\front-end-editing.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery-ui-i18n.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-af.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-ar-DZ.js" />
@@ -643,8 +644,50 @@
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-zh-CN.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-zh-HK.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-zh-TW.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.formbuilder.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.mrcms-mediaselector.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\jquery.mrcms-mediaselector.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2-spinner.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.css" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.png" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2x2.png" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ar.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ca.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_cs.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_da.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_de.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_el.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_es.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_et.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_eu.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_fi.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_fr.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_gl.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_he.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_hr.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_hu.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_id.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_is.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_it.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ja.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ko.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_lt.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_lv.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_mk.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_nl.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_no.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_pl.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_pt-BR.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_pt-PT.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ro.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ru.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_sk.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_sv.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_tr.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ua.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_vi.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_zh-CN.js" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_zh-TW.js" />
     <Content Include="Areas\Admin\Content\Scripts\tag-it.min.js" />
     <Content Include="Areas\Admin\Content\Styles\admin.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.css" />
@@ -1172,7 +1215,6 @@
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\Gallery.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryList.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\SearchPage.cshtml" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.mrcms-copyandpaste.js" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleCategories.cshtml" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\scayt\LICENSE.md" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\scayt\README.md" />
@@ -1350,6 +1392,12 @@
     <Content Include="Areas\Admin\Views\ACL\Group.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Documents.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\InPageEditorContainer.cshtml" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\component.json" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\LICENSE" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\README.md" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\release.sh" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.jquery.json" />
+    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_en.js.template" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
@@ -1473,7 +1521,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>36181</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
