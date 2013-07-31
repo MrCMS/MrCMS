@@ -560,7 +560,7 @@
     <Content Include="Areas\Admin\Content\less\variables.min.css">
       <DependentUpon>variables.less</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Content\Scripts\admin.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\admin.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-page-widget.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-webpage.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-layout.js" />
@@ -571,9 +571,10 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\popup.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\search.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\sort.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
-    <Content Include="Areas\Admin\Content\Scripts\front-end-editing.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\front-end-editing.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery-ui-i18n.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-af.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-ar-DZ.js" />
@@ -643,8 +644,7 @@
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-zh-CN.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-zh-HK.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-zh-TW.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.formbuilder.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.mrcms-mediaselector.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\jquery.mrcms-mediaselector.js" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2-spinner.gif" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.css" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.js" />
@@ -1215,7 +1215,6 @@
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\Gallery.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryList.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\SearchPage.cshtml" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.mrcms-copyandpaste.js" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleCategories.cshtml" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\scayt\LICENSE.md" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\scayt\README.md" />
@@ -1523,7 +1522,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>36181</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

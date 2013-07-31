@@ -15,6 +15,8 @@ namespace MrCMS.DbConfiguration.Conventions
             instance.Inverse();
             instance.Relationship.NotFound.Ignore();
             instance.ApplyFilter<NotDeletedFilter>();
+            instance.Key.ForeignKey(string.Format("FK_{0}_{1}", instance.ChildType.Name, instance.EntityType.Name));
+
         }
     }
 }
