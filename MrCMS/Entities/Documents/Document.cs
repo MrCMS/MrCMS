@@ -31,16 +31,6 @@ namespace MrCMS.Entities.Documents
         private IList<Document> _children = new List<Document>();
         private IList<Tag> _tags = new List<Tag>();
 
-        public virtual IEnumerable<Webpage> PublishedChildren
-        {
-            get
-            {
-                return
-                    Children.Select(webpage => webpage.Unproxy()).OfType<Webpage>().Where(document => document.Published)
-                        .OrderBy(webpage => webpage.DisplayOrder);
-            }
-        }
-
         public virtual IList<Document> Children
         {
             get { return _children; }

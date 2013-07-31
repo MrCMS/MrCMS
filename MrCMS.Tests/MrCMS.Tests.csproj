@@ -110,6 +110,7 @@
     <Compile Include="ACL\ACLRuleTests.cs" />
     <Compile Include="Entities\DocumentTests.cs" />
     <Compile Include="Entities\MediaFileTests.cs" />
+    <Compile Include="Entities\WebpageTests.cs" />
     <Compile Include="Helpers\DocumentExtensionsTests.cs" />
     <Compile Include="Helpers\TypeHelperTests.cs" />
     <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
