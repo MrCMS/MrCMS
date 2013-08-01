@@ -7,7 +7,7 @@ namespace MrCMS.Services
     {
         void Delete(UrlHistory urlHistory);
         void Add(UrlHistory urlHistory);
-        IEnumerable<UrlHistory> GetAllNotForDocument(Webpage document);
+        IEnumerable<UrlHistory> GetAllOtherUrls(Webpage document);
         UrlHistory GetByUrlSegment(string url);
     }
 }

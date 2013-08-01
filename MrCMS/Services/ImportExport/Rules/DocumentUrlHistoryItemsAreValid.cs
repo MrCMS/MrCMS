@@ -24,7 +24,7 @@ namespace MrCMS.Services.ImportExport.Rules
 
             if (document == null) yield break;
 
-            var urls = _urlHistoryService.GetAllNotForDocument(document).ToList();
+            var urls = _urlHistoryService.GetAllOtherUrls(document).ToList();
             foreach (var url in item.UrlHistory.Where(url => urls.Any(x=>x.UrlSegment==url)))
             {
                 yield return "One of url history segments is already within the system and belongs to another document.";
