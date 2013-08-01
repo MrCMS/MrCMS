@@ -754,7 +754,6 @@
     <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
     <Content Include="Areas\Admin\Content\Styles\jquery.tagit.css" />
     <Content Include="Content\install\images\install-synchronizing.gif" />
-    <Content Include="Content\images\mrcms-logo.png" />
     <Content Include="Content\install\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="Content\install\bootstrap\css\bootstrap-responsive.min.css" />
     <Content Include="Content\install\bootstrap\css\bootstrap.css" />

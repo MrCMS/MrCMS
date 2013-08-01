@@ -76,6 +76,7 @@ namespace MrCMS.Services.ImportExport
                 wsItems.Cells["D" + rowId].Value = webpages[i].Name;
                 wsItems.Cells["D" + rowId].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
                 wsItems.Cells["E" + rowId].Value = webpages[i].BodyContent;
+                wsItems.Cells["E" + rowId].Style.HorizontalAlignment = ExcelHorizontalAlignment.Fill;
                 wsItems.Cells["F" + rowId].Value = webpages[i].MetaTitle;
                 wsItems.Cells["G" + rowId].Value = webpages[i].MetaDescription;
                 wsItems.Cells["G" + rowId].Style.HorizontalAlignment = ExcelHorizontalAlignment.Fill;

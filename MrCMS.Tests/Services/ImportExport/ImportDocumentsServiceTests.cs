@@ -31,16 +31,17 @@ namespace MrCMS.Tests.Services.ImportExport
         }
 
         [Fact]
-        public void ImportDocumentsService_ImportDocument_ShouldCallGetGetDocumentByUrlOfDocumentService()
+        public void ImportDocumentsService_ImportDocumentsFromDTOs_ShouldCallGetAllDocuments()
         {
-            var document = new DocumentImportDataTransferObject()
+            var documentDto = new DocumentImportDataTransferObject()
             {
                 UrlSegment = "test-url",
+                DocumentType = "TextPage"
             };
 
-            _importDocumentsService.ImportDocument(document);
+            _importDocumentsService.ImportDocumentsFromDTOs(new List<DocumentImportDataTransferObject>(){documentDto});
 
-            A.CallTo(() => _documentService.GetDocumentByUrl<Webpage>(document.UrlSegment)).MustHaveHappened();
+            A.CallTo(() => _documentService.GetAllDocuments<Document>()).MustHaveHappened();
         }
 
         [Fact]
@@ -56,31 +57,24 @@ namespace MrCMS.Tests.Services.ImportExport
                 MetaDescription = "Test SEO Description",
                 MetaKeywords = "Test, Thought",
                 MetaTitle = "Test SEO Title",
-                DisplayOrder = 2,
+                DisplayOrder = 0,
                 RevealInNavigation = true,
                 RequireSSL = false,
                 PublishDate = currentTime,
-                DocumentType = "Article",
+                DocumentType = "TextPage",
                 Tags = new List<string>(){"Test"}
             };
 
           
-            var document = new TextPage { Name = "Test Document", UrlSegment = "test-url" };
-            A.CallTo(() => _documentService.GetDocumentByUrl<Webpage>(documentDTO.UrlSegment)).Returns(document);
-
-            var parent = new TextPage { Name = "Test Parent", UrlSegment = "test-parent-url"};
-            A.CallTo(() => _documentService.GetDocumentByUrl<Webpage>(documentDTO.ParentUrl)).Returns(parent);
-
             var result = _importDocumentsService.ImportDocument(documentDTO);
 
             result.UrlSegment.Should().BeEquivalentTo("test-url");
             result.Name.Should().BeEquivalentTo("Test Document");
-            result.Parent.UrlSegment.Should().BeEquivalentTo("test-parent-url");
             result.BodyContent.Should().BeEquivalentTo("Test Body Content");
             result.MetaDescription.Should().BeEquivalentTo("Test SEO Description");
             result.MetaKeywords.Should().BeEquivalentTo("Test, Thought");
             result.MetaTitle.Should().BeEquivalentTo("Test SEO Title");
-            result.DisplayOrder.Should().Be(2);
+            result.DisplayOrder.Should().Be(0);
             result.RevealInNavigation.Should().BeTrue();
             result.RequiresSSL.Should().BeFalse();
             result.PublishOn.Should().Be(currentTime);
