@@ -103,12 +103,13 @@ namespace MrCMS.Helpers
             documentTypeDefinitions =
                 documentTypeDefinitions.FindAll(
                     definition => !typeof (IUniquePage).IsAssignableFrom(definition.Type) ||
-                                  OverrideExistAny != null
-                                      ? !OverrideExistAny(definition.Type)
-                                      : !MrCMSApplication.Get<IDocumentService>().ExistAny(definition.Type));
+                                  (OverrideExistAny != null
+                                       ? !OverrideExistAny(definition.Type)
+                                       : !MrCMSApplication.Get<IDocumentService>().ExistAny(definition.Type)));
 
             return documentTypeDefinitions;
         }
+
         public static Func<Type, bool> OverrideExistAny { get; set; } 
 
         public static int? GetMaxChildNodes(this Document document)

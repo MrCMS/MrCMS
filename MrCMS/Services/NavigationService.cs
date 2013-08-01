@@ -43,7 +43,7 @@ namespace MrCMS.Services
                                IconClass = "icon-asterisk",
                                Name = "Root",
                                NodeType = "Webpage",
-                               CanAddChild = DocumentMetadataHelper.GetValidWebpageDocumentTypes(null).Any()
+                               CanAddChild = DocumentMetadataHelper.GetValidWebpageDocumentTypes(null).Any(),
                            };
             tree.Children = GetNodes<Webpage>(tree, _documentSearcher.IndexSearcher.Search(GetRootEntities<Webpage>(), int.MaxValue).ScoreDocs, null, maxDepth: depth);
 
@@ -81,7 +81,7 @@ namespace MrCMS.Services
                                IconClass = "icon-asterisk",
                                Name = "Root",
                                NodeType = "MediaCategory",
-                               CanAddChild = true
+                               CanAddChild = true,
                            };
             tree.Children = GetNodes<MediaCategory>(tree, _documentSearcher.IndexSearcher.Search(GetRootEntities<MediaCategory>(), int.MaxValue).ScoreDocs, null);
 
@@ -97,7 +97,7 @@ namespace MrCMS.Services
                                IconClass = "icon-asterisk",
                                Name = "Root",
                                NodeType = "Layout",
-                               CanAddChild = true
+                               CanAddChild = true,
                            };
 
             tree.Children = GetNodes<Layout>(tree, _documentSearcher.IndexSearcher.Search(GetRootEntities<Layout>(), int.MaxValue).ScoreDocs, null);
