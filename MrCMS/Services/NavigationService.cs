@@ -220,7 +220,7 @@ namespace MrCMS.Services
                                                                  Sortable = document.Get(DocumentIndexDefinition.IsSortable.FieldName) == true.ToString(),
                                                                  CanAddChild = document.Get(DocumentIndexDefinition.CanAddChild.FieldName) == true.ToString(),
                                                                  IsPublished = GetNodeType(document) != "Webpage" || !string.IsNullOrWhiteSpace(publishOn) && DateTools.StringToDate(publishOn) <= CurrentRequestData.Now,
-                                                                 RevealInNavigation = document.Get(DocumentIndexDefinition.CanAddChild.FieldName) == true.ToString()
+                                                                 RevealInNavigation = document.Get(DocumentIndexDefinition.RevealInNavigation.FieldName) == true.ToString()
                                                              };
                                       if (document.GetValues(DocumentIndexDefinition.ShowChildrenInNav.FieldName).Contains(true.ToString()))
                                       {
