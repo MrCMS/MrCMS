@@ -48,7 +48,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                                              SelectListItemHelper.EmptyItem("Default Layout"));
 
             var documentTypeDefinitions =
-                (doc.Parent as Webpage).GetValidWebpageDocumentTypes(_documentService, CurrentSite)
+                (doc.Parent as Webpage).GetValidWebpageDocumentTypes()
                                        .Where(
                                            metadata =>
                                            CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Add,
