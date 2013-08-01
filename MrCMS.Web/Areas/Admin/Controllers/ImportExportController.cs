@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Web.Mvc;
+using MrCMS.Website;
 using MrCMS.Website.Controllers;
 using MrCMS.Services.ImportExport;
 
@@ -16,13 +17,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Documents()
+        public ActionResult Documents(string status)
         {
+            ViewBag.ExportStatus = status;
             return View();
         }
 
         [HttpGet]
-        public FileResult ExportDocuments()
+        public ActionResult ExportDocuments()
         {
             try
             {
@@ -32,8 +34,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.ExportStatus = "Documents exporting has failed. Please try again and contact system administration if error continues to appear.";
-                return null;
+                CurrentRequestData.ErrorSignal.Raise(ex);
+                const string msg = "Documents exporting has failed. Please try again and contact system administration if error continues to appear.";
+                return RedirectToAction("Documents", new { status = msg });
             }
         }
 
@@ -41,13 +44,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ViewResult ImportDocuments(HttpPostedFileBase document)
         {
             if (document != null && document.ContentLength > 0 && document.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            {
                 ViewBag.Messages = _importExportManager.ImportDocumentsFromExcel(document.InputStream);
-            }
             else
-            {
                 ViewBag.ImportStatus = "Please choose non-empty Excel (.xslx) file before uploading.";
-            }
             return View("Documents");
         }
     }
