@@ -754,7 +754,6 @@
     <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
     <Content Include="Areas\Admin\Content\Styles\jquery.tagit.css" />
     <Content Include="Content\install\images\install-synchronizing.gif" />
-    <Content Include="Content\images\mrcms-logo.png" />
     <Content Include="Content\install\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="Content\install\bootstrap\css\bootstrap-responsive.min.css" />
     <Content Include="Content\install\bootstrap\css\bootstrap.css" />
@@ -1398,6 +1397,7 @@
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\release.sh" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.jquery.json" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_en.js.template" />
+    <Content Include="Areas\Admin\Views\Search\GetBreadCrumb.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />

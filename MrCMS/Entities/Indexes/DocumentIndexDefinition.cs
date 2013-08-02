@@ -30,7 +30,7 @@ namespace MrCMS.Entities.Indexes
 
 
         private static readonly FieldDefinition<Document> _parentId =
-            new StringFieldDefinition<Document>("parentid", webpage => GetParentIds(webpage), Field.Store.NO,
+            new StringFieldDefinition<Document>("parentid", webpage => webpage.ParentId.ToString(), Field.Store.NO,
                                                 Field.Index.NOT_ANALYZED);
 
         public override string IndexName

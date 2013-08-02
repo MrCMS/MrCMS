@@ -31,7 +31,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             searchService = A.Fake<ISearchService>();
             navigationService = A.Fake<INavigationService>();
-            var searchController = new SearchController(searchService, navigationService);
+            var searchController = new SearchController(searchService, navigationService, A.Fake<IDocumentService>());
             return searchController;
         }
 

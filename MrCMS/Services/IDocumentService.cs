@@ -48,5 +48,6 @@ namespace MrCMS.Services
         bool UrlIsValidForWebpage(string url, int? id);
         bool UrlIsValidForWebpageUrlHistory(string url);
         IEnumerable<SelectListItem> GetValidParents(Webpage webpage);
+        IEnumerable<Document> GetParents(int? parent);
     }
 }

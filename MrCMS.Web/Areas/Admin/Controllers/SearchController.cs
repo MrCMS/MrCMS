@@ -1,24 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class SearchController : MrCMSAdminController
     {
-        private readonly ISearchService _documentService;
+        private readonly ISearchService _searchService;
         private readonly INavigationService _navigationService;
+        private readonly IDocumentService _documentService;
 
-        public SearchController(ISearchService documentService, INavigationService navigationService)
+        public SearchController(ISearchService searchService, INavigationService navigationService, IDocumentService documentService)
         {
-            _documentService = documentService;
+            _searchService = searchService;
             _navigationService = navigationService;
+            _documentService = documentService;
         }
 
         [HttpGet]
@@ -58,16 +62,16 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (!string.IsNullOrWhiteSpace(type))
             {
                 var typeByName = DocumentMetadataHelper.GetTypeByName(type);
-                var searchResults = _documentService.GetType()
+                var searchResults = _searchService.GetType()
                                                     .GetMethodExt("SearchDocumentsDetailed", typeof(string),
                                                                   typeof(int?), typeof(int));
                 var method = searchResults.MakeGenericMethod(typeByName);
                 return
-                    (method.Invoke(_documentService, new object[] { term, parent, page }) as
+                    (method.Invoke(_searchService, new object[] { term, parent, page }) as
                      IPagedList<DetailedSearchResultModel>);
             }
             var docs =
-                _documentService.SearchDocumentsDetailed<Document>(term, parent, page);
+                _searchService.SearchDocumentsDetailed<Document>(term, parent, page);
 
             return docs;
         }
@@ -77,13 +81,32 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (!string.IsNullOrWhiteSpace(type))
             {
                 var typeByName = DocumentMetadataHelper.GetTypeByName(type);
-                var searchResults = _documentService.GetType().GetMethodExt("SearchDocuments", typeof(string));
+                var searchResults = _searchService.GetType().GetMethodExt("SearchDocuments", typeof(string));
                 var method = searchResults.MakeGenericMethod(typeByName);
-                return (method.Invoke(_documentService, new object[] { term }) as IEnumerable<SearchResultModel>).ToList();
+                return (method.Invoke(_searchService, new object[] { term }) as IEnumerable<SearchResultModel>).ToList();
             }
-            List<SearchResultModel> docs = _documentService.SearchDocuments<Document>(term).ToList();
+            List<SearchResultModel> docs = _searchService.SearchDocuments<Document>(term).ToList();
 
             return docs;
+        }
+
+        public PartialViewResult GetBreadCrumb(int? parentId)
+        {
+            //get breadcrumb
+            if (parentId.HasValue)
+            {
+                var allParents = _documentService.GetParents(parentId);
+
+                IEnumerable<NavigationRecord> navigationRecords = allParents.Select(webpage => new NavigationRecord
+                    {
+                        Text = MvcHtmlString.Create(webpage.Name),
+                        Url = MvcHtmlString.Create("/Admin/Search?parent=" + webpage.Id)
+                    }).Reverse().ToList();
+
+                return PartialView(new NavigationList(navigationRecords));
+            }
+
+            return PartialView(null);
         }
     }
 }
