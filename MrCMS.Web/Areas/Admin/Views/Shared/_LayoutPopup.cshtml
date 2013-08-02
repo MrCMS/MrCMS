@@ -3,13 +3,26 @@
     Layout = "_LayoutRoot.cshtml";
     Html.IncludeScript("/Areas/Admin/Content/Scripts/custom/popup.js");
 }
-@RenderBody()
-@if (IsSectionDefined("JavaScriptBlock"))
-{
-    @RenderSection("JavaScriptBlock")
-}
+
+<div class="row-fluid">
+    <div class="span12" style="padding: 20px">@RenderBody()</div>
+</div>
 
 <style type="text/css">
     body { padding-top: 0; }
 </style>
+
+<footer id="footer-popup">
+    <hr>
+    <img src="/Areas/Admin/Content/Images/logo.png" class="display-inline" style="margin-left: 20px;">
+    <p class="display-inline">
+        © Mr CMS 2012-2013 - v0.3.1.0
+    </p>
+</footer>
+
+
+@if (IsSectionDefined("JavaScriptBlock"))
+{
+    @RenderSection("JavaScriptBlock")
+}
 

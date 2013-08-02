@@ -5,31 +5,28 @@
     ViewBag.Title = "Edit | " + Model.WidgetType.BreakUpString();
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
 }
-@using (Html.BeginForm("Edit", "Widget", new { }, FormMethod.Post, new { id = "edit-document" }))
+@using (Html.BeginForm("Edit", "Widget", new { }, FormMethod.Post, new { id = "edit-widget" }))
 {
     
-    <div class="modal-header">
-        <h3>@(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : Model.WidgetType.BreakUpString())</h3>
-    </div>
-    
-    <div class="modal-body">
-        <div class="row-fluid">
-            <div class="span12">
-                @Html.HiddenFor(widget => widget.Id)
-                @Html.Hidden("ReturnUrl", ViewData["return-url"])
-                @Html.LabelFor(widget => widget.Name)
-                @Html.TextBoxFor(widget => widget.Name, new { @class = "span12" })
-                @if (Model.Webpage != null)
-                {
-                    @Html.InlineCheckboxFor(widget => widget.IsRecursive, null, null, "Is Recursive (shows on child pages)")
-                }
-                <hr class="small-margin" />
-                @Html.RenderCustomAdminProperties()
-            </div>
-        </div>
+    <fieldset>
+        <legend>@(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : Model.WidgetType.BreakUpString())
 
-    </div>
-    <div class="modal-footer">
-        <input type="submit" class="btn-success btn" value="Save widget" />
-    </div>
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-success btn" value="Save widget" />
+            </span>
+        </legend>
+
+        @Html.HiddenFor(widget => widget.Id)
+        @Html.Hidden("ReturnUrl", ViewData["return-url"])
+        @Html.LabelFor(widget => widget.Name)
+        @Html.TextBoxFor(widget => widget.Name, new { @class = "span12" })
+        @if (Model.Webpage != null)
+        {
+            @Html.InlineCheckboxFor(widget => widget.IsRecursive, null, null, "Is Recursive (shows on child pages)")
+        }
+        <hr class="small-margin" />
+        @Html.RenderCustomAdminProperties()
+    </fieldset>
+    
+    
 }

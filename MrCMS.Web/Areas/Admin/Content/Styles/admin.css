@@ -77,4 +77,5 @@ ul.nav { margin-bottom: 10px;}
 
 .main-content legend { line-height: 37px;}
 
-.modal-body { max-height: 1000px;}
+
+#footer-popup { position: fixed;bottom: 20px;width: 100%;}
