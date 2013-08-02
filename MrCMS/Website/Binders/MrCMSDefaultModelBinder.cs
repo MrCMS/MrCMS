@@ -65,55 +65,6 @@ namespace MrCMS.Website.Binders
                                                                idVal)
                            : null;
             }
-            if (typeof(IEnumerable<SiteEntity>).IsAssignableFrom(propertyDescriptor.PropertyType))
-            {
-                var baseValue = base.GetPropertyValue(controllerContext, bindingContext, propertyDescriptor, propertyBinder);
-
-                var retrievedValue = baseValue as IEnumerable<SiteEntity>;
-
-                if (retrievedValue != null)
-                {
-                    var baseEntities = retrievedValue as SiteEntity[] ?? retrievedValue.ToArray();
-                    for (int i = 0; i < baseEntities.Count(); i++)
-                    {
-                        var deletedKey = propertyDescriptor.Name + "[" + i + "].Deleted";
-
-                        var isDeleted =
-                            Convert.ToString(controllerContext.RouteData.Values[deletedKey] ??
-                                             controllerContext.HttpContext.Request[deletedKey]).Contains("true");
-
-                        if (isDeleted)
-                        {
-                            var baseEntity = baseEntities.ElementAt(i);
-
-                            foreach (var property in baseEntity.GetType().GetProperties().Where(info => info.CanWrite && info.PropertyType.IsSubclassOf(typeof(SiteEntity))))
-                            {
-                                var parent = property.GetValue(baseEntity, null) as SiteEntity;
-
-                                if (parent == null)
-                                    continue;
-                                var makeGenericType = typeof(IList<>).MakeGenericType(baseEntity.GetType());
-                                var lists =
-                                    parent.GetType().GetProperties().Where(
-                                        info => makeGenericType.IsAssignableFrom(info.PropertyType));
-
-                                foreach (var info in lists)
-                                {
-                                    var infoValue = info.GetValue(parent, null);
-                                    var methodInfo = info.PropertyType.GetMethodExt("Remove", new[] { baseEntity.GetType() });
-
-                                    methodInfo.Invoke(infoValue, new[] { baseEntity });
-                                }
-
-                                property.SetValue(baseEntity, null, null);
-                            }
-                            Session.Delete(baseEntity);
-                        }
-                    }
-                }
-
-                return baseValue;
-            }
 
             var value = base.GetPropertyValue(controllerContext, bindingContext, propertyDescriptor, propertyBinder);
             return value;

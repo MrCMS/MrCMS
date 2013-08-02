@@ -84,3 +84,5 @@ MrCMS.Web/content/upload*
 MrCMS.Web/App_Data/*
 *.jtconfig
 *.vspx
+NDependOut/*
+*.ndproj

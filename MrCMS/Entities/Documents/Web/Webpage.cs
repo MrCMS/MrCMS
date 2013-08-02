@@ -182,6 +182,16 @@ namespace MrCMS.Entities.Documents.Web
         
         public virtual IList<UrlHistory> Urls { get; set; }
 
+        public virtual IEnumerable<Webpage> PublishedChildren
+        {
+            get
+            {
+                return
+                    Children.Select(webpage => webpage.Unproxy()).OfType<Webpage>().Where(document => document.Published)
+                            .OrderBy(webpage => webpage.DisplayOrder);
+            }
+        }
+
         public virtual bool IsAllowed(User currentUser)
         {
             if (currentUser != null && currentUser.IsAdmin) return true;

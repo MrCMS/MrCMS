@@ -74,38 +74,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void NavigationController_UserList_ShouldCallUserList()
-        {
-            NavigationController navigationController = GetNavigationController();
-
-            navigationController.UserList();
-
-            A.CallTo(() => navigationService.GetUserList()).MustHaveHappened();
-        }
-
-        [Fact]
-        public void NavigationController_UserList_ShouldReturnAPartialViewResult()
-        {
-            NavigationController navigationController = GetNavigationController();
-
-            PartialViewResult result = navigationController.UserList();
-
-            result.Should().NotBeNull();
-        }
-
-        [Fact]
-        public void NavigationController_UserList_ModelShouldBeResponseOfNavigationService()
-        {
-            NavigationController navigationController = GetNavigationController();
-            var siteTree = new SiteTree<User>();
-            A.CallTo(() => navigationService.GetUserList()).Returns(siteTree);
-
-            PartialViewResult result = navigationController.UserList();
-
-            result.Model.Should().Be(siteTree);
-        }
-
-        [Fact]
         public void NavigationController_Navlinks_ShouldReturnAPartialViewResult()
         {
             NavigationController navigationController = GetNavigationController();

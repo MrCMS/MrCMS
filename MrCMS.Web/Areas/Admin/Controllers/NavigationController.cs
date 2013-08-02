@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using MrCMS.Entities.Multisite;
-using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
-using MrCMS.Website;
 using MrCMS.Website.Controllers;
-using NHibernate;
 using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -36,11 +32,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult LayoutTree()
         {
             return PartialView("LayoutTree", _service.GetLayoutList());
-        }
-
-        public PartialViewResult UserList()
-        {
-            return PartialView("UserList", _service.GetUserList());
         }
 
         public PartialViewResult NavLinks()

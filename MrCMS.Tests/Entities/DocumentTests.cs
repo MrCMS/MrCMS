@@ -38,38 +38,6 @@ namespace MrCMS.Tests.Entities
         }
 
         [Fact]
-        public void Document_PublishedChildren_DoesNotReturnNonWebpages()
-        {
-            var doc = new StubDocument();
-
-            doc.SetChildren(new List<Document> {new StubDocument()});
-
-            doc.PublishedChildren.Should().HaveCount(0);
-        }
-
-        [Fact]
-        public void Document_PublishedChildren_PublishedWebpageIsReturned()
-        {
-            var doc = new StubDocument();
-
-            var document = new BasicMappedWebpage {PublishOn = CurrentRequestData.Now.AddDays(-1)};
-            doc.SetChildren(new List<Document> {document});
-
-            doc.PublishedChildren.Should().Contain(document);
-        }
-
-        [Fact]
-        public void Document_PublishedChildren_UnpublishedWebpageIsNotReturned()
-        {
-            var doc = new StubDocument();
-
-            var document = new BasicMappedWebpage {PublishOn = null};
-            doc.SetChildren(new List<Document> {document});
-
-            doc.PublishedChildren.Should().NotContain(document);
-        }
-
-        [Fact]
         public void Document_OnDeleting_RemovesDocumentFromParent()
         {
             var doc = new StubDocument();
