@@ -72,16 +72,17 @@ namespace MrCMS.Tasks
             if (Entity != null)
             {
                 Entity = GetObject();
-                CurrentRequestData.SetTaskSite(Session.Get<Site>(Entity.Site.Id));
+                var site = Session.Get<Site>(Entity.Site.Id);
+                CurrentRequestData.SetTaskSite(site);
 
                 var definitionTypes = GetDefinitionTypes();
-                foreach (var indexManagerBase in definitionTypes.Select(IndexService.GetIndexManagerBase))
+                foreach (var indexManagerBase in definitionTypes.Select(type => IndexService.GetIndexManagerBase(type, site)))
                     ExecuteLogic(indexManagerBase, Entity);
                 var relatedDefinitionTypes = GetRelatedDefinitionTypes();
                 foreach (var type in relatedDefinitionTypes)
                 {
                     var instance = Activator.CreateInstance(type);
-                    var indexManagerBase = IndexService.GetIndexManagerBase(type);
+                    var indexManagerBase = IndexService.GetIndexManagerBase(type, site);
                     var methodInfo = type.GetMethodExt("GetEntitiesToUpdate", typeof (T));
                     var toUpdate = methodInfo.Invoke(instance, new[] {Entity}) as IEnumerable;
                     foreach (var entity in toUpdate)

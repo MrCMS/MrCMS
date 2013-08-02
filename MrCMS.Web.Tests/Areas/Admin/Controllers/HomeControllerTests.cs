@@ -13,10 +13,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void HomeController_OnGetIndex_ReturnsAViewResult()
         {
-            var siteService = A.Fake<ISiteService>();
+            var currentSiteLocator = A.Fake<ICurrentSiteLocator>();
             var userService = A.Fake<IUserService>();
             var session = A.Fake<ISession>();
-            var homeController = new HomeController(siteService, userService, session);
+            var homeController = new HomeController(currentSiteLocator, userService, session);
 
             ActionResult actionResult = homeController.Index();
 

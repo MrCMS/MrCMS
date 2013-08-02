@@ -21,20 +21,23 @@ namespace MrCMS.Website.Routing
         {
             string controllerName = Convert.ToString(values["controller"]);
             string actionName = Convert.ToString(values["action"]);
+            bool isAdmin = !string.IsNullOrWhiteSpace(_area) && _area.Equals("Admin", StringComparison.OrdinalIgnoreCase);
             if (routeDirection == RouteDirection.IncomingRequest)
             {
                 var mrCMSControllerFactory = ControllerBuilder.Current.GetControllerFactory() as MrCMSControllerFactory;
                 if (mrCMSControllerFactory != null)
                 {
-                    bool isAdmin = !string.IsNullOrWhiteSpace(_area) && _area.Equals("Admin", StringComparison.OrdinalIgnoreCase);
                     bool isValidControllerType = mrCMSControllerFactory.IsValidControllerType(_appName, controllerName, isAdmin);
                     return isValidControllerType;
                 }
                 return false;
             }
 
+            var controllers = isAdmin
+                                          ? MrCMSControllerFactory.AppAdminControllers
+                                          : MrCMSControllerFactory.AppUiControllers;
             Type controllerType =
-                MrCMSControllerFactory.AppAdminControllers[_appName].FirstOrDefault(
+                controllers[_appName].FirstOrDefault(
                     type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
 
             if (controllerType == null)

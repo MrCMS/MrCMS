@@ -8,7 +8,7 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<Layout> mapping)
         {
-            mapping.HasMany(x => x.LayoutAreas).KeyColumn("LayoutId").Cascade.Delete();
+            mapping.HasMany(x => x.LayoutAreas).KeyColumn("LayoutId").Cascade.All();
             mapping.HasMany(layout => layout.Webpages).KeyColumn("LayoutId");
         }
     }

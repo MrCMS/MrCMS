@@ -17,7 +17,6 @@ namespace MrCMS.Entities.People
         {
             Guid = Guid.NewGuid();
             Roles = new List<UserRole>();
-            Sites = new List<Site>();
             UserProfileData = new List<UserProfileData>();
         }
 
@@ -62,18 +61,12 @@ namespace MrCMS.Entities.People
             get { return Roles != null && Roles.Any(role => role.Name == UserRole.Administrator); }
         }
 
-        public virtual IList<Site> Sites { get; set; }
-
-
         public override void OnDeleting(ISession session)
         {
             base.OnDeleting(session);
             foreach (var userRole in Roles)
                 userRole.Users.Remove(this);
             Roles.Clear();
-            foreach (var site in Sites)
-                site.Users.Remove(this);
-            Sites.Clear();
         }
 
         public virtual bool CanAccess<T>(string operation, string type = null) where T : ACLRule, new()

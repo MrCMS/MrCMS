@@ -40,34 +40,6 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void UserService_AddUser_AddsTheCurrentSiteToTheUsersSites()
-        {
-            _session = A.Fake<ISession>();
-            _userService = new UserService(_session, _siteService);
-            var site = new Site();
-            A.CallTo(() => _siteService.GetCurrentSite()).Returns(site);
-
-            var user = new User();
-            _userService.AddUser(user);
-
-            user.Sites.Should().Contain(site);
-        }
-
-        [Fact]
-        public void UserService_AddUser_AddsTheUserToTheSitesUsers()
-        {
-            _session = A.Fake<ISession>();
-            _userService = new UserService(_session, _siteService);
-            var site = new Site();
-            A.CallTo(() => _siteService.GetCurrentSite()).Returns(site);
-
-            var user = new User();
-            _userService.AddUser(user);
-
-            site.Users.Should().Contain(user);
-        }
-
-        [Fact]
         public void UserService_SaveUser_UpdatesAUser()
         {
             _session = A.Fake<ISession>();

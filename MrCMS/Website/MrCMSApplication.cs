@@ -69,7 +69,7 @@ namespace MrCMS.Website
                                         if (!IsFileRequest(Request.Url))
                                         {
                                             CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
-                                            CurrentRequestData.CurrentSite = Get<ISiteService>().GetCurrentSite();
+                                            CurrentRequestData.CurrentSite = Get<ICurrentSiteLocator>().GetCurrentSite();
                                             CurrentRequestData.SiteSettings = Get<SiteSettings>();
                                             Thread.CurrentThread.CurrentCulture = CurrentRequestData.SiteSettings.CultureInfo;
                                             Thread.CurrentThread.CurrentUICulture = CurrentRequestData.SiteSettings.CultureInfo;

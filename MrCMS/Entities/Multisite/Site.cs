@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities.People;
 
@@ -9,15 +10,13 @@ namespace MrCMS.Entities.Multisite
     {
         public Site()
         {
-            Users = new List<User>();
         }
+        [Required]
         public virtual string Name { get; set; }
 
         [DisplayName("Base URL")]
+        [Required]
         public virtual string BaseUrl { get; set; }
-
-        public virtual IList<User> Users { get; set; }
-
 
         public virtual bool IsValidForSite(SiteEntity entity)
         {

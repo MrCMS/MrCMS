@@ -197,7 +197,7 @@ namespace MrCMS.Helpers
         }
 
         public static MvcHtmlString InlineCheckboxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
-                                                     Expression<Func<TModel, bool>> expression, object labelAttributes, object checkboxAttributes,
+                                                     Expression<Func<TModel, bool>> expression, object labelAttributes = null, object checkboxAttributes = null,
                                                      string text = null)
         {
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);

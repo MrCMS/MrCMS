@@ -69,7 +69,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var textPage = new TextPage { Site = webpageController.CurrentSite };
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(textPage);
 
-            var result = webpageController.Add_Get(1) as ViewResult;
+            webpageController.Add_Get(1);
 
             webpageController.ViewData["Layout"].Should().BeAssignableTo<IEnumerable<SelectListItem>>();
         }
@@ -80,7 +80,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var webpage = new TextPage { Site = new Site() };
             A.CallTo(() => documentService.UrlIsValidForWebpage(null, null)).Returns(true);
 
-            webpageController.Add(webpage);
+            webpageController.Add(webpage); 
 
             A.CallTo(() => documentService.AddDocument<Webpage>(webpage)).MustHaveHappened();
         }

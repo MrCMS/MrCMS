@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MrCMS.Entities.Multisite;
 using MrCMS.Settings;
 using Ninject;
 using Ninject.Activation;
@@ -30,12 +31,12 @@ namespace MrCMS.IoC
             var configProvider =
                 context.Kernel.Get<ConfigurationProvider>();
             var method =
-                typeof(ConfigurationProvider).GetMethodExt("GetSiteSettings");
+                typeof(ConfigurationProvider).GetMethodExt("GetSiteSettings", typeof(Site));
 
             return method != null
                        ? method.MakeGenericMethod(type)
                                .Invoke(configProvider,
-                                       new object[] { })
+                                       new object[] { null })
                        : null;
         }
     }

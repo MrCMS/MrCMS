@@ -49,7 +49,7 @@ namespace MrCMS.Website
         private List<Type> GetAdminControllersToCheck(string appName)
         {
             var types = new List<Type>();
-            if (!string.IsNullOrWhiteSpace(appName))
+            if (!string.IsNullOrWhiteSpace(appName) && AppAdminControllers.ContainsKey(appName))
                 types.AddRange(AppAdminControllers[appName]);
             types.AddRange(AdminControllers);
             foreach (var key in AppAdminControllers.Keys.Where(s => !s.Equals(appName, StringComparison.InvariantCultureIgnoreCase)))
@@ -62,7 +62,7 @@ namespace MrCMS.Website
         private List<Type> GetUiControllersToCheck(string appName)
         {
             var types = new List<Type>();
-            if (!string.IsNullOrWhiteSpace(appName))
+            if (!string.IsNullOrWhiteSpace(appName) && AppUiControllers.ContainsKey(appName))
                 types.AddRange(AppUiControllers[appName]);
             types.AddRange(UiControllers);
             foreach (var key in AppUiControllers.Keys.Where(s => !s.Equals(appName, StringComparison.InvariantCultureIgnoreCase)))

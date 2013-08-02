@@ -116,6 +116,7 @@ namespace MrCMS.Settings
                     Value = valueStr,
                     Site = site
                 };
+                AllSettings.Add(setting);
             }
             _session.Transact(session => session.SaveOrUpdate(setting));
         }

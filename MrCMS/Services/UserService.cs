@@ -26,16 +26,7 @@ namespace MrCMS.Services
         {
             _session.Transact(session =>
                                   {
-                                      var site = _siteService.GetCurrentSite();
-
-                                      if (user.Sites != null)
-                                          user.Sites.Add(site);
-
-                                      if (site.Users != null)
-                                          site.Users.Add(user);
-
                                       session.Save(user);
-                                      session.Update(site);
                                   });
         }
 

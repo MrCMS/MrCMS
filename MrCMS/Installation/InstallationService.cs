@@ -357,18 +357,13 @@ namespace MrCMS.Installation
             InitializeIndices(site, session);
         }
 
-        private static void InitializeIndices(Site site, ISession session)
+        public static void InitializeIndices(Site site, ISession session)
         {
             var currentSite = new CurrentSite(site);
             var service = new IndexService(session, currentSite);
-            IndexService.GetIndexManagerOverride =
-                (indexType, indexDefinitionInterface) =>
-                Activator.CreateInstance(typeof (FSDirectoryIndexManager<,>).MakeGenericType(
-                    indexDefinitionInterface.GetGenericArguments()[0], indexType), currentSite) as IIndexManagerBase;
-            var mrCMSIndices = service.GetIndexes();
-            mrCMSIndices.ForEach(index => service.Reindex(index.TypeName));
-            mrCMSIndices.ForEach(index => service.Optimise(index.TypeName));
-            IndexService.GetIndexManagerOverride = null;
+            DocumentMetadataHelper.OverrideExistAny = new DocumentService(session, null, currentSite).ExistAny;
+            service.InitializeAllIndices(site);
+            DocumentMetadataHelper.OverrideExistAny = null;
         }
 
         public virtual void RestartAppDomain()
@@ -766,8 +761,8 @@ namespace MrCMS.Installation
         {
             var builder = new MySqlConnectionStringBuilder();
             builder.IntegratedSecurity = trustedConnection;
-            builder.Server= serverName;
-            builder.Database= databaseName;
+            builder.Server = serverName;
+            builder.Database = databaseName;
             if (!trustedConnection)
             {
                 builder.UserID = userName;

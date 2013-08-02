@@ -41,7 +41,6 @@ namespace MrCMS.Web.Apps.Core
         protected override void OnInstallation(ISession session, InstallModel model, Site site)
         {
             //settings
-            var mediaSettings = new MediaSettings();
             session.Transact(sess => sess.Save(site));
             CurrentRequestData.CurrentSite = site;
             var currentSite = new CurrentSite(site);
@@ -52,6 +51,10 @@ namespace MrCMS.Web.Apps.Core
                 TimeZone = model.TimeZone,
                 UICulture = model.UiCulture
             };
+            var mediaSettings = new MediaSettings
+                                    {
+                                        Site = site
+                                    };
             CurrentRequestData.SiteSettings = siteSettings;
 
             var documentService = new DocumentService(session, siteSettings, currentSite);
@@ -126,7 +129,7 @@ namespace MrCMS.Web.Apps.Core
             navigationWidget.LayoutArea = layoutAreas.Single(x => x.AreaName == "Main Navigation");
             widgetService.AddWidget(navigationWidget);
 
-            
+
             widgetService.AddWidget(new UserLinks
             {
                 Name = "User Links",
@@ -216,7 +219,7 @@ namespace MrCMS.Web.Apps.Core
             var webpages = session.QueryOver<Webpage>().List();
             webpages.ForEach(documentService.PublishNow);
 
-            
+
             siteSettings.DefaultLayoutId = model.BaseLayout.Id;
             siteSettings.Error403PageId = model.Error403.Id;
             siteSettings.Error404PageId = model.Error404.Id;
@@ -236,8 +239,8 @@ namespace MrCMS.Web.Apps.Core
             mediaSettings.ResizeQuality = 90;
 
             var configurationProvider = new ConfigurationProvider(new SettingService(session),
-                                                                  currentSite, session);
-            var fileSystemSettings = new FileSystemSettings { StorageType = typeof(FileSystem).FullName };
+                                                                  currentSite);
+            var fileSystemSettings = new FileSystemSettings { Site = site, StorageType = typeof(FileSystem).FullName };
             configurationProvider.SaveSettings(siteSettings);
             configurationProvider.SaveSettings(mediaSettings);
             configurationProvider.SaveSettings(fileSystemSettings);
@@ -273,9 +276,6 @@ namespace MrCMS.Web.Apps.Core
             adminUserRole.Users = new List<User> { user };
             var roleService = new RoleService(session);
             roleService.SaveRole(adminUserRole);
-
-            user.Sites = new List<Site> { site };
-            site.Users = new List<User> { user };
 
             authorisationService.Logout();
             authorisationService.SetAuthCookie(user.Email, false);

@@ -249,6 +249,7 @@
     <Compile Include="Helpers\ConversionHelper.cs" />
     <Compile Include="Helpers\DocumentExtensions.cs" />
     <Compile Include="Helpers\DocumentMetadataHelper.cs" />
+    <Compile Include="Helpers\EntityHelper.cs" />
     <Compile Include="Helpers\EnumerableHelper.cs" />
     <Compile Include="Helpers\ImportHelper.cs" />
     <Compile Include="Helpers\MrCMSHtmlHelper.cs" />
@@ -318,6 +319,7 @@
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\SearchResult.cs" />
     <Compile Include="Models\SearchResultModel.cs" />
+    <Compile Include="Models\SiteCopyOptions.cs" />
     <Compile Include="Models\SortItem.cs" />
     <Compile Include="Models\SystemAdminMenuItem.cs" />
     <Compile Include="Models\UsersAdminMenuItem.cs" />
@@ -335,6 +337,9 @@
     <Compile Include="Services\AuthorisationService.cs" />
     <Compile Include="Services\AzureFileSystem.cs" />
     <Compile Include="Services\IACLService.cs" />
+    <Compile Include="Services\ICloneSitePartsService.cs" />
+    <Compile Include="Services\ICloneSiteService.cs" />
+    <Compile Include="Services\ICurrentSiteLocator.cs" />
     <Compile Include="Services\ImportExport\DTOs\DocumentImportDataTransferObject.cs" />
     <Compile Include="Services\ImportExport\IImportExportManager.cs" />
     <Compile Include="Services\ImportExport\IImportDocumentsService.cs" />
@@ -446,7 +451,6 @@
     <Compile Include="Website\Binders\AddWidgetModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />
-    <Compile Include="Website\Binders\EditSiteModelBinder.cs" />
     <Compile Include="Website\Binders\EditUserModelBinder.cs" />
     <Compile Include="Website\Binders\GlobalSettingsModelBinder.cs" />
     <Compile Include="Website\Binders\MrCMSDefaultModelBinder.cs" />

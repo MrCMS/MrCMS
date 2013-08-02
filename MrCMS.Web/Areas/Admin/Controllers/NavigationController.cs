@@ -12,11 +12,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly INavigationService _service;
         private readonly ISiteService _siteService;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
 
-        public NavigationController(INavigationService service, ISiteService siteService)
+        public NavigationController(INavigationService service, ISiteService siteService, ICurrentSiteLocator currentSiteLocator)
         {
             _service = service;
             _siteService = siteService;
+            _currentSiteLocator = currentSiteLocator;
         }
 
         public PartialViewResult WebSiteTree()
@@ -48,7 +50,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 return new EmptyResult();
 
             return PartialView(allSites.BuildSelectItemList(site => site.Name, site => string.Format("http://{0}/admin/", site.BaseUrl),
-                                                            site => _siteService.GetCurrentSite() == site,
+                                                            site => _currentSiteLocator.GetCurrentSite() == site,
                                                             emptyItemText: null));
         }
     }

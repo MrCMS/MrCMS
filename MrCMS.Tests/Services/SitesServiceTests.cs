@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
-using MrCMS.Entities.Settings;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Website;
-using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
 
@@ -19,180 +13,96 @@ namespace MrCMS.Tests.Services
 {
     public class SitesServiceTests : InMemoryDatabaseTest
     {
-        private HttpRequestBase httpRequestBase;
+        private readonly ICloneSiteService _cloneSiteService;
+        private readonly IIndexService _indexService;
+        private readonly SiteService _siteService;
 
-        [Fact]
-        public void SitesService_GetAllSites_CallsAndReturnsSessionQueryOverSitesToList()
+        public SitesServiceTests()
         {
-            var session = A.Fake<ISession>();
-            var sitesService = GetSitesService(session);
-
-            sitesService.GetAllSites();
-
-            A.CallTo(() => session.QueryOver<Site>()).MustHaveHappened();
+            _cloneSiteService = A.Fake<ICloneSiteService>();
+            _indexService = A.Fake<IIndexService>();
+            _siteService = new SiteService(Session, _cloneSiteService,_indexService);
         }
 
         [Fact]
         public void SitesService_GetAllSites_ReturnsPersistedSites()
         {
-            var sitesService = GetSitesService();
-            Enumerable.Range(1, 10)
-                      .ForEach(i => Session.Transact(sess => sess.SaveOrUpdate(new Site {Name = "Site " + i})));
+            var sites = Enumerable.Range(1, 10).Select(i => new Site { Name = "Site " + i }).ToList();
+            sites.ForEach(site => Session.Transact(session => session.Save(site)));
 
-            var allSites = sitesService.GetAllSites();
+            var allSites = _siteService.GetAllSites();
 
-            // Including CurrentSite from the base class
-            allSites.Should().HaveCount(11);
+            sites.ForEach(site => allSites.Should().Contain(site));
         }
 
         [Fact]
         public void SitesService_AddSite_ShouldPersistSiteToSession()
         {
-            var sitesService = GetSitesService();
             var user = new User();
             Session.Transact(session => session.Save(user));
             CurrentRequestData.CurrentUser = user;
             var site = new Site();
+            var options = new SiteCopyOptions();
 
-            sitesService.AddSite(site);
+            _siteService.AddSite(site, options);
 
             // Including CurrentSite from the base class
             Session.QueryOver<Site>().RowCount().Should().Be(2);
         }
 
         [Fact]
-        public void SitesService_AddSite_CallsSessionSaveOnPassedSite()
+        public void SitesService_AddSite_SavesPassedSiteToSession()
         {
-            var session = A.Fake<ISession>();
-            var sitesService = GetSitesService(session);
             var site = new Site();
+            var options = new SiteCopyOptions();
 
-            sitesService.AddSite(site);
+            _siteService.AddSite(site, options);
 
-            A.CallTo(() => session.Save(site)).MustHaveHappened();
+            Session.QueryOver<Site>().List().Should().Contain(site);
+        }
+
+
+        [Fact]
+        public void SitesService_SaveSite_UpdatesPassedSite()
+        {
+            var site = new Site();
+            Session.Transact(session => session.Save(site));
+            site.Name = "updated";
+
+            _siteService.SaveSite(site);
+
+            Session.Evict(site);
+            Session.QueryOver<Site>().Where(s => s.Name == "updated").RowCount().Should().Be(1);
         }
 
         [Fact]
-        public void SitesService_AddSite_ShouldAddCurrentUserToSiteUsers()
+        public void SitesService_DeleteSite_ShouldDeleteSiteFromSession()
         {
-            var sitesService = GetSitesService();
-            var user = new User();
-            Session.Transact(session => session.Save(user));
-            CurrentRequestData.CurrentUser = user;
             var site = new Site();
+            Session.Transact(session => session.Save(site));
 
-            sitesService.AddSite(site);
+            _siteService.DeleteSite(site);
 
-            site.Users.Should().Contain(user);
-        }
-
-        [Fact]
-        public void SitesService_AddSite_ShouldAddSiteToCurrentUsersSites()
-        {
-            var sitesService = GetSitesService();
-            var user = new User();
-            Session.Transact(session => session.Save(user));
-            CurrentRequestData.CurrentUser = user;
-            var site = new Site();
-
-            sitesService.AddSite(site);
-
-            user.Sites.Should().Contain(site);
-        }
-
-        [Fact]
-        public void SitesService_SaveSite_CallsSessionUpdateOnPassedSite()
-        {
-            var session = A.Fake<ISession>();
-            var sitesService = GetSitesService(session);
-            var site = new Site();
-
-            sitesService.SaveSite(site);
-
-            A.CallTo(() => session.Update(site)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void SitesService_DeleteSite_ShouldCallDeleteOnPassedSite()
-        {
-            var session = A.Fake<ISession>();
-            var sitesService = GetSitesService(session);
-            var site = new Site();
-
-            sitesService.DeleteSite(site);
-
-            A.CallTo(() => session.Delete(site)).MustHaveHappened();
+            Session.QueryOver<Site>().List().Should().NotContain(site);
         }
 
         [Fact]
         public void SitesService_DeleteSite_ShouldRemoveSiteFromSession()
         {
-            var sitesService = GetSitesService();
-
-            sitesService.DeleteSite(CurrentSite);
+            _siteService.DeleteSite(CurrentSite);
 
             // Including CurrentSite from the base class
             Session.QueryOver<Site>().RowCount().Should().Be(0);
         }
 
         [Fact]
-        public void SitesService_GetSite_CallsSessionGetWithPassedId()
-        {
-            var session = A.Fake<ISession>();
-            var sitesService = GetSitesService(session);
-
-            sitesService.GetSite(1);
-
-            A.CallTo(() => session.Get<Site>(1)).MustHaveHappened();
-        }
-
-        [Fact]
         public void SitesService_GetSite_ReturnsResultFromSessionGetAsResult()
         {
-            var session = A.Fake<ISession>();
             var site = new Site();
-            A.CallTo(() => session.Get<Site>(1)).Returns(site);
-            var sitesService = GetSitesService(session);
+            Session.Transact(session => session.Save(site));
 
-            sitesService.GetSite(1).Should().Be(site);
+            _siteService.GetSite(site.Id).Should().Be(site);
         }
 
-        [Fact]
-        public void SitesService_GetCurrentSite_ReturnsFirstIfNoneMatch()
-        {
-            var site1 = new Site { BaseUrl = "test1" };
-            var site2 = new Site { BaseUrl = "test2" };
-            Session.Transact(session =>
-            {
-                session.Save(site1);
-                session.Save(site2);
-            });
-            var sitesService = GetSitesService();
-            A.CallTo(() => httpRequestBase.Url).Returns(new Uri("http://www.example.com/"));
-
-            sitesService.GetCurrentSite().Should().Be(CurrentSite);
-        }
-
-        [Fact]
-        public void SitesService_GetCurrentSite_IfUrlMatchesReturnsMatchingSite()
-        {
-            var site1 = new Site { BaseUrl = "test1" };
-            var site2 = new Site { BaseUrl = "www.example.com" };
-            Session.Transact(session =>
-            {
-                session.Save(site1);
-                session.Save(site2);
-            });
-            var sitesService = GetSitesService();
-            A.CallTo(() => httpRequestBase.Url).Returns(new Uri("http://www.example.com/"));
-
-            sitesService.GetCurrentSite().Should().Be(site2);
-        }
-        
-        private SiteService GetSitesService(ISession session = null)
-        {
-            httpRequestBase = A.Fake<HttpRequestBase>();
-            return new SiteService(session ?? Session, httpRequestBase);
-        }
     }
 }

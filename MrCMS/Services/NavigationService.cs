@@ -27,6 +27,11 @@ namespace MrCMS.Services
         private readonly IDocumentService _documentService;
         private readonly ISearcher<Document, DocumentIndexDefinition> _documentSearcher;
 
+        private Sort _defaultSort = new Sort(new[]
+                                                 {
+                                                     SortField.FIELD_SCORE, new SortField(DocumentIndexDefinition.DisplayOrder.FieldName, SortField.INT)
+                                                 });
+
         public NavigationService(IDocumentService documentService, ISearcher<Document, DocumentIndexDefinition> documentSearcher)
         {
             _documentService = documentService;
@@ -45,7 +50,12 @@ namespace MrCMS.Services
                                NodeType = "Webpage",
                                CanAddChild = DocumentMetadataHelper.GetValidWebpageDocumentTypes(null).Any(),
                            };
-            tree.Children = GetNodes<Webpage>(tree, _documentSearcher.IndexSearcher.Search(GetRootEntities<Webpage>(), int.MaxValue).ScoreDocs, null, maxDepth: depth);
+            var sort = _defaultSort;
+            tree.Children = GetNodes<Webpage>(tree,
+                                              _documentSearcher.IndexSearcher.Search(GetRootEntities<Webpage>(), null,
+                                                                                     int.MaxValue,
+                                                                                     sort).ScoreDocs, null,
+                                              maxDepth: depth);
 
             return tree;
         }
@@ -83,7 +93,7 @@ namespace MrCMS.Services
                                NodeType = "MediaCategory",
                                CanAddChild = true,
                            };
-            tree.Children = GetNodes<MediaCategory>(tree, _documentSearcher.IndexSearcher.Search(GetRootEntities<MediaCategory>(), int.MaxValue).ScoreDocs, null);
+            tree.Children = GetNodes<MediaCategory>(tree, _documentSearcher.IndexSearcher.Search(GetRootEntities<MediaCategory>(), null, int.MaxValue, _defaultSort).ScoreDocs, null);
 
             return tree;
         }
@@ -100,7 +110,7 @@ namespace MrCMS.Services
                                CanAddChild = true,
                            };
 
-            tree.Children = GetNodes<Layout>(tree, _documentSearcher.IndexSearcher.Search(GetRootEntities<Layout>(), int.MaxValue).ScoreDocs, null);
+            tree.Children = GetNodes<Layout>(tree, _documentSearcher.IndexSearcher.Search(GetRootEntities<Layout>(), null, int.MaxValue, _defaultSort).ScoreDocs, null);
             return tree;
         }
 
@@ -205,7 +215,7 @@ namespace MrCMS.Services
                                   if (document.GetValues(DocumentIndexDefinition.ShowInNav.FieldName).Contains(true.ToString()))
                                   {
                                       int id = Convert.ToInt32(document.GetValues(DocumentIndexDefinition.Id.FieldName).First());
-                                      TopDocs topDocs = _documentSearcher.IndexSearcher.Search(GetEntities<T>(id), int.MaxValue);
+                                      TopDocs topDocs = _documentSearcher.IndexSearcher.Search(GetEntities<T>(id), null, int.MaxValue, _defaultSort);
                                       var count = topDocs.ScoreDocs.Count();
                                       string publishOn = document.Get(DocumentIndexDefinition.PublishOn.FieldName);
                                       var siteTreeNode = new SiteTreeNode<T>

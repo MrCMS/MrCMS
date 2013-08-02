@@ -34,7 +34,7 @@ namespace MrCMS.Website
             get
             {
                 return _taskSite ?? (Site)CurrentContext.Items["current.site"] ??
-                       (CurrentSite = MrCMSApplication.Get<ISiteService>().GetCurrentSite());
+                       (CurrentSite = MrCMSApplication.Get<ICurrentSiteLocator>().GetCurrentSite());
             }
             set { CurrentContext.Items["current.site"] = value; }
         }

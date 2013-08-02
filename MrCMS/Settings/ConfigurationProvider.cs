@@ -13,13 +13,11 @@ namespace MrCMS.Settings
     {
         private readonly ISettingService _settingService;
         private readonly CurrentSite _currentSite;
-        private readonly ISession _session;
 
-        public ConfigurationProvider(ISettingService settingService, CurrentSite currentSite, ISession session)
+        public ConfigurationProvider(ISettingService settingService, CurrentSite currentSite)
         {
             _settingService = settingService;
             _currentSite = currentSite;
-            _session = session;
         }
 
 
@@ -59,12 +57,12 @@ namespace MrCMS.Settings
                 _settingService.DeleteSetting(setting);
         }
 
-        public List<SiteSettingsBase> GetAllSiteSettings()
+        public List<SiteSettingsBase> GetAllSiteSettings(Site site = null)
         {
-            var methodInfo = GetType().GetMethodExt("GetSiteSettings");
+            var methodInfo = GetType().GetMethodExt("GetSiteSettings", typeof(Site));
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()
-                             .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
+                             .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { site ?? _currentSite.Site }))
                              .OfType<SiteSettingsBase>().ToList();
 
         }
@@ -137,16 +135,17 @@ namespace MrCMS.Settings
                              .OfType<GlobalSettingsBase>().ToList();
         }
 
-        public TSettings GetSiteSettings<TSettings>() where TSettings : SiteSettingsBase, new()
+        public TSettings GetSiteSettings<TSettings>(Site site = null) where TSettings : SiteSettingsBase, new()
         {
             var settings = Activator.CreateInstance<TSettings>();
 
             // get properties we can write to
+            site = site ?? _currentSite.Site;
             var properties = from prop in typeof(TSettings).GetProperties()
                              where prop.CanWrite && prop.CanRead
                              where prop.Name != "Site"
                              let setting =
-                                 _settingService.GetSettingValueByKey<string>(_currentSite.Site,
+                                 _settingService.GetSettingValueByKey<string>(site,
                                  string.Format("{0}.{1}", typeof(TSettings).FullName, prop.Name))
                              where setting != null
                              where prop.PropertyType.GetCustomTypeConverter().CanConvertFrom(typeof(string))
@@ -156,7 +155,7 @@ namespace MrCMS.Settings
 
             // assign properties
             properties.ToList().ForEach(p => p.prop.SetValue(settings, p.value, null));
-            settings.Site = _currentSite.Site;
+            settings.Site = site;
 
             return settings;
         }

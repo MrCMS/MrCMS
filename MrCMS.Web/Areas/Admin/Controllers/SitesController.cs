@@ -2,32 +2,29 @@
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Multisite;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 using NHibernate;
+using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class SitesController : MrCMSAdminController
     {
         private readonly ISiteService _siteService;
-        private readonly IUserService _userService;
-        private readonly IConfigurationProvider _configurationProvider;
 
-        public SitesController(ISiteService siteService, IUserService userService, IConfigurationProvider configurationProvider)
+        public SitesController(ISiteService siteService)
         {
             _siteService = siteService;
-            _userService = userService;
-            _configurationProvider = configurationProvider;
         }
 
         [HttpGet]
         [ActionName("Index")]
         public ViewResult Index_Get()
         {
-            ViewData["Settings"] = _configurationProvider.GetAllGlobalSettings();
             var sites = _siteService.GetAllSites();
             return View("Index", sites);
         }
@@ -36,13 +33,17 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Add")]
         public PartialViewResult Add_Get()
         {
+            ViewData["other-sites"] = _siteService.GetAllSites()
+                                                  .BuildSelectItemList(site => site.Name, site => site.Id.ToString(),
+                                                                       emptyItemText: "Do not copy");
+
             return PartialView(new Site());
         }
 
         [HttpPost]
-        public RedirectToRouteResult Add(Site site)
+        public RedirectToRouteResult Add(Site site, SiteCopyOptions options)
         {
-            _siteService.AddSite(site);
+            _siteService.AddSite(site, options);
             return RedirectToAction("Index");
         }
 
@@ -50,13 +51,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Edit")]
         public ViewResult Edit_Get(Site site)
         {
-            ViewData["Users"] = _userService.GetAllUsers();
-
             return View(site);
         }
 
         [HttpPost]
-        public RedirectToRouteResult Edit([IoCModelBinder(typeof(EditSiteModelBinder))] Site site)
+        public RedirectToRouteResult Edit(Site site)
         {
             _siteService.SaveSite(site);
             return RedirectToAction("Index");

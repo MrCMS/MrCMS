@@ -4,23 +4,25 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using MrCMS.Entities.Multisite;
-using MrCMS.Entities.People;
+using MrCMS.Models;
 using MrCMS.Website;
 using NHibernate;
 using MrCMS.Helpers;
 
 namespace MrCMS.Services
 {
+
     public class SiteService : ISiteService
     {
         private readonly ISession _session;
-        private readonly HttpRequestBase _requestBase;
-        private Site _currentSite;
+        private readonly ICloneSiteService _cloneSiteService;
+        private readonly IIndexService _indexService;
 
-        public SiteService(ISession session, HttpRequestBase requestBase)
+        public SiteService(ISession session, ICloneSiteService cloneSiteService, IIndexService indexService)
         {
             _session = session;
-            _requestBase = requestBase;
+            _cloneSiteService = cloneSiteService;
+            _indexService = indexService;
         }
 
         public List<Site> GetAllSites()
@@ -33,21 +35,15 @@ namespace MrCMS.Services
             return _session.Get<Site>(id);
         }
 
-        public void AddSite(Site site)
+        public void AddSite(Site site, SiteCopyOptions options)
         {
-            _session.Transact(session =>
-                                  {
-                                      var user = CurrentRequestData.CurrentUser;
+            _session.Transact(session => session.Save(site));
+            _indexService.InitializeAllIndices(site);
 
-                                      if (user.Sites != null)
-                                          user.Sites.Add(site);
-
-                                      if (site.Users != null)
-                                          site.Users.Add(user);
-
-                                      session.Save(site);
-                                      session.Update(user);
-                                  });
+            if (options.SiteId.HasValue)
+            {
+                _cloneSiteService.CloneData(site, options);
+            }
         }
 
         public void SaveSite(Site site)
@@ -64,27 +60,5 @@ namespace MrCMS.Services
                                   });
         }
 
-        public Site GetCurrentSite()
-        {
-            return _currentSite ?? (_currentSite = GetSiteFromSettingForDebugging() ?? GetSiteFromRequest());
-        }
-
-        private Site GetSiteFromSettingForDebugging()
-        {
-            var appSetting = ConfigurationManager.AppSettings["debugSiteId"];
-
-            int id;
-            return int.TryParse(appSetting, out id) ? _session.Get<Site>(id) : null;
-        }
-
-        private Site GetSiteFromRequest()
-        {
-            var authority = _requestBase.Url.Authority;
-
-            var allSites = GetAllSites();
-            var site = allSites.FirstOrDefault(s => s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase));
-
-            return site ?? allSites.First();
-        }
     }
 }

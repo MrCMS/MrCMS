@@ -1,5 +1,7 @@
-﻿@model MrCMS.Entities.Multisite.Site
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+﻿@using MrCMS.Helpers
+@using MrCMS.Models
+@model MrCMS.Entities.Multisite.Site
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
 @using (Html.BeginForm("Add", "Sites", FormMethod.Post))
 {
@@ -7,14 +9,23 @@
         <h3>Add Site</h3>
     </div>
     <div class="modal-body">
-        @Html.LabelFor(x => x.Name)
-        @Html.TextBoxFor(x => x.Name)
-        @Html.ValidationMessageFor(x => x.Name)
-        @Html.LabelFor(x => x.BaseUrl)
-        @Html.TextBoxFor(x => x.BaseUrl)
-        @Html.ValidationMessageFor(x => x.BaseUrl)
+        <div class="row-fluid">
+            <div class="span6">
+                @Html.LabelFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name)
+                @Html.ValidationMessageFor(x => x.Name)
+                @Html.LabelFor(x => x.BaseUrl)
+                @Html.TextBoxFor(x => x.BaseUrl)
+                @Html.ValidationMessageFor(x => x.BaseUrl)
+
+            </div>
+            <div class="span6">
+                @{ Html.RenderPartial("CopyOptions", new ViewDataDictionary(new SiteCopyOptions()) {{"other-sites", ViewData["other-sites"]}});}
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <input type="submit" class="btn-primary btn" value="Add site" />
     </div>
 }
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/add-site.js");}

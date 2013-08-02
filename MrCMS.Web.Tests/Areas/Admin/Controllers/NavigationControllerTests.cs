@@ -16,35 +16,35 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     public class NavigationControllerTests
     {
         private ISiteService _siteService;
-        private INavigationService navigationService;
+        private INavigationService _navigationService;
+        private ICurrentSiteLocator _currentSiteLocator;
+        private NavigationController _navigationController;
+
+        public NavigationControllerTests()
+        {
+
+            _navigationService = A.Fake<INavigationService>();
+            _siteService = A.Fake<ISiteService>();
+            _currentSiteLocator = A.Fake<ICurrentSiteLocator>();
+            _navigationController = new NavigationController(_navigationService, _siteService, _currentSiteLocator);
+        }
 
         [Fact]
         public void NavigationController_WebsiteTree_ShouldReturnPartialView()
         {
-            NavigationController navigationController = GetNavigationController();
-
-            PartialViewResult partialViewResult = navigationController.WebSiteTree();
+            PartialViewResult partialViewResult = _navigationController.WebSiteTree();
 
             partialViewResult.Should().BeOfType<PartialViewResult>();
-        }
-
-        private NavigationController GetNavigationController()
-        {
-            navigationService = A.Fake<INavigationService>();
-            _siteService = A.Fake<ISiteService>();
-            var navigationController = new NavigationController(navigationService,  _siteService);
-            return navigationController;
         }
 
         [Fact]
         public void NavigationController_WebsiteTree_ShouldReturnWebsiteTreeAsModel()
         {
-            NavigationController navigationController = GetNavigationController();
             var site = new Site();
-            A.CallTo(() => _siteService.GetCurrentSite()).Returns(site);
-            A.CallTo(() => navigationService.GetWebsiteTree(null)).Returns(new SiteTree<Webpage>());
+            A.CallTo(() => _currentSiteLocator.GetCurrentSite()).Returns(site);
+            A.CallTo(() => _navigationService.GetWebsiteTree(null)).Returns(new SiteTree<Webpage>());
 
-            PartialViewResult partialViewResult = navigationController.WebSiteTree();
+            PartialViewResult partialViewResult = _navigationController.WebSiteTree();
 
             partialViewResult.Model.Should().BeOfType<SiteTree<Webpage>>();
         }
@@ -52,12 +52,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void NavigationController_LayoutTree_ShouldReturnLayoutTreeAsModel()
         {
-            NavigationController navigationController = GetNavigationController();
             var site = new Site();
-            A.CallTo(() => _siteService.GetCurrentSite()).Returns(site);
-            A.CallTo(() => navigationService.GetLayoutList()).Returns(new SiteTree<Layout>());
+            A.CallTo(() => _currentSiteLocator.GetCurrentSite()).Returns(site);
+            A.CallTo(() => _navigationService.GetLayoutList()).Returns(new SiteTree<Layout>());
 
-            PartialViewResult partialViewResult = navigationController.LayoutTree();
+            PartialViewResult partialViewResult = _navigationController.LayoutTree();
 
             partialViewResult.Model.Should().BeOfType<SiteTree<Layout>>();
         }
@@ -65,10 +64,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void NavigationController_MediaTree_ShouldReturnSiteTreeAsModel()
         {
-            NavigationController navigationController = GetNavigationController();
-            A.CallTo(() => navigationService.GetMediaTree()).Returns(new SiteTree<MediaCategory>());
+            A.CallTo(() => _navigationService.GetMediaTree()).Returns(new SiteTree<MediaCategory>());
 
-            PartialViewResult partialViewResult = navigationController.MediaTree();
+            PartialViewResult partialViewResult = _navigationController.MediaTree();
 
             partialViewResult.Model.Should().BeOfType<SiteTree<MediaCategory>>();
         }
@@ -76,9 +74,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void NavigationController_Navlinks_ShouldReturnAPartialViewResult()
         {
-            NavigationController navigationController = GetNavigationController();
-
-            navigationController.NavLinks().Should().BeOfType<PartialViewResult>();
+            _navigationController.NavLinks().Should().BeOfType<PartialViewResult>();
         }
     }
 }

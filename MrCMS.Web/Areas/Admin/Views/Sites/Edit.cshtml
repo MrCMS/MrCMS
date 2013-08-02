@@ -21,43 +21,9 @@
         </legend>
 
         @Html.HiddenFor(x => x.Id)
-        <div id="tabs">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
-                <li><a href="#users" data-toggle="tab">Users</a></li>
-            </ul>
-            <div class="tab-content">
-                <div id="properties" class="tab-pane active">
-                    @Html.LabelFor(x => x.Name)
-                    @Html.TextBoxFor(x => x.Name, new { @class = "span6" })
-                    @Html.LabelFor(x => x.BaseUrl)
-                    @Html.TextBoxFor(x => x.BaseUrl, new { @class = "span6" })
-                    <hr />
-                </div>
-                <div id="users" class="tab-pane">
-                    @{
-    var users = ViewData["Users"] as IEnumerable<User>;
-                    }
-                    <table class="table table-striped table-bordered">
-                        @if (users != null)
-                        {
-                            foreach (var user in users)
-                            {
-                                bool isChecked = user.IsAdmin || Model.Users.Any(x => x.Id == user.Id);
-                                bool isEnabled = !user.IsAdmin;
-                            <tr>
-                                <td>
-                                    @Html.CheckBox("User-" + user.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
-                                </td>
-                                <td>
-                                    @Html.Label("User-" + user.Id, user.Name)
-                                </td>
-                            </tr>
-                            }
-                        }
-                    </table>
-                </div>
-            </div>
-        </div>
+        @Html.LabelFor(x => x.Name)
+        @Html.TextBoxFor(x => x.Name, new { @class = "span6" })
+        @Html.LabelFor(x => x.BaseUrl)
+        @Html.TextBoxFor(x => x.BaseUrl, new { @class = "span6" })
     </fieldset>
 }
