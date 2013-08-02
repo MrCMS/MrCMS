@@ -106,10 +106,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult ResetSorting(LayoutArea area, int pageId)
+        public ActionResult ResetSorting(LayoutArea area, int pageId, string returnUrl = null)
         {
             var webpage = _documentService.GetDocument<Webpage>(pageId);
             _layoutAreaService.ResetSorting(area, webpage);
+
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
 
             return RedirectToAction("Edit", "Webpage", new { id = pageId });
         }
