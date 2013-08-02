@@ -91,7 +91,7 @@ namespace MrCMS.Entities.Indexes
                                                 Field.Index.NOT_ANALYZED);
 
         private static readonly FieldDefinition<Document> _revealInNavigation =
-            new StringFieldDefinition<Document>("_revealInNavigation",
+            new StringFieldDefinition<Document>("revealInNavigation",
                                                 document => ((document is Webpage) &&
                                                                      (document as Webpage).RevealInNavigation).ToString(),
                                                                      Field.Store.YES, Field.Index.NOT_ANALYZED);
@@ -130,6 +130,7 @@ namespace MrCMS.Entities.Indexes
                 yield return MaxChildNodes;
                 yield return CanAddChild;
                 yield return PublishOn;
+                yield return RevealInNavigation;
             }
         }
 
