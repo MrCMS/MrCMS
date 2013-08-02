@@ -83,9 +83,17 @@ namespace MrCMS.Website
 
                 if (layoutArea == null) return MvcHtmlString.Empty;
 
+                var customSort = false;
+                var webpage = CurrentRequestData.CurrentPage;
+                if (webpage != null)
+                if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == webpage))
+                {
+                    customSort = true;
+                }
+
                 var stringBuilder = new StringBuilder();
                 if (EditingEnabled)
-                    stringBuilder.AppendFormat("<div data-layout-area-id=\"{0}\" data-layout-area-name=\"{1}\" class=\"layout-area\"> ", layoutArea.Id, layoutArea.AreaName);
+                    stringBuilder.AppendFormat("<div data-layout-area-id=\"{0}\" data-layout-area-name=\"{1}\" data-layout-area-hascustomsort=\"{2}\" class=\"layout-area\"> ", layoutArea.Id, layoutArea.AreaName, customSort.ToString());
 
                 foreach (var widget in layoutArea.GetWidgets(page))
                 {

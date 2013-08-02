@@ -6,12 +6,18 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
 }
 @{Html.IncludeScript("~/Areas/Admin/Content/Scripts/Custom/sort.js");}
-<div class="modal-header">
-    <h3>Sort widgets</h3>
-</div>
-<div class="modal-body">
-    @using (Html.BeginForm("SortWidgetsForPage", "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
-    {
+
+@using (Html.BeginForm("SortWidgetsForPage", "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
+{
+    <fieldset>
+        <legend>Sort Widgets for page
+
+            <span class="btn-group  display-inline  pull-right">
+                <button class="btn btn-primary" id="save" data-form-id="edit-sort" data-action="save">
+                    Save</button>
+            </span>
+        </legend>
+
         @Html.Hidden("returnUrl", ViewData["returnUrl"])
         @Html.Hidden("LayoutAreaId", Model.LayoutAreaId)
         @Html.Hidden("WebpageId", Model.WebpageId)
@@ -23,15 +29,11 @@
                     @Html.HiddenFor(model => model.Widgets[i].Id)
                     @Html.HiddenFor(model => model.Widgets[i].Order)
                     <i class="icon-resize-full"></i>&nbsp;&nbsp;
-                @widget.Name
+                    @widget.Name
                 </li>
             }
         </ul>
-    }
-    @Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")
 
-</div>
-<div class="modal-footer">
-    <button class="btn btn-primary" id="save" data-form-id="edit-sort" data-action="save">
-        Save</button>
-</div>
+    </fieldset>
+}
+@Html.InfoBlock("Heads up! ", "The sort you set here will only work on the current page. To order widgets for all pages please select 'Sort widgets' instead of 'Sort widgets for page.'")

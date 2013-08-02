@@ -7,13 +7,12 @@ CKEDITOR.editorConfig = function (config) {
     // Define changes to default configuration here. For example:
     // config.language = 'fr';
     // config.uiColor = '#AADC6E';
-    config.extraPlugins = 'justify,autogrow';
+    config.extraPlugins = 'justify,autogrow,youtube,mediaembed';
     config.removePlugins = 'elementspath';
-
+    config.forcePasteAsPlainText = true;
     config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.min.css', '/Apps/Core/Content/Styles/style.css'];
 
     config.toolbar = 'Full';
-    config.extraPlugins = 'youtube,mediaembed';
 
     config.toolbar_Full =
     [

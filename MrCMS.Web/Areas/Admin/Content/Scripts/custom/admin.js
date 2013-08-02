@@ -268,22 +268,14 @@
             padding: 0,
             height: 0,
             'onComplete': function () {
-                $('#fancybox-frame').load(function () { // wait for frame to load and then gets it's height
+                $('#fancybox-frame').load(function () {
                     $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
-                    var additionalHeight = 0;
-                    var ckeditor = $("#fancybox-frame").contents().find('.ckedit-enabled');
-                    if (ckeditor.length > 0) {
-                        additionalHeight = 300;
-                    }
-                    var height = $("#fancybox-frame").contents().find('html').height() + additionalHeight;
-                    if (height > $(top.window).height())
-                        height = $(top.window).height()-100;
                     var documentWidth = $('html').width() - 200;
                     if (documentWidth > 1000)
                         documentWidth = 1000;
                     var width = (documentWidth);
                     
-                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height(height);
+                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height($(top.window).height() - 100);
                     $('#fancybox-content, #fancybox-wrap, #fancybox-frame').width(width);
                     $.fancybox.center();
                 });

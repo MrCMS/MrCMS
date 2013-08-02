@@ -121,13 +121,18 @@
             $('.edit-indicator-layout', top.document).click(function () {
                 var areaId = $(this).parent().data('layout-area-id');
                 var areaName = $(this).parent().data('layout-area-name');
+                var customLayout = $(this).parent().data('layout-area-hascustomsort');
                 var pageId = $('#Id').val();
-
+                var resetMenu = '';
+                if (customLayout == 'True')
+                    resetMenu = '<li><a tab-index="3" href="/Admin/LayoutArea/ResetSorting/' + areaId + '?pageId=' + pageId + '&returnUrl=' + top.location.href + '" data-action="post-link" class="btn btn-mini">Reset custom sort</a></li>';
+                
                 var menu = '<div class="edit-layout-area-menu"><h4>' + areaName +
                     '</h4><ul><li><a tab-index="1" href="/Admin/Widget/Add?pageId=' + pageId + '&id=' + areaId + '" data-toggle="fb-modal" class="btn btn-mini btn-primary">Add widget</a></li>' +
-                    '<li><a tab-index="2" href="/Admin/LayoutArea/SortWidgetsForPage/' + areaId + '?pageId=' + pageId + '&returnUrl=' + top.location.href + '" class="btn btn-mini" data-toggle="fb-modal">Sort for page</a></li>' +
-                    '<li><a tab-index="3" href="/Admin/LayoutArea/SortWidgets/' + areaId +'?returnUrl='+top.location.href+'" class="btn btn-mini" data-toggle="fb-modal">Sort global widgets</a></li></ul></div>';
-
+                    '<li><a tab-index="3" href="/Admin/LayoutArea/SortWidgets/' + areaId + '?returnUrl=' + top.location.href + '" class="btn btn-mini" data-toggle="fb-modal">Sort widgets</a></li>' +
+                    resetMenu +
+                    '<li><a tab-index="2" href="/Admin/LayoutArea/SortWidgetsForPage/' + areaId + '?pageId=' + pageId + '&returnUrl=' + top.location.href + '" class="btn btn-mini" data-toggle="fb-modal">Sort widgets for page</a></li></ul></div>';
+                
                 $(this).parent().prepend(menu);
                 $(".edit-layout-area-menu", top.document).fadeIn(400);
                 //if click outside hide the menu

@@ -1,12 +1,16 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Models.AddWidgetModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-<div class="modal-header">
-    <h3>Add widget</h3>
-</div>
+
 @using (Html.BeginForm("Add", "Widget", new { id = "" }, FormMethod.Post, new { id = "add-widget-form" }))
 {
-    <div class="modal-body">
+    
+    <fieldset>
+        <legend>Add Widget
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-success btn" value="Add widget" id="add-widget" />
+            </span>
+        </legend>
         @Html.HiddenFor(model => model.LayoutArea.Id)
         @if (Model.Webpage != null)
         {
@@ -30,10 +34,9 @@
         @Html.LabelFor(model => model.Name)
         @Html.EditorFor(model => model.Name, Model.Name)
         @Html.ValidationMessageFor(model => model.Name)
-    </div>
-    <div class="modal-footer">
-        <input type="submit" class="btn-success btn" value="Add widget" id="add-widget" />
-    </div>
+    </fieldset>
+    
+    
 }
 
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/add-page-widget.js"); }

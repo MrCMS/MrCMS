@@ -130,32 +130,19 @@
                 $('#fancybox-frame').load(function () { // wait for frame to load and then gets it's height
                     $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
                     $(this).data('callback', callback).data('element', element);
-                    $('#fancybox-content').height($(this).contents()[0].documentElement.scrollHeight);
+                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height(600);
+                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').width(600);
                     $.fancybox.center();
                 });
             }
         }).click().remove();
 
-        //$.get(href, { v: new Date().getTime() }, function (data) {
-        //    div = $('<div class="modal">' + data + '</div>');
-        //    div.modal({ element: element, callback: callback }).on('hidden', function () {
-        //        $(this).remove();
-        //    });
-        //    setupSelector(div);
-        //    $.validator.unobtrusive.parse('.modal form');
-        //}).success(function () {
-        //    $('input:text:visible:first').focus();
-        //    resizeModal(div);
-        //    div.wrap('<div class="admin-tools" />');
-        //});
     }
 })(jQuery);
 
 $(function () {
 
     function resizeModal() {
-        parent.$('#fancybox-content').height(document.documentElement.scrollHeight);
-        parent.$.fancybox.center();
     }
     $(document).on('click', '#media-selector .selected-file', function () {
         $(".set-file").removeAttr('disabled');
