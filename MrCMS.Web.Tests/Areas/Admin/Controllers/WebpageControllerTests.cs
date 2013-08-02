@@ -8,6 +8,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
@@ -40,6 +41,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             {
                 CurrentSite = new Site()
             };
+            DocumentMetadataHelper.OverrideExistAny = type => false;
         }
 
         [Fact]
@@ -477,6 +479,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             redirectToRouteResult.RouteValues["action"].Should().Be("Edit");
             redirectToRouteResult.RouteValues["id"].Should().Be(stubWebpage.Id);
             redirectToRouteResult.RouteValues["layoutAreaId"].Should().Be(3);
+        }
+
+        ~WebpageControllerTests()
+        {
+            DocumentMetadataHelper.OverrideExistAny = null;
         }
     }
 }

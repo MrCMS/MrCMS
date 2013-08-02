@@ -30,9 +30,10 @@ namespace MrCMS.Web.Apps.Core.Metadata
 
         public override IEnumerable<Type> ChildrenList
         {
-            get {
+            get
+            {
                 yield return typeof(ForgottenPasswordPage);
-                yield return typeof (ResetPasswordPage);
+                yield return typeof(ResetPasswordPage);
             }
         }
     }

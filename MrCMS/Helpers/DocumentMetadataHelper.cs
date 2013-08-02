@@ -6,6 +6,7 @@ using MrCMS.Entities.Documents.Metadata;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Services;
+using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Helpers
@@ -70,7 +71,7 @@ namespace MrCMS.Helpers
             return DocumentMetadatas.FirstOrDefault(x => x.Type.Name == document.DocumentType);
         }
 
-        public static IEnumerable<DocumentMetadata> GetValidWebpageDocumentTypes(this Webpage parent, IDocumentService documentService, Site site)
+        public static IEnumerable<DocumentMetadata> GetValidWebpageDocumentTypes(this Webpage parent)
         {
             var documentTypeDefinitions = new List<DocumentMetadata>();
             if (parent == null)
@@ -98,13 +99,18 @@ namespace MrCMS.Helpers
                 }
             }
 
+
             documentTypeDefinitions =
                 documentTypeDefinitions.FindAll(
-                    definition => !typeof(IUniquePage).IsAssignableFrom(definition.Type) ||
-                                  !documentService.ExistAny(definition.Type));
+                    definition => !typeof (IUniquePage).IsAssignableFrom(definition.Type) ||
+                                  (OverrideExistAny != null
+                                       ? !OverrideExistAny(definition.Type)
+                                       : !MrCMSApplication.Get<IDocumentService>().ExistAny(definition.Type)));
 
             return documentTypeDefinitions;
         }
+
+        public static Func<Type, bool> OverrideExistAny { get; set; } 
 
         public static int? GetMaxChildNodes(this Document document)
         {
