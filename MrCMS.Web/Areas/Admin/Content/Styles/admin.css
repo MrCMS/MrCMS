@@ -28,6 +28,8 @@ h1, h2, h3, h4 { font-weight: normal!important; }
 .field-validation-error span { color: red;}
 .sidebar-nav{ padding: 10px;}
 
+#admin-site-selector { font-size: 12px;background: slategray; color:white;border: none;position: absolute; top:5px;right: 20px;line-height: 20px;}
+
 /*Right click context menu*/
 .context-menu { background: #fff; border: solid 1px #CCC; border-radius: 4px; display: none; margin: 0px; padding: 5px; position: absolute; width: 120px; z-index: 99999; }
     .context-menu li { list-style: none; }
