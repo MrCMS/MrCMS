@@ -1,49 +1,20 @@
-﻿@model List<MrCMS.Models.SortItem>
+﻿@using MrCMS.Helpers
+@model List<MrCMS.Models.SortItem>
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
 
-@section JavaScriptBlock
+@using (Html.BeginForm("Sort", "Form", null, FormMethod.Post, new { @class = "form-update-form", id = "sort-fields-form" }))
 {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#sortable").sortable({
-                update: function (event, ui) {
-                    $('#sortable li').each(function (index, domElement) {
-                        $(domElement).find('[name*="Order"]').val(index);
-                    });
-                }
-            });
+    
+    <fieldset>
+        <legend>Sort fields
+        <span class="btn-group  display-inline  pull-right">
+            <button class="btn btn-primary" id="submit">
+                Save & Close</button>
+        </span>
+        </legend>
 
-            $("#submit").click(function(e) {
-                e.preventDefault();
-                var form = $('#sort-fields-form');
-                $.ajax({
-                    data: form.serialize(),
-                    dataType: "json",
-                    url: "/Admin/Form/Sort",
-                    type: "POST",
-                    beforeSend: function () {
-                    },
-                    complete: function () {
-                        window.parent.location.href = window.parent.location.href;
-                    },
-                    success: function (result) {
-                    },
-                    error: function (result) {
-                        alert("Could not sort fields");
-                    }
-                });
-            });
-        });
-    </script>
-}
-
-<form method="POST" action="/Admin/Form/Sort" id="sort-fields-form">
-    <div class="modal-header">
-        <h3>Sort fields</h3>
-    </div>
-    <div class="modal-body">
-        <ul id="sortable">
+       <ul id="sortable">
             @if (Model.Any())
             {
                 for (int i = 0; i < Model.Count; i++)
@@ -62,11 +33,6 @@
                 <li>No form fields added.</li>
             }
         </ul>
-    </div>
-
-
-<div class="modal-footer">
-    <button class="btn btn-primary" id="submit">
-        Save & Close</button>
-</div>
-</form>
+    </fieldset>
+}
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/form-sort.js");}

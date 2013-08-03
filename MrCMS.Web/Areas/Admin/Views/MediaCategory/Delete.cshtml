@@ -1,14 +1,13 @@
 ﻿@model MrCMS.Entities.Documents.Media.MediaCategory
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
-<div class="modal-header">
-    <h3 id="myModalLabel">Confirm delete</h3>
-</div>
-<div class="modal-body">
-    <p>Deleting this category can not be undone and will delete all images within the category.</p>
-</div>
-<div class="modal-footer">
-    @using (Html.BeginForm("Delete", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
-    {
-        <input type="submit" class="btn btn-primary" value="Confirm Delete Category" />
-    }
-</div>
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Delete", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+{
+    <fieldset>
+        <legend>Delete folder
+                <span class="btn-group  display-inline  pull-right">
+                    <input type="submit" class="btn btn-danger" value="Delete" />
+                </span>
+        </legend>
+        <p>Deleting this cannot be undone.</p>
+    </fieldset>
+}

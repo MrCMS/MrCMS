@@ -1,22 +1,21 @@
 ﻿@model MrCMS.Entities.Documents.Layout.LayoutArea
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-<div class="modal-header">
-    <h3>Add layout area</h3>
-</div>
+
 @using (Html.BeginForm("Add", "LayoutArea", new { id = "" }, FormMethod.Post))
 {
-    <div class="modal-body">
+    <fieldset>
+        <legend>Add layout area
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-success btn" value="Add layout area" />
+            </span>
+        </legend>
         <div class="row-fluid">
             <div class="span12">
                 @Html.HiddenFor(x => x.Layout.Id)
                 @Html.LabelFor(x => x.AreaName)
-                @Html.EditorFor(x => x.AreaName, new{@class="span12"})
+                @Html.EditorFor(x => x.AreaName, new { @class = "span12" })
                 @Html.ValidationMessageFor(x => x.AreaName, "", new { @class = "error" })
             </div>
         </div>
-
-    </div>
-    <div class="modal-footer">
-        <input type="submit" class="btn-success btn" value="Add layout area" />
-    </div>
+    </fieldset>
 }

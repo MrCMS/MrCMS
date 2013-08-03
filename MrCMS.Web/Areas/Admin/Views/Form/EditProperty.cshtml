@@ -4,10 +4,13 @@
 
 @using (Html.BeginForm("EditProperty", "Form", new { id = Model.Id }, FormMethod.Post, new { @class = "form-update-form" }))
 {
-    <div class="modal-header">
-        <h3>Edit field</h3>
-    </div>
-    <div class="modal-body">
+    <fieldset>
+    <legend>Edit field
+        <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn btn-primary submit-form-btn" value="Edit field" />
+        </span>
+    </legend>
+
         @Html.LabelFor(property => property.Name)
         @Html.TextBoxFor(property => property.Name)
         @Html.LabelFor(property => property.LabelText)
@@ -18,9 +21,6 @@
         @Html.TextBoxFor(property => property.CssClass)
         @Html.LabelFor(property => property.HtmlId)
         @Html.TextBoxFor(property => property.HtmlId)
-    </div>
+    </fieldset>
 }
-<div class="modal-footer">
-    <input type="button" class="btn-primary btn submit-form-btn" value="Edit form property" />
-</div>
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/form-builder.js"); }

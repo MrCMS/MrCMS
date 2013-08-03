@@ -1,15 +1,14 @@
 ﻿@model MrCMS.Entities.Documents.Layout.Layout
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
-<div class="modal-header">
-    <h3 id="myModalLabel">Confirm delete</h3>
-</div>
-<div class="modal-body">
-    <p>Deleting this layout can not be undone and will delete all areas within the layout.</p>
-    <p>This will also revert any pages that were using this layout to the site default</p>
-</div>
-<div class="modal-footer">
-    @using (Html.BeginForm("Delete", "Layout", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
-    {
-        <input type="submit" class="btn btn-primary" value="Confirm Delete Layout" />
-    }
-</div>
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Delete", "Layout", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+{
+    <fieldset>
+        <legend>Delete layout
+                 <span class="btn-group  display-inline  pull-right">
+                     <input type="submit" class="btn btn-danger" value="Confirm Delete Layout" />
+                 </span>
+        </legend>
+        <p>Deleting this layout can not be undone and will delete all areas within the layout.</p>
+        <p>This will also revert any pages that were using this layout to the site default</p>
+    </fieldset>
+}

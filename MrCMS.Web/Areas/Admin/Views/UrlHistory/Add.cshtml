@@ -2,37 +2,32 @@
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @section JavaScriptBlock{
     <script>
-    $.fn.delayKeyup = function (callback, ms) {
-    var timer = 0;
-    var el = $(this);
-    $(this).keyup(function () {
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-            callback(el);
-        }, ms);
-    });
-    return $(this);
-};
+        $.fn.delayKeyup = function (callback, ms) {
+            var timer = 0;
+            var el = $(this);
+            $(this).keyup(function () {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    callback(el);
+                }, ms);
+            });
+            return $(this);
+        };
 
-</script>
+    </script>
 }
 
 @using (Html.BeginForm("Add", "UrlHistory", FormMethod.Post))
 {
-    <div class="modal-header">
-        <h3>Add Url</h3>
-    </div>
-    <div class="modal-body">
-        <div class="row-fluid">
-            <div class="span12">
-                @Html.HiddenFor(x => x.Webpage.Id)
-                @Html.LabelFor(x => x.UrlSegment, "Url")
-                @Html.TextBoxFor(x => x.UrlSegment, new{@class="span12"})
-                @Html.ValidationMessageFor(x => x.UrlSegment, "", new{@class="error"})
-            </div>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <input type="submit" class="btn-primary btn" value="Add" />
-    </div>
+    <fieldset>
+        <legend>Add Url
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-primary btn" value="Add" />
+            </span>
+        </legend>
+        @Html.HiddenFor(x => x.Webpage.Id)
+        @Html.LabelFor(x => x.UrlSegment, "Url")
+        @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
+        @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+    </fieldset>
 }

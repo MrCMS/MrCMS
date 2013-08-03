@@ -1,15 +1,13 @@
 ﻿@model MrCMS.Entities.People.User
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Delete", "User", new { id = Model.Id }, FormMethod.Post))
 {
-    <div class="modal-header">
-        <h3>Delete User</h3>
-    </div>
-    <div class="modal-body">
+    <fieldset>
+        <legend>Delete User
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-primary btn" value="Delete" />
+            </span>
+        </legend>
         Are you sure you want to delete this user? This action cannot be undone.
-        <br />
-    </div>
-    <div class="modal-footer">
-        <input type="submit" class="btn-primary btn" value="Delete User" />
-    </div>
+    </fieldset>
 }

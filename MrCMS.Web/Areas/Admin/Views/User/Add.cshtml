@@ -1,12 +1,14 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Web.Areas.Admin.Models.AddUserModel
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Add", "User", FormMethod.Post))
 {
-    <div class="modal-header">
-        <h3>Add user</h3>
-    </div>
-    <div class="modal-body">
+    <fieldset>
+        <legend>Add user
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-primary btn" value="Add user" />
+            </span>
+        </legend>
         @Html.ValidationSummary()
 
         @Html.LabelFor(x => x.Email)
@@ -32,9 +34,5 @@
         @Html.InlineCheckboxFor(x => x.IsActive, null, null, "User is active")
         @Html.ValidationMessageFor(x => x.IsActive)
         <br />
-        
-    </div>
-    <div class="modal-footer">
-        <input type="submit" class="btn-primary btn" value="Add user" />
-    </div>
+    </fieldset>
 }

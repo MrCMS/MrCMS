@@ -3,15 +3,15 @@
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("DeleteProperty", "Form", FormMethod.Post))
 {
-    <div class="modal-header">
-        <h3>Delete field</h3>
-    </div>
-    <div class="modal-body">
+    <fieldset>
+        <legend>Delete Field
+            <span class="btn-group  display-inline  pull-right">
+                <input type="button" class="btn btn-danger submit-form-btn" value="Delete field" />
+            </span>
+        </legend>
+
         Are you sure you want to delete the field @Model.Name? Deleting this property can not be undone.
-        <br />
-    </div>
+    </fieldset>
 }
-<div class="modal-footer">
-    <input type="button" class="btn-primary btn submit-form-btn" value="Delete form property" />
-</div>
+
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/form-builder.js"); }

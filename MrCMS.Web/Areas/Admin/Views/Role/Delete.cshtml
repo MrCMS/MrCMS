@@ -1,16 +1,13 @@
 ﻿@model MrCMS.Entities.People.UserRole
-
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Delete", "Role", FormMethod.Post))
 {
-    <div class="modal-header">
-        <h3>Delete Role</h3>
-    </div>
-    <div class="modal-body">
+    <fieldset>
+        <legend>Delete role
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-danger btn" value="Delete role" />
+            </span>
+        </legend>
         Are you sure you want to delete the role @Model.Name ? Deleting this role will delete all user mappings and can not be undone.
-        <br />
-    </div>
-    <div class="modal-footer">
-        <input type="submit" class="btn-primary btn" value="Delete role" />
-    </div>
+    </fieldset>
 }

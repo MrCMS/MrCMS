@@ -1,21 +1,19 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.FormProperties.FormListOption
-
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("AddOption", "Form", new { id = "" }, FormMethod.Post, new { @class = "form-update-form" }))
 {
-    <div class="modal-header">
-        <h3>Add option</h3>
-    </div>
-    <div class="modal-body">
+    <fieldset>
+        <legend>Add option
+            <span class="btn-group  display-inline  pull-right">
+                <input type="button" class="btn-primary btn submit-form-btn" value="Add form option" />
+            </span>
+        </legend>
         @Html.HiddenFor(x => x.FormProperty.Id)
         @Html.LabelFor(option => option.Value)
         @Html.TextBoxFor(option => option.Value)
         @Html.LabelFor(option => option.Selected)
         @Html.CheckBoxFor(option => option.Selected)
-    </div>
+    </fieldset>
 }
-<div class="modal-footer">
-    <input type="button" class="btn-primary btn submit-form-btn" value="Add form option" />
-</div>
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/form-builder.js"); }

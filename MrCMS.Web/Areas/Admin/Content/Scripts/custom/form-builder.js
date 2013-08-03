@@ -1,5 +1,6 @@
 ﻿$(function () {
-    $('.submit-form-btn').click(function () {
+    $('.submit-form-btn').on('click', function (e) {
+        e.preventDefault();
         $.post($('.form-update-form').attr('action'),
             $('.form-update-form').serialize(), function (response) {
                 if (response.success) {

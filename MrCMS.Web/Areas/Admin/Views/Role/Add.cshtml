@@ -1,17 +1,15 @@
 ﻿@model MrCMS.Entities.People.UserRole
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Add", "Role", FormMethod.Post))
 {
-    <div class="modal-header">
-        <h3>Add Role</h3>
-    </div>
-    <div class="modal-body">
+    <fieldset>
+        <legend>Add Role
+                <span class="btn-group  display-inline  pull-right">
+                    <input type="submit" class="btn-primary btn" value="Add role" />
+                </span>
+        </legend>
         @Html.LabelFor(x => x.Name)
         @Html.TextBoxFor(x => x.Name)
         @Html.ValidationMessageFor(x => x.Name)
-        <br />
-    </div>
-    <div class="modal-footer">
-        <input type="submit" class="btn-primary btn" value="Add role" />
-    </div>
+    </fieldset>
 }
