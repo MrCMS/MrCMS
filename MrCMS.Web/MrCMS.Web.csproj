@@ -1390,7 +1390,6 @@
     <Content Include="Content\install\images\mr-cms-thumb.jpg" />
     <Content Include="Areas\Admin\Views\ACL\Group.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Documents.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\InPageEditorContainer.cshtml" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\component.json" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\LICENSE" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\README.md" />
@@ -1524,7 +1523,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>36181</DevelopmentServerPort>
+          <DevelopmentServerPort>10516</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:8888</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

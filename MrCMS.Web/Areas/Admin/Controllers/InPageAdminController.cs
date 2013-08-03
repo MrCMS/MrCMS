@@ -23,12 +23,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _session = session;
         }
 
-        public PartialViewResult InPageEditor(Webpage page)
-        {
-            return PartialView("InPageEditorContainer", page);
-        }
-
-        public ActionResult InPageEditorPage(Webpage page)
+        public ActionResult InPageEditor(Webpage page)
         {
             return PartialView("InPageEditor", page);
         }

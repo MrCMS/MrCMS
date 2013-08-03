@@ -1,21 +1,203 @@
-﻿
-    html { margin-top: 40px!important; }
-    #cke_editor1 { z-index: 9999; }
-    .middle-col:focus { outline: none; background: #e7e7e7; }
+﻿html { margin-top: 30px; }
+.mrcms-admin-nav-bar { position: fixed; top: 0; left: 0; height: 30px; width: 100%; background:#3a3c3c; }
+.mrcms-admin-nav-bar > a { margin-top: 2px;}
+.mrcms-admin-nav-bar > a:first-child { margin-left: 2px;}
 
-    .modal { z-index: 100000; }
-    .edit-indicator-widget { width: 20px; height: 20px; position: absolute; left: 5px; cursor: pointer; z-index: 9999; display: none; }
-    .edit-indicator-layout { width: 20px; height: 20px; position: absolute; right: 0; cursor: pointer; z-index: 9999; display: none; }
+#cke_editor1 { z-index: 9999; }
+.middle-col:focus { outline: none; background: #e7e7e7; }
 
-    div.layout-area, div.widget { position: relative; }
-    .edit-widget-menu { position: absolute; left: 0; padding: 5px; z-index: 10000; border: 1px solid #d0d0d0; background: white; display: none; }
+.modal { z-index: 100000; }
+.edit-indicator-widget { width: 20px; height: 20px; position: absolute; left: 5px; cursor: pointer; z-index: 9999; display: none; }
+.edit-indicator-layout { width: 20px; height: 20px; position: absolute; right: 0; cursor: pointer; z-index: 9999; display: none; }
 
+div.layout-area, div.widget { position: relative; }
 
-    .edit-layout-area-menu { position: absolute; right: 0; padding: 5px; z-index: 10000; border: 1px solid #d0d0d0; background: white; display: none; }
+.mrcms-edit-menu { position: absolute; padding: 5px; z-index: 10000; border: 1px solid #d0d0d0; background: white; display: none; box-shadow: 5px 5px 5px #888888;min-width: 100px;max-width: 200px;}
+.mrcms-edit-widget {  left: 0;}
+.mrcms-edit-layout-area { right: 0;width: 150px;}
+.mrcms-edit-menu h4 { font-size: 12px; font-family: arial; margin: 5px; padding: 0;overflow: hidden;text-wrap: none;}
+.mrcms-edit-menu ul { margin: 0; padding: 0; list-style-type: none; }
+    .mrcms-edit-menu ul li { margin: 5px; }
 
-    .edit-layout-area-menu h4, .edit-widget-menu h4 { font-size: 12px!important; font-family: arial!important; margin: 5px!important; padding: 0; }
+.mrcms-btn { display: inline-block; padding: 6px 12px; margin-bottom: 0; font-size: 14px; font-weight: 500; line-height: 1.428571429; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; border: 1px solid transparent; border-radius: 4px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; }
 
-    .edit-widget-menu ul, .edit-layout-area-menu ul { margin: 0!important; padding: 0; list-style-type: none; }
-    .edit-widget-menu ul li, .edit-layout-area-menu ul li { margin: 5px!important; }
+    .mrcms-btn:focus { outline: thin dotted #333; outline: 5px auto -webkit-focus-ring-color; outline-offset: -2px; }
 
-    
+    .mrcms-btn:hover,
+    .mrcms-btn:focus { color: #ffffff; text-decoration: none; }
+
+    .mrcms-btn:active,
+    .mrcms-btn.active { outline: 0; -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125); box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125); }
+
+    .mrcms-btn.disabled,
+    .mrcms-btn[disabled],
+    fieldset[disabled] .mrcms-btn { pointer-events: none; cursor: default; opacity: 0.65; filter: alpha(opacity=65); -webkit-box-shadow: none; box-shadow: none; }
+
+.mrcms-btn-default { color: #ffffff; background-color: #474949; border-color: #474949; }
+
+    .mrcms-btn-default:hover,
+    .mrcms-btn-default:focus,
+    .mrcms-btn-default:active,
+    .mrcms-btn-default.active { background-color: #3a3c3c; border-color: #2e2f2f; }
+
+    .mrcms-btn-default.disabled,
+    .mrcms-btn-default[disabled],
+    fieldset[disabled] .mrcms-btn-default,
+    .mrcms-btn-default.disabled:hover,
+    .mrcms-btn-default[disabled]:hover,
+    fieldset[disabled] .mrcms-btn-default:hover,
+    .mrcms-btn-default.disabled:focus,
+    .mrcms-btn-default[disabled]:focus,
+    fieldset[disabled] .mrcms-btn-default:focus,
+    .mrcms-btn-default.disabled:active,
+    .mrcms-btn-default[disabled]:active,
+    fieldset[disabled] .mrcms-btn-default:active,
+    .mrcms-btn-default.disabled.active,
+    .mrcms-btn-default[disabled].active,
+    fieldset[disabled] .mrcms-btn-default.active { background-color: #474949; border-color: #474949; }
+
+.mrcms-btn-primary { color: #ffffff; background-color: #428bca; border-color: #428bca; }
+
+    .mrcms-btn-primary:hover,
+    .mrcms-btn-primary:focus,
+    .mrcms-btn-primary:active,
+    .mrcms-btn-primary.active { background-color: #357ebd; border-color: #3071a9; }
+
+    .mrcms-btn-primary.disabled,
+    .mrcms-btn-primary[disabled],
+    fieldset[disabled] .mrcms-btn-primary,
+    .mrcms-btn-primary.disabled:hover,
+    .mrcms-btn-primary[disabled]:hover,
+    fieldset[disabled] .mrcms-btn-primary:hover,
+    .mrcms-btn-primary.disabled:focus,
+    .mrcms-btn-primary[disabled]:focus,
+    fieldset[disabled] .mrcms-btn-primary:focus,
+    .mrcms-btn-primary.disabled:active,
+    .mrcms-btn-primary[disabled]:active,
+    fieldset[disabled] .mrcms-btn-primary:active,
+    .mrcms-btn-primary.disabled.active,
+    .mrcms-btn-primary[disabled].active,
+    fieldset[disabled] .mrcms-btn-primary.active { background-color: #428bca; border-color: #428bca; }
+
+.mrcms-btn-warning { color: #ffffff; background-color: #f0ad4e; border-color: #f0ad4e; }
+
+    .mrcms-btn-warning:hover,
+    .mrcms-btn-warning:focus,
+    .mrcms-btn-warning:active,
+    .mrcms-btn-warning.active { background-color: #eea236; border-color: #ec971f; }
+
+    .mrcms-btn-warning.disabled,
+    .mrcms-btn-warning[disabled],
+    fieldset[disabled] .mrcms-btn-warning,
+    .mrcms-btn-warning.disabled:hover,
+    .mrcms-btn-warning[disabled]:hover,
+    fieldset[disabled] .mrcms-btn-warning:hover,
+    .mrcms-btn-warning.disabled:focus,
+    .mrcms-btn-warning[disabled]:focus,
+    fieldset[disabled] .mrcms-btn-warning:focus,
+    .mrcms-btn-warning.disabled:active,
+    .mrcms-btn-warning[disabled]:active,
+    fieldset[disabled] .mrcms-btn-warning:active,
+    .mrcms-btn-warning.disabled.active,
+    .mrcms-btn-warning[disabled].active,
+    fieldset[disabled] .mrcms-btn-warning.active { background-color: #f0ad4e; border-color: #f0ad4e; }
+
+.mrcms-btn-danger { color: #ffffff; background-color: #d9534f; border-color: #d9534f; }
+
+    .mrcms-btn-danger:hover,
+    .mrcms-btn-danger:focus,
+    .mrcms-btn-danger:active,
+    .mrcms-btn-danger.active { background-color: #d43f3a; border-color: #c9302c; }
+
+    .mrcms-btn-danger.disabled,
+    .mrcms-btn-danger[disabled],
+    fieldset[disabled] .mrcms-btn-danger,
+    .mrcms-btn-danger.disabled:hover,
+    .mrcms-btn-danger[disabled]:hover,
+    fieldset[disabled] .mrcms-btn-danger:hover,
+    .mrcms-btn-danger.disabled:focus,
+    .mrcms-btn-danger[disabled]:focus,
+    fieldset[disabled] .mrcms-btn-danger:focus,
+    .mrcms-btn-danger.disabled:active,
+    .mrcms-btn-danger[disabled]:active,
+    fieldset[disabled] .mrcms-btn-danger:active,
+    .mrcms-btn-danger.disabled.active,
+    .mrcms-btn-danger[disabled].active,
+    fieldset[disabled] .mrcms-btn-danger.active { background-color: #d9534f; border-color: #d9534f; }
+
+.mrcms-btn-success { color: #ffffff; background-color: #5cb85c; border-color: #5cb85c; }
+
+    .mrcms-btn-success:hover,
+    .mrcms-btn-success:focus,
+    .mrcms-btn-success:active,
+    .mrcms-btn-success.active { background-color: #4cae4c; border-color: #449d44; }
+
+    .mrcms-btn-success.disabled,
+    .mrcms-btn-success[disabled],
+    fieldset[disabled] .mrcms-btn-success,
+    .mrcms-btn-success.disabled:hover,
+    .mrcms-btn-success[disabled]:hover,
+    fieldset[disabled] .mrcms-btn-success:hover,
+    .mrcms-btn-success.disabled:focus,
+    .mrcms-btn-success[disabled]:focus,
+    fieldset[disabled] .mrcms-btn-success:focus,
+    .mrcms-btn-success.disabled:active,
+    .mrcms-btn-success[disabled]:active,
+    fieldset[disabled] .mrcms-btn-success:active,
+    .mrcms-btn-success.disabled.active,
+    .mrcms-btn-success[disabled].active,
+    fieldset[disabled] .mrcms-btn-success.active { background-color: #5cb85c; border-color: #5cb85c; }
+
+.mrcms-btn-info { color: #ffffff; background-color: #5bc0de; border-color: #5bc0de; }
+
+    .mrcms-btn-info:hover,
+    .mrcms-btn-info:focus,
+    .mrcms-btn-info:active,
+    .mrcms-btn-info.active { background-color: #46b8da; border-color: #31b0d5; }
+
+    .mrcms-btn-info.disabled,
+    .mrcms-btn-info[disabled],
+    fieldset[disabled] .mrcms-btn-info,
+    .mrcms-btn-info.disabled:hover,
+    .mrcms-btn-info[disabled]:hover,
+    fieldset[disabled] .mrcms-btn-info:hover,
+    .mrcms-btn-info.disabled:focus,
+    .mrcms-btn-info[disabled]:focus,
+    fieldset[disabled] .mrcms-btn-info:focus,
+    .mrcms-btn-info.disabled:active,
+    .mrcms-btn-info[disabled]:active,
+    fieldset[disabled] .mrcms-btn-info:active,
+    .mrcms-btn-info.disabled.active,
+    .mrcms-btn-info[disabled].active,
+    fieldset[disabled] .mrcms-btn-info.active { background-color: #5bc0de; border-color: #5bc0de; }
+
+.mrcms-btn-link { font-weight: normal; color: #428bca; cursor: pointer; border-radius: 0; }
+
+    .mrcms-btn-link,
+    .mrcms-btn-link:active,
+    .mrcms-btn-link[disabled],
+    fieldset[disabled] .mrcms-btn-link { background-color: transparent; -webkit-box-shadow: none; box-shadow: none; }
+
+        .mrcms-btn-link,
+        .mrcms-btn-link:hover,
+        .mrcms-btn-link:focus,
+        .mrcms-btn-link:active { border-color: transparent; }
+
+            .mrcms-btn-link:hover,
+            .mrcms-btn-link:focus { color: #2a6496; text-decoration: underline; background-color: transparent; }
+
+            .mrcms-btn-link[disabled]:hover,
+            fieldset[disabled] .mrcms-btn-link:hover,
+            .mrcms-btn-link[disabled]:focus,
+            fieldset[disabled] .mrcms-btn-link:focus { color: #333333; text-decoration: none; }
+
+.mrcms-btn-large { padding: 10px 16px; font-size: 18px; line-height: 1.33; border-radius: 6px; }
+
+.mrcms-btn-small,
+.mrcms-btn-mini { padding: 5px 10px; font-size: 12px; line-height: 1.5; border-radius: 3px; }
+
+.mrcms-btn-mini { padding: 3px 5px; }
+
+.mrcms-btn-block { display: block; width: 100%; padding-right: 0; padding-left: 0; }
+
+    .mrcms-btn-block + .mrcms-btn-block { margin-top: 5px; }
