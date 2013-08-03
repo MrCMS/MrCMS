@@ -5,27 +5,27 @@
 
 @using (Html.BeginForm("Add", "Sites", FormMethod.Post))
 {
-    <div class="modal-header">
-        <h3>Add Site</h3>
-    </div>
-    <div class="modal-body">
+    <fieldset>
+        <legend>Add site
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-primary btn" value="Add site" />
+            </span>
+        </legend>
         <div class="row-fluid">
-            <div class="span6">
+            <div class="span12">
                 @Html.LabelFor(x => x.Name)
-                @Html.TextBoxFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name, new {@class="span12"})
                 @Html.ValidationMessageFor(x => x.Name)
                 @Html.LabelFor(x => x.BaseUrl)
-                @Html.TextBoxFor(x => x.BaseUrl)
+                @Html.TextBoxFor(x => x.BaseUrl, new {@class="span12"})
                 @Html.ValidationMessageFor(x => x.BaseUrl)
-
-            </div>
-            <div class="span6">
-                @{ Html.RenderPartial("CopyOptions", new ViewDataDictionary(new SiteCopyOptions()) {{"other-sites", ViewData["other-sites"]}});}
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <input type="submit" class="btn-primary btn" value="Add site" />
-    </div>
+        <div class="row-fluid">
+            <div class="span12">
+                @{ Html.RenderPartial("CopyOptions", new ViewDataDictionary(new SiteCopyOptions()) { { "other-sites", ViewData["other-sites"] } });}
+            </div>
+        </div>
+    </fieldset>
 }
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/add-site.js");}

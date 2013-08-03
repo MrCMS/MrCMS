@@ -7,17 +7,17 @@ namespace MrCMS.Models
         [DisplayName("Copy settings from another site?")]
         public int? SiteId { get; set; }
 
-        [DisplayName("Also copy layouts?")]
+        [DisplayName("Copy layouts?")]
         public bool CopyLayouts { get; set; }
-        [DisplayName("Also copy media categories?")]
+        [DisplayName("Copy media categories?")]
         public bool CopyMediaCategories { get; set; }
-        [DisplayName("Also copy home page?")]
+        [DisplayName("Copy home page?")]
         public bool CopyHome { get; set; }
-        [DisplayName("Also copy 404?")]
+        [DisplayName("Copy 404 page?")]
         public bool Copy404 { get; set; }
-        [DisplayName("Also copy 403?")]
+        [DisplayName("Copy 403 page?")]
         public bool Copy403 { get; set; }
-        [DisplayName("Also copy 500?")]
+        [DisplayName("Copy 500 page?")]
         public bool Copy500 { get; set; }
     }
 }

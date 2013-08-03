@@ -25,7 +25,7 @@ h1, h2, h3, h4 { font-weight: normal!important; }
 #browser { padding-left: 10px; }
     #browser li { cursor: pointer; }
 .user-list li { list-style: none; }
-
+.field-validation-error span { color: red;}
 .sidebar-nav{ padding: 10px;}
 
 /*Right click context menu*/
