@@ -39,6 +39,15 @@ namespace MrCMS.IoC
                   .ToMethod(context => new CurrentSite(CurrentRequestData.CurrentSite))
                   .InRequestScope();
 
+            Kernel.Bind<HttpContextBase>()
+                  .ToMethod(context => new HttpContextWrapper(HttpContext.Current))
+                  .When(request => HttpContext.Current != null)
+                  .InRequestScope();
+            Kernel.Bind<HttpContextBase>()
+                  .ToMethod(context => new OutOfContext())
+                  .When(request => HttpContext.Current == null)
+                  .InThreadScope();
+
             // Allowing IFileSystem implementation to be set in the site settings
             Kernel.Rebind<IFileSystem>().ToMethod(context =>
                                                       {

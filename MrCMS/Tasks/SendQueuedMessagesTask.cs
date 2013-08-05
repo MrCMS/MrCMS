@@ -15,6 +15,7 @@ namespace MrCMS.Tasks
         private readonly SiteSettings _siteSettings;
 
         public SendQueuedMessagesTask(MailSettings mailSettings, SiteSettings siteSettings)
+            : base(siteSettings.Site)
         {
             _mailSettings = mailSettings;
             _siteSettings = siteSettings;

@@ -16,6 +16,7 @@ namespace MrCMS.Tasks
         protected T Entity;
 
         protected IndexManagementTask(T entity)
+            : base(entity.Site)
         {
             Entity = entity;
         }
@@ -50,13 +51,13 @@ namespace MrCMS.Tasks
                                                                                  interfaceType =>
                                                                                  interfaceType.IsGenericType &&
                                                                                  interfaceType.GetGenericTypeDefinition() ==
-                                                                                 typeof (IRelatedItemIndexDefinition<,>));
+                                                                                 typeof(IRelatedItemIndexDefinition<,>));
 
                                                                      return
                                                                          interfaces.Any(
                                                                              relatedDefinitionType =>
                                                                              relatedDefinitionType.GetGenericArguments()
-                                                                                 [0].IsAssignableFrom(typeof (T)));
+                                                                                 [0].IsAssignableFrom(typeof(T)));
 
                                                                  }).ToList();
             return definitionTypes;
@@ -73,7 +74,7 @@ namespace MrCMS.Tasks
             {
                 Entity = GetObject();
                 var site = Session.Get<Site>(Entity.Site.Id);
-                CurrentRequestData.SetTaskSite(site);
+                CurrentRequestData.CurrentSite = site;
 
                 var definitionTypes = GetDefinitionTypes();
                 foreach (var indexManagerBase in definitionTypes.Select(type => IndexService.GetIndexManagerBase(type, site)))
@@ -83,14 +84,13 @@ namespace MrCMS.Tasks
                 {
                     var instance = Activator.CreateInstance(type);
                     var indexManagerBase = IndexService.GetIndexManagerBase(type, site);
-                    var methodInfo = type.GetMethodExt("GetEntitiesToUpdate", typeof (T));
-                    var toUpdate = methodInfo.Invoke(instance, new[] {Entity}) as IEnumerable;
+                    var methodInfo = type.GetMethodExt("GetEntitiesToUpdate", typeof(T));
+                    var toUpdate = methodInfo.Invoke(instance, new[] { Entity }) as IEnumerable;
                     foreach (var entity in toUpdate)
                     {
                         indexManagerBase.Update(entity);
                     }
                 }
-                CurrentRequestData.SetTaskSite(null);
             }
         }
 

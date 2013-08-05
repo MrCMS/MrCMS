@@ -1,11 +1,24 @@
 ﻿using System;
+using MrCMS.Entities.Multisite;
 using NHibernate;
 
 namespace MrCMS.Tasks
 {
     public abstract class BackgroundTask
     {
+        private readonly Site _site;
+
+        protected  BackgroundTask(Site site)
+        {
+            _site = site;
+        }
+
         protected ISession Session;
+
+        public Site Site
+        {
+            get { return _site; }
+        }
 
         protected virtual void Initialize(ISession session)
         {
