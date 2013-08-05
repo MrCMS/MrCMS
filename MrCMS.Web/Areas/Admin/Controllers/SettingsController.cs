@@ -21,11 +21,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [MrCMSACLRule(typeof(SiteSettingsACL),SiteSettingsACL.View)]
+        [MrCMSACLRule(typeof(SiteSettingsACL), SiteSettingsACL.View)]
         public ViewResult Index()
         {
             var settings = _configurationProvider.GetAllSiteSettings().FindAll(arg => arg.RenderInSettings);
-            settings.ForEach(@base => @base.SetViewData(_session,ViewData));
+            settings.ForEach(@base => @base.SetViewData(_session, ViewData));
             return View(settings);
         }
 
