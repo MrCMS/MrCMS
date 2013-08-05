@@ -452,12 +452,11 @@
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditUserModelBinder.cs" />
-    <Compile Include="Website\Binders\GlobalSettingsModelBinder.cs" />
+    <Compile Include="Website\Binders\FileSystemSettingsModelBinder.cs" />
     <Compile Include="Website\Binders\MrCMSDefaultModelBinder.cs" />
     <Compile Include="Website\Binders\IoCModelBinderAttribute.cs" />
     <Compile Include="Website\Binders\NullableEntityModelBinder.cs" />
     <Compile Include="Website\Binders\SettingModelBinder.cs" />
-    <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />

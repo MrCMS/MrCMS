@@ -2,16 +2,17 @@
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 
 namespace MrCMS.Website.Binders
 {
-    public abstract class SettingModelBinder<T> : DefaultModelBinder where T : SettingsBase
+    public class SiteSettingsModelBinder : DefaultModelBinder 
     {
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            var settingTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<T>();
+            var settingTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>();
             // Uses Id because the settings are edited on the same page as the site itself
 
             var objects = settingTypes.Select(type =>
@@ -24,8 +25,9 @@ namespace MrCMS.Website.Binders
                                                       return
                                                           methodInfo.MakeGenericMethod(type)
                                                                     .Invoke(configurationProvider,
-                                                                            new object[] {});
-                                                  }).OfType<T>().Where(arg => arg.RenderInSettings).ToList();
+                                                                            new object[]
+                                                                                {CurrentRequestData.CurrentSite});
+                                                  }).OfType<SiteSettingsBase>().Where(arg => arg.RenderInSettings).ToList();
 
             foreach (var settings in objects)
             {
@@ -51,8 +53,6 @@ namespace MrCMS.Website.Binders
         }
 
 
-        protected abstract MethodInfo GetGetSettingsMethod();
-
         private object GetValue(PropertyInfo propertyInfo, ControllerContext controllerContext, string fullName)
         {
             var value = (propertyInfo.PropertyType == typeof(bool)
@@ -60,6 +60,11 @@ namespace MrCMS.Website.Binders
                              : controllerContext.HttpContext.Request[fullName]).ToString();
 
             return propertyInfo.PropertyType.GetCustomTypeConverter().ConvertFromInvariantString(value);
+        }
+
+        protected virtual MethodInfo GetGetSettingsMethod()
+        {
+            return typeof (ConfigurationProvider).GetMethodExt("GetSiteSettings", typeof (Site));
         }
     }
 }

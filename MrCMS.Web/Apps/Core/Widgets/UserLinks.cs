@@ -12,7 +12,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Widgets
 {
-    public class UserLinks : Widget 
+    public class UserLinks : Widget
     {
         public override object GetModel(NHibernate.ISession session)
         {
@@ -30,6 +30,14 @@ namespace MrCMS.Web.Apps.Core.Widgets
                         Url =
                             MvcHtmlString.Create(string.Format("/{0}", liveUrlSegment))
                     });
+
+
+                navigationRecords.Add(new NavigationRecord
+                {
+                    Text = MvcHtmlString.Create("Logout"),
+                    Url =
+                        MvcHtmlString.Create(string.Format("/logout"))
+                });
             }
             else
             {

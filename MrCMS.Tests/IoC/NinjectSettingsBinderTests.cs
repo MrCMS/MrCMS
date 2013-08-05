@@ -15,7 +15,7 @@ namespace MrCMS.Tests.IoC
         [Fact]
         public void NinjectSettingsBinder_GetMethodExt_ReturnsGenericGetSiteSettingsMethod()
         {
-            var methodInfo = typeof (ConfigurationProvider).GetMethodExt("GetSiteSettings");
+            var methodInfo = typeof(ConfigurationProvider).GetMethodExt("GetSiteSettings", typeof(Site));
 
             methodInfo.Should().NotBeNull();
         }

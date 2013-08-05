@@ -18,7 +18,7 @@ namespace MrCMS.Settings
     {
         public virtual List<SelectListItem> GetErrorPageOptions(ISession session, Site site, int pageId)
         {
-            var list = session.QueryOver<Webpage>().Where(webpage => webpage.Site == site).Cacheable().List();
+            var list = session.QueryOver<Webpage>().Where(webpage => webpage.Site == site && webpage.Parent == null).Cacheable().List();
             return
                 list.Where(page => page.Published)
                          .BuildSelectItemList(
