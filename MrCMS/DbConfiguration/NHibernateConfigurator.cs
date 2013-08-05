@@ -216,6 +216,18 @@ namespace MrCMS.DbConfiguration
                                                                                  {
                                                                                      updateIndexesListener
                                                                                  });
+                configuration.AppendListeners(ListenerType.PostCollectionRecreate, new IPostCollectionRecreateEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
+                configuration.AppendListeners(ListenerType.PostCollectionRemove, new IPostCollectionRemoveEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
+                configuration.AppendListeners(ListenerType.PostCollectionUpdate, new IPostCollectionUpdateEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
             }
         }
     }
