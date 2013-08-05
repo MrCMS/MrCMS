@@ -283,7 +283,6 @@
     <Compile Include="Installation\InstallModel.cs" />
     <Compile Include="InvalidPasswordException.cs" />
     <Compile Include="IoC\NHibernateModule.cs" />
-    <Compile Include="IoC\NinjectGlobalSettingsBinder.cs" />
     <Compile Include="IoC\NinjectServiceToInterfaceBinder.cs" />
     <Compile Include="IoC\NinjectSiteSettingsBinder.cs" />
     <Compile Include="IoC\ServiceModule.cs" />
@@ -395,7 +394,6 @@
     <Compile Include="Settings\DropDownSelectionAttribute.cs" />
     <Compile Include="Settings\FileSystemSettings.cs" />
     <Compile Include="Settings\GenericListTypeConverter.cs" />
-    <Compile Include="Settings\GlobalSettingsBase.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
     <Compile Include="Settings\ISettingService.cs" />
@@ -456,7 +454,7 @@
     <Compile Include="Website\Binders\MrCMSDefaultModelBinder.cs" />
     <Compile Include="Website\Binders\IoCModelBinderAttribute.cs" />
     <Compile Include="Website\Binders\NullableEntityModelBinder.cs" />
-    <Compile Include="Website\Binders\SettingModelBinder.cs" />
+    <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
