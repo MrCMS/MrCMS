@@ -27,10 +27,13 @@ namespace MrCMS.Indexing.Management
             Boost = boost;
         }
 
-        public override IEnumerable<AbstractField> GetFields(T obj)
+        public override List<AbstractField> GetFields(T obj)
         {
-            var values = GetValues(obj);
-            return values.Select(s => new Field(FieldName, s ?? string.Empty, Store, Index) { Boost = Boost });
+            var values = GetValues(obj).ToList();
+            return
+                values.Select(s => new Field(FieldName, s ?? string.Empty, Store, Index) { Boost = Boost })
+                      .Cast<AbstractField>()
+                      .ToList();
         }
     }
 }

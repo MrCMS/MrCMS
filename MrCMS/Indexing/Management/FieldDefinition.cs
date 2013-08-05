@@ -18,6 +18,6 @@ namespace MrCMS.Indexing.Management
 
     public abstract class FieldDefinition<T> : FieldDefinition
     {
-        public abstract IEnumerable<AbstractField> GetFields(T obj);
+        public abstract List<AbstractField> GetFields(T obj);
     }
 }
