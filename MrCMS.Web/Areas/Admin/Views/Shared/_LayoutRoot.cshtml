@@ -45,11 +45,9 @@
         Html.IncludeScript("~/Areas/Admin/Content/Editors/fancybox/jquery.mousewheel-3.0.4.pack.js");
         Html.IncludeScript("~/Areas/Admin/Content/Editors/fancybox/jquery.fancybox-1.3.4.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/tag-it.min.js");
-        
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.globalize/globalize.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.globalize/cultures/globalize.culture." + CurrentRequestData.CultureInfo.Name + ".js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/i18n/jquery.ui.datepicker-" + CurrentRequestData.CultureInfo.Name + ".js");
-        
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/admin.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/tagging.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/search.js");
@@ -57,7 +55,6 @@
         
     }
     @Html.RenderScripts()
-    
 
     @Html.Hidden("UICulture", CurrentRequestData.CultureInfo.Name)
     
