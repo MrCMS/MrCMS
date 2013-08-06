@@ -16,11 +16,13 @@ namespace MrCMS.Tests.Services
 {
     public class MessageTemplateServiceTests : InMemoryDatabaseTest
     {
-        private MessageTemplateService _messageTemplateService;
+        private readonly IMessageTemplateParser _messageTemplateParser;
+        private readonly MessageTemplateService _messageTemplateService;
 
         public MessageTemplateServiceTests()
         {
-            _messageTemplateService = new MessageTemplateService(Session);
+            _messageTemplateParser = A.Fake<IMessageTemplateParser>();
+            _messageTemplateService = new MessageTemplateService(Session, _messageTemplateParser);
         }
 
         [Fact]
@@ -31,16 +33,6 @@ namespace MrCMS.Tests.Services
             _messageTemplateService.Save(messageTemplate);
 
             Session.QueryOver<MessageTemplate>().RowCount().Should().Be(1);
-        }
-
-        [Fact]
-        public void MessageTemplateService_GetAll_ShouldReturnTheCollectionOfMessageTemplates()
-        {
-            Enumerable.Range(1, 1).ForEach(i => Session.Transact(s => s.SaveOrUpdate(new BasicMessageTemplate().GetInitialTemplate())));
-
-            var items = _messageTemplateService.GetAll();
-
-            items.Should().NotBeEmpty();
         }
 
         [Fact]
@@ -72,7 +64,7 @@ namespace MrCMS.Tests.Services
         {
             var messageTemplate = new BasicMessageTemplate() { ToAddress = "info@thought.co.uk" };
 
-            var result=_messageTemplateService.Reset(messageTemplate);
+            var result = _messageTemplateService.Reset(messageTemplate);
 
             result.ToAddress.Should().Be("{Email}");
         }

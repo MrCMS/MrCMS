@@ -14,9 +14,9 @@ namespace MrCMS.Web.Tests.Stubs
             return new BasicMessageTemplate();
         }
 
-        public override List<string> GetTokens()
+        public override List<string> GetTokens(IMessageTemplateParser messageTemplateParser)
         {
-            return MessageTemplateProcessor.GetTokens<User>();
+            return new List<string>();
         }
     }
 }

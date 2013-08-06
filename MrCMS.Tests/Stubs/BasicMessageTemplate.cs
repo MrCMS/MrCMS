@@ -20,9 +20,9 @@ namespace MrCMS.Tests.Stubs
             };
         }
 
-        public override List<string> GetTokens()
+        public override List<string> GetTokens(IMessageTemplateParser messageTemplateParser)
         {
-            return MessageTemplateProcessor.GetTokens<User>();
+            return new List<string>();
         }
     }
 }

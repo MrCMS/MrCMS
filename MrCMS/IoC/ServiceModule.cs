@@ -49,6 +49,7 @@ namespace MrCMS.IoC
             Kernel.Bind<ObjectCache>().ToMethod(context => MemoryCache.Default);
             Kernel.Bind<Cache>().ToMethod(context => CurrentRequestData.CurrentContext.Cache);
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(FSDirectorySearcher<,>)).InRequestScope();
+            Kernel.Bind(typeof(ITokenProvider<>)).To(typeof(PropertyTokenProvider<>)).InRequestScope();
             Kernel.Rebind<Site>()
                   .ToMethod(context => CurrentRequestData.CurrentSite)
                   .InRequestScope();

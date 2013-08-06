@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
 using NHibernate;
@@ -10,23 +11,22 @@ namespace MrCMS.Services
     public class MessageTemplateService : IMessageTemplateService
     {
         private readonly ISession _session;
+        private readonly IMessageTemplateParser _messageTemplateParser;
 
-        public MessageTemplateService(ISession session)
+        public MessageTemplateService(ISession session, IMessageTemplateParser messageTemplateParser)
         {
             _session = session;
+            _messageTemplateParser = messageTemplateParser;
         }
-        public IList<MessageTemplate> GetAll()
-        {
-            return _session.QueryOver<MessageTemplate>().Cacheable().List();
-        }
+
         public Dictionary<Type, int> GetAllMessageTemplateTypesWithDetails()
         {
             var messageTemplates = new Dictionary<Type, int>();
-            var exisitingMessageTemplates = GetAll();
+            var templates = _session.QueryOver<MessageTemplate>().Cacheable().List();
             var messageTemplateTypes = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<MessageTemplate>();
             foreach (var messageTemplateType in messageTemplateTypes)
             {
-                var existingMessageTemplate = exisitingMessageTemplates.SingleOrDefault(x => x.GetType().Name == messageTemplateType.Name);
+                var existingMessageTemplate = templates.SingleOrDefault(x => x.GetType() == messageTemplateType);
                 messageTemplates.Add(messageTemplateType, existingMessageTemplate != null ? existingMessageTemplate.Id : 0);
             }
             return messageTemplates;
@@ -63,6 +63,11 @@ namespace MrCMS.Services
             Save(messageTemplate);
 
             return messageTemplate;
+        }
+
+        public List<string> GetTokens(MessageTemplate messageTemplate)
+        {
+            return messageTemplate.GetTokens(_messageTemplateParser);
         }
 
         public void Save(MessageTemplate messageTemplate)

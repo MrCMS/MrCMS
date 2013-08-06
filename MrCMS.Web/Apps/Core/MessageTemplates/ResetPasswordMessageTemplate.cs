@@ -4,7 +4,6 @@ using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Settings;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
 
@@ -17,9 +16,9 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates
         {
             var resetPasswordPage = MrCMSApplication.Get<IDocumentService>().GetUniquePage<ResetPasswordPage>();
 
-            string resetUrl = string.Empty;
-            if (resetPasswordPage != null)
-                resetUrl = resetPasswordPage.AbsoluteUrl + "?id={ResetPasswordGuid}";
+            string resetUrl = resetPasswordPage != null
+                                  ? resetPasswordPage.AbsoluteUrl + "?id={ResetPasswordGuid}"
+                                  : string.Empty;
 
             var fromName = CurrentRequestData.CurrentSite.Name;
             return new ResetPasswordMessageTemplate
@@ -34,9 +33,9 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates
                        };
         }
 
-        public override List<string> GetTokens()
+        public override List<string> GetTokens(IMessageTemplateParser messageTemplateParser)
         {
-            return MessageTemplateProcessor.GetTokens<User>();
+            return messageTemplateParser.GetAllTokens<User>();
         }
     }
 }

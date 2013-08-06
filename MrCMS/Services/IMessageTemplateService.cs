@@ -6,10 +6,10 @@ namespace MrCMS.Services
 {
     public interface IMessageTemplateService
     {
-        IList<MessageTemplate> GetAll();
         void Save(MessageTemplate messageTemplate);
         Dictionary<Type, int> GetAllMessageTemplateTypesWithDetails();
         MessageTemplate GetNew(string type);
         MessageTemplate Reset(MessageTemplate messageTemplate);
+        List<string> GetTokens(MessageTemplate messageTemplate);
     }
 }

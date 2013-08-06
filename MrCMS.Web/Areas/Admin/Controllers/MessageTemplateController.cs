@@ -27,7 +27,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             var template = _messageTemplateService.GetNew(type);
             if (template != null)
             {
-                ViewBag.AvailableTokens = template.GetTokens();
                 return View(template);
             }
 
@@ -50,7 +49,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (messageTemplate != null)
             {
-                ViewBag.AvailableTokens = messageTemplate.GetTokens();
                 return View(messageTemplate);
             }
             return RedirectToAction("Index");
@@ -88,6 +86,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 return RedirectToAction("Edit", new { id = messageTemplate.Id });
             }
             return RedirectToAction("Index");
+        }
+
+        public PartialViewResult Tokens(MessageTemplate messageTemplate)
+        {
+            return PartialView(_messageTemplateService.GetTokens(messageTemplate));
         }
     }
 }
