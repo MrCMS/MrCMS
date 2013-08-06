@@ -16,13 +16,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class MessageTemplateControllerTests
     {
-        private IMessageTemplateService _messageTemplateService;
-        private MessageTemplateController _messageTemplateController;
+        private readonly IMessageTemplateService _messageTemplateService;
+        private readonly MessageTemplateController _messageTemplateController;
 
         public MessageTemplateControllerTests()
         {
-            CurrentRequestData.OverridenContext = A.Fake<HttpContextBase>();
-            CurrentRequestData.CurrentUser = new User();
             _messageTemplateService = A.Fake<IMessageTemplateService>();
             _messageTemplateController = new MessageTemplateController(_messageTemplateService)
                                   {

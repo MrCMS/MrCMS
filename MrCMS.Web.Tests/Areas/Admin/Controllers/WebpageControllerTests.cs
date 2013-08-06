@@ -23,7 +23,7 @@ using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
-    public class WebpageControllerTests
+    public class WebpageControllerTests : MrCMSTest
     {
         private static IDocumentService documentService;
         private static IFormService formService;

@@ -72,7 +72,7 @@ namespace MrCMS.Website
 
         public static HttpContextBase CurrentContext
         {
-            get { return OverridenContext ?? MrCMSApplication.Get<HttpContextBase>(); }
+            get { return MrCMSApplication.Get<HttpContextBase>(); }
         }
 
         public static HttpContextBase OverridenContext { get; set; }
