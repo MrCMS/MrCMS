@@ -693,9 +693,7 @@
     <Content Include="Areas\Admin\Content\Scripts\tag-it.min.js" />
     <Content Include="Areas\Admin\Content\Styles\admin.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.css" />
-    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.min.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.css" />
-    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.min.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\img\glyphicons-halflings-white.png" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\img\glyphicons-halflings.png" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\js\bootstrap.js" />
