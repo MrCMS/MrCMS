@@ -12,11 +12,11 @@ namespace MrCMS.Indexing.Querying
         where TEntity : SystemEntity
         where TDefinition : IIndexDefinition<TEntity>, new()
     {
-        public FSDirectorySearcher(CurrentSite currentSite, ISession session) : base(currentSite, session)
+        public FSDirectorySearcher(Site currentSite, ISession session) : base(currentSite, session)
         {
         }
 
-        protected override Directory GetDirectory(CurrentSite currentSite)
+        protected override Directory GetDirectory(Site currentSite)
         {
             return FSDirectory.Open(new DirectoryInfo(Definition.GetLocation(currentSite)));
         }

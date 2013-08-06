@@ -16,6 +16,20 @@ using Ninject;
 
 namespace MrCMS.IoC
 {
+    public class ContextModule:NinjectModule
+    {
+        public override void Load()
+        {
+            Kernel.Bind<HttpContextBase>()
+                  .ToMethod(context => new HttpContextWrapper(HttpContext.Current))
+                  .When(request => HttpContext.Current != null)
+                  .InRequestScope();
+            Kernel.Bind<HttpContextBase>()
+                  .ToMethod(context => new OutOfContext())
+                  .When(request => HttpContext.Current == null)
+                  .InThreadScope();
+        }
+    }
     //Wires up IOC automatically
     public class ServiceModule : NinjectModule
     {
@@ -29,19 +43,15 @@ namespace MrCMS.IoC
                                       .Where(t => typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
                                       .BindWith<NinjectSiteSettingsBinder>()
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
-            Kernel.Bind(syntax => syntax.FromAssembliesMatching("MrCMS.*").SelectAllClasses()
-                                      .Where(t => typeof(GlobalSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
-                                      .BindWith<NinjectGlobalSettingsBinder>()
-                                      .Configure(onSyntax => onSyntax.InRequestScope()));
 
-            //Kernel.Bind<HttpContextBase>().ToMethod(context => MrCMSApplication.CurrentContext);
             Kernel.Bind<HttpRequestBase>().ToMethod(context => CurrentRequestData.CurrentContext.Request);
             Kernel.Bind<HttpSessionStateBase>().ToMethod(context => CurrentRequestData.CurrentContext.Session);
             Kernel.Bind<ObjectCache>().ToMethod(context => MemoryCache.Default);
             Kernel.Bind<Cache>().ToMethod(context => CurrentRequestData.CurrentContext.Cache);
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(FSDirectorySearcher<,>)).InRequestScope();
-            Kernel.Rebind<CurrentSite>()
-                  .ToMethod(context => new CurrentSite(CurrentRequestData.CurrentSite))
+            Kernel.Bind(typeof(ITokenProvider<>)).To(typeof(PropertyTokenProvider<>)).InRequestScope();
+            Kernel.Rebind<Site>()
+                  .ToMethod(context => CurrentRequestData.CurrentSite)
                   .InRequestScope();
 
             // Allowing IFileSystem implementation to be set in the site settings

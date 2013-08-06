@@ -251,14 +251,9 @@ namespace MrCMS.Website.Routing
 
         private Webpage GetWebpage()
         {
-            Webpage webpage;
-            if (string.IsNullOrWhiteSpace(Data))
-            {
-                webpage = !CurrentRequestData.CurrentUserIsAdmin
-                              ? MrCMSApplication.PublishedRootChildren().FirstOrDefault()
-                              : MrCMSApplication.RootChildren().FirstOrDefault();
-            }
-            else webpage = _documentService.GetDocumentByUrl<Webpage>(Data);
+            Webpage webpage = string.IsNullOrWhiteSpace(Data)
+                                  ? CurrentRequestData.HomePage
+                                  : _documentService.GetDocumentByUrl<Webpage>(Data);
 
             CurrentRequestData.CurrentPage = webpage;
             _webpageLookedUp = true;

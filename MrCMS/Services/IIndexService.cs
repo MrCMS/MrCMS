@@ -21,9 +21,9 @@ namespace MrCMS.Services
     public class IndexService : IIndexService
     {
         private readonly ISession _session;
-        private readonly CurrentSite _site;
+        private readonly Site _site;
 
-        public IndexService(ISession session, CurrentSite site)
+        public IndexService(ISession session, Site site)
         {
             _session = session;
             _site = site;
@@ -31,7 +31,7 @@ namespace MrCMS.Services
 
         public void InitializeAllIndices(Site site = null)
         {
-            site = site ?? _site.Site;
+            site = site ?? _site;
             var mrCMSIndices = GetIndexes(site);
             mrCMSIndices.ForEach(index => Reindex(index.TypeName, site));
             mrCMSIndices.ForEach(index => Optimise(index.TypeName, site));
@@ -39,7 +39,7 @@ namespace MrCMS.Services
 
         public List<MrCMSIndex> GetIndexes(Site site = null)
         {
-            site = site ?? _site.Site;
+            site = site ?? _site;
             var mrCMSIndices = new List<MrCMSIndex>();
             var indexDefinitionTypes = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IIndexDefinition<>));
             foreach (var definitionType in indexDefinitionTypes)
@@ -78,13 +78,13 @@ namespace MrCMS.Services
         {
             return (indexType, indexDefinitionInterface, site) => Activator.CreateInstance(
                 typeof(FSDirectoryIndexManager<,>).MakeGenericType(indexDefinitionInterface.GetGenericArguments()[0],
-                                                                    indexType), new[] { new CurrentSite(site) }) as
+                                                                    indexType), new[] { site }) as
                                                                   IIndexManagerBase;
         }
 
         public void Reindex(string typeName, Site site = null)
         {
-            site = site ?? _site.Site;
+            site = site ?? _site;
             var definitionType = TypeHelper.GetTypeByName(typeName);
             var indexManagerBase = GetIndexManagerBase(definitionType, site);
 
@@ -107,7 +107,7 @@ namespace MrCMS.Services
 
         public void Optimise(string typeName, Site site = null)
         {
-            site = site ?? _site.Site;
+            site = site ?? _site;
             var definitionType = TypeHelper.GetTypeByName(typeName);
             var indexManagerBase = GetIndexManagerBase(definitionType, site);
 

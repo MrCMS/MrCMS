@@ -64,7 +64,7 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual string LiveUrlSegment
         {
-            get { return MrCMSApplication.PublishedRootChildren().FirstOrDefault() == this ? string.Empty : UrlSegment; }
+            get { return CurrentRequestData.HomePage == this ? string.Empty : UrlSegment; }
         }
 
         [UIHint("DateTime")]

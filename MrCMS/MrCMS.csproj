@@ -36,9 +36,6 @@
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\packages\WebGrease.1.1.0\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.0.0.4001\lib\net40-client\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
@@ -97,9 +94,6 @@
     <Reference Include="Ninject.Extensions.Conventions">
       <HintPath>..\packages\Ninject.Extensions.Conventions.3.0.0.11\lib\net40\Ninject.Extensions.Conventions.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.Factory">
-      <HintPath>..\packages\Ninject.Extensions.Factory.3.0.1.0\lib\net40\Ninject.Extensions.Factory.dll</HintPath>
-    </Reference>
     <Reference Include="Ninject.Web.Common">
       <HintPath>..\packages\Ninject.Web.Common.3.0.0.7\lib\net40-full\Ninject.Web.Common.dll</HintPath>
     </Reference>
@@ -152,6 +146,7 @@
     <Compile Include="ACL\Rules\SiteSettingsACL.cs" />
     <Compile Include="ACL\Rules\SystemAdminMenuACL.cs" />
     <Compile Include="ACL\Rules\UserACL.cs" />
+    <Compile Include="ACL\Rules\UserAdminMenuACL.cs" />
     <Compile Include="ACL\TypeACLRule.cs" />
     <Compile Include="Apps\MrCMSApp.cs" />
     <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
@@ -181,6 +176,7 @@
     <Compile Include="DbConfiguration\Overrides\LayoutOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaCategoryOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaFileOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\MessageTemplateOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\PageWidgetSortOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
@@ -217,6 +213,15 @@
     <Compile Include="Entities\Indexes\DocumentIndexDefinition.cs" />
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
+    <Compile Include="Installation\SetupMessageTemplates.cs" />
+    <Compile Include="Services\IMessageTemplateService.cs" />
+    <Compile Include="Services\ITokenProvider.cs" />
+    <Compile Include="Services\MessageTemplateService.cs" />
+    <Compile Include="Services\IMessageParser.cs" />
+    <Compile Include="Entities\Messaging\IMessageTemplate.cs" />
+    <Compile Include="Services\IMessageTemplateParser.cs" />
+    <Compile Include="Services\MessageParser.cs" />
+    <Compile Include="Services\MessageTemplateParser.cs" />
     <Compile Include="Entities\SiteEntity.cs" />
     <Compile Include="Entities\Documents\Document.cs" />
     <Compile Include="Entities\Documents\DocumentMetadata.cs" />
@@ -283,7 +288,6 @@
     <Compile Include="Installation\InstallModel.cs" />
     <Compile Include="InvalidPasswordException.cs" />
     <Compile Include="IoC\NHibernateModule.cs" />
-    <Compile Include="IoC\NinjectGlobalSettingsBinder.cs" />
     <Compile Include="IoC\NinjectServiceToInterfaceBinder.cs" />
     <Compile Include="IoC\NinjectSiteSettingsBinder.cs" />
     <Compile Include="IoC\ServiceModule.cs" />
@@ -384,6 +388,7 @@
     <Compile Include="Models\SiteTree.cs" />
     <Compile Include="Models\SiteTreeNode.cs" />
     <Compile Include="Services\NavigationService.cs" />
+    <Compile Include="Services\PropertyTokenProvider.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SearchService.cs" />
     <Compile Include="Services\SiteService.cs" />
@@ -395,7 +400,6 @@
     <Compile Include="Settings\DropDownSelectionAttribute.cs" />
     <Compile Include="Settings\FileSystemSettings.cs" />
     <Compile Include="Settings\GenericListTypeConverter.cs" />
-    <Compile Include="Settings\GlobalSettingsBase.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
     <Compile Include="Settings\ISettingService.cs" />
@@ -449,14 +453,15 @@
     <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\AddWidgetModelBinder.cs" />
+    <Compile Include="Website\Binders\AddMessageTemplateModelBinder.cs" />
+    <Compile Include="Website\Binders\MessageTemplateModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditUserModelBinder.cs" />
-    <Compile Include="Website\Binders\GlobalSettingsModelBinder.cs" />
+    <Compile Include="Website\Binders\FileSystemSettingsModelBinder.cs" />
     <Compile Include="Website\Binders\MrCMSDefaultModelBinder.cs" />
     <Compile Include="Website\Binders\IoCModelBinderAttribute.cs" />
     <Compile Include="Website\Binders\NullableEntityModelBinder.cs" />
-    <Compile Include="Website\Binders\SettingModelBinder.cs" />
     <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
@@ -482,6 +487,10 @@
     <Compile Include="Website\Optimization\ResourceBundler.cs" />
     <Compile Include="Website\Optimization\ResourceData.cs" />
     <Compile Include="Website\Optimization\WhitespaceFilter.cs" />
+    <Compile Include="Website\OutOfContext.cs" />
+    <Compile Include="Website\OutOfContextResponse.cs" />
+    <Compile Include="Website\OutOfContextServerUtility.cs" />
+    <Compile Include="Website\OutOfContextSession.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
     <Compile Include="Website\Routing\ErrorHandler.cs" />

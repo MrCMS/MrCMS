@@ -36,8 +36,6 @@ namespace MrCMS.Services
         void Unpublish(Webpage document);
         void HideWidget(Webpage document, int widgetId);
         void ShowWidget(Webpage document, int widgetId);
-        Document Get404Page();
-        Document Get500Page();
         DocumentVersion GetDocumentVersion(int id);
         void SetParent(Document document, int? parentId);
         DocumentMetadata GetDefinitionByType(Type type);
@@ -49,5 +47,6 @@ namespace MrCMS.Services
         bool UrlIsValidForWebpageUrlHistory(string url);
         IEnumerable<SelectListItem> GetValidParents(Webpage webpage);
         IEnumerable<Document> GetParents(int? parent);
+        Webpage GetHomePage();
     }
 }

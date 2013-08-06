@@ -140,6 +140,7 @@
     <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
     <Compile Include="Apps\Core\Controllers\RegisterController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\Metadata\RegisterPageMedatData.cs" />
     <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\ForgottenPasswordPageMetaData.cs" />
@@ -186,6 +187,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\ACLController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MessageTemplateController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImageController.cs" />
@@ -566,6 +568,7 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\add-layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-site.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\edit-message-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\form-sort.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\move-webpage.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\edit-webpage.js" />
@@ -691,7 +694,7 @@
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_zh-CN.js" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_zh-TW.js" />
     <Content Include="Areas\Admin\Content\Scripts\tag-it.min.js" />
-    <Content Include="Areas\Admin\Content\Styles\admin.css" />
+    <Content Include="Areas\Admin\Content\Styles\mrcms-admin.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\img\glyphicons-halflings-white.png" />
@@ -720,7 +723,6 @@
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery-ui-1.9.2.custom.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery.ui.1.10.0.ie.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery.ui.1.9.2.ie.css" />
-    <Content Include="Areas\Admin\Content\Styles\jquery.formbuilder.css" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\cut.png" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\door.png" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\page_white_copy.png" />
@@ -1388,6 +1390,10 @@
     <Content Include="Areas\Admin\Views\ACL\Index.cshtml" />
     <Content Include="Content\install\images\mr-cms-thumb.jpg" />
     <Content Include="Areas\Admin\Views\ACL\Group.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\Reset.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Documents.cshtml" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\component.json" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\LICENSE" />
@@ -1397,6 +1403,7 @@
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_en.js.template" />
     <Content Include="Areas\Admin\Views\Search\GetBreadCrumb.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\CopyOptions.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\Tokens.cshtml" />
     <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
@@ -1522,7 +1529,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>10516</DevelopmentServerPort>
+          <DevelopmentServerPort>27465</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:8888</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

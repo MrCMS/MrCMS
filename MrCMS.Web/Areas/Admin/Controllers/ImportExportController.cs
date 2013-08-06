@@ -17,9 +17,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Documents(string status)
+        public ActionResult Documents()
         {
-            ViewBag.ExportStatus = status;
+            if (TempData.ContainsKey("messages"))
+                ViewBag.Messages = TempData["messages"];
+            if (TempData.ContainsKey("import-status"))
+                ViewBag.ImportStatus = TempData["import-status"];
+            if (TempData.ContainsKey("export-status"))
+                ViewBag.ExportStatus = TempData["export-status"];
             return View();
         }
 
@@ -29,25 +34,25 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             try
             {
                 byte[] file = _importExportManager.ExportDocumentsToExcel();
-                ViewBag.ExportStatus = "Documents successfully exported.";
+                TempData["export-status"]= "Documents successfully exported.";
                 return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "MrCMS-Documents-" + DateTime.UtcNow + ".xlsx");
             }
             catch (Exception ex)
             {
                 CurrentRequestData.ErrorSignal.Raise(ex);
-                const string msg = "Documents exporting has failed. Please try again and contact system administration if error continues to appear.";
-                return RedirectToAction("Documents", new { status = msg });
+                TempData["export-status"] = "Documents exporting has failed. Please try again and contact system administration if error continues to appear.";
+                return RedirectToAction("Documents");
             }
         }
 
         [HttpPost]
-        public ViewResult ImportDocuments(HttpPostedFileBase document)
+        public ActionResult ImportDocuments(HttpPostedFileBase document)
         {
             if (document != null && document.ContentLength > 0 && document.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                ViewBag.Messages = _importExportManager.ImportDocumentsFromExcel(document.InputStream);
+                TempData["messages"] = _importExportManager.ImportDocumentsFromExcel(document.InputStream);
             else
-                ViewBag.ImportStatus = "Please choose non-empty Excel (.xslx) file before uploading.";
-            return View("Documents");
+                TempData["import-status"] = "Please choose non-empty Excel (.xslx) file before uploading.";
+            return RedirectToAction("Documents");
         }
     }
 }

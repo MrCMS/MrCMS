@@ -4,10 +4,8 @@ using System.Linq;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Metadata;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Helpers
 {
@@ -110,7 +108,11 @@ namespace MrCMS.Helpers
             return documentTypeDefinitions;
         }
 
-        public static Func<Type, bool> OverrideExistAny { get; set; } 
+        public static Func<Type, bool> OverrideExistAny
+        {
+            get { return (Func<Type, bool>) CurrentRequestData.CurrentContext.Items["current.override.existany"]; }
+            set { CurrentRequestData.CurrentContext.Items["current.override.existany"] = value; }
+        }
 
         public static int? GetMaxChildNodes(this Document document)
         {

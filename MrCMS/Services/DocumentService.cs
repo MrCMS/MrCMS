@@ -23,9 +23,9 @@ namespace MrCMS.Services
     {
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
-        private readonly CurrentSite _currentSite;
+        private readonly Site _currentSite;
 
-        public DocumentService(ISession session, SiteSettings siteSettings, CurrentSite currentSite)
+        public DocumentService(ISession session, SiteSettings siteSettings, Site currentSite)
         {
             _session = session;
             _siteSettings = siteSettings;
@@ -53,7 +53,7 @@ namespace MrCMS.Services
         public T GetUniquePage<T>()
             where T : Document, IUniquePage
         {
-            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite.Site).Take(1).Cacheable().SingleOrDefault();
+            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite).Take(1).Cacheable().SingleOrDefault();
         }
 
         public T SaveDocument<T>(T document) where T : Document
@@ -73,14 +73,14 @@ namespace MrCMS.Services
 
         public IEnumerable<T> GetAllDocuments<T>() where T : Document
         {
-            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite.Site).Cacheable().List();
+            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite).Cacheable().List();
         }
 
         public bool ExistAny(Type type)
         {
             var uniqueResult =
                 _session.CreateCriteria(type)
-                        .Add(Restrictions.Eq(Projections.Property("Site"), _currentSite.Site))
+                        .Add(Restrictions.Eq(Projections.Property("Site"), _currentSite))
                         .SetProjection(Projections.RowCount()).SetCacheable(true)
                         .UniqueResult<int>();
             return uniqueResult != 0;
@@ -337,23 +337,6 @@ namespace MrCMS.Services
 
         }
 
-        public Document Get404Page()
-        {
-            var error404Id = _siteSettings.Error404PageId;
-
-            return _session.Get<Document>(error404Id)
-                   ?? GetDocumentByUrl<Webpage>("404")
-                   ?? MrCMSApplication.PublishedRootChildren().OfType<Document>().FirstOrDefault();
-        }
-
-        public Document Get500Page()
-        {
-            var error500Id = _siteSettings.Error500PageId;
-
-            return _session.Get<Document>(error500Id)
-                   ?? GetDocumentByUrl<Webpage>("500")
-                   ?? MrCMSApplication.PublishedRootChildren().OfType<Document>().FirstOrDefault();
-        }
 
         public DocumentVersion GetDocumentVersion(int id)
         {
@@ -538,6 +521,18 @@ namespace MrCMS.Services
                     document = document.Parent;
                 }
             }
+        }
+
+        public Webpage GetHomePage()
+        {
+            return
+                _session.QueryOver<Webpage>()
+                        .Where(
+                            document =>
+                            document.Site == _currentSite && document.PublishOn != null &&
+                            document.PublishOn <= CurrentRequestData.Now && document.Parent == null)
+                        .Take(1)
+                        .SingleOrDefault();
         }
 
         public bool UrlIsValidForMediaCategory(string url, int? id)

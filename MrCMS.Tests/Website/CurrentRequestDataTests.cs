@@ -17,10 +17,6 @@ namespace MrCMS.Tests.Website
 {
     public class CurrentRequestDataTests : MrCMSTest
     {
-        public CurrentRequestDataTests()
-        {
-            A.CallTo(() => CurrentRequestData.CurrentContext.Session).Returns(new FakeHttpSessionState());
-        }
         [Fact]
         public void CurrentRequestData_UserGuid_ReturnsTheUserGuidIfTheUserIsLoggedIn()
         {

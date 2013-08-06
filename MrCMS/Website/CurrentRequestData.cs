@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using Elmah;
@@ -33,7 +32,7 @@ namespace MrCMS.Website
         {
             get
             {
-                return _taskSite ?? (Site)CurrentContext.Items["current.site"] ??
+                return (Site)CurrentContext.Items["current.site"] ??
                        (CurrentSite = MrCMSApplication.Get<ICurrentSiteLocator>().GetCurrentSite());
             }
             set { CurrentContext.Items["current.site"] = value; }
@@ -49,6 +48,12 @@ namespace MrCMS.Website
         {
             get { return (SiteSettings)CurrentContext.Items["current.sitesettings"]; }
             set { CurrentContext.Items["current.sitesettings"] = value; }
+        }
+
+        public static Webpage HomePage
+        {
+            get { return (Webpage) CurrentContext.Items["current.homepage"]; }
+            set { CurrentContext.Items["current.homepage"] = value; }
         }
 
         public static CultureInfo CultureInfo
@@ -73,15 +78,8 @@ namespace MrCMS.Website
 
         public static HttpContextBase CurrentContext
         {
-            get
-            {
-                return OverridenContext ?? (HttpContext.Current == null
-                                                ? (HttpContextBase)new OutOfContext()
-                                                : new HttpContextWrapper(HttpContext.Current));
-            }
+            get { return MrCMSApplication.Get<HttpContextBase>(); }
         }
-
-        public static HttpContextBase OverridenContext { get; set; }
 
         public static bool CurrentUserIsAdmin
         {
@@ -89,7 +87,6 @@ namespace MrCMS.Website
         }
 
         private static bool? _databaseIsInstalled;
-        private static Site _taskSite;
 
         public static bool DatabaseIsInstalled
         {
@@ -124,29 +121,6 @@ namespace MrCMS.Website
                 return (Guid)(o != null ? (Guid)o : (CurrentContext.Session["current.usersessionGuid"] = Guid.NewGuid()));
             }
             set { CurrentContext.Session["current.usersessionGuid"] = value; }
-        }
-
-        public static void SetTaskSite(Site site)
-        {
-            _taskSite = site;
-        }
-    }
-
-    public class OutOfContext : HttpContextBase
-    {
-        private readonly IDictionary _items = new Dictionary<string, object>();
-        private readonly OOCServerUtility _oocServerUtility = new OOCServerUtility();
-
-        public override IDictionary Items { get { return _items; } }
-
-        public override HttpServerUtilityBase Server { get { return _oocServerUtility; } }
-    }
-
-    public class OOCServerUtility : HttpServerUtilityBase
-    {
-        public override string MapPath(string path)
-        {
-            return HostingEnvironment.MapPath(path);
         }
     }
 }

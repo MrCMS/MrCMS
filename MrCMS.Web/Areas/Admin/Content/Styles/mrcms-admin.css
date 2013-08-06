@@ -1,6 +1,4 @@
-﻿@import url("bootstrap/css/bootstrap.min.css");
-
-body { padding-top: 60px; }
+﻿body { padding-top: 60px; }
 .container-mrcms { margin-left: 20px; padding-left: 300px; }
 .left-nav { float: left; width: 300px; margin-left: -300px; }
 .main-content { float: left; width: 100%; display: inline; }
@@ -44,7 +42,7 @@ h1, h2, h3, h4 { font-weight: normal!important; }
 .modal form { margin: 0; }
 section.admin-header h3 { margin: 0px; }
 .tab-content { overflow-x: hidden; }
-#PublishOn { margin: 0; }
+#PublishOn { margin: 0;height: 20px;border-left: 0;border-bottom-left-radius: 0;border-top-left-radius: 0;}
 .page-name-edit { white-space: nowrap; overflow: hidden; font-size: 18px; }
 .accordion-toggle { background-color: #f5f5f5; }
 

@@ -45,7 +45,7 @@ namespace MrCMS.Indexing.Management
                               .List()
                               .OrderBy(arg => ids.IndexOf(arg.Id)));
         }
-        public string GetLocation(CurrentSite currentSite)
+        public string GetLocation(Site currentSite)
         {
             string location = string.Format("~/App_Data/Indexes/{0}/{1}/", currentSite.Id, IndexFolderName);
             string mapPath = CurrentRequestData.CurrentContext.Server.MapPath(location);

@@ -15,6 +15,7 @@ using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
+using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Widget;
 using MrCMS.Website;
 using NHibernate;
@@ -135,6 +136,7 @@ namespace MrCMS.DbConfiguration
                        .IgnoreBase<SiteEntity>()
                        .IncludeBase<Document>()
                        .IncludeBase<Webpage>()
+                       .IncludeBase<MessageTemplate>()
                        .IncludeBase<UserProfileData>()
                        .IncludeBase<Widget>()
                        .IncludeBase<FormProperty>()
@@ -213,6 +215,18 @@ namespace MrCMS.DbConfiguration
                                                                                      updateIndexesListener
                                                                                  });
                 configuration.AppendListeners(ListenerType.PostCommitDelete, new IPostDeleteEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
+                configuration.AppendListeners(ListenerType.PostCollectionRecreate, new IPostCollectionRecreateEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
+                configuration.AppendListeners(ListenerType.PostCollectionRemove, new IPostCollectionRemoveEventListener[]
+                                                                                 {
+                                                                                     updateIndexesListener
+                                                                                 });
+                configuration.AppendListeners(ListenerType.PostCollectionUpdate, new IPostCollectionUpdateEventListener[]
                                                                                  {
                                                                                      updateIndexesListener
                                                                                  });

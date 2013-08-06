@@ -11,9 +11,9 @@ namespace MrCMS.Indexing.Management
     public abstract class IndexManager<TEntity, TDefinition> : IIndexManager<TEntity, TDefinition>
         where TEntity : SystemEntity where TDefinition : IIndexDefinition<TEntity>, new()
     {
-        protected readonly CurrentSite CurrentSite;
+        protected readonly Site CurrentSite;
 
-        protected IndexManager(CurrentSite currentSite)
+        protected IndexManager(Site currentSite)
         {
             CurrentSite = currentSite;
         }

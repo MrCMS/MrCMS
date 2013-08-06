@@ -25,10 +25,13 @@ namespace MrCMS.Indexing.Management
             Index = index;
             Boost = boost;
         }
-        public override IEnumerable<AbstractField> GetFields(T obj)
+        public override List<AbstractField> GetFields(T obj)
         {
-            var values = GetValues(obj);
-            return values.Select(value => new NumericField(FieldName, Store, Index != Field.Index.NO) { Boost = Boost }.SetIntValue(value));
+            var values = GetValues(obj).ToList();
+            return
+                values.Select(value => new NumericField(FieldName, Store, Index != Field.Index.NO) { Boost = Boost }.SetIntValue(value))
+                      .Cast<AbstractField>()
+                      .ToList();
         }
     }
 }

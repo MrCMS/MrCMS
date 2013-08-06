@@ -19,6 +19,7 @@ using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -354,14 +355,32 @@ namespace MrCMS.Installation
 
             MrCMSApp.InstallApps(session, model, site);
 
+            SetupInitialTemplates(session);
+
             InitializeIndices(site, session);
+        }
+
+        private static void SetupInitialTemplates(ISession session)
+        {
+            session.Transact(s =>
+                                 {
+                                     foreach (
+                                         var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<MessageTemplate>())
+                                     {
+                                         if (s.CreateCriteria(type).List().Count == 0)
+                                         {
+                                             var messageTemplate = Activator.CreateInstance(type) as MessageTemplate;
+                                             if (messageTemplate != null && messageTemplate.GetInitialTemplate(s) != null)
+                                                 s.Save(messageTemplate.GetInitialTemplate(s));
+                                         }
+                                     }
+                                 });
         }
 
         public static void InitializeIndices(Site site, ISession session)
         {
-            var currentSite = new CurrentSite(site);
-            var service = new IndexService(session, currentSite);
-            DocumentMetadataHelper.OverrideExistAny = new DocumentService(session, null, currentSite).ExistAny;
+            var service = new IndexService(session, site);
+            DocumentMetadataHelper.OverrideExistAny = new DocumentService(session, null, site).ExistAny;
             service.InitializeAllIndices(site);
             DocumentMetadataHelper.OverrideExistAny = null;
         }

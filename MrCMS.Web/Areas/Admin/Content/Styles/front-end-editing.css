@@ -1,5 +1,5 @@
 ﻿html { margin-top: 30px; }
-.mrcms-admin-nav-bar { position: fixed; top: 0; left: 0; height: 30px; width: 100%; background:#3a3c3c; }
+.mrcms-admin-nav-bar { position: fixed; top: 0; left: 0; height: 30px; width: 100%; background:#3a3c3c;z-index: 9999;}
 .mrcms-admin-nav-bar > a { margin-top: 2px;}
 .mrcms-admin-nav-bar > a:first-child { margin-left: 2px;}
 

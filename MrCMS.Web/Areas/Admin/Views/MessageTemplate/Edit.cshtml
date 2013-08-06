@@ -1,0 +1,67 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Messaging.MessageTemplate
+@{
+    ViewBag.Title = "Edit Message Template";
+}
+
+@using (Html.BeginForm("Edit", "MessageTemplate", FormMethod.Post, new { id = "edit-message-template" }))
+{
+    <fieldset>
+        <legend>Edit @Model.GetType().GetFriendlyName()
+            <span class="pull-right">
+                @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn btn-mini" })
+                @Html.ActionLink("Reset", "Reset", "MessageTemplate", new { Id = Model.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+                <input class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-message-template" type="submit" value="Save" />
+            </span>
+        </legend>
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.MessageTemplateType)
+        <div class="row-fluid">
+            <div class="span6">
+                @Html.LabelFor(x => x.FromAddress)
+                @Html.TextBoxFor(x => x.FromAddress, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.FromAddress)
+                @Html.LabelFor(x => x.FromName)
+                @Html.TextBoxFor(x => x.FromName, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.FromName)
+                @Html.LabelFor(x => x.Bcc)
+                @Html.TextBoxFor(x => x.Bcc, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.Bcc)
+            </div>
+            <div class="span6">
+                @Html.LabelFor(x => x.ToAddress)
+                @Html.TextBoxFor(x => x.ToAddress, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.ToAddress)
+                @Html.LabelFor(x => x.ToName)
+                @Html.TextBoxFor(x => x.ToName, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.ToName)
+                @Html.LabelFor(x => x.Cc)
+                @Html.TextBoxFor(x => x.Cc, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.Cc)
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                @Html.LabelFor(x => x.Subject)
+                @Html.TextBoxFor(x => x.Subject, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.Subject)
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                @Html.LabelFor(x => x.Body)
+                @Html.TextAreaFor(x => x.Body, new { @class = "span12", style = "min-height:200px;" })
+                @Html.ValidationMessageFor(x => x.Body)
+            </div>
+        </div>
+        <br />
+        @Html.CheckBoxFor(x => x.IsHtml, new { @class = "pull-left" }) <span>&nbsp;Is HTML?</span>
+
+        @{ Html.RenderAction("Tokens", "MessageTemplate", Model);}
+
+
+    </fieldset>
+}
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/edit-message-template.js");}

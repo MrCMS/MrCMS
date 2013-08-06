@@ -23,11 +23,6 @@ namespace MrCMS.Website
             return _configurationProvider.GetSiteSettings<T>();
         }
 
-        public T GlobalSettings<T>() where T : GlobalSettingsBase, new()
-        {
-            return _configurationProvider.GetGlobalSettings<T>();
-        }
-
         public override void InitHelpers()
         {
             base.InitHelpers();

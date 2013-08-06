@@ -71,6 +71,7 @@ namespace MrCMS.Website
                                             CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
                                             CurrentRequestData.CurrentSite = Get<ICurrentSiteLocator>().GetCurrentSite();
                                             CurrentRequestData.SiteSettings = Get<SiteSettings>();
+                                            CurrentRequestData.HomePage = Get<IDocumentService>().GetHomePage();
                                             Thread.CurrentThread.CurrentCulture = CurrentRequestData.SiteSettings.CultureInfo;
                                             Thread.CurrentThread.CurrentUICulture = CurrentRequestData.SiteSettings.CultureInfo;
                                         }
@@ -119,7 +120,7 @@ namespace MrCMS.Website
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
-            
+
             routes.MapRoute("Logout", "logout", new { controller = "Login", action = "Logout" },
                             new[] { RootNamespace });
 
@@ -189,7 +190,7 @@ namespace MrCMS.Website
         /// <returns>The created kernel.</returns>
         private static IKernel CreateKernel()
         {
-            var kernel = new StandardKernel(new ServiceModule(),
+            var kernel = new StandardKernel(new ServiceModule(), new ContextModule(),
                                             new NHibernateModule(DatabaseType.Auto, InDevelopment));
             kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
@@ -225,23 +226,6 @@ namespace MrCMS.Website
         public static object Get(Type type)
         {
             return Kernel.Get(type);
-        }
-
-        public static IEnumerable<Webpage> PublishedRootChildren()
-        {
-            return RootChildren().Where(webpage => webpage.Published);
-        }
-
-        public static IEnumerable<Webpage> OverridenRootChildren { get; set; }
-        public static IEnumerable<Webpage> RootChildren()
-        {
-            return OverridenRootChildren ??
-                   Get<ISession>()
-                       .QueryOver<Webpage>()
-                       .Where(
-                           document => document.Parent == null && document.Site.Id == CurrentRequestData.CurrentSite.Id)
-                       .Cacheable()
-                       .List().OrderBy(x => x.DisplayOrder);
         }
 
         public const string AssemblyVersion = "0.3.1.*";
