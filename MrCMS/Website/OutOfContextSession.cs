@@ -34,7 +34,7 @@ namespace MrCMS.Website
 
         public override object this[string name]
         {
-            get { return _dictionary[name]; }
+            get { return _dictionary.ContainsKey(name) ? _dictionary[name] : null; }
             set { _dictionary[name] = value; }
         }
     }

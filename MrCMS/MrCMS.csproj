@@ -457,7 +457,6 @@
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\AddWidgetModelBinder.cs" />
     <Compile Include="Website\Binders\AddMessageTemplateModelBinder.cs" />
-    <Compile Include="Website\Binders\EditMessageTemplateModelBinder.cs" />
     <Compile Include="Website\Binders\MessageTemplateModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />
@@ -492,6 +491,7 @@
     <Compile Include="Website\Optimization\ResourceData.cs" />
     <Compile Include="Website\Optimization\WhitespaceFilter.cs" />
     <Compile Include="Website\OutOfContext.cs" />
+    <Compile Include="Website\OutOfContextResponse.cs" />
     <Compile Include="Website\OutOfContextServerUtility.cs" />
     <Compile Include="Website\OutOfContextSession.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />

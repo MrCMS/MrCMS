@@ -58,7 +58,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Edit")]
-        public ActionResult Edit_POST([IoCModelBinder(typeof(EditMessageTemplateModelBinder))] MessageTemplate messageTemplate)
+        public ActionResult Edit_POST(MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
