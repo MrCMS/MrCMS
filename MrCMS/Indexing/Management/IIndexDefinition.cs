@@ -53,7 +53,7 @@ namespace MrCMS.Indexing.Management
         /// </summary>
         /// <param name="currentSite">Site of the request to allow folder paths to be different per site</param>
         /// <returns>FOlder location</returns>
-        string GetLocation(CurrentSite currentSite);
+        string GetLocation(Site currentSite);
 
         /// <summary>
         /// Defines the analyzer to use when indexing entities

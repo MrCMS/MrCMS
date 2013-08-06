@@ -16,6 +16,20 @@ using Ninject;
 
 namespace MrCMS.IoC
 {
+    public class ContextModule:NinjectModule
+    {
+        public override void Load()
+        {
+            Kernel.Bind<HttpContextBase>()
+                  .ToMethod(context => new HttpContextWrapper(HttpContext.Current))
+                  .When(request => HttpContext.Current != null)
+                  .InRequestScope();
+            Kernel.Bind<HttpContextBase>()
+                  .ToMethod(context => new OutOfContext())
+                  .When(request => HttpContext.Current == null)
+                  .InThreadScope();
+        }
+    }
     //Wires up IOC automatically
     public class ServiceModule : NinjectModule
     {
@@ -35,8 +49,8 @@ namespace MrCMS.IoC
             Kernel.Bind<ObjectCache>().ToMethod(context => MemoryCache.Default);
             Kernel.Bind<Cache>().ToMethod(context => CurrentRequestData.CurrentContext.Cache);
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(FSDirectorySearcher<,>)).InRequestScope();
-            Kernel.Rebind<CurrentSite>()
-                  .ToMethod(context => new CurrentSite(CurrentRequestData.CurrentSite))
+            Kernel.Rebind<Site>()
+                  .ToMethod(context => CurrentRequestData.CurrentSite)
                   .InRequestScope();
 
             // Allowing IFileSystem implementation to be set in the site settings

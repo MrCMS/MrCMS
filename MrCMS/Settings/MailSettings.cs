@@ -1,8 +1,4 @@
 using System.ComponentModel;
-using System.Web.Mvc;
-using MrCMS.Entities.Multisite;
-using NHibernate;
-using Ninject;
 
 namespace MrCMS.Settings
 {

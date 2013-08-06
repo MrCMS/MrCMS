@@ -13,7 +13,6 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Indexes;
-using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Querying;
@@ -28,8 +27,8 @@ namespace MrCMS.Tests.Services
     public class NavigationServiceTests : InMemoryDatabaseTest
     {
         private readonly IDocumentService _documentService;
-        private ISearcher<Document, DocumentIndexDefinition> _documentSearcher;
-        private NavigationService _navigationService;
+        private readonly ISearcher<Document, DocumentIndexDefinition> _documentSearcher;
+        private readonly NavigationService _navigationService;
 
         public NavigationServiceTests()
         {
@@ -95,8 +94,7 @@ namespace MrCMS.Tests.Services
                                      session.SaveOrUpdate(page4);
                                  });
 
-            var currentSite = new CurrentSite(CurrentSite);
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), currentSite), _documentSearcher);
+            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), CurrentSite), _documentSearcher);
             var websiteTree = navigationService.GetWebsiteTree();
 
             websiteTree.Children.Should().HaveCount(1);
@@ -130,7 +128,7 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(category4);
             });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings { Site = CurrentSite }, new CurrentSite(CurrentSite)), null);
+            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings { Site = CurrentSite }, CurrentSite), null);
             var mediaTree = navigationService.GetMediaTree();
 
             mediaTree.Children.Should().HaveCount(1);
@@ -161,9 +159,8 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(layout4);
             });
 
-            var currentSite = new CurrentSite(CurrentSite);
             var navigationService = new NavigationService(
-                new DocumentService(Session, new SiteSettings(), currentSite),  _documentSearcher);
+                new DocumentService(Session, new SiteSettings(), CurrentSite),  _documentSearcher);
             var layoutList = navigationService.GetLayoutList();
 
             layoutList.Children.Should().HaveCount(4);
@@ -210,8 +207,7 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(page4);
             });
 
-            var currentSite = new CurrentSite(CurrentSite);
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), currentSite), _documentSearcher);
+            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), CurrentSite), _documentSearcher);
             var websiteTree = navigationService.GetWebsiteTree();
 
             websiteTree.Children.Should().HaveCount(1);

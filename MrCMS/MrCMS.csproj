@@ -152,6 +152,7 @@
     <Compile Include="ACL\Rules\SiteSettingsACL.cs" />
     <Compile Include="ACL\Rules\SystemAdminMenuACL.cs" />
     <Compile Include="ACL\Rules\UserACL.cs" />
+    <Compile Include="ACL\Rules\UserAdminMenuACL.cs" />
     <Compile Include="ACL\TypeACLRule.cs" />
     <Compile Include="Apps\MrCMSApp.cs" />
     <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="DbConfiguration\Overrides\LayoutOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaCategoryOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaFileOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\MessageTemplateOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\PageWidgetSortOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
@@ -217,6 +219,13 @@
     <Compile Include="Entities\Indexes\DocumentIndexDefinition.cs" />
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
+    <Compile Include="Services\IMessageTemplateService.cs" />
+    <Compile Include="Services\MessageTemplateService.cs" />
+    <Compile Include="Services\IMessageParser.cs" />
+    <Compile Include="Entities\Messaging\IMessageTemplate.cs" />
+    <Compile Include="Services\IMessageTemplateProcessor.cs" />
+    <Compile Include="Services\MessageParser.cs" />
+    <Compile Include="Services\MessageTemplateProcessor.cs" />
     <Compile Include="Entities\SiteEntity.cs" />
     <Compile Include="Entities\Documents\Document.cs" />
     <Compile Include="Entities\Documents\DocumentMetadata.cs" />
@@ -447,6 +456,8 @@
     <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\AddWidgetModelBinder.cs" />
+    <Compile Include="Website\Binders\AddMessageTemplateModelBinder.cs" />
+    <Compile Include="Website\Binders\MessageTemplateModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditUserModelBinder.cs" />
@@ -479,6 +490,10 @@
     <Compile Include="Website\Optimization\ResourceBundler.cs" />
     <Compile Include="Website\Optimization\ResourceData.cs" />
     <Compile Include="Website\Optimization\WhitespaceFilter.cs" />
+    <Compile Include="Website\OutOfContext.cs" />
+    <Compile Include="Website\OutOfContextResponse.cs" />
+    <Compile Include="Website\OutOfContextServerUtility.cs" />
+    <Compile Include="Website\OutOfContextSession.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
     <Compile Include="Website\Routing\ErrorHandler.cs" />

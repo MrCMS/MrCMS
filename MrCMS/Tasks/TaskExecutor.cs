@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MrCMS.Entities.Multisite;
+using MrCMS.Website;
 using NHibernate;
 using MrCMS.Helpers;
 
@@ -71,6 +73,7 @@ namespace MrCMS.Tasks
             {
                 using (var session = _sessionFactory.OpenFilteredSession())
                 {
+                    CurrentRequestData.CurrentSite = session.Get<Site>(task.Site.Id);
                     switch (task.Run(session))
                     {
                         case true:

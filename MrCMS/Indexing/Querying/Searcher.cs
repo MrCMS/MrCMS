@@ -19,13 +19,13 @@ namespace MrCMS.Indexing.Querying
         protected readonly TDefinition Definition = new TDefinition();
         private IndexSearcher _indexSearcher;
 
-        protected Searcher(CurrentSite currentSite, ISession session)
+        protected Searcher(Site currentSite, ISession session)
         {
             _session = session;
             _indexSearcher = new IndexSearcher(GetDirectory(currentSite));
         }
 
-        protected abstract Directory GetDirectory(CurrentSite currentSite);
+        protected abstract Directory GetDirectory(Site currentSite);
 
         public IPagedList<TEntity> Search(Query query, int pageNumber, int pageSize, Filter filter = null, Sort sort = null)
         {

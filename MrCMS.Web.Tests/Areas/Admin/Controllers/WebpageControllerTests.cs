@@ -23,16 +23,15 @@ using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
-    public class WebpageControllerTests
+    public class WebpageControllerTests : MrCMSTest
     {
-        private static IDocumentService documentService;
-        private static IFormService formService;
-        private static ISession session;
+        private readonly IDocumentService documentService;
+        private readonly IFormService formService;
+        private readonly ISession session;
         private readonly WebpageController webpageController;
 
         public WebpageControllerTests()
         {
-            CurrentRequestData.OverridenContext = new OutOfContext();
             CurrentRequestData.CurrentUser = new User();
             documentService = A.Fake<IDocumentService>();
             formService = A.Fake<IFormService>();

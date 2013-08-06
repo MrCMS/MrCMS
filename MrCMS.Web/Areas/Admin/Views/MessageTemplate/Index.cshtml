@@ -1,0 +1,26 @@
+﻿@using MrCMS.Helpers
+@model Dictionary<Type,int>
+@{
+    ViewBag.Title = "Message Templates";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<form>
+    <fieldset>
+        <legend>Message Templates
+        </legend>
+        
+        <table class="table table-condensed table-striped">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Key.GetFriendlyName()
+                    </td>
+                    <td>
+                        @(item.Value != 0 ? Html.ActionLink("Edit", "Edit", new {Id=item.Value}, new { @class = "btn btn-success" }) : Html.ActionLink("Add", "Add", new { type=item.Key.Name }, new { @class = "btn btn-primary"}))
+                    </td>
+                </tr>
+            }
+        </table>
+    </fieldset>
+</form>

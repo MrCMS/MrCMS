@@ -12,9 +12,9 @@ namespace MrCMS.Settings
     public class ConfigurationProvider : IConfigurationProvider
     {
         private readonly ISettingService _settingService;
-        private readonly CurrentSite _currentSite;
+        private readonly Site _currentSite;
 
-        public ConfigurationProvider(ISettingService settingService, CurrentSite currentSite)
+        public ConfigurationProvider(ISettingService settingService, Site currentSite)
         {
             _settingService = settingService;
             _currentSite = currentSite;
@@ -50,7 +50,7 @@ namespace MrCMS.Settings
 
             List<Setting> settingList =
                 properties.Select(prop => type.FullName + "." + prop.Name)
-                          .Select(key => _settingService.GetSettingByKey(_currentSite.Site, key))
+                          .Select(key => _settingService.GetSettingByKey(_currentSite, key))
                           .Where(setting => setting != null).ToList();
 
             foreach (Setting setting in settingList)
@@ -62,7 +62,7 @@ namespace MrCMS.Settings
             var methodInfo = GetType().GetMethodExt("GetSiteSettings", typeof(Site));
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()
-                             .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { site ?? _currentSite.Site }))
+                             .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { site ?? _currentSite }))
                              .OfType<SiteSettingsBase>().ToList();
 
         }
@@ -72,7 +72,7 @@ namespace MrCMS.Settings
             var settings = Activator.CreateInstance<TSettings>();
 
             // get properties we can write to
-            site = site ?? _currentSite.Site;
+            site = site ?? _currentSite;
             var properties = from prop in typeof(TSettings).GetProperties()
                              where prop.CanWrite && prop.CanRead
                              where prop.Name != "Site"
