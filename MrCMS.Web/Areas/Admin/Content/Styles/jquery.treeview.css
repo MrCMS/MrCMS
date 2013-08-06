@@ -7,7 +7,7 @@
 .treeview ul { margin-top: 4px; }
 
 .treeview .hitarea {
-    background: url(images/jquerytree/treeview-default.gif) -64px -25px no-repeat;
+    background: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-default.gif) -64px -25px no-repeat;
     cursor: pointer;
     float: left;
     height: 16px;
@@ -38,7 +38,7 @@
     cursor: pointer;
 }
 
-.treeview li { background: url(images/jquerytree/treeview-default-line.gif) 0 0 no-repeat; }
+.treeview li { background: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-default-line.gif) 0 0 no-repeat; }
 
 .treeview li.collapsable, .treeview li.expandable { background-position: 0 -176px; }
 
@@ -46,7 +46,7 @@
 
 .treeview li.last { background-position: 0 -1766px; }
 
-.treeview li.lastCollapsable, .treeview li.lastExpandable { background-image: url(images/jquerytree/treeview-default.gif); }
+.treeview li.lastCollapsable, .treeview li.lastExpandable { background-image: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-default.gif); }
 
 .treeview li.lastCollapsable { background-position: 0 -111px; }
 
@@ -54,24 +54,24 @@
 
 .treeview div.lastCollapsable-hitarea, .treeview div.lastExpandable-hitarea { background-position: 0; }
 
-.treeview-red li { background-image: url(images/jquerytree/treeview-red-line.gif); }
+.treeview-red li { background-image: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-red-line.gif); }
 
-.treeview-red .hitarea, .treeview-red li.lastCollapsable, .treeview-red li.lastExpandable { background-image: url(images/jquerytree/treeview-red.gif); }
+.treeview-red .hitarea, .treeview-red li.lastCollapsable, .treeview-red li.lastExpandable { background-image: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-red.gif); }
 
-.treeview-black li { background-image: url(images/jquerytree/treeview-black-line.gif); }
+.treeview-black li { background-image: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-black-line.gif); }
 
-.treeview-black .hitarea, .treeview-black li.lastCollapsable, .treeview-black li.lastExpandable { background-image: url(images/jquerytree/treeview-black.gif); }
+.treeview-black .hitarea, .treeview-black li.lastCollapsable, .treeview-black li.lastExpandable { background-image: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-black.gif); }
 
-.treeview-gray li { background-image: url(images/jquerytree/treeview-gray-line.gif); }
+.treeview-gray li { background-image: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-gray-line.gif); }
 
-.treeview-gray .hitarea, .treeview-gray li.lastCollapsable, .treeview-gray li.lastExpandable { background-image: url(images/jquerytree/treeview-gray.gif); }
+.treeview-gray .hitarea, .treeview-gray li.lastCollapsable, .treeview-gray li.lastExpandable { background-image: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-gray.gif); }
 
-.treeview-famfamfam li { background-image: url(images/jquerytree/treeview-famfamfam-line.gif); }
+.treeview-famfamfam li { background-image: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-famfamfam-line.gif); }
 
-.treeview-famfamfam .hitarea, .treeview-famfamfam li.lastCollapsable, .treeview-famfamfam li.lastExpandable { background-image: url(images/jquerytree/treeview-famfamfam.gif); }
+.treeview-famfamfam .hitarea, .treeview-famfamfam li.lastCollapsable, .treeview-famfamfam li.lastExpandable { background-image: url(/Areas/Admin/Content/Styles/images/jquerytree/treeview-famfamfam.gif); }
 
 .treeview .placeholder {
-    background: url(images/jquerytree/ajax-loader.gif) 0 0 no-repeat;
+    background: url(/Areas/Admin/Content/Styles/images/jquerytree/ajax-loader.gif) 0 0 no-repeat;
     display: block;
     height: 16px;
     width: 16px;
@@ -84,8 +84,8 @@
     padding: 1px 0 1px 16px;
 }
 
-.filetree span.folder { background: url(images/jquerytree/folder.gif) 0 0 no-repeat; }
+.filetree span.folder { background: url(/Areas/Admin/Content/Styles/images/jquerytree/folder.gif) 0 0 no-repeat; }
 
-.filetree li.expandable span.folder { background: url(images/jquerytree/folder-closed.gif) 0 0 no-repeat; }
+.filetree li.expandable span.folder { background: url(/Areas/Admin/Content/Styles/images/jquerytree/folder-closed.gif) 0 0 no-repeat; }
 
-.filetree span.file { background: url(images/jquerytree/file.gif) 0 0 no-repeat; }
+.filetree span.file { background: url(/Areas/Admin/Content/Styles/images/jquerytree/file.gif) 0 0 no-repeat; }
