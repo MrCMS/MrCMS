@@ -214,6 +214,7 @@
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Services\IMessageTemplateService.cs" />
+    <Compile Include="Services\ITokenProvider.cs" />
     <Compile Include="Services\MessageTemplateService.cs" />
     <Compile Include="Services\IMessageParser.cs" />
     <Compile Include="Entities\Messaging\IMessageTemplate.cs" />
@@ -386,6 +387,7 @@
     <Compile Include="Models\SiteTree.cs" />
     <Compile Include="Models\SiteTreeNode.cs" />
     <Compile Include="Services\NavigationService.cs" />
+    <Compile Include="Services\PropertyTokenProvider.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SearchService.cs" />
     <Compile Include="Services\SiteService.cs" />
