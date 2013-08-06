@@ -17,8 +17,6 @@ namespace MrCMS.Entities.Messaging
         public virtual string Subject { get; set; }
         public virtual string Body { get; set; }
 
-        public virtual int Priority { get; set; }
-
         public virtual DateTime? SentOn { get; set; }
 
         public virtual int Tries { get; set; }
