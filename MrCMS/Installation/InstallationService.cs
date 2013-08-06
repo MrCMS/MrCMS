@@ -19,6 +19,7 @@ using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -353,8 +354,27 @@ namespace MrCMS.Installation
             session.Transact(s => s.Save(site));
 
             MrCMSApp.InstallApps(session, model, site);
-            TaskExecutor.ExecuteLater(new SetupMessageTemplates(site));
+
+            //SetupInitialTemplates(session);
+
             InitializeIndices(site, session);
+        }
+
+        private static void SetupInitialTemplates(ISession session)
+        {
+            session.Transact(s =>
+                                 {
+                                     foreach (
+                                         var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<MessageTemplate>())
+                                     {
+                                         if (s.CreateCriteria(type).List().Count == 0)
+                                         {
+                                             var messageTemplate = Activator.CreateInstance(type) as MessageTemplate;
+                                             if (messageTemplate != null && messageTemplate.GetInitialTemplate(s) != null)
+                                                 s.Save(messageTemplate.GetInitialTemplate(s));
+                                         }
+                                     }
+                                 });
         }
 
         public static void InitializeIndices(Site site, ISession session)

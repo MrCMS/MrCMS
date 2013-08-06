@@ -6,13 +6,14 @@ using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Website;
+using NHibernate;
 
 namespace MrCMS.Tests.Stubs
 {
     [MrCMSMapClass]
     public class BasicMessageTemplate : MessageTemplate
     {
-        public override MessageTemplate GetInitialTemplate()
+        public override MessageTemplate GetInitialTemplate(ISession session)
         {
             return new BasicMessageTemplate()
             {

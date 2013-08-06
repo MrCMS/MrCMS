@@ -6,15 +6,16 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
+using NHibernate;
 
 namespace MrCMS.Web.Apps.Core.MessageTemplates
 {
     [FriendlyClassName("Reset Password Message Template")]
     public class ResetPasswordMessageTemplate : MessageTemplate, IMessageTemplate<User>
     {
-        public override MessageTemplate GetInitialTemplate()
+        public override MessageTemplate GetInitialTemplate(ISession session)
         {
-            var resetPasswordPage = MrCMSApplication.Get<IDocumentService>().GetUniquePage<ResetPasswordPage>();
+            var resetPasswordPage = session.QueryOver<ResetPasswordPage>().SingleOrDefault();
 
             string resetUrl = resetPasswordPage != null
                                   ? resetPasswordPage.AbsoluteUrl + "?id={ResetPasswordGuid}"

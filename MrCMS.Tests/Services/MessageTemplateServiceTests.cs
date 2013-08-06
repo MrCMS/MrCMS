@@ -1,15 +1,9 @@
-﻿using System;
-using System.Linq;
-using FakeItEasy;
+﻿using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Messaging;
-using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Settings;
 using MrCMS.Tests.Stubs;
-using MrCMS.Website;
 using NHibernate;
-using Ninject.MockingKernel;
 using Xunit;
 
 namespace MrCMS.Tests.Services
@@ -28,7 +22,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void MessageTemplateService_Save_SavesAMessageTemplateToSession()
         {
-            var messageTemplate = new BasicMessageTemplate().GetInitialTemplate();
+            var messageTemplate = new BasicMessageTemplate().GetInitialTemplate(A<ISession>._);
 
             _messageTemplateService.Save(messageTemplate);
 

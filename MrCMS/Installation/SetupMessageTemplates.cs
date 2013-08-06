@@ -15,18 +15,7 @@ namespace MrCMS.Installation
 
         public override void Execute()
         {
-            Session.Transact(s =>
-                                 {
-                                     foreach (var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<MessageTemplate>())
-                                     {
-                                         if (s.CreateCriteria(type).List().Count == 0)
-                                         {
-                                             var messageTemplate = Activator.CreateInstance(type) as MessageTemplate;
-                                             if (messageTemplate != null && messageTemplate.GetInitialTemplate() != null)
-                                                 s.Save(messageTemplate.GetInitialTemplate());
-                                         }
-                                     }
-                                 });
+            
         }
     }
 }

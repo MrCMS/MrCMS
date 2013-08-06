@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using MrCMS.Services;
+using NHibernate;
 
 namespace MrCMS.Entities.Messaging
 {
@@ -34,7 +35,7 @@ namespace MrCMS.Entities.Messaging
         [Display(Name = "Is HTML?")]
         public virtual bool IsHtml { get; set; }
 
-        public abstract MessageTemplate GetInitialTemplate();
+        public abstract MessageTemplate GetInitialTemplate(ISession session);
 
         public abstract List<string> GetTokens(IMessageTemplateParser messageTemplateParser);
     }

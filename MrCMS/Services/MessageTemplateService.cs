@@ -40,7 +40,7 @@ namespace MrCMS.Services
                 var messageTemplate = Activator.CreateInstance(newType) as MessageTemplate;
                 if (messageTemplate != null)
                 {
-                    return messageTemplate.GetInitialTemplate();
+                    return messageTemplate.GetInitialTemplate(_session);
                 }
             }
             return null;
@@ -48,7 +48,7 @@ namespace MrCMS.Services
 
         public MessageTemplate Reset(MessageTemplate messageTemplate)
         {
-            var initialTemplate = messageTemplate.GetInitialTemplate();
+            var initialTemplate = messageTemplate.GetInitialTemplate(_session);
 
             messageTemplate.FromAddress = initialTemplate.FromAddress;
             messageTemplate.FromName = initialTemplate.FromName;
