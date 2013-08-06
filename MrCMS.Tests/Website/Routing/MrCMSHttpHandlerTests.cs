@@ -32,7 +32,6 @@ namespace MrCMS.Tests.Website.Routing
         {
             CurrentRequestData.DatabaseIsInstalled = true;
             CurrentRequestData.CurrentUser = new User();
-            MrCMSApplication.OverridenRootChildren = new List<Webpage>();
         }
 
         [Fact]
@@ -238,8 +237,8 @@ namespace MrCMS.Tests.Website.Routing
         {
             CurrentRequestData.ErrorSignal = new ErrorSignal();
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
-            mrCMSHttpHandler.Webpage = new BasicMappedWebpage {PublishOn = DateTime.Today.AddDays(-1)};
-            var stubAllowedWebpage = new StubAllowedWebpage { UrlSegment = "test-404",PublishOn = DateTime.Today.AddDays(-1)};
+            mrCMSHttpHandler.Webpage = new BasicMappedWebpage { PublishOn = DateTime.Today.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { UrlSegment = "test-404", PublishOn = DateTime.Today.AddDays(-1) };
             var httpContext = A.Fake<HttpContextBase>();
             mrCMSHttpHandler.Webpage = stubAllowedWebpage;
 
@@ -275,7 +274,7 @@ namespace MrCMS.Tests.Website.Routing
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var textPage = new BasicMappedWebpage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
-            MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
+            CurrentRequestData.HomePage = textPage;
             mrCMSHttpHandler.Webpage = textPage;
             var httpContext = A.Fake<HttpContextBase>();
 
@@ -289,7 +288,7 @@ namespace MrCMS.Tests.Website.Routing
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var textPage = new BasicMappedWebpage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
-            MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
+            CurrentRequestData.HomePage = textPage;
             mrCMSHttpHandler.Webpage = textPage;
             var httpContext = A.Fake<HttpContextBase>();
 
@@ -305,7 +304,7 @@ namespace MrCMS.Tests.Website.Routing
         {
             var mrCMSHttpHandler = GetMrCMSHttpHandler();
             var textPage = new BasicMappedWebpage { UrlSegment = "test", Site = new Site(), PublishOn = DateTime.Today.AddDays(-1) };
-            MrCMSApplication.OverridenRootChildren = new List<Webpage> { textPage };
+            CurrentRequestData.HomePage = textPage;
             mrCMSHttpHandler.Webpage = textPage;
             var httpContext = A.Fake<HttpContextBase>();
 
@@ -426,7 +425,7 @@ namespace MrCMS.Tests.Website.Routing
             seoSettings = A.Fake<SEOSettings>();
             documentService = A.Fake<IDocumentService>();
             controllerManager = A.Fake<IControllerManager>();
-            var mrCMSHttpHandler = new MrCMSHttpHandler(session, documentService, controllerManager, siteSettings,seoSettings);
+            var mrCMSHttpHandler = new MrCMSHttpHandler(session, documentService, controllerManager, siteSettings, seoSettings);
             mrCMSHttpHandler.SetRequestContext(requestContext);
             return mrCMSHttpHandler;
         }

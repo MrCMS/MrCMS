@@ -71,6 +71,7 @@ namespace MrCMS.Website
                                             CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
                                             CurrentRequestData.CurrentSite = Get<ICurrentSiteLocator>().GetCurrentSite();
                                             CurrentRequestData.SiteSettings = Get<SiteSettings>();
+                                            CurrentRequestData.HomePage = Get<IDocumentService>().GetHomePage();
                                             Thread.CurrentThread.CurrentCulture = CurrentRequestData.SiteSettings.CultureInfo;
                                             Thread.CurrentThread.CurrentUICulture = CurrentRequestData.SiteSettings.CultureInfo;
                                         }
@@ -225,23 +226,6 @@ namespace MrCMS.Website
         public static object Get(Type type)
         {
             return Kernel.Get(type);
-        }
-
-        public static IEnumerable<Webpage> PublishedRootChildren()
-        {
-            return RootChildren().Where(webpage => webpage.Published);
-        }
-
-        public static IEnumerable<Webpage> OverridenRootChildren { get; set; }
-        public static IEnumerable<Webpage> RootChildren()
-        {
-            return OverridenRootChildren ??
-                   Get<ISession>()
-                       .QueryOver<Webpage>()
-                       .Where(
-                           document => document.Parent == null && document.Site.Id == CurrentRequestData.CurrentSite.Id)
-                       .Cacheable()
-                       .List().OrderBy(x => x.DisplayOrder);
         }
 
         public const string AssemblyVersion = "0.3.1.*";

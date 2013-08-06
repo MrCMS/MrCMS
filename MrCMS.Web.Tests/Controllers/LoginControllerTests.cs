@@ -16,14 +16,14 @@ using Xunit;
 
 namespace MrCMS.Web.Tests.Controllers
 {
-    public class LoginControllerTests
+    public class LoginControllerTests : MrCMSTest
     {
-        private readonly LoginController _loginController;
         private readonly IUserService _userService;
         private readonly IResetPasswordService _resetPasswordService;
         private readonly IAuthorisationService _authorisationService;
         private readonly IDocumentService _documentService;
-        private ILoginService _loginService;
+        private readonly ILoginService _loginService;
+        private readonly LoginController _loginController;
 
         public LoginControllerTests()
         {
@@ -33,8 +33,6 @@ namespace MrCMS.Web.Tests.Controllers
             _documentService = A.Fake<IDocumentService>();
             _loginService = A.Fake<ILoginService>();
             _loginController = new LoginController(_userService, _resetPasswordService, _authorisationService, _documentService, _loginService);
-            // this allows LiveUrlSegment to work
-            MrCMSApplication.OverridenRootChildren = new List<Webpage>();
             // initial setup as this is reused
             A.CallTo(() => _documentService.GetUniquePage<LoginPage>())
              .Returns(new LoginPage { UrlSegment = "login-page" });
@@ -92,8 +90,8 @@ namespace MrCMS.Web.Tests.Controllers
         {
             var loginModel = new LoginModel();
             A.CallTo(() => _loginService.AuthenticateUser(loginModel))
-             .Returns(new LoginResult {Success = true, RedirectUrl = "redirect-url"});
-            
+             .Returns(new LoginResult { Success = true, RedirectUrl = "redirect-url" });
+
             var redirectResult = _loginController.Post(loginModel);
 
             redirectResult.Url.Should().Be("redirect-url");
@@ -105,7 +103,7 @@ namespace MrCMS.Web.Tests.Controllers
             var loginModel = new LoginModel();
             A.CallTo(() => _loginService.AuthenticateUser(loginModel))
              .Returns(new LoginResult { Success = false });
-            
+
             var redirectResult = _loginController.Post(loginModel);
 
             redirectResult.Url.Should().Be("~/login-page");
@@ -116,8 +114,8 @@ namespace MrCMS.Web.Tests.Controllers
         {
             var loginModel = new LoginModel();
             A.CallTo(() => _loginService.AuthenticateUser(loginModel))
-             .Returns(new LoginResult { Success = false, Message = "failure message"});
-            
+             .Returns(new LoginResult { Success = false, Message = "failure message" });
+
             _loginController.Post(loginModel);
 
             loginModel.Message.Should().Be("failure message");

@@ -355,7 +355,7 @@ namespace MrCMS.Installation
 
             MrCMSApp.InstallApps(session, model, site);
 
-            //SetupInitialTemplates(session);
+            SetupInitialTemplates(session);
 
             InitializeIndices(site, session);
         }

@@ -50,6 +50,12 @@ namespace MrCMS.Website
             set { CurrentContext.Items["current.sitesettings"] = value; }
         }
 
+        public static Webpage HomePage
+        {
+            get { return (Webpage) CurrentContext.Items["current.homepage"]; }
+            set { CurrentContext.Items["current.homepage"] = value; }
+        }
+
         public static CultureInfo CultureInfo
         {
             get { return SiteSettings != null ? SiteSettings.CultureInfo : CultureInfo.CurrentCulture; }

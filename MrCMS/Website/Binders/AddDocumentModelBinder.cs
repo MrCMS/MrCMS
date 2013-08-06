@@ -47,7 +47,7 @@ namespace MrCMS.Website.Binders
                 (document as Webpage).RevealInNavigation = true;
 
                 var pages = (document.Parent == null
-                                 ? MrCMSApplication.RootChildren()
+                                 ? Session.QueryOver<Webpage>().Where(webpage => webpage.Parent==null).Cacheable().List()
                                  : document.Parent.Children.OfType<Webpage>()).ToList();
                 document.DisplayOrder = pages.Any() ? pages.Max(x => x.DisplayOrder) + 1 : 0;
             }

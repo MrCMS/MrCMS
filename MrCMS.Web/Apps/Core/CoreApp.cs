@@ -143,6 +143,7 @@ namespace MrCMS.Web.Apps.Core
             });
 
             documentService.AddDocument(model.HomePage);
+            CurrentRequestData.HomePage = model.HomePage;
             documentService.AddDocument(model.Page2);
             documentService.AddDocument(model.Page3);
             documentService.AddDocument(model.Error403);

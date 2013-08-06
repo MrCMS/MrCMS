@@ -337,23 +337,6 @@ namespace MrCMS.Services
 
         }
 
-        public Document Get404Page()
-        {
-            var error404Id = _siteSettings.Error404PageId;
-
-            return _session.Get<Document>(error404Id)
-                   ?? GetDocumentByUrl<Webpage>("404")
-                   ?? MrCMSApplication.PublishedRootChildren().OfType<Document>().FirstOrDefault();
-        }
-
-        public Document Get500Page()
-        {
-            var error500Id = _siteSettings.Error500PageId;
-
-            return _session.Get<Document>(error500Id)
-                   ?? GetDocumentByUrl<Webpage>("500")
-                   ?? MrCMSApplication.PublishedRootChildren().OfType<Document>().FirstOrDefault();
-        }
 
         public DocumentVersion GetDocumentVersion(int id)
         {
@@ -538,6 +521,18 @@ namespace MrCMS.Services
                     document = document.Parent;
                 }
             }
+        }
+
+        public Webpage GetHomePage()
+        {
+            return
+                _session.QueryOver<Webpage>()
+                        .Where(
+                            document =>
+                            document.Site == _currentSite && document.PublishOn != null &&
+                            document.PublishOn <= CurrentRequestData.Now && document.Parent == null)
+                        .Take(1)
+                        .SingleOrDefault();
         }
 
         public bool UrlIsValidForMediaCategory(string url, int? id)

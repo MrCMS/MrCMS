@@ -74,7 +74,6 @@ namespace MrCMS.Tests
 
             SetupUser();
 
-            SetupRootChildren();
 
             CurrentSite = Session.Transact(session =>
                 {
@@ -94,10 +93,6 @@ namespace MrCMS.Tests
         protected Site CurrentSite { get; set; }
 
 
-        private void SetupRootChildren()
-        {
-            MrCMSApplication.OverridenRootChildren = new List<Webpage>();
-        }
 
         private void SetupUser()
         {
