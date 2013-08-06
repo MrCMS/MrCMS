@@ -1,6 +1,7 @@
 ﻿using System;
 using MrCMS.Entities.Multisite;
 using NHibernate;
+using MrCMS.Helpers;
 
 namespace MrCMS.Tasks
 {
@@ -8,7 +9,7 @@ namespace MrCMS.Tasks
     {
         private readonly Site _site;
 
-        protected  BackgroundTask(Site site)
+        protected BackgroundTask(Site site)
         {
             _site = site;
         }
@@ -34,11 +35,7 @@ namespace MrCMS.Tasks
             Initialize(openSession);
             try
             {
-                using (ITransaction transation = Session.BeginTransaction())
-                {
-                    Execute();
-                    transation.Commit();
-                }
+                Session.Transact(session => Execute());
                 TaskExecutor.StartExecuting();
                 return true;
             }

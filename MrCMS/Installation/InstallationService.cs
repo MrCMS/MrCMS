@@ -359,9 +359,8 @@ namespace MrCMS.Installation
 
         public static void InitializeIndices(Site site, ISession session)
         {
-            var currentSite = new CurrentSite(site);
-            var service = new IndexService(session, currentSite);
-            DocumentMetadataHelper.OverrideExistAny = new DocumentService(session, null, currentSite).ExistAny;
+            var service = new IndexService(session, site);
+            DocumentMetadataHelper.OverrideExistAny = new DocumentService(session, null, site).ExistAny;
             service.InitializeAllIndices(site);
             DocumentMetadataHelper.OverrideExistAny = null;
         }

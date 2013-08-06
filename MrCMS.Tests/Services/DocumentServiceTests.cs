@@ -23,13 +23,11 @@ namespace MrCMS.Tests.Services
     public class DocumentServiceTests : InMemoryDatabaseTest
     {
         private readonly SiteSettings _siteSettings;
-        private readonly CurrentSite _currentSite;
         private readonly DocumentService _documentService;
 
         public DocumentServiceTests()
         {
-            _currentSite = new CurrentSite(CurrentSite);
-            _documentService= new DocumentService(Session, _siteSettings, _currentSite);
+            _documentService = new DocumentService(Session, _siteSettings, CurrentSite);
             _siteSettings = new SiteSettings();
         }
 

@@ -10,9 +10,9 @@ namespace MrCMS.Tasks
     public class ScheduledTaskManager : IScheduledTaskManager
     {
         private readonly ISession _session;
-        private readonly CurrentSite _currentSite;
+        private readonly Site _currentSite;
 
-        public ScheduledTaskManager(ISession session, CurrentSite currentSite)
+        public ScheduledTaskManager(ISession session, Site currentSite)
         {
             _session = session;
             _currentSite = currentSite;

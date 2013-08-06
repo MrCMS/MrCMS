@@ -43,7 +43,6 @@ namespace MrCMS.Web.Apps.Core
             //settings
             session.Transact(sess => sess.Save(site));
             CurrentRequestData.CurrentSite = site;
-            var currentSite = new CurrentSite(site);
 
             var siteSettings = new SiteSettings
             {
@@ -57,12 +56,12 @@ namespace MrCMS.Web.Apps.Core
                                     };
             CurrentRequestData.SiteSettings = siteSettings;
 
-            var documentService = new DocumentService(session, siteSettings, currentSite);
+            var documentService = new DocumentService(session, siteSettings, site);
             var layoutAreaService = new LayoutAreaService(session);
             var widgetService = new WidgetService(session);
             var fileSystem = new FileSystem();
             var imageProcessor = new ImageProcessor(session, fileSystem, mediaSettings);
-            var fileService = new FileService(session, fileSystem, imageProcessor, mediaSettings, currentSite);
+            var fileService = new FileService(session, fileSystem, imageProcessor, mediaSettings, site);
             var user = new User
             {
                 Email = model.AdminEmail,
@@ -239,7 +238,7 @@ namespace MrCMS.Web.Apps.Core
             mediaSettings.ResizeQuality = 90;
 
             var configurationProvider = new ConfigurationProvider(new SettingService(session),
-                                                                  currentSite);
+                                                                  site);
             var fileSystemSettings = new FileSystemSettings { Site = site, StorageType = typeof(FileSystem).FullName };
             configurationProvider.SaveSettings(siteSettings);
             configurationProvider.SaveSettings(mediaSettings);

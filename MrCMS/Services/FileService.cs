@@ -21,9 +21,9 @@ namespace MrCMS.Services
         private readonly IFileSystem _fileSystem;
         private readonly IImageProcessor _imageProcessor;
         private readonly MediaSettings _mediaSettings;
-        private readonly CurrentSite _currentSite;
+        private readonly Site _currentSite;
 
-        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings, CurrentSite currentSite)
+        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings, Site currentSite)
         {
             _session = session;
             _fileSystem = fileSystem;
@@ -41,7 +41,7 @@ namespace MrCMS.Services
             fileName = GetFileSeName(fileName);
             var fileNameOriginal = GetFileSeName(fileName);
 
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Site.Id, mediaCategory.UrlSegment);
+            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id, mediaCategory.UrlSegment);
 
             //check for duplicates
             int i = 1;
@@ -51,7 +51,7 @@ namespace MrCMS.Services
                 i++;
             }
 
-            string fileLocation = string.Format("{0}/{1}/{2}", _currentSite.Site.Id, mediaCategory.UrlSegment, fileName);
+            string fileLocation = string.Format("{0}/{1}/{2}", _currentSite.Id, mediaCategory.UrlSegment, fileName);
 
             var mediaFile = new MediaFile
                                 {
@@ -207,7 +207,7 @@ namespace MrCMS.Services
 
         public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1, int pageSize = 10)
         {
-            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site == _currentSite.Site);
+            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site == _currentSite);
 
             if (categoryId.HasValue)
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == categoryId);
@@ -240,7 +240,7 @@ namespace MrCMS.Services
 
         public void RemoveFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Site.Id,
+            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id,
                                                   mediaCategory.UrlSegment);
 
             _fileSystem.Delete(folderLocation);
@@ -248,7 +248,7 @@ namespace MrCMS.Services
 
         public void CreateFolder(MediaCategory mediaCategory)
         {
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Site.Id,
+            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id,
                                                   mediaCategory.UrlSegment);
 
             _fileSystem.CreateDirectory(folderLocation);
