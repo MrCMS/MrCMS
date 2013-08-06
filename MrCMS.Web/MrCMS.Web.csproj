@@ -1380,6 +1380,15 @@
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
     <None Include="Properties\PublishProfiles\v0.2.pubxml" />
     <None Include="Properties\PublishProfiles\v0.3.pubxml" />
+    <Content Include="Themes\Default\Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Themes\Default\Views\Web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="Themes\Default\Views\Web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apps\Articles\Controllers\" />
