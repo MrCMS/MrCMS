@@ -1379,9 +1379,6 @@
     <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
     <None Include="Properties\PublishProfiles\v0.2.pubxml" />
-    <Content Include="Themes\Default\Web.config">
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="Properties\PublishProfiles\v0.3.pubxml" />
   </ItemGroup>
   <ItemGroup>
