@@ -33,6 +33,13 @@ namespace MrCMS.DbConfiguration
     public class NHibernateConfigurator
     {
         private List<Assembly> _manuallyAddedAssemblies = new List<Assembly>();
+        private static readonly SaveOrUpdateListener _saveOrUpdateListener = new SaveOrUpdateListener();
+        private static readonly UpdateIndicesListener _updateIndexesListener = new UpdateIndicesListener();
+        private static readonly PostCommitEventListener _postCommitEventListener = new PostCommitEventListener();
+        private static readonly UrlHistoryListener _urlHistoryListener = new UrlHistoryListener();
+
+        private static readonly DocumentSoftDeleteListener _documentSoftDeleteListener =
+            new DocumentSoftDeleteListener();
         public DatabaseType DatabaseType { get; set; }
         public bool InDevelopment { get; set; }
         public bool CacheEnabled { get; set; }
@@ -113,12 +120,7 @@ namespace MrCMS.DbConfiguration
 
         public NHibernate.Cfg.Configuration GetConfiguration()
         {
-            var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var assemblies =
-                currentAssemblies.Where(
-                    assembly =>
-                    !assembly.IsDynamic && !assembly.GlobalAssemblyCache &&
-                    !assembly.FullName.Contains("xunit", StringComparison.OrdinalIgnoreCase)).ToList();
+            var assemblies = TypeHelper.GetAllMrCMSAssemblies();
             assemblies.AddRange(ManuallyAddedAssemblies);
 
             var finalAssemblies = new List<Assembly>();
@@ -172,63 +174,83 @@ namespace MrCMS.DbConfiguration
 
         public List<Assembly> ManuallyAddedAssemblies { get { return _manuallyAddedAssemblies; } set { _manuallyAddedAssemblies = value; } }
 
+        public static SaveOrUpdateListener SaveOrUpdateListener
+        {
+            get { return _saveOrUpdateListener; }
+        }
+
+        public static UpdateIndicesListener UpdateIndexesListener
+        {
+            get { return _updateIndexesListener; }
+        }
+
+        public static PostCommitEventListener PostCommitEventListener
+        {
+            get { return _postCommitEventListener; }
+        }
+
+        public static UrlHistoryListener UrlHistoryListener
+        {
+            get { return _urlHistoryListener; }
+        }
+
+        public static DocumentSoftDeleteListener DocumentSoftDeleteListener
+        {
+            get { return _documentSoftDeleteListener; }
+        }
+
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)
         {
-            var saveOrUpdateListener = new SaveOrUpdateListener();
-            var updateIndexesListener = new UpdateIndicesListener();
-            var postCommitEventListener = new PostCommitEventListener();
-            var urlHistoryListener = new UrlHistoryListener();
-            var documentSoftDeleteListener = new DocumentSoftDeleteListener();
             configuration.EventListeners.SaveOrUpdateEventListeners =
                  new ISaveOrUpdateEventListener[]
                       {
-                          saveOrUpdateListener
+                          SaveOrUpdateListener
                       };
 
             configuration.AppendListeners(ListenerType.PreInsert,
                                           new[]
                                               {
-                                                  saveOrUpdateListener
+                                                  SaveOrUpdateListener
                                               });
             configuration.AppendListeners(ListenerType.PreUpdate,
                                           new IPreUpdateEventListener[]
                                               {
-                                                  saveOrUpdateListener
+                                                  SaveOrUpdateListener
                                               });
 
             configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
                                                                              {
-                                                                                 postCommitEventListener,
-                                                                                 urlHistoryListener
+                                                                                 PostCommitEventListener,
+                                                                                 UrlHistoryListener
                                                                              });
 
-            configuration.SetListener(ListenerType.Delete, documentSoftDeleteListener);
+            configuration.SetListener(ListenerType.Delete, DocumentSoftDeleteListener);
 
             if (!InDevelopment && CurrentRequestData.DatabaseIsInstalled)
             {
                 configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
                                                                                  {
-                                                                                     updateIndexesListener
+                                                                                     UpdateIndexesListener
                                                                                  });
                 configuration.AppendListeners(ListenerType.PostCommitInsert, new IPostInsertEventListener[]
                                                                                  {
-                                                                                     updateIndexesListener
+                                                                                     UpdateIndexesListener
                                                                                  });
                 configuration.AppendListeners(ListenerType.PostCommitDelete, new IPostDeleteEventListener[]
                                                                                  {
-                                                                                     updateIndexesListener
+                                                                                     UpdateIndexesListener
                                                                                  });
                 configuration.AppendListeners(ListenerType.PostCollectionRecreate, new IPostCollectionRecreateEventListener[]
                                                                                  {
-                                                                                     updateIndexesListener
+                                                                                     UpdateIndexesListener
                                                                                  });
                 configuration.AppendListeners(ListenerType.PostCollectionRemove, new IPostCollectionRemoveEventListener[]
                                                                                  {
-                                                                                     updateIndexesListener
+                                                                                     UpdateIndexesListener
                                                                                  });
                 configuration.AppendListeners(ListenerType.PostCollectionUpdate, new IPostCollectionUpdateEventListener[]
                                                                                  {
-                                                                                     updateIndexesListener
+                                                                                     UpdateIndexesListener
                                                                                  });
             }
         }

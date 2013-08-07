@@ -35,11 +35,11 @@ namespace MrCMS.IoC
     {
         public override void Load()
         {
-            Kernel.Bind(syntax => syntax.FromAssembliesMatching("MrCMS.*").SelectAllClasses()
-                                      .Where(t => !typeof(SettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
+            Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
+                                      .Where(t => !typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
                                       .BindWith<NinjectServiceToInterfaceBinder>()
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
-            Kernel.Bind(syntax => syntax.FromAssembliesMatching("MrCMS.*").SelectAllClasses()
+            Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
                                       .Where(t => typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
                                       .BindWith<NinjectSiteSettingsBinder>()
                                       .Configure(onSyntax => onSyntax.InRequestScope()));
