@@ -1,35 +1,48 @@
-﻿@model MrCMS.Entities.Documents.Web.Webpage   
-<link href="@Url.Content("~/Areas/Admin/Content/Styles/front-end-editing.css")" rel="stylesheet" type="text/css" />
+﻿@using MrCMS.Settings
+@using MrCMS.Website
+@model MrCMS.Entities.Documents.Web.Webpage   
+<link href="@Url.Content("~/Areas/Admin/Content/Styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css" />
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css" />
 <link href="@Url.Content("~/Areas/Admin/Content/Editors/fancybox/jquery.fancybox-1.3.4.css")" rel="stylesheet" type="text/css" />
 <div class="mrcms-admin-nav-bar">
-        <a href="@Url.Action("Index", "Home")" target="_parent" class="mrcms-btn mrcms-btn-default mrcms-btn-mini">Admin</a>
+    <a href="@Url.Action("Index", "Home")" target="_parent" class="mrcms-btn mrcms-btn-default mrcms-btn-mini">Admin</a>
 
-        <a href="@Url.Action("Edit", "Webpage", new { Model.Id })" target="_parent" class="mrcms-btn mrcms-btn-mini mrcms-btn-primary">Edit</a>
-        @if (Model.Published)
-        {
-            <a id="unpublish-now" class="mrcms-btn mrcms-btn-mini  mrcms-btn-success">Unpublish</a>
-        }
-        else
-        {
-            <a id="publish-now" class="mrcms-btn mrcms-btn-mini  mrcms-btn-warning">Publish</a>
-        }
-        @if (Model.CanAddChildren())
-        {
+    <a href="@Url.Action("Edit", "Webpage", new { Model.Id })" target="_parent" class="mrcms-btn mrcms-btn-mini mrcms-btn-primary">Edit</a>
+    @if (Model.Published)
+    {
+        <a id="unpublish-now" class="mrcms-btn mrcms-btn-mini  mrcms-btn-success">Unpublish</a>
+    }
+    else
+    {
+        <a id="publish-now" class="mrcms-btn mrcms-btn-mini  mrcms-btn-warning">Publish</a>
+    }
+    @if (Model.CanAddChildren())
+    {
 
-            @Html.ActionLink("Add a child page", "Add", "Webpage", new { id = Model.Id }, new { @class = "mrcms-btn mrcms-btn-mini mrcms-btn-default" })
-        }
-        @Html.ActionLink("Add page", "Add", "Webpage", new { id = Model.Parent == null ? (int?)null : Model.Parent.Id }, new { @class = "mrcms-btn mrcms-btn-mini mrcms-btn-default" })
+        @Html.ActionLink("Add a child page", "Add", "Webpage", new { id = Model.Id }, new { @class = "mrcms-btn mrcms-btn-mini mrcms-btn-default" })
+    }
+    @Html.ActionLink("Add page", "Add", "Webpage", new { id = Model.Parent == null ? (int?)null : Model.Parent.Id }, new { @class = "mrcms-btn mrcms-btn-mini mrcms-btn-default" })
 
     <a id="enable-editing" class="mrcms-btn mrcms-btn-mini mrcms-btn-default">Inline Editing: On</a>
 
-        @if (Model.FormPostings.Any())
-        {
-            <a href="/Admin/Webpage/Edit/@Model.Id#postings-tab" class="mrcms-btn mrcms-btn-mini mrcms-btn-info" target="_parent">
-                @Model.FormPostings.Count
-                Form entry
-            </a>
-        }
+    @if (Model.FormPostings.Any())
+    {
+        <a href="/Admin/Webpage/Edit/@Model.Id#postings-tab" class="mrcms-btn mrcms-btn-mini mrcms-btn-info" target="_parent">
+            @Model.FormPostings.Count
+            Form entry
+        </a>
+    }
+    
+    <a href="/logout" class="mrcms-btn mrcms-btn-mini mrcms-btn-default" style="float: right;">Logout</a>
+
+    @if (MrCMSApplication.Get<SiteSettings>().SiteIsLive)
+    {
+        <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-mini mrcms-btn-success" style="float: right;">Site is set live</a>
+    }
+    else
+    {
+        <a href="/Admin/Settings#site-settings" class="mrcms-btn mrcms-btn-mini mrcms-btn-warning" style="float: right;">Site is not set live</a>
+    }
 
 </div>
 
