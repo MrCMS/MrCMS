@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Web;
-using System.Web.Mvc;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Models;
@@ -19,5 +17,7 @@ namespace MrCMS.Services
         void UpdateFormListOption(FormListOption formListOption);
         void DeleteFormListOption(FormListOption formListOption);
         void SetOrders(List<SortItem> items);
+        void ClearFormData(Webpage webpage);
+        byte[] ExportFormData(Webpage webpage);
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using MrCMS.Entities;
@@ -39,7 +40,9 @@ namespace MrCMS.Website
                 return MvcHtmlString.Empty;
 
             var propertyInfo = PropertyFinder.GetProperty(method);
+
             var value = Html.ParseShortcodes(method.Compile().Invoke(model)).ToHtmlString();
+
             var typeName = "";
             if (model is Webpage) //get base document type as using generic interfaces cause issues using Editable I.E DocumentContainer
                 typeName = (model as Webpage).DocumentType;

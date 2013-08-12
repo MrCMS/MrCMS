@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using CsvHelper;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
@@ -14,8 +16,9 @@ using MrCMS.Paging;
 using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
 using MrCMS.Tasks;
+using MrCMS.Website;
 using NHibernate;
-
+using System.Linq;
 namespace MrCMS.Services
 {
     public class FormService : IFormService
@@ -171,6 +174,62 @@ namespace MrCMS.Services
 
                                       SendFormMessages(webpage, formPosting);
                                   });
+        }
+
+        public void ClearFormData(Webpage webpage)
+        {
+            _session.Transact(session => webpage.FormPostings.ForEach(session.Delete));
+        }
+
+        public byte[] ExportFormData(Webpage webpage)
+        {
+            using (var ms = new MemoryStream())
+            using (var sw = new StreamWriter(ms))
+            using (var w = new CsvWriter(sw))
+            {
+                w.WriteField("Webpage");
+                w.WriteField("Key");
+                w.WriteField("Value");
+                w.NextRecord();
+
+                foreach (var item in GetFormDataForExport(webpage))
+                {
+                    w.WriteField(webpage.UrlSegment);
+                    w.WriteField(item.Key);
+                    w.WriteField(item.Value);
+                    w.NextRecord();
+                }
+
+                sw.Flush();
+                var file = ms.ToArray();
+                sw.Close();
+
+                return file;
+            }
+        }
+
+        private static Dictionary<string, string> GetFormDataForExport(Webpage webpage)
+        {
+            var items = new Dictionary<string, string>();
+            foreach (var posting in webpage.FormPostings)
+            {
+                if (!posting.FormValues.Any()) continue;
+
+                var uniqueKeys = posting.FormValues.Select(x => x.Key).Distinct();
+                foreach (var uniqueKey in uniqueKeys)
+                {
+                    if (!items.Any(x => x.Key == uniqueKey))
+                        items.Add(uniqueKey, String.Empty);
+                    foreach (var value in posting.FormValues.Where(x => x.Key == uniqueKey))
+                    {
+                        if (!value.IsFile)
+                            items[uniqueKey] += value.Value + "|";
+                        else
+                            items[uniqueKey] += "http://" + CurrentRequestData.CurrentSite.BaseUrl + value.Value + "|";
+                    }
+                }
+            }
+            return items;
         }
 
         private void SendFormMessages(Webpage webpage, FormPosting formPosting)

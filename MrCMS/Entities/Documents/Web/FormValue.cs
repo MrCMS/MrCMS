@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace MrCMS.Entities.Documents.Web
 {
     public class FormValue : SiteEntity

@@ -1,4 +1,5 @@
 ﻿(function ($) {
+    CKEDITOR.config.allowedContent = true;
     var settings, methods = {
         init: function (options) {
             settings = {
@@ -19,7 +20,6 @@
                 $(this).mrcmsinline(!getEditingEnabled() ? 'enable' : 'disable');
             });
             $(this).mrcmsinline(getEditingEnabled() ? 'enable' : 'disable', true);
-
             return this;
         },
 
