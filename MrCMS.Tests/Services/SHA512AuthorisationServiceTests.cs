@@ -1,52 +1,51 @@
 ﻿using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Services;
-using MrCMS.Settings;
 using Xunit;
 
 namespace MrCMS.Tests.Services
 {
-    public class AuthorisationServiceTests
+    public class SHA512AuthorisationServiceTests
     {
-        private static AuthorisationService GetAuthorisationService()
+        private static SHA512AuthorisationService GetSHA512AuthorisationService()
         {
-            var authorisationService = new AuthorisationService();
+            var authorisationService = new SHA512AuthorisationService();
             return authorisationService;
         }
 
         [Fact]
-        public void AuthorisationService_ValidatePassword_ShouldThrowOnDifferentPasswords()
+        public void SHA512AuthorisationService_ValidatePassword_ShouldThrowOnDifferentPasswords()
         {
-            var authorisationService = GetAuthorisationService();
+            var authorisationService = GetSHA512AuthorisationService();
 
             authorisationService.Invoking(service => service.ValidatePassword("password", "differentpassword")).
                 ShouldThrow<InvalidPasswordException>();
         }
 
         [Fact]
-        public void AuthorisationService_ValidatePassword_ReturnsTrueIfPasswordsAreTheSame()
+        public void SHA512AuthorisationService_ValidatePassword_ReturnsTrueIfPasswordsAreTheSame()
         {
-            var authorisationService = GetAuthorisationService();
+            var authorisationService = GetSHA512AuthorisationService();
 
             authorisationService.Invoking(service => service.ValidatePassword("password", "password")).ShouldNotThrow();
         }
 
         [Fact]
-        public void AuthorisationService_SetPassword_WithInvalidPasswordShouldThrowException()
+        public void SHA512AuthorisationService_SetPassword_WithInvalidPasswordShouldThrowException()
         {
-            var authorisationService = GetAuthorisationService();
+            var authorisationService = GetSHA512AuthorisationService();
 
             var user = new User();
 
-            authorisationService.Invoking(service => service.SetPassword(user,"password", "differentpassword")).
+            authorisationService.Invoking(service => service.SetPassword(user, "password", "differentpassword")).
                 ShouldThrow<InvalidPasswordException>();
-            
+
         }
 
         [Fact]
-        public void AuthorisationService_SetPassword_WithSamePasswordsShouldAssignThePasswordSaltAndHashOfTheUser()
+        public void SHA512AuthorisationService_SetPassword_WithSamePasswordsShouldAssignThePasswordSaltAndHashOfTheUser()
         {
-            var authorisationService = GetAuthorisationService();
+            var authorisationService = GetSHA512AuthorisationService();
 
             var user = new User();
 
@@ -57,9 +56,9 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void AuthorisationService_ValidateUser_WithIncorrectPasswordShouldReturnFalse()
+        public void SHA512AuthorisationService_ValidateUser_WithIncorrectPasswordShouldReturnFalse()
         {
-            var authorisationService = GetAuthorisationService();
+            var authorisationService = GetSHA512AuthorisationService();
             var user = new User();
             authorisationService.SetPassword(user, "password", "password");
 
@@ -69,9 +68,9 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void AuthorisationService_ValidateUser_WithCorrectPasswordShouldReturnTrue()
+        public void SHA512AuthorisationService_ValidateUser_WithCorrectPasswordShouldReturnTrue()
         {
-            var authorisationService = GetAuthorisationService();
+            var authorisationService = GetSHA512AuthorisationService();
             var user = new User();
             authorisationService.SetPassword(user, "password", "password");
 
