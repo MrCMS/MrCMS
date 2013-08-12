@@ -1,3 +1,4 @@
+using System.Configuration;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
@@ -67,6 +68,19 @@ namespace MrCMS.IoC
                                                           }
                                                           return context.Kernel.Get<FileSystem>();
                                                       }).InRequestScope();
+
+            // Allowing IAuthorisationService implementation to be set in the Web.config App Settings
+            Kernel.Rebind<IAuthorisationService>().ToMethod(context =>
+            {
+                var hashingMethod = ConfigurationManager.AppSettings["HashingMethod"];
+                if (!string.IsNullOrWhiteSpace(hashingMethod) && (hashingMethod == "SHA1" || hashingMethod == "SHA512"))
+                {
+                    if(hashingMethod=="SHA1")
+                        return context.Kernel.Get(typeof(SHA1AuthorisationService)) as IAuthorisationService;
+                    return context.Kernel.Get(typeof(SHA512AuthorisationService)) as IAuthorisationService;
+                }
+                return context.Kernel.Get<SHA512AuthorisationService>();
+            }).InRequestScope();
         }
     }
 }

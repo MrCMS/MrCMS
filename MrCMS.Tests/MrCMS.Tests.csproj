@@ -81,6 +81,7 @@
       <HintPath>..\packages\Ninject.MockingKernel.3.0.0.5\lib\net40-full\Ninject.MockingKernel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.82.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -128,7 +129,8 @@
     <Compile Include="Logging\LogServiceTests.cs" />
     <Compile Include="Helpers\SessionHelperTests.cs" />
     <Compile Include="Optimization\ResourceDataTests.cs" />
-    <Compile Include="Services\AuthorisationServiceTests.cs" />
+    <Compile Include="Services\SHA512AuthorisationServiceTests.cs" />
+    <Compile Include="Services\SHA1AuthorisationServiceTests.cs" />
     <Compile Include="Services\CurrentSiteLocatorTests.cs" />
     <Compile Include="Services\MessageTemplateParserTests.cs" />
     <Compile Include="Services\MessageTemplateServiceTests.cs" />

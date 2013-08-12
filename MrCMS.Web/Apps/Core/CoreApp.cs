@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -68,7 +69,11 @@ namespace MrCMS.Web.Apps.Core
                 IsActive = true
             };
 
-            var authorisationService = new AuthorisationService();
+            IAuthorisationService authorisationService = new SHA512AuthorisationService();
+            var hashingMethod = ConfigurationManager.AppSettings["HashingMethod"];
+            if (!string.IsNullOrWhiteSpace(hashingMethod) )
+                if(hashingMethod == "SHA1")
+                    authorisationService = new SHA1AuthorisationService();
             authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
             authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
             session.Transact(sess => sess.Save(user));

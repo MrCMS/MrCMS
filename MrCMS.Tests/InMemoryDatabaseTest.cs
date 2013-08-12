@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Configuration;
 using System.Reflection;
 using System.Web;
 using Elmah;
@@ -18,10 +19,10 @@ using MrCMS.Tasks;
 using MrCMS.Tests.Stubs;
 using MrCMS.Website;
 using NHibernate;
-using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using Ninject;
 using Ninject.MockingKernel;
+using Configuration = NHibernate.Cfg.Configuration;
 
 namespace MrCMS.Tests
 {
@@ -102,7 +103,12 @@ namespace MrCMS.Tests
                                IsActive = true,
                            };
 
-            new AuthorisationService().SetPassword(user, "password", "password");
+            IAuthorisationService authorisationService = new SHA512AuthorisationService();
+            var hashingMethod = ConfigurationManager.AppSettings["HashingMethod"];
+            if (!string.IsNullOrWhiteSpace(hashingMethod))
+                if (hashingMethod == "SHA1")
+                    authorisationService = new SHA1AuthorisationService();
+            authorisationService.SetPassword(user, "password", "password");
 
             var adminUserRole = new UserRole
                                     {
