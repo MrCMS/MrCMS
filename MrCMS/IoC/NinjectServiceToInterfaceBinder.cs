@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using MrCMS.Helpers;
 using MrCMS.Settings;
 using Ninject;
 using Ninject.Activation;
@@ -21,7 +22,8 @@ namespace MrCMS.IoC
             }
 
             IList<Type> interfaceTypes = type.GetInterfaces()
-                .Where(t => t.Assembly == Assembly.GetAssembly(type)).ToList();
+                                             .Where(t => TypeHelper.GetAllMrCMSAssemblies().Contains(t.Assembly))
+                                             .ToList();
 
             if (interfaceTypes.Any())
             {

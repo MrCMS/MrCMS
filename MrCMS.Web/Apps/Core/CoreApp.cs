@@ -69,11 +69,11 @@ namespace MrCMS.Web.Apps.Core
                 IsActive = true
             };
 
-            IAuthorisationService authorisationService = new SHA512AuthorisationService();
             var hashingMethod = ConfigurationManager.AppSettings["HashingMethod"];
-            if (!string.IsNullOrWhiteSpace(hashingMethod) )
-                if(hashingMethod == "SHA1")
-                    authorisationService = new SHA1AuthorisationService();
+            IHashAlgorithm hashAlgorithm = !string.IsNullOrWhiteSpace(hashingMethod) && hashingMethod == "SHA1"
+                                               ? (IHashAlgorithm) new SHA1HashAlgorithm()
+                                               : new SHA512HashAlgorithm();
+            AuthorisationService authorisationService = new AuthorisationService(hashAlgorithm);
             authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
             authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
             session.Transact(sess => sess.Save(user));

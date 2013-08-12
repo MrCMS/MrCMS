@@ -103,11 +103,7 @@ namespace MrCMS.Tests
                                IsActive = true,
                            };
 
-            IAuthorisationService authorisationService = new SHA512AuthorisationService();
-            var hashingMethod = ConfigurationManager.AppSettings["HashingMethod"];
-            if (!string.IsNullOrWhiteSpace(hashingMethod))
-                if (hashingMethod == "SHA1")
-                    authorisationService = new SHA1AuthorisationService();
+            IAuthorisationService authorisationService = new AuthorisationService(new SHA512HashAlgorithm());
             authorisationService.SetPassword(user, "password", "password");
 
             var adminUserRole = new UserRole
