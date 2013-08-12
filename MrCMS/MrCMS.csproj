@@ -152,7 +152,7 @@
     <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
     <Compile Include="DbConfiguration\Configuration\DatabaseType.cs" />
-    <Compile Include="DbConfiguration\Configuration\DocumentSoftDeleteListener.cs" />
+    <Compile Include="DbConfiguration\Configuration\SoftDeleteListener.cs" />
     <Compile Include="DbConfiguration\Configuration\PostCommitEventListener.cs" />
     <Compile Include="DbConfiguration\Configuration\SaveOrUpdateListener.cs" />
     <Compile Include="DbConfiguration\Configuration\UpdateIndicesListener.cs" />

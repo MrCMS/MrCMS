@@ -1,15 +1,10 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using MrCMS.Entities.People;
 
 namespace MrCMS.Entities.Multisite
 {
     public class Site : SystemEntity
     {
-        public Site()
-        {
-        }
         [Required]
         public virtual string Name { get; set; }
 

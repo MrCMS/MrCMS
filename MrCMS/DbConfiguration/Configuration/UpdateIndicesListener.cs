@@ -49,7 +49,7 @@ namespace MrCMS.DbConfiguration.Configuration
             if (siteEntity != null) TaskExecutor.ExecuteLater(Create(typeof(UpdateIndicesTask<>), siteEntity));
         }
 
-        private BackgroundTask Create(Type type, SiteEntity siteEntity)
+        public static BackgroundTask Create(Type type, SiteEntity siteEntity)
         {
             return Activator.CreateInstance(type.MakeGenericType(siteEntity.GetType()), siteEntity) as BackgroundTask;
         }

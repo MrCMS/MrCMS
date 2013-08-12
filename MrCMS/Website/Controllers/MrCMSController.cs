@@ -17,9 +17,9 @@ namespace MrCMS.Website.Controllers
 
         private void CheckCurrentSite(ActionExecutingContext filterContext)
         {
-            var entities = filterContext.ActionParameters.Values.OfType<SiteEntity>();
+            var entities = filterContext.ActionParameters.Values.OfType<SiteEntity>().ToList();
 
-            if (entities.Any(entity => !CurrentSite.IsValidForSite(entity) && entity.Id != 0))
+            if (entities.Any(entity => !CurrentSite.IsValidForSite(entity) && entity.Id != 0) || entities.Any(entity => entity.IsDeleted))
             {
                 filterContext.Result = AuthenticationFailureRedirect();
             }
