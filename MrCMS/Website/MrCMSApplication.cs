@@ -56,7 +56,16 @@ namespace MrCMS.Website
                 return false;
             var extension = Path.GetExtension(absolutePath);
 
-            return !string.IsNullOrWhiteSpace(extension);
+            return !string.IsNullOrWhiteSpace(extension) && !WebExtensions.Contains(extension);
+        }
+
+        protected static IEnumerable<string> WebExtensions
+        {
+            get
+            {
+                yield return ".aspx";
+                yield return ".php";
+            }
         }
 
         public override void Init()
@@ -105,11 +114,6 @@ namespace MrCMS.Website
                 TaskExecutor.ExecuteLater(scheduledTaskManager.GetTask(scheduledTask));
         }
 
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            filters.Add(new HandleErrorAttribute());
-        }
-
         public abstract string RootNamespace { get; }
 
         public void RegisterRoutes(RouteCollection routes)
@@ -134,16 +138,11 @@ namespace MrCMS.Website
 
             RegisterAppSpecificRoutes(routes);
 
-            routes.Add(new Route("{*data}", new RouteValueDictionary(), new RouteValueDictionary(), GetConstraints(),
+            routes.Add(new Route("{*data}", new RouteValueDictionary(),
+                                 new RouteValueDictionary(new { data = @".*\.aspx" }),
+                                 new MrCMSAspxRouteHandler()));
+            routes.Add(new Route("{*data}", new RouteValueDictionary(), new RouteValueDictionary(),
                                  new MrCMSRouteHandler()));
-        }
-
-        protected virtual RouteValueDictionary GetConstraints()
-        {
-            return new RouteValueDictionary
-                       {
-                           {"Namespaces", new[] {"MrCMS.Web.Controllers"}}
-                       };
         }
 
         public static bool InDevelopment
