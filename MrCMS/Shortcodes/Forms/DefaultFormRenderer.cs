@@ -46,8 +46,10 @@ namespace MrCMS.Shortcodes.Forms
             form.InnerHtml += div;
 
             if (submittedStatus.Submitted)
+            {
+                form.InnerHtml += new TagBuilder("br");
                 form.InnerHtml += _submittedMessageRenderer.AppendSubmittedMessage(webpage, submittedStatus);
-
+            }
             return form.ToString();
         }
 

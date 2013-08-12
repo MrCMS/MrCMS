@@ -1,0 +1,14 @@
+﻿@model MrCMS.Entities.Documents.Web.Webpage
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("ClearFormData", "Form",FormMethod.Post))
+{
+    @Html.HiddenFor(x=>x.Id)
+    <fieldset>
+        <legend>Delete All Entries
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn btn-danger" value="Delete All Entries" />
+            </span>
+        </legend>
+        Are you sure you want to delete all entries for @Model.Name? Deleting entries can not be undone.
+    </fieldset>
+}
