@@ -17,7 +17,7 @@ using Ninject;
 
 namespace MrCMS.IoC
 {
-    public class ContextModule:NinjectModule
+    public class ContextModule : NinjectModule
     {
         public override void Load()
         {
@@ -69,18 +69,17 @@ namespace MrCMS.IoC
                                                           return context.Kernel.Get<FileSystem>();
                                                       }).InRequestScope();
 
-            // Allowing IAuthorisationService implementation to be set in the Web.config App Settings
-            Kernel.Rebind<IAuthorisationService>().ToMethod(context =>
-            {
-                var hashingMethod = ConfigurationManager.AppSettings["HashingMethod"];
-                if (!string.IsNullOrWhiteSpace(hashingMethod) && (hashingMethod == "SHA1" || hashingMethod == "SHA512"))
-                {
-                    if(hashingMethod=="SHA1")
-                        return context.Kernel.Get(typeof(SHA1AuthorisationService)) as IAuthorisationService;
-                    return context.Kernel.Get(typeof(SHA512AuthorisationService)) as IAuthorisationService;
-                }
-                return context.Kernel.Get<SHA512AuthorisationService>();
-            }).InRequestScope();
+            // Allowing IHashAlgorithm implementation to be set in the Web.config App Settings
+            Kernel.Rebind<IHashAlgorithm>().ToMethod(context =>
+                                                         {
+                                                             var hashAlgorithm =
+                                                                 ConfigurationManager.AppSettings["hash-algorithm"];
+                                                             return !string.IsNullOrWhiteSpace(hashAlgorithm) &&
+                                                                    hashAlgorithm == "SHA1"
+                                                                        ? context.Kernel.Get(typeof (SHA1HashAlgorithm))
+                                                                          as IHashAlgorithm
+                                                                        : context.Kernel.Get<SHA512HashAlgorithm>();
+                                                         }).InRequestScope();
         }
     }
 }

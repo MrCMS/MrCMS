@@ -214,6 +214,8 @@
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Installation\SetupMessageTemplates.cs" />
+    <Compile Include="Services\IAuthorisationService.cs" />
+    <Compile Include="Services\IHashAlgorithm.cs" />
     <Compile Include="Services\IMessageTemplateService.cs" />
     <Compile Include="Services\ITokenProvider.cs" />
     <Compile Include="Services\MessageTemplateService.cs" />
@@ -391,6 +393,8 @@
     <Compile Include="Services\PropertyTokenProvider.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SearchService.cs" />
+    <Compile Include="Services\SHA1HashAlgorithm.cs" />
+    <Compile Include="Services\SHA512HashAlgorithm.cs" />
     <Compile Include="Services\SiteService.cs" />
     <Compile Include="Services\TagService.cs" />
     <Compile Include="Services\UrlHistoryService.cs" />
