@@ -396,7 +396,7 @@
     <Compile Include="Services\PropertyTokenProvider.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SearchService.cs" />
-    <Compile Include="Services\SHA1HashAlgorithm.cs" />
+    <Compile Include="Services\NopSHA1HashAlgorithm.cs" />
     <Compile Include="Services\SHA512HashAlgorithm.cs" />
     <Compile Include="Services\SiteService.cs" />
     <Compile Include="Services\TagService.cs" />

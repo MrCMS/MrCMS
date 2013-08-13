@@ -71,7 +71,7 @@ namespace MrCMS.Web.Apps.Core
 
             var hashingMethod = ConfigurationManager.AppSettings["HashingMethod"];
             IHashAlgorithm hashAlgorithm = !string.IsNullOrWhiteSpace(hashingMethod) && hashingMethod == "SHA1"
-                                               ? (IHashAlgorithm) new SHA1HashAlgorithm()
+                                               ? (IHashAlgorithm) new NopSHA1HashAlgorithm()
                                                : new SHA512HashAlgorithm();
             AuthorisationService authorisationService = new AuthorisationService(hashAlgorithm);
             authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);

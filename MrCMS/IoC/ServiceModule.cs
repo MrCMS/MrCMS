@@ -76,7 +76,7 @@ namespace MrCMS.IoC
                                                                  ConfigurationManager.AppSettings["hash-algorithm"];
                                                              return !string.IsNullOrWhiteSpace(hashAlgorithm) &&
                                                                     hashAlgorithm == "SHA1"
-                                                                        ? context.Kernel.Get(typeof (SHA1HashAlgorithm))
+                                                                        ? context.Kernel.Get(typeof (NopSHA1HashAlgorithm))
                                                                           as IHashAlgorithm
                                                                         : context.Kernel.Get<SHA512HashAlgorithm>();
                                                          }).InRequestScope();

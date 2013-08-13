@@ -29,28 +29,10 @@ namespace MrCMS.Services
 
             var salt = CreateSalt(64);
 
-            user.PasswordHash = GenerateSaltedHash(GetBytes(password), salt);
+            user.PasswordHash = _hashAlgorithm.GenerateSaltedHash(GetBytes(password), salt);
             user.PasswordSalt = salt;
-        }
-
-        private byte[] GenerateSaltedHash(byte[] plainText, byte[] salt)
-        {
-            var plainTextWithSaltBytes =
-                new byte[plainText.Length + salt.Length];
-
-            for (int i = 0; i < plainText.Length; i++)
-            {
-                plainTextWithSaltBytes[i] = plainText[i];
-            }
-            for (int i = 0; i < salt.Length; i++)
-            {
-                plainTextWithSaltBytes[plainText.Length + i] = salt[i];
-            }
-
-            return _hashAlgorithm.ComputeHash(plainTextWithSaltBytes);
-        }
-
-        private static byte[] GetBytes(string text)
+        } 
+               private static byte[] GetBytes(string text)
         {
             return Encoding.UTF8.GetBytes(text);
         }
@@ -66,7 +48,7 @@ namespace MrCMS.Services
 
         public bool ValidateUser(User user, string password)
         {
-            return CompareByteArrays(user.PasswordHash, GenerateSaltedHash(GetBytes(password), user.PasswordSalt));
+            return CompareByteArrays(user.PasswordHash, _hashAlgorithm.GenerateSaltedHash(GetBytes(password), user.PasswordSalt));
         }
 
         private static bool CompareByteArrays(byte[] array1, byte[] array2)

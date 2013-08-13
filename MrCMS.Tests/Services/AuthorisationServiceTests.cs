@@ -45,7 +45,7 @@ namespace MrCMS.Tests.Services
         public void AuthorisationService_SetPassword_WithSamePasswordsShouldAssignThePasswordSaltAndHashOfTheUser()
         {
             var user = new User();
-            A.CallTo(() => _hashAlgorithm.ComputeHash(A<byte[]>._)).Returns(new byte[64]);
+            A.CallTo(() => _hashAlgorithm.GenerateSaltedHash(A<byte[]>._, A<byte[]>._)).Returns(new byte[64]);
 
             _authorisationService.SetPassword(user, "password", "password");
 

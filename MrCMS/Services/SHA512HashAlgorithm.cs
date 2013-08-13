@@ -8,13 +8,24 @@ namespace MrCMS.Services
 
         public SHA512HashAlgorithm()
         {
-
             _algorithm = new SHA512Managed();
         }
-
-        public byte[] ComputeHash(byte[] data)
+        
+        public byte[] GenerateSaltedHash(byte[] plainText, byte[] salt)
         {
-            return _algorithm.ComputeHash(data);
+            var plainTextWithSaltBytes =
+                new byte[plainText.Length + salt.Length];
+
+            for (int i = 0; i < plainText.Length; i++)
+            {
+                plainTextWithSaltBytes[i] = plainText[i];
+            }
+            for (int i = 0; i < salt.Length; i++)
+            {
+                plainTextWithSaltBytes[plainText.Length + i] = salt[i];
+            }
+
+            return _algorithm.ComputeHash(plainTextWithSaltBytes);
         }
     }
 }
