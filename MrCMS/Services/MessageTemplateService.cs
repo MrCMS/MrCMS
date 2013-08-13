@@ -70,6 +70,11 @@ namespace MrCMS.Services
             return messageTemplate.GetTokens(_messageTemplateParser);
         }
 
+        public T Get<T>() where T : MessageTemplate
+        {
+            return _session.QueryOver<T>().Take(1).Cacheable().SingleOrDefault();
+        }
+
         public void Save(MessageTemplate messageTemplate)
         {
             _session.Transact(session => session.SaveOrUpdate(messageTemplate));

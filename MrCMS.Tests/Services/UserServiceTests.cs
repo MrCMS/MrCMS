@@ -23,15 +23,14 @@ namespace MrCMS.Tests.Services
         public UserServiceTests()
         {
             _session = Session;
-            _siteService = A.Fake<ISiteService>();
-            _userService = new UserService(_session, _siteService);
+            _userService = new UserService(_session);
         }
 
         [Fact]
         public void UserService_AddUser_SavesAUserToSession()
         {
             _session = A.Fake<ISession>();
-            _userService = new UserService(_session, _siteService);
+            _userService = new UserService(_session);
             var user = new User();
 
             _userService.AddUser(user);
@@ -43,7 +42,7 @@ namespace MrCMS.Tests.Services
         public void UserService_SaveUser_UpdatesAUser()
         {
             _session = A.Fake<ISession>();
-            _userService = new UserService(_session, _siteService);
+            _userService = new UserService(_session);
             var user = new User();
 
             _userService.SaveUser(user);
@@ -197,7 +196,7 @@ namespace MrCMS.Tests.Services
         {
             var user = A.Fake<User>();
             _session = A.Fake<ISession>();
-            _userService = new UserService(_session, _siteService);
+            _userService = new UserService(_session);
 
             _userService.DeleteUser(user);
 

@@ -14,13 +14,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
-        private readonly IAuthorisationService _authorisationService;
+        private readonly IPasswordManagementService _passwordManagementService;
 
-        public UserController(IUserService userService, IRoleService roleService, IAuthorisationService authorisationService)
+        public UserController(IUserService userService, IRoleService roleService, IPasswordManagementService passwordManagementService)
         {
             _userService = userService;
             _roleService = roleService;
-            _authorisationService = authorisationService;
+            _passwordManagementService = passwordManagementService;
         }
 
         [MrCMSACLRule(typeof(UserACL), UserACL.View)]
@@ -96,7 +96,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [MrCMSACLRule(typeof(UserACL), UserACL.SetPassword)]
         public ActionResult SetPassword(User user, string password)
         {
-            _authorisationService.SetPassword(user, password, password);
+            _passwordManagementService.SetPassword(user, password, password);
             _userService.SaveUser(user);
             return RedirectToAction("Edit", new { user.Id });
         }

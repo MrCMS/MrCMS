@@ -9,20 +9,22 @@ namespace MrCMS.Website.Binders
 {
     public class AddUserModelBinder : MrCMSDefaultModelBinder
     {
-        public AddUserModelBinder(IAuthorisationService authorisationService, ISession session)
+        private readonly IPasswordManagementService _passwordManagementService;
+
+        public AddUserModelBinder(IPasswordManagementService passwordManagementService, ISession session)
             : base(() => session)
         {
-            AuthorisationService = authorisationService;
+            _passwordManagementService = passwordManagementService;
         }
-
-        private IAuthorisationService AuthorisationService { get; set; }
 
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var user = base.BindModel(controllerContext, bindingContext) as User;
 
-            AuthorisationService.SetPassword(user, controllerContext.RequestContext.HttpContext.Request["Password"],
-                                             controllerContext.RequestContext.HttpContext.Request["ConfirmPassword"]);
+            _passwordManagementService.SetPassword(user,
+                                                   controllerContext.RequestContext.HttpContext.Request["Password"],
+                                                   controllerContext.RequestContext.HttpContext.Request[
+                                                       "ConfirmPassword"]);
 
             return user;
         }

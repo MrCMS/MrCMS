@@ -7,6 +7,7 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
+using MrCMS.Web.Apps.Core.MessageTemplates;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website;
@@ -18,18 +19,33 @@ namespace MrCMS.Tests.Services
 {
     public class ResetPasswordServiceTests : InMemoryDatabaseTest
     {
+        private readonly SiteSettings _siteSettings;
+        private readonly MailSettings _mailSettings;
+        private readonly IUserService _userService;
+        private readonly IPasswordManagementService _passwordManagementService;
+        private readonly IMessageParser<ResetPasswordMessageTemplate, User> _messageParser;
+        private readonly ResetPasswordService _resetPasswordService;
+
+        public ResetPasswordServiceTests()
+        {
+            _siteSettings = new SiteSettings();
+            _mailSettings = new MailSettings();
+            _userService = A.Fake<IUserService>();
+            _passwordManagementService = A.Fake<IPasswordManagementService>();
+            _messageParser = A.Fake<IMessageParser<ResetPasswordMessageTemplate, User>>();
+            _resetPasswordService = new ResetPasswordService(Session, _siteSettings, _mailSettings, _userService,
+                                                             _passwordManagementService,
+                                                             _messageParser);
+        }
+
         [Fact]
         public void ResetPasswordService_SetResetPassword_SetsTheResetPasswordGuid()
         {
-            var httpRequestBase = A.Fake<HttpRequestBase>();
-            A.CallTo(() => httpRequestBase.Url).Returns(new Uri("http://www.example.com"));
-            var resetPasswordService = new ResetPasswordService(Session, new SiteSettings(), new MailSettings(),
-                                                                A.Fake<UserService>(), httpRequestBase,
-                                                                A.Fake<IAuthorisationService>(), A.Fake<IDocumentService>());
-
             var user = new User();
+            A.CallTo(() => _messageParser.GetMessage(user, null, null, null, null, null, null))
+             .Returns(new QueuedMessage());
 
-            resetPasswordService.SetResetPassword(user);
+            _resetPasswordService.SetResetPassword(user);
 
             user.ResetPasswordGuid.Should().HaveValue();
         }
@@ -37,15 +53,11 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void ResetPasswordService_SetResetPassword_SetsTheResetPasswordExpiry()
         {
-            var httpRequestBase = A.Fake<HttpRequestBase>();
-            A.CallTo(() => httpRequestBase.Url).Returns(new Uri("http://www.example.com"));
-            var resetPasswordService = new ResetPasswordService(Session, new SiteSettings(), new MailSettings(),
-                                                                A.Fake<UserService>(), httpRequestBase,
-                                                                A.Fake<IAuthorisationService>(), A.Fake<IDocumentService>());
-
             var user = new User();
+            A.CallTo(() => _messageParser.GetMessage(user, null, null, null, null, null, null))
+             .Returns(new QueuedMessage());
 
-            resetPasswordService.SetResetPassword(user);
+            _resetPasswordService.SetResetPassword(user);
 
             user.ResetPasswordExpiry.Should().HaveValue();
         }
@@ -53,43 +65,30 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void ResetPasswordService_SetResetPassword_ShouldSaveAQueuedMessage()
         {
-            var httpRequestBase = A.Fake<HttpRequestBase>();
-            A.CallTo(() => httpRequestBase.Url).Returns(new Uri("http://www.example.com"));
-            var resetPasswordService = new ResetPasswordService(Session, new SiteSettings(), new MailSettings(),
-                                                                A.Fake<UserService>(), httpRequestBase,
-                                                                A.Fake<IAuthorisationService>(), A.Fake<IDocumentService>());
-
             var user = new User();
+            A.CallTo(() => _messageParser.GetMessage(user, null, null, null, null, null, null))
+             .Returns(new QueuedMessage());
 
-            resetPasswordService.SetResetPassword(user);
+            _resetPasswordService.SetResetPassword(user);
+
             Session.QueryOver<QueuedMessage>().List().Should().HaveCount(1);
         }
 
         [Fact]
         public void ResetPasswordService_SetResetPassword_ShouldQueueASendMessagesTask()
         {
-            var httpRequestBase = A.Fake<HttpRequestBase>();
-            A.CallTo(() => httpRequestBase.Url).Returns(new Uri("http://www.example.com"));
-            var resetPasswordService = new ResetPasswordService(Session, new SiteSettings(), new MailSettings(),
-                                                                A.Fake<UserService>(), httpRequestBase,
-                                                                A.Fake<IAuthorisationService>(), A.Fake<IDocumentService>());
-
             var user = new User();
+            A.CallTo(() => _messageParser.GetMessage(user, null, null, null, null, null, null))
+             .Returns(new QueuedMessage());
 
-            resetPasswordService.SetResetPassword(user);
+            _resetPasswordService.SetResetPassword(user);
 
             TaskExecutor.TasksToExecute.Value.OfType<SendQueuedMessagesTask>().Should().HaveCount(1);
         }
 
         [Fact]
-        public void ResetPasswordService_ResetPassword_CallsSetPasswordOnTheAuthorisationService()
+        public void ResetPasswordService_ResetPassword_WhenValidCallsSetPasswordOnTheAuthorisationService()
         {
-            var authorisationService = A.Fake<IAuthorisationService>();
-            var userService = A.Fake<IUserService>();
-            var resetPasswordService = new ResetPasswordService(Session, new SiteSettings(), new MailSettings(),
-                                                                userService, A.Fake<HttpRequestBase>(),
-                                                                authorisationService, A.Fake<IDocumentService>());
-
             var guid = Guid.NewGuid();
             var user = new User
             {
@@ -97,29 +96,24 @@ namespace MrCMS.Tests.Services
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };
-
-            A.CallTo(() => userService.GetUserByEmail("test@example.com")).Returns(user);
+            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
 
             const string password = "password";
-            resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
+
+            A.CallTo(() => _passwordManagementService.ValidatePassword(password, password)).Returns(true);
+            _resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
             {
                 Password = password,
                 ConfirmPassword = password,
                 Email = "test@example.com"
             });
 
-            A.CallTo(() => authorisationService.SetPassword(user, password, password)).MustHaveHappened();
+            A.CallTo(() => _passwordManagementService.SetPassword(user, password, password)).MustHaveHappened();
         }
 
         [Fact]
         public void ResetPasswordService_ResetPassword_ResetsThePasswordGuid()
         {
-            var authorisationService = A.Fake<IAuthorisationService>();
-            var userService = A.Fake<IUserService>();
-            var resetPasswordService = new ResetPasswordService(Session, new SiteSettings(), new MailSettings(),
-                                                                userService, A.Fake<HttpRequestBase>(),
-                                                                authorisationService, A.Fake<IDocumentService>());
-
             var guid = Guid.NewGuid();
             var user = new User
             {
@@ -127,11 +121,11 @@ namespace MrCMS.Tests.Services
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };
-
-            A.CallTo(() => userService.GetUserByEmail("test@example.com")).Returns(user);
-
+            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
             const string password = "password";
-            resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
+
+            A.CallTo(() => _passwordManagementService.ValidatePassword(password, password)).Returns(true);
+            _resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
             {
                 Password = password,
                 ConfirmPassword = password,
@@ -144,12 +138,6 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void ResetPasswordService_ResetPassword_ResetsThePasswordExpiry()
         {
-            var authorisationService = A.Fake<IAuthorisationService>();
-            var userService = A.Fake<IUserService>();
-            var resetPasswordService = new ResetPasswordService(Session, new SiteSettings(), new MailSettings(),
-                                                                userService, A.Fake<HttpRequestBase>(),
-                                                                authorisationService, A.Fake<IDocumentService>());
-
             var guid = Guid.NewGuid();
             var user = new User
             {
@@ -157,11 +145,11 @@ namespace MrCMS.Tests.Services
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };
-
-            A.CallTo(() => userService.GetUserByEmail("test@example.com")).Returns(user);
-
+            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
             const string password = "password";
-            resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
+
+            A.CallTo(() => _passwordManagementService.ValidatePassword(password, password)).Returns(true);
+            _resetPasswordService.ResetPassword(new ResetPasswordViewModel(guid, user)
             {
                 Password = password,
                 ConfirmPassword = password,
@@ -174,23 +162,16 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void ResetPasswordService_ResetPassword_ThrowsAnExceptionIfTheGuidIsNotCorrect()
         {
-            var authorisationService = A.Fake<IAuthorisationService>();
-            var userService = A.Fake<IUserService>();
-            var resetPasswordService = new ResetPasswordService(Session, new SiteSettings(), new MailSettings(),
-                                                                userService, A.Fake<HttpRequestBase>(),
-                                                                authorisationService, A.Fake<IDocumentService>());
-
             var guid = Guid.NewGuid();
             var user = new User
             {
                 Email = "test@example.com"
             };
 
-            A.CallTo(() => userService.GetUserByEmail("test@example.com")).Returns(user);
-
+            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
             const string password = "password";
             AssertionExtensions.ShouldThrow<InvalidOperationException>(() =>
-                                                                       resetPasswordService
+                                                                       _resetPasswordService
                                                                            .ResetPassword(
                                                                                new ResetPasswordViewModel
                                                                                    (guid, user)

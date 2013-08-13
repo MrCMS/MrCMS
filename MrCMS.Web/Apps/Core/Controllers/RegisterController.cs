@@ -12,11 +12,13 @@ namespace MrCMS.Web.Apps.Core.Controllers
     public class RegistrationController : MrCMSAppUIController<CoreApp>
     {
         private readonly IUserService _userService;
+        private readonly IPasswordManagementService _passwordManagementService;
         private readonly IAuthorisationService _authorisationService;
 
-        public RegistrationController(IUserService userService, IAuthorisationService authorisationService)
+        public RegistrationController(IUserService userService, IPasswordManagementService passwordManagementService, IAuthorisationService authorisationService)
         {
             _userService = userService;
+            _passwordManagementService = passwordManagementService;
             _authorisationService = authorisationService;
         }
 
@@ -55,7 +57,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     Email = model.Email,
                     IsActive = true
                 };
-                _authorisationService.SetPassword(user, model.Password, model.ConfirmPassword);
+                _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
                 _userService.AddUser(user);
                 _authorisationService.SetAuthCookie(model.Email, false);
                 if (!string.IsNullOrEmpty(model.ReturnUrl))

@@ -13,11 +13,13 @@ namespace MrCMS.Web.Apps.Core.Services
     {
         private readonly IUserService _userService;
         private readonly IAuthorisationService _authorisationService;
+        private readonly IPasswordManagementService _passwordManagementService;
 
-        public LoginService(IUserService userService, IAuthorisationService authorisationService)
+        public LoginService(IUserService userService, IAuthorisationService authorisationService, IPasswordManagementService passwordManagementService)
         {
             _userService = userService;
             _authorisationService = authorisationService;
+            _passwordManagementService = passwordManagementService;
         }
 
         public LoginResult AuthenticateUser(LoginModel loginModel)
@@ -26,7 +28,7 @@ namespace MrCMS.Web.Apps.Core.Services
             User user = _userService.GetUserByEmail(loginModel.Email);
             if (user != null && user.IsActive)
             {
-                if (_authorisationService.ValidateUser(user, loginModel.Password))
+                if (_passwordManagementService.ValidateUser(user, loginModel.Password))
                 {
                     _authorisationService.SetAuthCookie(loginModel.Email, loginModel.RememberMe);
                     return user.IsAdmin

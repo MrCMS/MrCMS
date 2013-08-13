@@ -84,7 +84,7 @@ namespace MrCMS.Tests
                     return site;
                 });
 
-            CurrentRequestData.SiteSettings = new SiteSettings {TimeZone = TimeZoneInfo.Local.Id};
+            CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.Local.Id };
 
             TaskExecutor.Discard();
 
@@ -102,9 +102,6 @@ namespace MrCMS.Tests
                                Email = "test@example.com",
                                IsActive = true,
                            };
-
-            IAuthorisationService authorisationService = new AuthorisationService(new SHA512HashAlgorithm());
-            authorisationService.SetPassword(user, "password", "password");
 
             var adminUserRole = new UserRole
                                     {

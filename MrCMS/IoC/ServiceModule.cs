@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Runtime.Caching;
@@ -54,6 +55,9 @@ namespace MrCMS.IoC
             Kernel.Rebind<Site>()
                   .ToMethod(context => CurrentRequestData.CurrentSite)
                   .InRequestScope();
+            Kernel.Bind<IEnumerable<IHashAlgorithm>>()
+                  .ToMethod(context => context.Kernel.GetAll<IHashAlgorithm>())
+                  .InRequestScope();
 
             // Allowing IFileSystem implementation to be set in the site settings
             Kernel.Rebind<IFileSystem>().ToMethod(context =>
@@ -68,18 +72,6 @@ namespace MrCMS.IoC
                                                           }
                                                           return context.Kernel.Get<FileSystem>();
                                                       }).InRequestScope();
-
-            // Allowing IHashAlgorithm implementation to be set in the Web.config App Settings
-            Kernel.Rebind<IHashAlgorithm>().ToMethod(context =>
-                                                         {
-                                                             var hashAlgorithm =
-                                                                 ConfigurationManager.AppSettings["hash-algorithm"];
-                                                             return !string.IsNullOrWhiteSpace(hashAlgorithm) &&
-                                                                    hashAlgorithm == "SHA1"
-                                                                        ? context.Kernel.Get(typeof (NopSHA1HashAlgorithm))
-                                                                          as IHashAlgorithm
-                                                                        : context.Kernel.Get<SHA512HashAlgorithm>();
-                                                         }).InRequestScope();
         }
     }
 }

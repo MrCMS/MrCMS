@@ -13,10 +13,12 @@ namespace MrCMS.Web.Apps.Core.Controllers
     {
         private readonly IUserService _userService;
         private readonly IAuthorisationService _authorisationService;
+        private IPasswordManagementService _passwordManagementService;
 
-        public UserAccountController(IUserService userService, IAuthorisationService authorisationService)
+        public UserAccountController(IUserService userService, IPasswordManagementService passwordManagementService,IAuthorisationService authorisationService)
         {
             _userService = userService;
+            _passwordManagementService = passwordManagementService;
             _authorisationService = authorisationService;
         }
 
@@ -90,7 +92,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             if (ModelState.IsValid)
             {
                 var user = CurrentRequestData.CurrentUser;
-                _authorisationService.SetPassword(user, model.Password, model.ConfirmPassword);
+                _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
                 model.Message = "Password updated.";
 
             }

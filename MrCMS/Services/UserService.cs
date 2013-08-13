@@ -14,12 +14,10 @@ namespace MrCMS.Services
     public class UserService : IUserService
     {
         private readonly ISession _session;
-        private readonly ISiteService _siteService;
 
-        public UserService(ISession session, ISiteService siteService)
+        public UserService(ISession session)
         {
             _session = session;
-            _siteService = siteService;
         }
 
         public void AddUser(User user)

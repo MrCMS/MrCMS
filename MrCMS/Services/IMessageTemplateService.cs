@@ -11,5 +11,6 @@ namespace MrCMS.Services
         MessageTemplate GetNew(string type);
         MessageTemplate Reset(MessageTemplate messageTemplate);
         List<string> GetTokens(MessageTemplate messageTemplate);
+        T Get<T>() where T : MessageTemplate;
     }
 }

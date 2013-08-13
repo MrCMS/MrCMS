@@ -69,13 +69,13 @@ namespace MrCMS.Web.Apps.Core
                 IsActive = true
             };
 
-            var hashingMethod = ConfigurationManager.AppSettings["HashingMethod"];
-            IHashAlgorithm hashAlgorithm = !string.IsNullOrWhiteSpace(hashingMethod) && hashingMethod == "SHA1"
-                                               ? (IHashAlgorithm) new NopSHA1HashAlgorithm()
-                                               : new SHA512HashAlgorithm();
-            AuthorisationService authorisationService = new AuthorisationService(hashAlgorithm);
-            authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
-            authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
+            var hashAlgorithms = new List<IHashAlgorithm> {new SHA512HashAlgorithm()};
+            var hashAlgorithmProvider = new HashAlgorithmProvider(hashAlgorithms);
+            var passwordEncryptionManager = new PasswordEncryptionManager(hashAlgorithmProvider, new UserService(session));
+            var passwordManagementService = new PasswordManagementService(passwordEncryptionManager);
+
+            passwordManagementService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
+            passwordManagementService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
             session.Transact(sess => sess.Save(user));
             CurrentRequestData.CurrentUser = user;
 
@@ -282,6 +282,7 @@ namespace MrCMS.Web.Apps.Core
             var roleService = new RoleService(session);
             roleService.SaveRole(adminUserRole);
 
+            var authorisationService = new AuthorisationService();
             authorisationService.Logout();
             authorisationService.SetAuthCookie(user.Email, false);
 

@@ -15,7 +15,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     public class UserControllerTests
     {
         private static IUserService _userService;
-        private static IAuthorisationService _authorisationService;
+        private static IPasswordManagementService _passwordManagementService;
         private static IRoleService _roleService;
 
         [Fact]
@@ -29,12 +29,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         private static UserController GetUserController(IUserService userService = null, IRoleService roleService = null,
-                                                        IAuthorisationService authorisationService = null)
+                                                        IPasswordManagementService passwordManagementService= null)
         {
             _userService = userService ?? A.Fake<IUserService>();
             _roleService = roleService ?? A.Fake<IRoleService>();
-            _authorisationService = authorisationService ?? A.Fake<IAuthorisationService>();
-            var userController = new UserController(_userService, _roleService, _authorisationService);
+            _passwordManagementService = passwordManagementService ?? A.Fake<IPasswordManagementService>();
+            var userController = new UserController(_userService, _roleService, _passwordManagementService);
             return userController;
         }
 
@@ -196,7 +196,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             const string password = "password";
             ActionResult result = userController.SetPassword(user, password);
 
-            A.CallTo(() => _authorisationService.SetPassword(user, password, password)).MustHaveHappened();
+            A.CallTo(() => _passwordManagementService.SetPassword(user, password, password)).MustHaveHappened();
         }
     }
 }
