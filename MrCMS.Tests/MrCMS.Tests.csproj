@@ -129,7 +129,8 @@
     <Compile Include="Logging\LogServiceTests.cs" />
     <Compile Include="Helpers\SessionHelperTests.cs" />
     <Compile Include="Optimization\ResourceDataTests.cs" />
-    <Compile Include="Services\SHA512AuthorisationServiceTests.cs" />
+    <Compile Include="Services\AuthorisationServiceTests.cs" />
+    <Compile Include="Services\FormServiceTests.cs" />
     <Compile Include="Services\CurrentSiteLocatorTests.cs" />
     <Compile Include="Services\MessageTemplateParserTests.cs" />
     <Compile Include="Services\MessageTemplateServiceTests.cs" />
