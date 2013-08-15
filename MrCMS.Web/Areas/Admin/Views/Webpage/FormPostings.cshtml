@@ -8,8 +8,8 @@
             <div class="pull-right btn-group">
                 @if (Model.FormPostings.Any())
                 {
-                    @Html.ActionLink("Delete all entries", "ClearFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-danger", data_toggle = "fb-modal"})
-                    @Html.ActionLink("Export Entries", "ExportFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-primary"})
+                    @Html.ActionLink("Delete all entries", "ClearFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-mini btn-danger", data_toggle = "fb-modal"})
+                    @Html.ActionLink("Export Entries", "ExportFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-mini btn-primary"})
                 }
             </div>
         </div>
