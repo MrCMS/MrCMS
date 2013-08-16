@@ -4,7 +4,6 @@ using MrCMS.Entities;
 using MrCMS.Paging;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Criterion.Lambda;
 
 namespace MrCMS.Helpers
 {

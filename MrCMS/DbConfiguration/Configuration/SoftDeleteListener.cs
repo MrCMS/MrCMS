@@ -17,9 +17,9 @@ namespace MrCMS.DbConfiguration.Configuration
                 CascadeBeforeDelete(session, persister, entity, entityEntry, transientEntities);
                 CascadeAfterDelete(session, persister, entity, transientEntities);
 
-            var siteEntity = e as SiteEntity;
+                var siteEntity = e as SiteEntity;
                 if (siteEntity != null)
-                    TaskExecutor.ExecuteLater(UpdateIndicesListener.Create(typeof (DeleteIndicesTask<>), siteEntity));
+                    TaskExecutor.ExecuteLater(UpdateIndicesListener.Create(typeof(DeleteIndicesTask<>), siteEntity));
             }
             else
             {
