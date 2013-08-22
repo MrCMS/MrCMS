@@ -39,7 +39,15 @@ namespace MrCMS.Apps
         public static readonly Dictionary<Type, string> AppWidgets = new Dictionary<Type, string>();
         public static readonly Dictionary<Type, string> AppUserProfileDatas = new Dictionary<Type, string>();
         public static readonly Dictionary<Type, string> AppEntities = new Dictionary<Type, string>();
-        public static readonly Dictionary<Type, string> AppTypes = new Dictionary<Type, string>();
+        public static readonly Dictionary<Type, string> AllAppTypes = new Dictionary<Type, string>();
+        public static Dictionary<Type, string> AppTypes
+        {
+            get { return AllAppTypes.Where(pair => !pair.Key.IsAbstract).ToDictionary(pair => pair.Key, pair => pair.Value); }
+        }
+        public static Dictionary<Type, string> AbstractTypes
+        {
+            get { return AllAppTypes.Where(pair => pair.Key.IsAbstract).ToDictionary(pair => pair.Key, pair => pair.Value); }
+        }
         private static List<MrCMSApp> _allApps;
         public virtual IEnumerable<Type> BaseTypes { get { yield break; } }
         public virtual IEnumerable<Type> Conventions { get { yield break; } }
@@ -59,8 +67,8 @@ namespace MrCMS.Apps
             userProfileTypes.ForEach(type => AppUserProfileDatas[type] = AppName);
             var entities = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<SystemEntity>().FindAll(type => type.Namespace.StartsWith(this.GetType().Namespace));
             entities.ForEach(type => AppEntities[type] = AppName);
-            var types = TypeHelper.GetAllTypes().Where(type => !type.IsAbstract).Where(type => !string.IsNullOrWhiteSpace(type.Namespace) && type.Namespace.StartsWith(this.GetType().Namespace));
-            types.ForEach(type => AppTypes[type] = AppName);
+            var types = TypeHelper.GetAllTypes().Where(type => !string.IsNullOrWhiteSpace(type.Namespace) && type.Namespace.StartsWith(this.GetType().Namespace));
+            types.ForEach(type => AllAppTypes[type] = AppName);
         }
 
         /// <summary>
