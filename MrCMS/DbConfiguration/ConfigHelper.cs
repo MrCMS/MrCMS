@@ -28,6 +28,7 @@ namespace MrCMS.DbConfiguration
             }
             return model;
         }
+
         public static AutoPersistenceModel IncludeAppConventions(this AutoPersistenceModel model)
         {
             foreach (var baseType in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>()
