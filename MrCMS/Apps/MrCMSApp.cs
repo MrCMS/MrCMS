@@ -42,6 +42,7 @@ namespace MrCMS.Apps
         public static readonly Dictionary<Type, string> AppTypes = new Dictionary<Type, string>();
         private static List<MrCMSApp> _allApps;
         public virtual IEnumerable<Type> BaseTypes { get { yield break; } }
+        public virtual IEnumerable<Type> Conventions { get { yield break; } }
 
         internal void CreateContextAndRegister(RouteCollection routes, object state)
         {
@@ -98,6 +99,7 @@ namespace MrCMS.Apps
         protected virtual int InstallOrder { get { return 10; } }
 
         public static IEnumerable<string> AppNames { get { return AllApps.Select(app => app.AppName); } }
+
 
         protected abstract void RegisterServices(IKernel kernel);
 

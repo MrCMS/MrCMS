@@ -28,5 +28,15 @@ namespace MrCMS.DbConfiguration
             }
             return model;
         }
+        public static AutoPersistenceModel IncludeAppConventions(this AutoPersistenceModel model)
+        {
+            foreach (var baseType in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>()
+                                        .Select(type => Activator.CreateInstance(type) as MrCMSApp)
+                                        .SelectMany(app => app.Conventions))
+            {
+                model.Conventions.Add(baseType);
+            }
+            return model;
+        }
     }
 }

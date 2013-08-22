@@ -45,7 +45,6 @@ namespace MrCMS.DbConfiguration
 
         public IPersistenceConfigurer PersistenceOverride { get; set; }
 
-
         public ISessionFactory CreateSessionFactory()
         {
             var configuration = GetConfiguration();
@@ -143,7 +142,8 @@ namespace MrCMS.DbConfiguration
                        .IncludeBase<FormProperty>()
                        .IncludeAppBases()
                        .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
-                       .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>();
+                       .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
+                       .IncludeAppConventions();
             addFromAssemblyOf.Add(typeof(NotDeletedFilter));
             var config = Fluently.Configure()
                 .Database(iPersistenceConfigurer)
