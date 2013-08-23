@@ -48,5 +48,6 @@ namespace MrCMS.Services
         IEnumerable<SelectListItem> GetValidParents(Webpage webpage);
         IEnumerable<Document> GetParents(int? parent);
         Webpage GetHomePage();
+        RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage;
     }
 }

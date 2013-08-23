@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using System.Web.Routing;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -533,6 +534,21 @@ namespace MrCMS.Services
                             document.PublishOn <= CurrentRequestData.Now && document.Parent == null)
                         .Take(1)
                         .SingleOrDefault();
+        }
+
+        public RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
+        {
+            var page = GetUniquePage<T>();
+            var url = page != null ? string.Format("/{0}", page.LiveUrlSegment) : "/";
+            if (routeValues != null)
+            {
+                var dictionary = new RouteValueDictionary(routeValues);
+                url += string.Format("?{0}",
+                                     string.Join("&",
+                                                 dictionary.Select(
+                                                     pair => string.Format("{0}={1}", pair.Key, pair.Value))));
+            }
+            return new RedirectResult(url);
         }
 
         public bool UrlIsValidForMediaCategory(string url, int? id)
