@@ -718,10 +718,7 @@
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_888888_256x240.png" />
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_f6cf3b_256x240.png" />
-    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery-ui-1.10.0.custom.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery-ui-1.9.2.custom.css" />
-    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery.ui.1.10.0.ie.css" />
-    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery.ui.1.9.2.ie.css" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\cut.png" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\door.png" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\page_white_copy.png" />
@@ -1376,14 +1373,11 @@
     <Content Include="Areas\Admin\Views\Sites\CopyOptions.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Tokens.cshtml" />
     <Content Include="Areas\Admin\Views\Form\ClearFormData.cshtml" />
-    <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
-    <None Include="Properties\PublishProfiles\v0.1.pubxml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
-    <None Include="Properties\PublishProfiles\v0.2.pubxml" />
-    <None Include="Properties\PublishProfiles\v0.3.pubxml" />
     <Content Include="Themes\Default\Views\web.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="Properties\PublishProfiles\demo.mrcms.com.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -1507,7 +1501,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>27465</DevelopmentServerPort>
+          <DevelopmentServerPort>41657</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:8888</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
