@@ -5,16 +5,16 @@
     <ul>
         @foreach (SiteTreeNode node in Model)
         {
-            <li data-id="@node.Id" data-sort-id="@node.ParentId" data-sortable="@node.Sortable" data-can-add-child="@node.CanAddChild" data-controller="@node.NodeType" @(!node.IsPublished ? "class=\"grey\"" : "")><i class="@node.IconClass">&nbsp;</i>
+            <li data-id="@node.Id" data-sort-id="@node.ParentId" data-sortable="@node.Sortable" data-can-add-child="@node.CanAddChild" data-controller="@node.NodeType"><i class="@node.IconClass">&nbsp;</i>
                 @{
             var cssClass = "";
-            if (!node.IsPublished)
-            {
-                cssClass = "orange";
-            }
             if (!node.RevealInNavigation)
             {
                 cssClass = "grey";
+            }
+            if (!node.IsPublished)
+            {
+                cssClass = "orange";
             }
                 }
 

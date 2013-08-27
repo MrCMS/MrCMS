@@ -7,6 +7,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using MrCMS.ACL.Rules;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
@@ -66,7 +67,7 @@ namespace MrCMS.Website
 
         private bool EditingEnabled
         {
-            get { return CurrentRequestData.CurrentUserIsAdmin && _configurationProvider.GetSiteSettings<SiteSettings>().EnableInlineEditing; }
+            get { return (CurrentRequestData.CurrentUser != null && CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") && _configurationProvider.GetSiteSettings<SiteSettings>().EnableInlineEditing); }
         }
 
         public MvcHtmlString RenderZone(string areaName)
