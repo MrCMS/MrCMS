@@ -30,7 +30,7 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates
                            Cc = String.Empty,
                            Subject = String.Format("{0} - Password Reset Request", fromName),
                            Body = string.Format("To reset your password please click <a href=\"{0}\">here</a>", resetUrl),
-                           IsHtml = false
+                           IsHtml = true
                        };
         }
 

@@ -8,9 +8,9 @@
 {
     <fieldset>
         <legend>Edit @Model.GetType().GetFriendlyName()
-            <span class="pull-right">
-                @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn btn-mini" })
-                @Html.ActionLink("Reset", "Reset", "MessageTemplate", new { Id = Model.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+            <span class="pull-right btn-group  display-inline ">
+                @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn" })
+                @Html.ActionLink("Reset", "Reset", "MessageTemplate", new { Id = Model.Id }, new { @class = "btn", data_toggle = "fb-modal" })
                 <input class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-message-template" type="submit" value="Save" />
             </span>
         </legend>

@@ -52,9 +52,15 @@ namespace MrCMS.Web.Apps.Core
                 UICulture = model.UiCulture
             };
             var mediaSettings = new MediaSettings
-                                    {
-                                        Site = site
-                                    };
+            {
+                Site = site
+            };
+            var mailSettings = new MailSettings
+            {
+                Site = site
+            };
+            mailSettings.Port = 25;
+
             CurrentRequestData.SiteSettings = siteSettings;
 
             var documentService = new DocumentService(session, siteSettings, site);
@@ -229,7 +235,6 @@ namespace MrCMS.Web.Apps.Core
             siteSettings.Error403PageId = model.Error403.Id;
             siteSettings.Error404PageId = model.Error404.Id;
             siteSettings.Error500PageId = model.Error500.Id;
-
             siteSettings.EnableInlineEditing = true;
             siteSettings.SiteIsLive = true;
 
