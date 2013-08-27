@@ -3,7 +3,7 @@ using MrCMS.Indexing.Management;
 
 namespace MrCMS.Tasks
 {
-    public class UpdateIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
+    internal class UpdateIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
         public UpdateIndicesTask(T entity)
             : base(entity)

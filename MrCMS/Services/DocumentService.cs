@@ -36,14 +36,43 @@ namespace MrCMS.Services
         public void AddDocument<T>(T document) where T : Document
         {
             _session.Transact(session =>
+                                  {
+                                      document.DisplayOrder = GetMaxParentDisplayOrder(document);
+                                      document.CustomInitialization(this, _session);
+                                      session.SaveOrUpdate(document);
+                                  });
+        }
+
+        private int GetMaxParentDisplayOrder(Document document)
+        {
+            if (document.Parent != null)
             {
-                var sameParentDocs = GetDocumentsByParent(document.Parent as T).ToList();
-                document.DisplayOrder = sameParentDocs.Any()
-                                            ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1
-                                            : 0;
-                document.CustomInitialization(this, _session);
-                session.SaveOrUpdate(document);
-            });
+                var enumerable = document.Parent.Children.Where(d => d != document).ToList();
+                return enumerable.Any()
+                           ? enumerable.Max(d => d.DisplayOrder) + 1
+                           : 0;
+            }
+            if (document is MediaCategory)
+            {
+                var documentsByParent = GetDocumentsByParent<MediaCategory>(null).ToList();
+                return documentsByParent.Any()
+                           ? documentsByParent.Max(category => category.DisplayOrder) + 1
+                           : 0;
+            }
+            else if (document is Layout)
+            {
+                var documentsByParent = GetDocumentsByParent<Layout>(null).ToList();
+                return documentsByParent.Any()
+                           ? documentsByParent.Max(category => category.DisplayOrder) + 1
+                           : 0;
+            }
+            else
+            {
+                var documentsByParent = GetDocumentsByParent<Webpage>(null).ToList();
+                return documentsByParent.Any()
+                           ? documentsByParent.Max(category => category.DisplayOrder) + 1
+                           : 0;
+            }
         }
 
         public T GetDocument<T>(int id) where T : Document
@@ -63,11 +92,6 @@ namespace MrCMS.Services
             {
                 document.OnSaving(session);
                 session.SaveOrUpdate(document);
-                if (document.IsDeleted)
-                {
-                    var test = "";
-                    test += "ba";
-                }
             });
             return document;
         }
@@ -501,7 +525,7 @@ namespace MrCMS.Services
                 potentialParents.AddRange(_session.CreateCriteria(metadata.Type).SetCacheable(true).List<Webpage>());
             }
 
-            var result = potentialParents.Distinct().Where(page => !page.ActivePages.Contains(webpage)).OrderBy(x=>x.Name)
+            var result = potentialParents.Distinct().Where(page => !page.ActivePages.Contains(webpage)).OrderBy(x => x.Name)
                                                         .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
                                                                              page => page.Id.ToString(), emptyItem: null);
 
@@ -644,6 +668,6 @@ namespace MrCMS.Services
                         .RowCount() > 0;
         }
 
-        
+
     }
 }

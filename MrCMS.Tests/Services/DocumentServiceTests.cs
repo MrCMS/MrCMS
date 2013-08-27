@@ -687,10 +687,10 @@ namespace MrCMS.Tests.Services
         {
             for (int i = 0; i < 4; i++)
             {
-                Session.Transact(session => session.Save(new StubDocument { DisplayOrder = i, Site = CurrentSite }));
+                Session.Transact(session => session.Save(new StubWebpage { DisplayOrder = i, Site = CurrentSite }));
             }
 
-            var stubDocument = new StubDocument { Site = CurrentSite };
+            var stubDocument = new StubWebpage { Site = CurrentSite };
             _documentService.AddDocument(stubDocument);
 
             stubDocument.DisplayOrder.Should().Be(4);

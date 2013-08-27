@@ -3,7 +3,7 @@ using MrCMS.Indexing.Management;
 
 namespace MrCMS.Tasks
 {
-    public class DeleteIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
+    internal class DeleteIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
         public DeleteIndicesTask(T entity)
             : base(entity)
