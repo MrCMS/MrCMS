@@ -525,7 +525,7 @@ namespace MrCMS.Services
                 potentialParents.AddRange(_session.CreateCriteria(metadata.Type).SetCacheable(true).List<Webpage>());
             }
 
-            var result = potentialParents.Distinct().Where(page => !page.ActivePages.Contains(webpage)).OrderBy(x => x.Name)
+            var result = potentialParents.Distinct().Where(page => !page.ActivePages.Contains(webpage) && page.Site.Id == _currentSite.Id).OrderBy(x => x.Name)
                                                         .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
                                                                              page => page.Id.ToString(), emptyItem: null);
 
