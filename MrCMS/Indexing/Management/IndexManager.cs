@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Lucene.Net.Index;
+using Lucene.Net.Search;
 using Lucene.Net.Store;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
@@ -9,7 +10,8 @@ using System.Linq;
 namespace MrCMS.Indexing.Management
 {
     public abstract class IndexManager<TEntity, TDefinition> : IIndexManager<TEntity, TDefinition>
-        where TEntity : SystemEntity where TDefinition : IIndexDefinition<TEntity>, new()
+        where TEntity : SystemEntity
+        where TDefinition : IIndexDefinition<TEntity>, new()
     {
         protected readonly Site CurrentSite;
 
@@ -114,7 +116,7 @@ namespace MrCMS.Indexing.Management
                 throw new Exception(
                     string.Format(
                         "object {0} is not of correct type for the index {1}",
-                        entity.ToString(),
+                        entity,
                         GetType().Name));
             });
         }
@@ -146,8 +148,17 @@ namespace MrCMS.Indexing.Management
 
         public IndexResult Update(TEntity entity)
         {
-            return IndexResult.GetResult(() => Write(writer => writer.UpdateDocument(Definition.GetIndex(entity),
-                                                                                     Definition.Convert(entity))));
+            return IndexResult.GetResult(() => Write(writer =>
+                                                         {
+                                                             using (var indexSearcher = new IndexSearcher(GetDirectory(), true))
+                                                             {
+                                                                 var topDocs = indexSearcher.Search(new TermQuery(Definition.GetIndex(entity)), int.MaxValue);
+                                                                 if (!topDocs.ScoreDocs.Any()) 
+                                                                    return;
+                                                             }
+                                                             writer.UpdateDocument(Definition.GetIndex(entity),
+                                                                                   Definition.Convert(entity));
+                                                         }));
         }
 
         public IndexResult Update(object entity)
@@ -159,9 +170,7 @@ namespace MrCMS.Indexing.Management
                                              {
                                                  throw new Exception(
                                                      string.Format(
-                                                         "object {0} is not of correct type for the index {1}",
-                                                         entity.ToString(),
-                                                         GetType().Name));
+                                                         "object {0} is not of correct type for the index {1}", entity, GetType().Name));
                                              });
         }
 
