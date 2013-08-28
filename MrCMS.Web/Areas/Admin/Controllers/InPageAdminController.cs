@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    [MrCMSACLRule(typeof (InlineEditingACL), InlineEditingACL.Allowed, ReturnEmptyResult = true)]
+    [MrCMSACLRule(typeof (AdminBarACL), AdminBarACL.Show, ReturnEmptyResult = true)]
     public class InPageAdminController : MrCMSAdminController
     {
         private readonly ISession _session;
