@@ -78,7 +78,7 @@ section.admin-header h3 { margin: 0px; }
 .error, .error span { color: red; }
 
 
-#loading { position: fixed; top: 5px; right: 5px; z-index: 999999; }
+#loading { position: fixed; bottom: 5px; right: 5px; z-index: 999999; }
 
 /*page versions*/
 #changes-table tr.unchanged { background-color: rgb(203, 255, 203); }
