@@ -53,12 +53,12 @@ namespace MrCMS.Website.Controllers
             }
 
             ViewData["controller-name"] = ControllerContext.RouteData.Values["controller"];
-
-            if (MrCMSApplication.Get<SiteSettings>().SSLAdmin)
+            var url = Request.Url.ToString();
+            if (MrCMSApplication.Get<SiteSettings>().SSLAdmin && url.ToLower().Contains("/admin"))
             {
                 if (!Request.IsSecureConnection && !Request.IsLocal)
                 {
-                    Response.Redirect(Request.Url.ToString().Replace("http://", "https://"));
+                    Response.Redirect(url.Replace("http://", "https://"));
                 }
             }
 
