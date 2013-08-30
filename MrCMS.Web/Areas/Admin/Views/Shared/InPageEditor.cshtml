@@ -40,7 +40,7 @@
     {
         <a href="/Admin/Webpage/Edit/@Model.Id#postings-tab" class="mrcms-btn mrcms-btn-mini mrcms-btn-info" target="_parent">
             @Model.FormPostings.Count
-            Form entry
+            Form entr@(Model.FormPostings.Count > 1 ? "ies" : "y")
         </a>
     }
     <a href="/logout" class="mrcms-btn mrcms-btn-mini mrcms-btn-default" style="float: right;">Logout</a>
