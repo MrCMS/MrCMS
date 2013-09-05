@@ -72,7 +72,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public PartialViewResult MediaSelector(int? categoryId, bool imagesOnly = false, int page = 1)
         {
-            ViewData["categories"] = _documentService.GetAllDocuments<MediaCategory>().OrderBy(category => category.Name).BuildSelectItemList
+            ViewData["categories"] = _documentService.GetAllDocuments<MediaCategory>().Where(category => category.ShowInAdminNav).OrderBy(category => category.Name).BuildSelectItemList
                        (category => category.Name, category => category.Id.ToString(),
                         emptyItem: SelectListItemHelper.EmptyItem("Select a category..."));
             return PartialView(_fileService.GetFilesPaged(categoryId, imagesOnly, page));
