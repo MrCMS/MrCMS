@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using FluentNHibernate.Automapping;
 using MrCMS.Entities;
-using MrCMS.Entities.Documents;
 
 namespace MrCMS.DbConfiguration.Mapping
 {
@@ -10,8 +9,8 @@ namespace MrCMS.DbConfiguration.Mapping
     {
         public override bool ShouldMap(Type type)
         {
-            return type.IsSubclassOf(typeof (SystemEntity)) &&
-                   base.ShouldMap(type) && !HasDoNotMapAttribute(type);
+            return type.IsSubclassOf(typeof(SystemEntity)) &&
+                   base.ShouldMap(type) && !HasDoNotMapAttribute(type) && !type.Assembly.IsDynamic;
         }
 
         private bool HasDoNotMapAttribute(Type type)
@@ -31,7 +30,7 @@ namespace MrCMS.DbConfiguration.Mapping
 
         public override bool IsDiscriminated(System.Type type)
         {
-            return type.IsSubclassOf(typeof(Document));
+            return ShouldMap(type) && ShouldMap(type.BaseType);
         }
     }
 }
