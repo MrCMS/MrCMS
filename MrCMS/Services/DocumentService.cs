@@ -556,7 +556,9 @@ namespace MrCMS.Services
                             document =>
                             document.Site == _currentSite && document.PublishOn != null &&
                             document.PublishOn <= CurrentRequestData.Now && document.Parent == null)
+                        .OrderBy(webpage => webpage.DisplayOrder).Asc
                         .Take(1)
+                        .Cacheable()
                         .SingleOrDefault();
         }
 
