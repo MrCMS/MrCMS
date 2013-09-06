@@ -17,6 +17,8 @@ namespace MrCMS.Services
         public QueuedMessage GetMessage(T2 obj, string fromAddress = null, string fromName = null, string toAddress = null, string toName = null, string cc = null, string bcc = null)
         {
             var template = _session.QueryOver<T>().Cacheable().SingleOrDefault();
+            if (template == null)
+                return null;
 
             return new QueuedMessage
                 {
