@@ -51,9 +51,7 @@ namespace MrCMS.Services
         public User GetUserByEmail(string email)
         {
             string trim = email.Trim();
-            return
-                _session.QueryOver<User>().Where(user => user.Email==trim).Cacheable().
-                    SingleOrDefault();
+            return _session.QueryOver<User>().Where(user => user.Email == trim).Cacheable().SingleOrDefault();
         }
 
         public User GetUserByResetGuid(Guid resetGuid)
@@ -124,7 +122,7 @@ namespace MrCMS.Services
         public IPagedList<T> GetPaged<T>(User user, QueryOver<T> query = null, int page = 1, int pageSize = 10) where T : SystemEntity, IBelongToUser
         {
             return _session.Paged(query ?? QueryOver.Of<T>(), page, pageSize);
-            
+
         }
     }
 }
