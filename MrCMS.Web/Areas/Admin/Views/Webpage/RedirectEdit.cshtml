@@ -3,6 +3,7 @@
 @model Webpage
 <ul class="nav nav-tabs margin-top-10">
     <li class="active"><a href="#edit-content" data-toggle="tab">Edit</a></li>
+    <li><a href="#layout-content" data-toggle="tab">Layout</a></li>
     <li><a href="#edit-seo" data-toggle="tab">SEO</a></li>
     <li><a href="#versions" data-toggle="tab">Versions</a></li>
 </ul>
@@ -12,6 +13,7 @@
     {
         <div class="tab-content">
             @{Html.RenderPartial("Properties", Model);}
+            @{Html.RenderPartial("Layout", Model); }
             @{Html.RenderPartial("SEO", Model);}
             @{Html.RenderPartial("PageVersions", Model);}
         </div>
