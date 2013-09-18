@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Website.Binders;
 using NHibernate;
@@ -9,8 +10,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class LayoutController : BaseDocumentController<Layout>
     {
-        public LayoutController(IDocumentService documentService)
-            : base(documentService)
+        public LayoutController(IDocumentService documentService, Site site)
+            : base(documentService, site)
         {
         }
 

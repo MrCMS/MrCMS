@@ -29,6 +29,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private readonly IFormService formService;
         private readonly ISession session;
         private readonly WebpageController webpageController;
+        private readonly Site _site = new Site();
 
         public WebpageControllerTests()
         {
@@ -36,9 +37,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             documentService = A.Fake<IDocumentService>();
             formService = A.Fake<IFormService>();
             session = A.Fake<ISession>();
-            webpageController = new WebpageController(documentService, formService, session)
+            webpageController = new WebpageController(documentService, formService, session,_site)
             {
-                CurrentSite = new Site()
             };
             DocumentMetadataHelper.OverrideExistAny = type => false;
         }
@@ -54,7 +54,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
         {
-            var textPage = new TextPage { Site = webpageController.CurrentSite, Id = 1 };
+            var textPage = new TextPage { Site = _site, Id = 1 };
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(textPage);
 
             var actionResult = webpageController.Add_Get(1) as ViewResult;
@@ -65,7 +65,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldSetViewDataToSelectListItem()
         {
-            var textPage = new TextPage { Site = webpageController.CurrentSite };
+            var textPage = new TextPage { Site = _site };
             A.CallTo(() => documentService.GetDocument<Document>(1)).Returns(textPage);
 
             webpageController.Add_Get(1);
@@ -76,7 +76,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddPost_ShouldCallSaveDocument()
         {
-            var webpage = new TextPage { Site = new Site() };
+            var webpage = new TextPage { Site = _site };
             A.CallTo(() => documentService.UrlIsValidForWebpage(null, null)).Returns(true);
 
             webpageController.Add(webpage); 
@@ -155,7 +155,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_EditGet_ShouldSetLayoutDetailsToSelectListItems()
         {
-            var layout = new Layout { Id = 1, Name = "Layout Name", Site = webpageController.CurrentSite };
+            var layout = new Layout { Id = 1, Name = "Layout Name", Site = _site };
             A.CallTo(() => documentService.GetAllDocuments<Layout>()).Returns(new List<Layout> { layout });
 
             webpageController.Edit_Get(new TextPage());

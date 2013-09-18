@@ -1,13 +1,11 @@
 using System;
 using MrCMS.Entities.People;
-using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Web.Apps.Core.MessageTemplates;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Web.Apps.Core.Services
 {

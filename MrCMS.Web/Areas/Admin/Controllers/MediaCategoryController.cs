@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Website.Binders;
@@ -13,8 +14,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IFileService _fileService;
 
-        public MediaCategoryController(IDocumentService documentService, IFileService fileService)
-            : base(documentService)
+        public MediaCategoryController(IDocumentService documentService, IFileService fileService, Site site)
+            : base(documentService, site)
         {
             _fileService = fileService;
         }
@@ -106,7 +107,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             var sortItems =
             _fileService.GetFiles(parent).OrderBy(arg => arg.display_order)
                                 .Select(
-                                    arg => new ImageSortItem { Order = arg.display_order, Id = arg.Id, Name = arg.name, ImageUrl = arg.url, IsImage=arg.is_image})
+                                    arg => new ImageSortItem { Order = arg.display_order, Id = arg.Id, Name = arg.name, ImageUrl = arg.url, IsImage = arg.is_image })
                                 .ToList();
 
             return View(sortItems);

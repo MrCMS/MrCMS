@@ -6,6 +6,7 @@ using MrCMS.ACL;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Website;
@@ -19,8 +20,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         private readonly IFormService _formService;
         private readonly ISession _session;
 
-        public WebpageController(IDocumentService documentService, IFormService formService, ISession session)
-            : base(documentService)
+        public WebpageController(IDocumentService documentService, IFormService formService, ISession session, Site site)
+            : base(documentService, site)
         {
             _formService = formService;
             _session = session;
@@ -38,7 +39,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         protected override void DocumentTypeSetup(Webpage doc)
         {
             IEnumerable<Layout> layouts =
-                _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false && x.Site == CurrentSite);
+                _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false && x.Site == Site);
 
             ViewData["Layout"] = layouts.BuildSelectItemList(layout => layout.Name,
                                                              layout => layout.Id.ToString(CultureInfo.InvariantCulture),
