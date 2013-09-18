@@ -142,14 +142,20 @@ namespace MrCMS.Services
 
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
+            IEnumerable<T> list;
             if (parent != null)
             {
-                var list = parent.Children.OfType<T>();
                 var documentTypeDefinition = parent.GetMetadata();
-                return documentTypeDefinition != null ? Sort(documentTypeDefinition, list) : list;
+                list = parent.Children.OfType<T>();
+                if (documentTypeDefinition != null)
+                    list = Sort(documentTypeDefinition, list);
             }
-            return
-                _session.QueryOver<T>().Where(arg => arg.Parent == null && arg.Site == _currentSite).Cacheable().List();
+            else
+            {
+                list = _session.QueryOver<T>().Where(arg => arg.Parent == null).Cacheable().List();
+            }
+            list = list.Where(arg => arg.Site == _currentSite);
+            return list;
         }
 
         public IEnumerable<T> GetAdminDocumentsByParent<T>(T parent) where T : Document
