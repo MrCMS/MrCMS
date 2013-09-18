@@ -159,7 +159,12 @@
     <Compile Include="Apps\Core\Pages\ForgottenPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\LoginPage.cs" />
     <Compile Include="Apps\Core\Services\ILoginService.cs" />
+    <Compile Include="Apps\Core\Services\IOnUserRegistered.cs" />
+    <Compile Include="Apps\Core\Services\IRegistrationService.cs" />
+    <Compile Include="Apps\Core\Services\IUserEventService.cs" />
+    <Compile Include="Apps\Core\Services\RegistrationService.cs" />
     <Compile Include="Apps\Core\Services\ResetPasswordService.cs" />
+    <Compile Include="Apps\Core\Services\UserEventService.cs" />
     <Compile Include="Apps\Core\Widgets\LinkedImage.cs" />
     <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Core\Widgets\UserLinks.cs" />

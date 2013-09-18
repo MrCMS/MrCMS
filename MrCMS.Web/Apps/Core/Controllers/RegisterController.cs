@@ -1,25 +1,20 @@
 using System.Web.Mvc;
-using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Pages;
+using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
-using MrCMS.Services;
 
 namespace MrCMS.Web.Apps.Core.Controllers
 {
     public class RegistrationController : MrCMSAppUIController<CoreApp>
     {
-        private readonly IUserService _userService;
-        private readonly IPasswordManagementService _passwordManagementService;
-        private readonly IAuthorisationService _authorisationService;
+        private readonly IRegistrationService _registrationService;
 
-        public RegistrationController(IUserService userService, IPasswordManagementService passwordManagementService, IAuthorisationService authorisationService)
+        public RegistrationController(IRegistrationService registrationService)
         {
-            _userService = userService;
-            _passwordManagementService = passwordManagementService;
-            _authorisationService = authorisationService;
+            _registrationService = registrationService;
         }
 
         public ActionResult Show(RegisterPage page)
@@ -50,26 +45,18 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
             if (model != null && ModelState.IsValid)
             {
-                var user = new User
-                {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Email = model.Email,
-                    IsActive = true
-                };
-                _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
-                _userService.AddUser(user);
-                _authorisationService.SetAuthCookie(model.Email, false);
-                if (!string.IsNullOrEmpty(model.ReturnUrl))
-                    return Redirect("~/" + model.ReturnUrl);
-                return Redirect("~/");
+                _registrationService.RegisterUser(model);
+
+                return !string.IsNullOrEmpty(model.ReturnUrl)
+                           ? Redirect("~/" + model.ReturnUrl)
+                           : Redirect("~/");
             }
             return Redirect(UniquePageHelper.GetUrl<RegisterPage>());
         }
 
         public JsonResult CheckEmailIsNotRegistered(string email)
         {
-            return Json(_userService.GetUserByEmail(email) == null, JsonRequestBehavior.AllowGet);
+            return Json(_registrationService.CheckEmailIsNotRegistered(email), JsonRequestBehavior.AllowGet);
         }
     }
 }
