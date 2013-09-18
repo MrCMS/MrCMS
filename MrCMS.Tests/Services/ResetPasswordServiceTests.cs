@@ -33,7 +33,7 @@ namespace MrCMS.Tests.Services
             _userService = A.Fake<IUserService>();
             _passwordManagementService = A.Fake<IPasswordManagementService>();
             _messageParser = A.Fake<IMessageParser<ResetPasswordMessageTemplate, User>>();
-            _resetPasswordService = new ResetPasswordService(Session, _siteSettings, _mailSettings, _userService,
+            _resetPasswordService = new ResetPasswordService(_siteSettings, _mailSettings, _userService,
                                                              _passwordManagementService,
                                                              _messageParser);
         }
@@ -66,12 +66,13 @@ namespace MrCMS.Tests.Services
         public void ResetPasswordService_SetResetPassword_ShouldSaveAQueuedMessage()
         {
             var user = new User();
+            var queuedMessage = new QueuedMessage();
             A.CallTo(() => _messageParser.GetMessage(user, null, null, null, null, null, null))
-             .Returns(new QueuedMessage());
+             .Returns(queuedMessage);
 
             _resetPasswordService.SetResetPassword(user);
 
-            Session.QueryOver<QueuedMessage>().List().Should().HaveCount(1);
+            A.CallTo(() => _messageParser.QueueMessage(queuedMessage)).MustHaveHappened();
         }
 
         [Fact]

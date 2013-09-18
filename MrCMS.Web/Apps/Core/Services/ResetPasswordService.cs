@@ -11,24 +11,16 @@ using NHibernate;
 
 namespace MrCMS.Web.Apps.Core.Services
 {
-    public interface IResetPasswordService
-    {
-        void SetResetPassword(User user);
-        void ResetPassword(ResetPasswordViewModel model);
-    }
-
     public class ResetPasswordService : IResetPasswordService
     {
-        private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
         private readonly IUserService _userService;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IMessageParser<ResetPasswordMessageTemplate, User> _messageParser;
         private readonly MailSettings _mailSettings;
 
-        public ResetPasswordService(ISession session, SiteSettings siteSettings, MailSettings mailSettings, IUserService userService, IPasswordManagementService passwordManagementService, IMessageParser<ResetPasswordMessageTemplate, User> messageParser)
+        public ResetPasswordService( SiteSettings siteSettings, MailSettings mailSettings, IUserService userService, IPasswordManagementService passwordManagementService, IMessageParser<ResetPasswordMessageTemplate, User> messageParser)
         {
-            _session = session;
             _siteSettings = siteSettings;
             _mailSettings = mailSettings;
             _userService = userService;
@@ -43,8 +35,7 @@ namespace MrCMS.Web.Apps.Core.Services
             _userService.SaveUser(user);
 
             var queuedMessage = _messageParser.GetMessage(user);
-
-            _session.Transact(session => session.SaveOrUpdate(queuedMessage));
+            _messageParser.QueueMessage(queuedMessage);
 
             //to do - is this needed with new task system?
 

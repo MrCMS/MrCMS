@@ -1,5 +1,6 @@
 ﻿using MrCMS.Entities.Messaging;
 using NHibernate;
+using MrCMS.Helpers;
 
 namespace MrCMS.Services
 {
@@ -32,6 +33,11 @@ namespace MrCMS.Services
                     Body = _messageTemplateParser.Parse(template.Body, obj),
                     IsHtml = template.IsHtml
                 };
+        }
+
+        public void QueueMessage(QueuedMessage queuedMessage)
+        {
+            _session.Transact(session => session.Save(queuedMessage));
         }
     }
 }
