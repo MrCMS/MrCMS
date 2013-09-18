@@ -19,7 +19,7 @@ namespace MrCMS.Web.Apps.Core.Services
         private readonly IMessageParser<ResetPasswordMessageTemplate, User> _messageParser;
         private readonly MailSettings _mailSettings;
 
-        public ResetPasswordService( SiteSettings siteSettings, MailSettings mailSettings, IUserService userService, IPasswordManagementService passwordManagementService, IMessageParser<ResetPasswordMessageTemplate, User> messageParser)
+        public ResetPasswordService(SiteSettings siteSettings, MailSettings mailSettings, IUserService userService, IPasswordManagementService passwordManagementService, IMessageParser<ResetPasswordMessageTemplate, User> messageParser)
         {
             _siteSettings = siteSettings;
             _mailSettings = mailSettings;
