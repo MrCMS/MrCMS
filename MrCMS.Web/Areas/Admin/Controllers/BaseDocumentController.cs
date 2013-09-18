@@ -89,7 +89,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))]T parent)
         {
             var sortItems =
-                _documentService.GetDocumentsByParent(parent).Where(x => x.Site == Site).OrderBy(arg => arg.DisplayOrder)
+                _documentService.GetDocumentsByParent(parent).OrderBy(arg => arg.DisplayOrder)
                                 .Select(
                                     arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
                                 .ToList();

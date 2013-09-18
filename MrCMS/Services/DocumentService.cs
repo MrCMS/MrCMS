@@ -148,7 +148,8 @@ namespace MrCMS.Services
                 var documentTypeDefinition = parent.GetMetadata();
                 return documentTypeDefinition != null ? Sort(documentTypeDefinition, list) : list;
             }
-            return _session.QueryOver<T>().Where(arg => arg.Parent == null).Cacheable().List();
+            return
+                _session.QueryOver<T>().Where(arg => arg.Parent == null && arg.Site == _currentSite).Cacheable().List();
         }
 
         public IEnumerable<T> GetAdminDocumentsByParent<T>(T parent) where T : Document
