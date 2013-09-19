@@ -37,7 +37,8 @@ namespace MrCMS.Services
 
         public void QueueMessage(QueuedMessage queuedMessage)
         {
-            _session.Transact(session => session.Save(queuedMessage));
+            if (queuedMessage != null)
+                _session.Transact(session => session.Save(queuedMessage));
         }
     }
 }

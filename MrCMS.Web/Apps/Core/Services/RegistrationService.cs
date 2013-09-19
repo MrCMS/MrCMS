@@ -20,7 +20,7 @@ namespace MrCMS.Web.Apps.Core.Services
             _userEventService = userEventService;
         }
 
-        public void RegisterUser(RegisterModel model)
+        public User RegisterUser(RegisterModel model)
         {
             var user = new User
                            {
@@ -33,6 +33,7 @@ namespace MrCMS.Web.Apps.Core.Services
             _userService.AddUser(user);
             _authorisationService.SetAuthCookie(model.Email, false);
             _userEventService.OnUserRegistered(user);
+            return user;
         }
 
         public bool CheckEmailIsNotRegistered(string email)
