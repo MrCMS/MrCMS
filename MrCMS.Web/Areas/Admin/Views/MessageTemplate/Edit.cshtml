@@ -59,7 +59,7 @@
         <br />
         @Html.CheckBoxFor(x => x.IsHtml, new { @class = "pull-left" }) <span>&nbsp;Is HTML?</span>
 
-        @{ Html.RenderAction("Tokens", "MessageTemplate", Model);}
+        @{ Html.RenderAction("Tokens", "MessageTemplate", new {messageTemplate = Model});}
 
 
     </fieldset>
