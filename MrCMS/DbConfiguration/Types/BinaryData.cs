@@ -8,7 +8,7 @@ namespace MrCMS.DbConfiguration.Types
 {
     public class BinaryData<T> : BaseImmutableUserType<T>
     {
-        readonly BinaryFormatter binaryFormatter = new BinaryFormatter();
+        private readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
         public override object NullSafeGet(IDataReader rs, string[] names, object owner)
         {
             var o = NHibernateUtil.BinaryBlob.NullSafeGet(rs, names[0]) as byte[];
@@ -16,14 +16,13 @@ namespace MrCMS.DbConfiguration.Types
             {
                 try
                 {
-                    var deserialize = binaryFormatter.Deserialize(memoryStream);
+                    var deserialize = _binaryFormatter.Deserialize(memoryStream);
                     return deserialize;
                 }
                 catch
                 {
                     return null;
                 }
-
             }
         }
 
@@ -33,7 +32,7 @@ namespace MrCMS.DbConfiguration.Types
 
             using (var memoryStream = new MemoryStream())
             {
-                binaryFormatter.Serialize(memoryStream, value);
+                _binaryFormatter.Serialize(memoryStream, value);
                 NHibernateUtil.BinaryBlob.NullSafeSet(cmd, memoryStream.GetBuffer(), index);
             }
         }
