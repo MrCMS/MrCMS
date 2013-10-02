@@ -32,14 +32,25 @@ namespace MrCMS.Logging
             var newGuid = Guid.NewGuid();
 
             if (_session != null)
-                _session.Transact(session => session.Save(new Log
-                                                              {
-                                                                  Error = error,
-                                                                  Guid = newGuid,
-                                                                  Message = error.Message,
-                                                                  Detail = error.Detail,
-                                                                  Site = _session.Get<Site>(CurrentRequestData.CurrentSite.Id)
-                                                              }));
+            {
+                var log = new Log
+                              {
+                                  Error = error,
+                                  Guid = newGuid,
+                                  Message = error.Message,
+                                  Detail = error.Detail,
+                                  Site = _session.Get<Site>(CurrentRequestData.CurrentSite.Id)
+                              };
+                try
+                {
+                    _session.Transact(session => session.Save(log));
+                }
+                catch
+                {
+                    log.Error = null;
+                    _session.Transact(session => session.Save(log));
+                }
+            }
 
             return newGuid.ToString();
         }

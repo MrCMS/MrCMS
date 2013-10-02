@@ -169,7 +169,7 @@
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
     <Compile Include="DbConfiguration\Filters\NotDeletedFilter.cs" />
-    <Compile Include="DbConfiguration\LogEntryOverride.cs" />
+    <Compile Include="DbConfiguration\LogOverride.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCMSMapClassAttribute.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCmsMappingConfiguration.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
