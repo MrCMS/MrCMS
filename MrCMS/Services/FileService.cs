@@ -143,8 +143,16 @@ namespace MrCMS.Services
             //check to see if the image already exists, if it does simply return it
             var requestedImageFileUrl = ImageProcessor.RequestedImageFileUrl(file, size);
 
-            if (_fileSystem.Exists(requestedImageFileUrl))
+            // if we've cached the file existing then we're fine
+            if (file.ResizedImages.Any(image => image.Url == requestedImageFileUrl))
                 return requestedImageFileUrl;
+
+            // if it exists but isn't cached, we should add it to the cache
+            if (_fileSystem.Exists(requestedImageFileUrl))
+            {
+                CacheResizedImage(file, requestedImageFileUrl);
+                return requestedImageFileUrl;
+            }
 
             //if we have got this far the image doesn't exist yet so we need to create the image at the requested size
             var fileBytes = LoadFile(file);
@@ -153,7 +161,17 @@ namespace MrCMS.Services
 
             _imageProcessor.SaveResizedImage(file, size, fileBytes, requestedImageFileUrl);
 
+            // we also need to cache the resized image, to save making a request to find it
+            CacheResizedImage(file, requestedImageFileUrl);
+
             return requestedImageFileUrl;
+        }
+
+        private void CacheResizedImage(MediaFile file, string requestedImageFileUrl)
+        {
+            var resizedImage = new ResizedImage { Url = requestedImageFileUrl, MediaFile = file };
+            file.ResizedImages.Add(resizedImage);
+            _session.Transact(session => session.Save(resizedImage));
         }
 
         public ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory)
@@ -221,7 +239,7 @@ namespace MrCMS.Services
 
         public MediaFile GetFileByUrl(string value)
         {
-            return _session.QueryOver<MediaFile>().Where(file => file.FileUrl== value).Take(1).Cacheable().SingleOrDefault();
+            return _session.QueryOver<MediaFile>().Where(file => file.FileUrl == value).Take(1).Cacheable().SingleOrDefault();
         }
 
         public string GetFileUrl(string value)

@@ -466,7 +466,6 @@ namespace MrCMS.Helpers
 
             if (ImageProcessor.RequiresResize(image.Size, targetSize))
             {
-                var resized = ImageProcessor.CalculateDimensions(image.Size, targetSize);
                 var location = fileService.GetFileLocation(image, targetSize);
                 if (!string.IsNullOrWhiteSpace(location))
                     imageUrl = location;

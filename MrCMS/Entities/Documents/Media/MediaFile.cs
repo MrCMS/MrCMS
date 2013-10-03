@@ -15,7 +15,6 @@ namespace MrCMS.Entities.Documents.Media
         public virtual string FileExtension { get; set; }
         public virtual string ContentType { get; set; }
         public virtual MediaCategory MediaCategory { get; set; }
-        //public virtual string FileLocation { get; set; }
         public virtual string FileUrl { get; set; }
         public virtual long ContentLength { get; set; }
         public virtual string FileName { get; set; }
@@ -55,5 +54,7 @@ namespace MrCMS.Entities.Documents.Media
                 }
             }
         }
+
+        public virtual IList<ResizedImage> ResizedImages { get; set; }
     }
 }

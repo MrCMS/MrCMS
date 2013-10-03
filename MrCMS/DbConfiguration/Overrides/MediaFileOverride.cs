@@ -15,4 +15,11 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(file => file.FileUrl).Length(1000);
         }
     }
+    public class ResizedImageOverride : IAutoMappingOverride<ResizedImage>
+    {
+        public void Override(AutoMapping<ResizedImage> mapping)
+        {
+            mapping.Map(file => file.Url).Length(1000);
+        }
+    }
 }

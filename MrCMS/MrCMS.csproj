@@ -201,6 +201,7 @@
     <Compile Include="Entities\ACL\ACLRole.cs" />
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />
+    <Compile Include="Entities\Documents\Media\ResizedImage.cs" />
     <Compile Include="Entities\Documents\Metadata\DefaultDocumentMetadata.cs" />
     <Compile Include="Entities\Documents\Metadata\DocumentMetadataMap.cs" />
     <Compile Include="Entities\Documents\Metadata\IGetDocumentMetadata.cs" />
