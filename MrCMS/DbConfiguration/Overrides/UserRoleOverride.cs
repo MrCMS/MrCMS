@@ -10,7 +10,7 @@ namespace MrCMS.DbConfiguration.Overrides
         {
             mapping.HasManyToMany(role => role.FrontEndWebpages).Inverse().Table("FrontEndWebpageRoles").Cache.ReadWrite();
             mapping.HasManyToMany(role => role.AdminWebpages).Inverse().Table("AdminWebpageRoles").Cache.ReadWrite();
-            mapping.HasManyToMany(role => role.Users).Cascade.SaveUpdate().Cache.ReadWrite();
+            mapping.HasManyToMany(role => role.Users).Inverse().Cascade.SaveUpdate().Cache.ReadWrite();
         }
     }
 }
