@@ -17,7 +17,7 @@ namespace MrCMS.Website
         protected override bool AuthorizeCore(System.Web.HttpContextBase httpContext)
         {
             var aclRule = (Activator.CreateInstance(_type) as ACLRule);
-            return aclRule.CanAccess(CurrentRequestData.CurrentUser, _operation, null);
+            return aclRule != null && aclRule.CanAccess(CurrentRequestData.CurrentUser, _operation, null);
         }
     }
 }
