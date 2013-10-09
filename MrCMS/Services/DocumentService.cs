@@ -23,12 +23,14 @@ namespace MrCMS.Services
     public class DocumentService : IDocumentService
     {
         private readonly ISession _session;
+        private readonly IDocumentEventService _documentEventService;
         private readonly SiteSettings _siteSettings;
         private readonly Site _currentSite;
 
-        public DocumentService(ISession session, SiteSettings siteSettings, Site currentSite)
+        public DocumentService(ISession session, IDocumentEventService documentEventService, SiteSettings siteSettings, Site currentSite)
         {
             _session = session;
+            _documentEventService = documentEventService;
             _siteSettings = siteSettings;
             _currentSite = currentSite;
         }
@@ -41,6 +43,7 @@ namespace MrCMS.Services
                                       document.CustomInitialization(this, _session);
                                       session.SaveOrUpdate(document);
                                   });
+            _documentEventService.OnDocumentAdded(document);
         }
 
         private int GetMaxParentDisplayOrder(Document document)
@@ -324,6 +327,7 @@ namespace MrCMS.Services
                     document.OnDeleting(session);
                     session.Delete(document);
                 });
+                _documentEventService.OnDocumentDeleted(document);
             }
         }
 
@@ -340,6 +344,7 @@ namespace MrCMS.Services
         {
             document.PublishOn = null;
             SaveDocument(document);
+            _documentEventService.OnDocumentUnpublished(document);
         }
 
         public void HideWidget(Webpage document, int widgetId)
