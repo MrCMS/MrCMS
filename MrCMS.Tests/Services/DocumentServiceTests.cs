@@ -24,10 +24,12 @@ namespace MrCMS.Tests.Services
     {
         private readonly SiteSettings _siteSettings;
         private readonly DocumentService _documentService;
+        private readonly IDocumentEventService _documentEventService;
 
         public DocumentServiceTests()
         {
-            _documentService = new DocumentService(Session, _siteSettings, CurrentSite);
+            _documentEventService = A.Fake<IDocumentEventService>();
+            _documentService = new DocumentService(Session, _documentEventService, _siteSettings, CurrentSite);
             _siteSettings = new SiteSettings();
         }
 

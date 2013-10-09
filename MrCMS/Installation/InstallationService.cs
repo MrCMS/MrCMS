@@ -22,6 +22,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Services;
@@ -380,7 +381,11 @@ namespace MrCMS.Installation
         public static void InitializeIndices(Site site, ISession session)
         {
             var service = new IndexService(session, site);
-            DocumentMetadataHelper.OverrideExistAny = new DocumentService(session, null, site).ExistAny;
+            DocumentMetadataHelper.OverrideExistAny =
+                new DocumentService(session,
+                                    new DocumentEventService(new List<IOnDocumentDeleted>(),
+                                                             new List<IOnDocumentUnpublished>(),
+                                                             new List<IOnDocumentAdded>()), null, site).ExistAny;
             service.InitializeAllIndices(site);
             DocumentMetadataHelper.OverrideExistAny = null;
         }
