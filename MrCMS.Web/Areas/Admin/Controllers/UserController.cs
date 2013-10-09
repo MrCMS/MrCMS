@@ -2,6 +2,7 @@
 using MrCMS.ACL.Rules;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website;
@@ -24,9 +25,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [MrCMSACLRule(typeof(UserACL), UserACL.View)]
-        public ActionResult Index(int page = 1)
+        public ActionResult Index(UserSearchQuery searchQuery)
         {
-            return View(_userService.GetAllUsersPaged(page));
+            ViewData["query"] = searchQuery;
+            return View(_userService.GetUsersPaged(searchQuery));
         }
 
         [HttpGet]

@@ -4,6 +4,7 @@ using System.Web;
 using MrCMS.Entities;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
+using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Website;
 using NHibernate;
@@ -41,6 +42,21 @@ namespace MrCMS.Services
         public IList<User> GetAllUsers()
         {
             return _session.QueryOver<User>().Cacheable().List();
+        }
+
+        public IPagedList<User> GetUsersPaged(UserSearchQuery searchQuery)
+        {
+            var query = _session.QueryOver<User>();
+
+            if (!string.IsNullOrWhiteSpace(searchQuery.Query))
+                query =
+                    query.Where(
+                        user =>
+                        user.Email.IsInsensitiveLike(searchQuery.Query, MatchMode.Anywhere) ||
+                        user.LastName.IsInsensitiveLike(searchQuery.Query, MatchMode.Anywhere) ||
+                        user.FirstName.IsInsensitiveLike(searchQuery.Query, MatchMode.Anywhere));
+
+            return query.Paged(searchQuery.Page, 10);
         }
 
         public IPagedList<User> GetAllUsersPaged(int page)

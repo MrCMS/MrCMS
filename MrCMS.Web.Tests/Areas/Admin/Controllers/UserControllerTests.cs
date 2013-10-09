@@ -4,6 +4,7 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
@@ -23,7 +24,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             UserController userController = GetUserController();
 
-            ActionResult actionResult = userController.Index();
+            ActionResult actionResult = userController.Index(null);
 
             actionResult.Should().BeOfType<ViewResult>();
         }
@@ -39,13 +40,14 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void UserController_Index_ShouldCallUserServiceGetAllUsers()
+        public void UserController_Index_ShouldCallUserServiceGetUsersPaged()
         {
             UserController userController = GetUserController();
+            var userSearchQuery = new UserSearchQuery();
 
-            userController.Index();
+            userController.Index(userSearchQuery);
 
-            A.CallTo(() => _userService.GetAllUsersPaged(1)).MustHaveHappened();
+            A.CallTo(() => _userService.GetUsersPaged(userSearchQuery)).MustHaveHappened();
         }
 
         [Fact]
@@ -53,9 +55,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             UserController userController = GetUserController();
             var users = new StaticPagedList<User>(new List<User>(), 1, 1, 0);
-            A.CallTo(() => _userService.GetAllUsersPaged(1)).Returns(users);
+            var userSearchQuery = new UserSearchQuery();
+            A.CallTo(() => _userService.GetUsersPaged(userSearchQuery)).Returns(users);
 
-            ActionResult actionResult = userController.Index();
+            ActionResult actionResult = userController.Index(userSearchQuery);
 
             actionResult.As<ViewResult>().Model.Should().BeSameAs(users);
         }
