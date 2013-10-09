@@ -16,9 +16,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ViewResult Index(LogEntryType? type, int page = 1)
+        public ViewResult Index(LogSearchQuery searchQuery)
         {
-            var model = _service.GetEntriesPaged(page, type);
+            ViewData["query"] = searchQuery;
+            var model = _service.GetEntriesPaged(searchQuery);
             return View(model);
         }
 

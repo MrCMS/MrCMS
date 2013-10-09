@@ -1329,6 +1329,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Admin\Views\User\Filter.cshtml" />
+    <Content Include="Areas\Admin\Views\Log\Filter.cshtml" />
     <None Include="Properties\PublishProfiles\demo.mrcms.com.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

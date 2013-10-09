@@ -8,6 +8,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using Xunit;
@@ -16,21 +17,22 @@ namespace MrCMS.Tests.Services
 {
     public class UserServiceTests : InMemoryDatabaseTest
     {
-        private static ISiteService _siteService;
         private UserService _userService;
         private ISession _session;
+        private readonly SiteSettings _siteSettings;
 
         public UserServiceTests()
         {
             _session = Session;
-            _userService = new UserService(_session);
+            _siteSettings = new SiteSettings();
+            _userService = new UserService(_session,_siteSettings);
         }
 
         [Fact]
         public void UserService_AddUser_SavesAUserToSession()
         {
             _session = A.Fake<ISession>();
-            _userService = new UserService(_session);
+            _userService = new UserService(_session, _siteSettings);
             var user = new User();
 
             _userService.AddUser(user);
@@ -42,7 +44,7 @@ namespace MrCMS.Tests.Services
         public void UserService_SaveUser_UpdatesAUser()
         {
             _session = A.Fake<ISession>();
-            _userService = new UserService(_session);
+            _userService = new UserService(_session, _siteSettings);
             var user = new User();
 
             _userService.SaveUser(user);
@@ -196,7 +198,7 @@ namespace MrCMS.Tests.Services
         {
             var user = A.Fake<User>();
             _session = A.Fake<ISession>();
-            _userService = new UserService(_session);
+            _userService = new UserService(_session, _siteSettings);
 
             _userService.DeleteUser(user);
 

@@ -4,17 +4,20 @@ using Elmah;
 using FluentAssertions;
 using MrCMS.Logging;
 using MrCMS.Helpers;
+using MrCMS.Settings;
 using Xunit;
 
 namespace MrCMS.Tests.Logging
 {
-    public class LogServiceTests :InMemoryDatabaseTest
+    public class LogServiceTests : InMemoryDatabaseTest
     {
-        private LogService _logService;
+        private readonly LogService _logService;
+        private readonly SiteSettings _siteSettings;
 
         public LogServiceTests()
         {
-            _logService= new LogService(Session);
+            _siteSettings = new SiteSettings();
+            _logService = new LogService(Session, _siteSettings);
         }
 
         [Fact]
@@ -83,15 +86,9 @@ namespace MrCMS.Tests.Logging
 
         private static List<Log> CreateLogList()
         {
-            var logList = Enumerable.Range(1, 20).Select(i => new Log {Message = i.ToString(), Error = new Error()}).ToList();
+            var logList = Enumerable.Range(1, 20).Select(i => new Log { Message = i.ToString(), Error = new Error() }).ToList();
             logList.ForEach(log => Session.Transact(session => session.Save(log)));
             return logList;
-        }
-
-        [Fact]
-        public void FactMethodName()
-        {
-            
         }
     }
 }

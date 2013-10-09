@@ -257,7 +257,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             _mediaCategoryController.MediaSelector(1, false, 1);
 
-            A.CallTo(() => _fileService.GetFilesPaged(1, false, 1, 10)).MustHaveHappened();
+            A.CallTo(() => _fileService.GetFilesPaged(1, false, 1)).MustHaveHappened();
         }
 
         [Fact]

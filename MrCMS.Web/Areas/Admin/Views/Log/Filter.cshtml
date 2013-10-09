@@ -1,0 +1,13 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Logging
+@model MrCMS.Logging.LogSearchQuery
+<div class="row-fluid">
+    <div class="span12">
+        @using (Html.BeginForm("Index", "Log"))
+        {
+            @Html.LabelFor(query => query.Type)
+            @Html.DropDownListFor(query => query.Type, Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All"))
+            <input type="submit" class="btn btn-mini btn-primary" value="Search" />
+        }
+    </div>
+</div>

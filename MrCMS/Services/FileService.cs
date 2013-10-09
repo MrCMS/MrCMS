@@ -22,14 +22,16 @@ namespace MrCMS.Services
         private readonly IImageProcessor _imageProcessor;
         private readonly MediaSettings _mediaSettings;
         private readonly Site _currentSite;
+        private readonly SiteSettings _siteSettings;
 
-        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings, Site currentSite)
+        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings, Site currentSite, SiteSettings siteSettings)
         {
             _session = session;
             _fileSystem = fileSystem;
             _imageProcessor = imageProcessor;
             _mediaSettings = mediaSettings;
             _currentSite = currentSite;
+            _siteSettings = siteSettings;
         }
 
         public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory)
@@ -223,7 +225,7 @@ namespace MrCMS.Services
             return GetUrl(mediaFile, imageSize);
         }
 
-        public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1, int pageSize = 10)
+        public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1)
         {
             var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site == _currentSite);
 
@@ -233,7 +235,7 @@ namespace MrCMS.Services
             if (imagesOnly)
                 queryOver.Where(file => file.FileExtension.IsIn(MediaFile.ImageExtensions));
 
-            var mediaFiles = queryOver.OrderBy(file => file.CreatedOn).Desc.Paged(page, pageSize);
+            var mediaFiles = queryOver.OrderBy(file => file.CreatedOn).Desc.Paged(page, _siteSettings.DefaultPageSize);
             return new FilesPagedResult(mediaFiles, mediaFiles.GetMetaData(), categoryId, imagesOnly);
         }
 

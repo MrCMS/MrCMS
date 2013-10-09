@@ -71,7 +71,7 @@ namespace MrCMS.Web.Apps.Core
             var widgetService = new WidgetService(session);
             var fileSystem = new FileSystem();
             var imageProcessor = new ImageProcessor(session, fileSystem, mediaSettings);
-            var fileService = new FileService(session, fileSystem, imageProcessor, mediaSettings, site);
+            var fileService = new FileService(session, fileSystem, imageProcessor, mediaSettings, site, siteSettings);
             var user = new User
             {
                 Email = model.AdminEmail,
@@ -80,7 +80,8 @@ namespace MrCMS.Web.Apps.Core
 
             var hashAlgorithms = new List<IHashAlgorithm> { new SHA512HashAlgorithm() };
             var hashAlgorithmProvider = new HashAlgorithmProvider(hashAlgorithms);
-            var passwordEncryptionManager = new PasswordEncryptionManager(hashAlgorithmProvider, new UserService(session));
+            var passwordEncryptionManager = new PasswordEncryptionManager(hashAlgorithmProvider,
+                                                                          new UserService(session, siteSettings));
             var passwordManagementService = new PasswordManagementService(passwordEncryptionManager);
 
             passwordManagementService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);

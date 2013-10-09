@@ -16,6 +16,11 @@ namespace MrCMS.Settings
             _siteSettingsOptionGeneratorOverride = siteSettingsOptionGenerator;
         }
 
+        public SiteSettings()
+        {
+            DefaultPageSize = 10;
+        }
+
         [DropDownSelection("Themes")]
         [DisplayName("Theme")]
         public string ThemeName { get; set; }
@@ -23,6 +28,9 @@ namespace MrCMS.Settings
         [DisplayName("Default Layout")]
         [DropDownSelection("DefaultLayoutOptions")]
         public int DefaultLayoutId { get; set; }
+
+        [DisplayName("Default Page Size")]
+        public int DefaultPageSize { get; set; }
 
         [DisplayName("Unauthorised Page")]
         [DropDownSelection("403Options")]
