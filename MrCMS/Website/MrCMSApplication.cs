@@ -41,12 +41,19 @@ namespace MrCMS.Website
             RegisterServices(bootstrapper.Kernel);
             MrCMSApp.RegisterAllServices(bootstrapper.Kernel);
 
-            ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
+            SetModelBinders();
 
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
+        }
+
+        private static void SetModelBinders()
+        {
+            ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
+            ModelBinders.Binders.Add(typeof (DateTime), new CultureAwareDateBinder());
+            ModelBinders.Binders.Add(typeof (DateTime?), new NullableCultureAwareDateBinder());
         }
 
         private static bool IsFileRequest(Uri uri)

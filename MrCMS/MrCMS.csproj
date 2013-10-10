@@ -469,6 +469,7 @@
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\AddWidgetModelBinder.cs" />
     <Compile Include="Website\Binders\AddMessageTemplateModelBinder.cs" />
+    <Compile Include="Website\Binders\CultureAwareDateBinder.cs" />
     <Compile Include="Website\Binders\MessageTemplateModelBinder.cs" />
     <Compile Include="Website\Binders\DocumentModelBinder.cs" />
     <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />
@@ -476,6 +477,7 @@
     <Compile Include="Website\Binders\FileSystemSettingsModelBinder.cs" />
     <Compile Include="Website\Binders\MrCMSDefaultModelBinder.cs" />
     <Compile Include="Website\Binders\IoCModelBinderAttribute.cs" />
+    <Compile Include="Website\Binders\NullableCultureAwareDateBinder.cs" />
     <Compile Include="Website\Binders\NullableEntityModelBinder.cs" />
     <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
