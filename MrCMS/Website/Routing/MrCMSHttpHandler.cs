@@ -154,7 +154,7 @@ namespace MrCMS.Website.Routing
 
         private void SetCustomHeaders(HttpContextBase context)
         {
-            context.Response.AppendHeader("X-Built-With", "Mr CMS - http://mrcms.codeplex.com");
+            context.Response.AppendHeader("X-Built-With", "Mr CMS - http://www.mrcms.com");
         }
 
         public void Handle500(HttpContextBase context, Exception exception)

@@ -1330,7 +1330,7 @@
     </Content>
     <Content Include="Areas\Admin\Views\User\Filter.cshtml" />
     <Content Include="Areas\Admin\Views\Log\Filter.cshtml" />
-    <None Include="Properties\PublishProfiles\demo.mrcms.com.pubxml" />
+    <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -1453,7 +1453,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>1834</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:8888</IISUrl>
+          <IISUrl>http://localhost:8887</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
