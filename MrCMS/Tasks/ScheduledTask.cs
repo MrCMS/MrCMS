@@ -27,7 +27,7 @@ namespace MrCMS.Tasks
         {
             return TypeHelper.GetAllConcreteTypesAssignableFrom<BackgroundTask>()
                              .Where(type => type.IsPublic)
-                             .BuildSelectItemList(type => type.Name, type => type.FullName,
+                             .BuildSelectItemList(type => type.Name.BreakUpString(), type => type.FullName,
                                                   emptyItemText: "Select a type");
         }
     }
