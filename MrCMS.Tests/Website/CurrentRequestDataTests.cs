@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Web;
-using System.Web.SessionState;
-using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Settings;
 using MrCMS.Website;
 using Xunit;
-using MrCMS.Helpers;
 
 namespace MrCMS.Tests.Website
 {
