@@ -10,6 +10,11 @@ namespace MrCMS.Tasks
 {
     public class ScheduledTask : SiteEntity
     {
+        public ScheduledTask()
+        {
+            EveryXMinutes = 10;
+        }
+
         public virtual string Type { get; set; }
 
         [DisplayName("Every X Minutes")]
