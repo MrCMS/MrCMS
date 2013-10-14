@@ -33,7 +33,8 @@ namespace MrCMS.Tests.Website
         {
             CurrentRequestData.CurrentUser = null;
             var newGuid = Guid.NewGuid();
-            CurrentRequestData.CurrentContext.Session["current.usersessionGuid"] = newGuid;
+            CurrentRequestData.CurrentContext.Response.Cookies.Add(new HttpCookie("current.usersessionGuid",
+                                                                                  newGuid.ToString()));
 
             var userGuid = CurrentRequestData.UserGuid;
 
