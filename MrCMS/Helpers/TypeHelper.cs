@@ -300,7 +300,7 @@ namespace MrCMS.Helpers
 
         public static string GetFriendlyName(this Type type)
         {
-            return type.GetCustomAttributes(true).Any() ? (type.GetCustomAttributes(true).First() as FriendlyClassName).Name : type.Name.BreakUpString();
+            return type.GetCustomAttributes(true).Any() ? (type.GetCustomAttributes(true).First() as FriendlyClassName).Name : type.Name.BreakUpString();
         }
     }
 
