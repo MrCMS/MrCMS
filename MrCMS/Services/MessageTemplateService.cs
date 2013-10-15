@@ -23,7 +23,6 @@ namespace MrCMS.Services
 
         public List<MessageTemplateInfo> GetAllMessageTemplateTypesWithDetails()
         {
-            var messageTemplates = new Dictionary<Type, int>();
             var templates = _session.QueryOver<MessageTemplate>().Cacheable().List();
             var messageTemplateTypes = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<MessageTemplate>();
             return messageTemplateTypes.Select(type =>
