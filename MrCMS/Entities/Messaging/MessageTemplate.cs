@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using MrCMS.Services;
 using NHibernate;
 
@@ -38,5 +40,25 @@ namespace MrCMS.Entities.Messaging
         public abstract MessageTemplate GetInitialTemplate(ISession session);
 
         public abstract List<string> GetTokens(IMessageTemplateParser messageTemplateParser);
+
+
+        public virtual bool CanPreview
+        {
+            get { return PreviewType != null; }
+        }
+
+        public virtual Type PreviewType
+        {
+            get
+            {
+                var interfaceDef =
+                    GetType().GetInterfaces()
+                             .FirstOrDefault(type => type.GetGenericTypeDefinition() == typeof(IMessageTemplate<>));
+
+                return interfaceDef != null && interfaceDef.GetGenericArguments()[0].IsSubclassOf(typeof(SystemEntity))
+                           ? interfaceDef.GetGenericArguments()[0]
+                           : null;
+            }
+        }
     }
 }

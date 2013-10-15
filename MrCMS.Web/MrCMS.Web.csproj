@@ -574,6 +574,7 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\popup.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\preview-message-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\search.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\sort.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
@@ -1330,6 +1331,7 @@
     </Content>
     <Content Include="Areas\Admin\Views\User\Filter.cshtml" />
     <Content Include="Areas\Admin\Views\Log\Filter.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\Preview.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

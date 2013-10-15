@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Helpers
-@model Dictionary<Type,int>
+@model List<MrCMS.Services.MessageTemplateInfo>
 @{
     ViewBag.Title = "Message Templates";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -8,16 +8,24 @@
     <fieldset>
         <legend>Message Templates
         </legend>
-        
+
         <table class="table table-condensed table-striped">
             @foreach (var item in Model)
             {
                 <tr>
                     <td>
-                        @item.Key.GetFriendlyName()
+                        @item.Type.GetFriendlyName()
                     </td>
                     <td>
-                        @(item.Value != 0 ? Html.ActionLink("Edit", "Edit", new {Id=item.Value}, new { @class = "btn btn-success" }) : Html.ActionLink("Add", "Add", new { type=item.Key.Name }, new { @class = "btn btn-primary"}))
+                        <div class="btn-group">
+                            @(item.Id.HasValue
+                        ? Html.ActionLink("Edit", "Edit", new { Id = item.Id }, new { @class = "btn btn-success" })
+                        : Html.ActionLink("Add", "Add", new { type = item.Type.Name }, new { @class = "btn btn-primary" }))
+                            @if (item.CanPreview)
+                            {
+                                @Html.ActionLink("Preview", "Preview", "MessageTemplate", new { id = item.Id }, new { @class = "btn", data_toggle="fb-modal" })
+                            }
+                        </div>
                     </td>
                 </tr>
             }

@@ -47,15 +47,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MessageTemplateController_Index_ShouldReturnTheResultOfServiceCallAsModel()
         {
-            var items = new Dictionary<Type, int>()
-                {
-                    { typeof(BasicMessageTemplate), 0}
-                };
+            var items = new List<MessageTemplateInfo>();
+
             A.CallTo(() => _messageTemplateService.GetAllMessageTemplateTypesWithDetails()).Returns(items);
 
             var result = _messageTemplateController.Index();
 
-            result.As<ViewResult>().Model.Should().BeSameAs(items);
+            result.As<ViewResult>().Model.Should().Be(items);
         }
 
         [Fact]
@@ -166,7 +164,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MessageTemplateController_ResetPost_IfTemplateIsPassedShouldReturnRedirectToEdit()
         {
-            var messageTemplate = new BasicMessageTemplate {Id = 123};
+            var messageTemplate = new BasicMessageTemplate { Id = 123 };
 
             var result = _messageTemplateController.Reset_POST(messageTemplate);
 

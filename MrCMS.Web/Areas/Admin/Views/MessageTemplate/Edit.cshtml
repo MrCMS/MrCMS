@@ -60,8 +60,7 @@
         @Html.CheckBoxFor(x => x.IsHtml, new { @class = "pull-left" }) <span>&nbsp;Is HTML?</span>
 
         @{ Html.RenderAction("Tokens", "MessageTemplate", new {messageTemplate = Model});}
-
-
     </fieldset>
 }
+        @{ Html.RenderAction("Preview", "MessageTemplate", new {messageTemplate = Model});}
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/edit-message-template.js");}

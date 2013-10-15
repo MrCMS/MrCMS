@@ -1,0 +1,23 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Messaging.MessageTemplate
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("GetPreview", "MessageTemplate", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+{
+    <fieldset>
+        <legend>Preview message template
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn btn-danger" value="Preview" />
+            </span>
+        </legend>
+        <div class="row-fluid">
+            @Html.Label("itemId", @Model.PreviewType.Name.BreakUpString() + " Id")
+            @Html.TextBox("itemId")
+        </div>
+        <input class="btn btn-mini" value="Preview" id="preview-message" type="submit" />
+        <h4>Preview</h4>
+        <div id="preview">
+        </div>
+    </fieldset>
+}
+
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/preview-message-template.js");}

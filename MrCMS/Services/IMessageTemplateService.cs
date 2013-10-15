@@ -7,10 +7,11 @@ namespace MrCMS.Services
     public interface IMessageTemplateService
     {
         void Save(MessageTemplate messageTemplate);
-        Dictionary<Type, int> GetAllMessageTemplateTypesWithDetails();
+        List<MessageTemplateInfo> GetAllMessageTemplateTypesWithDetails();
         MessageTemplate GetNew(string type);
         MessageTemplate Reset(MessageTemplate messageTemplate);
         List<string> GetTokens(MessageTemplate messageTemplate);
         T Get<T>() where T : MessageTemplate;
+        string GetPreview(MessageTemplate messageTemplate, int itemId);
     }
 }
