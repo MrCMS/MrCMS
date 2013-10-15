@@ -89,7 +89,13 @@ namespace MrCMS.Services
 
         public string GetPreview(MessageTemplate messageTemplate, int itemId)
         {
-            return _messageTemplateParser.Parse(messageTemplate.Body, _session.Get(messageTemplate.PreviewType, itemId));
+            var parse = _messageTemplateParser.GetType().GetMethod("Parse");
+            var parseGeneric = parse.MakeGenericMethod(messageTemplate.PreviewType);
+            return parseGeneric.Invoke(_messageTemplateParser, new object[]
+                                                                   {
+                                                                       messageTemplate.Body,
+                                                                       _session.Get(messageTemplate.PreviewType, itemId)
+                                                                   }) as string;
         }
 
         public void Save(MessageTemplate messageTemplate)
