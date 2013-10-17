@@ -69,6 +69,10 @@ namespace MrCMS.Helpers
             return new StaticPagedList<TResult>(results, pageNumber, pageSize, rowCount);
         }
 
+        public static bool Any<T>(this IQueryOver<T> query)
+        {
+            return query.RowCount() > 0;
+        }
     }
 
     public enum OrderType
