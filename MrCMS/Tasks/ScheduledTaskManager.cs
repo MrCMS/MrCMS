@@ -26,20 +26,22 @@ namespace MrCMS.Tasks
                         task => task.LastRun < CurrentRequestData.Now.AddMinutes(-task.EveryXMinutes) || task.LastRun == null)
                     .ToList();
             _session.Transact(session =>
+            {
+                foreach (var task in scheduledTasks)
                 {
-                    foreach (var task in scheduledTasks)
-                    {
-                        task.LastRun = CurrentRequestData.Now;
-                        _session.Update(task);
-                    }
-                });
+                    task.LastRun = CurrentRequestData.Now;
+                    _session.Update(task);
+                }
+            });
             return scheduledTasks;
         }
 
         public BackgroundTask GetTask(ScheduledTask scheduledTask)
         {
             var taskType = TypeHelper.GetAllTypes().FirstOrDefault(type => type.FullName == scheduledTask.Type);
-            return MrCMSApplication.Get(taskType) as BackgroundTask;
+            var backgroundTask = MrCMSApplication.Get(taskType) as BackgroundTask;
+            backgroundTask.Site = scheduledTask.Site;
+            return backgroundTask;
         }
 
         public List<ScheduledTask> GetAllTasks()

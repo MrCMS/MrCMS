@@ -47,6 +47,8 @@ namespace MrCMS.Website
             ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
+
+            ScheduledTaskChecker.Instance.Start(10);
         }
 
         private static void SetModelBinders()
@@ -102,23 +104,20 @@ namespace MrCMS.Website
                                                }
                                            };
 
-                EndRequest += (sender, args) =>
-                                  {
-                                      if (!IsFileRequest(Request.Url))
-                                      {
-                                          if (CurrentRequestData.DatabaseIsInstalled)
-                                              AppendScheduledTasks();
-                                          TaskExecutor.StartExecuting();
-                                      }
-                                  };
+                //EndRequest += (sender, args) =>
+                //                  {
+                //                      if (!IsFileRequest(Request.Url))
+                //                      {
+                //                          if (CurrentRequestData.DatabaseIsInstalled)
+                //                              AppendScheduledTasks();
+                //                          TaskExecutor.StartExecuting();
+                //                      }
+                //                  };
             }
         }
 
         protected void AppendScheduledTasks()
         {
-            var scheduledTaskManager = Get<IScheduledTaskManager>();
-            foreach (var scheduledTask in scheduledTaskManager.GetDueTasks())
-                TaskExecutor.ExecuteLater(scheduledTaskManager.GetTask(scheduledTask));
         }
 
         public abstract string RootNamespace { get; }
