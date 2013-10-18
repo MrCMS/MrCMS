@@ -101,7 +101,7 @@
                 var widgetId = $(this).parent().data('widget-id');
                 var name = $(this).parent().data('widget-name');
                 var menu = '<div class="mrcms-edit-menu mrcms-edit-widget"><h4>' + name + '</h4>' +
-                    '<ul>' +    
+                    '<ul>' +
                     '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Edit/' + widgetId + '?returnUrl=' + window.top.location + '" target="_parent" class="mrcms-btn mrcms-btn-mini mrcms-btn-primary">Edit</a></li>' +
                     '<li><a id="" data-toggle="fb-modal" href="/Admin/Widget/Delete/' + widgetId + '" target="_parent" class="mrcms-btn mrcms-btn-mini mrcms-btn-danger">Delete</a></li>' +
                     '</ul></div>';
@@ -126,13 +126,13 @@
                 var resetMenu = '';
                 if (customLayout == 'True')
                     resetMenu = '<li><a tab-index="3" href="/Admin/LayoutArea/ResetSorting/' + areaId + '?pageId=' + pageId + '&returnUrl=' + top.location.href + '" data-action="post-link" class="mrcms-btn mrcms-btn-mini mrcms-btn-danger">Reset custom sort</a></li>';
-                
+
                 var menu = '<div class="mrcms-edit-menu mrcms-edit-layout-area"><h4>' + areaName +
                     '</h4><ul><li><a tab-index="1" href="/Admin/Widget/Add?pageId=' + pageId + '&id=' + areaId + '" data-toggle="fb-modal" class="mrcms-btn mrcms-btn-mini mrcms-btn-primary">Add widget</a></li>' +
                     '<li><a tab-index="3" href="/Admin/LayoutArea/SortWidgets/' + areaId + '?returnUrl=' + top.location.href + '" class="mrcms-btn mrcms-btn-mini mrcms-btn-default" data-toggle="fb-modal">Sort widgets</a></li>' +
                     resetMenu +
                     '<li><a tab-index="2" href="/Admin/LayoutArea/SortWidgetsForPage/' + areaId + '?pageId=' + pageId + '&returnUrl=' + top.location.href + '" class="mrcms-btn mrcms-btn-mini mrcms-btn-default" data-toggle="fb-modal">Sort widgets for page</a></li></ul></div>';
-                
+
                 $(this).parent().prepend(menu);
                 $(".mrcms-edit-layout-area", document).fadeIn(400);
                 //if click outside hide the menu
@@ -197,6 +197,8 @@
     }
 
     function setEditingEnabled(value) {
+        $.cookie('mrcms-inline-edit', null, { expires: -1 });
+        $.cookie('mrcms-inline-edit', null, { expires: -1, path: location.pathname });
         return $.cookie('mrcms-inline-edit', value, { expires: 1 });
     }
     function stripHtml(str) {
