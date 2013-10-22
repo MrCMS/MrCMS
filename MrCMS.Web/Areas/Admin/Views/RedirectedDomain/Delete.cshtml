@@ -1,0 +1,14 @@
+﻿@model MrCMS.Entities.Multisite.RedirectedDomain
+
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Delete", "RedirectedDomain", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+{
+    <fieldset>
+        <legend>Delete Redirected Domain
+                 <span class="btn-group  display-inline  pull-right">
+                     <input type="submit" class="btn btn-danger" value="Confirm Delete Redirected Domain" />
+                 </span>
+        </legend>
+        <p>Deleting this redirected domain can not be undone.</p>
+    </fieldset>
+}

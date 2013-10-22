@@ -203,6 +203,7 @@
     <Compile Include="Areas\Admin\Controllers\LogController.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaCategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\NavigationController.cs" />
+    <Compile Include="Areas\Admin\Controllers\RedirectedDomainController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\SearchController.cs" />
     <Compile Include="Areas\Admin\Controllers\SettingsController.cs" />
@@ -1332,6 +1333,9 @@
     <Content Include="Areas\Admin\Views\User\Filter.cshtml" />
     <Content Include="Areas\Admin\Views\Log\Filter.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Preview.cshtml" />
+    <Content Include="Areas\Admin\Views\Sites\RestrictedDomains.cshtml" />
+    <Content Include="Areas\Admin\Views\RedirectedDomain\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\RedirectedDomain\Delete.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

@@ -25,5 +25,7 @@
         @Html.TextBoxFor(x => x.Name, new { @class = "span6" })
         @Html.LabelFor(x => x.BaseUrl)
         @Html.TextBoxFor(x => x.BaseUrl, new { @class = "span6" })
+
+        @{ Html.RenderPartial("RestrictedDomains", Model); }
     </fieldset>
 }

@@ -40,8 +40,17 @@ namespace MrCMS.Services
         {
             var authority = _requestBase.Url.Authority;
 
-            var allSites = _session.QueryOver<Site>().Cacheable().List();
+            var allSites = _session.QueryOver<Site>().Fetch(s => s.RedirectedDomains).Eager.Cacheable().List();
+            var redirectedDomains = allSites.SelectMany(s => s.RedirectedDomains).ToList();
             var site = allSites.FirstOrDefault(s => s.BaseUrl != null && s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase));
+            if (site == null)
+            {
+                var redirectedDomain =
+                    redirectedDomains.FirstOrDefault(
+                        s => s.Url != null && s.Url.Equals(authority, StringComparison.OrdinalIgnoreCase));
+                if (redirectedDomain != null)
+                    site = redirectedDomain.Site;
+            }
 
             return site ?? allSites.First();
         }
