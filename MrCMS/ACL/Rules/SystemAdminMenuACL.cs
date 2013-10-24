@@ -14,6 +14,7 @@ namespace MrCMS.ACL.Rules
         public const string MessageTemplates = "Message Templates";
         public const string ACL = "ACL";
         public const string Indices = "Indices";
+        public const string MessageQueue = "Message Queue";
 
         public override string DisplayName
         {

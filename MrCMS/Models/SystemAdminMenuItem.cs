@@ -41,6 +41,7 @@ namespace MrCMS.Models
                                        new ChildMenuItem("Tasks", "/Admin/Task",ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Tasks)),
                                        new ChildMenuItem("ACL", "/Admin/ACL",ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.ACL)),
                                        new ChildMenuItem("Indices", "/Admin/Indexes",ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Indices)),
+                                       new ChildMenuItem("Message Queue", "/Admin/MessageQueue",ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.MessageQueue)),
                                        new ChildMenuItem("Logout", "/Logout"),
                                    }
                            }
