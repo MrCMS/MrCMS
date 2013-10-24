@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Settings;
 using MrCMS.Website.ActionResults;
+using MrCMS.Helpers;
 
 namespace MrCMS.Website.Controllers
 {
@@ -46,7 +47,17 @@ namespace MrCMS.Website.Controllers
                 }
             }
 
+            SetDefaultPageTitle(filterContext);
             base.OnActionExecuting(filterContext);
+        }
+
+        protected virtual void SetDefaultPageTitle(ActionExecutingContext filterContext)
+        {
+            ViewBag.Title = string.Format("{0} - {1}",
+                                          filterContext.RequestContext.RouteData.Values["controller"].ToString()
+                                                                                                     .BreakUpString(),
+                                          filterContext.RequestContext.RouteData.Values["action"].ToString()
+                                                                                                 .BreakUpString());
         }
 
         protected override RedirectResult AuthenticationFailureRedirect()

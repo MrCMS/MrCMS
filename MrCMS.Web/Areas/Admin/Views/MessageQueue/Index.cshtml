@@ -43,6 +43,10 @@
                     </th>
                     <th>To
                     </th>
+                    <th>Subject
+                    </th>
+                    <th>Created On
+                    </th>
                     <th>Sent On?
                     </th>
                     <th>Actions
@@ -58,6 +62,12 @@
                         </td>
                         <td>
                             @message.ToDescription
+                        </td>
+                        <td>
+                            @message.Subject
+                        </td>
+                        <td>
+                            @message.CreatedOn.ToString()
                         </td>
                         <td>
                             @(message.SentOnDescription)
