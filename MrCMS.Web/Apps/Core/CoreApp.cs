@@ -247,7 +247,7 @@ namespace MrCMS.Web.Apps.Core
             mediaSettings.SmallImageWidth = 200;
             mediaSettings.ResizeQuality = 90;
 
-            var configurationProvider = new ConfigurationProvider(new SettingService(session),
+            var configurationProvider = new ConfigurationProvider(new SettingService(session, site),
                                                                   site);
             var fileSystemSettings = new FileSystemSettings { Site = site, StorageType = typeof(FileSystem).FullName };
             configurationProvider.SaveSettings(siteSettings);

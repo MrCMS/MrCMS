@@ -187,7 +187,7 @@ namespace MrCMS.Entities.Documents.Web
             get
             {
                 return
-                    Children.Select(webpage => webpage.Unproxy()).OfType<Webpage>().Where(document => document.Published)
+                    Children.OfType<Webpage>().Where(document => document.Published)
                             .OrderBy(webpage => webpage.DisplayOrder);
             }
         }

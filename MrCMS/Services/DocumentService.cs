@@ -86,7 +86,7 @@ namespace MrCMS.Services
         public T GetUniquePage<T>()
             where T : Document, IUniquePage
         {
-            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite).Take(1).Cacheable().SingleOrDefault();
+            return _session.QueryOver<T>().Where(arg => arg.Site.Id == _currentSite.Id).Take(1).Cacheable().SingleOrDefault();
         }
 
         public T SaveDocument<T>(T document) where T : Document
@@ -566,12 +566,10 @@ namespace MrCMS.Services
                 _session.QueryOver<Webpage>()
                         .Where(
                             document =>
-                            document.Site == _currentSite && document.PublishOn != null &&
-                            document.PublishOn <= CurrentRequestData.Now && document.Parent == null)
+                            document.Site.Id == _currentSite.Id && document.Parent == null)
                         .OrderBy(webpage => webpage.DisplayOrder).Asc
-                        .Take(1)
-                        .Cacheable()
-                        .SingleOrDefault();
+                        .Cacheable().List()
+                        .FirstOrDefault(webpage => webpage.Published);
         }
 
         public RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage

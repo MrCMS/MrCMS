@@ -224,6 +224,7 @@
     <Compile Include="Events\IOnDocumentUnpublished.cs" />
     <Compile Include="Models\MessageQueueQuery.cs" />
     <Compile Include="Models\UserSearchQuery.cs" />
+    <Compile Include="Services\CloneSitePartsService.cs" />
     <Compile Include="Services\DocumentEventService.cs" />
     <Compile Include="Services\IAuthorisationService.cs" />
     <Compile Include="Services\IDocumentEventService.cs" />

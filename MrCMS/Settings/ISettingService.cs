@@ -21,7 +21,7 @@ namespace MrCMS.Settings
         /// </summary>
         /// <param name="key">Key</param>
         /// <returns>Setting object</returns>
-        Setting GetSettingByKey(Site site, string key);
+        Setting GetSettingByKey(string key);
 
         /// <summary>
         /// Get setting value by key
@@ -30,7 +30,7 @@ namespace MrCMS.Settings
         /// <param name="key">Key</param>
         /// <param name="defaultValue">Default value</param>
         /// <returns>Setting value</returns>
-        T GetSettingValueByKey<T>(Site site, string key, T defaultValue = default(T));
+        T GetSettingValueByKey<T>(string key, T defaultValue = default(T));
 
         /// <summary>
         /// Set setting value
@@ -39,7 +39,7 @@ namespace MrCMS.Settings
         /// <param name="key">Key</param>
         /// <param name="value">Value</param>
         /// <param name="clearCache">A value indicating whether to clear cache after setting update</param>
-        void SetSetting<T>(Site site, string key, T value);
+        void SetSetting<T>(string key, T value);
 
         /// <summary>
         /// Deletes a setting

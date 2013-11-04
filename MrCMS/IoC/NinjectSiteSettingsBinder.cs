@@ -31,12 +31,12 @@ namespace MrCMS.IoC
             var configProvider =
                 context.Kernel.Get<ConfigurationProvider>();
             var method =
-                typeof(ConfigurationProvider).GetMethodExt("GetSiteSettings", typeof(Site));
+                typeof(ConfigurationProvider).GetMethodExt("GetSiteSettings");
 
             return method != null
                        ? method.MakeGenericMethod(type)
                                .Invoke(configProvider,
-                                       new object[] { null })
+                                       new object[] { })
                        : null;
         }
     }

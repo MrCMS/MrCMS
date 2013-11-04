@@ -16,15 +16,19 @@ namespace MrCMS.Settings
     public partial class SettingService : ISettingService
     {
         private readonly ISession _session;
+        private readonly Site _site;
         private IList<Setting> _allSettings;
+        private IDictionary<string, KeyValuePair<int, string>> _allSettingsDictionary;
 
         /// <summary>
         /// Ctor
         /// </summary>
         /// <param name="session">ISession for db access</param>
-        public SettingService(ISession session)
+        /// <param name="site"></param>
+        public SettingService(ISession session, Site site)
         {
             _session = session;
+            _site = site;
         }
 
         /// <summary>
@@ -43,14 +47,14 @@ namespace MrCMS.Settings
         /// <param name="site">Site (null for global parameter)</param>
         /// <param name="key">Key</param>
         /// <returns>Setting object</returns>
-        public virtual Setting GetSettingByKey(Site site, string key)
+        public virtual Setting GetSettingByKey(string key)
         {
             if (String.IsNullOrEmpty(key))
                 return null;
 
             key = key.Trim().ToLowerInvariant();
 
-            var settings = GetAllSettings(site);
+            var settings = GetAllSettings();
             if (settings.ContainsKey(key))
             {
                 var id = settings[key].Key;
@@ -68,14 +72,14 @@ namespace MrCMS.Settings
         /// <param name="key">Key</param>
         /// <param name="defaultValue">Default value</param>
         /// <returns>Setting value</returns>
-        public virtual T GetSettingValueByKey<T>(Site site, string key, T defaultValue = default(T))
+        public virtual T GetSettingValueByKey<T>(string key, T defaultValue = default(T))
         {
             if (String.IsNullOrEmpty(key))
                 return defaultValue;
 
             key = key.Trim().ToLowerInvariant();
 
-            var settings = GetAllSettings(site);
+            var settings = GetAllSettings();
             if (settings.ContainsKey(key))
                 return settings[key].Value.To<T>();
 
@@ -89,13 +93,13 @@ namespace MrCMS.Settings
         /// <param name="site">Site (null for global parameter)</param>
         /// <param name="key">Key</param>
         /// <param name="value">Value</param>
-        public virtual void SetSetting<T>(Site site, string key, T value)
+        public virtual void SetSetting<T>(string key, T value)
         {
             if (key == null)
                 throw new ArgumentNullException("key");
             key = key.Trim().ToLowerInvariant();
 
-            var settings = GetAllSettings(site);
+            var settings = GetAllSettings();
 
             Setting setting = null;
             string valueStr = typeof(T).GetCustomTypeConverter().ConvertToInvariantString(value);
@@ -105,7 +109,7 @@ namespace MrCMS.Settings
                 var settingId = settings[key].Key;
                 setting = GetSettingById(settingId);
                 setting.Value = valueStr;
-                setting.Site = site;
+                setting.Site = _site;
             }
             else
             {
@@ -114,7 +118,7 @@ namespace MrCMS.Settings
                 {
                     Name = key,
                     Value = valueStr,
-                    Site = site
+                    Site = _site
                 };
                 AllSettings.Add(setting);
             }
@@ -136,14 +140,17 @@ namespace MrCMS.Settings
         /// <summary>
         /// Gets all settings
         /// </summary>
-        /// <param name="site">Site (null for global parameter)</param>
         /// <returns>Setting collection</returns>
-        private IDictionary<string, KeyValuePair<int, string>> GetAllSettings(Site site)
+        private IDictionary<string, KeyValuePair<int, string>> GetAllSettings()
         {
-            var settings = AllSettings.Where(setting => setting.Site.Id == site.Id).ToList();
+            return _allSettingsDictionary ?? (_allSettingsDictionary = GetSettingsDictionary());
+        }
+
+        private IDictionary<string, KeyValuePair<int, string>> GetSettingsDictionary()
+        {
             //format: <name, <id, value>>
             var dictionary = new Dictionary<string, KeyValuePair<int, string>>();
-            foreach (var s in settings)
+            foreach (var s in AllSettings)
             {
                 var resourceName = s.Name.ToLowerInvariant();
                 if (!dictionary.ContainsKey(resourceName))
@@ -154,7 +161,13 @@ namespace MrCMS.Settings
 
         private IList<Setting> AllSettings
         {
-            get { return _allSettings = _allSettings ?? _session.QueryOver<Setting>().Cacheable().List(); }
+            get
+            {
+                return
+                    _allSettings =
+                    _allSettings ??
+                    _session.QueryOver<Setting>().Where(setting => setting.Site.Id == _site.Id).Cacheable().List();
+            }
         }
 
     }

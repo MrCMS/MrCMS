@@ -8,7 +8,7 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<LayoutArea> mapping)
         {
-            mapping.HasMany(area => area.Widgets).OrderBy("DisplayOrder").Cascade.All();
+            mapping.HasMany(area => area.Widgets).OrderBy("DisplayOrder").Cascade.All().Cache.ReadWrite();
         }
     }
 }
