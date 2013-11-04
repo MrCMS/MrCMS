@@ -132,8 +132,8 @@
                     $(this).data('callback', callback).data('element', element);
                     var height = 800;
                     var width = 800;
-                    var parentHeight = $(document, top.window).height();
-                    var parentWidth = $(document, top.window).width();
+                    var parentHeight = $(top.window, top.window).height();
+                    var parentWidth = $(top.window, top.window).width();
                     if (height >= parentHeight-100)
                         height = parentHeight - 100;
                     
