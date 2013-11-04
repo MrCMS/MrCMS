@@ -23,6 +23,11 @@ namespace MrCMS.Tasks
         [DisplayName("Last Run")]
         public virtual DateTime? LastRun { get; set; }
 
+        public virtual string TypeName
+        {
+            get { return Type.Split('.').Last().BreakUpString(); }
+        }
+
         public virtual IEnumerable<SelectListItem> GetTypeOptions()
         {
             return TypeHelper.GetAllConcreteTypesAssignableFrom<BackgroundTask>()

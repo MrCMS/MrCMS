@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
@@ -19,14 +20,12 @@ namespace MrCMS.Web.Apps.Core.Widgets
         public override object GetModel(ISession session)
         {
             var navigationRecords =
-                session.QueryOver<Webpage>().Where(
-                    webpage => webpage.Parent == null && webpage.PublishOn != null && webpage.PublishOn <= CurrentRequestData.Now && webpage.RevealInNavigation && webpage.Site == Site).Cacheable()
-                       .List().OrderBy(webpage => webpage.DisplayOrder)
+                GetPages(session, null).Where(webpage => webpage.Published).OrderBy(webpage => webpage.DisplayOrder)
                        .Select(webpage => new NavigationRecord
                        {
                            Text = MvcHtmlString.Create(webpage.Name),
                            Url = MvcHtmlString.Create("/" + webpage.LiveUrlSegment),
-                           Children = webpage.PublishedChildren.Where(webpage1 => webpage1.RevealInNavigation)
+                           Children = GetPages(session, webpage)
                                             .Select(webpage1 =>
                                                     new NavigationRecord
                                                     {
@@ -36,6 +35,17 @@ namespace MrCMS.Web.Apps.Core.Widgets
                        }).ToList();
 
             return new NavigationList(navigationRecords.ToList());
+        }
+
+        private IList<Webpage> GetPages(ISession session, Webpage parent)
+        {
+            var queryOver = session.QueryOver<Webpage>();
+            queryOver = parent == null
+                            ? queryOver.Where(webpage => webpage.Parent == null)
+                            : queryOver.Where(webpage => webpage.Parent.Id == parent.Id);
+            return queryOver.Where(
+                webpage => webpage.RevealInNavigation && webpage.Site.Id == Site.Id).Cacheable()
+                          .List();
         }
     }
 }

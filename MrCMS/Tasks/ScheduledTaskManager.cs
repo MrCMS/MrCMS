@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
@@ -10,18 +9,16 @@ namespace MrCMS.Tasks
     public class ScheduledTaskManager : IScheduledTaskManager
     {
         private readonly ISession _session;
-        private readonly Site _currentSite;
 
-        public ScheduledTaskManager(ISession session, Site currentSite)
+        public ScheduledTaskManager(ISession session)
         {
             _session = session;
-            _currentSite = currentSite;
         }
 
         public IEnumerable<ScheduledTask> GetDueTasks()
         {
             var scheduledTasks =
-                GetAllTasks()
+                _session.QueryOver<ScheduledTask>().Cacheable().List()
                     .Where(
                         task => task.LastRun < CurrentRequestData.Now.AddMinutes(-task.EveryXMinutes) || task.LastRun == null)
                     .ToList();
@@ -47,7 +44,7 @@ namespace MrCMS.Tasks
         public List<ScheduledTask> GetAllTasks()
         {
             return
-                _session.QueryOver<ScheduledTask>().Where(task => task.Site.Id == _currentSite.Id).Cacheable().List().ToList();
+                _session.QueryOver<ScheduledTask>().Cacheable().List().ToList();
         }
 
         public void Add(ScheduledTask scheduledTask)

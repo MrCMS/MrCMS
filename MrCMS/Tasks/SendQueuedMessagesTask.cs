@@ -6,6 +6,7 @@ using MrCMS.Entities.Messaging;
 using MrCMS.Logging;
 using MrCMS.Settings;
 using MrCMS.Website;
+using MrCMS.Helpers;
 
 namespace MrCMS.Tasks
 {
@@ -24,22 +25,26 @@ namespace MrCMS.Tasks
         public override void Execute()
         {
             using (var smtpClient = new SmtpClient(_mailSettings.Host, _mailSettings.Port)
-                                        {
-                                            EnableSsl = _mailSettings.UseSSL,
-                                            Credentials = new NetworkCredential(_mailSettings.UserName, _mailSettings.Password)
-                                        })
             {
-                foreach (
-                    var queuedMessage in
-                        Session.QueryOver<QueuedMessage>().Where(
-                            message => message.SentOn == null && message.Tries < MAX_TRIES).List())
+                EnableSsl = _mailSettings.UseSSL,
+                Credentials = new NetworkCredential(_mailSettings.UserName, _mailSettings.Password)
+            })
+            {
+                Session.Transact(session =>
                 {
-                    if (CanSend(queuedMessage, smtpClient))
-                        SendMailMessage(queuedMessage, smtpClient);
-                    else
-                        MarkAsSent(queuedMessage);
-                    Session.SaveOrUpdate(queuedMessage);
-                }
+                    foreach (
+                        var queuedMessage in
+                            Session.QueryOver<QueuedMessage>().Where(
+                                message => message.SentOn == null && message.Tries < MAX_TRIES)
+                                   .List())
+                    {
+                        if (CanSend(queuedMessage, smtpClient))
+                            SendMailMessage(queuedMessage, smtpClient);
+                        else
+                            MarkAsSent(queuedMessage);
+                        Session.SaveOrUpdate(queuedMessage);
+                    }
+                });
             }
         }
 
@@ -54,10 +59,10 @@ namespace MrCMS.Tasks
             {
                 var mailMessage = new MailMessage(new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),
                                                   new MailAddress(queuedMessage.ToAddress, queuedMessage.ToName))
-                                      {
-                                          Subject = queuedMessage.Subject,
-                                          Body = queuedMessage.Body
-                                      };
+                {
+                    Subject = queuedMessage.Subject,
+                    Body = queuedMessage.Body
+                };
 
                 if (!string.IsNullOrWhiteSpace(queuedMessage.Cc))
                     mailMessage.CC.Add(queuedMessage.Cc);
@@ -75,16 +80,15 @@ namespace MrCMS.Tasks
             catch (Exception exception)
             {
                 // TODO: Make this work without HTTP context
-                //Elmah.ErrorLog.GetDefault(null).Log(new Error(exception));
                 var error = new Error(exception);
                 Session.SaveOrUpdate(new Log
-                    {
-                        Error = error,
-                        Type = LogEntryType.Error,
-                        Site = queuedMessage.Site,
-                        Message = error.Message,
-                        Detail = error.Detail
-                    });
+                {
+                    Error = error,
+                    Type = LogEntryType.Error,
+                    Site = queuedMessage.Site,
+                    Message = error.Message,
+                    Detail = error.Detail
+                });
                 queuedMessage.Tries++;
             }
         }

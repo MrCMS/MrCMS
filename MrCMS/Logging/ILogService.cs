@@ -6,6 +6,7 @@ namespace MrCMS.Logging
 {
     public interface ILogService
     {
+        void Insert(Log log);
         IList<Log> GetAllLogEntries();
         IPagedList<Log> GetEntriesPaged(LogSearchQuery searchQuery);
         void DeleteAllLogs();

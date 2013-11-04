@@ -15,7 +15,7 @@ namespace MrCMS.Services
         private readonly SiteSettings _siteSettings;
         private readonly Site _site;
 
-        public MessageQueueAdminService(ISession session, SiteSettings siteSettings,Site site)
+        public MessageQueueAdminService(ISession session, SiteSettings siteSettings, Site site)
         {
             _session = session;
             _siteSettings = siteSettings;
@@ -31,16 +31,10 @@ namespace MrCMS.Services
                 queryOver = queryOver.Where(message => message.CreatedOn <= searchQuery.To);
             if (!string.IsNullOrWhiteSpace(searchQuery.FromQuery))
                 queryOver =
-                    queryOver.Where(
-                        message =>
-                        message.FromAddress.IsInsensitiveLike(searchQuery.FromQuery) ||
-                        message.FromName.IsInsensitiveLike(searchQuery.FromQuery));
+                    queryOver.Where(message => message.FromAddress.IsInsensitiveLike(searchQuery.FromQuery, MatchMode.Anywhere) || message.FromName.IsInsensitiveLike(searchQuery.FromQuery, MatchMode.Anywhere));
             if (!string.IsNullOrWhiteSpace(searchQuery.ToQuery))
                 queryOver =
-                    queryOver.Where(
-                        message =>
-                        message.ToAddress.IsInsensitiveLike(searchQuery.ToQuery) ||
-                        message.ToName.IsInsensitiveLike(searchQuery.ToQuery));
+                    queryOver.Where(message => message.ToAddress.IsInsensitiveLike(searchQuery.ToQuery, MatchMode.Anywhere) || message.ToName.IsInsensitiveLike(searchQuery.ToQuery, MatchMode.Anywhere));
 
             return queryOver.OrderBy(message => message.CreatedOn).Desc.Paged(searchQuery.Page, _siteSettings.DefaultPageSize);
         }

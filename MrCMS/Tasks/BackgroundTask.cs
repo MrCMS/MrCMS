@@ -1,5 +1,6 @@
 ﻿using System;
 using MrCMS.Entities.Multisite;
+using MrCMS.Logging;
 using NHibernate;
 using MrCMS.Helpers;
 
@@ -30,13 +31,21 @@ namespace MrCMS.Tasks
             Initialize(openSession);
             try
             {
-                Session.Transact(session => Execute());
+                Execute();
                 TaskExecutor.StartExecuting();
                 return true;
             }
             catch (Exception e)
             {
                 OnError(e);
+                var logService = new LogService(Session, null);
+                logService.Insert(new Log
+                {
+                    Message = e.Message,
+                    Detail = e.StackTrace,
+                    Site = Session.Get<Site>(Site.Id)
+                });
+
                 return false;
             }
             finally

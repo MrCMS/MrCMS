@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Elmah;
 using MrCMS.Helpers;
 using MrCMS.Paging;
 using MrCMS.Settings;
@@ -16,6 +18,14 @@ namespace MrCMS.Logging
         {
             _session = session;
             _siteSettings = siteSettings;
+        }
+
+        public void Insert(Log log)
+        {
+            if (log.Error == null)
+                log.Error = new Error();
+            log.Guid = Guid.NewGuid();
+            _session.Transact(session => session.Save(log));
         }
 
         public IList<Log> GetAllLogEntries()

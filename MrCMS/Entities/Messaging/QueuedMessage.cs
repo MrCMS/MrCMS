@@ -39,7 +39,7 @@ namespace MrCMS.Entities.Messaging
 
         public virtual string SentOnDescription
         {
-            get { return SentOn.HasValue ? SentOn.Value.ToLongDateString() : "-"; }
+            get { return SentOn.HasValue ? SentOn.Value.ToString() : "-"; }
         }
     }
 }
