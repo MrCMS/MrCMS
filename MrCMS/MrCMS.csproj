@@ -517,7 +517,6 @@
     <Compile Include="Website\OutOfContextSession.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
-    <Compile Include="Website\Routing\ErrorHandler.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandler.cs" />
     <Compile Include="Website\MrCMSPage.cs" />

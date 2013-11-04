@@ -19,6 +19,7 @@ namespace MrCMS.Settings
         public SiteSettings()
         {
             DefaultPageSize = 10;
+            Log404s = true;
         }
 
         [DropDownSelection("Themes")]
@@ -50,6 +51,9 @@ namespace MrCMS.Settings
 
         [DisplayName("Use SSL in Admin")]
         public bool SSLAdmin { get; set; }
+
+        [DisplayName("Log 404 in admin logs")]
+        public bool Log404s { get; set; }
 
         [DisplayName("Site UI Culture")]
         [DropDownSelection("UiCultures")]

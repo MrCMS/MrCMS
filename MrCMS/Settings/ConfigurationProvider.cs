@@ -59,7 +59,7 @@ namespace MrCMS.Settings
 
         public List<SiteSettingsBase> GetAllSiteSettings()
         {
-            var methodInfo = GetType().GetMethodExt("GetSiteSettings", typeof(Site));
+            var methodInfo = GetType().GetMethodExt("GetSiteSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()
                              .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))

@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -34,9 +33,10 @@ namespace MrCMS.Website.Routing
             CurrentRequestData.ErrorSignal.Raise(exception);
         }
 
-        protected void HandleError(HttpContextBase context, int code, int pageId, HttpException exception)
+        protected void HandleError(HttpContextBase context, int code, int pageId, HttpException exception, bool logException = true)
         {
-            HandleExceptionWithElmah(exception);
+            if (logException)
+                HandleExceptionWithElmah(exception);
             var webpage = _documentService.GetDocument<Webpage>(pageId);
             if (webpage != null)
             {
@@ -186,7 +186,7 @@ namespace MrCMS.Website.Routing
         {
             if (Webpage == null || (!Webpage.Published) && !CurrentRequestData.CurrentUserIsAdmin)
             {
-                HandleError(context, 404, _siteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data));
+                HandleError(context, 404, _siteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data), _siteSettings.Log404s);
                 return true;
             }
             return false;

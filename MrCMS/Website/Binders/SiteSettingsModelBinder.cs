@@ -26,7 +26,7 @@ namespace MrCMS.Website.Binders
                                                           methodInfo.MakeGenericMethod(type)
                                                                     .Invoke(configurationProvider,
                                                                             new object[]
-                                                                                {CurrentRequestData.CurrentSite});
+                                                                                {});
                                                   }).OfType<SiteSettingsBase>().Where(arg => arg.RenderInSettings).ToList();
 
             foreach (var settings in objects)
@@ -64,7 +64,7 @@ namespace MrCMS.Website.Binders
 
         protected virtual MethodInfo GetGetSettingsMethod()
         {
-            return typeof (ConfigurationProvider).GetMethodExt("GetSiteSettings", typeof (Site));
+            return typeof (ConfigurationProvider).GetMethodExt("GetSiteSettings");
         }
     }
 }

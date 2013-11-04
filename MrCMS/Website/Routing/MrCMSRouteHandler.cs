@@ -58,7 +58,7 @@ namespace MrCMS.Website.Routing
                 context.Response.RedirectPermanent("~/" + urlHistory.Webpage.LiveUrlSegment);
             }
 
-            HandleError(context, 404, _siteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data));
+            HandleError(context, 404, _siteSettings.Error404PageId, new HttpException(404, "Cannot find " + Data), _siteSettings.Log404s);
         }
 
         private string Data
