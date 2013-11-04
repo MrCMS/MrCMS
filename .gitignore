@@ -87,3 +87,4 @@ MrCMS.Web/App_Data/*
 NDependOut/*
 *.ndproj
 MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
+*.stackdump

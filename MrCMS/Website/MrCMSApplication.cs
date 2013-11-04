@@ -29,8 +29,8 @@ using Ninject.Web.Common;
 using System.Linq;
 using MrCMS.Helpers;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "Start",Order= 1)]
-[assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "EnsureIndexesExist",Order= 2)]
+[assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "Start", Order = 1)]
+[assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "EnsureIndexesExist", Order = 2)]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(MrCMSApplication), "Stop")]
 
 namespace MrCMS.Website
@@ -129,11 +129,13 @@ namespace MrCMS.Website
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
+            routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",
+                            new {controller = "CKEditor", action = "Config"});
 
             routes.MapRoute("Logout", "logout", new { controller = "Login", action = "Logout" },
                             new[] { RootNamespace });
 
-            routes.MapRoute("zones", "render-widget", new { action = "Show", controller = "Widget" },
+            routes.MapRoute("zones", "render-widget", new { controller = "Widget", action = "Show" },
                             new[] { RootNamespace });
 
             routes.MapRoute("ajax content save", "admintools/savebodycontent",
