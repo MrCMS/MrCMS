@@ -21,7 +21,7 @@ namespace MrCMS.IoC
                 return list;
             }
 
-            bindingRoot.Bind(type).ToMethod(context => GetValue(type, context)).InRequestScope();
+            bindingRoot.Bind(type).ToMethod(context => GetValue(type, context));
 
             return list;
         }

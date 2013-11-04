@@ -38,13 +38,16 @@ namespace MrCMS.IoC
         public override void Load()
         {
             Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
-                                      .Where(t => !typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
-                                      .BindWith<NinjectServiceToInterfaceBinder>()
-                                      .Configure(onSyntax => onSyntax.InRequestScope()));
+                                        .Where(
+                                            t =>
+                                            !typeof(SiteSettingsBase).IsAssignableFrom(t) &&
+                                            !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
+                                        .BindWith<NinjectServiceToInterfaceBinder>()
+                                        .Configure(onSyntax => onSyntax.InScope(context => context.Kernel.Get<HttpContextBase>())));
             Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
                                       .Where(t => typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
                                       .BindWith<NinjectSiteSettingsBinder>()
-                                      .Configure(onSyntax => onSyntax.InRequestScope()));
+                                        .Configure(onSyntax => onSyntax.InScope(context => context.Kernel.Get<HttpContextBase>())));
 
             Kernel.Bind<HttpRequestBase>().ToMethod(context => CurrentRequestData.CurrentContext.Request);
             Kernel.Bind<HttpSessionStateBase>().ToMethod(context => CurrentRequestData.CurrentContext.Session);

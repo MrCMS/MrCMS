@@ -17,10 +17,6 @@ namespace MrCMS.Web
             get { return typeof(WidgetController).Namespace; }
         }
 
-        protected override void RegisterAppSpecificRoutes(RouteCollection routes)
-        {
-        }
-
         protected override void RegisterServices(IKernel kernel)
         {
         }

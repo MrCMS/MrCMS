@@ -103,21 +103,7 @@ namespace MrCMS.Website
                                                            .GetCurrentUser(CurrentRequestData.CurrentContext);
                                                }
                                            };
-
-                //EndRequest += (sender, args) =>
-                //                  {
-                //                      if (!IsFileRequest(Request.Url))
-                //                      {
-                //                          if (CurrentRequestData.DatabaseIsInstalled)
-                //                              AppendScheduledTasks();
-                //                          TaskExecutor.StartExecuting();
-                //                      }
-                //                  };
             }
-        }
-
-        protected void AppendScheduledTasks()
-        {
         }
 
         public abstract string RootNamespace { get; }
@@ -142,8 +128,6 @@ namespace MrCMS.Website
 
             routes.MapRoute("form save", "save-form/{id}", new { controller = "Form", action = "Save" });
 
-            RegisterAppSpecificRoutes(routes);
-
             routes.Add(new Route("{*data}", new RouteValueDictionary(),
                                  new RouteValueDictionary(new { data = @".*\.aspx" }),
                                  new MrCMSAspxRouteHandler()));
@@ -159,14 +143,6 @@ namespace MrCMS.Website
                                      StringComparison.OrdinalIgnoreCase);
             }
         }
-
-        protected abstract void RegisterAppSpecificRoutes(RouteCollection routes);
-
-        //public static Layout OverridenDefaultLayout { get; set; }
-        //public static Layout GetDefaultLayout(Webpage page)
-        //{
-        //    return OverridenDefaultLayout ?? Get<IDocumentService>().GetDefaultLayout(page);
-        //}
 
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
         private static IKernel _kernel;

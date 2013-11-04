@@ -125,6 +125,7 @@
     <Compile Include="Entities\WebpageTests.cs" />
     <Compile Include="Helpers\DocumentExtensionsTests.cs" />
     <Compile Include="Helpers\TypeHelperTests.cs" />
+    <Compile Include="IoC\NinjectScopingTests.cs" />
     <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
     <Compile Include="Logging\LogServiceTests.cs" />
     <Compile Include="Helpers\SessionHelperTests.cs" />
