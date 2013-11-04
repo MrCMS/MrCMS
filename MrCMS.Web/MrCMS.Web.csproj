@@ -141,6 +141,7 @@
     <Compile Include="Apps\Core\Controllers\RegisterController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
     <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\TokenProviders\UserTokenProvider.cs" />
     <Compile Include="Apps\Core\Metadata\RegisterPageMedatData.cs" />
     <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\ForgottenPasswordPageMetaData.cs" />
