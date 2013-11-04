@@ -54,8 +54,8 @@ namespace MrCMS.Website
         private static void SetModelBinders()
         {
             ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
-            ModelBinders.Binders.Add(typeof (DateTime), new CultureAwareDateBinder());
-            ModelBinders.Binders.Add(typeof (DateTime?), new NullableCultureAwareDateBinder());
+            ModelBinders.Binders.Add(typeof(DateTime), new CultureAwareDateBinder());
+            ModelBinders.Binders.Add(typeof(DateTime?), new NullableCultureAwareDateBinder());
         }
 
         private static bool IsFileRequest(Uri uri)
@@ -103,6 +103,13 @@ namespace MrCMS.Website
                                                            .GetCurrentUser(CurrentRequestData.CurrentContext);
                                                }
                                            };
+                EndRequest += (sender, args) =>
+                {
+                    if (!IsFileRequest(Request.Url))
+                    {
+                        TaskExecutor.StartExecuting();
+                    }
+                };
             }
         }
 
