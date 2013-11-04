@@ -6,9 +6,33 @@ using Lucene.Net.Store;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using System.Linq;
+using MrCMS.Events;
+using MrCMS.Helpers;
+using MrCMS.Services;
+using NHibernate;
 
 namespace MrCMS.Indexing.Management
 {
+    public static class IndexManager
+    {
+        public static void EnsureIndexesExist(ISession session, Site site)
+        {
+            var service = new IndexService(session, site);
+            DocumentMetadataHelper.OverrideExistAny =
+                new DocumentService(session,
+                                    new DocumentEventService(new List<IOnDocumentDeleted>(),
+                                                             new List<IOnDocumentUnpublished>(),
+                                                             new List<IOnDocumentAdded>()), null, site).ExistAny;
+            var mrCMSIndices = service.GetIndexes(site);
+            foreach (var index in mrCMSIndices.Where(index => !index.DoesIndexExist))
+            {
+                service.Reindex(index.TypeName, site);
+                service.Optimise(index.TypeName, site);
+            }
+            DocumentMetadataHelper.OverrideExistAny = null;
+        }
+    }
+
     public abstract class IndexManager<TEntity, TDefinition> : IIndexManager<TEntity, TDefinition>
         where TEntity : SystemEntity
         where TDefinition : IIndexDefinition<TEntity>, new()
@@ -154,8 +178,8 @@ namespace MrCMS.Indexing.Management
                                                              using (var indexSearcher = new IndexSearcher(GetDirectory(), true))
                                                              {
                                                                  var topDocs = indexSearcher.Search(new TermQuery(Definition.GetIndex(entity)), int.MaxValue);
-                                                                 if (!topDocs.ScoreDocs.Any()) 
-                                                                    return;
+                                                                 if (!topDocs.ScoreDocs.Any())
+                                                                     return;
                                                              }
                                                              writer.UpdateDocument(Definition.GetIndex(entity),
                                                                                    Definition.Convert(entity));

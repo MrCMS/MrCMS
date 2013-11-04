@@ -12,6 +12,10 @@ using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using MrCMS.Apps;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
+using MrCMS.Events;
+using MrCMS.Indexing.Management;
+using MrCMS.Installation;
 using MrCMS.IoC;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -23,8 +27,10 @@ using NHibernate;
 using Ninject;
 using Ninject.Web.Common;
 using System.Linq;
+using MrCMS.Helpers;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "Start")]
+[assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "Start",Order= 1)]
+[assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "EnsureIndexesExist",Order= 2)]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(MrCMSApplication), "Stop")]
 
 namespace MrCMS.Website
@@ -162,6 +168,17 @@ namespace MrCMS.Website
             DynamicModuleUtility.RegisterModule(typeof(OnePerRequestHttpModule));
             DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
             bootstrapper.Initialize(CreateKernel);
+        }
+
+        public static void EnsureIndexesExist()
+        {
+            if (CurrentRequestData.DatabaseIsInstalled)
+            {
+                var session = bootstrapper.Kernel.Get<ISessionFactory>().OpenFilteredSession();
+                var sites = session.QueryOver<Site>().List();
+                foreach (var site in sites)
+                    IndexManager.EnsureIndexesExist(session, site);
+            }
         }
 
         /// <summary>
