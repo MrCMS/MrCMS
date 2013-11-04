@@ -5,7 +5,6 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tests.Stubs;
-using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
 
@@ -13,7 +12,6 @@ namespace MrCMS.Tests.Services
 {
     public class FormServiceTests : InMemoryDatabaseTest
     {
-        private readonly ISession _session;
         private readonly IDocumentService _documentService;
         private readonly IFileService _fileService;
         private readonly SiteSettings _siteSettings;
