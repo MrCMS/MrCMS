@@ -2,7 +2,6 @@
 using System.Configuration;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using Elmah;
@@ -52,7 +51,7 @@ namespace MrCMS.Website
 
         public static Webpage HomePage
         {
-            get { return (Webpage) CurrentContext.Items["current.homepage"]; }
+            get { return (Webpage)CurrentContext.Items["current.homepage"]; }
             set { CurrentContext.Items["current.homepage"] = value; }
         }
 
@@ -112,15 +111,37 @@ namespace MrCMS.Website
             set { _databaseIsInstalled = value; }
         }
 
+        private const string UserSessionId = "current.usersessionGuid";
+        private static Guid? UserGuidOverride
+        {
+            get { return CurrentContext.Items[UserSessionId] as Guid?; }
+            set { CurrentContext.Items[UserSessionId] = value; }
+        }
         public static Guid UserGuid
         {
             get
             {
+                if (UserGuidOverride.HasValue)
+                    return UserGuidOverride.Value;
                 if (CurrentUser != null) return CurrentUser.Guid;
-                var o = CurrentContext.Session["current.usersessionGuid"];
-                return (Guid)(o != null ? (Guid)o : (CurrentContext.Session["current.usersessionGuid"] = Guid.NewGuid()));
+                var o = CurrentContext.Request.Cookies[UserSessionId] != null ? CurrentContext.Request.Cookies[UserSessionId].Value : null;
+                if (o == null)
+                {
+                    o = Guid.NewGuid().ToString();
+                    AddCookieToResponse(UserSessionId, o, Now.AddMonths(3));
+                }
+                return Guid.Parse(o);
             }
-            set { CurrentContext.Session["current.usersessionGuid"] = value; }
+            set { UserGuidOverride = value; }
+        }
+        private static void AddCookieToResponse(string key, string value, DateTime expiry)
+        {
+            var userGuidCookie = new HttpCookie(key)
+            {
+                Value = value,
+                Expires = expiry
+            };
+            CurrentContext.Response.Cookies.Add(userGuidCookie);
         }
     }
 }

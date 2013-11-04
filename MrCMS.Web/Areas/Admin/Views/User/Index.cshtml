@@ -1,44 +1,43 @@
 ﻿@using MrCMS.Entities.People
 @using MrCMS.Helpers
+@using MrCMS.Models
 @model MrCMS.Paging.IPagedList<User>
 @{
     ViewBag.Title = "Users";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
+    var query = ViewData["query"] as UserSearchQuery ?? new UserSearchQuery();
 }
-<form>
-    <fieldset>
-        <legend>Users
+<fieldset>
+    <legend>Users
 
             <span class="btn-group  display-inline  pull-right">
                 @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-success", data_toggle = "fb-modal" })
             </span>
-        </legend>
-        
-        <table class="table table-condensed table-striped">
+    </legend>
+    @{ Html.RenderPartial("Filter", query);}
+    <table class="table table-condensed table-striped">
+        <tr>
+            <th>Email
+            </th>
+            <th>Name
+            </th>
+            <th>Created On
+            </th>
+        </tr>
+        @foreach (User user in Model)
+        {
             <tr>
-                <th>Email
-                </th>
-                <th>Name
-                </th>
-                <th>Created On
-                </th>
+                <td>
+                    @Html.ActionLink(user.Email, "Edit", new { id = user.Id })
+                </td>
+                <td>
+                    @user.Name
+                </td>
+                <td>
+                    @user.CreatedOn
+                </td>
             </tr>
-            @foreach (User user in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.ActionLink(user.Email, "Edit", new { id = user.Id })
-                    </td>
-                    <td>
-                        @user.Name
-                    </td>
-                    <td>
-                        @user.CreatedOn
-                    </td>
-                </tr>
-            }
-        </table>
-        @Html.Pager(Model, "Index", page => new { page })
-    </fieldset>
-</form>
+        }
+    </table>
+    @Html.Pager(Model, "Index", page => new { page })
+</fieldset>

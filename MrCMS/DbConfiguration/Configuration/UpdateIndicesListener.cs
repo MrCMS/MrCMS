@@ -16,40 +16,45 @@ namespace MrCMS.DbConfiguration.Configuration
         public void OnPostUpdate(PostUpdateEvent @event)
         {
             var siteEntity = @event.Entity as SiteEntity;
-            if (siteEntity != null) TaskExecutor.ExecuteLater(Create(typeof (UpdateIndicesTask<>), siteEntity));
+            if (ShouldBeUpdated(siteEntity)) TaskExecutor.ExecuteLater(Create(typeof(UpdateIndicesTask<>), siteEntity));
+        }
+
+        private static bool ShouldBeUpdated(SiteEntity siteEntity)
+        {
+            return siteEntity != null && !siteEntity.IsDeleted;
         }
 
         public void OnPostInsert(PostInsertEvent @event)
         {
             var siteEntity = @event.Entity as SiteEntity;
-            if (siteEntity != null) TaskExecutor.ExecuteLater(Create(typeof (InsertIndicesTask<>), siteEntity));
+            if (ShouldBeUpdated(siteEntity)) TaskExecutor.ExecuteLater(Create(typeof(InsertIndicesTask<>), siteEntity));
         }
 
         public void OnPostDelete(PostDeleteEvent @event)
         {
             var siteEntity = @event.Entity as SiteEntity;
-            if (siteEntity != null) TaskExecutor.ExecuteLater(Create(typeof (DeleteIndicesTask<>), siteEntity));
+            if (ShouldBeUpdated(siteEntity)) TaskExecutor.ExecuteLater(Create(typeof(DeleteIndicesTask<>), siteEntity));
         }
 
         public void OnPostUpdateCollection(PostCollectionUpdateEvent @event)
         {
             var siteEntity = @event.AffectedOwnerOrNull as SiteEntity;
-            if (siteEntity != null) TaskExecutor.ExecuteLater(Create(typeof(UpdateIndicesTask<>), siteEntity));
+            if (ShouldBeUpdated(siteEntity)) TaskExecutor.ExecuteLater(Create(typeof(UpdateIndicesTask<>), siteEntity));
         }
 
         public void OnPostRemoveCollection(PostCollectionRemoveEvent @event)
         {
             var siteEntity = @event.AffectedOwnerOrNull as SiteEntity;
-            if (siteEntity != null) TaskExecutor.ExecuteLater(Create(typeof(UpdateIndicesTask<>), siteEntity));
+            if (ShouldBeUpdated(siteEntity)) TaskExecutor.ExecuteLater(Create(typeof(UpdateIndicesTask<>), siteEntity));
         }
 
         public void OnPostRecreateCollection(PostCollectionRecreateEvent @event)
         {
             var siteEntity = @event.AffectedOwnerOrNull as SiteEntity;
-            if (siteEntity != null) TaskExecutor.ExecuteLater(Create(typeof(UpdateIndicesTask<>), siteEntity));
+            if (ShouldBeUpdated(siteEntity)) TaskExecutor.ExecuteLater(Create(typeof(UpdateIndicesTask<>), siteEntity));
         }
 
-        private BackgroundTask Create(Type type, SiteEntity siteEntity)
+        public static BackgroundTask Create(Type type, SiteEntity siteEntity)
         {
             return Activator.CreateInstance(type.MakeGenericType(siteEntity.GetType()), siteEntity) as BackgroundTask;
         }

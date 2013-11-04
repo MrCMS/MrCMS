@@ -14,8 +14,9 @@ namespace MrCMS.Tests.Services
 {
     public class FileServiceTests : InMemoryDatabaseTest
     {
-        private static IFileSystem _fileSystem;
-        private static MediaSettings mediaSettings;
+        private IFileSystem _fileSystem;
+        private MediaSettings _mediaSettings;
+        private SiteSettings _siteSettings;
 
         [Fact]
         public void FileService_AddFile_NullMediaCategoryThrowsArgumentNullException()
@@ -31,7 +32,7 @@ namespace MrCMS.Tests.Services
         {
             _fileSystem = A.Fake<IFileSystem>();
 
-            mediaSettings = new MediaSettings
+            _mediaSettings = new MediaSettings
                                 {
                                     LargeImageHeight = 480,
                                     LargeImageWidth = 640,
@@ -43,8 +44,9 @@ namespace MrCMS.Tests.Services
                                     ThumbnailImageWidth = 64,
                                     Site = CurrentSite
                                 };
+            _siteSettings = new SiteSettings();
             return new FileService(session ?? Session, fileSystem ?? _fileSystem,
-                                   A.Fake<IImageProcessor>(), mediaSettings, CurrentSite);
+                                   A.Fake<IImageProcessor>(), _mediaSettings, CurrentSite, _siteSettings);
         }
 
         [Fact]

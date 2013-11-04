@@ -41,12 +41,21 @@ namespace MrCMS.Website
             RegisterServices(bootstrapper.Kernel);
             MrCMSApp.RegisterAllServices(bootstrapper.Kernel);
 
-            ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
+            SetModelBinders();
 
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
+
+            ScheduledTaskChecker.Instance.Start(10);
+        }
+
+        private static void SetModelBinders()
+        {
+            ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
+            ModelBinders.Binders.Add(typeof (DateTime), new CultureAwareDateBinder());
+            ModelBinders.Binders.Add(typeof (DateTime?), new NullableCultureAwareDateBinder());
         }
 
         private static bool IsFileRequest(Uri uri)
@@ -56,7 +65,16 @@ namespace MrCMS.Website
                 return false;
             var extension = Path.GetExtension(absolutePath);
 
-            return !string.IsNullOrWhiteSpace(extension);
+            return !string.IsNullOrWhiteSpace(extension) && !WebExtensions.Contains(extension);
+        }
+
+        protected static IEnumerable<string> WebExtensions
+        {
+            get
+            {
+                yield return ".aspx";
+                yield return ".php";
+            }
         }
 
         public override void Init()
@@ -86,28 +104,20 @@ namespace MrCMS.Website
                                                }
                                            };
 
-                EndRequest += (sender, args) =>
-                                  {
-                                      if (!IsFileRequest(Request.Url))
-                                      {
-                                          if (CurrentRequestData.DatabaseIsInstalled)
-                                              AppendScheduledTasks();
-                                          TaskExecutor.StartExecuting();
-                                      }
-                                  };
+                //EndRequest += (sender, args) =>
+                //                  {
+                //                      if (!IsFileRequest(Request.Url))
+                //                      {
+                //                          if (CurrentRequestData.DatabaseIsInstalled)
+                //                              AppendScheduledTasks();
+                //                          TaskExecutor.StartExecuting();
+                //                      }
+                //                  };
             }
         }
 
         protected void AppendScheduledTasks()
         {
-            var scheduledTaskManager = Get<IScheduledTaskManager>();
-            foreach (var scheduledTask in scheduledTaskManager.GetDueTasks())
-                TaskExecutor.ExecuteLater(scheduledTaskManager.GetTask(scheduledTask));
-        }
-
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            filters.Add(new HandleErrorAttribute());
         }
 
         public abstract string RootNamespace { get; }
@@ -134,16 +144,11 @@ namespace MrCMS.Website
 
             RegisterAppSpecificRoutes(routes);
 
-            routes.Add(new Route("{*data}", new RouteValueDictionary(), new RouteValueDictionary(), GetConstraints(),
+            routes.Add(new Route("{*data}", new RouteValueDictionary(),
+                                 new RouteValueDictionary(new { data = @".*\.aspx" }),
+                                 new MrCMSAspxRouteHandler()));
+            routes.Add(new Route("{*data}", new RouteValueDictionary(), new RouteValueDictionary(),
                                  new MrCMSRouteHandler()));
-        }
-
-        protected virtual RouteValueDictionary GetConstraints()
-        {
-            return new RouteValueDictionary
-                       {
-                           {"Namespaces", new[] {"MrCMS.Web.Controllers"}}
-                       };
         }
 
         public static bool InDevelopment

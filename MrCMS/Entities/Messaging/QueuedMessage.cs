@@ -26,5 +26,20 @@ namespace MrCMS.Entities.Messaging
         public virtual bool IsHtml { get; set; }
 
         public virtual IList<QueuedMessageAttachment> QueuedMessageAttachments { get; set; }
+
+        public virtual string FromDescription
+        {
+            get { return !string.IsNullOrWhiteSpace(FromName) ? string.Format("{0} ({1})", FromName, FromAddress) : FromAddress; }
+        }
+
+        public virtual string ToDescription
+        {
+            get { return !string.IsNullOrWhiteSpace(ToName) ? string.Format("{0} ({1})", ToName, ToAddress) : ToAddress; }
+        }
+
+        public virtual string SentOnDescription
+        {
+            get { return SentOn.HasValue ? SentOn.Value.ToLongDateString() : "-"; }
+        }
     }
 }

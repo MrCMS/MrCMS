@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -9,6 +10,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.Installation;
 using MrCMS.Services;
@@ -51,26 +53,39 @@ namespace MrCMS.Web.Apps.Core
                 UICulture = model.UiCulture
             };
             var mediaSettings = new MediaSettings
-                                    {
-                                        Site = site
-                                    };
+            {
+                Site = site
+            };
+            var mailSettings = new MailSettings
+            {
+                Site = site
+            };
+            mailSettings.Port = 25;
+
             CurrentRequestData.SiteSettings = siteSettings;
 
-            var documentService = new DocumentService(session, siteSettings, site);
+            var documentService = new DocumentService(session,
+                                                      new DocumentEventService(new List<IOnDocumentDeleted>(), new List<IOnDocumentUnpublished>(), new List<IOnDocumentAdded>()),
+                                                      siteSettings, site);
             var layoutAreaService = new LayoutAreaService(session);
             var widgetService = new WidgetService(session);
             var fileSystem = new FileSystem();
             var imageProcessor = new ImageProcessor(session, fileSystem, mediaSettings);
-            var fileService = new FileService(session, fileSystem, imageProcessor, mediaSettings, site);
+            var fileService = new FileService(session, fileSystem, imageProcessor, mediaSettings, site, siteSettings);
             var user = new User
             {
                 Email = model.AdminEmail,
                 IsActive = true
             };
 
-            var authorisationService = new AuthorisationService();
-            authorisationService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
-            authorisationService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
+            var hashAlgorithms = new List<IHashAlgorithm> { new SHA512HashAlgorithm() };
+            var hashAlgorithmProvider = new HashAlgorithmProvider(hashAlgorithms);
+            var passwordEncryptionManager = new PasswordEncryptionManager(hashAlgorithmProvider,
+                                                                          new UserService(session, siteSettings));
+            var passwordManagementService = new PasswordManagementService(passwordEncryptionManager);
+
+            passwordManagementService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
+            passwordManagementService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
             session.Transact(sess => sess.Save(user));
             CurrentRequestData.CurrentUser = user;
 
@@ -155,7 +170,6 @@ namespace MrCMS.Web.Apps.Core
                 Name = "Login",
                 UrlSegment = "login",
                 CreatedOn = CurrentRequestData.Now,
-                Layout = model.BaseLayout,
                 Site = site,
                 PublishOn = CurrentRequestData.Now,
                 DisplayOrder = 100,
@@ -168,7 +182,6 @@ namespace MrCMS.Web.Apps.Core
                 Name = "Forgot Password",
                 UrlSegment = "forgot-password",
                 CreatedOn = CurrentRequestData.Now,
-                Layout = model.BaseLayout,
                 Site = site,
                 PublishOn = CurrentRequestData.Now,
                 Parent = loginPage,
@@ -182,7 +195,6 @@ namespace MrCMS.Web.Apps.Core
                 Name = "Reset Password",
                 UrlSegment = "reset-password",
                 CreatedOn = CurrentRequestData.Now,
-                Layout = model.BaseLayout,
                 Site = site,
                 PublishOn = CurrentRequestData.Now,
                 Parent = loginPage,
@@ -196,7 +208,6 @@ namespace MrCMS.Web.Apps.Core
                 Name = "My Account",
                 UrlSegment = "my-account",
                 CreatedOn = CurrentRequestData.Now,
-                Layout = model.BaseLayout,
                 Site = site,
                 PublishOn = CurrentRequestData.Now,
                 Parent = loginPage,
@@ -210,7 +221,6 @@ namespace MrCMS.Web.Apps.Core
                 Name = "Register",
                 UrlSegment = "register",
                 CreatedOn = CurrentRequestData.Now,
-                Layout = model.BaseLayout,
                 Site = site,
                 PublishOn = CurrentRequestData.Now
             };
@@ -224,7 +234,6 @@ namespace MrCMS.Web.Apps.Core
             siteSettings.Error403PageId = model.Error403.Id;
             siteSettings.Error404PageId = model.Error404.Id;
             siteSettings.Error500PageId = model.Error500.Id;
-
             siteSettings.EnableInlineEditing = true;
             siteSettings.SiteIsLive = true;
 
@@ -277,6 +286,7 @@ namespace MrCMS.Web.Apps.Core
             var roleService = new RoleService(session);
             roleService.SaveRole(adminUserRole);
 
+            var authorisationService = new AuthorisationService();
             authorisationService.Logout();
             authorisationService.SetAuthCookie(user.Email, false);
 

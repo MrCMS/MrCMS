@@ -92,5 +92,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             return PartialView(_messageTemplateService.GetTokens(messageTemplate));
         }
+
+        public ActionResult Preview(MessageTemplate messageTemplate)
+        {
+            return PartialView(messageTemplate);
+        }
+
+        public string GetPreview(MessageTemplate messageTemplate, int itemId)
+        {
+            return _messageTemplateService.GetPreview(messageTemplate, itemId);
+        }
     }
 }

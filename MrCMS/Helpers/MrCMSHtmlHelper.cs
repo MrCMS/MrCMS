@@ -202,7 +202,7 @@ namespace MrCMS.Helpers
         {
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var htmlFieldName = ExpressionHelper.GetExpressionText(expression);
-            var checkbox = (CheckBoxHelper(htmlHelper, metadata, htmlFieldName, expression.Compile()(htmlHelper.ViewData.Model), AnonymousObjectToHtmlAttributes(checkboxAttributes)).ToHtmlString());
+            var checkbox = (CheckBoxHelper(htmlHelper, metadata, htmlFieldName, htmlHelper.ViewData.Model != null ? expression.Compile()(htmlHelper.ViewData.Model) : (bool?)null, AnonymousObjectToHtmlAttributes(checkboxAttributes)).ToHtmlString());
             var labelHtmlAttributes = AnonymousObjectToHtmlAttributes(labelAttributes);
             // add checkbox style to label, for Bootstrap
             if (labelHtmlAttributes.ContainsKey("class"))
@@ -232,28 +232,28 @@ namespace MrCMS.Helpers
             var hashTag = new Regex(@"#\w+");
 
             string formattedTweet = link.Replace(tweet, match =>
-                                                            {
-                                                                string val = match.Value;
-                                                                return "<a href='" + val + "'>" + val + "</a>";
-                                                            });
+            {
+                string val = match.Value;
+                return "<a href='" + val + "'>" + val + "</a>";
+            });
 
             formattedTweet = screenName.Replace(formattedTweet, match =>
-                                                                    {
-                                                                        string val = match.Value.Trim('@');
-                                                                        return
-                                                                            String.Format(
-                                                                                "@<a href='http://twitter.com/{0}'>{1}</a>",
-                                                                                val, val);
-                                                                    });
+            {
+                string val = match.Value.Trim('@');
+                return
+                    String.Format(
+                        "@<a href='http://twitter.com/{0}'>{1}</a>",
+                        val, val);
+            });
 
             formattedTweet = hashTag.Replace(formattedTweet, match =>
-                                                                 {
-                                                                     string val = match.Value;
-                                                                     return
-                                                                         String.Format(
-                                                                             "<a href='http://twitter.com/search/?q=%23{0}'>{1}</a>",
-                                                                             val.Substring(1), val);
-                                                                 });
+            {
+                string val = match.Value;
+                return
+                    String.Format(
+                        "<a href='http://twitter.com/search/?q=%23{0}'>{1}</a>",
+                        val.Substring(1), val);
+            });
 
             return new HtmlString(formattedTweet);
         }
@@ -417,10 +417,10 @@ namespace MrCMS.Helpers
             {
                 Uri requestUrl = url.RequestContext.HttpContext.Request.Url;
                 UriBuilder builder = new UriBuilder(requestUrl.Scheme, requestUrl.Host, requestUrl.Port)
-                                         {
-                                             Path =
-                                                 VirtualPathUtility.ToAbsolute("~/" + path)
-                                         };
+                {
+                    Path =
+                        VirtualPathUtility.ToAbsolute("~/" + path)
+                };
 
                 uri = builder.Uri;
             }
@@ -466,7 +466,6 @@ namespace MrCMS.Helpers
 
             if (ImageProcessor.RequiresResize(image.Size, targetSize))
             {
-                var resized = ImageProcessor.CalculateDimensions(image.Size, targetSize);
                 var location = fileService.GetFileLocation(image, targetSize);
                 if (!string.IsNullOrWhiteSpace(location))
                     imageUrl = location;

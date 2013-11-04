@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
@@ -14,10 +15,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public abstract class BaseDocumentController<T> : MrCMSAdminController where T : Document
     {
         protected readonly IDocumentService _documentService;
+        protected readonly Site Site;
 
-        protected BaseDocumentController(IDocumentService documentService)
+        protected BaseDocumentController(IDocumentService documentService, Site site)
         {
             _documentService = documentService;
+            Site = site;
         }
 
         public ViewResult Index()

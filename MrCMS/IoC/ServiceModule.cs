@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
@@ -16,7 +18,7 @@ using Ninject;
 
 namespace MrCMS.IoC
 {
-    public class ContextModule:NinjectModule
+    public class ContextModule : NinjectModule
     {
         public override void Load()
         {
@@ -50,8 +52,12 @@ namespace MrCMS.IoC
             Kernel.Bind<Cache>().ToMethod(context => CurrentRequestData.CurrentContext.Cache);
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(FSDirectorySearcher<,>)).InRequestScope();
             Kernel.Bind(typeof(ITokenProvider<>)).To(typeof(PropertyTokenProvider<>)).InRequestScope();
+            Kernel.Bind(typeof(IMessageParser<,>)).To(typeof(MessageParser<,>)).InRequestScope();
             Kernel.Rebind<Site>()
                   .ToMethod(context => CurrentRequestData.CurrentSite)
+                  .InRequestScope();
+            Kernel.Bind<IEnumerable<IHashAlgorithm>>()
+                  .ToMethod(context => context.Kernel.GetAll<IHashAlgorithm>())
                   .InRequestScope();
 
             // Allowing IFileSystem implementation to be set in the site settings

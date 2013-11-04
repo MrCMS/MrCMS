@@ -94,7 +94,7 @@ namespace MrCMS.Tests.Services
                                      session.SaveOrUpdate(page4);
                                  });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), CurrentSite), _documentSearcher);
+            var navigationService = new NavigationService(new DocumentService(Session, null, new SiteSettings(), CurrentSite), _documentSearcher);
             var websiteTree = navigationService.GetWebsiteTree();
 
             websiteTree.Children.Should().HaveCount(1);
@@ -128,7 +128,7 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(category4);
             });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings { Site = CurrentSite }, CurrentSite), null);
+            var navigationService = new NavigationService(new DocumentService(Session, null, new SiteSettings { Site = CurrentSite }, CurrentSite), null);
             var mediaTree = navigationService.GetMediaTree();
 
             mediaTree.Children.Should().HaveCount(1);
@@ -160,7 +160,7 @@ namespace MrCMS.Tests.Services
             });
 
             var navigationService = new NavigationService(
-                new DocumentService(Session, new SiteSettings(), CurrentSite),  _documentSearcher);
+                new DocumentService(Session, null, new SiteSettings(), CurrentSite), _documentSearcher);
             var layoutList = navigationService.GetLayoutList();
 
             layoutList.Children.Should().HaveCount(4);
@@ -207,7 +207,7 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(page4);
             });
 
-            var navigationService = new NavigationService(new DocumentService(Session, new SiteSettings(), CurrentSite), _documentSearcher);
+            var navigationService = new NavigationService(new DocumentService(Session, null, new SiteSettings(), CurrentSite), _documentSearcher);
             var websiteTree = navigationService.GetWebsiteTree();
 
             websiteTree.Children.Should().HaveCount(1);

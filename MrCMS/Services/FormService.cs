@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using CsvHelper;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
@@ -14,6 +16,7 @@ using MrCMS.Paging;
 using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
 using MrCMS.Tasks;
+using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Services
@@ -171,6 +174,68 @@ namespace MrCMS.Services
 
                                       SendFormMessages(webpage, formPosting);
                                   });
+        }
+
+        public void ClearFormData(Webpage webpage)
+        {
+            _session.Transact(session => webpage.FormPostings.ForEach(session.Delete));
+        }
+
+        public byte[] ExportFormData(Webpage webpage)
+        {
+            using (var ms = new MemoryStream())
+            using (var sw = new StreamWriter(ms))
+            using (var w = new CsvWriter(sw))
+            {
+                foreach (var header in GetHeadersForExport(webpage))
+                {
+                    w.WriteField(header);
+                }
+                w.NextRecord();
+
+                foreach (var item in GetFormDataForExport(webpage))
+                {
+                    foreach (var value in item.Value)
+                    {
+                        w.WriteField(value);
+                    }
+                    w.NextRecord();
+                }
+
+                sw.Flush();
+                var file = ms.ToArray();
+                sw.Close();
+
+                return file;
+            }
+        }
+
+        private static IEnumerable<string> GetHeadersForExport(Webpage webpage)
+        {
+            var headers = new List<string>();
+            foreach (var posting in webpage.FormPostings)
+            {
+                headers.AddRange(posting.FormValues.Select(x => x.Key).Distinct());
+            }
+            return headers.Distinct().ToList();
+        }
+
+        private static Dictionary<int, List<string>> GetFormDataForExport(Webpage webpage)
+        {
+            var items = new Dictionary<int, List<string>>();
+            for (var i = 0; i < webpage.FormPostings.Count; i++)
+            {
+                var posting = webpage.FormPostings[i];
+                items.Add(i, new List<string>());
+                foreach (var value in GetHeadersForExport(webpage).SelectMany(header => posting.FormValues.Where(x => x.Key == header)))
+                {
+                    if (!value.IsFile)
+                        items[i].Add(value.Value);
+                    else
+                        items[i].Add("http://" + CurrentRequestData.CurrentSite.BaseUrl + value.Value);
+                }
+            }
+            return items.OrderByDescending(x => x.Value.Count).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
         private void SendFormMessages(Webpage webpage, FormPosting formPosting)

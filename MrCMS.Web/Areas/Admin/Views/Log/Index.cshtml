@@ -3,20 +3,18 @@
 @model MrCMS.Paging.IPagedList<Log>
 @{
     ViewBag.Title = "Logs";
+    var query = ViewData["query"] as LogSearchQuery ?? new LogSearchQuery();
 }
-@using (Html.BeginForm())
-{
-    <fieldset>
-        <legend>Logs 
+
+<fieldset>
+    <legend>Logs 
             <span class="btn-group  display-inline  pull-right">
                 <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">Delete logs</a>
-                <input class="btn btn-primary" type="submit" value="Update" />
+
             </span>
-        </legend>
-        @Html.Label("type", "Filter logs")
-        @Html.DropDownList("type", Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type.ToString() == Request["type"], "All"))
-    </fieldset>
-}
+    </legend>
+    @{ Html.RenderPartial("Filter", query); }
+</fieldset>
 @if (Model.Count == 0)
 {
     @:No logs.

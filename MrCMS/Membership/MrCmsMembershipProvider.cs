@@ -12,18 +12,18 @@ namespace MrCMS.Membership
     public class MrCmsMembershipProvider : MembershipProvider
     {
         private readonly IUserService _userService;
-        private readonly IAuthorisationService _authorisationService;
+        private readonly IPasswordManagementService _passwordManagementService;
 
-        public MrCmsMembershipProvider(IUserService userService, IAuthorisationService authorisationService)
+        public MrCmsMembershipProvider(IUserService userService, IPasswordManagementService passwordManagementService)
         {
             _userService = userService;
-            _authorisationService = authorisationService;
+            _passwordManagementService = passwordManagementService;
         }
 
         public override bool ValidateUser(string email, string password)
         {
             User user = _userService.GetUserByEmail(email);
-            return user != null && user.IsActive && _authorisationService.ValidateUser(user, password);
+            return user != null && user.IsActive && _passwordManagementService.ValidateUser(user, password);
         }
 
         #region Not used

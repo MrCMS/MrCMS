@@ -45,6 +45,8 @@ namespace MrCMS.Services
                 _cloneSitePartsService.Copy403(@from, site);
             if (options.Copy500)
                 _cloneSitePartsService.Copy500(@from, site);
+            if (options.CopyLogin)
+                _cloneSitePartsService.CopyLogin(@from, site);
         }
     }
 }

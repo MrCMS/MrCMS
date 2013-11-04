@@ -30,6 +30,8 @@ namespace MrCMS.Entities.People
 
         public virtual Guid Guid { get; set; }
 
+        public virtual string CurrentEncryption { get; set; }
+
         [Required]
         [Remote("IsUniqueEmail", "User", AdditionalFields = "Id")]
         public virtual string Email { get; set; }

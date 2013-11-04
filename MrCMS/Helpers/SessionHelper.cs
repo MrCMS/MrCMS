@@ -4,7 +4,6 @@ using MrCMS.Entities;
 using MrCMS.Paging;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Criterion.Lambda;
 
 namespace MrCMS.Helpers
 {
@@ -70,6 +69,10 @@ namespace MrCMS.Helpers
             return new StaticPagedList<TResult>(results, pageNumber, pageSize, rowCount);
         }
 
+        public static bool Any<T>(this IQueryOver<T> query)
+        {
+            return query.RowCount() > 0;
+        }
     }
 
     public enum OrderType

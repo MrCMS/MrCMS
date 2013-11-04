@@ -16,7 +16,7 @@ namespace MrCMS.Tests.Services
         public MessageTemplateServiceTests()
         {
             _messageTemplateParser = A.Fake<IMessageTemplateParser>();
-            _messageTemplateService = new MessageTemplateService(Session, _messageTemplateParser);
+            _messageTemplateService = new MessageTemplateService(Session, CurrentSite, _messageTemplateParser);
         }
 
         [Fact]

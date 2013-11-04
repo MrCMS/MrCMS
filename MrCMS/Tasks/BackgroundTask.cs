@@ -7,19 +7,14 @@ namespace MrCMS.Tasks
 {
     public abstract class BackgroundTask
     {
-        private readonly Site _site;
-
         protected BackgroundTask(Site site)
         {
-            _site = site;
+            Site = site;
         }
 
         protected ISession Session;
 
-        public Site Site
-        {
-            get { return _site; }
-        }
+        public Site Site { get; set; }
 
         protected virtual void Initialize(ISession session)
         {

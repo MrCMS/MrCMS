@@ -1,4 +1,5 @@
-﻿using MrCMS.ACL.Rules;
+﻿using System;
+using MrCMS.ACL.Rules;
 
 namespace MrCMS.Website
 {
@@ -9,7 +10,7 @@ namespace MrCMS.Website
             var currentUser = CurrentRequestData.CurrentUser;
             return base.AuthorizeCore(httpContext) && currentUser != null &&
                    currentUser.IsActive &&
-                   currentUser.Email == httpContext.User.Identity.Name &&
+                   currentUser.Email != null && currentUser.Email.Equals(httpContext.User.Identity.Name, StringComparison.OrdinalIgnoreCase) &&
                    currentUser.CanAccess<AdminAccessACL>("Allowed");
         }
     }

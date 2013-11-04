@@ -1,6 +1,6 @@
 ﻿html { margin-top: 30px; }
 .mrcms-admin-nav-bar { position: fixed; top: 0; left: 0; height: 30px; width: 100%; background:#3a3c3c;z-index: 9999;font-family: arial;font-size: 13px;}
-.mrcms-admin-nav-bar > a { margin-top: 2px;text-decoration: none;}
+.mrcms-admin-nav-bar > a { margin-top: 2px;text-decoration: none;margin-left: 2px;}
 .mrcms-admin-nav-bar > a:first-child { margin-left: 2px;}
 
 #cke_editor1 { z-index: 9999; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Elmah;
+using MrCMS.DbConfiguration.Types;
 using MrCMS.Entities.Multisite;
 using MrCMS.Website;
 using NHibernate;
@@ -32,14 +33,17 @@ namespace MrCMS.Logging
             var newGuid = Guid.NewGuid();
 
             if (_session != null)
-                _session.Transact(session => session.Save(new Log
-                                                              {
-                                                                  Error = error,
-                                                                  Guid = newGuid,
-                                                                  Message = error.Message,
-                                                                  Detail = error.Detail,
-                                                                  Site = _session.Get<Site>(CurrentRequestData.CurrentSite.Id)
-                                                              }));
+            {
+                var log = new Log
+                              {
+                                  Error = BinaryData.CanSerialize(error) ? error : null,
+                                  Guid = newGuid,
+                                  Message = error.Message,
+                                  Detail = error.Detail,
+                                  Site = _session.Get<Site>(CurrentRequestData.CurrentSite.Id)
+                              };
+                _session.Transact(session => session.Save(log));
+            }
 
             return newGuid.ToString();
         }

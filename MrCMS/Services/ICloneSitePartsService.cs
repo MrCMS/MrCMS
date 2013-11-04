@@ -21,6 +21,7 @@ namespace MrCMS.Services
         void Copy404(Site @from, Site to);
         void Copy403(Site @from, Site to);
         void Copy500(Site @from, Site to);
+        void CopyLogin(Site @from, Site to);
     }
 
     public class CloneSitePartsService : ICloneSitePartsService
@@ -164,6 +165,22 @@ namespace MrCMS.Services
             var toSettings = _configurationProvider.GetSiteSettings<SiteSettings>(@to);
             toSettings.Error500PageId = copy.Id;
             _configurationProvider.SaveSettings(toSettings);
+        }
+
+        public void CopyLogin(Site @from, Site to)
+        {
+            var login =
+                _session.QueryOver<Webpage>()
+                        .Where(webpage => webpage.Site == @from && webpage.DocumentType == "MrCMS.Web.Apps.Core.Pages.LoginPage")
+                        .OrderBy(webpage => webpage.DisplayOrder)
+                        .Asc.Take(1)
+                        .SingleOrDefault();
+
+            if (login != null)
+            {
+                var loginCopy = GetCopy(login, to);
+                _session.Transact(session => session.Save(loginCopy));
+            }
         }
     }
 }

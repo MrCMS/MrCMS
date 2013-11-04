@@ -81,6 +81,7 @@
       <HintPath>..\packages\Ninject.MockingKernel.3.0.0.5\lib\net40-full\Ninject.MockingKernel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.82.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -128,7 +129,7 @@
     <Compile Include="Logging\LogServiceTests.cs" />
     <Compile Include="Helpers\SessionHelperTests.cs" />
     <Compile Include="Optimization\ResourceDataTests.cs" />
-    <Compile Include="Services\AuthorisationServiceTests.cs" />
+    <Compile Include="Services\FormServiceTests.cs" />
     <Compile Include="Services\CurrentSiteLocatorTests.cs" />
     <Compile Include="Services\MessageTemplateParserTests.cs" />
     <Compile Include="Services\MessageTemplateServiceTests.cs" />
@@ -142,11 +143,14 @@
     <Compile Include="Services\LayoutAreaServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\NavigationServiceTests.cs" />
+    <Compile Include="Services\PasswordEncryptionManagerTests.cs" />
+    <Compile Include="Services\PasswordManagementServiceTests.cs" />
     <Compile Include="Services\ResetPasswordServiceTests.cs" />
     <Compile Include="Services\RoleServiceTests.cs" />
     <Compile Include="Services\SearchServiceTests.cs" />
     <Compile Include="Services\SitesServiceTests.cs" />
     <Compile Include="Services\TagServiceTests.cs" />
+    <Compile Include="Services\TestablePasswordEncryptionManager.cs" />
     <Compile Include="Services\UrlHistoryServiceTests.cs" />
     <Compile Include="Services\UserServiceTests.cs" />
     <Compile Include="Services\WidgetServiceTests.cs" />

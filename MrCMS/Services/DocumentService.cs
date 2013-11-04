@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using System.Web.Routing;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -22,12 +23,14 @@ namespace MrCMS.Services
     public class DocumentService : IDocumentService
     {
         private readonly ISession _session;
+        private readonly IDocumentEventService _documentEventService;
         private readonly SiteSettings _siteSettings;
         private readonly Site _currentSite;
 
-        public DocumentService(ISession session, SiteSettings siteSettings, Site currentSite)
+        public DocumentService(ISession session, IDocumentEventService documentEventService, SiteSettings siteSettings, Site currentSite)
         {
             _session = session;
+            _documentEventService = documentEventService;
             _siteSettings = siteSettings;
             _currentSite = currentSite;
         }
@@ -35,14 +38,44 @@ namespace MrCMS.Services
         public void AddDocument<T>(T document) where T : Document
         {
             _session.Transact(session =>
+                                  {
+                                      document.DisplayOrder = GetMaxParentDisplayOrder(document);
+                                      document.CustomInitialization(this, _session);
+                                      session.SaveOrUpdate(document);
+                                  });
+            _documentEventService.OnDocumentAdded(document);
+        }
+
+        private int GetMaxParentDisplayOrder(Document document)
+        {
+            if (document.Parent != null)
             {
-                var sameParentDocs = GetDocumentsByParent(document.Parent as T).ToList();
-                document.DisplayOrder = sameParentDocs.Any()
-                                            ? sameParentDocs.Max(doc => doc.DisplayOrder) + 1
-                                            : 0;
-                document.CustomInitialization(this, _session);
-                session.SaveOrUpdate(document);
-            });
+                var enumerable = document.Parent.Children.Where(d => d != document).ToList();
+                return enumerable.Any()
+                           ? enumerable.Max(d => d.DisplayOrder) + 1
+                           : 0;
+            }
+            if (document is MediaCategory)
+            {
+                var documentsByParent = GetDocumentsByParent<MediaCategory>(null).ToList();
+                return documentsByParent.Any()
+                           ? documentsByParent.Max(category => category.DisplayOrder) + 1
+                           : 0;
+            }
+            else if (document is Layout)
+            {
+                var documentsByParent = GetDocumentsByParent<Layout>(null).ToList();
+                return documentsByParent.Any()
+                           ? documentsByParent.Max(category => category.DisplayOrder) + 1
+                           : 0;
+            }
+            else
+            {
+                var documentsByParent = GetDocumentsByParent<Webpage>(null).ToList();
+                return documentsByParent.Any()
+                           ? documentsByParent.Max(category => category.DisplayOrder) + 1
+                           : 0;
+            }
         }
 
         public T GetDocument<T>(int id) where T : Document
@@ -62,11 +95,6 @@ namespace MrCMS.Services
             {
                 document.OnSaving(session);
                 session.SaveOrUpdate(document);
-                if (document.IsDeleted)
-                {
-                    var test = "";
-                    test += "ba";
-                }
             });
             return document;
         }
@@ -117,13 +145,20 @@ namespace MrCMS.Services
 
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
+            IEnumerable<T> list;
             if (parent != null)
             {
-                var list = parent.Children.OfType<T>();
                 var documentTypeDefinition = parent.GetMetadata();
-                return documentTypeDefinition != null ? Sort(documentTypeDefinition, list) : list;
+                list = parent.Children.OfType<T>();
+                if (documentTypeDefinition != null)
+                    list = Sort(documentTypeDefinition, list);
             }
-            return _session.QueryOver<T>().Where(arg => arg.Parent == null).Cacheable().List();
+            else
+            {
+                list = _session.QueryOver<T>().Where(arg => arg.Parent == null).Cacheable().List();
+            }
+            list = list.Where(arg => arg.Site == _currentSite);
+            return list;
         }
 
         public IEnumerable<T> GetAdminDocumentsByParent<T>(T parent) where T : Document
@@ -292,6 +327,7 @@ namespace MrCMS.Services
                     document.OnDeleting(session);
                     session.Delete(document);
                 });
+                _documentEventService.OnDocumentDeleted(document);
             }
         }
 
@@ -308,6 +344,7 @@ namespace MrCMS.Services
         {
             document.PublishOn = null;
             SaveDocument(document);
+            _documentEventService.OnDocumentUnpublished(document);
         }
 
         public void HideWidget(Webpage document, int widgetId)
@@ -500,7 +537,7 @@ namespace MrCMS.Services
                 potentialParents.AddRange(_session.CreateCriteria(metadata.Type).SetCacheable(true).List<Webpage>());
             }
 
-            var result = potentialParents.Distinct().Where(page => !page.ActivePages.Contains(webpage)).OrderBy(x=>x.Name)
+            var result = potentialParents.Distinct().Where(page => !page.ActivePages.Contains(webpage) && page.Site.Id == _currentSite.Id).OrderBy(x => x.Name)
                                                         .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
                                                                              page => page.Id.ToString(), emptyItem: null);
 
@@ -531,8 +568,25 @@ namespace MrCMS.Services
                             document =>
                             document.Site == _currentSite && document.PublishOn != null &&
                             document.PublishOn <= CurrentRequestData.Now && document.Parent == null)
+                        .OrderBy(webpage => webpage.DisplayOrder).Asc
                         .Take(1)
+                        .Cacheable()
                         .SingleOrDefault();
+        }
+
+        public RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
+        {
+            var page = GetUniquePage<T>();
+            var url = page != null ? string.Format("/{0}", page.LiveUrlSegment) : "/";
+            if (routeValues != null)
+            {
+                var dictionary = new RouteValueDictionary(routeValues);
+                url += string.Format("?{0}",
+                                     string.Join("&",
+                                                 dictionary.Select(
+                                                     pair => string.Format("{0}={1}", pair.Key, pair.Value))));
+            }
+            return new RedirectResult(url);
         }
 
         public bool UrlIsValidForMediaCategory(string url, int? id)
@@ -628,6 +682,6 @@ namespace MrCMS.Services
                         .RowCount() > 0;
         }
 
-        
+
     }
 }

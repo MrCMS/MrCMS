@@ -65,6 +65,7 @@
     $(".web-tree").treeview({
         animated: "medium",
         persist: "cookie",
+        collapsed: true,
         cookieId: "navigationtreeWeb",
         toggle: function () {
         }

@@ -19,5 +19,7 @@ namespace MrCMS.Models
         public bool Copy403 { get; set; }
         [DisplayName("Copy 500 page?")]
         public bool Copy500 { get; set; }
+        [DisplayName("Copy Login Page?")]
+        public bool CopyLogin { get; set; }
     }
 }

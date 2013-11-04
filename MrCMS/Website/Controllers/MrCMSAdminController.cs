@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Settings;
 using MrCMS.Website.ActionResults;
+using MrCMS.Helpers;
 
 namespace MrCMS.Website.Controllers
 {
@@ -18,17 +19,6 @@ namespace MrCMS.Website.Controllers
             // if it's a GET
             if (filterContext.HttpContext.Request.HttpMethod.Equals("GET", StringComparison.OrdinalIgnoreCase))
             {
-                //// loop over the existing parameters
-                //var collection = filterContext.ActionParameters.Keys.ToList();
-                //foreach (var key in collection)
-                //{
-                //    // see if a value has been persisted to temp data as part of an invalid model
-                //    var value = TempData["parameters-" + key];
-                //    // if one is found, set it
-                //    if (value != null)
-                //        filterContext.ActionParameters[key] = value;
-                //}
-
                 // merge in any invalid modelstate found
                 var modelStateDictionary = TempData["MrCMS-invalid-modelstate"] as ModelStateDictionary;
                 if (modelStateDictionary != null)
@@ -41,11 +31,6 @@ namespace MrCMS.Website.Controllers
             // if model state is invalid and it's a post
             if (!ModelState.IsValid && filterContext.HttpContext.Request.HttpMethod.Equals("POST", StringComparison.OrdinalIgnoreCase))
             {
-                //// copy the parameter values into tempdata
-                //foreach (var actionParameter in filterContext.ActionParameters)
-                //{
-                //    TempData["parameters-" + actionParameter.Key] = actionParameter.Value;
-                //}
                 // persist the model state to the tempdata dictionary
                 TempData["MrCMS-invalid-modelstate"] = ModelState;
                 // redirect to the previous page
@@ -53,16 +38,26 @@ namespace MrCMS.Website.Controllers
             }
 
             ViewData["controller-name"] = ControllerContext.RouteData.Values["controller"];
-
-            if (MrCMSApplication.Get<SiteSettings>().SSLAdmin)
+            var url = Request.Url.ToString();
+            if (MrCMSApplication.Get<SiteSettings>().SSLAdmin && url.ToLower().Contains("/admin"))
             {
                 if (!Request.IsSecureConnection && !Request.IsLocal)
                 {
-                    Response.Redirect(Request.Url.ToString().Replace("http://", "https://"));
+                    filterContext.Result = new RedirectResult(url.Replace("http://", "https://"));
                 }
             }
 
+            SetDefaultPageTitle(filterContext);
             base.OnActionExecuting(filterContext);
+        }
+
+        protected virtual void SetDefaultPageTitle(ActionExecutingContext filterContext)
+        {
+            ViewBag.Title = string.Format("{0} - {1}",
+                                          filterContext.RequestContext.RouteData.Values["controller"].ToString()
+                                                                                                     .BreakUpString(),
+                                          filterContext.RequestContext.RouteData.Values["action"].ToString()
+                                                                                                 .BreakUpString());
         }
 
         protected override RedirectResult AuthenticationFailureRedirect()

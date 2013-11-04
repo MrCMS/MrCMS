@@ -1,6 +1,6 @@
 /*!
  * jQuery UI Bootstrap (0.22)
- * http://addyosmani.github.com/jquery-ui-bootstrap
+ * http:/addyosmani.github.com/jquery-ui-bootstrap
  *
  * Copyright 2012, Addy Osmani
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -46,13 +46,13 @@
 /*
  * jQuery UI CSS Framework 1.8.16
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Theming/API
+ * http:/docs.jquery.com/UI/Theming/API
  *
- * To view and modify this theme, visit http://jqueryui.com/themeroller/?ctl=themeroller
+ * To view and modify this theme, visit http:/jqueryui.com/themeroller/?ctl=themeroller
  */
 
 
@@ -61,7 +61,7 @@
 .ui-widget {   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size:13px; }
 .ui-widget .ui-widget { font-size: 1em; }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 1em; }
-.ui-widget-content { border: 1px solid #aaaaaa; background: #ffffff url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-bg_glass_75_ffffff_1x400.png) 50% 50% repeat-x; color: #404040; }
+.ui-widget-content { border: 1px solid #aaaaaa; background: #ffffff url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-bg_glass_75_ffffff_1x400.png) 50% 50% repeat-x; color: #404040; }
 .ui-widget-content a { color: #404040; }
 .ui-widget-header {
   font-weight:bold;
@@ -203,14 +203,14 @@
 ----------------------------------*/
 
 /* states and images */
-.ui-icon { width: 16px; height: 16px; background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-icons_222222_256x240.png); }
-.ui-widget-content .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-icons_222222_256x240.png); }
-.ui-widget-header .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-icons_222222_256x240.png); }
-.ui-state-default .ui-icon { background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-icons_888888_256x240.png); }
-.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-icons_454545_256x240.png); }
-.ui-state-active .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-icons_454545_256x240.png); }
-.ui-state-highlight .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-icons_2e83ff_256x240.png); }
-.ui-state-error .ui-icon, .ui-state-error-text .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-icons_f6cf3b_256x240.png); }
+.ui-icon { width: 16px; height: 16px; background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-icons_222222_256x240.png); }
+.ui-widget-content .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-icons_222222_256x240.png); }
+.ui-widget-header .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-icons_222222_256x240.png); }
+.ui-state-default .ui-icon { background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-icons_888888_256x240.png); }
+.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-icons_454545_256x240.png); }
+.ui-state-active .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-icons_454545_256x240.png); }
+.ui-state-highlight .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-icons_2e83ff_256x240.png); }
+.ui-state-error .ui-icon, .ui-state-error-text .ui-icon {background-image: url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-icons_f6cf3b_256x240.png); }
 
 /* positioning */
 .ui-icon-carat-1-n { background-position: 0 0; }
@@ -401,15 +401,15 @@
 
 
 /* Overlays */
-.ui-widget-overlay { background: #aaaaaa url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: .30;filter:Alpha(Opacity=30); }
-.ui-widget-shadow { margin: -8px 0 0 -8px; padding: 8px; background: #aaaaaa url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images//ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: .30;filter:Alpha(Opacity=30); -moz-border-radius: 8px; -khtml-border-radius: 8px; -webkit-border-radius: 8px; border-radius: 8px; }/*
+.ui-widget-overlay { background: #aaaaaa url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: .30;filter:Alpha(Opacity=30); }
+.ui-widget-shadow { margin: -8px 0 0 -8px; padding: 8px; background: #aaaaaa url(/Areas/Admin/Content/Styles/jquery-ui-bootstrap/images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: .30;filter:Alpha(Opacity=30); -moz-border-radius: 8px; -khtml-border-radius: 8px; -webkit-border-radius: 8px; border-radius: 8px; }/*
  * jQuery UI Resizable 1.8.16
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Resizable#theming
+ * http:/docs.jquery.com/UI/Resizable#theming
  */
 .ui-resizable { position: relative;}
 .ui-resizable-handle { position: absolute;font-size: 0.1px;z-index: 99999; display: block; }
@@ -424,21 +424,21 @@
 .ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px;}/*
  * jQuery UI Selectable 1.8.16
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Selectable#theming
+ * http:/docs.jquery.com/UI/Selectable#theming
  */
 .ui-selectable-helper { position: absolute; z-index: 100; border:1px dotted black; }
 /*
  * jQuery UI Accordion 1.9.0
  *
- * Copyright 2012, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2012, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Accordion#theming
+ * http:/docs.jquery.com/UI/Accordion#theming
  */
 /* IE/Win - Fix animation bug - #4615 */
 .ui-accordion { width: 100%; }
@@ -453,11 +453,11 @@
 /*
  * jQuery UI Autocomplete 1.8.16
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Autocomplete#theming
+ * http:/docs.jquery.com/UI/Autocomplete#theming
  */
 .ui-autocomplete { 
 	position: absolute; 
@@ -472,11 +472,11 @@
 /*
  * jQuery UI Menu 1.9.0
  *
- * Copyright 2012-10-11, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2012-10-11, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Menu#theming
+ * http:/docs.jquery.com/UI/Menu#theming
  */
 
 .ui-menu { list-style:none; padding: 2px; margin: 0; display:block; float:left; outline: none; }
@@ -527,11 +527,11 @@
 /*
  * jQuery UI Button 1.8.16
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Button#theming
+ * http:/docs.jquery.com/UI/Button#theming
  */
 .ui-button {
 
@@ -672,11 +672,11 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 /*
  * jQuery UI spinner 1.9.0
  *
- * Copyright 2012-10-11, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2012-10-11, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Menu#theming
+ * http:/docs.jquery.com/UI/Menu#theming
  */
 
 .ui-spinner { position:relative; display: inline-block; overflow: hidden; padding: 0; vertical-align: middle; }
@@ -697,11 +697,11 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 /*
  * jQuery UI Dialog 1.8.16
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Dialog#theming
+ * http:/docs.jquery.com/UI/Dialog#theming
  */
 .ui-dialog { position: absolute; top: 0; left: 0; padding: .2em; width: 300px; overflow: hidden; outline: 0; }
 .ui-dialog .ui-dialog-titlebar { /*padding: .4em 1em;*/
@@ -809,11 +809,11 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 /*
  * jQuery UI Slider 1.8.16
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Slider#theming
+ * http:/docs.jquery.com/UI/Slider#theming
  */
 .ui-slider { position: relative; text-align: left; }
 .ui-slider .ui-slider-handle { position: absolute; z-index: 2; width: 1.2em; height: 1.2em; cursor: default; }
@@ -851,11 +851,11 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 /*
  * jQuery UI Tabs 1.9.2
  *
- * Copyright 2012, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2012, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://jqueryui.com/tabs/
+ * http:/jqueryui.com/tabs/
  */
  .ui-tabs .ui-tabs-nav{ background:none; border-color: #ddd;border-style: solid;border-width: 0 0 1px;}
 .ui-tabs { position: relative; padding: .2em; zoom: 1; border:0px;} /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
@@ -922,11 +922,11 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 /*
  * jQuery UI Tooltip 1.9.0
  *
- * Copyright 2012-10-11, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2012-10-11, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://jqueryui.com/tooltip/
+ * http:/jqueryui.com/tooltip/
  */
 .ui-tooltip {
     padding:8px;
@@ -948,11 +948,11 @@ body .ui-tooltip { border-width:2px; }
 /*
  * jQuery UI Datepicker 1.9.0
  *
- * Copyright 2012-10-11, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2012-10-11, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://jqueryui.com/datepicker/
+ * http:/jqueryui.com/datepicker/
  */
 .ui-datepicker { width: 17em; padding: .2em .2em 0; display: none; }
 .ui-datepicker .ui-datepicker-header { position:relative; padding:.2em 0; border:0px; font-weight: bold; width: 100%; padding: 4px 0; background-color: #f5f5f5; color: #808080; }
@@ -1092,11 +1092,11 @@ body .ui-tooltip { border-width:2px; }
 /*
  * jQuery UI Progressbar 1.8.16
  *
- * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http:/jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
- * http://jquery.org/license
+ * http:/jquery.org/license
  *
- * http://docs.jquery.com/UI/Progressbar#theming
+ * http:/docs.jquery.com/UI/Progressbar#theming
  */
 .ui-progressbar { height:2em; text-align: left; }
 .ui-progressbar .ui-progressbar-value {margin: -1px; height:100%;

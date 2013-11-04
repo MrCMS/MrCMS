@@ -159,7 +159,13 @@
     <Compile Include="Apps\Core\Pages\ForgottenPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\LoginPage.cs" />
     <Compile Include="Apps\Core\Services\ILoginService.cs" />
+    <Compile Include="Apps\Core\Services\IOnUserRegistered.cs" />
+    <Compile Include="Apps\Core\Services\IRegistrationService.cs" />
+    <Compile Include="Apps\Core\Services\IResetPasswordService.cs" />
+    <Compile Include="Apps\Core\Services\IUserEventService.cs" />
+    <Compile Include="Apps\Core\Services\RegistrationService.cs" />
     <Compile Include="Apps\Core\Services\ResetPasswordService.cs" />
+    <Compile Include="Apps\Core\Services\UserEventService.cs" />
     <Compile Include="Apps\Core\Widgets\LinkedImage.cs" />
     <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Core\Widgets\UserLinks.cs" />
@@ -187,6 +193,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\ACLController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MessageQueueController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
@@ -197,6 +204,7 @@
     <Compile Include="Areas\Admin\Controllers\LogController.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaCategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\NavigationController.cs" />
+    <Compile Include="Areas\Admin\Controllers\RedirectedDomainController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\SearchController.cs" />
     <Compile Include="Areas\Admin\Controllers\SettingsController.cs" />
@@ -544,6 +552,7 @@
     <Content Include="Areas\Admin\Content\Editors\fancybox\jquery.fancybox-1.3.4.js" />
     <Content Include="Areas\Admin\Content\Editors\fancybox\jquery.fancybox-1.3.4.pack.js" />
     <Content Include="Areas\Admin\Content\Editors\fancybox\jquery.mousewheel-3.0.4.pack.js" />
+    <Content Include="Areas\Admin\Content\Images\ajax-loader2.gif" />
     <Content Include="Areas\Admin\Content\Images\ajax-loader.gif" />
     <Content Include="Areas\Admin\Content\Images\layout-area-menu.png" />
     <Content Include="Areas\Admin\Content\Images\button-left.png" />
@@ -553,15 +562,6 @@
     <Content Include="Areas\Admin\Content\Images\no-image.jpg" />
     <Content Include="Areas\Admin\Content\Images\no-media-selected.jpg" />
     <Content Include="Areas\Admin\Content\Images\pencil.png" />
-    <Content Include="Areas\Admin\Content\less\bootstrap.min.css">
-      <DependentUpon>bootstrap.less</DependentUpon>
-    </Content>
-    <Content Include="Areas\Admin\Content\less\variables.css">
-      <DependentUpon>variables.less</DependentUpon>
-    </Content>
-    <Content Include="Areas\Admin\Content\less\variables.min.css">
-      <DependentUpon>variables.less</DependentUpon>
-    </Content>
     <Content Include="Areas\Admin\Content\Scripts\custom\admin.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-page-widget.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\add-webpage.js" />
@@ -576,6 +576,7 @@
     <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\popup.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\preview-message-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\search.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\sort.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
@@ -718,10 +719,7 @@
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_888888_256x240.png" />
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\images\ui-icons_f6cf3b_256x240.png" />
-    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery-ui-1.10.0.custom.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery-ui-1.9.2.custom.css" />
-    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery.ui.1.10.0.ie.css" />
-    <Content Include="Areas\Admin\Content\Styles\jquery-ui-bootstrap\jquery.ui.1.9.2.ie.css" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\cut.png" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\door.png" />
     <Content Include="Areas\Admin\Content\Styles\Images\contextmenu\page_white_copy.png" />
@@ -767,12 +765,6 @@
     <Content Include="Content\install\style.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.fileupload-ui.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.treeview.css" />
-    <Content Include="Areas\Admin\Content\less\bootstrap.css">
-      <DependentUpon>bootstrap.less</DependentUpon>
-    </Content>
-    <Content Include="Areas\Admin\Content\less\mixins.css">
-      <DependentUpon>mixins.less</DependentUpon>
-    </Content>
     <Content Include="Apps\Core\Content\Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Apps\Core\Content\Scripts\jquery.validate.min.js" />
     <Content Include="Apps\Core\Content\Scripts\jquery.validate.unobtrusive.min.js" />
@@ -1147,7 +1139,6 @@
     <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zu-ZA.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.cultures.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\globalize.js" />
     <Content Include="Content\install\scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Content\install\scripts\jquery.unobtrusive-ajax.js" />
@@ -1257,46 +1248,6 @@
     <Content Include="Areas\Admin\Views\Search\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutRoot.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\MediaSelector.cshtml" />
-    <Content Include="Areas\Admin\Content\less\wells.less" />
-    <Content Include="Areas\Admin\Content\less\variables.less" />
-    <Content Include="Areas\Admin\Content\less\utilities.less" />
-    <Content Include="Areas\Admin\Content\less\type.less" />
-    <Content Include="Areas\Admin\Content\less\tooltip.less" />
-    <Content Include="Areas\Admin\Content\less\thumbnails.less" />
-    <Content Include="Areas\Admin\Content\less\tables.less" />
-    <Content Include="Areas\Admin\Content\less\sprites.less" />
-    <Content Include="Areas\Admin\Content\less\scaffolding.less" />
-    <Content Include="Areas\Admin\Content\less\responsive-utilities.less" />
-    <Content Include="Areas\Admin\Content\less\responsive-navbar.less" />
-    <Content Include="Areas\Admin\Content\less\responsive-768px-979px.less" />
-    <Content Include="Areas\Admin\Content\less\responsive-767px-max.less" />
-    <Content Include="Areas\Admin\Content\less\responsive-1200px-min.less" />
-    <Content Include="Areas\Admin\Content\less\responsive.less" />
-    <Content Include="Areas\Admin\Content\less\reset.less" />
-    <Content Include="Areas\Admin\Content\less\progress-bars.less" />
-    <Content Include="Areas\Admin\Content\less\popovers.less" />
-    <Content Include="Areas\Admin\Content\less\pagination.less" />
-    <Content Include="Areas\Admin\Content\less\pager.less" />
-    <Content Include="Areas\Admin\Content\less\navs.less" />
-    <Content Include="Areas\Admin\Content\less\navbar.less" />
-    <Content Include="Areas\Admin\Content\less\modals.less" />
-    <Content Include="Areas\Admin\Content\less\mixins.less" />
-    <Content Include="Areas\Admin\Content\less\layouts.less" />
-    <Content Include="Areas\Admin\Content\less\labels-badges.less" />
-    <Content Include="Areas\Admin\Content\less\hero-unit.less" />
-    <Content Include="Areas\Admin\Content\less\grid.less" />
-    <Content Include="Areas\Admin\Content\less\forms.less" />
-    <Content Include="Areas\Admin\Content\less\dropdowns.less" />
-    <Content Include="Areas\Admin\Content\less\component-animations.less" />
-    <Content Include="Areas\Admin\Content\less\code.less" />
-    <Content Include="Areas\Admin\Content\less\close.less" />
-    <Content Include="Areas\Admin\Content\less\carousel.less" />
-    <Content Include="Areas\Admin\Content\less\buttons.less" />
-    <Content Include="Areas\Admin\Content\less\button-groups.less" />
-    <Content Include="Areas\Admin\Content\less\breadcrumbs.less" />
-    <Content Include="Areas\Admin\Content\less\bootstrap.less" />
-    <Content Include="Areas\Admin\Content\less\alerts.less" />
-    <Content Include="Areas\Admin\Content\less\accordion.less" />
     <Content Include="Areas\Admin\Views\MediaCategory\FileResult.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\ViewChanges.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Postings.cshtml" />
@@ -1375,14 +1326,20 @@
     <Content Include="Areas\Admin\Views\Search\GetBreadCrumb.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\CopyOptions.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Tokens.cshtml" />
-    <None Include="Properties\PublishProfiles\v0.1.1.pubxml" />
-    <None Include="Properties\PublishProfiles\v0.1.pubxml" />
+    <Content Include="Areas\Admin\Views\Form\ClearFormData.cshtml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
-    <None Include="Properties\PublishProfiles\v0.2.pubxml" />
-    <None Include="Properties\PublishProfiles\v0.3.pubxml" />
     <Content Include="Themes\Default\Views\web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Areas\Admin\Views\User\Filter.cshtml" />
+    <Content Include="Areas\Admin\Views\Log\Filter.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\Preview.cshtml" />
+    <Content Include="Areas\Admin\Views\Sites\RestrictedDomains.cshtml" />
+    <Content Include="Areas\Admin\Views\RedirectedDomain\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\RedirectedDomain\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageQueue\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageQueue\Show.cshtml" />
+    <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -1409,9 +1366,6 @@
     <Folder Include="Apps\Galleries\Views\Widgets\" />
     <Folder Include="Apps\Galleries\Widgets\" />
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\ckeditor\plugins\showblocks\" />
-    <Folder Include="Scripts\ckeditor\plugins\uicolor\yui\" />
-    <Folder Include="Scripts\ckeditor\themes\" />
     <Folder Include="Themes\Default\Apps\" />
     <Folder Include="Themes\Default\Content\" />
     <Folder Include="Themes\Default\Shared\" />
@@ -1504,11 +1458,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>27465</DevelopmentServerPort>
+          <DevelopmentServerPort>1834</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:8888</IISUrl>
+          <IISUrl>http://localhost:8887</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

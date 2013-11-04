@@ -11,7 +11,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
-    public abstract class IndexManagementTask<T> : BackgroundTask where T : SiteEntity
+    internal abstract class IndexManagementTask<T> : BackgroundTask where T : SiteEntity
     {
         protected T Entity;
 

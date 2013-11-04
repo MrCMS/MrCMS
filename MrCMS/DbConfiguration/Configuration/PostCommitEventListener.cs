@@ -20,7 +20,7 @@ namespace MrCMS.DbConfiguration.Configuration
             try
             {
                 var session = @event.Session.SessionFactory.OpenFilteredSession();
-                if (@event.Entity is Document)
+                if (@event.Entity is Document && !(@event.Entity as Document).IsDeleted)
                 {
                     var ignorePropertyNames = new[]
                         {

@@ -1,0 +1,76 @@
+﻿@model MrCMS.Entities.Messaging.QueuedMessage
+<fieldset>
+    <legend>Message #@Model.Id
+        <span class="btn-group  display-inline  pull-right">
+            @Html.ActionLink("Back to list", "Index", null, new { @class = "btn " })
+        </span>
+    </legend>
+    <table class="table table-striped table-condensed">
+        <tbody>
+            <tr>
+                <td class="span2">
+                    From
+                </td>
+                <td class="span10">
+                    @Model.FromDescription
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    To
+                </td>
+                <td>
+                    @Model.ToDescription
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cc
+                </td>
+                <td>
+                    @Model.Cc
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Bcc
+                </td>
+                <td>
+                    @Model.Bcc
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Subject
+                </td>
+                <td>
+                    @Model.Subject
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Body
+                </td>
+                <td>
+                    @Html.Raw(Model.Body)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Created On
+                </td>
+                <td>
+                    @Model.CreatedOn.ToString()
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Sent On?
+                </td>
+                <td>
+                    @Model.SentOnDescription
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</fieldset>

@@ -14,7 +14,7 @@ namespace MrCMS.Services
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);
         string GetFileLocation(MediaFile mediaFile, Size imageSize);
-        FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1, int pageSize = 10);
+        FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1);
         MediaFile GetFileByUrl(string value);
         string GetFileUrl(string value);
         void RemoveFolder(MediaCategory mediaCategory);

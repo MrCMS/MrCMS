@@ -1,52 +1,61 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Models.PostingsModel
-<div data-paging-type="async">
-    <div class="row-fluid">
-        @Html.LabelFor(model => model.Search)
-        @Html.TextBoxFor(model => model.Search)
-        <p>
-            <button class="btn btn-mini" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">Search</button>
-        </p>
-    </div>
-    <table class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                @foreach (var heading in Model.Headings)
-                {
-                    <th>
-                        @heading
-                    </th>
-                }
-                <th>Posted On</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var posting in Model.Items)
-            {
+
+
+    <div data-paging-type="async">
+        <div class="row-fluid">
+            @Html.LabelFor(model => model.Search)
+            @Html.TextBoxFor(model => model.Search)
+            <p>
+                <button class="btn btn-mini" data-action="update" data-url="@Url.Action("Postings", new {id = Model.Id})">Search</button>
+            </p>
+        </div>
+    @if (Model.Items.Any())
+    {
+        <table class="table table-condensed table-striped">
+            <thead>
                 <tr>
                     @foreach (var heading in Model.Headings)
                     {
-                        <td>
-                            @if (posting.Get(heading) != null && posting.Get(heading).IsFile)
-                            {
-                                <a href="/@posting.Get(heading).Value" download>Download</a>
-                            }
-                            else
-                            {
-                                @posting[heading]
-                            }
-                        </td>
+                        <th>
+                            @heading
+                        </th>
                     }
-                    <td>
-                        @posting.CreatedOn
-                    </td>
-                    <td>
-                        @Html.ActionLink("View full entry", "ViewPosting", new { id = posting.Id }, new { data_toggle = "fb-modal" })
-                    </td>
+                    <th>Posted On</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-    @Html.Pager(Model.Items, "Postings", i => new { Model.Id, page = i, Model.Search })
-</div>
+            </thead>
+            <tbody>
+                @foreach (var posting in Model.Items)
+                {
+                    <tr>
+                        @foreach (var heading in Model.Headings)
+                        {
+                            <td>
+                                @if (posting.Get(heading) != null && posting.Get(heading).IsFile)
+                                {
+                                    <a href="/@posting.Get(heading).Value" download>Download</a>
+                                }
+                                else
+                                {
+                                    @posting[heading]
+                                }
+                            </td>
+                        }
+                        <td>
+                            @posting.CreatedOn
+                        </td>
+                        <td>
+                            @Html.ActionLink("View full entry", "ViewPosting", new {id = posting.Id}, new {data_toggle = "fb-modal"})
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @Html.Pager(Model.Items, "Postings", i => new {Model.Id, page = i, Model.Search})
+    }
+    else
+    {
+        <span>No found postings.</span>
+    }
+    </div>

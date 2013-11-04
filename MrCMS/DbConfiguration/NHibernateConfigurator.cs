@@ -37,15 +37,13 @@ namespace MrCMS.DbConfiguration
         private static readonly UpdateIndicesListener _updateIndexesListener = new UpdateIndicesListener();
         private static readonly PostCommitEventListener _postCommitEventListener = new PostCommitEventListener();
         private static readonly UrlHistoryListener _urlHistoryListener = new UrlHistoryListener();
+        private static readonly SoftDeleteListener _softDeleteListener = new SoftDeleteListener();
 
-        private static readonly DocumentSoftDeleteListener _documentSoftDeleteListener =
-            new DocumentSoftDeleteListener();
         public DatabaseType DatabaseType { get; set; }
         public bool InDevelopment { get; set; }
         public bool CacheEnabled { get; set; }
 
         public IPersistenceConfigurer PersistenceOverride { get; set; }
-
 
         public ISessionFactory CreateSessionFactory()
         {
@@ -144,7 +142,8 @@ namespace MrCMS.DbConfiguration
                        .IncludeBase<FormProperty>()
                        .IncludeAppBases()
                        .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
-                       .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>();
+                       .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
+                       .IncludeAppConventions();
             addFromAssemblyOf.Add(typeof(NotDeletedFilter));
             var config = Fluently.Configure()
                 .Database(iPersistenceConfigurer)
@@ -194,9 +193,9 @@ namespace MrCMS.DbConfiguration
             get { return _urlHistoryListener; }
         }
 
-        public static DocumentSoftDeleteListener DocumentSoftDeleteListener
+        public static SoftDeleteListener SoftDeleteListener
         {
-            get { return _documentSoftDeleteListener; }
+            get { return _softDeleteListener; }
         }
 
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)
@@ -224,7 +223,7 @@ namespace MrCMS.DbConfiguration
                                                                                  UrlHistoryListener
                                                                              });
 
-            configuration.SetListener(ListenerType.Delete, DocumentSoftDeleteListener);
+            configuration.SetListener(ListenerType.Delete, SoftDeleteListener);
 
             if (!InDevelopment && CurrentRequestData.DatabaseIsInstalled)
             {

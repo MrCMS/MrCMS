@@ -7,6 +7,7 @@ using System.Reflection;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
 using MrCMS.Settings;
+using MrCMS.Website;
 using NHibernate.Proxy;
 
 namespace MrCMS.Helpers
@@ -218,7 +219,7 @@ namespace MrCMS.Helpers
         /// <returns>The converted value.</returns>
         public static object To(this object value, Type destinationType)
         {
-            return To(value, destinationType, CultureInfo.InvariantCulture);
+            return To(value, destinationType, CurrentRequestData.CultureInfo);
         }
 
         /// <summary>
@@ -256,7 +257,6 @@ namespace MrCMS.Helpers
         /// <returns>The converted value.</returns>
         public static T To<T>(this object value)
         {
-            //return (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
             return (T)To(value, typeof(T));
         }
 
@@ -300,7 +300,7 @@ namespace MrCMS.Helpers
 
         public static string GetFriendlyName(this Type type)
         {
-            return type.GetCustomAttributes(true).Any() ? (type.GetCustomAttributes(true).First() as FriendlyClassName).Name : type.Name;
+            return type.GetCustomAttributes(true).Any() ? (type.GetCustomAttributes(true).First() as FriendlyClassName).Name : type.Name.BreakUpString();
         }
     }
 

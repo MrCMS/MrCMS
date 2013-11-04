@@ -29,85 +29,56 @@ namespace MrCMS.Website
             //Apps
             AppViewLocationFormats = new[] {
                 "~/Apps/{3}/Areas/{2}/Views/{1}/{0}.cshtml", 
-                "~/Apps/{3}/Areas/{2}/Views/{1}/{0}.vbhtml",
                 "~/Apps/{3}/Areas/{2}/Views/Shared/{0}.cshtml", 
-                "~/Apps/{3}/Areas/{2}/Views/Shared/{0}.vbhtml" ,
                 "~/Apps/{3}/Views/{1}/{0}.cshtml",
-                "~/Apps/{3}/Views/{1}/{0}.vbhtml", 
                 "~/Apps/{3}/Views/Shared/{0}.cshtml", 
-                "~/Apps/{3}/Views/Shared/{0}.vbhtml",
                 "~/Apps/{3}/Views/Pages/{0}.cshtml",
-                "~/Apps/{3}/Views/Pages/{0}.vbhtml"
             };
             AppMasterLocationFormats = new[] { 
                 "~/Apps/{3}/Areas/{2}/Views/{1}/{0}.cshtml", 
-                "~/Apps/{3}/Areas/{2}/Views/{1}/{0}.vbhtml",
                 "~/Apps/{3}/Areas/{2}/Views/Shared/{0}.cshtml", 
-                "~/Apps/{3}/Areas/{2}/Views/Shared/{0}.vbhtml" ,
                 "~/Apps/{3}/Views/{1}/{0}.cshtml",
-                "~/Apps/{3}/Views/{1}/{0}.vbhtml", 
                 "~/Apps/{3}/Views/Shared/{0}.cshtml", 
-                "~/Apps/{3}/Views/Shared/{0}.vbhtml"
             };
             AppPartialViewLocationFormats = new[] { 
                 "~/Apps/{3}/Areas/{2}/Views/{1}/{0}.cshtml", 
-                "~/Apps/{3}/Areas/{2}/Views/{1}/{0}.vbhtml",
                 "~/Apps/{3}/Areas/{2}/Views/Shared/{0}.cshtml", 
-                "~/Apps/{3}/Areas/{2}/Views/Shared/{0}.vbhtml" ,
                 "~/Apps/{3}/Views/{1}/{0}.cshtml",
-                "~/Apps/{3}/Views/{1}/{0}.vbhtml", 
                 "~/Apps/{3}/Views/Shared/{0}.cshtml", 
-                "~/Apps/{3}/Views/Shared/{0}.vbhtml",
                 "~/Apps/{3}/Views/Widgets/{0}.cshtml",
-                "~/Apps/{3}/Views/Widgets/{0}.vbhtml"
             };
 
             //MVC Default
             AreaViewLocationFormats = new[] {
                 "~/Areas/{2}/Views/{1}/{0}.cshtml", 
-                "~/Areas/{2}/Views/{1}/{0}.vbhtml",
                 "~/Areas/{2}/Views/Shared/{0}.cshtml", 
-                "~/Areas/{2}/Views/Shared/{0}.vbhtml" 
             };
             AreaMasterLocationFormats = new[] { 
                 "~/Areas/{2}/Views/{1}/{0}.cshtml",
-                "~/Areas/{2}/Views/{1}/{0}.vbhtml",
                 "~/Areas/{2}/Views/Shared/{0}.cshtml",
-                "~/Areas/{2}/Views/Shared/{0}.vbhtml" 
             };
             AreaPartialViewLocationFormats = new[] { 
                 "~/Areas/{2}/Views/{1}/{0}.cshtml", 
-                "~/Areas/{2}/Views/{1}/{0}.vbhtml",
                 "~/Areas/{2}/Views/Shared/{0}.cshtml", 
-                "~/Areas/{2}/Views/Shared/{0}.vbhtml"
             };
 
             ViewLocationFormats = new[] { 
                 "~/Views/{1}/{0}.cshtml",
-                "~/Views/{1}/{0}.vbhtml", 
                 "~/Views/Shared/{0}.cshtml", 
-                "~/Views/Shared/{0}.vbhtml",
                 "~/Views/Pages/{0}.cshtml",
-                "~/Views/Pages/{0}.vbhtml"
             };
             MasterLocationFormats = new[] {
                 "~/Views/{1}/{0}.cshtml",
-                "~/Views/{1}/{0}.vbhtml",
                 "~/Views/Shared/{0}.cshtml", 
-                "~/Views/Shared/{0}.vbhtml"
             };
             PartialViewLocationFormats = new[] { 
                 "~/Views/{1}/{0}.cshtml",
-                "~/Views/{1}/{0}.vbhtml", 
                 "~/Views/Shared/{0}.cshtml",
-                "~/Views/Shared/{0}.vbhtml",
                 "~/Views/Widgets/{0}.cshtml",
-                "~/Views/Widgets/{0}.vbhtml"
             };
 
             FileExtensions = new[] {
                 "cshtml", 
-                "vbhtml", 
             };
         }
 

@@ -4,6 +4,7 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
@@ -15,7 +16,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     public class UserControllerTests
     {
         private static IUserService _userService;
-        private static IAuthorisationService _authorisationService;
+        private static IPasswordManagementService _passwordManagementService;
         private static IRoleService _roleService;
 
         [Fact]
@@ -23,29 +24,30 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             UserController userController = GetUserController();
 
-            ActionResult actionResult = userController.Index();
+            ActionResult actionResult = userController.Index(null);
 
             actionResult.Should().BeOfType<ViewResult>();
         }
 
         private static UserController GetUserController(IUserService userService = null, IRoleService roleService = null,
-                                                        IAuthorisationService authorisationService = null)
+                                                        IPasswordManagementService passwordManagementService= null)
         {
             _userService = userService ?? A.Fake<IUserService>();
             _roleService = roleService ?? A.Fake<IRoleService>();
-            _authorisationService = authorisationService ?? A.Fake<IAuthorisationService>();
-            var userController = new UserController(_userService, _roleService, _authorisationService);
+            _passwordManagementService = passwordManagementService ?? A.Fake<IPasswordManagementService>();
+            var userController = new UserController(_userService, _roleService, _passwordManagementService);
             return userController;
         }
 
         [Fact]
-        public void UserController_Index_ShouldCallUserServiceGetAllUsers()
+        public void UserController_Index_ShouldCallUserServiceGetUsersPaged()
         {
             UserController userController = GetUserController();
+            var userSearchQuery = new UserSearchQuery();
 
-            userController.Index();
+            userController.Index(userSearchQuery);
 
-            A.CallTo(() => _userService.GetAllUsersPaged(1)).MustHaveHappened();
+            A.CallTo(() => _userService.GetUsersPaged(userSearchQuery)).MustHaveHappened();
         }
 
         [Fact]
@@ -53,9 +55,10 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             UserController userController = GetUserController();
             var users = new StaticPagedList<User>(new List<User>(), 1, 1, 0);
-            A.CallTo(() => _userService.GetAllUsersPaged(1)).Returns(users);
+            var userSearchQuery = new UserSearchQuery();
+            A.CallTo(() => _userService.GetUsersPaged(userSearchQuery)).Returns(users);
 
-            ActionResult actionResult = userController.Index();
+            ActionResult actionResult = userController.Index(userSearchQuery);
 
             actionResult.As<ViewResult>().Model.Should().BeSameAs(users);
         }
@@ -196,7 +199,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             const string password = "password";
             ActionResult result = userController.SetPassword(user, password);
 
-            A.CallTo(() => _authorisationService.SetPassword(user, password, password)).MustHaveHappened();
+            A.CallTo(() => _passwordManagementService.SetPassword(user, password, password)).MustHaveHappened();
         }
     }
 }

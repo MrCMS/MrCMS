@@ -56,7 +56,7 @@ namespace MrCMS.Website.Binders
 
         protected override object GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
-            if (propertyDescriptor.PropertyType.IsSubclassOf(typeof(SiteEntity)))
+            if (propertyDescriptor.PropertyType.IsSubclassOf(typeof(SystemEntity)))
             {
                 var id = controllerContext.HttpContext.Request[bindingContext.ModelName + ".Id"];
                 int idVal;

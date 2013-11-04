@@ -1,17 +1,12 @@
-using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
-using MrCMS.Website;
 using NHibernate;
 using MrCMS.Helpers;
 
 namespace MrCMS.Services
 {
-
     public class SiteService : ISiteService
     {
         private readonly ISession _session;
@@ -27,7 +22,7 @@ namespace MrCMS.Services
 
         public List<Site> GetAllSites()
         {
-            return _session.QueryOver<Site>().Cacheable().List().ToList();
+            return _session.QueryOver<Site>().OrderBy(site => site.Name).Asc.Cacheable().List().ToList();
         }
 
         public Site GetSite(int id)

@@ -24,10 +24,12 @@ namespace MrCMS.Tests.Services
     {
         private readonly SiteSettings _siteSettings;
         private readonly DocumentService _documentService;
+        private readonly IDocumentEventService _documentEventService;
 
         public DocumentServiceTests()
         {
-            _documentService = new DocumentService(Session, _siteSettings, CurrentSite);
+            _documentEventService = A.Fake<IDocumentEventService>();
+            _documentService = new DocumentService(Session, _documentEventService, _siteSettings, CurrentSite);
             _siteSettings = new SiteSettings();
         }
 
@@ -687,10 +689,10 @@ namespace MrCMS.Tests.Services
         {
             for (int i = 0; i < 4; i++)
             {
-                Session.Transact(session => session.Save(new StubDocument { DisplayOrder = i, Site = CurrentSite }));
+                Session.Transact(session => session.Save(new StubWebpage { DisplayOrder = i, Site = CurrentSite }));
             }
 
-            var stubDocument = new StubDocument { Site = CurrentSite };
+            var stubDocument = new StubWebpage { Site = CurrentSite };
             _documentService.AddDocument(stubDocument);
 
             stubDocument.DisplayOrder.Should().Be(4);

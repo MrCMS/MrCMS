@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 
@@ -132,6 +133,35 @@ namespace MrCMS.Web.Areas.Admin
         public void Sort(List<SortItem> items)
         {
             _formService.SetOrders(items);
+        }
+
+        [HttpGet]
+        public PartialViewResult ClearFormData(Webpage webpage)
+        {
+            return PartialView(webpage);
+        }
+
+        [HttpPost]
+        [ActionName("ClearFormData")]
+        public RedirectToRouteResult ClearFormData_POST(Webpage webpage)
+        {
+            _formService.ClearFormData(webpage);
+            return RedirectToAction("Edit","Webpage", new { id = webpage.Id });
+        }
+
+        [HttpGet]
+        public ActionResult ExportFormData(Webpage webpage)
+        {
+            try
+            {
+                var file = _formService.ExportFormData(webpage);
+                return File(file, "text/csv", "MrCMS-FormData-[" + webpage.UrlSegment + "]-" + DateTime.UtcNow + ".csv");
+            }
+            catch (Exception ex)
+            {
+                CurrentRequestData.ErrorSignal.Raise(ex);
+                return RedirectToAction("Edit", "Webpage", new { id = webpage.Id });
+            }
         }
     }
 

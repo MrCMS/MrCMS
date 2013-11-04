@@ -14,7 +14,58 @@ using NHibernate;
 
 namespace MrCMS.Website.Routing
 {
-    public sealed class MrCMSHttpHandler : IHttpHandler, IRequiresSessionState
+    public abstract class ErrorHandlingHttpHandler : IHttpHandler, IRequiresSessionState
+    {
+        private readonly IDocumentService _documentService;
+        private readonly IControllerManager _controllerManager;
+
+        protected ErrorHandlingHttpHandler(IDocumentService documentService, IControllerManager controllerManager)
+        {
+            _documentService = documentService;
+            _controllerManager = controllerManager;
+        }
+
+        public abstract void ProcessRequest(HttpContext context);
+        public abstract bool IsReusable { get; }
+
+
+        private void HandleExceptionWithElmah(Exception exception)
+        {
+            CurrentRequestData.ErrorSignal.Raise(exception);
+        }
+
+        protected void HandleError(HttpContextBase context, int code, int pageId, HttpException exception)
+        {
+            HandleExceptionWithElmah(exception);
+            var webpage = _documentService.GetDocument<Webpage>(pageId);
+            if (webpage != null)
+            {
+                context.ClearError();
+                context.Response.Clear();
+                context.Response.StatusCode = code;
+                context.Response.TrySkipIisCustomErrors = true;
+
+                var data = new RouteData();
+                data.Values["data"] = webpage.LiveUrlSegment;
+
+                CurrentRequestData.CurrentPage = webpage;
+                var controller = _controllerManager.GetController(RequestContext, webpage, context.Request.HttpMethod);
+                (controller as IController).Execute(new RequestContext(context, controller.RouteData));
+            }
+            else
+            {
+                throw exception;
+            }
+        }
+
+        public RequestContext RequestContext { get; private set; }
+        public void SetRequestContext(RequestContext requestContext)
+        {
+            RequestContext = requestContext;
+        }
+    }
+
+    public sealed class MrCMSHttpHandler : ErrorHandlingHttpHandler
     {
         private readonly IDocumentService _documentService;
         private readonly SiteSettings _siteSettings;
@@ -25,7 +76,9 @@ namespace MrCMS.Website.Routing
         private readonly IControllerManager _controllerManager;
 
 
-        public MrCMSHttpHandler(ISession session, IDocumentService documentService, IControllerManager controllerManager, SiteSettings siteSettings, SEOSettings seoSettings)
+        public MrCMSHttpHandler(ISession session, IDocumentService documentService, IControllerManager controllerManager,
+                                SiteSettings siteSettings, SEOSettings seoSettings)
+            : base(documentService, controllerManager)
         {
             _session = session;
             _documentService = documentService;
@@ -34,7 +87,7 @@ namespace MrCMS.Website.Routing
             _seoSettings = seoSettings;
         }
 
-        public void ProcessRequest(HttpContext context)
+        public override void ProcessRequest(HttpContext context)
         {
             // Wrapped up to aid testing
             ProcessRequest(new HttpContextWrapper(context));
@@ -53,6 +106,8 @@ namespace MrCMS.Website.Routing
             if (PageIsRedirect(context)) return;
 
             if (RequiresSSLRedirect(context)) return;
+
+            if (RequiresSiteRedirect(context)) return;
 
             if (RedirectsToHomePage(context)) return;
 
@@ -101,17 +156,12 @@ namespace MrCMS.Website.Routing
 
         private void SetCustomHeaders(HttpContextBase context)
         {
-            context.Response.AppendHeader("X-Built-With", "Mr CMS - http://mrcms.codeplex.com");
+            context.Response.AppendHeader("X-Built-With", "Mr CMS - http://www.mrcms.com");
         }
 
         public void Handle500(HttpContextBase context, Exception exception)
         {
             HandleError(context, 500, _siteSettings.Error500PageId, new HttpException(500, exception.Message, exception));
-        }
-
-        private void HandleExceptionWithElmah(Exception exception)
-        {
-            CurrentRequestData.ErrorSignal.Raise(exception);
         }
 
         public bool IsAllowed(HttpContextBase context)
@@ -141,11 +191,44 @@ namespace MrCMS.Website.Routing
             }
             return false;
         }
+        public bool RequiresSiteRedirect(HttpContextBase context)
+        {
+            var url = context.Request.Url;
+            if (url != null)
+            {
+                var scheme = url.Scheme;
+                var authority = url.Authority;
+                var baseUrl = Webpage.Site.BaseUrl;
+                if (!context.Request.IsLocal && !authority.Equals(baseUrl, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var redirectUrl = url.ToString().Replace(scheme + "://" + authority, scheme + "://" + baseUrl);
+                    context.Response.Redirect(redirectUrl);
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public bool RequiresSSLRedirect(HttpContextBase context)
         {
             var url = context.Request.Url;
             var scheme = url.Scheme;
+            if (CurrentRequestData.CurrentUserIsAdmin && _siteSettings.SSLAdmin && _siteSettings.SiteIsLive && !context.Request.IsLocal)
+            {
+                if (scheme == "http")
+                {
+                    var redirectUrl = url.ToString().Replace(scheme + "://", "https://");
+                    context.Response.Redirect(redirectUrl);
+                    return true;
+                }
+                return false;
+            }
+            if (CurrentRequestData.CurrentUserIsAdmin && scheme == "http" && _siteSettings.SSLAdmin && _siteSettings.SiteIsLive && !context.Request.IsLocal)
+            {
+                var redirectUrl = url.ToString().Replace(scheme + "://", "https://");
+                context.Response.Redirect(redirectUrl);
+                return true;
+            }
             if (Webpage.RequiresSSL && scheme != "https" && _siteSettings.SiteIsLive)
             {
                 var redirectUrl = url.ToString().Replace(scheme + "://", "https://");
@@ -169,31 +252,6 @@ namespace MrCMS.Website.Routing
                 return true;
             }
             return false;
-        }
-
-        private void HandleError(HttpContextBase context, int code, int pageId, HttpException exception)
-        {
-            HandleExceptionWithElmah(exception);
-            var webpage = _documentService.GetDocument<Webpage>(pageId);
-            if (webpage != null)
-            {
-                context.ClearError();
-                context.Response.Clear();
-                context.Response.StatusCode = code;
-                context.Response.TrySkipIisCustomErrors = true;
-
-                var data = new RouteData();
-                data.Values["data"] = webpage.LiveUrlSegment;
-
-                Webpage = webpage;
-                CurrentRequestData.CurrentPage = webpage;
-                var controller = _controllerManager.GetController(RequestContext, webpage, context.Request.HttpMethod);
-                (controller as IController).Execute(new RequestContext(context, controller.RouteData));
-            }
-            else
-            {
-                throw exception;
-            }
         }
 
         public bool PageIsRedirect(HttpContextBase context)
@@ -271,15 +329,10 @@ namespace MrCMS.Website.Routing
             get { return Convert.ToString(RequestContext.RouteData.Values["data"]); }
         }
 
-        bool IHttpHandler.IsReusable
+
+        public override bool IsReusable
         {
             get { return false; }
-        }
-
-        public RequestContext RequestContext { get; private set; }
-        public void SetRequestContext(RequestContext requestContext)
-        {
-            RequestContext = requestContext;
         }
     }
 }

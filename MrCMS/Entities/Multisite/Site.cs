@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using MrCMS.Entities.People;
 
 namespace MrCMS.Entities.Multisite
 {
@@ -9,6 +8,7 @@ namespace MrCMS.Entities.Multisite
     {
         public Site()
         {
+            RedirectedDomains = new List<RedirectedDomain>();
         }
         [Required]
         public virtual string Name { get; set; }
@@ -16,6 +16,8 @@ namespace MrCMS.Entities.Multisite
         [DisplayName("Base URL")]
         [Required]
         public virtual string BaseUrl { get; set; }
+
+        public virtual IList<RedirectedDomain> RedirectedDomains { get; set; }
 
         public virtual bool IsValidForSite(SiteEntity entity)
         {

@@ -1,4 +1,5 @@
-﻿@using MrCMS.Helpers
+﻿@using MrCMS.ACL.Rules
+@using MrCMS.Helpers
 @using MrCMS.Settings
 @using MrCMS.Website
 @model MrCMS.Entities.Documents.Web.Webpage
@@ -56,7 +57,7 @@
        Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.min.js");
        Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.unobtrusive.min.js");}
     @Html.RenderScripts()
-    @if (CurrentRequestData.CurrentUserIsAdmin && SiteSettings<SiteSettings>().EnableInlineEditing)
+    @if (CurrentRequestData.CurrentUser != null && CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") && SiteSettings<SiteSettings>().EnableInlineEditing)
     {
         Html.RenderAction("InPageEditor", "InPageAdmin", new { id = Model.Id, area = "Admin" });
     }
