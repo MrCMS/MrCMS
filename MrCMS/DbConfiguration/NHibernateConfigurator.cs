@@ -6,6 +6,7 @@ using System.Reflection;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using MrCMS.Apps;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.DbConfiguration.Conventions;
 using MrCMS.DbConfiguration.Filters;
@@ -155,6 +156,7 @@ namespace MrCMS.DbConfiguration
                             QueryCacheFactory<StandardQueryCacheFactory>();
                 })
                 .ExposeConfiguration(AppendListeners)
+                .ExposeConfiguration(AppSpecificConfiguration)
                 .ExposeConfiguration(c =>
                 {
                     c.SetProperty(Environment.GenerateStatistics, "true");
@@ -169,6 +171,11 @@ namespace MrCMS.DbConfiguration
             config.BuildMappings();
 
             return config;
+        }
+
+        private void AppSpecificConfiguration(NHibernate.Cfg.Configuration configuration)
+        {
+            MrCMSApp.AppendAllAppConfiguration(configuration);
         }
 
         public List<Assembly> ManuallyAddedAssemblies { get { return _manuallyAddedAssemblies; } set { _manuallyAddedAssemblies = value; } }

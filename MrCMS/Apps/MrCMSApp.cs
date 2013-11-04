@@ -18,6 +18,7 @@ using MrCMS.Website;
 using MrCMS.Website.Controllers;
 using System.Linq;
 using NHibernate;
+using NHibernate.Cfg;
 using Ninject;
 
 namespace MrCMS.Apps
@@ -94,6 +95,13 @@ namespace MrCMS.Apps
         {
             AllApps.OrderBy(app => app.InstallOrder).ForEach(app => app.OnInstallation(session, model, site));
         }
+
+        public static void AppendAllAppConfiguration(Configuration configuration)
+        {
+            AllApps.ForEach(app => app.AppendConfiguration(configuration));
+        }
+
+        protected virtual void AppendConfiguration(Configuration configuration) { }
 
         private static List<MrCMSApp> AllApps
         {
