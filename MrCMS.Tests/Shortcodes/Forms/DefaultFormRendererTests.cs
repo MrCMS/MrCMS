@@ -5,6 +5,7 @@ using FakeItEasy.Core;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
 using MrCMS.Tests.Stubs;
 using MrCMS.Website;
@@ -16,24 +17,27 @@ namespace MrCMS.Tests.Shortcodes.Forms
 {
     public class DefaultFormRendererTests
     {
-        private DefaultFormRenderer _defaultFormRenderer;
-        private IElementRendererManager _elementRendererManager;
-        private ILabelRenderer _labelRenderer;
-        private IValidationMessaageRenderer _validationMessageRenderer;
+        private readonly DefaultFormRenderer _defaultFormRenderer;
+        private readonly IElementRendererManager _elementRendererManager;
+        private readonly ILabelRenderer _labelRenderer;
+        private readonly IValidationMessaageRenderer _validationMessageRenderer;
         private string _existingValue = null;
-        private FormCollection _formCollection = new FormCollection();
-        private ISubmittedMessageRenderer _submittedMessageRenderer;
+        private readonly FormCollection _formCollection;
+        private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
+        private readonly SiteSettings _siteSettings;
 
         public DefaultFormRendererTests()
         {
+            _formCollection = new FormCollection();
             var mockingKernel = new MockingKernel();
             MrCMSApplication.OverrideKernel(mockingKernel);
             _elementRendererManager = A.Fake<IElementRendererManager>();
             _labelRenderer= A.Fake<ILabelRenderer>();
             _validationMessageRenderer= A.Fake<IValidationMessaageRenderer>();
             _submittedMessageRenderer = A.Fake<ISubmittedMessageRenderer>();
+            _siteSettings = new SiteSettings();
             _defaultFormRenderer = new DefaultFormRenderer(_elementRendererManager, _labelRenderer,
-                                                           _validationMessageRenderer,_submittedMessageRenderer);
+                                                           _validationMessageRenderer,_submittedMessageRenderer, _siteSettings);
         }
 
         [Fact]

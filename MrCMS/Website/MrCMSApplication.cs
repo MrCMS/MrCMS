@@ -55,6 +55,8 @@ namespace MrCMS.Website
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
 
             ScheduledTaskChecker.Instance.Start(10);
+
+            GlobalFilters.Filters.Add(new HoneypotFilterAttribute());
         }
 
         private static void SetModelBinders()
@@ -130,7 +132,7 @@ namespace MrCMS.Website
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
             routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",
-                            new {controller = "CKEditor", action = "Config"});
+                            new { controller = "CKEditor", action = "Config" });
 
             routes.MapRoute("Logout", "logout", new { controller = "Login", action = "Logout" },
                             new[] { RootNamespace });
@@ -237,5 +239,17 @@ namespace MrCMS.Website
 
         public const string AssemblyVersion = "0.3.1.*";
         public const string AssemblyFileVersion = "0.3.1.0";
+    }
+
+    public class HoneypotFilterAttribute : ActionFilterAttribute
+    {
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (!string.IsNullOrWhiteSpace(
+                    filterContext.HttpContext.Request[MrCMSApplication.Get<SiteSettings>().HoneypotFieldName]))
+            {
+                filterContext.Result = new EmptyResult();
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Settings;
 
 namespace MrCMS.Shortcodes.Forms
 {
@@ -10,13 +11,16 @@ namespace MrCMS.Shortcodes.Forms
         private readonly ILabelRenderer _labelRenderer;
         private readonly IValidationMessaageRenderer _validationMessaageRenderer;
         private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
+        private readonly SiteSettings _siteSettings;
 
-        public DefaultFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer, IValidationMessaageRenderer validationMessaageRenderer, ISubmittedMessageRenderer submittedMessageRenderer)
+        public DefaultFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer, IValidationMessaageRenderer validationMessaageRenderer, ISubmittedMessageRenderer submittedMessageRenderer,
+        SiteSettings siteSettings)
         {
             _elementRendererManager = elementRendererManager;
             _labelRenderer = labelRenderer;
             _validationMessaageRenderer = validationMessaageRenderer;
             _submittedMessageRenderer = submittedMessageRenderer;
+            _siteSettings = siteSettings;
         }
 
         public string GetDefault(Webpage webpage, FormSubmittedStatus submittedStatus)
@@ -50,8 +54,13 @@ namespace MrCMS.Shortcodes.Forms
                 form.InnerHtml += new TagBuilder("br");
                 form.InnerHtml += _submittedMessageRenderer.AppendSubmittedMessage(webpage, submittedStatus);
             }
+
+            if (_siteSettings.HasHoneyPot)
+                form.InnerHtml += _siteSettings.GetHoneypot();
+
             return form.ToString();
         }
+
 
         public TagBuilder GetSubmitButton(Webpage webpage)
         {

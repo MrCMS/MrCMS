@@ -19,6 +19,7 @@ using MrCMS.Apps;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.People;
 using MrCMS.Services;
+using MrCMS.Settings;
 using MrCMS.Shortcodes;
 using MrCMS.Website;
 using MrCMS.Website.Optimization;
@@ -26,6 +27,17 @@ using Newtonsoft.Json;
 
 namespace MrCMS.Helpers
 {
+    public static class HoneypotHtmlHelper
+    {
+        public static MvcHtmlString Honeypot(this HtmlHelper html)
+        {
+            var siteSettings = MrCMSApplication.Get<SiteSettings>();
+
+            return siteSettings.HasHoneyPot
+                       ? MvcHtmlString.Create(siteSettings.GetHoneypot().ToString())
+                       : MvcHtmlString.Empty;
+        }
+    }
     public static class MrCMSHtmlHelper
     {
         private static MvcHtmlString CheckBoxHelper<TModel>(HtmlHelper<TModel> htmlHelper, ModelMetadata metadata,
@@ -618,7 +630,7 @@ namespace MrCMS.Helpers
                 var strongText = new TagBuilder("strong");
                 strongText.SetInnerText(boldText);
 
-                tagBulder.InnerHtml += strongText.ToString() + text;
+                tagBulder.InnerHtml += strongText + text;
 
                 return MvcHtmlString.Create(tagBulder.ToString());
             }

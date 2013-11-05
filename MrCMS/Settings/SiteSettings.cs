@@ -20,12 +20,8 @@ namespace MrCMS.Settings
         {
             DefaultPageSize = 10;
             Log404s = true;
-            CKEditorConfig = GetDefaultCKEditorConfig();
-        }
-
-        private static string GetDefaultCKEditorConfig()
-        {
-            return _defaultCkEditorConfig;
+            CKEditorConfig = SettingDefaults.CkEditorConfig;
+            HoneypotFieldName = "YourStatus";
         }
 
         [DropDownSelection("Themes")]
@@ -64,12 +60,18 @@ namespace MrCMS.Settings
         [DisplayName("Site UI Culture")]
         [DropDownSelection("UiCultures")]
         public string UICulture { get; set; }
-        public CultureInfo CultureInfo { get { return !string.IsNullOrWhiteSpace(UICulture) ? CultureInfo.GetCultureInfo(UICulture) : CultureInfo.CurrentCulture; } }
+        public CultureInfo CultureInfo { get { return !String.IsNullOrWhiteSpace(UICulture) ? CultureInfo.GetCultureInfo(UICulture) : CultureInfo.CurrentCulture; } }
 
         [DisplayName("Time zones")]
         [DropDownSelection("TimeZones")]
         public string TimeZone { get; set; }
-        public TimeZoneInfo TimeZoneInfo { get { return !string.IsNullOrWhiteSpace(TimeZone) ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone) : TimeZoneInfo.Local; } }
+        public TimeZoneInfo TimeZoneInfo { get { return !String.IsNullOrWhiteSpace(TimeZone) ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone) : TimeZoneInfo.Local; } }
+
+        [DisplayName("Honeypot Field Name")]
+        public string HoneypotFieldName { get; set; }
+
+        public bool HasHoneyPot { get { return !string.IsNullOrWhiteSpace(HoneypotFieldName); }
+        }
 
         [DisplayName("CKEditor Config")]
         [TextArea]
@@ -91,7 +93,19 @@ namespace MrCMS.Settings
 
             viewDataDictionary["TimeZones"] = SiteSettingsOptionGenerator.GetTimeZones(TimeZone);
         }
-        private const string _defaultCkEditorConfig = @"/**
+
+        public TagBuilder GetHoneypot()
+        {
+            var honeyPot = new TagBuilder("input");
+            honeyPot.Attributes["type"] = "text";
+            honeyPot.Attributes["style"] = "display:none; visibility: hidden;";
+            honeyPot.Attributes["name"] = HoneypotFieldName;
+            return honeyPot;
+        }
+    }
+    public static class SettingDefaults
+    {
+        public const string CkEditorConfig = @"/**
  * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.html or http://ckeditor.com/license
  */
