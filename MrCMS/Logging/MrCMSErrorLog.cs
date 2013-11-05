@@ -36,7 +36,7 @@ namespace MrCMS.Logging
             {
                 var log = new Log
                               {
-                                  Error = BinaryData.CanSerialize(error) ? error : null,
+                                  Error = BinaryData.CanSerialize(error) ? error : new Error(),
                                   Guid = newGuid,
                                   Message = error.Message,
                                   Detail = error.Detail,
