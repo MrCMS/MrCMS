@@ -197,8 +197,6 @@
     }
 
     function setEditingEnabled(value) {
-        $.cookie('mrcms-inline-edit', null, { expires: -1 });
-        $.cookie('mrcms-inline-edit', null, { expires: -1, path: location.pathname });
         return $.cookie('mrcms-inline-edit', value, { expires: 1 });
     }
     function stripHtml(str) {
@@ -237,13 +235,13 @@ $(function () {
     });
 
     $("#unpublish-now").click(function () {
-        $.post('/admin/webpage/unpublish', { id: $('#Id').val() }, function (response) {
+        $.post('/admin/webpage/unpublish', { id: $('.mrcms-admin-nav-bar + #Id').val() }, function (response) {
             window.top.location.reload();
         });
         return false;
     });
     $("#publish-now").click(function () {
-        $.post('/admin/webpage/publishnow', { id: $('#Id').val() }, function (response) {
+        $.post('/admin/webpage/publishnow', { id: $('.mrcms-admin-nav-bar + #Id').val() }, function (response) {
             window.top.location.reload();
         });
         return false;
