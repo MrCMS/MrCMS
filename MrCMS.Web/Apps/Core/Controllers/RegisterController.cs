@@ -43,7 +43,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 return Redirect(UniquePageHelper.GetUrl<RegisterPage>());
             }
 
-            if (model != null && ModelState.IsValid)
+            if (model != null && ModelState.IsValid && _registrationService.CheckEmailIsNotRegistered(model.Email))
             {
                 _registrationService.RegisterUser(model);
 
