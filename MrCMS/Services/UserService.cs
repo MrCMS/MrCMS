@@ -70,7 +70,7 @@ namespace MrCMS.Services
         public User GetUserByEmail(string email)
         {
             string trim = email.Trim();
-            return _session.QueryOver<User>().Where(user => user.Email == trim).Cacheable().SingleOrDefault();
+            return _session.QueryOver<User>().Where(user => user.Email == trim).Take(1).Cacheable().SingleOrDefault();
         }
 
         public User GetUserByResetGuid(Guid resetGuid)
