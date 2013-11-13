@@ -407,6 +407,7 @@
     <Compile Include="Models\SiteTree.cs" />
     <Compile Include="Models\SiteTreeNode.cs" />
     <Compile Include="Services\NavigationService.cs" />
+    <Compile Include="Services\PasswordEncryptionManager.cs" />
     <Compile Include="Services\PasswordManagementService.cs" />
     <Compile Include="Services\PropertyTokenProvider.cs" />
     <Compile Include="Services\RedirectedDomainService.cs" />
