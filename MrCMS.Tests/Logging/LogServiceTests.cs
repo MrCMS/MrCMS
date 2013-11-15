@@ -50,39 +50,6 @@ namespace MrCMS.Tests.Logging
             Session.QueryOver<Log>().List().Should().NotContain(list[0]);
         }
 
-        [Fact]
-        public void LogService_GetAllEntriesPaged_ShouldReturn10ItemsByDefault()
-        {
-            var list = CreateLogList();
-
-            var allEntriesPaged = _logService.GetEntriesPaged(1);
-
-            allEntriesPaged.Should().HaveCount(10);
-        }
-
-        [Fact]
-        public void LogService_GetAllEntriesPaged_ShouldReturnTheFirst10Items()
-        {
-            var list = CreateLogList();
-            list.Reverse();
-
-            var allEntriesPaged = _logService.GetEntriesPaged(1);
-
-            allEntriesPaged.Should().BeEquivalentTo(list.Take(10));
-        }
-
-        [Fact]
-        public void LogService_GetAllEntriesPaged_PageSelectedShouldPageTheResults()
-        {
-            var list = CreateLogList();
-            list.Reverse();
-
-            var allEntriesPaged = _logService.GetEntriesPaged(2);
-
-            // comparing ids to more easily try and identify why this sporadically fails
-            allEntriesPaged.Select(log => log.Id).Should().BeEquivalentTo(list.Skip(10).Take(10).Select(log => log.Id));
-        }
-
 
         private static List<Log> CreateLogList()
         {

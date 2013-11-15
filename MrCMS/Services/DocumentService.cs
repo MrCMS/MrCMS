@@ -108,7 +108,7 @@ namespace MrCMS.Services
         {
             var uniqueResult =
                 _session.CreateCriteria(type)
-                        .Add(Restrictions.Eq(Projections.Property("Site"), _currentSite))
+                        .Add(Restrictions.Eq(Projections.Property("Site.Id"), _currentSite.Id))
                         .SetProjection(Projections.RowCount()).SetCacheable(true)
                         .UniqueResult<int>();
             return uniqueResult != 0;

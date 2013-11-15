@@ -18,16 +18,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ViewResult Index(LogSearchQuery searchQuery)
         {
+            ViewData["site-options"] = _service.GetSiteOptions();
             ViewData["query"] = searchQuery;
             var model = _service.GetEntriesPaged(searchQuery);
             return View(model);
-        }
-
-        [HttpPost]
-        [ActionName("Index")]
-        public RedirectToRouteResult Index_Post(LogEntryType? type)
-        {
-            return RedirectToAction("Index", new {type});
         }
 
         public ViewResult Show(Log entry)

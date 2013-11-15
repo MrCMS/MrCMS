@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FluentAssertions;
-using MrCMS.Entities.Multisite;
+﻿using FluentAssertions;
 using MrCMS.Settings;
 using Xunit;
 using MrCMS.Helpers;

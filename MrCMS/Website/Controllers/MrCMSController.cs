@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 
@@ -41,7 +42,13 @@ namespace MrCMS.Website.Controllers
             get { return RequestMock ?? base.Request; }
         }
 
+        public new RouteData RouteData
+        {
+            get { return RouteDataMock ?? base.RouteData; }
+        }
+
         public HttpRequestBase RequestMock { get; set; }
+        public RouteData RouteDataMock { get; set; }
 
         protected virtual RedirectResult AuthenticationFailureRedirect()
         {

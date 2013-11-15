@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Routing;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
@@ -37,9 +38,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             documentService = A.Fake<IDocumentService>();
             formService = A.Fake<IFormService>();
             session = A.Fake<ISession>();
-            webpageController = new WebpageController(documentService, formService, session,_site)
+            webpageController = new WebpageController(documentService, formService, session, _site)
             {
+                RouteDataMock = new RouteData()
             };
+
             DocumentMetadataHelper.OverrideExistAny = type => false;
         }
 

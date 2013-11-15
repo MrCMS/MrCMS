@@ -53,6 +53,13 @@ namespace MrCMS.Entities.People
         {
             return UserProfileData.OfType<T>().FirstOrDefault();
         }
+
+        public virtual T2 Get<T1, T2>(Func<T1, T2> func) where T1 : UserProfileData
+        {
+            var firstOrDefault = UserProfileData.OfType<T1>().FirstOrDefault();
+            return firstOrDefault == null ? default(T2) : func(firstOrDefault);
+        }
+
         public virtual IEnumerable<T> GetAll<T>() where T : UserProfileData
         {
             return UserProfileData.OfType<T>();

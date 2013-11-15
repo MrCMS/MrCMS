@@ -9,10 +9,5 @@ namespace MrCMS.Website.Optimization
         {
             return files;
         }
-
-        public IEnumerable<BundleFile> OrderFiles(BundleContext context, IEnumerable<BundleFile> files)
-        {
-            return files;
-        }
     }
 }

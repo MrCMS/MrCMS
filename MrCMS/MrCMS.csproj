@@ -219,9 +219,11 @@
     <Compile Include="Entities\Multisite\RedirectedDomain.cs" />
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
+    <Compile Include="Entities\SystemEntity.cs" />
     <Compile Include="Events\IOnDocumentAdded.cs" />
     <Compile Include="Events\IOnDocumentDeleted.cs" />
     <Compile Include="Events\IOnDocumentUnpublished.cs" />
+    <Compile Include="Logging\LogSearchQuery.cs" />
     <Compile Include="Models\MessageQueueQuery.cs" />
     <Compile Include="Models\UserSearchQuery.cs" />
     <Compile Include="Services\CloneSitePartsService.cs" />
@@ -470,6 +472,7 @@
     <Compile Include="Tasks\ScheduledTaskManager.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Website\Binders\ACLUpdateModelBinder.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />
     <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />

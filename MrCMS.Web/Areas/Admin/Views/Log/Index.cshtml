@@ -26,6 +26,8 @@ else
             <tr>
                 <th>Date
                 </th>
+                <th>Site
+                </th>
                 <th>Message
                 </th>
                 <th>Type
@@ -40,6 +42,9 @@ else
                 <tr>
                     <td>
                         @entry.CreatedOn.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+                    <td>
+                        @entry.SiteName
                     </td>
                     <td>
                         @entry.Message

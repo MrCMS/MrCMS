@@ -1,13 +1,35 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Logging
 @model MrCMS.Logging.LogSearchQuery
-<div class="row-fluid">
-    <div class="span12">
-        @using (Html.BeginForm("Index", "Log"))
-        {
+@{
+    var siteOptions = ViewData["site-options"] as List<SelectListItem>;
+}
+@using (Html.BeginForm("Index", "Log", FormMethod.Get))
+{
+    <div class="row-fluid">
+        <div class="span2">
             @Html.LabelFor(query => query.Type)
-            @Html.DropDownListFor(query => query.Type, Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All"))
-            <input type="submit" class="btn btn-mini btn-primary" value="Search" />
+            @Html.DropDownListFor(query => query.Type, Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All"), new { @class = "span12" })
+        </div>
+        @if (siteOptions.Any())
+        {
+            <div class="span2">
+                @Html.LabelFor(query => query.SiteId)
+                @Html.DropDownListFor(query => query.SiteId, siteOptions, new { @class = "span12" })
+            </div>
         }
+        <div class="span4">
+            @Html.LabelFor(query => query.Message)
+            @Html.TextBoxFor(query => query.Message, new { @class = "span12" })
+        </div>
+        <div class="span4">
+            @Html.LabelFor(query => query.Detail)
+            @Html.TextBoxFor(query => query.Detail, new { @class = "span12" })
+        </div>
     </div>
-</div>
+    <div class="row-fluid">
+        <div class="span12">
+            <input type="submit" class="btn btn-primary" value="Search" />
+        </div>
+    </div>
+}

@@ -1,9 +1,11 @@
 ﻿using System;
 using Elmah;
 using MrCMS.Entities;
+using MrCMS.Website;
 
 namespace MrCMS.Logging
 {
+    [AdminUISiteAgnostic]
     public class Log : SiteEntity
     {
         public virtual LogEntryType Type { get; set; }

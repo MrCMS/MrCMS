@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using MrCMS.Website;
+using System.Linq;
 
 namespace MrCMS.Entities.Multisite
 {
@@ -19,8 +21,15 @@ namespace MrCMS.Entities.Multisite
 
         public virtual IList<RedirectedDomain> RedirectedDomains { get; set; }
 
+        public virtual string DisplayName
+        {
+            get { return string.Format("{0} ({1})", Name, BaseUrl); }
+        }
+
         public virtual bool IsValidForSite(SiteEntity entity)
         {
+            if (entity.GetType().GetCustomAttributes(typeof(AdminUISiteAgnosticAttribute), true).Any())
+                return true;
             return entity.Site != null && entity.Site.Id == Id;
         }
     }
