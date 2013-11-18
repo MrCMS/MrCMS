@@ -131,12 +131,13 @@ namespace MrCMS.Website
                     return UserGuidOverride.Value;
                 if (CurrentUser != null) return CurrentUser.Guid;
                 var o = CurrentContext.Request.Cookies[UserSessionId] != null ? CurrentContext.Request.Cookies[UserSessionId].Value : null;
-                if (o == null)
+                Guid result;
+                if (o == null || !Guid.TryParse(o, out result))
                 {
-                    o = Guid.NewGuid().ToString();
-                    AddCookieToResponse(UserSessionId, o, Now.AddMonths(3));
+                    result = Guid.NewGuid();
+                    AddCookieToResponse(UserSessionId, result.ToString(), Now.AddMonths(3));
                 }
-                return Guid.Parse(o);
+                return result;
             }
             set { UserGuidOverride = value; }
         }
