@@ -245,10 +245,13 @@ namespace MrCMS.Website
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (!string.IsNullOrWhiteSpace(
-                    filterContext.HttpContext.Request[MrCMSApplication.Get<SiteSettings>().HoneypotFieldName]))
+            if (CurrentRequestData.DatabaseIsInstalled)
             {
-                filterContext.Result = new EmptyResult();
+                if (!string.IsNullOrWhiteSpace(
+                        filterContext.HttpContext.Request[MrCMSApplication.Get<SiteSettings>().HoneypotFieldName]))
+                {
+                    filterContext.Result = new EmptyResult();
+                }
             }
         }
     }
