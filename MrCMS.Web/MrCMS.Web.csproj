@@ -1342,6 +1342,7 @@
     <Content Include="Areas\Admin\Views\RedirectedDomain\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\MessageQueue\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MessageQueue\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_LayoutWithoutWebTree.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
