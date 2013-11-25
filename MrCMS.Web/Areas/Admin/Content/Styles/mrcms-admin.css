@@ -1,4 +1,5 @@
-﻿body { padding-top: 60px; }
+﻿body { padding-top: 60px;min-width: 1000px;}
+.mrcms-navbar { min-width: 1000px;}
 .container-mrcms { margin-left: 20px; padding-left: 300px; }
 .left-nav { float: left; width: 300px; margin-left: -300px; }
 .main-content { float: left; width: 100%; display: inline; }
@@ -26,21 +27,11 @@ h1, h2, h3, h4 { font-weight: normal!important; }
 .field-validation-error span { color: red;}
 .sidebar-nav{ padding: 10px;}
 
+.navbar .brand { font-size: 16px;}
+
 /* Generic context menu styles */
-.contextMenu {
-    background: #EEE;
-    border: solid 1px #CCC;
-    display: none;
-    margin: 0px;
-    padding: 5px;
-    position: absolute;
-    width: 120px;
-    z-index: 99999;
-}
-.contextMenu a {
-    font-style: normal;
-    padding-left: 15px;
-}
+.contextMenu { background: #EEE; border: solid 1px #CCC; display: none; margin: 0px; padding: 5px; position: absolute; width: 120px;z-index: 99999;}
+.contextMenu a { font-style: normal; padding-left: 15px; }
 /* End Generic context menu styles */
 
 #admin-site-selector { font-size: 12px;background: slategray; color:white;border: none;position: absolute; top:5px;right: 20px;line-height: 20px;}
@@ -77,7 +68,6 @@ section.admin-header h3 { margin: 0px; }
 .validation-summary-errors { color: red; }
 .error, .error span { color: red; }
 
-
 #loading { position: fixed; bottom: 5px; right: 5px; z-index: 999999; }
 
 /*page versions*/
@@ -98,3 +88,8 @@ ul.nav { margin-bottom: 10px;}
 #footer-popup { position: fixed;bottom: 0;width: 100%;background: white;padding-top: 0;padding-bottom: 10px;}
 
 #footer-popup hr { margin-top: 1px;}
+
+@media (max-width: 979px) {
+    /*body { padding-top: 0;}*/
+    .navbar-fixed-top { position: fixed;}
+}

@@ -30,7 +30,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             ViewData["term"] = term;
             ViewData["parent-val"] = parent;
-            ViewData["parents"] = _navigationService.GetParentsList();
+            //ViewData["parents"] = _navigationService.GetParentsList();
             ViewData["type"] = type;
             ViewData["doc-types"] = _navigationService.GetDocumentTypes(type);
 
