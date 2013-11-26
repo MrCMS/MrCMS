@@ -7,8 +7,8 @@
             @Html.Label("term", "Search")
             @Html.TextBox("term", ViewData["term"])
             @Html.DropDownList("type", ViewData["doc-types"] as IEnumerable<SelectListItem>)
-@*            @Html.Label("parent", "Select Parent:")
-            @Html.DropDownList("parent", ViewData["parents"] as IEnumerable<SelectListItem>)*@
+            @Html.Label("parent", "Select Parent:")
+            @Html.DropDownList("parent", ViewData["parents"] as IEnumerable<SelectListItem>)
             <input type="button" value="Search" class="btn btn-primary" />
         </div>
     }
