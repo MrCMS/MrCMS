@@ -10,7 +10,7 @@ namespace MrCMS.DbConfiguration.Overrides
         public void Override(AutoMapping<Document> mapping)
         {
             mapping.DiscriminateSubClassesOnColumn("DocumentType");
-            mapping.HasMany(x => x.Children).KeyColumn("ParentId");
+            mapping.HasMany(x => x.Children).KeyColumn("ParentId").Cascade.SaveUpdate();
             mapping.HasManyToMany(document => document.Tags).Table("DocumentTags").Cascade.SaveUpdate();
             mapping.HasMany(document => document.Versions).KeyColumn("DocumentId").Cascade.All();
             mapping.IgnoreProperty(x=>x.UrlSegment);
