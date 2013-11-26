@@ -23,16 +23,16 @@ namespace MrCMS.Services
         public void CopySettings(Site @from, Site to)
         {
             _session.Transact(session =>
-                                  {
-                                      var fromProvider = new ConfigurationProvider(new SettingService(_session, @from), @from);
-                                      var toProvider = new ConfigurationProvider(new SettingService(_session, @to), @to);
-                                      var siteSettingsBases = fromProvider.GetAllSiteSettings();
-                                      siteSettingsBases.ForEach(@base =>
-                                                                    {
-                                                                        @base.Site = to;
-                                                                        toProvider.SaveSettings(@base);
-                                                                    });
-                                  });
+            {
+                var fromProvider = new ConfigurationProvider(new SettingService(_session, @from), @from);
+                var toProvider = new ConfigurationProvider(new SettingService(_session, @to), @to);
+                var siteSettingsBases = fromProvider.GetAllSiteSettings();
+                siteSettingsBases.ForEach(@base =>
+                {
+                    @base.Site = to;
+                    toProvider.SaveSettings(@base);
+                });
+            });
         }
 
         public void CopyLayouts(Site @from, Site to)
@@ -43,35 +43,40 @@ namespace MrCMS.Services
             var copies = layouts.Select(layout => CopyLayout(layout, to));
 
             _session.Transact(session => copies.ForEach(layout =>
-                                                            {
-                                                                session.Save(layout);
-                                                                layout.LayoutAreas.ForEach(area =>
-                                                                                               {
-                                                                                                   session.Save(area);
-                                                                                                   area.Widgets.ForEach(widget => session.Save(widget));
-                                                                                               });
-                                                            }));
+            {
+                session.Save(layout);
+                layout.LayoutAreas.ForEach(area =>
+                {
+                    session.Save(area);
+                    area.Widgets.ForEach(widget => session.Save(widget));
+                });
+            }));
         }
 
         private Layout CopyLayout(Layout layout, Site to)
         {
             var copy = GetCopy(layout, to);
             copy.LayoutAreas = layout.LayoutAreas.Select(area =>
-                                                             {
-                                                                 var areaCopy = GetCopy(area, to);
-                                                                 areaCopy.Layout = copy;
-                                                                 areaCopy.Widgets = area.Widgets
-                                                                                        .Where(widget => widget.Webpage == null)
-                                                                                        .Select(widget =>
-                                                                                                    {
-                                                                                                        var widgetCopy = GetCopy(widget, to);
-                                                                                                        widgetCopy.LayoutArea = areaCopy;
-                                                                                                        return widgetCopy;
-                                                                                                    })
-                                                                                        .ToList();
-                                                                 return areaCopy;
-                                                             }).ToList();
-            copy.Children = layout.Children.OfType<Layout>().Select(childLayout => CopyLayout(childLayout, to)).Cast<Document>().ToList();
+            {
+                var areaCopy = GetCopy(area, to);
+                areaCopy.Layout = copy;
+                areaCopy.Widgets = area.Widgets
+                                       .Where(widget => widget.Webpage == null)
+                                       .Select(widget =>
+                                       {
+                                           var widgetCopy = GetCopy(widget, to);
+                                           widgetCopy.LayoutArea = areaCopy;
+                                           return widgetCopy;
+                                       })
+                                       .ToList();
+                return areaCopy;
+            }).ToList();
+            copy.Children = layout.Children.OfType<Layout>().Select(childLayout =>
+            {
+                var child = CopyLayout(childLayout, to);
+                child.Parent = copy;
+                return child;
+            }).Cast<Document>().ToList();
             return copy;
         }
 
@@ -96,7 +101,12 @@ namespace MrCMS.Services
             var copy = GetCopy(category, to);
             copy.Children =
                 category.Children.OfType<MediaCategory>()
-                        .Select(childLayout => CopyMediaCategory(childLayout, to))
+                        .Select(childLayout =>
+                        {
+                            var child = CopyMediaCategory(childLayout, to);
+                            child.Parent = copy;
+                            return child;
+                        })
                         .Cast<Document>()
                         .ToList();
             return copy;
