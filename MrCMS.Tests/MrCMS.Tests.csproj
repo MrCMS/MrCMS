@@ -132,6 +132,12 @@
     <Compile Include="Optimization\ResourceDataTests.cs" />
     <Compile Include="Services\FormServiceTests.cs" />
     <Compile Include="Services\CurrentSiteLocatorTests.cs" />
+    <Compile Include="Services\ImportExport\ImportDocumentsService_AddingDocuments.cs" />
+    <Compile Include="Services\ImportExport\ImportDocumentsService_GetHierarchyDepthTests.cs" />
+    <Compile Include="Services\ImportExport\ImportDocumentsService_GetRootParentUrlTests.cs" />
+    <Compile Include="Services\ImportExport\UpdateTagsService_SetTagsTests.cs" />
+    <Compile Include="Services\ImportExport\UpdateUrlHistoryService_SaveUrlHistoriesTests.cs" />
+    <Compile Include="Services\ImportExport\UpdateUrlHistoryService_SetHistoriesTests.cs" />
     <Compile Include="Services\MessageTemplateParserTests.cs" />
     <Compile Include="Services\MessageTemplateServiceTests.cs" />
     <Compile Include="Services\DocumentServiceTests.cs" />
@@ -139,7 +145,7 @@
     <Compile Include="Services\FileServiceTests.cs" />
     <Compile Include="Services\ImageProcessorTests.cs" />
     <Compile Include="Services\ImportExport\ImportExportManagerTests.cs" />
-    <Compile Include="Services\ImportExport\ImportDocumentsServiceTests.cs" />
+    <Compile Include="Services\ImportExport\ImportDocumentsService_UpdatingDocuments.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsValidationServiceTests.cs" />
     <Compile Include="Services\LayoutAreaServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

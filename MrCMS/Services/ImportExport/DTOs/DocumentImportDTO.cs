@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace MrCMS.Services.ImportExport.DTOs
 {
-    public class DocumentImportDataTransferObject
+    public class DocumentImportDTO
     {
-        public DocumentImportDataTransferObject()
+        public DocumentImportDTO()
         {
             Tags=new List<string>();
             UrlHistory=new List<string>();

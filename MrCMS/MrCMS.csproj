@@ -233,6 +233,10 @@
     <Compile Include="Services\IHashAlgorithm.cs" />
     <Compile Include="Services\IMessageQueueAdminService.cs" />
     <Compile Include="Services\IMessageTemplateService.cs" />
+    <Compile Include="Services\ImportExport\IUpdateTagsService.cs" />
+    <Compile Include="Services\ImportExport\IUpdateUrlHistoryService.cs" />
+    <Compile Include="Services\ImportExport\UpdateTagsService.cs" />
+    <Compile Include="Services\ImportExport\UpdateUrlHistoryService.cs" />
     <Compile Include="Services\IPasswordEncryptionManager.cs" />
     <Compile Include="Services\IRedirectedDomainService.cs" />
     <Compile Include="Services\ITokenProvider.cs" />
@@ -365,7 +369,7 @@
     <Compile Include="Services\ICloneSitePartsService.cs" />
     <Compile Include="Services\ICloneSiteService.cs" />
     <Compile Include="Services\ICurrentSiteLocator.cs" />
-    <Compile Include="Services\ImportExport\DTOs\DocumentImportDataTransferObject.cs" />
+    <Compile Include="Services\ImportExport\DTOs\DocumentImportDTO.cs" />
     <Compile Include="Services\ImportExport\IImportExportManager.cs" />
     <Compile Include="Services\ImportExport\IImportDocumentsService.cs" />
     <Compile Include="Services\ImportExport\IImportDocumentsValidationService.cs" />

@@ -10,8 +10,8 @@ namespace MrCMS.Services.ImportExport
 {
     public interface IImportDocumentsService
     {
-        void ImportDocumentsFromDTOs(IEnumerable<DocumentImportDataTransferObject> items);
-        Webpage ImportDocument(DocumentImportDataTransferObject dataTransferObject);
+        void ImportDocumentsFromDTOs(IEnumerable<DocumentImportDTO> items);
+        Webpage ImportDocument(DocumentImportDTO dto);
     }
 
     public interface IExportDocumentsService

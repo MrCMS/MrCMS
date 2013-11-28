@@ -2,109 +2,131 @@
 using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services.ImportExport.DTOs;
-using MrCMS.Entities.Documents;
 using NHibernate;
 
 namespace MrCMS.Services.ImportExport
 {
     public class ImportDocumentsService : IImportDocumentsService
     {
-        private readonly IDocumentService _documentService;
-        private readonly ITagService _tagService;
-        private readonly IUrlHistoryService _urlHistoryService;
         private readonly ISession _session;
-        private List<Document> _allDocuments;
+        private readonly Site _site;
+        private readonly IIndexService _indexService;
+        private readonly IUpdateTagsService _updateTagsService;
+        private readonly IUpdateUrlHistoryService _updateUrlHistoryService;
+        private HashSet<Webpage> _webpages = new HashSet<Webpage>();
+        private HashSet<UrlHistory> _urlHistories = new HashSet<UrlHistory>();
 
-        public ImportDocumentsService(IDocumentService documentService, ITagService tagService, IUrlHistoryService urlHistoryService, ISession session)
+        public ImportDocumentsService(ISession session, Site site, IIndexService indexService, IUpdateTagsService updateTagsService, IUpdateUrlHistoryService updateUrlHistoryService)
         {
             _session = session;
-            _documentService = documentService;
-            _tagService = tagService;
-            _urlHistoryService = urlHistoryService;
+            _site = site;
+            _indexService = indexService;
+            _updateTagsService = updateTagsService;
+            _updateUrlHistoryService = updateUrlHistoryService;
         }
 
         /// <summary>
         /// Import All from DTOs
         /// </summary>
         /// <param name="items"></param>
-        public void ImportDocumentsFromDTOs(IEnumerable<DocumentImportDataTransferObject> items)
+        public void ImportDocumentsFromDTOs(IEnumerable<DocumentImportDTO> items)
         {
-            _allDocuments = _documentService.GetAllDocuments<Document>().ToList();
+            var dataTransferObjects = new HashSet<DocumentImportDTO>(items);
+            _webpages = new HashSet<Webpage>(_session.QueryOver<Webpage>().Where(webpage => webpage.Site == _site).List());
+            _updateTagsService.Inititalise();
+            _updateUrlHistoryService.Initialise();
+            _urlHistories =
+                new HashSet<UrlHistory>(_session.QueryOver<UrlHistory>().Where(tag => tag.Site == _site).List());
 
             _session.Transact(session =>
             {
-                foreach (var dataTransferObject in items)
-                {
-                    var transferObject = dataTransferObject;
-                    ImportDocument(transferObject);
-                }
-                _allDocuments.ForEach(session.SaveOrUpdate);
+                foreach (var dataTransferObject in dataTransferObjects.OrderBy(o => GetHierarchyDepth(o, dataTransferObjects)).ThenBy(o => GetRootParentUrl(o,dataTransferObjects)))
+                    ImportDocument(dataTransferObject);
+
+                _updateTagsService.SaveTags();
+                _updateUrlHistoryService.SaveUrlHistories();
+                _webpages.ForEach(session.SaveOrUpdate);
             });
+            _indexService.InitializeAllIndices(_site);
+        }
+
+        public static int GetHierarchyDepth(DocumentImportDTO dto, HashSet<DocumentImportDTO> allItems)
+        {
+            var currentDto = dto;
+            int depth = 0;
+            while (!string.IsNullOrWhiteSpace(currentDto.ParentUrl))
+            {
+                currentDto = allItems.First(o => o.UrlSegment == currentDto.ParentUrl);
+                depth++;
+            }
+            return depth;
+        }
+
+        public static string GetRootParentUrl(DocumentImportDTO dto, HashSet<DocumentImportDTO> allItems)
+        {
+            var currentDto = dto;
+            while (!string.IsNullOrWhiteSpace(currentDto.ParentUrl))
+            {
+                currentDto = allItems.First(o => o.UrlSegment == currentDto.ParentUrl);
+            }
+            return currentDto.UrlSegment;
         }
 
         /// <summary>
         /// Import from DTOs
         /// </summary>
-        /// <param name="documentDto"></param>
-        public Webpage ImportDocument(DocumentImportDataTransferObject documentDto)
+        /// <param name="dto"></param>
+        public Webpage ImportDocument(DocumentImportDTO dto)
         {
-            if (_allDocuments == null)
-                _allDocuments = new List<Document>();
+            var documentByUrl = _webpages.SingleOrDefault(x => x.UrlSegment == dto.UrlSegment);
+            var webpage = documentByUrl ??
+                           (Webpage)
+                           Activator.CreateInstance(DocumentMetadataHelper.GetTypeByName(dto.DocumentType));
 
-            var documentByUrl = _allDocuments.OfType<Webpage>().SingleOrDefault(x => x.UrlSegment == documentDto.UrlSegment);
-            var document = documentByUrl ??(Webpage)Activator.CreateInstance(DocumentMetadataHelper.GetTypeByName(documentDto.DocumentType));
-
-            if (!String.IsNullOrEmpty(documentDto.ParentUrl))
+            if (!String.IsNullOrEmpty(dto.ParentUrl))
             {
-                var parent = _allDocuments.OfType<Webpage>().SingleOrDefault(x => x.UrlSegment == documentDto.ParentUrl);
-                document.Parent = parent;
-                document.SetParent(parent);
+                var parent = _webpages.SingleOrDefault(x => x.UrlSegment == dto.ParentUrl);
+                webpage.SetParent(parent);
             }
-            if (documentDto.UrlSegment != null)
-                document.UrlSegment = documentDto.UrlSegment;
-            document.Name = documentDto.Name;
-            document.BodyContent = documentDto.BodyContent;
-            document.MetaTitle = documentDto.MetaTitle;
-            document.MetaDescription = documentDto.MetaDescription;
-            document.MetaKeywords = documentDto.MetaKeywords;
-            document.RevealInNavigation = documentDto.RevealInNavigation;
-            document.RequiresSSL = documentDto.RequireSSL;
-            if (documentDto.PublishDate != null)
-                document.PublishOn = documentDto.PublishDate;
-            else
-                document.PublishOn = null;
+            if (dto.UrlSegment != null)
+                webpage.UrlSegment = dto.UrlSegment;
+            webpage.Name = dto.Name;
+            webpage.BodyContent = dto.BodyContent;
+            webpage.MetaTitle = dto.MetaTitle;
+            webpage.MetaDescription = dto.MetaDescription;
+            webpage.MetaKeywords = dto.MetaKeywords;
+            webpage.RevealInNavigation = dto.RevealInNavigation;
+            webpage.RequiresSSL = dto.RequireSSL;
+            webpage.DisplayOrder = dto.DisplayOrder;
+            webpage.PublishOn = dto.PublishDate;
 
-            //Tags
-            foreach (var item in documentDto.Tags)
-            {
-                var tag = _tagService.GetByName(item);
-                if (tag == null)
-                {
-                    tag = new Tag { Name = item };
-                    _tagService.Add(tag);
-                }
-                if (!document.Tags.Contains(tag))
-                    document.Tags.Add(tag);
-            }
+            _updateTagsService.SetTags(dto, webpage);
             //Url History
+         _updateUrlHistoryService.SetUrlHistory(dto, webpage);
+
+            if (!_webpages.Contains(webpage))
+                _webpages.Add(webpage);
+
+            return webpage;
+        }
+
+        private void SetUrlHistory(DocumentImportDTO documentDto, Webpage webpage)
+        {
             foreach (var item in documentDto.UrlHistory)
             {
-                if (!String.IsNullOrWhiteSpace(item) && document.Urls.All(x => x.UrlSegment != item))
+                if (!String.IsNullOrWhiteSpace(item) && webpage.Urls.All(x => x.UrlSegment != item))
                 {
-                    if (_urlHistoryService.GetByUrlSegment(item) == null)
-                        _urlHistoryService.Add(new UrlHistory { UrlSegment = item, Webpage = document });
+                    if (_urlHistories.FirstOrDefault(history => history.UrlSegment == item) == null)
+                    {
+                        var urlHistory = new UrlHistory {UrlSegment = item, Webpage = webpage};
+                        webpage.Urls.Add(urlHistory);
+                        _urlHistories.Add(urlHistory);
+                    }
                 }
             }
-
-            if (document.Id == 0)
-            {
-                document.DisplayOrder = documentDto.DisplayOrder > 0 ? documentDto.DisplayOrder : _allDocuments.Count();
-                _allDocuments.Add(document);
-            }
-
-            return document;
         }
     }
 }

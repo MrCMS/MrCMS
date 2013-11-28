@@ -7,17 +7,17 @@ namespace MrCMS.Services.ImportExport.Rules
     public abstract class DocumentMaxStringLength : IDocumentImportValidationRule
     {
         protected string DisplayName { get; private set; }
-        protected Func<DocumentImportDataTransferObject, string> Selector { get; private set; }
+        protected Func<DocumentImportDTO, string> Selector { get; private set; }
         protected int Length { get; private set; }
 
-        protected DocumentMaxStringLength(string displayName, Func<DocumentImportDataTransferObject,string> selector, int length)
+        protected DocumentMaxStringLength(string displayName, Func<DocumentImportDTO,string> selector, int length)
         {
             DisplayName = displayName;
             Selector = selector;
             Length = length;
         }
 
-        public IEnumerable<string> GetErrors(DocumentImportDataTransferObject item, IList<DocumentImportDataTransferObject> allItems)
+        public IEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems)
         {
             var value = Selector(item);
             if (!String.IsNullOrWhiteSpace(value))

@@ -41,7 +41,7 @@ namespace MrCMS.IoC
             if (_forWebsite)
             {
                 Kernel.Bind<ISession>().ToMethod(
-                    context => _getSession!= null ? _getSession() : context.Kernel.Get<ISessionFactory>().OpenFilteredSession()).InRequestScope();
+                    context => _getSession != null ? _getSession() : context.Kernel.Get<ISessionFactory>().OpenFilteredSession()).InRequestScope();
             }
             else
             {

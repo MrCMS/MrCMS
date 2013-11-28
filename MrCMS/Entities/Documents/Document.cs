@@ -16,6 +16,8 @@ namespace MrCMS.Entities.Documents
         protected Document()
         {
             Versions = new List<DocumentVersion>();
+            Children = new List<Document>();
+            Tags = new List<Tag>();
         }
         [Required]
         [StringLength(255)]
@@ -28,20 +30,9 @@ namespace MrCMS.Entities.Documents
 
         public virtual string UrlSegment { get; set; }
 
-        private IList<Document> _children = new List<Document>();
-        private IList<Tag> _tags = new List<Tag>();
+        public virtual IList<Document> Children { get; set; }
 
-        public virtual IList<Document> Children
-        {
-            get { return _children; }
-            protected internal set { _children = value; }
-        }
-
-        public virtual IList<Tag> Tags
-        {
-            get { return _tags; }
-            protected internal set { _tags = value; }
-        }
+        public virtual IList<Tag> Tags { get; set; }
 
         public virtual string TagList
         {
@@ -87,7 +78,7 @@ namespace MrCMS.Entities.Documents
         }
 
         protected internal virtual void CustomInitialization(IDocumentService service, ISession session) { }
-        
+
         public virtual bool ShowInAdminNav { get { return true; } }
     }
 }

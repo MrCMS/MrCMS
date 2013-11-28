@@ -49,11 +49,11 @@ namespace MrCMS.Services.ImportExport
         /// <param name="spreadsheet"></param>
         /// <param name="parseErrors"></param>
         /// <returns></returns>
-        private List<DocumentImportDataTransferObject> GetDocumentsFromSpreadSheet(ExcelPackage spreadsheet, out Dictionary<string, List<string>> parseErrors)
+        private List<DocumentImportDTO> GetDocumentsFromSpreadSheet(ExcelPackage spreadsheet, out Dictionary<string, List<string>> parseErrors)
         {
             parseErrors = _importDocumentsValidationService.ValidateImportFile(spreadsheet);
             return parseErrors.Any()
-                       ? new List<DocumentImportDataTransferObject>()
+                       ? new List<DocumentImportDTO>()
                        : _importDocumentsValidationService.ValidateAndImportDocuments(spreadsheet, ref parseErrors);
         }
 
