@@ -35,6 +35,8 @@ namespace MrCMS.Website
             var scheduledTaskManager = MrCMSApplication.Get<IScheduledTaskManager>();
             foreach (var scheduledTask in scheduledTaskManager.GetDueTasks())
                 TaskExecutor.ExecuteLater(scheduledTaskManager.GetTask(scheduledTask));
+
+            TaskExecutor.StartExecuting();
         }
     }
 }
