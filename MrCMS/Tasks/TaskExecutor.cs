@@ -25,7 +25,7 @@ namespace MrCMS.Tasks
                 }
             }
         }
-        
+
         private static ISessionFactory _sessionFactory;
 
         public static Action<Exception> ExceptionHandler { get; set; }
@@ -69,20 +69,10 @@ namespace MrCMS.Tasks
 
         public static void ExecuteTask(BackgroundTask task)
         {
-            for (var i = 0; i < 10; i++)
+            using (var session = _sessionFactory.OpenFilteredSession())
             {
-                using (var session = _sessionFactory.OpenFilteredSession())
-                {
-                    CurrentRequestData.CurrentSite = session.Get<Site>(task.Site.Id);
-                    switch (task.Run(session))
-                    {
-                        case true:
-                        case false:
-                            return;
-                        case null:
-                            break;
-                    }
-                }
+                CurrentRequestData.CurrentSite = session.Get<Site>(task.Site.Id);
+                task.Run(session);
             }
         }
     }

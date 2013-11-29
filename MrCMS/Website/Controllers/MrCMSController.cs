@@ -53,5 +53,12 @@ namespace MrCMS.Website.Controllers
         {
             return Redirect("~");
         }
+
+        public new HttpServerUtilityBase Server
+        {
+            get { return ServerMock ?? base.Server; }
+        }
+
+        public HttpServerUtilityBase ServerMock { get; set; }
     }
 }

@@ -41,7 +41,7 @@ namespace MrCMS.Tests.Services.ImportExport
                                                                       .ToMethod(context => rule));
             MrCMSApplication.OverrideKernel(mockingKernel);
 
-            var documents = Enumerable.Range(1, 10).Select(i => new DocumentImportDataTransferObject()).ToList();
+            var documents = Enumerable.Range(1, 10).Select(i => new DocumentImportDTO()).ToList();
 
             _importDocumentsValidationService.ValidateBusinessLogic(documents);
 
@@ -109,7 +109,7 @@ namespace MrCMS.Tests.Services.ImportExport
         private ExcelPackage GetSpreadsheet()
         {
             var currentTime = DateTime.Parse("2013-07-19 15:18:20");
-            var document = new Article()
+            var document = new Article
                 {
                     UrlSegment = "test-url",
                     Name = "Test Document",

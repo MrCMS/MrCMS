@@ -16,7 +16,7 @@ namespace MrCMS.Services.ImportExport.Rules
             _urlHistoryService = urlHistoryService;
         }
 
-        public IEnumerable<string> GetErrors(DocumentImportDataTransferObject item, IList<DocumentImportDataTransferObject> allItems)
+        public IEnumerable<string> GetErrors(DocumentImportDTO item, IList<DocumentImportDTO> allItems)
         {
             if (item.UrlHistory.Count <= 0) yield break;
 

@@ -23,12 +23,12 @@ namespace MrCMS.Services.ImportExport
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        public Dictionary<string, List<string>> ValidateBusinessLogic(IEnumerable<DocumentImportDataTransferObject> items)
+        public Dictionary<string, List<string>> ValidateBusinessLogic(IEnumerable<DocumentImportDTO> items)
         {
             var errors = new Dictionary<string, List<string>>();
             var itemRules = MrCMSApplication.GetAll<IDocumentImportValidationRule>();
 
-            var documentImportDataTransferObjects = items as IList<DocumentImportDataTransferObject> ?? items.ToList();
+            var documentImportDataTransferObjects = items as IList<DocumentImportDTO> ?? items.ToList();
             foreach (var item in documentImportDataTransferObjects)
             {
                 var validationErrors = itemRules.SelectMany(rule => rule.GetErrors(item, documentImportDataTransferObjects)).ToList();
@@ -45,9 +45,9 @@ namespace MrCMS.Services.ImportExport
         /// <param name="spreadsheet"></param>
         /// <param name="parseErrors"></param>
         /// <returns></returns>
-        public List<DocumentImportDataTransferObject> ValidateAndImportDocuments(ExcelPackage spreadsheet, ref Dictionary<string, List<string>> parseErrors)
+        public List<DocumentImportDTO> ValidateAndImportDocuments(ExcelPackage spreadsheet, ref Dictionary<string, List<string>> parseErrors)
         {
-            var items = new List<DocumentImportDataTransferObject>();
+            var items = new List<DocumentImportDTO>();
 
             if (spreadsheet != null)
             {
@@ -89,10 +89,10 @@ namespace MrCMS.Services.ImportExport
             return items;
         }
 
-        private DocumentImportDataTransferObject GetDocumentImportDataTransferObject(ExcelWorksheet worksheet, int rowId,
+        private DocumentImportDTO GetDocumentImportDataTransferObject(ExcelWorksheet worksheet, int rowId,
                                                                                      string name, ref List<string> parseErrors)
         {
-            var item = new DocumentImportDataTransferObject();
+            var item = new DocumentImportDTO();
             item.UrlSegment = worksheet.GetValue<string>(rowId, 1).HasValue()
                                   ? worksheet.GetValue<string>(rowId, 1)
                                   : _documentService.GetDocumentUrl(name, null);
