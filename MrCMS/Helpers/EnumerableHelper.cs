@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Paging;
+using MrCMS.Settings;
+using MrCMS.Website;
 
 namespace MrCMS.Helpers
 {
@@ -31,5 +34,9 @@ namespace MrCMS.Helpers
             }
         }
 
+        public static IPagedList<T> ToPagedList<T>(this IEnumerable<T> source, int page, int? pageSize = null)
+        {
+            return new PagedList<T>(source, page, pageSize ?? MrCMSApplication.Get<SiteSettings>().DefaultPageSize);
+        }
     }
 }
