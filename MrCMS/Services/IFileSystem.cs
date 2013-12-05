@@ -9,5 +9,6 @@ namespace MrCMS.Services
         void Delete(string filePath);
         bool Exists(string filePath);
         byte[] ReadAllBytes(string filePath);
+        void WriteToStream(string filePath, Stream stream);
     }
 }

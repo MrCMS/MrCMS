@@ -50,6 +50,7 @@ namespace MrCMS.IoC
                                         .Configure(onSyntax => onSyntax.InScope(context => context.Kernel.Get<HttpContextBase>())));
 
             Kernel.Bind<HttpRequestBase>().ToMethod(context => CurrentRequestData.CurrentContext.Request);
+            Kernel.Bind<HttpResponseBase>().ToMethod(context => CurrentRequestData.CurrentContext.Response);
             Kernel.Bind<HttpSessionStateBase>().ToMethod(context => CurrentRequestData.CurrentContext.Session);
             Kernel.Bind<ObjectCache>().ToMethod(context => MemoryCache.Default);
             Kernel.Bind<Cache>().ToMethod(context => CurrentRequestData.CurrentContext.Cache);

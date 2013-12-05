@@ -77,5 +77,11 @@ namespace MrCMS.Services
                 return memoryStream.GetBuffer();
             }
         }
+
+        public void WriteToStream(string filePath, Stream stream)
+        {
+            ICloudBlob blob = _container.GetBlockBlobReference(filePath);
+            blob.DownloadToStream(stream);
+        }
     }
 }
