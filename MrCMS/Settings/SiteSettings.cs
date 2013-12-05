@@ -22,6 +22,7 @@ namespace MrCMS.Settings
             Log404s = true;
             CKEditorConfig = SettingDefaults.CkEditorConfig;
             HoneypotFieldName = "YourStatus";
+            DaysToKeepLogs = 30;
         }
 
         [DropDownSelection("Themes")]
@@ -76,6 +77,8 @@ namespace MrCMS.Settings
         [DisplayName("CKEditor Config")]
         [TextArea]
         public string CKEditorConfig { get; set; }
+
+        public int DaysToKeepLogs { get; set; }
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {

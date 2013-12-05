@@ -468,6 +468,7 @@
     <Compile Include="Shortcodes\Forms\ValidationMessaageRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
     <Compile Include="Tasks\BackgroundTask.cs" />
+    <Compile Include="Tasks\DeleteExpiredLogsTask.cs" />
     <Compile Include="Tasks\DeleteIndicesTask.cs" />
     <Compile Include="Tasks\IndexManagementTask.cs" />
     <Compile Include="Tasks\InsertIndicesTask.cs" />

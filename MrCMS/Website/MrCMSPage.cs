@@ -14,7 +14,7 @@ using MrCMS.Helpers;
 
 namespace MrCMS.Website
 {
-    public abstract class MrCMSPage<TModel> : System.Web.Mvc.WebViewPage<TModel>
+    public abstract class MrCMSPage<TModel> : WebViewPage<TModel>
     {
         private IConfigurationProvider _configurationProvider;
 
