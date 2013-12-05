@@ -15,7 +15,6 @@
     </li>
     <li><a href="#versions" data-toggle="tab">Versions</a></li>
     <li><a href="#permissions"  data-toggle="tab">Permissions&nbsp;</a></li>
-    <li><a href="#preview" data-toggle="tab">Preview</a></li>
 </ul>
 <div class="row-fluid">
     <div class="tab-content">
@@ -29,7 +28,6 @@
         @{Html.RenderPartial("PageVersions", Model);}
         @{Html.RenderPartial("Permissions", Model);}
         @{Html.RenderPartial("PermissionsAdmin", Model);}
-        @{Html.RenderPartial("Preview", Model);}
     </div>
 </div>
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/edit-webpage.js"); }
