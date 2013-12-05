@@ -42,26 +42,6 @@ namespace MrCMS.Services
             return _session.Get<User>(id);
         }
 
-        public IList<User> GetAllUsers()
-        {
-            return _session.QueryOver<User>().Cacheable().List();
-        }
-
-        public IPagedList<User> GetUsersPaged(UserSearchQuery searchQuery)
-        {
-            var query = _session.QueryOver<User>();
-
-            if (!string.IsNullOrWhiteSpace(searchQuery.Query))
-                query =
-                    query.Where(
-                        user =>
-                        user.Email.IsInsensitiveLike(searchQuery.Query, MatchMode.Anywhere) ||
-                        user.LastName.IsInsensitiveLike(searchQuery.Query, MatchMode.Anywhere) ||
-                        user.FirstName.IsInsensitiveLike(searchQuery.Query, MatchMode.Anywhere));
-
-            return query.Paged(searchQuery.Page, _siteSettings.DefaultPageSize);
-        }
-
         public IPagedList<User> GetAllUsersPaged(int page)
         {
             return _session.QueryOver<User>().Paged(page, _siteSettings.DefaultPageSize);

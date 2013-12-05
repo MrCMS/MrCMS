@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Web;
 using MrCMS.Entities;
 using MrCMS.Entities.People;
-using MrCMS.Models;
 using MrCMS.Paging;
 using NHibernate.Criterion;
 
@@ -14,8 +13,6 @@ namespace MrCMS.Services
         void AddUser(User user);
         void SaveUser(User user);
         User GetUser(int id);
-        IList<User> GetAllUsers();
-        IPagedList<User> GetUsersPaged(UserSearchQuery searchQuery);
         User GetUserByEmail(string email);
         User GetUserByResetGuid(Guid resetGuid);
         User GetCurrentUser(HttpContextBase context);

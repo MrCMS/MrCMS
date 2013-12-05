@@ -72,18 +72,6 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void UserService_GetAllUsers_ShouldReturnTheCollectionOfUsers()
-        {
-            Enumerable.Range(1, 15).ForEach(
-                i =>
-                Session.Transact(session => session.SaveOrUpdate(new User { FirstName = "Test " + i, LastName = "User" })));
-
-            var users = _userService.GetAllUsers();
-
-            users.Should().HaveCount(15);
-        }
-
-        [Fact]
         public void UserService_GetAllUsersPaged_ShouldReturnTheCollectionOfUsersPaged()
         {
             Enumerable.Range(1, 15).ForEach(

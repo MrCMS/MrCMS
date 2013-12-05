@@ -1,43 +1,74 @@
 ﻿@using MrCMS.Entities.People
 @using MrCMS.Helpers
 @using MrCMS.Models
-@model MrCMS.Paging.IPagedList<User>
+@using MrCMS.Paging
+@model UserSearchQuery
 @{
     ViewBag.Title = "Users";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    var query = ViewData["query"] as UserSearchQuery ?? new UserSearchQuery();
+    var users = ViewData["users"] as IPagedList<User> ?? PagedList<User>.Empty;
+    var roleOptions = ViewData["roles"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 <fieldset>
     <legend>Users
-
             <span class="btn-group  display-inline  pull-right">
                 @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-success", data_toggle = "fb-modal" })
             </span>
     </legend>
-    @{ Html.RenderPartial("Filter", query);}
-    <table class="table table-condensed table-striped">
-        <tr>
-            <th>Email
-            </th>
-            <th>Name
-            </th>
-            <th>Created On
-            </th>
-        </tr>
-        @foreach (User user in Model)
-        {
+    @using (Html.BeginForm("Index", "User", FormMethod.Get))
+    {
+        <div class="row-fluid">
+            <div class="span6">
+                @Html.LabelFor(query => query.Query)
+                @Html.TextBoxFor(query => query.Query, new { @class = "search-query", placeholder = "Search" })
+                @Html.ValidationMessageFor(query => query.Query)
+            </div>
+            <div class="span6">
+                @Html.LabelFor(query => query.UserRoleId, "Role")
+                @Html.DropDownListFor(query => query.UserRoleId, roleOptions)
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <input type="submit" class="btn btn-primary" value="Search" />
+            </div>
+        </div>
+    }
+    @if (users.Any())
+    {
+        <table class="table table-condensed table-striped">
             <tr>
-                <td>
-                    @Html.ActionLink(user.Email, "Edit", new { id = user.Id })
-                </td>
-                <td>
-                    @user.Name
-                </td>
-                <td>
-                    @user.CreatedOn
-                </td>
+                <th>Email
+                </th>
+                <th>Name
+                </th>
+                <th>Roles
+                </th>
+                <th>Created On
+                </th>
             </tr>
-        }
-    </table>
-    @Html.Pager(Model, "Index", page => new { page })
+            @foreach (User user in users)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink(user.Email, "Edit", new { id = user.Id })
+                    </td>
+                    <td>
+                        @user.Name
+                    </td>
+                    <td>
+                        @(user.Roles.Any() ? string.Join(", ", user.Roles.Select(role => role.Name)) : "-")
+                    </td>
+                    <td>
+                        @user.CreatedOn
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p>No users matched your criteria.</p>
+    }
+    @Html.Pager(users, "Index", page => new { page })
 </fieldset>

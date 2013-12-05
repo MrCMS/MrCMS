@@ -14,12 +14,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class UserController : MrCMSAdminController
     {
         private readonly IUserService _userService;
+        private readonly IUserSearchService _userSearchService;
         private readonly IRoleService _roleService;
         private readonly IPasswordManagementService _passwordManagementService;
 
-        public UserController(IUserService userService, IRoleService roleService, IPasswordManagementService passwordManagementService)
+        public UserController(IUserService userService, IUserSearchService userSearchService, IRoleService roleService, IPasswordManagementService passwordManagementService)
         {
             _userService = userService;
+            _userSearchService = userSearchService;
             _roleService = roleService;
             _passwordManagementService = passwordManagementService;
         }
@@ -27,8 +29,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [MrCMSACLRule(typeof(UserACL), UserACL.View)]
         public ActionResult Index(UserSearchQuery searchQuery)
         {
-            ViewData["query"] = searchQuery;
-            return View(_userService.GetUsersPaged(searchQuery));
+            ViewData["users"] = _userSearchService.GetUsersPaged(searchQuery);
+            ViewData["roles"] = _userSearchService.GetAllRoleOptions();
+            return View(searchQuery);
         }
 
         [HttpGet]

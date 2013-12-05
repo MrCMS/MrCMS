@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Paging
 {
@@ -98,5 +99,11 @@ namespace MrCMS.Paging
         }
 
         #endregion
+
+
+        public static IPagedList<T> Empty
+        {
+            get { return new StaticPagedList<T>(Enumerable.Empty<T>(), 1, 1, 0); }
+        }
     }
 }
