@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using MrCMS.ACL.Rules;
@@ -12,7 +11,6 @@ using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
 using MrCMS.Helpers;
-using MrCMS.Website.Optimization;
 
 namespace MrCMS.Website
 {
@@ -50,7 +48,7 @@ namespace MrCMS.Website
             else
                 typeName = model.GetType().Name;
 
-            if (EditingEnabled  && propertyInfo != null)
+            if (EditingEnabled && propertyInfo != null)
             {
                 var tagBuilder = new TagBuilder("div");
                 tagBuilder.AddCssClass("editable");
@@ -67,12 +65,17 @@ namespace MrCMS.Website
 
         private bool EditingEnabled
         {
-            get { return (CurrentRequestData.CurrentUser != null && CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") && _configurationProvider.GetSiteSettings<SiteSettings>().EnableInlineEditing); }
+            get
+            {
+                return CurrentRequestData.CurrentUser != null &&
+                       CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") &&
+                       _configurationProvider.GetSiteSettings<SiteSettings>().EnableInlineEditing;
+            }
         }
 
-        public MvcHtmlString RenderZone(string areaName)
+        public MvcHtmlString RenderZone(string areaName, Webpage page = null)
         {
-            var page = Model as Webpage;
+            page = page ?? CurrentRequestData.CurrentPage;
 
             if (page != null && page.CurrentLayout != null)
             {
@@ -82,17 +85,14 @@ namespace MrCMS.Website
 
                 if (layoutArea == null) return MvcHtmlString.Empty;
 
-                var customSort = false;
-                var webpage = CurrentRequestData.CurrentPage;
-                if (webpage != null)
-                if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == webpage))
-                {
-                    customSort = true;
-                }
+                bool customSort = layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == page);
 
                 var stringBuilder = new StringBuilder();
                 if (EditingEnabled)
-                    stringBuilder.AppendFormat("<div data-layout-area-id=\"{0}\" data-layout-area-name=\"{1}\" data-layout-area-hascustomsort=\"{2}\" class=\"layout-area\"> ", layoutArea.Id, layoutArea.AreaName, customSort.ToString());
+                    stringBuilder.AppendFormat(
+                        "<div data-layout-area-id=\"{0}\" data-layout-area-name=\"{1}\" " +
+                        "data-layout-area-hascustomsort=\"{2}\" class=\"layout-area\"> ",
+                        layoutArea.Id, layoutArea.AreaName, customSort.ToString());
 
                 foreach (var widget in layoutArea.GetWidgets(page))
                 {
