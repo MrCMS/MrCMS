@@ -25,7 +25,7 @@ h1, h2, h3, h4 { font-weight: normal!important; }
     #browser li { cursor: pointer; }
 .user-list li { list-style: none; }
 .field-validation-error span { color: red;}
-input.error, select.error { border: 1px solid red!important;}
+input.input-validation-error, select.input-validation-error { border: 1px solid red!important;}
 .sidebar-nav{ padding: 10px;}
 
 .navbar .brand { font-size: 16px;}
