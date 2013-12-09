@@ -47,6 +47,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Edit(MessageTemplate messageTemplate)
         {
+            ModelState.Clear();
             if (messageTemplate != null)
             {
                 return View(messageTemplate);

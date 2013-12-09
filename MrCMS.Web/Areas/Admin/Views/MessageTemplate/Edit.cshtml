@@ -24,9 +24,9 @@
                 @Html.LabelFor(x => x.FromName)
                 @Html.TextBoxFor(x => x.FromName, new { @class = "span12" })
                 @Html.ValidationMessageFor(x => x.FromName)
-                @Html.LabelFor(x => x.Bcc)
-                @Html.TextBoxFor(x => x.Bcc, new { @class = "span12" })
-                @Html.ValidationMessageFor(x => x.Bcc)
+                @Html.LabelFor(x => x.Cc)
+                @Html.TextBoxFor(x => x.Cc, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.Cc)
             </div>
             <div class="span6">
                 @Html.LabelFor(x => x.ToAddress)
@@ -35,12 +35,18 @@
                 @Html.LabelFor(x => x.ToName)
                 @Html.TextBoxFor(x => x.ToName, new { @class = "span12" })
                 @Html.ValidationMessageFor(x => x.ToName)
-                @Html.LabelFor(x => x.Cc)
-                @Html.TextBoxFor(x => x.Cc, new { @class = "span12" })
-                @Html.ValidationMessageFor(x => x.Cc)
+                @Html.LabelFor(x => x.Bcc)
+                @Html.TextBoxFor(x => x.Bcc, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.Bcc)
             </div>
         </div>
-
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="alert alert-info">
+                    <strong>Quick tip:</strong> To send to multiple email addresses via To, Cc or Bcc, separate them with a comma, <em>not</em> a semi-colon.
+                </div>
+            </div>
+        </div>
         <div class="row-fluid">
             <div class="span12">
                 @Html.LabelFor(x => x.Subject)
@@ -59,7 +65,7 @@
         <br />
         @Html.CheckBoxFor(x => x.IsHtml, new { @class = "pull-left" }) <span>&nbsp;Is HTML?</span>
 
-        @{ Html.RenderAction("Tokens", "MessageTemplate", new {messageTemplate = Model});}
+        @{ Html.RenderAction("Tokens", "MessageTemplate", new { messageTemplate = Model });}
     </fieldset>
 }
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/edit-message-template.js");}

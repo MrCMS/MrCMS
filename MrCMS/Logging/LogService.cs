@@ -74,6 +74,11 @@ namespace MrCMS.Logging
 
             if (searchQuery.SiteId.HasValue)
                 query = query.Where(log => log.Site.Id == searchQuery.SiteId);
+            
+            if (searchQuery.From.HasValue)
+                query = query.Where(log => log.CreatedOn >= searchQuery.From);
+            if (searchQuery.To.HasValue)
+                query = query.Where(log => log.CreatedOn <= searchQuery.To);
 
             return query.Paged(searchQuery.Page, _siteSettings.DefaultPageSize);
         }

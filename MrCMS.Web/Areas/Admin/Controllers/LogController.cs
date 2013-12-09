@@ -19,9 +19,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ViewResult Index(LogSearchQuery searchQuery)
         {
             ViewData["site-options"] = _service.GetSiteOptions();
-            ViewData["query"] = searchQuery;
-            var model = _service.GetEntriesPaged(searchQuery);
-            return View(model);
+            ViewData["logs"] = _service.GetEntriesPaged(searchQuery);
+            return View(searchQuery);
         }
 
         public ViewResult Show(Log entry)

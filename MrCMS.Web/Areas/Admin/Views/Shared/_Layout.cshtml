@@ -16,21 +16,21 @@
                 {
                     <div class="alert alert-success">
                         <button type="button" class="close" data-dismiss="alert">×</button>
-                        @string.Join("<br />",TempData.SuccessMessages())
+                        @string.Join("<br />", TempData.SuccessMessages())
                     </div>
                 }
                 @if (TempData.ErrorMessages().Any())
                 {
                     <div class="alert alert-error">
                         <button type="button" class="close" data-dismiss="alert">×</button>
-                        @string.Join("<br />",TempData.ErrorMessages())
+                        @string.Join("<br />", TempData.ErrorMessages())
                     </div>
                 }
                 @if (TempData.InfoMessages().Any())
                 {
                     <div class="alert alert-info">
                         <button type="button" class="close" data-dismiss="alert">×</button>
-                        @string.Join("<br />",TempData.InfoMessages())
+                        @string.Join("<br />", TempData.InfoMessages())
                     </div>
                 }
             </section>
@@ -43,7 +43,7 @@
     <hr />
     <img src="/Areas/Admin/Content/Images/logo.png" class="display-inline" style="margin-left: 20px;" />
     <p class="display-inline">
-        &copy; Mr CMS 2012-@CurrentRequestData.Now.Year - v@(Html.AssemblyVersion())
+        &copy; Mr CMS 2012-@CurrentRequestData.Now.Year - v@(Html.AssemblyVersion()). <span class="pull-right" style="margin-right: 20px;">Logged in from @CurrentRequestData.CurrentContext.GetCurrentIP()</span>
     </p>
 </footer>
 

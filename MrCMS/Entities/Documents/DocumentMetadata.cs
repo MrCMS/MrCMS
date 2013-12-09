@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MrCMS.Helpers;
 using System.Linq;
+using NHibernate;
 
 namespace MrCMS.Entities.Documents
 {

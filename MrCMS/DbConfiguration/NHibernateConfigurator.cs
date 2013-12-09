@@ -159,8 +159,12 @@ namespace MrCMS.DbConfiguration
                 .ExposeConfiguration(AppSpecificConfiguration)
                 .ExposeConfiguration(c =>
                 {
+#if DEBUG
                     c.SetProperty(Environment.GenerateStatistics, "true");
+#endif
                     c.SetProperty(Environment.Hbm2ddlKeyWords, "auto-quote");
+                    c.SetProperty(Environment.DefaultBatchFetchSize, "25");
+                    c.SetProperty(Environment.BatchSize, "25");
                 })
                 .BuildConfiguration();
 
