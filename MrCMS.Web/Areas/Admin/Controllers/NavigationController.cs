@@ -38,8 +38,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public PartialViewResult NavLinks()
         {
-            var items = TypeHelper.GetAllConcreteTypesAssignableFrom<IAdminMenuItem>().Select(Activator.CreateInstance).Cast<IAdminMenuItem>().OrderBy(item => item.DisplayOrder);
-            return PartialView("NavLinks", items);
+            return PartialView("NavLinks", _service.GetNavLinks());
         }
 
         public ActionResult SiteList()

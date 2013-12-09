@@ -1,23 +1,17 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Xml;
-using Lucene.Net.Documents;
-using Lucene.Net.Index;
-using Lucene.Net.Search;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Indexes;
 using MrCMS.Entities.Multisite;
-using MrCMS.Entities.People;
 using MrCMS.Helpers;
-using MrCMS.Indexing.Querying;
 using MrCMS.Models;
 using MrCMS.Website;
+using NHibernate;
 using Document = MrCMS.Entities.Documents.Document;
 
 namespace MrCMS.Services
@@ -25,75 +19,55 @@ namespace MrCMS.Services
     public class NavigationService : INavigationService
     {
         private readonly IDocumentService _documentService;
-        private readonly ISearcher<Document, DocumentIndexDefinition> _documentSearcher;
+        private readonly ISession _session;
+        private readonly Site _site;
 
-        private Sort _defaultSort = new Sort(new[]
-                                                 {
-                                                     SortField.FIELD_SCORE, new SortField(DocumentIndexDefinition.DisplayOrder.FieldName, SortField.INT)
-                                                 });
-
-        public NavigationService(IDocumentService documentService, ISearcher<Document, DocumentIndexDefinition> documentSearcher)
+        public NavigationService(IDocumentService documentService, ISession session, Site site)
         {
             _documentService = documentService;
-            _documentSearcher = documentSearcher;
+            _session = session;
+            _site = site;
         }
 
         public SiteTree<Webpage> GetWebsiteTree(int? depth = null)
         {
             var tree = new SiteTree<Webpage>
-                           {
+            {
 
-                               Id = null,
-                               ParentId = null,
-                               IconClass = "icon-asterisk",
-                               Name = "Root",
-                               NodeType = "Webpage",
-                               CanAddChild = DocumentMetadataHelper.GetValidWebpageDocumentTypes(null).Any(),
-                           };
-            var sort = _defaultSort;
-            tree.Children = GetNodes<Webpage>(tree,
-                                              _documentSearcher.IndexSearcher.Search(GetRootEntities<Webpage>(), null,
-                                                                                     int.MaxValue,
-                                                                                     sort).ScoreDocs, null,
-                                              maxDepth: depth);
+                Id = null,
+                ParentId = null,
+                IconClass = "icon-asterisk",
+                Name = "Root",
+                NodeType = "Webpage",
+                CanAddChild = DocumentMetadataHelper.GetValidWebpageDocumentTypes(null).Any(),
+            };
+            tree.Children = GetNodes(tree,
+                                     _session.QueryOver<Webpage>()
+                                             .Where(webpage => webpage.Parent == null && webpage.Site.Id == _site.Id)
+                                             .OrderBy(webpage => webpage.DisplayOrder).Asc
+                                             .Cacheable()
+                                             .List(), depth);
 
             return tree;
-        }
-
-        private Query GetRootEntities<T>()
-        {
-            var rootEntities = new BooleanQuery
-                {
-                    {new TermQuery(new Term(DocumentIndexDefinition.Type.FieldName, typeof (T).FullName)), Occur.MUST},
-                    {new TermQuery(new Term(DocumentIndexDefinition.IsRootEntity.FieldName, true.ToString())), Occur.MUST}
-                };
-
-            return rootEntities;
-        }
-
-        private Query GetEntities<T>(int parentId)
-        {
-            var rootEntities = new BooleanQuery
-                {
-                    {new TermQuery(new Term(DocumentIndexDefinition.Type.FieldName, typeof (T).FullName)), Occur.MUST},
-                    {new TermQuery(new Term(DocumentIndexDefinition.ParentId.FieldName, parentId.ToString())), Occur.MUST}
-                };
-
-            return rootEntities;
         }
 
         public SiteTree<MediaCategory> GetMediaTree()
         {
             var tree = new SiteTree<MediaCategory>
-                           {
-                               Id = null,
-                               ParentId = null,
-                               IconClass = "icon-asterisk",
-                               Name = "Root",
-                               NodeType = "MediaCategory",
-                               CanAddChild = true,
-                           };
-            tree.Children = GetNodes<MediaCategory>(tree, _documentSearcher.IndexSearcher.Search(GetRootEntities<MediaCategory>(), null, int.MaxValue, _defaultSort).ScoreDocs, null);
+            {
+                Id = null,
+                ParentId = null,
+                IconClass = "icon-asterisk",
+                Name = "Root",
+                NodeType = "MediaCategory",
+                CanAddChild = true,
+            };
+            tree.Children = GetNodes(tree,
+                                     _session.QueryOver<MediaCategory>()
+                                             .Where(category => category.Parent == null && category.Site.Id == _site.Id)
+                                             .OrderBy(webpage => webpage.DisplayOrder).Asc
+                                             .Cacheable()
+                                             .List(), int.MaxValue);
 
             return tree;
         }
@@ -101,16 +75,21 @@ namespace MrCMS.Services
         public SiteTree<Layout> GetLayoutList()
         {
             var tree = new SiteTree<Layout>
-                           {
-                               Id = null,
-                               ParentId = null,
-                               IconClass = "icon-asterisk",
-                               Name = "Root",
-                               NodeType = "Layout",
-                               CanAddChild = true,
-                           };
+            {
+                Id = null,
+                ParentId = null,
+                IconClass = "icon-asterisk",
+                Name = "Root",
+                NodeType = "Layout",
+                CanAddChild = true,
+            };
 
-            tree.Children = GetNodes<Layout>(tree, _documentSearcher.IndexSearcher.Search(GetRootEntities<Layout>(), null, int.MaxValue, _defaultSort).ScoreDocs, null);
+            tree.Children = GetNodes(tree,
+                                     _session.QueryOver<Layout>()
+                                             .Where(layout => layout.Parent == null && layout.Site.Id == _site.Id)
+                                             .OrderBy(webpage => webpage.DisplayOrder).Asc
+                                             .Cacheable()
+                                             .List(), int.MaxValue);
             return tree;
         }
 
@@ -144,26 +123,26 @@ namespace MrCMS.Services
             while (children.Any())
             {
                 children.ForEach(node =>
+                {
+                    var document = _documentService.GetDocument<Webpage>(node.Id.GetValueOrDefault());
+                    if (document != null && document.Published)
                     {
-                        var document = _documentService.GetDocument<Webpage>(node.Id.GetValueOrDefault());
-                        if (document != null && document.Published)
-                        {
-                            var url =
-                                urlset.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "url",
-                                                                          ""));
+                        var url =
+                            urlset.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "url",
+                                                                      ""));
 
-                            var loc =
-                                url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "loc", ""));
-                            loc.InnerText = urlHelper.AbsoluteContent(document.LiveUrlSegment);
-                            document.AddCustomSitemapData(urlHelper, url, xmlDocument);
-                            var lastMod =
-                                url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "lastmod",
-                                                                       ""));
+                        var loc =
+                            url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "loc", ""));
+                        loc.InnerText = urlHelper.AbsoluteContent(document.LiveUrlSegment);
+                        document.AddCustomSitemapData(urlHelper, url, xmlDocument);
+                        var lastMod =
+                            url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "lastmod",
+                                                                   ""));
 
-                            lastMod.InnerText = document.UpdatedOn.ToString("yyyy-MM-dd");
+                        lastMod.InnerText = document.UpdatedOn.ToString("yyyy-MM-dd");
 
-                        }
-                    });
+                    }
+                });
 
                 children = children.SelectMany(node => node.Children).ToList();
             }
@@ -180,6 +159,13 @@ namespace MrCMS.Services
             return DocumentMetadataHelper.DocumentMetadatas
                                    .BuildSelectItemList(definition => definition.Name, definition => definition.TypeName,
                                                         definition => definition.TypeName == type, "Select type");
+        }
+
+        public IEnumerable<IAdminMenuItem> GetNavLinks()
+        {
+            return TypeHelper.GetAllConcreteTypesAssignableFrom<IAdminMenuItem>()
+                             .Select(MrCMSApplication.Get).Cast<IAdminMenuItem>()
+                             .OrderBy(item => item.DisplayOrder);
         }
 
         private IEnumerable<SelectListItem> GetPageListItems(IEnumerable<SiteTreeNode<Webpage>> nodes, int depth)
@@ -201,76 +187,52 @@ namespace MrCMS.Services
         }
 
 
-        private List<SiteTreeNode<T>> GetNodes<T>(SiteTreeNode parent, IEnumerable<ScoreDoc> docs, int? parentId, int? maxChildren = null, int? maxDepth = null) where T : Document
+        private List<SiteTreeNode<T>> GetNodes<T>(SiteTreeNode parent, IEnumerable<T> docs, int? maxDepth = null) where T : Document
         {
             var list = new List<SiteTreeNode<T>>();
-
-            if (maxChildren.HasValue)
-            {
-                docs = docs.Take(maxChildren.Value);
-            }
             docs.ForEach(doc =>
-                              {
-                                  Lucene.Net.Documents.Document document = _documentSearcher.IndexSearcher.Doc(doc.Doc);
-                                  if (document.GetValues(DocumentIndexDefinition.ShowInNav.FieldName).Contains(true.ToString()))
-                                  {
-                                      int id = Convert.ToInt32(document.GetValues(DocumentIndexDefinition.Id.FieldName).First());
-                                      TopDocs topDocs = _documentSearcher.IndexSearcher.Search(GetEntities<T>(id), null, int.MaxValue, _defaultSort);
-                                      var count = topDocs.ScoreDocs.Count();
-                                      string publishOn = document.Get(DocumentIndexDefinition.PublishOn.FieldName);
-                                      var siteTreeNode = new SiteTreeNode<T>
-                                                             {
-                                                                 Total =
-                                                                     count,
-                                                                 IconClass = document.Get(DocumentIndexDefinition.IconClass.FieldName),
-                                                                 Id = id,
-                                                                 ParentId = parentId,
-                                                                 Name = document.Get(DocumentIndexDefinition.Name.FieldName),
-                                                                 NodeType = GetNodeType(document),
-                                                                 Sortable = document.Get(DocumentIndexDefinition.IsSortable.FieldName) == true.ToString(),
-                                                                 CanAddChild = document.Get(DocumentIndexDefinition.CanAddChild.FieldName) == true.ToString(),
-                                                                 IsPublished = GetNodeType(document) != "Webpage" || !string.IsNullOrWhiteSpace(publishOn) && DateTools.StringToDate(publishOn) <= CurrentRequestData.Now,
-                                                                 RevealInNavigation = document.Get(DocumentIndexDefinition.RevealInNavigation.FieldName) == true.ToString()
-                                                             };
-                                      if (document.GetValues(DocumentIndexDefinition.ShowChildrenInNav.FieldName).Contains(true.ToString()))
-                                      {
-                                          if (maxDepth.HasValue)
-                                          {
-                                              if (maxDepth.Value == 0)
-                                              {
-                                                  siteTreeNode.Children = new List<SiteTreeNode<T>>();
-                                              }
-                                              else
-                                              {
-                                                  siteTreeNode.Children = GetNodes<T>(siteTreeNode,
-                                                      topDocs.ScoreDocs
-                                                                                   , id,
-                                                                                   Convert.ToInt32(document.Get(DocumentIndexDefinition.MaxChildNodes.FieldName)),
-                                                                                   maxDepth - 1);
-                                              }
-                                          }
-                                          else
-                                          {
-                                              siteTreeNode.Children = GetNodes<T>(siteTreeNode,
-                                                                                  topDocs
-                                                                                                   .ScoreDocs, id,
-                                                                                  Convert.ToInt32(document.Get(DocumentIndexDefinition.MaxChildNodes.FieldName)));
-                                          }
-                                      }
-                                      else
-                                      {
-                                          siteTreeNode.Children = new List<SiteTreeNode<T>>();
-                                      }
-                                      siteTreeNode.Parent = parent;
-                                      list.Add(siteTreeNode);
-                                  }
-                              });
-            return list;
-        }
+            {
+                if (doc.ShowInAdminNav)
+                {
+                    var documentMetadata = doc.GetMetadata();
+                    var queryOver = _session.QueryOver<T>().Where(arg => arg.Parent.Id == doc.Id);
 
-        private bool ShowInNav(Document document)
-        {
-            return !(document is MediaCategory) || !(document as MediaCategory).HideInAdminNav;
+                    queryOver = queryOver.OrderBy(webpage => webpage.DisplayOrder).Asc;
+
+                    var nodeType = GetNodeType(doc);
+                    var isWebpage = doc is Webpage;
+                    var siteTreeNode = new SiteTreeNode<T>
+                    {
+                        Total = queryOver.Cacheable().RowCount(),
+                        IconClass = documentMetadata == null ? "icon-file" : documentMetadata.IconClass,
+                        Id = doc.Id,
+                        ParentId = doc.Parent != null ? doc.Parent.Id : (int?)null,
+                        Name = doc.Name,
+                        NodeType = nodeType,
+                        Sortable = IsSortable(doc),
+                        CanAddChild = isWebpage && (doc as Webpage).GetValidWebpageDocumentTypes().Any(),
+                        IsPublished = !isWebpage || (doc as Webpage).Published,
+                        RevealInNavigation = !isWebpage || (doc as Webpage).RevealInNavigation
+                    };
+                    if (ShowChildrenInAdminNav(doc))
+                    {
+                        var pagedList = queryOver.Paged(1, doc.GetMaxChildNodes() ?? int.MaxValue);
+                        if (maxDepth.HasValue)
+                            siteTreeNode.Children = maxDepth.Value == 0
+                                                        ? new List<SiteTreeNode<T>>()
+                                                        : GetNodes<T>(siteTreeNode, pagedList,
+                                                                      maxDepth - 1);
+                        else
+                            siteTreeNode.Children = GetNodes<T>(siteTreeNode, pagedList);
+                    }
+                    else
+                        siteTreeNode.Children = new List<SiteTreeNode<T>>();
+
+                    siteTreeNode.Parent = parent;
+                    list.Add(siteTreeNode);
+                }
+            });
+            return list;
         }
 
         private bool ShowChildrenInAdminNav(Document document)
@@ -281,26 +243,21 @@ namespace MrCMS.Services
             return true;
         }
 
-        private bool IsSortable(int? documentId)
+        private bool IsSortable(Document document)
         {
-            if (documentId.HasValue)
-            {
-                var document = _documentService.GetDocument<Document>(documentId.Value);
-                var documentTypeDefinition = DocumentMetadataHelper.GetMetadataByType(document.GetType());
-                if (documentTypeDefinition != null)
-                    return documentTypeDefinition.Sortable;
-            }
+            var documentTypeDefinition = DocumentMetadataHelper.GetMetadataByType(document.GetType());
+            if (documentTypeDefinition != null)
+                return documentTypeDefinition.Sortable;
             return false;
         }
 
-        private string GetNodeType(Lucene.Net.Documents.Document document)
+        private string GetNodeType<T>(T document) where T : Document
         {
-            string[] values = document.GetValues(DocumentIndexDefinition.Type.FieldName);
-            return values.Contains(typeof(Webpage).FullName)
+            return document is Webpage
                        ? "Webpage"
-                       : values.Contains(typeof(Layout).FullName)
+                       : document is Layout
                              ? "Layout"
-                             : values.Contains(typeof(MediaCategory).FullName)
+                             : document is MediaCategory
                                    ? "MediaCategory"
                                    : "";
 

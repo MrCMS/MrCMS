@@ -15,5 +15,6 @@ namespace MrCMS.Services
         IEnumerable<SelectListItem> GetParentsList();
         string GetSiteMap(UrlHelper urlHelper);
         IEnumerable<SelectListItem> GetDocumentTypes(string type);
+        IEnumerable<IAdminMenuItem> GetNavLinks();
     }
 }

@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using FakeItEasy;
 using FluentAssertions;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
-using Lucene.Net.Util;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -21,6 +20,7 @@ using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tests.Stubs;
 using Xunit;
+using Version = Lucene.Net.Util.Version;
 
 namespace MrCMS.Tests.Services
 {
@@ -43,7 +43,7 @@ namespace MrCMS.Tests.Services
 
             var indexReader = IndexReader.Open(ramDirectory, true);
             A.CallTo(() => _documentSearcher.IndexSearcher).Returns(new IndexSearcher(indexReader));
-            _navigationService = new NavigationService(_documentService, _documentSearcher);
+            _navigationService = new NavigationService(_documentService, Session, CurrentSite);
             DocumentMetadataHelper.OverrideExistAny = type => false;
         }
 
@@ -87,14 +87,14 @@ namespace MrCMS.Tests.Services
             page1.Children.Add(page2);
 
             Session.Transact(session =>
-                                 {
-                                     session.SaveOrUpdate(page1);
-                                     session.SaveOrUpdate(page2);
-                                     session.SaveOrUpdate(page3);
-                                     session.SaveOrUpdate(page4);
-                                 });
+            {
+                session.SaveOrUpdate(page1);
+                session.SaveOrUpdate(page2);
+                session.SaveOrUpdate(page3);
+                session.SaveOrUpdate(page4);
+            });
 
-            var navigationService = new NavigationService(new DocumentService(Session, null, new SiteSettings(), CurrentSite), _documentSearcher);
+            var navigationService = new NavigationService(new DocumentService(Session, null, new SiteSettings(), CurrentSite), Session, CurrentSite);
             var websiteTree = navigationService.GetWebsiteTree();
 
             websiteTree.Children.Should().HaveCount(1);
@@ -128,7 +128,7 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(category4);
             });
 
-            var navigationService = new NavigationService(new DocumentService(Session, null, new SiteSettings { Site = CurrentSite }, CurrentSite), null);
+            var navigationService = new NavigationService(new DocumentService(Session, null, new SiteSettings { Site = CurrentSite }, CurrentSite), null, CurrentSite);
             var mediaTree = navigationService.GetMediaTree();
 
             mediaTree.Children.Should().HaveCount(1);
@@ -160,7 +160,7 @@ namespace MrCMS.Tests.Services
             });
 
             var navigationService = new NavigationService(
-                new DocumentService(Session, null, new SiteSettings(), CurrentSite), _documentSearcher);
+                new DocumentService(Session, null, new SiteSettings(), CurrentSite), Session, CurrentSite);
             var layoutList = navigationService.GetLayoutList();
 
             layoutList.Children.Should().HaveCount(4);
@@ -207,13 +207,12 @@ namespace MrCMS.Tests.Services
                 session.SaveOrUpdate(page4);
             });
 
-            var navigationService = new NavigationService(new DocumentService(Session, null, new SiteSettings(), CurrentSite), _documentSearcher);
+            var navigationService = new NavigationService(new DocumentService(Session, null, new SiteSettings(), CurrentSite), Session, CurrentSite);
             var websiteTree = navigationService.GetWebsiteTree();
 
             websiteTree.Children.Should().HaveCount(1);
             websiteTree.Children.First().Children.Should().HaveCount(0);
         }
-        
 
         ~NavigationServiceTests()
         {
