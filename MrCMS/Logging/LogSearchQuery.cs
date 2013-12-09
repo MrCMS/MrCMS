@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace MrCMS.Logging
 {
@@ -15,5 +16,8 @@ namespace MrCMS.Logging
         public int? SiteId { get; set; }
         [DisplayName("Filter logs")]
         public LogEntryType? Type { get; set; }
+
+        public DateTime? From { get; set; }
+        public DateTime? To { get; set; }
     }
 }
