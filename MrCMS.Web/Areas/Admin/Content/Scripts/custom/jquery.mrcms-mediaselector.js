@@ -130,23 +130,12 @@
                 $('#fancybox-frame').load(function () { // wait for frame to load and then gets it's height
                     $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
                     $(this).data('callback', callback).data('element', element);
-                    var height = 800;
-                    var width = 800;
-                    var parentHeight = $(top.window, top.window).height();
-                    var parentWidth = $(top.window, top.window).width();
-                    if (height >= parentHeight-100)
-                        height = parentHeight - 100;
-                    
-                    if (width >= parentWidth-100)
-                        width = parentWidth - 100;
+                    var documentWidth = $('html').width() - 100;
+                    if (documentWidth > 1000)
+                        documentWidth = 1000;
+                    var width = (documentWidth);
 
-                    console.log(parentWidth);
-                    console.log(width);
-                    
-                    console.log(parentHeight);
-                    console.log(height);
-
-                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height(height);
+                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height($(window).height() - 100);
                     $('#fancybox-content, #fancybox-wrap, #fancybox-frame').width(width);
                     $.fancybox.center();
                 });
