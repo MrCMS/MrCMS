@@ -69,6 +69,9 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
+    <Reference Include="MVC Foolproof Validation">
+      <HintPath>..\packages\foolproof.0.9.4517\lib\MVC Foolproof Validation.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.6.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MySql.Data.6.6.4\lib\net40\MySql.Data.dll</HintPath>
@@ -654,6 +657,13 @@
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-zh-HK.js" />
     <Content Include="Areas\Admin\Content\Scripts\i18n\jquery.ui.datepicker-zh-TW.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\jquery.mrcms-mediaselector.js" />
+    <Content Include="Areas\Admin\Content\Scripts\MicrosoftAjax.js" />
+    <Content Include="Areas\Admin\Content\Scripts\MicrosoftMvcAjax.js" />
+    <Content Include="Areas\Admin\Content\Scripts\MicrosoftMvcJQueryValidation.js" />
+    <Content Include="Areas\Admin\Content\Scripts\MicrosoftMvcValidation.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mvcfoolproof.unobtrusive.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\MvcFoolproofJQueryValidation.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\MvcFoolproofValidation.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2-spinner.gif" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.css" />
     <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.js" />

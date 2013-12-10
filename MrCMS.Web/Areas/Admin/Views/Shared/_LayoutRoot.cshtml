@@ -25,9 +25,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"> </script>
     <script src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")" type="text/javascript"> </script>
     @{
+        //Validate
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.validate.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.validate.unobtrusive.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.unobtrusive-ajax.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/MvcFoolproofJQueryValidation.min.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mvcfoolproof.unobtrusive.min.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/MicrosoftAjax.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/MicrosoftMvcAjax.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/MicrosoftMvcValidation.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/MvcFoolproofValidation.min.js"); //client side validation
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/MicrosoftMvcJQueryValidation.js");
+        //end validate
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.treeview.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.cookie.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.postback.js");
