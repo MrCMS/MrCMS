@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using MrCMS.ACL;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Helpers.Validation;
 using NHibernate;
 
 namespace MrCMS.Entities.People
@@ -33,6 +34,7 @@ namespace MrCMS.Entities.People
         public virtual string CurrentEncryption { get; set; }
 
         [Required]
+        [EmailValidator]
         [Remote("IsUniqueEmail", "User", AdditionalFields = "Id")]
         public virtual string Email { get; set; }
 
