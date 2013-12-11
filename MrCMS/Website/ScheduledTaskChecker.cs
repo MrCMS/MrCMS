@@ -26,7 +26,7 @@ namespace MrCMS.Website
         {
             _timer = new Timer
                          {
-                             Interval = checkEveryXSeconds*1000
+                             Interval = checkEveryXSeconds * 1000
                          };
             _timer.Elapsed += AppendScheduledTasks;
             _timer.Start();
@@ -34,11 +34,15 @@ namespace MrCMS.Website
 
         private void AppendScheduledTasks(object sender, ElapsedEventArgs e)
         {
-            var scheduledTaskManager = new ScheduledTaskManager(MrCMSApplication.Get<ISessionFactory>().OpenFilteredSession());
-            foreach (var scheduledTask in scheduledTaskManager.GetDueTasks())
-                TaskExecutor.ExecuteLater(scheduledTaskManager.GetTask(scheduledTask));
+            if (CurrentRequestData.DatabaseIsInstalled)
+            {
+                var scheduledTaskManager =
+                    new ScheduledTaskManager(MrCMSApplication.Get<ISessionFactory>().OpenFilteredSession());
+                foreach (var scheduledTask in scheduledTaskManager.GetDueTasks())
+                    TaskExecutor.ExecuteLater(scheduledTaskManager.GetTask(scheduledTask));
 
-            TaskExecutor.StartExecuting();
+                TaskExecutor.StartExecuting();
+            }
         }
     }
 }
