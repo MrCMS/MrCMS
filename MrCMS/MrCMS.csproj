@@ -253,6 +253,8 @@
     <Compile Include="Events\IOnDocumentAdded.cs" />
     <Compile Include="Events\IOnDocumentDeleted.cs" />
     <Compile Include="Events\IOnDocumentUnpublished.cs" />
+    <Compile Include="Helpers\Validation\CurrencyValidator.cs" />
+    <Compile Include="Helpers\Validation\EmailValidator.cs" />
     <Compile Include="Logging\LogSearchQuery.cs" />
     <Compile Include="Models\MessageQueueQuery.cs" />
     <Compile Include="Models\UserSearchQuery.cs" />
