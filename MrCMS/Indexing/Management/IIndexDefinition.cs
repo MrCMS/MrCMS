@@ -67,8 +67,13 @@ namespace MrCMS.Indexing.Management
         IEnumerable<FieldDefinition<T>> Definitions { get; }
 
         /// <summary>
-        /// THe name that is shown in admin
+        /// The name that is shown in admin
         /// </summary>
         string IndexName { get; }
+
+        /// <summary>
+        /// The name used to define the index in the directory
+        /// </summary>
+        string IndexFolderName { get; }
     }
 }

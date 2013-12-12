@@ -58,6 +58,9 @@
     <Reference Include="Lucene.Net">
       <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
+    <Reference Include="Lucene.Net.Store.Azure">
+      <HintPath>..\packages\Lucene.Net.Store.Azure.2.0.4937.26631\lib\net40\Lucene.Net.Store.Azure.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ApplicationServer.Caching.AzureClientHelper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.2.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.AzureClientHelper.dll</HintPath>
     </Reference>
@@ -255,6 +258,8 @@
     <Compile Include="Events\IOnDocumentUnpublished.cs" />
     <Compile Include="Helpers\Validation\CurrencyValidator.cs" />
     <Compile Include="Helpers\Validation\EmailValidator.cs" />
+    <Compile Include="Indexing\Management\AzureDirectoryIndexManager.cs" />
+    <Compile Include="Indexing\Querying\AzureDirectorySearcher.cs" />
     <Compile Include="Logging\LogSearchQuery.cs" />
     <Compile Include="Models\MessageQueueQuery.cs" />
     <Compile Include="Models\UserSearchQuery.cs" />
@@ -572,6 +577,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Eula.htm" />
+    <Content Include="Readme.html" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

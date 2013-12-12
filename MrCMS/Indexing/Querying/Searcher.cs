@@ -58,6 +58,9 @@ namespace MrCMS.Indexing.Querying
 
         public IndexSearcher IndexSearcher { get { return _indexSearcher; } }
 
+        public string IndexName { get { return Definition.IndexName; } }
+        public string IndexFolderName { get { return Definition.IndexFolderName; } }
+
 
         private bool _disposed;
         public void Dispose()

@@ -102,7 +102,7 @@ namespace MrCMS.Entities.Indexes
             get { return "Default Document Index"; }
         }
 
-        protected override string IndexFolderName
+        public override string IndexFolderName
         {
             get { return "Documents"; }
         }

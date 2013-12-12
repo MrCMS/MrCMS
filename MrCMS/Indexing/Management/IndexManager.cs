@@ -61,8 +61,14 @@ namespace MrCMS.Indexing.Management
                     return null;
 
                 var lastModified = IndexReader.LastModified(GetDirectory());
-
-                return new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
+                try
+                {
+                    return new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
+                }
+                catch
+                {
+                    return DateTime.FromFileTime(lastModified);
+                }
             }
         }
 
@@ -78,6 +84,7 @@ namespace MrCMS.Indexing.Management
         }
 
         public string IndexName { get { return Definition.IndexName; } }
+        public string IndexFolderName { get { return Definition.IndexFolderName; } }
 
         private void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
         {

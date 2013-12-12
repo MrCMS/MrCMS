@@ -12,13 +12,16 @@ namespace MrCMS.Indexing.Querying
         where TEntity : SystemEntity
         where TDefinition : IIndexDefinition<TEntity>, new()
     {
-        public FSDirectorySearcher(Site currentSite, ISession session) : base(currentSite, session)
+        private static FSDirectory _directory;
+
+        public FSDirectorySearcher(Site currentSite, ISession session)
+            : base(currentSite, session)
         {
         }
 
         protected override Directory GetDirectory(Site currentSite)
         {
-            return FSDirectory.Open(new DirectoryInfo(Definition.GetLocation(currentSite)));
+            return _directory = _directory ?? FSDirectory.Open(new DirectoryInfo(Definition.GetLocation(currentSite)));
         }
     }
 }

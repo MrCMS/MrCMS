@@ -16,5 +16,7 @@ namespace MrCMS.Indexing.Querying
         int Total(Query query, Filter filter = null);
         IList<TEntity> GetAll(Query query = null, Filter filter = null, Sort sort = null);
         IndexSearcher IndexSearcher { get; }
+
+        string IndexName { get; }
     }
 }

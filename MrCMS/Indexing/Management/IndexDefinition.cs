@@ -52,7 +52,7 @@ namespace MrCMS.Indexing.Management
             return mapPath;
         }
 
-        protected abstract string IndexFolderName { get; }
+        public abstract string IndexFolderName { get; }
 
         public virtual Analyzer GetAnalyser()
         {

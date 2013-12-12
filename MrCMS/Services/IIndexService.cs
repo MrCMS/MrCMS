@@ -76,9 +76,9 @@ namespace MrCMS.Services
 
         private static Func<Type, Type, Site, IIndexManagerBase> DefaultGetIndexManager()
         {
-            return (indexType, indexDefinitionInterface, site) => Activator.CreateInstance(
-                typeof(FSDirectoryIndexManager<,>).MakeGenericType(indexDefinitionInterface.GetGenericArguments()[0],
-                                                                    indexType), new[] { site }) as
+            return (indexType, indexDefinitionInterface, site) => MrCMSApplication.Get(
+                typeof(IIndexManager<,>).MakeGenericType(indexDefinitionInterface.GetGenericArguments()[0],
+                                                                    indexType)) as
                                                                   IIndexManagerBase;
         }
 

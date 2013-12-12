@@ -34,7 +34,7 @@ namespace MrCMS.Entities.Indexes
         public static FieldDefinition<Webpage> Type { get { return _type; } }
         public static FieldDefinition<Webpage> PublishOn { get { return _publishOn; } }
 
-        protected override string IndexFolderName
+        public override string IndexFolderName
         {
             get { return "Webpages"; }
         }

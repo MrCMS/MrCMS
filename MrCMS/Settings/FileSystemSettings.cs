@@ -20,6 +20,9 @@ namespace MrCMS.Settings
         [DisplayName("Azure is using Emulator")]
         public bool AzureUsingEmulator { get; set; }
 
+        [DisplayName("Use Azure for Lucene")]
+        public bool UseAzureForLucene { get; set; }
+
         public List<SelectListItem> StorageTypeOptions
         {
             get
@@ -32,5 +35,6 @@ namespace MrCMS.Settings
         }
 
         public override bool RenderInSettings { get { return false; } }
+
     }
 }

@@ -24,8 +24,10 @@
                 @Html.TextBoxFor(settings => settings.AzureAccountKey)
                 @Html.LabelFor(settings => settings.AzureContainerName)
                 @Html.TextBoxFor(settings => settings.AzureContainerName)
-                @Html.LabelFor(settings => settings.AzureUsingEmulator)
-                @Html.CheckBoxFor(settings => settings.AzureUsingEmulator)
+
+                @Html.InlineCheckboxFor(settings => settings.AzureUsingEmulator)
+
+                @Html.InlineCheckboxFor(settings => settings.UseAzureForLucene)
             </div>
         </div>
     </fieldset>
