@@ -8,10 +8,5 @@ namespace MrCMS.Tests.Stubs
         {
             return false;
         }
-
-        public override bool IsAllowedForAdmin(MrCMS.Entities.People.User user)
-        {
-            return false;
-        }
     }
 }

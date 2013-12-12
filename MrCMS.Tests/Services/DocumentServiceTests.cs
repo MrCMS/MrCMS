@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Elmah;
 using FakeItEasy;
+using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
@@ -91,7 +92,6 @@ namespace MrCMS.Tests.Services
             var parent = new BasicMappedWebpage
             {
                 Name = "Parent",
-                AdminAllowedRoles = new List<UserRole>()
             };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
@@ -101,8 +101,6 @@ namespace MrCMS.Tests.Services
                                                                        {
                                                                            Name = String.Format("Page {0}", (object)i),
                                                                            Parent = parent,
-                                                                           AdminAllowedRoles =
-                                                                               new List<UserRole>(),
                                                                            Site = CurrentSite
                                                                        };
                                                     parent.Children.Add(textPage);
@@ -121,7 +119,6 @@ namespace MrCMS.Tests.Services
             var parent = new BasicMappedWebpage
                              {
                                  Name = "Parent",
-                                 AdminAllowedRoles = new List<UserRole>(),
                              };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
@@ -133,7 +130,6 @@ namespace MrCMS.Tests.Services
                                                                       {
                                                                           Name = String.Format("Page {0}", i),
                                                                           Parent = parent,
-                                                                          AdminAllowedRoles = new List<UserRole>(),
                                                                           Site = CurrentSite
                                                                       }
                                                                     : new Layout { Parent = parent };
@@ -153,7 +149,6 @@ namespace MrCMS.Tests.Services
             var parent = new BasicMappedWebpage
                              {
                                  Name = "Parent",
-                                 AdminAllowedRoles = new List<UserRole>(),
                              };
             Session.Transact(session => session.SaveOrUpdate(parent));
 
@@ -164,7 +159,6 @@ namespace MrCMS.Tests.Services
                                                                           Name = String.Format("Page {0}", i),
                                                                           Parent = parent,
                                                                           DisplayOrder = 4 - i,
-                                                                          AdminAllowedRoles = new List<UserRole>(),
                                                                           Site = CurrentSite
                                                                       };
                                                    parent.Children.Add(textPage);
@@ -325,7 +319,7 @@ namespace MrCMS.Tests.Services
 
             _documentService.SetTags("test 1, test 2", textPage);
 
-            textPage.Tags[1].Name.Should().Be("test 2");
+            textPage.Tags.ElementAt(1).Name.Should().Be("test 2");
         }
 
         [Fact]
@@ -510,7 +504,7 @@ namespace MrCMS.Tests.Services
         {
             var widgetService = new WidgetService(Session);
 
-            var textPage = new BasicMappedWebpage { ShownWidgets = new List<Widget>(), HiddenWidgets = new List<Widget>() };
+            var textPage = new BasicMappedWebpage { ShownWidgets = new HashedSet<Widget>(), HiddenWidgets = new HashedSet<Widget>() };
             _documentService.SaveDocument(textPage);
 
             var textWidget = new BasicMappedWidget();
@@ -531,8 +525,8 @@ namespace MrCMS.Tests.Services
 
             var textPage = new BasicMappedWebpage
             {
-                ShownWidgets = new List<Widget> { textWidget },
-                HiddenWidgets = new List<Widget>()
+                ShownWidgets = new HashedSet<Widget> { textWidget },
+                HiddenWidgets = new HashedSet<Widget>()
             };
             _documentService.SaveDocument(textPage);
 
@@ -551,8 +545,8 @@ namespace MrCMS.Tests.Services
 
             var textPage = new BasicMappedWebpage
             {
-                ShownWidgets = new List<Widget> { textWidget },
-                HiddenWidgets = new List<Widget>()
+                ShownWidgets = new HashedSet<Widget> { textWidget },
+                HiddenWidgets = new HashedSet<Widget>()
             };
             _documentService.SaveDocument(textPage);
 
@@ -567,7 +561,7 @@ namespace MrCMS.Tests.Services
         {
             var widgetService = new WidgetService(Session);
 
-            var textPage = new BasicMappedWebpage { ShownWidgets = new List<Widget>(), HiddenWidgets = new List<Widget>() };
+            var textPage = new BasicMappedWebpage { ShownWidgets = new HashedSet<Widget>(), HiddenWidgets = new HashedSet<Widget>() };
             _documentService.SaveDocument(textPage);
 
             var textWidget = new BasicMappedWidget();
@@ -588,8 +582,8 @@ namespace MrCMS.Tests.Services
 
             var textPage = new BasicMappedWebpage
             {
-                ShownWidgets = new List<Widget>(),
-                HiddenWidgets = new List<Widget> { textWidget }
+                ShownWidgets = new HashedSet<Widget>(),
+                HiddenWidgets = new HashedSet<Widget> { textWidget }
             };
             _documentService.SaveDocument(textPage);
 
@@ -609,8 +603,8 @@ namespace MrCMS.Tests.Services
 
             var textPage = new BasicMappedWebpage
             {
-                ShownWidgets = new List<Widget>(),
-                HiddenWidgets = new List<Widget> { textWidget }
+                ShownWidgets = new HashedSet<Widget>(),
+                HiddenWidgets = new HashedSet<Widget> { textWidget }
             };
             _documentService.SaveDocument(textPage);
 

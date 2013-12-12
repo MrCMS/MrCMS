@@ -448,48 +448,6 @@ namespace MrCMS.Services
             return _session.QueryOver<UserRole>().Where(role => role.Name.IsInsensitiveLike(name, MatchMode.Exact)).SingleOrDefault();
         }
 
-        public void SetAdminRoles(string adminRoles, Webpage webpage)
-        {
-            if (webpage == null) throw new ArgumentNullException("webpage");
-
-            if (adminRoles == null)
-                adminRoles = string.Empty;
-
-            var roleNames =
-                adminRoles.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
-                    x => !string.IsNullOrWhiteSpace(x));
-
-            var roles = webpage.AdminAllowedRoles.ToList();
-
-            if (webpage.InheritAdminRolesFromParent)
-            {
-                roles.ForEach(role =>
-                {
-                    role.AdminWebpages.Remove(webpage);
-                    webpage.AdminAllowedRoles.Remove(role);
-                });
-            }
-            else
-            {
-                roleNames.ForEach(name =>
-                {
-                    var role = GetRole(name);
-                    if (!webpage.AdminAllowedRoles.Contains(role))
-                    {
-                        webpage.AdminAllowedRoles.Add(role);
-                        role.AdminWebpages.Add(webpage);
-                    }
-                    roles.Remove(role);
-                });
-
-                roles.ForEach(role =>
-                {
-                    webpage.AdminAllowedRoles.Remove(role);
-                    role.AdminWebpages.Remove(webpage);
-                });
-            }
-        }
-
         public T GetDocumentByUrl<T>(string url) where T : Document
         {
             return _session.QueryOver<T>()

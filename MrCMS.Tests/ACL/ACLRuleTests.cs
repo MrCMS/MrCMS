@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FluentAssertions;
+using Iesi.Collections.Generic;
 using MrCMS.ACL;
 using MrCMS.Apps;
 using MrCMS.Entities.People;
@@ -18,7 +19,7 @@ namespace MrCMS.Tests.ACL
         {
             var testAclRule = new TestACLRule();
 
-            testAclRule.CanAccess(new User { Roles = new List<UserRole> { new UserRole { Name = UserRole.Administrator } } },
+            testAclRule.CanAccess(new User { Roles = new HashedSet<UserRole> { new UserRole { Name = UserRole.Administrator } } },
                                   "test").Should().BeTrue();
         }
 

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Web;
 using Elmah;
 using FakeItEasy;
+using Iesi.Collections.Generic;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
@@ -108,8 +109,8 @@ namespace MrCMS.Tests
                                         Name = UserRole.Administrator
                                     };
 
-            user.Roles = new List<UserRole> { adminUserRole };
-            adminUserRole.Users = new List<User> { user };
+            user.Roles = new HashedSet<UserRole> { adminUserRole };
+            adminUserRole.Users = new HashedSet<User> { user };
 
             CurrentRequestData.CurrentUser = user;
         }

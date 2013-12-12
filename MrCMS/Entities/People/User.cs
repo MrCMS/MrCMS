@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using Iesi.Collections.Generic;
 using MrCMS.ACL;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -17,7 +18,7 @@ namespace MrCMS.Entities.People
         public User()
         {
             Guid = Guid.NewGuid();
-            Roles = new List<UserRole>();
+            Roles = new HashedSet<UserRole>();
             UserProfileData = new List<UserProfileData>();
         }
 
@@ -48,7 +49,7 @@ namespace MrCMS.Entities.People
         public virtual Guid? ResetPasswordGuid { get; set; }
         public virtual DateTime? ResetPasswordExpiry { get; set; }
 
-        public virtual IList<UserRole> Roles { get; set; }
+        public virtual Iesi.Collections.Generic.ISet<UserRole> Roles { get; set; }
         protected internal virtual IList<UserProfileData> UserProfileData { get; set; }
 
         public virtual T Get<T>() where T : UserProfileData

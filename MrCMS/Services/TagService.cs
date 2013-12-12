@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -35,7 +36,7 @@ namespace MrCMS.Services
 
         public IEnumerable<Tag> GetTags(Document document)
         {
-            IList<Tag> parentCategories = new List<Tag>();
+            Iesi.Collections.Generic.ISet<Tag> parentCategories = new HashedSet<Tag>();
 
             if (document != null)
             {

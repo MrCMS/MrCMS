@@ -23,9 +23,6 @@ namespace MrCMS.Website.Binders
             {
                 var frontEndRoles = GetValueFromContext(controllerContext, "FrontEndRoles");
                 DocumentService.SetFrontEndRoles(frontEndRoles, document as Webpage);
-
-                var adminRoles = GetValueFromContext(controllerContext, "AdminRoles");
-                DocumentService.SetAdminRoles(adminRoles, document as Webpage);
             }
 
             return document;

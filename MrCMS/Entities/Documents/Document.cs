@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Paging;
@@ -17,7 +18,7 @@ namespace MrCMS.Entities.Documents
         {
             Versions = new List<DocumentVersion>();
             Children = new List<Document>();
-            Tags = new List<Tag>();
+            Tags = new HashedSet<Tag>();
         }
         [Required]
         [StringLength(255)]
@@ -32,7 +33,7 @@ namespace MrCMS.Entities.Documents
 
         public virtual IList<Document> Children { get; set; }
 
-        public virtual IList<Tag> Tags { get; set; }
+        public virtual Iesi.Collections.Generic.ISet<Tag> Tags { get; set; }
 
         public virtual string TagList
         {

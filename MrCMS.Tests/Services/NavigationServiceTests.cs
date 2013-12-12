@@ -61,25 +61,21 @@ namespace MrCMS.Tests.Services
             var page1 = new BasicMappedWebpage
             {
                 Parent = null,
-                AdminAllowedRoles = new List<UserRole>(),
                 Site = CurrentSite
             };
             var page2 = new BasicMappedWebpage
             {
                 Parent = page1,
-                AdminAllowedRoles = new List<UserRole>(),
                 Site = CurrentSite
             };
             var page3 = new BasicMappedWebpage
             {
                 Parent = page2,
-                AdminAllowedRoles = new List<UserRole>(),
                 Site = CurrentSite
             };
             var page4 = new BasicMappedWebpage
             {
                 Parent = page2,
-                AdminAllowedRoles = new List<UserRole>(),
                 Site = CurrentSite
             };
             page2.Children.Add(page3);
@@ -174,25 +170,21 @@ namespace MrCMS.Tests.Services
             var page1 = new BasicMappedNoChildrenInNavWebpage
             {
                 Parent = null,
-                AdminAllowedRoles = new List<UserRole>(),
                 Site = CurrentSite
             };
             var page2 = new BasicMappedWebpage
             {
                 Parent = page1,
-                AdminAllowedRoles = new List<UserRole>(),
                 Site = CurrentSite
             };
             var page3 = new BasicMappedWebpage
             {
                 Parent = page1,
-                AdminAllowedRoles = new List<UserRole>(),
                 Site = CurrentSite
             };
             var page4 = new BasicMappedWebpage
             {
                 Parent = page1,
-                AdminAllowedRoles = new List<UserRole>(),
                 Site = CurrentSite
             };
             page1.Children.Add(page3);

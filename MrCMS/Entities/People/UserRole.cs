@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Iesi.Collections.Generic;
 using MrCMS.Entities.ACL;
 using MrCMS.Entities.Documents.Web;
 
@@ -10,9 +11,9 @@ namespace MrCMS.Entities.People
     {
         public UserRole()
         {
-            FrontEndWebpages = new List<Webpage>();
-            AdminWebpages = new List<Webpage>();
+            FrontEndWebpages = new HashedSet<Webpage>();
             ACLRoles = new List<ACLRole>();
+            Users = new HashedSet<User>();
         }
         public const string Administrator = "Administrator";
 
@@ -20,12 +21,11 @@ namespace MrCMS.Entities.People
         [DisplayName("Role Name")]
         public virtual string Name { get; set; }
 
-        public virtual IList<User> Users { get; set; }
+        public virtual Iesi.Collections.Generic.ISet<User> Users { get; set; }
 
         public virtual bool IsAdmin { get { return Name == Administrator; } }
 
-        public virtual IList<Webpage> FrontEndWebpages { get; set; }
-        public virtual IList<Webpage> AdminWebpages { get; set; }
+        public virtual Iesi.Collections.Generic.ISet<Webpage> FrontEndWebpages { get; set; }
         public virtual IList<ACLRole> ACLRoles { get; set; }
     }
 }

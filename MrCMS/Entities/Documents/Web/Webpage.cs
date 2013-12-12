@@ -23,7 +23,6 @@ namespace MrCMS.Entities.Documents.Web
     {
         protected Webpage()
         {
-            InheritAdminRolesFromParent = true;
             InheritFrontEndRolesFromParent = true;
             Urls = new List<UrlHistory>();
         }
@@ -78,8 +77,8 @@ namespace MrCMS.Entities.Documents.Web
             get { return _layout ?? (_layout = Layout ?? MrCMSApplication.Get<IDocumentService>().GetDefaultLayout(this)); }
         }
 
-        public virtual IList<Widget.Widget> ShownWidgets { get; set; }
-        public virtual IList<Widget.Widget> HiddenWidgets { get; set; }
+        public virtual Iesi.Collections.Generic.ISet<Widget.Widget> ShownWidgets { get; set; }
+        public virtual Iesi.Collections.Generic.ISet<Widget.Widget> HiddenWidgets { get; set; }
 
         public virtual IList<Widget.Widget> Widgets { get; set; }
 
@@ -150,21 +149,12 @@ namespace MrCMS.Entities.Documents.Web
 
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }
-        public virtual IList<UserRole> FrontEndAllowedRoles { get; set; }
-        [DisplayName("Same as parent")]
-        public virtual bool InheritAdminRolesFromParent { get; set; }
-        public virtual IList<UserRole> AdminAllowedRoles { get; set; }
+        public virtual Iesi.Collections.Generic.ISet<UserRole> FrontEndAllowedRoles { get; set; }
 
         [DisplayName("Roles")]
         public virtual string FrontEndRoles
         {
             get { return string.Join(", ", FrontEndAllowedRoles.Select(x => x.Name)); }
-        }
-
-        [DisplayName("Roles")]
-        public virtual string AdminRoles
-        {
-            get { return string.Join(", ", AdminAllowedRoles.Select(x => x.Name)); }
         }
 
         public virtual string AbsoluteUrl
@@ -204,20 +194,6 @@ namespace MrCMS.Entities.Documents.Web
             if (!FrontEndAllowedRoles.Any()) return true;
             if (FrontEndAllowedRoles.Any() && currentUser == null) return false;
             return currentUser != null && currentUser.Roles.Intersect(FrontEndAllowedRoles).Any();
-        }
-
-        public virtual bool IsAllowedForAdmin(User currentUser)
-        {
-            if (currentUser != null && currentUser.IsAdmin) return true;
-            if (InheritAdminRolesFromParent)
-            {
-                if (Parent is Webpage)
-                    return (Parent as Webpage).IsAllowedForAdmin(currentUser);
-                return true;
-            }
-            if (!AdminAllowedRoles.Any()) return true;
-            if (AdminAllowedRoles.Any() && currentUser == null) return false;
-            return currentUser != null && currentUser.Roles.Intersect(AdminAllowedRoles).Any();
         }
 
         /// <summary>

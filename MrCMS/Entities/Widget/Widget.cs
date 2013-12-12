@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.Mvc;
+using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using NHibernate;
@@ -12,8 +13,8 @@ namespace MrCMS.Entities.Widget
     {
         protected Widget()
         {
-            ShownOn = new List<Webpage>();
-            HiddenOn = new List<Webpage>();
+            ShownOn = new HashedSet<Webpage>();
+            HiddenOn = new HashedSet<Webpage>();
         }
         public virtual LayoutArea LayoutArea { get; set; }
 
@@ -39,8 +40,8 @@ namespace MrCMS.Entities.Widget
             return this;
         }
 
-        public virtual IList<Webpage> HiddenOn { get; set; }
-        public virtual IList<Webpage> ShownOn { get; set; }
+        public virtual Iesi.Collections.Generic.ISet<Webpage> HiddenOn { get; set; }
+        public virtual Iesi.Collections.Generic.ISet<Webpage> ShownOn { get; set; }
 
         public virtual void SetDropdownData(ViewDataDictionary viewData, ISession session) { }
 

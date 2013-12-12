@@ -15,6 +15,8 @@ namespace MrCMS.Services
 
         public void Save(RedirectedDomain domain)
         {
+            if (domain.Site != null)
+                domain.Site.RedirectedDomains.Add(domain);
             _session.Transact(session => session.Save(domain));
         }
 

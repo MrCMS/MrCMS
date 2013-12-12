@@ -1,5 +1,9 @@
+using System.Linq;
+using System.Reflection;
 using FluentNHibernate.Conventions;
+using FluentNHibernate.Conventions.Inspections;
 using FluentNHibernate.Conventions.Instances;
+using FluentNHibernate.MappingModel;
 
 namespace MrCMS.DbConfiguration.Conventions
 {
@@ -15,6 +19,13 @@ namespace MrCMS.DbConfiguration.Conventions
             instance.Relationship.NotFound.Ignore();
             instance.Key.ForeignKey(string.Format("FK_{0}_{1}", instance.ChildType.Name, instance.EntityType.Name));
             instance.Where("(IsDeleted = 'False' or IsDeleted = 0 or IsDeleted is null)");
+        }
+    }
+    public class HasManyToManyConvention : IHasManyToManyConvention
+    {
+        public void Apply(IManyToManyCollectionInstance instance)
+        {
+            instance.AsSet();
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
+using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Tests.Stubs;
 using NHibernate;
@@ -49,7 +48,7 @@ namespace MrCMS.Tests.Services
             Session.Transact(session => Session.SaveOrUpdate(tag1));
 
             var container = new FakeContainer { Site = CurrentSite };
-            container.SetTags(new List<Tag> { tag1 });
+            container.SetTags(new HashedSet<Tag> { tag1 });
             var containerItem = new FakeContainerItem { Parent = container, Site = CurrentSite };
 
             tagService.GetTags(containerItem).Should().HaveCount(1);
@@ -57,21 +56,14 @@ namespace MrCMS.Tests.Services
 
         public class FakeContainerItem : Document
         {
-            public string ContainerUrl { get; private set; }
         }
 
         public class FakeContainer : Document
         {
-            public void SetTags(IList<Tag> tags)
+            public void SetTags(Iesi.Collections.Generic.ISet<Tag> tags)
             {
                 Tags = tags;
             }
-
-            public string LiveUrlSegment { get; private set; }
-            public string BodyContent { get; private set; }
-            public int PageSize { get; private set; }
-            public bool AllowPaging { get; private set; }
-            public IEnumerable<FakeContainerItem> ChildItems { get; private set; }
         }
     }
 }

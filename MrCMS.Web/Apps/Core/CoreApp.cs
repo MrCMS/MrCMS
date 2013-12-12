@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
+using Iesi.Collections.Generic;
 using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -281,8 +282,8 @@ namespace MrCMS.Web.Apps.Core
                 Name = UserRole.Administrator
             };
 
-            user.Roles = new List<UserRole> { adminUserRole };
-            adminUserRole.Users = new List<User> { user };
+            user.Roles = new HashedSet<UserRole>{ adminUserRole };
+            adminUserRole.Users = new HashedSet<User> { user };
             var roleService = new RoleService(session);
             roleService.SaveRole(adminUserRole);
 
