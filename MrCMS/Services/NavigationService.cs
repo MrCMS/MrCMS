@@ -114,6 +114,7 @@ namespace MrCMS.Services
 
             var standardNs = xmlDocument.CreateAttribute("xmlns");
             standardNs.Value = "http://www.google.com/schemas/sitemap/0.9";
+            urlset.Attributes.Append(standardNs);
             var imageNs = xmlDocument.CreateAttribute("xmlns:image");
             imageNs.Value = "http://www.google.com/schemas/sitemap-image/1.1";
             urlset.Attributes.Append(imageNs);
