@@ -48,5 +48,7 @@ namespace MrCMS.Services
         IEnumerable<Document> GetParents(int? parent);
         Webpage GetHomePage();
         RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage;
+        
+        void RevertToVersion(DocumentVersion documentVersion);
     }
 }

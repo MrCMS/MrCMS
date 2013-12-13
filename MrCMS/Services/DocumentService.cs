@@ -545,6 +545,19 @@ namespace MrCMS.Services
             return new RedirectResult(url);
         }
 
+        public void RevertToVersion(DocumentVersion documentVersion)
+        {
+            var currentVersion = documentVersion.Document;
+            var previousVersion = currentVersion.GetVersion(documentVersion.Id);
+
+            var versionProperties = currentVersion.GetType().GetVersionProperties();
+            foreach (var versionProperty in versionProperties)
+            {
+                versionProperty.SetValue(currentVersion, versionProperty.GetValue(previousVersion, null), null);
+            }
+            _session.Transact(session => session.Update(currentVersion));
+        }
+
         public bool UrlIsValidForMediaCategory(string url, int? id)
         {
             if (string.IsNullOrEmpty(url))

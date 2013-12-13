@@ -1,36 +1,42 @@
-﻿@using MrCMS.Entities.Documents.Web
-@using MrCMS.Helpers
+﻿@using MrCMS.Helpers
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @model MrCMS.Entities.Documents.DocumentVersion
-@{Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-
-<h4>Edited by @Html.ActionLink(Model.User.Email, "Edit", "User", new { id = Model.User.Id }, null) on @Model.CreatedOn</h4>
-<table class="table table-bordered" id="changes-table">
-    <thead>
-        <tr>
-            <th>Property
-            </th>
-            <th>Previous
-            </th>
-            <th>Current
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var change in Model.GetComparisonToCurrent())
-        {
-            <tr class="@(change.AnyChange ? "changed" : "unchanged")">
-                <td>
-                    @change.Property
-                </td>
-                <td>
-                    @Html.RenderValue(change.PreviousValue)
-                </td>
-                <td>
-                    @Html.RenderValue(change.CurrentValue)
-                </td>
+<fieldset>
+    <legend>Edited by @Html.ActionLink(Model.User.Email, "Edit", "User", new { id = Model.User.Id }, null) on @Model.CreatedOn
+        <span class="btn-group  display-inline  pull-right">
+            @using (Html.BeginForm("RevertToVersion", "Webpage", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+            {
+                <input type="submit" class="btn btn-primary" value="Revert to version" />
+            }
+        </span>
+    </legend>
+    <table class="table table-bordered" id="changes-table">
+        <thead>
+            <tr>
+                <th>Property
+                </th>
+                <th>Previous
+                </th>
+                <th>Current
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var change in Model.GetComparisonToCurrent())
+            {
+                <tr class="@(change.AnyChange ? "changed" : "unchanged")">
+                    <td>
+                        @change.Property
+                    </td>
+                    <td>
+                        @Html.RenderValue(change.PreviousValue)
+                    </td>
+                    <td>
+                        @Html.RenderValue(change.CurrentValue)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</fieldset>

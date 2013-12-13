@@ -25,7 +25,13 @@
                             @(version.User != null ? version.User.Email : "")
                         </td>
                         <td>
-                            @Html.ActionLink("View Changes", "ViewChanges", "Webpage", new { id = version.Id }, new { data_toggle = "fb-modal" })
+                            <div class="btn-group">
+                                @Html.ActionLink("View Changes", "ViewChanges", "Webpage", new { id = version.Id }, new { data_toggle = "fb-modal",@class="btn btn-primary btn-mini" })
+                                @if (version.AnyDifferencesFromCurrent())
+                                {
+                                    @Html.ActionLink("Revert to this version", "RevertToVersion", "Webpage", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-warning btn-mini"})
+                                }
+                            </div>
                         </td>
                     </tr>
                 }

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using Newtonsoft.Json;
@@ -44,20 +46,10 @@ namespace MrCMS.Helpers
         {
             var changes = new List<VersionChange>();
             
-            var ignorePropertyNames = new[]
-                        {
-                            "UpdatedOn", "Id", "CreatedOn"
-                        };
-
             if (previousVersion == null)
                 return changes;
 
-            var propertyInfos =
-                currentVersion.GetType().GetProperties()
-                    .Where(info =>
-                           info.CanWrite && !info.PropertyType.IsGenericType && !typeof(SiteEntity).IsAssignableFrom(info.PropertyType) &&
-                           info.DeclaringType != typeof(SiteEntity) && !ignorePropertyNames.Contains(info.Name))
-                    .ToList();
+            var propertyInfos = currentVersion.GetType().GetVersionProperties();
 
             changes.AddRange(from propertyInfo in propertyInfos
                              let oldValue = propertyInfo.GetValue(previousVersion, null)
@@ -77,12 +69,34 @@ namespace MrCMS.Helpers
             return changes;
         }
 
+        public static bool AnyDifferencesFromCurrent(this DocumentVersion currentVersion)
+        {
+            return GetComparisonToCurrent(currentVersion).Any(change => change.AnyChange);
+        }
+
         public static List<VersionChange> GetComparisonToCurrent(this DocumentVersion currentVersion)
         {
             var document = currentVersion.Document.Unproxy();
             var previousVersion = DeserializeVersion(currentVersion, document);
 
             return GetVersionChanges(document, previousVersion);
+        }
+
+        public static List<PropertyInfo> GetVersionProperties(this Type type)
+        {
+            var ignorePropertyNames = new[]
+                                          {
+                                              "UpdatedOn", "Id", "CreatedOn"
+                                          };
+
+            return type.GetProperties().Where(
+                info =>
+                info.CanWrite &&
+                !typeof (SystemEntity).IsAssignableFrom(info.PropertyType) &&
+                (!info.PropertyType.IsGenericType ||
+                 (info.PropertyType.IsGenericType && info.PropertyType.GetGenericTypeDefinition() == typeof (Nullable<>)))
+                &&
+                !ignorePropertyNames.Contains(info.Name)).ToList();
         }
     }
 

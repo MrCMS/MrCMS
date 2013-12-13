@@ -199,5 +199,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             return CurrentRequestData.Now.ToString(CurrentRequestData.CultureInfo);
         }
+
+        [HttpGet]
+        public PartialViewResult RevertToVersion(DocumentVersion documentVersion)
+        {
+            return PartialView(documentVersion);
+        }
+
+        [HttpPost]
+        [ActionName("RevertToVersion")]
+        public RedirectToRouteResult RevertToVersion_POST(DocumentVersion documentVersion)
+        {
+            _documentService.RevertToVersion(documentVersion);
+            return RedirectToAction("Edit", new { id = documentVersion.Document.Id });
+        }
     }
 }

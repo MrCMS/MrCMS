@@ -1373,6 +1373,8 @@
     <Content Include="Areas\Admin\Views\MessageQueue\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MessageQueue\Show.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutWithoutWebTree.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\RevertToVersion.cshtml" />
+    <None Include="Properties\PublishProfiles\mrcms-azure.pubxml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
@@ -1387,6 +1389,7 @@
     <Folder Include="Apps\Core\Entities\" />
     <Folder Include="Apps\Core\Helpers\" />
     <Folder Include="Apps\Core\Settings\" />
+    <Folder Include="Apps\Core\Tasks\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Views\Widget\" />
     <Folder Include="Apps\Galleries\Content\" />

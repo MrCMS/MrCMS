@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
@@ -22,15 +23,8 @@ namespace MrCMS.DbConfiguration.Configuration
                 var session = @event.Session.SessionFactory.OpenFilteredSession();
                 if (@event.Entity is Document && !(@event.Entity as Document).IsDeleted)
                 {
-                    var ignorePropertyNames = new[]
-                        {
-                            "UpdatedOn", "Id", "CreatedOn"
-                        };
-                    var propertyInfos =
-                        @event.Entity.GetType().GetProperties().Where(
-                            info =>
-                            info.CanWrite && !typeof(SystemEntity).IsAssignableFrom(info.PropertyType) &&
-                            !info.PropertyType.IsGenericType && !ignorePropertyNames.Contains(info.Name)).ToList();
+
+                    var propertyInfos = @event.Entity.GetType().GetVersionProperties();
 
                     var propertyNames = @event.Persister.PropertyNames;
 
