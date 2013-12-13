@@ -10,11 +10,13 @@ namespace MrCMS.Models
             Page = 1;
         }
         public int Page { get; set; }
+        [DisplayName("Date From")]
         public DateTime? From { get; set; }
+        [DisplayName("Date To")]
         public DateTime? To { get; set; }
-        [DisplayName("Sent From")]
+        [DisplayName("Email From")]
         public string FromQuery { get; set; }
-        [DisplayName("Sent To")]
+        [DisplayName("Email To")]
         public string ToQuery { get; set; }
     }
 }
