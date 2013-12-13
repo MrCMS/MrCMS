@@ -429,8 +429,8 @@ namespace MrCMS.Website
         private static string GetThemeName()
         {
             return (CurrentRequestData.DatabaseIsInstalled &&
-                    !string.IsNullOrWhiteSpace(MrCMSApplication.Get<SiteSettings>().ThemeName))
-                       ? MrCMSApplication.Get<SiteSettings>().ThemeName
+                    !string.IsNullOrWhiteSpace(CurrentRequestData.SiteSettings.ThemeName))
+                       ? CurrentRequestData.SiteSettings.ThemeName
                        : null;
         }
     }
