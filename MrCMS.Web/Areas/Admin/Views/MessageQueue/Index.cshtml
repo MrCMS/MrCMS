@@ -6,86 +6,90 @@
 @{
     var queuedMessages = ViewData["data"] as IPagedList<QueuedMessage>;
 }
+@using (Html.BeginForm("Index", "MessageQueue", FormMethod.Get))
+{
+    <fieldset>
+        <legend>Queued Messages
+        <span class="btn-group  display-inline  pull-right">
+            <input type="submit" value="Search" class="btn btn-primary" />
+        </span>
+        </legend>
 
-<fieldset>
-    <legend>Queued Messages
-    </legend>
-    @using (Html.BeginForm("Index", "MessageQueue", FormMethod.Get))
-    {
         <div class="row-fluid">
             <div class="span6">
                 @Html.LabelFor(query => query.FromQuery)
-                @Html.TextBoxFor(query => query.FromQuery, new { @class = "search-query span12" })
+                @Html.TextBoxFor(query => query.FromQuery, new { @class = "span12" })
             </div>
             <div class="span6">
-                @Html.LabelFor(query => query.ToQuery)
-                @Html.TextBoxFor(query => query.ToQuery, new { @class = "search-query span12" })
+                @Html.LabelFor(query => query.From)
+                @Html.EditorFor(query => query.From)
             </div>
         </div>
         <div class="row-fluid margin-top-10">
             <div class="span6">
-                @Html.LabelFor(query => query.From)
-                @Html.EditorFor(query => query.From)
+                @Html.LabelFor(query => query.ToQuery)
+                @Html.TextBoxFor(query => query.ToQuery, new { @class = "span12" })
+
             </div>
             <div class="span6">
                 @Html.LabelFor(query => query.To)
                 @Html.EditorFor(query => query.To)
             </div>
         </div>
-        <input type="submit" value="Search" class="btn btn-primary" style="margin-bottom: 20px;" />
-    }
-    @if (queuedMessages.Any())
-    {
-        <table class="table table-condensed table-striped">
-            <thead>
+        
+    </fieldset>
+}
+@if (queuedMessages.Any())
+{
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th>From
+                </th>
+                <th>To
+                </th>
+                <th>Subject
+                </th>
+                <th>Created On
+                </th>
+                <th>Sent On?
+                </th>
+                <th>Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var message in queuedMessages)
+            {
                 <tr>
-                    <th>From
-                    </th>
-                    <th>To
-                    </th>
-                    <th>Subject
-                    </th>
-                    <th>Created On
-                    </th>
-                    <th>Sent On?
-                    </th>
-                    <th>Actions
-                    </th>
+                    <td>
+                        @message.FromDescription
+                    </td>
+                    <td>
+                        @message.ToDescription
+                    </td>
+                    <td>
+                        @message.Subject
+                    </td>
+                    <td>
+                        @message.CreatedOn.ToString()
+                    </td>
+                    <td>
+                        @(message.SentOnDescription)
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            @Html.ActionLink("View", "Show", "MessageQueue", new { id = message.Id }, new { @class = "btn btn-mini" })
+                        </div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var message in queuedMessages)
-                {
-                    <tr>
-                        <td>
-                            @message.FromDescription
-                        </td>
-                        <td>
-                            @message.ToDescription
-                        </td>
-                        <td>
-                            @message.Subject
-                        </td>
-                        <td>
-                            @message.CreatedOn.ToString()
-                        </td>
-                        <td>
-                            @(message.SentOnDescription)
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                @Html.ActionLink("View", "Show", "MessageQueue", new { id = message.Id }, new { @class = "btn btn-mini" })
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p>No results match your search.</p>
-    }
-    @Html.Pager(queuedMessages, "Index", page => new { page })
-</fieldset>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No results match your search.</p>
+}
+@Html.Pager(queuedMessages, "Index", page => new { page })
 

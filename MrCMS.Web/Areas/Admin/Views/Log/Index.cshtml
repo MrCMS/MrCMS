@@ -7,15 +7,16 @@
     var logs = ViewData["logs"] as IPagedList<Log> ?? PagedList<Log>.Empty;
     var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
+@using (Html.BeginForm("Index", "Log", FormMethod.Get))
+{
 <fieldset>
     <legend>Logs 
             <span class="btn-group  display-inline  pull-right">
                 <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">Delete logs</a>
-
+                <input type="submit" class="btn btn-primary" value="Search" />
             </span>
     </legend>
-@using (Html.BeginForm("Index", "Log", FormMethod.Get))
-{
+
     <div class="row-fluid">
         <div class="span2">
             @Html.LabelFor(query => query.Type)
@@ -47,13 +48,9 @@
             @Html.TextBoxFor(query => query.To, new { @class = "date-time-picker span12" })
         </div>
     </div>
-    <div class="row-fluid">
-        <div class="span12">
-            <input type="submit" class="btn btn-primary" value="Search" />
-        </div>
-    </div>
-}
 </fieldset>
+}
+
 @if (logs.Count == 0)
 {
     @:No logs.
