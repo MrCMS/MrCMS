@@ -18,6 +18,7 @@ namespace MrCMS.Tests.Settings
         public SettingServiceTests()
         {
             _settingService = new SettingService(Session, CurrentSite);
+            _settingService.ResetSettingCache();
         }
         [Fact]
         public void SettingService_GetSettingById_LoadsFromSession()

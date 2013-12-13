@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.ApplicationServer.Caching;
@@ -25,14 +23,8 @@ namespace MrCMS.DbConfiguration.Caches.Azure
         /// <summary>the name of the cache region</summary>
         private readonly string _name;
 
-        /// <summary>The name of the cache key for the region</summary>
-        private readonly string _rootCacheKey;
-
         /// <summary>The cache for the web application</summary>
         private readonly DataCache _webCache;
-
-        /// <summary>Indicates if the root cache item has been stored or not</summary>
-        private bool _isRootItemCached;
 
         private readonly ISerializationProvider _serializationProvider;
 
@@ -57,15 +49,11 @@ namespace MrCMS.DbConfiguration.Caches.Azure
                 Log.Info("No region name specified for cache region. Using default name of 'nhibernate'");
                 name = "nhibernate";
             }
-
             _webCache = AzureCacheFactory.Instance.GetCache("default");
             _name = StripNonAlphaNumeric(name);
 
             //configure the cache region based on the configured settings and any relevant nhibernate settings
 
-            //creaet the cache key that will be used for the root cache item which all other
-            //cache items are dependent on
-            _rootCacheKey = GenerateRootCacheKey();
         }
 
         private string StripNonAlphaNumeric(string name)
@@ -81,7 +69,6 @@ namespace MrCMS.DbConfiguration.Caches.Azure
         {
             //remove the root cache item, this will cause all of the individual items to be removed from the cache
             _webCache.ClearRegion(RegionName);
-            _isRootItemCached = false;
 
             Log.Debug("All items cleared from the cache.");
         }
@@ -102,25 +89,21 @@ namespace MrCMS.DbConfiguration.Caches.Azure
         /// <returns>the item stored in the cache with the id specified by <paramref name="key"/></returns>
         public object Get(object key)
         {
-            if (key == null || _isRootItemCached == false)
-            {
+            if (key == null)
                 return null;
-            }
 
             //get the full key to use to locate the item in the cache
             string cacheKey = GetCacheKey(key);
 
             if (Log.IsDebugEnabled)
-            {
                 Log.DebugFormat("Fetching object '{0}' from the cache.", cacheKey);
-            }
 
-            object cachedObject = _webCache.Get(cacheKey);
-            if (cachedObject == null)
-            {
+            object cachedObject = _webCache.Get(cacheKey, RegionName);
+
+            if (cachedObject == null || !(cachedObject is byte[]))
                 return null;
-            }
-            return _serializationProvider.Deserialize((byte[]) cachedObject);
+
+            return _serializationProvider.Deserialize(cachedObject as byte[]);
         }
 
         /// <summary>
@@ -162,41 +145,19 @@ namespace MrCMS.DbConfiguration.Caches.Azure
                 throw new ArgumentNullException("value");
             }
 
-            //If the root cache item is not cached then we should reestablish it now
-            if (_isRootItemCached == false)
-            {
-                Log.DebugFormat("root cache item for region not found.");
-
-                CacheRootItem();
-            }
-
             //get the full key for the cache key
             string cacheKey = GetCacheKey(key);
 
-            if (_webCache[cacheKey] != null)
-            {
-                if (Log.IsDebugEnabled)
-                {
-                    Log.DebugFormat("updating value of key '{0}' to '{1}'.", cacheKey, value.ToString());
-                }
-            }
-            else
-            {
-                if (Log.IsDebugEnabled)
-                {
-                    Log.DebugFormat("adding new data: key={0} & value={1}", cacheKey, value.ToString());
-                }
-            }
-
             try
             {
-                _webCache.Put(cacheKey, _serializationProvider.Serialize(value),
-                              new List<DataCacheTag> { new DataCacheTag(_rootCacheKey) }, RegionName);
+                _webCache.Put(cacheKey, _serializationProvider.Serialize(value), RegionName);
             }
             catch (DataCacheException ex)
             {
                 if (ex.ErrorCode == DataCacheErrorCode.RegionDoesNotExist)
+                {
                     CreateAppFabricRegion(b => Put(key, value));
+                }
                 else if (!IsSafeToIgnore(ex) && ex.ErrorCode != DataCacheErrorCode.ObjectLocked)
                 {
                     throw new CacheException(ex);
@@ -311,47 +272,6 @@ namespace MrCMS.DbConfiguration.Caches.Azure
         private string GetCacheKey(object identifier)
         {
             return String.Concat(CacheKeyPrefix, _name, ":", identifier.ToString(), "@", identifier.GetHashCode());
-        }
-
-        /// <summary>
-        /// Generates the root cache key for the cache region
-        /// </summary>
-        /// <returns>Cache key that can be used for the root cache dependency</returns>
-        private string GenerateRootCacheKey()
-        {
-            return GetCacheKey(Guid.NewGuid());
-        }
-
-        /// <summary>
-        /// Creates the cache item for the cache region which all other cache items in the region
-        /// will be dependent upon
-        /// </summary>
-        /// <remarks>
-        ///                <para>Specified Region dependencies will be associated to the cache item</para>
-        /// </remarks>
-        private void CacheRootItem()
-        {
-            if (Log.IsDebugEnabled)
-            {
-                Log.DebugFormat("Creating root cache entry for cache region: {0}", _name);
-            }
-
-            try
-            {
-                _webCache.Add(_rootCacheKey, _rootCacheKey, RegionName);
-            }
-            catch (DataCacheException ex)
-            {
-                if (ex.ErrorCode == DataCacheErrorCode.RegionDoesNotExist)
-                    CreateAppFabricRegion(b => CacheRootItem());
-                else if (!IsSafeToIgnore(ex) && ex.ErrorCode != DataCacheErrorCode.ObjectLocked)
-                {
-                    throw new CacheException(ex);
-                }
-            }
-
-            //flag the root cache item as beeing cached
-            _isRootItemCached = true;
         }
     }
 }

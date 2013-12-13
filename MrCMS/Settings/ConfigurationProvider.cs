@@ -40,6 +40,7 @@ namespace MrCMS.Settings
                 dynamic value = prop.GetValue(settings, null);
                 _settingService.SetSetting(key, value ?? "");
             }
+            _settingService.ResetSettingCache();
         }
 
         public void DeleteSettings(SiteSettingsBase settings)

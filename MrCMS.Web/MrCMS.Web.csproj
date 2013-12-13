@@ -264,7 +264,6 @@
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\build-config.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\ckeditor.js" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\config.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\contents.css" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\lang\en-gb.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\lang\en.js" />

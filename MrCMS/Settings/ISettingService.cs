@@ -46,5 +46,7 @@ namespace MrCMS.Settings
         /// </summary>
         /// <param name="setting">Setting</param>
         void DeleteSetting(Setting setting);
+
+        void ResetSettingCache();
     }
 }
