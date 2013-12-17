@@ -276,7 +276,7 @@
                         documentWidth = 1000;
                     var width = (documentWidth);
                     
-                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height($(top.window).height() - 100);
+                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height($(window).height() - 100);
                     $('#fancybox-content, #fancybox-wrap, #fancybox-frame').width(width);
                     $.fancybox.center();
                 });
