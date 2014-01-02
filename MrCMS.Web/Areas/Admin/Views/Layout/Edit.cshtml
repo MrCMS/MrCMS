@@ -58,8 +58,10 @@
                                 (@area.GetWidgets().Count())
                             </td>
                             <td>
-                                @Html.ActionLink("Edit", "Edit", "LayoutArea", new { id = area.Id }, new { @class = "btn btn-mini" })
-                                <a href="@Url.Action("Delete", "LayoutArea", new { id = area.Id })" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete</a>
+                                <div class="btn-group">
+                                    @Html.ActionLink("Edit", "Edit", "LayoutArea", new { id = area.Id }, new { @class = "btn btn-mini" })
+                                    <a href="@Url.Action("Delete", "LayoutArea", new { id = area.Id })" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete</a>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -68,7 +70,7 @@
         }
         else
         {
-  @:Click Add layout area to add the first area to this layout.
+            @:Click Add layout area to add the first area to this layout.
         }
         }
 

@@ -43,8 +43,10 @@
                                     @widget.WidgetTypeFormatted
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Edit", "Edit", "Widget", new {id = widget.Id}, new {@class = "btn btn-mini", @data_toggle="fb-modal"})
-                                    <a href="@Url.Action("Delete", "Widget", new {id = widget.Id})" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete</a>
+                                    <div class="btn-group">
+                                        @Html.ActionLink("Edit", "Edit", "Widget", new {id = widget.Id}, new {@class = "btn btn-mini", @data_toggle="fb-modal"})
+                                        <a href="@Url.Action("Delete", "Widget", new {id = widget.Id})" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete</a>
+                                    </div>
                                 </td>
                             </tr>
                         }
