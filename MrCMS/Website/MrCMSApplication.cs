@@ -237,8 +237,8 @@ namespace MrCMS.Website
             return Kernel.Get(type);
         }
 
-        public const string AssemblyVersion = "0.3.1.*";
-        public const string AssemblyFileVersion = "0.3.1.0";
+        public const string AssemblyVersion = "0.3.2.*";
+        public const string AssemblyFileVersion = "0.3.2.0";
     }
 
     public class HoneypotFilterAttribute : ActionFilterAttribute
