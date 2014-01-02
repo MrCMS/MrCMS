@@ -25,6 +25,7 @@ namespace MrCMS.Services
 
         public void Add(UrlHistory urlHistory)
         {
+            urlHistory.Webpage.Urls.Add(urlHistory);
             _session.Transact(session => session.Save(urlHistory));
         }
 
@@ -34,7 +35,7 @@ namespace MrCMS.Services
             var urls = _session.QueryOver<Document>().Where(x => x.Id != document.Id).Cacheable().List();
             foreach (var url in urls)
             {
-                if (!urlHistory.Any(x => x.UrlSegment == url.UrlSegment))
+                if (urlHistory.All(x => x.UrlSegment != url.UrlSegment))
                     urlHistory.Add(new UrlHistory() { UrlSegment = url.UrlSegment, Webpage = document });
             }
             return urlHistory;

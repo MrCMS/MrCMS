@@ -40,7 +40,7 @@ namespace MrCMS.DbConfiguration.Configuration
                             UpdatedOn = CurrentRequestData.Now,
                             Site = session.Get<Site>(CurrentRequestData.CurrentSite.Id)
                         };
-
+                        webpage.Urls.Add(urlHistory);
                         using (var transaction = session.BeginTransaction())
                         {
                             session.Save(urlHistory);
