@@ -5,7 +5,6 @@ using System.Web.Mvc;
 
 namespace MrCMS.Entities.Documents.Web
 {
-    [ValidateInput(false)]
     public class FormPosting : SiteEntity
     {
         public FormPosting()
