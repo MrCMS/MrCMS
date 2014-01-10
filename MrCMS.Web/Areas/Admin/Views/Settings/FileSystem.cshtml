@@ -3,7 +3,7 @@
 @{ ViewBag.Title = "File System Settings";}
 
 
-@using (Html.BeginForm("FileSystem", "Settings", FormMethod.Post, new {id = "edit-settings"}))
+@using (Html.BeginForm("FileSystem", "Settings", FormMethod.Post, new { id = "edit-settings" }))
 {
     <fieldset>
         <legend>Global Settings
@@ -15,8 +15,8 @@
         </legend>
         <div class="row-fluid">
             @Html.LabelFor(settings => settings.StorageType)
-            @Html.DropDownListFor(settings=>settings.StorageType,Model.StorageTypeOptions)
-            
+            @Html.DropDownListFor(settings => settings.StorageType, Model.StorageTypeOptions)
+
             <div id="azure-settings">
                 @Html.LabelFor(settings => settings.AzureAccountName)
                 @Html.TextBoxFor(settings => settings.AzureAccountName)
@@ -28,8 +28,10 @@
                 @Html.InlineCheckboxFor(settings => settings.AzureUsingEmulator)
 
                 @Html.InlineCheckboxFor(settings => settings.UseAzureForLucene)
+
             </div>
         </div>
     </fieldset>
 }
+@{ Html.RenderAction("Show", "FileMigration");}
 @{Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/file-system-settings.js");}

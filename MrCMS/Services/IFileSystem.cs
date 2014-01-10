@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 
 namespace MrCMS.Services
@@ -10,5 +11,6 @@ namespace MrCMS.Services
         bool Exists(string filePath);
         byte[] ReadAllBytes(string filePath);
         void WriteToStream(string filePath, Stream stream);
+        IEnumerable<string> GetFiles(string filePath);
     }
 }

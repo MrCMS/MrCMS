@@ -24,7 +24,7 @@ namespace MrCMS.Services
         private readonly Site _currentSite;
         private readonly SiteSettings _siteSettings;
 
-        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings, Site currentSite, SiteSettings siteSettings)
+        public FileService(ISession session, IFileSystem fileSystem,  IImageProcessor imageProcessor, MediaSettings mediaSettings, Site currentSite, SiteSettings siteSettings)
         {
             _session = session;
             _fileSystem = fileSystem;

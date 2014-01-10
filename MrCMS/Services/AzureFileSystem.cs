@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.WindowsAzure;
@@ -29,16 +30,22 @@ namespace MrCMS.Services
                                           : string.Format(
                                               "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}",
                                               _fileSystemSettings.AzureAccountName, _fileSystemSettings.AzureAccountKey);
-            _storageAccount = CloudStorageAccount.Parse(connectionString);
-            var cloudBlobClient = StorageAccount.CreateCloudBlobClient();
-            var container =
-                cloudBlobClient.GetContainerReference(
-                    SeoHelper.TidyUrl(FileService.RemoveInvalidUrlCharacters(_fileSystemSettings.AzureContainerName)));
-            if (container.CreateIfNotExists())
+            if (CloudStorageAccount.TryParse(connectionString, out _storageAccount))
             {
-                container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+                var cloudBlobClient = StorageAccount.CreateCloudBlobClient();
+                var container =
+                    cloudBlobClient.GetContainerReference(
+                        SeoHelper.TidyUrl(FileService.RemoveInvalidUrlCharacters(_fileSystemSettings.AzureContainerName)));
+                if (container.CreateIfNotExists())
+                {
+                    container.SetPermissions(new BlobContainerPermissions
+                                                 {
+                                                     PublicAccess =
+                                                         BlobContainerPublicAccessType.Blob
+                                                 });
+                }
+                _container = container;
             }
-            _container = container;
         }
 
         public CloudBlobContainer Container
@@ -99,6 +106,13 @@ namespace MrCMS.Services
         {
             ICloudBlob blob = Container.GetBlockBlobReference(filePath);
             blob.DownloadToStream(stream);
+        }
+
+        public IEnumerable<string> GetFiles(string filePath)
+        {
+            var cloudBlobDirectory = Container.GetDirectoryReference(filePath);
+
+            return cloudBlobDirectory.ListBlobs().Select(item => item.Uri.ToString());
         }
     }
 }

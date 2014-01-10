@@ -219,6 +219,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\ACLController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\FileMigrationController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageQueueController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
@@ -1374,6 +1375,7 @@
     <Content Include="Areas\Admin\Views\MessageQueue\Show.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutWithoutWebTree.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\RevertToVersion.cshtml" />
+    <Content Include="Areas\Admin\Views\FileMigration\Show.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

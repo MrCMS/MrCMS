@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
+using MrCMS.Tests.Stubs;
 using Xunit;
 using MrCMS.Helpers;
 
@@ -18,7 +19,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void UrlHistoryService_Add_AddsAHistoryToTheDb()
         {
-            _urlHistoryService.Add(new UrlHistory());
+            _urlHistoryService.Add(new UrlHistory {Webpage = new StubWebpage()});
 
             Session.QueryOver<UrlHistory>().RowCount().Should().Be(1);
         }

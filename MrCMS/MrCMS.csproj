@@ -265,6 +265,7 @@
     <Compile Include="Models\UserSearchQuery.cs" />
     <Compile Include="Services\CloneSitePartsService.cs" />
     <Compile Include="Services\DocumentEventService.cs" />
+    <Compile Include="Services\FileMigration\IFileMigrationService.cs" />
     <Compile Include="Services\IAuthorisationService.cs" />
     <Compile Include="Services\IDocumentEventService.cs" />
     <Compile Include="Services\IHashAlgorithm.cs" />
@@ -467,6 +468,7 @@
     <Compile Include="Services\WidgetService.cs" />
     <Compile Include="Settings\ConfigurationProvider.cs" />
     <Compile Include="Settings\DropDownSelectionAttribute.cs" />
+    <Compile Include="Settings\FileMigrationSettings.cs" />
     <Compile Include="Settings\FileSystemSettings.cs" />
     <Compile Include="Settings\GenericListTypeConverter.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />
@@ -577,8 +579,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Eula.htm" />
-    <Content Include="Readme.html" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
