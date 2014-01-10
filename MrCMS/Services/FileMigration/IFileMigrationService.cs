@@ -44,22 +44,25 @@ namespace MrCMS.Services.FileMigration
 
         public void MigrateFilesToAzure(int numberOfFiles = 100)
         {
-            if (_fileSystemSettings.StorageType != typeof (AzureFileSystem).FullName)
+            if (_fileSystemSettings.StorageType != typeof(AzureFileSystem).FullName)
                 return;
 
             PrimeFileMigrationSettings();
 
-            _filesToUpdate = new Dictionary<MediaFile, string>();
-            _resizesToUpdate = new Dictionary<ResizedImage, string>();
-            foreach (string file in _fileMigrationSettings.FilesToMigrateList.Take(numberOfFiles))
-                MoveFile(file);
+            _session.Transact(session =>
+                                  {
+                                      _filesToUpdate = new Dictionary<MediaFile, string>();
+                                      _resizesToUpdate = new Dictionary<ResizedImage, string>();
+                                      foreach (string file in _fileMigrationSettings.FilesToMigrateList.Take(numberOfFiles))
+                                          MoveFile(file);
 
-            UpdateUrls();
+                                      UpdateUrls();
+                                  });
         }
 
         public int FilesToMigrate()
         {
-            if (_fileSystemSettings.StorageType != typeof (AzureFileSystem).FullName)
+            if (_fileSystemSettings.StorageType != typeof(AzureFileSystem).FullName)
                 return 0;
 
             PrimeFileMigrationSettings();
@@ -69,31 +72,28 @@ namespace MrCMS.Services.FileMigration
 
         private void UpdateUrls()
         {
-            _session.Transact(session =>
-                                  {
-                                      foreach (var pair in _filesToUpdate)
-                                      {
-                                          pair.Key.FileUrl = pair.Value;
-                                          _session.Update(pair.Key);
-                                      }
-                                      foreach (var pair in _resizesToUpdate)
-                                      {
-                                          pair.Key.Url = pair.Value;
-                                          _session.Update(pair.Key);
-                                      }
-                                  });
+            foreach (var pair in _filesToUpdate)
+            {
+                pair.Key.FileUrl = pair.Value;
+                _session.Update(pair.Key);
+            }
+            foreach (var pair in _resizesToUpdate)
+            {
+                pair.Key.Url = pair.Value;
+                _session.Update(pair.Key);
+            }
         }
 
         private void MoveFile(string file)
         {
+            MediaFile fileByUrl = _imageProcessor.GetImage(file);
+
             using (var memoryStream = new MemoryStream())
             {
-                byte[] data = _fileSystem.ReadAllBytes(file);
-                memoryStream.Write(data, 0, data.Length);
-                memoryStream.Position = 0;
-                MediaFile fileByUrl = _imageProcessor.GetImage(file);
                 if (fileByUrl != null)
                 {
+                    _fileSystem.WriteToStream(file, memoryStream);
+                    memoryStream.Position = 0;
                     string result = _azureFileSystem.SaveFile(memoryStream, file.Substring(1), fileByUrl.ContentType);
                     if (fileByUrl.FileUrl == file)
                     {

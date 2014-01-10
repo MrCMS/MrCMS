@@ -79,7 +79,8 @@ namespace MrCMS.Services
         public byte[] ReadAllBytes(string filePath) { return File.ReadAllBytes(GetPath(filePath)); }
         public void WriteToStream(string filePath, Stream stream)
         {
-            using (var fileStream = File.OpenRead(filePath))
+            var path = GetPath(filePath);
+            using (var fileStream = File.OpenRead(path))
             {
                 fileStream.CopyTo(stream);
             }

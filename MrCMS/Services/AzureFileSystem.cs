@@ -23,29 +23,38 @@ namespace MrCMS.Services
 
         public AzureFileSystem(FileSystemSettings fileSystemSettings)
         {
-            _fileSystemSettings = fileSystemSettings;
 
+            _fileSystemSettings = fileSystemSettings;
             string connectionString = _fileSystemSettings.AzureUsingEmulator
                                           ? string.Format("UseDevelopmentStorage=true;")
                                           : string.Format(
                                               "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}",
                                               _fileSystemSettings.AzureAccountName, _fileSystemSettings.AzureAccountKey);
-            if (CloudStorageAccount.TryParse(connectionString, out _storageAccount))
+            try
             {
-                var cloudBlobClient = StorageAccount.CreateCloudBlobClient();
-                var container =
-                    cloudBlobClient.GetContainerReference(
-                        SeoHelper.TidyUrl(FileService.RemoveInvalidUrlCharacters(_fileSystemSettings.AzureContainerName)));
-                if (container.CreateIfNotExists())
+                if (CloudStorageAccount.TryParse(connectionString, out _storageAccount))
                 {
-                    container.SetPermissions(new BlobContainerPermissions
-                                                 {
-                                                     PublicAccess =
-                                                         BlobContainerPublicAccessType.Blob
-                                                 });
+                    var cloudBlobClient = StorageAccount.CreateCloudBlobClient();
+                    var container =
+                        cloudBlobClient.GetContainerReference(
+                            SeoHelper.TidyUrl(
+                                FileService.RemoveInvalidUrlCharacters(_fileSystemSettings.AzureContainerName)));
+                    if (container.CreateIfNotExists())
+                    {
+                        container.SetPermissions(new BlobContainerPermissions
+                            {
+                                PublicAccess =
+                                    BlobContainerPublicAccessType.Blob
+                            });
+                    }
+                    _container = container;
                 }
-                _container = container;
             }
+            catch
+            {
+
+            }
+
         }
 
         public CloudBlobContainer Container
