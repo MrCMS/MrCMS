@@ -229,7 +229,12 @@ namespace MrCMS.Services
                 string defaultLayoutName = currentPage.GetMetadata().DefaultLayoutName;
                 if (!String.IsNullOrEmpty(defaultLayoutName))
                 {
-                    var layout = _session.QueryOver<Layout>().Where(x => x.Name == defaultLayoutName).Cacheable().Take(1).SingleOrDefault();
+                    var layout =
+                        _session.QueryOver<Layout>()
+                                .Where(x => x.Name == defaultLayoutName)
+                                .Cacheable()
+                                .List()
+                                .FirstOrDefault();
                     if (layout != null)
                         return layout;
                 }

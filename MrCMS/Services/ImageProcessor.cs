@@ -35,9 +35,8 @@ namespace MrCMS.Services
             var fileByLocation =
                 _session.QueryOver<MediaFile>()
                         .Where(file => file.FileUrl == imageUrl)
-                        .Take(1)
                         .Cacheable()
-                        .SingleOrDefault();
+                        .List().FirstOrDefault();
 
             return fileByLocation;
         }

@@ -26,7 +26,6 @@ namespace MrCMS.Services.FileMigration
         private readonly ISession _session;
         private readonly Site _site;
         private Dictionary<MediaFile, string> _filesToUpdate;
-        private Dictionary<ResizedImage, string> _resizesToUpdate;
 
         public FileMigrationService(Site site, ISession session, FileSystem fileSystem, AzureFileSystem azureFileSystem,
                                     FileSystemSettings fileSystemSettings, IConfigurationProvider configurationProvider,
@@ -52,7 +51,6 @@ namespace MrCMS.Services.FileMigration
             _session.Transact(session =>
                                   {
                                       _filesToUpdate = new Dictionary<MediaFile, string>();
-                                      _resizesToUpdate = new Dictionary<ResizedImage, string>();
                                       foreach (string file in _fileMigrationSettings.FilesToMigrateList.Take(numberOfFiles))
                                           MoveFile(file);
 
@@ -75,11 +73,12 @@ namespace MrCMS.Services.FileMigration
             foreach (var pair in _filesToUpdate)
             {
                 pair.Key.FileUrl = pair.Value;
-                _session.Update(pair.Key);
-            }
-            foreach (var pair in _resizesToUpdate)
-            {
-                pair.Key.Url = pair.Value;
+                var resizedImages = pair.Key.ResizedImages.ToList();
+                foreach (var resizedImage in resizedImages)
+                {
+                    pair.Key.ResizedImages.Remove(resizedImage);
+                    _session.Delete(resizedImage);
+                }
                 _session.Update(pair.Key);
             }
         }
@@ -96,17 +95,7 @@ namespace MrCMS.Services.FileMigration
                     memoryStream.Position = 0;
                     string result = _azureFileSystem.SaveFile(memoryStream, file.Substring(1), fileByUrl.ContentType);
                     if (fileByUrl.FileUrl == file)
-                    {
                         _filesToUpdate[fileByUrl] = result;
-                    }
-                    else
-                    {
-                        ResizedImage resizedImage = fileByUrl.ResizedImages.FirstOrDefault(image => image.Url == file);
-                        if (resizedImage != null)
-                        {
-                            _resizesToUpdate[resizedImage] = result;
-                        }
-                    }
                 }
             }
             _fileMigrationSettings.MoveFileToMigrated(file);
