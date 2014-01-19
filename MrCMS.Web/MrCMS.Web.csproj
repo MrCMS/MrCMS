@@ -1295,7 +1295,7 @@
     <Content Include="Areas\Admin\Views\Sites\SiteList.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Add.cshtml" />
-    <Content Include="Areas\Admin\Views\Navigation\WebsiteTreeList.cshtml" />
+    <Content Include="Areas\Admin\Views\Navigation\TreeList.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\NavLinks.cshtml" />
@@ -1432,8 +1432,6 @@
     <Content Include="Areas\Admin\Views\MediaCategory\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\AdminNavigation.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\EditorTemplates\DateTime.cshtml" />
-    <Content Include="Areas\Admin\Views\Navigation\LayoutTree.cshtml" />
-    <Content Include="Areas\Admin\Views\Navigation\MediaTree.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Navbar.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\UserList.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
