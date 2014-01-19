@@ -29,8 +29,6 @@
     <script src="/Areas/Admin/Content/Scripts/jquery-ui-1.10.4/ui/jquery-ui.js" type="text/javascript"> </script>
     <script src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")" type="text/javascript"> </script>
     <!-- The Templates plugin is included to render the upload/download listings -->
-    <script src="http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
-    <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
     <script src="http://blueimp.github.io/JavaScript-Load-Image/js/load-image.min.js"></script>
 
     @{
@@ -76,6 +74,9 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-validate.js");
         <!-- The File Upload user interface plugin -->
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-ui.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.iframe-transport.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/vendor/jquery.ui.widget.js");
+        
 
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/menu.js"); // should come before admin.js for event reasons
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/admin.js");

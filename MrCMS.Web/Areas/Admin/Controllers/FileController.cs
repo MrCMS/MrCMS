@@ -23,6 +23,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return Json(_fileService.GetFiles(mediaCategory), "text/html", System.Text.Encoding.UTF8);
         }
 
+        [HttpGet]
+        public ActionResult ShowFiles(MediaCategory mediaCategory)
+        {
+            return PartialView("ShowFiles", _fileService.GetFiles(mediaCategory.Id));
+        }
+
         [HttpPost]
         [ActionName("Files")]
         public JsonResult Files_Post(MediaCategory mediaCategory)

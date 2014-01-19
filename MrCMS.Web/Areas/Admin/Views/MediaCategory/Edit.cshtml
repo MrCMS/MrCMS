@@ -42,9 +42,6 @@
     </fieldset>
 }
 
-<p id="dragdropsupported" style="border: 2px dotted #808080; height: 30px; line-height: 30px;" onmouseover="$(this).css('background','#e7e7e7')" onmouseout="$(this).css('background','#fff')">&nbsp;Drag files here to upload.</p>
-
 @{ Html.RenderPartial("Upload", Model); }
 
-@{ Html.RenderPartial("UploadTemplate"); }
-@{ Html.RenderPartial("DownloadTemplate"); }
+@{Html.RenderAction("ShowFiles", "File", new{Id = Model.Id});}

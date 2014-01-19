@@ -1610,6 +1610,7 @@
     <Content Include="Areas\Admin\Views\Shared\_LayoutWithoutWebTree.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\RevertToVersion.cshtml" />
     <Content Include="Areas\Admin\Views\FileMigration\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\File\ShowFiles.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
@@ -1696,9 +1697,6 @@
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Shared\TreeChildren.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\CategoryList.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\Thumbnails.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\UploadTemplate.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\DownloadTemplate.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Upload.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImageSelector.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImageList.cshtml" />
