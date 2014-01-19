@@ -119,7 +119,8 @@
 };
 $(function () {
     webMenu.init();
-    $(document).on("shown", 'a[data-toggle="tab"]', function (e) {
+    //webMenu.initWebTree();
+    $(document).on("show", 'a[data-toggle="tab"]', function (e) {
         if (e.target.id === "pages-tab") {
             webMenu.destroy();
             webMenu.initWebTree();
