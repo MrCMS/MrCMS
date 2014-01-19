@@ -1,12 +1,42 @@
-﻿@model MrCMS.Models.SiteTree<MrCMS.Entities.Documents.Media.MediaCategory>
-<div id="media-tree" class="tab-pane">
-    <div class="sidebar-nav">
-        <ul class="filetree  browser web-media">
-            <li data-id="@Model.Id" data-controller="@Model.NodeType"><i class="@Model.IconClass">
-                                                                          &nbsp;</i>
-                @Html.ActionLink(Model.Name, "Edit", Model.NodeType, new {id = Model.Children.Any() ? Model.Children.FirstOrDefault().Id : 1}, null)
-                @{ Html.RenderPartial("TreeChildren", Model.ChildrenModel); }
+﻿@using MrCMS.Models
+@model IList<MrCMS.Models.AdminTreeNode>
+@{
+    bool rootRequest = Model.First().ParentId == 0;
+}
+
+@if (rootRequest)
+{
+    <ul>
+        <li class="jstree-open" id="m_0" data-can-add-child="True" data-sortable="True" data-haschildren="True">
+            <a href="#">
+                <i class="icon-picture">&nbsp;</i>Root</a>
+            @RenderChildren(Model)
+        </li>
+    </ul>
+}
+else
+{
+    @RenderChildren(Model)
+}
+
+@helper RenderChildren(IList<AdminTreeNode> Model)
+{
+    <ul>
+        @foreach (AdminTreeNode node in Model)
+        {
+            if (node.IsMoreLink)
+            {
+            <li><i class="icon-plus">&nbsp;</i>@Html.ActionLink(string.Format("{0} More", node.NumberMore), "Index", "Search", new { parent = node.ParentId }, null)</li>
+            }
+            else
+            {
+                <li id="@node.Id" data-id="@node.Id" data-parent-id="@node.ParentId" data-sortable="@node.Sortable" data-can-add-child="@node.CanAddChild" 
+                data-haschildren="@node.HasChildren" data-controller="@node.NodeType" class="@(node.HasChildren ? "jstree-closed" : "")" data-jstree='{"icon":"@node.IconClass"}'>
+                @Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, null))
             </li>
-        </ul>
-    </div>
-</div>
+
+            }
+        }
+    </ul>
+}
+

@@ -263,5 +263,100 @@ namespace MrCMS.Services
                                    : "";
 
         }
+        public List<AdminTreeNode> GetWebsiteNodes(int? parentId)
+        {
+            var nodes = new List<AdminTreeNode>();
+            var query = _session.QueryOver<Webpage>().Where(x => x.Parent.Id == parentId && x.Site.Id == _site.Id);
+            Webpage parent = null;
+            int maxChildNodes = 1000;
+            if (parentId.HasValue)
+            {
+                parent = _session.Get<Webpage>(parentId);
+                var metaData = parent.GetMetadata();
+                if (metaData != null)
+                {
+                    maxChildNodes = metaData.MaxChildNodes;
+                }
+            }
+            var rowCount = query.Cacheable().RowCount();
+            query.OrderBy(x=>x.DisplayOrder).Asc.Take(maxChildNodes).Cacheable().List().ForEach(doc =>
+                                     {
+                                         var documentMetaData = doc.GetMetadata();
+                                         var nodeType = GetNodeType(doc);
+                                         
+                                         var node = new AdminTreeNode
+                                                        {
+                                                            Id = doc.Id,
+                                                            ParentId = doc.ParentId,
+                                                            Name = doc.Name,
+                                                            IconClass = documentMetaData.IconClass,
+                                                            NodeType = nodeType,
+                                                            HasChildren = doc.Children.Any(),
+                                                            Sortable = IsSortable(doc),
+                                                            CanAddChild = doc.GetValidWebpageDocumentTypes().Any(),
+                                                            IsPublished = doc.Published,
+                                                            RevealInNavigation = doc.RevealInNavigation,
+                                                            IsMoreLink = false
+                                                        };
+                                         nodes.Add(node);
+                                     });
+            if (rowCount > maxChildNodes)
+            {
+                nodes.Add(new AdminTreeNode
+                              { 
+                                  NumberMore = (rowCount - maxChildNodes),
+                                  IconClass = "icon-plus",
+                                  IsMoreLink = true,
+                                  ParentId = parent.Id
+                              });
+            }
+            return nodes;
+        }
+
+        public List<AdminTreeNode> GetMediaNodes(int? parentId)
+        {
+            var nodes = new List<AdminTreeNode>();
+            var query = _session.QueryOver<MediaCategory>().Where(x => x.Parent.Id == parentId && x.Site.Id == _site.Id);
+            MediaCategory parent = null;
+            int maxChildNodes = 50;
+            if (parentId.HasValue)
+            {
+                parent = _session.Get<MediaCategory>(parentId);
+                var metaData = parent.GetMetadata();
+                if (metaData != null)
+                {
+                    maxChildNodes = metaData.MaxChildNodes;
+                }
+            }
+            var rowCount = query.Cacheable().RowCount();
+            query.OrderBy(x => x.DisplayOrder).Asc.Take(maxChildNodes).Cacheable().List().ForEach(doc =>
+            {
+                var nodeType = GetNodeType(doc);
+
+                var node = new AdminTreeNode
+                {
+                    Id = doc.Id,
+                    ParentId = doc.ParentId,
+                    Name = doc.Name,
+                    IconClass = "icon-picture",
+                    NodeType = nodeType,
+                    HasChildren = doc.Children.Any(),
+                    Sortable = true,
+                    IsMoreLink = false
+                };
+                nodes.Add(node);
+            });
+            if (rowCount > maxChildNodes)
+            {
+                nodes.Add(new AdminTreeNode
+                {
+                    NumberMore = (rowCount - maxChildNodes),
+                    IconClass = "icon-picture",
+                    IsMoreLink = true,
+                    ParentId = parent.Id
+                });
+            }
+            return nodes;
+        }
     }
 }

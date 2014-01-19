@@ -5,7 +5,7 @@
             <li class="nav-header">somewebsite.co.uk</li>
         </ul>
         <ul class="filetree treeview-famfamfam browser">
-            <li data-id="@Model.Id" data-controller="@Model.NodeType"><i class="@Model.IconClass">
+            <li data-id="@Model.Id" data-controller="@Model.NodeType"><i class="@Model.IconUrl">
                                                                           &nbsp;</i>
                 @Html.ActionLink(Model.Name, "View", Model.NodeType, new {id = Model.Id}, null)
                 @{ Html.RenderPartial("TreeChildren", Model.ChildrenModel); }

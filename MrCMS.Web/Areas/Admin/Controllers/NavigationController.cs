@@ -21,20 +21,20 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _currentSiteLocator = currentSiteLocator;
         }
 
-        public PartialViewResult WebSiteTree()
+        public PartialViewResult WebSiteTree(int? id)
         {
-            return PartialView("WebsiteTreeList", _service.GetWebsiteTree());
+            return PartialView("WebsiteTreeList", _service.GetWebsiteNodes(id));
         }
 
-        public PartialViewResult MediaTree()
+        public PartialViewResult MediaTree(int? id)
         {
-            return PartialView("MediaTree", _service.GetMediaTree());
+            return PartialView("MediaTree", _service.GetMediaNodes(id));
         }
 
-        public PartialViewResult LayoutTree()
-        {
-            return PartialView("LayoutTree", _service.GetLayoutList());
-        }
+        //public PartialViewResult LayoutTree()
+        //{
+        //    return PartialView("LayoutTree", _service.GetLayoutList());
+        //}
 
         public PartialViewResult NavLinks()
         {

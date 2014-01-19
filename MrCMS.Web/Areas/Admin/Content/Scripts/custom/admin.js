@@ -6,6 +6,8 @@
         $(this).hide();
     });
     
+    $.ajaxSetup({ cache: false });
+    
     $.validator.methods.number = function (value, element) {
         return this.optional(element) ||
             !isNaN(Globalize.parseFloat(value));
@@ -62,14 +64,14 @@
         return 0;
     }
 
-    $(".web-tree").treeview({
-        animated: "medium",
-        persist: "cookie",
-        collapsed: true,
-        cookieId: "navigationtreeWeb",
-        toggle: function () {
-        }
-    });
+    //$(".web-tree").treeview({
+    //    animated: "medium",
+    //    persist: "cookie",
+    //    collapsed: true,
+    //    cookieId: "navigationtreeWeb",
+    //    toggle: function () {
+    //    }
+    //});
 
 
     if ($.cookie('selected-site')) {
@@ -102,20 +104,20 @@
         $.cookie('selected-site', id, { expires: 1, path: '/Admin' });
     }
 
-    $(".web-media").treeview({
-        animated: "medium",
-        persist: "cookie",
-        cookieId: "navigationtreeMedia",
-        toggle: function () {
-        }
-    });
-    $(".layout-tree").treeview({
-        animated: "medium",
-        persist: "cookie",
-        cookieId: "navigationtreeLayout",
-        toggle: function () {
-        }
-    });
+    //$(".web-media").treeview({
+    //    animated: "medium",
+    //    persist: "cookie",
+    //    cookieId: "navigationtreeMedia",
+    //    toggle: function () {
+    //    }
+    //});
+    //$(".layout-tree").treeview({
+    //    animated: "medium",
+    //    persist: "cookie",
+    //    cookieId: "navigationtreeLayout",
+    //    toggle: function () {
+    //    }
+    //});
 
     $(document).on('click', '.date-time-picker', function () {
         var that = $(this);
@@ -123,137 +125,6 @@
             that.datetimepicker({
                 timeFormat: 'hh:mm'
             }).blur().focus();
-        }
-    });
-    $(".date-time-picker");
-
-    // Show menu when an ahref is click
-    $(".browser li").not(".browser > li").not(':has(ul)').contextMenu({
-        menu: 'edit-menu'
-    }, function (action, el, pos) {
-        processMenuAction(action, el, pos);
-    });
-
-    // Show menu when an ahref is click
-    $(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-can-add-child=False]').contextMenu({
-        menu: 'edit-no-add-menu'
-    }, function (action, el, pos) {
-        processMenuAction(action, el, pos);
-    });
-
-    // Show menu when an ahref is click
-    $(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-sortable=False]').contextMenu({
-        menu: 'edit-no-sort-menu'
-    }, function (action, el, pos) {
-        processMenuAction(action, el, pos);
-    });
-
-    // Show menu when an ahref is click
-    $(".browser li").not(".browser > li").not(':has(ul)').filter('li[data-can-add-child=False]').filter('li[data-custom-sortable=False]').contextMenu({
-        menu: 'edit-no-add-no-sort-menu'
-    }, function (action, el, pos) {
-        processMenuAction(action, el, pos);
-    });
-
-    // Show menu when an ahref is click
-    $(".browser li").not(".browser > li").has('ul').contextMenu({
-        menu: 'edit-no-delete-menu'
-    }, function (action, el, pos) {
-        processMenuAction(action, el, pos);
-    });
-
-    // Show menu when an ahref is click
-    $(".browser li").not(".browser > li").has('ul').filter('li[data-can-add-child=False]').contextMenu({
-        menu: 'edit-no-add-no-delete-menu'
-    }, function (action, el, pos) {
-        processMenuAction(action, el, pos);
-    });
-
-    // Show menu when an ahref is click
-    $(".browser li").not(".browser > li").has('ul').filter('li[data-sortable=False]').contextMenu({
-        menu: 'edit-no-delete-no-sort-menu'
-    }, function (action, el, pos) {
-        processMenuAction(action, el, pos);
-    });
-
-    // Show menu when an ahref is click
-    $(".browser li").not(".browser > li").has('ul').filter('li[data-can-add-child=False]').filter('li[data-sortable=False]').contextMenu({
-        menu: 'edit-no-add-no-delete-no-sort-menu'
-    }, function (action, el, pos) {
-        processMenuAction(action, el, pos);
-    });
-
-    function processMenuAction(action, el, pos) {
-        var element = $(el);
-        var id = element.data('id');
-        var sortId = element.data('sort-id');
-        var controller = element.data('controller');
-        var href = element.data('href');
-        if (href != null) {
-            location.href = href;
-        } else {
-            switch (action) {
-                case "add":
-                    location.href = '/Admin/' + controller + '/Add/' + id;
-                    break;
-                case "edit":
-                    location.href = '/Admin/' + controller + '/Edit/' + id;
-                    break;
-                case "delete":
-                    getRemoteModel('/Admin/' + controller + '/Delete/' + id);
-                    break;
-                case "sort":
-                    location.href = '/Admin/' + controller + '/Sort/' + sortId;
-                    break;
-            }
-        }
-    }
-
-    function processAdd(element, id, controller) {
-        if (controller == 'Webpage' && $(element).data('parent-id') == '') {
-        } else {
-
-        }
-    }
-
-    // Show menu when an ahref is click
-    $(".browser > li").contextMenu({
-        menu: 'edit-root-menu'
-    }, function (action, el, pos) {
-        var element = $(el);
-        var controller = element.data('controller');
-        switch (action) {
-            case "add":
-                location.href = '/Admin/' + controller + '/Add';
-                break;
-            case "sort":
-                location.href = '/Admin/' + controller + '/Sort';
-                break;
-        }
-    });
-
-    // Show menu when an ahref is click
-    $(".user-list > li").contextMenu({
-        menu: 'edit-user-root-menu'
-    }, function (action, el, pos) {
-        var controller = $(el).data('controller');
-        switch (action) {
-            case "add":
-                location.href = '/Admin/' + controller + '/Add/';
-                break;
-        }
-    });
-
-    // Show menu when an ahref is click
-    $(".user-list li").not('.user-list > li').contextMenu({
-        menu: 'edit-user-menu'
-    }, function (action, el, pos) {
-        var id = $(el).data('id');
-        var controller = $(el).data('controller');
-        switch (action) {
-            case "edit":
-                location.href = '/Admin/' + controller + '/Edit/' + id;
-                break;
         }
     });
 
@@ -266,21 +137,9 @@
         clone.hide();
         clone.fancybox({
             type: 'iframe',
-            padding: 0,
-            height: 0,
-            'onComplete': function () {
-                $('#fancybox-frame').load(function () {
-                    $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
-                    var documentWidth = $('html').width() - 200;
-                    if (documentWidth > 1000)
-                        documentWidth = 1000;
-                    var width = (documentWidth);
-                    
-                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height($(window).height() - 100);
-                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').width(width);
-                    $.fancybox.center();
-                });
-            }
+            autoSize: true,
+            minHeight: 200,
+            padding:0
         }).click().remove();
         return false;
     });
@@ -417,6 +276,11 @@ function extractLast(term) {
     return split(term).pop();
 }
 
-CKEDITOR.config.toolbar = 'Basic';
-CKEDITOR.replaceAll('ckedit-enabled');
-CKEDITOR.on('instanceReady', function () { $(window).resize(); });
+
+$(function () {
+    CKEDITOR.config.toolbar = 'Basic';
+    CKEDITOR.replaceAll('ckedit-enabled');
+    CKEDITOR.on('instanceReady', function () { $(window).resize(); });
+});
+
+

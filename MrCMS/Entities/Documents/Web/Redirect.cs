@@ -2,7 +2,7 @@
 
 namespace MrCMS.Entities.Documents.Web
 {
-    //[DocumentTypeDefinition(ChildrenListType.WhiteList, Name = "Redirect", IconClass = "icon-forward", DisplayOrder = 6, Type = typeof(Redirect))]
+    //[DocumentTypeDefinition(ChildrenListType.WhiteList, Name = "Redirect", IconUrl = "icon-forward", DisplayOrder = 6, Type = typeof(Redirect))]
     public class Redirect : Webpage
     {
         [DisplayName("Redirect Url")]

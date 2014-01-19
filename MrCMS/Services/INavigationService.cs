@@ -9,6 +9,9 @@ namespace MrCMS.Services
 {
     public interface INavigationService
     {
+        List<AdminTreeNode> GetWebsiteNodes(int? parentId);
+        List<AdminTreeNode> GetMediaNodes(int? parentId);
+
         SiteTree<Webpage> GetWebsiteTree(int? depth = null);
         SiteTree<MediaCategory> GetMediaTree();
         SiteTree<Layout> GetLayoutList();

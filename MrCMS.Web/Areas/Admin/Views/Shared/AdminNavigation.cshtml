@@ -1,63 +1,29 @@
 ﻿<div class="left-nav">
     <div id="nav-tabs">
         <ul class="nav nav-tabs">
-            <li id="web-nav"><a href="#web" data-toggle="tab">Pages</a></li>
-            <li id="media-tree-nav"><a href="#media-tree" data-toggle="tab">Media</a></li>
-            <li id="layout-nav"><a href="#layout" data-toggle="tab">Layout</a></li>
+            <li id="web-nav"><a href="#web" data-toggle="tab" id="pages-tab">Pages</a></li>
+            <li id="media-tree-nav"><a href="#media" data-toggle="tab" id="media-tab">Media</a></li>
+            <li id="layout-nav"><a href="#layout" data-toggle="tab" id="layout-tab">Layout</a></li>
         </ul>
         <div class="tab-content">
-            @{ Html.RenderAction("WebSiteTree", "Navigation"); }
+            <div id="web" class="tab-pane">
+                <div class="sidebar-nav" id="webpage-tree">
+                </div>
+                <strong>Key</strong>
+                <hr class="small-margin" />
+                <span class="grey">Not included in site navigation</span><br />
+                <span class="orange">Not published</span><br />
+            </div>
+
+            <div id="media" class="tab-pane">
+                <div class="sidebar-nav" id="media-tree">
+                    
+                </div>
+            </div>
+
+            @*@{ Html.RenderAction("WebSiteTree", "Navigation"); }
             @{ Html.RenderAction("MediaTree", "Navigation"); }
-            @{ Html.RenderAction("LayoutTree", "Navigation"); }
+            @{ Html.RenderAction("LayoutTree", "Navigation"); }*@
         </div>
     </div>
 </div>
-<ul id="edit-menu" class="context-menu">
-    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
-    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
-    <li><i class="icon-trash"></i><a href="#delete">Delete</a></li>
-    <li><i class="icon-random sort"></i><a href="#sort">Sort items</a></li>
-</ul>
-<ul id="edit-no-sort-menu" class="context-menu">
-    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
-    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
-    <li><i class="icon-trash"></i><a href="#delete">Delete</a></li>
-</ul>
-<ul id="edit-no-delete-menu" class="context-menu">
-    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
-    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
-    <li><i class="icon-random sort"></i><a href="#sort">Sort items</a></li>
-</ul>
-<ul id="edit-no-delete-no-sort-menu" class="context-menu">
-    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
-    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
-</ul>
-<ul id="edit-no-add-menu" class="context-menu">
-    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
-    <li><i class="icon-trash"></i><a href="#delete">Delete</a></li>
-    <li><i class="icon-random sort"></i><a href="#sort">Sort items</a></li>
-</ul>
-<ul id="edit-no-add-no-sort-menu" class="context-menu">
-    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
-    <li><i class="icon-trash"></i><a href="#delete">Delete</a></li>
-</ul>
-<ul id="edit-no-add-no-delete-menu" class="context-menu">
-    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
-    <li><i class="icon-random sort"></i><a href="#sort">Sort items</a></li>
-</ul>
-<ul id="edit-no-add-no-delete-no-sort-menu" class="context-menu">
-    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
-</ul>
-<ul id="edit-root-menu" class="context-menu">
-    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
-    <li><i class="icon-random sort"></i><a href="#sort">Sort Items</a></li>
-</ul>
-<ul id="edit-user-menu" class="context-menu">
-    <li><i class="icon-pencil"></i><a href="#edit">Edit</a></li>
-</ul>
-<ul id="edit-user-root-menu" class="context-menu">
-    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
-</ul>
-<ul id="edit-category-root-menu" class="context-menu">
-    <li><i class="icon-plus"></i><a href="#add">Add</a></li>
-</ul>
