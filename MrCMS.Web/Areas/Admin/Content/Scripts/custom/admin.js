@@ -18,7 +18,7 @@
             !isNaN(Globalize.parseDate(value));
     }
     Globalize.culture($("#UICulture").val());
-
+    
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 

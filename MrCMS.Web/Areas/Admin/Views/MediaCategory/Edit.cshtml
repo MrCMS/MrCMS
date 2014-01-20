@@ -44,4 +44,8 @@
 
 @{ Html.RenderPartial("Upload", Model); }
 
-@{Html.RenderAction("ShowFiles", "File", new{Id = Model.Id});}
+@{Html.RenderAction("ShowFiles", "MediaCategory", new{Id = Model.Id});}
+
+<script>
+    if (self !== top) { top.location = self.location; }
+</script>

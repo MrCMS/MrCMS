@@ -193,11 +193,11 @@ namespace MrCMS.Services
             return _session.Get<MediaFile>(id);
         }
 
-        public IPagedList<MediaFile> GetFiles(int? mediaCategoryId)
+        public IPagedList<MediaFile> GetFiles(int? mediaCategoryId, int page = 1)
         {
             return _session.QueryOver<MediaFile>()
                            .Where(x => x.MediaCategory.Id == mediaCategoryId)
-                           .Paged(pageNumber:1, pageSize:10);
+                           .Paged(pageNumber:page, pageSize:_siteSettings.DefaultPageSize);
         }
 
         public void DeleteFile(MediaFile mediaFile)
