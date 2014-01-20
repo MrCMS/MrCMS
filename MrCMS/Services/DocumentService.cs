@@ -41,7 +41,10 @@ namespace MrCMS.Services
                                   {
                                       document.DisplayOrder = GetMaxParentDisplayOrder(document);
                                       document.CustomInitialization(this, _session);
+                                      if (document.Parent != null)
+                                          document.Parent.Children.Add(document);
                                       session.SaveOrUpdate(document);
+                                      
                                   });
             _documentEventService.OnDocumentAdded(document);
         }
