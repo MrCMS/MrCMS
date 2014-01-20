@@ -32,7 +32,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void NavigationController_WebsiteTree_ShouldReturnPartialView()
         {
-            PartialViewResult partialViewResult = _navigationController.WebSiteTree();
+            PartialViewResult partialViewResult = _navigationController.WebSiteTree(null);
 
             partialViewResult.Should().BeOfType<PartialViewResult>();
         }
@@ -42,11 +42,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var site = new Site();
             A.CallTo(() => _currentSiteLocator.GetCurrentSite()).Returns(site);
-            A.CallTo(() => _navigationService.GetWebsiteTree(null)).Returns(new SiteTree<Webpage>());
+            A.CallTo(() => _navigationService.GetNodes<Webpage>(null)).Returns(new AdminTree());
 
-            PartialViewResult partialViewResult = _navigationController.WebSiteTree();
+            PartialViewResult partialViewResult = _navigationController.WebSiteTree(null);
 
-            partialViewResult.Model.Should().BeOfType<SiteTree<Webpage>>();
+            partialViewResult.Model.Should().BeOfType<AdminTree>();
         }
 
         [Fact]
@@ -54,21 +54,21 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var site = new Site();
             A.CallTo(() => _currentSiteLocator.GetCurrentSite()).Returns(site);
-            A.CallTo(() => _navigationService.GetLayoutList()).Returns(new SiteTree<Layout>());
+            A.CallTo(() => _navigationService.GetNodes<Layout>(null)).Returns(new AdminTree());
 
-            PartialViewResult partialViewResult = _navigationController.LayoutTree();
+            PartialViewResult partialViewResult = _navigationController.LayoutTree(null);
 
-            partialViewResult.Model.Should().BeOfType<SiteTree<Layout>>();
+            partialViewResult.Model.Should().BeOfType<AdminTree>();
         }
 
         [Fact]
         public void NavigationController_MediaTree_ShouldReturnSiteTreeAsModel()
         {
-            A.CallTo(() => _navigationService.GetMediaTree()).Returns(new SiteTree<MediaCategory>());
+            A.CallTo(() => _navigationService.GetNodes<Layout>(null)).Returns(new AdminTree());
 
-            PartialViewResult partialViewResult = _navigationController.MediaTree();
+            PartialViewResult partialViewResult = _navigationController.LayoutTree(null);
 
-            partialViewResult.Model.Should().BeOfType<SiteTree<MediaCategory>>();
+            partialViewResult.Model.Should().BeOfType<AdminTree>();
         }
 
         [Fact]
