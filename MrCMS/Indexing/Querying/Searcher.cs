@@ -15,14 +15,15 @@ namespace MrCMS.Indexing.Querying
         where TEntity : SystemEntity
         where TDefinition : IIndexDefinition<TEntity>, new()
     {
+        private readonly Site _site;
         private readonly ISession _session;
         protected readonly TDefinition Definition = new TDefinition();
         private IndexSearcher _indexSearcher;
 
-        protected Searcher(Site currentSite, ISession session)
+        protected Searcher(Site site, ISession session)
         {
+            _site = site;
             _session = session;
-            _indexSearcher = new IndexSearcher(GetDirectory(currentSite));
         }
 
         protected abstract Directory GetDirectory(Site currentSite);
@@ -56,7 +57,7 @@ namespace MrCMS.Indexing.Querying
             return entities.ToList();
         }
 
-        public IndexSearcher IndexSearcher { get { return _indexSearcher; } }
+        public IndexSearcher IndexSearcher { get { return _indexSearcher = _indexSearcher ?? new IndexSearcher(GetDirectory(_site)); } }
 
         public string IndexName { get { return Definition.IndexName; } }
         public string IndexFolderName { get { return Definition.IndexFolderName; } }

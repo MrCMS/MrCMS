@@ -93,7 +93,6 @@ namespace MrCMS.Indexing.Management
                                                   IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 writeFunc(indexWriter);
-                indexWriter.Optimize();
             }
         }
 
