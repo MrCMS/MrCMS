@@ -197,6 +197,7 @@ namespace MrCMS.Services
         {
             return _session.QueryOver<MediaFile>()
                            .Where(x => x.MediaCategory.Id == mediaCategoryId)
+                           .OrderBy(x=>x.DisplayOrder).Desc
                            .Paged(pageNumber:page, pageSize:_siteSettings.DefaultPageSize);
         }
 

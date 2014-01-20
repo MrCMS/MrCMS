@@ -42,9 +42,7 @@
     </fieldset>
 }
 
-@{ Html.RenderPartial("Upload", Model); }
-
-@{Html.RenderAction("ShowFiles", "MediaCategory", new{Id = Model.Id});}
+@{Html.RenderAction("ShowFiles", "MediaCategory", new{ Model});}
 
 <script>
     if (self !== top) { top.location = self.location; }
