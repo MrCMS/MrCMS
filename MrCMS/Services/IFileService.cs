@@ -12,7 +12,7 @@ namespace MrCMS.Services
         ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory);
         ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory);
         MediaFile GetFile(int id);
-        IPagedList<MediaFile> GetFiles(int? mediaCategoryId);
+        IPagedList<MediaFile> GetFiles(int? mediaCategoryId, int page);
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);
         string GetFileLocation(MediaFile mediaFile, Size imageSize);

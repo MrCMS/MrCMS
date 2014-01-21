@@ -43,6 +43,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             return View(model);
         }
+        
+
+        [HttpGet]
+        public ActionResult ShowFiles(MediaCategory mediaCategory, int page=1)
+        {
+            ViewData["MediaCategory"] = mediaCategory;
+            return PartialView("ShowFiles", _fileService.GetFiles(mediaCategory.Id, page));
+        }
 
         public override ActionResult Show(MediaCategory document)
         {
@@ -54,21 +62,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Upload(MediaCategory category)
         {
             return PartialView(category);
-        }
-
-        public ActionResult UploadTemplate()
-        {
-            return PartialView();
-        }
-
-        public ActionResult DownloadTemplate()
-        {
-            return PartialView();
-        }
-
-        public ActionResult Thumbnails()
-        {
-            return PartialView();
         }
 
         public PartialViewResult MediaSelector(int? categoryId, bool imagesOnly = false, int page = 1)

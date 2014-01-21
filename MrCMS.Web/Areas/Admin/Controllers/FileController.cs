@@ -23,12 +23,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return Json(_fileService.GetFiles(mediaCategory), "text/html", System.Text.Encoding.UTF8);
         }
 
-        [HttpGet]
-        public ActionResult ShowFiles(MediaCategory mediaCategory)
-        {
-            return PartialView("ShowFiles", _fileService.GetFiles(mediaCategory.Id));
-        }
-
+       
         [HttpPost]
         [ActionName("Files")]
         public JsonResult Files_Post(MediaCategory mediaCategory)
@@ -46,9 +41,18 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public void Delete(MediaFile file)
+        [ActionName("Delete")]
+        public ActionResult Delete_POST(MediaFile file)
         {
+            var categoryId = file.MediaCategory.Id;
             _fileService.DeleteFile(file);
+            return RedirectToAction("Edit", "MediaCategory", new { Id = categoryId });
+        }
+
+        [HttpGet]
+        public ActionResult Delete(MediaFile file)
+        {
+            return View("Delete", file);
         }
 
         [HttpPost]
@@ -66,6 +70,20 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             {
                 return string.Format("There was an error saving the SEO values: {0}", ex.Message);
             }
+        }
+
+        public ActionResult Edit(MediaFile file)
+        {
+            return View("Edit", file);
+        }
+
+        [HttpPost]
+        [ActionName("Edit")]
+        public ActionResult Edit_POST(MediaFile file)
+        {
+            _fileService.SaveFile(file);
+
+            return RedirectToAction("Edit", "MediaCategory", new { Id = file.MediaCategory.Id }); 
         }
     }
 }
