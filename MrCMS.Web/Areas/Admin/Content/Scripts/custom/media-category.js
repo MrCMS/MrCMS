@@ -1,4 +1,4 @@
-﻿var MediaCategory = function (options) {
+﻿var MediaUploader = function (options) {
     var settings = $.extend({
         fileUploadSelector: $("#fileupload"),
         acceptFileTypes: /(\.|\/)(gif|jpe?g|png|rar)$/i,
@@ -55,7 +55,7 @@
         }
     };
 };
-var mediaCategory;
+var mediaUploader;
 $(function () {
-    mediaCategory = new MediaCategory().init();
+    mediaUploader = new MediaUploader().init();
 });

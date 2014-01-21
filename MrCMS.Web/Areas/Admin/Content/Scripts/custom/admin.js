@@ -22,9 +22,6 @@
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 
-    if ($('#nav-tabs').length) {
-        $("#nav-tabs li:eq(" + getTabNumber() + ") a").tab('show');
-    }
 
     var currentTab = $.cookie('selected-tab-' + location.pathname);
     if (location.hash !== '') {
@@ -41,23 +38,6 @@
 
     $(".datepicker").datepicker();
 
-    function getTabNumber() {
-        var val = $('#controller-name').val();
-        if (val !== undefined) {
-            switch (val.toLowerCase()) {
-                case 'mediacategory':
-                    return 1;
-                case 'layout':
-                    return 2;
-                case 'layoutarea':
-                    return 2;
-                case 'webpage':
-                default:
-                    return 0;
-            }
-        }
-        return 0;
-    }
 
     $(document).on('click', '.date-time-picker', function () {
         var that = $(this);
