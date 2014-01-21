@@ -4,24 +4,23 @@
 {
     using (Html.BeginForm("Files", "File", new { Id = Model.Id }, FormMethod.Post, new { id = "fileuploadform", enctype = "multipart/form-data", @class = "form-fileUpload" }))
     {
-    <div class="row-fluid">
-        <div class="span3">
-            <span class="btn btn-success fileinput-button">
-                <i class="glyphicon glyphicon-plus icon-plus"></i>
-                <span>Select files...</span>
-                <!-- The file input field used as target for the file upload widget -->
-                <input id="fileupload" type="file" name="files[]" multiple />
-            </span>
-        </div>
-        <div class="span9">
-            <!-- The global progress bar -->
-            <div id="progress" class="progress" style="height: 30px; display: none;">
-                <div class="bar"><span id="percent-complete" style="text-align:center;"></span></div>
+        <div class="row-fluid">
+            <div class="span3">
+                <span class="btn btn-success fileinput-button">
+                    <i class="icon-plus"></i>
+                    <span>Select files...</span>
+                    <input id="fileupload" type="file" name="files[]" multiple />
+                </span>
             </div>
-            <!-- The container for the uploaded files -->
-            <div id="files" class="files"></div>
+            <div class="span9">
+                <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 5px;">
+                    <div class="bar"><span id="percent-complete" style="text-align:center;"></span></div>
+                </div>
+            </div>
         </div>
-    </div>
+        <div class="row-fluid">
+            <div class="span12"><div id="files" class=""></div></div>
+        </div>
     }
 
 }

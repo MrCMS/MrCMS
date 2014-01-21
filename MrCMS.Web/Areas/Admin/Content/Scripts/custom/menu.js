@@ -30,7 +30,7 @@
                     }
                 },
                 "state": {
-                    "key": tree,
+                    "key": location.hostname + tree,
                 },
                 "contextmenu": {
                     "items": self.menuItems
