@@ -23,7 +23,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return Json(_fileService.GetFiles(mediaCategory), "text/html", System.Text.Encoding.UTF8);
         }
 
-       
+
         [HttpPost]
         [ActionName("Files")]
         public JsonResult Files_Post(MediaCategory mediaCategory)
@@ -83,7 +83,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _fileService.SaveFile(file);
 
-            return RedirectToAction("Edit", "MediaCategory", new { Id = file.MediaCategory.Id }); 
+            return RedirectToAction("Edit", "MediaCategory", new { file.MediaCategory.Id });
         }
     }
 }

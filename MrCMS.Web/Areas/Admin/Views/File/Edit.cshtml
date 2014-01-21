@@ -1,6 +1,6 @@
 ﻿@model MrCMS.Entities.Documents.Media.MediaFile
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using (Html.BeginForm("Edit", "File", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+@using (Html.BeginForm("Edit", "File", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;", target = "_top" }))
 {
     <fieldset>
         <legend>Edit @Model.FileName

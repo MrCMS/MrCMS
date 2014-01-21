@@ -15,7 +15,7 @@
     </div>
 }
 
-@using (Html.BeginForm("Edit", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { id = "edit-media" }))
+@using (Html.BeginForm("Edit", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { id = "edit-media", target = "_top" }))
 {
     <fieldset>
         <legend>@Model.Name
@@ -42,8 +42,4 @@
     </fieldset>
 }
 
-@{Html.RenderAction("ShowFiles", "MediaCategory", new{ Model});}
-
-<script>
-    if (self !== top) { top.location = self.location; }
-</script>
+@{Html.RenderAction("ShowFiles", "MediaCategory", new { Model });}
