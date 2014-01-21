@@ -211,7 +211,7 @@ namespace MrCMS.Services
                         Name = doc.Name,
                         NodeType = nodeType,
                         Sortable = IsSortable(doc),
-                        CanAddChild = isWebpage && (doc as Webpage).GetValidWebpageDocumentTypes().Any(),
+                        CanAddChild = !isWebpage || (doc as Webpage).GetValidWebpageDocumentTypes().Any(),
                         IsPublished = !isWebpage || (doc as Webpage).Published,
                         RevealInNavigation = !isWebpage || (doc as Webpage).RevealInNavigation
                     };
@@ -285,7 +285,7 @@ namespace MrCMS.Services
             }
 
             var rowCount = query.Cacheable().RowCount();
-            query.OrderBy(x=>x.DisplayOrder).Asc.Take(maxChildNodes).Cacheable().List().ForEach(doc =>
+            query.OrderBy(x => x.DisplayOrder).Asc.Take(maxChildNodes).Cacheable().List().ForEach(doc =>
                                      {
                                          var nodeType = GetNodeType(doc);
                                          var iconClass = GetIconClass(doc);
@@ -296,7 +296,7 @@ namespace MrCMS.Services
                                                             Name = doc.Name,
                                                             IconClass = iconClass,
                                                             NodeType = nodeType,
-                                                            HasChildren = _session.QueryOver<T>().Where(x => x.Parent.Id == doc.Id).Cacheable().Any(),
+                                                            HasChildren = doc.Children.Any(),
                                                             Sortable = IsSortable(doc),
                                                             IsMoreLink = false
                                                         };
@@ -315,11 +315,11 @@ namespace MrCMS.Services
             if (rowCount > maxChildNodes)
             {
                 adminTree.Nodes.Add(new AdminTreeNode
-                              { 
+                              {
                                   NumberMore = (rowCount - maxChildNodes),
                                   IconClass = "icon-plus",
                                   IsMoreLink = true,
-                                  ParentId = parent.Id
+                                  ParentId = parentId
                               });
             }
             return adminTree;

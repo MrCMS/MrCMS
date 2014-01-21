@@ -1,9 +1,0 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Paging.IPagedList<MrCMS.Entities.Documents.Media.MediaFile>
-
-@foreach (var file in Model)
-{
-    @file.FileName <br/>
-}
-
-@Html.Pager(Model, "Index", page => new { page })
