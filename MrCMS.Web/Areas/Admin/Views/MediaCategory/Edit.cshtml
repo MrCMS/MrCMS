@@ -42,4 +42,9 @@
     </fieldset>
 }
 
-@{Html.RenderAction("ShowFiles", "MediaCategory", new { Model });}
+
+@{ Html.RenderPartial("Upload", Model); }
+
+<div id="dropzone" class="fade well">Drop files here</div>
+
+@{Html.RenderAction("ShowFiles", "File", new { Model });}

@@ -1610,7 +1610,7 @@
     <Content Include="Areas\Admin\Views\Shared\_LayoutWithoutWebTree.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\RevertToVersion.cshtml" />
     <Content Include="Areas\Admin\Views\FileMigration\Show.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\ShowFiles.cshtml" />
+    <Content Include="Areas\Admin\Views\File\ShowFiles.cshtml" />
     <Content Include="Areas\Admin\Views\File\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\File\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
