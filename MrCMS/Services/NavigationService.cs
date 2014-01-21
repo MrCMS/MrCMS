@@ -319,7 +319,7 @@ namespace MrCMS.Services
                                   NumberMore = (rowCount - maxChildNodes),
                                   IconClass = "icon-plus",
                                   IsMoreLink = true,
-                                  ParentId = parent.Id
+                                  ParentId = parentId
                               });
             }
             return adminTree;
