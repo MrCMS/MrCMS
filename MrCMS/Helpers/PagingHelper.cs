@@ -451,7 +451,7 @@ namespace MrCMS.Helpers
                     routeValueDictionary.Add(key, queryString[key]);
             }
 
-            return relativePath + "?" +
+            return "/" + relativePath + "?" +
                    string.Join("&", routeValueDictionary.Select(pair => string.Format("{0}={1}", pair.Key, pair.Value)));
         }
     }
