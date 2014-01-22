@@ -1,6 +1,5 @@
 ﻿var WebMenu = function (options) {
     var settings = $.extend({
-        tabIndexToShow: 1
     }, options);
     var self;
     return {
@@ -12,13 +11,7 @@
             $(document).on("show", 'a[data-toggle="tab"]', function (e) {
                 self.initTree($(e.target));
             });
-            self.selectTab(settings.tabIndexToShow);
             return self;
-        },
-        selectTab: function (tab) {
-            if ($('#nav-tabs').length) {
-                $("#nav-tabs li:eq(" + tab + ") a").tab('show');
-            }
         },
         initTree: function (link) {
             if (link.data('tree-initialized'))
@@ -81,23 +74,5 @@
 };
 var webMenu;
 $(function () {
-    webMenu = new WebMenu({tabIndexToShow:getTab()}).init();
+    webMenu = new WebMenu().init();
 });
-
-function getTab() {
-    var val = $('#controller-name').val();
-    if (val !== undefined) {
-        switch (val.toLowerCase()) {
-            case 'mediacategory':
-                return 1;
-            case 'layout':
-                return 2;
-            case 'layoutarea':
-                return 2;
-            case 'webpage':
-            default:
-                return 0;
-        }
-    }
-    return 0;
-};

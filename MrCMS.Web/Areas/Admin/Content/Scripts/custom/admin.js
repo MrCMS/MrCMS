@@ -23,14 +23,14 @@
     $("[rel='tooltip']").tooltip();
 
 
-    var currentTab = $.cookie('selected-tab-' + location.pathname);
-    if (location.hash !== '') {
-        $('.inner-content a[href="' + location.hash + '"]').tab('show');
-    } else if (currentTab) {
-        $('.inner-content a[href="' + currentTab + '"]').tab('show');
-    } else if ($('.inner-content li a[data-toggle="tab"]').length > 0 && $('.inner-content li.active a[data-toggle="tab"]').length == 0) {
-        $('.inner-content a[data-toggle="tab"]').eq(0).click();
-    }
+    //var currentTab = $.cookie('selected-tab-' + location.pathname);
+    //if (location.hash !== '') {
+    //    $('.inner-content a[href="' + location.hash + '"]').tab('show');
+    //} else if (currentTab) {
+    //    $('.inner-content a[href="' + currentTab + '"]').tab('show');
+    //} else if ($('.inner-content li a[data-toggle="tab"]').length > 0 && $('.inner-content li.active a[data-toggle="tab"]').length == 0) {
+    //    $('.inner-content a[data-toggle="tab"]').eq(0).click();
+    //}
 
     $('.inner-content a[data-toggle="tab"]').on('shown', function (e) {
         $.cookie('selected-tab-' + location.pathname, e.target.hash, { expires: 1, path: "/" });
@@ -59,7 +59,7 @@
             type: 'iframe',
             autoSize: true,
             minHeight: 200,
-            padding:0
+            padding:0 //To do: add in oncomplete to set target
         }).click().remove();
         return false;
     });

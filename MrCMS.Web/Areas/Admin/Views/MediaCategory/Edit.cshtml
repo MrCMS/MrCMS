@@ -45,6 +45,6 @@
 
 @{ Html.RenderPartial("Upload", Model); }
 
-<div id="dropzone" class="fade well">Drop files here</div>
+<div id="dropzone"><span>Drop files here</span></div>
 
 @{Html.RenderAction("ShowFiles", "File", new { Model });}

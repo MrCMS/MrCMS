@@ -1,4 +1,6 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Settings
+@using MrCMS.Website
 @model MrCMS.Entities.Documents.Media.MediaCategory
 @if (Model != null)
 {
@@ -21,4 +23,6 @@
         <div id="files" class=""></div>
     }
 
+    <input type="hidden" id="allowedFileTypes" value="@(MrCMSApplication.Get<MediaSettings>().AllowedFileTypes)"/>
+    <input type="hidden" id="maxFileSizeUpload" value="@(MrCMSApplication.Get<MediaSettings>().MaxFileSizeUpload)"/>
 }

@@ -17,6 +17,12 @@ namespace MrCMS.Settings
         private Size _smallSize;
         private Size _maxSize;
 
+        public MediaSettings()
+        {
+            MaxFileSizeUpload = 5000000; //5mb
+            AllowedFileTypes = "gif|jpeg|jpg|png|rar|zip|pdf|mp3|mp4|wmv|doc|docx|xls|xlsx|ppt|avi|mpg|wav|mov|wma";
+        }
+
         [DisplayName("Thumbnail Image Height")]
         public int ThumbnailImageHeight { get; set; }
         [DisplayName("Thumbnail Image Width")]
@@ -121,6 +127,11 @@ namespace MrCMS.Settings
         [DisplayName("Max Image Size Width")]
         public int MaxImageSizeWidth { get; set; }
 
+        [DisplayName("Admin allowed file type uploads")]
+        public string AllowedFileTypes { get; set; }
+
+        [DisplayName("Admin max file upload size (Max 50000000 (500 mb)")]
+        public int MaxFileSizeUpload { get; set; }
 
         public Size MaxSize
         {
