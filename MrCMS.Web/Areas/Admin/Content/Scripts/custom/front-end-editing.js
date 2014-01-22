@@ -211,26 +211,15 @@ $(function () {
         var clone = $(this).clone();
         clone.attr('data-toggle', '');
         clone.hide();
-        $("body", document).append(clone);
         clone.fancybox({
             type: 'iframe',
+            autoSize: true,
+            minHeight: 200,
             padding: 0,
-            height: 0,
-            context: document,
-            'onComplete': function () {
-                $('#fancybox-frame').load(function () { // wait for frame to load and then gets it's height
-                    $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
-                    var documentWidth = $('html').width() - 200;
-                    if (documentWidth > 1000)
-                        documentWidth = 1000;
-                    var width = (documentWidth);
-
-                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height($(top.window).height() - 100);
-                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').width(width);
-                    $.fancybox.center();
-                });
+            afterShow: function () {
+                $(".fancybox-iframe").contents().find('form').attr('target', '_parent').css('margin', '0');
             }
-        }).click();//.remove();
+        }).click().remove();
         return false;
     });
 

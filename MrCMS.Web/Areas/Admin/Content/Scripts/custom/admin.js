@@ -59,7 +59,10 @@
             type: 'iframe',
             autoSize: true,
             minHeight: 200,
-            padding:0 //To do: add in oncomplete to set target
+            padding: 0,
+            afterShow: function () {
+                $(".fancybox-iframe").contents().find('form').attr('target', '_parent').css('margin', '0');
+            }
         }).click().remove();
         return false;
     });
