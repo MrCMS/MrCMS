@@ -45,22 +45,3 @@
     @Html.Pager(Model, "ShowFiles", page => new { page })
     <input type="hidden" value="@Url.Action("ShowFiles", "File", new{mediaCategory.Id})" id="pager-url"/>
 </div>
-@{
-    //file uploading
-    <!-- The basic File Upload plugin -->
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload.js");
-    <!-- The File Upload processing plugin -->
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-process.js");
-    <!-- The File Upload image preview & resize plugin -->
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-process.js");
-    <!-- The File Upload audio preview plugin -->
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-audio.js");
-    <!-- The File Upload video preview plugin -->
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-video.js");
-    <!-- The File Upload validation plugin -->
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-validate.js");
-    <!-- The File Upload user interface plugin -->
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-ui.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.iframe-transport.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/vendor/jquery.ui.widget.js");
-}

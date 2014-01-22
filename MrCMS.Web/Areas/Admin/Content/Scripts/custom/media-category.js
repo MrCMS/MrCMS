@@ -15,33 +15,38 @@
     return {
         init: function () {
             self = this;
-            $(settings.fileUploadSelector).fileupload({
-                dataType: 'json',
-                type: 'POST',
-                autoUpload: true,
-                sequentialUploads: settings.sequentialUploads,
-                acceptFileTypes: settings.acceptFileTypes,
-                maxFileSize: settings.maxFileSize,
-                done: this.fileUploaded,
-                progressall: this.progressBar,
-                dropZone: settings.dropZoneSelector
-            });
-
-            $(settings.fileUploadSelector).on('fileuploadstopped', function (e) {
-                $.get($("#pager-url").val(), function (response) {
-                    $('div[data-paging-type="async"]').replaceWith(response);
+            if ($(settings.fileUploadSelector).length) {
+                $(settings.fileUploadSelector).fileupload({
+                    dataType: 'json',
+                    type: 'POST',
+                    autoUpload: true,
+                    sequentialUploads: settings.sequentialUploads,
+                    acceptFileTypes: settings.acceptFileTypes,
+                    maxFileSize: settings.maxFileSize,
+                    done: this.fileUploaded,
+                    progressall: this.progressBar,
+                    dropZone: settings.dropZoneSelector
                 });
-            });
-            $(document).bind('dragover', function (e) {
-                self.dropZoneEffect(e);
-            });
 
-            $(document).on('fileuploadprocessalways', function (e, data) {
-                self.validateFiles(e, data);
-            }).on('fileuploadadded', function(e, data) {
-                settings.filesSelector.html('');
-            });
+                $(settings.fileUploadSelector).on('fileuploadstopped', function (e) {
+                    if ($("#pager-url")) {
+                        $.get($("#pager-url").val(), function (response) {
+                            $('div[data-paging-type="async"]').replaceWith(response);
+                        });
+                    }
+                });
+                $(document).bind('dragover', function (e) {
+                    self.dropZoneEffect(e);
+                });
 
+                $(document).on('fileuploadprocessalways', function (e, data) {
+                    self.validateFiles(e, data);
+                }).on('fileuploadadded', function (e, data) {
+                    settings.filesSelector.html('');
+                });
+
+            }
+           
             return self;
         },
         fileUploaded: function (e, data) {

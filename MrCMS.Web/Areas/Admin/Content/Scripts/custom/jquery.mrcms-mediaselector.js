@@ -124,12 +124,12 @@
 
         $('<a>').attr('href', href).fancybox({
             type: 'iframe',
-            autoSize: true,
-            minHeight: 200,
-            padding: 0,
-            afterShow: function () {
-                $(".fancybox-iframe").contents().find('form').attr('target', '_parent').css('margin', '0');
-            }
+        autoSize: true,
+        minHeight: 200,
+        padding: 0,
+        afterShow: function () {
+            $(".fancybox-iframe").contents().find('form').attr('target', '_parent').css('margin', '0');
+        }
         }).click().remove();
 
     }
