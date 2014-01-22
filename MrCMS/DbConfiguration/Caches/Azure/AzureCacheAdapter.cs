@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web.Configuration;
 using Microsoft.ApplicationServer.Caching;
+using MrCMS.Config;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cache;
@@ -49,7 +52,8 @@ namespace MrCMS.DbConfiguration.Caches.Azure
                 Log.Info("No region name specified for cache region. Using default name of 'nhibernate'");
                 name = "nhibernate";
             }
-            _webCache = AzureCacheFactory.Instance.GetCache("default");
+            var mrCMSSection = WebConfigurationManager.GetSection("mrcms") as MrCMSConfigSection;
+            _webCache = AzureCacheFactory.Instance.GetCache(mrCMSSection == null ? "default" : mrCMSSection.CacheName);
             _name = StripNonAlphaNumeric(name);
 
             //configure the cache region based on the configured settings and any relevant nhibernate settings
@@ -101,7 +105,14 @@ namespace MrCMS.DbConfiguration.Caches.Azure
             object cachedObject = _webCache.Get(cacheKey, RegionName);
 
             if (cachedObject == null || !(cachedObject is byte[]))
+            {
+                if (_name == "UpdateTimestampsCache")
+                {
+                    Put(key, long.MinValue);
+                    return long.MinValue;
+                }
                 return null;
+            }
 
             return _serializationProvider.Deserialize(cachedObject as byte[]);
         }

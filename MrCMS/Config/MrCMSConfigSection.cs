@@ -15,6 +15,13 @@ namespace MrCMS.Config
             set { this["cache-provider"] = value; }
         }
 
+        [ConfigurationProperty("cache-name", DefaultValue = "default")]
+        public string CacheName
+        {
+            get { return (string)this["cache-name"]; }
+            set { this["cache-name"] = value; }
+        }
+
         [ConfigurationProperty("minimize-puts", DefaultValue = false)]
         public bool MinimizePuts
         {
