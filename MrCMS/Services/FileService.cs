@@ -8,6 +8,7 @@ using System.Text;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
+using MrCMS.Paging;
 using MrCMS.Settings;
 using NHibernate;
 using MrCMS.Helpers;
@@ -190,6 +191,14 @@ namespace MrCMS.Services
         public MediaFile GetFile(int id)
         {
             return _session.Get<MediaFile>(id);
+        }
+
+        public IPagedList<MediaFile> GetFiles(int? mediaCategoryId, int page = 1)
+        {
+            return _session.QueryOver<MediaFile>()
+                           .Where(x => x.MediaCategory.Id == mediaCategoryId)
+                           .OrderBy(x=>x.DisplayOrder).Desc
+                           .Paged(pageNumber:page, pageSize:_siteSettings.DefaultPageSize);
         }
 
         public void DeleteFile(MediaFile mediaFile)

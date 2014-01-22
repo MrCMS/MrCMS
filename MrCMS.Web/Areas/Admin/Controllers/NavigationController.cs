@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Website.Controllers;
@@ -21,19 +24,25 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _currentSiteLocator = currentSiteLocator;
         }
 
-        public PartialViewResult WebSiteTree()
+        public PartialViewResult WebSiteTree(int? id)
         {
-            return PartialView("WebsiteTreeList", _service.GetWebsiteTree());
+            var admintree = _service.GetNodes<Webpage>(id);
+            admintree.RootContoller = "Webpage";
+            return PartialView("TreeList", admintree);
         }
 
-        public PartialViewResult MediaTree()
+        public PartialViewResult MediaTree(int? id)
         {
-            return PartialView("MediaTree", _service.GetMediaTree());
+            var admintree = _service.GetNodes<MediaCategory>(id);
+            admintree.RootContoller = "MediaCategory";
+            return PartialView("TreeList", admintree);
         }
 
-        public PartialViewResult LayoutTree()
+        public PartialViewResult LayoutTree(int? id)
         {
-            return PartialView("LayoutTree", _service.GetLayoutList());
+            var admintree = _service.GetNodes<Layout>(id);
+            admintree.RootContoller = "Layout";
+            return PartialView("TreeList", admintree);
         }
 
         public PartialViewResult NavLinks()

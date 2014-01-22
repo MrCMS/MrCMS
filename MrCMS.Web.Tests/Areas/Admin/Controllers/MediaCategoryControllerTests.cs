@@ -175,30 +175,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_UploadTemplate_ShouldReturnAPartialView()
-        {
-            ActionResult result = _mediaCategoryController.UploadTemplate();
-
-            result.Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void MediaCategoryController_Thumbnails_ShouldReturnAPartialView()
-        {
-            ActionResult result = _mediaCategoryController.Thumbnails();
-
-            result.Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void MediaCategoryController_DownloadTemplate_ShouldReturnAPartialView()
-        {
-            ActionResult result = _mediaCategoryController.DownloadTemplate();
-
-            result.Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
         public void MediaCategoryController_RemoveMedia_ShouldReturnAPartialView()
         {
             _mediaCategoryController.RemoveMedia().Should().BeOfType<PartialViewResult>();

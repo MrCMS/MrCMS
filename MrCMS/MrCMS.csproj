@@ -261,6 +261,7 @@
     <Compile Include="Indexing\Management\AzureDirectoryIndexManager.cs" />
     <Compile Include="Indexing\Querying\AzureDirectorySearcher.cs" />
     <Compile Include="Logging\LogSearchQuery.cs" />
+    <Compile Include="Models\AdminTreeNode.cs" />
     <Compile Include="Models\MessageQueueQuery.cs" />
     <Compile Include="Models\UserSearchQuery.cs" />
     <Compile Include="Services\CloneSitePartsService.cs" />
@@ -381,7 +382,6 @@
     <Compile Include="Models\IAdminMenuItem.cs" />
     <Compile Include="Models\IMenuItem.cs" />
     <Compile Include="Models\ISystemAdminMenuItem.cs" />
-    <Compile Include="Models\LayoutTreeListModel.cs" />
     <Compile Include="Models\PageWidgetSortModel.cs" />
     <Compile Include="Models\PostingsModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
@@ -393,7 +393,6 @@
     <Compile Include="Models\UsersAdminMenuItem.cs" />
     <Compile Include="Models\VersionsModel.cs" />
     <Compile Include="Models\ViewDataUploadFilesResult.cs" />
-    <Compile Include="Models\WebsiteTreeListModel.cs" />
     <Compile Include="Models\WidgetPageOrder.cs" />
     <Compile Include="Paging\BasePagedList.cs" />
     <Compile Include="Paging\IPagedList.cs" />

@@ -9,45 +9,21 @@
 @using (Html.BeginForm("Add", "Webpage", new { id = "" }, FormMethod.Post))
 {
     <fieldset>
-        <legend>Add page
+        <legend>Add page to @(Model.Parent != null ? Model.Parent.Name : "Root")
             <span class="btn-group  display-inline  pull-right">
                 <input type="submit" class="btn-primary btn" value="Save and continue" />
             </span>
         </legend>
         <div class="row-fluid">
             <div class="span2">
-                <strong>Location:</strong><br />
-                @if (Model.Parent != null)
-                {
-                    <ul class="filetree filetree  web-tree">
-                        <ul>
-                            <li><i class="@Model.Parent.GetMetadata().IconClass">&nbsp;</i> @Model.Parent.Name
-                                <ul>
-                                    <li><i class="icon-file">&nbsp;</i> <span style="font-style: italic" id="new-page">[Your new page]</span></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </ul>
-                }
-                else
-                {
-                    <ul class="filetree filetree  web-tree">
-                        <li><i class="icon-asterisk">&nbsp;</i> Root
-                             <ul>
-                                 <li><i class="icon-file">&nbsp;</i> <span style="font-style: italic" id="new-page">[Your new page]</span></li>
-                             </ul>
-                        </li>
-                    </ul>
-                }
-                <hr class="small-margin" />
                 @{ //pre select radio if there is only one option
-                var count = 0;
-                var documentMetadatas = ViewData["DocumentTypes"] as List<DocumentMetadata>;
+                    var count = 0;
+                    var documentMetadatas = ViewData["DocumentTypes"] as List<DocumentMetadata>;
 
-                if (documentMetadatas != null)
-                {
-                    count = documentMetadatas.Count;
-                }
+                    if (documentMetadatas != null)
+                    {
+                        count = documentMetadatas.Count;
+                    }
                 }
 
                 @foreach (var documentType in documentMetadatas)

@@ -211,7 +211,7 @@ namespace MrCMS.Services
                         Name = doc.Name,
                         NodeType = nodeType,
                         Sortable = IsSortable(doc),
-                        CanAddChild = isWebpage && (doc as Webpage).GetValidWebpageDocumentTypes().Any(),
+                        CanAddChild = !isWebpage || (doc as Webpage).GetValidWebpageDocumentTypes().Any(),
                         IsPublished = !isWebpage || (doc as Webpage).Published,
                         RevealInNavigation = !isWebpage || (doc as Webpage).RevealInNavigation
                     };
@@ -263,5 +263,82 @@ namespace MrCMS.Services
                                    : "";
 
         }
+        public AdminTree GetNodes<T>(int? parentId) where T : Document
+        {
+            var adminTree = new AdminTree();
+            var query = _session.QueryOver<T>().Where(x => x.Parent.Id == parentId && x.Site.Id == _site.Id);
+            T parent = null;
+            int maxChildNodes = 1000;
+            if (parentId.HasValue)
+            {
+                parent = _session.Get<T>(parentId);
+
+                var metaData = parent.GetMetadata();
+                if (metaData != null)
+                {
+                    maxChildNodes = metaData.MaxChildNodes;
+                }
+            }
+            else
+            {
+                adminTree.IsRootRequest = true;
+            }
+
+            var rowCount = query.Cacheable().RowCount();
+            query.OrderBy(x => x.DisplayOrder).Asc.Take(maxChildNodes).Cacheable().List().ForEach(doc =>
+                                     {
+                                         var nodeType = GetNodeType(doc);
+                                         var iconClass = GetIconClass(doc);
+                                         var node = new AdminTreeNode
+                                                        {
+                                                            Id = doc.Id,
+                                                            ParentId = doc.ParentId,
+                                                            Name = doc.Name,
+                                                            IconClass = iconClass,
+                                                            NodeType = nodeType,
+                                                            HasChildren = doc.Children.Any(),
+                                                            Sortable = IsSortable(doc),
+                                                            IsMoreLink = false
+                                                        };
+                                         if (doc is Webpage)
+                                         {
+                                             node.CanAddChild = (doc as Webpage).GetValidWebpageDocumentTypes().Any();
+                                             node.IsPublished = (doc as Webpage).Published;
+                                             node.RevealInNavigation = (doc as Webpage).RevealInNavigation;
+                                         }
+                                         else
+                                         {
+                                             node.CanAddChild = true;
+                                         }
+                                         adminTree.Nodes.Add(node);
+                                     });
+            if (rowCount > maxChildNodes)
+            {
+                adminTree.Nodes.Add(new AdminTreeNode
+                              {
+                                  NumberMore = (rowCount - maxChildNodes),
+                                  IconClass = "icon-plus",
+                                  IsMoreLink = true,
+                                  ParentId = parentId
+                              });
+            }
+            return adminTree;
+        }
+
+        private string GetIconClass(Document doc)
+        {
+            var documentMetaData = doc.GetMetadata();
+            if (documentMetaData != null)
+                return documentMetaData.IconClass;
+
+            if (doc is MediaCategory)
+                return "icon-picture";
+
+            if (doc is Layout)
+                return "icon-th-large";
+
+            return "";
+        }
+
     }
 }

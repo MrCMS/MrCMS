@@ -1,57 +1,102 @@
-﻿window.locale = {
-    "fileupload": {
-        "errors": {
-            "maxFileSize": "File is too big",
-            "minFileSize": "File is too small",
-            "acceptFileTypes": "Filetype not allowed",
-            "maxNumberOfFiles": "Max number of files exceeded",
-            "uploadedBytes": "Uploaded bytes exceed file size",
-            "emptyResult": "Empty file upload result"
+﻿var MediaUploader = function (options) {
+    var settings = $.extend({
+        fileUploadSelector: $("#fileupload"),
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png|rar)$/i,
+        sequentialUploads: true,
+        maxFileSize: 5000000,
+        progressBarSelector: $("#progress"),
+        progressBarSelectorInner: $("#progress .bar"),
+        percentCompleteSelector: $("#percent-complete"),
+        filesSelector: $("#files")
+    }, options);
+    var self;
+    return {
+        init: function () {
+            self = this;
+
+            $(settings.fileUploadSelector).fileupload({
+                dataType: 'json',
+                type: 'POST',
+                autoUpload: true,
+                sequentialUploads: settings.sequentialUploads,
+                acceptFileTypes: settings.acceptFileTypes,
+                maxFileSize: settings.maxFileSize,
+                done: this.fileUploaded,
+                progressall: this.progressBar,
+            });
+
+            $(settings.fileUploadSelector).on('fileuploadstopped', function (e) {
+                $.get($("#pager-url").val(), function (response) {
+                    $('div[data-paging-type="async"]').replaceWith(response);
+                });
+            });
+            
+            $(settings.fileUploadSelector).fileupload({
+                dropZone: $('#dropzone')
+            });
+
+
+            $(document).on('fileuploadprocessalways', function (e, data) {
+                self.validateFiles(e, data);
+            }).on('fileuploadadded', function(e, data) {
+                settings.filesSelector.html('');
+            });
+
+            return self;
         },
-        "error": "Error",
-        "start": "Start",
-        "cancel": "Cancel",
-        "destroy": "Delete"
-    }
+        fileUploaded: function (e, data) {
+            //$.each(data.files, function (index, file) {
+            //    $('<p/>').text(file.name + ' uploaded').appendTo(settings.filesSelector);
+            //});
+        },
+        progressBar: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $(settings.progressBarSelector).show();
+            $(settings.progressBarSelectorInner).css('width', progress + '%');
+            $(settings.percentCompleteSelector).html(progress + '%');
+
+        },
+        validateFiles: function (e, data) {
+            var index = data.index,
+                file = data.files[index];
+
+            if (file.error) {
+                settings.filesSelector
+                    .append('<br/>')
+                    .append($('<span class="red"/>').text(file.name + ' ' + file.error));
+            }
+        }
+    };
 };
-
+var mediaUploader;
 $(function () {
-    'use strict';
+    mediaUploader = new MediaUploader().init();
+});
 
-
-    // Initialize the jQuery File Upload widget:
-    $('#fileupload').fileupload();
-
-    // Load existing files:
-    $('#fileupload').each(function () {
-        var that = this;
-        $.getJSON(this.action,{v: new Date().getTime()}, function (result) {
-            if (result && result.length) {
-                var fileupload = $(that).fileupload('option', 'done');
-                fileupload.call(that, null, { result: result });
-            }
-        });
-    });
-    
-    $(document).on('click', '.seo-attributes', function () {
-        var link = $(this);
-        link.siblings('.seo-attributes-holder').slideToggle('500', function () {
-            if (link.siblings('.seo-attributes-holder').is(":visible")) {
-                link.val('Hide SEO attributes');
-            } else {
-                link.val('Set SEO attributes');
-            }
-        });
-        return false;
-    });
-
-    $('#file-items-table').on('click', '.btn-seo-update', function (event) {
-        event.preventDefault();
-        var form = $(this).parents('.seo-update-form');
-        console.log(form.find(':input').serialize());
-        $.post(form.data('action'), form.find(':input').serialize(), function (response) {
-            form.siblings('.seo-update-message').show().html(response).delay(4000).fadeOut();
-        });
-        return false;
-    });
-})
+$(document).bind('dragover', function (e) {
+    var dropZone = $('#dropzone'),
+        timeout = window.dropZoneTimeout;
+    if (!timeout) {
+        dropZone.addClass('in');
+    } else {
+        clearTimeout(timeout);
+    }
+    var found = false,
+      	node = e.target;
+    do {
+        if (node === dropZone[0]) {
+            found = true;
+            break;
+        }
+        node = node.parentNode;
+    } while (node != null);
+    if (found) {
+        dropZone.addClass('hover');
+    } else {
+        dropZone.removeClass('hover');
+    }
+    window.dropZoneTimeout = setTimeout(function () {
+        window.dropZoneTimeout = null;
+        dropZone.removeClass('in hover');
+    }, 100);
+});
