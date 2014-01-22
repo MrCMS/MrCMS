@@ -151,7 +151,7 @@ namespace MrCMS.Settings
         {
             //format: <name, <id, value>>
             var dictionary = new Dictionary<string, KeyValuePair<int, string>>();
-            foreach (var s in AllSettings)
+            foreach (var s in AllSettings.Where(setting => setting.Site.Id == _site.Id))
             {
                 var resourceName = s.Name.ToLowerInvariant();
                 if (!dictionary.ContainsKey(resourceName))
@@ -173,9 +173,7 @@ namespace MrCMS.Settings
 
         private IList<Setting> GetAllSettingForSite()
         {
-            var allSettings = _session.QueryOver<Setting>().Cacheable().List();
-
-            return allSettings.Where(setting => setting.Site.Id == _site.Id).ToList();
+            return _session.QueryOver<Setting>().Cacheable().List();
         }
     }
 }
