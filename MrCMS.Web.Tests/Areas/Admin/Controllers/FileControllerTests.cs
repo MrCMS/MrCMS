@@ -60,12 +60,20 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void FileController_Delete_CallsDeleteFileOnFileService()
+        public void FileController_Delete_ShouldBeViewResult()
         {
             FileController fileController = GetFileController();
 
+            fileController.Delete(new MediaFile()).Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void FileController_Delete_CallsDeleteFileOnFileService()
+        {
+            FileController fileController = GetFileController();
             var mediaFile = new MediaFile();
-            fileController.Delete(mediaFile);
+            mediaFile.MediaCategory = new MediaCategory{Id = 1};
+            fileController.Delete_POST(mediaFile);
 
             A.CallTo(() => fileService.DeleteFile(mediaFile)).MustHaveHappened();
         }
