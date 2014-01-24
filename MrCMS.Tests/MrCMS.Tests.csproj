@@ -190,7 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MrCMS.Web\MrCMS.Web.csproj">
-      <Project>{e64f6811-8373-4310-9cce-3fbca0d87826}</Project>
+      <Project>{E64F6811-8373-4310-9CCE-3FBCA0D87826}</Project>
       <Name>MrCMS.Web</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrCMS\MrCMS.csproj">
