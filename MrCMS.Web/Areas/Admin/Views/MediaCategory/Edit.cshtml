@@ -1,10 +1,9 @@
-﻿@model MrCMS.Entities.Documents.Media.MediaCategory
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaCategory
 @{
     ViewBag.Title = "Edit | " + Model.Name;
-}
-@section JavaScriptBlock   
-{
-    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/media-category.js")"></script>
+
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/media-category.js");
 }
 
 @if (TempData["saved"] != null)
@@ -42,9 +41,6 @@
     </fieldset>
 }
 
-
 @{ Html.RenderPartial("Upload", Model); }
-
-<div id="dropzone" class="fade well">Drop files here</div>
 
 @{Html.RenderAction("ShowFiles", "File", new { Model });}

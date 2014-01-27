@@ -565,6 +565,7 @@
     <Content Include="Areas\Admin\Content\Images\no-image.jpg" />
     <Content Include="Areas\Admin\Content\Images\no-media-selected.jpg" />
     <Content Include="Areas\Admin\Content\Images\pencil.png" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\stickytabs.js" />
     <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\demo-ie8.css" />
     <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\demo.css" />
     <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\jquery.fileupload-noscript.css" />
@@ -906,6 +907,7 @@
     <Content Include="Areas\Admin\Content\Scripts\fancybox\jquery.fancybox.css" />
     <Content Include="Areas\Admin\Content\Scripts\fancybox\jquery.fancybox.js" />
     <Content Include="Areas\Admin\Content\Scripts\fancybox\jquery.fancybox.pack.js" />
+    <Content Include="Areas\Admin\Content\Scripts\store.js" />
     <Content Include="Areas\Admin\Content\Scripts\jstree\jstree.js" />
     <Content Include="Areas\Admin\Content\Scripts\jstree\jstree.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\jstree\libs\jquery.js" />

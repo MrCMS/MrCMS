@@ -48,6 +48,7 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.cookie.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.postback.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery-ui-timepicker-addon.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/store.js"); //used for local storage
 
         Html.IncludeScript("~/Areas/Admin/Content/Styles/bootstrap/js/bootstrap.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/fancybox/jquery.fancybox.js");
@@ -55,8 +56,9 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.globalize/globalize.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.globalize/cultures/globalize.culture." + CurrentRequestData.CultureInfo.Name + ".js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery-ui-1.10.4/ui/i18n/jquery.ui.datepicker-" + CurrentRequestData.CultureInfo.Name + ".js");
-        
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/menu.js"); // should come before admin.js for event reasons
+
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/menu.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/stickyTabs.js"); 
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/admin.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/tagging.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/search.js");

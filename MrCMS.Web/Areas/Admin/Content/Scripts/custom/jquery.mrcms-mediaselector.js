@@ -124,22 +124,12 @@
 
         $('<a>').attr('href', href).fancybox({
             type: 'iframe',
-            padding: 0,
-            height: 0,
-            onComplete: function () {
-                $('#fancybox-frame').load(function () { // wait for frame to load and then gets it's height
-                    $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
-                    $(this).data('callback', callback).data('element', element);
-                    var documentWidth = $('html').width() - 100;
-                    if (documentWidth > 1000)
-                        documentWidth = 1000;
-                    var width = (documentWidth);
-
-                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').height($(window).height() - 100);
-                    $('#fancybox-content, #fancybox-wrap, #fancybox-frame').width(width);
-                    $.fancybox.center();
-                });
-            }
+        autoSize: true,
+        minHeight: 200,
+        padding: 0,
+        afterShow: function () {
+            $(".fancybox-iframe").contents().find('form').attr('target', '_parent').css('margin', '0');
+        }
         }).click().remove();
 
     }
