@@ -220,6 +220,7 @@
     <Compile Include="Areas\Admin\Controllers\ACLController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileMigrationController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MediaSelectorController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageQueueController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileController.cs" />
@@ -565,6 +566,8 @@
     <Content Include="Areas\Admin\Content\Images\no-image.jpg" />
     <Content Include="Areas\Admin\Content\Images\no-media-selected.jpg" />
     <Content Include="Areas\Admin\Content\Images\pencil.png" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\media-uploader.js" />
+    <Content Include="Areas\Admin\Content\Scripts\custom\mrcms-media-selector.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\stickytabs.js" />
     <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\demo-ie8.css" />
     <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\demo.css" />
@@ -1615,6 +1618,8 @@
     <Content Include="Areas\Admin\Views\File\ShowFiles.cshtml" />
     <Content Include="Areas\Admin\Views\File\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\File\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\MediaSelector\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\MediaSelector\FileResult.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

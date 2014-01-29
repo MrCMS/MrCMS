@@ -38,7 +38,6 @@
 
     $(".datepicker").datepicker();
 
-
     $(document).on('click', '.date-time-picker', function () {
         var that = $(this);
         if (!that.hasClass('hasDatepicker')) {
@@ -60,7 +59,7 @@
             autoSize: true,
             minHeight: 200,
             padding: 0,
-            afterLoad: function (){
+            afterShow: function (){
                 $('.fancybox-iframe').contents().find('form').attr('target', '_parent').css('margin', '0');
             }
         }).click().remove();

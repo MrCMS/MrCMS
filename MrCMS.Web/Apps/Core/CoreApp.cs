@@ -230,6 +230,14 @@ namespace MrCMS.Web.Apps.Core
             var webpages = session.QueryOver<Webpage>().List();
             webpages.ForEach(documentService.PublishNow);
 
+            var defaultMediaCategory = new MediaCategory
+            {
+                Name = "Default",
+                UrlSegment = "default",
+                Site = site
+            };
+            documentService.AddDocument(defaultMediaCategory);
+
 
             siteSettings.DefaultLayoutId = model.BaseLayout.Id;
             siteSettings.Error403PageId = model.Error403.Id;
@@ -247,6 +255,7 @@ namespace MrCMS.Web.Apps.Core
             mediaSettings.SmallImageHeight = 200;
             mediaSettings.SmallImageWidth = 200;
             mediaSettings.ResizeQuality = 90;
+            mediaSettings.DefaultCategory = defaultMediaCategory.Id;
 
             var configurationProvider = new ConfigurationProvider(new SettingService(session, site),
                                                                   site);
@@ -254,16 +263,7 @@ namespace MrCMS.Web.Apps.Core
             configurationProvider.SaveSettings(siteSettings);
             configurationProvider.SaveSettings(mediaSettings);
             configurationProvider.SaveSettings(fileSystemSettings);
-
-
-            var defaultMediaCategory = new MediaCategory
-            {
-                Name = "Default",
-                UrlSegment = "default",
-                Site = site
-            };
-            documentService.AddDocument(defaultMediaCategory);
-
+            
             var logoPath = HttpContext.Current.Server.MapPath("/Apps/Core/Content/images/mrcms-logo.png");
             var fileStream = new FileStream(logoPath, FileMode.Open);
             var dbFile = fileService.AddFile(fileStream, Path.GetFileName(logoPath), "image/png", fileStream.Length, defaultMediaCategory);

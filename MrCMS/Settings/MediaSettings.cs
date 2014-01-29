@@ -146,5 +146,15 @@ namespace MrCMS.Settings
         }
 
         public int? ResizeQuality { get; set; }
+
+        [DisplayName("Default Category")]
+        [DropDownSelection("DefaultCategoryOptions")]
+        public virtual int DefaultCategory { get; set; }
+
+        private readonly SiteSettingsOptionGenerator _siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
+        public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
+        {
+            viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(session, Site, DefaultCategory);
+        }
     }
 }
