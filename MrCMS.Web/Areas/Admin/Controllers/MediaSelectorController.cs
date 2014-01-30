@@ -64,12 +64,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == searchQuery.CategoryId);
             if (!string.IsNullOrWhiteSpace(searchQuery.Query))
             {
+                var term = searchQuery.Query.Trim();
                 queryOver =
                     queryOver.Where(
                         file =>
-                        file.FileName.IsLike(searchQuery.Query, MatchMode.Anywhere) ||
-                        file.Title.IsLike(searchQuery.Query, MatchMode.Anywhere) ||
-                        file.Description.IsLike(searchQuery.Query, MatchMode.Anywhere));
+                        file.FileName.IsLike(term, MatchMode.Anywhere) ||
+                        file.Title.IsLike(term, MatchMode.Anywhere) ||
+                        file.Description.IsLike(term, MatchMode.Anywhere));
             }
             return queryOver.OrderBy(file => file.CreatedOn).Desc.Paged(searchQuery.Page);
         }
