@@ -236,14 +236,17 @@
                             label: c.lang.common.browseServer,
                             onLoad: function () {
                                 $(this.getInputElement().$).attr("href", null).click({ button: this }, function (e) {
-                                    var selectorUrl = "/Admin/MediaCategory/MediaSelector?v=" + new Date().getTime();
-                                    $(this).mediaselector('show', selectorUrl, function (element, value) {
-                                        e.data.button.getDialog().setValueOf('info', 'txtUrl', value);
-                                        $.get('/Admin/Image/GetImageData', { url: value, v: new Date().getTime() }, function (response) {
-                                            e.data.button.getDialog().setValueOf('info', 'txtAlt', response.alt);
-                                            e.data.button.getDialog().setValueOf('advanced', 'txtGenTitle', response.title);
-                                        });
+                                    var mediaSelector = new MediaSelector({
+                                        onSelected: function (info) {
+                                            e.data.button.getDialog().setValueOf('info', 'txtUrl', info.Url);
+                                            $.get('/Admin/Image/GetImageData', { url: info.Url, v: new Date().getTime() }, function (response) {
+                                                e.data.button.getDialog().setValueOf('info', 'txtAlt', response.alt);
+                                                e.data.button.getDialog().setValueOf('advanced', 'txtGenTitle', response.title);
+                                            });
+                                            $.fancybox.close();
+                                        }
                                     });
+                                    mediaSelector.show($);
                                 });
                             }
                         }

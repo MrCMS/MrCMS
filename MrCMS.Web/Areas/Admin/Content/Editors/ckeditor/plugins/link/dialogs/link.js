@@ -282,10 +282,13 @@ CKEDITOR.dialog.add("link", function (n) {
                     type: "button", id: "browse", label: i.browseServer,
                     onLoad: function () {
                         $(this.getInputElement().$).attr("href", null).click({ button: this }, function (e) {
-                            var selectorUrl = "/Admin/MediaCategory/MediaSelector?v=" + new Date().getTime();
-                            $(this).mediaselector('show', selectorUrl, function (element, value) {
-                                e.data.button.getDialog().setValueOf('info', 'url', value);
+                            var mediaSelector = new MediaSelector({
+                                onSelected: function (info) {
+                                    e.data.button.getDialog().setValueOf('info', 'url', info.Url);
+                                    $.fancybox.close();
+                                }
                             });
+                            mediaSelector.show($);
                         });
                     }
                 }

@@ -57,12 +57,25 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery.globalize/cultures/globalize.culture." + CurrentRequestData.CultureInfo.Name + ".js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/jquery-ui-1.10.4/ui/i18n/jquery.ui.datepicker-" + CurrentRequestData.CultureInfo.Name + ".js");
 
+
+        //file uploading
+        // The basic File Upload plugin 
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload.js");
+        // The File Upload processing plugin
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-process.js");
+        // The File Upload validation plugin 
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-validate.js");
+        // The File Upload user interface plugin
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/jQuery-File-Upload-9.5.2/js/jquery.fileupload-ui.js");
+
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/menu.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/stickyTabs.js"); 
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/stickyTabs.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/admin.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/tagging.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/search.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/jquery.mrcms-mediaselector.js");
+        //Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/jquery.mrcms-mediaselector.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/mrcms-media-selector.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/media-uploader.js");
     }
     @Html.RenderScripts()
 

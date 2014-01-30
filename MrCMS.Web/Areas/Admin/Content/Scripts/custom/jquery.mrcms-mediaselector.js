@@ -1,4 +1,6 @@
-﻿(function ($) {
+﻿
+
+(function ($) {
     var settings, methods = {
         init: function (options) {
             initializeSettings(options);

@@ -1,0 +1,49 @@
+﻿@using System.Drawing
+@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaFile
+<div class="file-result" data-file-result="@Model.Id">
+    <div class="header">
+        @if (Model.IsImage)
+        {
+            @Html.RenderImage(Model.FileUrl, new Size(25, 25))
+        }
+        @Model.FileName - @Model.ContentLength bytes
+                                    <a href="#" class="pull-right" data-media-toggle="@Model.Id">Show</a>
+    </div>
+    <div class="content" style="display: none" data-media-result="@Model.Id">
+        @if (Model.IsImage)
+        {
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            @Html.RenderImage(Model.FileUrl, new Size(64, 64))
+                        </td>
+                        <td>
+                            @foreach (var size in Model.Sizes)
+                            {
+                                <div>
+                                    @{
+                                var id = "SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height;
+                                    }
+                                    @Html.RadioButton("SelectedFile", Model.Id + "-" + size.Width + "-" + size.Height, new { id, data_file = Model.Id })
+                                    @Html.Label(id, new { style = "display:inline" }, size.Name + " (" + size.ActualWidth + "px x " + size.ActualHeight + "px)")
+                                </div>
+                            }
+
+                            <input type="button" class="btn-primary btn" data-file="@Model.Id" data-action="select" disabled="disabled" value="Choose file" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            var id = "SelectedFile-" + Model.Id;
+            @Html.RadioButton("SelectedFile", Model.FileUrl, new { id })
+            @Html.Label(id, "Select file")
+
+            <input type="button" class="btn-primary btn set-file" data-file="@Model.Id" data-action="select" disabled="disabled" value="Choose file" />
+        }
+    </div>
+</div>
