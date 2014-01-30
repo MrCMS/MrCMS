@@ -132,14 +132,11 @@ function getRemoteModel(href) {
     link.attr('href', href);
     link.fancybox({
         type: 'iframe',
+        autoSize: true,
+        minHeight: 200,
         padding: 0,
-        height: 0,
-        'onComplete': function() {
-            $('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
-                $(this).contents().find('form').attr('target', '_parent').css('margin', '0');
-                $('#fancybox-content').height($(this).contents()[0].documentElement.scrollHeight);
-                $.fancybox.center();
-            });
+        afterShow: function () {
+            $('.fancybox-iframe').contents().find('form').attr('target', '_parent').css('margin', '0');
         }
     }).click();
 }
