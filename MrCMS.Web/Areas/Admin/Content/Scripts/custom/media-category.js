@@ -1,6 +1,6 @@
 ﻿
 var mediaUploader;
 $(function () {
-    mediaUploader = new MediaUploader().init();
+    mediaUploader = new MediaUploader($(document)).init();
 });
 

@@ -1,31 +1,32 @@
-﻿var MediaUploader = function (options) {
+﻿var MediaUploader = function (el, options) {
+    var element = el;
     var settings = $.extend(MediaUploader.defaults, options);
     var self;
     return {
         init: function () {
             self = this;
-            if ($(settings.fileUploadSelector).length) {
-                $(settings.fileUploadSelector).fileupload({
+            if (element.find(settings.fileUploadSelector).length) {
+                element.find(settings.fileUploadSelector).fileupload({
                     dataType: 'json',
                     type: 'POST',
                     autoUpload: true,
                     sequentialUploads: settings.sequentialUploads,
-                    acceptFileTypes: settings.acceptFileTypes(),
-                    maxFileSize: settings.maxFileSize(),
+                    acceptFileTypes: settings.acceptFileTypes(element),
+                    maxFileSize: settings.maxFileSize(element),
                     done: this.fileUploaded,
                     progressall: this.progressBar,
-                    dropZone: settings.dropZoneSelector
+                    dropZone: element.find(settings.dropZoneSelector)
                 });
 
-                $(settings.fileUploadSelector).on('fileuploadstopped', settings.onFileUploadStopped);
-                $(document).bind('dragover', function (e) {
+                element.find(settings.fileUploadSelector).on('fileuploadstopped', function (e) { settings.onFileUploadStopped(e, element) });
+                element.bind('dragover', function (e) {
                     self.dropZoneEffect(e);
                 });
 
-                $(document).on('fileuploadprocessalways', function (e, data) {
+                element.on('fileuploadprocessalways', function (e, data) {
                     self.validateFiles(e, data);
                 }).on('fileuploadadded', function (e, data) {
-                    $(settings.filesSelector).html('');
+                    element.find(settings.filesSelector).html('');
                 });
 
             }
@@ -39,9 +40,9 @@
         },
         progressBar: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
-            $(settings.progressBarSelector).show();
-            $(settings.progressBarSelectorInner).css('width', progress + '%');
-            $(settings.percentCompleteSelector).html(progress + '%');
+            element.find(settings.progressBarSelector).show();
+            element.find(settings.progressBarSelectorInner).css('width', progress + '%');
+            element.find(settings.percentCompleteSelector).html(progress + '%');
 
         },
         validateFiles: function (e, data) {
@@ -49,17 +50,17 @@
                 file = data.files[index];
 
             if (file.error) {
-                settings.filesSelector
+                element.find(settings.filesSelector)
                     .append('<br/>')
                     .append($('<span class="red"/>').text(file.name + ' ' + file.error));
             }
         },
         dropZoneEffect: function (e) {
-            var dropZone = $('#dropzone'),
+            var dropZone = element.find('#dropzone'),
             timeout = window.dropZoneTimeout;
             if (!timeout) {
                 dropZone.addClass('in');
-                $("#drop-zone-text").text(settings.dragHereText);
+                element.find("#drop-zone-text").text(settings.dragHereText);
             } else {
                 clearTimeout(timeout);
             }
@@ -87,8 +88,8 @@
 };
 MediaUploader.defaults = {
     fileUploadSelector: "#fileupload",
-    acceptFileTypes: function () {
-        var allowedFileTypes = $("#allowedFileTypes").val();
+    acceptFileTypes: function (element) {
+        var allowedFileTypes = element.find("#allowedFileTypes").val();
         if (allowedFileTypes != null) {
             var filetypes = "(\\.|\\/)($1)$".replace("$1", allowedFileTypes);
             return new RegExp(filetypes, "i");
@@ -96,8 +97,8 @@ MediaUploader.defaults = {
         return /(\.|\/)(gif|jpeg|jpg|png|rar|zip)$/i;
     },
     sequentialUploads: true,
-    maxFileSize: function () {
-        var maxFileSize = $("#maxFileSizeUpload").val();
+    maxFileSize: function (element) {
+        var maxFileSize = element.find("#maxFileSizeUpload").val();
         return maxFileSize || 5000000;
     },
     progressBarSelector: "#progress",
@@ -106,10 +107,10 @@ MediaUploader.defaults = {
     filesSelector: "#files",
     dropZoneSelector: "#dropzone",
     dragHereText: "Drop Files Here",
-    onFileUploadStopped: function (e) {
-        if ($("#pager-url")) {
-            $.get($("#pager-url").val(), function (response) {
-                $('div[data-paging-type="async"]').replaceWith(response);
+    onFileUploadStopped: function (e, element) {
+        if (element.find("#pager-url")) {
+            $.get(element.find("#pager-url").val(), function (response) {
+                element.find('div[data-paging-type="async"]').replaceWith(response);
             });
         }
     }

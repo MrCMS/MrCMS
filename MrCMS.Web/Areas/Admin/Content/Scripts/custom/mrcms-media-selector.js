@@ -1,15 +1,17 @@
-﻿var MediaSelector = function (el, options) {
-    var element = el,
-        settings = $.extend(MediaSelector.defaults, options),
+﻿var MediaSelector = function (options) {
+
+    var element,
+        settings = jQuery.extend(MediaSelector.defaults, options),
         self,
         onSelected,
         timer,
-        mediaUploader;
+        mediaUploader,
+        $;
 
     var toggle = function (link) {
         var id = link.data('media-toggle');
-        var thisElement = $('[data-file-result=' + id + ']');
-        var others = $('[data-file-result]').not(thisElement);
+        var thisElement = element.find('[data-file-result=' + id + ']');
+        var others = element.find('[data-file-result]').not(thisElement);
         others.each(function () {
             var result = $(this);
             hideResult(result);
@@ -34,7 +36,7 @@
     };
     var submitForm = function (event) {
         event.preventDefault();
-        var form = $(settings.formSelector);
+        var form = element.find(settings.formSelector);
         var url = form.attr('action') + '?' + form.serialize();
         updateResults(url);
     };
@@ -52,7 +54,7 @@
     };
     var selectFile = function (event) {
         var file = $(this).data('file');
-        $('[data-action="select"][data-file=' + file + ']').removeAttr('disabled');
+        element.find('[data-action="select"][data-file=' + file + ']').removeAttr('disabled');
     };
     var deselectAll = function (result) {
         result.find('input[data-file]').removeAttr('checked');
@@ -60,28 +62,46 @@
     };
     var selected = function (event) {
         event.preventDefault();
-        var fileValue = $('input[data-file]').filter(':checked').val();
+        var fileValue = element.find('input[data-file]').filter(':checked').val();
         if (fileValue != '') {
-            if (onSelected) {
+            if (settings.onSelected) {
                 $.get('/Admin/MediaSelector/GetFileInfo/', { value: fileValue }, function (info) {
-                    onSelected(info);
+                    settings.onSelected(info);
                 });
             }
         }
     };
-    
-    var initializeMediaUploader = function() {
-        mediaUploader = new MediaUploader({
-            onFileUploadStopped:function(event) {
-                var form = $(settings.formSelector);
+
+    var initializeMediaUploader = function () {
+        mediaUploader = new MediaUploader(element, {
+            onFileUploadStopped: function (event) {
+                var form = element.find(settings.formSelector);
                 var url = form.attr('action') + '?' + form.serialize();
                 updateResults(url);
             }
         });
         mediaUploader.init();
     };
-    
+
     return {
+        show: function (jQ) {
+            self = this;
+            $ = jQ;
+            var link = $('<a>').attr('href', settings.selectorUrl);
+            link.hide();
+            link.fancybox({
+                type: 'iframe',
+                autoSize: true,
+                minHeight: 200,
+                padding: 0,
+                afterShow: function () {
+                    element = $('.fancybox-iframe').contents();
+                    element.find('form').css('margin', '0');
+                    self.init();
+                }
+            }).click().remove();
+            return self;
+        },
         init: function () {
             self = this;
             initializeMediaUploader();
@@ -103,9 +123,6 @@
             $(element).on('click', '[data-action="select"]', selected);
 
             return self;
-        },
-        setOnSelected: function (callback) {
-            onSelected = callback;
         }
     };
 };
@@ -118,6 +135,7 @@ var MediaSelectorWrapper = function (el, options) {
         removeButton,
         selectButton,
         buttonHolder,
+        mediaSelector,
         eventsRegistered = false;
     var getValue = function () {
         return element.val();
@@ -165,6 +183,7 @@ var MediaSelectorWrapper = function (el, options) {
                 element.hide().after(para);
                 this.update();
                 this.registerEvents();
+                mediaSelector = new MediaSelector({ onSelected: this.onSelected });
             }
         },
         registerEvents: function () {
@@ -201,22 +220,7 @@ var MediaSelectorWrapper = function (el, options) {
             self.update();
         },
         show: function () {
-            console.log('show');
-            var link = $('<a>').attr('href', settings.selectorUrl);
-            link.hide();
-            link.fancybox({
-                type: 'iframe',
-                autoSize: true,
-                minHeight: 200,
-                padding: 0,
-                afterShow: function () {
-                    var contents = $('.fancybox-iframe').contents();
-                    contents.find('form').css('margin', '0');
-                    var find = contents.find('[data-type=media-selector-popup]');
-                    var data = $.data(find[0], 'media-selector');
-                    data.setOnSelected(self.onSelected);
-                }
-            }).click().remove();
+            mediaSelector.show($);
         },
         reset: function () {
             self.setValue('');
@@ -234,15 +238,16 @@ MediaSelectorWrapper.defaults =
     selectClasses: 'btn btn-success',
     selectMessage: 'Select media...',
     removeClasses: 'btn btn-danger',
-    removeMessage: 'Remove media...',
-    selectorUrl: '/Admin/MediaSelector/Show'
+    removeMessage: 'Remove media...'
 };
 MediaSelector.defaults =
 {
+    selectorUrl: '/Admin/MediaSelector/Show',
     formSelector: '#search-form',
     resultsHolderSelector: '#results',
     mediaResultSelector: '[data-media-result]',
-    mediaToggleSelector: '[data-media-toggle]'
+    mediaToggleSelector: '[data-media-toggle]',
+    onSelected: function (info) { }
 };
 
 (function ($) {
@@ -301,5 +306,4 @@ MediaSelector.defaults =
 
 $(function () {
     $('[data-type=media-selector]').mediaSelector();
-    $('[data-type=media-selector-popup]').mediaSelectorPopup();
 });

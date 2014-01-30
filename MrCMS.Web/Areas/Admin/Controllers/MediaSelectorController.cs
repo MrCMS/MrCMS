@@ -44,8 +44,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class SelectedItemInfo
     {
         public string Url { get; set; }
-        public int Height { get; set; }
-        public int Width { get; set; }
     }
 
     public class MediaSelectorService : IMediaSelectorService
@@ -53,7 +51,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         private readonly ISession _session;
         private readonly IFileService _fileService;
 
-        public MediaSelectorService(ISession session,IFileService fileService)
+        public MediaSelectorService(ISession session, IFileService fileService)
         {
             _session = session;
             _fileService = fileService;
@@ -86,13 +84,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public SelectedItemInfo GetFileInfo(string value)
         {
             var fileUrl = _fileService.GetFileUrl(value);
-            var file = _fileService.GetFileByUrl(fileUrl);
 
             return new SelectedItemInfo
                        {
-                           Url = fileUrl,
-                           Height = file.Height,
-                           Width = file.Width
+                           Url = fileUrl
                        };
         }
     }
