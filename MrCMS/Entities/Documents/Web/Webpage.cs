@@ -143,7 +143,7 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Submit Button Css Class")]
         public virtual string SubmitButtonCssClass { get; set; }
         [StringLength(100)]
-        [DisplayName("Submit button custom CSS class")]
+        [DisplayName("Submit button custom text")]
         public virtual string SubmitButtonText { get; set; }
         
 
