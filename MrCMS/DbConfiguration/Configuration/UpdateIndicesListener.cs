@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Indexing;
 using MrCMS.Tasks;
 using MrCMS.Website;
 using NHibernate;
@@ -65,14 +66,19 @@ namespace MrCMS.DbConfiguration.Configuration
 
         public static void QueueTask(Type type, SiteEntity siteEntity)
         {
-            var queuedTask = new QueuedTask
-                                 {
-                                     Data = siteEntity.Id.ToString(),
-                                     Type = type.MakeGenericType(siteEntity.GetType()).FullName,
-                                     Status = TaskExecutionStatus.Pending,
-                                 };
-            if (!CurrentRequestData.QueuedTasks.Any(task => task.Data == queuedTask.Data && task.Type == queuedTask.Type))
-                CurrentRequestData.QueuedTasks.Add(queuedTask);
+            if (IndexingHelper.AnyIndexes(siteEntity))
+            {
+                var queuedTask = new QueuedTask
+                                     {
+                                         Data = siteEntity.Id.ToString(),
+                                         Type = type.MakeGenericType(siteEntity.GetType()).FullName,
+                                         Status = TaskExecutionStatus.Pending,
+                                     };
+                if (
+                    !CurrentRequestData.QueuedTasks.Any(
+                        task => task.Data == queuedTask.Data && task.Type == queuedTask.Type))
+                    CurrentRequestData.QueuedTasks.Add(queuedTask);
+            }
         }
 
         private static bool ShouldBeUpdated(SiteEntity siteEntity)

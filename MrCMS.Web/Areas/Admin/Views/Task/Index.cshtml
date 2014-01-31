@@ -25,6 +25,8 @@
                         </th>
                         <th>Every X Seconds
                         </th>
+                        <th>Status
+                        </th>
                         <th>Last Completed
                         </th>
                         <th></th>
@@ -39,6 +41,9 @@
                             </td>
                             <td>
                                 @task.EveryXSeconds
+                            </td>
+                            <td>
+                                @task.Status
                             </td>
                             <td>
                                 @(task.LastComplete.HasValue ? task.LastComplete.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-")

@@ -258,6 +258,7 @@
     <Compile Include="Events\IOnDocumentUnpublished.cs" />
     <Compile Include="Helpers\Validation\CurrencyValidator.cs" />
     <Compile Include="Helpers\Validation\EmailValidator.cs" />
+    <Compile Include="Indexing\IndexingHelper.cs" />
     <Compile Include="Indexing\Management\AzureDirectoryIndexManager.cs" />
     <Compile Include="Indexing\Querying\AzureDirectorySearcher.cs" />
     <Compile Include="Logging\LogSearchQuery.cs" />

@@ -9,7 +9,6 @@ using MrCMS.Entities;
 using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate.Proxy;
-using Ninject.Parameters;
 
 namespace MrCMS.Helpers
 {
