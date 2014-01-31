@@ -507,16 +507,17 @@
     <Compile Include="Shortcodes\Forms\IFormRenderer.cs" />
     <Compile Include="Shortcodes\Forms\ValidationMessaageRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
-    <Compile Include="Tasks\BackgroundTask.cs" />
     <Compile Include="Tasks\DeleteExpiredLogsTask.cs" />
     <Compile Include="Tasks\DeleteIndicesTask.cs" />
     <Compile Include="Tasks\IndexManagementTask.cs" />
     <Compile Include="Tasks\InsertIndicesTask.cs" />
-    <Compile Include="Tasks\IScheduledTaskManager.cs" />
-    <Compile Include="Tasks\ScheduledTask.cs" />
-    <Compile Include="Tasks\ScheduledTaskManager.cs" />
+    <Compile Include="Tasks\ITaskStatusUpdater.cs" />
+    <Compile Include="Tasks\ITaskManager.cs" />
+    <Compile Include="Tasks\QueuedTaskSearchQuery.cs" />
+    <Compile Include="Tasks\TaskManager.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
-    <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Tasks\ScheduledTask.cs" />
+    <Compile Include="Tasks\TaskStatusUpdater.cs" />
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Website\Binders\ACLUpdateModelBinder.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />
@@ -536,7 +537,21 @@
     <Compile Include="Website\Binders\NullableCultureAwareDateBinder.cs" />
     <Compile Include="Website\Binders\NullableEntityModelBinder.cs" />
     <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
+    <Compile Include="Tasks\BatchExecutionResult.cs" />
+    <Compile Include="Tasks\IExecutableTask.cs" />
+    <Compile Include="Tasks\IHaveExecutionStatus.cs" />
+    <Compile Include="Tasks\ITaskQueuer.cs" />
+    <Compile Include="Tasks\ITaskBuilder.cs" />
+    <Compile Include="Tasks\ITaskRunner.cs" />
+    <Compile Include="Tasks\ITaskExecutor.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
+    <Compile Include="Tasks\TaskQueuer.cs" />
+    <Compile Include="Tasks\QueuedTask.cs" />
+    <Compile Include="Tasks\TaskBuilder.cs" />
+    <Compile Include="Tasks\TaskExecutionController.cs" />
+    <Compile Include="Tasks\TaskExecutionResult.cs" />
+    <Compile Include="Tasks\TaskRunner.cs" />
+    <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
     <Compile Include="Website\MrCMSTypeACLAttribute.cs" />
@@ -569,7 +584,6 @@
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandler.cs" />
     <Compile Include="Website\MrCMSPage.cs" />
-    <Compile Include="Website\ScheduledTaskChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

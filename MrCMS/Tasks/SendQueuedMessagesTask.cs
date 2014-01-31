@@ -1,56 +1,64 @@
 using System;
 using System.Net;
 using System.Net.Mail;
-using Elmah;
 using MrCMS.Entities.Messaging;
-using MrCMS.Logging;
+using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Website;
-using MrCMS.Helpers;
+using NHibernate;
 
 namespace MrCMS.Tasks
 {
-    public class SendQueuedMessagesTask : BackgroundTask
+    public class SendQueuedMessagesTask : SchedulableTask
     {
+        public const int MAX_TRIES = 5;
         private readonly MailSettings _mailSettings;
+        private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
 
-        public SendQueuedMessagesTask(MailSettings mailSettings, SiteSettings siteSettings)
-            : base(siteSettings.Site)
+        public SendQueuedMessagesTask(ISession session, MailSettings mailSettings, SiteSettings siteSettings)
         {
+            _session = session;
             _mailSettings = mailSettings;
             _siteSettings = siteSettings;
         }
 
-        public override void Execute()
+        public override int Priority
         {
-            using (var smtpClient = new SmtpClient(_mailSettings.Host, _mailSettings.Port)
-            {
-                EnableSsl = _mailSettings.UseSSL,
-                Credentials = new NetworkCredential(_mailSettings.UserName, _mailSettings.Password)
-            })
-            {
-                Session.Transact(session =>
+            get { return 5; }
+        }
+
+        protected override void OnExecute()
+        {
+                using (var smtpClient = new SmtpClient(_mailSettings.Host, _mailSettings.Port)
+                                            {
+                                                EnableSsl = _mailSettings.UseSSL,
+                                                Credentials =
+                                                    new NetworkCredential(_mailSettings.UserName, _mailSettings.Password)
+                                            })
                 {
-                    foreach (
-                        var queuedMessage in
-                            Session.QueryOver<QueuedMessage>().Where(
-                                message => message.SentOn == null && message.Tries < MAX_TRIES)
-                                   .List())
-                    {
-                        if (CanSend(queuedMessage, smtpClient))
-                            SendMailMessage(queuedMessage, smtpClient);
-                        else
-                            MarkAsSent(queuedMessage);
-                        Session.SaveOrUpdate(queuedMessage);
-                    }
-                });
-            }
+                    _session.Transact(session =>
+                                          {
+                                              foreach (
+                                                  QueuedMessage queuedMessage in
+                                                      session.QueryOver<QueuedMessage>().Where(
+                                                          message => message.SentOn == null && message.Tries < MAX_TRIES)
+                                                             .List())
+                                              {
+                                                  if (CanSend(queuedMessage, smtpClient))
+                                                      SendMailMessage(queuedMessage, smtpClient);
+                                                  else
+                                                      MarkAsSent(queuedMessage);
+                                                  session.SaveOrUpdate(queuedMessage);
+                                              }
+                                          });
+                }
         }
 
         private bool CanSend(QueuedMessage queuedMessage, SmtpClient smtpClient)
         {
-            return !string.IsNullOrEmpty(queuedMessage.ToAddress) && smtpClient.Credentials != null && !string.IsNullOrWhiteSpace(smtpClient.Host) && _siteSettings.SiteIsLive;
+            return !string.IsNullOrEmpty(queuedMessage.ToAddress) && smtpClient.Credentials != null &&
+                   !string.IsNullOrWhiteSpace(smtpClient.Host) && _siteSettings.SiteIsLive;
         }
 
         private void SendMailMessage(QueuedMessage queuedMessage, SmtpClient smtpClient)
@@ -59,17 +67,17 @@ namespace MrCMS.Tasks
             {
                 var mailMessage = new MailMessage(new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),
                                                   new MailAddress(queuedMessage.ToAddress, queuedMessage.ToName))
-                {
-                    Subject = queuedMessage.Subject,
-                    Body = queuedMessage.Body
-                };
+                                      {
+                                          Subject = queuedMessage.Subject,
+                                          Body = queuedMessage.Body
+                                      };
 
                 if (!string.IsNullOrWhiteSpace(queuedMessage.Cc))
                     mailMessage.CC.Add(queuedMessage.Cc);
                 if (!string.IsNullOrWhiteSpace(queuedMessage.Bcc))
                     mailMessage.Bcc.Add(queuedMessage.Bcc);
 
-                foreach (var attachment in queuedMessage.QueuedMessageAttachments)
+                foreach (QueuedMessageAttachment attachment in queuedMessage.QueuedMessageAttachments)
                     mailMessage.Attachments.Add(new Attachment(attachment.FileName));
 
                 mailMessage.IsBodyHtml = queuedMessage.IsHtml;
@@ -80,15 +88,7 @@ namespace MrCMS.Tasks
             catch (Exception exception)
             {
                 // TODO: Make this work without HTTP context
-                var error = new Error(exception);
-                Session.SaveOrUpdate(new Log
-                {
-                    Error = error,
-                    Type = LogEntryType.Error,
-                    Site = queuedMessage.Site,
-                    Message = error.Message,
-                    Detail = error.Detail
-                });
+                CurrentRequestData.ErrorSignal.Raise(exception);
                 queuedMessage.Tries++;
             }
         }
@@ -97,7 +97,5 @@ namespace MrCMS.Tasks
         {
             queuedMessage.SentOn = CurrentRequestData.Now;
         }
-
-        public const int MAX_TRIES = 5;
     }
 }

@@ -6,19 +6,22 @@ using NHibernate;
 
 namespace MrCMS.Tasks
 {
-    public class DeleteExpiredLogsTask : BackgroundTask
+    public class DeleteExpiredLogsTask : SchedulableTask
     {
         private readonly SiteSettings _siteSettings;
+        private readonly ISessionFactory _sessionFactory;
 
-        public DeleteExpiredLogsTask(SiteSettings siteSettings)
-            : base(siteSettings.Site)
+        public DeleteExpiredLogsTask(SiteSettings siteSettings, ISessionFactory sessionFactory)
         {
             _siteSettings = siteSettings;
+            _sessionFactory = sessionFactory;
         }
 
-        public override void Execute()
+        public override int Priority { get { return 0; } }
+
+        protected override void OnExecute()
         {
-            var statelessSession = MrCMSApplication.Get<ISessionFactory>().OpenStatelessSession();
+            var statelessSession = _sessionFactory.OpenStatelessSession();
             var sessionDatas =
                 statelessSession.QueryOver<Log>().Where(data => data.CreatedOn <= CurrentRequestData.Now.AddDays(-_siteSettings.DaysToKeepLogs)).List();
 
@@ -31,5 +34,8 @@ namespace MrCMS.Tasks
                 transaction.Commit();
             }
         }
+
+        public Site Site { get; set; }
+        public IHaveExecutionStatus Entity { get; set; }
     }
 }

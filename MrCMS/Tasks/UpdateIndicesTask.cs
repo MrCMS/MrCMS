@@ -1,12 +1,12 @@
 ﻿using MrCMS.Entities;
 using MrCMS.Indexing.Management;
+using NHibernate;
 
 namespace MrCMS.Tasks
 {
     internal class UpdateIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
-        public UpdateIndicesTask(T entity)
-            : base(entity)
+        public UpdateIndicesTask(ISession session) : base(session)
         {
         }
 

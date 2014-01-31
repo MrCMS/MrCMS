@@ -9,6 +9,7 @@ using MrCMS.Entities;
 using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate.Proxy;
+using Ninject.Parameters;
 
 namespace MrCMS.Helpers
 {
@@ -296,6 +297,13 @@ namespace MrCMS.Helpers
         public static Type GetTypeByClassName(string typeName)
         {
             return _alltypes.FirstOrDefault(type => type.Name == typeName);
+        }
+
+        public static Type GetGenericTypeByName(string type)
+        {
+            return
+                _mrCMSAssemblies.Select(mrCMSAssembly => mrCMSAssembly.GetType(type))
+                                .FirstOrDefault(type1 => type1 != null);
         }
     }
 }

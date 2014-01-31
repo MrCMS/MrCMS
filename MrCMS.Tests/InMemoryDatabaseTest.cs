@@ -87,8 +87,6 @@ namespace MrCMS.Tests
 
             CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.Local.Id };
 
-            TaskExecutor.Discard();
-
             CurrentRequestData.ErrorSignal = new ErrorSignal();
         }
 
