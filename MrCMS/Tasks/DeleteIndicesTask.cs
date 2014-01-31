@@ -1,18 +1,13 @@
 ﻿using MrCMS.Entities;
 using MrCMS.Indexing.Management;
+using NHibernate;
 
 namespace MrCMS.Tasks
 {
     internal class DeleteIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
-        public DeleteIndicesTask(T entity)
-            : base(entity)
+        public DeleteIndicesTask(ISession session) : base(session)
         {
-        }
-
-        protected override T GetObject()
-        {
-            return Entity;
         }
 
         protected override void ExecuteLogic(IIndexManagerBase manager, T entity)

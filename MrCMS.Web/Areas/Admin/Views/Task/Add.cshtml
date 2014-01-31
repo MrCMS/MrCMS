@@ -11,8 +11,8 @@
         @Html.LabelFor(task => task.Type)
         @Html.DropDownListFor(task => task.Type, Model.GetTypeOptions(), new { data_val = "true", data_val_required = "Please select a task type" })
         @Html.ValidationMessageFor(task => task.Type)
-        @Html.LabelFor(task => task.EveryXMinutes)
-        @Html.TextBoxFor(task => task.EveryXMinutes)
-        @Html.ValidationMessageFor(task => task.EveryXMinutes)
+        @Html.LabelFor(task => task.EveryXSeconds)
+        @Html.TextBoxFor(task => task.EveryXSeconds)
+        @Html.ValidationMessageFor(task => task.EveryXSeconds)
     </fieldset>
 }

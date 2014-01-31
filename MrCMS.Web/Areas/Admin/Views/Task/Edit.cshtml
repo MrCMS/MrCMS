@@ -6,13 +6,12 @@
         <legend>Edit task
             <span class="btn-group  display-inline  pull-right">
                 <input type="submit" class="btn-primary btn" value="Edit task" />
-
             </span>
         </legend>
         @Html.LabelFor(task => task.Type)
         @Html.DisplayFor(task => task.Type)
-        @Html.LabelFor(task => task.EveryXMinutes)
-        @Html.TextBoxFor(task => task.EveryXMinutes)
-        @Html.ValidationMessageFor(task => task.EveryXMinutes)
+        @Html.LabelFor(task => task.EveryXSeconds)
+        @Html.TextBoxFor(task => task.EveryXSeconds)
+        @Html.ValidationMessageFor(task => task.EveryXSeconds)
     </fieldset>
 }

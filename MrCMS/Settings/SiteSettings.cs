@@ -25,6 +25,8 @@ namespace MrCMS.Settings
             CKEditorConfig = SettingDefaults.CkEditorConfig;
             HoneypotFieldName = "YourStatus";
             DaysToKeepLogs = 30;
+            TaskExecutorKey = "executor";
+            TaskExecutorPassword = Guid.NewGuid().ToString();
         }
 
         [DropDownSelection("Themes")]
@@ -72,6 +74,10 @@ namespace MrCMS.Settings
 
         [DisplayName("Honeypot Field Name")]
         public string HoneypotFieldName { get; set; }
+
+        public string TaskExecutorKey { get; set; }
+        public string TaskExecutorPassword { get; set; }
+
 
         public bool HasHoneyPot
         {

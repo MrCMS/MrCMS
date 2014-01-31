@@ -34,10 +34,6 @@ namespace MrCMS.Web.Apps.Core.Services
 
             var queuedMessage = _messageParser.GetMessage(user);
             _messageParser.QueueMessage(queuedMessage);
-
-            //to do - is this needed with new task system?
-
-            TaskExecutor.ExecuteLater(new SendQueuedMessagesTask(_mailSettings, _siteSettings));
         }
 
         public void ResetPassword(ResetPasswordViewModel model)

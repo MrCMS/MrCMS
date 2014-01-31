@@ -1,103 +1,62 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Indexing;
 using MrCMS.Indexing.Management;
 using MrCMS.Services;
-using MrCMS.Website;
+using NHibernate;
 
 namespace MrCMS.Tasks
 {
-    internal abstract class IndexManagementTask<T> : BackgroundTask where T : SiteEntity
+    internal abstract class IndexManagementTask<T> : AdHocTask where T : SiteEntity
     {
-        protected T Entity;
+        private readonly ISession _session;
 
-        protected IndexManagementTask(T entity)
-            : base(entity.Site)
+        protected IndexManagementTask(ISession session)
         {
-            Entity = entity;
+            _session = session;
         }
-        protected List<Type> GetDefinitionTypes()
+
+        public override string GetData()
         {
-            var definitionTypes = IndexDefinitionTypes.Where(type =>
+            return Id.ToString();
+        }
+        public override void SetData(string data)
+        {
+            Id = int.Parse(data);
+        }
+        public override int Priority
+        {
+            get { return 10; }
+        }
+
+        protected override void OnExecute()
+        {
+            var definitionTypes = IndexingHelper.GetDefinitionTypes<T>();
+            foreach (var indexManagerBase in definitionTypes.Select(type => IndexService.GetIndexManagerBase(type, Site)))
+                ExecuteLogic(indexManagerBase, GetObject());
+            var relatedDefinitionTypes = IndexingHelper.GetRelatedDefinitionTypes<T>();
+            foreach (var type in relatedDefinitionTypes)
             {
-                var indexDefinitionInterface =
-                    type.GetInterfaces()
-                        .FirstOrDefault(
-                            interfaceType =>
-                            interfaceType.IsGenericType &&
-                            interfaceType.GetGenericTypeDefinition() ==
-                            typeof(IIndexDefinition<>));
-                var genericArgument =
-                    indexDefinitionInterface.GetGenericArguments()[
-                        0];
-
-                return
-                    genericArgument.IsAssignableFrom(typeof(T));
-            }).ToList();
-            return definitionTypes;
-        }
-
-        protected List<Type> GetRelatedDefinitionTypes()
-        {
-            var definitionTypes = IndexDefinitionTypes.Where(type =>
-                                                                 {
-                                                                     var interfaces =
-                                                                         type.GetInterfaces()
-                                                                             .Where(
-                                                                                 interfaceType =>
-                                                                                 interfaceType.IsGenericType &&
-                                                                                 interfaceType.GetGenericTypeDefinition() ==
-                                                                                 typeof(IRelatedItemIndexDefinition<,>));
-
-                                                                     return
-                                                                         interfaces.Any(
-                                                                             relatedDefinitionType =>
-                                                                             relatedDefinitionType.GetGenericArguments()
-                                                                                 [0].IsAssignableFrom(typeof(T)));
-
-                                                                 }).ToList();
-            return definitionTypes;
-        }
-
-        private static List<Type> IndexDefinitionTypes
-        {
-            get { return TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IIndexDefinition<>)); }
-        }
-
-        public override void Execute()
-        {
-            if (Entity != null)
-            {
-                Entity = GetObject();
-                var site = Session.Get<Site>(Entity.Site.Id);
-                CurrentRequestData.CurrentSite = site;
-
-                var definitionTypes = GetDefinitionTypes();
-                foreach (var indexManagerBase in definitionTypes.Select(type => IndexService.GetIndexManagerBase(type, site)))
-                    ExecuteLogic(indexManagerBase, Entity);
-                var relatedDefinitionTypes = GetRelatedDefinitionTypes();
-                foreach (var type in relatedDefinitionTypes)
+                var instance = Activator.CreateInstance(type);
+                var indexManagerBase = IndexService.GetIndexManagerBase(type, Site);
+                var methodInfo = type.GetMethodExt("GetEntitiesToUpdate", typeof(T));
+                var toUpdate = methodInfo.Invoke(instance, new[] { Entity }) as IEnumerable;
+                foreach (var entity in toUpdate)
                 {
-                    var instance = Activator.CreateInstance(type);
-                    var indexManagerBase = IndexService.GetIndexManagerBase(type, site);
-                    var methodInfo = type.GetMethodExt("GetEntitiesToUpdate", typeof(T));
-                    var toUpdate = methodInfo.Invoke(instance, new[] { Entity }) as IEnumerable;
-                    foreach (var entity in toUpdate)
-                    {
-                        indexManagerBase.Update(entity);
-                    }
+                    indexManagerBase.Update(entity);
                 }
             }
         }
 
         protected virtual T GetObject()
         {
-            return Session.Get(typeof(T), Entity.Id) as T;
+            return _session.Get(typeof(T), Id) as T;
         }
+
+        public int Id { get; set; }
 
         protected abstract void ExecuteLogic(IIndexManagerBase manager, T entity);
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -10,6 +11,8 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Tasks;
+using Ninject;
 
 namespace MrCMS.Website
 {
@@ -149,6 +152,26 @@ namespace MrCMS.Website
                 Expires = expiry
             };
             CurrentContext.Response.Cookies.Add(userGuidCookie);
+        }
+
+        public static HashSet<Action<IKernel>> OnEndRequest
+        {
+            get
+            {
+                return (HashSet<Action<IKernel>>)(CurrentContext.Items["current.on-end-request"] ??
+                               (CurrentContext.Items["current.on-end-request"] = new HashSet<Action<IKernel>>()));
+            }
+            set { CurrentContext.Items["current.on-end-request"] = value; }
+        }
+
+        public static HashSet<QueuedTask> QueuedTasks
+        {
+            get
+            {
+                return (HashSet<QueuedTask>)(CurrentContext.Items["current.queued-tasks"] ??
+                               (CurrentContext.Items["current.queued-tasks"] = new HashSet<QueuedTask>()));
+            }
+            set { CurrentContext.Items["current.queued-tasks"] = value; }
         }
     }
 }

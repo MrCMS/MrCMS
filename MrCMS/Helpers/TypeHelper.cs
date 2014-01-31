@@ -297,5 +297,12 @@ namespace MrCMS.Helpers
         {
             return _alltypes.FirstOrDefault(type => type.Name == typeName);
         }
+
+        public static Type GetGenericTypeByName(string type)
+        {
+            return
+                _mrCMSAssemblies.Select(mrCMSAssembly => mrCMSAssembly.GetType(type))
+                                .FirstOrDefault(type1 => type1 != null);
+        }
     }
 }

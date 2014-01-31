@@ -76,18 +76,6 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void ResetPasswordService_SetResetPassword_ShouldQueueASendMessagesTask()
-        {
-            var user = new User();
-            A.CallTo(() => _messageParser.GetMessage(user, null, null, null, null, null, null))
-             .Returns(new QueuedMessage());
-
-            _resetPasswordService.SetResetPassword(user);
-
-            TaskExecutor.TasksToExecute.Value.OfType<SendQueuedMessagesTask>().Should().HaveCount(1);
-        }
-
-        [Fact]
         public void ResetPasswordService_ResetPassword_WhenValidCallsSetPasswordOnTheAuthorisationService()
         {
             var guid = Guid.NewGuid();

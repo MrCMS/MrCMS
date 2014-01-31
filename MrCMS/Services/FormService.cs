@@ -263,9 +263,6 @@ namespace MrCMS.Services
                                                                            IsHtml = true
                                                                        });
                                           }
-
-                                          TaskExecutor.ExecuteLater(new SendQueuedMessagesTask(_mailSettings,
-                                                                                               _siteSettings));
                                       });
             }
         }

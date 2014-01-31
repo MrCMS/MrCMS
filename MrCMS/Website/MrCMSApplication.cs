@@ -54,8 +54,6 @@ namespace MrCMS.Website
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
 
-            ScheduledTaskChecker.Instance.Start(10);
-
             GlobalFilters.Filters.Add(new HoneypotFilterAttribute());
         }
 
@@ -89,7 +87,6 @@ namespace MrCMS.Website
         {
             if (CurrentRequestData.DatabaseIsInstalled)
             {
-                TaskExecutor.SessionFactory = Get<ISessionFactory>();
                 BeginRequest += (sender, args) =>
                                     {
                                         if (!IsFileRequest(Request.Url))
@@ -112,12 +109,19 @@ namespace MrCMS.Website
                                                }
                                            };
                 EndRequest += (sender, args) =>
-                {
-                    if (!IsFileRequest(Request.Url))
-                    {
-                        TaskExecutor.StartExecuting();
-                    }
-                };
+                                  {
+                                      if (CurrentRequestData.QueuedTasks.Any())
+                                      {
+                                          Kernel.Get<ISession>()
+                                                 .Transact(session =>
+                                                               {
+                                                                   foreach (var queuedTask in CurrentRequestData.QueuedTasks)
+                                                                       session.Save(queuedTask);
+                                                               });
+                                      }
+                                      foreach (var action in CurrentRequestData.OnEndRequest)
+                                          action(Kernel);
+                                  };
             }
         }
 
@@ -129,6 +133,7 @@ namespace MrCMS.Website
             routes.IgnoreRoute("favicon.ico");
 
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
+            routes.MapRoute("Task Execution", "execute-pending-tasks", new { controller = "TaskExecution", action = "Execute" });
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
             routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",
@@ -237,7 +242,7 @@ namespace MrCMS.Website
             return Kernel.Get(type);
         }
 
-        public const string AssemblyVersion = "0.3.3.*";
+        public const string AssemblyVersion = "0.3.3.0";
         public const string AssemblyFileVersion = "0.3.3.0";
     }
 
