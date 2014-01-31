@@ -211,7 +211,7 @@ namespace MrCMS.Services
                         Name = doc.Name,
                         NodeType = nodeType,
                         Sortable = IsSortable(doc),
-                        CanAddChild = isWebpage && (doc as Webpage).GetValidWebpageDocumentTypes().Any(),
+                        CanAddChild = !isWebpage || (doc as Webpage).GetValidWebpageDocumentTypes().Any(),
                         IsPublished = !isWebpage || (doc as Webpage).Published,
                         RevealInNavigation = !isWebpage || (doc as Webpage).RevealInNavigation
                     };
