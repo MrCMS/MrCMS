@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
 using MrCMS.ACL.Rules;
@@ -46,6 +47,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 return
                     Json(new SaveResult(false,
                                         string.Format("Could not find entity of type '{0}' with id {1}", type, id)));
+            if (string.IsNullOrWhiteSpace(content) &&
+                propertyInfo.GetCustomAttributes(typeof (RequiredAttribute), false).Any())
+            {
+                return
+                    Json(new SaveResult(false,
+                                        string.Format("Could not edit '{0}' as it is required", property)));
+            }
+
             propertyInfo.SetValue(entity, content, null);
             _session.Transact(session => session.SaveOrUpdate(entity));
 
