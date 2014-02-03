@@ -30,7 +30,7 @@ namespace MrCMS.Tasks
 
         public List<TaskExecutionResult> ExecuteTasks(IList<IExecutableTask> list)
         {
-            ListExtensions.ForEach(list, task => _taskStatusUpdater.BeginExecution(task));
+            list.ForEach(task => _taskStatusUpdater.BeginExecution(task));
             var luceneActions =
                 list.Select(task => task as ILuceneIndexTask)
                     .SelectMany(task => task.GetActions())
