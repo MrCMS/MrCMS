@@ -5,29 +5,22 @@ namespace MrCMS.Tasks
 {
     public class TaskExecutor : ITaskExecutor
     {
-        private readonly ITaskStatusUpdater _taskStatusUpdater;
+        private readonly IEnumerable<ITaskExecutionHandler> _executionHandlers;
 
-        public TaskExecutor(ITaskStatusUpdater taskStatusUpdater)
+        public TaskExecutor(IEnumerable<ITaskExecutionHandler> executionHandlers)
         {
-            _taskStatusUpdater = taskStatusUpdater;
+            _executionHandlers = executionHandlers;
         }
 
         public BatchExecutionResult Execute(IList<IExecutableTask> tasksToExecute)
         {
-            var results = tasksToExecute.Select(Execute).ToList();
-
+            var results = new List<TaskExecutionResult>();
+            foreach (var handler in _executionHandlers.OrderByDescending(handler => handler.Priority))
+            {
+                var tasks = handler.ExtractTasksToHandle(ref tasksToExecute);
+                results.AddRange(handler.ExecuteTasks(tasks));
+            }
             return new BatchExecutionResult { Results = results };
-        }
-
-        public TaskExecutionResult Execute(IExecutableTask executableTask)
-        {
-            _taskStatusUpdater.BeginExecution(executableTask);
-            var result = executableTask.Execute();
-            if (result.Success)
-                _taskStatusUpdater.SuccessfulCompletion(executableTask);
-            else
-                _taskStatusUpdater.FailedExecution(executableTask);
-            return result;
         }
     }
 }

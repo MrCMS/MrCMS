@@ -52,6 +52,7 @@ namespace MrCMS.Indexing.Management
             return mapPath;
         }
 
+        public string SystemName { get { return GetType().FullName; } }
         public abstract string IndexFolderName { get; }
 
         public virtual Analyzer GetAnalyser()
@@ -66,5 +67,18 @@ namespace MrCMS.Indexing.Management
                                          Field.Index.NOT_ANALYZED);
 
         public static FieldDefinition<T> Id { get { return _id; } }
+        public Document Convert(object entity)
+        {
+            if (entity is T)
+                return Convert(entity as T);
+            return null;
+        }
+
+        public Term GetIndex(object entity)
+        {
+            if (entity is T)
+                return GetIndex(entity as T);
+            return null;
+        }
     }
 }

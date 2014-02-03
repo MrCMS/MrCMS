@@ -13,17 +13,18 @@ namespace MrCMS.Indexing.Querying
 {
     public abstract class Searcher<TEntity, TDefinition> : ISearcher<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>, new()
+        where TDefinition : IIndexDefinition<TEntity>
     {
         private readonly Site _site;
         private readonly ISession _session;
-        protected readonly TDefinition Definition = new TDefinition();
+        private readonly TDefinition _definition;
         private IndexSearcher _indexSearcher;
 
-        protected Searcher(Site site, ISession session)
+        protected Searcher(Site site, ISession session, TDefinition definition)
         {
             _site = site;
             _session = session;
+            _definition = definition;
         }
 
         protected abstract Directory GetDirectory(Site currentSite);
@@ -61,6 +62,11 @@ namespace MrCMS.Indexing.Querying
 
         public string IndexName { get { return Definition.IndexName; } }
         public string IndexFolderName { get { return Definition.IndexFolderName; } }
+
+        public TDefinition Definition
+        {
+            get { return _definition; }
+        }
 
 
         private bool _disposed;

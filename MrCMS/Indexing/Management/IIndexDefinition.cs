@@ -13,9 +13,43 @@ namespace MrCMS.Indexing.Management
         where T2 : SystemEntity
         where T1 : SystemEntity
     {
-        new IEnumerable<T2> GetEntitiesToUpdate(T1 obj);
+        IEnumerable<T2> GetEntitiesToUpdate(T1 obj);
     }
-    public interface IIndexDefinition<T> where T : SystemEntity
+
+    public interface IIndexDefinition
+    {
+        /// <summary>
+        /// Takes your entity, and convert a Lucene document for indexing
+        /// </summary>
+        /// <param name="entity">MrCMS entity</param>
+        /// <returns>a Lucene document ready to be indexed</returns>
+        Document Convert(object entity);
+
+        /// <summary>
+        /// Retrieves the index term, to allow updates and deletes to be performed on the lucene index, 
+        /// getting the value from the passed entity (normally the id)
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        Term GetIndex(object entity);
+
+        /// <summary>
+        /// The name that is shown in admin
+        /// </summary>
+        string IndexName { get; }
+
+        /// <summary>
+        /// The name of the type
+        /// </summary>
+        string SystemName { get; }
+
+        /// <summary>
+        /// The name used to define the index in the directory
+        /// </summary>
+        string IndexFolderName { get; }
+    }
+
+    public interface IIndexDefinition<T> : IIndexDefinition where T : SystemEntity
     {
         /// <summary>
         /// Takes your entity, and convert a Lucene document for indexing
@@ -65,15 +99,5 @@ namespace MrCMS.Indexing.Management
         /// 
         /// </summary>
         IEnumerable<FieldDefinition<T>> Definitions { get; }
-
-        /// <summary>
-        /// The name that is shown in admin
-        /// </summary>
-        string IndexName { get; }
-
-        /// <summary>
-        /// The name used to define the index in the directory
-        /// </summary>
-        string IndexFolderName { get; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using MrCMS.Entities;
+using MrCMS.Helpers;
 using MrCMS.Website;
 
 namespace MrCMS.Tasks
@@ -7,6 +8,10 @@ namespace MrCMS.Tasks
     public class QueuedTask : SiteEntity, IHaveExecutionStatus
     {
         public virtual string Type { get; set; }
+        public virtual Type GetTaskType()
+        {
+            return TypeHelper.GetGenericTypeByName(Type);
+        }
         public virtual string Data { get; set; }
         public virtual TaskExecutionStatus Status { get; set; }
         public virtual int Tries { get; set; }

@@ -10,12 +10,12 @@ namespace MrCMS.Indexing.Querying
 {
     public class FSDirectorySearcher<TEntity, TDefinition> : Searcher<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>, new()
+        where TDefinition : IIndexDefinition<TEntity>
     {
         private static FSDirectory _directory;
 
-        public FSDirectorySearcher(Site currentSite, ISession session)
-            : base(currentSite, session)
+        public FSDirectorySearcher(Site currentSite, ISession session, TDefinition definition)
+            : base(currentSite, session, definition)
         {
         }
 
