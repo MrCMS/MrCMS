@@ -5,6 +5,5 @@ namespace MrCMS.Tasks
     public interface ITaskExecutor
     {
         BatchExecutionResult Execute(IList<IExecutableTask> tasksToExecute);
-        TaskExecutionResult Execute(IExecutableTask executableTask);
     }
 }

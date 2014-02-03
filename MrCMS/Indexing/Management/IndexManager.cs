@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
@@ -35,16 +36,16 @@ namespace MrCMS.Indexing.Management
 
     public abstract class IndexManager<TEntity, TDefinition> : IIndexManager<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>, new()
+        where TDefinition : IIndexDefinition<TEntity>
     {
         protected readonly Site CurrentSite;
+        private readonly TDefinition _definition;
 
-        protected IndexManager(Site currentSite)
+        protected IndexManager(Site currentSite, TDefinition definition)
         {
             CurrentSite = currentSite;
+            _definition = definition;
         }
-
-        protected readonly TDefinition Definition = new TDefinition();
 
         protected abstract Directory GetDirectory();
 
@@ -86,7 +87,12 @@ namespace MrCMS.Indexing.Management
         public string IndexName { get { return Definition.IndexName; } }
         public string IndexFolderName { get { return Definition.IndexFolderName; } }
 
-        private void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
+        public TDefinition Definition
+        {
+            get { return _definition; }
+        }
+
+        private void Write(Action<IndexWriter> writeFunc, bool recreateIndex)
         {
             using (
                 var indexWriter = new IndexWriter(GetDirectory(), Definition.GetAnalyser(), recreateIndex,
@@ -121,6 +127,11 @@ namespace MrCMS.Indexing.Management
         public Type GetEntityType()
         {
             return typeof(TEntity);
+        }
+
+        public void Write(Action<IndexWriter> action)
+        {
+            Write(action, false);
         }
 
         public IndexResult Insert(IEnumerable<TEntity> entities)
@@ -217,6 +228,11 @@ namespace MrCMS.Indexing.Management
         public IndexResult Delete(TEntity entity)
         {
             return IndexResult.GetResult(() => Write(writer => writer.DeleteDocuments(Definition.GetIndex(entity))));
+        }
+
+        public Document GetDocument(object entity)
+        {
+            return Definition.Convert(entity as TEntity);
         }
 
         public IndexResult Optimise()

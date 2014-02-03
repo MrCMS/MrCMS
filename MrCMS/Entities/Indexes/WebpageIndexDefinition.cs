@@ -7,7 +7,8 @@ using MrCMS.Indexing.Management;
 
 namespace MrCMS.Entities.Indexes
 {
-    public class WebpageIndexDefinition : IndexDefinition<Webpage>
+    public class WebpageIndexDefinition : IndexDefinition<Webpage>, 
+    IRelatedItemIndexDefinition<UrlHistory, Webpage>
     {
 
         public override IEnumerable<FieldDefinition<Webpage>> Definitions
@@ -90,6 +91,11 @@ namespace MrCMS.Entities.Indexes
             }
 
             yield return typeof(Webpage).FullName;
+        }
+
+        public IEnumerable<Webpage> GetEntitiesToUpdate(UrlHistory obj)
+        {
+            yield return obj.Webpage;
         }
     }
 }

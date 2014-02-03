@@ -256,6 +256,8 @@
     <Compile Include="Events\IOnDocumentAdded.cs" />
     <Compile Include="Events\IOnDocumentDeleted.cs" />
     <Compile Include="Events\IOnDocumentUnpublished.cs" />
+    <Compile Include="Helpers\KeyEqualityComparer.cs" />
+    <Compile Include="Helpers\StrictKeyEqualityComparer.cs" />
     <Compile Include="Helpers\Validation\CurrencyValidator.cs" />
     <Compile Include="Helpers\Validation\EmailValidator.cs" />
     <Compile Include="Indexing\IndexingHelper.cs" />
@@ -508,12 +510,16 @@
     <Compile Include="Shortcodes\Forms\IFormRenderer.cs" />
     <Compile Include="Shortcodes\Forms\ValidationMessaageRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
+    <Compile Include="Tasks\DefaultTaskExecutionHandler.cs" />
     <Compile Include="Tasks\DeleteExpiredLogsTask.cs" />
     <Compile Include="Tasks\DeleteIndicesTask.cs" />
     <Compile Include="Tasks\IndexManagementTask.cs" />
     <Compile Include="Tasks\InsertIndicesTask.cs" />
+    <Compile Include="Tasks\ITaskExecutionHandler.cs" />
     <Compile Include="Tasks\ITaskStatusUpdater.cs" />
     <Compile Include="Tasks\ITaskManager.cs" />
+    <Compile Include="Tasks\LuceneActionComparison.cs" />
+    <Compile Include="Tasks\LuceneIndexTaskExecutionHandler.cs" />
     <Compile Include="Tasks\QueuedTaskSearchQuery.cs" />
     <Compile Include="Tasks\TaskManager.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />

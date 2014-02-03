@@ -8,13 +8,13 @@ namespace MrCMS.Indexing.Management
 {
     public class AzureDirectoryIndexManager<TEntity, TDefinition> : IndexManager<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>, new()
+        where TDefinition : IIndexDefinition<TEntity>
     {
         private readonly IAzureFileSystem _azureFileSystem;
         private static AzureDirectory _directory;
 
-        public AzureDirectoryIndexManager(Site currentSite, IAzureFileSystem azureFileSystem)
-            : base(currentSite)
+        public AzureDirectoryIndexManager(Site currentSite, TDefinition definition, IAzureFileSystem azureFileSystem)
+            : base(currentSite, definition)
         {
             _azureFileSystem = azureFileSystem;
         }

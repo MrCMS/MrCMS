@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using MrCMS.Helpers;
 using Ninject;
 
@@ -21,8 +19,7 @@ namespace MrCMS.Tasks
             var executableTasks = new List<IExecutableTask>();
             foreach (var queuedTask in pendingQueuedTasks)
             {
-                var taskType = TypeHelper.GetGenericTypeByName(queuedTask.Type);
-                var task = _kernel.Get(taskType) as IExecutableTask;
+                var task = _kernel.Get(queuedTask.GetTaskType()) as IExecutableTask;
                 task.Site = queuedTask.Site;
                 task.Entity = queuedTask;
                 task.SetData(queuedTask.Data);
