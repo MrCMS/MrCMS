@@ -53,8 +53,8 @@ namespace MrCMS.Tasks
                                       var hungTasks = session.QueryOver<QueuedTask>()
                                                              .Where(
                                                                  task =>
-                                                                 task.Status == TaskExecutionStatus.AwaitingExecution &&
-                                                                 task.QueuedAt < CurrentRequestData.Now.AddMinutes(5))
+                                                                 (task.Status == TaskExecutionStatus.AwaitingExecution || task.Status == TaskExecutionStatus.Executing) &&
+                                                                 task.QueuedAt < CurrentRequestData.Now.AddMinutes(15))
                                                              .List();
                                       foreach (var task in hungTasks)
                                       {
