@@ -20,9 +20,7 @@ namespace MrCMS.Entities.Documents
 
         public bool Sortable { get; set; }
 
-        public Func<Document, object> SortBy { get; set; }
-
-        public bool SortByDesc { get; set; }
+        public SortBy SortBy { get; set; }
 
         public int DisplayOrder { get; set; }
         public Type Type { get; set; }
@@ -64,6 +62,16 @@ namespace MrCMS.Entities.Documents
                 return new List<Type>();
             }
         }
+    }
+
+    public enum SortBy 
+    {
+        DisplayOrder,
+        DisplayOrderDesc,
+        PublishedOn,
+        PublishedOnDesc,
+        CreatedOn,
+        CreatedOnDesc,
     }
 
     public enum ChildrenListType

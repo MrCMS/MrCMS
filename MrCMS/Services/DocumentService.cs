@@ -89,7 +89,12 @@ namespace MrCMS.Services
         public T GetUniquePage<T>()
             where T : Document, IUniquePage
         {
-            return _session.QueryOver<T>().Where(arg => arg.Site.Id == _currentSite.Id).Take(1).Cacheable().SingleOrDefault();
+            return
+                _session.QueryOver<T>()
+                        .Where(arg => arg.Site.Id == _currentSite.Id)
+                        .Take(1)
+                        .Cacheable()
+                        .SingleOrDefault();
         }
 
         public T SaveDocument<T>(T document) where T : Document
@@ -117,82 +122,13 @@ namespace MrCMS.Services
             return uniqueResult != 0;
         }
 
-        public IEnumerable<T> GetFrontEndDocumentsByParentId<T>(int? id) where T : Document
-        {
-            IEnumerable<T> children;
-            Document document = null;
-            if (id.HasValue)
-            {
-                document = _session.Get<Document>(id);
-                children = document.Children.Select(TypeHelper.Unproxy).OfType<T>();
-            }
-            else
-            {
-                children = _session.QueryOver<T>().Where(arg => arg.Parent == null).List();
-            }
-
-            children =
-                children.Where(
-                    arg => !(arg is Webpage) || (arg as Webpage).IsAllowed(CurrentRequestData.CurrentUser));
-
-            if (document != null)
-            {
-                var documentTypeDefinition = document.GetMetadata();
-                if (documentTypeDefinition != null)
-                {
-                    return Sort(documentTypeDefinition, children);
-                }
-            }
-            return children.OrderBy(arg => arg.DisplayOrder);
-        }
-
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
-            IEnumerable<T> list;
-            if (parent != null)
-            {
-                var documentTypeDefinition = parent.GetMetadata();
-                list = parent.Children.OfType<T>();
-                if (documentTypeDefinition != null)
-                    list = Sort(documentTypeDefinition, list);
-            }
-            else
-            {
-                list = _session.QueryOver<T>().Where(arg => arg.Parent == null).Cacheable().List();
-            }
+            IEnumerable<T> list = parent != null
+                                      ? parent.Children.OfType<T>()
+                                      : _session.QueryOver<T>().Where(arg => arg.Parent == null).Cacheable().List();
             list = list.Where(arg => arg.Site == _currentSite);
             return list;
-        }
-
-        public IEnumerable<T> GetAdminDocumentsByParent<T>(T parent) where T : Document
-        {
-            var queryOver = _session.QueryOver<T>().Where(arg => arg.Site.Id == _currentSite.Id);
-
-            queryOver = parent != null
-                            ? queryOver.Where(arg => arg.Parent.Id == parent.Id)
-                            : queryOver.Where(arg => arg.Parent == null);
-
-            IEnumerable<T> children =
-                queryOver.Cacheable().List();
-
-            if (parent is Webpage)
-            {
-                var documentTypeDefinition = parent.GetMetadata();
-                if (documentTypeDefinition != null)
-                {
-                    return Sort(documentTypeDefinition, children);
-                }
-            }
-            return children.Where(arg => arg.ShowInAdminNav).OrderBy(arg => arg.DisplayOrder);
-        }
-
-        private static IEnumerable<T> Sort<T>(DocumentMetadata documentMetadata, IEnumerable<T> children) where T : Document
-        {
-            var childrenSortedNull =
-                children.OrderByDescending(arg => documentMetadata.SortBy(arg) == null);
-            return documentMetadata.SortByDesc
-                       ? childrenSortedNull.ThenByDescending(documentMetadata.SortBy)
-                       : childrenSortedNull.ThenBy(documentMetadata.SortBy);
         }
 
         public string GetDocumentUrl(string pageName, Webpage parent, bool useHierarchy = false)

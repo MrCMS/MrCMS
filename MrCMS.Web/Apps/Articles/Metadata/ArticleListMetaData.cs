@@ -23,16 +23,11 @@ namespace MrCMS.Web.Apps.Articles.Metadata
             get { yield return typeof(Pages.Article); }
         }
 
-        public override bool SortByDesc
-        {
-            get { return true; }
-        }
-
-        public override Func<Document, object> SortBy
+        public override SortBy SortBy
         {
             get
             {
-                return document => document.CreatedOn;
+                return SortBy.PublishedOnDesc;
             }
         }
 
