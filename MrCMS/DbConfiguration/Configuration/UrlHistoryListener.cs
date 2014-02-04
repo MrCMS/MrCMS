@@ -30,7 +30,7 @@ namespace MrCMS.DbConfiguration.Configuration
                     var newState = @event.State[indexOf];
 
                     //check that the URL is different and doesn't already exist in the URL history table.
-                    if (oldState != newState && !CheckUrlExistence(session, oldState.ToString()))
+                    if (!StringComparer.OrdinalIgnoreCase.Equals(oldState,newState) && !CheckUrlExistence(session, oldState.ToString()))
                     {
                         var urlHistory = new UrlHistory
                         {
