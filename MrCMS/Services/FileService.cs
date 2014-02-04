@@ -207,14 +207,13 @@ namespace MrCMS.Services
             if (mediaFile.MediaCategory != null)
                 mediaFile.MediaCategory.Files.Remove(mediaFile);
 
-            _fileSystem.Delete(mediaFile.FileUrl);
-            foreach (var imageUrl in
-                GetImageSizes()
-                    .Select(imageSize => GetUrl(mediaFile, imageSize.Size))
-                    .Where(path => _fileSystem.Exists(path)))
+            foreach (var resizedImage in
+                mediaFile.ResizedImages
+                    .Where(path => _fileSystem.Exists(path.Url)))
             {
-                _fileSystem.Delete(imageUrl);
+                _fileSystem.Delete(resizedImage.Url);
             }
+            _fileSystem.Delete(mediaFile.FileUrl);
 
             _session.Transact(session => session.Delete(mediaFile));
         }
