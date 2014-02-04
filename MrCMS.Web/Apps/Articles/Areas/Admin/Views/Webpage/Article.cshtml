@@ -2,7 +2,7 @@
 @model MrCMS.Web.Apps.Articles.Pages.Article 
            
 @Html.LabelFor(model => model.FeatureImage, "Article Image")
-@Html.TextAreaFor(model => model.FeatureImage, new { @rows = "4", @class = "span12 media-selector" })
+@Html.TextBoxFor(model => model.FeatureImage, new { data_type = "media-selector" })
 
 @Html.LabelFor(model => model.Abstract)
 @Html.TextAreaFor(model => model.Abstract, new { @rows = "4", @class = "span12" })

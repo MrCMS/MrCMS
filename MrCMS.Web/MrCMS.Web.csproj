@@ -923,7 +923,6 @@
     <Content Include="Areas\Admin\Content\Scripts\jstree\themes\default\throbber.gif" />
     <Content Include="Areas\Admin\Content\Scripts\custom\jquery.mrcms-mediaselector.js" />
     <Content Include="Areas\Admin\Content\Scripts\custom\menu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\MicrosoftAjax.js" />
     <Content Include="Areas\Admin\Content\Scripts\MicrosoftMvcAjax.js" />
     <Content Include="Areas\Admin\Content\Scripts\MicrosoftMvcJQueryValidation.js" />
     <Content Include="Areas\Admin\Content\Scripts\MicrosoftMvcValidation.js" />
@@ -1481,7 +1480,6 @@
     <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Edit.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\User\Article.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Article\ForUser.cshtml" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.validate.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1492,9 +1490,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Content\Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Areas\Admin\Content\Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
