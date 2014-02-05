@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using Iesi.Collections.Generic;
+using Microsoft.AspNet.Identity;
 using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -87,7 +88,8 @@ namespace MrCMS.Web.Apps.Core
 
             passwordManagementService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
             passwordManagementService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
-            session.Transact(sess => sess.Save(user));
+            var userService = new UserService(session, siteSettings);
+            userService.AddUser(user);
             CurrentRequestData.CurrentUser = user;
 
             documentService.AddDocument(model.BaseLayout);
@@ -287,9 +289,11 @@ namespace MrCMS.Web.Apps.Core
             var roleService = new RoleService(session);
             roleService.SaveRole(adminUserRole);
 
-            var authorisationService = new AuthorisationService();
+            var authorisationService = new AuthorisationService(HttpContext.Current.GetOwinContext().Authentication,
+                                                                new UserManager<User>(new UserStore(userService,
+                                                                                                    roleService, session)));
             authorisationService.Logout();
-            authorisationService.SetAuthCookie(user.Email, false);
+            authorisationService.SetAuthCookie(user, false);
 
             //set up system tasks
             //var taskService = MrCMSApplication.Get<IScheduledTaskManager>();

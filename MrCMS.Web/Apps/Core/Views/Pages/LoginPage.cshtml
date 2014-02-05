@@ -1,7 +1,33 @@
-﻿@using MrCMS.Helpers
+﻿@using Microsoft.Owin.Security
+@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Core.Models
 @model MrCMS.Web.Apps.Core.Pages.LoginPage
-           
+
 @Editable(Model, page => page.BodyContent, true)
 
-@{ Html.RenderPartial("LoginBox", ViewData["login-model"] as LoginModel);}
+@{
+    var loginModel = ViewData["login-model"] as LoginModel;
+    Html.RenderPartial("LoginBox", loginModel);
+}
+
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Any())
+    {
+    <hr />
+<h4>Use another service to log in.</h4>
+        string returnUrl = loginModel.ReturnUrl;
+        using (Html.BeginForm("Login", "ExternalLogin", new { ReturnUrl = returnUrl }))
+        {
+    <div id="socialLoginList">
+        <p>
+            @foreach (AuthenticationDescription p in loginProviders)
+            {
+                <button type="submit" class="btn btn-default" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">@p.AuthenticationType</button>
+            }
+        </p>
+    </div>
+        }
+    }
+}
+

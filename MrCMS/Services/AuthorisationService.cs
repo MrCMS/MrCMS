@@ -1,17 +1,31 @@
 using System.Web.Security;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
+using MrCMS.Entities.People;
 
 namespace MrCMS.Services
 {
     public class AuthorisationService : IAuthorisationService
     {
-        public void SetAuthCookie(string email, bool rememberMe)
+        private readonly IAuthenticationManager _authenticationManager;
+        private readonly UserManager<User> _userManager;
+
+        public AuthorisationService(IAuthenticationManager authenticationManager, UserManager<User> userManager)
         {
-            FormsAuthentication.SetAuthCookie(email, rememberMe);
+            _authenticationManager = authenticationManager;
+            _userManager = userManager;
+        }
+
+        public void SetAuthCookie(User user, bool rememberMe)
+        {
+            _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            var identity = _userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+            _authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = rememberMe }, identity);
         }
 
         public void Logout()
         {
-            FormsAuthentication.SignOut();
+            _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
         }
     }
 }

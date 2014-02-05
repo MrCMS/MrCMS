@@ -4,7 +4,7 @@ namespace MrCMS.Services
 {
     public interface IAuthorisationService
     {
-        void SetAuthCookie(string email, bool rememberMe);
+        void SetAuthCookie(User user, bool rememberMe);
         void Logout();
     }
 
