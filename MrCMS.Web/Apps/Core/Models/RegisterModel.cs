@@ -25,7 +25,7 @@ namespace MrCMS.Web.Apps.Core.Models
 
         [DisplayName("Confirm Password")]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Password does not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Password does not match.")]
         public string ConfirmPassword { get; set; }
 
         public string ReturnUrl { get; set; }
