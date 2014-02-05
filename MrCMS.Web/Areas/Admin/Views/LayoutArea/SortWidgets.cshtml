@@ -8,7 +8,7 @@
     var action = Model.WebpageId > 0 ? "SortWidgetsForPage" : "SortWidgetsAction";
 
 }
-@{Html.IncludeScript("~/Areas/Admin/Content/Scripts/Custom/sort.js");}
+@{Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/sort.js");}
 
 @using (Html.BeginForm(action, "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
 {
