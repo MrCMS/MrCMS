@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Security;
+using Microsoft.AspNet.Identity;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using System.Web;

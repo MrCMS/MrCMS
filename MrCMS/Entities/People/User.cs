@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using Iesi.Collections.Generic;
+using Microsoft.AspNet.Identity;
 using MrCMS.ACL;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -13,7 +14,7 @@ using NHibernate;
 
 namespace MrCMS.Entities.People
 {
-    public class User : SystemEntity
+    public class User : SystemEntity, Microsoft.AspNet.Identity.IUser
     {
         public User()
         {
@@ -89,6 +90,17 @@ namespace MrCMS.Entities.People
         public static List<Type> OwnedObjectTypes
         {
             get { return TypeHelper.GetAllConcreteMappedClassesAssignableFrom<IBelongToUser>(); }
+        }
+
+        string IUser.Id
+        {
+            get { return Id.ToString(); }
+        }
+
+        string IUser.UserName
+        {
+            get { return Email; }
+            set { Email = value; }
         }
     }
 }
