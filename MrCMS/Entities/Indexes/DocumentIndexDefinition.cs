@@ -231,10 +231,5 @@ namespace MrCMS.Entities.Indexes
                 parent = parent.Parent;
             }
         }
-
-        public Analyzer GetAnalyser()
-        {
-            return _analyser ?? (_analyser = new StandardAnalyzer(Version.LUCENE_30));
-        }
     }
 }
