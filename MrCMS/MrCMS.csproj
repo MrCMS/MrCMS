@@ -282,6 +282,7 @@
     <Compile Include="Services\IPasswordEncryptionManager.cs" />
     <Compile Include="Services\IRedirectedDomainService.cs" />
     <Compile Include="Services\ITokenProvider.cs" />
+    <Compile Include="Services\ITreeNavService.cs" />
     <Compile Include="Services\IUserSearchService.cs" />
     <Compile Include="Services\MessageQueueAdminService.cs" />
     <Compile Include="Services\MessageTemplateService.cs" />
@@ -464,6 +465,7 @@
     <Compile Include="Services\SHA512HashAlgorithm.cs" />
     <Compile Include="Services\SiteService.cs" />
     <Compile Include="Services\TagService.cs" />
+    <Compile Include="Services\TreeNavService.cs" />
     <Compile Include="Services\UrlHistoryService.cs" />
     <Compile Include="Services\UserSearchService.cs" />
     <Compile Include="Services\UserService.cs" />

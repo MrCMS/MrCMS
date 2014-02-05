@@ -24,16 +24,6 @@ namespace MrCMS.Web.Apps.Galleries.Metadata
         {
             get { yield return typeof(Pages.Gallery); }
         }
-
-        //sort child items by the display order in web tree
-        public override Func<Document, object> SortBy
-        {
-            get
-            {
-                return document => document.DisplayOrder;
-            }
-        }
-
     }
 }
 
