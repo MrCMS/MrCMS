@@ -8,6 +8,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using NHibernate;
+using NHibernate.Criterion;
 
 namespace MrCMS.Services
 {
@@ -87,14 +88,12 @@ namespace MrCMS.Services
                     break;
                 case SortBy.PublishedOn:
                     query =
-                        query.OrderBy(webpage => webpage.PublishOn == null)
-                             .Desc.ThenBy(webpage => webpage.PublishOn)
+                        query.OrderBy(Projections.Conditional(Restrictions.IsNull(Projections.Property<Webpage>(x => x.PublishOn)), Projections.Constant(1), Projections.Constant(0))).Desc.ThenBy(webpage => webpage.PublishOn)
                              .Asc;
                     break;
                 case SortBy.PublishedOnDesc:
                     query =
-                        query.OrderBy(webpage => webpage.PublishOn == null)
-                             .Desc.ThenBy(webpage => webpage.PublishOn)
+                        query.OrderBy(Projections.Conditional(Restrictions.IsNull(Projections.Property<Webpage>(x=>x.PublishOn)), Projections.Constant(1), Projections.Constant(0))).Desc.ThenBy(webpage => webpage.PublishOn)
                              .Desc;
                     break;
                 case SortBy.CreatedOn:
