@@ -36,13 +36,11 @@ $(function () {
 
     function suggestUrl() {
         var pageName = $("#Name").val(),
-            parentId = $("#Parent_Id").val()
+            parentId = $("#Parent_Id").val();
         if (pageName != "") {
             $.get('/Admin/Webpage/SuggestDocumentUrl', { pageName: pageName, id: parentId}, function (data) {
                 $("#UrlSegment").val(data);
             });
         }
     }
-
-    $("form").validate();
 });
