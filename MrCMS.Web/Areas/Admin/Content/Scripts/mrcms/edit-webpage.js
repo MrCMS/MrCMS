@@ -1,4 +1,6 @@
 ﻿$(function () {
+    $.validator.setDefaults({ ignore: "" }); // validate hidden tabs
+
     $("#UrlSegment").blur(function (e) {
         var that = $(this);
         that.val(that.val().trim().replace(/[^a-zA-Z0-9-/]/g, '-'));
