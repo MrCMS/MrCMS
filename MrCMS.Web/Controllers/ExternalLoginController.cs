@@ -7,6 +7,10 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using MrCMS.Entities.People;
+using MrCMS.Services;
+using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Pages;
+using MrCMS.Website;
 using MrCMS.Website.Controllers;
 using System.Linq;
 
@@ -16,47 +20,62 @@ namespace MrCMS.Web.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthenticationManager _authenticationManager;
+        private readonly IExternalLoginService _externalLoginService;
+        private readonly IUniquePageService _uniquePageService;
 
-        public ExternalLoginController(UserManager<User> userManager,IAuthenticationManager authenticationManager)
+        public ExternalLoginController(UserManager<User> userManager, IAuthenticationManager authenticationManager, IExternalLoginService externalLoginService, IUniquePageService uniquePageService)
         {
             _userManager = userManager;
             _authenticationManager = authenticationManager;
+            _externalLoginService = externalLoginService;
+            _uniquePageService = uniquePageService;
         }
 
 
         [HttpPost]
         public ActionResult Login(string provider, string returnUrl)
         {
+            ControllerContext.HttpContext.Session.RemoveAll();
             // Request a redirect to the external login provider
-            return new ChallengeResult(provider, Url.Action("Callback", "ExternalLogin", new { ReturnUrl = returnUrl }));
+            return new ChallengeResult(provider,
+                                       Url.Action("Callback", "ExternalLogin",
+                                                  new {ReturnUrl = returnUrl ?? CurrentRequestData.HomePage.AbsoluteUrl}));
         }
 
-        //
-        // GET: /Account/ExternalLoginCallback
         public async Task<ActionResult> Callback(string returnUrl)
         {
-            var result = await _authenticationManager.AuthenticateAsync(DefaultAuthenticationTypes.ExternalCookie);
-            IEnumerable<Claim> claims = result.Identity.Claims;
+            AuthenticateResult result = await _authenticationManager.AuthenticateAsync(DefaultAuthenticationTypes.ExternalCookie);
+            IEnumerable<Claim> claims = result.Identity.Claims ?? new List<Claim>();
+            var emailClaim = claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email);
+            var email = emailClaim != null ? emailClaim.Value : null;
+            if (email == null)
+            {
+                return _uniquePageService.RedirectTo<LoginPage>();
+            }
 
             var loginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
-                return RedirectToAction("Login");
+                return _uniquePageService.RedirectTo<LoginPage>();
             }
 
             // Sign in the user with this external login provider if the user already has a login
-            var user = await _userManager.FindAsync(loginInfo.Login);
+            var user = await _userManager.FindAsync(loginInfo.Login) ?? await _userManager.FindByNameAsync(email);
             if (user == null)
             {
-                user= new User { Email = claims.First(claim => claim.Type == ClaimTypes.Email).Value };
+                user = new User { Email = email, IsActive = true };
                 IdentityResult identityResult = await _userManager.CreateAsync(user);
-                bool succeeded = identityResult.Succeeded;
+                if (!identityResult.Succeeded)
+                {
+                    TempData["login-model"] = new LoginModel { Message = string.Join(", ", identityResult.Errors) };
+                    return _uniquePageService.RedirectTo<LoginPage>();
+                }
+                foreach (var claim in claims)
+                {
+                    _userManager.AddClaim(user.OwinId, claim);
+                }
             }
             await SignInAsync(user, isPersistent: false);
-            foreach (var claim in claims)
-            {
-                _userManager.AddClaim(user.OwinId, claim);
-            }
             return RedirectToLocal(returnUrl);
         }
 
@@ -64,7 +83,7 @@ namespace MrCMS.Web.Controllers
         {
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             var identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-            _authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
+            _authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = isPersistent }, identity);
         }
         private ActionResult RedirectToLocal(string returnUrl)
         {
@@ -108,4 +127,11 @@ namespace MrCMS.Web.Controllers
         private const string XsrfKey = "XsrfId";
     }
 
+    public interface IExternalLoginService
+    {
+    }
+
+    public class ExternalLoginService : IExternalLoginService
+    {
+    }
 }

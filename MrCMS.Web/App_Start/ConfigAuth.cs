@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Collections.Generic;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
+using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Facebook;
+using Microsoft.Owin.Security.Twitter;
 using Owin;
 using Owin.Security.Providers.LinkedIn;
 
@@ -18,7 +22,7 @@ namespace MrCMS.Web
                 LoginPath = new PathString("/login")
             });
             // Use a cookie to temporarily store information about a user logging in with a third party login provider
-            
+
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
             // Uncomment the following lines to enable logging in with third party login providers
@@ -28,15 +32,16 @@ namespace MrCMS.Web
 
             //app.UseLinkedInAuthentication(clientId: "", clientSecret: "");
 
-            //app.UseTwitterAuthentication(
-            //   consumerKey: "",
-            //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            //var facebookAuthenticationOptions = new FacebookAuthenticationOptions
+            //                                        {
+            //                                            AppId = "",
+            //                                            AppSecret = "",
+            //                                        };
+            //facebookAuthenticationOptions.Scope.Add("email");
+            //app.UseFacebookAuthentication(facebookAuthenticationOptions);
 
-            app.UseGoogleAuthentication();
+            //app.UseGoogleAuthentication();
         }
     }
 }
