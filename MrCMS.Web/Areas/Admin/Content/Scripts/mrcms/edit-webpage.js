@@ -73,11 +73,21 @@
     $('input[name=InheritFrontEndRolesFromParent]').change(function () {
         $("#edit-document").submit();
     });
+
     
+
+    $('a[data-toggle="tab"]').on('shown', function (e) {
+        if (e.currentTarget.id === "versions-link") {
+            $.get('/Admin/Webpage/Versions/' + $(this).data('id'), function (data) {
+                $("#versions").html(data);
+            });
+        }
+    });
+
 });
 //Show the accordion which was last shown for layout areas.
 $(window).load(function () {
-    if ($.cookie('selected-layout-area-' + location.pathname)) {
-        $('#accordion-layout-areas a[href="#' + $.cookie('selected-layout-area-' + location.pathname) + '"]').click();
+    if (store.get('selected-layout-area-' + location.pathname)) {
+        $('#accordion-layout-areas a[href="#' + store.get('selected-layout-area-' + location.pathname) + '"]').click();
     }
 });
