@@ -30,15 +30,13 @@
     });
 
     $('#accordion-layout-areas').on('shown', function (e) {
-        $.cookie('selected-layout-area-' + location.pathname, e.target.id, { expires: 1 });
+        store.set('selected-layout-area-' + location.pathname, e.target.id);
     });
 
     $('#accordion-layout-areas').on('hidden', function (e) {
-        $.cookie('selected-layout-area-' + location.pathname, '', { expires: 1 });
+        store.set('selected-layout-area-' + location.pathname, '');
     });
 
-    
-    
     $('#PublishOn').change(function () {
         $('#publish-on-hidden').val($(this).val());
     });

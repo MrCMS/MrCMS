@@ -34,9 +34,6 @@
         }
     });
 
-    if ($().mediaselector) {
-        $('.media-selector').mediaselector();
-    }
     $(document).on('click', '[data-toggle="fb-modal"]', function () {
         var clone = $(this).clone();
         clone.attr('data-toggle', '');
@@ -128,26 +125,7 @@ function getRemoteModel(href) {
     }).click();
 }
 
-//general functions
-function setCookie(name, value) {
-    $.cookie(name, value, { expires: 7, path: '/' });
-}
-
-function getCookie(cookieName) {
-    return $.cookie(cookieName);
-}
-
-function split(val) {
-    return val.split(/,\s*/);
-}
-
-function extractLast(term) {
-    return split(term).pop();
-}
-
-
 $(function () {
-    CKEDITOR.config.toolbar = 'Basic';
     CKEDITOR.replaceAll('ckedit-enabled');
     CKEDITOR.on('instanceReady', function () { $(window).resize(); });
 });
