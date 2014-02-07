@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Security.Claims;
 using MrCMS.Entities.People;
 
 namespace MrCMS.Services
@@ -6,6 +8,7 @@ namespace MrCMS.Services
     {
         void SetAuthCookie(User user, bool rememberMe);
         void Logout();
+        void UpdateClaims(User user, IEnumerable<Claim> claims);
     }
 
     public interface IPasswordManagementService

@@ -222,11 +222,14 @@
     <Compile Include="Apps\Articles\Entities\AuthorInfo.cs" />
     <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
+    <Compile Include="Apps\Core\Controllers\CompleteExternalRegistrationPageController.cs" />
     <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
     <Compile Include="Apps\Core\Controllers\RegistrationController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
+    <Compile Include="Apps\Core\CoreAppInstallation.cs" />
     <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\UserTokenProvider.cs" />
+    <Compile Include="Apps\Core\Metadata\CompleteExternalRegistrationPageMetadata.cs" />
     <Compile Include="Apps\Core\Metadata\RegisterPageMedatData.cs" />
     <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\ForgottenPasswordPageMetaData.cs" />
@@ -239,6 +242,7 @@
     <Compile Include="Apps\Core\Models\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Models\UserAccountModel.cs" />
+    <Compile Include="Apps\Core\Pages\CompleteExternalRegistrationPage.cs" />
     <Compile Include="Apps\Core\Pages\UserAccountPage.cs" />
     <Compile Include="Apps\Core\Pages\RegisterPage.cs" />
     <Compile Include="Apps\Core\Pages\ResetPasswordPage.cs" />
@@ -310,7 +314,7 @@
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
     <Compile Include="Areas\Admin\Models\Dashboard.cs" />
     <Compile Include="Controllers\CKEditorController.cs" />
-    <Compile Include="Controllers\ExternalLoginController.cs" />
+    <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Apps\Core\Controllers\LoginController.cs" />
@@ -1311,11 +1315,16 @@
     <Content Include="Areas\Admin\Views\File\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\MediaSelector\Show.cshtml" />
     <Content Include="Areas\Admin\Views\MediaSelector\FileResult.cshtml" />
+    <Content Include="Apps\Core\Views\ExternalLogin\Providers.cshtml" />
+    <Content Include="Apps\Core\Views\ExternalLogin\Google.cshtml" />
+    <Content Include="Apps\Core\Views\ExternalLogin\StandardProvider.cshtml" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\Admin\Views\MediaCategory\Show.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ShowFiles.cshtml" />
+    <Content Include="Apps\Core\Views\ExternalLogin\LinkedIn.cshtml" />
+    <Content Include="Apps\Core\Views\ExternalLogin\Facebook.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

@@ -134,8 +134,6 @@ namespace MrCMS.Website
 
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
             routes.MapRoute("Task Execution", "execute-pending-tasks", new { controller = "TaskExecution", action = "Execute" });
-            routes.MapRoute("External Login", "external-login", new { controller = "ExternalLogin", action = "Login" });
-            routes.MapRoute("External Login Callback", "external-login/callback", new { controller = "ExternalLogin", action = "Callback" });
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
             routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",

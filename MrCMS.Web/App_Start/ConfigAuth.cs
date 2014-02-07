@@ -41,7 +41,7 @@ namespace MrCMS.Web
             //facebookAuthenticationOptions.Scope.Add("email");
             //app.UseFacebookAuthentication(facebookAuthenticationOptions);
 
-            //app.UseGoogleAuthentication();
+            app.UseGoogleAuthentication();
         }
     }
 }
