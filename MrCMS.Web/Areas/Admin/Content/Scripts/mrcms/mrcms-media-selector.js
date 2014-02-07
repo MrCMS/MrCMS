@@ -92,7 +92,7 @@
             link.fancybox({
                 type: 'iframe',
                 autoSize: true,
-                minHeight: 200,
+                minHeight: 400,
                 padding: 0,
                 afterShow: function () {
                     element = $('.fancybox-iframe').contents();

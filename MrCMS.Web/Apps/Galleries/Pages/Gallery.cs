@@ -17,7 +17,6 @@ namespace MrCMS.Web.Apps.Galleries.Pages
         public override void AdminViewData(ViewDataDictionary viewData, ISession session)
         {
             viewData["galleries"] = session.QueryOver<MediaCategory>()
-                                       .Where(category => category.IsGallery)
                                        .OrderBy(category => category.Name)
                                        .Desc.Cacheable()
                                        .List()
