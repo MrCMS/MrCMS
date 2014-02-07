@@ -47,6 +47,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public ActionResult Show(MediaCategorySearchModel mediaCategorySearchModel)
         {
+            if (mediaCategorySearchModel == null)
+                return RedirectToAction("Index");
+
             var mediacategory = _documentService.GetDocument<MediaCategory>(mediaCategorySearchModel.Id);
             if (mediacategory == null)
                 return RedirectToAction("Index");
@@ -126,5 +129,5 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return !_documentService.UrlIsValidForMediaCategory(UrlSegment, Id) ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
     }
-   
+
 }
