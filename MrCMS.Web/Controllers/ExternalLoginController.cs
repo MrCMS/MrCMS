@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MrCMS.Entities.People;
 using MrCMS.Services;
@@ -12,20 +14,19 @@ using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
-using System.Linq;
 
 namespace MrCMS.Web.Controllers
 {
     public class ExternalLoginController : MrCMSUIController
     {
-        private readonly UserManager<User> _userManager;
+        private const string XsrfKey = "XsrfId";
         private readonly IAuthenticationManager _authenticationManager;
         private readonly IExternalLoginService _externalLoginService;
         private readonly IUniquePageService _uniquePageService;
 
-        public ExternalLoginController(UserManager<User> userManager, IAuthenticationManager authenticationManager, IExternalLoginService externalLoginService, IUniquePageService uniquePageService)
+        public ExternalLoginController(IAuthenticationManager authenticationManager,
+                                       IExternalLoginService externalLoginService, IUniquePageService uniquePageService)
         {
-            _userManager = userManager;
             _authenticationManager = authenticationManager;
             _externalLoginService = externalLoginService;
             _uniquePageService = uniquePageService;
@@ -35,75 +36,53 @@ namespace MrCMS.Web.Controllers
         [HttpPost]
         public ActionResult Login(string provider, string returnUrl)
         {
-            ControllerContext.HttpContext.Session.RemoveAll();
+            Session.RemoveAll();
             // Request a redirect to the external login provider
             return new ChallengeResult(provider,
                                        Url.Action("Callback", "ExternalLogin",
-                                                  new {ReturnUrl = returnUrl ?? CurrentRequestData.HomePage.AbsoluteUrl}));
+                                                  new { ReturnUrl = returnUrl ?? CurrentRequestData.HomePage.AbsoluteUrl }));
         }
 
         public async Task<ActionResult> Callback(string returnUrl)
         {
-            AuthenticateResult result = await _authenticationManager.AuthenticateAsync(DefaultAuthenticationTypes.ExternalCookie);
-            IEnumerable<Claim> claims = result.Identity.Claims ?? new List<Claim>();
-            var emailClaim = claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email);
-            var email = emailClaim != null ? emailClaim.Value : null;
-            if (email == null)
+            ExternalLoginInfo externalLoginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
+            AuthenticateResult authenticateResult =
+                await _authenticationManager.AuthenticateAsync(DefaultAuthenticationTypes.ExternalCookie);
+            string email = _externalLoginService.GetEmail(authenticateResult);
+            if (string.IsNullOrWhiteSpace(email))
             {
+                TempData["login-model"] = new LoginModel
+                                              {
+                                                  Message =
+                                                      "There was an error retrieving your email from the 3rd party provider"
+                                              };
                 return _uniquePageService.RedirectTo<LoginPage>();
             }
-
-            var loginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
-            if (loginInfo == null)
+            if (_externalLoginService.IsLogin(externalLoginInfo))
             {
-                return _uniquePageService.RedirectTo<LoginPage>();
+                _externalLoginService.Login(externalLoginInfo, authenticateResult);
+                return _externalLoginService.RedirectAfterLogin(email, returnUrl);
+            }
+            if (await _externalLoginService.UserExistsAsync(email))
+            {
+                _externalLoginService.AssociateLoginToUser(email, externalLoginInfo);
+                _externalLoginService.Login(externalLoginInfo, authenticateResult);
+                return _externalLoginService.RedirectAfterLogin(email, returnUrl);
+            }
+            if (!_externalLoginService.RequiresAdditionalFieldsForRegistration())
+            {
+                _externalLoginService.CreateUser(email, externalLoginInfo);
+                _externalLoginService.Login(externalLoginInfo, authenticateResult);
+                return _externalLoginService.RedirectAfterLogin(email, returnUrl);
             }
 
-            // Sign in the user with this external login provider if the user already has a login
-            var user = await _userManager.FindAsync(loginInfo.Login) ?? await _userManager.FindByNameAsync(email);
-            if (user == null)
-            {
-                user = new User { Email = email, IsActive = true };
-                IdentityResult identityResult = await _userManager.CreateAsync(user);
-                if (!identityResult.Succeeded)
-                {
-                    TempData["login-model"] = new LoginModel { Message = string.Join(", ", identityResult.Errors) };
-                    return _uniquePageService.RedirectTo<LoginPage>();
-                }
-                foreach (var claim in claims)
-                {
-                    _userManager.AddClaim(user.OwinId, claim);
-                }
-            }
-            await SignInAsync(user, isPersistent: false);
-            return RedirectToLocal(returnUrl);
+            return _uniquePageService.RedirectTo<CompleteExternalRegistrationPage>();
+
         }
 
-        private async Task SignInAsync(User user, bool isPersistent)
-        {
-            _authenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-            var identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-            _authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = isPersistent }, identity);
-        }
-        private ActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                return Redirect("~");
-            }
-        }
         private class ChallengeResult : HttpUnauthorizedResult
         {
-            public ChallengeResult(string provider, string redirectUri)
-                : this(provider, redirectUri, null)
-            {
-            }
-
-            public ChallengeResult(string provider, string redirectUri, string userId)
+            public ChallengeResult(string provider, string redirectUri, string userId = null)
             {
                 LoginProvider = provider;
                 RedirectUri = redirectUri;
@@ -116,7 +95,7 @@ namespace MrCMS.Web.Controllers
 
             public override void ExecuteResult(ControllerContext context)
             {
-                var properties = new AuthenticationProperties() { RedirectUri = RedirectUri };
+                var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
                 if (UserId != null)
                 {
                     properties.Dictionary[XsrfKey] = UserId;
@@ -124,14 +103,101 @@ namespace MrCMS.Web.Controllers
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
         }
-        private const string XsrfKey = "XsrfId";
     }
 
     public interface IExternalLoginService
     {
+        bool IsLogin(ExternalLoginInfo externalLoginInfo);
+        void Login(ExternalLoginInfo externalLoginInfo, AuthenticateResult authenticateResult);
+        bool UserExists(string authenticateResult);
+        void AssociateLoginToUser(string email, ExternalLoginInfo externalLoginInfo);
+        bool RequiresAdditionalFieldsForRegistration();
+        void CreateUser(string email, ExternalLoginInfo externalLoginInfo);
+        ActionResult RedirectAfterLogin(string email, string returnUrl);
+        string GetEmail(AuthenticateResult authenticateResult);
     }
 
     public class ExternalLoginService : IExternalLoginService
     {
+        private readonly IAuthorisationService _authorisationService;
+        private readonly UserManager<User> _userManager;
+
+        public ExternalLoginService(UserManager<User> userManager, IAuthorisationService authorisationService)
+        {
+            _userManager = userManager;
+            _authorisationService = authorisationService;
+        }
+
+        public bool IsLogin(ExternalLoginInfo externalLoginInfo)
+        {
+            return _userManager.Find(externalLoginInfo.Login) != null;
+        }
+
+        public void Login(ExternalLoginInfo externalLoginInfo, AuthenticateResult authenticateResult)
+        {
+            User user = _userManager.Find(externalLoginInfo.Login);
+            _authorisationService.SetAuthCookie(user, false);
+            _authorisationService.UpdateClaims(user, authenticateResult.Identity.Claims);
+        }
+
+        public bool UserExists(string email)
+        {
+            return _userManager.FindByName(email) != null;
+        }
+
+        public string GetEmail(AuthenticateResult authenticateResult)
+        {
+            if (authenticateResult != null && authenticateResult.Identity != null)
+            {
+                IEnumerable<Claim> claims = authenticateResult.Identity.Claims;
+                if (claims != null)
+                {
+                    Claim emailClaim = claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email);
+                    if (emailClaim != null)
+                        return emailClaim.Value;
+                }
+            }
+            return null;
+        }
+
+        public void AssociateLoginToUser(string email, ExternalLoginInfo externalLoginInfo)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return;
+            var user = _userManager.FindByName(email);
+            if (user == null)
+                return;
+            _userManager.AddLogin(user.OwinId, externalLoginInfo.Login);
+        }
+
+        public bool RequiresAdditionalFieldsForRegistration()
+        {
+            //TODO: wire in framework to allow extra fields to be added
+
+            return false;
+        }
+
+        public void CreateUser(string email, ExternalLoginInfo externalLoginInfo)
+        {
+            var user = new User { Email = email, IsActive = true };
+            _userManager.Create(user);
+            _userManager.AddLogin(user.OwinId, externalLoginInfo.Login);
+        }
+
+        public ActionResult RedirectAfterLogin(string email, string returnUrl)
+        {
+            var user = _userManager.FindByName(email);
+            if (!string.IsNullOrWhiteSpace(returnUrl))
+                return new RedirectResult(returnUrl);
+            return user.IsAdmin ? new RedirectResult("~/admin") : new RedirectResult("~");
+        }
+    }
+
+    public static class ExternalLoginServiceExtensions
+    {
+        public static Task<bool> UserExistsAsync(this IExternalLoginService service, string email)
+        {
+            return Task.Run(() => service.UserExists(email));
+        }
     }
 }
