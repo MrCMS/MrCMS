@@ -1,0 +1,29 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Settings.ThirdPartyAuthSettings
+@{ ViewBag.Title = "Third Party Auth Settings"; }
+@using (Html.BeginForm("Index", "ThirdPartyAuth", FormMethod.Post))
+{
+    <fieldset>
+        <legend>Third Party Auth Settings
+            <span class="btn-group  display-inline  pull-right">
+                <button class="btn btn-primary">
+                    Save</button>
+            </span>
+        </legend>
+        <div class="row-fluid">
+            @Html.InlineCheckboxFor(settings => settings.GoogleEnabled)
+            <hr />
+            @Html.InlineCheckboxFor(settings => settings.FacebookEnabled)
+            @Html.LabelFor(settings => settings.FacebookAppId)
+            @Html.TextBoxFor(settings => settings.FacebookAppId)
+            @Html.LabelFor(settings => settings.FacebookAppSecret)
+            @Html.TextBoxFor(settings => settings.FacebookAppSecret)
+            <hr />
+            @Html.InlineCheckboxFor(settings => settings.LinkedInEnabled)
+            @Html.LabelFor(settings => settings.LinkedInClientId)
+            @Html.TextBoxFor(settings => settings.LinkedInClientId)
+            @Html.LabelFor(settings => settings.LinkedInClientSecret)
+            @Html.TextBoxFor(settings => settings.LinkedInClientSecret)
+        </div>
+    </fieldset>
+}
