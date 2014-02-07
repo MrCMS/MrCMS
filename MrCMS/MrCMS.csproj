@@ -81,6 +81,9 @@
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.1.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.1.0.0\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Data.Edm.5.2.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
@@ -320,9 +323,12 @@
     <Compile Include="Models\UserSearchQuery.cs" />
     <Compile Include="Services\CloneSitePartsService.cs" />
     <Compile Include="Services\DocumentEventService.cs" />
+    <Compile Include="Services\ExternalLoginService.cs" />
+    <Compile Include="Services\ExternalLoginServiceExtensions.cs" />
     <Compile Include="Services\FileMigration\IFileMigrationService.cs" />
     <Compile Include="Services\IAuthorisationService.cs" />
     <Compile Include="Services\IDocumentEventService.cs" />
+    <Compile Include="Services\IExternalLoginService.cs" />
     <Compile Include="Services\IHashAlgorithm.cs" />
     <Compile Include="Services\IMessageQueueAdminService.cs" />
     <Compile Include="Services\IMessageTemplateService.cs" />
