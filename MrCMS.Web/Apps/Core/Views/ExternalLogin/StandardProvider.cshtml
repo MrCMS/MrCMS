@@ -1,0 +1,7 @@
+﻿@model Microsoft.Owin.Security.AuthenticationDescription
+@{var returnUrl = ViewData["returnUrl"] as string;}
+@using (Html.BeginForm("Login", "ExternalLogin", new { ReturnUrl = returnUrl }))
+{
+    <button type="submit" class="btn btn-default" id="@Model.AuthenticationType" name="provider" value="@Model.AuthenticationType" title="Log in using your @Model.Caption account">@Model.AuthenticationType</button>
+}
+

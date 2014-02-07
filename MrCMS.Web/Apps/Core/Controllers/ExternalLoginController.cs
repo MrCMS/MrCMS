@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -11,9 +11,9 @@ using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 
-namespace MrCMS.Web.Controllers
+namespace MrCMS.Web.Apps.Core.Controllers
 {
-    public class ExternalLoginController : MrCMSUIController
+    public class ExternalLoginController : MrCMSAppUIController<CoreApp>
     {
         private const string XsrfKey = "XsrfId";
         private readonly IAuthenticationManager _authenticationManager;
@@ -28,6 +28,12 @@ namespace MrCMS.Web.Controllers
             _uniquePageService = uniquePageService;
         }
 
+        public PartialViewResult Providers(string returnUrl)
+        {
+            ViewData["returnUrl"] = returnUrl;
+            IEnumerable<AuthenticationDescription> externalAuthenticationTypes = _authenticationManager.GetExternalAuthenticationTypes();
+            return PartialView(externalAuthenticationTypes);
+        }
 
         [HttpPost]
         public ActionResult Login(string provider, string returnUrl)

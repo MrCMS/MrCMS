@@ -1,0 +1,16 @@
+﻿@model IEnumerable<Microsoft.Owin.Security.AuthenticationDescription>
+@{
+    if (Model.Any())
+    {
+    <hr />
+    <h4>Use another service to log in.</h4>
+    <div id="socialLoginList">
+        <p>
+            @foreach (var p in Model)
+            {
+                Html.RenderPartial(p.Caption, p);
+            }
+        </p>
+    </div>
+    }
+}
