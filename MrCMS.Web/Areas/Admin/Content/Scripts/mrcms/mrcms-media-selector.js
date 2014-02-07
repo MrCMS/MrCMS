@@ -305,5 +305,5 @@ MediaSelector.defaults =
 })(jQuery);
 
 $(function () {
-    $('[data-type=media-selector]').mediaSelector();
+    $('[data-type=media-selector], [class=media-selector]').mediaSelector();
 });

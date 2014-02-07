@@ -90,7 +90,7 @@ h1, h2, h3, h4 {
 }
 
 .settings-textarea {
-    width: 300px;
+    width: 100%;
     height: 150px;
 }
 /*Navigation*/

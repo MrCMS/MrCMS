@@ -328,6 +328,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps\Articles\Areas\Admin\Content\Scripts\articles.js" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-theme.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.js" />
+    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
     <Content Include="Apps\Core\Content\Images\mrcms-logo.png" />
     <Content Include="Apps\Core\Content\Scripts\forgot-password.js" />
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
@@ -1084,14 +1089,6 @@
     <Content Include="Areas\Admin\Content\Styles\Images\jquerytree\treeview-red-line.gif" />
     <Content Include="Areas\Admin\Content\Styles\Images\jquerytree\treeview-red.gif" />
     <Content Include="Areas\Admin\Content\Styles\jquery.mrcms-mediaselector.css" />
-    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-responsive.css" />
-    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-responsive.min.css" />
-    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.css" />
-    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.min.css" />
-    <Content Include="Apps\Core\Content\Bootstrap\img\glyphicons-halflings-white.png" />
-    <Content Include="Apps\Core\Content\Bootstrap\img\glyphicons-halflings.png" />
-    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.js" />
-    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
     <Content Include="Areas\Admin\Content\Styles\jquery.tagit.css" />
     <Content Include="Content\install\images\install-synchronizing.gif" />
     <Content Include="Content\install\bootstrap\css\bootstrap-responsive.css" />
@@ -1323,6 +1320,9 @@
     <Content Include="Apps\Core\Views\ExternalLogin\Providers.cshtml" />
     <Content Include="Apps\Core\Views\ExternalLogin\Google.cshtml" />
     <Content Include="Apps\Core\Views\ExternalLogin\StandardProvider.cshtml" />
+    <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Apps\Core\Views\ExternalLogin\LinkedIn.cshtml" />
     <Content Include="Apps\Core\Views\ExternalLogin\Facebook.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />

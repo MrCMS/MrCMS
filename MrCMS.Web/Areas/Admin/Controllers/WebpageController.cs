@@ -46,7 +46,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                                              layout =>
                                                              doc != null && doc.Layout != null &&
                                                              doc.Layout.Id == layout.Id,
-                                                             SelectListItemHelper.EmptyItem("Default Layout"));
+                                                             SelectListItemHelper.EmptyItem("Default Layout", "0"));
 
             var documentTypeDefinitions =
                 (doc.Parent as Webpage).GetValidWebpageDocumentTypes()

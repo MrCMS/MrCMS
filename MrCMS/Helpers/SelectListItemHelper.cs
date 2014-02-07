@@ -28,9 +28,9 @@ namespace MrCMS.Helpers
                         : selectListItems).ToList();
         }
 
-        public static SelectListItem EmptyItem(string text = null)
+        public static SelectListItem EmptyItem(string text = null, string value="")
         {
-            return new SelectListItem { Text = text ?? "None Set", Value = "" };
+            return new SelectListItem { Text = text ?? "Please select...", Value = value };
         }
     }
 }
