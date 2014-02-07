@@ -1,0 +1,31 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaCategory
+@{
+    ViewBag.Title = Model.Name;
+
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
+}
+@if (TempData["saved"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["saved"]
+    </div>
+}
+<fieldset>
+    <legend>@Model.Name
+        <span class="btn-group  display-inline  pull-right">
+            <a href="@Url.Action("SortFiles", "MediaCategory", new { id = Model.Id })" class="btn ">Sort</a>
+            @if (Model.CanDelete)
+            {
+                <a href="@Url.Action("Delete", "MediaCategory", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
+            }
+            <a href="@Url.Action("Edit", "MediaCategory", new { id = Model.Id })" class="btn btn-primary" data-toggle="fb-modal">Edit</a>
+        </span>
+    </legend>
+</fieldset>
+
+@{ Html.RenderPartial("Upload", Model); }
+
+@{Html.RenderAction("ShowFiles", "File", new { Model });}

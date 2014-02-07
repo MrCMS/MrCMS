@@ -41,7 +41,9 @@ else
                 }
                 }
 
-                @(node.NodeType == "Webpage" ? Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, new { @class = cssClass != "" ? cssClass : "" }) : Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, null))
+                @(node.NodeType == "Webpage" ? Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, new { @class = cssClass != "" ? cssClass : "" }) : 
+                (node.NodeType == "MediaCategory" ? Html.ActionLink(node.Name, "Show", node.NodeType, new { id = node.Id }, null) : Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, null))
+                )
             </li>
 
             }

@@ -46,9 +46,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         
         public override ActionResult Show(MediaCategory document)
         {
-            if (document != null)
-                return RedirectToAction("Edit", new { document.Id });
-            return RedirectToAction("Index");
+            if (document == null)
+                return RedirectToAction("Index");
+
+            return View(document);
         }
 
         public ActionResult Upload(MediaCategory category)

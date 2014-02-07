@@ -46,7 +46,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             var categoryId = file.MediaCategory.Id;
             _fileService.DeleteFile(file);
-            return RedirectToAction("Edit", "MediaCategory", new { Id = categoryId });
+            return RedirectToAction("Show", "MediaCategory", new { Id = categoryId });
         }
 
         [HttpGet]
@@ -90,7 +90,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _fileService.SaveFile(file);
 
-            return RedirectToAction("Edit", "MediaCategory", new { file.MediaCategory.Id });
+            return RedirectToAction("Show", "MediaCategory", new { file.MediaCategory.Id });
         }
     }
 }
