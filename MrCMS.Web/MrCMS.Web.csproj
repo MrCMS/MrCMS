@@ -1307,7 +1307,6 @@
     <Content Include="Areas\Admin\Views\Shared\_LayoutWithoutWebTree.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\RevertToVersion.cshtml" />
     <Content Include="Areas\Admin\Views\FileMigration\Show.cshtml" />
-    <Content Include="Areas\Admin\Views\File\ShowFiles.cshtml" />
     <Content Include="Areas\Admin\Views\File\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\File\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\MediaSelector\Show.cshtml" />
@@ -1316,6 +1315,7 @@
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\Admin\Views\MediaCategory\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\MediaCategory\ShowFiles.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

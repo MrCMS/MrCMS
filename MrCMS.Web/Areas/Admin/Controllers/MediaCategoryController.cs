@@ -4,6 +4,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
 using System.Linq;
 using MrCMS.Helpers;
@@ -43,14 +44,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             return View(model);
         }
-        
-        public override ActionResult Show(MediaCategory document)
+
+        public ActionResult Show(MediaCategorySearchModel mediaCategorySearchModel)
         {
-            if (document == null)
+            var mediacategory = _documentService.GetDocument<MediaCategory>(mediaCategorySearchModel.Id);
+            if (mediacategory == null)
                 return RedirectToAction("Index");
 
-            return View(document);
+            ViewData["media-category"] = mediacategory;
+
+            ViewData["files"] = _fileService.GetFilesForSearchPaged(mediaCategorySearchModel);
+            return View(mediaCategorySearchModel);
         }
+
 
         public ActionResult Upload(MediaCategory category)
         {
@@ -113,11 +119,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// Finds out if the URL entered is valid.
         /// </summary>
         /// <param name="UrlSegment">The URL Segment entered</param>
-        /// <param name="DocumentType">The type of document</param>
+        /// <param name="DocumentType">The type of mediaCategorySearchModel</param>
         /// <returns></returns>
         public ActionResult ValidateUrlIsAllowed(string UrlSegment, int? Id)
         {
             return !_documentService.UrlIsValidForMediaCategory(UrlSegment, Id) ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
     }
+   
 }

@@ -316,6 +316,7 @@
     <Compile Include="Indexing\Querying\AzureDirectorySearcher.cs" />
     <Compile Include="Logging\LogSearchQuery.cs" />
     <Compile Include="Models\AdminTreeNode.cs" />
+    <Compile Include="Models\MediaCategorySearchModel.cs" />
     <Compile Include="Models\MessageQueueQuery.cs" />
     <Compile Include="Models\UserSearchQuery.cs" />
     <Compile Include="Services\CloneSitePartsService.cs" />

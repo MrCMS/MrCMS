@@ -91,7 +91,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return base.Delete(document);
         }
 
-        public override ActionResult Show(Webpage document)
+        public ActionResult Show(Webpage document)
         {
             if (document == null)
                 return RedirectToAction("Index");

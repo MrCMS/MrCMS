@@ -1,10 +1,16 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Entities.Documents.Media.MediaCategory
+﻿@using MrCMS.Entities.Documents.Media
+@using MrCMS.Helpers
+@using MrCMS.Paging
+@model MrCMS.Models.MediaCategorySearchModel
 @{
-    ViewBag.Title = Model.Name;
+    var mediaCategory = ViewData["media-category"] as MediaCategory;
+    ViewBag.Title = mediaCategory.Name;
 
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
+    ViewData["MediaCategory"] = mediaCategory;
+    var pagedList = ViewData["files"] as IPagedList<MediaFile>;
+    
 }
 @if (TempData["saved"] != null)
 {
@@ -13,19 +19,30 @@
         @TempData["saved"]
     </div>
 }
-<fieldset>
-    <legend>@Model.Name
-        <span class="btn-group  display-inline  pull-right">
-            <a href="@Url.Action("SortFiles", "MediaCategory", new { id = Model.Id })" class="btn ">Sort</a>
-            @if (Model.CanDelete)
-            {
-                <a href="@Url.Action("Delete", "MediaCategory", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
-            }
-            <a href="@Url.Action("Edit", "MediaCategory", new { id = Model.Id })" class="btn btn-primary" data-toggle="fb-modal">Edit</a>
-        </span>
-    </legend>
-</fieldset>
+<form action="@Url.Action("Show", "MediaCategory", new{mediaCategory.Id})" method="get">
 
-@{ Html.RenderPartial("Upload", Model); }
 
-@{Html.RenderAction("ShowFiles", "File", new { Model });}
+    <fieldset>
+        <legend>@mediaCategory.Name
+            <span class="btn-group  display-inline  pull-right">
+                <a href="@Url.Action("SortFiles", "MediaCategory", new { id = mediaCategory.Id })" class="btn ">Sort</a>
+                @if (mediaCategory.CanDelete)
+                {
+                    <a href="@Url.Action("Delete", "MediaCategory", new { id = mediaCategory.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
+                }
+                <a href="@Url.Action("Edit", "MediaCategory", new { id = mediaCategory.Id })" class="btn" data-toggle="fb-modal">Edit</a>
+
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </span>
+        </legend>
+    </fieldset>
+    @Html.LabelFor(x=>x.SearchText)
+    @Html.TextBoxFor(x=>x.SearchText)
+
+    @{ Html.RenderPartial("Upload", mediaCategory); }
+
+    @{
+        Html.RenderPartial("ShowFiles", pagedList);
+    }
+
+</form>

@@ -201,6 +201,17 @@ namespace MrCMS.Services
                            .Paged(pageNumber:page, pageSize:_siteSettings.DefaultPageSize);
         }
 
+        public IPagedList<MediaFile> GetFilesForSearchPaged(MediaCategorySearchModel model)
+        {
+            var query = _session.QueryOver<MediaFile>();
+            if (model.Id > 0)
+                query = query.Where(x => x.MediaCategory.Id == model.Id);
+            if (model.SearchText != null)
+                query = query.Where(x => x.FileName.IsLike(model.SearchText, MatchMode.Anywhere) || x.Title.IsLike(model.SearchText, MatchMode.Anywhere) || x.Description.IsLike(model.SearchText, MatchMode.Anywhere));
+
+            return query.OrderBy(x => x.DisplayOrder).Desc.Paged(model.Page, _siteSettings.DefaultPageSize);
+        }
+
         public void DeleteFile(MediaFile mediaFile)
         {
             // remove file from the file list for its category, to prevent missing item exception

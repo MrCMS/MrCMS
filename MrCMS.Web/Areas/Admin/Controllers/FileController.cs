@@ -72,13 +72,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult ShowFiles(MediaCategory mediaCategory, int page = 1)
-        {
-            ViewData["MediaCategory"] = mediaCategory;
-            return PartialView("ShowFiles", _fileService.GetFiles(mediaCategory.Id, page));
-        }
-
         public ActionResult Edit(MediaFile file)
         {
             return View("Edit", file);

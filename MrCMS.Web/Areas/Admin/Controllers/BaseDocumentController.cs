@@ -103,9 +103,5 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _documentService.SetOrders(items);
             return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
         }
-
-        public abstract ActionResult Show(T document);
-
-        
     }
 }
