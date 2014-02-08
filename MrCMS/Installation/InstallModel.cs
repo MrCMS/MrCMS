@@ -21,7 +21,7 @@ namespace MrCMS.Installation
         [AllowHtml]
         [DataType(DataType.Password)]
         [Required]
-        [Compare("ConfirmPassword", ErrorMessage = "Passwords must match")]
+        [System.ComponentModel.DataAnnotations.Compare("ConfirmPassword", ErrorMessage = "Passwords must match")]
         public string AdminPassword { get; set; }
 
         [AllowHtml]

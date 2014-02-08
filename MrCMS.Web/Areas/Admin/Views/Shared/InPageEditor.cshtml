@@ -5,7 +5,7 @@
 @model MrCMS.Entities.Documents.Web.Webpage   
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css" />
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css" />
-<link href="@Url.Content("~/Areas/Admin/Content/Scripts/fancybox/jquery.fancybox.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.css")" rel="stylesheet" type="text/css" />
 
 @{
     var canEditPage = CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Edit, Model.GetType().FullName);
@@ -56,8 +56,7 @@
 
 @Html.HiddenFor(webpage => webpage.Id)
 <script src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"></script>
-<script src="@Url.Content("~/Areas/Admin/Content/Scripts/jquery.cookie.js")"></script>
-<script src="@Url.Content("~/Areas/Admin/Content/Styles/bootstrap/js/bootstrap.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/front-end-editing.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/custom/jquery.mrcms-mediaselector.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/fancybox/jquery.fancybox.js")"></script>
+<script src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jquery.cookie.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/mrcms/front-end-editing.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.js")"></script>

@@ -62,7 +62,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     user.LastName = model.LastName;
                     user.Email = model.Email;
                     _userService.SaveUser(user);
-                    _authorisationService.SetAuthCookie(user.Email, false);
+                    _authorisationService.SetAuthCookie(user, false);
 
                     return Redirect(UniquePageHelper.GetUrl<UserAccountPage>());
                 }

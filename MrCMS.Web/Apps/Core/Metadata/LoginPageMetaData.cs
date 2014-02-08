@@ -9,7 +9,7 @@ using MrCMS.Web.Apps.Core.Pages;
 
 namespace MrCMS.Web.Apps.Core.Metadata
 {
-    public class LoginPageMetaData : DocumentMetadataMap<LoginPage>
+    public class LoginPageMetadata : DocumentMetadataMap<LoginPage>
     {
         public override string IconClass
         {
@@ -34,6 +34,7 @@ namespace MrCMS.Web.Apps.Core.Metadata
             {
                 yield return typeof(ForgottenPasswordPage);
                 yield return typeof(ResetPasswordPage);
+                yield return typeof(CompleteExternalRegistrationPage);
             }
         }
     }

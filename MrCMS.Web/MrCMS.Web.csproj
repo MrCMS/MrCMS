@@ -8,12 +8,12 @@
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E64F6811-8373-4310-9CCE-3FBCA0D87826}</ProjectGuid>
-    <ProjectTypeGuids>{E53F8FEA-EAE0-44A6-8774-FFD645390401};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MrCMS.Web</RootNamespace>
     <AssemblyName>MrCMS.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -22,11 +22,11 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
+    <IISExpressSSLPort>44301</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,6 +36,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,11 +45,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dotless.Core">
-      <HintPath>..\packages\dotless.1.3.1.0\lib\dotless.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
@@ -77,6 +76,36 @@
     <Reference Include="Microsoft.ApplicationServer.Caching.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.2.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.1.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.1.0.0\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.2.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.2.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.2.1.0\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.2.1.0\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
+      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.2.1.0\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.2.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.DistributedCache, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.2.0.0\lib\net40-full\Microsoft.Web.DistributedCache.dll</HintPath>
     </Reference>
@@ -97,8 +126,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MySql.Data.6.6.4\lib\net40\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -120,6 +149,13 @@
     <Reference Include="Ninject.Web.Mvc">
       <HintPath>..\packages\Ninject.MVC3.3.0.0.6\lib\net40-full\Ninject.Web.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin.Security.Providers">
+      <HintPath>..\packages\Owin.Security.Providers.1.2.1\lib\net45\Owin.Security.Providers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.SQLite, Version=1.0.82.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -129,9 +165,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Data.SQLite.1.0.82.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -140,17 +188,26 @@
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebActivator">
       <HintPath>..\packages\WebActivator.1.5\lib\net40\WebActivator.dll</HintPath>
     </Reference>
@@ -162,11 +219,14 @@
     <Compile Include="Apps\Articles\Entities\AuthorInfo.cs" />
     <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
+    <Compile Include="Apps\Core\Controllers\CompleteExternalRegistrationPageController.cs" />
     <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
     <Compile Include="Apps\Core\Controllers\RegistrationController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
+    <Compile Include="Apps\Core\CoreAppInstallation.cs" />
     <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\UserTokenProvider.cs" />
+    <Compile Include="Apps\Core\Metadata\CompleteExternalRegistrationPageMetadata.cs" />
     <Compile Include="Apps\Core\Metadata\RegisterPageMedatData.cs" />
     <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\ForgottenPasswordPageMetaData.cs" />
@@ -179,6 +239,7 @@
     <Compile Include="Apps\Core\Models\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Models\UserAccountModel.cs" />
+    <Compile Include="Apps\Core\Pages\CompleteExternalRegistrationPage.cs" />
     <Compile Include="Apps\Core\Pages\UserAccountPage.cs" />
     <Compile Include="Apps\Core\Pages\RegisterPage.cs" />
     <Compile Include="Apps\Core\Pages\ResetPasswordPage.cs" />
@@ -239,16 +300,21 @@
     <Compile Include="Areas\Admin\Controllers\SitesController.cs" />
     <Compile Include="Areas\Admin\Controllers\TagController.cs" />
     <Compile Include="Areas\Admin\Controllers\TaskController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ThirdPartyAuthController.cs" />
     <Compile Include="Areas\Admin\Controllers\UrlHistoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageController.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaController.cs" />
     <Compile Include="Areas\Admin\FormController.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\ThirdPartyAuthSettingsModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\AddPageModel.cs" />
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
     <Compile Include="Areas\Admin\Models\Dashboard.cs" />
+    <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\ThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Controllers\CKEditorController.cs" />
+    <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Apps\Core\Controllers\LoginController.cs" />
@@ -258,9 +324,15 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps\Articles\Areas\Admin\Content\Scripts\articles.js" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-theme.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.css" />
+    <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.js" />
+    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
     <Content Include="Apps\Core\Content\Images\mrcms-logo.png" />
     <Content Include="Apps\Core\Content\Scripts\forgot-password.js" />
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
@@ -566,414 +638,408 @@
     <Content Include="Areas\Admin\Content\Images\no-image.jpg" />
     <Content Include="Areas\Admin\Content\Images\no-media-selected.jpg" />
     <Content Include="Areas\Admin\Content\Images\pencil.png" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\media-uploader.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\mrcms-media-selector.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\stickytabs.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\demo-ie8.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\demo.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\jquery.fileupload-noscript.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\jquery.fileupload-ui-noscript.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\jquery.fileupload-ui.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\jquery.fileupload.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\css\style.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\img\loading.gif" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\img\progressbar.gif" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\app.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\cors\jquery.postmessage-transport.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\cors\jquery.xdr-transport.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\jquery.fileupload-angular.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\jquery.fileupload-audio.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\jquery.fileupload-image.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\jquery.fileupload-jquery-ui.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\jquery.fileupload-process.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\jquery.fileupload-ui.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\jquery.fileupload-validate.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\jquery.fileupload-video.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\jquery.fileupload.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\jquery.iframe-transport.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\main.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jQuery-File-Upload-9.5.2\js\vendor\jquery.ui.widget.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\AUTHORS.txt" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\Gruntfile.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\jquery-1.10.2.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\animated-overlay.gif" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-icons_222222_256x240.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-icons_454545_256x240.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-icons_888888_256x240.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\images\ui-icons_cd0a0a_256x240.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery-ui.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.accordion.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.all.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.autocomplete.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.base.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.button.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.core.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.datepicker.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.dialog.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.menu.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.progressbar.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.resizable.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.selectable.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.slider.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.spinner.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.tabs.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.theme.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\jquery.ui.tooltip.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\animated-overlay.gif" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-icons_222222_256x240.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-icons_454545_256x240.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-icons_888888_256x240.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery-ui.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.accordion.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.autocomplete.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.button.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.core.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.datepicker.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.dialog.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.menu.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.progressbar.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.resizable.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.selectable.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.slider.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.spinner.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.tabs.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.theme.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\themes\base\minified\jquery.ui.tooltip.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery-ui-i18n.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-af.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ar-DZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ar.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-az.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-be.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-bg.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-bs.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ca.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-cs.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-cy-GB.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-da.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-de.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-el.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-en-AU.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-en-GB.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-en-NZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-eo.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-es.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-et.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-eu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fa.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fi.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fo.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fr-CA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fr-CH.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-gl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-he.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-hi.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-hr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-hu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-hy.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-id.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-is.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-it.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ja.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ka.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-kk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-km.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ko.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ky.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-lb.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-lt.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-lv.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-mk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ml.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ms.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-nb.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-nl-BE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-nl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-nn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-no.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-pl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-pt-BR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-pt.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-rm.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ro.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ru.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sq.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sr-SR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sv.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ta.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-th.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-tj.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-tr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-uk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-vi.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-zh-CN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-zh-HK.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-zh-TW.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery-ui.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.accordion.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.autocomplete.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.button.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.core.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.datepicker.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.dialog.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.draggable.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.droppable.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-blind.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-bounce.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-clip.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-drop.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-explode.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-fade.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-fold.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-highlight.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-pulsate.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-scale.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-shake.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-slide.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect-transfer.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.effect.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.menu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.mouse.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.position.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.progressbar.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.resizable.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.selectable.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.slider.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.sortable.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.spinner.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.tabs.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.tooltip.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\jquery.ui.widget.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery-ui-i18n.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-af.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ar-DZ.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ar.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-az.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-be.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-bg.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-bs.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ca.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-cs.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-cy-GB.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-da.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-de.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-el.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-en-AU.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-en-GB.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-en-NZ.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-eo.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-es.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-et.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-eu.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fa.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fi.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fo.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fr-CA.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fr-CH.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fr.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-gl.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-he.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-hi.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-hr.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-hu.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-hy.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-id.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-is.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-it.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ja.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ka.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-kk.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-km.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ko.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ky.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-lb.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-lt.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-lv.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-mk.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ml.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ms.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-nb.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-nl-BE.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-nl.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-nn.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-no.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-pl.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-pt-BR.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-pt.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-rm.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ro.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ru.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sk.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sl.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sq.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sr-SR.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sr.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sv.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ta.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-th.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-tj.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-tr.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-uk.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-vi.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-zh-CN.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-zh-HK.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-zh-TW.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery-ui.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.accordion.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.autocomplete.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.button.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.core.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.datepicker.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.dialog.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.draggable.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.droppable.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-blind.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-bounce.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-clip.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-drop.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-explode.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-fade.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-fold.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-highlight.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-pulsate.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-scale.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-shake.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-slide.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-transfer.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.effect.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.menu.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.mouse.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.position.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.progressbar.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.resizable.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.selectable.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.slider.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.sortable.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.spinner.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.tabs.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.tooltip.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-1.10.4\ui\minified\jquery.ui.widget.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\admin.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\add-page-widget.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\add-webpage.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\add-layout.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\add-category.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\add-site.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\edit-message-template.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\form-sort.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\move-webpage.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\edit-webpage.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\file-system-settings.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\form-builder.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\media-category.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\popup.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\preview-message-template.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\search.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\sort.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\tagging.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\front-end-editing.js" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\blank.gif" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\fancybox_loading%402x.gif" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\fancybox_loading.gif" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\fancybox_overlay.png" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\fancybox_sprite%402x.png" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\fancybox_sprite.png" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\helpers\fancybox_buttons.png" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\helpers\jquery.fancybox-buttons.css" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\helpers\jquery.fancybox-buttons.js" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\helpers\jquery.fancybox-media.js" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\helpers\jquery.fancybox-thumbs.css" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\helpers\jquery.fancybox-thumbs.js" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\jquery.fancybox.css" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\jquery.fancybox.js" />
-    <Content Include="Areas\Admin\Content\Scripts\fancybox\jquery.fancybox.pack.js" />
-    <Content Include="Areas\Admin\Content\Scripts\store.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jstree\jstree.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jstree\jstree.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jstree\libs\jquery.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jstree\libs\jquery.ui.touch.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jstree\libs\require.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jstree\themes\default\32px.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jstree\themes\default\40px.png" />
-    <Content Include="Areas\Admin\Content\Scripts\jstree\themes\default\style.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jstree\themes\default\style.min.css" />
-    <Content Include="Areas\Admin\Content\Scripts\jstree\themes\default\throbber.gif" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\jquery.mrcms-mediaselector.js" />
-    <Content Include="Areas\Admin\Content\Scripts\custom\menu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\MicrosoftMvcAjax.js" />
-    <Content Include="Areas\Admin\Content\Scripts\MicrosoftMvcJQueryValidation.js" />
-    <Content Include="Areas\Admin\Content\Scripts\MicrosoftMvcValidation.js" />
-    <Content Include="Areas\Admin\Content\Scripts\mvcfoolproof.unobtrusive.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\MvcFoolproofJQueryValidation.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\MvcFoolproofValidation.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2-spinner.gif" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.css" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.png" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2x2.png" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ar.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ca.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_cs.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_da.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_de.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_el.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_es.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_et.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_eu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_fi.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_fr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_gl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_he.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_hr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_hu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_id.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_is.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_it.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ja.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ko.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_lt.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_lv.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_mk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_nl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_no.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_pl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_pt-BR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_pt-PT.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ro.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ru.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_sk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_sv.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_tr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_ua.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_vi.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_zh-CN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_zh-TW.js" />
-    <Content Include="Areas\Admin\Content\Scripts\tag-it.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\tmpl.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\load-image.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\media-uploader.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\mrcms-media-selector.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\stickytabs.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\css\demo-ie8.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\css\demo.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\css\jquery.fileupload-noscript.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\css\jquery.fileupload-ui-noscript.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\css\jquery.fileupload-ui.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\css\jquery.fileupload.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\css\style.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\img\loading.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\img\progressbar.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\app.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\cors\jquery.postmessage-transport.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\cors\jquery.xdr-transport.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\jquery.fileupload-angular.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\jquery.fileupload-audio.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\jquery.fileupload-image.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\jquery.fileupload-jquery-ui.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\jquery.fileupload-process.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\jquery.fileupload-ui.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\jquery.fileupload-validate.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\jquery.fileupload-video.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\jquery.fileupload.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\jquery.iframe-transport.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\main.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jQuery-File-Upload-9.5.2\js\vendor\jquery.ui.widget.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\AUTHORS.txt" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\Gruntfile.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\jquery-1.10.2.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\animated-overlay.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery-ui.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.all.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.base.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.button.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.core.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.menu.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.slider.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.spinner.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.theme.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\jquery.ui.tooltip.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\animated-overlay.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-icons_222222_256x240.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-icons_454545_256x240.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-icons_888888_256x240.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery-ui.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.accordion.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.autocomplete.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.button.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.core.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.datepicker.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.dialog.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.menu.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.progressbar.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.resizable.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.selectable.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.slider.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.spinner.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.tabs.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\themes\base\minified\jquery.ui.tooltip.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery-ui-i18n.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-af.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ar-DZ.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ar.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-az.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-be.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-bg.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-bs.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ca.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-cs.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-cy-GB.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-da.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-de.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-el.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-en-AU.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-en-GB.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-en-NZ.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-eo.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-es.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-et.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-eu.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fa.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fi.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fo.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fr-CA.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fr-CH.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-fr.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-gl.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-he.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-hi.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-hr.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-hu.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-hy.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-id.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-is.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-it.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ja.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ka.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-kk.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-km.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ko.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ky.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-lb.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-lt.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-lv.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-mk.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ml.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ms.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-nb.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-nl-BE.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-nl.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-nn.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-no.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-pl.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-pt-BR.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-pt.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-rm.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ro.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ru.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sk.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sl.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sq.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sr-SR.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sr.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-sv.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-ta.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-th.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-tj.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-tr.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-uk.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-vi.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-zh-CN.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-zh-HK.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\i18n\jquery.ui.datepicker-zh-TW.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery-ui.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.accordion.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.autocomplete.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.button.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.core.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.datepicker.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.dialog.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.draggable.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.droppable.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-blind.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-bounce.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-clip.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-drop.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-explode.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-fade.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-fold.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-highlight.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-pulsate.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-scale.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-shake.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-slide.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect-transfer.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.effect.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.menu.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.mouse.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.position.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.progressbar.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.resizable.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.selectable.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.slider.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.sortable.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.spinner.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.tabs.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.tooltip.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\jquery.ui.widget.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery-ui-i18n.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-af.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ar-DZ.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ar.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-az.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-be.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-bg.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-bs.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ca.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-cs.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-cy-GB.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-da.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-de.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-el.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-en-AU.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-en-GB.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-en-NZ.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-eo.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-es.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-et.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-eu.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fa.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fi.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fo.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fr-CA.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fr-CH.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-fr.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-gl.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-he.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-hi.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-hr.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-hu.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-hy.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-id.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-is.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-it.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ja.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ka.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-kk.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-km.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ko.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ky.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-lb.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-lt.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-lv.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-mk.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ml.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ms.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-nb.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-nl-BE.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-nl.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-nn.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-no.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-pl.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-pt-BR.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-pt.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-rm.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ro.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ru.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sk.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sl.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sq.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sr-SR.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sr.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-sv.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-ta.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-th.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-tj.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-tr.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-uk.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-vi.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-zh-CN.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-zh-HK.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\i18n\jquery.ui.datepicker-zh-TW.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery-ui.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.accordion.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.autocomplete.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.button.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.core.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.datepicker.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.dialog.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.draggable.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.droppable.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-blind.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-bounce.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-clip.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-drop.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-explode.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-fade.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-fold.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-highlight.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-pulsate.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-scale.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-shake.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-slide.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect-transfer.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.effect.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.menu.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.mouse.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.position.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.progressbar.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.resizable.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.selectable.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.slider.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.sortable.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.spinner.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.tabs.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.tooltip.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-1.10.4\ui\minified\jquery.ui.widget.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\admin.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\add-page-widget.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\add-webpage.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\add-layout.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\add-category.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\add-site.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\edit-message-template.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\form-sort.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\move-webpage.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\edit-webpage.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\file-system-settings.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\form-builder.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\media-category.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\popup.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\preview-message-template.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\search.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\sort.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\tagging.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\front-end-editing.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\blank.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\fancybox_loading%402x.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\fancybox_loading.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\fancybox_overlay.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\fancybox_sprite%402x.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\fancybox_sprite.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\helpers\fancybox_buttons.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\helpers\jquery.fancybox-buttons.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\helpers\jquery.fancybox-buttons.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\helpers\jquery.fancybox-media.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\helpers\jquery.fancybox-thumbs.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\helpers\jquery.fancybox-thumbs.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\jquery.fancybox.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\jquery.fancybox.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\fancybox\jquery.fancybox.pack.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\store.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\libs\jquery.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\libs\jquery.ui.touch.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\libs\require.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\32px.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\40px.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.min.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\menu.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2-spinner.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2.css" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2x2.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_ar.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_ca.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_cs.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_da.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_de.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_el.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_es.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_et.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_eu.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_fi.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_fr.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_gl.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_he.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_hr.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_hu.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_id.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_is.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_it.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_ja.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_ko.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_lt.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_lv.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_mk.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_nl.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_no.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_pl.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_pt-BR.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_pt-PT.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_ro.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_ru.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_sk.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_sv.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_tr.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_ua.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_vi.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_zh-CN.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_zh-TW.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\tag-it.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\tmpl.min.js" />
     <Content Include="Areas\Admin\Content\Styles\mrcms-admin.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.css" />
@@ -1022,14 +1088,6 @@
     <Content Include="Areas\Admin\Content\Styles\Images\jquerytree\treeview-red-line.gif" />
     <Content Include="Areas\Admin\Content\Styles\Images\jquerytree\treeview-red.gif" />
     <Content Include="Areas\Admin\Content\Styles\jquery.mrcms-mediaselector.css" />
-    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-responsive.css" />
-    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-responsive.min.css" />
-    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.css" />
-    <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.min.css" />
-    <Content Include="Apps\Core\Content\Bootstrap\img\glyphicons-halflings-white.png" />
-    <Content Include="Apps\Core\Content\Bootstrap\img\glyphicons-halflings.png" />
-    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.js" />
-    <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
     <Content Include="Areas\Admin\Content\Styles\jquery.tagit.css" />
     <Content Include="Content\install\images\install-synchronizing.gif" />
     <Content Include="Content\install\bootstrap\css\bootstrap-responsive.css" />
@@ -1051,369 +1109,8 @@
     <Content Include="Apps\Core\Content\Styles\style.css" />
     <Content Include="Docs\UpgradeNotes.txt" />
     <Content Include="Global.asax" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery-ui-timepicker-addon.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.contextMenu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.cookie.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.fileupload-fp.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.fileupload-ui.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.fileupload.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.greyscale.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.iframe-transport.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.postback.js" />
-    <Content Include="Areas\Admin\Content\Scripts\load-image.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.af-ZA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.af.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.am-ET.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.am.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-AE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-BH.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-DZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-EG.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-IQ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-JO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-KW.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-LB.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-LY.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-MA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-OM.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-QA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-SA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-SY.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-TN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar-YE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ar.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.arn-CL.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.arn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.as-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.as.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.az-Cyrl-AZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.az-Cyrl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.az-Latn-AZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.az-Latn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.az.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ba-RU.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ba.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.be-BY.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.be.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bg-BG.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bg.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bn-BD.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bn-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bo-CN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bo.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.br-FR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.br.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bs-Cyrl-BA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bs-Cyrl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bs-Latn-BA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bs-Latn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.bs.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ca-ES.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ca.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.co-FR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.co.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.cs-CZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.cs.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.cy-GB.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.cy.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.da-DK.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.da.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.de-AT.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.de-CH.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.de-DE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.de-LI.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.de-LU.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.de.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.dsb-DE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.dsb.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.dv-MV.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.dv.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.el-GR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.el.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-029.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-AU.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-BZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-CA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-GB.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-IE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-JM.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-MY.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-NZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-PH.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-SG.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-TT.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-US.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-ZA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.en-ZW.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-AR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-BO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-CL.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-CO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-CR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-DO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-EC.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-ES.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-GT.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-HN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-MX.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-NI.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-PA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-PE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-PR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-PY.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-SV.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-US.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-UY.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es-VE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.es.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.et-EE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.et.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.eu-ES.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.eu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fa-IR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fa.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fi-FI.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fi.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fil-PH.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fil.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fo-FO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fo.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fr-BE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fr-CA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fr-CH.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fr-FR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fr-LU.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fr-MC.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fy-NL.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.fy.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ga-IE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ga.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.gd-GB.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.gd.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.gl-ES.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.gl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.gsw-FR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.gsw.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.gu-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.gu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ha-Latn-NG.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ha-Latn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ha.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.he-IL.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.he.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hi-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hi.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hr-BA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hr-HR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hsb-DE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hsb.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hu-HU.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hy-AM.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.hy.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.id-ID.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.id.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ig-NG.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ig.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ii-CN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ii.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.is-IS.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.is.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.it-CH.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.it-IT.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.it.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.iu-Cans-CA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.iu-Cans.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.iu-Latn-CA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.iu-Latn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.iu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ja-JP.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ja.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ka-GE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ka.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.kk-KZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.kk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.kl-GL.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.kl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.km-KH.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.km.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.kn-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.kn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ko-KR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ko.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.kok-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.kok.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ky-KG.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ky.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.lb-LU.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.lb.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.lo-LA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.lo.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.lt-LT.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.lt.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.lv-LV.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.lv.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mi-NZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mi.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mk-MK.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ml-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ml.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mn-Cyrl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mn-MN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mn-Mong-CN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mn-Mong.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.moh-CA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.moh.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mr-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ms-BN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ms-MY.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ms.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mt-MT.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.mt.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.nb-NO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.nb.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ne-NP.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ne.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.nl-BE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.nl-NL.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.nl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.nn-NO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.nn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.no.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.nso-ZA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.nso.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.oc-FR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.oc.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.or-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.or.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.pa-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.pa.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.pl-PL.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.pl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.prs-AF.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.prs.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ps-AF.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ps.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.pt-BR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.pt-PT.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.pt.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.qut-GT.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.qut.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.quz-BO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.quz-EC.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.quz-PE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.quz.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.rm-CH.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.rm.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ro-RO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ro.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ru-RU.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ru.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.rw-RW.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.rw.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sa-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sa.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sah-RU.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sah.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.se-FI.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.se-NO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.se-SE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.se.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.si-LK.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.si.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sk-SK.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sl-SI.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sma-NO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sma-SE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sma.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.smj-NO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.smj-SE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.smj.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.smn-FI.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.smn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sms-FI.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sms.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sq-AL.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sq.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr-Cyrl-BA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr-Cyrl-CS.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr-Cyrl-ME.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr-Cyrl-RS.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr-Cyrl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr-Latn-BA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr-Latn-CS.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr-Latn-ME.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr-Latn-RS.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr-Latn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sv-FI.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sv-SE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sv.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sw-KE.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.sw.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.syr-SY.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.syr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ta-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ta.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.te-IN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.te.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tg-Cyrl-TJ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tg-Cyrl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tg.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.th-TH.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.th.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tk-TM.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tn-ZA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tr-TR.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tr.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tt-RU.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tt.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tzm-Latn-DZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tzm-Latn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.tzm.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ug-CN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ug.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.uk-UA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.uk.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ur-PK.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.ur.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.uz-Cyrl-UZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.uz-Cyrl.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.uz-Latn-UZ.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.uz-Latn.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.uz.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.vi-VN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.vi.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.wo-SN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.wo.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.xh-ZA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.xh.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.yo-NG.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.yo.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh-CHS.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh-CHT.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh-CN.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh-Hans.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh-Hant.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh-HK.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh-MO.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh-SG.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh-TW.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zh.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zu-ZA.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\cultures\globalize.culture.zu.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.globalize\globalize.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-timepicker-addon.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.cookie.js" />
     <Content Include="Content\install\scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Content\install\scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Content\install\scripts\jquery.unobtrusive-ajax.min.js" />
@@ -1430,13 +1127,17 @@
     <Content Include="Apps\Core\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Apps\Articles\Areas\Admin\Views\Web.config" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\Article.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleList.cshtml" />
     <Content Include="Apps\Articles\Views\Pages\Article.cshtml" />
     <Content Include="Apps\Articles\Views\Pages\ArticleList.cshtml" />
     <Content Include="Apps\Articles\Views\Shared\ShowCategories.cshtml" />
-    <Content Include="Apps\Articles\Views\Web.config" />
+    <Content Include="Apps\Articles\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Apps\Articles\Views\Widgets\LatestXArticles.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Web.config">
       <SubType>Designer</SubType>
@@ -1480,7 +1181,7 @@
     <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Edit.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\User\Article.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Article\ForUser.cshtml" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.validate.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.validate.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1490,8 +1191,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Content\Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Areas\Admin\Content\Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.validate.unobtrusive.min.js" />
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1586,12 +1286,12 @@
     <Content Include="Areas\Admin\Views\MessageTemplate\Add.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Reset.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Documents.cshtml" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\component.json" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\LICENSE" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\README.md" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\release.sh" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2.jquery.json" />
-    <Content Include="Areas\Admin\Content\Scripts\select2-3.4.1\select2_locale_en.js.template" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\component.json" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\LICENSE" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\README.md" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\release.sh" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2.jquery.json" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.1\select2_locale_en.js.template" />
     <Content Include="Areas\Admin\Views\Search\GetBreadCrumb.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\CopyOptions.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Tokens.cshtml" />
@@ -1611,11 +1311,21 @@
     <Content Include="Areas\Admin\Views\Shared\_LayoutWithoutWebTree.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\RevertToVersion.cshtml" />
     <Content Include="Areas\Admin\Views\FileMigration\Show.cshtml" />
-    <Content Include="Areas\Admin\Views\File\ShowFiles.cshtml" />
     <Content Include="Areas\Admin\Views\File\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\File\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\MediaSelector\Show.cshtml" />
     <Content Include="Areas\Admin\Views\MediaSelector\FileResult.cshtml" />
+    <Content Include="Apps\Core\Views\ExternalLogin\Providers.cshtml" />
+    <Content Include="Apps\Core\Views\ExternalLogin\Google.cshtml" />
+    <Content Include="Apps\Core\Views\ExternalLogin\StandardProvider.cshtml" />
+    <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Areas\Admin\Views\MediaCategory\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\MediaCategory\ShowFiles.cshtml" />
+    <Content Include="Apps\Core\Views\ExternalLogin\LinkedIn.cshtml" />
+    <Content Include="Apps\Core\Views\ExternalLogin\Facebook.cshtml" />
+    <Content Include="Areas\Admin\Views\ThirdPartyAuth\Index.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
@@ -1735,7 +1445,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>1834</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:8880</IISUrl>
+          <IISUrl>http://localhost:8880/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

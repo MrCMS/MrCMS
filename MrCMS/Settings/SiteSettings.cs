@@ -144,7 +144,8 @@ CKEDITOR.editorConfig = function (config) {
     config.extraPlugins = 'justify,autogrow,youtube,mediaembed';
     config.removePlugins = 'elementspath';
     config.forcePasteAsPlainText = true;
-    config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.min.css', '/Apps/Core/Content/Styles/style.css'];
+    config.allowedContent = true;
+    config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.css', '/Apps/Core/Content/Styles/style.css'];
 
     config.toolbar = 'Full';
 

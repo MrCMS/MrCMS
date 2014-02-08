@@ -4,7 +4,7 @@
     var currentPage = CurrentRequestData.CurrentPage;
     var activePages = currentPage.ActivePages.Select(webpage => "/" + webpage.LiveUrlSegment).ToList();
 }
-    <ul class="nav">
+    <ul class="nav navbar-nav">
         @foreach (var page in Model)
         {
             if (@page.Children.Any())

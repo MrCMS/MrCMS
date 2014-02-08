@@ -20,8 +20,7 @@ namespace MrCMS.Entities.Documents.Media
         public virtual string MetaTitle { get; set; }
         public virtual string MetaDescription { get; set; }
 
-        [DisplayName("Is Gallery")]
-        public virtual bool IsGallery { get; set; }
+        public virtual bool IsGallery { get { return true; }}
 
         private IList<MediaFile> _files = new List<MediaFile>();
 

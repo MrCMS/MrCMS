@@ -1,0 +1,44 @@
+﻿@using System.Drawing
+@using MrCMS.Entities.Documents.Media
+@using MrCMS.Helpers
+@model MrCMS.Paging.IPagedList<MrCMS.Entities.Documents.Media.MediaFile>
+@{
+    var mediaCategory = ViewData["MediaCategory"] as MediaCategory;
+}
+<table class="table table-striped table-condensed">
+    <tr>
+        <th class="span6">File Name</th>
+        <th class="span4">Alt / Description</th>
+        <th class="span2">Actions</th>
+    </tr>
+
+    @foreach (var file in Model)
+    {
+        <tr>
+            <td>
+                @{
+        if (file.IsImage)
+        {
+                    <a href="@file.FileUrl">
+                        @Html.RenderImage(file.FileUrl, new Size(100, 100))
+                    </a>
+        }
+        else
+        {
+                    @Html.Link(file.FileName, file.FileUrl)
+        }
+                }
+            </td>
+            <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? MvcHtmlString.Create("<br />" + file.Description) : null)</td>
+            <td>
+                <div class="btn-group">
+                    @Html.ActionLink("Delete", "Delete", "File", new { Id = file.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
+                    @Html.ActionLink("Edit", "Edit", "File", new { Id = file.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+                </div>
+            </td>
+        </tr>
+    }
+
+</table>
+
+@Html.Pager(Model, "Show", page => new { page })

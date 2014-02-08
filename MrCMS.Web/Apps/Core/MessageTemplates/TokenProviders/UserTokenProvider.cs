@@ -9,12 +9,12 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
     public class UserTokenProvider : ITokenProvider<User>
     {
         private readonly ICurrentSiteLocator _currentSiteLocator;
-        private readonly IDocumentService _documentService;
+        private readonly IUniquePageService _uniquePageService;
 
-        public UserTokenProvider(ICurrentSiteLocator currentSiteLocator, IDocumentService documentService)
+        public UserTokenProvider(ICurrentSiteLocator currentSiteLocator, IUniquePageService uniquePageService)
         {
             _currentSiteLocator = currentSiteLocator;
-            _documentService = documentService;
+            _uniquePageService = uniquePageService;
             _tokens = GetTokens();
         }
 
@@ -42,7 +42,7 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
                                "ResetPasswordUrl",
                                user =>
                                    {
-                                       var resetPasswordPage = _documentService.GetUniquePage<ResetPasswordPage>();
+                                       var resetPasswordPage = _uniquePageService.GetUniquePage<ResetPasswordPage>();
 
                                        string resetUrl = resetPasswordPage != null
                                                              ? string.Format("{0}?id={1}", resetPasswordPage.AbsoluteUrl, user.ResetPasswordGuid)

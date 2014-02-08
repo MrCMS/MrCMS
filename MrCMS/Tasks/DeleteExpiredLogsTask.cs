@@ -34,8 +34,5 @@ namespace MrCMS.Tasks
                 transaction.Commit();
             }
         }
-
-        public Site Site { get; set; }
-        public IHaveExecutionStatus Entity { get; set; }
     }
 }

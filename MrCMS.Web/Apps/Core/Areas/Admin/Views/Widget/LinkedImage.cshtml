@@ -1,9 +1,9 @@
 ﻿@model MrCMS.Web.Apps.Core.Widgets.LinkedImage
 
 @Html.LabelFor(webpage => webpage.Image)
-@Html.TextBoxFor(webpage => webpage.Image,new{@class="media-selector"})
+@Html.TextBoxFor(webpage => webpage.Image, new { data_type = "media-selector" })
 
 @Html.LabelFor(webpage => webpage.Link)
-@Html.TextBoxFor(webpage => webpage.Link)
+@Html.TextBoxFor(webpage => webpage.Link, new {@class="span12"})
 
 

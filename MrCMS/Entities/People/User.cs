@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using Iesi.Collections.Generic;
+using Microsoft.AspNet.Identity;
 using MrCMS.ACL;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -13,14 +14,36 @@ using NHibernate;
 
 namespace MrCMS.Entities.People
 {
-    public class User : SystemEntity
+    public class UserLogin : SystemEntity
+    {
+        public virtual string LoginProvider { get; set; }
+
+        public virtual string ProviderKey { get; set; }
+
+        public virtual User User { get; set; }
+    }
+    public class UserClaim : SystemEntity
+    {
+        public virtual string Issuer { get; set; }
+        public virtual string Claim { get; set; }
+        public virtual string Value { get; set; }
+
+        public virtual User User { get; set; }
+    }
+    public class User : SystemEntity, IUser
     {
         public User()
         {
             Guid = Guid.NewGuid();
             Roles = new HashedSet<UserRole>();
             UserProfileData = new List<UserProfileData>();
+            UserLogins = new List<UserLogin>();
+            UserClaims = new List<UserClaim>();
         }
+
+        public virtual IList<UserClaim> UserClaims { get; set; }
+
+        public virtual IList<UserLogin> UserLogins { get; set; }
 
         [DisplayName("First Name")]
         public virtual string FirstName { get; set; }
@@ -89,6 +112,21 @@ namespace MrCMS.Entities.People
         public static List<Type> OwnedObjectTypes
         {
             get { return TypeHelper.GetAllConcreteMappedClassesAssignableFrom<IBelongToUser>(); }
+        }
+
+        public virtual string OwinId
+        {
+            get { return Id.ToString(); }
+        }
+        string IUser.Id
+        {
+            get { return OwinId; }
+        }
+
+        string IUser.UserName
+        {
+            get { return Email; }
+            set { Email = value; }
         }
     }
 }

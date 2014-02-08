@@ -31,7 +31,7 @@ namespace MrCMS.Web.Apps.Core.Services
                            };
             _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
             _userService.AddUser(user);
-            _authorisationService.SetAuthCookie(model.Email, false);
+            _authorisationService.SetAuthCookie(user, false);
             _userEventService.OnUserRegistered(user);
             return user;
         }

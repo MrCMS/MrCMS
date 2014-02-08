@@ -33,7 +33,7 @@
                                                 <td>
                                                     @(!string.IsNullOrWhiteSpace(widget.Name) ? string.Format("{0} ({1})", widget.Name, widget.WidgetTypeFormatted) : widget.WidgetTypeFormatted)
 
-                                                    
+
                                                 </td>
                                                 <td>
                                                     <div class="btn-group">
@@ -52,7 +52,7 @@
                                                         {
                                                             <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete Widget</a>
                                                         }
-                                                        @Html.ActionLink("Edit Widget", "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini", @data_toggle="fb-modal" })
+                                                        @Html.ActionLink("Edit Widget", "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini", @data_toggle = "fb-modal" })
                                                     </div>
                                                 </td>
                                             </tr>
@@ -65,7 +65,7 @@
                                 </a>
                                 @if (widgets.Any())
                                 {
-                                    @Html.ActionLink("Sort", "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini", @data_toggle="fb-modal" })
+                                    @Html.ActionLink("Sort", "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini", @data_toggle = "fb-modal" })
                                     if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == Model))
                                     {
                                     @Html.FormLink("Reset sorting", "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })

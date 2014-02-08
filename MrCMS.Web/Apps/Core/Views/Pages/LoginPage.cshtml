@@ -1,7 +1,12 @@
-﻿@using MrCMS.Helpers
+﻿@using Microsoft.Owin.Security
 @using MrCMS.Web.Apps.Core.Models
 @model MrCMS.Web.Apps.Core.Pages.LoginPage
-           
+
 @Editable(Model, page => page.BodyContent, true)
 
-@{ Html.RenderPartial("LoginBox", ViewData["login-model"] as LoginModel);}
+@{
+    var loginModel = ViewData["login-model"] as LoginModel;
+    Html.RenderPartial("LoginBox", loginModel);
+}
+@{Html.RenderAction("Providers", "ExternalLogin", new { returnUrl = loginModel.ReturnUrl });}
+

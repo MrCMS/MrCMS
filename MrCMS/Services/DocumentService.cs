@@ -85,18 +85,6 @@ namespace MrCMS.Services
         {
             return _session.Get<T>(id);
         }
-
-        public T GetUniquePage<T>()
-            where T : Document, IUniquePage
-        {
-            return
-                _session.QueryOver<T>()
-                        .Where(arg => arg.Site.Id == _currentSite.Id)
-                        .Take(1)
-                        .Cacheable()
-                        .SingleOrDefault();
-        }
-
         public T SaveDocument<T>(T document) where T : Document
         {
             _session.Transact(session =>
@@ -472,21 +460,6 @@ namespace MrCMS.Services
                         .OrderBy(webpage => webpage.DisplayOrder).Asc
                         .Cacheable().List()
                         .FirstOrDefault(webpage => webpage.Published);
-        }
-
-        public RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
-        {
-            var page = GetUniquePage<T>();
-            var url = page != null ? string.Format("/{0}", page.LiveUrlSegment) : "/";
-            if (routeValues != null)
-            {
-                var dictionary = new RouteValueDictionary(routeValues);
-                url += string.Format("?{0}",
-                                     string.Join("&",
-                                                 dictionary.Select(
-                                                     pair => string.Format("{0}={1}", pair.Key, pair.Value))));
-            }
-            return new RedirectResult(url);
         }
 
         public void RevertToVersion(DocumentVersion documentVersion)

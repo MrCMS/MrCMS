@@ -21,8 +21,19 @@ namespace MrCMS.Helpers
 
         private static string Get<T>(object queryString, Func<T, string> selector) where T : Webpage, IUniquePage
         {
-            var documentService = MrCMSApplication.Get<IDocumentService>();
-            return documentService.RedirectTo<T>(queryString).Url;
+            var service = MrCMSApplication.Get<IUniquePageService>();
+
+            var processPage = service.GetUniquePage<T>();
+            string url = processPage != null ? selector(processPage) : "/";
+            if (queryString != null && processPage != null)
+            {
+                var dictionary = new RouteValueDictionary(queryString);
+                url += string.Format("?{0}",
+                                     string.Join("&",
+                                                 dictionary.Select(
+                                                     pair => string.Format("{0}={1}", pair.Key, pair.Value))));
+            }
+            return url;
         }
     }
 }

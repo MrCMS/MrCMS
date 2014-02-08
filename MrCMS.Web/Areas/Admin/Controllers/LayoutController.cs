@@ -28,7 +28,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View(model);
         }
 
-        public override ActionResult Show(Layout document)
+        public ActionResult Show(Layout document)
         {
             if (document == null)
                 return RedirectToAction("Index");
