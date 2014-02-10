@@ -21,7 +21,7 @@ namespace MrCMS.Settings
 
         public virtual bool RenderInSettings
         {
-            get { return true; }
+            get { return false; }
         }
 
         public virtual void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)

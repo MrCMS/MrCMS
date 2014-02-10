@@ -1,116 +1,148 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Settings;
+using MrCMS.Tasks;
+using MrCMS.Website;
 using NHibernate;
+using Newtonsoft.Json;
+using Ninject;
+using Site = MrCMS.Entities.Multisite.Site;
 
 namespace MrCMS.Services.FileMigration
 {
     public interface IFileMigrationService
     {
-        void MigrateFilesToAzure(int numberOfFiles = 100);
-        int FilesToMigrate();
+        void MigrateFiles();
     }
 
     public class FileMigrationService : IFileMigrationService
     {
-        private readonly AzureFileSystem _azureFileSystem;
-        private readonly IConfigurationProvider _configurationProvider;
-        private readonly FileMigrationSettings _fileMigrationSettings;
-        private readonly FileSystem _fileSystem;
+        private readonly IEnumerable<IFileSystem> _allFileSystems;
         private readonly FileSystemSettings _fileSystemSettings;
-        private readonly ImageProcessor _imageProcessor;
         private readonly ISession _session;
         private readonly Site _site;
-        private Dictionary<MediaFile, string> _filesToUpdate;
 
-        public FileMigrationService(Site site, ISession session, FileSystem fileSystem, AzureFileSystem azureFileSystem,
-                                    FileSystemSettings fileSystemSettings, IConfigurationProvider configurationProvider,
-                                    FileMigrationSettings fileMigrationSettings)
+        public FileMigrationService(IKernel kernel, FileSystemSettings fileSystemSettings, ISession session, Site site)
         {
-            _site = site;
-            _session = session;
-            _fileSystem = fileSystem;
-            _azureFileSystem = azureFileSystem;
+            _allFileSystems =
+                TypeHelper.GetAllTypesAssignableFrom<IFileSystem>()
+                          .Select(type => kernel.Get(type) as IFileSystem)
+                          .ToList();
             _fileSystemSettings = fileSystemSettings;
-            _configurationProvider = configurationProvider;
-            _fileMigrationSettings = fileMigrationSettings;
-            _imageProcessor = new ImageProcessor(_session, _fileSystem, null);
+            _session = session;
+            _site = site;
         }
 
-        public void MigrateFilesToAzure(int numberOfFiles = 100)
+        public IFileSystem CurrentFileSystem
         {
-            if (_fileSystemSettings.StorageType != typeof(AzureFileSystem).FullName)
-                return;
+            get
+            {
+                var storageType = _fileSystemSettings.StorageType;
+                return _allFileSystems.FirstOrDefault(system => system.GetType().FullName == storageType);
+            }
+        }
 
-            PrimeFileMigrationSettings();
+        public void MigrateFiles()
+        {
+            var mediaFiles = _session.QueryOver<MediaFile>().Where(file => file.Site == _site).Fetch(file => file.ResizedImages).Eager.List();
+            var filesToMove =
+                mediaFiles.Where(mediaFile => mediaFile.GetFileSystem(_allFileSystems) != CurrentFileSystem)
+                          .Select(file => new MoveFileData
+                                              {
+                                                  FileId = file.Id,
+                                                  From = file.GetFileSystem(_allFileSystems).GetType().FullName,
+                                                  To = CurrentFileSystem.GetType().FullName
+                                              }).ToList();
 
+            foreach (var queuedTask in filesToMove.Select(moveFileData => new QueuedTask
+                                                                              {
+                                                                                  Data = JsonConvert.SerializeObject(moveFileData),
+                                                                                  Type = typeof(MoveFile).FullName,
+                                                                                  Status = TaskExecutionStatus.Pending
+                                                                              }))
+            {
+                CurrentRequestData.QueuedTasks.Add(queuedTask);
+            }
+        }
+    }
+
+    public class MoveFile : AdHocTask
+    {
+        private readonly IEnumerable<IFileSystem> _fileSystems;
+        private readonly ISession _session;
+
+        public MoveFile(IKernel kernel, ISession session)
+        {
+            _fileSystems =
+                TypeHelper.GetAllTypesAssignableFrom<IFileSystem>()
+                          .Select(type => kernel.Get(type) as IFileSystem)
+                          .ToList();
+            _session = session;
+        }
+
+        public override int Priority
+        {
+            get { return 0; }
+        }
+        private MoveFileData FileData { get; set; }
+
+        protected override void OnExecute()
+        {
             _session.Transact(session =>
                                   {
-                                      _filesToUpdate = new Dictionary<MediaFile, string>();
-                                      foreach (string file in _fileMigrationSettings.FilesToMigrateList.Take(numberOfFiles))
-                                          MoveFile(file);
+                                      var file = _session.Get<MediaFile>(FileData.FileId);
+                                      var from = _fileSystems.FirstOrDefault(system => system.GetType().FullName == FileData.From);
+                                      var to = _fileSystems.FirstOrDefault(system => system.GetType().FullName == FileData.To);
 
-                                      UpdateUrls();
+                                      // remove resized images (they will be regenerated on the to system)
+                                      foreach (var resizedImage in file.ResizedImages.ToList())
+                                      {
+                                          from.Delete(resizedImage.Url);
+                                          file.ResizedImages.Remove(resizedImage);
+                                          session.Delete(resizedImage);
+                                      }
+
+                                      var existingUrl = file.FileUrl;
+                                      using (var readStream = @from.GetReadStream(existingUrl))
+                                      {
+                                          file.FileUrl = to.SaveFile(readStream, GetNewFilePath(file),
+                                                                     file.ContentType);
+                                      }
+                                      from.Delete(existingUrl);
+
+                                      session.Update(file);
                                   });
         }
 
-        public int FilesToMigrate()
+        private string GetNewFilePath(MediaFile file)
         {
-            if (_fileSystemSettings.StorageType != typeof(AzureFileSystem).FullName)
-                return 0;
-
-            PrimeFileMigrationSettings();
-
-            return _fileMigrationSettings.FilesToMigrateList.Count();
+            var fileUrl = file.FileUrl;
+            var id = file.Site.Id;
+            var indexOf = file.FileUrl.IndexOf(string.Format("/{0}/", id), StringComparison.OrdinalIgnoreCase);
+            var newFilePath = fileUrl.Substring(indexOf + 1);
+            return newFilePath;
         }
 
-        private void UpdateUrls()
+        public override string GetData()
         {
-            foreach (var pair in _filesToUpdate)
-            {
-                pair.Key.FileUrl = pair.Value;
-                var resizedImages = pair.Key.ResizedImages.ToList();
-                foreach (var resizedImage in resizedImages)
-                {
-                    pair.Key.ResizedImages.Remove(resizedImage);
-                    _session.Delete(resizedImage);
-                }
-                _session.Update(pair.Key);
-            }
+            return JsonConvert.SerializeObject(FileData);
         }
 
-        private void MoveFile(string file)
+        public override void SetData(string data)
         {
-            MediaFile fileByUrl = _imageProcessor.GetImage(file);
-
-            using (var memoryStream = new MemoryStream())
-            {
-                if (fileByUrl != null)
-                {
-                    _fileSystem.WriteToStream(file, memoryStream);
-                    memoryStream.Position = 0;
-                    string result = _azureFileSystem.SaveFile(memoryStream, file.Substring(1), fileByUrl.ContentType);
-                    if (fileByUrl.FileUrl == file)
-                        _filesToUpdate[fileByUrl] = result;
-                }
-            }
-            _fileMigrationSettings.MoveFileToMigrated(file);
-            _configurationProvider.SaveSettings(_fileMigrationSettings);
+            FileData = JsonConvert.DeserializeObject<MoveFileData>(data);
         }
+    }
 
-        private void PrimeFileMigrationSettings()
-        {
-            IEnumerable<string> files = _fileSystem.GetFiles(string.Format("{0}", _site.Id));
-
-            var existingFiles = new HashSet<string>(_fileMigrationSettings.ExistingFiles);
-            foreach (string file in files.Where(s => !existingFiles.Contains(s)))
-                _fileMigrationSettings.AddFileToMigrate(file);
-
-            _configurationProvider.SaveSettings(_fileMigrationSettings);
-        }
+    public class MoveFileData
+    {
+        public int FileId { get; set; }
+        public string From { get; set; }
+        public string To { get; set; }
     }
 }

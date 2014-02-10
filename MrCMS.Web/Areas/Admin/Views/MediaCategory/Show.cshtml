@@ -19,7 +19,7 @@
         @TempData["saved"]
     </div>
 }
-<form action="@Url.Action("Show", "MediaCategory", new{mediaCategory.Id})" method="get">
+<form action="@Url.Action("Show", "MediaCategory", new { mediaCategory.Id })" method="get">
 
 
     <fieldset>
@@ -36,13 +36,8 @@
             </span>
         </legend>
     </fieldset>
-    @Html.LabelFor(x=>x.SearchText)
-    @Html.TextBoxFor(x=>x.SearchText)
-
-    @{ Html.RenderPartial("Upload", mediaCategory); }
-
-    @{
-        Html.RenderPartial("ShowFiles", pagedList);
-    }
-
+    @Html.LabelFor(x => x.SearchText)
+    @Html.TextBoxFor(x => x.SearchText)
 </form>
+@{ Html.RenderPartial("Upload", mediaCategory); }
+@{ Html.RenderPartial("ShowFiles", pagedList); }

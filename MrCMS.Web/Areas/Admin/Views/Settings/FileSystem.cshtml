@@ -17,21 +17,19 @@
             @Html.LabelFor(settings => settings.StorageType)
             @Html.DropDownListFor(settings => settings.StorageType, Model.StorageTypeOptions)
 
-            <div id="azure-settings">
-                @Html.LabelFor(settings => settings.AzureAccountName)
-                @Html.TextBoxFor(settings => settings.AzureAccountName)
-                @Html.LabelFor(settings => settings.AzureAccountKey)
-                @Html.TextBoxFor(settings => settings.AzureAccountKey)
-                @Html.LabelFor(settings => settings.AzureContainerName)
-                @Html.TextBoxFor(settings => settings.AzureContainerName)
+            <h4>Azure Settings</h4>
+            @Html.LabelFor(settings => settings.AzureAccountName)
+            @Html.TextBoxFor(settings => settings.AzureAccountName)
+            @Html.LabelFor(settings => settings.AzureAccountKey)
+            @Html.TextBoxFor(settings => settings.AzureAccountKey)
+            @Html.LabelFor(settings => settings.AzureContainerName)
+            @Html.TextBoxFor(settings => settings.AzureContainerName)
 
-                @Html.InlineCheckboxFor(settings => settings.AzureUsingEmulator)
+            @Html.InlineCheckboxFor(settings => settings.AzureUsingEmulator)
 
-                @Html.InlineCheckboxFor(settings => settings.UseAzureForLucene)
+            @Html.InlineCheckboxFor(settings => settings.UseAzureForLucene)
 
-            </div>
         </div>
     </fieldset>
 }
 @{ Html.RenderAction("Show", "FileMigration");}
-@{Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/file-system-settings.js");}

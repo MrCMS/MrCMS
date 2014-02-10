@@ -318,6 +318,7 @@
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
+    <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />
     <Compile Include="Entities\SystemEntity.cs" />
@@ -546,7 +547,6 @@
     <Compile Include="Services\WidgetService.cs" />
     <Compile Include="Settings\ConfigurationProvider.cs" />
     <Compile Include="Settings\DropDownSelectionAttribute.cs" />
-    <Compile Include="Settings\FileMigrationSettings.cs" />
     <Compile Include="Settings\FileSystemSettings.cs" />
     <Compile Include="Settings\GenericListTypeConverter.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />

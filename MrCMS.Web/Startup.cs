@@ -1,5 +1,6 @@
 ﻿using Microsoft.Owin;
 using MrCMS.Web;
+using MrCMS.Website;
 using Owin;
 using MrCMS.Helpers;
 
@@ -10,7 +11,8 @@ namespace MrCMS.Web
     {
         public void Configuration(IAppBuilder app)
         {
-            app.ConfigureAuth();
+            if (CurrentRequestData.DatabaseIsInstalled)
+                app.ConfigureAuth();
         }
     }
 }

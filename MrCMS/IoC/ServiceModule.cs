@@ -78,6 +78,12 @@ namespace MrCMS.IoC
                                                               return context.Kernel.Get(TypeHelper.GetTypeByName(storageType)) as IFileSystem;
                                                           return context.Kernel.Get<FileSystem>();
                                                       }).InRequestScope();
+            Kernel.Rebind<IEnumerable<IFileSystem>>().ToMethod(context => TypeHelper
+                                                                              .GetAllTypesAssignableFrom<IFileSystem>()
+                                                                              .Select(
+                                                                                  type =>
+                                                                                  context.Kernel.Get(type) as
+                                                                                  IFileSystem)).InRequestScope();
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(FSDirectorySearcher<,>)).When(request => !UseAzureForLucene()).InRequestScope();
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(AzureDirectorySearcher<,>)).When(request => UseAzureForLucene()).InRequestScope();
             Kernel.Bind(typeof(IIndexManager<,>)).To(typeof(FSDirectoryIndexManager<,>)).When(request => !UseAzureForLucene()).InRequestScope();

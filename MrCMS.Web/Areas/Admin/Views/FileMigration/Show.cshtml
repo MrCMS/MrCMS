@@ -1,12 +1,5 @@
-﻿@model int
-@if (Model > 0)
+﻿@model dynamic
+@using (Html.BeginForm("Migrate", "FileMigration", FormMethod.Post))
 {
-    <p>Files to migrate: @Model</p>
-
-    using (Html.BeginForm("Migrate", "FileMigration", FormMethod.Post))
-    {
-        <input type="text" value="100" name="number" />
-        <br/>
-    <input type="submit" value="Migrate" class="btn btn-mini btn-primary" />
-    }
+    <input type="submit" value="Queue any required migrations" class="btn btn-mini btn-primary" />
 }

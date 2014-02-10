@@ -2,20 +2,19 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.Mvc;
-using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using NHibernate;
-using Ninject;
 
 namespace MrCMS.Settings
 {
     public class MediaSettings : SiteSettingsBase
     {
-        private Size _thumbnailSize;
+        private readonly SiteSettingsOptionGenerator _siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
         private Size _largeSize;
+        private Size _maxSize;
         private Size _mediumSize;
         private Size _smallSize;
-        private Size _maxSize;
+        private Size _thumbnailSize;
 
         public MediaSettings()
         {
@@ -25,21 +24,25 @@ namespace MrCMS.Settings
 
         [DisplayName("Thumbnail Image Height")]
         public int ThumbnailImageHeight { get; set; }
+
         [DisplayName("Thumbnail Image Width")]
         public int ThumbnailImageWidth { get; set; }
 
         [DisplayName("Large Image Height")]
         public int LargeImageHeight { get; set; }
+
         [DisplayName("Large Image Width")]
         public int LargeImageWidth { get; set; }
 
         [DisplayName("Medium Image Height")]
         public int MediumImageHeight { get; set; }
+
         [DisplayName("Medium Image Width")]
         public int MediumImageWidth { get; set; }
 
         [DisplayName("Small Image Height")]
         public int SmallImageHeight { get; set; }
+
         [DisplayName("Small Image Width")]
         public int SmallImageWidth { get; set; }
 
@@ -118,12 +121,12 @@ namespace MrCMS.Settings
         }
 
 
-
-
         [DisplayName("Enforce Max Image Size")]
         public bool EnforceMaxImageSize { get; set; }
+
         [DisplayName("Max Image Size Height")]
         public int MaxImageSizeHeight { get; set; }
+
         [DisplayName("Max Image Size Width")]
         public int MaxImageSizeWidth { get; set; }
 
@@ -151,10 +154,15 @@ namespace MrCMS.Settings
         [DropDownSelection("DefaultCategoryOptions")]
         public virtual int DefaultCategory { get; set; }
 
-        private readonly SiteSettingsOptionGenerator _siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
+        public override bool RenderInSettings
+        {
+            get { return true; }
+        }
+
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-            viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(session, Site, DefaultCategory);
+            viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(
+                session, Site, DefaultCategory);
         }
     }
 }

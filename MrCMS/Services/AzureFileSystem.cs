@@ -111,6 +111,12 @@ namespace MrCMS.Services
             }
         }
 
+        public Stream GetReadStream(string filePath)
+        {
+            ICloudBlob blob = Container.GetBlockBlobReference(filePath);
+            return blob.OpenRead();
+        }
+
         public void WriteToStream(string filePath, Stream stream)
         {
             ICloudBlob blob = Container.GetBlockBlobReference(filePath);

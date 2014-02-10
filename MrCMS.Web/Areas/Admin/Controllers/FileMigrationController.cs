@@ -15,12 +15,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public PartialViewResult Show()
         {
-            return PartialView(_fileMigrationService.FilesToMigrate());
+            return PartialView();
         }
 
-        public ActionResult Migrate(int number = 100)
+        [HttpPost]
+        public ActionResult Migrate()
         {
-            _fileMigrationService.MigrateFilesToAzure(number);
+            _fileMigrationService.MigrateFiles();
             return RedirectToAction("FileSystem", "Settings");
         }
     }
