@@ -138,17 +138,17 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_View_ShouldRedirectToEditWithTheSameId()
+        public void MediaCategoryController_Show_ShouldReturnViewResultWithObjectAsModel()
         {
-            ActionResult actionResult = _mediaCategoryController.Show(new MediaCategory { Id = 1 });
+            var mediaCategorySearchModel = new MediaCategorySearchModel();
+            ActionResult actionResult = _mediaCategoryController.Show(mediaCategorySearchModel);
 
-            actionResult.Should().BeOfType<RedirectToRouteResult>();
-            actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
-            actionResult.As<RedirectToRouteResult>().RouteValues["id"].Should().Be(1);
+            actionResult.Should().BeOfType<ViewResult>();
+            actionResult.As<ViewResult>().Model.Should().Be(mediaCategorySearchModel);
         }
 
         [Fact]
-        public void MediaCategoryController_View_IncorrectCategoryIdRedirectsToIndex()
+        public void MediaCategoryController_Show_IncorrectCategoryIdRedirectsToIndex()
         {
             ActionResult actionResult = _mediaCategoryController.Show(null);
 
