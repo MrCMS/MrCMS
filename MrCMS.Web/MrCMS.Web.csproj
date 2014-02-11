@@ -334,6 +334,7 @@
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.js" />
     <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
+    <Content Include="Apps\Core\Content\Images\mrcms-hat.gif" />
     <Content Include="Apps\Core\Content\Images\mrcms-logo.png" />
     <Content Include="Apps\Core\Content\Scripts\forgot-password.js" />
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
