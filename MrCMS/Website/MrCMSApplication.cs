@@ -103,9 +103,14 @@ namespace MrCMS.Website
                                            {
                                                if (!IsFileRequest(Request.Url))
                                                {
-                                                   CurrentRequestData.CurrentUser =
-                                                       Get<IUserService>()
-                                                           .GetCurrentUser(CurrentRequestData.CurrentContext);
+                                                   if (CurrentRequestData.CurrentContext.User != null)
+                                                   {
+                                                       var currentUser = Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
+                                                       if (currentUser == null || !currentUser.IsActive)
+                                                           Get<IAuthorisationService>().Logout();
+                                                       else
+                                                           CurrentRequestData.CurrentUser = currentUser;
+                                                   }
                                                }
                                            };
                 EndRequest += (sender, args) =>
