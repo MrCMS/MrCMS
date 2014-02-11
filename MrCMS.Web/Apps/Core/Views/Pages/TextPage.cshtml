@@ -1,6 +1,3 @@
 ﻿@model MrCMS.Web.Apps.Core.Pages.TextPage
-
+@RenderImage(Model.FeatureImage)
 @Editable(Model, page => page.BodyContent, true)
-<div class="right">
-    @RenderImage(Model.FeatureImage)
-</div>

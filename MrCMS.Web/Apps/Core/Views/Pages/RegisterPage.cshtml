@@ -1,7 +1,8 @@
 ﻿@model MrCMS.Web.Apps.Core.Pages.RegisterPage
 
 <h1>@Editable(Model, page => page.Name) </h1>
-@if (!string.IsNullOrEmpty(Model.FeatureImage))
+<hr />
+@if (!string.IsNullOrWhiteSpace(Model.FeatureImage))
 {
     @RenderImage(Model.FeatureImage, null, null, new { @class = "pull-right" })
 }

@@ -73,12 +73,13 @@ namespace MrCMS.Website
             }
         }
 
-        public MvcHtmlString RenderZone(string areaName, Webpage page = null)
+        public MvcHtmlString RenderZone(string areaName, Webpage page = null, bool allowFrontEndEditing = true)
         {
             page = page ?? CurrentRequestData.CurrentPage;
 
             if (page != null && page.CurrentLayout != null)
             {
+                var allowEdit = EditingEnabled && allowFrontEndEditing;
                 var layout = page.CurrentLayout;
 
                 var layoutArea = layout.GetLayoutAreas().FirstOrDefault(area => area.AreaName == areaName);
@@ -88,7 +89,7 @@ namespace MrCMS.Website
                 bool customSort = layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == page);
 
                 var stringBuilder = new StringBuilder();
-                if (EditingEnabled)
+                if (allowEdit)
                     stringBuilder.AppendFormat(
                         "<div data-layout-area-id=\"{0}\" data-layout-area-name=\"{1}\" " +
                         "data-layout-area-hascustomsort=\"{2}\" class=\"layout-area\"> ",
@@ -96,7 +97,7 @@ namespace MrCMS.Website
 
                 foreach (var widget in layoutArea.GetWidgets(page))
                 {
-                    if (EditingEnabled)
+                    if (allowEdit)
                         stringBuilder.AppendFormat(
                             "<div data-widget-id=\"{0}\" data-widget-name=\"{1}\" class=\"widget\"> ", widget.Id,
                             widget.Name ?? widget.GetType().Name);
@@ -110,11 +111,11 @@ namespace MrCMS.Website
                         CurrentRequestData.ErrorSignal.Raise(ex);
                     }
 
-                    if (EditingEnabled)
+                    if (allowEdit)
                         stringBuilder.Append("</div>");
                 }
 
-                if (EditingEnabled)
+                if (allowEdit)
                     stringBuilder.Append("</div>");
 
                 return MvcHtmlString.Create(stringBuilder.ToString());
