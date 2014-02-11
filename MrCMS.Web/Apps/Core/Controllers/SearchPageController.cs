@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MrCMS.Models.Search;
 using MrCMS.Services;
+using MrCMS.Services.Search;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website.Controllers;
 
@@ -11,11 +13,11 @@ namespace MrCMS.Web.Apps.Core.Controllers
 {
     public class SearchPageController : MrCMSAppUIController<CoreApp>
     {
-        private readonly ISearchService _documentService;
+        private readonly IWebpageSearchService _webpageSearchService;
 
-        public SearchPageController(ISearchService documentService)
+        public SearchPageController(IWebpageSearchService webpageSearchService)
         {
-            _documentService = documentService;
+            _webpageSearchService = webpageSearchService;
         }
 
         public ActionResult Show(SearchPage page)
@@ -27,7 +29,11 @@ namespace MrCMS.Web.Apps.Core.Controllers
                                : int.TryParse(Request["p"], out pageVal)
                                      ? pageVal
                                      : 1;
-            ViewData["searchResults"] = _documentService.SiteSearch(Request["q"], pageNum);
+            ViewData["searchResults"] = _webpageSearchService.Search(new AdminWebpageSearchQuery
+            {
+                Term = Request["q"],
+                Page = pageNum
+            });
 
             return View(page);
         }

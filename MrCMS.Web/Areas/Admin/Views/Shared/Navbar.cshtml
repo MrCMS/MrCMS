@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="nav-collapse">
                 @{ Html.RenderAction("Navlinks", "Navigation");}
-                <form class="navbar-search pull-left" action="@Url.Action("Index", "Search")" method="POST">
+                <form class="navbar-search pull-left" action="@Url.Action("Index", "Search")" method="GET">
                     @Html.TextBox("term", "", new { @class = "search-query span2", placeholder = "Search", autocomplete = "off" })
                 </form>
                 <div class="pull-right">

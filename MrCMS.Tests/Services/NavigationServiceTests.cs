@@ -27,13 +27,11 @@ namespace MrCMS.Tests.Services
     public class NavigationServiceTests : InMemoryDatabaseTest
     {
         private readonly IDocumentService _documentService;
-        private readonly ISearcher<Document, DocumentIndexDefinition> _documentSearcher;
         private readonly NavigationService _navigationService;
 
         public NavigationServiceTests()
         {
             _documentService = A.Fake<IDocumentService>();
-            _documentSearcher = A.Fake<ISearcher<Document, DocumentIndexDefinition>>();
             var ramDirectory = new RAMDirectory();
             using (new IndexWriter(ramDirectory, new StandardAnalyzer(Version.LUCENE_30),
                                                              IndexWriter.MaxFieldLength.UNLIMITED))
@@ -42,7 +40,6 @@ namespace MrCMS.Tests.Services
             }
 
             var indexReader = IndexReader.Open(ramDirectory, true);
-            A.CallTo(() => _documentSearcher.IndexSearcher).Returns(new IndexSearcher(indexReader));
             _navigationService = new NavigationService(_documentService, Session, CurrentSite);
             DocumentMetadataHelper.OverrideExistAny = type => false;
         }

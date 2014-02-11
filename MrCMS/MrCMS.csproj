@@ -312,14 +312,17 @@
     <Compile Include="Entities\Documents\Web\FormProperties\TextArea.cs" />
     <Compile Include="Entities\Documents\Web\FormProperties\TextBox.cs" />
     <Compile Include="Entities\Documents\Web\UrlHistory.cs" />
-    <Compile Include="Entities\Indexes\DocumentIndexDefinition.cs" />
     <Compile Include="Entities\Multisite\RedirectedDomain.cs" />
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
+    <Compile Include="Models\Search\QuickSearchResults.cs" />
+    <Compile Include="Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
+    <Compile Include="Services\Search\WebpageSearchService.cs" />
+    <Compile Include="Services\Search\IWebpageSearchService.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />
     <Compile Include="Entities\SystemEntity.cs" />
     <Compile Include="Events\IOnDocumentAdded.cs" />
@@ -517,7 +520,6 @@
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Entities\Indexes\WebpageIndexDefinition.cs" />
     <Compile Include="Services\IRoleService.cs" />
-    <Compile Include="Services\ISearchService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
     <Compile Include="Services\ISiteService.cs" />
     <Compile Include="Services\ITagService.cs" />
@@ -534,7 +536,6 @@
     <Compile Include="Services\RedirectedDomainService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\RoleStore.cs" />
-    <Compile Include="Services\SearchService.cs" />
     <Compile Include="Services\NopSHA1HashAlgorithm.cs" />
     <Compile Include="Services\SHA512HashAlgorithm.cs" />
     <Compile Include="Services\SiteService.cs" />

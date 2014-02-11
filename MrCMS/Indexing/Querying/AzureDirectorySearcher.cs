@@ -4,6 +4,7 @@ using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Indexing.Management;
 using MrCMS.Services;
+using MrCMS.Settings;
 using NHibernate;
 
 namespace MrCMS.Indexing.Querying
@@ -16,8 +17,8 @@ namespace MrCMS.Indexing.Querying
         private readonly IAzureFileSystem _azureFileSystem;
 
         public AzureDirectorySearcher(Site currentSite, ISession session, TDefinition definition,
-                                      IAzureFileSystem azureFileSystem)
-            : base(currentSite, session, definition)
+                                      IAzureFileSystem azureFileSystem, SiteSettings siteSettings)
+            : base(currentSite, session, definition, siteSettings)
         {
             _azureFileSystem = azureFileSystem;
         }

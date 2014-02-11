@@ -7,6 +7,7 @@ using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Indexing.Management;
 using MrCMS.Paging;
+using MrCMS.Settings;
 using NHibernate;
 
 namespace MrCMS.Indexing.Querying
@@ -18,28 +19,32 @@ namespace MrCMS.Indexing.Querying
         private readonly Site _site;
         private readonly ISession _session;
         private readonly TDefinition _definition;
+        private readonly SiteSettings _siteSettings;
         private IndexSearcher _indexSearcher;
 
-        protected Searcher(Site site, ISession session, TDefinition definition)
+        protected Searcher(Site site, ISession session, TDefinition definition, SiteSettings siteSettings)
         {
             _site = site;
             _session = session;
             _definition = definition;
+            _siteSettings = siteSettings;
         }
 
         protected abstract Directory GetDirectory(Site currentSite);
 
-        public IPagedList<TEntity> Search(Query query, int pageNumber, int pageSize, Filter filter = null, Sort sort = null)
+        public IPagedList<TEntity> Search(Query query, int pageNumber, int? pageSize = null, Filter filter = null, Sort sort = null)
         {
-            var topDocs = IndexSearcher.Search(query, filter, pageNumber * pageSize, sort ?? Sort.RELEVANCE);
+            var size = pageSize ?? _siteSettings.DefaultPageSize;
+
+            var topDocs = IndexSearcher.Search(query, filter, pageNumber * size, sort ?? Sort.RELEVANCE);
 
             var entities =
                 Definition.Convert(_session,
-                                   topDocs.ScoreDocs.Skip((pageNumber - 1) * pageSize)
-                                          .Take(pageSize)
+                                   topDocs.ScoreDocs.Skip((pageNumber - 1) * size)
+                                          .Take(size)
                                           .Select(doc => IndexSearcher.Doc(doc.Doc)));
 
-            return new StaticPagedList<TEntity>(entities, pageNumber, pageSize, topDocs.TotalHits);
+            return new StaticPagedList<TEntity>(entities, pageNumber, size, topDocs.TotalHits);
         }
 
         public int Total(Query query, Filter filter = null)
