@@ -33,23 +33,27 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/"><img src="/Apps/Core/Content/Images/mrcms-hat.gif" style="width: 40px; height: auto;" /> Mr CMS</a>
+                <a class="navbar-brand" href="/">
+                    <img src="/Apps/Core/Content/Images/mrcms-hat.gif" style="width: 40px; height: auto;" />
+                    Mr CMS</a>
             </div>
             <div class="collapse navbar-collapse navbar-left" id="bs-example-navbar-collapse-1">
-                @RenderZone("Main Navigation", allowFrontEndEditing:false)
+                @RenderZone("Main Navigation", allowFrontEndEditing: false)
             </div>
-            <div class="navbar-right" >
+            <div class="navbar-right">
                 <ul class="nav navbar-nav" id="nav-links-right">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <span class="glyphicon glyphicon-search"></span>
                         </a>
                         <div class="dropdown-menu">
-                            <form class="navbar-form navbar-left" role="search">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Search">
+                            <form class="navbar-form navbar-left form-inline" role="search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                                    </span>
                                 </div>
-                                <button type="submit" class="btn btn-default">Submit</button>
                             </form>
                         </div>
                     </li>
@@ -57,7 +61,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <span class="glyphicon glyphicon-user"></span>
                         </a>
-                        @RenderZone("Header Right", allowFrontEndEditing:false)
+                        @RenderZone("Header Right", allowFrontEndEditing: false)
                     </li>
                 </ul>
             </div>

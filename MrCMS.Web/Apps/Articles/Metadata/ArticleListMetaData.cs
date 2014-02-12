@@ -8,6 +8,10 @@ namespace MrCMS.Web.Apps.Articles.Metadata
 {
     public class ArticleListMetaData : DocumentMetadataMap<ArticleList>
     {
+        public override string WebGetController
+        {
+            get { return "Article"; }
+        }
         public override string IconClass
         {
             get { return "icon-list"; }

@@ -216,9 +216,13 @@
   <ItemGroup>
     <Compile Include="Apps\Articles\Areas\Admin\Controllers\ArticleController.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Controllers\AuthorInfoController.cs" />
+    <Compile Include="Apps\Articles\Controllers\ArticleController.cs" />
     <Compile Include="Apps\Articles\DbConfiguration\AuthorInfoOverride.cs" />
     <Compile Include="Apps\Articles\Entities\AuthorInfo.cs" />
     <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
+    <Compile Include="Apps\Articles\Models\ArticleSearchModel.cs" />
+    <Compile Include="Apps\Articles\Services\IArticleService.cs" />
+    <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
     <Compile Include="Apps\Core\Controllers\CompleteExternalRegistrationPageController.cs" />
     <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
@@ -1330,6 +1334,8 @@
     <Content Include="Areas\Admin\Views\ThirdPartyAuth\Index.cshtml" />
     <Content Include="Apps\Core\Views\Shared\_TwoColumn.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\Navigation.cshtml" />
+    <Content Include="Apps\Articles\Views\Widgets\ArticleArchive.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchive.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
@@ -1339,7 +1345,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Apps\Articles\Controllers\" />
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Core\Entities\" />
     <Folder Include="Apps\Core\Helpers\" />
@@ -1363,6 +1368,7 @@
     <Folder Include="Themes\Default\Shared\" />
     <Folder Include="Themes\Default\Views\Pages\" />
     <Folder Include="Themes\Default\Views\Widgets\" />
+    <Folder Include="Views\Article\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

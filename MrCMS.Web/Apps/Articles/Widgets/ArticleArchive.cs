@@ -4,13 +4,13 @@ using System.Linq;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Articles.Pages;
-using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Articles.Widgets
 {
-    public class ArticleCategories : Widget
+    public class ArticleArchive : Widget
     {
         public virtual ArticleList ArticleList { get; set; }
+
         [DisplayName("Show Name As Title")]
         public virtual bool ShowNameAsTitle { get; set; }
 
@@ -25,8 +25,5 @@ namespace MrCMS.Web.Apps.Articles.Widgets
                                                             emptyItemText: "Select an article list...");
         }
 
-
-        public virtual string Category { get { return CurrentRequestData.CurrentContext.Request["category"]; } }
     }
-
 }
