@@ -632,6 +632,8 @@
     <Content Include="Areas\Admin\Content\Images\ajax-loader2.gif" />
     <Content Include="Areas\Admin\Content\Images\ajax-loader.gif" />
     <Content Include="Areas\Admin\Content\Images\Icons\default.PNG" />
+    <Content Include="Areas\Admin\Content\Images\layout-1.png" />
+    <Content Include="Areas\Admin\Content\Images\layout-2.png" />
     <Content Include="Areas\Admin\Content\Images\layout-area-menu.png" />
     <Content Include="Areas\Admin\Content\Images\button-left.png" />
     <Content Include="Areas\Admin\Content\Images\button-right.png" />
@@ -1112,7 +1114,6 @@
     <Content Include="Docs\UpgradeNotes.txt" />
     <Content Include="Global.asax" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-timepicker-addon.js" />
-    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.cookie.js" />
     <Content Include="Content\install\scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Content\install\scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Content\install\scripts\jquery.unobtrusive-ajax.min.js" />
@@ -1327,6 +1328,8 @@
     <Content Include="Apps\Core\Views\ExternalLogin\LinkedIn.cshtml" />
     <Content Include="Apps\Core\Views\ExternalLogin\Facebook.cshtml" />
     <Content Include="Areas\Admin\Views\ThirdPartyAuth\Index.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\_TwoColumn.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\Navigation.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

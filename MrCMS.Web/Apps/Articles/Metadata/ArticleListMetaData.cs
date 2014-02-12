@@ -23,6 +23,11 @@ namespace MrCMS.Web.Apps.Articles.Metadata
             get { yield return typeof(Pages.Article); }
         }
 
+        public override string DefaultLayoutName
+        {
+            get { return "Two Column"; }
+        }
+
         public override SortBy SortBy
         {
             get

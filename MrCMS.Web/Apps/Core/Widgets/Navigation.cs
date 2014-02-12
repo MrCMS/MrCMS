@@ -12,10 +12,7 @@ namespace MrCMS.Web.Apps.Core.Widgets
 {
     public class Navigation : Widget
     {
-        public override bool HasProperties
-        {
-            get { return false; }
-        }
+        public virtual bool IncludeChildren { get; set; }
 
         public override object GetModel(ISession session)
         {
@@ -25,13 +22,13 @@ namespace MrCMS.Web.Apps.Core.Widgets
                        {
                            Text = MvcHtmlString.Create(webpage.Name),
                            Url = MvcHtmlString.Create("/" + webpage.LiveUrlSegment),
-                           Children = GetPages(session, webpage)
+                           Children = IncludeChildren ? GetPages(session, webpage)
                                             .Select(webpage1 =>
                                                     new NavigationRecord
                                                     {
                                                         Text = MvcHtmlString.Create(webpage1.Name),
                                                         Url = MvcHtmlString.Create("/" + webpage1.LiveUrlSegment)
-                                                    }).ToList()
+                                                    }).ToList() : null
                        }).ToList();
 
             return new NavigationList(navigationRecords.ToList());

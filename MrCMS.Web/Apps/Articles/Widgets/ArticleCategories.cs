@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
@@ -9,14 +10,8 @@ namespace MrCMS.Web.Apps.Articles.Widgets
     public class ArticleCategories : Widget
     {
         public virtual ArticleList ArticleList { get; set; }
-
-        public override object GetModel(NHibernate.ISession session)
-        {
-            if (ArticleList != null)
-                return ArticleList;
-
-            return session.QueryOver<ArticleList>().Cacheable().List().FirstOrDefault();
-        }
+        [DisplayName("Show Name As Title")]
+        public virtual bool ShowNameAsTitle { get; set; }
 
         public override void SetDropdownData(System.Web.Mvc.ViewDataDictionary viewData, NHibernate.ISession session)
         {
