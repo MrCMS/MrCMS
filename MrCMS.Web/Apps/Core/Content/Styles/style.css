@@ -88,13 +88,12 @@ padding-bottom: 15px;
         float: left;
         min-width: 160px;
         padding: 5px 0;
-        margin: 2px 0 0;
         font-size: 14px;
         list-style: none;
         background-color: #fff;
         background-clip: padding-box;
         border: 1px solid #ccc;
-        border: 1px solid rgba(0, 0, 0, .15);
+        border-top: none;
     }
 
     .dropdown-menu > li > a { display: block;
