@@ -173,6 +173,7 @@
     <Compile Include="Apps\Core\Metadata\LoginPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\UserAccountMetaData.cs" />
+    <Compile Include="Apps\Core\ModelBinders\LoginModelModelBinder.cs" />
     <Compile Include="Apps\Core\Models\ChangePasswordModel.cs" />
     <Compile Include="Apps\Core\Models\RegisterModel.cs" />
     <Compile Include="Apps\Core\Models\LoginModel.cs" />
