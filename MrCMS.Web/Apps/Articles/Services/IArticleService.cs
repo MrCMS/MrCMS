@@ -8,15 +8,19 @@ using MrCMS.Helpers;
 using MrCMS.Paging;
 using MrCMS.Web.Apps.Articles.Models;
 using MrCMS.Web.Apps.Articles.Pages;
+using MrCMS.Web.Apps.Articles.Widgets;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
+using NHibernate.Transform;
 
 namespace MrCMS.Web.Apps.Articles.Services
 {
     public interface IArticleService
     {
         IPagedList<Article> GetArticles(ArticleList page, ArticleSearchModel model);
+        List<ArchiveModel> GetMonthsAndYears(ArticleList articleList);
     }
 
     public class ArticleService : IArticleService
@@ -40,6 +44,21 @@ namespace MrCMS.Web.Apps.Articles.Services
             }
 
             return query.OrderBy(x => x.PublishOn).Desc.Paged(model.Page, page.PageSize);
+        }
+
+        public List<ArchiveModel> GetMonthsAndYears(ArticleList articleList)
+        {
+            var query = (from article in _session.Query<Article>()
+                         where article.Parent == articleList && article.PublishOn != null
+                         group article by new { article.PublishOn.Value.Year, article.PublishOn.Value.Month } into entryGroup
+                         select new ArchiveModel
+                         {
+                             Year = entryGroup.Key.Year,
+                             Month = entryGroup.Key.Month,
+                             Count = entryGroup.Count()
+                         });
+            return query.ToList().OrderByDescending(x => x.Year).ThenByDescending(x => x.Month).ToList();
+
         }
     }
 }

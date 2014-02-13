@@ -1,26 +1,15 @@
-﻿@model MrCMS.Web.Apps.Articles.Widgets.ArticleArchive
-@{
-    var month = Request["Month"];
-    var year = Request["Year"];
-    var distinctYearMonths = Model.ArticleList.PublishedChildren.Where(p => p.PublishOn.HasValue && p.Published)
-        .Select(p => new { p.PublishOn.Value.Year, p.PublishOn.Value.Month })
-        .Distinct()
-        .ToList()
-        .Select(x => new DateTime(x.Year, x.Month, 1))
-        .OrderByDescending(x => x.Date);
-}
-@if (Model != null)
+﻿@model MrCMS.Web.Apps.Articles.Widgets.ArticleArchiveModel  
+@if (Model != null && Model.ArticleYearsAndMonths != null)
 {
-    if (Model.ShowNameAsTitle)
+    if (Model.ArticleArchive.ShowNameAsTitle)
     {
         <h4>News Archive</h4>
     }
-
     <ul class="nav nav-pills nav-stacked">
-        @foreach (var i in distinctYearMonths)
+        @foreach (var i in Model.ArticleYearsAndMonths)
             {
                 var active = "";
-                if (month == i.ToString("MM") && year == i.ToString("yyyy"))
+                if (Model.Month == i.ToString("MM") && Model.Year == i.ToString("yyyy"))
                 {
                     active = "active";
                 }

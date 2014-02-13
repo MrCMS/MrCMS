@@ -221,6 +221,7 @@
     <Compile Include="Apps\Articles\Entities\AuthorInfo.cs" />
     <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
     <Compile Include="Apps\Articles\ModelBinders\ArticleListModelBinder.cs" />
+    <Compile Include="Apps\Articles\Models\ArchiveModel.cs" />
     <Compile Include="Apps\Articles\Models\ArticleSearchModel.cs" />
     <Compile Include="Apps\Articles\Services\IArticleService.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
