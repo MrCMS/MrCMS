@@ -9,11 +9,11 @@
         @foreach (var i in Model.ArticleYearsAndMonths)
             {
                 var active = "";
-                if (Model.Month == i.ToString("MM") && Model.Year == i.ToString("yyyy"))
+                if (Model.Month == i.Date.ToString("MM") && Model.Year == i.Date.ToString("yyyy"))
                 {
                     active = "active";
                 }
-            <li class="@active"><a href="/@Model.ArticleList.LiveUrlSegment?Month=@i.ToString("MM")&Year=@i.ToString("yyyy")">@i.ToString("MMMM") @i.ToString("yyyy")</a></li>
+            <li class="@active"><a href="/@Model.ArticleList.LiveUrlSegment?Month=@i.Date.ToString("MM")&Year=@i.Date.ToString("yyyy")">@i.Date.ToString("MMMM") @i.Date.ToString("yyyy")</a></li>
             }
     </ul>
 }

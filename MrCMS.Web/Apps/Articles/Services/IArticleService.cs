@@ -53,11 +53,10 @@ namespace MrCMS.Web.Apps.Articles.Services
                          group article by new { article.PublishOn.Value.Year, article.PublishOn.Value.Month } into entryGroup
                          select new ArchiveModel
                          {
-                             Year = entryGroup.Key.Year,
-                             Month = entryGroup.Key.Month,
+                             Date = new DateTime(entryGroup.Key.Year, entryGroup.Key.Month, 1),
                              Count = entryGroup.Count()
                          });
-            return query.ToList().OrderByDescending(x => x.Year).ThenByDescending(x => x.Month).ToList();
+            return query.ToList().OrderByDescending(x => x.Date).ToList();
 
         }
     }
