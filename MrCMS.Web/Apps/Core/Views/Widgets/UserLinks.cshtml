@@ -1,6 +1,6 @@
 ﻿@using MrCMS.Website
 @model List<MrCMS.Web.Apps.Core.Models.NavigationRecord>
-<ul class="nav navbar-nav navbar-right">
+<ul class="dropdown-menu">
     @foreach (var page in Model)
     {
         <li><a href="@page.Url">@page.Text</a></li>    
