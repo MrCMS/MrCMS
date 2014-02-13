@@ -15,7 +15,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class SearchControllerTests
     {
-        //private static IWebpageSearchService searchService;
+        //private static IAdminWebpageSearchService searchService;
         //private static INavigationService navigationService;
 
         //[Fact]
@@ -30,7 +30,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
         //private static SearchController GetSearchController()
         //{
-        //    searchService = A.Fake<IWebpageSearchService>();
+        //    searchService = A.Fake<IAdminWebpageSearchService>();
         //    navigationService = A.Fake<INavigationService>();
         //    var searchController = new SearchController(searchService, navigationService, A.Fake<IDocumentService>());
         //    return searchController;

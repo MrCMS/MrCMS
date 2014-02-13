@@ -10,7 +10,7 @@ using MrCMS.Paging;
 
 namespace MrCMS.Services.Search
 {
-    public interface IWebpageSearchService
+    public interface IAdminWebpageSearchService
     {
         IPagedList<Webpage> Search(AdminWebpageSearchQuery model);
         IEnumerable<QuickSearchResults> QuickSearch(AdminWebpageSearchQuery model);

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
-namespace MrCMS.Web.Apps.Core.Models
+namespace MrCMS.Web.Apps.Core.Models.RegiserAndLogin
 {
     public class UserAccountModel
     {

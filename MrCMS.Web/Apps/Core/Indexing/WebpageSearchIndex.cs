@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using Lucene.Net.Documents;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 
-namespace MrCMS.Entities.Indexes
+namespace MrCMS.Web.Apps.Core.Indexing
 {
-    public class WebpageIndexDefinition : IndexDefinition<Webpage>, IRelatedItemIndexDefinition<UrlHistory, Webpage>
+    public class WebpageIndexDefinition : IndexDefinition<Webpage>
     {
         public override IEnumerable<FieldDefinition<Webpage>> Definitions
         {
@@ -40,12 +39,12 @@ namespace MrCMS.Entities.Indexes
 
         public override string IndexFolderName
         {
-            get { return "Webpages"; }
+            get { return "UI Webpages"; }
         }
 
         public override string IndexName
         {
-            get { return "Default Webpage Index"; }
+            get { return "UI Webpage Index"; }
         }
 
         private static readonly FieldDefinition<Webpage> _name =
@@ -74,7 +73,7 @@ namespace MrCMS.Entities.Indexes
             new StringFieldDefinition<Webpage>("createdOn",
                                                 document => DateTools.DateToString(document.CreatedOn, DateTools.Resolution.SECOND), Field.Store.YES,
                                                 Field.Index.NOT_ANALYZED);
-        
+
         private static readonly FieldDefinition<Webpage> _metaKeywords =
             new StringFieldDefinition<Webpage>("metakeywords", webpage => webpage.MetaKeywords, Field.Store.NO,
                                          Field.Index.ANALYZED);
@@ -98,21 +97,5 @@ namespace MrCMS.Entities.Indexes
                                                                 DateTools.Resolution.SECOND), Field.Store.NO,
                                          Field.Index.NOT_ANALYZED);
 
-        private static IEnumerable<string> GetAllTypeNames(Documents.Document document)
-        {
-            var type = document.Unproxy().GetType();
-            while (type != typeof(Webpage))
-            {
-                yield return type.FullName;
-                type = type.BaseType;
-            }
-
-            yield return typeof(Webpage).FullName;
-        }
-
-        public IEnumerable<Webpage> GetEntitiesToUpdate(UrlHistory obj)
-        {
-            yield return obj.Webpage;
-        }
     }
 }

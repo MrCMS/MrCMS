@@ -65,6 +65,10 @@
     <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
+    <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MrCMS\bin\Debug\Lucene.Net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ApplicationServer.Caching.AzureClientHelper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.2.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.AzureClientHelper.dll</HintPath>
     </Reference>
@@ -223,6 +227,7 @@
     <Compile Include="Apps\Articles\ModelBinders\ArticleListModelBinder.cs" />
     <Compile Include="Apps\Articles\Models\ArchiveModel.cs" />
     <Compile Include="Apps\Articles\Models\ArticleSearchModel.cs" />
+    <Compile Include="Apps\Articles\Services\ArticleService.cs" />
     <Compile Include="Apps\Articles\Services\IArticleService.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
@@ -231,6 +236,8 @@
     <Compile Include="Apps\Core\Controllers\RegistrationController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
     <Compile Include="Apps\Core\CoreAppInstallation.cs" />
+    <Compile Include="Apps\Core\Helpers\StringHelper.cs" />
+    <Compile Include="Apps\Core\Indexing\WebpageSearchIndex.cs" />
     <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\UserTokenProvider.cs" />
     <Compile Include="Apps\Core\Metadata\CompleteExternalRegistrationPageMetadata.cs" />
@@ -240,12 +247,14 @@
     <Compile Include="Apps\Core\Metadata\LoginPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\UserAccountMetaData.cs" />
-    <Compile Include="Apps\Core\Models\ChangePasswordModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterModel.cs" />
-    <Compile Include="Apps\Core\Models\LoginModel.cs" />
-    <Compile Include="Apps\Core\Models\LoginResult.cs" />
-    <Compile Include="Apps\Core\Models\ResetPasswordViewModel.cs" />
-    <Compile Include="Apps\Core\Models\UserAccountModel.cs" />
+    <Compile Include="Apps\Core\ModelBinders\WebpageSearchQueryModelBinder.cs" />
+    <Compile Include="Apps\Core\Models\RegiserAndLogin\ChangePasswordModel.cs" />
+    <Compile Include="Apps\Core\Models\RegiserAndLogin\RegisterModel.cs" />
+    <Compile Include="Apps\Core\Models\RegiserAndLogin\LoginModel.cs" />
+    <Compile Include="Apps\Core\Models\RegiserAndLogin\LoginResult.cs" />
+    <Compile Include="Apps\Core\Models\RegiserAndLogin\ResetPasswordViewModel.cs" />
+    <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
+    <Compile Include="Apps\Core\Models\RegiserAndLogin\UserAccountModel.cs" />
     <Compile Include="Apps\Core\Pages\CompleteExternalRegistrationPage.cs" />
     <Compile Include="Apps\Core\Pages\UserAccountPage.cs" />
     <Compile Include="Apps\Core\Pages\RegisterPage.cs" />
@@ -259,6 +268,8 @@
     <Compile Include="Apps\Core\Services\IUserEventService.cs" />
     <Compile Include="Apps\Core\Services\RegistrationService.cs" />
     <Compile Include="Apps\Core\Services\ResetPasswordService.cs" />
+    <Compile Include="Apps\Core\Services\Search\WebpageSearchService.cs" />
+    <Compile Include="Apps\Core\Services\Search\IWebpageSearchService.cs" />
     <Compile Include="Apps\Core\Services\UserEventService.cs" />
     <Compile Include="Apps\Core\Widgets\LinkedImage.cs" />
     <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
@@ -266,8 +277,8 @@
     <Compile Include="Apps\Galleries\GalleriesApp.cs" />
     <Compile Include="Apps\Core\DbConfiguration\PlainTextWidgetOveride.cs" />
     <Compile Include="Apps\Core\DbConfiguration\TextWidgetOveride.cs" />
-    <Compile Include="Apps\Core\Models\NavigationList.cs" />
-    <Compile Include="Apps\Core\Models\NavigationRecord.cs" />
+    <Compile Include="Apps\Core\Models\Navigation\NavigationList.cs" />
+    <Compile Include="Apps\Core\Models\Navigation\NavigationRecord.cs" />
     <Compile Include="Apps\Core\Pages\SearchPage.cs" />
     <Compile Include="Apps\Core\Pages\TextPage.cs" />
     <Compile Include="Apps\Core\Widgets\Navigation.cs" />
@@ -1338,6 +1349,7 @@
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\Navigation.cshtml" />
     <Content Include="Apps\Articles\Views\Widgets\ArticleArchive.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchive.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\SearchQuery.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
@@ -1349,7 +1361,6 @@
   <ItemGroup>
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Core\Entities\" />
-    <Folder Include="Apps\Core\Helpers\" />
     <Folder Include="Apps\Core\Settings\" />
     <Folder Include="Apps\Core\Tasks\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Controllers\" />

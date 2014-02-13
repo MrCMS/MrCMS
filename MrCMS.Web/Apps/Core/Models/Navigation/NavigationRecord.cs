@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 
-namespace MrCMS.Web.Apps.Core.Models
+namespace MrCMS.Web.Apps.Core.Models.Navigation
 {
     public class NavigationRecord
     {
