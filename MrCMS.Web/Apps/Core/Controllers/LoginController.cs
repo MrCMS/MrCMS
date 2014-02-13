@@ -4,9 +4,11 @@ using Elmah;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Core.ModelBinders;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
+using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 using ResetPasswordViewModel = MrCMS.Web.Apps.Core.Models.ResetPasswordViewModel;
 
@@ -39,7 +41,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpPost]
-        public RedirectResult Post(LoginModel loginModel)
+        public RedirectResult Post([IoCModelBinder(typeof(LoginModelModelBinder))]LoginModel loginModel)
         {
             if (loginModel != null && ModelState.IsValid)
             {
@@ -88,12 +90,12 @@ namespace MrCMS.Web.Apps.Core.Controllers
             {
                 TempData["message"] = "Email not recognized.";
             }
-            
+
             return Redirect("~/" + _documentService.GetUniquePage<ForgottenPasswordPage>().LiveUrlSegment);
         }
 
 
-        
+
 
         [HttpGet]
         public ActionResult PasswordReset(ResetPasswordPage page, Guid id)
