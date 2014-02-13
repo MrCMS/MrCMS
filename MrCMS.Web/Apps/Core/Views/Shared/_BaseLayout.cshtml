@@ -47,14 +47,7 @@
                             <span class="glyphicon glyphicon-search"></span>
                         </a>
                         <div class="dropdown-menu">
-                            <form class="navbar-form navbar-left form-inline" role="search">
-                                <div class="input-group">
-                                    <input type="text" class="form-control">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                                    </span>
-                                </div>
-                            </form>
+                            @Html.Partial("SearchForm")
                         </div>
                     </li>
                     <li class="dropdown">

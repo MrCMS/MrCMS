@@ -1350,6 +1350,7 @@
     <Content Include="Apps\Articles\Views\Widgets\ArticleArchive.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchive.cshtml" />
     <Content Include="Apps\Core\Views\Shared\SearchQuery.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\SearchForm.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
