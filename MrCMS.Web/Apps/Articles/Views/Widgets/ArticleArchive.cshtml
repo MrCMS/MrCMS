@@ -1,0 +1,19 @@
+﻿@model MrCMS.Web.Apps.Articles.Widgets.ArticleArchiveModel  
+@if (Model != null && Model.ArticleYearsAndMonths != null)
+{
+    if (Model.ArticleArchive.ShowNameAsTitle)
+    {
+        <h4>News Archive</h4>
+    }
+    <ul class="nav nav-pills nav-stacked">
+        @foreach (var i in Model.ArticleYearsAndMonths)
+            {
+                var active = "";
+                if (Model.Month == i.Date.ToString("MM") && Model.Year == i.Date.ToString("yyyy"))
+                {
+                    active = "active";
+                }
+            <li class="@active"><a href="/@Model.ArticleList.LiveUrlSegment?Month=@i.Date.ToString("MM")&Year=@i.Date.ToString("yyyy")">@i.Date.ToString("MMMM") @i.Date.ToString("yyyy")</a></li>
+            }
+    </ul>
+}

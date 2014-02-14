@@ -1,10 +1,20 @@
-﻿@using MrCMS.Web.Apps.Articles.Pages
-@using NHibernate.Criterion
-@model MrCMS.Web.Apps.Articles.Pages.ArticleList 
-
-<ul class="nav nav-pills nav-stacked">
-    @foreach (var category in Model.Tags)
+﻿@using System.Activities.Statements
+@using MrCMS.Web.Apps.Articles.Pages
+@model MrCMS.Web.Apps.Articles.Widgets.ArticleCategories
+@{
+    var list = ViewData["ArticleLists"] as ArticleList;
+}
+@{
+    if (Model.ShowNameAsTitle)
     {
-        <li><a href="/@Model.LiveUrlSegment?category=@category.Name">@category.Name</a></li>
+    <h4>@Model.Name</h4>
+    }
+}
+<ul class="nav nav-pills nav-stacked">
+    @foreach (var category in Model.ArticleList.Tags)
+    {
+        <li class="@((!string.IsNullOrEmpty(Model.Category) && Model.Category == category.Name) ? "active" : "")">
+            <a href="/@Model.ArticleList.LiveUrlSegment?category=@category.Name">@category.Name</a>
+        </li>
     }
 </ul>

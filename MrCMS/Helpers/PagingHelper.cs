@@ -318,12 +318,15 @@ namespace MrCMS.Helpers
             var ul = new TagBuilder("ul")
             {
                 InnerHtml = listItemLinks.ToString()
+
             };
+            ul.AddCssClass("pagination"); //bootstrap3
+
             var div = new TagBuilder("div")
             {
                 InnerHtml = ul.ToString()
             };
-            div.AddCssClass("pagination");
+            div.AddCssClass("pagination"); //bootstrap2
 
             return new MvcHtmlString(div.ToString());
         }
@@ -413,11 +416,13 @@ namespace MrCMS.Helpers
                          {
                              InnerHtml = listItemLinks.ToString()
                          };
+            ul.AddCssClass("pagination"); //bootstrap3
+
             var div = new TagBuilder("div")
                           {
                               InnerHtml = ul.ToString()
                           };
-            div.AddCssClass("pagination");
+            div.AddCssClass("pagination"); //bootstrap2
 
             return new MvcHtmlString(div.ToString());
         }

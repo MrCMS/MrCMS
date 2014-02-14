@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
 

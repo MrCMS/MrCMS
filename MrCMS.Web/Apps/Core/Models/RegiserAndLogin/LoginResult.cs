@@ -1,4 +1,4 @@
-namespace MrCMS.Web.Apps.Core.Models
+namespace MrCMS.Web.Apps.Core.Models.RegiserAndLogin
 {
     public class LoginResult
     {

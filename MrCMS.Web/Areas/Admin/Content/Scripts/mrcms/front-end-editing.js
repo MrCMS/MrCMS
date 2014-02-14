@@ -24,9 +24,10 @@
         },
 
         enable: function () {
+            $("body").addClass("editing-on");
             setEditingEnabled(true);
             $("#enable-editing").text("Inline Editing: On").addClass("mrcms-btn-warning");
-
+            $(".layout-area").addClass('layout-area-enabled');
             $(settings.editableSelector, document).each(function (index, element) {
                 var el = $(element);
                 if (el.attr('contenteditable') != 'true')
@@ -85,14 +86,18 @@
             });
             //foreach widget add edit indicator
             $("div[data-widget-id]", document).each(function () {
-                $(this).prepend("<div class='edit-indicator-widget'><img src='/Areas/Admin/Content/Images/pencil.png' /></div>");
+                $(this).prepend("<div class='edit-indicator-widget' style='diaply:none;'><img src='/Areas/Admin/Content/Images/pencil.png' /></div>");
             });
             //foreach layout area add edit indicator
-            $("div[data-layout-area-id]", document).each(function () {
-                $(this).prepend("<div class='edit-indicator-layout'><img src='/Areas/Admin/Content/Images/layout-area-menu.png' /></div>");
+            $("div[data-layout-area-id]", document).each(function (element) {
+                if ($(this).height() == 0) {
+                    $(this).prepend("<div class='edit-indicator-layout corner'><img src='/Areas/Admin/Content/Images/layout-2.png' /></div>");
+                } else {
+                    $(this).prepend("<div class='edit-indicator-layout'><img src='/Areas/Admin/Content/Images/layout-1.png' /></div>");
+                }
 
             });
-
+            
             $(".edit-indicator-layout", document).fadeIn(800);
             $(".edit-indicator-widget", document).fadeIn(800);
 
@@ -142,16 +147,23 @@
                         container.remove();
                     }
                 });
+                
+                $('[data-action=post-link]').on('click', function (e) {
+                    alert("hi");
+                    e.preventDefault();
+                    var self = $(this);
+                    var url = self.attr('href') || self.data('link');
+                    if (url != null) {
+                        post_to_url(url, {});
+                    }
+                });
 
-            });
-
-            //set active tab for layout
-            $(document, document).on('click', '#mrcms-manage-page-widgets', function () {
-                $.cookie('selected-tab-/Admin/Webpage/Edit/' + $('#Id').val(), '#layout-content');
             });
         },
         disable: function (init) {
             setEditingEnabled(false);
+            $("body").removeClass("editing-on");
+            $(".layout-area").removeClass('layout-area-enabled');
             $("#enable-editing").text("Inline Editing: Off").removeClass("mrcms-btn-warning");;
             //remove all edit tools
             $(".edit-indicator-layout", document).remove();
@@ -193,15 +205,17 @@
     };
 
     function getEditingEnabled() {
-        return $.cookie('mrcms-inline-edit') === "true";
+        return store.get('mrcms-inline-edit') === true;
     }
 
     function setEditingEnabled(value) {
-        return $.cookie('mrcms-inline-edit', value, { expires: 1 });
+        return store.set('mrcms-inline-edit', value);
     }
     function stripHtml(str) {
         return jQuery('<div />', { html: str }).text();
     }
+    
+    
 })(jQuery);
 
 $(function () {
@@ -236,3 +250,27 @@ $(function () {
         return false;
     });
 });
+
+
+
+function post_to_url(path, params, method) {
+    method = method || "post"; // Set method to post by default, if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for (var key in params) {
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", params[key].name);
+        hiddenField.setAttribute("value", params[key].value);
+
+        form.appendChild(hiddenField);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}

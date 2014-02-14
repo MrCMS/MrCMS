@@ -37,11 +37,11 @@ namespace MrCMS.Models.Search
             {
                 var fuzzySearchTerm = MakeFuzzy(Term);
                 var q = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
-                    FieldDefinition.GetFieldNames(WebpageIndexDefinition.Name,
-                                                                          WebpageIndexDefinition.BodyContent,
-                                                                          WebpageIndexDefinition.MetaTitle,
-                                                                          WebpageIndexDefinition.MetaKeywords,
-                                                                          WebpageIndexDefinition.MetaDescription), 
+                    FieldDefinition.GetFieldNames(AdminWebpageIndexDefinition.Name,
+                                                                          AdminWebpageIndexDefinition.BodyContent,
+                                                                          AdminWebpageIndexDefinition.MetaTitle,
+                                                                          AdminWebpageIndexDefinition.MetaKeywords,
+                                                                          AdminWebpageIndexDefinition.MetaDescription), 
                     new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30));
 
                 var query = q.Parse(fuzzySearchTerm);
@@ -53,13 +53,13 @@ namespace MrCMS.Models.Search
                 booleanQuery.Add(new TermQuery(new Term("type", Type)), Occur.MUST);
             if (Parent != null)
                 booleanQuery.Add(
-                    new TermQuery(new Term(WebpageIndexDefinition.ParentId.FieldName, Parent.Id.ToString())), Occur.MUST);
+                    new TermQuery(new Term(AdminWebpageIndexDefinition.ParentId.FieldName, Parent.Id.ToString())), Occur.MUST);
 
             return booleanQuery;
         }
         private Query GetDateQuery()
         {
-            return new TermRangeQuery(WebpageIndexDefinition.CreatedOn.FieldName,
+            return new TermRangeQuery(AdminWebpageIndexDefinition.CreatedOn.FieldName,
                 CreatedOnFrom.HasValue
                     ? DateTools.DateToString(CreatedOnFrom.Value, DateTools.Resolution.SECOND)
                     : null,

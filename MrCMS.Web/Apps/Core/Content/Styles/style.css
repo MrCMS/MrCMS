@@ -3,15 +3,114 @@
     -moz-border-radius: 0 !important;
     border-radius: 0 !important;
 }
+.margin-top-0 { margin-top: 0;}
+.margin-bottom-0 { margin-top: 0;}
 
-h2.not-registered { font-size: 36px;}
 
-.field-validation-error, .field-validation-error span { color: red;}
-.input-validation-error{ border: 1px solid red!important;}
+.margin-top-5 { margin-top: 5px;}
+.margin-bottom-5 { margin-top: 5px;}
 
-nav.navbar-mrcms {background-color: #1BA1E2;color: white;}
-nav.navbar-mrcms ul li a, .navbar-brand { color: white;}
-nav.navbar-mrcms .nav > li > a:hover, nav.navbar-mrcms .nav > li > a:focus { background-color: #e7e7e7;color: grey;}
-nav.navbar-mrcms ul.dropdown-menu li a { color: black;}
 
-.mrcms-content > :first-child { margin-top: 0;}
+.margin-top-10 { margin-top: 10px;}
+.margin-bottom-10 { margin-top: 10px;}
+
+h2.not-registered {
+    font-size: 36px;
+}
+
+.field-validation-error, .field-validation-error span {
+    color: red;
+}
+
+.input-validation-error {
+    border: 1px solid red!important;
+}
+
+nav.navbar-mrcms {
+    background-color: #1BA1E2;
+    color: white;
+    border: none;
+}
+
+    nav.navbar-mrcms ul li a, .navbar-brand {
+        color: white;
+    }
+
+    nav.navbar-mrcms .nav > li > a:hover, nav.navbar-mrcms .nav > li > a:focus {
+        background-color: #e7e7e7;
+        color: grey;
+    }
+
+    nav.navbar-mrcms ul.dropdown-menu li a {
+        color: black;
+    }
+
+.mrcms-content > :first-child {
+    margin-top: 0;
+}
+
+.navbar-toggle {
+    background: white;
+}
+
+    .navbar-toggle .icon-bar {
+        background: #1BA1E2;
+    }
+
+@media (max-width: 768px) {
+    #nav-links-right {
+        position: absolute;
+        top: 0;
+        right: 70px;
+    }
+
+        #nav-links-right .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+        }
+
+        .navbar-nav > li {
+            float: left;
+        }
+
+    .navbar-nav {
+        margin: 0;
+    }
+
+   .navbar-nav > li > a {
+        padding-top: 15px;
+padding-bottom: 15px;
+    }
+    #nav-links-right .dropdown-menu {
+        right: 0;
+        left: auto;
+    }
+
+     .open > .dropdown-menu {
+        display: block;
+    }
+
+    .navbar-nav .open .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        float: left;
+        min-width: 160px;
+        padding: 5px 0;
+        font-size: 14px;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+
+    .dropdown-menu > li > a { display: block;
+padding: 3px 20px;
+clear: both;
+font-weight: normal;
+line-height: 1.428571429;
+color: #333;
+white-space: nowrap;}
+}

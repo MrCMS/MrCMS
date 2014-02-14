@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Widget;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Website;
 using NHibernate;
 

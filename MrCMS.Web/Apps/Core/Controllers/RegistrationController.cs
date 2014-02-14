@@ -1,6 +1,7 @@
 using System.Web.Mvc;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.RegiserAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website;

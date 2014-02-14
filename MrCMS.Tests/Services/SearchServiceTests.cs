@@ -89,7 +89,7 @@ namespace MrCMS.Tests.Services
         //    searchResultModels.First().Name.Should().Be("Test");
         //}
 
-        private WebpageSearchService GetSearchService()
+        private AdminWebpageSearchService GetSearchService()
         {
             return null;// new SearchService( new CurrentSite(CurrentSite));
         }
