@@ -163,6 +163,19 @@ namespace MrCMS.Web.Areas.Admin
                 return RedirectToAction("Edit", "Webpage", new { id = webpage.Id });
             }
         }
+
+        [HttpGet]
+        public ViewResult DeleteEntry(FormPosting posting)
+        {
+            return View(posting);
+        }
+        [HttpPost]
+        [ActionName("DeleteEntry")]
+        public ActionResult DeleteEntry_POST(FormPosting posting)
+        {
+            _formService.DeletePosting(posting);
+            return RedirectToAction("Edit", "Webpage", new { id = posting.Webpage.Id });
+        }
     }
 
     public class FormActionResult
