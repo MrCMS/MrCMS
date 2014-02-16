@@ -1353,6 +1353,11 @@
     <Content Include="Apps\Core\Views\Shared\SearchQuery.cshtml" />
     <Content Include="Apps\Core\Views\Shared\SearchForm.cshtml" />
     <Content Include="Areas\Admin\Views\Form\DeleteEntry.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Webpage\RegisterPage.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Webpage\LoginPage.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Webpage\ForgottenPasswordPage.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Webpage\ResetPasswordPage.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Webpage\UserAccountPage.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

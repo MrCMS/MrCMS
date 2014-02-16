@@ -20,7 +20,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
         public ActionResult Show(RegisterPage page)
         {
-            if (CurrentRequestData.CurrentUser != null)
+            if (CurrentRequestData.CurrentUser != null && !CurrentRequestData.CurrentUserIsAdmin)
                 return Redirect("~/");
             return View(page);
         }
