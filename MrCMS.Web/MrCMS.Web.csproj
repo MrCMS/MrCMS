@@ -356,6 +356,12 @@
     <Content Include="Apps\Core\Content\Images\mrcms-logo.png" />
     <Content Include="Apps\Core\Content\Scripts\forgot-password.js" />
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
+    <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\css\bootstrap-image-gallery.min.css" />
+    <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\img\loading.gif" />
+    <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\index.html" />
+    <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\js\bootstrap-image-gallery.js" />
+    <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\js\bootstrap-image-gallery.min.js" />
+    <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\js\jquery.blueimp-gallery.min.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\build-config.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\ckeditor.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\contents.css" />
@@ -1358,6 +1364,8 @@
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\ForgottenPasswordPage.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\ResetPasswordPage.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\UserAccountPage.cshtml" />
+    <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\README.md" />
+    <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\css\blueimp-gallery.min.css" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
@@ -1373,7 +1381,6 @@
     <Folder Include="Apps\Core\Tasks\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Galleries\Areas\Admin\Views\Widget\" />
-    <Folder Include="Apps\Galleries\Content\" />
     <Folder Include="Apps\Galleries\Controllers\" />
     <Folder Include="Apps\Galleries\DbConfiguration\" />
     <Folder Include="Apps\Galleries\Entities\" />

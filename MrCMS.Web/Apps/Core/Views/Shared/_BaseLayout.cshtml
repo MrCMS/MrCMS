@@ -72,13 +72,13 @@
             @RenderZone("Footer")
         </footer>
     </div>
-
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     @{ Html.IncludeScript("~/Apps/Core/Content/bootstrap/js/bootstrap.js");
        Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.min.js");
        Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.unobtrusive.min.js");}
 
-    @Html.RenderScripts()
+    
     @if (CurrentRequestData.CurrentUser != null && CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") && SiteSettings<SiteSettings>().EnableInlineEditing)
     {
         Html.RenderAction("InPageEditor", "InPageAdmin", new { id = Model.Id, area = "Admin" });
@@ -88,5 +88,7 @@
         @RenderSection("JavascriptBlockInclude")
     }
     @Html.Raw(Model.CustomFooterScripts)
+    
+    @Html.RenderScripts()
 </body>
 </html>
