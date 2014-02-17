@@ -7,6 +7,7 @@ using MrCMS.Website;
 using System.Linq;
 using NHibernate;
 using NHibernate.Criterion;
+using Ninject;
 
 namespace MrCMS.Services
 {
@@ -16,15 +17,18 @@ namespace MrCMS.Services
         List<MrCMSIndex> GetIndexes(Site site = null);
         void Reindex(string typeName, Site site = null);
         void Optimise(string typeName, Site site = null);
+        IIndexManagerBase GetIndexManagerBase(Type indexType, Site site);
     }
 
     public class IndexService : IIndexService
     {
+        private readonly IKernel _kernel;
         private readonly ISession _session;
         private readonly Site _site;
 
-        public IndexService(ISession session, Site site)
+        public IndexService(IKernel kernel, ISession session, Site site)
         {
+            _kernel = kernel;
             _session = session;
             _site = site;
         }
@@ -41,7 +45,7 @@ namespace MrCMS.Services
         {
             site = site ?? _site;
             var mrCMSIndices = new List<MrCMSIndex>();
-            var indexDefinitionTypes = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IIndexDefinition<>));
+            var indexDefinitionTypes = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IndexDefinition<>));
             foreach (var definitionType in indexDefinitionTypes)
             {
                 var indexManagerBase = GetIndexManagerBase(definitionType, site);
@@ -61,24 +65,19 @@ namespace MrCMS.Services
             return mrCMSIndices;
         }
 
-        public static IIndexManagerBase GetIndexManagerBase(Type indexType, Site site)
+        public IIndexManagerBase GetIndexManagerBase(Type indexType, Site site)
         {
-            var indexDefinitionInterface =
-                indexType.GetInterfaces()
-                         .FirstOrDefault(
-                             type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IIndexDefinition<>));
             var indexManagerBase =
-                (GetIndexManagerOverride ?? DefaultGetIndexManager())(indexType, indexDefinitionInterface, site);
+                (GetIndexManagerOverride ?? DefaultGetIndexManager())(indexType, site);
             return indexManagerBase;
         }
 
-        public static Func<Type, Type, Site, IIndexManagerBase> GetIndexManagerOverride = null;
+        public static Func<Type, Site, IIndexManagerBase> GetIndexManagerOverride = null;
 
-        private static Func<Type, Type, Site, IIndexManagerBase> DefaultGetIndexManager()
+        private Func<Type, Site, IIndexManagerBase> DefaultGetIndexManager()
         {
-            return (indexType, indexDefinitionInterface, site) => MrCMSApplication.Get(
-                typeof(IIndexManager<,>).MakeGenericType(indexDefinitionInterface.GetGenericArguments()[0],
-                                                                    indexType)) as
+            return (indexType, site) => _kernel.Get(
+                typeof(IIndexManager<,>).MakeGenericType(indexType.BaseType.GetGenericArguments()[0], indexType)) as
                                                                   IIndexManagerBase;
         }
 
@@ -113,6 +112,7 @@ namespace MrCMS.Services
 
             indexManagerBase.Optimise();
         }
+
     }
 
     public class MrCMSIndex

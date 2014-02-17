@@ -1,5 +1,6 @@
 ﻿using MrCMS.Entities;
 using MrCMS.Indexing.Management;
+using MrCMS.Services;
 using NHibernate;
 using Ninject;
 
@@ -7,8 +8,8 @@ namespace MrCMS.Tasks
 {
     internal class UpdateIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
-        public UpdateIndicesTask(ISession session, IKernel kernel)
-            : base(session, kernel)
+        public UpdateIndicesTask(ISession session, IKernel kernel, IIndexService indexService)
+            : base(session, kernel, indexService)
         {
         }
 

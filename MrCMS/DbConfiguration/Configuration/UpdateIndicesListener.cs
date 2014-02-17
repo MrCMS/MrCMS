@@ -26,47 +26,47 @@ namespace MrCMS.DbConfiguration.Configuration
         {
             var siteEntity = @event.AffectedOwnerOrNull as SiteEntity;
             if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof(UpdateIndicesTask<>), siteEntity);
+                QueueTask(typeof(UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
         }
 
         public void OnPostRemoveCollection(PostCollectionRemoveEvent @event)
         {
             var siteEntity = @event.AffectedOwnerOrNull as SiteEntity;
             if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof(UpdateIndicesTask<>), siteEntity);
+                QueueTask(typeof(UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
         }
 
         public void OnPostUpdateCollection(PostCollectionUpdateEvent @event)
         {
             var siteEntity = @event.AffectedOwnerOrNull as SiteEntity;
             if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof(UpdateIndicesTask<>), siteEntity);
+                QueueTask(typeof(UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
         }
 
         public void OnPostDelete(PostDeleteEvent @event)
         {
             var siteEntity = @event.Entity as SiteEntity;
             if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof(DeleteIndicesTask<>), siteEntity);
+                QueueTask(typeof(DeleteIndicesTask<>), siteEntity, LuceneOperation.Delete);
         }
 
         public void OnPostInsert(PostInsertEvent @event)
         {
             var siteEntity = @event.Entity as SiteEntity;
             if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof(InsertIndicesTask<>), siteEntity);
+                QueueTask(typeof(InsertIndicesTask<>), siteEntity, LuceneOperation.Insert);
         }
 
         public void OnPostUpdate(PostUpdateEvent @event)
         {
             var siteEntity = @event.Entity as SiteEntity;
             if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof(UpdateIndicesTask<>), siteEntity);
+                QueueTask(typeof(UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
         }
 
-        public static void QueueTask(Type type, SiteEntity siteEntity)
+        public static void QueueTask(Type type, SiteEntity siteEntity, LuceneOperation operation)
         {
-            if (IndexingHelper.AnyIndexes(siteEntity))
+            if (IndexingHelper.AnyIndexes(siteEntity, operation))
             {
                 var queuedTask = new QueuedTask
                                      {

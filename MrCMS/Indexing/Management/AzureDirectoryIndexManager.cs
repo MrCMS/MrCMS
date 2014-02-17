@@ -8,7 +8,7 @@ namespace MrCMS.Indexing.Management
 {
     public class AzureDirectoryIndexManager<TEntity, TDefinition> : IndexManager<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>
+        where TDefinition : IndexDefinition<TEntity>
     {
         private readonly IAzureFileSystem _azureFileSystem;
         private static AzureDirectory _directory;

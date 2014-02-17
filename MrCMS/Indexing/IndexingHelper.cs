@@ -3,76 +3,52 @@ using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
+using MrCMS.Tasks;
+using MrCMS.Website;
 
 namespace MrCMS.Indexing
 {
     public static class IndexingHelper
     {
-        public static bool AnyIndexes<T>()
-        {
-            return GetDefinitionTypes<T>().Any() || GetRelatedDefinitionTypes<T>().Any();
-        }
-        public static bool AnyIndexes(object obj)
+        //public static bool AnyIndexes<T>()
+        //{
+        //    return GetDefinitionTypes<T>().Any();
+        //}
+        public static bool AnyIndexes(object obj, LuceneOperation operation)
         {
             if (obj == null)
                 return false;
-            return DefinitionTypes(obj.GetType()).Any() || RelatedDefinitionTypes(obj.GetType()).Any();
+            return
+                IndexDefinitionTypes.Any(
+                    definition => definition.GetUpdateTypes(operation).Any(type => type.IsAssignableFrom(obj.GetType())));
         }
-        public static List<Type> GetDefinitionTypes<T>()
-        {
-            return DefinitionTypes(typeof(T));
-        }
+        //public static List<IndexDefinition> GetDefinitionTypes<T>()
+        //{
+        //    return DefinitionTypes(typeof(T));
+        //}
 
-        private static List<Type> DefinitionTypes(Type typeToCheck)
-        {
-            var definitionTypes = IndexDefinitionTypes.Where(type =>
-                                                                 {
-                                                                     var indexDefinitionInterface =
-                                                                         type.GetInterfaces()
-                                                                             .FirstOrDefault(
-                                                                                 interfaceType =>
-                                                                                 interfaceType.IsGenericType &&
-                                                                                 interfaceType.GetGenericTypeDefinition() ==
-                                                                                 typeof (IIndexDefinition<>));
-                                                                     var genericArgument =
-                                                                         indexDefinitionInterface.GetGenericArguments()[
-                                                                             0];
+        //private static List<IndexDefinition> DefinitionTypes(Type typeToCheck)
+        //{
+        //    //throw new NotImplementedException();
+        //    var definitionTypes =
+        //        IndexDefinitionTypes.FindAll(type => type.UpdateTypes.Any(typeToCheck.IsAssignableFrom));
+        //    return definitionTypes;
+        //}
 
-                                                                     return
-                                                                         genericArgument.IsAssignableFrom(typeToCheck);
-                                                                 }).ToList();
-            return definitionTypes;
-        }
-
-        public static List<Type> GetRelatedDefinitionTypes<T>()
+        public static List<IndexDefinition> IndexDefinitionTypes
         {
-            return RelatedDefinitionTypes(typeof (T));
+            get
+            {
+                return
+                    TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IndexDefinition<>))
+                        .Select(type => MrCMSApplication.Get(type) as IndexDefinition)
+                        .ToList();
+            }
         }
 
-        private static List<Type> RelatedDefinitionTypes(Type typeToCheck)
+        public static IndexDefinition Get<T>() where T :IndexDefinition
         {
-            var definitionTypes = IndexDefinitionTypes.Where(type =>
-                                                                 {
-                                                                     var interfaces =
-                                                                         type.GetInterfaces()
-                                                                             .Where(
-                                                                                 interfaceType =>
-                                                                                 interfaceType.IsGenericType &&
-                                                                                 interfaceType.GetGenericTypeDefinition() ==
-                                                                                 typeof (IRelatedItemIndexDefinition<,>));
-
-                                                                     return
-                                                                         interfaces.Any(
-                                                                             relatedDefinitionType =>
-                                                                             relatedDefinitionType.GetGenericArguments()
-                                                                                 [0].IsAssignableFrom(typeToCheck));
-                                                                 }).ToList();
-            return definitionTypes;
-        }
-
-        private static List<Type> IndexDefinitionTypes
-        {
-            get { return TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IIndexDefinition<>)); }
+            return IndexDefinitionTypes.OfType<T>().FirstOrDefault();
         }
     }
 }

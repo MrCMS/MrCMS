@@ -26,7 +26,7 @@ namespace MrCMS.DbConfiguration.Configuration
 
                 var siteEntity = e as SiteEntity;
                 if (siteEntity != null && !_inDevelopment)
-                    UpdateIndicesListener.QueueTask(typeof (DeleteIndicesTask<>), siteEntity);
+                    UpdateIndicesListener.QueueTask(typeof (DeleteIndicesTask<>), siteEntity, LuceneOperation.Delete);
             }
             else
             {

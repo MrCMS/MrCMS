@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using MrCMS.Entities;
 using MrCMS.Helpers;
@@ -19,11 +18,13 @@ namespace MrCMS.Tasks
     {
         private readonly ISession _session;
         private readonly IKernel _kernel;
+        private readonly IIndexService _indexService;
 
-        protected IndexManagementTask(ISession session, IKernel kernel)
+        protected IndexManagementTask(ISession session, IKernel kernel, IIndexService indexService)
         {
             _session = session;
             _kernel = kernel;
+            _indexService = indexService;
         }
 
         public override int Priority
@@ -45,24 +46,9 @@ namespace MrCMS.Tasks
 
         protected override void OnExecute()
         {
-            List<Type> definitionTypes = IndexingHelper.GetDefinitionTypes<T>();
-            var entity = GetObject();
-            foreach (
-                IIndexManagerBase indexManagerBase in
-                    definitionTypes.Select(type => IndexService.GetIndexManagerBase(type, Site)))
-                ExecuteLogic(indexManagerBase, entity);
-            List<Type> relatedDefinitionTypes = IndexingHelper.GetRelatedDefinitionTypes<T>();
-            foreach (Type type in relatedDefinitionTypes)
-            {
-                IIndexManagerBase indexManagerBase = IndexService.GetIndexManagerBase(type, Site);
-                object instance = Activator.CreateInstance(type);
-                MethodInfo methodInfo = type.GetMethodExt("GetEntitiesToUpdate", typeof(T));
-                var toUpdate = methodInfo.Invoke(instance, new[] { entity }) as IEnumerable;
-                foreach (object o in toUpdate)
-                {
-                    indexManagerBase.Update(o);
-                }
-            }
+            var luceneActions = GetActions().ToList();
+
+            LuceneActionExecutor.PerformActions(_indexService, Site, luceneActions);
         }
 
         protected virtual T GetObject()
@@ -73,35 +59,10 @@ namespace MrCMS.Tasks
         protected abstract void ExecuteLogic(IIndexManagerBase manager, T entity);
         public IEnumerable<LuceneAction> GetActions()
         {
-            var luceneActions = new List<LuceneAction>();
             var entity = GetObject();
-            foreach (var definitionType in IndexingHelper.GetDefinitionTypes<T>())
-            {
-                luceneActions.Add(new LuceneAction
-                                      {
-                                          Operation = Operation,
-                                          Entity = entity,
-                                          IndexDefinition = _kernel.Get(definitionType) as IIndexDefinition
-                                      });
-            }
-            foreach (var relatedDefinitionType in IndexingHelper.GetRelatedDefinitionTypes<T>())
-            {
-                object instance = _kernel.Get(relatedDefinitionType);
-                MethodInfo methodInfo = relatedDefinitionType.GetMethodExt("GetEntitiesToUpdate", typeof(T));
-                var toUpdate = methodInfo.Invoke(instance, new[] { entity }) as IEnumerable;
-
-                foreach (object o in toUpdate)
-                {
-                    luceneActions.Add(new LuceneAction
-                    {
-                        Operation = LuceneOperation.Update,
-                        Entity = o as SystemEntity,
-                        IndexDefinition = instance as IIndexDefinition
-                    });
-                }
-            }
-
-            return luceneActions;
+            return
+                IndexingHelper.IndexDefinitionTypes.SelectMany(
+                    definitionType => definitionType.GetAllActions(entity, Operation));
         }
 
         protected abstract LuceneOperation Operation { get; }
@@ -117,7 +78,7 @@ namespace MrCMS.Tasks
     {
         public LuceneOperation Operation { get; set; }
 
-        public IIndexDefinition IndexDefinition { get; set; }
+        public IndexDefinition IndexDefinition { get; set; }
         public SystemEntity Entity { get; set; }
 
         public Type Type

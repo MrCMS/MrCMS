@@ -8,7 +8,7 @@ namespace MrCMS.Indexing.Management
 {
     public class FSDirectoryIndexManager<TEntity, TDefinition> : IndexManager<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>
+        where TDefinition : IndexDefinition<TEntity>
     {
         private static FSDirectory _directory;
 

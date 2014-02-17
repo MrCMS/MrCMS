@@ -14,7 +14,7 @@ namespace MrCMS.Indexing.Querying
 {
     public abstract class Searcher<TEntity, TDefinition> : ISearcher<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>
+        where TDefinition : IndexDefinition<TEntity>
     {
         private readonly Site _site;
         private readonly ISession _session;
@@ -39,8 +39,7 @@ namespace MrCMS.Indexing.Querying
             var topDocs = IndexSearcher.Search(query, filter, pageNumber * size, sort ?? Sort.RELEVANCE);
 
             var entities =
-                Definition.Convert(_session,
-                                   topDocs.ScoreDocs.Skip((pageNumber - 1) * size)
+                Definition.Convert(topDocs.ScoreDocs.Skip((pageNumber - 1) * size)
                                           .Take(size)
                                           .Select(doc => IndexSearcher.Doc(doc.Doc)));
 
@@ -58,7 +57,7 @@ namespace MrCMS.Indexing.Querying
         {
             var topDocs = IndexSearcher.Search(query, filter, int.MaxValue, sort ?? Sort.RELEVANCE);
 
-            var entities = Definition.Convert(_session, topDocs.ScoreDocs.Select(doc => IndexSearcher.Doc(doc.Doc)));
+            var entities = Definition.Convert(topDocs.ScoreDocs.Select(doc => IndexSearcher.Doc(doc.Doc)));
 
             return entities.ToList();
         }

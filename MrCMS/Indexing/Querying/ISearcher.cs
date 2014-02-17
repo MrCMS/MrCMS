@@ -10,7 +10,7 @@ namespace MrCMS.Indexing.Querying
 {
     public interface ISearcher<TEntity, TDefinition> : IDisposable
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>
+        where TDefinition : IndexDefinition<TEntity>
     {
         IPagedList<TEntity> Search(Query query, int pageNumber, int? pageSize = null, Filter filter = null, Sort sort = null);
         int Total(Query query, Filter filter = null);

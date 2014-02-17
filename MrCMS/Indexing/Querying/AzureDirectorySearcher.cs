@@ -11,7 +11,7 @@ namespace MrCMS.Indexing.Querying
 {
     public class AzureDirectorySearcher<TEntity, TDefinition> : Searcher<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>
+        where TDefinition : IndexDefinition<TEntity>
     {
         private static AzureDirectory _directory;
         private readonly IAzureFileSystem _azureFileSystem;

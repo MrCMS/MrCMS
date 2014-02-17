@@ -11,14 +11,15 @@ using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Indexing.Management
 {
     public static class IndexManager
     {
-        public static void EnsureIndexesExist(ISession session, Site site)
+        public static void EnsureIndexesExist(IKernel kernel, ISession session, Site site)
         {
-            var service = new IndexService(session, site);
+            var service = new IndexService(kernel, session, site);
             DocumentMetadataHelper.OverrideExistAny =
                 new DocumentService(session,
                                     new DocumentEventService(new List<IOnDocumentDeleted>(),
@@ -36,7 +37,7 @@ namespace MrCMS.Indexing.Management
 
     public abstract class IndexManager<TEntity, TDefinition> : IIndexManager<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>
+        where TDefinition : IndexDefinition<TEntity>
     {
         protected readonly Site CurrentSite;
         private readonly TDefinition _definition;
@@ -209,11 +210,11 @@ namespace MrCMS.Indexing.Management
                 return Update(entity as TEntity);
 
             return IndexResult.GetResult(() =>
-                                             {
-                                                 throw new Exception(
-                                                     string.Format(
-                                                         "object {0} is not of correct type for the index {1}", entity, GetType().Name));
-                                             });
+            {
+                throw new Exception(
+                    string.Format(
+                        "object {0} is not of correct type for the index {1}", entity, GetType().Name));
+            });
         }
 
         public IndexResult Delete(IEnumerable<TEntity> entities)

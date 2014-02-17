@@ -1,0 +1,47 @@
+﻿@using MrCMS.Indexing.Management
+@model List<MrCMS.Indexing.Management.LuceneFieldBoost>
+
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+
+@using (Html.BeginForm("Boosts", "Indexes", new { id = "" }, FormMethod.Post))
+{
+    <fieldset>
+        <legend>Update field boosts
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-success btn" value="Update" />
+            </span>
+        </legend>
+        <div class="row-fluid">
+            <div class="span12">
+                <table class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th class="span10">
+                                Name
+                            </th>
+                            <th class="span2">
+                                Boost
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.HiddenFor(list => list[i].Id)
+                                    @Html.HiddenFor(list => list[i].Site.Id)
+                                    @Html.HiddenFor(list => list[i].Definition)
+                                    @FieldDefinition.GetDisplayName(Model[i].Definition)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(list => list[i].Boost)
+                                </td>
+                            </tr> 
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </fieldset>
+}

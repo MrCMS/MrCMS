@@ -10,7 +10,7 @@ using Ninject;
 namespace MrCMS.Indexing.Management
 {
     public interface IIndexManager<in TEntity, TDefinition> : IIndexManagerBase
-        where TEntity : SystemEntity where TDefinition : IIndexDefinition<TEntity>
+        where TEntity : SystemEntity where TDefinition : IndexDefinition<TEntity>
     {
         IndexResult Insert(IEnumerable<TEntity> entities);
         IndexResult Insert(TEntity entity);

@@ -188,11 +188,11 @@
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.Helpers.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.0\lib\net45\System.Web.Mvc.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.1\lib\net45\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -200,19 +200,19 @@
     </Reference>
     <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.0\lib\net45\System.Web.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.1\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.WebPages.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -316,6 +316,19 @@
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
+    <Compile Include="Indexing\Definitions\BodyContentFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\CreatedOnFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\DisplayOrderFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\MetaDescriptionFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\MetaKeywordsFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\MetaTitleFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\NameFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\ParentIdFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\PublishedOnFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\TypeFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\UrlSegmentFieldDefinition.cs" />
+    <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
+    <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Models\Search\QuickSearchResults.cs" />
     <Compile Include="Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
@@ -596,6 +609,7 @@
     <Compile Include="Tasks\ITaskStatusUpdater.cs" />
     <Compile Include="Tasks\ITaskManager.cs" />
     <Compile Include="Tasks\LuceneActionComparison.cs" />
+    <Compile Include="Tasks\LuceneActionExecutor.cs" />
     <Compile Include="Tasks\LuceneIndexTaskExecutionHandler.cs" />
     <Compile Include="Tasks\QueuedTaskSearchQuery.cs" />
     <Compile Include="Tasks\TaskManager.cs" />

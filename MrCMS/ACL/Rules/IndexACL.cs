@@ -8,6 +8,7 @@ namespace MrCMS.ACL.Rules
         public const string Reindex = "Reindex";
         public const string Create = "Create";
         public const string Optimize = "Optimize";
+        public const string SetBoosts = "Set Boosts";
         public override string DisplayName
         {
             get { return "Indices"; }
@@ -20,7 +21,8 @@ namespace MrCMS.ACL.Rules
                            View,
                            Reindex,
                            Create,
-                           Optimize
+                           Optimize,
+                           SetBoosts
                        };
         }
     }

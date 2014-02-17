@@ -2,9 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Documents;
+using MrCMS.Entities;
 
 namespace MrCMS.Indexing.Management
 {
+    public abstract class StringFieldDefinition<T1, T2> : FieldDefinition<T1, T2>
+        where T1 : IndexDefinition<T2>
+        where T2 : SystemEntity
+    {
+        protected StringFieldDefinition(ILuceneSettingsService luceneSettingsService, string name,
+            Field.Store store = Field.Store.YES, Field.Index index = Field.Index.ANALYZED)
+            : base(luceneSettingsService, name, store, index)
+        {
+        }
+
+        public override FieldDefinition<T2> GetDefinition
+        {
+            get { return new StringFieldDefinition<T2>(Name, arg => GetValues(arg), Store, Index, Boost); }
+        }
+
+        protected abstract IEnumerable<string> GetValues(T2 obj);
+    }
     public class StringFieldDefinition<T> : FieldDefinition<T>
     {
         public Func<T, IEnumerable<string>> GetValues { get; set; }

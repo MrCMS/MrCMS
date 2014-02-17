@@ -9,11 +9,13 @@ namespace MrCMS.Tasks
 {
     public class LuceneIndexTaskExecutionHandler : ITaskExecutionHandler
     {
+        private readonly IIndexService _indexService;
         private readonly ITaskStatusUpdater _taskStatusUpdater;
         private readonly Site _site;
 
-        public LuceneIndexTaskExecutionHandler(ITaskStatusUpdater taskStatusUpdater, Site site)
+        public LuceneIndexTaskExecutionHandler(IIndexService indexService, ITaskStatusUpdater taskStatusUpdater, Site site)
         {
+            _indexService = indexService;
             _taskStatusUpdater = taskStatusUpdater;
             _site = site;
         }
@@ -37,21 +39,7 @@ namespace MrCMS.Tasks
                     .Distinct(LuceneActionComparison.Comparer)
                     .ToList();
 
-            foreach (var @group in luceneActions.GroupBy(action => action.Type))
-            {
-                var managerBase = IndexService.GetIndexManagerBase(@group.Key, _site);
-
-                IGrouping<Type, LuceneAction> thisGroup = @group;
-                managerBase.Write(writer =>
-                                      {
-                                          foreach (var luceneAction in thisGroup.Where(action => action.Operation == LuceneOperation.Insert).ToList())
-                                              luceneAction.Execute(writer);
-                                          foreach (var luceneAction in thisGroup.Where(action => action.Operation == LuceneOperation.Update).ToList())
-                                              luceneAction.Execute(writer);
-                                          foreach (var luceneAction in thisGroup.Where(action => action.Operation == LuceneOperation.Delete).ToList())
-                                              luceneAction.Execute(writer);
-                                      });
-            }
+            LuceneActionExecutor.PerformActions(_indexService, _site, luceneActions);
             list.ForEach(task => _taskStatusUpdater.SuccessfulCompletion(task));
             return new List<TaskExecutionResult> { new TaskExecutionResult { Success = true } };
         }
