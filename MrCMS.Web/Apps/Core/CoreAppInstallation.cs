@@ -139,7 +139,7 @@ namespace MrCMS.Web.Apps.Core
             widgetService.AddWidget(new TextWidget
                                         {
                                             Name = "Footer text",
-                                            Text = "<p>© Mr CMS 2013</p>",
+                                            Text = string.Format("<p>© Mr CMS {0}</p>",CurrentRequestData.Now.Year),
                                             LayoutArea = layoutAreas.Single(x => x.AreaName == "Footer")
                                         });
 

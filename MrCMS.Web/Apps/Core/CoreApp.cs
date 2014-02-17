@@ -34,6 +34,11 @@ namespace MrCMS.Web.Apps.Core
             get { return "Core"; }
         }
 
+        public override string Version
+        {
+            get { return MrCMSApplication.AssemblyVersion; }
+        }
+
         protected override int InstallOrder
         {
             get { return 1; }
