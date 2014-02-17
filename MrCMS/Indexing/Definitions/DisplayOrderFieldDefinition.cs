@@ -6,7 +6,7 @@ using MrCMS.Indexing.Management;
 
 namespace MrCMS.Indexing.Definitions
 {
-    public class DisplayOrderFieldDefinition : IntegerFieldDefinition<WebpageIndexDefinition, Webpage>
+    public class DisplayOrderFieldDefinition : IntegerFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public DisplayOrderFieldDefinition(ILuceneSettingsService luceneSettingsService)
             : base(luceneSettingsService, "displayorder", index: Field.Index.NOT_ANALYZED)

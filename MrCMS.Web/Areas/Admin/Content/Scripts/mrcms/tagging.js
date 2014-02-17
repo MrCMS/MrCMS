@@ -17,3 +17,10 @@ $(function() {
         allowSpaces: true
     });
 });
+
+function extractLast(term) {
+    return split(term).pop();
+}
+function split(val) {
+    return val.split(/,\s*/);
+}

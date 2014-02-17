@@ -9,6 +9,7 @@ using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Web.Apps.Core.MessageTemplates;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.RegiserAndLogin;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website;
 using Xunit;

@@ -23,6 +23,10 @@ namespace MrCMS.Web.Apps.Articles.Metadata
             get { return true; }
         }
 
+        public override string DefaultLayoutName
+        {
+            get { return "Two Column"; }
+        }
         
         public override bool Sortable
         {

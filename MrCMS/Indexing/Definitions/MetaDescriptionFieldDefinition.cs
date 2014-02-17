@@ -5,7 +5,7 @@ using MrCMS.Indexing.Management;
 
 namespace MrCMS.Indexing.Definitions
 {
-    public class MetaDescriptionFieldDefinition : StringFieldDefinition<WebpageIndexDefinition, Webpage>
+    public class MetaDescriptionFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public MetaDescriptionFieldDefinition(ILuceneSettingsService luceneSettingsService)
             : base(luceneSettingsService, "metadescription")

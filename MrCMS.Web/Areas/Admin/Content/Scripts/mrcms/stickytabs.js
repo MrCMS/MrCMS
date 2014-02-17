@@ -18,7 +18,7 @@
         setActiveTab: function (tab) {
             var key = $(tab).data("stickytabs");
             var currentTab = store.get(key);
-            if (location.hash !== '') {
+            if (location.hash !== '' && $(tab).find(' a[href="' + location.hash + '"]').length > 0) {
                 $(tab).find(' a[href="' + location.hash + '"]').tab('show');
             } else if (currentTab) {
                 $(tab).find('a[href="' + currentTab + '"]').tab('show');

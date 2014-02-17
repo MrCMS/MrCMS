@@ -1,9 +1,8 @@
-﻿@using MrCMS.Entities.Documents
-@using MrCMS.Entities.Documents.Web
+﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
 @using MrCMS.Models.Search
 @using MrCMS.Paging
-@model MrCMS.Models.Search.AdminWebpageSearchQuery
+@model MrCMS.Web.Areas.Admin.Models.Search.AdminWebpageSearchQuery
 @{
     var results = ViewData["results"] as IPagedList<Webpage>;
 }

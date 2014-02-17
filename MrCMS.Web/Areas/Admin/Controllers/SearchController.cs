@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using MrCMS.Models.Search;
+﻿using System.Web.Mvc;
 using MrCMS.Services;
-using MrCMS.Services.Search;
-using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Areas.Admin.Models.Search;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -12,12 +9,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class SearchController : MrCMSAdminController
     {
         private readonly INavigationService _navigationService;
-        private readonly IWebpageSearchService _webpageSearchService;
+        private readonly IAdminWebpageSearchService _adminWebpageSearchService;
 
-        public SearchController(INavigationService navigationService, IWebpageSearchService webpageSearchService)
+        public SearchController(INavigationService navigationService, IAdminWebpageSearchService adminWebpageSearchService)
         {
             _navigationService = navigationService;
-            _webpageSearchService = webpageSearchService;
+            _adminWebpageSearchService = adminWebpageSearchService;
         }
 
         [HttpGet]
@@ -25,7 +22,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             ViewData["parents"] = _navigationService.GetParentsList();
             ViewData["doc-types"] = _navigationService.GetDocumentTypes(model.Type);
-            ViewData["results"] = _webpageSearchService.Search(model);
+            ViewData["results"] = _adminWebpageSearchService.Search(model);
 
             return View(model);
         }
@@ -35,14 +32,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.Term))
                 return Json(new object());
-            return Json(_webpageSearchService.QuickSearch(model), JsonRequestBehavior.AllowGet);
+            return Json(_adminWebpageSearchService.QuickSearch(model), JsonRequestBehavior.AllowGet);
         }
 
         
         public PartialViewResult GetBreadCrumb(int? parentId)
         {
             if (parentId.HasValue)
-                return PartialView(_webpageSearchService.GetBreadCrumb(parentId));
+                return PartialView(_adminWebpageSearchService.GetBreadCrumb(parentId));
             return PartialView(null);
         }
     }

@@ -6,7 +6,7 @@ using MrCMS.Indexing.Management;
 
 namespace MrCMS.Indexing.Definitions
 {
-    public class ParentIdFieldDefinition : StringFieldDefinition<WebpageIndexDefinition, Webpage>
+    public class ParentIdFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public ParentIdFieldDefinition(ILuceneSettingsService luceneSettingsService)
             : base(luceneSettingsService, "parentid", index:Field.Index.NOT_ANALYZED)

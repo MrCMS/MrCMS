@@ -7,7 +7,7 @@ using MrCMS.Indexing.Management;
 
 namespace MrCMS.Indexing.Definitions
 {
-    public class PublishedOnFieldDefinition : StringFieldDefinition<WebpageIndexDefinition, Webpage>
+    public class PublishedOnFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public PublishedOnFieldDefinition(ILuceneSettingsService luceneSettingsService)
             : base(luceneSettingsService, "publishon", index: Field.Index.NOT_ANALYZED)

@@ -5,7 +5,7 @@ using MrCMS.Indexing.Management;
 
 namespace MrCMS.Indexing.Definitions
 {
-    public class MetaKeywordsFieldDefinition : StringFieldDefinition<WebpageIndexDefinition, Webpage>
+    public class MetaKeywordsFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public MetaKeywordsFieldDefinition(ILuceneSettingsService luceneSettingsService)
             : base(luceneSettingsService, "metakeywords")

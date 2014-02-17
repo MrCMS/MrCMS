@@ -7,7 +7,7 @@ using MrCMS.Indexing.Management;
 
 namespace MrCMS.Indexing.Definitions
 {
-    public class BodyContentFieldDefinition : StringFieldDefinition<WebpageIndexDefinition, Webpage>
+    public class BodyContentFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public BodyContentFieldDefinition(ILuceneSettingsService luceneSettingsService)
             : base(luceneSettingsService, "bodycontent")

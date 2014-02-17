@@ -6,7 +6,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Indexing.Definitions
 {
-    public class NameFieldDefinition : StringFieldDefinition<WebpageIndexDefinition, Webpage>
+    public class NameFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public NameFieldDefinition(ILuceneSettingsService luceneSettingsService)
             : base(luceneSettingsService, "name")

@@ -1,17 +1,13 @@
-﻿using System.Linq;
-using FluentAssertions;
-using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
-using MrCMS.Models.Search;
-using MrCMS.Services;
-using MrCMS.Services.Search;
+﻿using MrCMS.Helpers;
 using MrCMS.Tests.Stubs;
+using MrCMS.Web.Areas.Admin.Models.Search;
 using Xunit;
 
 namespace MrCMS.Tests.Services
 {
     public class SearchServiceTests : InMemoryDatabaseTest
     {
+    /*
         [Fact(Skip = "Need to find a way to test lucene indexes")]
         public void SearchService_SearchDocuments_ReturnsAnIEnumerableOfSearchResultModelsWhereTheNameMatches()
         {
@@ -89,9 +85,9 @@ namespace MrCMS.Tests.Services
         //    searchResultModels.First().Name.Should().Be("Test");
         //}
 
-        private WebpageSearchService GetSearchService()
+        private AdminWebpageSearchService GetSearchService()
         {
             return null;// new SearchService( new CurrentSite(CurrentSite));
-        }
+        }*/
     }
 }

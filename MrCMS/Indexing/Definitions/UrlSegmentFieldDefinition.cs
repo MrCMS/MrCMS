@@ -10,7 +10,7 @@ using NHibernate.Mapping;
 
 namespace MrCMS.Indexing.Definitions
 {
-    public class UrlSegmentFieldDefinition : StringFieldDefinition<WebpageIndexDefinition, Webpage>
+    public class UrlSegmentFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public UrlSegmentFieldDefinition(ILuceneSettingsService luceneSettingsService)
             : base(luceneSettingsService, "urlsegment")
@@ -42,7 +42,7 @@ namespace MrCMS.Indexing.Definitions
                                               {
                                                   Entity = (entity as UrlHistory).Webpage,
                                                   Operation = LuceneOperation.Update,
-                                                  IndexDefinition = IndexingHelper.Get<WebpageIndexDefinition>()
+                                                  IndexDefinition = IndexingHelper.Get<AdminWebpageIndexDefinition>()
                                               }
                                           };
                                }

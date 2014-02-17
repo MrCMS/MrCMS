@@ -329,13 +329,9 @@
     <Compile Include="Indexing\Definitions\UrlSegmentFieldDefinition.cs" />
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
-    <Compile Include="Models\Search\QuickSearchResults.cs" />
-    <Compile Include="Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
-    <Compile Include="Services\Search\WebpageSearchService.cs" />
-    <Compile Include="Services\Search\IWebpageSearchService.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />
     <Compile Include="Entities\SystemEntity.cs" />
     <Compile Include="Events\IOnDocumentAdded.cs" />
@@ -531,7 +527,7 @@
     <Compile Include="Services\ILayoutAreaService.cs" />
     <Compile Include="Services\ImageProcessor.cs" />
     <Compile Include="Services\INavigationService.cs" />
-    <Compile Include="Entities\Indexes\WebpageIndexDefinition.cs" />
+    <Compile Include="Entities\Indexes\AdminWebpageIndexDefinition.cs" />
     <Compile Include="Services\IRoleService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
     <Compile Include="Services\ISiteService.cs" />

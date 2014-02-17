@@ -1,21 +1,8 @@
-using System.Collections.Generic;
-using System.Web.Mvc;
-using FakeItEasy;
-using FluentAssertions;
-using MrCMS.Entities.Documents;
-using MrCMS.Models;
-using MrCMS.Services;
-using MrCMS.Services.Search;
-using MrCMS.Web.Apps.Core.Pages;
-using MrCMS.Web.Areas.Admin.Controllers;
-using Xunit;
-using System.Linq;
-
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class SearchControllerTests
     {
-        //private static IWebpageSearchService searchService;
+        //private static IAdminWebpageSearchService searchService;
         //private static INavigationService navigationService;
 
         //[Fact]
@@ -30,7 +17,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
         //private static SearchController GetSearchController()
         //{
-        //    searchService = A.Fake<IWebpageSearchService>();
+        //    searchService = A.Fake<IAdminWebpageSearchService>();
         //    navigationService = A.Fake<INavigationService>();
         //    var searchController = new SearchController(searchService, navigationService, A.Fake<IDocumentService>());
         //    return searchController;

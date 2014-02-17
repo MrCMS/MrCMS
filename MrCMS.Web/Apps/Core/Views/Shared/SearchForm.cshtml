@@ -1,0 +1,10 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Core.Pages
+<form class="navbar-form navbar-left form-inline" role="search" method="GET" action="@(UniquePageHelper.GetUrl<SearchPage>())">
+    <div class="input-group">
+        <input type="text" class="form-control" name="term">
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+        </span>
+    </div>
+</form>

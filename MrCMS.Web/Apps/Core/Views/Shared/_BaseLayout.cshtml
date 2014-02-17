@@ -26,7 +26,6 @@
 
     <nav class="navbar navbar-mrcms" role="navigation">
         <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
@@ -34,31 +33,28 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/"><img src="/Apps/Core/Content/Images/mrcms-hat.gif" style="width: 40px; height: auto;" /> Mr CMS</a>
+                <a class="navbar-brand" href="/">
+                    <img src="/Apps/Core/Content/Images/mrcms-hat.gif" style="width: 40px; height: auto;" />
+                    Mr CMS</a>
             </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                @RenderZone("Main Navigation", allowFrontEndEditing:false)
-                <ul class="nav navbar-nav navbar-right">
+            <div class="collapse navbar-collapse navbar-left" id="bs-example-navbar-collapse-1">
+                @RenderZone("Main Navigation", allowFrontEndEditing: false)
+            </div>
+            <div class="navbar-right">
+                <ul class="nav navbar-nav" id="nav-links-right">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <span class="glyphicon glyphicon-search"></span>
                         </a>
                         <div class="dropdown-menu">
-                            <form class="navbar-form navbar-left" role="search">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Search">
-                                </div>
-                                <button type="submit" class="btn btn-default">Submit</button>
-                            </form>
+                            @Html.Partial("SearchForm")
                         </div>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <span class="glyphicon glyphicon-user"></span>
                         </a>
-                        @RenderZone("Header Right", allowFrontEndEditing:false)
+                        @RenderZone("Header Right", allowFrontEndEditing: false)
                     </li>
                 </ul>
             </div>
@@ -76,13 +72,13 @@
             @RenderZone("Footer")
         </footer>
     </div>
-
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     @{ Html.IncludeScript("~/Apps/Core/Content/bootstrap/js/bootstrap.js");
        Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.min.js");
        Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.unobtrusive.min.js");}
 
-    @Html.RenderScripts()
+    
     @if (CurrentRequestData.CurrentUser != null && CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") && SiteSettings<SiteSettings>().EnableInlineEditing)
     {
         Html.RenderAction("InPageEditor", "InPageAdmin", new { id = Model.Id, area = "Admin" });
@@ -92,5 +88,7 @@
         @RenderSection("JavascriptBlockInclude")
     }
     @Html.Raw(Model.CustomFooterScripts)
+    
+    @Html.RenderScripts()
 </body>
 </html>

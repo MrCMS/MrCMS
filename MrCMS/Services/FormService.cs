@@ -178,7 +178,11 @@ namespace MrCMS.Services
 
         public void ClearFormData(Webpage webpage)
         {
-            _session.Transact(session => webpage.FormPostings.ForEach(session.Delete));
+            _session.Transact(session =>
+                                  {
+                                      webpage.FormPostings.ForEach(session.Delete);
+                                      webpage.FormPostings.Clear();
+                                  });
         }
 
         public byte[] ExportFormData(Webpage webpage)
@@ -208,6 +212,12 @@ namespace MrCMS.Services
 
                 return file;
             }
+        }
+
+        public void DeletePosting(FormPosting posting)
+        {
+            posting.Webpage.FormPostings.Remove(posting);
+            _session.Transact(session => session.Delete(posting));
         }
 
         private static IEnumerable<string> GetHeadersForExport(Webpage webpage)

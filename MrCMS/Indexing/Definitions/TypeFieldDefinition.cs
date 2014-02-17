@@ -5,7 +5,7 @@ using MrCMS.Indexing.Management;
 
 namespace MrCMS.Indexing.Definitions
 {
-    public class TypeFieldDefinition : StringFieldDefinition<WebpageIndexDefinition, Webpage>
+    public class TypeFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public TypeFieldDefinition(ILuceneSettingsService luceneSettingsService)
             : base(luceneSettingsService, "type")
