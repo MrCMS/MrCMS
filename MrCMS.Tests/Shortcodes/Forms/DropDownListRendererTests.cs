@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
 using Xunit;
 
@@ -22,7 +23,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DropDownListRenderer_AppendElement_TagShouldBeOfTypeSelect()
         {
-            var element = _dropDownListRenderer.AppendElement(new DropDownList(), null);
+            var element = _dropDownListRenderer.AppendElement(new DropDownList(), null, FormRenderingType.Bootstrap2);
 
             element.TagName.Should().Be("select");
         }
@@ -30,7 +31,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DropDownListRenderer_AppendElement_NameShouldBeFormPropetyName()
         {
-            var element = _dropDownListRenderer.AppendElement(new DropDownList { Name = "test-name" }, null);
+            var element = _dropDownListRenderer.AppendElement(new DropDownList { Name = "test-name" }, null, FormRenderingType.Bootstrap2);
 
             element.Attributes["name"].Should().Be("test-name");
         }
@@ -38,7 +39,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DropDownListRenderer_AppendElement_IdShouldBeIdIfItIsSet()
         {
-            var element = _dropDownListRenderer.AppendElement(new DropDownList { HtmlId = "test-id" }, null);
+            var element = _dropDownListRenderer.AppendElement(new DropDownList { HtmlId = "test-id" }, null, FormRenderingType.Bootstrap2);
 
             element.Attributes["id"].Should().Be("test-id");
         }
@@ -46,7 +47,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DropDownListRenderer_AppendElement_IdShouldBeNameIfIdIsNotSet()
         {
-            var element = _dropDownListRenderer.AppendElement(new DropDownList { Name = "test-name" }, null);
+            var element = _dropDownListRenderer.AppendElement(new DropDownList { Name = "test-name" }, null, FormRenderingType.Bootstrap2);
 
             element.Attributes["id"].Should().Be("test-name");
         }
@@ -54,7 +55,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DropDownListRenderer_AppendElement_IfItIsRequiredShouldHaveDataValTrue()
         {
-            var element = _dropDownListRenderer.AppendElement(new DropDownList { Required = true }, null);
+            var element = _dropDownListRenderer.AppendElement(new DropDownList { Required = true }, null, FormRenderingType.Bootstrap2);
 
             element.Attributes["data-val"].Should().Be("true");
         }
@@ -62,7 +63,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DropDownListRenderer_AppendElement_ShouldHaveMessageSet()
         {
-            var element = _dropDownListRenderer.AppendElement(new DropDownList { Required = true, Name = "test-name" }, null);
+            var element = _dropDownListRenderer.AppendElement(new DropDownList { Required = true, Name = "test-name" }, null, FormRenderingType.Bootstrap2);
 
             element.Attributes["data-val-required"].Should().Be("The field test-name is required");
         }
@@ -70,7 +71,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DropDownListRenderer_AppendElement_ShouldHaveMessageSetWithLabelTextIfItIsSet()
         {
-            var element = _dropDownListRenderer.AppendElement(new DropDownList { Required = true, Name = "test-name", LabelText = "Test Name" }, null);
+            var element = _dropDownListRenderer.AppendElement(new DropDownList { Required = true, Name = "test-name", LabelText = "Test Name" }, null, FormRenderingType.Bootstrap2);
 
             element.Attributes["data-val-required"].Should().Be("The field Test Name is required");
         }
@@ -78,7 +79,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void DropDownListRenderer_AppendElement_CssClassShouldBeSetIfItExists()
         {
-            var element = _dropDownListRenderer.AppendElement(new DropDownList { CssClass = "css-class"}, null);
+            var element = _dropDownListRenderer.AppendElement(new DropDownList { CssClass = "css-class" }, null, FormRenderingType.Bootstrap2);
 
             element.Attributes["class"].Should().Be("css-class");
         }
@@ -92,7 +93,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
                     new List<FormListOption> { new FormListOption(), new FormListOption(), new FormListOption() }
             };
 
-            _dropDownListRenderer.AppendElement(dropDownList, null);
+            _dropDownListRenderer.AppendElement(dropDownList, null, FormRenderingType.Bootstrap2);
 
             A.CallTo(() => _dropDownListOptionRenderer.GetOption(A<FormListOption>.Ignored, null))
              .MustHaveHappened(Repeated.Exactly.Times(3));
@@ -109,7 +110,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
 
             A.CallTo(() => _dropDownListOptionRenderer.GetOption(A<FormListOption>.Ignored, null))
              .Returns(new TagBuilder("option"));
-            var appendElement = _dropDownListRenderer.AppendElement(dropDownList, null);
+            var appendElement = _dropDownListRenderer.AppendElement(dropDownList, null, FormRenderingType.Bootstrap2);
 
             appendElement.InnerHtml.Should().Be("<option></option>");
         }

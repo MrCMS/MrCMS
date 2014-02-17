@@ -1,32 +1,27 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Shortcodes.Forms;
-using MrCMS.Website;
-using Ninject.MockingKernel;
 using Xunit;
 
 namespace MrCMS.Tests.Shortcodes.Forms
 {
-    public class ElementRendererManagerTests
+    public class ElementRendererManagerTests :MrCMSTest
     {
-        private ElementRendererManager _elementRendererManager;
+        private readonly ElementRendererManager _elementRendererManager;
 
         public ElementRendererManagerTests()
         {
-            _elementRendererManager = new ElementRendererManager();
+            _elementRendererManager = new ElementRendererManager(Kernel);
         }
 
         [Fact]
         public void ElementRendererManager_GetElementRenderer_ShouldReturnTheResultOfTheTypeOfAPropertyFromTheKernel()
         {
-            var mockingKernel = new MockingKernel();
             var formElementRenderer = A.Fake<IFormElementRenderer<TextBox>>();
-            mockingKernel.Bind<IFormElementRenderer<TextBox>>()
+            Kernel.Bind<IFormElementRenderer<TextBox>>()
                          .ToMethod(context => formElementRenderer)
                          .InSingletonScope();
-            MrCMSApplication.OverrideKernel(mockingKernel);
 
             var renderer = _elementRendererManager.GetElementRenderer(new TextBox());
 

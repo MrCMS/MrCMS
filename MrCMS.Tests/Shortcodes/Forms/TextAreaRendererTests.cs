@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using MrCMS.Settings;
 using MrCMS.Shortcodes.Forms;
 using Xunit;
 
@@ -20,7 +21,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         [Fact]
         public void TextAreaRenderer_AppendElement_ShouldHaveTagNameOfTextArea()
         {
-            var appendElement = _textBoxRenderer.AppendElement(new TextArea(), _existingValue);
+            var appendElement = _textBoxRenderer.AppendElement(new TextArea(), _existingValue, FormRenderingType.Bootstrap2);
 
             appendElement.TagName.Should().Be("textarea");
         }
@@ -29,7 +30,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextAreaRenderer_AppendElement_ShouldHaveNameOfTextAreaName()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextArea { Name = "test name" }, _existingValue);
+                new TextArea { Name = "test name" }, _existingValue, FormRenderingType.Bootstrap2);
 
             appendElement.Attributes["name"].Should().Be("test name");
         }
@@ -38,7 +39,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextAreaRenderer_AppendElement_ShouldSetHtmlIdIfItIsSet()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextArea { HtmlId = "test-id" }, _existingValue);
+                new TextArea { HtmlId = "test-id" }, _existingValue, FormRenderingType.Bootstrap2);
 
             appendElement.Attributes["id"].Should().Be("test-id");
         }
@@ -53,7 +54,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextAreaRenderer_AppendElement_ShouldAppendDataValTrueIfIsRequired()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextArea { Required = true }, _existingValue);
+                new TextArea { Required = true }, _existingValue, FormRenderingType.Bootstrap2);
 
             appendElement.Attributes["data-val"].Should().Be("true");
         }
@@ -62,7 +63,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextAreaRenderer_AppendElement_ShouldAppendDataValRequiredIfIsRequiredUsingTheLabelText()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextArea { Required = true, LabelText = "Test Label" }, _existingValue);
+                new TextArea { Required = true, LabelText = "Test Label" }, _existingValue, FormRenderingType.Bootstrap2);
 
             appendElement.Attributes["data-val-required"].Should().Be("The field Test Label is required");
         }
@@ -71,7 +72,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextAreaRenderer_AppendElement_ShouldAppendDataValRequiredIfIsRequiredUsingTheNameIfLabelTextIsMissing()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextArea { Required = true, Name = "test-name" }, _existingValue);
+                new TextArea { Required = true, Name = "test-name" }, _existingValue, FormRenderingType.Bootstrap2);
 
             appendElement.Attributes["data-val-required"].Should().Be("The field test-name is required");
         }
@@ -80,7 +81,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         public void TextAreaRenderer_AppendElement_ShouldAppendNeitherDataAttributesIfRequiredIsFalse()
         {
             var appendElement = _textBoxRenderer.AppendElement(
-                new TextArea { Required = false }, _existingValue);
+                new TextArea { Required = false }, _existingValue, FormRenderingType.Bootstrap2);
 
             appendElement.Attributes.ContainsKey("data-val").Should().BeFalse();
             appendElement.Attributes.ContainsKey("data-val-required").Should().BeFalse();

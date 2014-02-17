@@ -1,22 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Configuration;
 using System.Reflection;
-using System.Web;
 using Elmah;
-using FakeItEasy;
 using Iesi.Collections.Generic;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.IoC;
-using MrCMS.Services;
 using MrCMS.Settings;
-using MrCMS.Tasks;
 using MrCMS.Tests.Stubs;
 using MrCMS.Website;
 using NHibernate;
@@ -29,14 +22,17 @@ namespace MrCMS.Tests
 {
     public abstract class MrCMSTest : IDisposable
     {
+        private readonly MockingKernel _kernel;
 
         protected MrCMSTest()
         {
-            var mockingKernel = new MockingKernel();
-            mockingKernel.Load(new ContextModule());
-            MrCMSApplication.OverrideKernel(mockingKernel);
+            _kernel = new MockingKernel();
+            Kernel.Load(new ContextModule());
+            MrCMSApplication.OverrideKernel(Kernel);
             CurrentRequestData.SiteSettings = new SiteSettings();
         }
+
+        public MockingKernel Kernel { get { return _kernel; } }
 
         public virtual void Dispose()
         {

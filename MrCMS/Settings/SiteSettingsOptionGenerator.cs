@@ -11,6 +11,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Shortcodes.Forms;
 using NHibernate;
 
 namespace MrCMS.Settings
@@ -39,7 +40,7 @@ namespace MrCMS.Settings
                 list.BuildSelectItemList(
                     category => category.Name,
                     category => category.Id.ToString(CultureInfo.InvariantCulture),
-                    category => category.Id == categoryId, (string) null);
+                    category => category.Id == categoryId, (string)null);
         }
 
         public virtual List<SelectListItem> GetLayoutOptions(ISession session, Site site, int? selectedLayoutId)
@@ -76,6 +77,15 @@ namespace MrCMS.Settings
             return TimeZoneInfo.GetSystemTimeZones().BuildSelectItemList(info => info.DisplayName,
                                                                   info => info.Id, info => info.Id == timeZone,
                                                                   emptyItem: null);
+        }
+
+        public virtual List<SelectListItem> GetFormRendererOptions(FormRenderingType defaultFormRendererType)
+        {
+            return Enum.GetValues(typeof (FormRenderingType)).Cast<FormRenderingType>()
+                .BuildSelectItemList(type => type.ToString().BreakUpString(),
+                    type => type.ToString(),
+                    type => type == defaultFormRendererType,
+                    emptyItem: null);
         }
     }
 }

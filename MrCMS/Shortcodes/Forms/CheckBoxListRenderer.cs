@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using System.Linq;
+using MrCMS.Settings;
 
 namespace MrCMS.Shortcodes.Forms
 {
@@ -11,7 +12,7 @@ namespace MrCMS.Shortcodes.Forms
     {
         public const string CbHiddenValue = "cb-hidden-value";
 
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var values = existingValue == null
                              ? new List<string>()
@@ -44,7 +45,17 @@ namespace MrCMS.Shortcodes.Forms
                 checkboxBuilder.Attributes["name"] = formProperty.Name;
                 checkboxBuilder.Attributes["id"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
                 cbLabelBuilder.InnerHtml += checkboxBuilder.ToString();
-                tagBuilder.InnerHtml += cbLabelBuilder.ToString();
+                if (formRenderingType == FormRenderingType.Bootstrap3)
+                {
+                    var checkboxContainer = new TagBuilder("div");
+                    checkboxContainer.AddCssClass("checkbox");
+                    checkboxContainer.InnerHtml += cbLabelBuilder.ToString();
+                    tagBuilder.InnerHtml += checkboxContainer;
+                }
+                else
+                {
+                    tagBuilder.InnerHtml += cbLabelBuilder;
+                }
             }
 
             var cbHiddenBuilder = new TagBuilder("input");

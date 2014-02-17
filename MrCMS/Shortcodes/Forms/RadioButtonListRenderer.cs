@@ -4,16 +4,17 @@ using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using MrCMS.Settings;
 
 namespace MrCMS.Shortcodes.Forms
 {
     public class RadioButtonListRenderer : IFormElementRenderer<RadioButtonList>
     {
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var values = existingValue == null
                              ? new List<string>()
-                             : existingValue.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
+                             : existingValue.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
                                             .Select(s => s.Trim())
                                             .ToList();
 
@@ -41,7 +42,17 @@ namespace MrCMS.Shortcodes.Forms
                 checkboxBuilder.Attributes["name"] = formProperty.Name;
                 checkboxBuilder.Attributes["id"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
                 cbLabelBuilder.InnerHtml += checkboxBuilder.ToString();
-                tagBuilder.InnerHtml += cbLabelBuilder.ToString();
+                if (formRenderingType == FormRenderingType.Bootstrap3)
+                {
+                    var radioContainer = new TagBuilder("div");
+                    radioContainer.AddCssClass("radio");
+                    radioContainer.InnerHtml += cbLabelBuilder.ToString();
+                    tagBuilder.InnerHtml += radioContainer;
+                }
+                else
+                {
+                    tagBuilder.InnerHtml += cbLabelBuilder;
+                }
             }
             return tagBuilder;
         }

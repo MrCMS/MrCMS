@@ -100,7 +100,7 @@ namespace MrCMS.Shortcodes.Forms
                            var renderer = _elementRendererManager.GetElementRenderer(formProperty);
 
                            return
-                               renderer.AppendElement(formProperty, existingValue)
+                               renderer.AppendElement(formProperty, existingValue, _siteSettings.FormRendererType)
                                        .ToString(renderer.IsSelfClosing
                                                      ? TagRenderMode.SelfClosing
                                                      : TagRenderMode.Normal);

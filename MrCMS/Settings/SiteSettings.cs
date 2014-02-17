@@ -118,7 +118,7 @@ namespace MrCMS.Settings
             get
             {
                 if (string.IsNullOrWhiteSpace(AllowedAdminIPs)) yield break;
-                string[] ips = AllowedAdminIPs.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
+                string[] ips = AllowedAdminIPs.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string ip in ips)
                 {
                     IPAddress address;
@@ -132,6 +132,10 @@ namespace MrCMS.Settings
         {
             get { return true; }
         }
+
+        [DisplayName("Default Form Renderer Type")]
+        [DropDownSelection("DefaultFormRenderer")]
+        public FormRenderingType FormRendererType { get; set; }
 
         public void SetSiteSettingsOptionGeneratorOverride(SiteSettingsOptionGenerator siteSettingsOptionGenerator)
         {
@@ -153,6 +157,8 @@ namespace MrCMS.Settings
             viewDataDictionary["UiCultures"] = SiteSettingsOptionGenerator.GetUiCultures(UICulture);
 
             viewDataDictionary["TimeZones"] = SiteSettingsOptionGenerator.GetTimeZones(TimeZone);
+
+            viewDataDictionary["DefaultFormRenderer"] = SiteSettingsOptionGenerator.GetFormRendererOptions(FormRendererType);
         }
 
         public TagBuilder GetHoneypot()
@@ -163,6 +169,12 @@ namespace MrCMS.Settings
             honeyPot.Attributes["name"] = HoneypotFieldName;
             return honeyPot;
         }
+    }
+
+    public enum FormRenderingType
+    {
+        Bootstrap2,
+        Bootstrap3
     }
 
     public static class SettingDefaults

@@ -14,6 +14,7 @@ using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Querying;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Shortcodes.Forms;
 using MrCMS.Website;
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
