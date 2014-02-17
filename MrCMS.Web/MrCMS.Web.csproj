@@ -265,6 +265,7 @@
     <Compile Include="Apps\Core\Models\RegiserAndLogin\LoginModel.cs" />
     <Compile Include="Apps\Core\Models\RegiserAndLogin\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\RegiserAndLogin\ResetPasswordViewModel.cs" />
+    <Compile Include="Areas\Admin\Controllers\ClearCachesController.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
@@ -344,7 +345,9 @@
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
     <Compile Include="Areas\Admin\Models\Dashboard.cs" />
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
+    <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminWebpageSearchService.cs" />
+    <Compile Include="Areas\Admin\Services\IClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
@@ -1384,6 +1387,7 @@
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\UserAccountPage.cshtml" />
     <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\README.md" />
     <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\css\blueimp-gallery.min.css" />
+    <Content Include="Areas\Admin\Views\ClearCaches\Index.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

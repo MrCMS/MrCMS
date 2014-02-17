@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Web.Caching;
 using MrCMS.Helpers;
 
@@ -29,6 +30,15 @@ namespace MrCMS.Website.Caching
                 return o.To<T>();
             }
             return (T) (object) null;
+        }
+
+        public void Clear()
+        {
+            IDictionaryEnumerator enumerator = _cache.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                _cache.Remove(enumerator.Key.ToString());
+            }
         }
     }
 }

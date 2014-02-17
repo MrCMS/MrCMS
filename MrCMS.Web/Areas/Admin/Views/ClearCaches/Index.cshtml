@@ -1,0 +1,24 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Clear Caches";
+var cleared=    ViewData["cleared"] is bool && (bool) ViewData["cleared"];
+}
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Clear Caches
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn btn-primary" value="Clear"/>
+            </span>
+        </legend>
+        <div class="row-fluid">
+           @if (cleared)
+           {
+               <div class="alert alert-success">
+                   Caches successfully cleared.
+               </div>
+           }
+        </div>
+    </fieldset>
+}
