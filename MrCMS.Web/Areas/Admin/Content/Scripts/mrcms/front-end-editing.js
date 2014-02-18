@@ -229,6 +229,7 @@ $(function () {
             type: 'iframe',
             autoSize: true,
             minHeight: 400,
+            minWidth: 500,
             padding: 0,
             afterShow: function () {
                 $(".fancybox-iframe").contents().find('form').attr('target', '_parent').css('margin', '0');

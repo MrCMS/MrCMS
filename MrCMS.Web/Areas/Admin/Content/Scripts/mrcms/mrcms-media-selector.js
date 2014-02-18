@@ -203,10 +203,10 @@ var MediaSelectorWrapper = function (el, options) {
             var value = this.getValue();
             if (value !== null && value !== '') {
                 removeButton.show();
-                buttonHolder.addClass('btn-group');
+                buttonHolder.addClass('btn-group btn-group-vertical');
             } else {
                 removeButton.hide();
-                buttonHolder.removeClass('btn-group');
+                buttonHolder.removeClass('btn-group btn-group-vertical');
             }
             var newPreview = getPreview();
             preview.replaceWith(newPreview);
@@ -234,10 +234,10 @@ var MediaSelectorWrapper = function (el, options) {
 MediaSelectorWrapper.defaults =
 {
     noImageSelectedImage: '/Areas/Admin/Content/Images/no-media-selected.jpg',
-    previewStyle: 'max-height: 200px; max-width:200px;',
-    selectClasses: 'btn btn-success',
+    previewStyle: 'max-height: 120px; max-width:120px;',
+    selectClasses: 'btn btn-success ',
     selectMessage: 'Select media...',
-    removeClasses: 'btn btn-danger',
+    removeClasses: 'btn btn-danger ',
     removeMessage: 'Remove media...'
 };
 MediaSelector.defaults =
