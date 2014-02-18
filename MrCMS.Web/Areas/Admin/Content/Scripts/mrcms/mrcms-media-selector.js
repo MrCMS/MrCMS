@@ -1,9 +1,7 @@
 ﻿var MediaSelector = function (options) {
-
     var element,
         settings = jQuery.extend(MediaSelector.defaults, options),
         self,
-        onSelected,
         timer,
         mediaUploader,
         $;
@@ -123,6 +121,9 @@
             $(element).on('click', '[data-action="select"]', selected);
 
             return self;
+        },
+        getSettings: function () {
+            return settings;
         }
     };
 };
@@ -135,7 +136,6 @@ var MediaSelectorWrapper = function (el, options) {
         removeButton,
         selectButton,
         buttonHolder,
-        mediaSelector,
         eventsRegistered = false;
     var getValue = function () {
         return element.val();
@@ -181,9 +181,9 @@ var MediaSelectorWrapper = function (el, options) {
                 removeButton = $('<button>').addClass(settings.removeClasses).html(settings.removeMessage).attr('data-media', 'remove')
                     .appendTo(buttonHolder);
                 element.hide().after(para);
-                this.update();
-                this.registerEvents();
-                mediaSelector = new MediaSelector({ onSelected: this.onSelected });
+                self.update();
+                self.registerEvents();
+
             }
         },
         registerEvents: function () {
@@ -220,6 +220,7 @@ var MediaSelectorWrapper = function (el, options) {
             self.update();
         },
         show: function () {
+            var mediaSelector = new MediaSelector({ onSelected: self.onSelected, element: element, name: $(element).attr('id') });
             mediaSelector.show($);
         },
         reset: function () {
@@ -261,7 +262,7 @@ MediaSelector.defaults =
             return $.error('Method ' + method + ' does not exist on mediaselector');
         }
     };
-    var settings, methods = {
+    var methods = {
         init: function (options) {
             return this.each(function () {
                 var self = $(this);
@@ -269,8 +270,6 @@ MediaSelector.defaults =
                 wrapper.init();
                 $.data(self, 'media-selector-wrapper', wrapper);
             });
-        },
-        show: function () {
         }
     };
 
@@ -286,7 +285,7 @@ MediaSelector.defaults =
             return $.error('Method ' + method + ' does not exist on mediaselector');
         }
     };
-    var settings, methods = {
+    var methods = {
         init: function (options) {
             return this.each(function () {
                 var self = $(this);
@@ -297,9 +296,6 @@ MediaSelector.defaults =
                     parent.$.data(self[0], 'media-selector', selector);
                 }
             });
-        },
-        show: function () {
-
         }
     };
 })(jQuery);
