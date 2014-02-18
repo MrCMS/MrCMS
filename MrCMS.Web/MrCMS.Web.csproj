@@ -265,6 +265,7 @@
     <Compile Include="Apps\Core\Models\RegiserAndLogin\LoginModel.cs" />
     <Compile Include="Apps\Core\Models\RegiserAndLogin\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\RegiserAndLogin\ResetPasswordViewModel.cs" />
+    <Compile Include="Apps\Core\Widgets\Slider.cs" />
     <Compile Include="Areas\Admin\Controllers\ClearCachesController.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
@@ -1388,6 +1389,8 @@
     <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\README.md" />
     <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\css\blueimp-gallery.min.css" />
     <Content Include="Areas\Admin\Views\ClearCaches\Index.cshtml" />
+    <Content Include="Apps\Core\Views\Widgets\Slider.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\Slider.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
