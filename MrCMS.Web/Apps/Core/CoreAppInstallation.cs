@@ -209,14 +209,14 @@ namespace MrCMS.Web.Apps.Core
                                       };
             documentService.AddDocument(userAccountPage);
 
-            var registerPage = new RegisterPage()
-                                   {
-                                       Name = "Register",
-                                       UrlSegment = "register",
-                                       CreatedOn = CurrentRequestData.Now,
-                                       Site = site,
-                                       PublishOn = CurrentRequestData.Now
-                                   };
+            var registerPage = new RegisterPage
+                               {
+                                   Name = "Register",
+                                   UrlSegment = "register",
+                                   CreatedOn = CurrentRequestData.Now,
+                                   Site = site,
+                                   PublishOn = CurrentRequestData.Now
+                               };
             documentService.AddDocument(registerPage);
 
             var webpages = session.QueryOver<Webpage>().List();
@@ -278,7 +278,7 @@ namespace MrCMS.Web.Apps.Core
             user.Roles = new HashedSet<UserRole> { adminUserRole };
             adminUserRole.Users = new HashedSet<User> { user };
             roleService.SaveRole(adminUserRole);
-            
+
             var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
             var authorisationService = new AuthorisationService(authenticationManager, userManager);
             authorisationService.Logout();
