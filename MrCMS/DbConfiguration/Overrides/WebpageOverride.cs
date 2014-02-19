@@ -35,21 +35,4 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.HasManyToMany(webpage => webpage.FrontEndAllowedRoles).Table("FrontEndWebpageRoles").ParentKeyColumn("WebpageId");
         }
     }
-
-    public class FormPostingOverride : IAutoMappingOverride<FormPosting>
-    {
-        public void Override(AutoMapping<FormPosting> mapping)
-        {
-            mapping.HasMany(posting => posting.FormValues).Cascade.All();
-        }
-    }
-
-    public class FormValueOverride : IAutoMappingOverride<FormValue>
-    {
-        public void Override(AutoMapping<FormValue> mapping)
-        {
-            mapping.Map(posting => posting.Value).CustomType<VarcharMax>().Length(4001);
-            mapping.Map(posting => posting.Key).CustomType<VarcharMax>().Length(4001);
-        }
-    }
 }

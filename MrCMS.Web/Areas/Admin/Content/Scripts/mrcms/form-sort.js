@@ -23,7 +23,7 @@
             success: function (result) {
             },
             error: function (result) {
-                alert("Could not sort fields");
+                //alert("Could not sort fields");
             }
         });
     });

@@ -6,7 +6,7 @@ namespace MrCMS.Shortcodes.Forms
 {
     public class TextAreaRenderer : IFormElementRenderer<TextArea>
     {
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        public TagBuilder AppendElement(TextArea formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var tagBuilder = new TagBuilder("textarea");
             tagBuilder.Attributes["name"] = formProperty.Name;
@@ -27,6 +27,11 @@ namespace MrCMS.Shortcodes.Forms
                 tagBuilder.AddCssClass("form-control");
             tagBuilder.InnerHtml = existingValue;
             return tagBuilder;
+        }
+
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        {
+            return AppendElement(formProperty as TextArea, existingValue, formRenderingType);
         }
 
         public bool IsSelfClosing { get { return false; } }

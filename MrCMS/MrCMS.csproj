@@ -272,7 +272,11 @@
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentVersionOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\FormListOptionOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\FormPostingOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\FormPropertyOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\FormPropertyWithOptionsOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\FormValueOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\LayoutAreaOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\LayoutOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaCategoryOverride.cs" />

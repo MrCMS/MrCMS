@@ -2,6 +2,7 @@
 using FluentNHibernate.Automapping.Alterations;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using NHibernate.Mapping;
 
 namespace MrCMS.DbConfiguration.Overrides
 {

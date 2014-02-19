@@ -1,5 +1,4 @@
 using System.Web.Mvc;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Settings;
 
@@ -7,7 +6,7 @@ namespace MrCMS.Shortcodes.Forms
 {
     public class TextBoxRenderer : IFormElementRenderer<TextBox>
     {
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        public TagBuilder AppendElement(TextBox formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var tagBuilder = new TagBuilder("input");
             tagBuilder.Attributes["type"] = "text";
@@ -30,6 +29,11 @@ namespace MrCMS.Shortcodes.Forms
 
             tagBuilder.Attributes["value"] = existingValue;
             return tagBuilder;
+        }
+
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        {
+            return AppendElement(formProperty as TextBox, existingValue, formRenderingType);
         }
 
         public bool IsSelfClosing { get { return true; } }

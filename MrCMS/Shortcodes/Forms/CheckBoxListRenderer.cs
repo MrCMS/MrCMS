@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using System.Linq;
 using MrCMS.Settings;
@@ -12,13 +11,13 @@ namespace MrCMS.Shortcodes.Forms
     {
         public const string CbHiddenValue = "cb-hidden-value";
 
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        public TagBuilder AppendElement(CheckboxList formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var values = existingValue == null
-                             ? new List<string>()
-                             : existingValue.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-                                            .Select(s => s.Trim())
-                                            .ToList();
+                                ? new List<string>()
+                                : existingValue.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                                               .Select(s => s.Trim())
+                                               .ToList();
             values.Remove(CbHiddenValue);
 
             var tagBuilder = new TagBuilder("div");
@@ -76,6 +75,11 @@ namespace MrCMS.Shortcodes.Forms
             tagBuilder.InnerHtml += cbHiddenBuilder.ToString();
 
             return tagBuilder;
+        }
+
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        {
+            return AppendElement(formProperty as CheckboxList, existingValue, formRenderingType);
         }
 
         public bool IsSelfClosing { get { return false; } }
