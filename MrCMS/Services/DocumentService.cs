@@ -113,9 +113,12 @@ namespace MrCMS.Services
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
             IEnumerable<T> list = parent != null
-                                      ? parent.Children.OfType<T>()
-                                      : _session.QueryOver<T>().Where(arg => arg.Parent == null).Cacheable().List();
-            list = list.Where(arg => arg.Site == _currentSite);
+                ? parent.Children.OfType<T>()
+                : _session.QueryOver<T>()
+                    .Where(arg => arg.Parent == null && arg.Site.Id == _currentSite.Id)
+                    .OrderBy(arg => arg.DisplayOrder)
+                    .Asc.Cacheable()
+                    .List();
             return list;
         }
 
