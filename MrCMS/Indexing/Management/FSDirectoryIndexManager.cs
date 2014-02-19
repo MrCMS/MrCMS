@@ -17,9 +17,9 @@ namespace MrCMS.Indexing.Management
         {
         }
 
-        protected override Directory GetDirectory()
+        protected override Directory GetDirectory(Site site)
         {
-            return _directory = _directory ?? FSDirectory.Open(new DirectoryInfo(Definition.GetLocation(CurrentSite)));
+            return _directory = _directory ?? FSDirectory.Open(new DirectoryInfo(Definition.GetLocation(site)));
         }
     }
 }
