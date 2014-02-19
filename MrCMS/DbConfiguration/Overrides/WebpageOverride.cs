@@ -40,7 +40,7 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<FormPosting> mapping)
         {
-            mapping.HasMany(posting => posting.FormValues).Cascade.Delete();
+            mapping.HasMany(posting => posting.FormValues).Cascade.All();
         }
     }
 

@@ -16,7 +16,7 @@ namespace MrCMS.Shortcodes.Forms
         {
             var values = existingValue == null
                              ? new List<string>()
-                             : existingValue.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
+                             : existingValue.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
                                             .Select(s => s.Trim())
                                             .ToList();
             values.Remove(CbHiddenValue);
@@ -41,6 +41,17 @@ namespace MrCMS.Shortcodes.Forms
                 }
                 else if (checkbox.Selected)
                     checkboxBuilder.Attributes["checked"] = "checked";
+
+                if (formProperty.Required)
+                {
+                    var requiredMessage = string.Format("The field {0} is required",
+                        string.IsNullOrWhiteSpace(formProperty.LabelText)
+                            ? formProperty.Name
+                            : formProperty.LabelText);
+                    checkboxBuilder.Attributes["data-val"] = "true";
+                    checkboxBuilder.Attributes["data-val-mandatory"] = requiredMessage;
+                    checkboxBuilder.Attributes["data-val-required"] = requiredMessage;
+                }
 
                 checkboxBuilder.Attributes["name"] = formProperty.Name;
                 checkboxBuilder.Attributes["id"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);

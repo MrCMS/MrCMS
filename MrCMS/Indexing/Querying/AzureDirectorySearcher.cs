@@ -1,4 +1,5 @@
-﻿using Lucene.Net.Store;
+﻿using System;
+using Lucene.Net.Store;
 using Lucene.Net.Store.Azure;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
@@ -25,10 +26,18 @@ namespace MrCMS.Indexing.Querying
 
         protected override Directory GetDirectory(Site currentSite)
         {
-            return
-                _directory =
-                _directory ??
-                new AzureDirectory(_azureFileSystem.StorageAccount, "Indexes-" + IndexFolderName, new RAMDirectory());
+            var catalog = "Indexes-" + IndexFolderName.Replace(" ","");
+            try
+            {
+                return
+                    _directory =
+                        _directory ??
+                        new AzureDirectory(_azureFileSystem.StorageAccount, catalog, new RAMDirectory());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Tried to create catalog " + catalog, ex);
+            }
         }
     }
 }
