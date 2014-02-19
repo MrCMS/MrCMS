@@ -1,6 +1,6 @@
 ﻿
-$(function() {
-    $("#parent").select2({
-        placeholder: "Root",
+$(function () {
+    $("#parentVal").select2({
+      
     });
 });

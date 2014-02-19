@@ -315,11 +315,11 @@ namespace MrCMS.Services
             return _session.Get<DocumentVersion>(id);
         }
 
-        public void SetParent(Document document, int? parentId)
+        public void SetParent(Document document, int? parentVal)
         {
             if (document == null) return;
 
-            var parent = parentId.HasValue ? GetDocument<Webpage>(parentId.Value) : null;
+            var parent = parentVal.HasValue ? GetDocument<Webpage>(parentVal.Value) : null;
 
             document.SetParent(parent);
 
@@ -427,12 +427,19 @@ namespace MrCMS.Services
 
             foreach (var metadata in validParentTypes)
             {
-                potentialParents.AddRange(_session.CreateCriteria(metadata.Type).SetCacheable(true).List<Webpage>());
+                potentialParents.AddRange(
+                    _session.CreateCriteria(metadata.Type)
+                        .Add(Restrictions.Eq(Projections.Property("Site.Id"), _currentSite.Id))
+                        .SetCacheable(true)
+                        .List<Webpage>());
             }
 
-            var result = potentialParents.Distinct().Where(page => !page.ActivePages.Contains(webpage) && page.Site.Id == _currentSite.Id).OrderBy(x => x.Name)
-                                                        .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
-                                                                             page => page.Id.ToString(), emptyItem: null);
+            var result = potentialParents.Distinct()
+                .Where(page => !page.ActivePages.Contains(webpage))
+                .OrderBy(x => x.Name)
+                .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
+                    page => page.Id.ToString(),
+                    webpage1 => webpage.Parent != null && webpage.ParentId == webpage1.Id, emptyItem: null);
 
             if (!webpage.GetMetadata().RequiresParent)
                 result.Insert(0, SelectListItemHelper.EmptyItem("Root"));

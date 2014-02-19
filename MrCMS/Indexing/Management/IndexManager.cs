@@ -39,20 +39,20 @@ namespace MrCMS.Indexing.Management
         where TEntity : SystemEntity
         where TDefinition : IndexDefinition<TEntity>
     {
-        protected readonly Site CurrentSite;
+        private readonly Site _currentSite;
         private readonly TDefinition _definition;
 
         protected IndexManager(Site currentSite, TDefinition definition)
         {
-            CurrentSite = currentSite;
+            _currentSite = currentSite;
             _definition = definition;
         }
 
-        protected abstract Directory GetDirectory();
+        protected abstract Directory GetDirectory(Site site);
 
         public bool IndexExists
         {
-            get { return IndexReader.IndexExists(GetDirectory()); }
+            get { return IndexReader.IndexExists(GetDirectory(_currentSite)); }
         }
 
         public DateTime? LastModified
@@ -62,7 +62,7 @@ namespace MrCMS.Indexing.Management
                 if (!IndexExists)
                     return null;
 
-                var lastModified = IndexReader.LastModified(GetDirectory());
+                var lastModified = IndexReader.LastModified(GetDirectory(_currentSite));
                 try
                 {
                     return new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
@@ -81,7 +81,7 @@ namespace MrCMS.Indexing.Management
                 if (!IndexExists)
                     return null;
 
-                return IndexReader.Open(GetDirectory(), true).NumDocs();
+                return IndexReader.Open(GetDirectory(_currentSite), true).NumDocs();
             }
         }
 
@@ -96,7 +96,7 @@ namespace MrCMS.Indexing.Management
         private void Write(Action<IndexWriter> writeFunc, bool recreateIndex)
         {
             using (
-                var indexWriter = new IndexWriter(GetDirectory(), Definition.GetAnalyser(), recreateIndex,
+                var indexWriter = new IndexWriter(GetDirectory(_currentSite), Definition.GetAnalyser(), recreateIndex,
                                                   IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 writeFunc(indexWriter);
@@ -105,7 +105,7 @@ namespace MrCMS.Indexing.Management
 
         public IndexCreationResult CreateIndex()
         {
-            var fsDirectory = GetDirectory();
+            var fsDirectory = GetDirectory(_currentSite);
             var indexExists = IndexReader.IndexExists(fsDirectory);
             if (indexExists)
                 return IndexCreationResult.AlreadyExists;
@@ -193,7 +193,7 @@ namespace MrCMS.Indexing.Management
         {
             return IndexResult.GetResult(() => Write(writer =>
                                                          {
-                                                             using (var indexSearcher = new IndexSearcher(GetDirectory(), true))
+                                                             using (var indexSearcher = new IndexSearcher(GetDirectory(_currentSite), true))
                                                              {
                                                                  var topDocs = indexSearcher.Search(new TermQuery(Definition.GetIndex(entity)), int.MaxValue);
                                                                  if (!topDocs.ScoreDocs.Any())

@@ -331,6 +331,7 @@
     <Compile Include="Indexing\Definitions\PublishedOnFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\TypeFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\UrlSegmentFieldDefinition.cs" />
+    <Compile Include="Indexing\Management\AzureDirectoryHelper.cs" />
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />

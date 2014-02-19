@@ -30,7 +30,7 @@ namespace MrCMS.Indexing.Querying
             _siteSettings = siteSettings;
         }
 
-        protected abstract Directory GetDirectory(Site currentSite);
+        protected abstract Directory GetDirectory(Site site);
 
         public IPagedList<TEntity> Search(Query query, int pageNumber, int? pageSize = null, Filter filter = null, Sort sort = null)
         {

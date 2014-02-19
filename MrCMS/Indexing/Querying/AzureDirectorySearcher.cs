@@ -24,9 +24,9 @@ namespace MrCMS.Indexing.Querying
             _azureFileSystem = azureFileSystem;
         }
 
-        protected override Directory GetDirectory(Site currentSite)
+        protected override Directory GetDirectory(Site site)
         {
-            var catalog = "Indexes-" + IndexFolderName.Replace(" ","");
+            var catalog = AzureDirectoryHelper.GetAzureCatalogName(site, IndexFolderName);
             try
             {
                 return

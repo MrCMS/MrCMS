@@ -1,17 +1,23 @@
-﻿@using MrCMS.Paging
+﻿@using MrCMS.Helpers
+@using MrCMS.Paging
 @using MrCMS.Settings
 @using MrCMS.Tasks
-@using MrCMS.Helpers
-@model QueuedTaskSearchQuery
+@model MrCMS.Tasks.QueuedTaskSearchQuery
 @{
     ViewBag.Title = "Scheduled Tasks";
-    var scheduledTasks = ViewData["scheduled-tasks"] as List<ScheduledTask> ?? new List<ScheduledTask>();
-    var tasks = ViewData["tasks"] as IPagedList<QueuedTask> ?? PagedList<QueuedTask>.Empty;
+    List<ScheduledTask> scheduledTasks = ViewData["scheduled-tasks"] as List<ScheduledTask> ?? new List<ScheduledTask>();
+    IPagedList<QueuedTask> tasks = ViewData["tasks"] as IPagedList<QueuedTask> ?? PagedList<QueuedTask>.Empty;
+    var siteSettings = SiteSettings<SiteSettings>();
+    string executionUrl = Url.Action("Execute", "TaskExecution", new RouteValueDictionary {{"area", ""}, {siteSettings.TaskExecutorKey, siteSettings.TaskExecutorPassword}}, "http");
 }
+<div class="alert alert-info">
+    <strong>Heads up!</strong> In order to execute tasks, you must poll the following url: <a href="@executionUrl">@executionUrl</a>. 
+    This will need to be polled by some sort of external task scheduler or cron system in order to run regularly.
+</div>
 <fieldset>
     <legend>Scheduled Tasks
         <span class="btn-group display-inline pull-right">
-            @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-success", data_toggle = "fb-modal" })
+            @Html.ActionLink("Add", "Add", null, new {@class = "btn btn-success", data_toggle = "fb-modal"})
         </span>
     </legend>
 
@@ -33,7 +39,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var task in scheduledTasks)
+                    @foreach (ScheduledTask task in scheduledTasks)
                     {
                         <tr>
                             <td>
@@ -50,8 +56,8 @@
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    @Html.ActionLink("Edit", "Edit", new { id = task.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
-                                    @Html.ActionLink("Delete", "Delete", new { id = task.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "fb-modal" })
+                                    @Html.ActionLink("Edit", "Edit", new {id = task.Id}, new {@class = "btn btn-mini", data_toggle = "fb-modal"})
+                                    @Html.ActionLink("Delete", "Delete", new {id = task.Id}, new {@class = "btn btn-danger btn-mini", data_toggle = "fb-modal"})
                                 </div>
                             </td>
                         </tr>
@@ -85,7 +91,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var task in tasks)
+                @foreach (QueuedTask task in tasks)
                 {
                     <tr>
                         <td>
@@ -111,7 +117,7 @@
                 }
             </tbody>
         </table>
-        @Html.Pager(tasks, "Index", page => new { page })
+        @Html.Pager(tasks, "Index", page => new {page})
     }
     else
     {

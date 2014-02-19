@@ -136,9 +136,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToRouteResult SetParent(Webpage webpage, int? parent)
+        public RedirectToRouteResult SetParent(Webpage webpage, int? parentVal)
         {
-            _documentService.SetParent(webpage, parent);
+            _documentService.SetParent(webpage, parentVal);
 
             return RedirectToAction("Edit", new { id = webpage.Id });
         }
