@@ -1363,7 +1363,6 @@
     <Content Include="Areas\Admin\Views\MediaSelector\FileResult.cshtml" />
     <Content Include="Apps\Core\Views\ExternalLogin\Providers.cshtml" />
     <Content Include="Apps\Core\Views\ExternalLogin\Google.cshtml" />
-    <Content Include="Apps\Core\Views\ExternalLogin\StandardProvider.cshtml" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.woff" />
@@ -1399,6 +1398,7 @@
     <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.eot" />
     <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.ttf" />
     <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.woff" />
+    <Content Include="Apps\Core\Views\ExternalLogin\StandardProvider.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

@@ -16,13 +16,17 @@ namespace MrCMS.Services
 
         public void ConfigureAuth(IAppBuilder app)
         {
-            if (_thirdPartyAuthSettings.LinkedInEnabled)
+            if (_thirdPartyAuthSettings.LinkedInEnabled
+                 && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.LinkedInClientId)
+                 && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.LinkedInClientSecret))
             {
                 app.UseLinkedInAuthentication(clientId: _thirdPartyAuthSettings.LinkedInClientId,
                     clientSecret: _thirdPartyAuthSettings.LinkedInClientSecret);
             }
 
-            if (_thirdPartyAuthSettings.FacebookEnabled)
+            if (_thirdPartyAuthSettings.FacebookEnabled
+                 && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.FacebookAppId)
+                 && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.FacebookAppSecret))
             {
                 var facebookAuthenticationOptions = new FacebookAuthenticationOptions
                                                     {

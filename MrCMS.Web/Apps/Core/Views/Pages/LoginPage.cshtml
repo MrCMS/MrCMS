@@ -15,6 +15,7 @@
             var loginModel = ViewData["login-model"] as LoginModel;
             Html.RenderPartial("LoginBox", loginModel);
         }
+        <hr />
         @{Html.RenderAction("Providers", "ExternalLogin", new { returnUrl = loginModel.ReturnUrl });}
     </div>
     <div class="col-md-8 col-sm-6">
