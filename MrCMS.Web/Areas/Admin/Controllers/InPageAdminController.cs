@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    [MrCMSACLRule(typeof (AdminBarACL), AdminBarACL.Show, ReturnEmptyResult = true)]
+    [MrCMSACLRule(typeof(AdminBarACL), AdminBarACL.Show, ReturnEmptyResult = true)]
     public class InPageAdminController : MrCMSAdminController
     {
         private readonly ISession _session;
@@ -48,7 +48,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                     Json(new SaveResult(false,
                                         string.Format("Could not find entity of type '{0}' with id {1}", type, id)));
             if (string.IsNullOrWhiteSpace(content) &&
-                propertyInfo.GetCustomAttributes(typeof (RequiredAttribute), false).Any())
+                propertyInfo.GetCustomAttributes(typeof(RequiredAttribute), false).Any())
             {
                 return
                     Json(new SaveResult(false,
@@ -111,10 +111,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 return string.Empty;
             var content = Convert.ToString(propertyInfo.GetValue(entity, null));
 
-            if (!typeof (Webpage).IsAssignableFrom(entityType))
-                return content;
-
-            CurrentRequestData.CurrentPage = entity as Webpage;
+            if (entity is Webpage)
+                CurrentRequestData.CurrentPage = entity as Webpage;
             var htmlHelper = MrCMSHtmlHelper.GetHtmlHelper(this);
             return htmlHelper.ParseShortcodes(content).ToHtmlString();
         }
