@@ -56,7 +56,7 @@
                     action: function () { return location.href = "/Admin/" + node.data.controller + "/Sort/" + node.parent; }
                 };
             }
-            if (node.id !== "0") {
+            if (!isNaN(node.id)) {
                 items.editMenuItem = {
                     label: "Edit",
                     action: function () { return location.href = "/Admin/" + node.data.controller + "/Edit/" + id; }
