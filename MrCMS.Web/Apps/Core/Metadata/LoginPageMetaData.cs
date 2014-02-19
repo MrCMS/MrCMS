@@ -34,7 +34,6 @@ namespace MrCMS.Web.Apps.Core.Metadata
             {
                 yield return typeof(ForgottenPasswordPage);
                 yield return typeof(ResetPasswordPage);
-                yield return typeof(CompleteExternalRegistrationPage);
             }
         }
     }

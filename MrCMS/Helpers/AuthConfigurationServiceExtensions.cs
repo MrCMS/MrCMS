@@ -8,8 +8,13 @@ namespace MrCMS.Helpers
     {
         public static void ConfigureAuth(this IAppBuilder app)
         {
-            var authConfigurationService = MrCMSApplication.Get<IAuthConfigurationService>();
-            authConfigurationService.ConfigureAuth(app);
+            var standardAuthConfigurationService = MrCMSApplication.Get<IStandardAuthConfigurationService>();
+            standardAuthConfigurationService.ConfigureAuth(app);
+            if (CurrentRequestData.DatabaseIsInstalled)
+            {
+                var authConfigurationService = MrCMSApplication.Get<IAuthConfigurationService>();
+                authConfigurationService.ConfigureAuth(app);
+            }
         }
     }
 }

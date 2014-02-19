@@ -41,9 +41,10 @@ namespace MrCMS.Web.Apps.Core.Controllers
         {
             Session.RemoveAll();
             // Request a redirect to the external login provider
+            var redirectUri = Url.Action("Callback", "ExternalLogin",
+                new { ReturnUrl = returnUrl ?? CurrentRequestData.HomePage.AbsoluteUrl });
             return new ChallengeResult(provider,
-                                       Url.Action("Callback", "ExternalLogin",
-                                                  new { ReturnUrl = returnUrl ?? CurrentRequestData.HomePage.AbsoluteUrl }));
+                                       redirectUri);
         }
 
         public async Task<ActionResult> Callback(string returnUrl)
@@ -79,7 +80,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 return _externalLoginService.RedirectAfterLogin(email, returnUrl);
             }
 
-            return _uniquePageService.RedirectTo<CompleteExternalRegistrationPage>();
+            return _uniquePageService.RedirectTo<LoginPage>();
 
         }
 

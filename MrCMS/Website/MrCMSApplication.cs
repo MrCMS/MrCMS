@@ -114,20 +114,23 @@ namespace MrCMS.Website
                                                }
                                            };
                 EndRequest += (sender, args) =>
-                                  {
-                                      if (CurrentRequestData.QueuedTasks.Any())
-                                      {
-                                          Kernel.Get<ISession>()
-                                                 .Transact(session =>
-                                                               {
-                                                                   foreach (var queuedTask in CurrentRequestData.QueuedTasks)
-                                                                       session.Save(queuedTask);
-                                                               });
-                                      }
-                                      foreach (var action in CurrentRequestData.OnEndRequest)
-                                          action(Kernel);
-                                  };
+                {
+                    if (CurrentRequestData.QueuedTasks.Any())
+                    {
+                        Kernel.Get<ISession>()
+                               .Transact(session =>
+                               {
+                                   foreach (var queuedTask in CurrentRequestData.QueuedTasks)
+                                       session.Save(queuedTask);
+                               });
+                    }
+                };
             }
+            EndRequest += (sender, args) =>
+            {
+                foreach (var action in CurrentRequestData.OnEndRequest)
+                    action(Kernel);
+            };
         }
 
         public abstract string RootNamespace { get; }

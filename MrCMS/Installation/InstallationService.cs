@@ -23,6 +23,7 @@ using MrCMS.Services;
 using MrCMS.Website;
 using MySql.Data.MySqlClient;
 using NHibernate;
+using Ninject;
 using AuthorizationRuleCollection = System.Security.AccessControl.AuthorizationRuleCollection;
 
 namespace MrCMS.Installation
@@ -282,18 +283,25 @@ namespace MrCMS.Installation
                     //save settings
                     SetUpInitialData(model, connectionString, model.DatabaseType);
 
+                    CurrentRequestData.OnEndRequest.Add(kernel =>
+                                                        {
 
-                    var connectionStringSettings = new ConnectionStringSettings("mrcms", connectionString)
-                        {
-                            ProviderName = GetProviderName(model.DatabaseType)
 
-                        };
-                    Configuration cfg = WebConfigurationManager.OpenWebConfiguration(@"/");
-                    cfg.ConnectionStrings.ConnectionStrings.Remove("mrcms");
-                    cfg.ConnectionStrings.ConnectionStrings.Add(connectionStringSettings);
-                    cfg.Save();
+                                                            var connectionStringSettings =
+                                                                new ConnectionStringSettings("mrcms", connectionString)
+                                                                {
+                                                                    ProviderName = GetProviderName(model.DatabaseType)
 
-                    RestartAppDomain();
+                                                                };
+                                                            Configuration cfg =
+                                                                WebConfigurationManager.OpenWebConfiguration(@"/");
+                                                            cfg.ConnectionStrings.ConnectionStrings.Remove("mrcms");
+                                                            cfg.ConnectionStrings.ConnectionStrings.Add(
+                                                                connectionStringSettings);
+                                                            cfg.Save();
+
+                                                            RestartAppDomain();
+                                                        });
                 }
                 catch (Exception exception)
                 {
@@ -356,8 +364,7 @@ namespace MrCMS.Installation
         {
             session.Transact(s =>
                                  {
-                                     foreach (
-                                         var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<MessageTemplate>())
+                                     foreach (var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<MessageTemplate>())
                                      {
                                          if (s.CreateCriteria(type).List().Count == 0)
                                          {
@@ -369,7 +376,7 @@ namespace MrCMS.Installation
                                  });
         }
 
-        public virtual void RestartAppDomain()
+        public static void RestartAppDomain()
         {
             if (GetTrustLevel() > AspNetHostingPermissionLevel.Medium)
             {
@@ -390,17 +397,9 @@ namespace MrCMS.Installation
                         "- give the application write access to the 'web.config' file.");
                 }
             }
-
-            // If setting up extensions/modules requires an AppDomain restart, it's very unlikely the
-            // current request can be processed correctly.  So, we redirect to the same URL, so that the
-            // new request will come to the newly started AppDomain.
-            if (_context != null)
-            {
-                _context.Response.Redirect("~", true);
-            }
         }
 
-        private bool TryWriteWebConfig()
+        private static bool TryWriteWebConfig()
         {
             try
             {
@@ -420,9 +419,9 @@ namespace MrCMS.Installation
         /// </summary>
         /// <param name="path">The path to map. E.g. "~/bin"</param>
         /// <returns>The physical path. E.g. "c:\inetpub\wwwroot\bin"</returns>
-        public virtual string MapPath(string path)
+        public static string MapPath(string path)
         {
-            if (_context != null)
+            if (HttpContext.Current != null)
                 return HostingEnvironment.MapPath(path);
 
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
