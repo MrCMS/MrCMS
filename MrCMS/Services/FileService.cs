@@ -303,5 +303,13 @@ namespace MrCMS.Services
                                                                session.Update(mediaFile);
                                                            }));
         }
+
+        public bool IsValidFileType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName);
+            if (string.IsNullOrWhiteSpace(extension) || extension.Length < 1)
+                return false;
+            return _mediaSettings.AllowedFileTypeList.Contains(extension.Substring(1), StringComparer.OrdinalIgnoreCase);
+        }
     }
 }

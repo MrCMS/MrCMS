@@ -55,8 +55,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 return RedirectToAction("Index");
 
             ViewData["media-category"] = mediacategory;
-
-            ViewData["files"] = _fileService.GetFilesForSearchPaged(mediaCategorySearchModel);
             return View(mediaCategorySearchModel);
         }
 
@@ -97,6 +95,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             return PartialView();
         }
+
+        [HttpGet]
+        public ActionResult ShowFiles(MediaCategorySearchModel searchModel)
+        {
+            ViewData["files"] = _fileService.GetFilesForSearchPaged(searchModel);
+            return PartialView(searchModel);
+        }
+
 
         [HttpGet]
         public ActionResult SortFiles(MediaCategory parent)

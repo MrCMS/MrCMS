@@ -18,7 +18,10 @@
                     dropZone: element.find(settings.dropZoneSelector)
                 });
 
-                element.find(settings.fileUploadSelector).on('fileuploadstopped', function (e) { settings.onFileUploadStopped(e, element) });
+                element.find(settings.fileUploadSelector).on('fileuploadstopped', function(e) {
+                    settings.onFileUploadStopped(e, element);
+                    element.find(settings.progressBarSelector).hide();
+                });
                 element.bind('dragover', function (e) {
                     self.dropZoneEffect(e);
                 });
@@ -108,10 +111,5 @@ MediaUploader.defaults = {
     dropZoneSelector: "#dropzone",
     dragHereText: "Drop Files Here",
     onFileUploadStopped: function (e, element) {
-        if (element.find("#pager-url")) {
-            $.get(element.find("#pager-url").val(), function (response) {
-                element.find('div[data-paging-type="async"]').replaceWith(response);
-            });
-        }
     }
 };

@@ -133,6 +133,11 @@ namespace MrCMS.Settings
         [DisplayName("Admin allowed file type uploads")]
         public string AllowedFileTypes { get; set; }
 
+        public IEnumerable<string> AllowedFileTypeList
+        {
+            get { return AllowedFileTypes.Split('|'); }
+        }
+        
         [DisplayName("Admin max file upload size (Max 50000000 (500 mb)")]
         public int MaxFileSizeUpload { get; set; }
 

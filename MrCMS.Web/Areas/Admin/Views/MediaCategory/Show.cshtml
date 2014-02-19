@@ -9,7 +9,6 @@
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
     ViewData["MediaCategory"] = mediaCategory;
-    var pagedList = ViewData["files"] as IPagedList<MediaFile>;
     
 }
 @if (TempData["saved"] != null)
@@ -19,7 +18,7 @@
         @TempData["saved"]
     </div>
 }
-<form action="@Url.Action("Show", "MediaCategory", new { mediaCategory.Id })" method="get">
+<form action="@Url.Action("Show", "MediaCategory", new { mediaCategory.Id })" method="get" id="search-form">
 
 
     <fieldset>
@@ -40,4 +39,4 @@
     @Html.TextBoxFor(x => x.SearchText)
 </form>
 @{ Html.RenderPartial("Upload", mediaCategory); }
-@{ Html.RenderPartial("ShowFiles", pagedList); }
+@{ Html.RenderAction("ShowFiles", new { searchModel = Model });}

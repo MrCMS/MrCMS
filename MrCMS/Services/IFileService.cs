@@ -22,5 +22,6 @@ namespace MrCMS.Services
         void RemoveFolder(MediaCategory mediaCategory);
         void CreateFolder(MediaCategory mediaCategory);
         void SetOrders(List<SortItem> items);
+        bool IsValidFileType(string fileName);
     }
 }

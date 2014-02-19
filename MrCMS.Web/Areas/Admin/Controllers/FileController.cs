@@ -32,10 +32,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             foreach (string files in Request.Files)
             {
                 var file = Request.Files[files];
-                var dbFile = _fileService.AddFile(file.InputStream, file.FileName,
-                                                  file.ContentType, file.ContentLength,
-                                                  mediaCategory);
-                list.Add(dbFile);
+                if (_fileService.IsValidFileType(file.FileName))
+                {
+                    var dbFile = _fileService.AddFile(file.InputStream, file.FileName,
+                        file.ContentType, file.ContentLength,
+                        mediaCategory);
+                    list.Add(dbFile);
+                }
             }
             return Json(list.ToArray(), "text/html", System.Text.Encoding.UTF8);
         }
