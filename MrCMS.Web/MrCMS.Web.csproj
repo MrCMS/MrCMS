@@ -377,6 +377,8 @@
     <Content Include="Apps\Core\Content\Images\mrcms-hat.gif" />
     <Content Include="Apps\Core\Content\Images\mrcms-logo.png" />
     <Content Include="Apps\Core\Content\Scripts\forgot-password.js" />
+    <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.svg" />
+    <Content Include="Apps\Core\Content\SocialButtons\zocial.css" />
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
     <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\css\bootstrap-image-gallery.min.css" />
     <Content Include="Apps\Galleries\Content\blueimp-Bootstrap-Image-Gallery\img\loading.gif" />
@@ -1397,6 +1399,9 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.5\release.sh" />
     <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.5\select2.jquery.json" />
     <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.5\select2_locale_en.js.template" />
+    <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.eot" />
+    <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.ttf" />
+    <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.woff" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
