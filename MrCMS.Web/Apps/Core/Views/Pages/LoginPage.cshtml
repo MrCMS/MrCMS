@@ -8,7 +8,7 @@
 @Editable(Model, page => page.BodyContent, true)
 
 <div class="row">
-    <div class="col-lg-4">
+    <div class="col-md-4 col-sm-6">
         <h1>Login</h1>
         <hr />
         @{
@@ -17,7 +17,7 @@
         }
         @{Html.RenderAction("Providers", "ExternalLogin", new { returnUrl = loginModel.ReturnUrl });}
     </div>
-    <div class="col-lg-8">
+    <div class="col-md-8 col-sm-6">
         <h2 class="not-registered">Not registered?</h2>
         <hr />
         <a href="@(UniquePageHelper.GetUrl<RegisterPage>())" class="btn btn-default">
