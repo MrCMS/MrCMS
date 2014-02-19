@@ -78,8 +78,6 @@
                     </th>
                     <th>Type
                     </th>
-                    <th>Data
-                    </th>
                     <th>Status
                     </th>
                     <th>Completed at
@@ -94,10 +92,7 @@
                             @task.CreatedOn.ToString("dd/MM/yyyy HH:mm")
                         </td>
                         <td>
-                            @task.Type
-                        </td>
-                        <td>
-                            @task.Data
+                            @task.DisplayTypeName
                         </td>
                         <td>
                             @task.Status

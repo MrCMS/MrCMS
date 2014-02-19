@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Website;
@@ -20,6 +21,18 @@ namespace MrCMS.Tasks
         public virtual DateTime? StartedAt { get; set; }
         public virtual DateTime? CompletedAt { get; set; }
         public virtual DateTime? FailedAt { get; set; }
+
+        public virtual string DisplayTypeName
+        {
+            get
+            {
+                var taskType = GetTaskType();
+                if (!taskType.IsGenericType)
+                    return taskType.Name;
+                return taskType.Name.Remove(taskType.Name.IndexOf('`')).BreakUpString() + " - " +
+                       string.Join(", ", taskType.GetGenericArguments().Select(type => type.Name.BreakUpString()));
+            }
+        }
 
         public virtual void OnStarting()
         {
