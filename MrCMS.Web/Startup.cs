@@ -11,8 +11,7 @@ namespace MrCMS.Web
     {
         public void Configuration(IAppBuilder app)
         {
-            if (CurrentRequestData.DatabaseIsInstalled)
-                app.ConfigureAuth();
+            app.ConfigureAuth();
         }
     }
 }

@@ -22,6 +22,7 @@ namespace MrCMS.Services
 
         public void SetAuthCookie(User user, bool rememberMe)
         {
+            _authenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             var identity = _userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
             _authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = rememberMe }, identity);

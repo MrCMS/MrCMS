@@ -337,6 +337,8 @@
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
+    <Compile Include="Services\IStandardAuthConfigurationService.cs" />
+    <Compile Include="Services\StandardAuthConfigurationService.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />
     <Compile Include="Entities\SystemEntity.cs" />
     <Compile Include="Events\IOnDocumentAdded.cs" />

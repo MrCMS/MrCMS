@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using Iesi.Collections.Generic;
 using Microsoft.AspNet.Identity;
@@ -25,7 +26,7 @@ namespace MrCMS.Web.Apps.Core
     {
         public static void Install(ISession session, InstallModel model, Site site)
         {
-//settings
+            //settings
             session.Transact(sess => sess.Save(site));
             CurrentRequestData.CurrentSite = site;
 
@@ -63,7 +64,7 @@ namespace MrCMS.Web.Apps.Core
                                IsActive = true
                            };
 
-            var hashAlgorithms = new List<IHashAlgorithm> {new SHA512HashAlgorithm()};
+            var hashAlgorithms = new List<IHashAlgorithm> { new SHA512HashAlgorithm() };
             var hashAlgorithmProvider = new HashAlgorithmProvider(hashAlgorithms);
             var passwordEncryptionManager = new PasswordEncryptionManager(hashAlgorithmProvider,
                                                                           new UserService(session, siteSettings));
@@ -72,7 +73,13 @@ namespace MrCMS.Web.Apps.Core
             passwordManagementService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
             passwordManagementService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
             var userService = new UserService(session, siteSettings);
-            userService.AddUser(user);
+            var roleService = new RoleService(session);
+            var userManager = new UserManager<User>(new UserStore(userService, roleService, session));
+            userManager.UserValidator = new UserValidator<User>(userManager)
+                                        {
+                                            AllowOnlyAlphanumericUserNames = false
+                                        };
+            var identityResult = userManager.Create(user);
             CurrentRequestData.CurrentUser = user;
 
             documentService.AddDocument(model.BaseLayout);
@@ -139,7 +146,7 @@ namespace MrCMS.Web.Apps.Core
             widgetService.AddWidget(new TextWidget
                                         {
                                             Name = "Footer text",
-                                            Text = string.Format("<p>© Mr CMS {0}</p>",CurrentRequestData.Now.Year),
+                                            Text = string.Format("<p>© Mr CMS {0}</p>", CurrentRequestData.Now.Year),
                                             LayoutArea = layoutAreas.Single(x => x.AreaName == "Footer")
                                         });
 
@@ -244,7 +251,7 @@ namespace MrCMS.Web.Apps.Core
 
             var configurationProvider = new ConfigurationProvider(new SettingService(session, site),
                                                                   site);
-            var fileSystemSettings = new FileSystemSettings {Site = site, StorageType = typeof (FileSystem).FullName};
+            var fileSystemSettings = new FileSystemSettings { Site = site, StorageType = typeof(FileSystem).FullName };
             configurationProvider.SaveSettings(siteSettings);
             configurationProvider.SaveSettings(mediaSettings);
             configurationProvider.SaveSettings(fileSystemSettings);
@@ -268,16 +275,14 @@ namespace MrCMS.Web.Apps.Core
                                         Name = UserRole.Administrator
                                     };
 
-            user.Roles = new HashedSet<UserRole> {adminUserRole};
-            adminUserRole.Users = new HashedSet<User> {user};
-            var roleService = new RoleService(session);
+            user.Roles = new HashedSet<UserRole> { adminUserRole };
+            adminUserRole.Users = new HashedSet<User> { user };
             roleService.SaveRole(adminUserRole);
-
-            var authorisationService = new AuthorisationService(HttpContext.Current.GetOwinContext().Authentication,
-                                                                new UserManager<User>(new UserStore(userService,
-                                                                                                    roleService, session)));
+            
+            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
+            var authorisationService = new AuthorisationService(authenticationManager, userManager);
             authorisationService.Logout();
-            authorisationService.SetAuthCookie(user, false);
+            authorisationService.SetAuthCookie(user, true);
         }
     }
 }
