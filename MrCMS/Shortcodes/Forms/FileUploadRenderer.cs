@@ -7,7 +7,7 @@ namespace MrCMS.Shortcodes.Forms
 {
     public class FileUploadRenderer : IFormElementRenderer<FileUpload>
     {
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        public TagBuilder AppendElement(FileUpload formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var tagBuilder = new TagBuilder("input");
             tagBuilder.Attributes["type"] = "file";
@@ -24,6 +24,11 @@ namespace MrCMS.Shortcodes.Forms
                                       : formProperty.LabelText);
             }
             return tagBuilder;
+        }
+
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        {
+            return AppendElement(formProperty as FileUpload, existingValue, formRenderingType);
         }
 
         public bool IsSelfClosing { get { return true; } }

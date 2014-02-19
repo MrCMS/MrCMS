@@ -77,7 +77,7 @@ namespace MrCMS.Web.Areas.Admin
         }
 
         [HttpGet]
-        public ActionResult AddOption(FormProperty formProperty)
+        public ActionResult AddOption(FormPropertyWithOptions formProperty)
         {
             return View(new FormListOption { FormProperty = formProperty });
         }

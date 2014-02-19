@@ -174,6 +174,7 @@ namespace MrCMS.DbConfiguration
                        .IncludeBase<UserProfileData>()
                        .IncludeBase<Widget>()
                        .IncludeBase<FormProperty>()
+                       .IncludeBase<FormPropertyWithOptions>()
                        .IncludeAppBases()
                        .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
                        .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()

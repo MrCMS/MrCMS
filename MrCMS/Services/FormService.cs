@@ -354,7 +354,12 @@ namespace MrCMS.Services
 
         public void AddFormProperty(FormProperty property)
         {
-            _session.Transact(session => session.Save(property));
+            _session.Transact(session =>
+                              {
+                                  property.DisplayOrder = property.Webpage.FormProperties.Count;
+
+                                  session.Save(property);
+                              });
         }
         public void SaveFormProperty(FormProperty property)
         {
@@ -371,12 +376,20 @@ namespace MrCMS.Services
             var formProperty = formListOption.FormProperty;
             if (formProperty != null)
                 formProperty.Options.Add(formListOption);
-            _session.Transact(session => session.Save(formListOption));
+            _session.Transact(session =>
+                              {
+                                  formListOption.OnSaving(session);
+                                  session.Save(formListOption);
+                              });
         }
 
         public void UpdateFormListOption(FormListOption formListOption)
         {
-            _session.Transact(session => session.Update(formListOption));
+            _session.Transact(session =>
+                              {
+                                  formListOption.OnSaving(session);
+                                  session.Update(formListOption);
+                              });
         }
 
         public void DeleteFormListOption(FormListOption formListOption)

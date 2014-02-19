@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Entities.Documents.Web.FormProperties
 @using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.FormProperties.FormProperty
 <div class="form-item well">
@@ -37,7 +38,7 @@
                     </tr>*@
                 </tbody>
             </table>
-            @if (Model.HasOptions)
+            @if (Model is FormPropertyWithOptions)
             {
                 Html.RenderPartial("FormPropertyOptions", Model);
             }

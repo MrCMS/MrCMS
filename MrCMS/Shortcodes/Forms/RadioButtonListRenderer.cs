@@ -10,7 +10,7 @@ namespace MrCMS.Shortcodes.Forms
 {
     public class RadioButtonListRenderer : IFormElementRenderer<RadioButtonList>
     {
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        public TagBuilder AppendElement(RadioButtonList formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var values = existingValue == null
                              ? new List<string>()
@@ -65,6 +65,11 @@ namespace MrCMS.Shortcodes.Forms
                 }
             }
             return tagBuilder;
+        }
+
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        {
+            return AppendElement(formProperty as RadioButtonList, existingValue, formRenderingType);
         }
         public bool IsSelfClosing { get { return false; } }
     }
