@@ -1,11 +1,9 @@
-﻿@using MrCMS.Entities.Documents
+﻿@using System.Drawing
 @using MrCMS.Helpers
 @using MrCMS.Paging
 @using MrCMS.Web.Apps.Articles.Models
 @using MrCMS.Web.Apps.Articles.Pages
-@using MrCMS.Website
-@using NHibernate.Criterion
-@model ArticleList         
+@model ArticleList      
 @Editable(Model, p=>p.BodyContent, true)
 @{
     var pagedList = ViewData["paged-articles"] as IPagedList<Article>;
@@ -20,24 +18,22 @@
 {
     foreach (var page in pagedList)
     {
-        <div class="row">
-            <div class="col-lg-12">
-                <h3 class="margin-top-0"><a href="/@page.LiveUrlSegment" class="margin-top-0">@page.Name </a></h3>
-                @page.CreatedOn.Day @page.CreatedOn.ToString("MMMMM") @page.CreatedOn.Year
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="margin-top-0"><a href="/@page.LiveUrlSegment" class="margin-top-0">@page.Name </a></h3>
+            @page.CreatedOn.Day @page.CreatedOn.ToString("MMMMM") @page.CreatedOn.Year
+            @if (!String.IsNullOrEmpty(page.FeatureImage))
+            {
+            <a href="/@page.LiveUrlSegment" class="margin-top-0">@RenderImage(page.FeatureImage, new Size{Width = 250})</a>
+            }
 
-                @if (!String.IsNullOrEmpty(page.FeatureImage))
-                {
-                    <a href="/@page.LiveUrlSegment" class="margin-top-0">
-                        <img src="@page.FeatureImage" align="left" /></a>
-                }
-                @Editable(page, p => p.Abstract)
-            </div>
+            @Editable(page, p => p.Abstract)
+            
         </div>
-    }
+    </div>
+        }
 }
-
 @if (Model.AllowPaging)
 {
     @Html.PageCurrentPage(pagedList, i => new { Page = i }, PagedListRenderOptions.PageNumbersOnly)
 }
-
