@@ -26,18 +26,6 @@ namespace MrCMS.Helpers
     {
         public static string GetCurrentIP(this HttpContextBase contextBase)
         {
-            string currentIp = GetRawIp(contextBase);
-            IPAddress ipaddress;
-            if (IPAddress.TryParse(currentIp, out ipaddress))
-            {
-                return ipaddress.
-            }
-            
-            return currentIp;
-        }
-
-        private static string GetRawIp(HttpContextBase contextBase)
-        {
             string ipAddress = contextBase.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
 
             if (!string.IsNullOrEmpty(ipAddress))
