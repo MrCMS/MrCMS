@@ -20,7 +20,7 @@ namespace MrCMS.HealthChecks
 
         public override string DisplayName
         {
-            get { return "Are there no queued tasks that have been waiting more than 30 minutes?"; }
+            get { return "Task Service Health"; }
         }
 
         public override HealthCheckResult PerformCheck()
