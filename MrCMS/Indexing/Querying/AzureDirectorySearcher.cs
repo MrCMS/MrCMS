@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Lucene.Net.Store;
 using Lucene.Net.Store.Azure;
 using MrCMS.Entities;
@@ -7,6 +8,7 @@ using MrCMS.Indexing.Management;
 using MrCMS.Services;
 using MrCMS.Settings;
 using NHibernate;
+using Directory = Lucene.Net.Store.Directory;
 
 namespace MrCMS.Indexing.Querying
 {
@@ -32,7 +34,8 @@ namespace MrCMS.Indexing.Querying
                 return
                     _directory =
                         _directory ??
-                        new AzureDirectory(_azureFileSystem.StorageAccount, catalog, new RAMDirectory());
+                        new AzureDirectory(_azureFileSystem.StorageAccount, catalog,
+                            FSDirectory.Open(new DirectoryInfo(Definition.GetLocation(site))));
             }
             catch (Exception ex)
             {
