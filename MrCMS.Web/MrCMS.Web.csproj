@@ -260,6 +260,7 @@
     <Compile Include="Apps\Core\ModelBinders\LoginModelModelBinder.cs" />
     <Compile Include="Apps\Core\ModelBinders\WebpageSearchQueryModelBinder.cs" />
     <Compile Include="Apps\Core\Models\RegiserAndLogin\ChangePasswordModel.cs" />
+    <Compile Include="Apps\Core\Models\RegiserAndLogin\ForgotPasswordModel.cs" />
     <Compile Include="Apps\Core\Models\RegiserAndLogin\RegisterModel.cs" />
     <Compile Include="Apps\Core\Models\RegiserAndLogin\LoginModel.cs" />
     <Compile Include="Apps\Core\Models\RegiserAndLogin\LoginResult.cs" />
@@ -373,7 +374,6 @@
     <Content Include="Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
     <Content Include="Apps\Core\Content\Images\mrcms-hat.gif" />
     <Content Include="Apps\Core\Content\Images\mrcms-logo.png" />
-    <Content Include="Apps\Core\Content\Scripts\forgot-password.js" />
     <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.svg" />
     <Content Include="Apps\Core\Content\SocialButtons\zocial.css" />
     <Content Include="Apps\Galleries\Areas\Admin\Content\Scripts\gallery.js" />
@@ -1399,6 +1399,7 @@
     <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.ttf" />
     <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.woff" />
     <Content Include="Apps\Core\Views\ExternalLogin\StandardProvider.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\ForgotPasswordForm.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

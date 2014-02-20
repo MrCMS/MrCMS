@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using MrCMS.Entities.People;
 
@@ -25,6 +26,7 @@ namespace MrCMS.Web.Apps.Core.Models.RegiserAndLogin
         public string Password { get; set; }
         [DataType(DataType.Password)]
         [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Password does not match.")]
+        [DisplayName("Confirm Password")]
         public string ConfirmPassword { get; set; }
     }
 }
