@@ -5,22 +5,6 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class UserStatsController : MrCMSAdminController
-    {
-        private readonly IAdminUserStatsService _userStatsService;
-
-        public UserStatsController(IAdminUserStatsService userStatsService)
-        {
-            _userStatsService = userStatsService;
-        }
-
-        [DashboardAreaAction(DashboardArea = DashboardArea.RightColumn)]
-        public PartialViewResult Summary()
-        {
-            return PartialView(_userStatsService.GetSummary());
-        }
-    }
-
     public class PageStatsController : MrCMSAdminController
     {
         private readonly IAdminPageStatsService _pageStatsService;
@@ -30,7 +14,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _pageStatsService = pageStatsService;
         }
 
-        [DashboardAreaAction(DashboardArea = DashboardArea.LeftColumn)]
+        [DashboardAreaAction(DashboardArea = DashboardArea.LeftColumn, Order = 100)]
         public PartialViewResult Summary()
         {
             return PartialView(_pageStatsService.GetSummary());

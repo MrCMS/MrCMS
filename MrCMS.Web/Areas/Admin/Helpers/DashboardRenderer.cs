@@ -13,7 +13,7 @@ namespace MrCMS.Web.Areas.Admin.Helpers
                 MrCMSControllerFactory.GetActionMethodsWithAttribute<DashboardAreaAction>()
                     .Where(info => info.Attribute.DashboardArea == dashboardArea);
 
-            return actionMethodsWithAttribute.OrderBy(info => info.Attribute.DisplayOrder)
+            return actionMethodsWithAttribute.OrderBy(info => info.Attribute.Order)
                 .Aggregate(MvcHtmlString.Empty,
                     (current, actionMethodInfo) =>
                         current.Concat(htmlHelper.Action(actionMethodInfo.Descriptor.ActionName,
@@ -29,7 +29,6 @@ namespace MrCMS.Web.Areas.Admin.Helpers
     public class DashboardAreaAction : ActionFilterAttribute
     {
         public DashboardArea DashboardArea { get; set; }
-        public int DisplayOrder { get; set; }
     }
 
     public enum DashboardArea

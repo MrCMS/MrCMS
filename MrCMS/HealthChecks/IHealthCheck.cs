@@ -1,6 +1,6 @@
 ﻿namespace MrCMS.HealthChecks
 {
-    public interface IWebsiteHealthCheck
+    public interface IHealthCheck
     {
         string DisplayName { get; }
         string TypeName { get; }

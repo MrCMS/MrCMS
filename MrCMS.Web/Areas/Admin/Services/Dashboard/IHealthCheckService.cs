@@ -1,27 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MrCMS.HealthChecks;
-using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Services.Dashboard
 {
     public interface IHealthCheckService
     {
-        List<IWebsiteHealthCheck> GetHealthChecks();
+        List<IHealthCheck> GetHealthChecks();
     }
 
     public class HealthCheckService : IHealthCheckService
     {
-        private readonly IEnumerable<IWebsiteHealthCheck> _websiteHealthChecks;
+        private readonly IEnumerable<IHealthCheck> _healthChecks;
 
-        public HealthCheckService(IEnumerable<IWebsiteHealthCheck> websiteHealthChecks)
+        public HealthCheckService(IEnumerable<IHealthCheck> healthChecks)
         {
-            _websiteHealthChecks = websiteHealthChecks;
-        }
+            _healthChecks = healthChecks;
+      }
 
-        public List<IWebsiteHealthCheck> GetHealthChecks()
+        public List<IHealthCheck> GetHealthChecks()
         {
-            return _websiteHealthChecks.ToList();
+            return _healthChecks.ToList();
         }
     }
 }

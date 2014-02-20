@@ -1,4 +1,5 @@
-﻿@model List<MrCMS.Web.Areas.Admin.Models.WebpageStats>
+﻿@using MrCMS.Helpers
+@model List<MrCMS.Web.Areas.Admin.Models.WebpageStats>
 
 <h4>Page stats</h4>
 <table class="table table-striped table-condensed" style="overflow: scroll">
@@ -16,7 +17,7 @@
         @foreach (var stat in Model)
         {
             <tr>
-                <td>@stat.DocumentType.Substring(stat.DocumentType.LastIndexOf('.') + 1)</td>
+                <td>@DocumentMetadataHelper.GetMetadataByTypeName(stat.DocumentType).Name</td>
                 <td>@stat.NumberOfPages
                 </td>
                 <td>@stat.NumberOfUnPublishedPages

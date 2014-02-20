@@ -267,7 +267,9 @@
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
     <Compile Include="Areas\Admin\Controllers\ClearCachesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HealthCheckController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageStatsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
@@ -744,6 +746,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.5\select2_locale_vi.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.5\select2_locale_zh-CN.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\select2-3.4.5\select2_locale_zh-TW.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\health-checks.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-uploader.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\mrcms-media-selector.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\stickytabs.js" />
@@ -1410,6 +1413,7 @@
     <Content Include="Areas\Admin\Views\Dashboard\Greeting.cshtml" />
     <Content Include="Areas\Admin\Views\PageStats\Summary.cshtml" />
     <Content Include="Areas\Admin\Views\UserStats\Summary.cshtml" />
+    <Content Include="Areas\Admin\Views\HealthCheck\List.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
