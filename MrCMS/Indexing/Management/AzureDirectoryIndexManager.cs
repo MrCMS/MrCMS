@@ -1,11 +1,9 @@
 ﻿using System;
-using System.IO;
 using Lucene.Net.Store;
 using Lucene.Net.Store.Azure;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Services;
-using Directory = Lucene.Net.Store.Directory;
 
 namespace MrCMS.Indexing.Management
 {
@@ -14,7 +12,7 @@ namespace MrCMS.Indexing.Management
         where TDefinition : IndexDefinition<TEntity>
     {
         private readonly IAzureFileSystem _azureFileSystem;
-        private static AzureDirectory _directory;
+        private AzureDirectory _directory;
 
         public AzureDirectoryIndexManager(Site currentSite, TDefinition definition, IAzureFileSystem azureFileSystem)
             : base(currentSite, definition)
@@ -30,8 +28,7 @@ namespace MrCMS.Indexing.Management
                 return
                     _directory =
                         _directory ??
-                        new AzureDirectory(_azureFileSystem.StorageAccount, catalog,
-                            FSDirectory.Open(new DirectoryInfo(Definition.GetLocation(site))));
+                        new AzureDirectory(_azureFileSystem.StorageAccount, catalog, new RAMDirectory());
             }
             catch (Exception ex)
             {
