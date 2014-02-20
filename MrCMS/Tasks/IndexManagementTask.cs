@@ -48,7 +48,7 @@ namespace MrCMS.Tasks
         {
             var luceneActions = GetActions().ToList();
 
-            LuceneActionExecutor.PerformActions(_indexService, Site, luceneActions);
+            LuceneActionExecutor.PerformActions(_indexService, luceneActions);
         }
 
         protected virtual T GetObject()

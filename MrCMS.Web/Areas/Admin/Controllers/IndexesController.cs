@@ -6,7 +6,6 @@ using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
-using NHibernate.Mapping;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {

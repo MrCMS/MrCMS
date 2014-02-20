@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
@@ -9,10 +10,12 @@ namespace MrCMS.Tasks
     public class TaskQueuer : ITaskQueuer
     {
         private readonly ISession _session;
+        private readonly Site _site;
 
-        public TaskQueuer(ISession session)
+        public TaskQueuer(ISession session, Site site)
         {
             _session = session;
+            _site = site;
         }
 
         public IList<QueuedTask> GetPendingQueuedTasks()
@@ -21,7 +24,7 @@ namespace MrCMS.Tasks
                                          {
                                              var queuedTasks =
                                                  session.QueryOver<QueuedTask>()
-                                                        .Where(task => task.Status == TaskExecutionStatus.Pending)
+                                                        .Where(task => task.Status == TaskExecutionStatus.Pending && task.Site.Id == _site.Id)
                                                         .List();
 
                                              foreach (var task in queuedTasks)
@@ -41,7 +44,7 @@ namespace MrCMS.Tasks
                                              var scheduledTasks =
                                                  _session.QueryOver<ScheduledTask>().List()
                                                          .Where(task =>
-                                                             task.Status == TaskExecutionStatus.Pending &&
+                                                             task.Status == TaskExecutionStatus.Pending && task.Site.Id == _site.Id &&
                                                              (task.LastComplete < CurrentRequestData.Now.AddSeconds(-task.EveryXSeconds) ||
                                                               task.LastComplete == null))
                                                          .ToList();

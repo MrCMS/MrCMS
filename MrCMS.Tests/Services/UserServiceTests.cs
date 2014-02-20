@@ -194,30 +194,6 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void UserService_ActiveUsers_ShouldReturnTheNumberOfUsersThatAreActiveSavedInTheSession()
-        {
-            Enumerable.Range(1, 10)
-                      .Select(i => new User {IsActive = true})
-                      .ForEach(user => Session.Transact(session => session.Save(user)));
-            Enumerable.Range(1, 5).Select(i =>  new User {IsActive = false})
-                      .ForEach(user => Session.Transact(session => session.Save(user)));
-
-            _userService.ActiveUsers().Should().Be(10);
-        }
-
-        [Fact]
-        public void UserService_NonActiveUsers_ShouldReturnTheNumberOfUsersThatAreNotActiveSavedInTheSession()
-        {
-            Enumerable.Range(1, 10)
-                      .Select(i => new User {IsActive = true})
-                      .ForEach(user => Session.Transact(session => session.Save(user)));
-            Enumerable.Range(1, 5).Select(i =>  new User {IsActive = false})
-                      .ForEach(user => Session.Transact(session => session.Save(user)));
-
-            _userService.NonActiveUsers().Should().Be(5);
-        }
-
-        [Fact]
         public void UserService_IsUniqueEmail_ShouldReturnTrueIfThereAreNoOtherUsers()
         {
             _userService.IsUniqueEmail("test@example.com").Should().BeTrue();

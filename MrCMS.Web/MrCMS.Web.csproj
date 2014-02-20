@@ -266,6 +266,9 @@
     <Compile Include="Apps\Core\Models\RegiserAndLogin\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
     <Compile Include="Areas\Admin\Controllers\ClearCachesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PageStatsController.cs" />
+    <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
@@ -343,8 +346,13 @@
     <Compile Include="Areas\Admin\Models\AddPageModel.cs" />
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
     <Compile Include="Areas\Admin\Models\Dashboard.cs" />
+    <Compile Include="Areas\Admin\Models\UserStats.cs" />
+    <Compile Include="Areas\Admin\Services\AdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
+    <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
+    <Compile Include="Areas\Admin\Services\IAdminPageStatsService.cs" />
+    <Compile Include="Areas\Admin\Services\IAdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\IClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
@@ -1399,6 +1407,9 @@
     <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.ttf" />
     <Content Include="Apps\Core\Content\SocialButtons\zocial-regular-webfont.woff" />
     <Content Include="Apps\Core\Views\ExternalLogin\StandardProvider.cshtml" />
+    <Content Include="Areas\Admin\Views\Dashboard\Greeting.cshtml" />
+    <Content Include="Areas\Admin\Views\PageStats\Summary.cshtml" />
+    <Content Include="Areas\Admin\Views\UserStats\Summary.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

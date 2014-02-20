@@ -90,24 +90,6 @@ namespace MrCMS.Services
             return _session.QueryOver<User>().Where(u => u.Email == email).RowCount() == 0;
         }
 
-        /// <summary>
-        /// Gets a count of active users
-        /// </summary>
-        /// <returns></returns>
-        public int ActiveUsers()
-        {
-            return _session.QueryOver<User>().Where(x => x.IsActive).Cacheable().RowCount();
-        }
-
-        /// <summary>
-        /// Gets a count of none active users
-        /// </summary>
-        /// <returns></returns>
-        public int NonActiveUsers()
-        {
-            return _session.QueryOver<User>().WhereNot(x => x.IsActive).Cacheable().RowCount();
-        }
-
         public T Get<T>(User user) where T : SystemEntity, IBelongToUser
         {
             return _session.QueryOver<T>().Where(arg => arg.User == user).Take(1).Cacheable().SingleOrDefault();

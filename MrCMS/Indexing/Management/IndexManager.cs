@@ -10,6 +10,7 @@ using System.Linq;
 using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Website;
 using NHibernate;
 using Ninject;
 
@@ -20,18 +21,21 @@ namespace MrCMS.Indexing.Management
         public static void EnsureIndexesExist(IKernel kernel, ISession session, Site site)
         {
             var service = new IndexService(kernel, session, site);
-            DocumentMetadataHelper.OverrideExistAny =
-                new DocumentService(session,
-                                    new DocumentEventService(new List<IOnDocumentDeleted>(),
-                                                             new List<IOnDocumentUnpublished>(),
-                                                             new List<IOnDocumentAdded>()), null, site).ExistAny;
-            var mrCMSIndices = service.GetIndexes(site);
+            var mrCMSIndices = service.GetIndexes();
             foreach (var index in mrCMSIndices.Where(index => !index.DoesIndexExist))
             {
-                service.Reindex(index.TypeName, site);
-                service.Optimise(index.TypeName, site);
+                service.Reindex(index.TypeName);
+                service.Optimise(index.TypeName);
             }
-            DocumentMetadataHelper.OverrideExistAny = null;
+        }
+        public static void EnsureIndexExists<T1,T2>() where T1 :SystemEntity  where T2 : IndexDefinition<T1>
+        {
+            var service = MrCMSApplication.Get<IIndexService>();
+            var indexManagerBase = service.GetIndexManagerBase(typeof (T2));
+            if (!indexManagerBase.IndexExists)
+            {
+                service.Reindex(indexManagerBase.GetIndexDefinitionType().FullName);
+            }
         }
     }
 
