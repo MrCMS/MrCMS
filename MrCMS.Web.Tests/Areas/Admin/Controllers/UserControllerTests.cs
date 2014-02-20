@@ -2,7 +2,6 @@
 using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Paging;

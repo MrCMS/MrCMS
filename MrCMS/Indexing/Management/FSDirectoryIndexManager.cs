@@ -10,7 +10,7 @@ namespace MrCMS.Indexing.Management
         where TEntity : SystemEntity
         where TDefinition : IndexDefinition<TEntity>
     {
-        private static FSDirectory _directory;
+        private FSDirectory _directory;
 
         public FSDirectoryIndexManager(Site currentSite, TDefinition definition)
             : base(currentSite, definition)

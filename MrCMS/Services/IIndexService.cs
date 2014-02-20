@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
-using MrCMS.Website;
-using System.Linq;
 using NHibernate;
 using NHibernate.Criterion;
 using Ninject;
@@ -13,11 +13,11 @@ namespace MrCMS.Services
 {
     public interface IIndexService
     {
-        void InitializeAllIndices(Site site = null);
-        List<MrCMSIndex> GetIndexes(Site site = null);
-        void Reindex(string typeName, Site site = null);
-        void Optimise(string typeName, Site site = null);
-        IIndexManagerBase GetIndexManagerBase(Type indexType, Site site);
+        void InitializeAllIndices();
+        List<MrCMSIndex> GetIndexes();
+        void Reindex(string typeName);
+        void Optimise(string typeName);
+        IIndexManagerBase GetIndexManagerBase(Type indexType);
     }
 
     public class IndexService : IIndexService
@@ -33,86 +33,85 @@ namespace MrCMS.Services
             _site = site;
         }
 
-        public void InitializeAllIndices(Site site = null)
+        public void InitializeAllIndices()
         {
-            site = site ?? _site;
-            var mrCMSIndices = GetIndexes(site);
-            mrCMSIndices.ForEach(index => Reindex(index.TypeName, site));
-            mrCMSIndices.ForEach(index => Optimise(index.TypeName, site));
+            List<MrCMSIndex> mrCMSIndices = GetIndexes();
+            mrCMSIndices.ForEach(index => Reindex(index.TypeName));
+            mrCMSIndices.ForEach(index => Optimise(index.TypeName));
         }
 
-        public List<MrCMSIndex> GetIndexes(Site site = null)
+        public List<MrCMSIndex> GetIndexes()
         {
-            site = site ?? _site;
             var mrCMSIndices = new List<MrCMSIndex>();
-            var indexDefinitionTypes = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IndexDefinition<>));
-            foreach (var definitionType in indexDefinitionTypes)
+            List<Type> indexDefinitionTypes = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof (IndexDefinition<>));
+            foreach (Type definitionType in indexDefinitionTypes)
             {
-                var indexManagerBase = GetIndexManagerBase(definitionType, site);
+                IIndexManagerBase indexManagerBase = GetIndexManagerBase(definitionType);
 
                 if (indexManagerBase != null)
                 {
                     mrCMSIndices.Add(new MrCMSIndex
-                                         {
-                                             Name = indexManagerBase.IndexName,
-                                             DoesIndexExist = indexManagerBase.IndexExists,
-                                             LastModified = indexManagerBase.LastModified,
-                                             NumberOfDocs = indexManagerBase.NumberOfDocs,
-                                             TypeName = indexManagerBase.GetIndexDefinitionType().FullName
-                                         });
+                                     {
+                                         Name = indexManagerBase.IndexName,
+                                         DoesIndexExist = indexManagerBase.IndexExists,
+                                         LastModified = indexManagerBase.LastModified,
+                                         NumberOfDocs = indexManagerBase.NumberOfDocs,
+                                         TypeName = indexManagerBase.GetIndexDefinitionType().FullName
+                                     });
                 }
             }
             return mrCMSIndices;
         }
 
-        public IIndexManagerBase GetIndexManagerBase(Type indexType, Site site)
+        public static Func<Type, IIndexManagerBase> GetIndexManagerOverride = null;
+
+        public IIndexManagerBase GetIndexManagerBase(Type indexType)
         {
-            var indexManagerBase =
-                (GetIndexManagerOverride ?? DefaultGetIndexManager())(indexType, site);
+            IIndexManagerBase indexManagerBase =
+                (GetIndexManagerOverride ?? DefaultGetIndexManager())(indexType);
             return indexManagerBase;
         }
 
-        public static Func<Type, Site, IIndexManagerBase> GetIndexManagerOverride = null;
-
-        private Func<Type, Site, IIndexManagerBase> DefaultGetIndexManager()
+        public void Reindex(string typeName)
         {
-            return (indexType, site) => _kernel.Get(
-                typeof(IIndexManager<,>).MakeGenericType(indexType.BaseType.GetGenericArguments()[0], indexType)) as
-                                                                  IIndexManagerBase;
-        }
+            Type definitionType = TypeHelper.GetTypeByName(typeName);
+            IIndexManagerBase indexManagerBase = GetIndexManagerBase(definitionType);
 
-        public void Reindex(string typeName, Site site = null)
-        {
-            site = site ?? _site;
-            var definitionType = TypeHelper.GetTypeByName(typeName);
-            var indexManagerBase = GetIndexManagerBase(definitionType, site);
+            IList list =
+                _session.CreateCriteria(indexManagerBase.GetEntityType())
+                    .Add(Restrictions.Eq("Site.Id", _site.Id))
+                    .List();
 
-            var list = _session.CreateCriteria(indexManagerBase.GetEntityType()).Add(Restrictions.Eq("Site.Id", site.Id)).List();
-
-            var listInstance =
-                Activator.CreateInstance(typeof(List<>).MakeGenericType(indexManagerBase.GetEntityType()));
-            var methodExt = listInstance.GetType().GetMethodExt("Add", indexManagerBase.GetEntityType());
-            foreach (var entity in list)
+            object listInstance =
+                Activator.CreateInstance(typeof (List<>).MakeGenericType(indexManagerBase.GetEntityType()));
+            MethodInfo methodExt = listInstance.GetType().GetMethodExt("Add", indexManagerBase.GetEntityType());
+            foreach (object entity in list)
             {
-                methodExt.Invoke(listInstance, new object[] { entity });
+                methodExt.Invoke(listInstance, new[] {entity});
             }
-            var concreteManagerType = typeof(IIndexManager<,>).MakeGenericType(indexManagerBase.GetEntityType(), indexManagerBase.GetIndexDefinitionType());
-            var methodInfo = concreteManagerType.GetMethodExt("ReIndex",
-                                                              typeof(IEnumerable<>).MakeGenericType(
-                                                                  indexManagerBase.GetEntityType()));
+            Type concreteManagerType = typeof (IIndexManager<,>).MakeGenericType(indexManagerBase.GetEntityType(),
+                indexManagerBase.GetIndexDefinitionType());
+            MethodInfo methodInfo = concreteManagerType.GetMethodExt("ReIndex",
+                typeof (IEnumerable<>).MakeGenericType(
+                    indexManagerBase.GetEntityType()));
 
-            methodInfo.Invoke(indexManagerBase, new object[] { listInstance });
+            methodInfo.Invoke(indexManagerBase, new[] {listInstance});
         }
 
-        public void Optimise(string typeName, Site site = null)
+        public void Optimise(string typeName)
         {
-            site = site ?? _site;
-            var definitionType = TypeHelper.GetTypeByName(typeName);
-            var indexManagerBase = GetIndexManagerBase(definitionType, site);
+            Type definitionType = TypeHelper.GetTypeByName(typeName);
+            IIndexManagerBase indexManagerBase = GetIndexManagerBase(definitionType);
 
             indexManagerBase.Optimise();
         }
 
+        private Func<Type, IIndexManagerBase> DefaultGetIndexManager()
+        {
+            return indexType => _kernel.Get(
+                typeof (IIndexManager<,>).MakeGenericType(indexType.BaseType.GetGenericArguments()[0], indexType)) as
+                IIndexManagerBase;
+        }
     }
 
     public class MrCMSIndex

@@ -12,7 +12,7 @@ namespace MrCMS.Indexing.Management
         where TDefinition : IndexDefinition<TEntity>
     {
         private readonly IAzureFileSystem _azureFileSystem;
-        private static AzureDirectory _directory;
+        private AzureDirectory _directory;
 
         public AzureDirectoryIndexManager(Site currentSite, TDefinition definition, IAzureFileSystem azureFileSystem)
             : base(currentSite, definition)

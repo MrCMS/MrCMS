@@ -7,8 +7,8 @@ using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Indexing.Management;
 using MrCMS.Paging;
+using MrCMS.Services;
 using MrCMS.Settings;
-using NHibernate;
 
 namespace MrCMS.Indexing.Querying
 {
@@ -17,17 +17,16 @@ namespace MrCMS.Indexing.Querying
         where TDefinition : IndexDefinition<TEntity>
     {
         private readonly Site _site;
-        private readonly ISession _session;
         private readonly TDefinition _definition;
         private readonly SiteSettings _siteSettings;
         private IndexSearcher _indexSearcher;
 
-        protected Searcher(Site site, ISession session, TDefinition definition, SiteSettings siteSettings)
+        protected Searcher(Site site, TDefinition definition, SiteSettings siteSettings)
         {
             _site = site;
-            _session = session;
             _definition = definition;
             _siteSettings = siteSettings;
+            IndexManager.EnsureIndexExists<TEntity, TDefinition>();
         }
 
         protected abstract Directory GetDirectory(Site site);

@@ -85,10 +85,6 @@ namespace MrCMS.IoC
                                                                                   type =>
                                                                                   context.Kernel.Get(type) as
                                                                                   IFileSystem)).InRequestScope();
-            Kernel.Bind(typeof(ISearcher<,>)).To(typeof(FSDirectorySearcher<,>)).When(request => !UseAzureForLucene()).InRequestScope();
-            Kernel.Bind(typeof(ISearcher<,>)).To(typeof(AzureDirectorySearcher<,>)).When(request => UseAzureForLucene()).InRequestScope();
-            Kernel.Bind(typeof(IIndexManager<,>)).To(typeof(FSDirectoryIndexManager<,>)).When(request => !UseAzureForLucene()).InRequestScope();
-            Kernel.Bind(typeof(IIndexManager<,>)).To(typeof(AzureDirectoryIndexManager<,>)).When(request => UseAzureForLucene()).InRequestScope();
             Kernel.Bind<IUserStore<User>>().To<UserStore>().InRequestScope();
             Kernel.Bind<UserManager<User>>().ToMethod(context =>
                 {
@@ -99,9 +95,13 @@ namespace MrCMS.IoC
                         };
                     return userManager;
                 }).InRequestScope();
+            Kernel.Bind(typeof(ISearcher<,>)).To(typeof(FSDirectorySearcher<,>)).When(request => !UseAzureForLucene()).InRequestScope();
+            Kernel.Bind(typeof(ISearcher<,>)).To(typeof(AzureDirectorySearcher<,>)).When(request => UseAzureForLucene()).InRequestScope();
+            Kernel.Bind(typeof(IIndexManager<,>)).To(typeof(FSDirectoryIndexManager<,>)).When(request => !UseAzureForLucene()).InRequestScope();
+            Kernel.Bind(typeof(IIndexManager<,>)).To(typeof(AzureDirectoryIndexManager<,>)).When(request => UseAzureForLucene()).InRequestScope();
         }
 
-        private bool UseAzureForLucene()
+        public bool UseAzureForLucene()
         {
             return (Kernel.Get<IFileSystem>() is IAzureFileSystem) && Kernel.Get<FileSystemSettings>().UseAzureForLucene;
         }

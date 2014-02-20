@@ -1,0 +1,17 @@
+﻿@using FluentNHibernate.Utils
+@model MrCMS.Web.Areas.Admin.Models.UserStats
+<h4>User stats</h4>
+<table class="table table-striped table-condensed" style="overflow: scroll">
+    <thead>
+        <tr>
+            <th>Active</th>
+            <th>Inactive</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.ActiveUsers</td>
+            <td>@Model.InactiveUsers</td>
+        </tr>
+    </tbody>
+</table>

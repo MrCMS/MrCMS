@@ -193,8 +193,8 @@ namespace MrCMS.Website
             {
                 var session = bootstrapper.Kernel.Get<ISessionFactory>().OpenFilteredSession();
                 var sites = session.QueryOver<Site>().List();
-                foreach (var site in sites)
-                    IndexManager.EnsureIndexesExist(bootstrapper.Kernel, session, site);
+                //foreach (var site in sites)
+                //    IndexManager.EnsureIndexesExist(bootstrapper.Kernel, session, site);
             }
         }
 

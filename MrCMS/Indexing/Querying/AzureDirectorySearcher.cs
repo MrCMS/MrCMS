@@ -14,12 +14,12 @@ namespace MrCMS.Indexing.Querying
         where TEntity : SystemEntity
         where TDefinition : IndexDefinition<TEntity>
     {
-        private static AzureDirectory _directory;
+        private AzureDirectory _directory;
         private readonly IAzureFileSystem _azureFileSystem;
 
         public AzureDirectorySearcher(Site currentSite, ISession session, TDefinition definition,
                                       IAzureFileSystem azureFileSystem, SiteSettings siteSettings)
-            : base(currentSite, session, definition, siteSettings)
+            : base(currentSite, definition, siteSettings)
         {
             _azureFileSystem = azureFileSystem;
         }
