@@ -15,6 +15,7 @@ using MrCMS.Helpers;
 using MrCMS.Installation;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Tasks;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
 using MrCMS.Website;
@@ -29,7 +30,7 @@ namespace MrCMS.Web.Apps.Core
             //settings
             session.Transact(sess => sess.Save(site));
             CurrentRequestData.CurrentSite = site;
-
+            SetupTasks(session, site);
             var siteSettings = new SiteSettings
                                    {
                                        Site = site,
@@ -237,7 +238,7 @@ namespace MrCMS.Web.Apps.Core
             siteSettings.Error500PageId = model.Error500.Id;
             siteSettings.EnableInlineEditing = true;
             siteSettings.SiteIsLive = true;
-
+            siteSettings.FormRendererType = FormRenderingType.Bootstrap3;
             mediaSettings.ThumbnailImageHeight = 50;
             mediaSettings.ThumbnailImageWidth = 50;
             mediaSettings.LargeImageHeight = 800;
@@ -283,6 +284,38 @@ namespace MrCMS.Web.Apps.Core
             var authorisationService = new AuthorisationService(authenticationManager, userManager);
             authorisationService.Logout();
             authorisationService.SetAuthCookie(user, true);
+        }
+
+        private static void SetupTasks(ISession session, Site site)
+        {
+            var deleteLogsTask = new ScheduledTask
+            {
+                Site = site,
+                Type = typeof(DeleteExpiredLogsTask).FullName,
+                EveryXSeconds = 60
+            };
+
+            var deleteQueuedTask = new ScheduledTask
+            {
+                Site = site,
+                Type = typeof(DeleteOldQueuedTaks).FullName,
+                EveryXSeconds = 60
+            };
+
+            var sendQueueEmailsTask = new ScheduledTask
+            {
+                Site = site,
+                Type = typeof(SendQueuedMessagesTask).FullName,
+                EveryXSeconds = 60
+            };
+
+            session.Transact(s =>
+            {
+                s.Save(deleteLogsTask);
+                s.Save(deleteQueuedTask);
+                s.Save(sendQueueEmailsTask);
+            });
+
         }
     }
 }

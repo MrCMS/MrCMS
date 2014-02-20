@@ -58,13 +58,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_AddPost_ShouldRedirectToEdit()
+        public void MediaCategoryController_AddPost_ShouldRedirectToShow()
         {
             var mediaCategory = new MediaCategory { Id = 1 };
 
             var result = _mediaCategoryController.Add(mediaCategory) as RedirectToRouteResult;
 
-            result.RouteValues["action"].Should().Be("Edit");
+            result.RouteValues["action"].Should().Be("Show");
             result.RouteValues["id"].Should().Be(1);
         }
 

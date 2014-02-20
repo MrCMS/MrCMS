@@ -27,9 +27,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
          */
         public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] MediaCategory doc)
         {
-            var actionResult = base.Add(doc);
+            base.Add(doc);
             _fileService.CreateFolder(doc);
-            return actionResult;
+            return RedirectToAction("Show", new { id = doc.Id });
         }
 
         [HttpGet]
