@@ -50,7 +50,7 @@ namespace MrCMS.Services.ImportExport
                 _updateUrlHistoryService.SaveUrlHistories();
                 _webpages.ForEach(session.SaveOrUpdate);
             });
-            _indexService.InitializeAllIndices(_site);
+            _indexService.InitializeAllIndices();
         }
 
         public static int GetHierarchyDepth(DocumentImportDTO dto, HashSet<DocumentImportDTO> allItems)

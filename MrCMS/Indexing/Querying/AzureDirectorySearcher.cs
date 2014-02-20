@@ -19,7 +19,7 @@ namespace MrCMS.Indexing.Querying
 
         public AzureDirectorySearcher(Site currentSite, ISession session, TDefinition definition,
                                       IAzureFileSystem azureFileSystem, SiteSettings siteSettings)
-            : base(currentSite, session, definition, siteSettings)
+            : base(currentSite, definition, siteSettings)
         {
             _azureFileSystem = azureFileSystem;
         }

@@ -1,4 +1,5 @@
-﻿using MrCMS.Website;
+﻿using MrCMS.Entities.Multisite;
+using MrCMS.Website;
 using NHibernate;
 using MrCMS.Helpers;
 
@@ -40,10 +41,12 @@ namespace MrCMS.Tasks
     public class TaskResetter : ITaskResetter
     {
         private readonly ISession _session;
+        private readonly Site _site;
 
-        public TaskResetter(ISession session)
+        public TaskResetter(ISession session, Site site)
         {
             _session = session;
+            _site = site;
         }
 
         public void ResetHungTasks()
@@ -52,7 +55,7 @@ namespace MrCMS.Tasks
                                   {
                                       var hungTasks = session.QueryOver<QueuedTask>()
                                                              .Where(
-                                                                 task =>
+                                                                 task => task.Site.Id == _site.Id &&
                                                                  (task.Status == TaskExecutionStatus.AwaitingExecution || task.Status == TaskExecutionStatus.Executing) &&
                                                                  task.QueuedAt < CurrentRequestData.Now.AddMinutes(15))
                                                              .List();

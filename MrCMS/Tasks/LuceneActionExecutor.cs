@@ -8,11 +8,11 @@ namespace MrCMS.Tasks
 {
     public class LuceneActionExecutor
     {
-        public static void PerformActions(IIndexService indexService, Site site, List<LuceneAction> luceneActions)
+        public static void PerformActions(IIndexService indexService, List<LuceneAction> luceneActions)
         {
             foreach (var @group in luceneActions.GroupBy(action => action.Type))
             {
-                var managerBase = indexService.GetIndexManagerBase(@group.Key, site);
+                var managerBase = indexService.GetIndexManagerBase(@group.Key);
 
                 IGrouping<Type, LuceneAction> thisGroup = @group;
                 managerBase.Write(writer =>

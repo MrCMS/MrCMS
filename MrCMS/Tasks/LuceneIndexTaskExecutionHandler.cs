@@ -11,13 +11,11 @@ namespace MrCMS.Tasks
     {
         private readonly IIndexService _indexService;
         private readonly ITaskStatusUpdater _taskStatusUpdater;
-        private readonly Site _site;
 
-        public LuceneIndexTaskExecutionHandler(IIndexService indexService, ITaskStatusUpdater taskStatusUpdater, Site site)
+        public LuceneIndexTaskExecutionHandler(IIndexService indexService, ITaskStatusUpdater taskStatusUpdater)
         {
             _indexService = indexService;
             _taskStatusUpdater = taskStatusUpdater;
-            _site = site;
         }
 
         public int Priority { get { return 100; } }
@@ -39,7 +37,7 @@ namespace MrCMS.Tasks
                     .Distinct(LuceneActionComparison.Comparer)
                     .ToList();
 
-            LuceneActionExecutor.PerformActions(_indexService, _site, luceneActions);
+            LuceneActionExecutor.PerformActions(_indexService, luceneActions);
             list.ForEach(task => _taskStatusUpdater.SuccessfulCompletion(task));
             return new List<TaskExecutionResult> { new TaskExecutionResult { Success = true } };
         }

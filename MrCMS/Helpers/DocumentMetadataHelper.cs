@@ -127,5 +127,10 @@ namespace MrCMS.Helpers
             var type = webpage.Unproxy().GetType();
             return DocumentMetadatas.FindAll(metadata => metadata.ValidChildrenTypes.Contains(type));
         }
+
+        public static DocumentMetadata GetMetadataByTypeName(string name)
+        {
+            return DocumentMetadatas.FirstOrDefault(x => x.Type.FullName == name);
+        }
     }
 }
