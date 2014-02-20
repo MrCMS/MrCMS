@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using Iesi.Collections.Generic;
+using Lucene.Net.Documents;
 using Microsoft.AspNet.Identity;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -16,6 +17,7 @@ using MrCMS.Installation;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
+using MrCMS.Web.Apps.Core.MessageTemplates;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
 using MrCMS.Website;
@@ -31,6 +33,7 @@ namespace MrCMS.Web.Apps.Core
             session.Transact(sess => sess.Save(site));
             CurrentRequestData.CurrentSite = site;
             SetupTasks(session, site);
+            SetupMessageTemplates(session, site);
             var siteSettings = new SiteSettings
                                    {
                                        Site = site,
@@ -84,6 +87,7 @@ namespace MrCMS.Web.Apps.Core
             CurrentRequestData.CurrentUser = user;
 
             documentService.AddDocument(model.BaseLayout);
+
             var layoutAreas = new List<LayoutArea>
                                   {
                                       new LayoutArea
@@ -133,6 +137,28 @@ namespace MrCMS.Web.Apps.Core
             foreach (LayoutArea l in layoutAreas)
                 layoutAreaService.SaveArea(l);
 
+            var layoutTwoColumn = new Layout
+            {
+                Parent = model.BaseLayout,
+                UrlSegment = "~/Apps/Core/Views/Shared/_TwoColumn.cshtml",
+                Site = site,
+                Name = "Two Column"
+            };
+            
+            documentService.AddDocument(layoutTwoColumn);
+
+            var layoutAreasTwoColumn = new List<LayoutArea>
+            {
+                new LayoutArea
+                {
+                    AreaName = "Right Column",
+                    Site = site,
+                    Layout = layoutTwoColumn
+                }
+            };
+            foreach (LayoutArea l in layoutAreasTwoColumn)
+                layoutAreaService.SaveArea(l);
+            
             var navigationWidget = new Navigation();
             navigationWidget.LayoutArea = layoutAreas.Single(x => x.AreaName == "Main Navigation");
             widgetService.AddWidget(navigationWidget);
@@ -284,6 +310,18 @@ namespace MrCMS.Web.Apps.Core
             var authorisationService = new AuthorisationService(authenticationManager, userManager);
             authorisationService.Logout();
             authorisationService.SetAuthCookie(user, true);
+        }
+
+        private static void SetupMessageTemplates(ISession session, Site site)
+        {
+            var messageTemplate = new ResetPasswordMessageTemplate
+            {
+                Site = site
+            };
+            session.Transact(s =>
+            {
+                s.Save(messageTemplate);
+            });
         }
 
         private static void SetupTasks(ISession session, Site site)

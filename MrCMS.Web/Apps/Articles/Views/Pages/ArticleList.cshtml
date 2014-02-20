@@ -12,7 +12,7 @@
 @if (pagedList !=null && !pagedList.Any() && !string.IsNullOrEmpty(searchModel.Category))
 {
     <div class="alert alert-info">No posts available in category "@searchModel.Category".</div>
-    <p><a href="/@Model.LiveUrlSegment">All @Model.Name</a></p>
+    <p><a href="/@Model.LiveUrlSegment">Show all</a></p>
 }
 @if (pagedList != null)
 {
