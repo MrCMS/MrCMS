@@ -27,6 +27,8 @@ namespace MrCMS.Tasks
             get
             {
                 var taskType = GetTaskType();
+                if (taskType == null)
+                    return Type;
                 if (!taskType.IsGenericType)
                     return taskType.Name;
                 return taskType.Name.Remove(taskType.Name.IndexOf('`')).BreakUpString() + " - " +

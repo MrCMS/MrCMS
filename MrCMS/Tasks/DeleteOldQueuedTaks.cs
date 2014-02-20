@@ -1,29 +1,24 @@
-using MrCMS.Entities.Multisite;
-using MrCMS.Logging;
-using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Tasks
 {
-    public class DeleteExpiredLogsTask : SchedulableTask
+    public class DeleteOldQueuedTaks : SchedulableTask
     {
-        private readonly SiteSettings _siteSettings;
         private readonly ISessionFactory _sessionFactory;
 
-        public DeleteExpiredLogsTask(SiteSettings siteSettings, ISessionFactory sessionFactory)
+        public DeleteOldQueuedTaks(ISessionFactory sessionFactory)
         {
-            _siteSettings = siteSettings;
             _sessionFactory = sessionFactory;
         }
 
-        public override int Priority { get { return 0; } }
+        public override int Priority { get { return 10; } }
 
         protected override void OnExecute()
         {
             var statelessSession = _sessionFactory.OpenStatelessSession();
             var logs =
-                statelessSession.QueryOver<Log>().Where(data => data.CreatedOn <= CurrentRequestData.Now.AddDays(-_siteSettings.DaysToKeepLogs)).List();
+                statelessSession.QueryOver<QueuedTask>().Where(data => data.CompletedAt <= CurrentRequestData.Now.AddDays(-1)).List();
 
             using (var transaction = statelessSession.BeginTransaction())
             {
