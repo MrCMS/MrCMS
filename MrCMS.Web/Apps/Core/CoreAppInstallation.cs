@@ -265,6 +265,7 @@ namespace MrCMS.Web.Apps.Core
             siteSettings.EnableInlineEditing = true;
             siteSettings.SiteIsLive = true;
             siteSettings.FormRendererType = FormRenderingType.Bootstrap3;
+            mailSettings.Port = 25;
             mediaSettings.ThumbnailImageHeight = 50;
             mediaSettings.ThumbnailImageWidth = 50;
             mediaSettings.LargeImageHeight = 800;
