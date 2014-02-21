@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Paging;
 using NHibernate;
@@ -9,22 +10,24 @@ namespace MrCMS.Tasks
     public class TaskManager : ITaskManager
     {
         private readonly ISession _session;
+        private readonly Site _site;
 
-        public TaskManager(ISession session)
+        public TaskManager(ISession session, Site site)
         {
             _session = session;
+            _site = site;
         }
 
         public List<ScheduledTask> GetAllScheduledTasks()
         {
-            return _session.QueryOver<ScheduledTask>().Cacheable().List().ToList();
+            return _session.QueryOver<ScheduledTask>().Where(task => task.Site.Id == _site.Id).Cacheable().List().ToList();
         }
 
         public IPagedList<QueuedTask> GetQueuedTask(QueuedTaskSearchQuery searchQuery)
         {
             var queryOver = _session.QueryOver<QueuedTask>();
 
-            return queryOver.OrderBy(task => task.CreatedOn).Desc.Paged(searchQuery.Page);
+            return queryOver.Where(task => task.Site.Id == _site.Id).OrderBy(task => task.CreatedOn).Desc.Paged(searchQuery.Page);
         }
 
         public void Add(ScheduledTask scheduledTask)
