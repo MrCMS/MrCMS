@@ -15,7 +15,7 @@ namespace MrCMS.HealthChecks
 
         public override string DisplayName
         {
-            get { return "Is email configured?"; }
+            get { return "Email settings check"; }
         }
 
         public override HealthCheckResult PerformCheck()

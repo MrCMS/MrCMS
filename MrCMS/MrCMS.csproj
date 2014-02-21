@@ -319,11 +319,12 @@
     <Compile Include="Entities\Multisite\RedirectedDomain.cs" />
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
+    <Compile Include="HealthChecks\EmailSenderTaskCheck.cs" />
     <Compile Include="HealthChecks\HealthCheck.cs" />
     <Compile Include="HealthChecks\HealthCheckResult.cs" />
     <Compile Include="HealthChecks\IHealthCheck.cs" />
     <Compile Include="HealthChecks\IsEmailConfigured.cs" />
-    <Compile Include="HealthChecks\AreThereNoQueuedTasksThatHaveBeenWaitingMoreThan30Minutes.cs" />
+    <Compile Include="HealthChecks\StalledTasks.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
     <Compile Include="Indexing\Definitions\BodyContentFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\CreatedOnFieldDefinition.cs" />
