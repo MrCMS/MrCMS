@@ -45,6 +45,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public override ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] MediaCategory doc)
+        {
+            _documentService.SaveDocument(doc);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
+            return RedirectToAction("Show", new { id = doc.Id });
+        }
+
         public ActionResult Show(MediaCategorySearchModel mediaCategorySearchModel)
         {
             if (mediaCategorySearchModel == null)
