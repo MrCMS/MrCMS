@@ -14,8 +14,12 @@
         <div class="carousel-inner">
             @foreach (var slider in sliders)
             {
-                <div class="item @(slider == sliders.First() ? "active" : "")" @(!string.IsNullOrWhiteSpace(slider.Link) ? "onclick='location.href=" + slider.Link + "'" : "")>
+                <div class="item @(slider == sliders.First() ? "active" : "")">
+                   
+                    @Html.Raw((!string.IsNullOrWhiteSpace(slider.Link) ? "<a href='" + slider.Link + "'>" : ""))
                     @RenderImage(slider.Image)
+                    @Html.Raw((!string.IsNullOrWhiteSpace(slider.Link) ? "</a>" : ""))
+
                     @if (!string.IsNullOrWhiteSpace(slider.Description))
                     {
                         <div class="carousel-caption">
