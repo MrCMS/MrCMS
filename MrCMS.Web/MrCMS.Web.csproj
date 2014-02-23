@@ -1415,6 +1415,8 @@
     <Content Include="Areas\Admin\Views\PageStats\Summary.cshtml" />
     <Content Include="Areas\Admin\Views\UserStats\Summary.cshtml" />
     <Content Include="Areas\Admin\Views\HealthCheck\List.cshtml" />
+    <Content Include="Apps\Core\Views\Widgets\CurrentPageSubNavigation.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\CurrentPageSubNavigation.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

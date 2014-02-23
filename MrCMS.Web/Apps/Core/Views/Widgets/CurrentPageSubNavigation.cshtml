@@ -1,0 +1,18 @@
+﻿@using MrCMS.Website
+@model MrCMS.Web.Apps.Core.Widgets.CurrentPageSubNavigationModel
+@{
+    var currentPage = CurrentRequestData.CurrentPage;
+    var activePages = currentPage.ActivePages.Select(webpage => "/" + webpage.LiveUrlSegment).ToList();
+}
+@if (Model.Model.ShowNameAsTitle)
+{
+    <h4>@Model.Model.Name</h4>
+}
+<ul class="nav nav-pills nav-stacked">
+    @foreach (var page in Model.NavigationList)
+    {
+        <li class="@(activePages.Any(s => s == page.Url.ToString()) ? "active" : "")">
+            <a href="@page.Url">@page.Text</a>
+        </li>
+    }
+</ul>

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Widget;
 using MrCMS.Web.Apps.Core.Models;
@@ -10,10 +12,8 @@ namespace MrCMS.Web.Apps.Core.Widgets
 {
     public class CurrentPageSubNavigation : Widget
     {
-        public override bool HasProperties
-        {
-            get { return false; }
-        }
+        [DisplayName("Show Name As Title")]
+        public virtual bool ShowNameAsTitle { get; set; }
 
         public override object GetModel(ISession session)
         {
@@ -33,7 +33,19 @@ namespace MrCMS.Web.Apps.Core.Widgets
                                                                                            }).ToList()
                                                          }).ToList();
 
-            return new NavigationList(navigationRecords.ToList());
+            return new CurrentPageSubNavigationModel
+                       {
+                           NavigationList = navigationRecords.ToList(),
+                           Model = this
+                       }; 
         }
+
+        
+    }
+
+    public class CurrentPageSubNavigationModel
+    {
+        public List<NavigationRecord> NavigationList { get; set; }
+        public CurrentPageSubNavigation Model { get; set; }
     }
 }
