@@ -7,12 +7,12 @@ using NHibernate;
 
 namespace MrCMS.HealthChecks
 {
-    public class AreThereNoQueuedTasksThatHaveBeenWaitingMoreThan30Minutes : HealthCheck
+    public class StalledTasks : HealthCheck
     {
         private readonly ISession _session;
         private readonly Site _site;
 
-        public AreThereNoQueuedTasksThatHaveBeenWaitingMoreThan30Minutes(ISession session, Site site)
+        public StalledTasks(ISession session, Site site)
         {
             _session = session;
             _site = site;
@@ -20,26 +20,26 @@ namespace MrCMS.HealthChecks
 
         public override string DisplayName
         {
-            get { return "Are there no queued tasks that have been waiting more than 30 minutes?"; }
+            get { return "Stalled tasks"; }
         }
 
         public override HealthCheckResult PerformCheck()
         {
-            var any= _session.QueryOver<QueuedTask>()
+            var any = _session.QueryOver<QueuedTask>()
                 .Where(
                     task =>
                         task.Status == TaskExecutionStatus.Pending &&
-                        task.CreatedOn <= CurrentRequestData.Now.AddMinutes(-30))
+                        task.CreatedOn <= CurrentRequestData.Now.AddMinutes(-30) && task.Site.Id == _site.Id)
                 .Any();
             return any
                 ? new HealthCheckResult
-                  {
-                      Messages = new List<string>
+                {
+                    Messages = new List<string>
                                  {
                                      "One or more tasks have not been run in the last 30 minutes. " +
                                      "Please check that your scheduler is still configured correctly."
                                  }
-                  }
+                }
                 : HealthCheckResult.Success;
         }
     }

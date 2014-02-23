@@ -42,7 +42,7 @@ namespace MrCMS.Website.Binders
 
             // Extension method used to break cache
             document.SetParent(document.Parent);
-            //set include as navigation as default
+            //set include as navigation as default and set diaply order
             if (document is Webpage)
             {
                 (document as Webpage).RevealInNavigation = true;
@@ -52,9 +52,6 @@ namespace MrCMS.Website.Binders
                                  : document.Parent.Children.OfType<Webpage>()).ToList();
                 document.DisplayOrder = pages.Any() ? pages.Max(x => x.DisplayOrder) + 1 : 0;
             }
-
-            if (document.Parent != null)
-                document.Parent.Children.Add(document);
             
             return document;
         }

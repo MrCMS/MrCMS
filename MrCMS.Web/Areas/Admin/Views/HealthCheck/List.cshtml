@@ -4,8 +4,8 @@
 <table class="table table-striped table-condensed" style="overflow: scroll" data-health-check-list="true">
     <thead>
         <tr>
-            <th>Description</th>
             <th>Status</th>
+            <th>Description</th>
             <th>Messages</th>
         </tr>
     </thead>
@@ -13,8 +13,8 @@
         @foreach (var healthCheck in Model)
         {
             <tr data-process-url=" @Url.Action("Process", "HealthCheck", new { typeName = healthCheck.TypeName })">
+                <td data-status="true" class="text-center"><i class="icon-refresh"></i></td>
                 <td>@healthCheck.DisplayName</td>
-                <td data-status="true">Pending...</td>
                 <td data-messages="true">
                 <td>
             </tr>

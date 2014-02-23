@@ -10,11 +10,11 @@
         }
     };
     var onSuccess = function (row, statusCell) {
-        statusCell.html('OK');
+        statusCell.html('<i class="icon-ok"></i>');
         row.addClass('success');
     };
     var onFailure = function (row, statusCell) {
-        statusCell.html('Failed');
+        statusCell.html('<i class="icon-remove"></i>');
         row.addClass('error');
     };
     var processRow = function (row) {
