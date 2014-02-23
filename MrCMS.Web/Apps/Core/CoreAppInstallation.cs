@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Events;
@@ -181,7 +182,10 @@ namespace MrCMS.Web.Apps.Core
             documentService.AddDocument(model.HomePage);
             CurrentRequestData.HomePage = model.HomePage;
             documentService.AddDocument(model.Page2);
+            //contact us
             documentService.AddDocument(model.Page3);
+            AddFormToContactUs(session, site, model.Page3);
+
             documentService.AddDocument(model.Error403);
             documentService.AddDocument(model.Error404);
             documentService.AddDocument(model.Error500);
@@ -238,14 +242,24 @@ namespace MrCMS.Web.Apps.Core
             documentService.AddDocument(userAccountPage);
 
             var registerPage = new RegisterPage
-                               {
-                                   Name = "Register",
-                                   UrlSegment = "register",
-                                   CreatedOn = CurrentRequestData.Now,
-                                   Site = site,
-                                   PublishOn = CurrentRequestData.Now
-                               };
+            {
+                Name = "Register",
+                UrlSegment = "register",
+                CreatedOn = CurrentRequestData.Now,
+                Site = site,
+                PublishOn = CurrentRequestData.Now
+            };
             documentService.AddDocument(registerPage);
+
+            var searchPage = new SearchPage
+            {
+                Name = "Search",
+                UrlSegment = "search",
+                CreatedOn = CurrentRequestData.Now,
+                Site = site,
+                PublishOn = CurrentRequestData.Now
+            };
+            documentService.AddDocument(searchPage);
 
             var webpages = session.QueryOver<Webpage>().List();
             webpages.ForEach(documentService.PublishNow);
@@ -312,6 +326,34 @@ namespace MrCMS.Web.Apps.Core
             var authorisationService = new AuthorisationService(authenticationManager, userManager);
             authorisationService.Logout();
             authorisationService.SetAuthCookie(user, true);
+        }
+
+        private static void AddFormToContactUs(ISession session, Site site, Webpage page3)
+        {
+            var fieldName = new TextBox
+            {
+                Name = "Name",
+                LabelText = "Your Name",
+                Site = site,
+                Required = true,
+                Webpage = page3,
+                DisplayOrder = 0
+            };
+
+            var fieldEmail = new TextBox
+            {
+                Name = "Email",
+                LabelText = "Your Email",
+                Site = site,
+                Required = true,
+                Webpage = page3,
+                DisplayOrder = 1
+            };
+            session.Transact(s =>
+            {
+                s.Save(fieldName);
+                s.Save(fieldEmail);
+            });
         }
 
         private static void SetupMessageTemplates(ISession session, Site site, InstallModel model)

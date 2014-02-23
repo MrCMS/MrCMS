@@ -13,9 +13,9 @@
 @Editable(Model, page => page.BodyContent, true)
 @{Html.RenderPartial("SearchQuery", model);}
 <p></p>
-@if (results != null)
+@if (results.Any())
 {
-   foreach (var result in results)
+    foreach (var result in results)
     {
         <div class="row">
             <div class="col-lg-12">
@@ -32,5 +32,9 @@
         <hr class="margin-top-0 margin-bottom-0"/>
     }
 
-    @Html.PageCurrentPage(results, i => new { page = i }, PagedListRenderOptions.PageNumbersOnly)
+    @Html.PageCurrentPage(results, i => new {page = i}, PagedListRenderOptions.PageNumbersOnly)
+}
+else
+{
+    <p>No results returned from query.</p>
 }
