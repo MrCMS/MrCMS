@@ -92,6 +92,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 _documentService.GetDocumentsByParent(parent)
                                 .Select(
                                     arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
+                                    .OrderBy(x => x.Order)
                                 .ToList();
 
             return View(sortItems);

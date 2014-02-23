@@ -128,7 +128,7 @@ namespace MrCMS.Services
             var query =
                 _session.QueryOver<T>()
                         .Where(x => x.Parent.Id == id && x.Site.Id == _site.Id)
-                        .OrderBy(x => x.DisplayOrder)
+                        .OrderBy(x => x.Name)
                         .Asc.Cacheable()
                         .List();
             query.ForEach(doc =>

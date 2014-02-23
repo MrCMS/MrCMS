@@ -265,21 +265,5 @@ namespace MrCMS.Services
                                    : "";
 
         }
-
-        private string GetIconClass(Document doc)
-        {
-            var documentMetaData = doc.GetMetadata();
-            if (documentMetaData != null)
-                return documentMetaData.IconClass;
-
-            if (doc is MediaCategory)
-                return "icon-picture";
-
-            if (doc is Layout)
-                return "icon-th-large";
-
-            return "";
-        }
-
     }
 }
