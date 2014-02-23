@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -33,7 +34,7 @@ namespace MrCMS.Web.Apps.Core
             session.Transact(sess => sess.Save(site));
             CurrentRequestData.CurrentSite = site;
             SetupTasks(session, site);
-            SetupMessageTemplates(session, site);
+            SetupMessageTemplates(session, site, model);
             var siteSettings = new SiteSettings
                                    {
                                        Site = site,
@@ -265,6 +266,7 @@ namespace MrCMS.Web.Apps.Core
             siteSettings.EnableInlineEditing = true;
             siteSettings.SiteIsLive = true;
             siteSettings.FormRendererType = FormRenderingType.Bootstrap3;
+            mailSettings.Port = 25;
             mediaSettings.ThumbnailImageHeight = 50;
             mediaSettings.ThumbnailImageWidth = 50;
             mediaSettings.LargeImageHeight = 800;
@@ -312,11 +314,18 @@ namespace MrCMS.Web.Apps.Core
             authorisationService.SetAuthCookie(user, true);
         }
 
-        private static void SetupMessageTemplates(ISession session, Site site)
+        private static void SetupMessageTemplates(ISession session, Site site, InstallModel model)
         {
             var messageTemplate = new ResetPasswordMessageTemplate
             {
-                Site = site
+                Site = site,
+                ToAddress = "{Email}",
+                ToName = "{Name}",
+                Bcc = String.Empty,
+                Cc = String.Empty,
+                Subject = String.Format("{0} - Password Reset Request", model.SiteName),
+                Body = string.Format("To reset your password please click <a href=\"{0}\">here</a>", "{ResetPasswordUrl}"),
+                IsHtml = true
             };
             session.Transact(s =>
             {
