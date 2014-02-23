@@ -11,7 +11,8 @@ namespace MrCMS.Website.Binders
 {
     public class AddDocumentGetModelBinder : DocumentModelBinder
     {
-        public AddDocumentGetModelBinder(ISession session, IDocumentService documentService) : base(session, documentService)
+        public AddDocumentGetModelBinder(ISession session, IDocumentService documentService)
+            : base(session, documentService)
         {
         }
 
@@ -47,11 +48,14 @@ namespace MrCMS.Website.Binders
                 (document as Webpage).RevealInNavigation = true;
 
                 var pages = (document.Parent == null
-                                 ? Session.QueryOver<Webpage>().Where(webpage => webpage.Parent==null).Cacheable().List()
+                                 ? Session.QueryOver<Webpage>().Where(webpage => webpage.Parent == null).Cacheable().List()
                                  : document.Parent.Children.OfType<Webpage>()).ToList();
                 document.DisplayOrder = pages.Any() ? pages.Max(x => x.DisplayOrder) + 1 : 0;
             }
 
+            if (document.Parent != null)
+                document.Parent.Children.Add(document);
+            
             return document;
         }
 
