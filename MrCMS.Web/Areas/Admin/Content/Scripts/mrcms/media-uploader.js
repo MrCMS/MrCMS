@@ -7,6 +7,8 @@
             self = this;
             if (element.find(settings.fileUploadSelector).length) {
                 element.find(settings.fileUploadSelector).fileupload({
+                    url: $(settings.uploadUrlSelector).val(),
+                    formData: { id: $(settings.uploadMediaCategoryIdSelector).val() }, //required because if nested within form uploader take form id instead of URL id
                     dataType: 'json',
                     type: 'POST',
                     autoUpload: true,
@@ -107,9 +109,11 @@ MediaUploader.defaults = {
     progressBarSelector: "#progress",
     progressBarSelectorInner: "#progress .bar",
     percentCompleteSelector: "#percent-complete",
-    filesSelector: "#files",
+    filesSelector: "#mrcmsfiles",
     dropZoneSelector: "#dropzone",
     dragHereText: "Drop Files Here",
+    uploadUrlSelector: "#action-url",
+    uploadMediaCategoryIdSelector: "#action-category-id",
     onFileUploadStopped: function (e, element) {
     }
 };

@@ -19,8 +19,6 @@
     </div>
 }
 <form action="@Url.Action("Show", "MediaCategory", new { mediaCategory.Id })" method="get" id="search-form" style="margin-bottom: 0;">
-
-
     <fieldset>
         <legend>@mediaCategory.Name
             <span class="btn-group  display-inline  pull-right">
@@ -38,5 +36,6 @@
     @Html.LabelFor(x => x.SearchText)
     @Html.TextBoxFor(x => x.SearchText)
 </form>
-@{ Html.RenderPartial("Upload", mediaCategory); }
+@{ Html.RenderAction("Upload", "MediaCategory", new { category = mediaCategory } ); }
+<hr class="small-margin" />
 @{ Html.RenderAction("ShowFiles", new { searchModel = Model });}

@@ -756,6 +756,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.min.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\media-show-files-simple.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\health-checks.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-uploader.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\mrcms-media-selector.js" />
@@ -1417,6 +1418,8 @@
     <Content Include="Areas\Admin\Views\HealthCheck\List.cshtml" />
     <Content Include="Apps\Core\Views\Widgets\CurrentPageSubNavigation.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\CurrentPageSubNavigation.cshtml" />
+    <Content Include="Areas\Admin\Views\MediaCategory\ShowFilesSimple.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\UploadAnywhere.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
