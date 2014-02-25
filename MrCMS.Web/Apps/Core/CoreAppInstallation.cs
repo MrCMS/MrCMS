@@ -304,14 +304,17 @@ namespace MrCMS.Web.Apps.Core
             var dbFile = fileService.AddFile(fileStream, Path.GetFileName(logoPath), "image/png", fileStream.Length,
                                              defaultMediaCategory);
 
-            widgetService.AddWidget(new LinkedImage
+            var logoPath1 = HttpContext.Current.Server.MapPath("/Apps/Core/Content/Images/mrcms-hat.gif");
+            var fileStream1 = new FileStream(logoPath1, FileMode.Open);
+            var dbFile1 = fileService.AddFile(fileStream1, Path.GetFileName(logoPath1), "image/gif", fileStream1.Length,
+                                             defaultMediaCategory);
+            
+            widgetService.AddWidget(new TextWidget
                                         {
                                             Name = "Mr CMS Logo",
-                                            Image = dbFile.url,
-                                            Link = "/",
+                                            Text = @"<a class=""navbar-brand"" href=""/""><img src=""/Apps/Core/Content/Images/mrcms-hat.gif"" style=""width: 40px; height: auto;"" />Mr CMS</a>",
                                             LayoutArea = layoutAreas.Single(x => x.AreaName == "Header Left")
                                         });
-
 
             var adminUserRole = new UserRole
                                     {
