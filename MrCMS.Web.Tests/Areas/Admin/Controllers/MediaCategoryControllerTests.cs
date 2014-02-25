@@ -104,7 +104,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             ActionResult actionResult = _mediaCategoryController.Edit(mediaCategory);
 
             actionResult.Should().BeOfType<RedirectToRouteResult>();
-            (actionResult as RedirectToRouteResult).RouteValues["action"].Should().Be("Edit");
+            (actionResult as RedirectToRouteResult).RouteValues["action"].Should().Be("Show");
             (actionResult as RedirectToRouteResult).RouteValues["id"].Should().Be(1);
         }
 
