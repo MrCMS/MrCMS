@@ -127,7 +127,7 @@ namespace MrCMS.Services
             }
             var query =
                 _session.QueryOver<T>()
-                        .Where(x => x.Parent.Id == id && x.Site.Id == _site.Id)
+                        .Where(x => x.Parent.Id == id && x.Site.Id == _site.Id && (x.HideInAdminNav == false || x.HideInAdminNav == null))
                         .OrderBy(x => x.Name)
                         .Asc.Cacheable()
                         .List();

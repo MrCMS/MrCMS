@@ -81,5 +81,6 @@ namespace MrCMS.Entities.Documents
         protected internal virtual void CustomInitialization(IDocumentService service, ISession session) { }
 
         public virtual bool ShowInAdminNav { get { return true; } }
+        public virtual bool HideInAdminNav { get; set; }
     }
 }

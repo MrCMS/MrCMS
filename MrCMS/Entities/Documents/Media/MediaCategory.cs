@@ -30,10 +30,8 @@ namespace MrCMS.Entities.Documents.Media
             protected internal set { _files = value; }
         }
 
-        public virtual bool HideInAdminNav { get; set; }
         public override bool ShowInAdminNav { get { return !HideInAdminNav; } }
-
-
+        
         public override void OnDeleting(ISession session)
         {
             base.OnDeleting(session);
