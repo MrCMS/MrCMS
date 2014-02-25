@@ -1,6 +1,7 @@
 ﻿@using System.Drawing
 @using MrCMS.Helpers
 @model MrCMS.Web.Apps.Galleries.Pages.Gallery
+<h1>@Editable(Model, page => page.Name)</h1>
 @Editable(Model, page => page.BodyContent, true)
 <div id="links">
     @{
@@ -11,7 +12,7 @@
                 {
                     <div class="col-lg-3">
                         <a href="@mediaFile.FileUrl" data-gallery>
-                            @RenderImage(mediaFile.FileUrl, new Size { Width = 200, Height = 200 })
+                            @RenderImage(mediaFile.FileUrl, new Size { Width = 250, Height = 250 })
                         </a>
                     </div>
                 }
