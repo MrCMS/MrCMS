@@ -11,7 +11,7 @@
                 <th class="span2"><a href="@Url.Action("Show", "MediaCategory", new {Id = Model.Id})" class="btn btn-mini" target="_new">View media folder</a></th>
             </tr>
 
-            @foreach (var file in Model.Files)
+            @foreach (var file in Model.Files.OrderByDescending(x=>x.CreatedOn))
             {
                 <tr>
                     <td>
