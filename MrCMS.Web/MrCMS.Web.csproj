@@ -259,12 +259,12 @@
     <Compile Include="Apps\Core\Metadata\UserAccountMetaData.cs" />
     <Compile Include="Apps\Core\ModelBinders\LoginModelModelBinder.cs" />
     <Compile Include="Apps\Core\ModelBinders\WebpageSearchQueryModelBinder.cs" />
-    <Compile Include="Apps\Core\Models\RegiserAndLogin\ChangePasswordModel.cs" />
-    <Compile Include="Apps\Core\Models\RegiserAndLogin\ForgotPasswordModel.cs" />
-    <Compile Include="Apps\Core\Models\RegiserAndLogin\RegisterModel.cs" />
-    <Compile Include="Apps\Core\Models\RegiserAndLogin\LoginModel.cs" />
-    <Compile Include="Apps\Core\Models\RegiserAndLogin\LoginResult.cs" />
-    <Compile Include="Apps\Core\Models\RegiserAndLogin\ResetPasswordViewModel.cs" />
+    <Compile Include="Apps\Core\Models\RegisterAndLogin\ChangePasswordModel.cs" />
+    <Compile Include="Apps\Core\Models\RegisterAndLogin\ForgotPasswordModel.cs" />
+    <Compile Include="Apps\Core\Models\RegisterAndLogin\RegisterModel.cs" />
+    <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginModel.cs" />
+    <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginResult.cs" />
+    <Compile Include="Apps\Core\Models\RegisterAndLogin\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
     <Compile Include="Areas\Admin\Controllers\ClearCachesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
@@ -275,7 +275,7 @@
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
-    <Compile Include="Apps\Core\Models\RegiserAndLogin\UserAccountModel.cs" />
+    <Compile Include="Apps\Core\Models\RegisterAndLogin\UserAccountModel.cs" />
     <Compile Include="Apps\Core\Pages\UserAccountPage.cs" />
     <Compile Include="Apps\Core\Pages\RegisterPage.cs" />
     <Compile Include="Apps\Core\Pages\ResetPasswordPage.cs" />

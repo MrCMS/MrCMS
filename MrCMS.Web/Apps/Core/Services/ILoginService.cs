@@ -1,7 +1,7 @@
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
-using MrCMS.Web.Apps.Core.Models.RegiserAndLogin;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Services

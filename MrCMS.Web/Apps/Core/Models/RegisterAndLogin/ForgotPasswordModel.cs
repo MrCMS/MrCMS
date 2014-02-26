@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using MrCMS.Helpers.Validation;
 
-namespace MrCMS.Web.Apps.Core.Models.RegiserAndLogin
+namespace MrCMS.Web.Apps.Core.Models.RegisterAndLogin
 {
     public class ForgotPasswordModel
     {

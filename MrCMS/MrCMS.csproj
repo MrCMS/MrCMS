@@ -612,7 +612,7 @@
     <Compile Include="Tasks\DefaultTaskExecutionHandler.cs" />
     <Compile Include="Tasks\DeleteExpiredLogsTask.cs" />
     <Compile Include="Tasks\DeleteIndicesTask.cs" />
-    <Compile Include="Tasks\DeleteOldQueuedTaks.cs" />
+    <Compile Include="Tasks\DeleteOldQueuedTasks.cs" />
     <Compile Include="Tasks\IndexManagementTask.cs" />
     <Compile Include="Tasks\InsertIndicesTask.cs" />
     <Compile Include="Tasks\ITaskExecutionHandler.cs" />

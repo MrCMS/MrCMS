@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MrCMS.Web.Apps.Core.Models.RegiserAndLogin
+namespace MrCMS.Web.Apps.Core.Models.RegisterAndLogin
 {
     public class LoginModel
     {

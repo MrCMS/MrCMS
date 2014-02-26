@@ -390,7 +390,7 @@ namespace MrCMS.Web.Apps.Core
             var deleteQueuedTask = new ScheduledTask
             {
                 Site = site,
-                Type = typeof(DeleteOldQueuedTaks).FullName,
+                Type = typeof(DeleteOldQueuedTasks).FullName,
                 EveryXSeconds = 60
             };
 

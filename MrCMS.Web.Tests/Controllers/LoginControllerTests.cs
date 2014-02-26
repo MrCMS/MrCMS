@@ -8,7 +8,7 @@ using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Controllers;
 using MrCMS.Web.Apps.Core.Models;
-using MrCMS.Web.Apps.Core.Models.RegiserAndLogin;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Web.Controllers;

@@ -2,7 +2,7 @@
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Core.Models;
-using MrCMS.Web.Apps.Core.Models.RegiserAndLogin;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;

@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
-namespace MrCMS.Web.Apps.Core.Models.RegiserAndLogin
+namespace MrCMS.Web.Apps.Core.Models.RegisterAndLogin
 {
     public class RegisterModel
     {
