@@ -20,14 +20,19 @@ namespace MrCMS.Tasks
 
         public List<ScheduledTask> GetAllScheduledTasks()
         {
-            return _session.QueryOver<ScheduledTask>().Where(task => task.Site.Id == _site.Id).Cacheable().List().ToList();
+            return _session.QueryOver<ScheduledTask>()
+                .Where(task => task.Site.Id == _site.Id)
+                .Cacheable()
+                .List()
+                .ToList();
         }
 
-        public IPagedList<QueuedTask> GetQueuedTask(QueuedTaskSearchQuery searchQuery)
+        public IPagedList<QueuedTask> GetQueuedTasks(QueuedTaskSearchQuery searchQuery)
         {
-            var queryOver = _session.QueryOver<QueuedTask>();
-
-            return queryOver.Where(task => task.Site.Id == _site.Id).OrderBy(task => task.CreatedOn).Desc.Paged(searchQuery.Page);
+            return _session.QueryOver<QueuedTask>()
+                .Where(task => task.Site.Id == _site.Id)
+                .OrderBy(task => task.CreatedOn)
+                .Desc.Paged(searchQuery.Page);
         }
 
         public void Add(ScheduledTask scheduledTask)
