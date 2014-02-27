@@ -15,6 +15,8 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates
             var fromName = CurrentRequestData.CurrentSite.Name;
             return new ResetPasswordMessageTemplate
             {
+                FromAddress = "test@example.com",
+                FromName = fromName,
                 ToAddress = "{Email}",
                 ToName = "{Name}",
                 Bcc = String.Empty,
