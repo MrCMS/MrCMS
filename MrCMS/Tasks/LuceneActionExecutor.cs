@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities.Multisite;
+using MrCMS.Indexing.Management;
 using MrCMS.Services;
 
 namespace MrCMS.Tasks
@@ -13,6 +14,8 @@ namespace MrCMS.Tasks
             foreach (var @group in luceneActions.GroupBy(action => action.Type))
             {
                 var managerBase = indexService.GetIndexManagerBase(@group.Key);
+                if (!managerBase.IndexExists)
+                    managerBase.CreateIndex();
 
                 IGrouping<Type, LuceneAction> thisGroup = @group;
                 managerBase.Write(writer =>
