@@ -82,7 +82,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             return _session.QueryOver<MediaCategory>()
                 .Where(category => category.Site.Id == _site.Id)
-                .Where(category => !category.HideInAdminNav)
+                .Where(category => !category.HideInAdminNav || category.HideInAdminNav == null)
                 .Cacheable()
                 .List()
                 .BuildSelectItemList(category => category.Name, category => category.Id.ToString(),
