@@ -8,7 +8,7 @@
             <tr>
                 <th class="span6">File Name</th>
                 <th class="span4">Alt / Description</th>
-                <th class="span2"><a href="@Url.Action("Show", "MediaCategory", new {Id = Model.Id})" class="btn btn-mini" target="_new">View media folder</a></th>
+                <th class="span2"><a href="@Url.Action("Show", "MediaCategory", new {Id = Model.Id})" class="btn btn-mini" target="_new">Manage folder</a></th>
             </tr>
 
             @foreach (var file in Model.Files.OrderByDescending(x=>x.CreatedOn))
