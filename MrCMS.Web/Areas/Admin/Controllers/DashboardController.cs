@@ -6,7 +6,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class DashboardController : MrCMSAdminController
     {
-        [DashboardAreaAction(DashboardArea = DashboardArea.Top, Order = 100)]
+        [DashboardAreaAction(DashboardArea = DashboardArea.Top, Order = -1)]
         public PartialViewResult Greeting()
         {
             return PartialView();

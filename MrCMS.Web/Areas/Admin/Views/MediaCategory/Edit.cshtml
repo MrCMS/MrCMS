@@ -5,7 +5,6 @@
 
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
 }
 
 @using (Html.BeginForm("Edit", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { id = "edit-media", target = "_top" }))

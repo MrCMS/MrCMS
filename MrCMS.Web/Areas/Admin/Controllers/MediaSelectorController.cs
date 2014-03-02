@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Entities.Multisite;
 using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -50,16 +51,18 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly ISession _session;
         private readonly IFileService _fileService;
+        private readonly Site _site;
 
-        public MediaSelectorService(ISession session, IFileService fileService)
+        public MediaSelectorService(ISession session, IFileService fileService, Site site)
         {
             _session = session;
             _fileService = fileService;
+            _site = site;
         }
 
         public IPagedList<MediaFile> Search(MediaSelectorSearchQuery searchQuery)
         {
-            var queryOver = _session.QueryOver<MediaFile>();
+            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site.Id == _site.Id);
             if (searchQuery.CategoryId.HasValue)
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == searchQuery.CategoryId);
             if (!string.IsNullOrWhiteSpace(searchQuery.Query))
@@ -77,9 +80,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public List<SelectListItem> GetCategories()
         {
-            return _session.QueryOver<MediaCategory>().Where(category => !category.HideInAdminNav).Cacheable().List()
-                           .BuildSelectItemList(category => category.Name, category => category.Id.ToString(),
-                                                emptyItemText: "All categories");
+            return _session.QueryOver<MediaCategory>()
+                .Where(category => category.Site.Id == _site.Id)
+                .Where(category => !category.HideInAdminNav || category.HideInAdminNav == null)
+                .Cacheable()
+                .List()
+                .BuildSelectItemList(category => category.Name, category => category.Id.ToString(),
+                    emptyItemText: "All categories");
         }
 
         public SelectedItemInfo GetFileInfo(string value)

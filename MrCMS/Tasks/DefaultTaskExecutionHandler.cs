@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
@@ -27,12 +29,21 @@ namespace MrCMS.Tasks
         private TaskExecutionResult Execute(IExecutableTask executableTask)
         {
             _taskStatusUpdater.BeginExecution(executableTask);
-            var result = executableTask.Execute();
-            if (result.Success)
-                _taskStatusUpdater.SuccessfulCompletion(executableTask);
-            else
+            try
+            {
+                var result = executableTask.Execute();
+                if (result.Success)
+                    _taskStatusUpdater.SuccessfulCompletion(executableTask);
+                else
+                    _taskStatusUpdater.FailedExecution(executableTask);
+                return result;
+            }
+            catch (Exception exception)
+            {
+                CurrentRequestData.ErrorSignal.Raise(exception);
                 _taskStatusUpdater.FailedExecution(executableTask);
-            return result;
+                return new TaskExecutionResult { Exception = exception };
+            }
         }
     }
 }
