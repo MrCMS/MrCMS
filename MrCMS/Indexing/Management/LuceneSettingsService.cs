@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using FluentNHibernate.Testing.Values;
 using Lucene.Net.Analysis;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
@@ -9,6 +12,7 @@ namespace MrCMS.Indexing.Management
     {
         private readonly ISession _session;
         private readonly Site _site;
+        private IList<LuceneFieldBoost> _boosts;
 
         public LuceneSettingsService(ISession session, Site site)
         {
@@ -21,10 +25,10 @@ namespace MrCMS.Indexing.Management
             where T2 : SystemEntity
         {
             var luceneFieldBoost =
-                _session.QueryOver<LuceneFieldBoost>()
-                    .Where(boost => boost.Site.Id == _site.Id && boost.Definition == fieldDefinition.TypeName)
-                    .Cacheable()
-                    .SingleOrDefault();
+                (_boosts ?? (_boosts = _session.QueryOver<LuceneFieldBoost>()
+                    .Where(boost => boost.Site.Id == _site.Id)
+                    .Cacheable().List()))
+                    .SingleOrDefault(boost => boost.Definition == fieldDefinition.TypeName);
 
             return luceneFieldBoost == null
                 ? 1f
