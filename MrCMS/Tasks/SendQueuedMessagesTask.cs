@@ -43,6 +43,7 @@ namespace MrCMS.Tasks
                                                   QueuedMessage queuedMessage in
                                                       session.QueryOver<QueuedMessage>().Where(
                                                           message => message.SentOn == null && message.Tries < MAX_TRIES)
+                                                          .Where(message => message.Site.Id == _siteSettings.Site.Id)
                                                              .List())
                                               {
                                                   if (CanSend(queuedMessage, smtpClient))
