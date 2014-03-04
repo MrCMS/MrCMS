@@ -23,6 +23,7 @@ namespace MrCMS.Tasks
             var item = filterContext.HttpContext.Request[_siteSettings.TaskExecutorKey];
             if (string.IsNullOrWhiteSpace(item) || item != _siteSettings.TaskExecutorPassword)
                 filterContext.Result = new EmptyResult();
+            filterContext.HttpContext.Server.ScriptTimeout = 6000;
         }
 
         public ContentResult Execute()

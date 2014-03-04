@@ -1,8 +1,9 @@
-﻿@model MrCMS.Entities.Documents.Web.Webpage
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane" id="postings-tab">
       <div class="row-fluid">
         <div class="span7">
-                <h4>Entries (@Model.FormPostings.Count)</h4>
+                <h4>Entries (@Model.FormPostingsCount()</h4>
         </div>
         <div class="span5">
             <div class="pull-right btn-group">

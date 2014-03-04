@@ -23,7 +23,7 @@
         <legend>@mediaCategory.Name
             <span class="btn-group  display-inline  pull-right">
                 <a href="@Url.Action("SortFiles", "MediaCategory", new { id = mediaCategory.Id })" class="btn ">Sort</a>
-                @if (mediaCategory.CanDelete)
+                @if (mediaCategory.CanDelete())
                 {
                     <a href="@Url.Action("Delete", "MediaCategory", new { id = mediaCategory.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                 }

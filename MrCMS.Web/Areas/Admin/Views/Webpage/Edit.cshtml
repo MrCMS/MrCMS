@@ -20,7 +20,7 @@
                 {
                     @Html.ActionLink("Add a child page", "Add", new {Model.Id}, new {@class = "btn btn-default"})
                 }
-                @if (Model.CanDelete)
+                @if (Model.CanDelete())
                 {
                     <a href="@Url.Action("Delete", "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                 }

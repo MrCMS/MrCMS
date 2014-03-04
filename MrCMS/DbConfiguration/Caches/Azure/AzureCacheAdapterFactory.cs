@@ -1,4 +1,6 @@
 ﻿using System;
+using NHibernate;
+using NHibernate.Caches.SysCache2;
 
 namespace MrCMS.DbConfiguration.Caches.Azure
 {

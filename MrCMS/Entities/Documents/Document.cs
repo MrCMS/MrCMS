@@ -62,10 +62,10 @@ namespace MrCMS.Entities.Documents
 
         }
 
-        public virtual bool CanDelete
-        {
-            get { return !Children.Any(); }
-        }
+        //public virtual bool CanDelete
+        //{
+        //    get { return !Children.Any(); }
+        //}
 
         protected internal virtual IList<DocumentVersion> Versions { get; set; }
 
