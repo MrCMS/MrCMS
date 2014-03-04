@@ -37,3 +37,4 @@ using MrCMS.Website;
 
 [assembly: AssemblyVersion(MrCMSApplication.AssemblyVersion)]
 [assembly: AssemblyFileVersion(MrCMSApplication.AssemblyFileVersion)]
+[assembly: MrCMSAssembly(MrCMSApplication.AssemblyFileVersion)]
