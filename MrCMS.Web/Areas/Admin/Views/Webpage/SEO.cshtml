@@ -10,6 +10,18 @@
         Permalink: /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
         @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
         <button id="change-url" class="btn btn-mini">Change</button>
+
+        <hr />
+        <h4>SEO Analysis </h4>
+        <label for="term-to-analyze">
+            Please enter a term to analyze
+        </label>
+        <input name="term-to-analyze" id="term-to-analyze" type="text" />
+        <div>
+            <button data-seo-analyze="true" class="btn btn-mini">Analyze</button>
+        </div>
+        <div data-seo-analysis-summary="true">
+        </div>
         <hr />
         <p><i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History</p>
 
@@ -38,7 +50,6 @@
         }
 
     </div>
-
 
     @if (!(Model is Redirect))
     {       
@@ -74,6 +85,7 @@
     @Html.LabelFor(x => x.CustomFooterScripts)
     @Html.TextAreaFor(x => x.CustomFooterScripts, new { @class = "span12" })
     @Html.ValidationMessageFor(x => x.CustomFooterScripts, "", new { @class = "error" })
+
 
     <hr />
     <strong>Page type:</strong> @Model.GetMetadata().Name
