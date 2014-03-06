@@ -22,7 +22,7 @@ else
         {
             if (node.IsMoreLink)
             {
-            <li data-jstree='{"icon":"@node.IconClass"}'>@Html.ActionLink(string.Format("{0} More", node.NumberMore), "Index", "Search", new { parent = node.ParentId }, null)</li>
+            <li data-jstree='{"icon":"@node.IconClass"}'>@Html.ActionLink(string.Format("{0} More", node.NumberMore), "Index", "Search", new RouteValueDictionary { { "Parent.Id", node.ParentId } }, null)</li>
             }
             else
             {
@@ -41,7 +41,7 @@ else
                 }
                 }
 
-                @(node.NodeType == "Webpage" ? Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, new { @class = cssClass != "" ? cssClass : "" }) : 
+                @(node.NodeType == "Webpage" ? Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, new { @class = cssClass != "" ? cssClass : "" }) :
                 (node.NodeType == "MediaCategory" ? Html.ActionLink(node.Name, "Show", node.NodeType, new { id = node.Id }, null) : Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, null))
                 )
             </li>

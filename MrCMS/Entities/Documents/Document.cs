@@ -62,10 +62,10 @@ namespace MrCMS.Entities.Documents
 
         }
 
-        public virtual bool CanDelete
-        {
-            get { return !Children.Any(); }
-        }
+        //public virtual bool CanDelete
+        //{
+        //    get { return !Children.Any(); }
+        //}
 
         protected internal virtual IList<DocumentVersion> Versions { get; set; }
 
@@ -81,5 +81,6 @@ namespace MrCMS.Entities.Documents
         protected internal virtual void CustomInitialization(IDocumentService service, ISession session) { }
 
         public virtual bool ShowInAdminNav { get { return true; } }
+        public virtual bool HideInAdminNav { get; set; }
     }
 }

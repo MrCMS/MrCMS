@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
@@ -14,7 +13,6 @@ using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Querying;
 using MrCMS.Services;
 using MrCMS.Settings;
-using MrCMS.Shortcodes.Forms;
 using MrCMS.Website;
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
@@ -23,36 +21,25 @@ using Ninject;
 
 namespace MrCMS.IoC
 {
-    public class ContextModule : NinjectModule
-    {
-        public override void Load()
-        {
-            Kernel.Bind<HttpContextBase>()
-                  .ToMethod(context => new HttpContextWrapper(HttpContext.Current))
-                  .When(request => HttpContext.Current != null)
-                  .InRequestScope();
-            Kernel.Bind<HttpContextBase>()
-                  .ToMethod(context => new OutOfContext())
-                  .When(request => HttpContext.Current == null)
-                  .InThreadScope();
-        }
-    }
     //Wires up IOC automatically
     public class ServiceModule : NinjectModule
     {
         public override void Load()
         {
             Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
-                                        .Where(
-                                            t =>
-                                            !typeof(SiteSettingsBase).IsAssignableFrom(t) &&
-                                            !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
-                                        .BindWith<NinjectServiceToInterfaceBinder>()
-                                        .Configure(onSyntax => onSyntax.InScope(context => context.Kernel.Get<HttpContextBase>())));
+                .Where(
+                    t =>
+                        !typeof (SiteSettingsBase).IsAssignableFrom(t) &&
+                        !typeof (IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
+                .BindWith<NinjectServiceToInterfaceBinder>()
+                .Configure(onSyntax => onSyntax.InRequestScope()));
             Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
-                                      .Where(t => typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
-                                      .BindWith<NinjectSiteSettingsBinder>()
-                                        .Configure(onSyntax => onSyntax.InScope(context => context.Kernel.Get<HttpContextBase>())));
+                .Where(
+                    t =>
+                        typeof (SiteSettingsBase).IsAssignableFrom(t) && !typeof (IController).IsAssignableFrom(t) &&
+                        !Kernel.GetBindings(t).Any())
+                .BindWith<NinjectSiteSettingsBinder>()
+                .Configure(onSyntax => onSyntax.InRequestScope()));
 
             Kernel.Bind<HttpRequestBase>().ToMethod(context => CurrentRequestData.CurrentContext.Request);
             Kernel.Bind<HttpResponseBase>().ToMethod(context => CurrentRequestData.CurrentContext.Response);

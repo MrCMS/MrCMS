@@ -111,6 +111,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(searchModel);
         }
 
+        [HttpGet]
+        public ActionResult ShowFilesSimple(MediaCategory category)
+        {
+            return PartialView(category);
+        }
+
 
         [HttpGet]
         public ActionResult SortFiles(MediaCategory parent)

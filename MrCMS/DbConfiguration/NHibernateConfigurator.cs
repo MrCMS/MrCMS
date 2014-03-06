@@ -220,10 +220,10 @@ namespace MrCMS.DbConfiguration
                                                                                        c.SetProperty(
                                                                                            Environment.Hbm2ddlKeyWords,
                                                                                            "auto-quote");
-                                                                                       c.SetProperty(
-                                                                                           Environment
-                                                                                               .DefaultBatchFetchSize,
-                                                                                           "25");
+                                                                                       //c.SetProperty(
+                                                                                       //    Environment
+                                                                                       //        .DefaultBatchFetchSize,
+                                                                                       //    "25");
                                                                                        c.SetProperty(
                                                                                            Environment.BatchSize, "25");
                                                                                    })

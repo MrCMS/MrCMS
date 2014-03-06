@@ -17,6 +17,7 @@ using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Transform;
 
 namespace MrCMS.Services
 {
@@ -26,6 +27,7 @@ namespace MrCMS.Services
         private readonly IDocumentEventService _documentEventService;
         private readonly SiteSettings _siteSettings;
         private readonly Site _currentSite;
+        private Dictionary<string, int> _counts;
 
         public DocumentService(ISession session, IDocumentEventService documentEventService, SiteSettings siteSettings, Site currentSite)
         {
@@ -44,7 +46,7 @@ namespace MrCMS.Services
                                       if (document.Parent != null)
                                           document.Parent.Children.Add(document);
                                       session.SaveOrUpdate(document);
-                                      
+
                                   });
             _documentEventService.OnDocumentAdded(document);
         }
@@ -97,17 +99,37 @@ namespace MrCMS.Services
 
         public IEnumerable<T> GetAllDocuments<T>() where T : Document
         {
-            return _session.QueryOver<T>().Where(arg => arg.Site == _currentSite).Cacheable().List();
+            return _session.QueryOver<T>().Where(arg => arg.Site.Id == _currentSite.Id).Cacheable().List();
         }
 
         public bool ExistAny(Type type)
         {
-            var uniqueResult =
-                _session.CreateCriteria(type)
-                        .Add(Restrictions.Eq(Projections.Property("Site.Id"), _currentSite.Id))
-                        .SetProjection(Projections.RowCount()).SetCacheable(true)
-                        .UniqueResult<int>();
-            return uniqueResult != 0;
+            _counts = (_counts ?? GetCounts());
+            return _counts[type.FullName] > 0;
+        }
+
+        private Dictionary<string, int> GetCounts()
+        {
+            WebpageCount countAlias = null;
+            Webpage webpageAlias = null;
+            IList<WebpageCount> webpageCounts = _session.QueryOver(() => webpageAlias)
+                .Where(x => x.Site.Id == _currentSite.Id)
+                .SelectList(
+                    builder =>
+                        builder.SelectGroup(() => webpageAlias.DocumentType)
+                            .WithAlias(() => countAlias.Type)
+                            .SelectCount(() => webpageAlias.Id)
+                            .WithAlias(() => countAlias.Count)
+                )
+                .TransformUsing(Transformers.AliasToBean<WebpageCount>())
+                .Cacheable()
+                .List<WebpageCount>();
+
+            foreach (var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>().Where(type => !webpageCounts.Select(count => count.Type).Contains(type.FullName)))
+            {
+                webpageCounts.Add(new WebpageCount { Type = type.FullName, Count = 0 });
+            }
+            return webpageCounts.ToDictionary(count => count.Type, count => count.Count);
         }
 
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
@@ -577,7 +599,5 @@ namespace MrCMS.Services
                         .Cacheable()
                         .RowCount() > 0;
         }
-
-
     }
 }

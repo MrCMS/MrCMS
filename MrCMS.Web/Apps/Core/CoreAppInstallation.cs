@@ -79,13 +79,8 @@ namespace MrCMS.Web.Apps.Core
             passwordManagementService.ValidatePassword(model.AdminPassword, model.ConfirmPassword);
             passwordManagementService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
             var userService = new UserService(session, siteSettings);
-            var roleService = new RoleService(session);
-            var userManager = new UserManager<User>(new UserStore(userService, roleService, session));
-            userManager.UserValidator = new UserValidator<User>(userManager)
-                                        {
-                                            AllowOnlyAlphanumericUserNames = false
-                                        };
-            var identityResult = userManager.Create(user);
+
+            userService.AddUser(user);
             CurrentRequestData.CurrentUser = user;
 
             documentService.AddDocument(model.BaseLayout);
@@ -323,9 +318,16 @@ namespace MrCMS.Web.Apps.Core
 
             user.Roles = new HashedSet<UserRole> { adminUserRole };
             adminUserRole.Users = new HashedSet<User> { user };
+
+            var roleService = new RoleService(session);
             roleService.SaveRole(adminUserRole);
 
-            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
+            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication; 
+            var userManager = new UserManager<User>(new UserStore(userService, roleService, session));
+            userManager.UserValidator = new UserValidator<User>(userManager)
+            {
+                AllowOnlyAlphanumericUserNames = false
+            };
             var authorisationService = new AuthorisationService(authenticationManager, userManager);
             authorisationService.Logout();
             authorisationService.SetAuthCookie(user, true);
@@ -390,7 +392,7 @@ namespace MrCMS.Web.Apps.Core
             var deleteQueuedTask = new ScheduledTask
             {
                 Site = site,
-                Type = typeof(DeleteOldQueuedTaks).FullName,
+                Type = typeof(DeleteOldQueuedTasks).FullName,
                 EveryXSeconds = 60
             };
 

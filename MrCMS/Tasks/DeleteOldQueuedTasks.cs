@@ -3,11 +3,11 @@ using NHibernate;
 
 namespace MrCMS.Tasks
 {
-    public class DeleteOldQueuedTaks : SchedulableTask
+    public class DeleteOldQueuedTasks : SchedulableTask
     {
         private readonly ISessionFactory _sessionFactory;
 
-        public DeleteOldQueuedTaks(ISessionFactory sessionFactory)
+        public DeleteOldQueuedTasks(ISessionFactory sessionFactory)
         {
             _sessionFactory = sessionFactory;
         }

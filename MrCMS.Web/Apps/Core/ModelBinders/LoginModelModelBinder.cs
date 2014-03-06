@@ -1,6 +1,6 @@
 using System.Web.Mvc;
 using MrCMS.Web.Apps.Core.Models;
-using MrCMS.Web.Apps.Core.Models.RegiserAndLogin;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Website.Binders;
 using NHibernate;
 

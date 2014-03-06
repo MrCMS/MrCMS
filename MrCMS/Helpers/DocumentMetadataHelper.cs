@@ -71,10 +71,10 @@ namespace MrCMS.Helpers
 
         public static IEnumerable<DocumentMetadata> GetValidWebpageDocumentTypes(this Webpage parent)
         {
-            var documentTypeDefinitions = new List<DocumentMetadata>();
+            var documentTypeDefinitions = new HashSet<DocumentMetadata>();
             if (parent == null)
-                documentTypeDefinitions =
-                    WebpageMetadata.Where(definition => !definition.RequiresParent).ToList();
+                documentTypeDefinitions = new HashSet<DocumentMetadata>(
+                    WebpageMetadata.Where(definition => !definition.RequiresParent));
             else
             {
                 var documentTypeDefinition =
@@ -83,27 +83,25 @@ namespace MrCMS.Helpers
 
                 if (documentTypeDefinition == null) return Enumerable.Empty<DocumentMetadata>();
 
+                IEnumerable<DocumentMetadata> metadatas = documentTypeDefinition.ChildrenList.Select(GetMetadataByType);
                 switch (documentTypeDefinition.ChildrenListType)
                 {
                     case ChildrenListType.BlackList:
-                        documentTypeDefinitions.AddRange(
-                            WebpageMetadata.Except(
-                                documentTypeDefinition.ChildrenList.Select(GetMetadataByType))
-                                                          .Where(def => !def.AutoBlacklist));
+                        IEnumerable<DocumentMetadata> documentMetadatas =
+                            WebpageMetadata.Except(metadatas).Where(def => !def.AutoBlacklist);
+                        documentMetadatas.ForEach(item => documentTypeDefinitions.Add(item));
                         break;
                     case ChildrenListType.WhiteList:
-                        documentTypeDefinitions.AddRange(documentTypeDefinition.ChildrenList.Select(GetMetadataByType));
+                        metadatas.ForEach(metadata => documentTypeDefinitions.Add(metadata));
                         break;
                 }
             }
 
-
-            documentTypeDefinitions =
-                documentTypeDefinitions.FindAll(
-                    definition => !typeof (IUniquePage).IsAssignableFrom(definition.Type) ||
-                                  (OverrideExistAny != null
-                                       ? !OverrideExistAny(definition.Type)
-                                       : !MrCMSApplication.Get<IDocumentService>().ExistAny(definition.Type)));
+            documentTypeDefinitions.RemoveWhere(
+                definition => !(!typeof (IUniquePage).IsAssignableFrom(definition.Type) ||
+                                (OverrideExistAny != null
+                                    ? !OverrideExistAny(definition.Type)
+                                    : !MrCMSApplication.Get<IDocumentService>().ExistAny(definition.Type))));
 
             return documentTypeDefinitions;
         }

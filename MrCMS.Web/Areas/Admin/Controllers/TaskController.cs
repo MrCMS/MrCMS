@@ -16,7 +16,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ViewResult Index(QueuedTaskSearchQuery searchQuery)
         {
             ViewData["scheduled-tasks"] = _taskManager.GetAllScheduledTasks();
-            ViewData["tasks"] = _taskManager.GetQueuedTask(searchQuery);
+            ViewData["tasks"] = _taskManager.GetQueuedTasks(searchQuery);
             return View(searchQuery);
         }
 

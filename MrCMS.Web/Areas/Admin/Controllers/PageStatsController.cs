@@ -15,6 +15,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [DashboardAreaAction(DashboardArea = DashboardArea.LeftColumn, Order = 100)]
+        [OutputCache(Duration = 3600, VaryByParam = "none")]
         public PartialViewResult Summary()
         {
             return PartialView(_pageStatsService.GetSummary());

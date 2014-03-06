@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Entities.Documents.Layout
+@using MrCMS.Helpers
 @model Layout
 @{
     ViewBag.Title = Model.Name;
@@ -11,7 +12,7 @@
         <legend>@Model.Name
 
             <span class="btn-group  display-inline  pull-right">
-                @if (Model.CanDelete)
+                @if (Model.CanDelete())
                 {
                     <a href="@Url.Action("Delete", "Layout", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                 }

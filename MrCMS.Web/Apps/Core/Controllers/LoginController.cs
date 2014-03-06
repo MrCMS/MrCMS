@@ -6,12 +6,12 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.ModelBinders;
 using MrCMS.Web.Apps.Core.Models;
-using MrCMS.Web.Apps.Core.Models.RegiserAndLogin;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
-using ResetPasswordViewModel = MrCMS.Web.Apps.Core.Models.RegiserAndLogin.ResetPasswordViewModel;
+using ResetPasswordViewModel = MrCMS.Web.Apps.Core.Models.RegisterAndLogin.ResetPasswordViewModel;
 
 namespace MrCMS.Web.Apps.Core.Controllers
 {

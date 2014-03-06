@@ -12,7 +12,7 @@ namespace MrCMS.Tests.IoC
         {
             var methodInfo = typeof(ConfigurationProvider).GetMethodExt("GetSiteSettings");
 
-            methodInfo.Should().NotBeNull();
+            methodInfo.Name.Should().NotBeNull();
         }
     }
 }

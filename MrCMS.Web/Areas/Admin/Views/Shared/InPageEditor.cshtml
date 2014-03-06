@@ -1,5 +1,6 @@
 ﻿@using MrCMS.ACL
 @using MrCMS.ACL.Rules
+@using MrCMS.Helpers
 @using MrCMS.Settings
 @using MrCMS.Website
 @model MrCMS.Entities.Documents.Web.Webpage   
@@ -36,7 +37,7 @@
         <a id="enable-editing" class="mrcms-btn mrcms-btn-mini mrcms-btn-default">Inline Editing: On</a>
     }
 
-    @if (Model.FormPostings.Any())
+    @if (Model.FormPostingsCount() > 0)
     {
         <a href="/Admin/Webpage/Edit/@Model.Id#postings-tab" class="mrcms-btn mrcms-btn-mini mrcms-btn-info" target="_parent">
             @Model.FormPostings.Count

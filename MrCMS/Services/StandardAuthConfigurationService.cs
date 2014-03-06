@@ -13,7 +13,8 @@ namespace MrCMS.Services
             app.UseCookieAuthentication(new CookieAuthenticationOptions
                                         {
                                             AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                                            LoginPath = new PathString("/login")
+                                            LoginPath = new PathString("/login"),
+                                            CookieSecure = CookieSecureOption.Never
                                         });
             // Use a cookie to temporarily store information about a user logging in with a third party login provider
 

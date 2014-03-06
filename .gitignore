@@ -88,3 +88,5 @@ NDependOut/*
 *.ndproj
 MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
 *.stackdump
+*.psess
+*.vsp

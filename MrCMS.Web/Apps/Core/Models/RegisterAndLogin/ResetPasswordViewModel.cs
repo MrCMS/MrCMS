@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using MrCMS.Entities.People;
 
-namespace MrCMS.Web.Apps.Core.Models.RegiserAndLogin
+namespace MrCMS.Web.Apps.Core.Models.RegisterAndLogin
 {
     public class ResetPasswordViewModel
     {

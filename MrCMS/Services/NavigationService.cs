@@ -14,6 +14,7 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Website;
 using NHibernate;
+using NHibernate.Criterion;
 using Document = MrCMS.Entities.Documents.Document;
 
 namespace MrCMS.Services
@@ -97,7 +98,20 @@ namespace MrCMS.Services
 
         public IEnumerable<SelectListItem> GetParentsList()
         {
-            var selectListItems = GetPageListItems(GetWebsiteTree().Children, 2).ToList();
+            var parentIds = _session.QueryOver<Webpage>()
+            .Where(webpage => webpage.Parent != null)
+                .SelectList(
+                    builder =>
+                        builder.Select(Projections.Distinct(Projections.Property<Webpage>(webpage => webpage.Parent.Id))))
+                .Cacheable()
+                .List<int>().ToList();
+            var rootWebpages = _session.QueryOver<Webpage>()
+                .Where(webpage => webpage.Parent == null && webpage.Site.Id == _site.Id && webpage.Id.IsIn(parentIds))
+                .OrderBy(webpage => webpage.DisplayOrder)
+                .Asc.List();
+            var selectListItems =
+                GetPageListItems(
+                    rootWebpages, parentIds, 1).ToList();
             selectListItems.Insert(0, new SelectListItem { Selected = false, Text = "Root", Value = "0" });
             return selectListItems;
         }
@@ -171,14 +185,18 @@ namespace MrCMS.Services
                              .OrderBy(item => item.DisplayOrder);
         }
 
-        private IEnumerable<SelectListItem> GetPageListItems(IEnumerable<SiteTreeNode<Webpage>> nodes, int depth)
+        private IEnumerable<SelectListItem> GetPageListItems(IEnumerable<Webpage> pages, List<int> parentIds, int depth)
         {
             var items = new List<SelectListItem>();
 
-            foreach (var node in nodes.Where(node => node.Children.Any()))
+            foreach (var node in pages.Where(node => parentIds.Contains(node.Id)))
             {
                 items.Add(new SelectListItem { Selected = false, Text = GetDashes(depth) + node.Name, Value = node.Id.ToString() });
-                items.AddRange(GetPageListItems(node.Children, depth + 1));
+                items.AddRange(GetPageListItems(_session.QueryOver<Webpage>()
+                    .Where(webpage => webpage.Parent.Id == node.Id && webpage.Id.IsIn(parentIds))
+                    .OrderBy(webpage => webpage.DisplayOrder)
+                    .Asc.Cacheable()
+                    .List(), parentIds, depth + 1));
             }
 
             return items;

@@ -21,6 +21,9 @@ namespace MrCMS.Tasks
         [DisplayName("Every X Seconds")]
         public virtual int EveryXSeconds { get; set; }
 
+        [DisplayName("Last Queued At")]
+        public virtual DateTime? LastQueuedAt { get; set; }
+
         [DisplayName("Last Run")]
         public virtual DateTime? LastComplete { get; set; }
 

@@ -30,7 +30,6 @@ using System.Linq;
 using MrCMS.Helpers;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "Start", Order = 1)]
-[assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "EnsureIndexesExist", Order = 2)]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(MrCMSApplication), "Stop")]
 
 namespace MrCMS.Website
@@ -187,17 +186,6 @@ namespace MrCMS.Website
             bootstrapper.Initialize(CreateKernel);
         }
 
-        public static void EnsureIndexesExist()
-        {
-            if (CurrentRequestData.DatabaseIsInstalled)
-            {
-                var session = bootstrapper.Kernel.Get<ISessionFactory>().OpenFilteredSession();
-                var sites = session.QueryOver<Site>().List();
-                //foreach (var site in sites)
-                //    IndexManager.EnsureIndexesExist(bootstrapper.Kernel, session, site);
-            }
-        }
-
         /// <summary>
         /// Stops the application.
         /// </summary>
@@ -212,7 +200,7 @@ namespace MrCMS.Website
         /// <returns>The created kernel.</returns>
         private static IKernel CreateKernel()
         {
-            var kernel = new StandardKernel(new ServiceModule(), new ContextModule(),
+            var kernel = new StandardKernel(new ServiceModule(), 
                                             new NHibernateModule(DatabaseType.Auto, InDevelopment));
             kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
