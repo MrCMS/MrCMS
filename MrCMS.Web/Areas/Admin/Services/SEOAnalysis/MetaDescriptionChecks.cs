@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.Models.SEOAnalysis;
 using NHibernate;
 
@@ -19,7 +21,10 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
 
         public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
         {
-            string metaDescription = webpage.MetaDescription ?? string.Empty;
+            var descriptionElement = document.ChildNodesRecursive().FirstOrDefault(node => node.Name == "meta" && node.GetAttributeValue("name","") == "description");
+            string metaDescription = descriptionElement != null
+                ? descriptionElement.GetAttributeValue("content", "")
+                : string.Empty;
             if (string.IsNullOrWhiteSpace(metaDescription))
             {
                 yield return GetFacet("Meta description set", SEOAnalysisStatus.Error, "Meta description should be set");
