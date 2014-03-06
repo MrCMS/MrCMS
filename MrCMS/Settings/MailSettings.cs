@@ -16,5 +16,10 @@ namespace MrCMS.Settings
         public string Password { get; set; }
 
         public int Port { get; set; }
+
+        public override bool RenderInSettings
+        {
+            get { return true; }
+        }
     }
 }

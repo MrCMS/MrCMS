@@ -2,14 +2,14 @@
 @model MrCMS.Models.PostingsModel
 
 
-    <div data-paging-type="async">
-        <div class="row-fluid">
-            @Html.LabelFor(model => model.Search)
-            @Html.TextBoxFor(model => model.Search)
-            <p>
-                <button class="btn btn-mini" data-action="update" data-url="@Url.Action("Postings", new {id = Model.Id})">Search</button>
-            </p>
-        </div>
+<div data-paging-type="async">
+    <div class="row-fluid">
+        @Html.LabelFor(model => model.Search)
+        @Html.TextBoxFor(model => model.Search)
+        <p>
+            <button class="btn btn-mini" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">Search</button>
+        </p>
+    </div>
     @if (Model.Items.Any())
     {
         <table class="table table-condensed table-striped">
@@ -46,16 +46,20 @@
                             @posting.CreatedOn
                         </td>
                         <td>
-                            @Html.ActionLink("View full entry", "ViewPosting", new {id = posting.Id}, new {data_toggle = "fb-modal"})
+                            <div class="btn-group">
+                                @Html.ActionLink("View full entry", "ViewPosting", new { id = posting.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+
+                                @Html.ActionLink("Delete", "DeleteEntry", "Form", new { id = posting.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
+                            </div>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-        @Html.Pager(Model.Items, "Postings", i => new {Model.Id, page = i, Model.Search})
+        @Html.Pager(Model.Items, "Postings", i => new { Model.Id, page = i, Model.Search })
     }
     else
     {
-        <span>No found postings.</span>
+        <span>No postings found.</span>
     }
-    </div>
+</div>

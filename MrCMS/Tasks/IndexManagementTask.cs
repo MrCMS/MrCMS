@@ -2,103 +2,116 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Lucene.Net.Index;
 using MrCMS.Entities;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Indexing;
 using MrCMS.Indexing.Management;
 using MrCMS.Services;
-using MrCMS.Website;
+using NHibernate;
+using Ninject;
 
 namespace MrCMS.Tasks
 {
-    internal abstract class IndexManagementTask<T> : BackgroundTask where T : SiteEntity
+    internal abstract class IndexManagementTask<T> : AdHocTask, ILuceneIndexTask where T : SiteEntity
     {
-        protected T Entity;
+        private readonly ISession _session;
+        private readonly IKernel _kernel;
+        private readonly IIndexService _indexService;
 
-        protected IndexManagementTask(T entity)
-            : base(entity.Site)
+        protected IndexManagementTask(ISession session, IKernel kernel, IIndexService indexService)
         {
-            Entity = entity;
-        }
-        protected List<Type> GetDefinitionTypes()
-        {
-            var definitionTypes = IndexDefinitionTypes.Where(type =>
-            {
-                var indexDefinitionInterface =
-                    type.GetInterfaces()
-                        .FirstOrDefault(
-                            interfaceType =>
-                            interfaceType.IsGenericType &&
-                            interfaceType.GetGenericTypeDefinition() ==
-                            typeof(IIndexDefinition<>));
-                var genericArgument =
-                    indexDefinitionInterface.GetGenericArguments()[
-                        0];
-
-                return
-                    genericArgument.IsAssignableFrom(typeof(T));
-            }).ToList();
-            return definitionTypes;
+            _session = session;
+            _kernel = kernel;
+            _indexService = indexService;
         }
 
-        protected List<Type> GetRelatedDefinitionTypes()
+        public override int Priority
         {
-            var definitionTypes = IndexDefinitionTypes.Where(type =>
-                                                                 {
-                                                                     var interfaces =
-                                                                         type.GetInterfaces()
-                                                                             .Where(
-                                                                                 interfaceType =>
-                                                                                 interfaceType.IsGenericType &&
-                                                                                 interfaceType.GetGenericTypeDefinition() ==
-                                                                                 typeof(IRelatedItemIndexDefinition<,>));
-
-                                                                     return
-                                                                         interfaces.Any(
-                                                                             relatedDefinitionType =>
-                                                                             relatedDefinitionType.GetGenericArguments()
-                                                                                 [0].IsAssignableFrom(typeof(T)));
-
-                                                                 }).ToList();
-            return definitionTypes;
+            get { return 10; }
         }
 
-        private static List<Type> IndexDefinitionTypes
+        public int Id { get; set; }
+
+        public override string GetData()
         {
-            get { return TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IIndexDefinition<>)); }
+            return Id.ToString();
         }
 
-        public override void Execute()
+        public override void SetData(string data)
         {
-            if (Entity != null)
-            {
-                Entity = GetObject();
-                var site = Session.Get<Site>(Entity.Site.Id);
-                CurrentRequestData.CurrentSite = site;
+            Id = int.Parse(data);
+        }
 
-                var definitionTypes = GetDefinitionTypes();
-                foreach (var indexManagerBase in definitionTypes.Select(type => IndexService.GetIndexManagerBase(type, site)))
-                    ExecuteLogic(indexManagerBase, Entity);
-                var relatedDefinitionTypes = GetRelatedDefinitionTypes();
-                foreach (var type in relatedDefinitionTypes)
-                {
-                    var instance = Activator.CreateInstance(type);
-                    var indexManagerBase = IndexService.GetIndexManagerBase(type, site);
-                    var methodInfo = type.GetMethodExt("GetEntitiesToUpdate", typeof(T));
-                    var toUpdate = methodInfo.Invoke(instance, new[] { Entity }) as IEnumerable;
-                    foreach (var entity in toUpdate)
-                    {
-                        indexManagerBase.Update(entity);
-                    }
-                }
-            }
+        protected override void OnExecute()
+        {
+            var luceneActions = GetActions().ToList();
+
+            LuceneActionExecutor.PerformActions(_indexService, luceneActions);
         }
 
         protected virtual T GetObject()
         {
-            return Session.Get(typeof(T), Entity.Id) as T;
+            return _session.Get(typeof(T), Id) as T;
         }
 
         protected abstract void ExecuteLogic(IIndexManagerBase manager, T entity);
+        public IEnumerable<LuceneAction> GetActions()
+        {
+            var entity = GetObject();
+            return
+                IndexingHelper.IndexDefinitionTypes.SelectMany(
+                    definitionType => definitionType.GetAllActions(entity, Operation));
+        }
+
+        protected abstract LuceneOperation Operation { get; }
+    }
+
+    internal interface ILuceneIndexTask
+    {
+        IEnumerable<LuceneAction> GetActions();
+    }
+
+
+    public class LuceneAction
+    {
+        public LuceneOperation Operation { get; set; }
+
+        public IndexDefinition IndexDefinition { get; set; }
+        public SystemEntity Entity { get; set; }
+
+        public Type Type
+        {
+            get { return IndexDefinition.GetType(); }
+        }
+
+        public void Execute(IndexWriter writer)
+        {
+            var document = IndexDefinition.Convert(Entity);
+            var index = IndexDefinition.GetIndex(Entity);
+            if (document == null || index == null)
+                return;
+            switch (Operation)
+            {
+                case LuceneOperation.Insert:
+                    writer.AddDocument(document);
+                    break;
+                case LuceneOperation.Update:
+                    writer.UpdateDocument(index, document);
+                    break;
+                case LuceneOperation.Delete:
+                    writer.DeleteDocuments(index);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
+    public enum LuceneOperation
+    {
+        Insert,
+        Update,
+        Delete
     }
 }

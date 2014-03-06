@@ -1,4 +1,4 @@
-﻿@model List<MrCMS.Settings.SiteSettingsBase> 
+﻿@model List<MrCMS.Settings.SiteSettingsBase>
 @{
     ViewBag.Title = "Edit Settings";
 }
@@ -24,7 +24,7 @@
         </legend>
 
         <div id="tabs">
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs" data-stickytabs="site-settings">
                 @foreach (var settingType in Model)
                 {
                     <li><a href="#@settingType.DivId" data-toggle="tab">@settingType.TypeName</a></li>

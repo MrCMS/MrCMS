@@ -1,0 +1,5 @@
+﻿@model MrCMS.Web.Apps.Articles.Widgets.ArticleArchive
+@Html.LabelFor(x => x.ArticleList, "Article List Page")
+@Html.DropDownListFor(x => x.ArticleList.Id, ViewData["ArticleLists"] as IEnumerable<SelectListItem>, new { data_val = "true", data_val_required = "Article list needs to be selected." })
+@Html.LabelFor(x=>x.ShowNameAsTitle)
+@Html.CheckBoxFor(x=>x.ShowNameAsTitle)

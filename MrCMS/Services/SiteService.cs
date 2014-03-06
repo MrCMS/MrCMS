@@ -33,7 +33,6 @@ namespace MrCMS.Services
         public void AddSite(Site site, SiteCopyOptions options)
         {
             _session.Transact(session => session.Save(site));
-            _indexService.InitializeAllIndices(site);
 
             if (options.SiteId.HasValue)
             {

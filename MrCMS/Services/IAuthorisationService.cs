@@ -1,11 +1,14 @@
+using System.Collections.Generic;
+using System.Security.Claims;
 using MrCMS.Entities.People;
 
 namespace MrCMS.Services
 {
     public interface IAuthorisationService
     {
-        void SetAuthCookie(string email, bool rememberMe);
+        void SetAuthCookie(User user, bool rememberMe);
         void Logout();
+        void UpdateClaims(User user, IEnumerable<Claim> claims);
     }
 
     public interface IPasswordManagementService

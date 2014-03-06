@@ -8,18 +8,18 @@ namespace MrCMS.Indexing.Management
 {
     public class FSDirectoryIndexManager<TEntity, TDefinition> : IndexManager<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>, new()
+        where TDefinition : IndexDefinition<TEntity>
     {
-        private static FSDirectory _directory;
+        private FSDirectory _directory;
 
-        public FSDirectoryIndexManager(Site currentSite)
-            : base(currentSite)
+        public FSDirectoryIndexManager(Site currentSite, TDefinition definition)
+            : base(currentSite, definition)
         {
         }
 
-        protected override Directory GetDirectory()
+        protected override Directory GetDirectory(Site site)
         {
-            return _directory = _directory ?? FSDirectory.Open(new DirectoryInfo(Definition.GetLocation(CurrentSite)));
+            return _directory = _directory ?? FSDirectory.Open(new DirectoryInfo(Definition.GetLocation(site)));
         }
     }
 }

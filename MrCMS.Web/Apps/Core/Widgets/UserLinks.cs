@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.Widget;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
 
@@ -17,12 +18,12 @@ namespace MrCMS.Web.Apps.Core.Widgets
         public override object GetModel(NHibernate.ISession session)
         {
             var navigationRecords = new List<NavigationRecord>();
-            var documentService = MrCMSApplication.Get<IDocumentService>();
+            var uniquePageService = MrCMSApplication.Get<IUniquePageService>();
 
             var loggedIn = CurrentRequestData.CurrentUser != null;
             if (loggedIn)
             {
-                var liveUrlSegment = documentService.GetUniquePage<UserAccountPage>().LiveUrlSegment;
+                var liveUrlSegment = uniquePageService.GetUniquePage<UserAccountPage>().LiveUrlSegment;
                 if (liveUrlSegment != null)
                     navigationRecords.Add(new NavigationRecord
                     {
@@ -41,7 +42,7 @@ namespace MrCMS.Web.Apps.Core.Widgets
             }
             else
             {
-                var liveUrlSegment = documentService.GetUniquePage<LoginPage>().LiveUrlSegment;
+                var liveUrlSegment = uniquePageService.GetUniquePage<LoginPage>().LiveUrlSegment;
                 if (liveUrlSegment != null)
                 {
                     navigationRecords.Add(new NavigationRecord
@@ -50,7 +51,7 @@ namespace MrCMS.Web.Apps.Core.Widgets
                         Url =
                             MvcHtmlString.Create(string.Format("/{0}", liveUrlSegment))
                     });
-                    var urlSegment = documentService.GetUniquePage<RegisterPage>().LiveUrlSegment;
+                    var urlSegment = uniquePageService.GetUniquePage<RegisterPage>().LiveUrlSegment;
                     if (urlSegment != null)
                         navigationRecords.Add(new NavigationRecord
                         {

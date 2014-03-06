@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using System.Linq;
+using MrCMS.Settings;
 
 namespace MrCMS.Shortcodes.Forms
 {
@@ -11,13 +11,13 @@ namespace MrCMS.Shortcodes.Forms
     {
         public const string CbHiddenValue = "cb-hidden-value";
 
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
+        public TagBuilder AppendElement(CheckboxList formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var values = existingValue == null
-                             ? new List<string>()
-                             : existingValue.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
-                                            .Select(s => s.Trim())
-                                            .ToList();
+                                ? new List<string>()
+                                : existingValue.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                                               .Select(s => s.Trim())
+                                               .ToList();
             values.Remove(CbHiddenValue);
 
             var tagBuilder = new TagBuilder("div");
@@ -41,10 +41,31 @@ namespace MrCMS.Shortcodes.Forms
                 else if (checkbox.Selected)
                     checkboxBuilder.Attributes["checked"] = "checked";
 
+                if (formProperty.Required)
+                {
+                    var requiredMessage = string.Format("The field {0} is required",
+                        string.IsNullOrWhiteSpace(formProperty.LabelText)
+                            ? formProperty.Name
+                            : formProperty.LabelText);
+                    checkboxBuilder.Attributes["data-val"] = "true";
+                    checkboxBuilder.Attributes["data-val-mandatory"] = requiredMessage;
+                    checkboxBuilder.Attributes["data-val-required"] = requiredMessage;
+                }
+
                 checkboxBuilder.Attributes["name"] = formProperty.Name;
                 checkboxBuilder.Attributes["id"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
                 cbLabelBuilder.InnerHtml += checkboxBuilder.ToString();
-                tagBuilder.InnerHtml += cbLabelBuilder.ToString();
+                if (formRenderingType == FormRenderingType.Bootstrap3)
+                {
+                    var checkboxContainer = new TagBuilder("div");
+                    checkboxContainer.AddCssClass("checkbox");
+                    checkboxContainer.InnerHtml += cbLabelBuilder.ToString();
+                    tagBuilder.InnerHtml += checkboxContainer;
+                }
+                else
+                {
+                    tagBuilder.InnerHtml += cbLabelBuilder;
+                }
             }
 
             var cbHiddenBuilder = new TagBuilder("input");
@@ -54,6 +75,11 @@ namespace MrCMS.Shortcodes.Forms
             tagBuilder.InnerHtml += cbHiddenBuilder.ToString();
 
             return tagBuilder;
+        }
+
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        {
+            return AppendElement(formProperty as CheckboxList, existingValue, formRenderingType);
         }
 
         public bool IsSelfClosing { get { return false; } }

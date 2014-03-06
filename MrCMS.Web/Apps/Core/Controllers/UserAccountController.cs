@@ -2,6 +2,7 @@
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
@@ -62,7 +63,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     user.LastName = model.LastName;
                     user.Email = model.Email;
                     _userService.SaveUser(user);
-                    _authorisationService.SetAuthCookie(user.Email, false);
+                    _authorisationService.SetAuthCookie(user, false);
 
                     return Redirect(UniquePageHelper.GetUrl<UserAccountPage>());
                 }

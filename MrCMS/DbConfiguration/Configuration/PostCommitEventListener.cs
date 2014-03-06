@@ -20,7 +20,6 @@ namespace MrCMS.DbConfiguration.Configuration
         {
             try
             {
-                var session = @event.Session.SessionFactory.OpenFilteredSession();
                 if (@event.Entity is Document && !(@event.Entity as Document).IsDeleted)
                 {
 
@@ -35,10 +34,14 @@ namespace MrCMS.DbConfiguration.Configuration
                     {
                         string propertyName = propertyNames[i];
 
-                        if (propertyInfos.All(info => info.Name != propertyName))
+                        var propertyInfo = propertyInfos.FirstOrDefault(info => info.Name == propertyName);
+                        if (propertyInfo == null)
                             continue;
 
-                        var oldValue = @event.OldState[i];
+                        var oldValue = @event.OldState[i] ??
+                                       (propertyInfo.PropertyType.IsValueType
+                                            ? Activator.CreateInstance(propertyInfo.PropertyType)
+                                            : null);
                         var newValue = @event.State[i];
 
                         if (oldValue != null)
@@ -52,17 +55,18 @@ namespace MrCMS.DbConfiguration.Configuration
                     }
                     if (anyChanges)
                     {
+                        var session = @event.Session.SessionFactory.OpenFilteredSession();
                         var document = GetDocument(session, @event.Entity as Document);
 
                         var documentVersion = new DocumentVersion
-                                                  {
-                                                      Document = document,
-                                                      Data = JsonConvert.SerializeObject(jObject),
-                                                      User = GetUser(session),
-                                                      CreatedOn = CurrentRequestData.Now,
-                                                      UpdatedOn = CurrentRequestData.Now,
-                                                      Site = session.Get<Site>(CurrentRequestData.CurrentSite.Id)
-                                                  };
+                        {
+                            Document = document,
+                            Data = JsonConvert.SerializeObject(jObject),
+                            User = GetUser(session),
+                            CreatedOn = CurrentRequestData.Now,
+                            UpdatedOn = CurrentRequestData.Now,
+                            Site = session.Get<Site>(CurrentRequestData.CurrentSite.Id)
+                        };
                         document.Versions.Add(documentVersion);
                         using (var transaction = session.BeginTransaction())
                         {

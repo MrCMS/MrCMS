@@ -1,6 +1,7 @@
 using System.Web.Mvc;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website;
@@ -19,7 +20,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
         public ActionResult Show(RegisterPage page)
         {
-            if (CurrentRequestData.CurrentUser != null)
+            if (CurrentRequestData.CurrentUser != null && !CurrentRequestData.CurrentUserIsAdmin)
                 return Redirect("~/");
             return View(page);
         }

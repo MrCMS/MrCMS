@@ -60,12 +60,20 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void FileController_Delete_CallsDeleteFileOnFileService()
+        public void FileController_Delete_ShouldBeViewResult()
         {
             FileController fileController = GetFileController();
 
+            fileController.Delete(new MediaFile()).Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void FileController_Delete_CallsDeleteFileOnFileService()
+        {
+            FileController fileController = GetFileController();
             var mediaFile = new MediaFile();
-            fileController.Delete(mediaFile);
+            mediaFile.MediaCategory = new MediaCategory{Id = 1};
+            fileController.Delete_POST(mediaFile);
 
             A.CallTo(() => fileService.DeleteFile(mediaFile)).MustHaveHappened();
         }
@@ -99,7 +107,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void FileController_FilesPost_CallsAddFileForTheUploadedFile()
+        public void FileController_FilesPost_CallsAddFileForTheUploadedFileIfIsValidFile()
         {
             FileController fileController = GetFileController();
             var httpRequestBase = A.Fake<HttpRequestBase>();
@@ -117,6 +125,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
                                                        }
                                                    });
             A.CallTo(() => httpRequestBase.Files).Returns(httpFileCollectionWrapper);
+            A.CallTo(() => fileService.IsValidFileType("test.txt")).Returns(true);
             fileController.RequestMock = httpRequestBase;
 
             var mediaCategory = new MediaCategory();
@@ -124,6 +133,35 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             A.CallTo(() => fileService.AddFile(memoryStream, fileName, contentType, contentLength, mediaCategory))
              .MustHaveHappened();
+        }
+
+        [Fact]
+        public void FileController_FilesPost_DoesNotCallAddFileForTheUploadedFileIfIsNotAValidType()
+        {
+            FileController fileController = GetFileController();
+            var httpRequestBase = A.Fake<HttpRequestBase>();
+            var memoryStream = new MemoryStream();
+            string fileName = "test.txt";
+            string contentType = "text/plain";
+            int contentLength = 0;
+            var httpFileCollectionWrapper =
+                new FakeHttpFileCollectionBase(new Dictionary<string, HttpPostedFileBase>
+                                                   {
+                                                       {
+                                                           "test",
+                                                           new FakeHttpPostedFileBase(memoryStream, fileName,
+                                                                                      contentType, contentLength)
+                                                       }
+                                                   });
+            A.CallTo(() => httpRequestBase.Files).Returns(httpFileCollectionWrapper);
+            A.CallTo(() => fileService.IsValidFileType("test.txt")).Returns(false);
+            fileController.RequestMock = httpRequestBase;
+
+            var mediaCategory = new MediaCategory();
+            fileController.Files_Post(mediaCategory);
+
+            A.CallTo(() => fileService.AddFile(memoryStream, fileName, contentType, contentLength, mediaCategory))
+                .MustNotHaveHappened();
         }
     }
 }

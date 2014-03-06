@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using MrCMS.Settings;
 
 namespace MrCMS.Shortcodes.Forms
 {
@@ -12,7 +13,7 @@ namespace MrCMS.Shortcodes.Forms
             _dropDownListOptionRenderer = dropDownListOptionRenderer;
         }
 
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
+        public TagBuilder AppendElement(DropDownList formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var tagBuilder = new TagBuilder("select");
             tagBuilder.Attributes["name"] = formProperty.Name;
@@ -29,12 +30,19 @@ namespace MrCMS.Shortcodes.Forms
             }
             if (!string.IsNullOrWhiteSpace(formProperty.CssClass))
                 tagBuilder.AddCssClass(formProperty.CssClass);
+            if (formRenderingType == FormRenderingType.Bootstrap3)
+                tagBuilder.AddCssClass("form-control");
 
             foreach (var option in formProperty.Options)
             {
                 tagBuilder.InnerHtml += _dropDownListOptionRenderer.GetOption(option, existingValue);
             }
             return tagBuilder;
+        }
+
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        {
+            return AppendElement(formProperty as DropDownList, existingValue, formRenderingType);
         }
 
         public bool IsSelfClosing { get { return false; } }

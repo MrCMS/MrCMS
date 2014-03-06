@@ -58,13 +58,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_AddPost_ShouldRedirectToEdit()
+        public void MediaCategoryController_AddPost_ShouldRedirectToShow()
         {
             var mediaCategory = new MediaCategory { Id = 1 };
 
             var result = _mediaCategoryController.Add(mediaCategory) as RedirectToRouteResult;
 
-            result.RouteValues["action"].Should().Be("Edit");
+            result.RouteValues["action"].Should().Be("Show");
             result.RouteValues["id"].Should().Be(1);
         }
 
@@ -104,7 +104,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             ActionResult actionResult = _mediaCategoryController.Edit(mediaCategory);
 
             actionResult.Should().BeOfType<RedirectToRouteResult>();
-            (actionResult as RedirectToRouteResult).RouteValues["action"].Should().Be("Edit");
+            (actionResult as RedirectToRouteResult).RouteValues["action"].Should().Be("Show");
             (actionResult as RedirectToRouteResult).RouteValues["id"].Should().Be(1);
         }
 
@@ -138,17 +138,17 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_View_ShouldRedirectToEditWithTheSameId()
+        public void MediaCategoryController_Show_ShouldReturnViewResultWithObjectAsModel()
         {
-            ActionResult actionResult = _mediaCategoryController.Show(new MediaCategory { Id = 1 });
+            var mediaCategorySearchModel = new MediaCategorySearchModel();
+            ActionResult actionResult = _mediaCategoryController.Show(mediaCategorySearchModel);
 
-            actionResult.Should().BeOfType<RedirectToRouteResult>();
-            actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
-            actionResult.As<RedirectToRouteResult>().RouteValues["id"].Should().Be(1);
+            actionResult.Should().BeOfType<ViewResult>();
+            actionResult.As<ViewResult>().Model.Should().Be(mediaCategorySearchModel);
         }
 
         [Fact]
-        public void MediaCategoryController_View_IncorrectCategoryIdRedirectsToIndex()
+        public void MediaCategoryController_Show_IncorrectCategoryIdRedirectsToIndex()
         {
             ActionResult actionResult = _mediaCategoryController.Show(null);
 
@@ -172,30 +172,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             ActionResult result = _mediaCategoryController.Upload(mediaCategory);
 
             result.As<PartialViewResult>().Model.Should().Be(mediaCategory);
-        }
-
-        [Fact]
-        public void MediaCategoryController_UploadTemplate_ShouldReturnAPartialView()
-        {
-            ActionResult result = _mediaCategoryController.UploadTemplate();
-
-            result.Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void MediaCategoryController_Thumbnails_ShouldReturnAPartialView()
-        {
-            ActionResult result = _mediaCategoryController.Thumbnails();
-
-            result.Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void MediaCategoryController_DownloadTemplate_ShouldReturnAPartialView()
-        {
-            ActionResult result = _mediaCategoryController.DownloadTemplate();
-
-            result.Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]

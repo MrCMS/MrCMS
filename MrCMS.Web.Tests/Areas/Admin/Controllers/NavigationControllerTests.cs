@@ -1,11 +1,7 @@
 ﻿using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
-using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
@@ -15,24 +11,26 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class NavigationControllerTests
     {
-        private ISiteService _siteService;
-        private INavigationService _navigationService;
-        private ICurrentSiteLocator _currentSiteLocator;
-        private NavigationController _navigationController;
+        private readonly ICurrentSiteLocator _currentSiteLocator;
+        private readonly NavigationController _navigationController;
+        private readonly INavigationService _navigationService;
+        private readonly ISiteService _siteService;
+        private readonly ITreeNavService _treeNavService;
 
         public NavigationControllerTests()
         {
-
             _navigationService = A.Fake<INavigationService>();
             _siteService = A.Fake<ISiteService>();
             _currentSiteLocator = A.Fake<ICurrentSiteLocator>();
-            _navigationController = new NavigationController(_navigationService, _siteService, _currentSiteLocator);
+            _treeNavService = A.Fake<ITreeNavService>();
+            _navigationController = new NavigationController(_navigationService, _treeNavService, _siteService,
+                                                             _currentSiteLocator);
         }
 
         [Fact]
         public void NavigationController_WebsiteTree_ShouldReturnPartialView()
         {
-            PartialViewResult partialViewResult = _navigationController.WebSiteTree();
+            PartialViewResult partialViewResult = _navigationController.WebSiteTree(null);
 
             partialViewResult.Should().BeOfType<PartialViewResult>();
         }
@@ -42,11 +40,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var site = new Site();
             A.CallTo(() => _currentSiteLocator.GetCurrentSite()).Returns(site);
-            A.CallTo(() => _navigationService.GetWebsiteTree(null)).Returns(new SiteTree<Webpage>());
+            A.CallTo(() => _treeNavService.GetWebpageNodes(null)).Returns(new AdminTree());
 
-            PartialViewResult partialViewResult = _navigationController.WebSiteTree();
+            PartialViewResult partialViewResult = _navigationController.WebSiteTree(null);
 
-            partialViewResult.Model.Should().BeOfType<SiteTree<Webpage>>();
+            partialViewResult.Model.Should().BeOfType<AdminTree>();
         }
 
         [Fact]
@@ -54,21 +52,21 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var site = new Site();
             A.CallTo(() => _currentSiteLocator.GetCurrentSite()).Returns(site);
-            A.CallTo(() => _navigationService.GetLayoutList()).Returns(new SiteTree<Layout>());
+            A.CallTo(() => _treeNavService.GetLayoutNodes(null)).Returns(new AdminTree());
 
-            PartialViewResult partialViewResult = _navigationController.LayoutTree();
+            PartialViewResult partialViewResult = _navigationController.LayoutTree(null);
 
-            partialViewResult.Model.Should().BeOfType<SiteTree<Layout>>();
+            partialViewResult.Model.Should().BeOfType<AdminTree>();
         }
 
         [Fact]
         public void NavigationController_MediaTree_ShouldReturnSiteTreeAsModel()
         {
-            A.CallTo(() => _navigationService.GetMediaTree()).Returns(new SiteTree<MediaCategory>());
+            A.CallTo(() => _treeNavService.GetMediaCategoryNodes(null)).Returns(new AdminTree());
 
-            PartialViewResult partialViewResult = _navigationController.MediaTree();
+            PartialViewResult partialViewResult = _navigationController.MediaTree(null);
 
-            partialViewResult.Model.Should().BeOfType<SiteTree<MediaCategory>>();
+            partialViewResult.Model.Should().BeOfType<AdminTree>();
         }
 
         [Fact]

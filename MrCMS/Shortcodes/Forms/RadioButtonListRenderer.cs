@@ -4,16 +4,17 @@ using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using MrCMS.Settings;
 
 namespace MrCMS.Shortcodes.Forms
 {
     public class RadioButtonListRenderer : IFormElementRenderer<RadioButtonList>
     {
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
+        public TagBuilder AppendElement(RadioButtonList formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var values = existingValue == null
                              ? new List<string>()
-                             : existingValue.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
+                             : existingValue.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
                                             .Select(s => s.Trim())
                                             .ToList();
 
@@ -25,25 +26,50 @@ namespace MrCMS.Shortcodes.Forms
                 cbLabelBuilder.InnerHtml = checkbox.Value;
                 cbLabelBuilder.AddCssClass("radio");
 
-                var checkboxBuilder = new TagBuilder("input");
-                checkboxBuilder.Attributes["type"] = "radio";
-                checkboxBuilder.Attributes["value"] = checkbox.Value;
-                checkboxBuilder.AddCssClass(formProperty.CssClass);
+                var radioButtonBuilder = new TagBuilder("input");
+                radioButtonBuilder.Attributes["type"] = "radio";
+                radioButtonBuilder.Attributes["value"] = checkbox.Value;
+                radioButtonBuilder.AddCssClass(formProperty.CssClass);
 
                 if (existingValue != null)
                 {
                     if (values.Contains(checkbox.Value))
-                        checkboxBuilder.Attributes["checked"] = "checked";
+                        radioButtonBuilder.Attributes["checked"] = "checked";
                 }
                 else if (checkbox.Selected)
-                    checkboxBuilder.Attributes["checked"] = "checked";
+                    radioButtonBuilder.Attributes["checked"] = "checked";
 
-                checkboxBuilder.Attributes["name"] = formProperty.Name;
-                checkboxBuilder.Attributes["id"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
-                cbLabelBuilder.InnerHtml += checkboxBuilder.ToString();
-                tagBuilder.InnerHtml += cbLabelBuilder.ToString();
+                if (formProperty.Required)
+                {
+                    radioButtonBuilder.Attributes["data-val"] = "true";
+                    radioButtonBuilder.Attributes["data-val-required"] =
+                        string.Format("The field {0} is required",
+                                      string.IsNullOrWhiteSpace(formProperty.LabelText)
+                                          ? formProperty.Name
+                                          : formProperty.LabelText);
+                }
+
+                radioButtonBuilder.Attributes["name"] = formProperty.Name;
+                radioButtonBuilder.Attributes["id"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
+                cbLabelBuilder.InnerHtml += radioButtonBuilder.ToString();
+                if (formRenderingType == FormRenderingType.Bootstrap3)
+                {
+                    var radioContainer = new TagBuilder("div");
+                    radioContainer.AddCssClass("radio");
+                    radioContainer.InnerHtml += cbLabelBuilder.ToString();
+                    tagBuilder.InnerHtml += radioContainer;
+                }
+                else
+                {
+                    tagBuilder.InnerHtml += cbLabelBuilder;
+                }
             }
             return tagBuilder;
+        }
+
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        {
+            return AppendElement(formProperty as RadioButtonList, existingValue, formRenderingType);
         }
         public bool IsSelfClosing { get { return false; } }
     }

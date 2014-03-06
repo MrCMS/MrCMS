@@ -1,27 +1,34 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Helpers;
-using System.Linq;
+using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
-    public class ScheduledTask : SiteEntity
+    public partial class ScheduledTask : SiteEntity, IHaveExecutionStatus
     {
         public ScheduledTask()
         {
-            EveryXMinutes = 10;
+            EveryXSeconds = 600;
         }
 
         public virtual string Type { get; set; }
 
-        [DisplayName("Every X Minutes")]
-        public virtual int EveryXMinutes { get; set; }
+        [DisplayName("Every X Seconds")]
+        public virtual int EveryXSeconds { get; set; }
+
+        [DisplayName("Last Queued At")]
+        public virtual DateTime? LastQueuedAt { get; set; }
 
         [DisplayName("Last Run")]
-        public virtual DateTime? LastRun { get; set; }
+        public virtual DateTime? LastComplete { get; set; }
+
+        [DisplayName("Last Run")]
+        public virtual TaskExecutionStatus Status { get; set; }
 
         public virtual string TypeName
         {
@@ -30,10 +37,35 @@ namespace MrCMS.Tasks
 
         public virtual IEnumerable<SelectListItem> GetTypeOptions()
         {
-            return TypeHelper.GetAllConcreteTypesAssignableFrom<BackgroundTask>()
+            return TypeHelper.GetAllConcreteTypesAssignableFrom<SchedulableTask>()
                              .Where(type => type.IsPublic)
                              .BuildSelectItemList(type => type.Name.BreakUpString(), type => type.FullName,
                                                   emptyItemText: "Select a type");
         }
+
+        public virtual void OnStarting()
+        {
+            Status = TaskExecutionStatus.Executing;
+        }
+
+        public virtual void OnSuccess()
+        {
+            Status = TaskExecutionStatus.Pending;
+            LastComplete = CurrentRequestData.Now;
+        }
+
+        public virtual void OnFailure()
+        {
+            Status = TaskExecutionStatus.Pending;
+        }
+    }
+
+    public enum TaskExecutionStatus
+    {
+        Pending,
+        AwaitingExecution,
+        Executing,
+        Completed,
+        Failed
     }
 }

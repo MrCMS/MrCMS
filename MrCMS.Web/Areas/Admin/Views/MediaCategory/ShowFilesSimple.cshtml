@@ -1,0 +1,40 @@
+﻿@using System.Drawing
+@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaCategory
+<div id="file-list-simple" data-category-id="@Model.Id">
+    @if (Model.Files.Any())
+    {
+        <table class="table table-striped table-condensed">
+            <tr>
+                <th class="span6">File Name</th>
+                <th class="span4">Alt / Description</th>
+                <th class="span2"><a href="@Url.Action("Show", "MediaCategory", new {Id = Model.Id})" class="btn btn-mini" target="_new">Manage folder</a></th>
+            </tr>
+
+            @foreach (var file in Model.Files.OrderByDescending(x=>x.CreatedOn))
+            {
+                <tr>
+                    <td>
+                        @if (file.IsImage)
+                        {
+                            <a href="@file.FileUrl">
+                                @Html.RenderImage(file.FileUrl, new Size(100, 100))
+                            </a>
+                        }
+                        @Html.Link(file.FileName, file.FileUrl)
+
+                    </td>
+                    <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? MvcHtmlString.Create("<br />" + file.Description) : null)</td>
+                    <th><a href="@Url.Action("Delete", "File", new{Id=file.Id})" class="btn btn-danger btn-mini delete-file-simple" onclick="if (!confirm('Are you sure?')) return false;">Delete</a></th>
+                </tr>
+            }
+
+        </table>
+
+    }
+    else
+    {
+        <p>There are no files here yet - why not upload some?</p>
+        
+    }
+</div>

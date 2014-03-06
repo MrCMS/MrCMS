@@ -178,7 +178,11 @@ namespace MrCMS.Services
 
         public void ClearFormData(Webpage webpage)
         {
-            _session.Transact(session => webpage.FormPostings.ForEach(session.Delete));
+            _session.Transact(session =>
+                                  {
+                                      webpage.FormPostings.ForEach(session.Delete);
+                                      webpage.FormPostings.Clear();
+                                  });
         }
 
         public byte[] ExportFormData(Webpage webpage)
@@ -208,6 +212,12 @@ namespace MrCMS.Services
 
                 return file;
             }
+        }
+
+        public void DeletePosting(FormPosting posting)
+        {
+            posting.Webpage.FormPostings.Remove(posting);
+            _session.Transact(session => session.Delete(posting));
         }
 
         private static IEnumerable<string> GetHeadersForExport(Webpage webpage)
@@ -263,9 +273,6 @@ namespace MrCMS.Services
                                                                            IsHtml = true
                                                                        });
                                           }
-
-                                          TaskExecutor.ExecuteLater(new SendQueuedMessagesTask(_mailSettings,
-                                                                                               _siteSettings));
                                       });
             }
         }
@@ -347,7 +354,12 @@ namespace MrCMS.Services
 
         public void AddFormProperty(FormProperty property)
         {
-            _session.Transact(session => session.Save(property));
+            _session.Transact(session =>
+                              {
+                                  property.DisplayOrder = property.Webpage.FormProperties.Count;
+
+                                  session.Save(property);
+                              });
         }
         public void SaveFormProperty(FormProperty property)
         {
@@ -364,12 +376,20 @@ namespace MrCMS.Services
             var formProperty = formListOption.FormProperty;
             if (formProperty != null)
                 formProperty.Options.Add(formListOption);
-            _session.Transact(session => session.Save(formListOption));
+            _session.Transact(session =>
+                              {
+                                  formListOption.OnSaving(session);
+                                  session.Save(formListOption);
+                              });
         }
 
         public void UpdateFormListOption(FormListOption formListOption)
         {
-            _session.Transact(session => session.Update(formListOption));
+            _session.Transact(session =>
+                              {
+                                  formListOption.OnSaving(session);
+                                  session.Update(formListOption);
+                              });
         }
 
         public void DeleteFormListOption(FormListOption formListOption)

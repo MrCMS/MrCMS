@@ -49,14 +49,11 @@ namespace MrCMS.Entities.Documents.Metadata
         /// <summary>
         /// Used to overide display order by another document property. I.E display by document date.
         /// </summary>
-        public virtual Func<Document, object> SortBy
+        public virtual SortBy SortBy
         {
-            get { return document => document.DisplayOrder; }
+            get { return SortBy.DisplayOrder; }
         }
-        /// <summary>
-        /// Directrion for sort
-        /// </summary>
-        public virtual bool SortByDesc { get { return false; } }
+
         /// <summary>
         /// Determines whether children of this document type are sortable
         /// </summary>
@@ -141,7 +138,6 @@ namespace MrCMS.Entities.Documents.Metadata
                                WebPostController = WebPostController,
                                SortBy = SortBy,
                                MaxChildNodes = MaxChildNodes,
-                               SortByDesc = SortByDesc,
                                Sortable = Sortable,
                                DisplayOrder = DisplayOrder,
                                Type = Type,

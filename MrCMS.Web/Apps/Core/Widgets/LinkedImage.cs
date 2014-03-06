@@ -13,7 +13,6 @@ using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Widgets
 {
-    [MrCMSMapClass]
     public class LinkedImage : Widget 
     {
         public virtual string Image { get; set; }

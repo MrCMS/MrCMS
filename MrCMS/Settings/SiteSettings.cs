@@ -12,11 +12,6 @@ namespace MrCMS.Settings
     {
         private readonly SiteSettingsOptionGenerator _siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
         private SiteSettingsOptionGenerator _siteSettingsOptionGeneratorOverride;
-        protected SiteSettingsOptionGenerator SiteSettingsOptionGenerator { get { return _siteSettingsOptionGeneratorOverride ?? _siteSettingsOptionGenerator; } }
-        public void SetSiteSettingsOptionGeneratorOverride(SiteSettingsOptionGenerator siteSettingsOptionGenerator)
-        {
-            _siteSettingsOptionGeneratorOverride = siteSettingsOptionGenerator;
-        }
 
         public SiteSettings()
         {
@@ -25,6 +20,13 @@ namespace MrCMS.Settings
             CKEditorConfig = SettingDefaults.CkEditorConfig;
             HoneypotFieldName = "YourStatus";
             DaysToKeepLogs = 30;
+            TaskExecutorKey = "executor";
+            TaskExecutorPassword = Guid.NewGuid().ToString();
+        }
+
+        protected SiteSettingsOptionGenerator SiteSettingsOptionGenerator
+        {
+            get { return _siteSettingsOptionGeneratorOverride ?? _siteSettingsOptionGenerator; }
         }
 
         [DropDownSelection("Themes")]
@@ -41,9 +43,11 @@ namespace MrCMS.Settings
         [DisplayName("Unauthorised Page")]
         [DropDownSelection("403Options")]
         public virtual int Error403PageId { get; set; }
+
         [DisplayName("404 Page")]
         [DropDownSelection("404Options")]
         public virtual int Error404PageId { get; set; }
+
         [DropDownSelection("500Options")]
         [DisplayName("500 Page")]
         public virtual int Error500PageId { get; set; }
@@ -63,15 +67,37 @@ namespace MrCMS.Settings
         [DisplayName("Site UI Culture")]
         [DropDownSelection("UiCultures")]
         public string UICulture { get; set; }
-        public CultureInfo CultureInfo { get { return !String.IsNullOrWhiteSpace(UICulture) ? CultureInfo.GetCultureInfo(UICulture) : CultureInfo.CurrentCulture; } }
+
+        public CultureInfo CultureInfo
+        {
+            get
+            {
+                return !String.IsNullOrWhiteSpace(UICulture)
+                           ? CultureInfo.GetCultureInfo(UICulture)
+                           : CultureInfo.CurrentCulture;
+            }
+        }
 
         [DisplayName("Time zones")]
         [DropDownSelection("TimeZones")]
         public string TimeZone { get; set; }
-        public TimeZoneInfo TimeZoneInfo { get { return !String.IsNullOrWhiteSpace(TimeZone) ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone) : TimeZoneInfo.Local; } }
+
+        public TimeZoneInfo TimeZoneInfo
+        {
+            get
+            {
+                return !String.IsNullOrWhiteSpace(TimeZone)
+                           ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone)
+                           : TimeZoneInfo.Local;
+            }
+        }
 
         [DisplayName("Honeypot Field Name")]
         public string HoneypotFieldName { get; set; }
+
+        public string TaskExecutorKey { get; set; }
+        public string TaskExecutorPassword { get; set; }
+
 
         public bool HasHoneyPot
         {
@@ -86,13 +112,14 @@ namespace MrCMS.Settings
 
         [DisplayName("Allowed Admin IPs")]
         public string AllowedAdminIPs { get; set; }
+
         public IEnumerable<string> AllowedIPs
         {
             get
             {
                 if (string.IsNullOrWhiteSpace(AllowedAdminIPs)) yield break;
-                var ips = AllowedAdminIPs.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var ip in ips)
+                string[] ips = AllowedAdminIPs.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string ip in ips)
                 {
                     IPAddress address;
                     if (IPAddress.TryParse(ip, out address))
@@ -101,21 +128,37 @@ namespace MrCMS.Settings
             }
         }
 
+        public override bool RenderInSettings
+        {
+            get { return true; }
+        }
+
+        [DisplayName("Default Form Renderer Type")]
+        [DropDownSelection("DefaultFormRenderer")]
+        public FormRenderingType FormRendererType { get; set; }
+
+        public void SetSiteSettingsOptionGeneratorOverride(SiteSettingsOptionGenerator siteSettingsOptionGenerator)
+        {
+            _siteSettingsOptionGeneratorOverride = siteSettingsOptionGenerator;
+        }
+
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
             viewDataDictionary["DefaultLayoutOptions"] = SiteSettingsOptionGenerator.GetLayoutOptions(session, Site,
-                                                                                                       DefaultLayoutId);
+                                                                                                      DefaultLayoutId);
             viewDataDictionary["403Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
-                                                                                                Error403PageId);
+                                                                                               Error403PageId);
             viewDataDictionary["404Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
-                                                                                                Error404PageId);
+                                                                                               Error404PageId);
             viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
-                                                                                                Error500PageId);
+                                                                                               Error500PageId);
             viewDataDictionary["Themes"] = SiteSettingsOptionGenerator.GetThemeNames(ThemeName);
 
             viewDataDictionary["UiCultures"] = SiteSettingsOptionGenerator.GetUiCultures(UICulture);
 
             viewDataDictionary["TimeZones"] = SiteSettingsOptionGenerator.GetTimeZones(TimeZone);
+
+            viewDataDictionary["DefaultFormRenderer"] = SiteSettingsOptionGenerator.GetFormRendererOptions(FormRendererType);
         }
 
         public TagBuilder GetHoneypot()
@@ -127,6 +170,13 @@ namespace MrCMS.Settings
             return honeyPot;
         }
     }
+
+    public enum FormRenderingType
+    {
+        Bootstrap2,
+        Bootstrap3
+    }
+
     public static class SettingDefaults
     {
         public const string CkEditorConfig = @"/**
@@ -138,7 +188,8 @@ CKEDITOR.editorConfig = function (config) {
     config.extraPlugins = 'justify,autogrow,youtube,mediaembed';
     config.removePlugins = 'elementspath';
     config.forcePasteAsPlainText = true;
-    config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.min.css', '/Apps/Core/Content/Styles/style.css'];
+    config.allowedContent = true;
+    config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.css', '/Apps/Core/Content/Styles/style.css'];
 
     config.toolbar = 'Full';
 

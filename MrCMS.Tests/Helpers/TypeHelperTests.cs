@@ -110,6 +110,11 @@ namespace MrCMS.Tests.Helpers
             get { return "Test"; }
         }
 
+        public override string Version
+        {
+            get { return "0.1"; }
+        }
+
         protected override void RegisterServices(IKernel kernel)
         {
             

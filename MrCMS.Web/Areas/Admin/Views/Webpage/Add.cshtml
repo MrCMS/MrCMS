@@ -4,68 +4,46 @@
 @{
     ViewBag.Title = "Add Webpage";
 }
-@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/add-webpage.js");}
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/add-webpage.js");}
 
 @using (Html.BeginForm("Add", "Webpage", new { id = "" }, FormMethod.Post))
 {
     <fieldset>
-        <legend>Add page
+        <legend>Add page to @(Model.Parent != null ? Model.Parent.Name : "Root")
             <span class="btn-group  display-inline  pull-right">
                 <input type="submit" class="btn-primary btn" value="Save and continue" />
             </span>
         </legend>
         <div class="row-fluid">
             <div class="span2">
-                <strong>Location:</strong><br />
-                @if (Model.Parent != null)
-                {
-                    <ul class="filetree filetree  web-tree">
-                        <ul>
-                            <li><i class="@Model.Parent.GetMetadata().IconClass">&nbsp;</i> @Model.Parent.Name
-                                <ul>
-                                    <li><i class="icon-file">&nbsp;</i> <span style="font-style: italic" id="new-page">[Your new page]</span></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </ul>
-                }
-                else
-                {
-                    <ul class="filetree filetree  web-tree">
-                        <li><i class="icon-asterisk">&nbsp;</i> Root
-                             <ul>
-                                 <li><i class="icon-file">&nbsp;</i> <span style="font-style: italic" id="new-page">[Your new page]</span></li>
-                             </ul>
-                        </li>
-                    </ul>
-                }
-                <hr class="small-margin" />
                 @{ //pre select radio if there is only one option
-                var count = 0;
-                var documentMetadatas = ViewData["DocumentTypes"] as List<DocumentMetadata>;
-
-                if (documentMetadatas != null)
-                {
-                    count = documentMetadatas.Count;
+    var count = 0;
+    var documentMetadatas = ViewData["DocumentTypes"] as List<DocumentMetadata>;
+    if (documentMetadatas != null)
+    {
+        count = documentMetadatas.Count;
+    }
                 }
-                }
-
                 @foreach (var documentType in documentMetadatas)
                 {
                     <label class="radio">
                         <i class="@documentType.IconClass">&nbsp;</i>
-                        <input id="DocumentType" name="DocumentType" type="radio" value="@documentType.TypeName" required  @(count == 1 ? "checked" : "")>
+                        @Html.RadioButton("DocumentType", documentType.TypeName, count == 1, new { data_val = "true", data_val_required = "Please select a page type" })
+                        @*<input id="DocumentType" name="DocumentType" type="radio" value="@documentType.TypeName" required  @(count == 1 ? "checked" : "")>*@
                         @documentType.Name
                     </label>
                 }
+                @Html.ValidationMessage("DocumentType")
             </div>
             <div class="span10">
                 @Html.HiddenFor(x => x.Parent.Id)
                 @Html.LabelFor(x => x.Name, "Page Name")
                 @Html.TextBoxFor(x => x.Name, new { @class = "span12", autocomplete = "off" })
+                @Html.ValidationMessageFor(x => x.Name)
 
                 @Html.LabelFor(x => x.UrlSegment, "Url")
                 @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
+                @Html.ValidationMessageFor(x => x.UrlSegment)
 
                 <label class="checkbox">
                     @if (Model.Parent != null && Model.Parent.GetMetadata().ChildrenMaintainHierarchy)
@@ -82,12 +60,5 @@
                 @Html.DropDownListFor(x => x.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
             </div>
         </div>
-
-        @Html.ValidationSummary()
-
-        <hr />
-
-
-
     </fieldset>
 }

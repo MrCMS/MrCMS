@@ -1,0 +1,41 @@
+﻿@using MrCMS.Entities.Documents.Media
+@using MrCMS.Helpers
+@using MrCMS.Paging
+@model MrCMS.Models.MediaCategorySearchModel
+@{
+    var mediaCategory = ViewData["media-category"] as MediaCategory;
+    ViewBag.Title = mediaCategory.Name;
+
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
+    ViewData["MediaCategory"] = mediaCategory;
+    
+}
+@if (TempData["saved"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @TempData["saved"]
+    </div>
+}
+<form action="@Url.Action("Show", "MediaCategory", new { mediaCategory.Id })" method="get" id="search-form" style="margin-bottom: 0;">
+    <fieldset>
+        <legend>@mediaCategory.Name
+            <span class="btn-group  display-inline  pull-right">
+                <a href="@Url.Action("SortFiles", "MediaCategory", new { id = mediaCategory.Id })" class="btn ">Sort</a>
+                @if (mediaCategory.CanDelete())
+                {
+                    <a href="@Url.Action("Delete", "MediaCategory", new { id = mediaCategory.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
+                }
+                <a href="@Url.Action("Edit", "MediaCategory", new { id = mediaCategory.Id })" class="btn">Edit</a>
+
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </span>
+        </legend>
+    </fieldset>
+    @Html.LabelFor(x => x.SearchText)
+    @Html.TextBoxFor(x => x.SearchText)
+</form>
+@{ Html.RenderAction("Upload", "MediaCategory", new { category = mediaCategory } ); }
+<hr class="small-margin" />
+@{ Html.RenderAction("ShowFiles", new { searchModel = Model });}

@@ -1,11 +1,12 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using MrCMS.Settings;
 
 namespace MrCMS.Shortcodes.Forms
 {
     public class TextAreaRenderer : IFormElementRenderer<TextArea>
     {
-        public TagBuilder AppendElement(FormProperty formProperty, string existingValue)
+        public TagBuilder AppendElement(TextArea formProperty, string existingValue, FormRenderingType formRenderingType)
         {
             var tagBuilder = new TagBuilder("textarea");
             tagBuilder.Attributes["name"] = formProperty.Name;
@@ -22,8 +23,15 @@ namespace MrCMS.Shortcodes.Forms
             }
             if (!string.IsNullOrWhiteSpace(formProperty.CssClass))
                 tagBuilder.AddCssClass(formProperty.CssClass);
+            if (formRenderingType == FormRenderingType.Bootstrap3)
+                tagBuilder.AddCssClass("form-control");
             tagBuilder.InnerHtml = existingValue;
             return tagBuilder;
+        }
+
+        public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)
+        {
+            return AppendElement(formProperty as TextArea, existingValue, formRenderingType);
         }
 
         public bool IsSelfClosing { get { return false; } }

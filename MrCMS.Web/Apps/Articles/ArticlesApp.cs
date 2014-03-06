@@ -13,6 +13,11 @@ namespace MrCMS.Web.Apps.Articles
             get { return "Articles"; }
         }
 
+        public override string Version
+        {
+            get { return "0.1"; }
+        }
+
         protected override void RegisterServices(IKernel kernel)
         {
             

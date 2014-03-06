@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
+using MrCMS.Paging;
 
 namespace MrCMS.Services
 {
@@ -11,6 +12,7 @@ namespace MrCMS.Services
         ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory);
         ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory);
         MediaFile GetFile(int id);
+        IPagedList<MediaFile> GetFilesForSearchPaged(MediaCategorySearchModel mediaCategorySearchModel);
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);
         string GetFileLocation(MediaFile mediaFile, Size imageSize);
@@ -20,5 +22,6 @@ namespace MrCMS.Services
         void RemoveFolder(MediaCategory mediaCategory);
         void CreateFolder(MediaCategory mediaCategory);
         void SetOrders(List<SortItem> items);
+        bool IsValidFileType(string fileName);
     }
 }

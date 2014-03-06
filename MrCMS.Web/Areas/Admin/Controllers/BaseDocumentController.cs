@@ -89,9 +89,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))]T parent)
         {
             var sortItems =
-                _documentService.GetDocumentsByParent(parent).OrderBy(arg => arg.DisplayOrder)
+                _documentService.GetDocumentsByParent(parent)
                                 .Select(
                                     arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
+                                    .OrderBy(x => x.Order)
                                 .ToList();
 
             return View(sortItems);
@@ -103,9 +104,5 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _documentService.SetOrders(items);
             return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
         }
-
-        public abstract ActionResult Show(T document);
-
-        
     }
 }

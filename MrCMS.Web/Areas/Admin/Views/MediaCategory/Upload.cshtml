@@ -1,52 +1,31 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Settings
+@using MrCMS.Website
 @model MrCMS.Entities.Documents.Media.MediaCategory
 
 @if (Model != null)
 {
-    using (Html.BeginForm("Files", "File", new { Id = Model.Id }, FormMethod.Post, new { id = "fileupload", enctype = "multipart/form-data", @class = "form-fileUpload" }))
-    {
-        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-        <div class="row-fluid fileupload-buttonbar margin0">
-            <div class="span7">
-                <!-- The fileinput-button span is used to style the file input field as button -->
-                <span class="btn btn-success fileinput-button"><i class="icon-plus icon-white"></i><span>
-                                                                                                       Add files...</span>
-                    <input type="file" name="files[]" multiple>
-                </span>
-                <button type="button" class="btn btn-primary start">
-                    <i class="icon-upload icon-white"></i><span>Start upload</span>
-                </button>
-                <button type="reset" class="btn btn-warning cancel">
-                    <i class="icon-ban-circle icon-white"></i><span>Cancel upload</span>
-                </button>
-                <button type="button" class="btn btn-danger delete">
-                    <i class="icon-trash icon-white"></i><span>Delete</span>
-                </button>
-                <input type="checkbox" class="toggle">
-            </div>
-            <!-- The global progress information -->
-            <div class="span5 fileupload-progress fade">
-                <!-- The global progress bar -->
-                <div class="progress progress-success progress-striped active">
-                    <div class="bar" style="width: 0%;">
-                    </div>
-                </div>
-                <!-- The extended global progress information -->
-                <div class="progress-extended">&nbsp;</div>
+    <div class="row-fluid">
+        <div class="span3">
+            <span class="btn btn-success fileinput-button">
+                <i class="icon-plus"></i>
+                <span>Upload files...</span>
+                <input id="fileupload" type="file" name="files[]" multiple />
+                <input type="hidden" value="@Url.Action("Files", "File", new { Id = Model.Id })" id="action-url"/>
+                <input type="hidden" value="@Model.Id" id="action-category-id"/>
+            </span>
+        </div>
+        <div class="span9">
+            <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 0px;">
+                <div class="bar"><span id="percent-complete" style="text-align: center;"></span></div>
             </div>
         </div>
+    </div>
+    <div id="mrcmsfiles" class=""></div>
 
-        <!-- The loading indicator is shown during file processing -->
-        <div class="fileupload-loading">
-        </div>
-
-        <br />
-
-        <!-- The table listing the files available for upload/download -->
-        <table class="table table-striped" id="file-items-table" style="margin-top:-20px;">
-            <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
-                @{ Html.RenderAction("Thumbnails", "MediaCategory", Model); }
-            </tbody>
-        </table>
-    }
+    <input type="hidden" id="allowedFileTypes" value="@(MrCMSApplication.Get<MediaSettings>().AllowedFileTypes)"/>
+    <input type="hidden" id="maxFileSizeUpload" value="@(MrCMSApplication.Get<MediaSettings>().MaxFileSizeUpload)"/>
+    
+    <div id="dropzone"><span>Drop files here</span></div>
+    
 }

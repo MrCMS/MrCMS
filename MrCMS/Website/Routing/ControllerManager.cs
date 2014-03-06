@@ -26,13 +26,6 @@ namespace MrCMS.Website.Routing
 
     public class ControllerManager : IControllerManager
     {
-        //public ControllerManager(string httpMethod, Webpage webpage)
-        //{
-        //    //HttpMethod = httpMethod;
-        //    Webpage = webpage;
-        //}
-
-
         public IControllerFactory OverridenControllerFactory { get; set; }
         private static readonly IControllerFactory DefaultControllerFactory = ControllerBuilder.Current.GetControllerFactory();
 
@@ -40,14 +33,6 @@ namespace MrCMS.Website.Routing
         {
             get { return OverridenControllerFactory ?? DefaultControllerFactory; }
         }
-
-        //public string HttpMethod { get; set; }
-        //public Webpage Webpage { get; set; }
-
-        //public DocumentMetadata Metadata
-        //{
-        //    get { return Webpage == null ? null : Webpage.GetMetadata(); }
-        //}
 
         public void SetViewData(Webpage webpage, Controller controller, ISession session)
         {
@@ -123,7 +108,7 @@ namespace MrCMS.Website.Routing
         public Controller GetController(RequestContext requestContext, Webpage webpage, string httpMethod)
         {
             var controllerName = GetControllerName(webpage, httpMethod);
-	    
+
             var controller = ControllerFactory.CreateController(requestContext, controllerName) as Controller;
 
             controller.ControllerContext = new ControllerContext(requestContext, controller)

@@ -6,16 +6,18 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class TaskController : MrCMSAdminController
     {
-        private readonly IScheduledTaskManager _scheduledTaskManager;
+        private readonly ITaskManager _taskManager;
 
-        public TaskController(IScheduledTaskManager scheduledTaskManager)
+        public TaskController(ITaskManager taskManager)
         {
-            _scheduledTaskManager = scheduledTaskManager;
+            _taskManager = taskManager;
         }
 
-        public ViewResult Index()
+        public ViewResult Index(QueuedTaskSearchQuery searchQuery)
         {
-            return View(_scheduledTaskManager.GetAllTasks());
+            ViewData["scheduled-tasks"] = _taskManager.GetAllScheduledTasks();
+            ViewData["tasks"] = _taskManager.GetQueuedTasks(searchQuery);
+            return View(searchQuery);
         }
 
         [HttpGet]
@@ -27,7 +29,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public RedirectToRouteResult Add(ScheduledTask scheduledTask)
         {
-            _scheduledTaskManager.Add(scheduledTask);
+            _taskManager.Add(scheduledTask);
 
             return RedirectToAction("Index");
         }
@@ -42,7 +44,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Edit")]
         public RedirectToRouteResult Edit_Post(ScheduledTask scheduledTask)
         {
-            _scheduledTaskManager.Update(scheduledTask);
+            _taskManager.Update(scheduledTask);
 
             return RedirectToAction("Index");
         }
@@ -57,7 +59,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Delete")]
         public RedirectToRouteResult Delete_Post(ScheduledTask scheduledTask)
         {
-            _scheduledTaskManager.Delete(scheduledTask);
+            _taskManager.Delete(scheduledTask);
             return RedirectToAction("Index");
         }
     }

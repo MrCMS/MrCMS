@@ -1,7 +1,7 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
 @model Webpage
-<ul class="nav nav-tabs margin-top-10">
+<ul class="nav nav-tabs margin-top-10" data-stickytabs="webpage-@Model.Id">
     <li class="active"><a href="#edit-content" data-toggle="tab">Edit</a></li>
     <li><a href="#edit-seo" data-toggle="tab">SEO & Properties</a></li>
     <li><a href="#layout-content" data-toggle="tab">Layout</a></li>
@@ -9,11 +9,11 @@
         <ul class="dropdown-menu">
             <li><a href="#form-properties-tab" data-toggle="tab">Fields</a></li>
             <li><a href="#form-design-tab" data-toggle="tab">Design</a></li>
-            <li><a href="#postings-tab" data-toggle="tab">Entries (@Model.FormPostings.Count)</a></li>
+            <li><a href="#postings-tab" data-toggle="tab">Entries (@Model.FormPostingsCount())</a></li>
             <li><a href="#form-message-tab" data-toggle="tab">Settings</a></li>
         </ul>
     </li>
-    <li><a href="#versions" data-toggle="tab">Versions</a></li>
+    <li><a href="#versions" data-toggle="tab" id="versions-link" data-id="@Url.RequestContext.RouteData.Values["id"]">Versions</a></li>
     <li><a href="#permissions"  data-toggle="tab">Permissions&nbsp;</a></li>
 </ul>
 <div class="row-fluid">
@@ -29,4 +29,4 @@
         @{Html.RenderPartial("Permissions", Model);}
     </div>
 </div>
-@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/edit-webpage.js"); }
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-webpage.js"); }

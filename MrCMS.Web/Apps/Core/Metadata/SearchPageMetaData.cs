@@ -22,6 +22,5 @@ namespace MrCMS.Web.Apps.Core.Metadata
         {
             get { return "SearchPage"; }
         }
-        public override bool HasBodyContent { get { return false; } }
     }
 }

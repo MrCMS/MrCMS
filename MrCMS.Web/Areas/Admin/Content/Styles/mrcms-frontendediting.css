@@ -1,5 +1,5 @@
 ﻿html { margin-top: 30px; }
-.mrcms-admin-nav-bar { position: fixed; top: 0; left: 0; height: 30px; width: 100%; background:#3a3c3c;z-index: 9999;font-family: arial;font-size: 13px;}
+.mrcms-admin-nav-bar { position: fixed; top: 0; left: 0; height: 30px; width: 100%; background:#3a3c3c;z-index: 9999;font-family: arial;font-size: 13px;min-width: 600px;}
 .mrcms-admin-nav-bar > a { margin-top: 2px;text-decoration: none;margin-left: 2px;}
 .mrcms-admin-nav-bar > a:first-child { margin-left: 2px;}
 
@@ -7,14 +7,17 @@
 .middle-col:focus { outline: none; background: #e7e7e7; }
 
 .modal { z-index: 100000; }
-.edit-indicator-widget { width: 20px; height: 20px; position: absolute; left: 5px; cursor: pointer; z-index: 9999; display: none; }
-.edit-indicator-layout { width: 20px; height: 20px; position: absolute; right: 0; cursor: pointer; z-index: 9999; display: none; }
+.edit-indicator-widget { position: absolute; cursor: pointer; z-index: 9999; display: none; }
+.edit-indicator-layout { position: absolute; right: 0; cursor: pointer; z-index: 9999; display: none; }
+.corner { right: -20px;top: -20px; }
+body.editing-on .editable { cursor: crosshair;}
 
 div.layout-area, div.widget { position: relative; }
-
+.layout-area-enabled {}
+.layout-area-enabled:hover { cursor: pointer;}
 .mrcms-edit-menu { position: absolute; padding: 5px; z-index: 10000; border: 1px solid #d0d0d0; background: white; display: none; box-shadow: 5px 5px 5px #888888;min-width: 100px;max-width: 200px;}
-.mrcms-edit-widget {  left: 0;}
-.mrcms-edit-layout-area { right: 0;width: 150px;}
+.mrcms-edit-widget {  left: 0;color: black;}
+.mrcms-edit-layout-area { right: 0;width: 150px; color: black;}
 .mrcms-edit-menu h4 { font-size: 12px; font-family: arial; margin: 5px; padding: 0;overflow: hidden;text-wrap: none;}
 .mrcms-edit-menu ul { margin: 0; padding: 0; list-style-type: none; }
     .mrcms-edit-menu ul li { margin: 5px; }

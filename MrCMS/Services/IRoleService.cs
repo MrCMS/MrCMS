@@ -13,5 +13,6 @@ namespace MrCMS.Services
         void DeleteRole(UserRole role);
         bool IsOnlyAdmin(User user);
         IEnumerable<AutoCompleteResult> Search(string term);
+        UserRole GetRole(int id);
     }
 }

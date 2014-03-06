@@ -1,75 +1,137 @@
-﻿body {
-    padding-top: 10px;
+﻿.btn, input, .navbar {
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
 }
 
-.container {
-    margin: 0 auto;
+.margin-top-0 {
+    margin-top: 0;
 }
 
-.jumbotron {
-    margin: 80px 0;
-    text-align: center;
+.margin-bottom-0 {
+    margin-top: 0;
 }
 
-    .jumbotron h1 {
-        font-size: 100px;
-        line-height: 1;
-    }
-
-    .jumbotron .lead {
-        font-size: 24px;
-        line-height: 1.25;
-    }
-
-    .jumbotron .btn {
-        font-size: 21px;
-        padding: 14px 24px;
-    }
-/* Supporting marketing content */
-.marketing {
-    margin: 60px 0;
+.margin-top-5 {
+    margin-top: 5px;
 }
 
-    .marketing p + h4 {
-        margin-top: 28px;
-    }
-/* Customize the navbar links to be fill the entire space of the .navbar */
-.navbar .navbar-inner {
-    padding: 0;
+.margin-bottom-5 {
+    margin-top: 5px;
 }
 
-.navbar .nav {
-    margin: 0;
-    display: table;
-    width: 100%;
+.margin-top-10 {
+    margin-top: 10px;
 }
 
-    .navbar .nav li {
-        display: table-cell;
-        width: 1%;
-        float: none;
-    }
+.margin-bottom-10 {
+    margin-top: 10px;
+}
 
-        .navbar .nav li a {
-            font-weight: bold;
-            text-align: center;
-            border-left: 1px solid rgba(255,255,255,.75);
-            border-right: 1px solid rgba(0,0,0,.1);
-        }
+h2.not-registered {
+    font-size: 36px;
+}
 
-        .navbar .nav li:first-child a {
-            border-left: 0;
-            border-radius: 3px 0 0 3px;
-        }
-
-        .navbar .nav li:last-child a {
-            border-right: 0;
-            border-radius: 0 3px 3px 0;
-        }
-
-.field-validation-error span {
+.field-validation-error, .field-validation-error span {
     color: red;
 }
 
-.margin-bottom-10 { margin-bottom: 10px;}
-.margin-bottom-20 { margin-bottom: 20px;}
+.input-validation-error {
+    border: 1px solid red!important;
+}
+
+nav.navbar-mrcms {
+    background-color: #1BA1E2;
+    color: white;
+    border: none;
+}
+
+    nav.navbar-mrcms ul li a, .navbar-brand {
+        color: white;
+    }
+
+    nav.navbar-mrcms .nav > li > a:hover, nav.navbar-mrcms .nav > li > a:focus {
+        background-color: #e7e7e7;
+        color: grey;
+    }
+
+    nav.navbar-mrcms ul.dropdown-menu li a {
+        color: black;
+    }
+
+.mrcms-content > :first-child {
+    margin-top: 0;
+}
+
+.navbar-toggle {
+    background: white;
+}
+
+    .navbar-toggle .icon-bar {
+        background: #1BA1E2;
+    }
+
+@media (max-width: 768px) {
+    #nav-links-right {
+        position: absolute;
+        top: 0;
+        right: 70px;
+    }
+
+        #nav-links-right .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+        }
+
+    #nav-links-right > li {
+        float: left;
+    }
+
+    .navbar-nav {
+        margin: 0;
+    }
+
+        .navbar-nav > li > a {
+            padding-top: 15px;
+            padding-bottom: 15px;
+        }
+
+    #nav-links-right .dropdown-menu {
+        right: 0;
+        left: auto;
+    }
+
+    .open > .dropdown-menu {
+        display: block;
+    }
+
+    .navbar-nav .open .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        float: left;
+        min-width: 160px;
+        padding: 5px 0;
+        font-size: 14px;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+
+    #nav-links-right .dropdown-menu > li > a {
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: normal;
+        line-height: 1.428571429;
+        color: #333;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 768px) {
+    #nav-links-right .navbar-form { margin: 0;padding: 3px 10px;width: 220px;}
+}

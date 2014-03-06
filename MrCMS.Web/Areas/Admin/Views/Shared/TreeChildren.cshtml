@@ -5,7 +5,7 @@
     <ul>
         @foreach (SiteTreeNode node in Model)
         {
-            <li data-id="@node.Id" data-sort-id="@node.ParentId" data-sortable="@node.Sortable" data-can-add-child="@node.CanAddChild" data-controller="@node.NodeType"><i class="@node.IconClass">&nbsp;</i>
+            <li data-id="@node.Id" data-sort-id="@node.ParentId" data-sortable="@node.Sortable" data-can-add-child="@node.CanAddChild" data-controller="@node.NodeType"><i class="@node.IconUrl">&nbsp;</i>
                 @{
             var cssClass = "";
             if (!node.RevealInNavigation)
@@ -24,7 +24,7 @@
         }
         @if (Model.More)
         {
-            <li><i class="icon-plus">&nbsp;</i>@Html.ActionLink(string.Format("{0} More", Model.NumberMore), "Index", "Search", new { parent = Model.Id }, null)</li>
+            <li><i class="icon-plus">&nbsp;</i>@Html.ActionLink(string.Format("{0} More", Model.NumberMore), "Index", "Search", new RouteValueDictionary { { "Parent.Id", Model.Id } }, null)</li>
         }
     </ul>
 }

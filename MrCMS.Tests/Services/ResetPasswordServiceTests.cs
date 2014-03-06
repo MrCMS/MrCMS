@@ -9,6 +9,7 @@ using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Web.Apps.Core.MessageTemplates;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website;
 using Xunit;
@@ -73,18 +74,6 @@ namespace MrCMS.Tests.Services
             _resetPasswordService.SetResetPassword(user);
 
             A.CallTo(() => _messageParser.QueueMessage(queuedMessage)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void ResetPasswordService_SetResetPassword_ShouldQueueASendMessagesTask()
-        {
-            var user = new User();
-            A.CallTo(() => _messageParser.GetMessage(user, null, null, null, null, null, null))
-             .Returns(new QueuedMessage());
-
-            _resetPasswordService.SetResetPassword(user);
-
-            TaskExecutor.TasksToExecute.Value.OfType<SendQueuedMessagesTask>().Should().HaveCount(1);
         }
 
         [Fact]

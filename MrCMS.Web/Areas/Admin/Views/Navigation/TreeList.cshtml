@@ -1,0 +1,53 @@
+﻿@using MrCMS.Models
+@model AdminTree
+
+@if (Model.IsRootRequest)
+{
+    <ul>
+        <li class="jstree-open" id="@Model.RootContoller" data-can-add-child="True" data-sortable="True" data-haschildren="True" data-jstree='{"icon":"icon-certificate"}' data-controller="@Model.RootContoller">
+            <a href="#">Root</a>
+            @RenderChildren(Model.Nodes)
+        </li>
+    </ul>
+}
+else
+{
+    @RenderChildren(Model.Nodes)
+}
+
+@helper RenderChildren(List<AdminTreeNode> Model)
+{
+    <ul>
+        @foreach (AdminTreeNode node in Model)
+        {
+            if (node.IsMoreLink)
+            {
+            <li data-jstree='{"icon":"@node.IconClass"}'>@Html.ActionLink(string.Format("{0} More", node.NumberMore), "Index", "Search", new RouteValueDictionary { { "Parent.Id", node.ParentId } }, null)</li>
+            }
+            else
+            {
+            <li id="@node.Id" data-id="@node.Id" data-parent-id="@node.ParentId" data-sortable="@node.Sortable" data-can-add-child="@node.CanAddChild" 
+                data-haschildren="@node.HasChildren" data-controller="@node.NodeType" class="@(node.HasChildren ? "jstree-closed" : "")" data-jstree='{"icon":"@node.IconClass"}'>
+
+                @{
+                var cssClass = "";
+                if (!node.RevealInNavigation)
+                {
+                    cssClass = "grey";
+                }
+                if (!node.IsPublished)
+                {
+                    cssClass = "orange";
+                }
+                }
+
+                @(node.NodeType == "Webpage" ? Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, new { @class = cssClass != "" ? cssClass : "" }) :
+                (node.NodeType == "MediaCategory" ? Html.ActionLink(node.Name, "Show", node.NodeType, new { id = node.Id }, null) : Html.ActionLink(node.Name, "Edit", node.NodeType, new { id = node.Id }, null))
+                )
+            </li>
+
+            }
+        }
+    </ul>
+}
+

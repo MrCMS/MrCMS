@@ -22,7 +22,7 @@ namespace MrCMS.Helpers
         public static List<Type> GetAllTypes()
         {
             return _alltypes ??
-                   (_alltypes = AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.GlobalAssemblyCache).SelectMany(GetLoadableTypes).Distinct().ToList());
+                   (_alltypes = GetAllMrCMSAssemblies().SelectMany(GetLoadableTypes).Distinct().ToList());
         }
         
         public static List<Assembly> GetAllMrCMSAssemblies()
@@ -30,7 +30,8 @@ namespace MrCMS.Helpers
             return
                 _mrCMSAssemblies =
                 _mrCMSAssemblies ??
-                GetAllTypesAssignableFrom<SystemEntity>().Select(type => type.Assembly).Distinct().ToList();
+                AppDomain.CurrentDomain.GetAssemblies()
+                         .Where(assembly => assembly.GetCustomAttributes<MrCMSAssemblyAttribute>().Any()).ToList();
         }
 
         public static List<Type> GetMappedClassesAssignableFrom<T>()
@@ -296,6 +297,13 @@ namespace MrCMS.Helpers
         public static Type GetTypeByClassName(string typeName)
         {
             return _alltypes.FirstOrDefault(type => type.Name == typeName);
+        }
+
+        public static Type GetGenericTypeByName(string type)
+        {
+            return
+                _mrCMSAssemblies.Select(mrCMSAssembly => mrCMSAssembly.GetType(type))
+                                .FirstOrDefault(type1 => type1 != null);
         }
     }
 }

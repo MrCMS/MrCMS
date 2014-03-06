@@ -8,6 +8,7 @@ using System.Text;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
+using MrCMS.Paging;
 using MrCMS.Settings;
 using NHibernate;
 using MrCMS.Helpers;
@@ -24,7 +25,7 @@ namespace MrCMS.Services
         private readonly Site _currentSite;
         private readonly SiteSettings _siteSettings;
 
-        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings, Site currentSite, SiteSettings siteSettings)
+        public FileService(ISession session, IFileSystem fileSystem,  IImageProcessor imageProcessor, MediaSettings mediaSettings, Site currentSite, SiteSettings siteSettings)
         {
             _session = session;
             _fileSystem = fileSystem;
@@ -192,20 +193,38 @@ namespace MrCMS.Services
             return _session.Get<MediaFile>(id);
         }
 
+        public IPagedList<MediaFile> GetFiles(int? mediaCategoryId, int page = 1)
+        {
+            return _session.QueryOver<MediaFile>()
+                           .Where(x => x.MediaCategory.Id == mediaCategoryId)
+                           .OrderBy(x=>x.DisplayOrder).Desc
+                           .Paged(pageNumber:page, pageSize:_siteSettings.DefaultPageSize);
+        }
+
+        public IPagedList<MediaFile> GetFilesForSearchPaged(MediaCategorySearchModel model)
+        {
+            var query = _session.QueryOver<MediaFile>();
+            if (model.Id > 0)
+                query = query.Where(x => x.MediaCategory.Id == model.Id);
+            if (model.SearchText != null)
+                query = query.Where(x => x.FileName.IsLike(model.SearchText, MatchMode.Anywhere) || x.Title.IsLike(model.SearchText, MatchMode.Anywhere) || x.Description.IsLike(model.SearchText, MatchMode.Anywhere));
+
+            return query.OrderBy(x => x.DisplayOrder).Desc.Paged(model.Page, _siteSettings.DefaultPageSize);
+        }
+
         public void DeleteFile(MediaFile mediaFile)
         {
             // remove file from the file list for its category, to prevent missing item exception
             if (mediaFile.MediaCategory != null)
                 mediaFile.MediaCategory.Files.Remove(mediaFile);
 
-            _fileSystem.Delete(mediaFile.FileUrl);
-            foreach (var imageUrl in
-                GetImageSizes()
-                    .Select(imageSize => GetUrl(mediaFile, imageSize.Size))
-                    .Where(path => _fileSystem.Exists(path)))
+            foreach (var resizedImage in
+                mediaFile.ResizedImages
+                    .Where(path => _fileSystem.Exists(path.Url)))
             {
-                _fileSystem.Delete(imageUrl);
+                _fileSystem.Delete(resizedImage.Url);
             }
+            _fileSystem.Delete(mediaFile.FileUrl);
 
             _session.Transact(session => session.Delete(mediaFile));
         }
@@ -283,6 +302,14 @@ namespace MrCMS.Services
                                                                mediaFile.DisplayOrder = item.Order;
                                                                session.Update(mediaFile);
                                                            }));
+        }
+
+        public bool IsValidFileType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName);
+            if (string.IsNullOrWhiteSpace(extension) || extension.Length < 1)
+                return false;
+            return _mediaSettings.AllowedFileTypeList.Contains(extension.Substring(1), StringComparer.OrdinalIgnoreCase);
         }
     }
 }

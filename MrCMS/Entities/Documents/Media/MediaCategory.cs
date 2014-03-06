@@ -19,8 +19,7 @@ namespace MrCMS.Entities.Documents.Media
 
         public virtual string MetaTitle { get; set; }
         public virtual string MetaDescription { get; set; }
-
-        [DisplayName("Is Gallery")]
+        [DisplayName("Allow use as gallery")]
         public virtual bool IsGallery { get; set; }
 
         private IList<MediaFile> _files = new List<MediaFile>();
@@ -31,10 +30,8 @@ namespace MrCMS.Entities.Documents.Media
             protected internal set { _files = value; }
         }
 
-        public virtual bool HideInAdminNav { get; set; }
         public override bool ShowInAdminNav { get { return !HideInAdminNav; } }
-
-
+        
         public override void OnDeleting(ISession session)
         {
             base.OnDeleting(session);

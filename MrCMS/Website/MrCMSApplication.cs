@@ -30,7 +30,6 @@ using System.Linq;
 using MrCMS.Helpers;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "Start", Order = 1)]
-[assembly: WebActivator.PreApplicationStartMethod(typeof(MrCMSApplication), "EnsureIndexesExist", Order = 2)]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(MrCMSApplication), "Stop")]
 
 namespace MrCMS.Website
@@ -53,8 +52,6 @@ namespace MrCMS.Website
             ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
-
-            ScheduledTaskChecker.Instance.Start(10);
 
             GlobalFilters.Filters.Add(new HoneypotFilterAttribute());
         }
@@ -89,7 +86,6 @@ namespace MrCMS.Website
         {
             if (CurrentRequestData.DatabaseIsInstalled)
             {
-                TaskExecutor.SessionFactory = Get<ISessionFactory>();
                 BeginRequest += (sender, args) =>
                                     {
                                         if (!IsFileRequest(Request.Url))
@@ -106,19 +102,34 @@ namespace MrCMS.Website
                                            {
                                                if (!IsFileRequest(Request.Url))
                                                {
-                                                   CurrentRequestData.CurrentUser =
-                                                       Get<IUserService>()
-                                                           .GetCurrentUser(CurrentRequestData.CurrentContext);
+                                                   if (CurrentRequestData.CurrentContext.User != null)
+                                                   {
+                                                       var currentUser = Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
+                                                       if (currentUser == null || !currentUser.IsActive)
+                                                           Get<IAuthorisationService>().Logout();
+                                                       else
+                                                           CurrentRequestData.CurrentUser = currentUser;
+                                                   }
                                                }
                                            };
                 EndRequest += (sender, args) =>
                 {
-                    if (!IsFileRequest(Request.Url))
+                    if (CurrentRequestData.QueuedTasks.Any())
                     {
-                        TaskExecutor.StartExecuting();
+                        Kernel.Get<ISession>()
+                               .Transact(session =>
+                               {
+                                   foreach (var queuedTask in CurrentRequestData.QueuedTasks)
+                                       session.Save(queuedTask);
+                               });
                     }
                 };
             }
+            EndRequest += (sender, args) =>
+            {
+                foreach (var action in CurrentRequestData.OnEndRequest)
+                    action(Kernel);
+            };
         }
 
         public abstract string RootNamespace { get; }
@@ -129,6 +140,7 @@ namespace MrCMS.Website
             routes.IgnoreRoute("favicon.ico");
 
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
+            routes.MapRoute("Task Execution", "execute-pending-tasks", new { controller = "TaskExecution", action = "Execute" });
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
             routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",
@@ -174,17 +186,6 @@ namespace MrCMS.Website
             bootstrapper.Initialize(CreateKernel);
         }
 
-        public static void EnsureIndexesExist()
-        {
-            if (CurrentRequestData.DatabaseIsInstalled)
-            {
-                var session = bootstrapper.Kernel.Get<ISessionFactory>().OpenFilteredSession();
-                var sites = session.QueryOver<Site>().List();
-                foreach (var site in sites)
-                    IndexManager.EnsureIndexesExist(session, site);
-            }
-        }
-
         /// <summary>
         /// Stops the application.
         /// </summary>
@@ -199,7 +200,7 @@ namespace MrCMS.Website
         /// <returns>The created kernel.</returns>
         private static IKernel CreateKernel()
         {
-            var kernel = new StandardKernel(new ServiceModule(), new ContextModule(),
+            var kernel = new StandardKernel(new ServiceModule(), 
                                             new NHibernateModule(DatabaseType.Auto, InDevelopment));
             kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
@@ -237,8 +238,8 @@ namespace MrCMS.Website
             return Kernel.Get(type);
         }
 
-        public const string AssemblyVersion = "0.3.2.*";
-        public const string AssemblyFileVersion = "0.3.2.0";
+        public const string AssemblyVersion = "0.4.0.0";
+        public const string AssemblyFileVersion = "0.4.0.0";
     }
 
     public class HoneypotFilterAttribute : ActionFilterAttribute

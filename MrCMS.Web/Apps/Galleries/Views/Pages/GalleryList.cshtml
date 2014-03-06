@@ -23,12 +23,14 @@
 
 @foreach (var page in pagedList)
 {
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-lg-12">
             <h3 class="margin-top-0"><a href="/@page.LiveUrlSegment" class="margin-top-0">@page.Name </a></h3>
+            @page.CreatedOn.Day @page.CreatedOn.ToString("MMMMM") @page.CreatedOn.Year <br />
             @Html.RenderImage(page.ThumbnailImage, new Size{Width = 100, Height = 100})
         </div>
     </div>
+    <hr />
 }
 @if (Model.AllowPaging)
 {

@@ -21,7 +21,7 @@ namespace MrCMS.Helpers
         {
             get
             {
-                return WidgetTypes.BuildSelectItemList(type => type.Name.BreakUpString(), type => type.Name,
+                return WidgetTypes.OrderBy(x=>x.Name).BuildSelectItemList(type => type.Name.BreakUpString(), type => type.Name,
                                                        emptyItemText: null);
             }
         }
@@ -33,7 +33,7 @@ namespace MrCMS.Helpers
                 return WidgetTypes.Where(
                     type =>
                     CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Add, type.FullName))
-                                  .BuildSelectItemList(type => type.Name.BreakUpString(), type => type.Name,
+                                  .OrderBy(x => x.Name).BuildSelectItemList(type => type.Name.BreakUpString(), type => type.Name,
                                                        emptyItemText: null);
             }
         }

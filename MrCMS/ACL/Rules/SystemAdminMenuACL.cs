@@ -15,6 +15,7 @@ namespace MrCMS.ACL.Rules
         public const string ACL = "ACL";
         public const string Indices = "Indices";
         public const string MessageQueue = "Message Queue";
+        public const string ClearCaches = "Clear Caches";
 
         public override string DisplayName
         {
@@ -23,7 +24,21 @@ namespace MrCMS.ACL.Rules
 
         protected override List<string> GetOperations()
         {
-            return new List<string> { ShowMenu, SiteSettings, FileSystemSettings, Sites, Logs, Tasks, ImportExport, MessageTemplates, ACL, Indices };
+            return new List<string>
+                   {
+                       ShowMenu,
+                       SiteSettings,
+                       FileSystemSettings,
+                       Sites,
+                       Logs,
+                       Tasks,
+                       ImportExport,
+                       MessageTemplates,
+                       ACL,
+                       Indices,
+                       MessageQueue,
+                       ClearCaches
+                   };
         }
     }
 }

@@ -18,26 +18,6 @@ namespace MrCMS.Tests.Entities
     public class DocumentTests : InMemoryDatabaseTest
     {
         [Fact]
-        public void Document_CanDelete_IsTrueWhenNoChildren()
-        {
-            var doc = new StubDocument();
-
-            doc.SetChildren(new List<Document>());
-
-            doc.CanDelete.Should().BeTrue();
-        }
-
-        [Fact]
-        public void Document_CanDelete_IsFalseWhenChildrenAreAdded()
-        {
-            var doc = new StubDocument();
-
-            doc.SetChildren(new List<Document> {new StubDocument()});
-
-            doc.CanDelete.Should().BeFalse();
-        }
-
-        [Fact]
         public void Document_OnDeleting_RemovesDocumentFromParent()
         {
             var doc = new StubDocument();

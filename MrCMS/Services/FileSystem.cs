@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Web.Hosting;
-using Microsoft.WindowsAzure.Storage.Blob;
 using MrCMS.Website;
 
 namespace MrCMS.Services
@@ -77,15 +77,32 @@ namespace MrCMS.Services
 
 
         public byte[] ReadAllBytes(string filePath) { return File.ReadAllBytes(GetPath(filePath)); }
+
+        public Stream GetReadStream(string filePath)
+        {
+            var path = GetPath(filePath);
+
+            return File.OpenRead(path);
+        }
+
         public void WriteToStream(string filePath, Stream stream)
         {
-            using (var fileStream = File.OpenRead(filePath))
+            var path = GetPath(filePath);
+            using (var fileStream = File.OpenRead(path))
             {
                 fileStream.CopyTo(stream);
             }
         }
 
+        public IEnumerable<string> GetFiles(string filePath)
+        {
+            var path = GetPath(filePath);
 
-        public string MapPath(string path) { return CurrentRequestData.CurrentContext.Server.MapPath(path); }
+            if (Directory.Exists(path))
+            {
+                foreach (var file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
+                    yield return "/" + file.Remove(0, ApplicationPath.Length).Replace('\\', '/');
+            }
+        }
     }
 }

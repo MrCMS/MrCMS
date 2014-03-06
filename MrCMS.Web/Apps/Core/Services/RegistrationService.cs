@@ -1,6 +1,7 @@
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 
 namespace MrCMS.Web.Apps.Core.Services
 {
@@ -31,7 +32,7 @@ namespace MrCMS.Web.Apps.Core.Services
                            };
             _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
             _userService.AddUser(user);
-            _authorisationService.SetAuthCookie(model.Email, false);
+            _authorisationService.SetAuthCookie(user, false);
             _userEventService.OnUserRegistered(user);
             return user;
         }

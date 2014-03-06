@@ -77,7 +77,7 @@ namespace MrCMS.Web.Areas.Admin
         }
 
         [HttpGet]
-        public ActionResult AddOption(FormProperty formProperty)
+        public ActionResult AddOption(FormPropertyWithOptions formProperty)
         {
             return View(new FormListOption { FormProperty = formProperty });
         }
@@ -162,6 +162,19 @@ namespace MrCMS.Web.Areas.Admin
                 CurrentRequestData.ErrorSignal.Raise(ex);
                 return RedirectToAction("Edit", "Webpage", new { id = webpage.Id });
             }
+        }
+
+        [HttpGet]
+        public ViewResult DeleteEntry(FormPosting posting)
+        {
+            return View(posting);
+        }
+        [HttpPost]
+        [ActionName("DeleteEntry")]
+        public ActionResult DeleteEntry_POST(FormPosting posting)
+        {
+            _formService.DeletePosting(posting);
+            return RedirectToAction("Edit", "Webpage", new { id = posting.Webpage.Id });
         }
     }
 

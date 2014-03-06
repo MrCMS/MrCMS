@@ -7,37 +7,42 @@ using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Indexing.Management;
 using MrCMS.Paging;
-using NHibernate;
+using MrCMS.Services;
+using MrCMS.Settings;
 
 namespace MrCMS.Indexing.Querying
 {
     public abstract class Searcher<TEntity, TDefinition> : ISearcher<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>, new()
+        where TDefinition : IndexDefinition<TEntity>
     {
-        private readonly ISession _session;
-        protected readonly TDefinition Definition = new TDefinition();
+        private readonly Site _site;
+        private readonly TDefinition _definition;
+        private readonly SiteSettings _siteSettings;
         private IndexSearcher _indexSearcher;
 
-        protected Searcher(Site currentSite, ISession session)
+        protected Searcher(Site site, TDefinition definition, SiteSettings siteSettings)
         {
-            _session = session;
-            _indexSearcher = new IndexSearcher(GetDirectory(currentSite));
+            _site = site;
+            _definition = definition;
+            _siteSettings = siteSettings;
+            IndexManager.EnsureIndexExists<TEntity, TDefinition>();
         }
 
-        protected abstract Directory GetDirectory(Site currentSite);
+        protected abstract Directory GetDirectory(Site site);
 
-        public IPagedList<TEntity> Search(Query query, int pageNumber, int pageSize, Filter filter = null, Sort sort = null)
+        public IPagedList<TEntity> Search(Query query, int pageNumber, int? pageSize = null, Filter filter = null, Sort sort = null)
         {
-            var topDocs = IndexSearcher.Search(query, filter, pageNumber * pageSize, sort ?? Sort.RELEVANCE);
+            var size = pageSize ?? _siteSettings.DefaultPageSize;
+
+            var topDocs = IndexSearcher.Search(query, filter, pageNumber * size, sort ?? Sort.RELEVANCE);
 
             var entities =
-                Definition.Convert(_session,
-                                   topDocs.ScoreDocs.Skip((pageNumber - 1) * pageSize)
-                                          .Take(pageSize)
+                Definition.Convert(topDocs.ScoreDocs.Skip((pageNumber - 1) * size)
+                                          .Take(size)
                                           .Select(doc => IndexSearcher.Doc(doc.Doc)));
 
-            return new StaticPagedList<TEntity>(entities, pageNumber, pageSize, topDocs.TotalHits);
+            return new StaticPagedList<TEntity>(entities, pageNumber, size, topDocs.TotalHits);
         }
 
         public int Total(Query query, Filter filter = null)
@@ -51,15 +56,20 @@ namespace MrCMS.Indexing.Querying
         {
             var topDocs = IndexSearcher.Search(query, filter, int.MaxValue, sort ?? Sort.RELEVANCE);
 
-            var entities = Definition.Convert(_session, topDocs.ScoreDocs.Select(doc => IndexSearcher.Doc(doc.Doc)));
+            var entities = Definition.Convert(topDocs.ScoreDocs.Select(doc => IndexSearcher.Doc(doc.Doc)));
 
             return entities.ToList();
         }
 
-        public IndexSearcher IndexSearcher { get { return _indexSearcher; } }
+        public IndexSearcher IndexSearcher { get { return _indexSearcher = _indexSearcher ?? new IndexSearcher(GetDirectory(_site)); } }
 
         public string IndexName { get { return Definition.IndexName; } }
         public string IndexFolderName { get { return Definition.IndexFolderName; } }
+
+        public TDefinition Definition
+        {
+            get { return _definition; }
+        }
 
 
         private bool _disposed;

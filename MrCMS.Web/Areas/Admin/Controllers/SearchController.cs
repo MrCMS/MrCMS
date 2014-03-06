@@ -1,111 +1,45 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Mvc;
-using MrCMS.Entities.Documents;
-using MrCMS.Helpers;
-using MrCMS.Models;
-using MrCMS.Paging;
+﻿using System.Web.Mvc;
 using MrCMS.Services;
-using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Areas.Admin.Models.Search;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class SearchController : MrCMSAdminController
     {
-        private readonly ISearchService _searchService;
         private readonly INavigationService _navigationService;
-        private readonly IDocumentService _documentService;
+        private readonly IAdminWebpageSearchService _adminWebpageSearchService;
 
-        public SearchController(ISearchService searchService, INavigationService navigationService, IDocumentService documentService)
+        public SearchController(INavigationService navigationService, IAdminWebpageSearchService adminWebpageSearchService)
         {
-            _searchService = searchService;
             _navigationService = navigationService;
-            _documentService = documentService;
+            _adminWebpageSearchService = adminWebpageSearchService;
         }
 
         [HttpGet]
-        public ActionResult Index(string term, string type, int? parent, int page = 1)
+        public ActionResult Index(AdminWebpageSearchQuery model)
         {
-            ViewData["term"] = term;
-            ViewData["parent-val"] = parent;
             ViewData["parents"] = _navigationService.GetParentsList();
-            ViewData["type"] = type;
-            ViewData["doc-types"] = _navigationService.GetDocumentTypes(type);
+            ViewData["doc-types"] = _navigationService.GetDocumentTypes(model.Type);
+            ViewData["results"] = _adminWebpageSearchService.Search(model);
 
-            var docs = GetDetailedResults(term, type, parent, page);
-            return View(docs);
+            return View(model);
         }
 
-        [HttpPost]
-        [ActionName("Index")]
-        public ActionResult IndexPost(string term, string type, int? parent)
-        {
-            return RedirectToAction("Index", new { term, type, parent });
-        }
-
-        //
-        // GET: /Admin/Search/
         [AcceptVerbs(HttpVerbs.Get)]
-        public JsonResult GetSearchResults(string term, string type)
+        public JsonResult GetSearchResults(AdminWebpageSearchQuery model)
         {
-            if (string.IsNullOrWhiteSpace(term))
+            if (string.IsNullOrWhiteSpace(model.Term))
                 return Json(new object());
-
-            var docs = GetResults(term, type).Take(15).ToList();
-            return Json(docs, JsonRequestBehavior.AllowGet);
+            return Json(_adminWebpageSearchService.QuickSearch(model), JsonRequestBehavior.AllowGet);
         }
 
-        private IPagedList<DetailedSearchResultModel> GetDetailedResults(string term, string type, int? parent, int page)
-        {
-            if (!string.IsNullOrWhiteSpace(type))
-            {
-                var typeByName = DocumentMetadataHelper.GetTypeByName(type);
-                var searchResults = _searchService.GetType()
-                                                    .GetMethodExt("SearchDocumentsDetailed", typeof(string),
-                                                                  typeof(int?), typeof(int));
-                var method = searchResults.MakeGenericMethod(typeByName);
-                return
-                    (method.Invoke(_searchService, new object[] { term, parent, page }) as
-                     IPagedList<DetailedSearchResultModel>);
-            }
-            var docs =
-                _searchService.SearchDocumentsDetailed<Document>(term, parent, page);
-
-            return docs;
-        }
-
-        private List<SearchResultModel> GetResults(string term, string type)
-        {
-            if (!string.IsNullOrWhiteSpace(type))
-            {
-                var typeByName = DocumentMetadataHelper.GetTypeByName(type);
-                var searchResults = _searchService.GetType().GetMethodExt("SearchDocuments", typeof(string));
-                var method = searchResults.MakeGenericMethod(typeByName);
-                return (method.Invoke(_searchService, new object[] { term }) as IEnumerable<SearchResultModel>).ToList();
-            }
-            List<SearchResultModel> docs = _searchService.SearchDocuments<Document>(term).ToList();
-
-            return docs;
-        }
-
+        
         public PartialViewResult GetBreadCrumb(int? parentId)
         {
-            //get breadcrumb
             if (parentId.HasValue)
-            {
-                var allParents = _documentService.GetParents(parentId);
-
-                IEnumerable<NavigationRecord> navigationRecords = allParents.Select(webpage => new NavigationRecord
-                    {
-                        Text = MvcHtmlString.Create(webpage.Name),
-                        Url = MvcHtmlString.Create("/Admin/Search?parent=" + webpage.Id)
-                    }).Reverse().ToList();
-
-                return PartialView(new NavigationList(navigationRecords));
-            }
-
+                return PartialView(_adminWebpageSearchService.GetBreadCrumb(parentId));
             return PartialView(null);
         }
     }

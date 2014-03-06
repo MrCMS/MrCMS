@@ -1,4 +1,5 @@
-﻿@using MrCMS.Helpers
+﻿@using MrCMS.Apps
+@using MrCMS.Helpers
 @using MrCMS.Website
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutRoot.cshtml";
@@ -43,7 +44,8 @@
     <hr />
     <img src="/Areas/Admin/Content/Images/logo.png" class="display-inline" style="margin-left: 20px;" />
     <p class="display-inline">
-        &copy; Mr CMS 2012-@CurrentRequestData.Now.Year - v@(Html.AssemblyVersion()). <span class="pull-right" style="margin-right: 20px;">Logged in from @CurrentRequestData.CurrentContext.GetCurrentIP()</span>
+        &copy; Mr CMS 2012-@CurrentRequestData.Now.Year - v@(Html.AssemblyVersion()) - Installed apps: @MrCMSApp.CurrentAppSummary
+        <span class="pull-right" style="margin-right: 20px;">Logged in from @CurrentRequestData.CurrentContext.GetCurrentIP()</span>
     </p>
 </footer>
 

@@ -3,7 +3,7 @@
 @{ ViewBag.Title = "File System Settings";}
 
 
-@using (Html.BeginForm("FileSystem", "Settings", FormMethod.Post, new {id = "edit-settings"}))
+@using (Html.BeginForm("FileSystem", "Settings", FormMethod.Post, new { id = "edit-settings" }))
 {
     <fieldset>
         <legend>Global Settings
@@ -15,21 +15,21 @@
         </legend>
         <div class="row-fluid">
             @Html.LabelFor(settings => settings.StorageType)
-            @Html.DropDownListFor(settings=>settings.StorageType,Model.StorageTypeOptions)
-            
-            <div id="azure-settings">
-                @Html.LabelFor(settings => settings.AzureAccountName)
-                @Html.TextBoxFor(settings => settings.AzureAccountName)
-                @Html.LabelFor(settings => settings.AzureAccountKey)
-                @Html.TextBoxFor(settings => settings.AzureAccountKey)
-                @Html.LabelFor(settings => settings.AzureContainerName)
-                @Html.TextBoxFor(settings => settings.AzureContainerName)
+            @Html.DropDownListFor(settings => settings.StorageType, Model.StorageTypeOptions)
 
-                @Html.InlineCheckboxFor(settings => settings.AzureUsingEmulator)
+            <h4>Azure Settings</h4>
+            @Html.LabelFor(settings => settings.AzureAccountName)
+            @Html.TextBoxFor(settings => settings.AzureAccountName)
+            @Html.LabelFor(settings => settings.AzureAccountKey)
+            @Html.TextBoxFor(settings => settings.AzureAccountKey)
+            @Html.LabelFor(settings => settings.AzureContainerName)
+            @Html.TextBoxFor(settings => settings.AzureContainerName)
 
-                @Html.InlineCheckboxFor(settings => settings.UseAzureForLucene)
-            </div>
+            @Html.InlineCheckboxFor(settings => settings.AzureUsingEmulator)
+
+            @Html.InlineCheckboxFor(settings => settings.UseAzureForLucene)
+
         </div>
     </fieldset>
 }
-@{Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/file-system-settings.js");}
+@{ Html.RenderAction("Show", "FileMigration");}

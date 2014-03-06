@@ -13,8 +13,9 @@ namespace MrCMS.Shortcodes.Forms
         private readonly ISubmittedMessageRenderer _submittedMessageRenderer;
         private readonly SiteSettings _siteSettings;
 
-        public DefaultFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer, IValidationMessaageRenderer validationMessaageRenderer, ISubmittedMessageRenderer submittedMessageRenderer,
-        SiteSettings siteSettings)
+        public DefaultFormRenderer(IElementRendererManager elementRendererManager, ILabelRenderer labelRenderer,
+            IValidationMessaageRenderer validationMessaageRenderer, ISubmittedMessageRenderer submittedMessageRenderer,
+            SiteSettings siteSettings)
         {
             _elementRendererManager = elementRendererManager;
             _labelRenderer = labelRenderer;
@@ -28,21 +29,30 @@ namespace MrCMS.Shortcodes.Forms
             if (webpage == null)
                 return string.Empty;
 
-            var formProperties = webpage.FormProperties.OrderBy(x=>x.DisplayOrder);
+            var formProperties = webpage.FormProperties.OrderBy(x => x.DisplayOrder);
             if (!formProperties.Any())
                 return string.Empty;
 
             var form = GetForm(webpage);
             foreach (var property in formProperties)
             {
+                string elementHtml = string.Empty;
                 IFormElementRenderer renderer = _elementRendererManager.GetElementRenderer(property);
-                form.InnerHtml += _labelRenderer.AppendLabel(property);
+                elementHtml+= _labelRenderer.AppendLabel(property);
                 var existingValue = submittedStatus.Data[property.Name];
-                form.InnerHtml += renderer.AppendElement(property, existingValue)
+                elementHtml += renderer.AppendElement(property, existingValue, _siteSettings.FormRendererType)
                                           .ToString(renderer.IsSelfClosing
                                                         ? TagRenderMode.SelfClosing
                                                         : TagRenderMode.Normal);
-                form.InnerHtml += _validationMessaageRenderer.AppendRequiredMessage(property);
+                elementHtml += _validationMessaageRenderer.AppendRequiredMessage(property);
+                var elementContainer = _elementRendererManager.GetElementContainer(_siteSettings.FormRendererType, property);
+                if (elementContainer != null)
+                {
+                    elementContainer.InnerHtml += elementHtml;
+                    form.InnerHtml += elementContainer;
+                }
+                else
+                    form.InnerHtml += elementHtml;
             }
 
             var div = new TagBuilder("div");

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Querying;
@@ -19,41 +21,33 @@ using Ninject;
 
 namespace MrCMS.IoC
 {
-    public class ContextModule : NinjectModule
-    {
-        public override void Load()
-        {
-            Kernel.Bind<HttpContextBase>()
-                  .ToMethod(context => new HttpContextWrapper(HttpContext.Current))
-                  .When(request => HttpContext.Current != null)
-                  .InRequestScope();
-            Kernel.Bind<HttpContextBase>()
-                  .ToMethod(context => new OutOfContext())
-                  .When(request => HttpContext.Current == null)
-                  .InThreadScope();
-        }
-    }
     //Wires up IOC automatically
     public class ServiceModule : NinjectModule
     {
         public override void Load()
         {
             Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
-                                        .Where(
-                                            t =>
-                                            !typeof(SiteSettingsBase).IsAssignableFrom(t) &&
-                                            !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
-                                        .BindWith<NinjectServiceToInterfaceBinder>()
-                                        .Configure(onSyntax => onSyntax.InScope(context => context.Kernel.Get<HttpContextBase>())));
+                .Where(
+                    t =>
+                        !typeof (SiteSettingsBase).IsAssignableFrom(t) &&
+                        !typeof (IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
+                .BindWith<NinjectServiceToInterfaceBinder>()
+                .Configure(onSyntax => onSyntax.InRequestScope()));
             Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
-                                      .Where(t => typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
-                                      .BindWith<NinjectSiteSettingsBinder>()
-                                        .Configure(onSyntax => onSyntax.InScope(context => context.Kernel.Get<HttpContextBase>())));
+                .Where(
+                    t =>
+                        typeof (SiteSettingsBase).IsAssignableFrom(t) && !typeof (IController).IsAssignableFrom(t) &&
+                        !Kernel.GetBindings(t).Any())
+                .BindWith<NinjectSiteSettingsBinder>()
+                .Configure(onSyntax => onSyntax.InRequestScope()));
 
             Kernel.Bind<HttpRequestBase>().ToMethod(context => CurrentRequestData.CurrentContext.Request);
             Kernel.Bind<HttpResponseBase>().ToMethod(context => CurrentRequestData.CurrentContext.Response);
             Kernel.Bind<HttpSessionStateBase>().ToMethod(context => CurrentRequestData.CurrentContext.Session);
+            Kernel.Bind<HttpServerUtilityBase>().ToMethod(context => CurrentRequestData.CurrentContext.Server);
             Kernel.Bind<ObjectCache>().ToMethod(context => MemoryCache.Default);
+            Kernel.Bind<IAuthenticationManager>()
+                  .ToMethod(context => context.Kernel.Get<HttpContextBase>().GetOwinContext().Authentication);
             Kernel.Bind<Cache>().ToMethod(context => CurrentRequestData.CurrentContext.Cache);
             Kernel.Bind(typeof(ITokenProvider<>)).To(typeof(PropertyTokenProvider<>)).InRequestScope();
             Kernel.Bind(typeof(IMessageParser<,>)).To(typeof(MessageParser<,>)).InRequestScope();
@@ -72,13 +66,29 @@ namespace MrCMS.IoC
                                                               return context.Kernel.Get(TypeHelper.GetTypeByName(storageType)) as IFileSystem;
                                                           return context.Kernel.Get<FileSystem>();
                                                       }).InRequestScope();
+            Kernel.Rebind<IEnumerable<IFileSystem>>().ToMethod(context => TypeHelper
+                                                                              .GetAllTypesAssignableFrom<IFileSystem>()
+                                                                              .Select(
+                                                                                  type =>
+                                                                                  context.Kernel.Get(type) as
+                                                                                  IFileSystem)).InRequestScope();
+            Kernel.Bind<IUserStore<User>>().To<UserStore>().InRequestScope();
+            Kernel.Bind<UserManager<User>>().ToMethod(context =>
+                {
+                    var userManager = new UserManager<User>(context.Kernel.Get<IUserStore<User>>());
+                    userManager.UserValidator = new UserValidator<User>(userManager)
+                        {
+                            AllowOnlyAlphanumericUserNames = false
+                        };
+                    return userManager;
+                }).InRequestScope();
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(FSDirectorySearcher<,>)).When(request => !UseAzureForLucene()).InRequestScope();
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(AzureDirectorySearcher<,>)).When(request => UseAzureForLucene()).InRequestScope();
             Kernel.Bind(typeof(IIndexManager<,>)).To(typeof(FSDirectoryIndexManager<,>)).When(request => !UseAzureForLucene()).InRequestScope();
             Kernel.Bind(typeof(IIndexManager<,>)).To(typeof(AzureDirectoryIndexManager<,>)).When(request => UseAzureForLucene()).InRequestScope();
         }
 
-        private bool UseAzureForLucene()
+        public bool UseAzureForLucene()
         {
             return (Kernel.Get<IFileSystem>() is IAzureFileSystem) && Kernel.Get<FileSystemSettings>().UseAzureForLucene;
         }

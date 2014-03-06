@@ -8,6 +8,12 @@ namespace MrCMS.Settings
 {
     public class FileSystemSettings : SiteSettingsBase
     {
+        public FileSystemSettings()
+        {
+            AzureUsingEmulator = true;
+            AzureContainerName = "MrCMS";
+            StorageType = typeof (FileSystem).FullName;
+        }
         [DisplayName("Storage Type")]
         public string StorageType { get; set; }
 

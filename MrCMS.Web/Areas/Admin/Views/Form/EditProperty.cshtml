@@ -10,17 +10,29 @@
                 <input type="submit" class="btn btn-primary submit-form-btn" value="Edit field" />
         </span>
     </legend>
-
-        @Html.LabelFor(property => property.Name)
-        @Html.TextBoxFor(property => property.Name)
-        @Html.LabelFor(property => property.LabelText)
-        @Html.TextBoxFor(property => property.LabelText)
-        @Html.LabelFor(property => property.Required)
-        @Html.CheckBoxFor(property => property.Required)
-        @Html.LabelFor(property => property.CssClass)
-        @Html.TextBoxFor(property => property.CssClass)
-        @Html.LabelFor(property => property.HtmlId)
-        @Html.TextBoxFor(property => property.HtmlId)
+        <div class="row-fluid">
+            <div class="span6">
+                @Html.LabelFor(property => property.Name)
+                @Html.TextBoxFor(property => property.Name)
+                @Html.ValidationMessageFor(property => property.Name)
+                @Html.LabelFor(property => property.LabelText)
+                @Html.TextBoxFor(property => property.LabelText)
+                @Html.ValidationMessageFor(property => property.LabelText)
+            </div>
+            <div class="span6">
+                @Html.LabelFor(property => property.CssClass)
+                @Html.TextBoxFor(property => property.CssClass)
+                @Html.ValidationMessageFor(property => property.CssClass)
+                @Html.LabelFor(property => property.HtmlId)
+                @Html.TextBoxFor(property => property.HtmlId)
+                @Html.ValidationMessageFor(property => property.HtmlId)
+            </div>
+        </div>
+       <div class="row-fluid">
+            <div class="span12">
+                @Html.InlineCheckboxFor(x => x.Required)
+            </div>
+        </div>
     </fieldset>
 }
-@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/form-builder.js"); }
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/form-builder.js"); }

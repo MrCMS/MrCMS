@@ -4,6 +4,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
 using System.Linq;
 using MrCMS.Helpers;
@@ -26,9 +27,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
          */
         public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] MediaCategory doc)
         {
-            var actionResult = base.Add(doc);
+            base.Add(doc);
             _fileService.CreateFolder(doc);
-            return actionResult;
+            return RedirectToAction("Show", new { id = doc.Id });
         }
 
         [HttpGet]
@@ -44,38 +45,41 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View(model);
         }
 
-        public override ActionResult Show(MediaCategory document)
+        [HttpPost]
+        public override ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] MediaCategory doc)
         {
-            if (document != null)
-                return RedirectToAction("Edit", new { document.Id });
-            return RedirectToAction("Index");
+            _documentService.SaveDocument(doc);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
+            return RedirectToAction("Show", new { id = doc.Id });
         }
+
+        public ActionResult Show(MediaCategorySearchModel mediaCategorySearchModel)
+        {
+            if (mediaCategorySearchModel == null)
+                return RedirectToAction("Index");
+
+            var mediacategory = _documentService.GetDocument<MediaCategory>(mediaCategorySearchModel.Id);
+            if (mediacategory == null)
+                return RedirectToAction("Index");
+
+            ViewData["media-category"] = mediacategory;
+            return View(mediaCategorySearchModel);
+        }
+
 
         public ActionResult Upload(MediaCategory category)
         {
             return PartialView(category);
         }
 
-        public ActionResult UploadTemplate()
-        {
-            return PartialView();
-        }
-
-        public ActionResult DownloadTemplate()
-        {
-            return PartialView();
-        }
-
-        public ActionResult Thumbnails()
-        {
-            return PartialView();
-        }
-
         public PartialViewResult MediaSelector(int? categoryId, bool imagesOnly = false, int page = 1)
         {
-            ViewData["categories"] = _documentService.GetAllDocuments<MediaCategory>().Where(category => category.ShowInAdminNav).OrderBy(category => category.Name).BuildSelectItemList
-                       (category => category.Name, category => category.Id.ToString(),
-                        emptyItem: SelectListItemHelper.EmptyItem("Select a category..."));
+            ViewData["categories"] = _documentService.GetAllDocuments<MediaCategory>()
+                                                     .Where(category => category.ShowInAdminNav)
+                                                     .OrderBy(category => category.Name)
+                                                     .BuildSelectItemList
+                (category => category.Name, category => category.Id.ToString(),
+                 emptyItem: SelectListItemHelper.EmptyItem("Select a category..."));
             return PartialView(_fileService.GetFilesPaged(categoryId, imagesOnly, page));
         }
 
@@ -101,6 +105,20 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        public ActionResult ShowFiles(MediaCategorySearchModel searchModel)
+        {
+            ViewData["files"] = _fileService.GetFilesForSearchPaged(searchModel);
+            return PartialView(searchModel);
+        }
+
+        [HttpGet]
+        public ActionResult ShowFilesSimple(MediaCategory category)
+        {
+            return PartialView(category);
+        }
+
+
+        [HttpGet]
         public ActionResult SortFiles(MediaCategory parent)
         {
             ViewData["categoryId"] = parent.Id;
@@ -124,11 +142,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// Finds out if the URL entered is valid.
         /// </summary>
         /// <param name="UrlSegment">The URL Segment entered</param>
-        /// <param name="DocumentType">The type of document</param>
+        /// <param name="DocumentType">The type of mediaCategorySearchModel</param>
         /// <returns></returns>
         public ActionResult ValidateUrlIsAllowed(string UrlSegment, int? Id)
         {
             return !_documentService.UrlIsValidForMediaCategory(UrlSegment, Id) ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
     }
+
 }

@@ -61,5 +61,10 @@ namespace MrCMS.Services
                             value = tag.Name
                         });
         }
+
+        public UserRole GetRole(int id)
+        {
+            return _session.Get<UserRole>(id);
+        }
     }
 }

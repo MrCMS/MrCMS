@@ -1,13 +1,13 @@
 ﻿@using MrCMS.Website
-@model MrCMS.Web.Apps.Core.Models.NavigationList
+@model MrCMS.Web.Apps.Core.Models.Navigation.NavigationList
 @{
     var currentPage = CurrentRequestData.CurrentPage;
     var activePages = currentPage.ActivePages.Select(webpage => "/" + webpage.LiveUrlSegment).ToList();
 }
-    <ul class="nav">
+    <ul class="nav navbar-nav">
         @foreach (var page in Model)
         {
-            if (@page.Children.Any())
+            if (@page.Children != null && @page.Children.Any())
             {
             <li class="dropdown @(activePages.Any(s => s == page.Url.ToString()) ? "active" : "")">
                 <a href="@page.Url" class="dropdown-toggle" data-toggle="dropdown">@page.Text</a>

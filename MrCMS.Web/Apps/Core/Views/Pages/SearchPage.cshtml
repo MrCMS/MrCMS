@@ -2,33 +2,39 @@
 @using MrCMS.Helpers
 @using MrCMS.Models
 @using MrCMS.Paging
+@using MrCMS.Web.Apps.Core.Helpers
+@using MrCMS.Web.Apps.Core.Models.Search
+@using MrCMS.Web.Apps.Core.Pages
 @model MrCMS.Web.Apps.Core.Pages.SearchPage
-<h1>@Model.Name</h1>
-@Html.RenderBodyContent(Model.BodyContent)
-@using (Html.BeginForm())
-{
-    @Html.Label("term", "Search")
-    @Html.TextBox("term", ViewData["term"])
-    <div>
-        <input type="submit" value="Search" class="btn btn-primary" />
-    </div>
-}
-
 @{
+    var model = ViewData["webpageSearchQueryModel"] as WebpageSearchQuery;
     var results = ViewData["searchResults"] as IPagedList<Webpage>;
 }
-
-
-@if (results != null)
+@Editable(Model, page => page.BodyContent, true)
+@{Html.RenderPartial("SearchQuery", model);}
+<p></p>
+@if (results.Any())
 {
-    <ul>
-        @foreach (var result in results)
-        {
-            <li>
-                <a href="/@result.LiveUrlSegment">@result.Name</a>
-            </li>
-        }
-    </ul>
+    foreach (var result in results)
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <a href="/@result.LiveUrlSegment"><h4 class="margin-top-10 margin-bottom-5">@result.Name</h4></a>
+                @{
+                    if (result is TextPage)
+                    {
+                        <p>@Html.Raw(result.BodyContent.StripHtml().TruncateAndBoldSearchAbstract(20, (model.Term != null ? model.Term.Split(' ').ToArray() : null), "..."))</p>
+                    }
+                }
+                <p class="font-small">Last updated @result.CreatedOn.ToShortDateString()</p>
+            </div>
+        </div>
+        <hr class="margin-top-0 margin-bottom-0"/>
+    }
 
-    @Html.PageCurrentPage(results, i => new {p = i}, PagedListRenderOptions.PageNumbersOnly)
+    @Html.PageCurrentPage(results, i => new {page = i}, PagedListRenderOptions.PageNumbersOnly)
+}
+else
+{
+    <p>No results returned from query.</p>
 }

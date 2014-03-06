@@ -1,0 +1,44 @@
+﻿@model MrCMS.Web.Apps.Core.Widgets.Slider 
+<div class="row-fluid">
+    <div class="span3">
+        @Html.LabelFor(widget => widget.Image)
+        @Html.TextBoxFor(widget => widget.Image, new { @class = "media-selector" })
+        @Html.ValidationMessageFor(x=>x.Image)
+
+        @Html.LabelFor(widget => widget.Link)
+        @Html.TextBoxFor(widget => widget.Link, new { @class = "span12" })
+        
+        @Html.LabelFor(widget => widget.Description)
+        @Html.TextAreaFor(widget => widget.Description, new { @class = "span12" })
+    </div>
+    <div class="span3">
+        @Html.LabelFor(widget => widget.Image1)
+        @Html.TextBoxFor(widget => widget.Image1, new { @class = "media-selector" })
+
+        @Html.LabelFor(widget => widget.Link1)
+        @Html.TextBoxFor(widget => widget.Link1, new { @class = "span12" })
+        
+        @Html.LabelFor(widget => widget.Description1)
+        @Html.TextAreaFor(widget => widget.Description1, new { @class = "span12" })
+    </div>
+    <div class="span3">
+        @Html.LabelFor(widget => widget.Image2)
+        @Html.TextBoxFor(widget => widget.Image2, new { @class = "media-selector" })
+
+        @Html.LabelFor(widget => widget.Link2)
+        @Html.TextBoxFor(widget => widget.Link2, new { @class = "span12" })
+        
+        @Html.LabelFor(widget => widget.Description2)
+        @Html.TextAreaFor(widget => widget.Description2, new { @class = "span12" })
+    </div>
+    <div class="span3">
+        @Html.LabelFor(widget => widget.Image3)
+        @Html.TextBoxFor(widget => widget.Image3, new { @class = "media-selector" })
+
+        @Html.LabelFor(widget => widget.Link3)
+        @Html.TextBoxFor(widget => widget.Link3, new { @class = "span12" })
+        
+        @Html.LabelFor(widget => widget.Description3)
+        @Html.TextAreaFor(widget => widget.Description3, new { @class = "span12" })
+    </div>
+</div>

@@ -1,62 +1,126 @@
-﻿@using MrCMS.Settings
-@model List<MrCMS.Tasks.ScheduledTask>
+﻿@using MrCMS.Helpers
+@using MrCMS.Paging
+@using MrCMS.Settings
+@using MrCMS.Tasks
+@model MrCMS.Tasks.QueuedTaskSearchQuery
 @{
     ViewBag.Title = "Scheduled Tasks";
+    List<ScheduledTask> scheduledTasks = ViewData["scheduled-tasks"] as List<ScheduledTask> ?? new List<ScheduledTask>();
+    IPagedList<QueuedTask> tasks = ViewData["tasks"] as IPagedList<QueuedTask> ?? PagedList<QueuedTask>.Empty;
+    var siteSettings = SiteSettings<SiteSettings>();
+    string executionUrl = Url.Action("Execute", "TaskExecution", new RouteValueDictionary {{"area", ""}, {siteSettings.TaskExecutorKey, siteSettings.TaskExecutorPassword}}, "http");
 }
-<form>
-    <fieldset>
-        <legend>Scheduled Tasks
+<div class="alert alert-info">
+    <strong>Heads up!</strong> In order to execute tasks, you must poll the following url: <a href="@executionUrl">@executionUrl</a>. 
+    This will need to be polled by some sort of external task scheduler or cron system in order to run regularly.
+</div>
+<fieldset>
+    <legend>Scheduled Tasks
+        <span class="btn-group display-inline pull-right">
+            @Html.ActionLink("Add", "Add", null, new {@class = "btn btn-success", data_toggle = "fb-modal"})
+        </span>
+    </legend>
 
-            <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-success", data_toggle = "fb-modal" })
-            </span>
-        </legend>
-
-        @if (Model.Any())
-        {
-            <div class="row-fluid margin-top-0">
-                <table class="table table-striped table-condensed margin-top-0">
-                    <thead>
+    @if (scheduledTasks.Any())
+    {
+        <div class="row-fluid margin-top-0">
+            <table class="table table-striped table-condensed margin-top-0">
+                <thead>
+                    <tr>
+                        <th>Type
+                        </th>
+                        <th>Every X Seconds
+                        </th>
+                        <th>Status
+                        </th>
+                        <th>Last Completed
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (ScheduledTask task in scheduledTasks)
+                    {
                         <tr>
-                            <th>Type
-                            </th>
-                            <th>Every X Minutes
-                            </th>
-                            <th>Last Run
-                            </th>
-                            <th></th>
+                            <td>
+                                @task.TypeName
+                            </td>
+                            <td>
+                                @task.EveryXSeconds
+                            </td>
+                            <td>
+                                @task.Status
+                            </td>
+                            <td>
+                                @(task.LastComplete.HasValue ? task.LastComplete.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-")
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    @Html.ActionLink("Edit", "Edit", new {id = task.Id}, new {@class = "btn btn-mini", data_toggle = "fb-modal"})
+                                    @Html.ActionLink("Delete", "Delete", new {id = task.Id}, new {@class = "btn btn-danger btn-mini", data_toggle = "fb-modal"})
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var task in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @task.TypeName
-                                </td>
-                                <td>
-                                    @task.EveryXMinutes
-                                </td>
-                                <td>
-                                    @(task.LastRun.HasValue ? task.LastRun.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-")
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        @Html.ActionLink("Edit", "Edit", new { id = task.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
-                                        @Html.ActionLink("Delete", "Delete", new { id = task.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "fb-modal" })
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
-        {
-            @:Please click 'Add' to add your first scheduled task.
-        }
-    </fieldset>
-</form>
-
-
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        @:Please click 'Add' to add your first scheduled task.
+    }
+</fieldset>
+<fieldset>
+    <legend>Queued Tasks
+        <span class="btn-group display-inline pull-right"></span>
+    </legend>
+    @if (tasks.Any())
+    {
+        <table class="table table-striped table-condensed margin-top-0">
+            <thead>
+                <tr>
+                    <th>Added On
+                    </th>
+                    <th>Type
+                    </th>
+                    <th>Status
+                    </th>
+                    <th>Completed at
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (QueuedTask task in tasks)
+                {
+                    <tr>
+                        <td>
+                            @task.CreatedOn.ToString("dd/MM/yyyy HH:mm")
+                        </td>
+                        <td>
+                            @task.DisplayTypeName
+                        </td>
+                        <td>
+                            @task.Status
+                        </td>
+                        <td>
+                            @if (task.CompletedAt.HasValue)
+                            {
+                                @task.CompletedAt.Value.ToString("dd/MM/yyyy HH:mm")
+                            }
+                            else
+                            {
+                                @:-
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @Html.Pager(tasks, "Index", page => new {page})
+    }
+    else
+    {
+        @:No queued tasks have matched your query
+    }
+</fieldset>

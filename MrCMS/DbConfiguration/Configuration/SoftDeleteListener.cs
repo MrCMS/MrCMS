@@ -7,6 +7,13 @@ namespace MrCMS.DbConfiguration.Configuration
 {
     public class SoftDeleteListener : DefaultDeleteEventListener
     {
+        private readonly bool _inDevelopment;
+
+        public SoftDeleteListener(bool inDevelopment)
+        {
+            _inDevelopment = inDevelopment;
+        }
+
         protected override void DeleteEntity(NHibernate.Event.IEventSource session, object entity, NHibernate.Engine.EntityEntry entityEntry, bool isCascadeDeleteEnabled, NHibernate.Persister.Entity.IEntityPersister persister, Iesi.Collections.ISet transientEntities)
         {
             if (entity is SystemEntity)
@@ -18,8 +25,8 @@ namespace MrCMS.DbConfiguration.Configuration
                 CascadeAfterDelete(session, persister, entity, transientEntities);
 
                 var siteEntity = e as SiteEntity;
-                if (siteEntity != null)
-                    TaskExecutor.ExecuteLater(UpdateIndicesListener.Create(typeof(DeleteIndicesTask<>), siteEntity));
+                if (siteEntity != null && !_inDevelopment)
+                    UpdateIndicesListener.QueueTask(typeof (DeleteIndicesTask<>), siteEntity, LuceneOperation.Delete);
             }
             else
             {

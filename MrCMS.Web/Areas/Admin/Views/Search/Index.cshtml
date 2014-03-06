@@ -1,81 +1,104 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Paging.IPagedList<MrCMS.Models.DetailedSearchResultModel>
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@using MrCMS.Paging
+@model MrCMS.Web.Areas.Admin.Models.Search.AdminWebpageSearchQuery
+@{
+    var results = ViewData["results"] as IPagedList<Webpage>;
+}
 <div class="row-fluid">
-    @using (Html.BeginForm())
+    @using (Html.BeginForm("Index", "Search", FormMethod.Get))
     {
-        <div class="form-search">
-            @Html.Label("term", "Search")
-            @Html.TextBox("term", ViewData["term"])
-            @Html.DropDownList("type", ViewData["doc-types"] as IEnumerable<SelectListItem>)
-            @Html.Label("parent", "Select Parent:")
-            @Html.DropDownList("parent", ViewData["parents"] as IEnumerable<SelectListItem>)
-            <input type="button" value="Search" class="btn btn-primary" />
-        </div>
+        <fieldset>
+            <legend>Webpage Search @(!string.IsNullOrWhiteSpace(Model.Term) ? " - " + Model.Term : "")
+                <span class="btn-group  display-inline  pull-right">
+                    <input type="submit" value="Search" class="btn btn-primary" />
+
+                </span>
+            </legend>
+            <div class="row-fluid">
+                <div class="span6">
+                    @Html.LabelFor(x => x.Term)
+                    @Html.TextBoxFor(x => x.Term, new { @class = "span12" })
+                    @Html.ValidationMessageFor(x => x.Term)
+                </div>
+                <div class="span6">
+
+                    @Html.LabelFor(x => x.CreatedOnFrom)
+                    @Html.TextBoxFor(x => x.CreatedOnFrom, new { @class = "date-time-picker" })
+                    @Html.ValidationMessageFor(x => x.CreatedOnFrom)
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="row-fluid">
+                        <div class="span6">
+                            @Html.LabelFor(x => x.Parent.Id, "Parent")
+                            @Html.DropDownListFor(x => x.Parent.Id, ViewData["parents"] as IEnumerable<SelectListItem>, new { @class = "span12" })
+                            @Html.ValidationMessageFor(x => x.Parent.Id)
+                        </div>
+                        <div class="span6">
+                            @Html.LabelFor(x => x.Type)
+                            @Html.DropDownListFor(x => x.Type, ViewData["doc-types"] as IEnumerable<SelectListItem>, new { @class = "span12" })
+                            @Html.ValidationMessageFor(x => x.Type)
+                        </div>
+                    </div>
+
+                </div>
+                <div class="span6">
+                    @Html.LabelFor(x => x.CreatedOnTo)
+                    @Html.TextBoxFor(x => x.CreatedOnTo, new { @class = "date-time-picker" })
+                    @Html.ValidationMessageFor(x => x.CreatedOnTo)
+                </div>
+
+            </div>
+            @Html.ValidationSummary()
+
+        </fieldset>
+
+
     }
 </div>
-@if (ViewData["parent-val"] != null)
+@if (Model.Parent != null)
 {
     Html.RenderAction("GetBreadCrumb", "Search", new { parentId = Convert.ToInt32(ViewData["parent-val"]) });
 }
-
-
 <div id="search-results">
-    @if (!Model.Any())
+    @if (results == null || !results.Any())
     {
         <p>No documents could be found matching your search term</p>
     }
     else
     {
+        
+        foreach (var result in results)
+        {
         <div class="row-fluid">
             <div class="span6">
-                <strong>Document</strong>
-            </div>
-            <div class="span2">
-                <strong>Type</strong>
-            </div>
-            <div class="span4">
-                <strong>Actions</strong>
-            </div>
-        </div>
-        <hr class="small-margin" />
-    }
-    @foreach (var result in Model)
-    {
-        <div class="row-fluid">
-            <div class="span6">
-                <a href="@result.EditUrl" class="@(result.Webpage != null ? (!result.Webpage.Published ? "orange" : "") : "") @(result.Webpage != null ? (!result.Webpage.RevealInNavigation ? "grey" : "") : "")">
+                <a href="@Url.Action("Edit", "Webpage", new { id = result.Id })" class="">
                     <strong>@result.Name</strong>
                 </a>
                 <br />
-                @if (result.Webpage != null)
+                @if (result.Parent != null)
                 {
-                    if (result.Webpage.Parent != null)
-                    {
-                    @:Parent: @result.Webpage.Parent.Name
-                    }
-                }
-                <p>Last updated on @result.LastUpdated</p>
+                    @:Parent: @result.Parent.Name
+                 }
+                <p>Last updated on @result.UpdatedOn</p>
             </div>
             <div class="span2">
                 @result.DocumentType
             </div>
             <div class="span4">
                 <div class="btn-group display-inline">
-                    @if (!string.IsNullOrWhiteSpace(result.ViewUrl))
+                    @Html.ActionLink("Edit", "Edit", "Webpage", new { id = result.Id }, new { @class = "btn btn-mini" })
+
+                    @if (result.Children.Any())
                     {
-                        <a href="@result.ViewUrl" target="_blank" class="btn btn-mini">View</a>
-                    }
-                    @if (!string.IsNullOrWhiteSpace(result.AddChildUrl))
-                    {
-                        <a href="@result.AddChildUrl" class="btn btn-mini">Add a child page</a>
-                    }
-                    @if (result.HasChildren)
-                    {
-                        <a href="/Admin/Search?parent=@result.DocumentId&type=@Request.QueryString["type"]" class="btn btn-mini">View Children</a>
+                        <a href="/Admin/Search?parent.id=@result.Id" class="btn btn-mini">View Children</a>
                     }
                 </div>
             </div>
         </div>
+        }
+        @Html.Pager(results, "Index", page => new { page })
     }
-    @Html.Pager(Model, "Index", i => new { term = ViewData["term"], type = ViewData["type"], parent = ViewData["parent-val"], page = i })
 </div>

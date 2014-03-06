@@ -1,0 +1,76 @@
+﻿@using MrCMS.Entities.Documents.Media
+@using MrCMS.Paging
+@using MrCMS.Helpers
+@using MrCMS.Settings
+@using MrCMS.Website
+@model MrCMS.Web.Areas.Admin.Controllers.MediaSelectorSearchQuery
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var categories = ViewData["categories"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var results = ViewData["results"] as IPagedList<MediaFile> ?? PagedList<MediaFile>.Empty;
+    var mediaSettings = MrCMSApplication.Get<MediaSettings>();
+}
+<div data-type="media-selector-popup">
+    @using (Html.BeginForm("Show", "MediaSelector", FormMethod.Get, new { id = "search-form", style = "margin:0px;" }))
+    {
+        <fieldset>
+            <legend>Media Selector
+            </legend>
+            <div class="row-fluid">
+                <div class="span5">
+                    @Html.DropDownListFor(query => query.CategoryId, categories, new { @class = "span12" })
+                    @Html.ValidationMessageFor(query => query.CategoryId)
+                </div>
+                <div class="span5">
+                    @Html.TextBoxFor(query => query.Query, new { @class = "span12" })
+                    @Html.ValidationMessageFor(query => query.Query)
+                </div>
+                <div class="span2">
+                    <input type="submit" class="btn btn-primary span12" value="Search" />
+                </div>
+            </div>
+        </fieldset>
+    }
+
+    <div id="results">
+        @using (Html.BeginForm("Files", "File", new { Id = (Model.CategoryId ?? mediaSettings.DefaultCategory) }, FormMethod.Post, new { id = "fileuploadform", enctype = "multipart/form-data", @class = "form-fileUpload" }))
+        {
+            <div class="row-fluid">
+                <div class="span3">
+                    <span class="btn btn-success fileinput-button">
+                        <i class="icon-plus"></i>
+                        <span>Select files...</span>
+                        <input id="fileupload" type="file" name="files[]" multiple />
+                    </span>
+                </div>
+                <div class="span9">
+                    <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 5px;">
+                        <div class="bar"><span id="percent-complete" style="text-align: center;"></span></div>
+                    </div>
+                </div>
+            </div>
+            <div id="files" class=""></div>
+        }
+
+        <input type="hidden" id="allowedFileTypes" value="
+                                                                 @mediaSettings.AllowedFileTypes"/>
+        <input type="hidden" id="maxFileSizeUpload" value="@mediaSettings.MaxFileSizeUpload"/>
+
+        <div id="dropzone"><span>Drop files here</span></div>
+        @if (results.Any())
+        {
+            foreach (var file in results)
+            {
+                Html.RenderPartial("FileResult", file);
+            }
+            <div class="clearfix"></div>
+            @Html.Pager(results, "Show", page => new { page })
+        }
+        else
+        {
+            <p>
+                No results found for your current search.
+            </p>
+        }
+    </div>
+</div>

@@ -6,10 +6,12 @@ using System.Linq;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Shortcodes.Forms;
 using NHibernate;
 
 namespace MrCMS.Settings
@@ -24,7 +26,21 @@ namespace MrCMS.Settings
                          .BuildSelectItemList(
                              page => page.Name,
                              page => page.Id.ToString(CultureInfo.InvariantCulture),
-                             page => page.Id == pageId, (string) null);
+                             page => page.Id == pageId, (string)null);
+        }
+
+        public virtual List<SelectListItem> GetMediaCategoryOptions(ISession session, Site site, int categoryId)
+        {
+            var list =
+                session.QueryOver<MediaCategory>()
+                       .Where(category => category.Site == site && category.Parent == null && !category.HideInAdminNav)
+                       .Cacheable()
+                       .List();
+            return
+                list.BuildSelectItemList(
+                    category => category.Name,
+                    category => category.Id.ToString(CultureInfo.InvariantCulture),
+                    category => category.Id == categoryId, (string)null);
         }
 
         public virtual List<SelectListItem> GetLayoutOptions(ISession session, Site site, int? selectedLayoutId)
@@ -43,7 +59,7 @@ namespace MrCMS.Settings
         public virtual List<SelectListItem> GetThemeNames(string themeName)
         {
             var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath + "\\Themes\\";
-            return Directory.GetDirectories(applicationPhysicalPath , "*")
+            return Directory.GetDirectories(applicationPhysicalPath, "*")
                             .Select(x => new DirectoryInfo(x.ToString()).Name)
                             .ToList()
                             .BuildSelectItemList(s => s, s => s, s => s == themeName, emptyItem: null);
@@ -61,6 +77,15 @@ namespace MrCMS.Settings
             return TimeZoneInfo.GetSystemTimeZones().BuildSelectItemList(info => info.DisplayName,
                                                                   info => info.Id, info => info.Id == timeZone,
                                                                   emptyItem: null);
+        }
+
+        public virtual List<SelectListItem> GetFormRendererOptions(FormRenderingType defaultFormRendererType)
+        {
+            return Enum.GetValues(typeof (FormRenderingType)).Cast<FormRenderingType>()
+                .BuildSelectItemList(type => type.ToString().BreakUpString(),
+                    type => type.ToString(),
+                    type => type == defaultFormRendererType,
+                    emptyItem: null);
         }
     }
 }

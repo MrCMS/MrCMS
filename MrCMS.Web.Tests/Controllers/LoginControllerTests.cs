@@ -8,6 +8,7 @@ using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Controllers;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Web.Controllers;
@@ -21,27 +22,27 @@ namespace MrCMS.Web.Tests.Controllers
         private readonly IUserService _userService;
         private readonly IResetPasswordService _resetPasswordService;
         private readonly IAuthorisationService _authorisationService;
-        private readonly IDocumentService _documentService;
         private readonly ILoginService _loginService;
         private readonly LoginController _loginController;
+        private readonly IUniquePageService _uniquePageService;
 
         public LoginControllerTests()
         {
             _userService = A.Fake<IUserService>();
             _resetPasswordService = A.Fake<IResetPasswordService>();
             _authorisationService = A.Fake<IAuthorisationService>();
-            _documentService = A.Fake<IDocumentService>();
             _loginService = A.Fake<ILoginService>();
-            _loginController = new LoginController(_userService, _resetPasswordService, _authorisationService, _documentService, _loginService);
+            _uniquePageService = A.Fake<IUniquePageService>();
+            _loginController = new LoginController(_userService, _resetPasswordService, _authorisationService, _uniquePageService, _loginService);
             // initial setup as this is reused
-            A.CallTo(() => _documentService.GetUniquePage<LoginPage>())
+            A.CallTo(() => _uniquePageService.GetUniquePage<LoginPage>())
              .Returns(new LoginPage { UrlSegment = "login-page" });
         }
 
         [Fact]
         public void LoginController_Show_ShouldReturnLoginPageAsModel()
         {
-            var result = _loginController.Show(new LoginPage { Layout = new Layout() });
+            var result = _loginController.Show(new LoginPage { Layout = new Layout() }, new LoginModel());
 
             result.Model.Should().BeOfType<LoginPage>();
         }

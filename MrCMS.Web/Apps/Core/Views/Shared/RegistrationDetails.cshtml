@@ -1,67 +1,54 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Core.Pages
-@model MrCMS.Web.Apps.Core.Models.RegisterModel
+@model MrCMS.Web.Apps.Core.Models.RegisterAndLogin.RegisterModel
 
-    @using (Html.BeginForm("RegistrationDetails", "Registration", null, FormMethod.Post, new { @class = "" }))
-    {
-        @Html.HiddenFor(x=>x.ReturnUrl)
-        <p>&nbsp;</p>
-        <div class="row-fluid">
-            <div class="span12">
-                <div class="control-group">
-                    <label class="control-label" for="FirstName">First Name</label>
-                    <div class="controls">
-                        @Html.TextBoxFor(model => model.FirstName)
-
-                        @Html.ValidationMessageFor(model => model.FirstName)
-                    </div>
-                </div>
-                 <div class="control-group">
-                    <label class="control-label" for="LastName">Last Name</label>
-                    <div class="controls">
-                        @Html.TextBoxFor(model => model.LastName)
-                        @Html.ValidationMessageFor(model => model.LastName)
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="Email">Email</label>
-                    <div class="controls">
-                        @Html.TextBoxFor(model => model.Email)
-                        @Html.ValidationMessageFor(model => model.Email)
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="Password">
-                        Password</label>
-                    <div class="controls">
-                        @Html.PasswordFor(model => model.Password)
-                         @Html.ValidationMessageFor(model => model.Password)
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="ConfirmPassword">
-                        Confirm Password</label>
-                    <div class="controls">
-                        @Html.PasswordFor(model => model.ConfirmPassword)
-                        @Html.ValidationMessageFor(model => model.ConfirmPassword)
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input type="submit" value="Register" class="btn btn-info" />
-                    </div>
-                </div>
-
-                @if (!String.IsNullOrEmpty(ViewBag.Message))
-                {
-                    <div class="alert alert-error">
-                        @ViewBag.Message
-                    </div>
-                }
-                
-                <a href="@( UniquePageHelper.GetUrl<LoginPage>() )">Already Registered? Login here</a>
-
+@using (Html.BeginForm("RegistrationDetails", "Registration", null, FormMethod.Post, new { @class = "" }))
+{
+    @Html.HiddenFor(x => x.ReturnUrl)
+    <p>&nbsp;</p>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName)
+                @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.FirstName)
             </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName)
+                @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.LastName)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email)
+                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password)
+                @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Password)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ConfirmPassword)
+                @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ConfirmPassword)
+            </div>
+            
+            <div class="btn-group">
+            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Register</button>
+            <a href="@( UniquePageHelper.GetUrl<LoginPage>())" class="btn btn-default">Already Registered? Login here</a>            
+            </div>
+            <br />
+            @if (!String.IsNullOrEmpty(ViewBag.Message))
+            {
+                <div class="alert alert-error">
+                    @ViewBag.Message
+                </div>
+            }
+
+
         </div>
-    }
+    </div>
+}
 

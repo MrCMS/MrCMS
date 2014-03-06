@@ -1,7 +1,7 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using (Html.BeginForm("SetParent", "Webpage", new { id = "" }, FormMethod.Post, new { @class = "update-parent-form", @data_placeholder = "Root" }))
+@using (Html.BeginForm("SetParent", "Webpage", new { id = "" }, FormMethod.Post, new { @class = "update-parent-form" }))
 {
     <fieldset>
         <legend>Set parent
@@ -10,12 +10,12 @@
             </span>
         </legend>
         @Html.HiddenFor(x => x.Id)
-        @Html.Label("parent", "Page")
-        @Html.DropDownList("parent", ViewData["valid-parents"] as IEnumerable<SelectListItem>, new{@class="input-xlarge select2"})
+        @Html.Label("parentVal", "Page")
+        @Html.DropDownList("parentVal", ViewData["valid-parents"] as IEnumerable<SelectListItem>, new{@class="input-xlarge select2"})
     </fieldset>
 }
 @{
-    Html.IncludeCss("~/Areas/Admin/Content/Scripts/select2-3.4.1/select2.css");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/select2-3.4.1/select2.min.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/move-webpage.js");
+    Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/select2-3.4.5/select2.css");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/select2-3.4.5/select2.min.js");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/move-webpage.js");
 }

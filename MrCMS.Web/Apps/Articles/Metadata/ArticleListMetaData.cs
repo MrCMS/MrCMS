@@ -8,6 +8,10 @@ namespace MrCMS.Web.Apps.Articles.Metadata
 {
     public class ArticleListMetaData : DocumentMetadataMap<ArticleList>
     {
+        public override string WebGetController
+        {
+            get { return "Article"; }
+        }
         public override string IconClass
         {
             get { return "icon-list"; }
@@ -23,16 +27,16 @@ namespace MrCMS.Web.Apps.Articles.Metadata
             get { yield return typeof(Pages.Article); }
         }
 
-        public override bool SortByDesc
+        public override string DefaultLayoutName
         {
-            get { return true; }
+            get { return "Two Column"; }
         }
 
-        public override Func<Document, object> SortBy
+        public override SortBy SortBy
         {
             get
             {
-                return document => document.CreatedOn;
+                return SortBy.PublishedOnDesc;
             }
         }
 

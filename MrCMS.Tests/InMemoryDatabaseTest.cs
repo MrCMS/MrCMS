@@ -1,42 +1,47 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Configuration;
 using System.Reflection;
 using System.Web;
 using Elmah;
-using FakeItEasy;
 using Iesi.Collections.Generic;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.IoC;
-using MrCMS.Services;
 using MrCMS.Settings;
-using MrCMS.Tasks;
 using MrCMS.Tests.Stubs;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Tool.hbm2ddl;
 using Ninject;
 using Ninject.MockingKernel;
+using Ninject.Modules;
 using Configuration = NHibernate.Cfg.Configuration;
 
 namespace MrCMS.Tests
 {
+    public class TestContextModule : NinjectModule
+    {
+        public override void Load()
+        {
+            Kernel.Bind<HttpContextBase>().To<OutOfContext>().InThreadScope();
+        }
+    }
     public abstract class MrCMSTest : IDisposable
     {
+        private readonly MockingKernel _kernel;
 
         protected MrCMSTest()
         {
-            var mockingKernel = new MockingKernel();
-            mockingKernel.Load(new ContextModule());
-            MrCMSApplication.OverrideKernel(mockingKernel);
+            _kernel = new MockingKernel();
+            Kernel.Load(new TestContextModule());
+            MrCMSApplication.OverrideKernel(Kernel);
             CurrentRequestData.SiteSettings = new SiteSettings();
         }
+
+        public MockingKernel Kernel { get { return _kernel; } }
 
         public virtual void Dispose()
         {
@@ -86,8 +91,6 @@ namespace MrCMS.Tests
                 });
 
             CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.Local.Id };
-
-            TaskExecutor.Discard();
 
             CurrentRequestData.ErrorSignal = new ErrorSignal();
         }

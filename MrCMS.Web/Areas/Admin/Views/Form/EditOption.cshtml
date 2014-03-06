@@ -9,12 +9,15 @@
             <input type="button" class="btn-primary btn submit-form-btn" value="Update form option" />
         </span>
         </legend>
-
-        @Html.LabelFor(option => option.Value)
-        @Html.TextBoxFor(option => option.Value)
-        @Html.LabelFor(option => option.Selected)
-        @Html.CheckBoxFor(option => option.Selected)
+        <div class="row-fluid">
+            <div class="span12">
+                @Html.LabelFor(option => option.Value)
+                @Html.TextBoxFor(option => option.Value)
+                @Html.ValidationMessageFor(option => option.Value)
+                @Html.InlineCheckboxFor(option => option.Selected)
+            </div>
+        </div>
 
     </fieldset>
 }
-@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/form-builder.js"); }
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/form-builder.js"); }

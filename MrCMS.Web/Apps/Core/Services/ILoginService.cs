@@ -1,6 +1,7 @@
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Services
@@ -34,7 +35,7 @@ namespace MrCMS.Web.Apps.Core.Services
                 if (_passwordManagementService.ValidateUser(user, loginModel.Password))
                 {
                     var guid = CurrentRequestData.UserGuid;
-                    _authorisationService.SetAuthCookie(loginModel.Email, loginModel.RememberMe);
+                    _authorisationService.SetAuthCookie(user, loginModel.RememberMe);
                     CurrentRequestData.CurrentUser = user;
                     _userEventService.OnUserLoggedIn(user, guid);
                     return user.IsAdmin

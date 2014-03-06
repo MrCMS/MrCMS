@@ -27,6 +27,12 @@ namespace MrCMS.Apps
         /// The name of the area to register.
         /// </returns>
         public abstract string AppName { get; }
+        public abstract string Version { get; }
+
+        public static string CurrentAppSummary
+        {
+            get { return string.Join(", ", AllApps.Select(app => app.AppName + ": " + app.Version)); }
+        }
 
         public static readonly Dictionary<Type, string> AppWebpages = new Dictionary<Type, string>();
         public static readonly Dictionary<Type, string> AppWidgets = new Dictionary<Type, string>();

@@ -10,10 +10,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MrCMS</RootNamespace>
     <AssemblyName>MrCMS</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+    <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,13 +34,16 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr3.Runtime">
-      <HintPath>..\packages\WebGrease.1.1.0\lib\Antlr3.Runtime.dll</HintPath>
+    <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="CsvHelper">
-      <HintPath>..\packages\CsvHelper.2.2.2\lib\net40-client\CsvHelper.dll</HintPath>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\CsvHelper.2.4.1\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
@@ -45,9 +51,9 @@
     <Reference Include="EPPlus">
       <HintPath>..\packages\EPPlus.3.1.3.3\lib\net35\EPPlus.dll</HintPath>
     </Reference>
-    <Reference Include="FluentNHibernate, Version=1.3.0.733, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
+    <Reference Include="FluentNHibernate, Version=1.4.0.0, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FluentNHibernate.1.3.0.733\lib\FluentNHibernate.dll</HintPath>
+      <HintPath>..\packages\FluentNHibernate.1.4.0.0\lib\net35\FluentNHibernate.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -73,6 +79,12 @@
     <Reference Include="Microsoft.ApplicationServer.Caching.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.2.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.1.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.1.0.0\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Data.Edm.5.2.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
@@ -80,6 +92,27 @@
     <Reference Include="Microsoft.Data.OData, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Data.OData.5.2.0\lib\net40\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.2.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.2.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.2.1.0\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.2.1.0\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.2.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.DistributedCache, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.2.0.0\lib\net40-full\Microsoft.Web.DistributedCache.dll</HintPath>
@@ -104,12 +137,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MySql.Data.6.6.4\lib\net40\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NHibernate.3.3.2.4000\lib\Net35\NHibernate.dll</HintPath>
+      <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate.Caches.SysCache2">
       <HintPath>..\packages\NHibernate.Caches.SysCache2.3.2.0.4000\lib\Net35\NHibernate.Caches.SysCache2.dll</HintPath>
@@ -123,6 +156,13 @@
     </Reference>
     <Reference Include="Ninject.Web.Common">
       <HintPath>..\packages\Ninject.Web.Common.3.0.0.7\lib\net40-full\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin.Security.Providers, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Owin.Security.Providers.1.3\lib\net45\Owin.Security.Providers.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -139,6 +179,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Spatial, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -146,11 +188,34 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.Optimization">
-      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.0.0\lib\net40\System.Web.Optimization.dll</HintPath>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Mvc, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.1\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.2\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.1\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -159,8 +224,9 @@
     <Reference Include="WebActivator">
       <HintPath>..\packages\WebActivator.1.5\lib\net40\WebActivator.dll</HintPath>
     </Reference>
-    <Reference Include="WebGrease">
-      <HintPath>..\packages\WebGrease.1.1.0\lib\WebGrease.dll</HintPath>
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -208,7 +274,11 @@
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentVersionOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\FormListOptionOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\FormPostingOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\FormPropertyOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\FormPropertyWithOptionsOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\FormValueOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\LayoutAreaOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\LayoutOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaCategoryOverride.cs" />
@@ -248,25 +318,61 @@
     <Compile Include="Entities\Documents\Web\FormProperties\TextArea.cs" />
     <Compile Include="Entities\Documents\Web\FormProperties\TextBox.cs" />
     <Compile Include="Entities\Documents\Web\UrlHistory.cs" />
-    <Compile Include="Entities\Indexes\DocumentIndexDefinition.cs" />
     <Compile Include="Entities\Multisite\RedirectedDomain.cs" />
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
+    <Compile Include="HealthChecks\EmailSenderTaskCheck.cs" />
+    <Compile Include="HealthChecks\HealthCheck.cs" />
+    <Compile Include="HealthChecks\HealthCheckResult.cs" />
+    <Compile Include="HealthChecks\IHealthCheck.cs" />
+    <Compile Include="HealthChecks\IsEmailConfigured.cs" />
+    <Compile Include="HealthChecks\StalledTasks.cs" />
+    <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
+    <Compile Include="Indexing\Definitions\BodyContentFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\CreatedOnFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\DisplayOrderFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\MetaDescriptionFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\MetaKeywordsFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\MetaTitleFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\NameFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\ParentIdFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\PublishedOnFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\TypeFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\UrlSegmentFieldDefinition.cs" />
+    <Compile Include="Indexing\Management\AzureDirectoryHelper.cs" />
+    <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
+    <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
+    <Compile Include="Models\WebpageCount.cs" />
+    <Compile Include="Services\AuthConfigurationService.cs" />
+    <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
+    <Compile Include="Services\IAuthConfigurationService.cs" />
+    <Compile Include="Services\IStandardAuthConfigurationService.cs" />
+    <Compile Include="Services\StandardAuthConfigurationService.cs" />
+    <Compile Include="Settings\ThirdPartyAuthSettings.cs" />
     <Compile Include="Entities\SystemEntity.cs" />
     <Compile Include="Events\IOnDocumentAdded.cs" />
     <Compile Include="Events\IOnDocumentDeleted.cs" />
     <Compile Include="Events\IOnDocumentUnpublished.cs" />
+    <Compile Include="Helpers\KeyEqualityComparer.cs" />
+    <Compile Include="Helpers\StrictKeyEqualityComparer.cs" />
     <Compile Include="Helpers\Validation\CurrencyValidator.cs" />
     <Compile Include="Helpers\Validation\EmailValidator.cs" />
+    <Compile Include="Indexing\IndexingHelper.cs" />
     <Compile Include="Indexing\Management\AzureDirectoryIndexManager.cs" />
     <Compile Include="Indexing\Querying\AzureDirectorySearcher.cs" />
     <Compile Include="Logging\LogSearchQuery.cs" />
+    <Compile Include="Models\AdminTreeNode.cs" />
+    <Compile Include="Models\MediaCategorySearchModel.cs" />
     <Compile Include="Models\MessageQueueQuery.cs" />
     <Compile Include="Models\UserSearchQuery.cs" />
     <Compile Include="Services\CloneSitePartsService.cs" />
     <Compile Include="Services\DocumentEventService.cs" />
+    <Compile Include="Services\ExternalLoginService.cs" />
+    <Compile Include="Services\ExternalLoginServiceExtensions.cs" />
+    <Compile Include="Services\FileMigration\IFileMigrationService.cs" />
     <Compile Include="Services\IAuthorisationService.cs" />
     <Compile Include="Services\IDocumentEventService.cs" />
+    <Compile Include="Services\IExternalLoginService.cs" />
     <Compile Include="Services\IHashAlgorithm.cs" />
     <Compile Include="Services\IMessageQueueAdminService.cs" />
     <Compile Include="Services\IMessageTemplateService.cs" />
@@ -277,6 +383,7 @@
     <Compile Include="Services\IPasswordEncryptionManager.cs" />
     <Compile Include="Services\IRedirectedDomainService.cs" />
     <Compile Include="Services\ITokenProvider.cs" />
+    <Compile Include="Services\ITreeNavService.cs" />
     <Compile Include="Services\IUserSearchService.cs" />
     <Compile Include="Services\MessageQueueAdminService.cs" />
     <Compile Include="Services\MessageTemplateService.cs" />
@@ -380,7 +487,6 @@
     <Compile Include="Models\IAdminMenuItem.cs" />
     <Compile Include="Models\IMenuItem.cs" />
     <Compile Include="Models\ISystemAdminMenuItem.cs" />
-    <Compile Include="Models\LayoutTreeListModel.cs" />
     <Compile Include="Models\PageWidgetSortModel.cs" />
     <Compile Include="Models\PostingsModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
@@ -392,7 +498,6 @@
     <Compile Include="Models\UsersAdminMenuItem.cs" />
     <Compile Include="Models\VersionsModel.cs" />
     <Compile Include="Models\ViewDataUploadFilesResult.cs" />
-    <Compile Include="Models\WebsiteTreeListModel.cs" />
     <Compile Include="Models\WidgetPageOrder.cs" />
     <Compile Include="Paging\BasePagedList.cs" />
     <Compile Include="Paging\IPagedList.cs" />
@@ -438,9 +543,8 @@
     <Compile Include="Services\ILayoutAreaService.cs" />
     <Compile Include="Services\ImageProcessor.cs" />
     <Compile Include="Services\INavigationService.cs" />
-    <Compile Include="Entities\Indexes\WebpageIndexDefinition.cs" />
+    <Compile Include="Entities\Indexes\AdminWebpageIndexDefinition.cs" />
     <Compile Include="Services\IRoleService.cs" />
-    <Compile Include="Services\ISearchService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
     <Compile Include="Services\ISiteService.cs" />
     <Compile Include="Services\ITagService.cs" />
@@ -456,14 +560,16 @@
     <Compile Include="Services\PropertyTokenProvider.cs" />
     <Compile Include="Services\RedirectedDomainService.cs" />
     <Compile Include="Services\RoleService.cs" />
-    <Compile Include="Services\SearchService.cs" />
+    <Compile Include="Services\RoleStore.cs" />
     <Compile Include="Services\NopSHA1HashAlgorithm.cs" />
     <Compile Include="Services\SHA512HashAlgorithm.cs" />
     <Compile Include="Services\SiteService.cs" />
     <Compile Include="Services\TagService.cs" />
+    <Compile Include="Services\TreeNavService.cs" />
     <Compile Include="Services\UrlHistoryService.cs" />
     <Compile Include="Services\UserSearchService.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\UserStore.cs" />
     <Compile Include="Services\WidgetService.cs" />
     <Compile Include="Settings\ConfigurationProvider.cs" />
     <Compile Include="Settings\DropDownSelectionAttribute.cs" />
@@ -506,16 +612,23 @@
     <Compile Include="Shortcodes\Forms\IFormRenderer.cs" />
     <Compile Include="Shortcodes\Forms\ValidationMessaageRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
-    <Compile Include="Tasks\BackgroundTask.cs" />
+    <Compile Include="Tasks\DefaultTaskExecutionHandler.cs" />
     <Compile Include="Tasks\DeleteExpiredLogsTask.cs" />
     <Compile Include="Tasks\DeleteIndicesTask.cs" />
+    <Compile Include="Tasks\DeleteOldQueuedTasks.cs" />
     <Compile Include="Tasks\IndexManagementTask.cs" />
     <Compile Include="Tasks\InsertIndicesTask.cs" />
-    <Compile Include="Tasks\IScheduledTaskManager.cs" />
-    <Compile Include="Tasks\ScheduledTask.cs" />
-    <Compile Include="Tasks\ScheduledTaskManager.cs" />
+    <Compile Include="Tasks\ITaskExecutionHandler.cs" />
+    <Compile Include="Tasks\ITaskStatusUpdater.cs" />
+    <Compile Include="Tasks\ITaskManager.cs" />
+    <Compile Include="Tasks\LuceneActionComparison.cs" />
+    <Compile Include="Tasks\LuceneActionExecutor.cs" />
+    <Compile Include="Tasks\LuceneIndexTaskExecutionHandler.cs" />
+    <Compile Include="Tasks\QueuedTaskSearchQuery.cs" />
+    <Compile Include="Tasks\TaskManager.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
-    <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Tasks\ScheduledTask.cs" />
+    <Compile Include="Tasks\TaskStatusUpdater.cs" />
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Website\Binders\ACLUpdateModelBinder.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />
@@ -535,8 +648,23 @@
     <Compile Include="Website\Binders\NullableCultureAwareDateBinder.cs" />
     <Compile Include="Website\Binders\NullableEntityModelBinder.cs" />
     <Compile Include="Website\Binders\SiteSettingsModelBinder.cs" />
+    <Compile Include="Tasks\BatchExecutionResult.cs" />
+    <Compile Include="Tasks\IExecutableTask.cs" />
+    <Compile Include="Tasks\IHaveExecutionStatus.cs" />
+    <Compile Include="Tasks\ITaskQueuer.cs" />
+    <Compile Include="Tasks\ITaskBuilder.cs" />
+    <Compile Include="Tasks\ITaskRunner.cs" />
+    <Compile Include="Tasks\ITaskExecutor.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
+    <Compile Include="Tasks\TaskQueuer.cs" />
+    <Compile Include="Tasks\QueuedTask.cs" />
+    <Compile Include="Tasks\TaskBuilder.cs" />
+    <Compile Include="Tasks\TaskExecutionController.cs" />
+    <Compile Include="Tasks\TaskExecutionResult.cs" />
+    <Compile Include="Tasks\TaskRunner.cs" />
+    <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
+    <Compile Include="Website\MrCMSAssemblyAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
     <Compile Include="Website\MrCMSTypeACLAttribute.cs" />
     <Compile Include="Website\Optimization\AsIsBundleOrderer.cs" />
@@ -568,7 +696,6 @@
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandler.cs" />
     <Compile Include="Website\MrCMSPage.cs" />
-    <Compile Include="Website\ScheduledTaskChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -577,8 +704,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Eula.htm" />
-    <Content Include="Readme.html" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

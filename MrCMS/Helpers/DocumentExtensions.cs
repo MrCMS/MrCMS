@@ -5,12 +5,33 @@ using System.Linq;
 using System.Reflection;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Web;
+using MrCMS.Website;
 using Newtonsoft.Json;
+using NHibernate;
 
 namespace MrCMS.Helpers
 {
     public static class DocumentExtensions
     {
+        public static bool CanDelete(this Document document)
+        {
+            return MrCMSApplication.Get<ISession>()
+                .QueryOver<Document>()
+                .Where(doc => doc.Parent != null && doc.Parent.Id == document.Id)
+                .Cacheable()
+                .Any();
+        }
+        public static int FormPostingsCount(this Webpage webpage)
+        {
+            return MrCMSApplication.Get<ISession>()
+                .QueryOver<FormPosting>()
+                .Where(posting => posting.Webpage != null && posting.Webpage.Id == webpage.Id)
+                .Cacheable()
+                .RowCount();
+        }
+
+
         public static void SetParent(this Document document, Document parent)
         {
             var existingParent = document.Parent;

@@ -1,0 +1,40 @@
+﻿@using System.Drawing
+@model MrCMS.Web.Apps.Core.Widgets.Slider
+@if (Model.Sliders.Any())
+{
+    var sliders = Model.Sliders.ToList();
+    
+    <div id="carousel-@Model.Name" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            @for (int i = 0; i < Model.Sliders.Count(); i++)
+            {
+                <li data-target="#carousel-@Model.Name" data-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
+            }
+        </ol>
+        <div class="carousel-inner">
+            @foreach (var slider in sliders)
+            {
+                <div class="item @(slider == sliders.First() ? "active" : "")">
+                   
+                    @Html.Raw((!string.IsNullOrWhiteSpace(slider.Link) ? "<a href='" + slider.Link + "'>" : ""))
+                    @RenderImage(slider.Image)
+                    @Html.Raw((!string.IsNullOrWhiteSpace(slider.Link) ? "</a>" : ""))
+
+                    @if (!string.IsNullOrWhiteSpace(slider.Description))
+                    {
+                        <div class="carousel-caption">
+                            @slider.Description
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <a class="left carousel-control" href="#carousel-@Model.Name" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" href="#carousel-@Model.Name" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+}
+

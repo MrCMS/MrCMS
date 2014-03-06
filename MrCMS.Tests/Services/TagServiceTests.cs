@@ -60,7 +60,7 @@ namespace MrCMS.Tests.Services
 
         public class FakeContainer : Document
         {
-            public void SetTags(Iesi.Collections.Generic.ISet<Tag> tags)
+            public virtual void SetTags(Iesi.Collections.Generic.ISet<Tag> tags)
             {
                 Tags = tags;
             }

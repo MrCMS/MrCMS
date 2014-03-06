@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -34,8 +37,9 @@ namespace MrCMS.Website.Routing
             }
 
             var controllers = isAdmin
-                                          ? MrCMSControllerFactory.AppAdminControllers
-                                          : MrCMSControllerFactory.AppUiControllers;
+                ? MrCMSControllerFactory.AppAdminControllers
+                : MrCMSControllerFactory.AppUiControllers;
+
             Type controllerType =
                 controllers[_appName].FirstOrDefault(
                     type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
@@ -44,9 +48,7 @@ namespace MrCMS.Website.Routing
                 return false;
 
             // get controller's methods
-            return
-                controllerType.GetMethods()
-                              .Where(q => q.IsPublic && typeof(ActionResult).IsAssignableFrom(q.ReturnType))
+            return MrCMSControllerFactory.GetActionMethods(controllerType)
                               .Any(info => info.Name.Equals(actionName, StringComparison.OrdinalIgnoreCase));
 
         }

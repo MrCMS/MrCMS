@@ -1,44 +1,35 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Core.Pages
-@model MrCMS.Web.Apps.Core.Models.LoginModel 
+@model MrCMS.Web.Apps.Core.Models.RegisterAndLogin.LoginModel
 @using (Html.BeginForm())
 {
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email)
+                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, new { @class = "control-label" })
+                @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Password)
+            </div>
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(model => model.RememberMe)
+                    Remember me
+                </label>
+            </div>
 
-            <div class="control-group">
-                <div class="controls">
-                    <h4>Login</h4>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="Email">Email</label>
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.Email)
-                    @Html.ValidationMessageFor(model => model.Email)
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="Password">
-                    Password</label>
-                <div class="controls">
-                    @Html.PasswordFor(model => model.Password)
-                    @Html.ValidationMessageFor(model => model.Password)
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="controls">
-                    <label class="checkbox">
-                        @Html.CheckBoxFor(model => model.RememberMe)
-                        Remember me
-                    </label>
-                    <input type="submit" value="Login" class="btn" />
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="controls">
-                    <a href="@(UniquePageHelper.GetUrl<ForgottenPasswordPage>())">Forgotten password?</a>
-                </div>
+            <div class="btn-group">
+                <button type="submit" value="Login" class="btn btn-primary"><span class="glyphicon glyphicon-user"></span> Login</button>
+
+                <a href="@(UniquePageHelper.GetUrl<ForgottenPasswordPage>())" class="btn btn-default">
+                    <span class="glyphicon glyphicon glyphicon-question-sign"></span>
+                    Forgotten password?
+                </a>
+                
             </div>
 
             @if (!String.IsNullOrEmpty(Model.Message))

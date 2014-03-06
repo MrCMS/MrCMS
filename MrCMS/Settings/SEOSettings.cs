@@ -1,8 +1,4 @@
 using System.ComponentModel;
-using System.Web.Mvc;
-using MrCMS.Entities.Multisite;
-using NHibernate;
-using Ninject;
 
 namespace MrCMS.Settings
 {
@@ -24,5 +20,10 @@ namespace MrCMS.Settings
 
         [DisplayName("Enable HTML Minification")]
         public bool EnableHtmlMinification { get; set; }
+
+        public override bool RenderInSettings
+        {
+            get { return true; }
+        }
     }
-} 
+}

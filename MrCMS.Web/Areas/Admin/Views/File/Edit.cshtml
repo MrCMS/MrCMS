@@ -1,0 +1,19 @@
+﻿@model MrCMS.Entities.Documents.Media.MediaFile
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Edit", "File", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+{
+    <fieldset>
+        <legend>Edit @Model.FileName
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn-primary btn" value="Save" />
+            </span>
+        </legend>
+        @Html.LabelFor(x => x.Title)
+        @Html.TextBoxFor(x => x.Title, new { @class = "span12" })
+        @Html.ValidationMessageFor(x => x.Title)
+
+        @Html.LabelFor(x => x.Description)
+        @Html.TextAreaFor(x => x.Description, new { @class = "span12" })
+        @Html.ValidationMessageFor(x => x.Description)
+    </fieldset>
+}

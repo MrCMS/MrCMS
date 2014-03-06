@@ -39,7 +39,9 @@ namespace MrCMS.Models
                                        new ChildMenuItem("Your Account",
                                                          "/Admin/User/Edit/" +
                                                          CurrentRequestData.CurrentUser.Id,
-                                                         ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.YourAccount))
+                                                         ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.YourAccount)),
+                                       new ChildMenuItem("Third Party Auth", "/Admin/ThirdPartyAuth",
+                                                         ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.ThirdPartyAuth)),
                                    }
                            }
                        };

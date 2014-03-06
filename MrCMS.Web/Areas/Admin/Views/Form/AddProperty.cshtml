@@ -10,22 +10,33 @@
             </span>
         </legend>
         @Html.HiddenFor(x => x.Webpage.Id)
-        @Html.DropDownList("type", ViewData["property-types"] as IEnumerable<SelectListItem>)
-                                                                 
-        @Html.LabelFor(property => property.Name)
-        @Html.TextBoxFor(property => property.Name)
-        @Html.LabelFor(property => property.LabelText)
-        @Html.TextBoxFor(property => property.LabelText)
-        @Html.LabelFor(property => property.CssClass)
-        @Html.TextBoxFor(property => property.CssClass)
-        @Html.LabelFor(property => property.HtmlId)
-        @Html.TextBoxFor(property => property.HtmlId)
-        
-    <div class="form-inline">
-        @Html.InlineCheckboxFor(x => x.Required, new { }, new { }, "Field is Required")
-    </div>
-    
+        <div class="row-fluid">
+            <div class="span6">
+                @Html.DropDownList("type", ViewData["property-types"] as IEnumerable<SelectListItem>)
+            </div>
+            <div class="span6">
+                @Html.InlineCheckboxFor(x => x.Required)
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span6">
+                @Html.LabelFor(property => property.Name)
+                @Html.TextBoxFor(property => property.Name)
+                @Html.ValidationMessageFor(property => property.Name)
+                @Html.LabelFor(property => property.LabelText)
+                @Html.TextBoxFor(property => property.LabelText)
+                @Html.ValidationMessageFor(property => property.LabelText)
+            </div>
+            <div class="span6">
+                @Html.LabelFor(property => property.CssClass)
+                @Html.TextBoxFor(property => property.CssClass)
+                @Html.ValidationMessageFor(property => property.CssClass)
+                @Html.LabelFor(property => property.HtmlId)
+                @Html.TextBoxFor(property => property.HtmlId)
+                @Html.ValidationMessageFor(property => property.HtmlId)
+            </div>
+        </div>
     </fieldset>
 }
-    
-@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/custom/form-builder.js"); }
+
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/form-builder.js"); }

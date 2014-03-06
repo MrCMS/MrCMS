@@ -1,40 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using MrCMS.Services;
+﻿using System.Web.Mvc;
+using MrCMS.Web.Apps.Articles.ModelBinders;
+using MrCMS.Web.Apps.Core.ModelBinders;
+using MrCMS.Web.Apps.Core.Models.Search;
 using MrCMS.Web.Apps.Core.Pages;
+using MrCMS.Web.Apps.Core.Services.Search;
+using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Core.Controllers
 {
     public class SearchPageController : MrCMSAppUIController<CoreApp>
     {
-        private readonly ISearchService _documentService;
+        private readonly IWebpageSearchService _webpageSearchService;
 
-        public SearchPageController(ISearchService documentService)
+        public SearchPageController(IWebpageSearchService webpageSearchService)
         {
-            _documentService = documentService;
+            _webpageSearchService = webpageSearchService;
         }
 
-        public ActionResult Show(SearchPage page)
+        public ActionResult Show(SearchPage page, [IoCModelBinder(typeof(WebpageSearchQueryModelBinder))]WebpageSearchQuery model)
         {
-            int pageVal;
-            ViewData["term"] = Request["q"];
-            int pageNum = string.IsNullOrWhiteSpace(Request["p"])
-                               ? 1
-                               : int.TryParse(Request["p"], out pageVal)
-                                     ? pageVal
-                                     : 1;
-            ViewData["searchResults"] = _documentService.SiteSearch(Request["q"], pageNum);
-
+            ViewData["searchResults"] = _webpageSearchService.Search(model);
+            ViewData["webpageSearchQueryModel"] = model;
             return View(page);
-        }
-
-        public ActionResult Post(SearchPage page, FormCollection form)
-        {
-            return Redirect(page.LiveUrlSegment + string.Format("?q={0}", form["term"]));
         }
     }
 }

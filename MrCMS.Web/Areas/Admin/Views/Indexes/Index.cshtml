@@ -1,13 +1,12 @@
 ﻿@using MrCMS.Helpers
-@model System.Collections.Generic.List<MrCMS.Services.MrCMSIndex>
+@model List<MrCMS.Services.MrCMSIndex>
 @{
     ViewBag.Title = "Indexes";
 }
 <form>
     <fieldset>
         <legend>Indexes
-
-            <span class="btn-group  display-inline  pull-right"></span>
+            <span class="btn-group display-inline pull-right"></span>
         </legend>
 
         <div class="row-fluid">
@@ -49,6 +48,8 @@
                                 {
                                     @Html.FormLink("Create", "Create", new { type = index.TypeName }, new { @class = "btn btn-mini" })
                                 }
+
+                                @Html.ActionLink("Set Boosts", "Boosts", "Indexes", new { type = index.TypeName }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
                             </div>
                         </td>
                     </tr>

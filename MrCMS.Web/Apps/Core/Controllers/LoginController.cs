@@ -6,37 +6,38 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.ModelBinders;
 using MrCMS.Web.Apps.Core.Models;
+using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
-using ResetPasswordViewModel = MrCMS.Web.Apps.Core.Models.ResetPasswordViewModel;
+using ResetPasswordViewModel = MrCMS.Web.Apps.Core.Models.RegisterAndLogin.ResetPasswordViewModel;
 
 namespace MrCMS.Web.Apps.Core.Controllers
 {
     public class LoginController : MrCMSAppUIController<CoreApp>
     {
         private readonly IAuthorisationService _authorisationService;
-        private readonly IDocumentService _documentService;
+        private readonly IUniquePageService _uniquePageService;
         private readonly ILoginService _loginService;
         private readonly IUserService _userService;
         private readonly IResetPasswordService _resetPasswordService;
 
-        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, IAuthorisationService authorisationService, IDocumentService documentService,
+        public LoginController(IUserService userService, IResetPasswordService resetPasswordService, IAuthorisationService authorisationService, IUniquePageService uniquePageService,
             ILoginService loginService)
         {
             _userService = userService;
             _resetPasswordService = resetPasswordService;
             _authorisationService = authorisationService;
-            _documentService = documentService;
+            _uniquePageService = uniquePageService;
             _loginService = loginService;
         }
 
         [HttpGet]
-        public ViewResult Show(LoginPage page)
+        public ViewResult Show(LoginPage page, LoginModel model)
         {
             ModelState.Clear();
-            ViewData["login-model"] = TempData["login-model"] as LoginModel ?? new LoginModel();
+            ViewData["login-model"] = TempData["login-model"] as LoginModel ?? model;
             return View(page);
         }
 
@@ -52,7 +53,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             }
             TempData["login-model"] = loginModel;
 
-            return Redirect("~/" + _documentService.GetUniquePage<LoginPage>().LiveUrlSegment);
+            return Redirect("~/" + _uniquePageService.GetUniquePage<LoginPage>().LiveUrlSegment);
         }
 
 
@@ -75,7 +76,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             if (string.IsNullOrEmpty(email))
             {
                 TempData["message"] = "Email not recognized.";
-                return Redirect("~/" + _documentService.GetUniquePage<ForgottenPasswordPage>().LiveUrlSegment);
+                return Redirect("~/" + _uniquePageService.GetUniquePage<ForgottenPasswordPage>().LiveUrlSegment);
             }
 
             var user = _userService.GetUserByEmail(email);
@@ -91,7 +92,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 TempData["message"] = "Email not recognized.";
             }
 
-            return Redirect("~/" + _documentService.GetUniquePage<ForgottenPasswordPage>().LiveUrlSegment);
+            return Redirect("~/" + _uniquePageService.GetUniquePage<ForgottenPasswordPage>().LiveUrlSegment);
         }
 
 
@@ -116,12 +117,12 @@ namespace MrCMS.Web.Apps.Core.Controllers
             try
             {
                 _resetPasswordService.ResetPassword(model);
-                return Redirect("~/" + _documentService.GetUniquePage<LoginPage>().LiveUrlSegment);
+                return Redirect("~/" + _uniquePageService.GetUniquePage<LoginPage>().LiveUrlSegment);
             }
             catch (Exception ex)
             {
                 ErrorSignal.FromCurrentContext().Raise(ex);
-                return Redirect("~/" + _documentService.GetUniquePage<LoginPage>().LiveUrlSegment);
+                return Redirect("~/" + _uniquePageService.GetUniquePage<LoginPage>().LiveUrlSegment);
             }
         }
     }

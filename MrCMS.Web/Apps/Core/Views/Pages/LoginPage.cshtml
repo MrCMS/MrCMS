@@ -1,7 +1,30 @@
-﻿@using MrCMS.Helpers
+﻿@using Microsoft.Owin.Security
+@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Core.Models
+@using MrCMS.Web.Apps.Core.Models.RegisterAndLogin
+@using MrCMS.Web.Apps.Core.Pages
 @model MrCMS.Web.Apps.Core.Pages.LoginPage
-           
+
 @Editable(Model, page => page.BodyContent, true)
 
-@{ Html.RenderPartial("LoginBox", ViewData["login-model"] as LoginModel);}
+<div class="row">
+    <div class="col-md-4 col-sm-6">
+        <h1>Login</h1>
+        <hr />
+        @{
+            var loginModel = ViewData["login-model"] as LoginModel;
+            Html.RenderPartial("LoginBox", loginModel);
+        }
+        <hr />
+        @{Html.RenderAction("Providers", "ExternalLogin", new { returnUrl = loginModel.ReturnUrl });}
+    </div>
+    <div class="col-md-8 col-sm-6">
+        <h2 class="not-registered">Not registered?</h2>
+        <hr />
+        <a href="@(UniquePageHelper.GetUrl<RegisterPage>())" class="btn btn-default">
+            <span class="glyphicon glyphicon-ok-sign"></span> Click here to register
+        </a>
+    </div>
+</div>
+
+@{ Html.IncludeCss("~/Apps/Core/Content/SocialButtons/zocial.css"); }

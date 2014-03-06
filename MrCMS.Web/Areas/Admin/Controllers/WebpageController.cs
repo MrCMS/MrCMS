@@ -46,7 +46,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                                              layout =>
                                                              doc != null && doc.Layout != null &&
                                                              doc.Layout.Id == layout.Id,
-                                                             SelectListItemHelper.EmptyItem("Default Layout"));
+                                                             SelectListItemHelper.EmptyItem("Default Layout", "0"));
 
             var documentTypeDefinitions =
                 (doc.Parent as Webpage).GetValidWebpageDocumentTypes()
@@ -91,7 +91,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return base.Delete(document);
         }
 
-        public override ActionResult Show(Webpage document)
+        public ActionResult Show(Webpage document)
         {
             if (document == null)
                 return RedirectToAction("Index");
@@ -136,9 +136,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToRouteResult SetParent(Webpage webpage, int? parent)
+        public RedirectToRouteResult SetParent(Webpage webpage, int? parentVal)
         {
-            _documentService.SetParent(webpage, parent);
+            _documentService.SetParent(webpage, parentVal);
 
             return RedirectToAction("Edit", new { id = webpage.Id });
         }

@@ -1,39 +1,33 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Web.Apps.Core.Models.UserAccountModel
-@using (Html.BeginForm("UserAccountDetails", "UserAccount", null, FormMethod.Post, new { @class = "form-horizontal" }))
+@model MrCMS.Web.Apps.Core.Models.RegisterAndLogin.UserAccountModel
+@using (Html.BeginForm("UserAccountDetails", "UserAccount", null, FormMethod.Post, new { @class = "" }))
 {
-    <div class="control-group">
-        <label class="control-label" for="FirstName">First Name</label>
-        <div class="controls">
-            @Html.TextBoxFor(model => model.FirstName)
-            @Html.ValidationMessageFor(model => model.FirstName)
-        </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.FirstName, new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.FirstName)
     </div>
-    <div class="control-group">
-        <label class="control-label" for="LastName">Last Name</label>
-        <div class="controls">
-            @Html.TextBoxFor(model => model.LastName)
-            @Html.ValidationMessageFor(model => model.LastName)
-        </div>
+    
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName, new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.LastName)
     </div>
-    <div class="control-group">
-        <label class="control-label" for="Email">Email</label>
-        <div class="controls">
-            @Html.TextBoxFor(model => model.Email)
-            @Html.ValidationMessageFor(model => model.Email)
-        </div>
+    
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email, new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Email)
     </div>
-    <div class="control-group">
-        <div class="controls">
-            <input type="submit" value="Save Changes" class="btn btn-primary" />
-        </div>
-    </div>
-
+    
+    <input type="submit" value="Save Changes" class="btn btn-primary" />
+    
     if (!String.IsNullOrEmpty(ViewBag.Message))
     {
     <div class="alert alert-error">
         @ViewBag.Message
     </div>
     }
+
 }
 

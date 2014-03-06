@@ -1,4 +1,5 @@
-﻿using Lucene.Net.Store;
+﻿using System;
+using Lucene.Net.Store;
 using Lucene.Net.Store.Azure;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
@@ -8,20 +9,31 @@ namespace MrCMS.Indexing.Management
 {
     public class AzureDirectoryIndexManager<TEntity, TDefinition> : IndexManager<TEntity, TDefinition>
         where TEntity : SystemEntity
-        where TDefinition : IIndexDefinition<TEntity>, new()
+        where TDefinition : IndexDefinition<TEntity>
     {
         private readonly IAzureFileSystem _azureFileSystem;
-        private static AzureDirectory _directory;
+        private AzureDirectory _directory;
 
-        public AzureDirectoryIndexManager(Site currentSite, IAzureFileSystem azureFileSystem)
-            : base(currentSite)
+        public AzureDirectoryIndexManager(Site currentSite, TDefinition definition, IAzureFileSystem azureFileSystem)
+            : base(currentSite, definition)
         {
             _azureFileSystem = azureFileSystem;
         }
 
-        protected override Directory GetDirectory()
+        protected override Directory GetDirectory(Site site)
         {
-            return _directory = _directory ?? new AzureDirectory(_azureFileSystem.StorageAccount, "Indexes-" + IndexFolderName, new RAMDirectory());
+            var catalog = AzureDirectoryHelper.GetAzureCatalogName(site,IndexFolderName);
+            try
+            {
+                return
+                    _directory =
+                        _directory ??
+                        new AzureDirectory(_azureFileSystem.StorageAccount, catalog, new RAMDirectory());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Tried to create catalog " + catalog, ex);
+            }
         }
     }
 }

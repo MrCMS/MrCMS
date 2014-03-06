@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @{
         Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap.css");
-        Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap-responsive.css");
+        Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap-theme.css");
         Html.IncludeCss("~/Apps/Core/Content/Styles/style.css");
     }
     @Html.RenderCss()
@@ -23,40 +23,62 @@
     @Html.Raw(Model.CustomHeaderScripts)
 </head>
 <body>
-    <div class="container">
-        <div class="row-fluid margin-bottom-20 margin-bottom-10">
-            <div class="span4">
-                @RenderZone("Header Left")
-            </div>
-            <div class="span8">
-                @RenderZone("Header Right")
-            </div>
-        </div>
+
+    <nav class="navbar navbar-mrcms" role="navigation">
         <div class="container">
-            <div class="navbar">
-                <div class="navbar-inner">
-                    <div class="container">
-                        @RenderZone("Main Navigation")
-                    </div>
-                </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    <img src="/Apps/Core/Content/Images/mrcms-hat.gif" style="width: 40px; height: auto;" />
+                    Mr CMS</a>
+            </div>
+            <div class="collapse navbar-collapse navbar-left" id="bs-example-navbar-collapse-1">
+                @RenderZone("Main Navigation", allowFrontEndEditing: false)
+            </div>
+            <div class="navbar-right">
+                <ul class="nav navbar-nav" id="nav-links-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </a>
+                        <div class="dropdown-menu">
+                            @Html.Partial("SearchForm")
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-user"></span>
+                        </a>
+                        @RenderZone("Header Right", allowFrontEndEditing: false)
+                    </li>
+                </ul>
             </div>
         </div>
+    </nav>
+    <div class="container mrcms-content">
         @RenderZone("Before Content")
         @RenderBody()
         @RenderZone("After Content")
+    </div>
 
-        <hr />
-
+    <hr />
+    <div class="container">
         <footer>
             @RenderZone("Footer")
         </footer>
-
     </div>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    @{ Html.IncludeScript("~/Apps/Core/Content/bootstrap/js/bootstrap.min.js");
+    
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    @{ Html.IncludeScript("~/Apps/Core/Content/bootstrap/js/bootstrap.js");
        Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.min.js");
        Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.unobtrusive.min.js");}
-    @Html.RenderScripts()
+
+    
     @if (CurrentRequestData.CurrentUser != null && CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") && SiteSettings<SiteSettings>().EnableInlineEditing)
     {
         Html.RenderAction("InPageEditor", "InPageAdmin", new { id = Model.Id, area = "Admin" });
@@ -66,5 +88,7 @@
         @RenderSection("JavascriptBlockInclude")
     }
     @Html.Raw(Model.CustomFooterScripts)
+    
+    @Html.RenderScripts()
 </body>
 </html>

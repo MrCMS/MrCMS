@@ -23,6 +23,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return Json(_fileService.GetFiles(mediaCategory), "text/html", System.Text.Encoding.UTF8);
         }
 
+
         [HttpPost]
         [ActionName("Files")]
         public JsonResult Files_Post(MediaCategory mediaCategory)
@@ -31,18 +32,30 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             foreach (string files in Request.Files)
             {
                 var file = Request.Files[files];
-                var dbFile = _fileService.AddFile(file.InputStream, file.FileName,
-                                                  file.ContentType, file.ContentLength,
-                                                  mediaCategory);
-                list.Add(dbFile);
+                if (_fileService.IsValidFileType(file.FileName))
+                {
+                    var dbFile = _fileService.AddFile(file.InputStream, file.FileName,
+                        file.ContentType, file.ContentLength,
+                        mediaCategory);
+                    list.Add(dbFile);
+                }
             }
             return Json(list.ToArray(), "text/html", System.Text.Encoding.UTF8);
         }
 
         [HttpPost]
-        public void Delete(MediaFile file)
+        [ActionName("Delete")]
+        public ActionResult Delete_POST(MediaFile file)
         {
+            var categoryId = file.MediaCategory.Id;
             _fileService.DeleteFile(file);
+            return RedirectToAction("Show", "MediaCategory", new { Id = categoryId });
+        }
+
+        [HttpGet]
+        public ActionResult Delete(MediaFile file)
+        {
+            return View("Delete", file);
         }
 
         [HttpPost]
@@ -60,6 +73,20 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             {
                 return string.Format("There was an error saving the SEO values: {0}", ex.Message);
             }
+        }
+
+        public ActionResult Edit(MediaFile file)
+        {
+            return View("Edit", file);
+        }
+
+        [HttpPost]
+        [ActionName("Edit")]
+        public ActionResult Edit_POST(MediaFile file)
+        {
+            _fileService.SaveFile(file);
+
+            return RedirectToAction("Show", "MediaCategory", new { file.MediaCategory.Id });
         }
     }
 }
