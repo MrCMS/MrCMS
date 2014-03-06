@@ -15,9 +15,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _seoAnalysisService = seoAnalysisService;
         }
 
-        public PartialViewResult Analyze(Webpage webpage, string analysisTerm)
+        public PartialViewResult Analyze(Webpage webpage)
         {
-            var result = _seoAnalysisService.Analyze(webpage, analysisTerm);
+            _seoAnalysisService.UpdateAnalysisTerm(webpage);
+            var result = _seoAnalysisService.Analyze(webpage, webpage.SEOTargetPhrase);
             return PartialView(result);
         }
     }

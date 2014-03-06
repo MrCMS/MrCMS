@@ -34,6 +34,9 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Url Segment")]
         public override string UrlSegment { get; set; }
 
+        [StringLength(250, ErrorMessage = "SEO Target Phrase cannot be longer than 250 characters.")]
+        public virtual string SEOTargetPhrase { get; set; }
+
         [DisplayName("Meta Title")]
         [StringLength(250, ErrorMessage = "Meta title cannot be longer than 250 characters.")]
         public virtual string MetaTitle { get; set; }

@@ -13,10 +13,8 @@
 
         <hr />
         <h4>SEO Analysis </h4>
-        <label for="term-to-analyze">
-            Please enter a term to analyze
-        </label>
-        <input name="term-to-analyze" id="term-to-analyze" type="text" />
+        @Html.LabelFor(webpage => webpage.SEOTargetPhrase,"Please enter a term to analyze")
+        @Html.TextBoxFor(webpage => webpage.SEOTargetPhrase)
         <div>
             <button data-seo-analyze="true" class="btn btn-mini">Analyze</button>
         </div>
