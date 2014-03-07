@@ -35,10 +35,8 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
         {
             string absoluteUrl = webpage.AbsoluteUrl;
             WebRequest request = WebRequest.Create(absoluteUrl);
-
             var document = new HtmlDocument();
             document.Load(request.GetResponse().GetResponseStream());
-
             var htmlNode = document.DocumentNode;
             return htmlNode;
         }

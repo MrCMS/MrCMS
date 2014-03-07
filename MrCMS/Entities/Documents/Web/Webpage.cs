@@ -35,6 +35,7 @@ namespace MrCMS.Entities.Documents.Web
         public override string UrlSegment { get; set; }
 
         [StringLength(250, ErrorMessage = "SEO Target Phrase cannot be longer than 250 characters.")]
+        [DisplayName("SEO Target Phrase")]
         public virtual string SEOTargetPhrase { get; set; }
 
         [DisplayName("Meta Title")]
@@ -125,7 +126,7 @@ namespace MrCMS.Entities.Documents.Web
 
         [DisplayName("Block Anonymous Access")]
         public virtual bool BlockAnonymousAccess { get; set; }
-        
+
         //forms
         [DisplayName("Form Submitted Message")]
         [AllowHtml]
@@ -148,7 +149,7 @@ namespace MrCMS.Entities.Documents.Web
         [StringLength(100)]
         [DisplayName("Submit button custom text")]
         public virtual string SubmitButtonText { get; set; }
-        
+
 
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }
@@ -172,7 +173,7 @@ namespace MrCMS.Entities.Documents.Web
                 return string.Format("{0}{1}/{2}", scheme, authority, LiveUrlSegment);
             }
         }
-        
+
         public virtual IList<UrlHistory> Urls { get; set; }
 
         public virtual IEnumerable<Webpage> PublishedChildren
@@ -227,7 +228,7 @@ namespace MrCMS.Entities.Documents.Web
         {
             return this.GetMetadata().ValidChildrenTypes.Any();
         }
-        
+
         public override void CustomBinding(ControllerContext controllerContext, ISession session)
         {
         }

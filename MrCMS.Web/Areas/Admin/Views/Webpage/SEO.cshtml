@@ -11,35 +11,35 @@
         @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
         <button id="change-url" class="btn btn-mini">Change</button>
 
-        
-            <hr />
-            <p><i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History</p>
 
-            @Html.ActionLink("Add", "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-mini btn-success", data_toggle = "fb-modal" })
-            @if (Model.Urls.Any())
-            {
-                <table class="table table-striped table-condensed margin-top-10">
-                    <tbody>
-                        @foreach (var url in Model.Urls.OrderByDescending(history => history.CreatedOn))
-                        {
-                            <tr>
-                                <td>
-                                    <a href="http://@Model.Site.BaseUrl/@url.UrlSegment" target="_blank">http://@Model.Site.BaseUrl/@url.UrlSegment</a>
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Delete", "Delete", "UrlHistory", new { id = url.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                @:No URL History
+        <hr />
+        <p><i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History</p>
+
+        @Html.ActionLink("Add", "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-mini btn-success", data_toggle = "fb-modal" })
+        @if (Model.Urls.Any())
+        {
+            <table class="table table-striped table-condensed margin-top-10">
+                <tbody>
+                    @foreach (var url in Model.Urls.OrderByDescending(history => history.CreatedOn))
+                    {
+                        <tr>
+                            <td>
+                                <a href="http://@Model.Site.BaseUrl/@url.UrlSegment" target="_blank">http://@Model.Site.BaseUrl/@url.UrlSegment</a>
+                            </td>
+                            <td>
+                                @Html.ActionLink("Delete", "Delete", "UrlHistory", new { id = url.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @:No URL History
             }
 
-        </div>
+    </div>
 
     @if (!(Model is Redirect))
     {       
@@ -57,7 +57,7 @@
         <hr />
         <h4>SEO Analysis </h4>
         <div class="input-append">
-            @Html.LabelFor(webpage => webpage.SEOTargetPhrase,"Please enter a term to analyze")
+            @Html.LabelFor(webpage => webpage.SEOTargetPhrase)
             @Html.TextBoxFor(webpage => webpage.SEOTargetPhrase)
             <button data-seo-analyze="true" class="btn">Analyze</button>
         </div>
@@ -90,9 +90,9 @@
 
 
     <hr />
-    
-    
-    
+
+
+
 
     <strong>Page type:</strong> @Model.GetMetadata().Name
     <br />

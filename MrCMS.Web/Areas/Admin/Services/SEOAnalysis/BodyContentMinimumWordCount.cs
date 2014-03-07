@@ -13,10 +13,11 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
     {
         public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
         {
-            var paragraphs = document.GetElementsOfType("p").ToList();
-            var wordCount =
-                paragraphs.SelectMany(node => node.InnerText.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries))
-                    .Count();
+            var text =
+                (HtmlNode.CreateNode("<div>" + webpage.BodyContent + "</div>").InnerText ?? string.Empty).Replace(
+                    Environment.NewLine, " ");
+            var strings = text.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            var wordCount = strings.Count();
             if (wordCount <= 300)
             {
                 yield return

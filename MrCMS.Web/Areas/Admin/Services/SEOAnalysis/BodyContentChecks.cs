@@ -4,7 +4,6 @@ using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Areas.Admin.Models.SEOAnalysis;
-using NHibernate.Util;
 
 namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
 {
@@ -12,7 +11,9 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
     {
         public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
         {
-            var text = HtmlNode.CreateNode("<div>" + webpage.BodyContent + "</div>").InnerText ?? string.Empty;
+            var text =
+                (HtmlNode.CreateNode("<div>" + webpage.BodyContent + "</div>").InnerText ?? string.Empty).Replace(
+                    Environment.NewLine, " ");
 
             if (text.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase))
             {

@@ -383,6 +383,7 @@
     <Compile Include="Areas\Admin\Services\SEOAnalysis\MetaDescriptionChecks.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\PageNameIsUnique.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\SEOAnalysisService.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\SingleH1Tag.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\SubheadingsContainingTerm.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TargetTermIsUnique.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleContainsTerm.cs" />

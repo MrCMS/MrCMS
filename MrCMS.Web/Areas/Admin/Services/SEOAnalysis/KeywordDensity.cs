@@ -13,16 +13,18 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
     {
         public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
         {
-            var paragraphs = document.GetElementsOfType("p").ToList();
-
-            var text = string.Join(" ", paragraphs.Select(node => node.InnerText.Replace(Environment.NewLine, " ")));
+            var text =
+                (HtmlNode.CreateNode("<div>" + webpage.BodyContent + "</div>").InnerText ?? string.Empty).Replace(
+                    Environment.NewLine, " ");
 
             var instances = Regex.Matches(text, analysisTerm, RegexOptions.IgnoreCase).Count;
 
-            var words = text.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).Count();
+            var strings = text.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            var words = strings.Count();
             var termWordCount = analysisTerm.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).Count();
 
-            var density = (instances / (words / (decimal)termWordCount)) * 100m;
+            var density = ((decimal)instances / (words - (termWordCount * (termWordCount - 1)))) * 100m;
+            // (instances / (words - (instances * (decimal)termWordCount)) * 100m);
 
             if (density < 1)
             {
