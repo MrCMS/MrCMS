@@ -7,7 +7,9 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Indexes;
+using MrCMS.Indexing;
 using MrCMS.Indexing.Management;
+using MrCMS.Indexing.Utils;
 using MrCMS.Web.Apps.Core.Indexing.WebpageSearch;
 using MrCMS.Website;
 
@@ -36,7 +38,8 @@ namespace MrCMS.Web.Areas.Admin.Models.Search
             var booleanQuery = new BooleanQuery();
             if (!String.IsNullOrWhiteSpace(Term))
             {
-                var fuzzySearchTerm = MakeFuzzy(Term);
+                var analyser = IndexingHelper.Get<AdminWebpageIndexDefinition>().GetAnalyser();
+                var fuzzySearchTerm = Term.GetFuzzyMatchString(analyser);
                 var q = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
                     new[]
                     {
@@ -45,8 +48,7 @@ namespace MrCMS.Web.Areas.Admin.Models.Search
                         FieldDefinition.GetFieldName<MetaTitleFieldDefinition>(),
                         FieldDefinition.GetFieldName<MetaKeywordsFieldDefinition>(),
                         FieldDefinition.GetFieldName<MetaDescriptionFieldDefinition>()
-                    },
-                    MrCMSApplication.Get<AdminWebpageIndexDefinition>().GetAnalyser());
+                    }, analyser);
 
                 var query = q.Parse(fuzzySearchTerm);
                 booleanQuery.Add(query, Occur.SHOULD);
@@ -71,12 +73,5 @@ namespace MrCMS.Web.Areas.Admin.Models.Search
                     ? DateTools.DateToString(CreatedOnTo.Value, DateTools.Resolution.SECOND)
                     : null, CreatedOnFrom.HasValue, CreatedOnTo.HasValue);
         }
-
-        private string MakeFuzzy(string keywords)
-        {
-            var split = keywords.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            return string.Join(" ", split.Select(s => s + "~"));
-        }
-
     }
 }

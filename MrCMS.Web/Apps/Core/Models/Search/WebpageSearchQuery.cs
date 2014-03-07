@@ -10,6 +10,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Indexes;
 using MrCMS.Indexing;
 using MrCMS.Indexing.Management;
+using MrCMS.Indexing.Utils;
 using MrCMS.Web.Apps.Core.Indexing;
 using MrCMS.Web.Apps.Core.Indexing.WebpageSearch;
 
@@ -38,17 +39,17 @@ namespace MrCMS.Web.Apps.Core.Models.Search
             var booleanQuery = new BooleanQuery();
             if (!String.IsNullOrWhiteSpace(Term))
             {
-                var fuzzySearchTerm = MakeFuzzy(Term);
+                var analyser = IndexingHelper.Get<AdminWebpageIndexDefinition>().GetAnalyser();
+                var fuzzySearchTerm = Term.GetFuzzyMatchString(analyser);
                 var q = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
-                    new string[]
+                    new[]
                     {
                         FieldDefinition.GetFieldName<NameFieldDefinition>(),
                         FieldDefinition.GetFieldName<BodyContentFieldDefinition>(),
                         FieldDefinition.GetFieldName<MetaTitleFieldDefinition>(),
                         FieldDefinition.GetFieldName<MetaKeywordsFieldDefinition>(),
                         FieldDefinition.GetFieldName<MetaDescriptionFieldDefinition>()
-                    }, 
-                    IndexingHelper.Get<WebpageSearchIndexDefinition>().GetAnalyser());
+                    }, analyser);
 
                 var query = q.Parse(fuzzySearchTerm);
                 booleanQuery.Add(query, Occur.SHOULD);
