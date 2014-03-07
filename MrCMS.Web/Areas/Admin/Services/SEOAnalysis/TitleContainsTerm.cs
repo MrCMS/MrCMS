@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.Models.SEOAnalysis;
 
@@ -14,10 +13,25 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
         public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
         {
             string titleText = document.GetElementText("title");
-            yield return
-                titleText.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase)
-                    ? GetFacet("Title contains term", SEOAnalysisStatus.Success, "The title contains '" + analysisTerm + "'")
-                    : GetFacet("Title contains term", SEOAnalysisStatus.Error, "The title does not contain '" + analysisTerm + "'");
+            if (titleText.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase))
+            {
+                if (titleText.StartsWith(analysisTerm))
+                    yield return
+                        GetFacet("Title contains term", SEOAnalysisStatus.Success,
+                            string.Format("The title starts with the term '{0}', which is considered to improve rankings", analysisTerm));
+                else
+                {
+                    yield return
+                        GetFacet("Title contains term", SEOAnalysisStatus.CanBeImproved,
+                            string.Format(
+                                "The title contains the term '{0}'. To improve this, consider moving it to the start of the title, as this is considered to improve rankings",
+                                analysisTerm));
+                }
+            }
+            else
+                yield return
+                    GetFacet("Title contains term", SEOAnalysisStatus.Error,
+                        string.Format("The title does not contain '{0}'", analysisTerm));
         }
     }
 }

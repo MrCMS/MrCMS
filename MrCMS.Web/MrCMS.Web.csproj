@@ -278,6 +278,7 @@
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
+    <Compile Include="Areas\Admin\Helpers\SEOAnalysisExtensions.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
@@ -373,12 +374,17 @@
     <Compile Include="Areas\Admin\Services\SEOAnalysis\AllImagesHaveAltTags.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\BaseSEOAnalysisFacetProvider.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\BodyContentChecks.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\BodyContentFirstParagraphContainsTerm.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\BodyContentMinimumWordCount.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\H1ContainsTerm.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\ISEOAnalysisFacetProvider.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\ISEOAnalysisService.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\KeywordDensity.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\MetaDescriptionChecks.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\PageNameIsUnique.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\SEOAnalysisService.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\SubheadingsContainingTerm.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\TargetTermIsUnique.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleContainsTerm.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleIsCorrectLength.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\URLContainsTerm.cs" />

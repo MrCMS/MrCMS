@@ -27,7 +27,7 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
                 : string.Empty;
             if (string.IsNullOrWhiteSpace(metaDescription))
             {
-                yield return GetFacet("Meta description set", SEOAnalysisStatus.Error, "Meta description should be set");
+                yield return GetFacet("Meta description set", SEOAnalysisStatus.Error, "No meta description has been set - search engines will instead use text from your copy in results");
                 yield break;
             }
             yield return GetFacet("Meta description set", SEOAnalysisStatus.Success, "Meta description is set");
@@ -38,7 +38,7 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
             if (metaDescription.Length < 120)
             {
                 yield return
-                    GetFacet("Meta description length", SEOAnalysisStatus.Error,
+                    GetFacet("Meta description length", SEOAnalysisStatus.CanBeImproved,
                         "Meta description should be at least 120 characters");
             }
             else if (metaDescription.Length > 200)
@@ -50,7 +50,7 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
             else
             {
                 yield return
-                    GetFacet("Meta description length", SEOAnalysisStatus.Error,
+                    GetFacet("Meta description length", SEOAnalysisStatus.Success,
                         "Meta description is of optimal length (between 120 and 200 characters)");
             }
             bool anyWithSameDescription =
