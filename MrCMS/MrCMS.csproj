@@ -342,6 +342,7 @@
     <Compile Include="Indexing\Management\AzureDirectoryHelper.cs" />
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
+    <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
     <Compile Include="Models\WebpageCount.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
