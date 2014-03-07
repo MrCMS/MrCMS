@@ -1194,7 +1194,6 @@
     <Content Include="Apps\Core\Content\Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Apps\Core\Content\Scripts\respond.min.js" />
     <Content Include="Apps\Core\Content\Styles\style.css" />
-    <Content Include="Docs\UpgradeNotes.txt" />
     <Content Include="Global.asax" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery-ui-timepicker-addon.js" />
     <Content Include="Content\install\scripts\jquery.validate.unobtrusive.min.js" />
