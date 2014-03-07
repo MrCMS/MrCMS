@@ -39,8 +39,7 @@ namespace MrCMS.Web.Apps.Core.Models.Search
             var booleanQuery = new BooleanQuery();
             if (!String.IsNullOrWhiteSpace(Term))
             {
-                var analyser = IndexingHelper.Get<AdminWebpageIndexDefinition>().GetAnalyser();
-                var fuzzySearchTerm = Term.GetFuzzyMatchString(analyser);
+                var analyser = IndexingHelper.Get<WebpageSearchIndexDefinition>().GetAnalyser();
                 var q = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
                     new[]
                     {
@@ -49,9 +48,9 @@ namespace MrCMS.Web.Apps.Core.Models.Search
                         FieldDefinition.GetFieldName<MetaTitleFieldDefinition>(),
                         FieldDefinition.GetFieldName<MetaKeywordsFieldDefinition>(),
                         FieldDefinition.GetFieldName<MetaDescriptionFieldDefinition>()
-                    }, analyser);
-
-                var query = q.Parse(fuzzySearchTerm);
+                    },
+                    analyser);
+                Query query = Term.SafeGetSearchQuery(q, analyser);
                 booleanQuery.Add(query, Occur.SHOULD);
             }
             if (CreatedOnFrom.HasValue || CreatedOnTo.HasValue)

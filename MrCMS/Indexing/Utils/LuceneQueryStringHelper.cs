@@ -1,15 +1,45 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Tokenattributes;
+using Lucene.Net.QueryParsers;
+using Lucene.Net.Search;
+using MrCMS.Helpers;
 
 namespace MrCMS.Indexing.Utils
 {
     public static class LuceneQueryStringHelper
     {
-        public static string GetFuzzyMatchString(this string keywords, Analyzer analyser)
+        public static Query SafeGetSearchQuery(this string term, MultiFieldQueryParser q, Analyzer analyser)
+        {
+            Query query;
+            try
+            {
+                query = q.Parse(term.MakeFuzzy());
+            }
+            catch
+            {
+                var searchTerm = term.Sanitize(analyser);
+                query = q.Parse(searchTerm);
+            }
+            return query;
+        }
+        public static string MakeFuzzy(this string keywords)
+        {
+            var makeFuzzy = Regex.Replace(keywords, "[A-Za-z0-9\\^\\?\\*\\:\\\"\\(\\)\\{\\}\\[\\]\\~]+",
+                match =>
+                    !match.Value.Equals("and", StringComparison.OrdinalIgnoreCase) &&
+                    !match.Value.Equals("or", StringComparison.OrdinalIgnoreCase) &&
+                    !match.Value.Contains("~", StringComparison.OrdinalIgnoreCase)
+                        ? match.Value.TrimEnd('~') + "~"
+                        : match.Value);
+            return makeFuzzy;
+        }
+
+        public static string Sanitize(this string keywords, Analyzer analyser)
         {
             var matchCollection = Regex.Matches(keywords, "\"(.*?)\"");
             var quotes = (from Match match in matchCollection select match.Value).ToList();
