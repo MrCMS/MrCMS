@@ -21,5 +21,23 @@ namespace MrCMS.Web.Areas.Admin.Helpers
                     throw new ArgumentOutOfRangeException("status");
             }
         }
+
+        public static string GetIconClass(this SEOAnalysisStatus status)
+        {
+
+            switch (status)
+            {
+                case SEOAnalysisStatus.CanBeImproved:
+                    return "icon-arrow-right";
+                case SEOAnalysisStatus.Error:
+                    return "icon-remove";
+                case SEOAnalysisStatus.Success:
+                    return "icon-ok";
+                case SEOAnalysisStatus.Problem:
+                    return "icon-remove";
+                default:
+                    throw new ArgumentOutOfRangeException("status");
+            }
+        }
     }
 }

@@ -157,5 +157,5 @@ ul.nav { margin-bottom: 10px; }
 
 .analysis-table { }
     .analysis-table > tbody > tr { color: #333; }
-        .analysis-table > tbody > tr > td > ul { list-style-type: none; }
+        .analysis-table > tbody > tr > td > ul { list-style-type: none; margin: 0; }
         .analysis-table > tbody > tr.can-be-improved > td { background-color: #FFF9B5; }
