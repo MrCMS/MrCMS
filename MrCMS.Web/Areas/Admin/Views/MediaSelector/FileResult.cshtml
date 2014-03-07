@@ -40,7 +40,7 @@
         else
         {
             var id = "SelectedFile-" + Model.Id;
-            @Html.RadioButton("SelectedFile", Model.FileUrl, new { id })
+            @Html.RadioButton("SelectedFile", Model.FileUrl, new { id, data_file = Model.Id })
             @Html.Label(id, "Select file")
 
             <input type="button" class="btn-primary btn set-file" data-file="@Model.Id" data-action="select" disabled="disabled" value="Choose file" />
