@@ -18,15 +18,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            return View(await _thirdPartyAuthSettingsAdminService.GetSettingsAsync());
+            return View(_thirdPartyAuthSettingsAdminService.GetSettings());
         }
 
         [HttpPost]
-        public async Task<RedirectToRouteResult> Index([IoCModelBinder(typeof(ThirdPartyAuthSettingsModelBinder))] ThirdPartyAuthSettings thirdPartyAuthSettings)
+        public RedirectToRouteResult Index([IoCModelBinder(typeof(ThirdPartyAuthSettingsModelBinder))] ThirdPartyAuthSettings thirdPartyAuthSettings)
         {
-            await _thirdPartyAuthSettingsAdminService.SaveSettingsAsync(thirdPartyAuthSettings);
+            _thirdPartyAuthSettingsAdminService.SaveSettings(thirdPartyAuthSettings);
             return RedirectToAction("Index");
         }
     }
