@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using MrCMS.Entities.People;
@@ -28,39 +29,50 @@ namespace MrCMS.Services
         {
         }
 
-        public Task CreateAsync(User user)
+        public async Task CreateAsync(User user)
         {
-            return Task.Run(() => _userService.AddUser(user));
+            await Task.Factory.StartNew(() => _userService.AddUser(user), CancellationToken.None,
+                                        TaskCreationOptions.None,
+                                        TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task UpdateAsync(User user)
+        public async Task UpdateAsync(User user)
         {
-            return Task.Run(() => _userService.SaveUser(user));
+            await Task.Factory.StartNew(() => _userService.SaveUser(user), CancellationToken.None,
+                                        TaskCreationOptions.None,
+                                        TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task DeleteAsync(User user)
+        public async Task DeleteAsync(User user)
         {
-            return Task.Run(() => _userService.DeleteUser(user));
+            await Task.Factory.StartNew(() => _userService.DeleteUser(user), CancellationToken.None,
+                                        TaskCreationOptions.None,
+                                        TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task<User> FindByIdAsync(string userId)
+        public async Task<User> FindByIdAsync(string userId)
         {
-            return Task.Run(() =>
+            return await Task.Factory.StartNew(() =>
                 {
                     int id;
                     int.TryParse(userId, out id);
                     return _userService.GetUser(id);
-                });
+                }, CancellationToken.None,
+                                               TaskCreationOptions.None,
+                                               TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task<User> FindByNameAsync(string userName)
+        public async Task<User> FindByNameAsync(string userName)
         {
-            return Task.Run(() => _userService.GetUserByEmail(userName));
+            return await Task.Factory.StartNew(() =>
+                                               _userService.GetUserByEmail(userName), CancellationToken.None,
+                                               TaskCreationOptions.None,
+                                               TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task AddLoginAsync(User user, UserLoginInfo login)
+        public async Task AddLoginAsync(User user, UserLoginInfo login)
         {
-            return Task.Run(() =>
+            await Task.Factory.StartNew(() =>
                 {
                     var userLogin = new UserLogin
                         {
@@ -74,12 +86,14 @@ namespace MrCMS.Services
                             session.Save(userLogin);
                             session.Update(user);
                         });
-                });
+                }, CancellationToken.None,
+                                        TaskCreationOptions.None,
+                                        TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task RemoveLoginAsync(User user, UserLoginInfo login)
+        public async Task RemoveLoginAsync(User user, UserLoginInfo login)
         {
-            return Task.Run(() =>
+            await Task.Factory.StartNew(() =>
                 {
                     UserLogin userLogin = user.UserLogins.FirstOrDefault(l => l.ProviderKey == login.ProviderKey);
                     if (userLogin != null)
@@ -89,23 +103,27 @@ namespace MrCMS.Services
                                 session.Delete(userLogin);
                                 session.Update(user);
                             });
-                });
+                }, CancellationToken.None,
+                                        TaskCreationOptions.None,
+                                        TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task<IList<UserLoginInfo>> GetLoginsAsync(User user)
+        public async Task<IList<UserLoginInfo>> GetLoginsAsync(User user)
         {
-            return Task.Run(() =>
+            return await Task.Factory.StartNew(() =>
                 {
                     IList<UserLoginInfo> list = new List<UserLoginInfo>();
                     foreach (UserLogin login in user.UserLogins)
                         list.Add(new UserLoginInfo(login.LoginProvider, login.ProviderKey));
                     return list;
-                });
+                }, CancellationToken.None,
+                                               TaskCreationOptions.None,
+                                               TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task<User> FindAsync(UserLoginInfo login)
+        public async Task<User> FindAsync(UserLoginInfo login)
         {
-            return Task.Run(() =>
+            return await Task.Factory.StartNew(() =>
                 {
                     UserLogin singleOrDefault =
                         _session.QueryOver<UserLogin>()
@@ -116,39 +134,55 @@ namespace MrCMS.Services
                                 .SingleOrDefault();
 
                     return singleOrDefault != null ? singleOrDefault.User : null;
-                });
+                }, CancellationToken.None,
+                                               TaskCreationOptions.None,
+                                               TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task<IList<Claim>> GetClaimsAsync(User user)
+        public async Task<IList<Claim>> GetClaimsAsync(User user)
         {
-            return Task.Run(() =>
+            return await Task.Factory.StartNew(() =>
                 {
                     IList<Claim> list = new List<Claim>();
                     foreach (UserClaim claim in user.UserClaims)
                         list.Add(new Claim(claim.Claim, claim.Value));
                     return list;
-                });
+                }, CancellationToken.None,
+                                               TaskCreationOptions.None,
+                                               TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task AddClaimAsync(User user, Claim claim)
+        public async Task AddClaimAsync(User user, Claim claim)
         {
-            return Task.Run(() =>
+            await Task.Factory.StartNew(() =>
                 {
-                    var userClaim = new UserClaim { Claim = claim.Type, Value = claim.Value, Issuer = claim.Issuer, User = user };
+                    var userClaim = new UserClaim
+                        {
+                            Claim = claim.Type,
+                            Value = claim.Value,
+                            Issuer = claim.Issuer,
+                            User = user
+                        };
                     user.UserClaims.Add(userClaim);
                     _session.Transact(session =>
                         {
                             session.Save(userClaim);
                             session.Update(user);
                         });
-                });
+                }, CancellationToken.None,
+                                        TaskCreationOptions.None,
+                                        TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task RemoveClaimAsync(User user, Claim claim)
+        public async Task RemoveClaimAsync(User user, Claim claim)
         {
-            return Task.Run(() =>
+            await Task.Factory.StartNew(() =>
                 {
-                    UserClaim singleOrDefault = user.UserClaims.SingleOrDefault(userClaim => userClaim.Claim == claim.Type && userClaim.Value == claim.Value && userClaim.Issuer == claim.Issuer);
+                    UserClaim singleOrDefault =
+                        user.UserClaims.SingleOrDefault(
+                            userClaim =>
+                            userClaim.Claim == claim.Type && userClaim.Value == claim.Value &&
+                            userClaim.Issuer == claim.Issuer);
                     if (singleOrDefault != null)
                         _session.Transact(session =>
                             {
@@ -156,12 +190,14 @@ namespace MrCMS.Services
                                 session.Delete(singleOrDefault);
                                 session.Update(user);
                             });
-                });
+                }, CancellationToken.None,
+                                        TaskCreationOptions.None,
+                                        TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task AddToRoleAsync(User user, string role)
+        public async Task AddToRoleAsync(User user, string role)
         {
-            return Task.Run(() =>
+            await Task.Factory.StartNew(() =>
                 {
                     UserRole userRole = _roleService.GetRoleByName(role);
                     if (userRole != null)
@@ -174,12 +210,14 @@ namespace MrCMS.Services
                         _userService.SaveUser(user);
                         _roleService.SaveRole(userRole);
                     }
-                });
+                }, CancellationToken.None,
+                                        TaskCreationOptions.None,
+                                        TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task RemoveFromRoleAsync(User user, string role)
+        public async Task RemoveFromRoleAsync(User user, string role)
         {
-            return Task.Run(() =>
+            await Task.Factory.StartNew(() =>
                 {
                     UserRole userRole = _roleService.GetRoleByName(role);
                     if (userRole != null)
@@ -192,23 +230,31 @@ namespace MrCMS.Services
                         _userService.SaveUser(user);
                         _roleService.SaveRole(userRole);
                     }
-                });
+                }, CancellationToken.None,
+                                        TaskCreationOptions.None,
+                                        TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task<IList<string>> GetRolesAsync(User user)
+        public async Task<IList<string>> GetRolesAsync(User user)
         {
-            return Task.Run(() =>
+            return await Task.Factory.StartNew(() =>
                 {
                     IList<string> roles = _roleService.GetAllRoles().Select(role => role.Name).ToList();
                     return roles;
-                });
+                }, CancellationToken.None,
+                                               TaskCreationOptions.None,
+                                               TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public Task<bool> IsInRoleAsync(User user, string role)
+        public async Task<bool> IsInRoleAsync(User user, string role)
         {
-            return
-                Task.Run(
-                    () => user.Roles.Any(userRole => userRole.Name.Equals(role, StringComparison.OrdinalIgnoreCase)));
+            return await Task.Factory.StartNew(() =>
+                                               user.Roles.Any(
+                                                   userRole =>
+                                                   userRole.Name.Equals(role, StringComparison.OrdinalIgnoreCase)),
+                                               CancellationToken.None,
+                                               TaskCreationOptions.None,
+                                               TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

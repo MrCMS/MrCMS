@@ -369,7 +369,6 @@
     <Compile Include="Services\CloneSitePartsService.cs" />
     <Compile Include="Services\DocumentEventService.cs" />
     <Compile Include="Services\ExternalLoginService.cs" />
-    <Compile Include="Services\ExternalLoginServiceExtensions.cs" />
     <Compile Include="Services\FileMigration\IFileMigrationService.cs" />
     <Compile Include="Services\IAuthorisationService.cs" />
     <Compile Include="Services\IDocumentEventService.cs" />
