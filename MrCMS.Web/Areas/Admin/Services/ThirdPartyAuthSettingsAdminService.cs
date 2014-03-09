@@ -12,19 +12,9 @@ namespace MrCMS.Web.Areas.Admin.Services
             _configurationProvider = configurationProvider;
         }
 
-        public Task<ThirdPartyAuthSettings> GetSettingsAsync()
-        {
-            return Task.Run(() => GetSettings());
-        }
-
         public ThirdPartyAuthSettings GetSettings()
         {
             return _configurationProvider.GetSiteSettings<ThirdPartyAuthSettings>();
-        }
-
-        public Task SaveSettingsAsync(ThirdPartyAuthSettings thirdPartyAuthSettings)
-        {
-            return Task.Run(() => SaveSettings(thirdPartyAuthSettings));
         }
 
         public void SaveSettings(ThirdPartyAuthSettings thirdPartyAuthSettings)

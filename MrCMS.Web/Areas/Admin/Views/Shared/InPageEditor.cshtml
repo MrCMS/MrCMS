@@ -3,9 +3,12 @@
 @using MrCMS.Helpers
 @using MrCMS.Settings
 @using MrCMS.Website
-@model MrCMS.Entities.Documents.Web.Webpage   
+@model MrCMS.Entities.Documents.Web.Webpage  
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css" />
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload-ui.css")" rel="stylesheet" type="text/css" />
 <link href="@Url.Content("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.css")" rel="stylesheet" type="text/css" />
 
 @{
@@ -31,7 +34,7 @@
         @Html.ActionLink("Add a child page", "Add", "Webpage", new { id = Model.Id }, new { @class = "mrcms-btn mrcms-btn-mini mrcms-btn-default" })
     }
     @Html.ActionLink("Add page", "Add", "Webpage", new { id = Model.Parent == null ? (int?)null : Model.Parent.Id }, new { @class = "mrcms-btn mrcms-btn-mini mrcms-btn-default" })
-    
+
     @if (CurrentRequestData.CurrentUser.CanAccess<InlineEditingACL>("Allowed"))
     {
         <a id="enable-editing" class="mrcms-btn mrcms-btn-mini mrcms-btn-default">Inline Editing: On</a>
@@ -56,8 +59,17 @@
 </div>
 
 @Html.HiddenFor(webpage => webpage.Id)
-<script src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"></script>
-<script src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/store.js")"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/store.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/mrcms/front-end-editing.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/load-image.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-process.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.iframe-transport.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-validate.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-ui.js")"></script>
+
