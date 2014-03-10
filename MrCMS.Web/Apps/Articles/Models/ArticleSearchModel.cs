@@ -2,8 +2,8 @@
 using MrCMS.Web.Apps.Articles.Pages;
 
 namespace MrCMS.Web.Apps.Articles.Models
-{    
-    public class ArticleSearchModel     
+{
+    public class ArticleSearchModel
     {
         public ArticleSearchModel()
         {
@@ -11,5 +11,7 @@ namespace MrCMS.Web.Apps.Articles.Models
         }
         public int Page { get; set; }
         public string Category { get; set; }
+        public int? Month { get; set; }
+        public int? Year { get; set; }
     }
 }
