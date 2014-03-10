@@ -666,6 +666,7 @@
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSAssemblyAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
+    <Compile Include="Website\MrCMSMetadataProvider.cs" />
     <Compile Include="Website\MrCMSTypeACLAttribute.cs" />
     <Compile Include="Website\Optimization\AsIsBundleOrderer.cs" />
     <Compile Include="Website\Optimization\IResourceBundler.cs" />

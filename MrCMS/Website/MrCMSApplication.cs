@@ -55,7 +55,7 @@ namespace MrCMS.Website
 
             GlobalFilters.Filters.Add(new HoneypotFilterAttribute());
 
-            SynchronizationContext synchronizationContext = SynchronizationContext.Current;
+            ModelMetadataProviders.Current = new MrCMSMetadataProvider(Kernel);
         }
 
         private static void SetModelBinders()
