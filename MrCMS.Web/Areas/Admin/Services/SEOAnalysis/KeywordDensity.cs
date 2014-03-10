@@ -21,6 +21,8 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
 
             var strings = text.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             var words = strings.Count();
+            if (words == 0)
+                yield break;
             var termWordCount = analysisTerm.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).Count();
 
             var density = ((decimal)instances / (words - (termWordCount * (termWordCount - 1)))) * 100m;

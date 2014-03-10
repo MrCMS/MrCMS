@@ -13,7 +13,7 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
         public override IEnumerable<SEOAnalysisFacet> GetFacets(Webpage webpage, HtmlNode document, string analysisTerm)
         {
             string titleText = document.GetElementText("title");
-            if (titleText.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase))
+            if (titleText != null && titleText.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase))
             {
                 if (titleText.StartsWith(analysisTerm))
                     yield return
