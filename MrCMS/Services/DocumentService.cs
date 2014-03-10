@@ -445,16 +445,12 @@ namespace MrCMS.Services
         public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
         {
             var validParentTypes = DocumentMetadataHelper.GetValidParentTypes(webpage);
-            var potentialParents = new List<Webpage>();
 
-            foreach (var metadata in validParentTypes)
-            {
-                potentialParents.AddRange(
-                    _session.CreateCriteria(metadata.Type)
-                        .Add(Restrictions.Eq(Projections.Property("Site.Id"), _currentSite.Id))
-                        .SetCacheable(true)
-                        .List<Webpage>());
-            }
+            List<string> validParentTypeNames = validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
+            var potentialParents =
+                _session.QueryOver<Webpage>()
+                    .Where(page => page.DocumentType.IsIn(validParentTypeNames) && page.Site.Id == _currentSite.Id)
+                    .Cacheable().List<Webpage>();
 
             var result = potentialParents.Distinct()
                 .Where(page => !page.ActivePages.Contains(webpage))
