@@ -25,7 +25,7 @@ namespace MrCMS.Services
         {
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            var identity =await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            var identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
             _authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = rememberMe }, identity);
         }
 
@@ -36,7 +36,7 @@ namespace MrCMS.Services
 
         public async Task UpdateClaimsAsync(User user, IEnumerable<Claim> claims)
         {
-            var existingClaims =(await  _userManager.GetClaimsAsync(user.OwinId)).ToList();
+            var existingClaims = (await _userManager.GetClaimsAsync(user.OwinId)).ToList();
             var list = claims as IList<Claim> ?? claims.ToList();
             var newClaims =
                 list.Where(claim => existingClaims.All(c => c.Type != claim.Type));
@@ -55,7 +55,8 @@ namespace MrCMS.Services
 
     public struct ClaimsComparison : IEquatable<ClaimsComparison>
     {
-        public ClaimsComparison(Claim claim) : this()
+        public ClaimsComparison(Claim claim)
+            : this()
         {
             Issuer = claim.Issuer;
             Type = claim.Type;
