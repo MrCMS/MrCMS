@@ -8,6 +8,7 @@ namespace MrCMS.ACL.Rules
         public const string SiteSettings = "Site Settings";
         public const string FileSystemSettings = "File System Settings";
         public const string Sites = "Sites";
+        public const string Resources = "Resources";
         public const string Logs = "Logs";
         public const string Tasks = "Tasks";
         public const string ImportExport = "Import/Export";
@@ -30,6 +31,7 @@ namespace MrCMS.ACL.Rules
                        SiteSettings,
                        FileSystemSettings,
                        Sites,
+                       Resources,
                        Logs,
                        Tasks,
                        ImportExport,

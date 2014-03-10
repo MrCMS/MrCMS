@@ -42,6 +42,8 @@ namespace MrCMS.Models
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.MessageTemplates)),
                                new ChildMenuItem("Sites", "/Admin/Sites",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Sites)),
+                               new ChildMenuItem("Resources", "/Admin/Resource",
+                                   ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Resources)),
                                new ChildMenuItem("Logs", "/Admin/Log",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Logs)),
                                new ChildMenuItem("Tasks", "/Admin/Task",
