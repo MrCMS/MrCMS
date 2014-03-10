@@ -73,8 +73,8 @@ namespace MrCMS.Settings
             get
             {
                 return !String.IsNullOrWhiteSpace(UICulture)
-                           ? CultureInfo.GetCultureInfo(UICulture)
-                           : CultureInfo.CurrentCulture;
+                    ? CultureInfo.GetCultureInfo(UICulture)
+                    : CultureInfo.CurrentCulture;
             }
         }
 

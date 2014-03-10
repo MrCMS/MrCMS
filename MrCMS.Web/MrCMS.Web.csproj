@@ -277,6 +277,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\HealthCheckController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageStatsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Admin\Controllers\SEOAnalysisController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
@@ -362,6 +363,7 @@
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisFacet.cs" />
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisResult.cs" />
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisStatus.cs" />
+    <Compile Include="Areas\Admin\Models\StringResourceSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
     <Compile Include="Areas\Admin\Services\AdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
@@ -373,6 +375,7 @@
     <Compile Include="Areas\Admin\Services\IClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IndexAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IStringResourceAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\AllImagesHaveAltTags.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\BaseSEOAnalysisFacetProvider.cs" />
@@ -392,6 +395,7 @@
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleContainsTerm.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleIsCorrectLength.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\URLContainsTerm.cs" />
+    <Compile Include="Areas\Admin\Services\StringResourceAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Controllers\CKEditorController.cs" />
     <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
@@ -1451,6 +1455,10 @@
     <Content Include="Areas\Admin\Views\MediaCategory\ShowFilesSimple.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\UploadAnywhere.cshtml" />
     <Content Include="Areas\Admin\Views\SEOAnalysis\Analyze.cshtml" />
+    <Content Include="Areas\Admin\Views\Resource\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Resource\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Resource\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Resource\Add.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
