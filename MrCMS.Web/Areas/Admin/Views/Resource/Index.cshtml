@@ -68,13 +68,13 @@ else
                     <td>
                         <div class="btn-group">
                             @Html.ActionLink("Edit", "Edit", "Resource", new { id = resource.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
-                            @if (!resource.IsDefault)
+                            @if (resource.IsDefault)
                             {
-                                @Html.ActionLink("Delete", "Delete", "Resource", new { id = resource.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "fb-modal" })
+                                @Html.ActionLink("Add an override", "Add", "Resource", new { resource.Key }, new { @class = "btn btn-success btn-mini", data_toggle = "fb-modal" })
                             }
                             else
                             {
-                                @Html.ActionLink("Add an override", "Add", "Resource", new { resource.Key }, new { @class = "btn btn-success btn-mini", data_toggle = "fb-modal" })
+                            @Html.ActionLink("Delete", "Delete", "Resource", new { id = resource.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "fb-modal" })    
                             }
 
                         </div>

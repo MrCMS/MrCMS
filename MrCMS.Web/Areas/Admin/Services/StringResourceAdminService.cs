@@ -58,7 +58,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public void Add(StringResource resource)
         {
-            _provider.Add(resource);
+            _provider.AddOverride(resource);
         }
 
         public void Update(StringResource resource)
@@ -77,8 +77,9 @@ namespace MrCMS.Web.Areas.Admin.Services
             var languages = _provider.GetOverriddenLanguages(key);
             cultureInfos.RemoveAll(info => languages.Contains(info.Name));
             return cultureInfos.OrderBy(info => info.DisplayName)
-                .BuildSelectItemList(info => info.DisplayName, info => info.Name,
-                    info => info.Name == _siteSettings.UICulture, emptyItem: null);
+                               .BuildSelectItemList(info => info.DisplayName, info => info.Name,
+                                                    info => info.Name == _siteSettings.UICulture,
+                                                    SelectListItemHelper.EmptyItem("Select a culture..."));
         }
 
         public List<SelectListItem> SearchLanguageOptions()

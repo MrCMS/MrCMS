@@ -32,17 +32,17 @@ namespace MrCMS.Helpers
         }
 
 
-        public static void SetParent(this Document document, Document parent)
-        {
-            var existingParent = document.Parent;
-            if (existingParent == parent)
-                return;
-            document.Parent = parent;
-            if (parent != null && !parent.Children.Contains(document))
-                parent.Children.Add(document);
-            if (existingParent != null)
-                existingParent.Children.Remove(document);
-        }
+        //public static void SetParent(this Document document, Document parent)
+        //{
+        //    var existingParent = document.Parent;
+        //    if (existingParent == parent)
+        //        return;
+        //    document.Parent = parent;
+        //    if (parent != null && !parent.Children.Contains(document))
+        //        parent.Children.Add(document);
+        //    if (existingParent != null)
+        //        existingParent.Children.Remove(document);
+        //}
 
         public static T GetVersion<T>(this T doc, int id) where T : Document
         {

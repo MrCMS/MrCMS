@@ -547,7 +547,7 @@
     <Compile Include="Services\IIndexService.cs" />
     <Compile Include="Services\ILayoutAreaService.cs" />
     <Compile Include="Services\ImageProcessor.cs" />
-    <Compile Include="Services\INavigationService.cs" />
+    <Compile Include="Services\ISiteMapService.cs" />
     <Compile Include="Entities\Indexes\AdminWebpageIndexDefinition.cs" />
     <Compile Include="Services\IRoleService.cs" />
     <Compile Include="Services\ISiteSettingsService.cs" />
@@ -559,7 +559,7 @@
     <Compile Include="Services\LayoutAreaService.cs" />
     <Compile Include="Models\SiteTree.cs" />
     <Compile Include="Models\SiteTreeNode.cs" />
-    <Compile Include="Services\NavigationService.cs" />
+    <Compile Include="Services\SiteMapService.cs" />
     <Compile Include="Services\PasswordEncryptionManager.cs" />
     <Compile Include="Services\PasswordManagementService.cs" />
     <Compile Include="Services\PropertyTokenProvider.cs" />

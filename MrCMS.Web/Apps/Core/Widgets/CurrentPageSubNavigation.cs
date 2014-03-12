@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Web.Mvc;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.Navigation;
@@ -17,21 +18,22 @@ namespace MrCMS.Web.Apps.Core.Widgets
 
         public override object GetModel(ISession session)
         {
+            var webpages =
+                GetPublishedChildWebpages(session, CurrentRequestData.CurrentPage.Id);
             var navigationRecords =
-                CurrentRequestData.CurrentPage.PublishedChildren.Where(webpage => webpage.RevealInNavigation)
-                                  .OrderBy(webpage => webpage.DisplayOrder)
-                                  .Select(webpage => new NavigationRecord
-                                                         {
-                                                             Text = MvcHtmlString.Create(webpage.Name),
-                                                             Url = MvcHtmlString.Create("/" + webpage.LiveUrlSegment),
-                                                             Children = webpage.PublishedChildren.Where(webpage1 => webpage1.RevealInNavigation)
-                                                                               .Select(webpage1 =>
-                                                                                       new NavigationRecord
-                                                                                           {
-                                                                                               Text = MvcHtmlString.Create(webpage1.Name),
-                                                                                               Url = MvcHtmlString.Create("/" + webpage1.LiveUrlSegment)
-                                                                                           }).ToList()
-                                                         }).ToList();
+                webpages
+                    .Select(webpage => new NavigationRecord
+                        {
+                            Text = MvcHtmlString.Create(webpage.Name),
+                            Url = MvcHtmlString.Create("/" + webpage.LiveUrlSegment),
+                            Children = GetPublishedChildWebpages(session, webpage.Id)
+                                           .Select(webpage1 =>
+                                                   new NavigationRecord
+                                                       {
+                                                           Text = MvcHtmlString.Create(webpage1.Name),
+                                                           Url = MvcHtmlString.Create("/" + webpage1.LiveUrlSegment)
+                                                       }).ToList()
+                        }).ToList();
 
             return new CurrentPageSubNavigationModel
                        {
@@ -40,7 +42,17 @@ namespace MrCMS.Web.Apps.Core.Widgets
                        }; 
         }
 
-        
+        private static IEnumerable<Webpage> GetPublishedChildWebpages(ISession session, int parentId)
+        {
+            return session.QueryOver<Webpage>()
+                          .Where(
+                              webpage =>
+                              webpage.Parent.Id == parentId && webpage.RevealInNavigation)
+                          .OrderBy(webpage => webpage.DisplayOrder).Asc
+                          .Cacheable()
+                          .List()
+                          .Where(webpage => webpage.Published);
+        }
     }
 
     public class CurrentPageSubNavigationModel

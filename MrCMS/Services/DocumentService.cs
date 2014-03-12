@@ -43,8 +43,8 @@ namespace MrCMS.Services
                                   {
                                       document.DisplayOrder = GetMaxParentDisplayOrder(document);
                                       document.CustomInitialization(this, _session);
-                                      if (document.Parent != null)
-                                          document.Parent.Children.Add(document);
+                                      //if (document.Parent != null)
+                                      //    document.Parent.Children.Add(document);
                                       session.SaveOrUpdate(document);
 
                                   });
@@ -55,10 +55,14 @@ namespace MrCMS.Services
         {
             if (document.Parent != null)
             {
-                var enumerable = document.Parent.Children.Where(d => d != document).ToList();
-                return enumerable.Any()
-                           ? enumerable.Max(d => d.DisplayOrder) + 1
-                           : 0;
+                return _session.QueryOver<Document>()
+                            .Where(doc => doc.Parent.Id == document.Parent.Id)
+                            .Select(Projections.Max<Document>(d => d.DisplayOrder))
+                            .SingleOrDefault<int>();
+                // document.Parent.Children.Where(d => d != document).ToList();
+                //return enumerable.Any()
+                //           ? enumerable.Max(d => d.DisplayOrder) + 1
+                //           : 0;
             }
             if (document is MediaCategory)
             {
@@ -135,7 +139,11 @@ namespace MrCMS.Services
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
             IEnumerable<T> list = parent != null
-                ? parent.Children.OfType<T>()
+                ? _session.QueryOver<T>()
+                    .Where(arg => arg.Parent.Id == parent.Id && arg.Site.Id == _currentSite.Id)
+                    .OrderBy(arg => arg.DisplayOrder)
+                    .Asc.Cacheable()
+                    .List()
                 : _session.QueryOver<T>()
                     .Where(arg => arg.Parent == null && arg.Site.Id == _currentSite.Id)
                     .OrderBy(arg => arg.DisplayOrder)
@@ -343,7 +351,7 @@ namespace MrCMS.Services
 
             var parent = parentVal.HasValue ? GetDocument<Webpage>(parentVal.Value) : null;
 
-            document.SetParent(parent);
+            document.Parent = parent;
 
             SaveDocument(document);
         }

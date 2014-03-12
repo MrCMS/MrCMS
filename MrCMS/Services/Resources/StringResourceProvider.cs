@@ -30,7 +30,8 @@ namespace MrCMS.Services.Resources
                     resource => resource.Key == key && resource.UICulture == _siteSettings.UICulture);
             if (languageValue != null)
                 return languageValue.Value;
-            var defaultResource = ResourcesForSite.SingleOrDefault(resource => resource.Key == key);
+            var defaultResource =
+                ResourcesForSite.SingleOrDefault(resource => resource.Key == key && resource.UICulture == null);
             if (defaultResource == null)
             {
                 defaultResource = new StringResource { Key = key, Value = defaultValue ?? key };
@@ -52,8 +53,10 @@ namespace MrCMS.Services.Resources
                 .Where(s => !string.IsNullOrWhiteSpace(s));
         }
 
-        public void Add(StringResource resource)
+        public void AddOverride(StringResource resource)
         {
+            if (resource.UICulture == null)
+                return;
             _session.Transact(session => session.Save(resource));
             AllResources.Add(resource);
         }
@@ -61,9 +64,7 @@ namespace MrCMS.Services.Resources
         public void Update(StringResource resource)
         {
             var firstOrDefault =
-                ResourcesForSite.FirstOrDefault(
-                    stringResource =>
-                        stringResource.Key == resource.Key && stringResource.UICulture == resource.UICulture);
+                ResourcesForSite.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
             if (firstOrDefault != null) firstOrDefault.Value = resource.Value;
             _session.Transact(session => session.Update(resource));
         }
@@ -71,9 +72,7 @@ namespace MrCMS.Services.Resources
         public void Delete(StringResource resource)
         {
             var firstOrDefault =
-                ResourcesForSite.FirstOrDefault(
-                    stringResource =>
-                        stringResource.Key == resource.Key && stringResource.UICulture == resource.UICulture);
+                ResourcesForSite.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
             if (firstOrDefault != null) AllResources.Remove(firstOrDefault);
             _session.Transact(session => session.Delete(resource));
         }

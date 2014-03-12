@@ -25,7 +25,7 @@ namespace MrCMS.Services
 
         public AdminTree GetWebpageNodes(int? id)
         {
-            var adminTree = new AdminTree();
+            var adminTree = new AdminTree {RootContoller = "Webpage"};
             var query = _session.QueryOver<Webpage>().Where(x => x.Parent.Id == id && x.Site.Id == _site.Id);
             int maxChildNodes = 1000;
             if (id.HasValue)
@@ -110,12 +110,16 @@ namespace MrCMS.Services
 
         public AdminTree GetMediaCategoryNodes(int? id)
         {
-            return GetSimpleAdminTree<MediaCategory>(id, "icon-picture");
+            var adminTree = GetSimpleAdminTree<MediaCategory>(id, "icon-picture");
+            adminTree.RootContoller = "MediaCategory";
+            return adminTree;
         }
 
         public AdminTree GetLayoutNodes(int? id)
         {
-            return GetSimpleAdminTree<Layout>(id, "icon-th-large");
+            var adminTree = GetSimpleAdminTree<Layout>(id, "icon-th-large");
+            adminTree.RootContoller = "Layout";
+            return adminTree;
         }
 
         private AdminTree GetSimpleAdminTree<T>(int? id, string iconClass) where T : Document
@@ -140,7 +144,7 @@ namespace MrCMS.Services
                             Name = doc.Name,
                             IconClass = iconClass,
                             NodeType = typeof(T).Name,
-                            HasChildren = doc.Children.Any(),
+                            HasChildren = _session.QueryOver<T>().Where(arg => arg.Parent.Id == doc.Id).Cacheable().Any(),
                             CanAddChild = true,
                             IsPublished = true,
                             RevealInNavigation = true

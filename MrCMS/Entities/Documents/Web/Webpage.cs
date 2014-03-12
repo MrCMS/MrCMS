@@ -176,15 +176,15 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual IList<UrlHistory> Urls { get; set; }
 
-        public virtual IEnumerable<Webpage> PublishedChildren
-        {
-            get
-            {
-                return
-                    Children.OfType<Webpage>().Where(document => document.Published)
-                            .OrderBy(webpage => webpage.DisplayOrder);
-            }
-        }
+        //public virtual IEnumerable<Webpage> PublishedChildren
+        //{
+        //    get
+        //    {
+        //        return
+        //            Children.OfType<Webpage>().Where(document => document.Published)
+        //                    .OrderBy(webpage => webpage.DisplayOrder);
+        //    }
+        //}
 
         public virtual bool IsAllowed(User currentUser)
         {

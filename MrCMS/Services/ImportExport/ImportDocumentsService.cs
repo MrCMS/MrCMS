@@ -43,7 +43,7 @@ namespace MrCMS.Services.ImportExport
 
             _session.Transact(session =>
             {
-                foreach (var dataTransferObject in dataTransferObjects.OrderBy(o => GetHierarchyDepth(o, dataTransferObjects)).ThenBy(o => GetRootParentUrl(o,dataTransferObjects)))
+                foreach (var dataTransferObject in dataTransferObjects.OrderBy(o => GetHierarchyDepth(o, dataTransferObjects)).ThenBy(o => GetRootParentUrl(o, dataTransferObjects)))
                     ImportDocument(dataTransferObject);
 
                 _updateTagsService.SaveTags();
@@ -89,7 +89,7 @@ namespace MrCMS.Services.ImportExport
             if (!String.IsNullOrEmpty(dto.ParentUrl))
             {
                 var parent = _webpages.SingleOrDefault(x => x.UrlSegment == dto.ParentUrl);
-                webpage.SetParent(parent);
+                webpage.Parent = parent;
             }
             if (dto.UrlSegment != null)
                 webpage.UrlSegment = dto.UrlSegment;
@@ -105,7 +105,7 @@ namespace MrCMS.Services.ImportExport
 
             _updateTagsService.SetTags(dto, webpage);
             //Url History
-         _updateUrlHistoryService.SetUrlHistory(dto, webpage);
+            _updateUrlHistoryService.SetUrlHistory(dto, webpage);
 
             if (!_webpages.Contains(webpage))
                 _webpages.Add(webpage);
@@ -121,7 +121,7 @@ namespace MrCMS.Services.ImportExport
                 {
                     if (_urlHistories.FirstOrDefault(history => history.UrlSegment == item) == null)
                     {
-                        var urlHistory = new UrlHistory {UrlSegment = item, Webpage = webpage};
+                        var urlHistory = new UrlHistory { UrlSegment = item, Webpage = webpage };
                         webpage.Urls.Add(urlHistory);
                         _urlHistories.Add(urlHistory);
                     }

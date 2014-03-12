@@ -17,7 +17,7 @@ namespace MrCMS.Entities.Documents
         protected Document()
         {
             Versions = new List<DocumentVersion>();
-            Children = new List<Document>();
+            //Children = new List<Document>();
             Tags = new HashedSet<Tag>();
         }
         [Required]
@@ -31,7 +31,7 @@ namespace MrCMS.Entities.Documents
 
         public virtual string UrlSegment { get; set; }
 
-        public virtual IList<Document> Children { get; set; }
+        //public virtual IList<Document> Children { get; set; }
 
         public virtual Iesi.Collections.Generic.ISet<Tag> Tags { get; set; }
 
@@ -50,10 +50,10 @@ namespace MrCMS.Entities.Documents
         /// </summary>
         public override void OnDeleting(ISession session)
         {
-            if (Parent != null)
-            {
-                Parent.Children.Remove(this);
-            }
+            //if (Parent != null)
+            //{
+            //    Parent.Children.Remove(this);
+            //}
             base.OnDeleting(session);
         }
 

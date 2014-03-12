@@ -40,17 +40,12 @@ namespace MrCMS.Website.Binders
 
             var document = base.BindModel(controllerContext, bindingContext) as Document;
 
-            // Extension method used to break cache
-            document.SetParent(document.Parent);
-            //set include as navigation as default and set diaply order
+            
+            
+            //set include as navigation as default 
             if (document is Webpage)
             {
                 (document as Webpage).RevealInNavigation = true;
-
-                var pages = (document.Parent == null
-                                 ? Session.QueryOver<Webpage>().Where(webpage => webpage.Parent == null).Cacheable().List()
-                                 : document.Parent.Children.OfType<Webpage>()).ToList();
-                document.DisplayOrder = pages.Any() ? pages.Max(x => x.DisplayOrder) + 1 : 0;
             }
             
             return document;
