@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
@@ -9,6 +10,7 @@ using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Helpers;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Entities.Documents
 {
@@ -82,5 +84,10 @@ namespace MrCMS.Entities.Documents
 
         public virtual bool ShowInAdminNav { get { return true; } }
         public virtual bool HideInAdminNav { get; set; }
+        public override void CustomBinding(ControllerContext controllerContext, IKernel kernel)
+        {
+            var taglist = controllerContext.GetValueFromRequest("TagList") ?? string.Empty;
+            kernel.Get<IDocumentService>().SetTags(taglist, this);
+        }
     }
 }

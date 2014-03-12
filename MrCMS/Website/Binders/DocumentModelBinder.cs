@@ -1,21 +1,21 @@
-using System.Linq;
-using System.Web.Mvc;
-using MrCMS.Entities.Documents;
-using MrCMS.Helpers;
 using MrCMS.Services;
-using NHibernate;
-using NHibernate.Criterion;
+using Ninject;
 
 namespace MrCMS.Website.Binders
 {
     public abstract class DocumentModelBinder : MrCMSDefaultModelBinder
     {
-        protected readonly IDocumentService DocumentService;
+        private readonly IDocumentService _documentService;
 
-        protected DocumentModelBinder(ISession session, IDocumentService documentService)
-            : base(() => session)
+        protected DocumentModelBinder(IKernel kernel, IDocumentService documentService)
+            : base(kernel)
         {
-            this.DocumentService = documentService;
+            _documentService = documentService;
+        }
+
+        protected IDocumentService DocumentService
+        {
+            get { return _documentService; }
         }
     }
 }

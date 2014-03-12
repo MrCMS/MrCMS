@@ -36,7 +36,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View((object)document);
         }
 
-        public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))]Layout doc)
+        public override ActionResult Add(Layout doc)
         {
             _documentService.AddDocument(doc);
             return RedirectToAction("Edit", new { id = doc.Id });

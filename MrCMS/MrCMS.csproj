@@ -329,8 +329,19 @@
     <Compile Include="HealthChecks\IHealthCheck.cs" />
     <Compile Include="HealthChecks\IsEmailConfigured.cs" />
     <Compile Include="HealthChecks\StalledTasks.cs" />
+    <Compile Include="Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
+    <Compile Include="Helpers\DocumentVersionRenderingExtensions.cs" />
+    <Compile Include="Helpers\HoneypotHtmlHelper.cs" />
+    <Compile Include="Helpers\HtmlFormExtensions.cs" />
+    <Compile Include="Helpers\ImageRenderingExtensions.cs" />
+    <Compile Include="Helpers\ModelBinderExtensions.cs" />
     <Compile Include="Helpers\MrCMSResources.cs" />
+    <Compile Include="Helpers\OptimisationExtensions.cs" />
+    <Compile Include="Helpers\PropertyRenderingExtensions.cs" />
+    <Compile Include="Helpers\ReturnUrlExtensions.cs" />
+    <Compile Include="Helpers\ShortcodeParsingExtensions.cs" />
+    <Compile Include="Helpers\TweetParsingExtensions.cs" />
     <Compile Include="Indexing\Definitions\BodyContentFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\CreatedOnFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\DisplayOrderFieldDefinition.cs" />
@@ -637,7 +648,8 @@
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Website\Binders\ACLUpdateModelBinder.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />
-    <Compile Include="Website\Binders\AddDocumentModelBinder.cs" />
+    <Compile Include="Website\Binders\AddDocumentGetModelBinder.cs" />
+    <Compile Include="Website\Binders\AddWebpageModelBinder.cs" />
     <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
     <Compile Include="Website\Binders\AddWidgetModelBinder.cs" />
@@ -668,6 +680,8 @@
     <Compile Include="Tasks\TaskExecutionResult.cs" />
     <Compile Include="Tasks\TaskRunner.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
+    <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSAssemblyAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
@@ -697,8 +711,6 @@
     <Compile Include="Website\OutOfContextResponse.cs" />
     <Compile Include="Website\OutOfContextServerUtility.cs" />
     <Compile Include="Website\OutOfContextSession.cs" />
-    <Compile Include="Website\ReturnUrlExtensions.cs" />
-    <Compile Include="Website\ReturnUrlHandlerAttribute.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />

@@ -22,6 +22,7 @@ using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Filters;
 using MrCMS.Website.Routing;
 using NHibernate;
 using Ninject;
@@ -60,7 +61,7 @@ namespace MrCMS.Website
 
         private static void SetModelBinders()
         {
-            ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Get<ISession>);
+            ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Kernel);
             ModelBinders.Binders.Add(typeof(DateTime), new CultureAwareDateBinder());
             ModelBinders.Binders.Add(typeof(DateTime?), new NullableCultureAwareDateBinder());
         }
@@ -242,20 +243,5 @@ namespace MrCMS.Website
 
         public const string AssemblyVersion = "0.4.0.0";
         public const string AssemblyFileVersion = "0.4.0.0";
-    }
-
-    public class HoneypotFilterAttribute : ActionFilterAttribute
-    {
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            if (CurrentRequestData.DatabaseIsInstalled)
-            {
-                if (!string.IsNullOrWhiteSpace(
-                        filterContext.HttpContext.Request[MrCMSApplication.Get<SiteSettings>().HoneypotFieldName]))
-                {
-                    filterContext.Result = new EmptyResult();
-                }
-            }
-        }
     }
 }

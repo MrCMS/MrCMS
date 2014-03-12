@@ -6,6 +6,7 @@ using MrCMS.Entities.People;
 using MrCMS.Settings;
 using MrCMS.Website.ActionResults;
 using MrCMS.Helpers;
+using MrCMS.Website.Filters;
 
 namespace MrCMS.Website.Controllers
 {

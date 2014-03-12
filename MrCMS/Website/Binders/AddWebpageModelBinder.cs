@@ -6,27 +6,14 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Website.Binders
 {
-    public class AddDocumentGetModelBinder : DocumentModelBinder
+    public class AddWebpageModelBinder : DocumentModelBinder
     {
-        public AddDocumentGetModelBinder(ISession session, IDocumentService documentService)
-            : base(session, documentService)
-        {
-        }
-
-        public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
-        {
-            var model = CreateModel(controllerContext, bindingContext, bindingContext.ModelType);
-            return model;
-        }
-    }
-
-    public class AddDocumentModelBinder : DocumentModelBinder
-    {
-        public AddDocumentModelBinder(ISession session, IDocumentService documentService)
-            : base(session, documentService)
+        public AddWebpageModelBinder(IKernel kernel, IDocumentService documentService)
+            : base(kernel, documentService)
         {
         }
 
@@ -40,14 +27,14 @@ namespace MrCMS.Website.Binders
 
             var document = base.BindModel(controllerContext, bindingContext) as Document;
 
-            
-            
+
+
             //set include as navigation as default 
             if (document is Webpage)
             {
                 (document as Webpage).RevealInNavigation = true;
             }
-            
+
             return document;
         }
 
@@ -60,8 +47,7 @@ namespace MrCMS.Website.Binders
         private static Type GetTypeByName(ControllerContext controllerContext)
         {
             string valueFromContext = GetValueFromContext(controllerContext, "DocumentType");
-            return DocumentMetadataHelper.GetTypeByName(valueFromContext)
-                ?? TypeHelper.MappedClasses.FirstOrDefault(x => x.Name == valueFromContext);
+            return TypeHelper.MappedClasses.FirstOrDefault(x => x.FullName == valueFromContext);
         }
     }
 }

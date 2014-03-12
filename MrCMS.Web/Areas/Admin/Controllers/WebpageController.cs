@@ -9,6 +9,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using NHibernate;
@@ -27,7 +28,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _session = session;
         }
 
-        public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] Webpage doc)
+        public override ActionResult Add([IoCModelBinder(typeof(AddWebpageModelBinder))] Webpage doc)
         {
             if (_documentService.UrlIsValidForWebpage(doc.UrlSegment, null))
                 return base.Add(doc);
@@ -212,6 +213,17 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _documentService.RevertToVersion(documentVersion);
             return RedirectToAction("Edit", new { id = documentVersion.Document.Id });
+        }
+
+        [HttpGet]
+        public ActionResult AddProperties([IoCModelBinder(typeof(AddPropertiesModelBinder))] Webpage webpage)
+        {
+            if (webpage != null)
+            {
+                webpage.AdminViewData(ViewData, _session);
+                return PartialView(webpage);
+            }
+            return new EmptyResult();
         }
     }
 }

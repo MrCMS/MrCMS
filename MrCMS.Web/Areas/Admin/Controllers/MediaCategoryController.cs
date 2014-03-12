@@ -25,7 +25,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
          * Need to do media category specific stuff before generic stuff. In this case
          * create a directory for media files.
          */
-        public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] MediaCategory doc)
+        public override ActionResult Add(MediaCategory doc)
         {
             base.Add(doc);
             _fileService.CreateFolder(doc);

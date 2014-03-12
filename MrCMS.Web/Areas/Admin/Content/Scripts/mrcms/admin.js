@@ -1,22 +1,11 @@
-﻿$(document).ready(function () {
+﻿$.ajaxSetup({ cache: false });
+$(document).ready(function () {
     $("#loading").ajaxStart(function () {
         $(this).show();
     });
     $("#loading").ajaxStop(function () {
         $(this).hide();
     });
-
-    $.ajaxSetup({ cache: false });
-
-    $.validator.methods.number = function (value, element) {
-        return this.optional(element) ||
-            !isNaN(Globalize.parseFloat(value));
-    }
-
-    $.validator.methods.date = function (value, element) {
-        return this.optional(element) ||
-            !isNaN(Globalize.parseDate(value));
-    }
     Globalize.culture($("#UICulture").val());
 
     $().dropdown();
@@ -126,9 +115,22 @@ function getRemoteModel(href) {
 }
 
 $(function () {
-    CKEDITOR.replaceAll('ckedit-enabled');
-    CKEDITOR.on('instanceReady', function () { $(window).resize(); });
+    admin.initializePlugins();
 });
+window.admin = {
+    initializePlugins: function () {
+        CKEDITOR.replaceAll('ckedit-enabled');
+        CKEDITOR.on('instanceReady', function () { $(window).resize(); });
+        $('[data-type=media-selector], [class=media-selector]').mediaSelector();
+        var form = $('form');
+        form.removeData("validator");
+        form.removeData("unobtrusiveValidation");
+        form.find('input, select').each(function () {
+            $.data(this, "previousValue", null);
+        });
+        $.validator.unobtrusive.parse("form");
+    }
+};
 
 
 function post_to_url(path, params, method) {
@@ -152,7 +154,7 @@ function post_to_url(path, params, method) {
     document.body.appendChild(form);
     form.submit();
 }
-$.fn.delayKeyup = function (callback, ms) {
+$.fn.delayKeyup = function (e, callback, ms) {
     var timer = 0;
     $(this).keyup(function (event) {
         clearTimeout(timer);

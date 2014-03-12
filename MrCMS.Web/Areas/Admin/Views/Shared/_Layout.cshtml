@@ -13,27 +13,7 @@
     <div class="main-content">
         <div class="inner-content">
             <section class="admin-header">
-                @if (TempData.SuccessMessages().Any())
-                {
-                    <div class="alert alert-success">
-                        <button type="button" class="close" data-dismiss="alert">×</button>
-                        @string.Join("<br />", TempData.SuccessMessages())
-                    </div>
-                }
-                @if (TempData.ErrorMessages().Any())
-                {
-                    <div class="alert alert-error">
-                        <button type="button" class="close" data-dismiss="alert">×</button>
-                        @string.Join("<br />", TempData.ErrorMessages())
-                    </div>
-                }
-                @if (TempData.InfoMessages().Any())
-                {
-                    <div class="alert alert-info">
-                        <button type="button" class="close" data-dismiss="alert">×</button>
-                        @string.Join("<br />", TempData.InfoMessages())
-                    </div>
-                }
+            @{ Html.RenderPartial("Messages");}
             </section>
             @RenderBody()
         </div>

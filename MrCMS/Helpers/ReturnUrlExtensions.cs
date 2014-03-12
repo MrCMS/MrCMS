@@ -1,7 +1,8 @@
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using MrCMS.Website.Filters;
 
-namespace MrCMS.Website
+namespace MrCMS.Helpers
 {
     public static class ReturnUrlExtensions
     {

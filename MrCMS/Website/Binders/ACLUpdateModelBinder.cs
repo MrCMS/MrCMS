@@ -1,13 +1,14 @@
 ﻿using MrCMS.Models;
 using NHibernate;
 using System.Linq;
+using Ninject;
 
 namespace MrCMS.Website.Binders
 {
     public class ACLUpdateModelBinder : MrCMSDefaultModelBinder
     {
-        public ACLUpdateModelBinder(ISession session)
-            : base(() => session)
+        public ACLUpdateModelBinder(IKernel kernel)
+            : base(kernel)
         {
         }
 

@@ -4,11 +4,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 using System.Xml;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
-using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Website;
@@ -16,6 +14,7 @@ using MrCMS.Helpers;
 using System.Linq;
 using NHibernate;
 using NHibernate.Criterion;
+using Ninject;
 
 namespace MrCMS.Entities.Documents.Web
 {
@@ -229,7 +228,7 @@ namespace MrCMS.Entities.Documents.Web
             return this.GetMetadata().ValidChildrenTypes.Any();
         }
 
-        public override void CustomBinding(ControllerContext controllerContext, ISession session)
+        public override void CustomBinding(ControllerContext controllerContext, IKernel kernel)
         {
         }
 
