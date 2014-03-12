@@ -1,46 +1,49 @@
-﻿$.fn.delayKeyup = function (callback, ms) {
-    var timer = 0;
-    var el = $(this);
-    $(this).keyup(function () {
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-            callback(el);
-        }, ms);
-    });
-    return $(this);
-};
-$(function () {
-    $("#Name").blur(function () {
-        if ($("#mode").is(':checked')) {
-            suggestUrl();
-        } else {
-            setStandardUrl();
-        }
-    });
-
-    $("#Name").delayKeyup(function () {
-
-        $("#new-page").text($("#Name").val());
-        
-        if ($("#mode").is(':checked')) {
-            suggestUrl();
-        } else {
-            setStandardUrl();
-        }
-
-    }, 100);
-
-    function setStandardUrl() {
+﻿var AddWebpage = function () {
+    var previousValue = '';
+    var setStandardUrl = function () {
         $("#UrlSegment").val($("#Name").val().trim().replace(/[^a-zA-Z0-9-/]/g, '-').toLowerCase());
-    }
-
-    function suggestUrl() {
+        previousValue = getCurrentValue();
+    };
+    var suggestUrl = function () {
         var pageName = $("#Name").val(),
             parentId = $("#Parent_Id").val();
         if (pageName != "") {
-            $.get('/Admin/Webpage/SuggestDocumentUrl', { pageName: pageName, id: parentId}, function (data) {
+            $.get('/Admin/Webpage/SuggestDocumentUrl', { pageName: pageName, id: parentId }, function (data) {
                 $("#UrlSegment").val(data);
             });
+            previousValue = getCurrentValue();
         }
-    }
-});
+    };
+    var getCurrentValue = function () {
+        return $('#Name').val();
+    };
+    var updateUrl = function (event) {
+        event.preventDefault();
+        if (previousValue != getCurrentValue()) {
+            if ($("#mode").is(':checked')) {
+                suggestUrl();
+            } else {
+                setStandardUrl();
+            }
+        }
+    };
+    var triggerKeyUp = function (event) {
+        event.preventDefault();
+        $(event.target).keyup();
+    };
+    var logCurrentValue = function (event) {
+        event.preventDefault();
+        previousValue = getCurrentValue();
+    };
+    return {
+        init: function () {
+            $("#Name").focus(logCurrentValue);
+            $("#Name").blur(triggerKeyUp);
+            $("#Name").delayKeyup(updateUrl, 300);
+        }
+    };
+};
+
+$(function () {
+    new AddWebpage().init();
+})

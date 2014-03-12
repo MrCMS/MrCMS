@@ -5,9 +5,9 @@
     $("#loading").ajaxStop(function () {
         $(this).hide();
     });
-    
+
     $.ajaxSetup({ cache: false });
-    
+
     $.validator.methods.number = function (value, element) {
         return this.optional(element) ||
             !isNaN(Globalize.parseFloat(value));
@@ -18,7 +18,7 @@
             !isNaN(Globalize.parseDate(value));
     }
     Globalize.culture($("#UICulture").val());
-    
+
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 
@@ -43,7 +43,7 @@
             autoSize: true,
             minHeight: 200,
             padding: 0,
-            afterShow: function (){
+            afterShow: function () {
                 $('.fancybox-iframe').contents().find('form').attr('target', '_parent').css('margin', '0');
             }
         }).click().remove();
@@ -71,7 +71,7 @@
             resizeModal($(element));
         });
     });
-    
+
     $(document).on('click', 'div[data-paging-type="async"] .pagination a[href]', function () {
         var self = $(this);
         $.get(this.href, function (response) {
@@ -152,3 +152,13 @@ function post_to_url(path, params, method) {
     document.body.appendChild(form);
     form.submit();
 }
+$.fn.delayKeyup = function (callback, ms) {
+    var timer = 0;
+    $(this).keyup(function (event) {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            callback(event);
+        }, ms);
+    });
+    return $(this);
+};
