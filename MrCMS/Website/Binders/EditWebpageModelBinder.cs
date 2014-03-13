@@ -7,9 +7,9 @@ using Ninject;
 
 namespace MrCMS.Website.Binders
 {
-    public class EditDocumentModelBinder : DocumentModelBinder
+    public class EditWebpageModelBinder : WebpageModelBinder
     {
-        public EditDocumentModelBinder(IKernel kernel, IDocumentService documentService) : base(kernel, documentService)
+        public EditWebpageModelBinder(IKernel kernel, IDocumentService documentService) : base(kernel, documentService)
         {
         }
 

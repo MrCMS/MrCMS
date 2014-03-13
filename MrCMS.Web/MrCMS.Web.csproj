@@ -1471,6 +1471,8 @@
     <Content Include="Areas\Admin\Views\Webpage\AddProperties.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\TextPageAdd.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleAdd.cshtml" />
+    <Content Include="Areas\Admin\Views\Widget\AddProperties.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchiveAdd.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

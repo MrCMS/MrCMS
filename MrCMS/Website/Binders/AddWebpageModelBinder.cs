@@ -5,12 +5,11 @@ using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using NHibernate;
 using Ninject;
 
 namespace MrCMS.Website.Binders
 {
-    public class AddWebpageModelBinder : DocumentModelBinder
+    public class AddWebpageModelBinder : WebpageModelBinder
     {
         public AddWebpageModelBinder(IKernel kernel, IDocumentService documentService)
             : base(kernel, documentService)
@@ -20,22 +19,19 @@ namespace MrCMS.Website.Binders
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var type = GetTypeByName(controllerContext);
-
             bindingContext.ModelMetadata =
                 ModelMetadataProviders.Current.GetMetadataForType(
                     () => CreateModel(controllerContext, bindingContext, type), type);
 
-            var document = base.BindModel(controllerContext, bindingContext) as Document;
-
-
+            var webpage = base.BindModel(controllerContext, bindingContext) as Webpage;
 
             //set include as navigation as default 
-            if (document is Webpage)
+            if (webpage != null)
             {
-                (document as Webpage).RevealInNavigation = true;
+                webpage.RevealInNavigation = true;
             }
 
-            return document;
+            return webpage;
         }
 
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)

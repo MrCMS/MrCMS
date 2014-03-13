@@ -17,11 +17,11 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var typeName = GetValueFromContext(controllerContext, "type");
-            var webpageType = TypeHelper.GetMappedClassesAssignableFrom<Webpage>().FirstOrDefault(type => type.FullName == typeName);
+            var entityType = TypeHelper.MappedClasses.FirstOrDefault(type => type.FullName == typeName);
 
-            if (webpageType != null && webpageType.HasDefaultConstructor())
+            if (entityType != null && entityType.HasDefaultConstructor())
             {
-                return Activator.CreateInstance(webpageType);
+                return Activator.CreateInstance(entityType);
             }
             return null;
         }

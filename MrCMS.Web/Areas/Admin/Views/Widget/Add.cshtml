@@ -4,7 +4,6 @@
 
 @using (Html.BeginForm("Add", "Widget", new { id = "" }, FormMethod.Post, new { id = "add-widget-form" }))
 {
-    
     <fieldset>
         <legend>Add Widget
             <span class="btn-group  display-inline  pull-right">
@@ -34,6 +33,9 @@
         @Html.LabelFor(model => model.Name)
         @Html.EditorFor(model => model.Name, Model.Name)
         @Html.ValidationMessageFor(model => model.Name)
+        <div data-additional-properties="true">
+            
+        </div>
     </fieldset>
     
     

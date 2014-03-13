@@ -648,7 +648,6 @@
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Website\Binders\ACLUpdateModelBinder.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />
-    <Compile Include="Website\Binders\AddDocumentGetModelBinder.cs" />
     <Compile Include="Website\Binders\AddWebpageModelBinder.cs" />
     <Compile Include="Website\Binders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Website\Binders\AddUserModelBinder.cs" />
@@ -656,8 +655,8 @@
     <Compile Include="Website\Binders\AddMessageTemplateModelBinder.cs" />
     <Compile Include="Website\Binders\CultureAwareDateBinder.cs" />
     <Compile Include="Website\Binders\MessageTemplateModelBinder.cs" />
-    <Compile Include="Website\Binders\DocumentModelBinder.cs" />
-    <Compile Include="Website\Binders\EditDocumentModelBinder.cs" />
+    <Compile Include="Website\Binders\WebpageModelBinder.cs" />
+    <Compile Include="Website\Binders\EditWebpageModelBinder.cs" />
     <Compile Include="Website\Binders\EditUserModelBinder.cs" />
     <Compile Include="Website\Binders\FileSystemSettingsModelBinder.cs" />
     <Compile Include="Website\Binders\MrCMSDefaultModelBinder.cs" />

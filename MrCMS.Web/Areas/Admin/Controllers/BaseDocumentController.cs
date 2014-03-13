@@ -64,7 +64,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public virtual ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] T doc)
+        public virtual ActionResult Edit( T doc)
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));

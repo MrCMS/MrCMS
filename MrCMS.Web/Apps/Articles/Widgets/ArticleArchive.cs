@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Articles.Models;
@@ -24,9 +22,9 @@ namespace MrCMS.Web.Apps.Articles.Widgets
             var articleService = MrCMSApplication.Get<IArticleService>();
             var model = new ArticleArchiveModel
             {
-                        ArticleYearsAndMonths =articleService.GetMonthsAndYears(ArticleList),
-                        ArticleList = ArticleList,
-                        ArticleArchive = this
+                ArticleYearsAndMonths = articleService.GetMonthsAndYears(ArticleList),
+                ArticleList = ArticleList,
+                ArticleArchive = this
             };
 
             return model;
@@ -36,7 +34,7 @@ namespace MrCMS.Web.Apps.Articles.Widgets
         {
             viewData["ArticleLists"] = session.QueryOver<ArticleList>()
                                        .OrderBy(list => list.Name)
-                                       .Desc.Cacheable()
+                                       .Asc.Cacheable()
                                        .List()
                                        .BuildSelectItemList(category => category.Name,
                                                             category => category.Id.ToString(),
