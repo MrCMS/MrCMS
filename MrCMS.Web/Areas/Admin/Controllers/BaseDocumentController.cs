@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -42,7 +43,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public virtual ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] T doc)
+        public virtual ActionResult Add(T doc)
         {
             _documentService.AddDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
@@ -63,7 +64,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public virtual ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] T doc)
+        public virtual ActionResult Edit( T doc)
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));

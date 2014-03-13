@@ -285,6 +285,8 @@
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
     <Compile Include="Areas\Admin\Helpers\SEOAnalysisExtensions.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\AddPropertiesModelBinder.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\HealthCheckProcessorModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
@@ -1465,6 +1467,12 @@
     <Content Include="Areas\Admin\Views\Resource\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Resource\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Resource\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\Messages.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\AddProperties.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\TextPageAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleAdd.cshtml" />
+    <Content Include="Areas\Admin\Views\Widget\AddProperties.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchiveAdd.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

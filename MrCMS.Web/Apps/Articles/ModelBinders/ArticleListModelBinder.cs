@@ -3,13 +3,13 @@ using System.Web.Mvc;
 using MrCMS.Web.Apps.Articles.Models;
 using MrCMS.Website.Binders;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Web.Apps.Articles.ModelBinders
 {
     public class ArticleListModelBinder : MrCMSDefaultModelBinder
     {
-        public ArticleListModelBinder(ISession session)
-            : base(() => session)
+        public ArticleListModelBinder(IKernel kernel) : base(kernel)
         {
         }
 

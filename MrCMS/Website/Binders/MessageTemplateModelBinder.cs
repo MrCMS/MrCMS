@@ -1,16 +1,21 @@
 using MrCMS.Services;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Website.Binders
 {
     public abstract class MessageTemplateModelBinder : MrCMSDefaultModelBinder
     {
-        protected readonly IMessageTemplateService MessageTemplateService;
+        private IMessageTemplateService _messageTemplateService;
 
-        protected MessageTemplateModelBinder(ISession session, IMessageTemplateService messageTemplateService)
-            : base(() => session)
+        protected MessageTemplateModelBinder(IKernel kernel)
+            : base(kernel)
         {
-            this.MessageTemplateService = messageTemplateService;
+        }
+
+        protected IMessageTemplateService MessageTemplateService
+        {
+            get { return _messageTemplateService = _messageTemplateService ?? Get<IMessageTemplateService>(); }
         }
     }
 }

@@ -5,11 +5,19 @@ using System.Web.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Settings;
+using Ninject;
 
 namespace MrCMS.Website.Binders
 {
-    public class SiteSettingsModelBinder : DefaultModelBinder 
+    public class SiteSettingsModelBinder : MrCMSDefaultModelBinder
     {
+        private readonly IConfigurationProvider _configurationProvider;
+
+        public SiteSettingsModelBinder(IKernel kernel, IConfigurationProvider configurationProvider) : base(kernel)
+        {
+            _configurationProvider = configurationProvider;
+        }
+
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var settingTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>();
@@ -17,14 +25,10 @@ namespace MrCMS.Website.Binders
 
             var objects = settingTypes.Select(type =>
                                                   {
-                                                      var configurationProvider =
-                                                          MrCMSApplication.Get<IConfigurationProvider>();
-
                                                       var methodInfo = GetGetSettingsMethod();
-
                                                       return
                                                           methodInfo.MakeGenericMethod(type)
-                                                                    .Invoke(configurationProvider,
+                                                                    .Invoke(_configurationProvider,
                                                                             new object[]
                                                                                 {});
                                                   }).OfType<SiteSettingsBase>().Where(arg => arg.RenderInSettings).ToList();

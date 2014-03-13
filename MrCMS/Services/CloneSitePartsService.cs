@@ -95,8 +95,6 @@ namespace MrCMS.Services
 
         public void CopyMediaCategories(Site @from, Site to)
         {
-            var mediaCategories = _session.QueryOver<MediaCategory>().Where(category => category.Site == @from && category.Parent == null).List();
-
             var copies = GetMediaCategoryCopies(@from, to);
 
             _session.Transact(session => copies.ForEach(category => session.Save(category)));

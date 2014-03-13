@@ -5,12 +5,13 @@ using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 using NHibernate;
 using System.Linq;
+using Ninject;
 
 namespace MrCMS.Website.Binders
 {
     public class AddFormPropertyModelBinder : MrCMSDefaultModelBinder
     {
-        public AddFormPropertyModelBinder(ISession session) : base(()=> session)
+        public AddFormPropertyModelBinder(IKernel kernel) : base(kernel)
         {
         }
 

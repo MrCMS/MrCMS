@@ -1,6 +1,6 @@
 using System.Web.Mvc;
 
-namespace MrCMS.Website
+namespace MrCMS.Website.Filters
 {
     public class ReturnUrlHandlerAttribute : ActionFilterAttribute
     {
