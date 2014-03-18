@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Linq;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
@@ -11,7 +10,6 @@ using MrCMS.Indexing;
 using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Utils;
 using MrCMS.Web.Apps.Core.Indexing.WebpageSearch;
-using MrCMS.Website;
 
 namespace MrCMS.Web.Areas.Admin.Models.Search
 {
@@ -39,7 +37,6 @@ namespace MrCMS.Web.Areas.Admin.Models.Search
             if (!String.IsNullOrWhiteSpace(Term))
             {
                 var analyser = IndexingHelper.Get<AdminWebpageIndexDefinition>().GetAnalyser();
-                var fuzzySearchTerm = Term.GetFuzzyMatchString(analyser);
                 var q = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
                     new[]
                     {
@@ -49,8 +46,8 @@ namespace MrCMS.Web.Areas.Admin.Models.Search
                         FieldDefinition.GetFieldName<MetaKeywordsFieldDefinition>(),
                         FieldDefinition.GetFieldName<MetaDescriptionFieldDefinition>()
                     }, analyser);
+                Query query = Term.SafeGetSearchQuery(q, analyser);
 
-                var query = q.Parse(fuzzySearchTerm);
                 booleanQuery.Add(query, Occur.SHOULD);
             }
             if (CreatedOnFrom.HasValue || CreatedOnTo.HasValue)

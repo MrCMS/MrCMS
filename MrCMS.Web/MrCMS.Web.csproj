@@ -59,6 +59,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentNHibernate.1.4.0.0\lib\net35\FluentNHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -271,8 +274,11 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\HealthCheckController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageStatsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SEOAnalysisController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
+    <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
+    <Compile Include="Areas\Admin\Helpers\SEOAnalysisExtensions.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
@@ -350,6 +356,9 @@
     <Compile Include="Areas\Admin\Models\AddPageModel.cs" />
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
     <Compile Include="Areas\Admin\Models\Dashboard.cs" />
+    <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisFacet.cs" />
+    <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisResult.cs" />
+    <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisStatus.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
     <Compile Include="Areas\Admin\Services\AdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
@@ -362,6 +371,24 @@
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\AllImagesHaveAltTags.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\BaseSEOAnalysisFacetProvider.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\BodyContentChecks.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\BodyContentFirstParagraphContainsTerm.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\BodyContentMinimumWordCount.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\H1ContainsTerm.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\ISEOAnalysisFacetProvider.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\ISEOAnalysisService.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\KeywordDensity.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\MetaDescriptionChecks.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\PageNameIsUnique.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\SEOAnalysisService.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\SingleH1Tag.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\SubheadingsContainingTerm.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\TargetTermIsUnique.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleContainsTerm.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleIsCorrectLength.cs" />
+    <Compile Include="Areas\Admin\Services\SEOAnalysis\URLContainsTerm.cs" />
     <Compile Include="Areas\Admin\Services\ThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Controllers\CKEditorController.cs" />
     <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
@@ -1420,6 +1447,7 @@
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\CurrentPageSubNavigation.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ShowFilesSimple.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\UploadAnywhere.cshtml" />
+    <Content Include="Areas\Admin\Views\SEOAnalysis\Analyze.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

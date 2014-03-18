@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using MrCMS.Settings;
 
 namespace MrCMS.Web.Areas.Admin.Services
@@ -12,9 +13,12 @@ namespace MrCMS.Web.Areas.Admin.Services
             _configurationProvider = configurationProvider;
         }
 
-        public Task<ThirdPartyAuthSettings> GetSettingsAsync()
+        public async Task<ThirdPartyAuthSettings> GetSettingsAsync()
         {
-            return Task.Run(() => GetSettings());
+            return
+                await
+                Task.Factory.StartNew(() => GetSettings(), CancellationToken.None, TaskCreationOptions.None,
+                                      TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public ThirdPartyAuthSettings GetSettings()
@@ -22,9 +26,12 @@ namespace MrCMS.Web.Areas.Admin.Services
             return _configurationProvider.GetSiteSettings<ThirdPartyAuthSettings>();
         }
 
-        public Task SaveSettingsAsync(ThirdPartyAuthSettings thirdPartyAuthSettings)
+        public async Task SaveSettingsAsync(ThirdPartyAuthSettings thirdPartyAuthSettings)
         {
-            return Task.Run(() => SaveSettings(thirdPartyAuthSettings));
+            await
+                Task.Factory.StartNew(() => SaveSettings(thirdPartyAuthSettings), CancellationToken.None,
+                                      TaskCreationOptions.None,
+                                      TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void SaveSettings(ThirdPartyAuthSettings thirdPartyAuthSettings)

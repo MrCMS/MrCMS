@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -20,21 +21,21 @@ namespace MrCMS.Services
             _authorisationService = authorisationService;
         }
 
-        public bool IsLogin(ExternalLoginInfo externalLoginInfo)
+        public async Task<bool> IsLoginAsync(ExternalLoginInfo externalLoginInfo)
         {
-            return _userManager.Find(externalLoginInfo.Login) != null;
+            return (await _userManager.FindAsync(externalLoginInfo.Login)) != null;
         }
 
-        public void Login(ExternalLoginInfo externalLoginInfo, AuthenticateResult authenticateResult)
+        public async Task LoginAsync(ExternalLoginInfo externalLoginInfo, AuthenticateResult authenticateResult)
         {
-            User user = _userManager.Find(externalLoginInfo.Login);
-            _authorisationService.SetAuthCookie(user, false);
-            _authorisationService.UpdateClaims(user, authenticateResult.Identity.Claims);
+            User user = await _userManager.FindAsync(externalLoginInfo.Login);
+            await _authorisationService.SetAuthCookie(user, false);
+            await _authorisationService.UpdateClaimsAsync(user, authenticateResult.Identity.Claims);
         }
 
-        public bool UserExists(string email)
+        public async Task<bool> UserExistsAsync(string email)
         {
-            return _userManager.FindByName(email) != null;
+            return await _userManager.FindByNameAsync(email)!= null;
         }
 
         public string GetEmail(AuthenticateResult authenticateResult)
@@ -52,14 +53,14 @@ namespace MrCMS.Services
             return null;
         }
 
-        public void AssociateLoginToUser(string email, ExternalLoginInfo externalLoginInfo)
+        public async Task AssociateLoginToUserAsync(string email, ExternalLoginInfo externalLoginInfo)
         {
             if (string.IsNullOrWhiteSpace(email))
                 return;
-            var user = _userManager.FindByName(email);
+            var user =await _userManager.FindByNameAsync(email);
             if (user == null)
                 return;
-            _userManager.AddLogin(user.OwinId, externalLoginInfo.Login);
+            await _userManager.AddLoginAsync(user.OwinId, externalLoginInfo.Login);
         }
 
         public bool RequiresAdditionalFieldsForRegistration()
@@ -69,16 +70,16 @@ namespace MrCMS.Services
             return false;
         }
 
-        public void CreateUser(string email, ExternalLoginInfo externalLoginInfo)
+        public async Task CreateUserAsync(string email, ExternalLoginInfo externalLoginInfo)
         {
             var user = new User { Email = email, IsActive = true };
-            _userManager.Create(user);
-            _userManager.AddLogin(user.OwinId, externalLoginInfo.Login);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.OwinId, externalLoginInfo.Login);
         }
 
-        public ActionResult RedirectAfterLogin(string email, string returnUrl)
+        public async Task<RedirectResult> RedirectAfterLogin(string email, string returnUrl)
         {
-            var user = _userManager.FindByName(email);
+            var user = await _userManager.FindByNameAsync(email);
             if (!string.IsNullOrWhiteSpace(returnUrl))
                 return new RedirectResult(returnUrl);
             return user.IsAdmin ? new RedirectResult("~/admin") : new RedirectResult("~");

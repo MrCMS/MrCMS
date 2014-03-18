@@ -10,6 +10,8 @@
         Permalink: /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
         @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
         <button id="change-url" class="btn btn-mini">Change</button>
+
+
         <hr />
         <p><i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History</p>
 
@@ -35,10 +37,9 @@
         else
         {
             @:No URL History
-        }
+            }
 
     </div>
-
 
     @if (!(Model is Redirect))
     {       
@@ -52,6 +53,18 @@
         @Html.LabelFor(x => x.MetaKeywords)
         @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "span12" })
         @Html.ValidationMessageFor(x => x.MetaKeywords, "", new { @class = "error" })
+
+        <hr />
+        <h4>SEO Analysis </h4>
+        <div class="input-append">
+            @Html.LabelFor(webpage => webpage.SEOTargetPhrase)
+            @Html.TextBoxFor(webpage => webpage.SEOTargetPhrase)
+            <button data-seo-analyze="true" class="btn">Analyze</button>
+        </div>
+
+        <div data-seo-analysis-summary="true">
+        </div>
+        
         <hr />
         <div class="form-inline">
             <i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="If ticked, the page will be included in any navigation widgets"></i>
@@ -75,7 +88,12 @@
     @Html.TextAreaFor(x => x.CustomFooterScripts, new { @class = "span12" })
     @Html.ValidationMessageFor(x => x.CustomFooterScripts, "", new { @class = "error" })
 
+
     <hr />
+
+
+
+
     <strong>Page type:</strong> @Model.GetMetadata().Name
     <br />
     <strong>Created On: </strong>@Model.CreatedOn
