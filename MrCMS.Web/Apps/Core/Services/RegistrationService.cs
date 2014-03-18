@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
@@ -21,7 +22,7 @@ namespace MrCMS.Web.Apps.Core.Services
             _userEventService = userEventService;
         }
 
-        public User RegisterUser(RegisterModel model)
+        public async Task<User> RegisterUser(RegisterModel model)
         {
             var user = new User
                            {
@@ -32,7 +33,7 @@ namespace MrCMS.Web.Apps.Core.Services
                            };
             _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
             _userService.AddUser(user);
-            _authorisationService.SetAuthCookie(user, false);
+            await _authorisationService.SetAuthCookie(user, false);
             _userEventService.OnUserRegistered(user);
             return user;
         }

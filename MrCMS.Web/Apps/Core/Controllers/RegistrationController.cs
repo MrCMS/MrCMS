@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Core.Models;
@@ -36,7 +37,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
         [HttpPost]
         [ActionName("RegistrationDetails")]
-        public ActionResult RegistrationDetails_POST(RegisterModel model)
+        public async Task<RedirectResult> RegistrationDetails_POST(RegisterModel model)
         {
             if (CurrentRequestData.CurrentUser != null)
             {
@@ -46,7 +47,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
             if (model != null && ModelState.IsValid && _registrationService.CheckEmailIsNotRegistered(model.Email))
             {
-                _registrationService.RegisterUser(model);
+                await _registrationService.RegisterUser(model);
 
                 return !string.IsNullOrEmpty(model.ReturnUrl)
                            ? Redirect("~/" + model.ReturnUrl)

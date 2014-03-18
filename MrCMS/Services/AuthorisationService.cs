@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
@@ -20,11 +21,11 @@ namespace MrCMS.Services
             _userManager = userManager;
         }
 
-        public void SetAuthCookie(User user, bool rememberMe)
+        public async Task SetAuthCookie(User user, bool rememberMe)
         {
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            var identity = _userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+            var identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
             _authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = rememberMe }, identity);
         }
 
@@ -33,28 +34,29 @@ namespace MrCMS.Services
             _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
         }
 
-        public void UpdateClaims(User user, IEnumerable<Claim> claims)
+        public async Task UpdateClaimsAsync(User user, IEnumerable<Claim> claims)
         {
-            var existingClaims = _userManager.GetClaims(user.OwinId).ToList();
+            var existingClaims = (await _userManager.GetClaimsAsync(user.OwinId)).ToList();
             var list = claims as IList<Claim> ?? claims.ToList();
             var newClaims =
                 list.Where(claim => existingClaims.All(c => c.Type != claim.Type));
             var updatedClaims =
                 list.Where(claim => existingClaims.Any(c => c.Type == claim.Type && c.Value != claim.Value));
             foreach (var newClaim in newClaims)
-                _userManager.AddClaim(user.OwinId, newClaim);
+                await _userManager.AddClaimAsync(user.OwinId, newClaim);
             foreach (var updatedClaim in updatedClaims)
             {
                 var existing = existingClaims.First(c => c.Type == updatedClaim.Type);
-                _userManager.RemoveClaim(user.OwinId, existing);
-                _userManager.AddClaim(user.OwinId, updatedClaim);
+                await _userManager.RemoveClaimAsync(user.OwinId, existing);
+                await _userManager.AddClaimAsync(user.OwinId, updatedClaim);
             }
         }
     }
 
     public struct ClaimsComparison : IEquatable<ClaimsComparison>
     {
-        public ClaimsComparison(Claim claim) : this()
+        public ClaimsComparison(Claim claim)
+            : this()
         {
             Issuer = claim.Issuer;
             Type = claim.Type;

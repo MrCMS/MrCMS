@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Elmah;
 using MrCMS.Entities.People;
@@ -42,11 +43,11 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpPost]
-        public RedirectResult Post([IoCModelBinder(typeof(LoginModelModelBinder))]LoginModel loginModel)
+        public async Task<RedirectResult> Post([IoCModelBinder(typeof(LoginModelModelBinder))]LoginModel loginModel)
         {
             if (loginModel != null && ModelState.IsValid)
             {
-                var result = _loginService.AuthenticateUser(loginModel);
+                var result = await _loginService.AuthenticateUser(loginModel);
                 if (result.Success)
                     return Redirect(result.RedirectUrl);
                 loginModel.Message = result.Message;

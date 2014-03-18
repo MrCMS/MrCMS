@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
@@ -8,7 +9,7 @@ namespace MrCMS.Web.Apps.Core.Services
 {
     public interface ILoginService
     {
-        LoginResult AuthenticateUser(LoginModel loginModel);
+        Task<LoginResult> AuthenticateUser(LoginModel loginModel);
     }
 
     public class LoginService : ILoginService
@@ -26,7 +27,7 @@ namespace MrCMS.Web.Apps.Core.Services
             _userEventService = userEventService;
         }
 
-        public LoginResult AuthenticateUser(LoginModel loginModel)
+        public async Task<LoginResult> AuthenticateUser(LoginModel loginModel)
         {
             string message = null;
             User user = _userService.GetUserByEmail(loginModel.Email);
@@ -35,7 +36,7 @@ namespace MrCMS.Web.Apps.Core.Services
                 if (_passwordManagementService.ValidateUser(user, loginModel.Password))
                 {
                     var guid = CurrentRequestData.UserGuid;
-                    _authorisationService.SetAuthCookie(user, loginModel.RememberMe);
+                    await _authorisationService.SetAuthCookie(user, loginModel.RememberMe);
                     CurrentRequestData.CurrentUser = user;
                     _userEventService.OnUserLoggedIn(user, guid);
                     return user.IsAdmin

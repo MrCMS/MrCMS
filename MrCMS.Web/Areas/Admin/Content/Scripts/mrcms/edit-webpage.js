@@ -82,6 +82,28 @@
         }
     });
 
+
+    $(document).on('keypress', function(event) {
+        if ($('#SEOTargetPhrase:focus').length) {
+            if (event.which === 13) {
+                event.preventDefault();
+                $('[data-seo-analyze]').click();
+            }
+        }
+    })
+    $(document).on('click', '[data-seo-analyze]', function(event) {
+        event.preventDefault();
+        var value = $('#SEOTargetPhrase').val();
+        if (value == '') {
+            $('[data-seo-analysis-summary]').html('Please enter a term to analyze.');
+        }else{
+        $('[data-seo-analysis-summary]').html('Analyzing...');
+        $.get('/Admin/SEOAnalysis/Analyze', { id: $('#Id').val(), SEOTargetPhrase: value }, function (response) {
+            $('[data-seo-analysis-summary]').html(response);
+        });
+        }
+    });
+
 });
 //Show the accordion which was last shown for layout areas.
 $(window).load(function () {
