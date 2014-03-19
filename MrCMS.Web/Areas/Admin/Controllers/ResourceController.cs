@@ -21,6 +21,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             ViewData["language-options"] = _stringResourceAdminService.SearchLanguageOptions();
             return View(searchQuery);
         }
+
         [HttpGet]
         public ViewResult Add(string key)
         {

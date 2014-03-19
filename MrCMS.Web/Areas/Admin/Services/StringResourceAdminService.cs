@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
@@ -29,20 +32,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public IPagedList<StringResource> Search(StringResourceSearchQuery searchQuery)
         {
-            var resources = _provider.ResourcesForSite;
-
-            if (!string.IsNullOrWhiteSpace(searchQuery.Key))
-            {
-                resources =
-                    resources.Where(
-                        resource => resource.Key.Contains(searchQuery.Key, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrWhiteSpace(searchQuery.Value))
-            {
-                resources =
-                    resources.Where(resource => resource.Value.Contains(searchQuery.Value, StringComparison.OrdinalIgnoreCase));
-            }
+            var resources = _provider.ResourcesForSite.GetResourcesByKeyAndValue(searchQuery);
             if (searchQuery.Language == DefaultLanguage)
             {
                 resources = resources.Where(resource => resource.UICulture == null);
@@ -94,6 +84,28 @@ namespace MrCMS.Web.Areas.Admin.Services
             selectListItems.Insert(0, new SelectListItem { Text = "Any", Value = "" });
             selectListItems.Insert(1, new SelectListItem { Text = DefaultLanguage, Value = DefaultLanguage });
             return selectListItems;
+        }
+    }
+
+    public static class StringResourceSearchExtensions
+    {
+        public static IEnumerable<StringResource> GetResourcesByKeyAndValue(this IEnumerable<StringResource> resourcesForQuery, StringResourceSearchQuery searchQuery)
+        {
+            var resources = resourcesForQuery;
+
+            if (!string.IsNullOrWhiteSpace(searchQuery.Key))
+            {
+                resources =
+                    resources.Where(
+                        resource => resource.Key.Contains(searchQuery.Key, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchQuery.Value))
+            {
+                resources =
+                    resources.Where(resource => resource.Value.Contains(searchQuery.Value, StringComparison.OrdinalIgnoreCase));
+            }
+            return resources;
         }
     }
 }

@@ -13,6 +13,8 @@
         <legend>Resources 
             <span class="btn-group display-inline pull-right">
                 <input type="submit" class="btn btn-primary" value="Search" />
+                @Html.ActionLink("Export All", "Export", "ResourceUpdate", new { }, new { @class = "btn" })
+                @Html.ActionLink("Export As Filtered", "Export", "ResourceUpdate", new { Model.Key, Model.Value }, new { @class = "btn" })
             </span>
         </legend>
 
@@ -74,7 +76,7 @@ else
                             }
                             else
                             {
-                            @Html.ActionLink("Delete", "Delete", "Resource", new { id = resource.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "fb-modal" })    
+                                @Html.ActionLink("Delete", "Delete", "Resource", new { id = resource.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "fb-modal" })    
                             }
 
                         </div>
@@ -85,3 +87,13 @@ else
     </table>
 }
 @Html.Pager(resources, "Index", i => new { page = i })
+
+<fieldset>
+    <legend>Import Resources
+    </legend>
+    @using (Html.BeginForm("Import", "ResourceUpdate", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="file" />
+        <button class="btn btn-primary">Import</button>
+    }
+</fieldset>

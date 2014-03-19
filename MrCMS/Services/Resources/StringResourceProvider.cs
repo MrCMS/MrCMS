@@ -14,7 +14,7 @@ namespace MrCMS.Services.Resources
         private readonly ISession _session;
         private readonly Site _site;
         private readonly SiteSettings _siteSettings;
-        private static IList<StringResource> _allResources;
+        private static HashSet<StringResource> _allResources;
 
         public StringResourceProvider(ISession session, Site site, SiteSettings siteSettings)
         {
@@ -53,6 +53,12 @@ namespace MrCMS.Services.Resources
                 .Where(s => !string.IsNullOrWhiteSpace(s));
         }
 
+        public void Insert(StringResource resource)
+        {
+            _session.Transact(session => session.Save(resource));
+            AllResources.Add(resource);
+        }
+
         public void AddOverride(StringResource resource)
         {
             if (resource.UICulture == null)
@@ -64,7 +70,7 @@ namespace MrCMS.Services.Resources
         public void Update(StringResource resource)
         {
             var firstOrDefault =
-                ResourcesForSite.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
+                AllResources.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
             if (firstOrDefault != null) firstOrDefault.Value = resource.Value;
             _session.Transact(session => session.Update(resource));
         }
@@ -72,7 +78,7 @@ namespace MrCMS.Services.Resources
         public void Delete(StringResource resource)
         {
             var firstOrDefault =
-                ResourcesForSite.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
+                AllResources.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
             if (firstOrDefault != null) AllResources.Remove(firstOrDefault);
             _session.Transact(session => session.Delete(resource));
         }
@@ -82,8 +88,13 @@ namespace MrCMS.Services.Resources
             get { return AllResources.Where(resource => resource.Site.Id == _site.Id); }
         }
 
+        IEnumerable<StringResource> IStringResourceProvider.AllResources
+        {
+            get { return AllResources; }
+        }
 
-        private IList<StringResource> AllResources
+
+        private HashSet<StringResource> AllResources
         {
             get
             {
@@ -94,9 +105,9 @@ namespace MrCMS.Services.Resources
             }
         }
 
-        private IList<StringResource> GetAllResourcesFromDb()
+        private HashSet<StringResource> GetAllResourcesFromDb()
         {
-            return _session.QueryOver<StringResource>().Cacheable().List();
+            return new HashSet<StringResource>(_session.QueryOver<StringResource>().Cacheable().List());
         }
     }
 }

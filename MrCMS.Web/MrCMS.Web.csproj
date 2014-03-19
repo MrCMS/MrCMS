@@ -273,6 +273,7 @@
     <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
+    <Compile Include="Areas\Admin\Controllers\ResourceUpdateController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteListController.cs" />
     <Compile Include="Areas\Admin\Controllers\ClearCachesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
@@ -384,6 +385,7 @@
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IStringResourceAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IStringResourceUpdateService.cs" />
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\AllImagesHaveAltTags.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\BaseSEOAnalysisFacetProvider.cs" />
@@ -404,6 +406,7 @@
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleIsCorrectLength.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\URLContainsTerm.cs" />
     <Compile Include="Areas\Admin\Services\StringResourceAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\StringResourceUpdateService.cs" />
     <Compile Include="Areas\Admin\Services\ThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Controllers\CKEditorController.cs" />
     <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
