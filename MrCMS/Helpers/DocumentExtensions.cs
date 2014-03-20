@@ -16,7 +16,7 @@ namespace MrCMS.Helpers
     {
         public static bool CanDelete(this Document document)
         {
-            return MrCMSApplication.Get<ISession>()
+            return !MrCMSApplication.Get<ISession>()
                 .QueryOver<Document>()
                 .Where(doc => doc.Parent != null && doc.Parent.Id == document.Id)
                 .Cacheable()
