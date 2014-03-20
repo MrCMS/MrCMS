@@ -2,8 +2,17 @@ using MrCMS.Entities.Documents;
 
 namespace MrCMS.Events
 {
-    public interface IOnDocumentAdded
+    public interface IOnDocumentAdded : IEvent<OnDocumentAddedEventArgs>
     {
-        void OnDocumentAdded(Document document);
+    }
+
+    public class OnDocumentAddedEventArgs
+    {
+        public OnDocumentAddedEventArgs(Document document)
+        {
+            Document = document;
+        }
+
+        public Document Document { get; set; }
     }
 }
