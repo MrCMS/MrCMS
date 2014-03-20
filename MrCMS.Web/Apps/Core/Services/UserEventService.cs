@@ -1,34 +1,29 @@
 using System;
 using System.Collections.Generic;
 using MrCMS.Entities.People;
+using MrCMS.Events;
 using MrCMS.Helpers;
 
 namespace MrCMS.Web.Apps.Core.Services
 {
-    public class UserEventService : IUserEventService
+
+    /// <summary>
+    /// Event that passes in the user object and the guid of the anonymous user guid that the user was using before login.
+    /// Allows the copying of data from the anonymous user to the existing one
+    /// </summary>
+    public interface IOnUserLoggedIn : IEvent<UserLoggedInEventArgs>
     {
-        private readonly IEnumerable<IOnUserRegistered> _onUserRegistereds;
-        private readonly IEnumerable<IOnUserLoggedIn> _onUserLoggedIns;
-
-        public UserEventService(IEnumerable<IOnUserRegistered> onUserRegistereds, IEnumerable<IOnUserLoggedIn> onUserLoggedIns)
-        {
-            _onUserRegistereds = onUserRegistereds;
-            _onUserLoggedIns = onUserLoggedIns;
-        }
-
-        public void OnUserRegistered(User user)
-        {
-            _onUserRegistereds.ForEach(registered => registered.UserRegistered(user));
-        }
-
-        public void OnUserLoggedIn(User user, Guid previousSession)
-        {
-            _onUserLoggedIns.ForEach(@in => @in.UserLoggedIn(user, previousSession));
-        }
     }
-        
-    public interface IOnUserLoggedIn
+
+    public class UserLoggedInEventArgs : EventArgs
     {
-        void UserLoggedIn(User user, Guid previousSession);
+        public UserLoggedInEventArgs(User user, Guid previousSession)
+        {
+            User = user;
+            PreviousSession = previousSession;
+        }
+
+        public User User { get; set; }
+        public Guid PreviousSession { get; set; }
     }
 }

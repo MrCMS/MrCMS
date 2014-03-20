@@ -323,6 +323,7 @@
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Entities\Resources\StringResource.cs" />
+    <Compile Include="Events\IEvent.cs" />
     <Compile Include="HealthChecks\EmailSenderTaskCheck.cs" />
     <Compile Include="HealthChecks\HealthCheck.cs" />
     <Compile Include="HealthChecks\HealthCheckResult.cs" />
@@ -359,8 +360,10 @@
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
     <Compile Include="Models\WebpageCount.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
+    <Compile Include="Services\EventContext.cs" />
     <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
+    <Compile Include="Services\IEventContext.cs" />
     <Compile Include="Services\IStandardAuthConfigurationService.cs" />
     <Compile Include="Services\Resources\IStringResourceProvider.cs" />
     <Compile Include="Services\Resources\StringResourceProvider.cs" />
@@ -383,11 +386,9 @@
     <Compile Include="Models\MessageQueueQuery.cs" />
     <Compile Include="Models\UserSearchQuery.cs" />
     <Compile Include="Services\CloneSitePartsService.cs" />
-    <Compile Include="Services\DocumentEventService.cs" />
     <Compile Include="Services\ExternalLoginService.cs" />
     <Compile Include="Services\FileMigration\IFileMigrationService.cs" />
     <Compile Include="Services\IAuthorisationService.cs" />
-    <Compile Include="Services\IDocumentEventService.cs" />
     <Compile Include="Services\IExternalLoginService.cs" />
     <Compile Include="Services\IHashAlgorithm.cs" />
     <Compile Include="Services\IMessageQueueAdminService.cs" />

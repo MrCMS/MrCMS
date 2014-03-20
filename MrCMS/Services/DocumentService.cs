@@ -11,6 +11,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
+using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
@@ -24,15 +25,13 @@ namespace MrCMS.Services
     public class DocumentService : IDocumentService
     {
         private readonly ISession _session;
-        private readonly IDocumentEventService _documentEventService;
         private readonly SiteSettings _siteSettings;
         private readonly Site _currentSite;
         private Dictionary<string, int> _counts;
 
-        public DocumentService(ISession session, IDocumentEventService documentEventService, SiteSettings siteSettings, Site currentSite)
+        public DocumentService(ISession session, SiteSettings siteSettings, Site currentSite)
         {
             _session = session;
-            _documentEventService = documentEventService;
             _siteSettings = siteSettings;
             _currentSite = currentSite;
         }
@@ -43,12 +42,10 @@ namespace MrCMS.Services
                                   {
                                       document.DisplayOrder = GetMaxParentDisplayOrder(document);
                                       document.CustomInitialization(this, _session);
-                                      //if (document.Parent != null)
-                                      //    document.Parent.Children.Add(document);
                                       session.SaveOrUpdate(document);
 
                                   });
-            _documentEventService.OnDocumentAdded(document);
+            EventContext.Instance.Publish<IOnDocumentAdded, OnDocumentAddedEventArgs>(new OnDocumentAddedEventArgs(document));
         }
 
         private int GetMaxParentDisplayOrder(Document document)
@@ -59,10 +56,6 @@ namespace MrCMS.Services
                             .Where(doc => doc.Parent.Id == document.Parent.Id)
                             .Select(Projections.Max<Document>(d => d.DisplayOrder))
                             .SingleOrDefault<int>();
-                // document.Parent.Children.Where(d => d != document).ToList();
-                //return enumerable.Any()
-                //           ? enumerable.Max(d => d.DisplayOrder) + 1
-                //           : 0;
             }
             if (document is MediaCategory)
             {
@@ -292,7 +285,8 @@ namespace MrCMS.Services
                     document.OnDeleting(session);
                     session.Delete(document);
                 });
-                _documentEventService.OnDocumentDeleted(document);
+
+                EventContext.Instance.Publish<IOnDocumentDeleted, OnDocumentDeletedEventArgs>(new OnDocumentDeletedEventArgs(document));
             }
         }
 
@@ -309,7 +303,7 @@ namespace MrCMS.Services
         {
             document.PublishOn = null;
             SaveDocument(document);
-            _documentEventService.OnDocumentUnpublished(document);
+            EventContext.Instance.Publish<IOnDocumentUnpublished, OnDocumentUnpublishedEventArgs>(new OnDocumentUnpublishedEventArgs(document));
         }
 
         public void HideWidget(Webpage document, int widgetId)

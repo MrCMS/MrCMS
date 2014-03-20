@@ -2,8 +2,17 @@ using MrCMS.Entities.Documents;
 
 namespace MrCMS.Events
 {
-    public interface IOnDocumentDeleted
+    public interface IOnDocumentDeleted : IEvent<OnDocumentDeletedEventArgs>
     {
-        void OnDocumentDeleted(Document document);
+    }
+
+    public class OnDocumentDeletedEventArgs
+    {
+        public OnDocumentDeletedEventArgs(Document document)
+        {
+            Document = document;
+        }
+
+        public Document Document { get; set; }
     }
 }
