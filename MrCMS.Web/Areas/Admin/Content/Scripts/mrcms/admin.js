@@ -6,11 +6,20 @@ $(document).ready(function () {
     $("#loading").ajaxStop(function () {
         $(this).hide();
     });
-    Globalize.culture($("#UICulture").val());
 
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 
+    Globalize.culture($("#UICulture").val());
+    $.validator.methods.number = function(value, element) {
+        return this.optional(element) ||
+            !isNaN(Globalize.parseFloat(value));
+    };
+
+    $.validator.methods.date = function(value, element) {
+        return this.optional(element) ||
+            !isNaN(Globalize.parseDate(value));
+    };
 
     $(".datepicker").datepicker();
 
