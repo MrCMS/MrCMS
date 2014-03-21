@@ -13,5 +13,6 @@ namespace MrCMS.Web.Areas.Admin.Services
         void PushNotification(PushNotificationModel model);
         List<SelectListItem> GetPublishTypeOptions();
         List<SelectListItem> GetNotificationTypeOptions(bool includeAnyOption = false);
+        void Delete(Notification notification);
     }
 }

@@ -73,5 +73,10 @@ namespace MrCMS.Web.Areas.Admin.Services
                        .BuildSelectItemList(type => type.ToString().BreakUpString(), type => type.ToString(),
                                             emptyItemText: includeAnyOption ? "Any" : null);
         }
+
+        public void Delete(Notification notification)
+        {
+            _session.Transact(session => session.Delete(notification));
+        }
     }
 }

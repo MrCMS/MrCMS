@@ -1,6 +1,7 @@
 ﻿@using MrCMS.Entities.Notifications
 @using MrCMS.Helpers
 @using MrCMS.Paging
+@using MrCMS.Web.Areas.Admin.ACL
 @model MrCMS.Web.Areas.Admin.Models.NotificationSearchQuery
 @{
     var results = ViewData["results"] as IPagedList<Notification> ?? PagedList<Notification>.Empty;
@@ -66,7 +67,7 @@ else
                         @notification.CreatedOn.ToString("dd/MM/yyyy HH:mm")
                     </td>
                     <td>
-                        @notification.NotificationType
+                        @notification.NotificationType.ToString().BreakUpString()
                     </td>
                     <td>
                         @notification.Message
@@ -74,7 +75,14 @@ else
                     <td>
                         @notification.UserName
                     </td>
-                    <td></td>
+                    <td>
+                        <div class="btn-group">
+                            @if (Html.CanAccess<NotificationACL>(NotificationACL.Delete))
+                            {
+                                @Html.ActionLink("Delete", "Delete", "Notification", new { id = notification.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
+                            }
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>

@@ -332,6 +332,7 @@
     <Compile Include="HealthChecks\IHealthCheck.cs" />
     <Compile Include="HealthChecks\IsEmailConfigured.cs" />
     <Compile Include="HealthChecks\StalledTasks.cs" />
+    <Compile Include="Helpers\ACLHelper.cs" />
     <Compile Include="Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
     <Compile Include="Helpers\DocumentVersionRenderingExtensions.cs" />

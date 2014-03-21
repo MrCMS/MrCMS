@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using MrCMS.Entities.Notifications;
 using MrCMS.Services.Notifications;
+using MrCMS.Web.Areas.Admin.ACL;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Website;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -37,6 +39,22 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public RedirectToRouteResult Push(PushNotificationModel model)
         {
             _service.PushNotification(model);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [MrCMSACLRule(typeof(NotificationACL), NotificationACL.Delete)]
+        public ViewResult Delete(Notification notification)
+        {
+            return View(notification);
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        [MrCMSACLRule(typeof(NotificationACL), NotificationACL.Delete)]
+        public RedirectToRouteResult Delete_POST(Notification notification)
+        {
+            _service.Delete(notification);
             return RedirectToAction("Index");
         }
     }

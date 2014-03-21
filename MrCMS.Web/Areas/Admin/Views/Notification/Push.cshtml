@@ -3,6 +3,7 @@
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var publishTypeOptions = ViewData["publish-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var notificationTypeOptions = ViewData["notification-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 @using (Html.BeginForm("Push", "Notification", FormMethod.Post))
 {
@@ -19,5 +20,8 @@
         @Html.LabelFor(model => model.PublishType)
         @Html.DropDownListFor(model => model.PublishType, publishTypeOptions)
         @Html.ValidationMessageFor(model => model.PublishType)
+        @Html.LabelFor(model => model.NotificationType)
+        @Html.DropDownListFor(model => model.NotificationType, notificationTypeOptions)
+        @Html.ValidationMessageFor(model => model.NotificationType)
     </fieldset>
 }
