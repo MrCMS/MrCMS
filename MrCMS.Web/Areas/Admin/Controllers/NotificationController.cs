@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MrCMS.Entities.Notifications;
 using MrCMS.Services.Notifications;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
@@ -20,6 +21,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ViewResult Index(NotificationSearchQuery searchQuery)
         {
             ViewData["results"] = _service.Search(searchQuery);
+            ViewData["notification-type-options"] = _service.GetNotificationTypeOptions(true);
             return View(searchQuery);
         }
 
@@ -27,8 +29,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ViewResult Push()
         {
             ViewData["publish-type-options"] = _service.GetPublishTypeOptions();
+            ViewData["notification-type-options"] = _service.GetNotificationTypeOptions();
             return View(new PushNotificationModel());
         }
+
         [HttpPost]
         public RedirectToRouteResult Push(PushNotificationModel model)
         {
@@ -43,5 +47,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public string Message { get; set; }
         [DisplayName("Publish Type")]
         public PublishType PublishType { get; set; }
+        [DisplayName("Notification Type")]
+        public NotificationType NotificationType { get; set; }
     }
 }

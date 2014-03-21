@@ -46,13 +46,18 @@ namespace MrCMS.Web.Areas.Admin.Services
             {
                 queryOver = queryOver.Where(notification => notification.CreatedOn <= searchQuery.To);
             }
+            if (searchQuery.NotificationType.HasValue)
+            {
+                queryOver =
+                    queryOver.Where(notification => notification.NotificationType == searchQuery.NotificationType);
+            }
 
             return queryOver.Paged(searchQuery.Page);
         }
 
         public void PushNotification(PushNotificationModel model)
         {
-            _notificationPublisher.PublishNotification(model.Message, model.PublishType);
+            _notificationPublisher.PublishNotification(model.Message, model.PublishType, model.NotificationType);
         }
 
         public List<SelectListItem> GetPublishTypeOptions()
@@ -60,6 +65,13 @@ namespace MrCMS.Web.Areas.Admin.Services
             return Enum.GetValues(typeof(PublishType))
                        .Cast<PublishType>()
                        .BuildSelectItemList(type => type.ToString(), emptyItem: null);
+        }
+        public List<SelectListItem> GetNotificationTypeOptions(bool includeAnyOption)
+        {
+            return Enum.GetValues(typeof (NotificationType))
+                       .Cast<NotificationType>()
+                       .BuildSelectItemList(type => type.ToString().BreakUpString(), type => type.ToString(),
+                                            emptyItemText: includeAnyOption ? "Any" : null);
         }
     }
 }

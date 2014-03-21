@@ -12,5 +12,6 @@ namespace MrCMS.Web.Areas.Admin.Services
         IPagedList<Notification> Search(NotificationSearchQuery searchQuery);
         void PushNotification(PushNotificationModel model);
         List<SelectListItem> GetPublishTypeOptions();
+        List<SelectListItem> GetNotificationTypeOptions(bool includeAnyOption = false);
     }
 }

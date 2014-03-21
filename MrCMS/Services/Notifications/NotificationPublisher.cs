@@ -17,12 +17,13 @@ namespace MrCMS.Services.Notifications
             _eventContext = eventContext;
         }
 
-        public void PublishNotification(string message, PublishType publishType = PublishType.Both)
+        public void PublishNotification(string message, PublishType publishType = PublishType.Both, NotificationType notificationType = NotificationType.All)
         {
             var notification = new Notification
                                    {
                                        Message = message,
-                                       User = CurrentRequestData.CurrentUser
+                                       User = CurrentRequestData.CurrentUser,
+                                       NotificationType = notificationType
                                    };
             switch (publishType)
             {

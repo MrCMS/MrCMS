@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using MrCMS.Entities.Notifications;
 
 namespace MrCMS.Web.Areas.Admin.Models
 {
@@ -13,5 +15,7 @@ namespace MrCMS.Web.Areas.Admin.Models
         public int? UserId { get; set; }
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
+        [DisplayName("Notification Type")]
+        public NotificationType? NotificationType { get; set; }
     }
 }
