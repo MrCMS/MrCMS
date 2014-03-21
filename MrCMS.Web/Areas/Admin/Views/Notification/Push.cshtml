@@ -1,0 +1,27 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Areas.Admin.Controllers.PushNotificationModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var publishTypeOptions = ViewData["publish-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var notificationTypeOptions = ViewData["notification-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+@using (Html.BeginForm("Push", "Notification", FormMethod.Post))
+{
+    <fieldset>
+        <legend>Push notification
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-primary btn" value="Push Notification" />
+            </span>
+        </legend>
+        @Html.ReturnToReferrer()
+        @Html.LabelFor(model => model.Message)
+        @Html.TextBoxFor(model => model.Message)
+        @Html.ValidationMessageFor(model => model.Message)
+        @Html.LabelFor(model => model.PublishType)
+        @Html.DropDownListFor(model => model.PublishType, publishTypeOptions)
+        @Html.ValidationMessageFor(model => model.PublishType)
+        @Html.LabelFor(model => model.NotificationType)
+        @Html.DropDownListFor(model => model.NotificationType, notificationTypeOptions)
+        @Html.ValidationMessageFor(model => model.NotificationType)
+    </fieldset>
+}

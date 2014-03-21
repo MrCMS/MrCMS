@@ -16,6 +16,7 @@ namespace MrCMS.ACL.Rules
         public const string ACL = "ACL";
         public const string Indices = "Indices";
         public const string MessageQueue = "Message Queue";
+        public const string Notifications = "Notifications";
         public const string ClearCaches = "Clear Caches";
 
         public override string DisplayName
@@ -39,6 +40,7 @@ namespace MrCMS.ACL.Rules
                        ACL,
                        Indices,
                        MessageQueue,
+                       Notifications,
                        ClearCaches
                    };
         }

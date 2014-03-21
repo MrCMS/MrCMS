@@ -273,6 +273,8 @@
     <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
+    <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
+    <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\ResourceUpdateController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteListController.cs" />
     <Compile Include="Areas\Admin\Controllers\ClearCachesController.cs" />
@@ -288,6 +290,7 @@
     <Compile Include="Areas\Admin\Helpers\SEOAnalysisExtensions.cs" />
     <Compile Include="Areas\Admin\ModelBinders\AddPropertiesModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\HealthCheckProcessorModelBinder.cs" />
+    <Compile Include="Areas\Admin\Models\NotificationSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
@@ -384,9 +387,11 @@
     <Compile Include="Areas\Admin\Services\IClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IndexAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\INotificationAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IStringResourceAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IStringResourceUpdateService.cs" />
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\NotificationAdminService.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\AllImagesHaveAltTags.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\BaseSEOAnalysisFacetProvider.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\BodyContentChecks.cs" />
@@ -1476,6 +1481,9 @@
     <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleAdd.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\AddProperties.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchiveAdd.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\Push.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\Delete.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

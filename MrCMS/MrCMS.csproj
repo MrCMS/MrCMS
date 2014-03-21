@@ -285,6 +285,7 @@
     <Compile Include="DbConfiguration\Overrides\MediaCategoryOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaFileOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MessageTemplateOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\NotificationOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\PageWidgetSortOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
@@ -320,6 +321,7 @@
     <Compile Include="Entities\Documents\Web\FormProperties\TextBox.cs" />
     <Compile Include="Entities\Documents\Web\UrlHistory.cs" />
     <Compile Include="Entities\Multisite\RedirectedDomain.cs" />
+    <Compile Include="Entities\Notifications\Notification.cs" />
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Entities\Resources\StringResource.cs" />
@@ -330,6 +332,7 @@
     <Compile Include="HealthChecks\IHealthCheck.cs" />
     <Compile Include="HealthChecks\IsEmailConfigured.cs" />
     <Compile Include="HealthChecks\StalledTasks.cs" />
+    <Compile Include="Helpers\ACLHelper.cs" />
     <Compile Include="Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
     <Compile Include="Helpers\DocumentVersionRenderingExtensions.cs" />
@@ -365,6 +368,13 @@
     <Compile Include="Services\IAuthConfigurationService.cs" />
     <Compile Include="Services\IEventContext.cs" />
     <Compile Include="Services\IStandardAuthConfigurationService.cs" />
+    <Compile Include="Services\Notifications\INotificationPublisher.cs" />
+    <Compile Include="Services\Notifications\IOnPersistentNotificationPublished.cs" />
+    <Compile Include="Services\Notifications\IOnTransientNotificationPublished.cs" />
+    <Compile Include="Services\Notifications\NotificationPublisher.cs" />
+    <Compile Include="Services\Notifications\OnPersistentNotificationPublishedEventArgs.cs" />
+    <Compile Include="Services\Notifications\OnTransientNotificationPublishedEventArgs.cs" />
+    <Compile Include="Services\Notifications\PublishType.cs" />
     <Compile Include="Services\Resources\IStringResourceProvider.cs" />
     <Compile Include="Services\Resources\StringResourceProvider.cs" />
     <Compile Include="Services\StandardAuthConfigurationService.cs" />
