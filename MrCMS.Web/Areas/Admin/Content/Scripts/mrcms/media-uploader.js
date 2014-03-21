@@ -32,6 +32,10 @@
                     self.validateFiles(e, data);
                 }).on('fileuploadadded', function (e, data) {
                     element.find(settings.filesSelector).html('');
+                }).on('fileuploadstart', function () {
+                    $("#loading").show();
+                }).on('#fileuploadstop', function () {
+                    $("#loading").hide();
                 });
 
             }
@@ -39,9 +43,7 @@
             return self;
         },
         fileUploaded: function (e, data) {
-            //$.each(data.files, function (index, file) {
-            //    $('<p/>').text(file.name + ' uploaded').appendTo(settings.filesSelector);
-            //});
+            $("#loading").hide();
         },
         progressBar: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);

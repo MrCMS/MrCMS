@@ -19,11 +19,14 @@
     {
         <div class="row">
             <div class="col-lg-12">
-                <a href="/@result.LiveUrlSegment"><h4 class="margin-top-10 margin-bottom-5">@result.Name</h4></a>
+                <a href="/@result.LiveUrlSegment"><h4 class="margin-top-10 margin-bottom-5">
+                 @Html.Raw(result.Name.StripHtml()
+                        .TruncateAndBoldSearchAbstract(200, (model.Term != null ? model.Term.Split(' ').ToArray() : null), "..."))
+                                                  </h4></a>
                 @{
                     if (result is TextPage)
                     {
-                        <p>@Html.Raw(result.BodyContent.StripHtml().TruncateAndBoldSearchAbstract(20, (model.Term != null ? model.Term.Split(' ').ToArray() : null), "..."))</p>
+                        <p>@Html.Raw(result.BodyContent.StripHtml().TruncateAndBoldSearchAbstract(200, (model.Term != null ? model.Term.Split(' ').ToArray() : null), "..."))</p>
                     }
                 }
                 <p class="font-small">Last updated @result.CreatedOn.ToShortDateString()</p>
