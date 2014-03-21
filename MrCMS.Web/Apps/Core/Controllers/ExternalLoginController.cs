@@ -69,7 +69,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             }
             if (await _externalLoginService.UserExistsAsync(email))
             {
-                _externalLoginService.AssociateLoginToUserAsync(email, externalLoginInfo);
+                await _externalLoginService.AssociateLoginToUserAsync(email, externalLoginInfo);
                 await _externalLoginService.LoginAsync(externalLoginInfo, authenticateResult);
                 return await _externalLoginService.RedirectAfterLogin(email, returnUrl);
             }

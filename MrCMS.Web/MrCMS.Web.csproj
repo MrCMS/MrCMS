@@ -283,6 +283,7 @@
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationSettingsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PersistentNotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\ResourceUpdateController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteListController.cs" />
     <Compile Include="Areas\Admin\Controllers\ClearCachesController.cs" />
@@ -301,6 +302,7 @@
     <Compile Include="Areas\Admin\ModelBinders\AddPropertiesModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\HealthCheckProcessorModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\NotificationSearchQuery.cs" />
+    <Compile Include="Areas\Admin\Models\Notifications\NotificationModel.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
@@ -389,7 +391,8 @@
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
-    <Compile Include="Areas\Admin\Services\Events\SendToNotificationHub.cs" />
+    <Compile Include="Areas\Admin\Services\Events\SendPersistentNotificationToHub.cs" />
+    <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\IAdminNavLinksService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminPageStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminSiteListService.cs" />
@@ -821,6 +824,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.min.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\persistent-notifications.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-show-files-simple.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\health-checks.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-uploader.js" />
@@ -1504,6 +1508,8 @@
     <Content Include="Areas\Admin\Views\NotificationSettings\Show.cshtml" />
     <Content Include="Areas\Admin\Views\User\NotificationSettings.cshtml" />
     <Content Include="Areas\Admin\Views\TransientNotification\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\PersistentNotification\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\PersistentNotification\Navbar.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

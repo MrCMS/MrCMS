@@ -73,10 +73,15 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/search.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.noty.packaged.js");
     }
     @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => settings.TransientNotificationsEnabled))
     {
         Html.RenderAction("Show", "TransientNotification");
+    }
+    @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => settings.PersistentNotificationsEnabled))
+    {
+        Html.RenderAction("Show", "PersistentNotification");
     }
     @Html.RenderScripts()
 
