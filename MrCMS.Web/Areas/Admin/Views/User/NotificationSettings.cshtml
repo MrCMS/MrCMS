@@ -3,9 +3,4 @@
 @{
     var settings = Model.Get<NotificationSettings>();
 }
-<fieldset>
-    <legend>
-        Notification Settings
-    </legend>
     @{ Html.RenderAction("Show", "NotificationSettings", new { settings, user = Model }); }
-</fieldset>

@@ -94,6 +94,12 @@
     <Reference Include="Microsoft.AspNet.Identity.Owin">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.1.0.0\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.0.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.0.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin">
       <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
@@ -277,6 +283,7 @@
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationSettingsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PersistentNotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\ResourceUpdateController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteListController.cs" />
     <Compile Include="Areas\Admin\Controllers\ClearCachesController.cs" />
@@ -286,13 +293,16 @@
     <Compile Include="Areas\Admin\Controllers\PageStatsController.cs" />
     <Compile Include="Areas\Admin\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Admin\Controllers\SEOAnalysisController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TransientNotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
     <Compile Include="Areas\Admin\Helpers\SEOAnalysisExtensions.cs" />
+    <Compile Include="Areas\Admin\Hubs\NotificationHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\AddPropertiesModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\HealthCheckProcessorModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\NotificationSearchQuery.cs" />
+    <Compile Include="Areas\Admin\Models\Notifications\NotificationModel.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
@@ -381,6 +391,8 @@
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
+    <Compile Include="Areas\Admin\Services\Events\SendPersistentNotificationToHub.cs" />
+    <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\IAdminNavLinksService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminPageStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminSiteListService.cs" />
@@ -752,6 +764,7 @@
     <Content Include="Areas\Admin\Content\Images\no-image.jpg" />
     <Content Include="Areas\Admin\Content\Images\no-media-selected.jpg" />
     <Content Include="Areas\Admin\Content\Images\pencil.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.noty.packaged.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\libs\jquery.js" />
@@ -811,6 +824,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.min.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\persistent-notifications.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-show-files-simple.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\health-checks.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-uploader.js" />
@@ -1161,6 +1175,7 @@
     <Content Include="Areas\Admin\Content\Scripts\mrcms\menu.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\tag-it.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\tmpl.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\transient-notifications.js" />
     <Content Include="Areas\Admin\Content\Styles\mrcms-admin.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.css" />
@@ -1233,6 +1248,8 @@
     <Content Include="Content\install\scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Content\install\scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Content\install\scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.signalR-2.0.2.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.signalR-2.0.2.min.js" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1490,6 +1507,9 @@
     <Content Include="Areas\Admin\Views\Notification\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\NotificationSettings\Show.cshtml" />
     <Content Include="Areas\Admin\Views\User\NotificationSettings.cshtml" />
+    <Content Include="Areas\Admin\Views\TransientNotification\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\PersistentNotification\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\PersistentNotification\Navbar.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

@@ -13,8 +13,7 @@
 {
     <fieldset>
         <legend>@Model.Name
-
-            <span class="btn-group  display-inline  pull-right">
+            <span class="btn-group display-inline pull-right">
                 @Html.ActionLink("Back to list", "Index", "User", null, new { @class = "btn" })
                 <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn" data-toggle="fb-modal">Reset Password</a>
 

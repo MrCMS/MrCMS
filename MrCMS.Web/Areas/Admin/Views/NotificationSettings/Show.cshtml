@@ -1,16 +1,24 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.UserProfile.NotificationSettings
 
-@using (Html.BeginForm("Update", "NotificationSettings", FormMethod.Post))
+@using (Html.BeginForm("Update", "NotificationSettings", new { Model.Id }, FormMethod.Post))
 {
-    <div class="row-fluid">
-        <div class="span6">
-            @Html.InlineCheckboxFor(settings => settings.PersistentNotificationsEnabled)
-            @Html.InlineCheckboxFor(settings => settings.TransientNotificationsEnabled)
+    <fieldset>
+        <legend>Notification Settings
+            <span class="btn-group display-inline pull-right">
+                <button class="btn btn-primary" type="submit">
+                    Save</button>
+            </span>
+        </legend>
+        <div class="row-fluid">
+            <div class="span6">
+                @Html.InlineCheckboxFor(settings => settings.PersistentNotificationsEnabled)
+                @Html.InlineCheckboxFor(settings => settings.TransientNotificationsEnabled)
+            </div>
+            <div class="span6">
+                @Html.LabelFor(settings => settings.LastMarkedAsRead)
+                @Html.EditorFor(settings => settings.LastMarkedAsRead)
+            </div>
         </div>
-        <div class="span6">
-            @Html.LabelFor(settings => settings.LastMarkedAsRead)
-            @Html.EditorFor(settings => settings.LastMarkedAsRead)
-        </div>
-    </div>
+    </fieldset>
 }

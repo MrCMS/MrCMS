@@ -13,9 +13,9 @@ namespace MrCMS.Services.Events
             _userProfileDataService = userProfileDataService;
         }
 
-        public void Execute(OnUserAddedEventArgs obj)
+        public void Execute(OnUserAddedEventArgs args)
         {
-            InitializeUserSettings(obj.User);
+            InitializeUserSettings(args.User);
         }
 
         public void InitializeUserSettings(User user)
