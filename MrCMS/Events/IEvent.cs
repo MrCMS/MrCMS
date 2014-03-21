@@ -5,6 +5,6 @@
     }
     public interface IEvent<in T> : IEvent
     {
-        void Execute(T obj);
+        void Execute(T args);
     }
 }
