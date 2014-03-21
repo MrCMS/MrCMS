@@ -55,6 +55,9 @@
     <Reference Include="EPPlus">
       <HintPath>..\packages\EPPlus.3.1.3.3\lib\net35\EPPlus.dll</HintPath>
     </Reference>
+    <Reference Include="FakeItEasy">
+      <HintPath>..\packages\FakeItEasy.1.17.0\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
     <Reference Include="FluentNHibernate, Version=1.4.0.0, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentNHibernate.1.4.0.0\lib\net35\FluentNHibernate.dll</HintPath>
@@ -90,6 +93,12 @@
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Owin">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.1.0.0\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.0.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.0.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin">
       <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -269,16 +278,31 @@
     <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginModel.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\ResetPasswordViewModel.cs" />
+    <Compile Include="Apps\Core\Services\OnUserRegisteredEventArgs.cs" />
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
+    <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
+    <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
+    <Compile Include="Areas\Admin\Controllers\NotificationSettingsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PersistentNotificationController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ResourceUpdateController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SiteListController.cs" />
     <Compile Include="Areas\Admin\Controllers\ClearCachesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\HealthCheckController.cs" />
+    <Compile Include="Areas\Admin\Controllers\NavLinksController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageStatsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Admin\Controllers\SEOAnalysisController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TransientNotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
     <Compile Include="Areas\Admin\Helpers\SEOAnalysisExtensions.cs" />
+    <Compile Include="Areas\Admin\Hubs\NotificationHub.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\AddPropertiesModelBinder.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\HealthCheckProcessorModelBinder.cs" />
+    <Compile Include="Areas\Admin\Models\NotificationSearchQuery.cs" />
+    <Compile Include="Areas\Admin\Models\Notifications\NotificationModel.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
@@ -351,7 +375,7 @@
     <Compile Include="Areas\Admin\Controllers\WebpageController.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaController.cs" />
-    <Compile Include="Areas\Admin\FormController.cs" />
+    <Compile Include="Areas\Admin\Controllers\FormController.cs" />
     <Compile Include="Areas\Admin\ModelBinders\ThirdPartyAuthSettingsModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\AddPageModel.cs" />
     <Compile Include="Areas\Admin\Models\AddUserModel.cs" />
@@ -359,18 +383,31 @@
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisFacet.cs" />
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisResult.cs" />
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisStatus.cs" />
+    <Compile Include="Areas\Admin\Models\StringResourceSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
+    <Compile Include="Areas\Admin\Services\AdminNavLinksService.cs" />
+    <Compile Include="Areas\Admin\Services\AdminSiteListService.cs" />
     <Compile Include="Areas\Admin\Services\AdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
+    <Compile Include="Areas\Admin\Services\Events\SendPersistentNotificationToHub.cs" />
+    <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
+    <Compile Include="Areas\Admin\Services\IAdminNavLinksService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminPageStatsService.cs" />
+    <Compile Include="Areas\Admin\Services\IAdminSiteListService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\IClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IndexAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\INotificationAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\INotificationSettingsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IStringResourceAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IStringResourceUpdateService.cs" />
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\NotificationAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\NotificationSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\AllImagesHaveAltTags.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\BaseSEOAnalysisFacetProvider.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\BodyContentChecks.cs" />
@@ -389,6 +426,8 @@
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleContainsTerm.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleIsCorrectLength.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\URLContainsTerm.cs" />
+    <Compile Include="Areas\Admin\Services\StringResourceAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\StringResourceUpdateService.cs" />
     <Compile Include="Areas\Admin\Services\ThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Controllers\CKEditorController.cs" />
     <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
@@ -725,6 +764,7 @@
     <Content Include="Areas\Admin\Content\Images\no-image.jpg" />
     <Content Include="Areas\Admin\Content\Images\no-media-selected.jpg" />
     <Content Include="Areas\Admin\Content\Images\pencil.png" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.noty.packaged.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\libs\jquery.js" />
@@ -784,6 +824,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.min.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\persistent-notifications.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-show-files-simple.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\health-checks.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-uploader.js" />
@@ -1134,6 +1175,7 @@
     <Content Include="Areas\Admin\Content\Scripts\mrcms\menu.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\tag-it.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\tmpl.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\transient-notifications.js" />
     <Content Include="Areas\Admin\Content\Styles\mrcms-admin.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.css" />
@@ -1206,6 +1248,8 @@
     <Content Include="Content\install\scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Content\install\scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Content\install\scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.signalR-2.0.2.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.signalR-2.0.2.min.js" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1322,13 +1366,13 @@
     <Content Include="Areas\Admin\Views\Navigation\TreeList.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Delete.cshtml" />
-    <Content Include="Areas\Admin\Views\Navigation\NavLinks.cshtml" />
+    <Content Include="Areas\Admin\Views\NavLinks\Get.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\InPageEditor.cshtml" />
     <Content Include="Apps\Core\Views\Shared\_BaseLayout.cshtml" />
     <Content Include="Apps\Core\Views\Pages\SearchPage.cshtml" />
     <Content Include="Areas\Admin\Views\User\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Navigation\SiteList.cshtml" />
+    <Content Include="Areas\Admin\Views\SiteList\Get.cshtml" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\js\bootstrap.min.js.map">
       <DependentUpon>bootstrap.js</DependentUpon>
     </Content>
@@ -1448,6 +1492,24 @@
     <Content Include="Areas\Admin\Views\MediaCategory\ShowFilesSimple.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\UploadAnywhere.cshtml" />
     <Content Include="Areas\Admin\Views\SEOAnalysis\Analyze.cshtml" />
+    <Content Include="Areas\Admin\Views\Resource\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Resource\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Resource\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Resource\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\Messages.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\AddProperties.cshtml" />
+    <Content Include="Areas\Admin\Views\Webpage\TextPageAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleAdd.cshtml" />
+    <Content Include="Areas\Admin\Views\Widget\AddProperties.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchiveAdd.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\Push.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\NotificationSettings\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\User\NotificationSettings.cshtml" />
+    <Content Include="Areas\Admin\Views\TransientNotification\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\PersistentNotification\Show.cshtml" />
+    <Content Include="Areas\Admin\Views\PersistentNotification\Navbar.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
@@ -10,18 +11,16 @@ namespace MrCMS.Web.Apps.Core.Services
         private readonly IUserService _userService;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IAuthorisationService _authorisationService;
-        private readonly IUserEventService _userEventService;
 
         public RegistrationService(IUserService userService, IPasswordManagementService passwordManagementService,
-                                   IAuthorisationService authorisationService, IUserEventService userEventService)
+                                   IAuthorisationService authorisationService)
         {
             _userService = userService;
             _passwordManagementService = passwordManagementService;
             _authorisationService = authorisationService;
-            _userEventService = userEventService;
         }
 
-        public User RegisterUser(RegisterModel model)
+        public async Task<User> RegisterUser(RegisterModel model)
         {
             var user = new User
                            {
@@ -32,8 +31,8 @@ namespace MrCMS.Web.Apps.Core.Services
                            };
             _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
             _userService.AddUser(user);
-            _authorisationService.SetAuthCookie(user, false);
-            _userEventService.OnUserRegistered(user);
+            await _authorisationService.SetAuthCookie(user, false);
+            EventContext.Instance.Publish<IOnUserRegistered, OnUserRegisteredEventArgs>(new OnUserRegisteredEventArgs(user));
             return user;
         }
 

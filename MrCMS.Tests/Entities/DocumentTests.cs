@@ -18,19 +18,6 @@ namespace MrCMS.Tests.Entities
     public class DocumentTests : InMemoryDatabaseTest
     {
         [Fact]
-        public void Document_OnDeleting_RemovesDocumentFromParent()
-        {
-            var doc = new StubDocument();
-
-            var child = new StubDocument();
-            doc.SetChildren(new List<Document> {child});
-
-            child.OnDeleting(A.Fake<ISession>());
-
-            doc.Children.Should().NotContain(child);
-        }
-
-        [Fact]
         public void Document_GetVersions_ReturnsVersionsInDescendingCreatedOnOrder()
         {
             var document = new StubDocument();

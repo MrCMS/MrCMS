@@ -1,0 +1,17 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Website
+@model MrCMS.Entities.Resources.StringResource
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+
+@using (Html.BeginForm("Delete", "Resource", FormMethod.Post))
+{
+    @Html.ReturnToReferrer()
+    <fieldset>
+        <legend>Delete resource
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-primary btn" value="Delete resource" />
+            </span>
+        </legend>
+        Are you sure you want to delete this resource? 
+    </fieldset>
+}

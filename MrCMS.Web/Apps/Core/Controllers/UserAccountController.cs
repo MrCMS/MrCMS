@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Threading.Tasks;
+using System.Web.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Core.Models;
@@ -52,7 +53,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
         [HttpPost]
         [ActionName("UserAccountDetails")]
-        public ActionResult UserAccountDetails_POST(UserAccountModel model)
+        public async Task<RedirectResult> UserAccountDetails_POST(UserAccountModel model)
         {
             if (model != null && ModelState.IsValid)
             {
@@ -63,7 +64,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     user.LastName = model.LastName;
                     user.Email = model.Email;
                     _userService.SaveUser(user);
-                    _authorisationService.SetAuthCookie(user, false);
+                    await _authorisationService.SetAuthCookie(user, false);
 
                     return Redirect(UniquePageHelper.GetUrl<UserAccountPage>());
                 }

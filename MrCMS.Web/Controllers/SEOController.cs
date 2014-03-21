@@ -8,18 +8,18 @@ namespace MrCMS.Web.Controllers
 {
     public class SEOController : MrCMSUIController
     {
-        private readonly INavigationService _navigationService;
+        private readonly ISiteMapService _siteMapService;
         private readonly SEOSettings _seoSettings;
 
-        public SEOController(INavigationService navigationService, SEOSettings seoSettings)
+        public SEOController(ISiteMapService siteMapService, SEOSettings seoSettings)
         {
-            _navigationService = navigationService;
+            _siteMapService = siteMapService;
             _seoSettings = seoSettings;
         }
 
         public ActionResult Sitemap()
         {
-            var content = _navigationService.GetSiteMap(Url);
+            var content = _siteMapService.GetSiteMap(Url);
             return Content(content, "application/xml", Encoding.UTF8);
         }
 

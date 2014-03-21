@@ -19,7 +19,6 @@ using MrCMS.Apps;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.People;
 using MrCMS.Services;
-using MrCMS.Settings;
 using MrCMS.Shortcodes;
 using MrCMS.Website;
 using MrCMS.Website.Optimization;
@@ -27,17 +26,6 @@ using Newtonsoft.Json;
 
 namespace MrCMS.Helpers
 {
-    public static class HoneypotHtmlHelper
-    {
-        public static MvcHtmlString Honeypot(this HtmlHelper html)
-        {
-            var siteSettings = MrCMSApplication.Get<SiteSettings>();
-
-            return siteSettings.HasHoneyPot
-                       ? MvcHtmlString.Create(siteSettings.GetHoneypot().ToString())
-                       : MvcHtmlString.Empty;
-        }
-    }
     public static class MrCMSHtmlHelper
     {
         private static MvcHtmlString CheckBoxHelper<TModel>(HtmlHelper<TModel> htmlHelper, ModelMetadata metadata,
@@ -236,190 +224,7 @@ namespace MrCMS.Helpers
                                labelFor, new RouteValueDictionary(htmlAttributes), text);
         }
 
-        public static IHtmlString ParseTweet(this string tweet)
-        {
-            var link =
-                new Regex(@"http(s)?://([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&amp;\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?");
-            var screenName = new Regex(@"@\w+");
-            var hashTag = new Regex(@"#\w+");
 
-            string formattedTweet = link.Replace(tweet, match =>
-            {
-                string val = match.Value;
-                return "<a href='" + val + "'>" + val + "</a>";
-            });
-
-            formattedTweet = screenName.Replace(formattedTweet, match =>
-            {
-                string val = match.Value.Trim('@');
-                return
-                    String.Format(
-                        "@<a href='http://twitter.com/{0}'>{1}</a>",
-                        val, val);
-            });
-
-            formattedTweet = hashTag.Replace(formattedTweet, match =>
-            {
-                string val = match.Value;
-                return
-                    String.Format(
-                        "<a href='http://twitter.com/search/?q=%23{0}'>{1}</a>",
-                        val.Substring(1), val);
-            });
-
-            return new HtmlString(formattedTweet);
-        }
-
-        public static IHtmlString ParseShortcodes(this HtmlHelper htmlHelper, string content)
-        {
-            var shortcodeParsers = MrCMSApplication.GetAll<IShortcodeParser>();
-
-            content = shortcodeParsers.Aggregate(content, (current, shortcodeParser) => shortcodeParser.Parse(htmlHelper, current));
-
-            return new HtmlString(content);
-        }
-
-        public static IHtmlString RenderBodyContent(this HtmlHelper htmlHelper, string content)
-        {
-            var htmlContent = htmlHelper.ParseShortcodes(content);
-
-            if (!CurrentRequestData.CurrentUserIsAdmin)
-                return htmlContent;
-
-            var sb = new StringBuilder();
-            sb.Append("<div class='editable'>" + htmlContent + "</div>");
-
-            return new HtmlString(sb.ToString());
-        }
-
-        public static MvcHtmlString RenderCustomAdminProperties<T>(this HtmlHelper<T> htmlHelper)
-        {
-            T model = htmlHelper.ViewData.Model;
-            if (model == null)
-                return MvcHtmlString.Empty;
-            if (MrCMSApp.AppWebpages.ContainsKey(model.GetType()))
-                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[model.GetType()];
-            if (MrCMSApp.AppWidgets.ContainsKey(model.GetType()))
-                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWidgets[model.GetType()];
-
-            ViewEngineResult viewEngineResult =
-                ViewEngines.Engines.FindView(
-                    new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller),
-                    model.GetType().Name, "");
-            if (viewEngineResult.View != null)
-            {
-                try
-                {
-                    return htmlHelper.Partial(model.GetType().Name, model);
-                }
-                catch (Exception exception)
-                {
-                    CurrentRequestData.ErrorSignal.Raise(exception);
-                    return
-                        MvcHtmlString.Create("We could not find a custom admin view for this page. Either this page is bespoke or has no custom properties.");
-                }
-            }
-            return MvcHtmlString.Empty;
-        }
-
-        public static MvcHtmlString RenderUserOwnedObjectProperties(this HtmlHelper<User> htmlHelper, Type entityType)
-        {
-            var user = htmlHelper.ViewData.Model;
-            if (user == null)
-                return MvcHtmlString.Empty;
-            if (MrCMSApp.AppEntities.ContainsKey(entityType))
-                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppEntities[entityType];
-
-            ViewEngineResult viewEngineResult =
-                ViewEngines.Engines.FindView(new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller), entityType.Name, "");
-            if (viewEngineResult.View != null)
-            {
-                try
-                {
-                    return htmlHelper.Partial(entityType.Name, user);
-                }
-                catch (Exception exception)
-                {
-                    CurrentRequestData.ErrorSignal.Raise(exception);
-                }
-            }
-            return MvcHtmlString.Empty;
-        }
-        public static MvcHtmlString RenderUserProfileProperties(this HtmlHelper<User> htmlHelper, Type userProfileType)
-        {
-            var user = htmlHelper.ViewData.Model;
-            if (user == null)
-                return MvcHtmlString.Empty;
-            if (MrCMSApp.AppUserProfileDatas.ContainsKey(userProfileType))
-                htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppUserProfileDatas[userProfileType];
-
-            ViewEngineResult viewEngineResult =
-                ViewEngines.Engines.FindView(new ControllerContext(htmlHelper.ViewContext.RequestContext, htmlHelper.ViewContext.Controller), userProfileType.Name, "");
-            if (viewEngineResult.View != null)
-            {
-                try
-                {
-                    return htmlHelper.Partial(userProfileType.Name, user);
-                }
-                catch (Exception exception)
-                {
-                    CurrentRequestData.ErrorSignal.Raise(exception);
-                }
-            }
-            return MvcHtmlString.Empty;
-        }
-
-        public static MvcHtmlString RenderValue(this HtmlHelper htmlHelper, object value)
-        {
-            return value != null
-                       ? MvcHtmlString.Create(IsJson(value.ToString())
-                                                  ? GetPrettyPrintedJson(value.ToString())
-                                                  : value.ToString())
-                       : MvcHtmlString.Create(String.Empty);
-        }
-
-        private static string GetPrettyPrintedJson(string json)
-        {
-            dynamic parsedJson = JsonConvert.DeserializeObject(json);
-            var prettyPrintedJson = string.Format("<pre>{0}</pre>",
-                                                  JsonConvert.SerializeObject(parsedJson, Formatting.Indented));
-            return prettyPrintedJson;
-        }
-
-        private static bool IsJson(string input)
-        {
-            input = input.Trim();
-            return input.StartsWith("{") && input.EndsWith("}")
-                   || input.StartsWith("[") && input.EndsWith("]");
-        }
-
-        public static MvcForm BeginForm(this HtmlHelper htmlHelper, FormMethod formMethod, object htmlAttributes)
-        {
-            // generates <form action="{current url}" method="post">...</form> 
-            string formAction = htmlHelper.ViewContext.HttpContext.Request.RawUrl;
-            return FormHelper(htmlHelper, formAction, formMethod, AnonymousObjectToHtmlAttributes(htmlAttributes));
-        }
-
-
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
-            Justification =
-                "Because disposing the object would write to the response stream, you don't want to prematurely dispose of this object."
-            )]
-        private static MvcForm FormHelper(this HtmlHelper htmlHelper, string formAction, FormMethod method,
-                                          IDictionary<string, object> htmlAttributes)
-        {
-            var tagBuilder = new TagBuilder("form");
-            tagBuilder.MergeAttributes(htmlAttributes);
-            // action is implicitly generated, so htmlAttributes take precedence.
-            tagBuilder.MergeAttribute("action", formAction);
-            // method is an explicit parameter, so it takes precedence over the htmlAttributes. 
-            tagBuilder.MergeAttribute("method", HtmlHelper.GetFormMethodString(method), true);
-
-            htmlHelper.ViewContext.Writer.Write(tagBuilder.ToString(TagRenderMode.StartTag));
-            var theForm = new MvcForm(htmlHelper.ViewContext);
-
-            return theForm;
-        }
         public static string AbsoluteContent(this UrlHelper url, string path)
         {
             Uri uri = new Uri(path, UriKind.RelativeOrAbsolute);
@@ -438,64 +243,6 @@ namespace MrCMS.Helpers
             }
 
             return uri.ToString();
-        }
-
-        public static MvcHtmlString RenderImage(this HtmlHelper helper, string imageUrl, string alt = null, string title = null, object attributes = null)
-        {
-            if (String.IsNullOrWhiteSpace(imageUrl))
-                return MvcHtmlString.Empty;
-
-            var image = MrCMSApplication.Get<IImageProcessor>().GetImage(imageUrl);
-            var tagBuilder = new TagBuilder("img");
-            if (image == null)
-                return MvcHtmlString.Empty;
-
-            tagBuilder.Attributes.Add("src", imageUrl);
-            tagBuilder.Attributes.Add("alt", alt ?? image.Description);
-            tagBuilder.Attributes.Add("title", title ?? image.Title);
-            if (attributes != null)
-            {
-                var routeValueDictionary = AnonymousObjectToHtmlAttributes(attributes);
-                foreach (var kvp in routeValueDictionary)
-                {
-                    tagBuilder.Attributes.Add(kvp.Key, kvp.Value.ToString());
-                }
-            }
-            return MvcHtmlString.Create(tagBuilder.ToString(TagRenderMode.SelfClosing));
-        }
-
-        public static MvcHtmlString RenderImage(this HtmlHelper helper, string imageUrl, Size targetSize, string alt = null, string title = null, object attributes = null)
-        {
-            if (String.IsNullOrWhiteSpace(imageUrl))
-                return MvcHtmlString.Empty;
-
-            var imageProcessor = MrCMSApplication.Get<IImageProcessor>();
-            var fileService = MrCMSApplication.Get<IFileService>();
-            var image = imageProcessor.GetImage(imageUrl);
-
-            if (image == null || targetSize == Size.Empty)
-                return MvcHtmlString.Empty;
-
-            if (ImageProcessor.RequiresResize(image.Size, targetSize))
-            {
-                var location = fileService.GetFileLocation(image, targetSize);
-                if (!string.IsNullOrWhiteSpace(location))
-                    imageUrl = location;
-            }
-
-            var tagBuilder = new TagBuilder("img");
-            tagBuilder.Attributes.Add("src", imageUrl);
-            tagBuilder.Attributes.Add("alt", alt ?? image.Title);
-            tagBuilder.Attributes.Add("title", title ?? image.Description);
-            if (attributes != null)
-            {
-                var routeValueDictionary = AnonymousObjectToHtmlAttributes(attributes);
-                foreach (var kvp in routeValueDictionary)
-                {
-                    tagBuilder.Attributes.Add(kvp.Key, kvp.Value.ToString());
-                }
-            }
-            return MvcHtmlString.Create(tagBuilder.ToString(TagRenderMode.SelfClosing));
         }
 
         public static MvcHtmlString Link(this HtmlHelper helper, string text, string url, object htmlAttributes = null)
@@ -538,7 +285,7 @@ namespace MrCMS.Helpers
 
         public static HtmlHelper GetHtmlHelper(Controller controller)
         {
-            var viewContext = new ViewContext(controller.ControllerContext, new FakeView(), controller.ViewData, controller.TempData, TextWriter.Null);
+            var viewContext = new ViewContext(controller.ControllerContext, new MrCMSHtmlHelper.FakeView(), controller.ViewData, controller.TempData, TextWriter.Null);
             return new HtmlHelper(viewContext, new ViewPage());
         }
 
@@ -558,30 +305,6 @@ namespace MrCMS.Helpers
             return baseDictionary;
         }
 
-        public static void IncludeScript(this HtmlHelper helper, string url)
-        {
-            var webPage = helper.ViewDataContainer as WebPageBase;
-            var virtualPath = webPage == null ? string.Empty : webPage.VirtualPath;
-            MrCMSApplication.Get<IResourceBundler>().AddScript(virtualPath, url);
-        }
-
-        public static MvcHtmlString RenderScripts(this HtmlHelper helper)
-        {
-            return MrCMSApplication.Get<IResourceBundler>().GetScripts();
-        }
-
-        public static void IncludeCss(this HtmlHelper helper, string url)
-        {
-            var webPage = helper.ViewDataContainer as WebPageBase;
-            var virtualPath = webPage == null ? string.Empty : webPage.VirtualPath;
-            MrCMSApplication.Get<IResourceBundler>().AddCss(virtualPath, url);
-        }
-
-        public static MvcHtmlString RenderCss(this HtmlHelper helper)
-        {
-            return MrCMSApplication.Get<IResourceBundler>().GetCss();
-        }
-
         public static RouteValueDictionary AnonymousObjectToHtmlAttributes(object htmlAttributes)
         {
             RouteValueDictionary routeValueDictionary = new RouteValueDictionary();
@@ -591,33 +314,6 @@ namespace MrCMS.Helpers
                     routeValueDictionary.Add(propertyDescriptor.Name.Replace('_', '-'), propertyDescriptor.GetValue(htmlAttributes));
             }
             return routeValueDictionary;
-        }
-
-        public static List<string> SuccessMessages(this TempDataDictionary tempData)
-        {
-            if (!tempData.ContainsKey("success-message"))
-            {
-                tempData["success-message"] = new List<string>();
-            }
-            return tempData["success-message"] as List<string>;
-        }
-
-        public static List<string> ErrorMessages(this TempDataDictionary tempData)
-        {
-            if (!tempData.ContainsKey("error-message"))
-            {
-                tempData["error-message"] = new List<string>();
-            }
-            return tempData["error-message"] as List<string>;
-        }
-
-        public static List<string> InfoMessages(this TempDataDictionary tempData)
-        {
-            if (!tempData.ContainsKey("info-message"))
-            {
-                tempData["info-message"] = new List<string>();
-            }
-            return tempData["info-message"] as List<string>;
         }
 
         public static MvcHtmlString InfoBlock(this HtmlHelper helper, string boldText, string text)

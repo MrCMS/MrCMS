@@ -26,7 +26,8 @@
                         'url': url,
                         'data': function (node) {
                             return { 'id': node.id };
-                        }
+                        },
+                        cache: false
                     }
                 },
                 "state": {

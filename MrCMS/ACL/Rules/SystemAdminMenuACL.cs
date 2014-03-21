@@ -8,6 +8,7 @@ namespace MrCMS.ACL.Rules
         public const string SiteSettings = "Site Settings";
         public const string FileSystemSettings = "File System Settings";
         public const string Sites = "Sites";
+        public const string Resources = "Resources";
         public const string Logs = "Logs";
         public const string Tasks = "Tasks";
         public const string ImportExport = "Import/Export";
@@ -15,6 +16,7 @@ namespace MrCMS.ACL.Rules
         public const string ACL = "ACL";
         public const string Indices = "Indices";
         public const string MessageQueue = "Message Queue";
+        public const string Notifications = "Notifications";
         public const string ClearCaches = "Clear Caches";
 
         public override string DisplayName
@@ -30,6 +32,7 @@ namespace MrCMS.ACL.Rules
                        SiteSettings,
                        FileSystemSettings,
                        Sites,
+                       Resources,
                        Logs,
                        Tasks,
                        ImportExport,
@@ -37,6 +40,7 @@ namespace MrCMS.ACL.Rules
                        ACL,
                        Indices,
                        MessageQueue,
+                       Notifications,
                        ClearCaches
                    };
         }

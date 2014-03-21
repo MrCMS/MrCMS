@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
@@ -8,7 +10,7 @@ namespace MrCMS.Web.Apps.Core.Services
 {
     public interface ILoginService
     {
-        LoginResult AuthenticateUser(LoginModel loginModel);
+        Task<LoginResult> AuthenticateUser(LoginModel loginModel);
     }
 
     public class LoginService : ILoginService
@@ -16,17 +18,15 @@ namespace MrCMS.Web.Apps.Core.Services
         private readonly IUserService _userService;
         private readonly IAuthorisationService _authorisationService;
         private readonly IPasswordManagementService _passwordManagementService;
-        private readonly IUserEventService _userEventService;
 
-        public LoginService(IUserService userService, IAuthorisationService authorisationService, IPasswordManagementService passwordManagementService, IUserEventService userEventService)
+        public LoginService(IUserService userService, IAuthorisationService authorisationService, IPasswordManagementService passwordManagementService)
         {
             _userService = userService;
             _authorisationService = authorisationService;
             _passwordManagementService = passwordManagementService;
-            _userEventService = userEventService;
         }
 
-        public LoginResult AuthenticateUser(LoginModel loginModel)
+        public async Task<LoginResult> AuthenticateUser(LoginModel loginModel)
         {
             string message = null;
             User user = _userService.GetUserByEmail(loginModel.Email);
@@ -35,9 +35,10 @@ namespace MrCMS.Web.Apps.Core.Services
                 if (_passwordManagementService.ValidateUser(user, loginModel.Password))
                 {
                     var guid = CurrentRequestData.UserGuid;
-                    _authorisationService.SetAuthCookie(user, loginModel.RememberMe);
+                    await _authorisationService.SetAuthCookie(user, loginModel.RememberMe);
                     CurrentRequestData.CurrentUser = user;
-                    _userEventService.OnUserLoggedIn(user, guid);
+                    EventContext.Instance.Publish<IOnUserLoggedIn, UserLoggedInEventArgs>(
+                        new UserLoggedInEventArgs(user, guid));
                     return user.IsAdmin
                                ? new LoginResult { Success = true, RedirectUrl = loginModel.ReturnUrl ?? "~/admin" }
                                : new LoginResult { Success = true, RedirectUrl = loginModel.ReturnUrl ?? "~/" };

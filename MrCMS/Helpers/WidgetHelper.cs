@@ -33,14 +33,14 @@ namespace MrCMS.Helpers
                 return WidgetTypes.Where(
                     type =>
                     CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Add, type.FullName))
-                                  .OrderBy(x => x.Name).BuildSelectItemList(type => type.Name.BreakUpString(), type => type.Name,
+                                  .OrderBy(x => x.Name).BuildSelectItemList(type => type.Name.BreakUpString(), type => type.FullName,
                                                        emptyItemText: null);
             }
         }
 
         public static Type GetTypeByName(string typeName)
         {
-            return WidgetTypes.FirstOrDefault(x => x.Name == typeName);
+            return WidgetTypes.FirstOrDefault(x => x.FullName == typeName);
         }
     }
 }

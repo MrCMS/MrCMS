@@ -1,14 +1,14 @@
 ﻿using System.Web.Mvc;
 using MrCMS.Web.Apps.Core.Models.Search;
 using MrCMS.Website.Binders;
-using NHibernate;
+using Ninject;
 
 namespace MrCMS.Web.Apps.Core.ModelBinders
 {
     public class WebpageSearchQueryModelBinder : MrCMSDefaultModelBinder
     {
-        public WebpageSearchQueryModelBinder(ISession session)
-            : base(() => session)
+        public WebpageSearchQueryModelBinder(IKernel kernel)
+            : base(kernel)
         {
         }
 

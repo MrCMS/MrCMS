@@ -13,6 +13,7 @@ using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Utils;
 using MrCMS.Web.Apps.Core.Indexing;
 using MrCMS.Web.Apps.Core.Indexing.WebpageSearch;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Models.Search
 {
@@ -33,10 +34,16 @@ namespace MrCMS.Web.Apps.Core.Models.Search
 
         public Query GetQuery()
         {
-            if (String.IsNullOrWhiteSpace(Term) && String.IsNullOrWhiteSpace(Type) && !CreatedOnTo.HasValue && !CreatedOnFrom.HasValue && Parent == null)
-                return new MatchAllDocsQuery();
-
-            var booleanQuery = new BooleanQuery();
+            var booleanQuery = new BooleanQuery
+                                   {
+                                       {
+                                           new TermRangeQuery(
+                                           FieldDefinition.GetFieldName<PublishedOnFieldDefinition>(), null,
+                                           DateTools.DateToString(CurrentRequestData.Now,
+                                                                  DateTools.Resolution.SECOND), false, true),
+                                           Occur.MUST
+                                       }
+                                   };
             if (!String.IsNullOrWhiteSpace(Term))
             {
                 var analyser = IndexingHelper.Get<WebpageSearchIndexDefinition>().GetAnalyser();

@@ -3,13 +3,13 @@ using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Website.Binders;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Web.Apps.Core.ModelBinders
 {
     public class LoginModelModelBinder : MrCMSDefaultModelBinder
     {
-        public LoginModelModelBinder(ISession session)
-            : base(() => session)
+        public LoginModelModelBinder(IKernel kernel) : base(kernel)
         {
         }
 

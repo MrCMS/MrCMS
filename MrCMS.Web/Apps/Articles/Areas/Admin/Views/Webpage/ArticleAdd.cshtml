@@ -1,0 +1,19 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Articles.Pages.Article
+@{
+    var userOptions = ViewData["users"] as IEnumerable<SelectListItem>;
+}
+
+@Html.LabelFor(model => model.FeatureImage, "Article Image")
+@Html.TextBoxFor(model => model.FeatureImage, new { data_type = "media-selector" })
+
+@Html.LabelFor(model => model.Abstract)
+@Html.TextAreaFor(model => model.Abstract, new { @rows = "4", @class = "span12" })
+
+@Html.LabelFor(model => model.User.Id, "Author")
+@Html.DropDownListFor(model => model.User.Id, userOptions)
+
+@Html.LabelFor(x => x.TagList, "Tags")
+@Html.TextBoxFor(x => x.TagList, new { @class = "span12 system-tagging" })
+
+@Html.InfoBlock("Heads up! ", "Set the tags here you would like to use as your categories for this article.")

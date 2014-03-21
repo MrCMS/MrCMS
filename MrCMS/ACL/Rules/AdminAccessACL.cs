@@ -4,6 +4,8 @@ namespace MrCMS.ACL.Rules
 {
     public class AdminAccessACL : ACLRule
     {
+        public const string Allowed = "Allowed";
+
         public override string DisplayName
         {
             get { return "Admin Access"; }
@@ -13,7 +15,7 @@ namespace MrCMS.ACL.Rules
         {
             return new List<string>
                        {
-                           "Allowed"
+                           Allowed
                        };
         }
     }

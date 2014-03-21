@@ -7,6 +7,7 @@ using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
@@ -108,6 +109,16 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                              ? RedirectToAction("Edit", "Webpage", new { id = webpageId, layoutAreaId })
                              : RedirectToAction("Edit", "LayoutArea", new { id = layoutAreaId });
         }
-        
+
+        [HttpGet]
+        public ActionResult AddProperties([IoCModelBinder(typeof(AddPropertiesModelBinder))] Widget widget)
+        {
+            if (widget != null)
+            {
+                widget.SetDropdownData(ViewData, _session);
+                return PartialView(widget);
+            }
+            return new EmptyResult();
+        }
     }
 }

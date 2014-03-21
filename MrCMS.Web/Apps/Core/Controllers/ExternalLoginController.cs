@@ -62,22 +62,22 @@ namespace MrCMS.Web.Apps.Core.Controllers
                                               };
                 return _uniquePageService.RedirectTo<LoginPage>();
             }
-            if (_externalLoginService.IsLogin(externalLoginInfo))
+            if (await _externalLoginService.IsLoginAsync(externalLoginInfo))
             {
-                _externalLoginService.Login(externalLoginInfo, authenticateResult);
-                return _externalLoginService.RedirectAfterLogin(email, returnUrl);
+                await _externalLoginService.LoginAsync(externalLoginInfo, authenticateResult);
+                return await _externalLoginService.RedirectAfterLogin(email, returnUrl);
             }
             if (await _externalLoginService.UserExistsAsync(email))
             {
-                _externalLoginService.AssociateLoginToUser(email, externalLoginInfo);
-                _externalLoginService.Login(externalLoginInfo, authenticateResult);
-                return _externalLoginService.RedirectAfterLogin(email, returnUrl);
+                await _externalLoginService.AssociateLoginToUserAsync(email, externalLoginInfo);
+                await _externalLoginService.LoginAsync(externalLoginInfo, authenticateResult);
+                return await _externalLoginService.RedirectAfterLogin(email, returnUrl);
             }
             if (!_externalLoginService.RequiresAdditionalFieldsForRegistration())
             {
-                _externalLoginService.CreateUser(email, externalLoginInfo);
-                _externalLoginService.Login(externalLoginInfo, authenticateResult);
-                return _externalLoginService.RedirectAfterLogin(email, returnUrl);
+                await _externalLoginService.CreateUserAsync(email, externalLoginInfo);
+                await _externalLoginService.LoginAsync(externalLoginInfo, authenticateResult);
+                return await _externalLoginService.RedirectAfterLogin(email, returnUrl);
             }
 
             return _uniquePageService.RedirectTo<LoginPage>();

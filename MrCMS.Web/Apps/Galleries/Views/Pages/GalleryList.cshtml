@@ -1,11 +1,9 @@
 ﻿@using System.Drawing
-@using MrCMS.Entities.Documents
 @using MrCMS.Helpers
-@using MrCMS.Web.Apps.Articles.Pages
 @using MrCMS.Web.Apps.Galleries.Pages
 @using MrCMS.Website
 @using NHibernate.Criterion
-@model MrCMS.Web.Apps.Galleries.Pages.GalleryList 
+@model GalleryList 
            
 @Editable(Model, p=>p.BodyContent, true)
 
@@ -17,7 +15,7 @@
                                      .ThenBy(gallery => gallery.DisplayOrder)
                                      .Desc;
 
-    var pagedList = Model.PagedChildren<Gallery>(pageNum: Request["p"].GetIntValue(1), query: query, pageSize: Model.PageSize);
+    var pagedList = Model.PagedChildren(pageNum: Request["p"].GetIntValue(1), query: query, pageSize: Model.PageSize);
 }
 
 

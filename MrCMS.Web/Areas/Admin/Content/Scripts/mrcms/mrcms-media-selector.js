@@ -266,9 +266,12 @@ MediaSelector.defaults =
         init: function (options) {
             return this.each(function () {
                 var self = $(this);
+                if (self.hasClass("media-selector-initialized")) {
+                    return;
+                }
                 var wrapper = new MediaSelectorWrapper(self, options);
                 wrapper.init();
-                $.data(self, 'media-selector-wrapper', wrapper);
+                self.addClass("media-selector-initialized");
             });
         }
     };
@@ -299,7 +302,3 @@ MediaSelector.defaults =
         }
     };
 })(jQuery);
-
-$(function () {
-    $('[data-type=media-selector], [class=media-selector]').mediaSelector();
-});

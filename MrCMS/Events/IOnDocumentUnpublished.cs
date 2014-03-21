@@ -2,8 +2,17 @@ using MrCMS.Entities.Documents;
 
 namespace MrCMS.Events
 {
-    public interface IOnDocumentUnpublished
+    public interface IOnDocumentUnpublished : IEvent<OnDocumentUnpublishedEventArgs>
     {
-        void OnDocumentUnpublished(Document document);
+    }
+
+    public class OnDocumentUnpublishedEventArgs
+    {
+        public OnDocumentUnpublishedEventArgs(Document document)
+        {
+            Document = document;
+        }
+
+        public Document Document { get; set; }
     }
 }

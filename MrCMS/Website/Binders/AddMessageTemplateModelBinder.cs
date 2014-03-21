@@ -5,12 +5,13 @@ using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Website.Binders
 {
     public class AddMessageTemplateGetModelBinder : MessageTemplateModelBinder
     {
-        public AddMessageTemplateGetModelBinder(ISession session, IMessageTemplateService messageTemplateService) : base(session, messageTemplateService)
+        public AddMessageTemplateGetModelBinder(IKernel kernel) : base(kernel)
         {
         }
 
@@ -23,8 +24,7 @@ namespace MrCMS.Website.Binders
 
     public class AddMessageTemplateModelBinder : MessageTemplateModelBinder
     {
-        public AddMessageTemplateModelBinder(ISession session, IMessageTemplateService messageTemplateService)
-            : base(session, messageTemplateService)
+        public AddMessageTemplateModelBinder(IKernel kernel) : base(kernel)
         {
         }
 

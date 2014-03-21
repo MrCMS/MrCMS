@@ -6,11 +6,13 @@ using MrCMS.Entities.People;
 using MrCMS.Settings;
 using MrCMS.Website.ActionResults;
 using MrCMS.Helpers;
+using MrCMS.Website.Filters;
 
 namespace MrCMS.Website.Controllers
 {
     [MrCMSAuthorize]
     [ValidateInput(false)]
+    [ReturnUrlHandler(Order = 999)]
     public abstract class MrCMSAdminController : MrCMSController
     {
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
