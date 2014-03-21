@@ -70,7 +70,7 @@ else
                         @notification.NotificationType.ToString().BreakUpString()
                     </td>
                     <td>
-                        @notification.Message
+                        @Html.Raw(notification.Message)
                     </td>
                     <td>
                         @notification.UserName

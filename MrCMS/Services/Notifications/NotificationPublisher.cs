@@ -9,12 +9,10 @@ namespace MrCMS.Services.Notifications
     public class NotificationPublisher : INotificationPublisher
     {
         private readonly ISession _session;
-        private readonly IEventContext _eventContext;
 
-        public NotificationPublisher(ISession session, IEventContext eventContext)
+        public NotificationPublisher(ISession session)
         {
             _session = session;
-            _eventContext = eventContext;
         }
 
         public void PublishNotification(string message, PublishType publishType = PublishType.Both, NotificationType notificationType = NotificationType.All)
@@ -45,13 +43,13 @@ namespace MrCMS.Services.Notifications
         private void SaveNotification(Notification notification)
         {
             _session.Transact(session => session.Save(notification));
-            _eventContext.Publish<IOnPersistentNotificationPublished, OnPersistentNotificationPublishedEventArgs>(
+            EventContext.Instance.Publish<IOnPersistentNotificationPublished, OnPersistentNotificationPublishedEventArgs>(
                             new OnPersistentNotificationPublishedEventArgs(notification));
         }
 
         private void PushNotification(Notification notification)
         {
-            _eventContext.Publish<IOnTransientNotificationPublished, OnTransientNotificationPublishedEventArgs>(
+            EventContext.Instance.Publish<IOnTransientNotificationPublished, OnTransientNotificationPublishedEventArgs>(
                             new OnTransientNotificationPublishedEventArgs(notification));
         }
     }
