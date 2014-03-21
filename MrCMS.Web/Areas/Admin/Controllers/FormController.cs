@@ -11,7 +11,7 @@ using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 
-namespace MrCMS.Web.Areas.Admin
+namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class FormController : MrCMSAdminController
     {

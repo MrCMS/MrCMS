@@ -325,6 +325,7 @@
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Entities\Resources\StringResource.cs" />
+    <Compile Include="Entities\UserProfile\NotificationSettings.cs" />
     <Compile Include="Events\IEvent.cs" />
     <Compile Include="HealthChecks\EmailSenderTaskCheck.cs" />
     <Compile Include="HealthChecks\HealthCheck.cs" />
@@ -364,9 +365,13 @@
     <Compile Include="Models\WebpageCount.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\EventContext.cs" />
+    <Compile Include="Services\Events\Args\OnUserAddedEventArgs.cs" />
+    <Compile Include="Services\Events\IOnUserAdded.cs" />
+    <Compile Include="Services\Events\InitializeNotificationSettings.cs" />
     <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
     <Compile Include="Services\IEventContext.cs" />
+    <Compile Include="Services\IInitializeNotificationSettings.cs" />
     <Compile Include="Services\IStandardAuthConfigurationService.cs" />
     <Compile Include="Services\Notifications\INotificationPublisher.cs" />
     <Compile Include="Services\Notifications\IOnPersistentNotificationPublished.cs" />

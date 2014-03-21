@@ -5,6 +5,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin;
+using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Tests.Stubs;
 using Xunit;
 

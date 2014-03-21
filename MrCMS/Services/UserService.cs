@@ -6,6 +6,8 @@ using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Paging;
+using MrCMS.Services.Events;
+using MrCMS.Services.Events.Args;
 using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
@@ -30,6 +32,7 @@ namespace MrCMS.Services
                                   {
                                       session.Save(user);
                                   });
+            EventContext.Instance.Publish<IOnUserAdded, OnUserAddedEventArgs>(new OnUserAddedEventArgs(user));
         }
 
         public void SaveUser(User user)
