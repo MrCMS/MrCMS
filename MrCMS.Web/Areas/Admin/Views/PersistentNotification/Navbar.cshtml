@@ -7,12 +7,17 @@
             @using (Html.BeginForm("MarkAllAsRead", "PersistentNotification", FormMethod.Post, new { @style = "margin:0", data_mark_all_as_read = true }))
             {
                 <div class="row-fluid">
-                    <button type="submit" class="btn btn-primary btn-mini span12">
-                        Mark all as read
-                    </button>
+                    <div class="span12 text-center">
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-mini">
+                                Dismiss all
+                            </button>
+                            <a href="@Url.Action("Index", "Notification")" class="btn btn-mini">View All</a>
+                        </div>
+                    </div>
                 </div>
             }
-            <ul data-notification-list="true">
+            <ul data-notification-list="true" class="persistent-notification">
                 <li>No notifications</li>
             </ul>
         </div>
