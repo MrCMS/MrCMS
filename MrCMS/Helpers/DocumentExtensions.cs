@@ -38,19 +38,6 @@ namespace MrCMS.Helpers
             return document is Layout ? "Layout" : document is MediaCategory ? "MediaCategory" : "Webpage";
         }
 
-
-        //public static void SetParent(this Document document, Document parent)
-        //{
-        //    var existingParent = document.Parent;
-        //    if (existingParent == parent)
-        //        return;
-        //    document.Parent = parent;
-        //    if (parent != null && !parent.Children.Contains(document))
-        //        parent.Children.Add(document);
-        //    if (existingParent != null)
-        //        existingParent.Children.Remove(document);
-        //}
-
         public static T GetVersion<T>(this T doc, int id) where T : Document
         {
             var documentVersion = doc.Versions.FirstOrDefault(version => version.Id == id).Unproxy();

@@ -241,7 +241,7 @@ namespace MrCMS.Website
             return Kernel.Get(type);
         }
 
-        public const string AssemblyVersion = "0.4.0.0";
-        public const string AssemblyFileVersion = "0.4.0.0";
+        public const string AssemblyVersion = "0.4.1.0";
+        public const string AssemblyFileVersion = "0.4.1.0";
     }
 }

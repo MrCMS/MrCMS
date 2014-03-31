@@ -92,7 +92,7 @@ namespace MrCMS.Services
                 document.OnSaving(session);
                 session.Update(document);
             });
-            EventContext.Instance.Publish<IOnDocumentUpdated, OnDocumentUpdatedEventArgs>(new OnDocumentUpdatedEventArgs(document));
+            EventContext.Instance.Publish<IOnDocumentUpdated, OnDocumentUpdatedEventArgs>(new OnDocumentUpdatedEventArgs(document, CurrentRequestData.CurrentUser));
             return document;
         }
 
