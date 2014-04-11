@@ -263,11 +263,13 @@
     <Compile Include="DbConfiguration\Conventions\AddIndexConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\CacheConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\DateTimeConvention.cs" />
-    <Compile Include="DbConfiguration\Conventions\DeletedFilterConvention.cs" />
+    <Compile Include="DbConfiguration\Conventions\NotDeletedFilterConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ForeignKeyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
+    <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
     <Compile Include="DbConfiguration\Filters\NotDeletedFilter.cs" />
+    <Compile Include="DbConfiguration\Filters\SiteFilter.cs" />
     <Compile Include="DbConfiguration\LogOverride.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCMSMapClassAttribute.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCmsMappingConfiguration.cs" />
@@ -296,6 +298,7 @@
     <Compile Include="DbConfiguration\Overrides\UserRoleOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WidgetOverride.cs" />
+    <Compile Include="DbConfiguration\SiteFilterDisabler.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
     <Compile Include="DbConfiguration\Types\BinaryData.cs" />
     <Compile Include="DbConfiguration\Types\DateTimeData.cs" />

@@ -180,6 +180,7 @@ namespace MrCMS.DbConfiguration
                        .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
                        .IncludeAppConventions();
             addFromAssemblyOf.Add(typeof(NotDeletedFilter));
+            addFromAssemblyOf.Add(typeof(SiteFilter));
             NHibernate.Cfg.Configuration config = Fluently.Configure()
                                                           .Database(iPersistenceConfigurer)
                                                           .Mappings(m => m.AutoMappings.Add(addFromAssemblyOf))

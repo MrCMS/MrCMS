@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Web.Apps.Core.Models;
@@ -41,9 +42,7 @@ namespace MrCMS.Web.Apps.Core.Widgets
             queryOver = parent == null
                             ? queryOver.Where(webpage => webpage.Parent == null)
                             : queryOver.Where(webpage => webpage.Parent.Id == parent.Id);
-            return queryOver.Where(
-                webpage => webpage.RevealInNavigation && webpage.Site.Id == Site.Id).Cacheable()
-                          .List();
+            return queryOver.Where(webpage => webpage.RevealInNavigation).Cacheable().List();
         }
     }
 }
