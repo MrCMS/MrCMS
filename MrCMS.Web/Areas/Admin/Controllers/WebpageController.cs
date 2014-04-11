@@ -12,6 +12,7 @@ using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Filters;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -75,6 +76,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [MrCMSTypeACL(typeof(Webpage), TypeACLRule.Edit)]
+        [ForceImmediateLuceneUpdate]
         public override ActionResult Edit([IoCModelBinder(typeof(EditWebpageModelBinder))] Webpage doc)
         {
             return base.Edit(doc);

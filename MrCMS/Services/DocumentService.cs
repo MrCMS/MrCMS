@@ -19,7 +19,9 @@ using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NHibernate.Transform;
+using EnumerableHelper = MrCMS.Helpers.EnumerableHelper;
 
 namespace MrCMS.Services
 {
@@ -217,7 +219,7 @@ namespace MrCMS.Services
 
             var existingTags = document.Tags.ToList();
 
-            tagNames.ForEach(name =>
+            EnumerableHelper.ForEach(tagNames, name =>
             {
                 var tag = GetTag(name) ?? new Tag { Name = name };
                 if (!document.Tags.Contains(tag))
@@ -381,7 +383,7 @@ namespace MrCMS.Services
             }
             else
             {
-                roleNames.ForEach(name =>
+                EnumerableHelper.ForEach(roleNames, name =>
                 {
                     var role = GetRole(name);
                     if (role != null)
