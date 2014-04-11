@@ -660,6 +660,7 @@
     <Compile Include="Tasks\IndexManagementTask.cs" />
     <Compile Include="Tasks\InsertIndicesTask.cs" />
     <Compile Include="Tasks\ITaskExecutionHandler.cs" />
+    <Compile Include="Tasks\ITaskResetter.cs" />
     <Compile Include="Tasks\ITaskStatusUpdater.cs" />
     <Compile Include="Tasks\ITaskManager.cs" />
     <Compile Include="Tasks\LuceneActionComparison.cs" />
@@ -669,6 +670,7 @@
     <Compile Include="Tasks\TaskManager.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\ScheduledTask.cs" />
+    <Compile Include="Tasks\TaskResetter.cs" />
     <Compile Include="Tasks\TaskStatusUpdater.cs" />
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Website\Binders\ACLUpdateModelBinder.cs" />
@@ -704,6 +706,7 @@
     <Compile Include="Tasks\TaskExecutionResult.cs" />
     <Compile Include="Tasks\TaskRunner.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Website\Filters\ForceImmediateLuceneUpdateAttribute.cs" />
     <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
     <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />

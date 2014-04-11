@@ -5,6 +5,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
+using NHibernate.Criterion;
 
 namespace MrCMS.Tasks
 {
@@ -27,6 +28,31 @@ namespace MrCMS.Tasks
                                              var queuedTasks =
                                                  session.QueryOver<QueuedTask>()
                                                         .Where(task => task.Status == TaskExecutionStatus.Pending && task.Site.Id == _site.Id)
+                                                        .List();
+
+                                             foreach (var task in queuedTasks)
+                                             {
+                                                 task.Status = TaskExecutionStatus.AwaitingExecution;
+                                                 task.QueuedAt = queuedAt;
+                                                 _session.Update(task);
+                                             }
+                                             return queuedTasks;
+                                         });
+        }
+
+        public IList<QueuedTask> GetPendingLuceneTasks()
+        {
+            return _session.Transact(session =>
+                                         {
+                                             DateTime queuedAt = CurrentRequestData.Now;
+                                             var queuedTasks =
+                                                 session.QueryOver<QueuedTask>()
+                                                        .Where(task => (task.Type.IsLike(typeof(InsertIndicesTask<>).FullName, MatchMode.Start) ||
+                                                                           task.Type.IsLike(typeof(UpdateIndicesTask<>).FullName, MatchMode.Start) ||
+                                                                           task.Type.IsLike(typeof(DeleteIndicesTask<>).FullName, MatchMode.Start)
+                                                                       ) &&
+                                                                       task.Status == TaskExecutionStatus.Pending &&
+                                                                       task.Site.Id == _site.Id)
                                                         .List();
 
                                              foreach (var task in queuedTasks)
