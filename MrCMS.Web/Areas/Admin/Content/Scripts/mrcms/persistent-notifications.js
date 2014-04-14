@@ -20,7 +20,7 @@
         });
     };
     var displayNotification = function (notification) {
-        return $('<li>').attr('data-notification', true).html(notification.Date + ': ' + notification.Message);
+        return $('<li>').attr('data-notification', true).html('<div class="notification-date">' + notification.Date + '</div><div class="notification-msg">' + notification.Message + '</div>');
     };
     var displayNoNotifications = function () {
         return $('<li>').html('No notifications');

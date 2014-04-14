@@ -753,6 +753,7 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\styles.js" />
     <Content Include="Areas\Admin\Content\Images\ajax-loader2.gif" />
     <Content Include="Areas\Admin\Content\Images\ajax-loader.gif" />
+    <Content Include="Areas\Admin\Content\Images\black-cross.png" />
     <Content Include="Areas\Admin\Content\Images\Icons\default.PNG" />
     <Content Include="Areas\Admin\Content\Images\layout-1.png" />
     <Content Include="Areas\Admin\Content\Images\layout-2.png" />

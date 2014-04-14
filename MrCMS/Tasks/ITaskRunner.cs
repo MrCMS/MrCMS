@@ -3,5 +3,6 @@
     public interface ITaskRunner
     {
         BatchExecutionResult ExecutePendingTasks();
+        BatchExecutionResult ExecuteLuceneTasks();
     }
 }

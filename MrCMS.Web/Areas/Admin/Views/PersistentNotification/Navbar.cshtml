@@ -2,17 +2,21 @@
 
 <ul class="nav pull-right">
     <li class="dropdown">
-        <a href="#" data-toggle="dropdown">Notifications: <span data-notification-count="true">-</span> <b class="caret"></b></a>
-        <div class="dropdown-menu" style="padding-bottom: 0; width: 350px;">
+        <a href="#" data-toggle="dropdown"><i class="icon-bullhorn icon-white"></i> <span class="badge badge-important" style="background:#d90000;" data-notification-count="true">-</span></a>
+        <div class="dropdown-menu notifications-dropdown reset-corners">
             @using (Html.BeginForm("MarkAllAsRead", "PersistentNotification", FormMethod.Post, new { @style = "margin:0", data_mark_all_as_read = true }))
             {
                 <div class="row-fluid">
                     <div class="span12 text-center">
-                        <div class="btn-group">
-                            <button type="submit" class="btn btn-mini">
-                                Dismiss all
-                            </button>
-                            <a href="@Url.Action("Index", "Notification")" class="btn btn-mini">View All</a>
+                        <div class="row-fluid">
+                            <div class="span6" style="padding-left:10px;">
+                                <button type="submit" class="btn reset-corners btn-block">
+                                    Dismiss all
+                                </button>
+                            </div>
+                            <div class="span6" style="padding-right:10px;">
+                                <a href="@Url.Action("Index", "Notification")" class="btn reset-corners btn-block">View All</a>
+                            </div>
                         </div>
                     </div>
                 </div>

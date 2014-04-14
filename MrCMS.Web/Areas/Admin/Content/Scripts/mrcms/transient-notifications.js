@@ -1,7 +1,7 @@
 ﻿var TransientNotifications = function () {
     var showNotification = function (notification) {
         noty({
-            text: notification.Date + ': ' + notification.Message,
+            text: '<div class="notification-date">' + notification.Date + '</div><div class="notification-msg">' + notification.Message + "</div>",
             layout: 'bottomRight'
         });
     };

@@ -90,49 +90,54 @@ namespace MrCMS.Website
             if (CurrentRequestData.DatabaseIsInstalled)
             {
                 BeginRequest += (sender, args) =>
-                                    {
-                                        if (!IsFileRequest(Request.Url))
-                                        {
-                                            CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
-                                            CurrentRequestData.CurrentSite = Get<ICurrentSiteLocator>().GetCurrentSite();
-                                            CurrentRequestData.SiteSettings = Get<SiteSettings>();
-                                            CurrentRequestData.HomePage = Get<IDocumentService>().GetHomePage();
-                                            Thread.CurrentThread.CurrentCulture = CurrentRequestData.SiteSettings.CultureInfo;
-                                            Thread.CurrentThread.CurrentUICulture = CurrentRequestData.SiteSettings.CultureInfo;
-                                        }
-                                    };
-                AuthenticateRequest += (sender, args) =>
-                                           {
-                                               if (!IsFileRequest(Request.Url))
-                                               {
-                                                   if (CurrentRequestData.CurrentContext.User != null)
-                                                   {
-                                                       var currentUser = Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
-                                                       if (currentUser == null || !currentUser.IsActive)
-                                                           Get<IAuthorisationService>().Logout();
-                                                       else
-                                                           CurrentRequestData.CurrentUser = currentUser;
-                                                   }
-                                               }
-                                           };
-                EndRequest += (sender, args) =>
-                {
-                    if (CurrentRequestData.QueuedTasks.Any())
                     {
-                        Kernel.Get<ISession>()
-                               .Transact(session =>
-                               {
-                                   foreach (var queuedTask in CurrentRequestData.QueuedTasks)
-                                       session.Save(queuedTask);
-                               });
-                    }
-                };
+                        if (!IsFileRequest(Request.Url))
+                        {
+                            CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
+                            CurrentRequestData.CurrentSite = Get<ICurrentSiteLocator>().GetCurrentSite();
+                            CurrentRequestData.SiteSettings = Get<SiteSettings>();
+                            CurrentRequestData.HomePage = Get<IDocumentService>().GetHomePage();
+                            Thread.CurrentThread.CurrentCulture = CurrentRequestData.SiteSettings.CultureInfo;
+                            Thread.CurrentThread.CurrentUICulture = CurrentRequestData.SiteSettings.CultureInfo;
+                        }
+                    };
+                AuthenticateRequest += (sender, args) =>
+                    {
+                        if (!IsFileRequest(Request.Url))
+                        {
+                            if (CurrentRequestData.CurrentContext.User != null)
+                            {
+                                var currentUser = Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
+                                if (currentUser == null || !currentUser.IsActive)
+                                    Get<IAuthorisationService>().Logout();
+                                else
+                                    CurrentRequestData.CurrentUser = currentUser;
+                            }
+                        }
+                    };
+                EndRequest += (sender, args) =>
+                    {
+                        if (CurrentRequestData.QueuedTasks.Any())
+                        {
+                            Kernel.Get<ISession>()
+                                  .Transact(session =>
+                                      {
+                                          foreach (var queuedTask in CurrentRequestData.QueuedTasks)
+                                              session.Save(queuedTask);
+                                      });
+                        }
+                        foreach (var action in CurrentRequestData.OnEndRequest)
+                            action(Kernel);
+                    };
             }
-            EndRequest += (sender, args) =>
+            else
             {
-                foreach (var action in CurrentRequestData.OnEndRequest)
-                    action(Kernel);
-            };
+                EndRequest += (sender, args) =>
+                    {
+                        foreach (var action in CurrentRequestData.OnEndRequest)
+                            action(Kernel);
+                    };
+            }
         }
 
         public abstract string RootNamespace { get; }
@@ -203,7 +208,7 @@ namespace MrCMS.Website
         /// <returns>The created kernel.</returns>
         private static IKernel CreateKernel()
         {
-            var kernel = new StandardKernel(new ServiceModule(), 
+            var kernel = new StandardKernel(new ServiceModule(),
                                             new NHibernateModule(DatabaseType.Auto, InDevelopment));
             kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
