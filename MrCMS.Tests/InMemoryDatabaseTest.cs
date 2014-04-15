@@ -84,8 +84,8 @@ namespace MrCMS.Tests
                     SessionFactory = Configuration.BuildSessionFactory();
                 }
             }
-
             Session = SessionFactory.OpenFilteredSession();
+            Kernel.Bind<ISession>().ToMethod(context => Session);
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 
@@ -93,12 +93,12 @@ namespace MrCMS.Tests
 
 
             CurrentSite = Session.Transact(session =>
-                {
-                    var site = new Site { Name = "Current Site", BaseUrl = "www.currentsite.com" };
-                    CurrentRequestData.CurrentSite = site;
-                    session.SaveOrUpdate(site);
-                    return site;
-                });
+                                           {
+                                               var site = new Site { Name = "Current Site", BaseUrl = "www.currentsite.com", Id = 1 };
+                                               CurrentRequestData.CurrentSite = site;
+                                               session.Save(site);
+                                               return site;
+                                           });
 
             CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.Local.Id };
 
