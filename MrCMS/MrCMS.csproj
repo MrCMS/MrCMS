@@ -270,6 +270,7 @@
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
     <Compile Include="DbConfiguration\Filters\NotDeletedFilter.cs" />
     <Compile Include="DbConfiguration\Filters\SiteFilter.cs" />
+    <Compile Include="DbConfiguration\ListenerDisabler.cs" />
     <Compile Include="DbConfiguration\LogOverride.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCMSMapClassAttribute.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCmsMappingConfiguration.cs" />
