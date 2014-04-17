@@ -20,37 +20,39 @@ namespace MrCMS.Tests.DbConfiguration
         [Fact]
         public void WithoutTheListenerDisabledListenersShouldBeTriggered()
         {
-            TestListener.Reset();
+            TestListenerApp.TestListener.Reset();
             Session.Transact(session => session.Save(new BasicMappedWebpage()));
-            TestListener.HitCount.Should().Be(1);
+            TestListenerApp.TestListener.HitCount.Should().Be(1);
         }
 
         [Fact]
         public void WithTheListenerDisablerListenersShouldNotBeTriggered()
         {
-            TestListener.Reset();
-            using (new ListenerDisabler(Session))
+            TestListenerApp.TestListener.Reset();
+            using (new ListenerDisabler(Session, ListenerType.PostCommitInsert, TestListenerApp.TestListener))
             {
                 Session.Transact(session => session.Save(new BasicMappedWebpage()));
             }
-            TestListener.HitCount.Should().Be(0);
+            TestListenerApp.TestListener.HitCount.Should().Be(0);
         }
 
         [Fact]
         public void AfterTheScopeOfTheDisablerListenersShouldBeTriggeredAgain()
         {
-            TestListener.Reset();
-            using (new ListenerDisabler(Session))
+            TestListenerApp.TestListener.Reset();
+            using (new ListenerDisabler(Session, ListenerType.PostCommitInsert, TestListenerApp.TestListener))
             {
                 Session.Transact(session => session.Save(new BasicMappedWebpage()));
             }
             Session.Transact(session => session.Save(new BasicMappedWebpage()));
-            TestListener.HitCount.Should().Be(1);
+            TestListenerApp.TestListener.HitCount.Should().Be(1);
         }
     }
 
     public class TestListenerApp : MrCMSApp
     {
+        private static TestListener _testListener = new TestListener();
+
         protected override void RegisterApp(MrCMSAppRegistrationContext context)
         {
         }
@@ -65,6 +67,11 @@ namespace MrCMS.Tests.DbConfiguration
             get { return "1.0.0.0"; }
         }
 
+        public static TestListener TestListener
+        {
+            get { return _testListener; }
+        }
+
         protected override void RegisterServices(IKernel kernel)
         {
         }
@@ -76,20 +83,21 @@ namespace MrCMS.Tests.DbConfiguration
         protected override void AppendConfiguration(Configuration configuration)
         {
             TestListener.Reset();
-            configuration.AppendListeners(ListenerType.PostCommitInsert, new IPostInsertEventListener[] { new TestListener() });
+            _testListener = new TestListener();
+            configuration.AppendListeners(ListenerType.PostCommitInsert, new IPostInsertEventListener[] { TestListener });
         }
     }
 
     public class TestListener : IPostInsertEventListener
     {
-        private static int _hitCount;
-        public static int HitCount { get { return _hitCount; } }
+        private int _hitCount;
+        public int HitCount { get { return _hitCount; } }
         public void OnPostInsert(PostInsertEvent @event)
         {
             _hitCount++;
         }
 
-        public static void Reset()
+        public void Reset()
         {
             _hitCount = 0;
         }

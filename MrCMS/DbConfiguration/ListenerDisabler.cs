@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NHibernate;
 using NHibernate.Event;
 
@@ -41,157 +42,301 @@ namespace MrCMS.DbConfiguration
         private readonly IMergeEventListener[] _saveOrUpdateCopyEventListeners;
         private readonly ISaveOrUpdateEventListener[] _saveOrUpdateEventListeners;
         private readonly ISession _session;
+        private readonly ListenerType _type;
+        private readonly object _listener;
         private readonly ISaveOrUpdateEventListener[] _updateEventListeners;
 
-        public ListenerDisabler(ISession session)
+        public ListenerDisabler(ISession session, ListenerType type, object listener)
         {
             _session = session;
+            _type = type;
+            _listener = listener;
             EventListeners eventListeners = _session.GetSessionImplementation().Listeners;
 
-            _loadEventListeners = eventListeners.LoadEventListeners;
-            eventListeners.LoadEventListeners = new ILoadEventListener[0];
-
-            _saveOrUpdateEventListeners = eventListeners.SaveOrUpdateEventListeners;
-            eventListeners.SaveOrUpdateEventListeners = new ISaveOrUpdateEventListener[0];
-
-            _saveOrUpdateCopyEventListeners = eventListeners.SaveOrUpdateCopyEventListeners;
-            eventListeners.SaveOrUpdateCopyEventListeners = new IMergeEventListener[0];
-
-            _mergeEventListeners = eventListeners.MergeEventListeners;
-            eventListeners.MergeEventListeners = new IMergeEventListener[0];
-
-            _persistEventListeners = eventListeners.PersistEventListeners;
-            eventListeners.PersistEventListeners = new IPersistEventListener[0];
-
-            _persistOnFlushEventListeners = eventListeners.PersistOnFlushEventListeners;
-            eventListeners.PersistOnFlushEventListeners = new IPersistEventListener[0];
-
-            _replicateEventListeners = eventListeners.ReplicateEventListeners;
-            eventListeners.ReplicateEventListeners = new IReplicateEventListener[0];
-
-            _deleteEventListeners = eventListeners.DeleteEventListeners;
-            eventListeners.DeleteEventListeners = new IDeleteEventListener[0];
-
-            _autoFlushEventListeners = eventListeners.AutoFlushEventListeners;
-            eventListeners.AutoFlushEventListeners = new IAutoFlushEventListener[0];
-
-            _dirtyCheckEventListeners = eventListeners.DirtyCheckEventListeners;
-            eventListeners.DirtyCheckEventListeners = new IDirtyCheckEventListener[0];
-
-            _flushEventListeners = eventListeners.FlushEventListeners;
-            eventListeners.FlushEventListeners = new IFlushEventListener[0];
-
-            _evictEventListeners = eventListeners.EvictEventListeners;
-            eventListeners.EvictEventListeners = new IEvictEventListener[0];
-
-            _lockEventListeners = eventListeners.LockEventListeners;
-            eventListeners.LockEventListeners = new ILockEventListener[0];
-
-            _refreshEventListeners = eventListeners.RefreshEventListeners;
-            eventListeners.RefreshEventListeners = new IRefreshEventListener[0];
-
-            _flushEntityEventListeners = eventListeners.FlushEntityEventListeners;
-            eventListeners.FlushEntityEventListeners = new IFlushEntityEventListener[0];
-
-            _initializeCollectionEventListeners = eventListeners.InitializeCollectionEventListeners;
-            eventListeners.InitializeCollectionEventListeners = new IInitializeCollectionEventListener[0];
-
-            _postLoadEventListeners = eventListeners.PostLoadEventListeners;
-            eventListeners.PostLoadEventListeners = new IPostLoadEventListener[0];
-
-            _preLoadEventListeners = eventListeners.PreLoadEventListeners;
-            eventListeners.PreLoadEventListeners = new IPreLoadEventListener[0];
-
-            _preDeleteEventListeners = eventListeners.PreDeleteEventListeners;
-            eventListeners.PreDeleteEventListeners = new IPreDeleteEventListener[0];
-
-            _preUpdateEventListeners = eventListeners.PreUpdateEventListeners;
-            eventListeners.PreUpdateEventListeners = new IPreUpdateEventListener[0];
-
-            _preInsertEventListeners = eventListeners.PreInsertEventListeners;
-            eventListeners.PreInsertEventListeners = new IPreInsertEventListener[0];
-
-            _postDeleteEventListeners = eventListeners.PostDeleteEventListeners;
-            eventListeners.PostDeleteEventListeners = new IPostDeleteEventListener[0];
-
-            _postUpdateEventListeners = eventListeners.PostUpdateEventListeners;
-            eventListeners.PostUpdateEventListeners = new IPostUpdateEventListener[0];
-
-            _postInsertEventListeners = eventListeners.PostInsertEventListeners;
-            eventListeners.PostInsertEventListeners = new IPostInsertEventListener[0];
-
-            _postCommitDeleteEventListeners = eventListeners.PostCommitDeleteEventListeners;
-            eventListeners.PostCommitDeleteEventListeners = new IPostDeleteEventListener[0];
-
-            _postCommitUpdateEventListeners = eventListeners.PostCommitUpdateEventListeners;
-            eventListeners.PostCommitUpdateEventListeners = new IPostUpdateEventListener[0];
-
-            _postCommitInsertEventListeners = eventListeners.PostCommitInsertEventListeners;
-            eventListeners.PostCommitInsertEventListeners = new IPostInsertEventListener[0];
-
-            _saveEventListeners = eventListeners.SaveEventListeners;
-            eventListeners.SaveEventListeners = new ISaveOrUpdateEventListener[0];
-
-            _updateEventListeners = eventListeners.UpdateEventListeners;
-            eventListeners.UpdateEventListeners = new ISaveOrUpdateEventListener[0];
-
-            _preCollectionRecreateEventListeners = eventListeners.PreCollectionRecreateEventListeners;
-            eventListeners.PreCollectionRecreateEventListeners = new IPreCollectionRecreateEventListener[0];
-
-            _postCollectionRecreateEventListeners = eventListeners.PostCollectionRecreateEventListeners;
-            eventListeners.PostCollectionRecreateEventListeners = new IPostCollectionRecreateEventListener[0];
-
-            _preCollectionRemoveEventListeners = eventListeners.PreCollectionRemoveEventListeners;
-            eventListeners.PreCollectionRemoveEventListeners = new IPreCollectionRemoveEventListener[0];
-
-            _postCollectionRemoveEventListeners = eventListeners.PostCollectionRemoveEventListeners;
-            eventListeners.PostCollectionRemoveEventListeners = new IPostCollectionRemoveEventListener[0];
-
-            _preCollectionUpdateEventListeners = eventListeners.PreCollectionUpdateEventListeners;
-            eventListeners.PreCollectionUpdateEventListeners = new IPreCollectionUpdateEventListener[0];
-
-            _postCollectionUpdateEventListeners = eventListeners.PostCollectionUpdateEventListeners;
-            eventListeners.PostCollectionUpdateEventListeners = new IPostCollectionUpdateEventListener[0];
+            switch (type)
+            {
+                case ListenerType.Autoflush:
+                    _autoFlushEventListeners = eventListeners.AutoFlushEventListeners;
+                    eventListeners.AutoFlushEventListeners =
+                        _autoFlushEventListeners.Where(eventListener => eventListeners != listener).ToArray();
+                    break;
+                case ListenerType.Merge:
+                    _mergeEventListeners = eventListeners.MergeEventListeners;
+                    eventListeners.MergeEventListeners =
+                        _mergeEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.Create:
+                    _persistEventListeners = eventListeners.PersistEventListeners;
+                    eventListeners.PersistEventListeners =
+                        _persistEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.CreateOnFlush:
+                    _persistOnFlushEventListeners = eventListeners.PersistOnFlushEventListeners;
+                    eventListeners.PersistOnFlushEventListeners =
+                        _persistOnFlushEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.Delete:
+                    _deleteEventListeners = eventListeners.DeleteEventListeners;
+                    eventListeners.DeleteEventListeners =
+                        _deleteEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.DirtyCheck:
+                    _dirtyCheckEventListeners = eventListeners.DirtyCheckEventListeners;
+                    eventListeners.DirtyCheckEventListeners =
+                        _dirtyCheckEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.Evict:
+                    _evictEventListeners = eventListeners.EvictEventListeners;
+                    eventListeners.EvictEventListeners =
+                        _evictEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.Flush:
+                    _flushEventListeners = eventListeners.FlushEventListeners;
+                    eventListeners.FlushEventListeners =
+                        _flushEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.FlushEntity:
+                    _flushEntityEventListeners = eventListeners.FlushEntityEventListeners;
+                    eventListeners.FlushEntityEventListeners =
+                        _flushEntityEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.Load:
+                    _loadEventListeners = eventListeners.LoadEventListeners;
+                    eventListeners.LoadEventListeners =
+                        _loadEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.LoadCollection:
+                    _initializeCollectionEventListeners = eventListeners.InitializeCollectionEventListeners;
+                    eventListeners.InitializeCollectionEventListeners =
+                        _initializeCollectionEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.Lock:
+                    _lockEventListeners = eventListeners.LockEventListeners;
+                    eventListeners.LockEventListeners =
+                        _lockEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.Refresh:
+                    _refreshEventListeners = eventListeners.RefreshEventListeners;
+                    eventListeners.RefreshEventListeners =
+                        _refreshEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.Replicate:
+                    _replicateEventListeners = eventListeners.ReplicateEventListeners;
+                    eventListeners.ReplicateEventListeners =
+                        _replicateEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.SaveUpdate:
+                    _saveOrUpdateEventListeners = eventListeners.SaveOrUpdateEventListeners;
+                    eventListeners.SaveOrUpdateEventListeners =
+                        _saveOrUpdateEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.Save:
+                    _saveEventListeners = eventListeners.SaveEventListeners;
+                    eventListeners.SaveEventListeners =
+                        _saveEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PreUpdate:
+                    _preUpdateEventListeners = eventListeners.PreUpdateEventListeners;
+                    eventListeners.PreUpdateEventListeners =
+                        _preUpdateEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.Update:
+                    _updateEventListeners = eventListeners.UpdateEventListeners;
+                    eventListeners.UpdateEventListeners =
+                        _updateEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PreLoad:
+                    _preLoadEventListeners = eventListeners.PreLoadEventListeners;
+                    eventListeners.PreLoadEventListeners =
+                        _preLoadEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PreDelete:
+                    _preDeleteEventListeners = eventListeners.PreDeleteEventListeners;
+                    eventListeners.PreDeleteEventListeners =
+                        _preDeleteEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PreInsert:
+                    _preInsertEventListeners = eventListeners.PreInsertEventListeners;
+                    eventListeners.PreInsertEventListeners =
+                        _preInsertEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PostLoad:
+                    _postLoadEventListeners = eventListeners.PostLoadEventListeners;
+                    eventListeners.PostLoadEventListeners =
+                        _postLoadEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PostInsert:
+                    _postInsertEventListeners = eventListeners.PostInsertEventListeners;
+                    eventListeners.PostInsertEventListeners =
+                        _postInsertEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PostUpdate:
+                    _postUpdateEventListeners = eventListeners.PostUpdateEventListeners;
+                    eventListeners.PostUpdateEventListeners =
+                        _postUpdateEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PostDelete:
+                    _postDeleteEventListeners = eventListeners.PostDeleteEventListeners;
+                    eventListeners.PostDeleteEventListeners =
+                        _postDeleteEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PostCommitUpdate:
+                    _postCommitUpdateEventListeners = eventListeners.PostCommitUpdateEventListeners;
+                    eventListeners.PostCommitUpdateEventListeners =
+                        _postCommitUpdateEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PostCommitInsert:
+                    _postCommitInsertEventListeners = eventListeners.PostCommitInsertEventListeners;
+                    eventListeners.PostCommitInsertEventListeners =
+                        _postCommitInsertEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PostCommitDelete:
+                    _postCommitDeleteEventListeners = eventListeners.PostCommitDeleteEventListeners;
+                    eventListeners.PostCommitDeleteEventListeners =
+                        _postCommitDeleteEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PreCollectionRecreate:
+                    _preCollectionRecreateEventListeners = eventListeners.PreCollectionRecreateEventListeners;
+                    eventListeners.PreCollectionRecreateEventListeners =
+                        _preCollectionRecreateEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PreCollectionRemove:
+                    _preCollectionRemoveEventListeners = eventListeners.PreCollectionRemoveEventListeners;
+                    eventListeners.PreCollectionRemoveEventListeners =
+                        _preCollectionRemoveEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PreCollectionUpdate:
+                    _preCollectionUpdateEventListeners = eventListeners.PreCollectionUpdateEventListeners;
+                    eventListeners.PreCollectionUpdateEventListeners =
+                        _preCollectionUpdateEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PostCollectionRecreate:
+                    _postCollectionRecreateEventListeners = eventListeners.PostCollectionRecreateEventListeners;
+                    eventListeners.PostCollectionRecreateEventListeners =
+                        _postCollectionRecreateEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PostCollectionRemove:
+                    _postCollectionRemoveEventListeners = eventListeners.PostCollectionRemoveEventListeners;
+                    eventListeners.PostCollectionRemoveEventListeners =
+                        _postCollectionRemoveEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+                case ListenerType.PostCollectionUpdate:
+                    _postCollectionUpdateEventListeners = eventListeners.PostCollectionUpdateEventListeners;
+                    eventListeners.PostCollectionUpdateEventListeners =
+                        _postCollectionUpdateEventListeners.Where(eventListener => eventListener != listener).ToArray();
+                    break;
+            }
         }
 
         public void Dispose()
         {
             EventListeners eventListeners = _session.GetSessionImplementation().Listeners;
-            eventListeners.LoadEventListeners = _loadEventListeners;
-            eventListeners.SaveOrUpdateEventListeners = _saveOrUpdateEventListeners;
-            eventListeners.SaveOrUpdateCopyEventListeners = _saveOrUpdateCopyEventListeners;
-            eventListeners.MergeEventListeners = _mergeEventListeners;
-            eventListeners.PersistEventListeners = _persistEventListeners;
-            eventListeners.PersistOnFlushEventListeners = _persistOnFlushEventListeners;
-            eventListeners.ReplicateEventListeners = _replicateEventListeners;
-            eventListeners.DeleteEventListeners = _deleteEventListeners;
-            eventListeners.AutoFlushEventListeners = _autoFlushEventListeners;
-            eventListeners.DirtyCheckEventListeners = _dirtyCheckEventListeners;
-            eventListeners.FlushEventListeners = _flushEventListeners;
-            eventListeners.EvictEventListeners = _evictEventListeners;
-            eventListeners.LockEventListeners = _lockEventListeners;
-            eventListeners.RefreshEventListeners = _refreshEventListeners;
-            eventListeners.FlushEntityEventListeners = _flushEntityEventListeners;
-            eventListeners.InitializeCollectionEventListeners = _initializeCollectionEventListeners;
-            eventListeners.PostLoadEventListeners = _postLoadEventListeners;
-            eventListeners.PreLoadEventListeners = _preLoadEventListeners;
-            eventListeners.PreDeleteEventListeners = _preDeleteEventListeners;
-            eventListeners.PreUpdateEventListeners = _preUpdateEventListeners;
-            eventListeners.PreInsertEventListeners = _preInsertEventListeners;
-            eventListeners.PostDeleteEventListeners = _postDeleteEventListeners;
-            eventListeners.PostUpdateEventListeners = _postUpdateEventListeners;
-            eventListeners.PostInsertEventListeners = _postInsertEventListeners;
-            eventListeners.PostCommitDeleteEventListeners = _postCommitDeleteEventListeners;
-            eventListeners.PostCommitUpdateEventListeners = _postCommitUpdateEventListeners;
-            eventListeners.PostCommitInsertEventListeners = _postCommitInsertEventListeners;
-            eventListeners.SaveEventListeners = _saveEventListeners;
-            eventListeners.UpdateEventListeners = _updateEventListeners;
-            eventListeners.PreCollectionRecreateEventListeners = _preCollectionRecreateEventListeners;
-            eventListeners.PostCollectionRecreateEventListeners = _postCollectionRecreateEventListeners;
-            eventListeners.PreCollectionRemoveEventListeners = _preCollectionRemoveEventListeners;
-            eventListeners.PostCollectionRemoveEventListeners = _postCollectionRemoveEventListeners;
-            eventListeners.PreCollectionUpdateEventListeners = _preCollectionUpdateEventListeners;
-            eventListeners.PostCollectionUpdateEventListeners = _postCollectionUpdateEventListeners;
+
+            switch (_type)
+            {
+                case ListenerType.Autoflush:
+                    eventListeners.AutoFlushEventListeners = _autoFlushEventListeners;
+                    break;
+                case ListenerType.Merge:
+                    eventListeners.MergeEventListeners = _mergeEventListeners;
+                    break;
+                case ListenerType.Create:
+                    eventListeners.PersistEventListeners = _persistEventListeners;
+                    break;
+                case ListenerType.CreateOnFlush:
+                    eventListeners.PersistOnFlushEventListeners = _persistOnFlushEventListeners;
+                    break;
+                case ListenerType.Delete:
+                    eventListeners.DeleteEventListeners = _deleteEventListeners;
+                    break;
+                case ListenerType.DirtyCheck:
+                    eventListeners.DirtyCheckEventListeners = _dirtyCheckEventListeners;
+                    break;
+                case ListenerType.Evict:
+                    eventListeners.EvictEventListeners = _evictEventListeners;
+                    break;
+                case ListenerType.Flush:
+                    eventListeners.FlushEventListeners = _flushEventListeners;
+                    break;
+                case ListenerType.FlushEntity:
+                    eventListeners.FlushEntityEventListeners = _flushEntityEventListeners;
+                    break;
+                case ListenerType.Load:
+                    eventListeners.LoadEventListeners = _loadEventListeners;
+                    break;
+                case ListenerType.LoadCollection:
+                    eventListeners.InitializeCollectionEventListeners = _initializeCollectionEventListeners;
+                    break;
+                case ListenerType.Lock:
+                    eventListeners.LockEventListeners = _lockEventListeners;
+                    break;
+                case ListenerType.Refresh:
+                    eventListeners.RefreshEventListeners = _refreshEventListeners;
+                    break;
+                case ListenerType.Replicate:
+                    eventListeners.ReplicateEventListeners = _replicateEventListeners;
+                    break;
+                case ListenerType.SaveUpdate:
+                    eventListeners.SaveOrUpdateEventListeners = _saveOrUpdateEventListeners;
+                    break;
+                case ListenerType.Save:
+                    eventListeners.SaveEventListeners = _saveEventListeners;
+                    break;
+                case ListenerType.PreUpdate:
+                    eventListeners.PreUpdateEventListeners = _preUpdateEventListeners;
+                    break;
+                case ListenerType.Update:
+                    eventListeners.UpdateEventListeners = _updateEventListeners;
+                    break;
+                case ListenerType.PreLoad:
+                    eventListeners.PreLoadEventListeners = _preLoadEventListeners;
+                    break;
+                case ListenerType.PreDelete:
+                    eventListeners.PreDeleteEventListeners = _preDeleteEventListeners;
+                    break;
+                case ListenerType.PreInsert:
+                    eventListeners.PreInsertEventListeners = _preInsertEventListeners;
+                    break;
+                case ListenerType.PostLoad:
+                    eventListeners.PostLoadEventListeners = _postLoadEventListeners;
+                    break;
+                case ListenerType.PostInsert:
+                    eventListeners.PostInsertEventListeners = _postInsertEventListeners;
+                    break;
+                case ListenerType.PostUpdate:
+                    eventListeners.PostUpdateEventListeners = _postUpdateEventListeners;
+                    break;
+                case ListenerType.PostDelete:
+                    eventListeners.PostDeleteEventListeners = _postDeleteEventListeners;
+                    break;
+                case ListenerType.PostCommitUpdate:
+                    eventListeners.PostCommitUpdateEventListeners = _postCommitUpdateEventListeners;
+                    break;
+                case ListenerType.PostCommitInsert:
+                    eventListeners.PostCommitInsertEventListeners = _postCommitInsertEventListeners;
+                    break;
+                case ListenerType.PostCommitDelete:
+                    eventListeners.PostCommitDeleteEventListeners = _postCommitDeleteEventListeners;
+                    break;
+                case ListenerType.PreCollectionRecreate:
+                    eventListeners.PreCollectionRecreateEventListeners = _preCollectionRecreateEventListeners;
+                    break;
+                case ListenerType.PreCollectionRemove:
+                    eventListeners.PreCollectionRemoveEventListeners = _preCollectionRemoveEventListeners;
+                    break;
+                case ListenerType.PreCollectionUpdate:
+                    eventListeners.PreCollectionUpdateEventListeners = _preCollectionUpdateEventListeners;
+                    break;
+                case ListenerType.PostCollectionRecreate:
+                    eventListeners.PostCollectionRecreateEventListeners = _postCollectionRecreateEventListeners;
+                    break;
+                case ListenerType.PostCollectionRemove:
+                    eventListeners.PostCollectionRemoveEventListeners = _postCollectionRemoveEventListeners;
+                    break;
+                case ListenerType.PostCollectionUpdate:
+                    eventListeners.PostCollectionUpdateEventListeners = _postCollectionUpdateEventListeners;
+                    break;
+            }
         }
     }
 }
