@@ -24,8 +24,8 @@ namespace MrCMS.Services.Events
             {
                 _userProfileDataService.Add(new NotificationSettings
                                                 {
-                                                    PersistentNotificationsEnabled = true,
-                                                    TransientNotificationsEnabled = true,
+                                                    DisablePersistentNotifications = false,
+                                                    DisableTransientNotifications = false,
                                                     LastMarkedAsRead = null,
                                                     User = user
                                                 });

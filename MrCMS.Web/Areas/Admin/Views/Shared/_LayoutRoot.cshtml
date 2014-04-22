@@ -75,11 +75,11 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.noty.packaged.js");
     }
-    @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => settings.TransientNotificationsEnabled))
+    @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => !settings.DisableTransientNotifications))
     {
         Html.RenderAction("Show", "TransientNotification");
     }
-    @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => settings.PersistentNotificationsEnabled))
+    @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => !settings.DisablePersistentNotifications))
     {
         Html.RenderAction("Show", "PersistentNotification");
     }

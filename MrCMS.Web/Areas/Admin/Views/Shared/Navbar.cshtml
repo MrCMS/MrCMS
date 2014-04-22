@@ -11,7 +11,7 @@
                 <div class="nav pull-right">
                     @{ Html.RenderAction("Get", "SiteList"); }
                 </div>
-                @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => settings.PersistentNotificationsEnabled))
+                @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => !settings.DisablePersistentNotifications))
                 {
                     Html.RenderAction("Navbar", "PersistentNotification");
                 }
