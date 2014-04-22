@@ -1511,6 +1511,17 @@
     <Content Include="Areas\Admin\Views\TransientNotification\Show.cshtml" />
     <Content Include="Areas\Admin\Views\PersistentNotification\Show.cshtml" />
     <Content Include="Areas\Admin\Views\PersistentNotification\Navbar.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleListAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleCategoriesAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\LatestXArticlesAdd.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Webpage\TextPageAdd.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\CurrentPageSubNavigationAdd.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\LinkedImageAdd.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\NavigationAdd.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\PlainTextWidgetAdd.cshtml" />
+    <Content Include="Apps\Core\Areas\Admin\Views\Widget\TextWidgetAdd.cshtml" />
+    <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryAdd.cshtml" />
+    <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryListAdd.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

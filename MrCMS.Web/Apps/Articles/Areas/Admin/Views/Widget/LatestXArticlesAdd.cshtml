@@ -1,0 +1,7 @@
+﻿@model MrCMS.Web.Apps.Articles.Widgets.LatestXArticles
+
+@Html.LabelFor(x=>x.NumberOfArticles, "Number of articles to show")
+@Html.TextBoxFor(x=>x.NumberOfArticles)
+
+@Html.LabelFor(x => x.RelatedNewsList, "News List")
+@Html.DropDownListFor(x => x.RelatedNewsList.Id, ViewData["newsList"] as IEnumerable<SelectListItem>, new { data_val = "true", data_val_required = "News list needs to be selected." })

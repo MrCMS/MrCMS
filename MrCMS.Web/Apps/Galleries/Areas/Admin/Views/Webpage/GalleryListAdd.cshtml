@@ -1,0 +1,9 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Galleries.Pages.GalleryList 
+@{ Html.IncludeScript("~/Apps/Galleries/Areas/Admin/Content/Scripts/gallery.js"); }
+
+@Html.LabelFor(model => model.PageSize)
+@Html.EditorFor(model => model.PageSize)
+
+@Html.InlineCheckboxFor(model => model.AllowPaging, null, null, "Allow paging")
+
