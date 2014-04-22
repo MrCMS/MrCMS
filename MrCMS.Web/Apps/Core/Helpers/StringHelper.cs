@@ -26,6 +26,9 @@ namespace MrCMS.Web.Apps.Core.Helpers
                             var tobold = "";
                             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
                             tobold = rgx.Replace(term, "");
+                            if (string.IsNullOrWhiteSpace(tobold))
+                                continue;
+                            
                             var regex = new Regex(tobold, RegexOptions.IgnoreCase);
                             foreach (Match m in regex.Matches(returnString))
                             {
