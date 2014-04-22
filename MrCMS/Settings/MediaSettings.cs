@@ -137,7 +137,7 @@ namespace MrCMS.Settings
         {
             get { return AllowedFileTypes.Split('|'); }
         }
-        
+
         [DisplayName("Admin max file upload size (Max 50000000 (500 mb)")]
         public int MaxFileSizeUpload { get; set; }
 
@@ -166,8 +166,7 @@ namespace MrCMS.Settings
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-            viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(
-                session, Site, DefaultCategory);
+            viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(session, DefaultCategory);
         }
     }
 }

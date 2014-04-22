@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website;
 using Newtonsoft.Json;
@@ -31,18 +33,10 @@ namespace MrCMS.Helpers
                 .RowCount();
         }
 
-
-        //public static void SetParent(this Document document, Document parent)
-        //{
-        //    var existingParent = document.Parent;
-        //    if (existingParent == parent)
-        //        return;
-        //    document.Parent = parent;
-        //    if (parent != null && !parent.Children.Contains(document))
-        //        parent.Children.Add(document);
-        //    if (existingParent != null)
-        //        existingParent.Children.Remove(document);
-        //}
+        public static string GetAdminController(this Document document)
+        {
+            return document is Layout ? "Layout" : document is MediaCategory ? "MediaCategory" : "Webpage";
+        }
 
         public static T GetVersion<T>(this T doc, int id) where T : Document
         {

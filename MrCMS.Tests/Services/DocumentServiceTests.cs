@@ -48,6 +48,8 @@ namespace MrCMS.Tests.Services
         public void DocumentService_SaveDocument_ReturnsTheSameDocument()
         {
             var document = new BasicMappedWebpage();
+            Session.Transact(session => session.Save(document));
+            
             var updatedDocument = _documentService.SaveDocument(document);
 
             document.Should().BeSameAs(updatedDocument);
@@ -413,7 +415,7 @@ namespace MrCMS.Tests.Services
             var widgetService = new WidgetService(Session);
 
             var textPage = new BasicMappedWebpage { ShownWidgets = new HashedSet<Widget>(), HiddenWidgets = new HashedSet<Widget>() };
-            _documentService.SaveDocument(textPage);
+            _documentService.AddDocument(textPage);
 
             var textWidget = new BasicMappedWidget();
             widgetService.SaveWidget(textWidget);
@@ -436,7 +438,7 @@ namespace MrCMS.Tests.Services
                 ShownWidgets = new HashedSet<Widget> { textWidget },
                 HiddenWidgets = new HashedSet<Widget>()
             };
-            _documentService.SaveDocument(textPage);
+            _documentService.AddDocument(textPage);
 
             _documentService.HideWidget(textPage, textWidget.Id);
 
@@ -456,7 +458,7 @@ namespace MrCMS.Tests.Services
                 ShownWidgets = new HashedSet<Widget> { textWidget },
                 HiddenWidgets = new HashedSet<Widget>()
             };
-            _documentService.SaveDocument(textPage);
+            _documentService.AddDocument(textPage);
 
             _documentService.HideWidget(textPage, -1);
 
@@ -470,7 +472,7 @@ namespace MrCMS.Tests.Services
             var widgetService = new WidgetService(Session);
 
             var textPage = new BasicMappedWebpage { ShownWidgets = new HashedSet<Widget>(), HiddenWidgets = new HashedSet<Widget>() };
-            _documentService.SaveDocument(textPage);
+            _documentService.AddDocument(textPage);
 
             var textWidget = new BasicMappedWidget();
             widgetService.SaveWidget(textWidget);
@@ -493,7 +495,7 @@ namespace MrCMS.Tests.Services
                 ShownWidgets = new HashedSet<Widget>(),
                 HiddenWidgets = new HashedSet<Widget> { textWidget }
             };
-            _documentService.SaveDocument(textPage);
+            _documentService.AddDocument(textPage);
 
             _documentService.ShowWidget(textPage, textWidget.Id);
 
@@ -514,7 +516,7 @@ namespace MrCMS.Tests.Services
                 ShownWidgets = new HashedSet<Widget>(),
                 HiddenWidgets = new HashedSet<Widget> { textWidget }
             };
-            _documentService.SaveDocument(textPage);
+            _documentService.AddDocument(textPage);
 
             _documentService.ShowWidget(textPage, -1);
 

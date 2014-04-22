@@ -1,6 +1,6 @@
 using MrCMS.Entities.Documents;
 
-namespace MrCMS.Events
+namespace MrCMS.Events.Documents
 {
     public interface IOnDocumentDeleted : IEvent<OnDocumentDeletedEventArgs>
     {

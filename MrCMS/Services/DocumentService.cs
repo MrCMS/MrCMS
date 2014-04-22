@@ -12,13 +12,16 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Events;
+using MrCMS.Events.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NHibernate.Transform;
+using EnumerableHelper = MrCMS.Helpers.EnumerableHelper;
 
 namespace MrCMS.Services
 {
@@ -89,8 +92,9 @@ namespace MrCMS.Services
             _session.Transact(session =>
             {
                 document.OnSaving(session);
-                session.SaveOrUpdate(document);
+                session.Update(document);
             });
+            EventContext.Instance.Publish<IOnDocumentUpdated, OnDocumentUpdatedEventArgs>(new OnDocumentUpdatedEventArgs(document, CurrentRequestData.CurrentUser));
             return document;
         }
 
@@ -215,7 +219,7 @@ namespace MrCMS.Services
 
             var existingTags = document.Tags.ToList();
 
-            tagNames.ForEach(name =>
+            EnumerableHelper.ForEach(tagNames, name =>
             {
                 var tag = GetTag(name) ?? new Tag { Name = name };
                 if (!document.Tags.Contains(tag))
@@ -295,15 +299,16 @@ namespace MrCMS.Services
             if (document.PublishOn == null)
             {
                 document.PublishOn = CurrentRequestData.Now;
-                SaveDocument(document);
+                _session.Transact(session => session.Update(document));
+                EventContext.Instance.Publish<IOnWebpagePublished, OnWebpagePublishedEventArgs>(new OnWebpagePublishedEventArgs(document));
             }
         }
 
         public void Unpublish(Webpage document)
         {
             document.PublishOn = null;
-            SaveDocument(document);
-            EventContext.Instance.Publish<IOnDocumentUnpublished, OnDocumentUnpublishedEventArgs>(new OnDocumentUnpublishedEventArgs(document));
+            _session.Transact(session => session.Update(document));
+            EventContext.Instance.Publish<IOnWebpageUnpublished, OnWebpageUnpublishedEventArgs>(new OnWebpageUnpublishedEventArgs(document));
         }
 
         public void HideWidget(Webpage document, int widgetId)
@@ -378,7 +383,7 @@ namespace MrCMS.Services
             }
             else
             {
-                roleNames.ForEach(name =>
+                EnumerableHelper.ForEach(roleNames, name =>
                 {
                     var role = GetRole(name);
                     if (role != null)

@@ -51,7 +51,9 @@ namespace MrCMS.Website.Routing
 
                 CurrentRequestData.CurrentPage = webpage;
                 var controller = _controllerManager.GetController(RequestContext, webpage, context.Request.HttpMethod);
-                (controller as IController).Execute(new RequestContext(context, controller.RouteData));
+
+                var asyncController = (controller as IAsyncController);
+                asyncController.BeginExecute(new RequestContext(context, controller.RouteData), asyncController.EndExecute, null);
             }
             else
             {
@@ -124,20 +126,8 @@ namespace MrCMS.Website.Routing
             {
                 if (_seoSettings.EnableHtmlMinification)
                     context.Response.Filter = new WhitespaceFilter(context.Response.Filter);
-                //(controller as IController).Execute(RequestContext);
-                var actionInvoker = controller.ActionInvoker;
-                    var controllerContext = controller.ControllerContext;
-                    var actionName = controller.RouteData.Values["action"].ToString();
-                if (actionInvoker is IAsyncActionInvoker)
-                {
-                    var asyncActionInvoker = (actionInvoker as IAsyncActionInvoker);
-                    asyncActionInvoker.BeginInvokeAction(controllerContext, actionName,
-                        ar => asyncActionInvoker.EndInvokeAction(ar), null);
-                }
-                else
-                {
-                    actionInvoker.InvokeAction(controllerContext, actionName);
-                }
+                var asyncController = (controller as IAsyncController);
+                asyncController.BeginExecute(RequestContext, asyncController.EndExecute, null);
             }
             catch (Exception exception)
             {

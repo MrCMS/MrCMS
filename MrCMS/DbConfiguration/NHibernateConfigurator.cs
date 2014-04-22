@@ -35,11 +35,6 @@ namespace MrCMS.DbConfiguration
 {
     public class NHibernateConfigurator
     {
-        private static readonly SaveOrUpdateListener _saveOrUpdateListener = new SaveOrUpdateListener();
-        private static readonly UpdateIndicesListener _updateIndexesListener = new UpdateIndicesListener();
-        private static readonly PostCommitEventListener _postCommitEventListener = new PostCommitEventListener();
-        private static readonly UrlHistoryListener _urlHistoryListener = new UrlHistoryListener();
-        private static SoftDeleteListener _softDeleteListener;
         private List<Assembly> _manuallyAddedAssemblies = new List<Assembly>();
 
         public DatabaseType DatabaseType { get; set; }
@@ -52,31 +47,6 @@ namespace MrCMS.DbConfiguration
         {
             get { return _manuallyAddedAssemblies; }
             set { _manuallyAddedAssemblies = value; }
-        }
-
-        public static SaveOrUpdateListener SaveOrUpdateListener
-        {
-            get { return _saveOrUpdateListener; }
-        }
-
-        public static UpdateIndicesListener UpdateIndexesListener
-        {
-            get { return _updateIndexesListener; }
-        }
-
-        public static PostCommitEventListener PostCommitEventListener
-        {
-            get { return _postCommitEventListener; }
-        }
-
-        public static UrlHistoryListener UrlHistoryListener
-        {
-            get { return _urlHistoryListener; }
-        }
-
-        public static SoftDeleteListener SoftDeleteListener
-        {
-            get { return _softDeleteListener; }
         }
 
         public ISessionFactory CreateSessionFactory()
@@ -180,6 +150,7 @@ namespace MrCMS.DbConfiguration
                        .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
                        .IncludeAppConventions();
             addFromAssemblyOf.Add(typeof(NotDeletedFilter));
+            addFromAssemblyOf.Add(typeof(SiteFilter));
             NHibernate.Cfg.Configuration config = Fluently.Configure()
                                                           .Database(iPersistenceConfigurer)
                                                           .Mappings(m => m.AutoMappings.Add(addFromAssemblyOf))
@@ -247,56 +218,56 @@ namespace MrCMS.DbConfiguration
             configuration.EventListeners.SaveOrUpdateEventListeners =
                 new ISaveOrUpdateEventListener[]
                     {
-                        SaveOrUpdateListener
+                        MrCMSListeners.SaveOrUpdateListener
                     };
 
             configuration.AppendListeners(ListenerType.PreInsert,
                                           new[]
                                               {
-                                                  SaveOrUpdateListener
+                                                  MrCMSListeners.SaveOrUpdateListener
                                               });
             configuration.AppendListeners(ListenerType.PreUpdate,
                                           new IPreUpdateEventListener[]
                                               {
-                                                  SaveOrUpdateListener
+                                                  MrCMSListeners.SaveOrUpdateListener
                                               });
 
             configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
                                                                              {
-                                                                                 PostCommitEventListener,
-                                                                                 UrlHistoryListener
+                                                                                 MrCMSListeners.PostCommitEventListener, MrCMSListeners.UrlHistoryListener
                                                                              });
-            _softDeleteListener = new SoftDeleteListener(InDevelopment);
-            configuration.SetListener(ListenerType.Delete, SoftDeleteListener);
+
+            var softDeleteListener = new SoftDeleteListener(InDevelopment);
+            configuration.SetListener(ListenerType.Delete, softDeleteListener);
 
             if (!InDevelopment && CurrentRequestData.DatabaseIsInstalled)
             {
                 configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
                                                                                  {
-                                                                                     UpdateIndexesListener
+                                                                                     MrCMSListeners.UpdateIndexesListener
                                                                                  });
                 configuration.AppendListeners(ListenerType.PostCommitInsert, new IPostInsertEventListener[]
                                                                                  {
-                                                                                     UpdateIndexesListener
+                                                                                     MrCMSListeners.UpdateIndexesListener
                                                                                  });
                 configuration.AppendListeners(ListenerType.PostCommitDelete, new IPostDeleteEventListener[]
                                                                                  {
-                                                                                     UpdateIndexesListener
+                                                                                     MrCMSListeners.UpdateIndexesListener
                                                                                  });
                 configuration.AppendListeners(ListenerType.PostCollectionRecreate,
                                               new IPostCollectionRecreateEventListener[]
                                                   {
-                                                      UpdateIndexesListener
+                                                      MrCMSListeners.UpdateIndexesListener
                                                   });
                 configuration.AppendListeners(ListenerType.PostCollectionRemove,
                                               new IPostCollectionRemoveEventListener[]
                                                   {
-                                                      UpdateIndexesListener
+                                                      MrCMSListeners.UpdateIndexesListener
                                                   });
                 configuration.AppendListeners(ListenerType.PostCollectionUpdate,
                                               new IPostCollectionUpdateEventListener[]
                                                   {
-                                                      UpdateIndexesListener
+                                                      MrCMSListeners.UpdateIndexesListener
                                                   });
             }
         }
