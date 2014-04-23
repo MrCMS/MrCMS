@@ -1,0 +1,24 @@
+﻿@using MrCMS.Web.Apps.Commenting.Models
+@using MrCMS.Web.Apps.Commenting.Services
+@using MrCMS.Website
+@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Commenting.Widgets.CommentingWidget
+@{
+    var currentPage = CurrentRequestData.CurrentPage;
+    var response = TempData["comment-response-info"] as ICommentResponseInfo;
+    ViewData["post-comment-info"] = response;
+}
+<div class="comments-container">
+    @if (response != null && !string.IsNullOrWhiteSpace(response.Message))
+    {
+        <div>
+            <div class="alert @(response.Type == CommentResponseType.Info ? "" : response.Type == CommentResponseType.Error ? "alert-danger" : "alert-success")">
+                @response.Message
+            </div>
+        </div>
+    }
+    @{Html.RenderAction("Add", "Comments", new { id = currentPage.Id });}
+    @{Html.RenderAction("Show", "Comments", new { id = currentPage.Id });}
+</div>
+@{ Html.IncludeScript("~/Apps/Commenting/Content/Scripts/ui.js");}
+@{ Html.IncludeCss("~/Apps/Commenting/Content/Styles/commenting.css");}

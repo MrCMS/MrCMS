@@ -1,0 +1,13 @@
+﻿@model MrCMS.Web.Apps.Commenting.Entities.Comment
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Delete", "Comment", FormMethod.Post))
+{
+    <fieldset>
+        <legend>Delete comment
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-danger btn" value="Delete comment" />
+            </span>
+        </legend>
+        Are you sure you want to delete this comment? 
+    </fieldset>
+}

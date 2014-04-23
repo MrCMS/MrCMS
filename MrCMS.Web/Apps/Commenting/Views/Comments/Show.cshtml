@@ -1,0 +1,15 @@
+﻿@model List<MrCMS.Web.Apps.Commenting.Entities.Comment>
+<h4>Show comments</h4>
+@if (!Model.Any())
+{
+    <p>No comments have been made yet.</p>
+}
+else
+{
+    <ul>
+        @foreach (var comment in Model)
+        {
+            Html.RenderPartial("ShowComment", comment);
+        }
+    </ul>
+}

@@ -1,0 +1,68 @@
+﻿@using MrCMS.Web.Apps.Commenting.Settings
+@using MrCMS.Website
+@model MrCMS.Web.Apps.Commenting.Entities.Comment
+<li class="post">
+    <div class="comment-container">
+        <div class="comment-header">
+            <div class="row-fluid">
+                <div class="span6 text-left">
+                    <p class="author">@Model.Name</p>
+                </div>
+                <div class="span6 text-right">
+                    <ul class="inline unstyled comment-actions reply">
+                        <li><a class="showhide"><i class="icon-minus"></i></a></li>
+                        <li><a href="#"><i class="icon-flag"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="comment-body">
+            <p>
+                @Model.Message
+            </p>
+        </div>
+        <div class="comment-footer">
+            @if (SiteSettings<CommentingSettings>().AllowVoting)
+            {
+                <ul class="inline unstyled comment-actions">
+                    <li>
+                        @using (Html.BeginForm("Upvote", "CommentVoting", new { CommentId = Model.Id }, FormMethod.Post, new { @class = "form-inline" }))
+                        {
+                            @Model.Upvotes
+                            <a href="#" data-link-action="true"><i class="icon-chevron-up"></i></a>
+                        }
+                    </li>
+                    <li>
+                        @using (Html.BeginForm("Downvote", "CommentVoting", new { CommentId = Model.Id }, FormMethod.Post, new { @class = "form-inline" }))
+                        {
+                            @Model.Downvotes
+                            <a href="#" data-link-action="true"><i class="icon-chevron-down"></i></a>
+                        }
+                    </li>
+                    @if (CurrentRequestData.CurrentUser != null || SiteSettings<CommentingSettings>().AllowGuestComments)
+                    {
+                        <li><a class="btn reply" data-show-reply-to="@Model.Id">Reply</a></li>
+                    }
+                </ul>
+            }
+        </div>
+        <div class="comment-post" data-reply-to="@Model.Id">
+            @{ Html.RenderAction("ReplyTo", "Comments", new { Model.Id });}
+            @*                        <form>
+                            <input type="text" class="input-block-level" placeholder="Join the discussion...">
+                            <div class="text-right">
+                                <a href="#" class="btn btn-primary">Post</a>
+                            </div>
+                        </form>*@
+        </div>
+    </div>
+    @if (Model.Children.Any())
+    {
+        <ul class="child">
+            @foreach (var comment in Model.Children.Where(comment => comment.Approved == true))
+            {
+                Html.RenderPartial("ShowComment", comment);
+            }
+        </ul>
+    }
+</li>
