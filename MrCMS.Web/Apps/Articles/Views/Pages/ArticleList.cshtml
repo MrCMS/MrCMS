@@ -22,12 +22,15 @@
             {
     <div class="row">
         <div class="col-lg-12">
-            <h3 class="margin-top-0"><a href="/@page.LiveUrlSegment" class="margin-top-0">@page.Name </a></h3>
-            @page.PublishOn.Value.Day @page.PublishOn.Value.ToString("MMMMM") @page.PublishOn.Value.Year
+            <h3 class="margin-bottom-0"><a href="/@page.LiveUrlSegment">@page.Name </a></h3>
+            <span class="small"><strong>@page.PublishOn.Value.Day @page.PublishOn.Value.ToString("MMMMM") @page.PublishOn.Value.Year</strong></span>
 
             @if (!String.IsNullOrEmpty(page.FeatureImage))
             {
+                <div class="left small-margin">
                 <a href="/@page.LiveUrlSegment" class="margin-top-0">@RenderImage(page.FeatureImage, new Size{Width = 250})</a>
+                    
+                </div>
             }
 
             @Editable(page, p => p.Abstract)
