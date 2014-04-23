@@ -330,7 +330,6 @@
     <Compile Include="Entities\People\IBelongToUser.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Entities\Resources\StringResource.cs" />
-    <Compile Include="Entities\UserProfile\NotificationSettings.cs" />
     <Compile Include="Events\Documents\DocumentAddedNotification.cs" />
     <Compile Include="Events\Documents\DocumentDeletedNotification.cs" />
     <Compile Include="Events\Documents\DocumentUpdatedNotification.cs" />
@@ -381,7 +380,6 @@
     <Compile Include="Services\EventContext.cs" />
     <Compile Include="Services\Events\Args\OnUserAddedEventArgs.cs" />
     <Compile Include="Services\Events\IOnUserAdded.cs" />
-    <Compile Include="Services\Events\InitializeNotificationSettings.cs" />
     <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
     <Compile Include="Services\IEventContext.cs" />

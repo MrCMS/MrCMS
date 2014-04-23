@@ -128,5 +128,8 @@ namespace MrCMS.Entities.People
             get { return Email; }
             set { Email = value; }
         }
+
+        public virtual bool DisableNotifications { get; set; }
+        public virtual DateTime? LastNotificationReadDate { get; set; }
     }
 }

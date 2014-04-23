@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using MrCMS.Entities.Notifications;
-using MrCMS.Entities.UserProfile;
+using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Models.Notifications;
 using MrCMS.Website;
@@ -54,20 +54,21 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class PersistentNotificationUIService : IPersistentNotificationUIService
     {
         private readonly ISession _session;
+        private readonly IUserService _userService;
 
-        public PersistentNotificationUIService(ISession session)
+        public PersistentNotificationUIService(ISession session, IUserService userService)
         {
             _session = session;
+            _userService = userService;
         }
 
         public IList<NotificationModel> GetNotifications()
         {
             var user = CurrentRequestData.CurrentUser;
-            var lastReadDate = user.Get<NotificationSettings, DateTime?>(settings => settings.LastMarkedAsRead);
             var queryOver = _session.QueryOver<Notification>();
 
-            if (lastReadDate.HasValue)
-                queryOver = queryOver.Where(notification => notification.CreatedOn >= lastReadDate);
+            if (user.LastNotificationReadDate.HasValue)
+                queryOver = queryOver.Where(notification => notification.CreatedOn >= user.LastNotificationReadDate);
 
             NotificationModel notificationModelAlias = null;
             return queryOver.SelectList(
@@ -85,9 +86,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public void MarkAllAsRead()
         {
-            var notificationSettings = CurrentRequestData.CurrentUser.Get<NotificationSettings>();
-            notificationSettings.LastMarkedAsRead = CurrentRequestData.Now;
-            _session.Transact(session => session.Update(notificationSettings));
+            var user = _userService.GetCurrentUser(CurrentRequestData.CurrentContext);
+            user.LastNotificationReadDate = CurrentRequestData.Now;
+            _session.Transact(session => session.Update(user));
         }
     }
 }

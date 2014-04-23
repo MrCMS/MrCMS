@@ -1,5 +1,4 @@
-﻿@using MrCMS.Entities.UserProfile
-@using MrCMS.Website
+﻿@using MrCMS.Website
 <div class="navbar navbar-fixed-top navbar-inverse mrcms-navbar">
     <div class="navbar-inner">
         <div class="container-fluid">
@@ -11,7 +10,7 @@
                 <div class="nav pull-right">
                     @{ Html.RenderAction("Get", "SiteList"); }
                 </div>
-                @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => !settings.DisablePersistentNotifications))
+                @if (!CurrentRequestData.CurrentUser.DisableNotifications)
                 {
                     Html.RenderAction("Navbar", "PersistentNotification");
                 }

@@ -1,6 +1,0 @@
-﻿@using MrCMS.Entities.UserProfile
-@model MrCMS.Entities.People.User
-@{
-    var settings = Model.Get<NotificationSettings>();
-}
-    @{ Html.RenderAction("Show", "NotificationSettings", new { settings, user = Model }); }

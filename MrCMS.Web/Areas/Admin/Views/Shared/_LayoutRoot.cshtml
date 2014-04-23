@@ -1,5 +1,4 @@
-﻿@using MrCMS.Entities.UserProfile
-@using MrCMS.Helpers
+﻿@using MrCMS.Helpers
 @using MrCMS.Website
 <!DOCTYPE html>
 <html>
@@ -75,12 +74,9 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.noty.packaged.js");
     }
-    @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => !settings.DisableTransientNotifications))
+    @if (!CurrentRequestData.CurrentUser.DisableNotifications)
     {
         Html.RenderAction("Show", "TransientNotification");
-    }
-    @if (CurrentRequestData.CurrentUser.Get<NotificationSettings, bool>(settings => !settings.DisablePersistentNotifications))
-    {
         Html.RenderAction("Show", "PersistentNotification");
     }
     @Html.RenderScripts()
