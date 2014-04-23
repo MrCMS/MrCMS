@@ -30,6 +30,8 @@ namespace MrCMS.Web.Apps.Core.Services
         {
             string message = null;
             User user = _userService.GetUserByEmail(loginModel.Email);
+            if (user == null)
+                message = "Incorrect email address.";
             if (user != null && user.IsActive)
             {
                 if (_passwordManagementService.ValidateUser(user, loginModel.Password))

@@ -249,7 +249,6 @@
     <Compile Include="Apps\Core\Controllers\RegistrationController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
     <Compile Include="Apps\Core\CoreAppInstallation.cs" />
-    <Compile Include="Apps\Core\Helpers\StringHelper.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearchIndexDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\BodyContentFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\CreatedOnFieldDefinition.cs" />

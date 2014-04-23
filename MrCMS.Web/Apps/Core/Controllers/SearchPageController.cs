@@ -20,8 +20,12 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
         public ActionResult Show(SearchPage page, [IoCModelBinder(typeof(WebpageSearchQueryModelBinder))]WebpageSearchQuery model)
         {
-            ViewData["searchResults"] = _webpageSearchService.Search(model);
             ViewData["webpageSearchQueryModel"] = model;
+
+            if (string.IsNullOrWhiteSpace(model.Term))
+                return View(page);
+
+            ViewData["searchResults"] = _webpageSearchService.Search(model);
             return View(page);
         }
     }
