@@ -20,12 +20,12 @@
         <div class="row">
             <div class="col-lg-12">
                 <a href="/@result.LiveUrlSegment"><h4 class="margin-top-10 margin-bottom-5">
-                 @Html.Raw(result.Name.StripHtml().TruncateString(200))
+                 @result.Name.StripHtml().TruncateString(200)
                                                   </h4></a>
                 @{
                     if (result is TextPage)
                     {
-                        <p>@Html.Raw(result.BodyContent.StripHtml().TruncateString(200))</p>
+                        <p>@result.BodyContent.StripHtml().TruncateString(200)</p>
                     }
                 }
                 <p class="font-small">Last updated @result.CreatedOn.ToShortDateString()</p>
