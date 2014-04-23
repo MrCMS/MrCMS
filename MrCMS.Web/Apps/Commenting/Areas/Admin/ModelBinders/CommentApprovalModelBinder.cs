@@ -2,13 +2,14 @@ using System.Web.Mvc;
 using MrCMS.Web.Apps.Commenting.Entities;
 using MrCMS.Website.Binders;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Web.Apps.Commenting.Areas.Admin.ModelBinders
 {
     public class CommentApprovalModelBinder : MrCMSDefaultModelBinder
     {
-        public CommentApprovalModelBinder(ISession session)
-            : base(() => session)
+        public CommentApprovalModelBinder(IKernel kernel)
+            : base(kernel)
         {
         }
 

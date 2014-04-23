@@ -8,6 +8,7 @@ using MrCMS.Web.Apps.Commenting.Services;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Web.Apps.Commenting.Areas.Admin.Controllers
 {
@@ -57,10 +58,10 @@ namespace MrCMS.Web.Apps.Commenting.Areas.Admin.Controllers
         private readonly HttpSessionStateBase _sessionStateBase;
         private const string CommentQueryKey = "admin.commentquery";
 
-        public CommentSearchQueryModelBinder(HttpSessionStateBase sessionStateBase, ISession session)
-            : base(() => session)
+        public CommentSearchQueryModelBinder(IKernel kernel)
+            : base(kernel)
         {
-            _sessionStateBase = sessionStateBase;
+            _sessionStateBase = kernel.Get<HttpSessionStateBase>();
         }
 
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)

@@ -6,6 +6,7 @@ using MrCMS.Web.Apps.Commenting.Settings;
 using MrCMS.Website.Binders;
 using NHibernate;
 using System.Linq;
+using Ninject;
 
 namespace MrCMS.Web.Apps.Commenting.ModelBinders
 {
@@ -14,10 +15,10 @@ namespace MrCMS.Web.Apps.Commenting.ModelBinders
         public const string PageType = "page-type-";
         private readonly IConfigurationProvider _configurationProvider;
 
-        public CommentingSettingsModelBinder(IConfigurationProvider configurationProvider, ISession session)
-            : base(() => session)
+        public CommentingSettingsModelBinder(IKernel kernel)
+            : base(kernel)
         {
-            _configurationProvider = configurationProvider;
+            _configurationProvider = kernel.Get<IConfigurationProvider>();
         }
         public override object BindModel(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ModelBindingContext bindingContext)
         {

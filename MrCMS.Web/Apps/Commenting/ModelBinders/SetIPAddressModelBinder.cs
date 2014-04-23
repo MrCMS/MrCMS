@@ -4,6 +4,7 @@ using MrCMS.Helpers;
 using MrCMS.Web.Apps.Commenting.Models;
 using MrCMS.Website.Binders;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Web.Apps.Commenting.ModelBinders
 {
@@ -11,16 +12,14 @@ namespace MrCMS.Web.Apps.Commenting.ModelBinders
     {
         private readonly HttpContextBase _context;
 
-        public SetIPAddressModelBinder(HttpContextBase context, ISession session)
-            : base(() => session)
+        public SetIPAddressModelBinder(IKernel kernel) : base(kernel)
         {
-            _context = context;
+            _context = Get<HttpContextBase>();
         }
-
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var bindModel = base.BindModel(controllerContext, bindingContext);
-            
+
             if (bindModel is IHaveIPAddress)
                 (bindModel as IHaveIPAddress).IPAddress = _context.GetCurrentIP();
 

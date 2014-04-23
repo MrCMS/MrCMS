@@ -3,6 +3,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Events;
+using MrCMS.Events.Documents;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
 using MrCMS.Web.Apps.Commenting.Extensions;
@@ -24,9 +25,9 @@ namespace MrCMS.Web.Apps.Commenting.Tasks
             _commentingSettings = commentingSettings;
         }
 
-        public void OnDocumentAdded(Document document)
+        public void Execute(OnDocumentAddedEventArgs args)
         {
-            var webpage = document as Webpage;
+            var webpage = args.Document as Webpage;
             if (webpage == null)
                 return;
             if (!_commentingSettings.AllowedTypes.Contains(webpage.GetType()))
@@ -35,10 +36,10 @@ namespace MrCMS.Web.Apps.Commenting.Tasks
             if (layoutArea == null)
                 return;
             var commentingWidget = new CommentingWidget
-                                       {
-                                           Webpage = webpage,
-                                           LayoutArea = layoutArea
-                                       };
+            {
+                Webpage = webpage,
+                LayoutArea = layoutArea
+            };
             webpage.Widgets.Add(commentingWidget);
             layoutArea.AddWidget(commentingWidget);
             _session.Transact(session => session.Save(commentingWidget));

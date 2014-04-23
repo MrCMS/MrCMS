@@ -1,14 +1,9 @@
 ﻿var Commenting = function (options) {
     var settings = $.extend(Commenting.defaults, options);
     var self;
-    var showReplyTo = function (event) {
+    var showHideReplyTo = function (event) {
         var id = $(event.target).data('show-reply-to');
-        $('[data-reply-to=' + id + ']').show();
-    };
-    var hideReplyTo = function (event) {
-        event.preventDefault();
-        var id = $(event.target).data('hide-reply-to');
-        $('[data-reply-to=' + id + ']').hide();
+        $('[data-reply-to=' + id + ']').toggle();
     };
     var showHideComment = function (event) {
         event.preventDefault();
@@ -29,10 +24,7 @@
                 showHideComment(event);
             });
             $(document).on('click', '[data-show-reply-to]', function (event) {
-                showReplyTo(event);
-            });
-            $(document).on('click', '[data-hide-reply-to]', function (event) {
-                hideReplyTo(event);
+                showHideReplyTo(event);
             });
             return self;
         }
