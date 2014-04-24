@@ -24,12 +24,10 @@
                                 @Html.RenderImage(file.FileUrl, new Size(100, 100))
                             </a>
                         }
-                        else
-                        {
-                            @Html.Link(file.FileName, file.FileUrl)
-                        }
+                        @Html.Link(file.FileName, file.FileUrl)
+                        
                     </td>
-                    <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? MvcHtmlString.Create("<br />" + file.Description) : null)</td>
+                    <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? MvcHtmlString.Create("<br />" + file.Description) : MvcHtmlString.Create("<span style='font-size: 10px;'><em>None set</em></span>"))</td>
                     <td>
                         <div class="btn-group">
                             @Html.ActionLink("Delete", "Delete", "File", new { Id = file.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
