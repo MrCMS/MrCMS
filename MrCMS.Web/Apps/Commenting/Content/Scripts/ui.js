@@ -7,19 +7,26 @@
     };
     var showHideComment = function (event) {
         event.preventDefault();
-        console.log(event);
         var link = $(event.target);
         var post = link.parents('[data-post]').eq(0);
         post.toggleClass('collapsed-post');
-        link.toggleClass('icon-plus icon-minus');
+        link.toggleClass('glyphicon-plus glyphicon-minus');
     };
+    var handleVote = function (event) {
+        event.preventDefault();
+        var button = $(event.target);
+        var form = button.parents('form');
+        $.post(form.attr('action'), function() {
+            var container = button.parents('ul[data-votes]');
+            $.get('/comments/votes/' + container.data('votes'), function(response) {
+                container.replaceWith(response);
+            });
+        });
+    }
     return {
         init: function () {
             self = this;
-            $(document).on('click', '[data-link-action]', function (event) {
-                event.preventDefault();
-                $(event.target).parents('form').submit();
-            });
+            $(document).on('click', '[data-link-action]', handleVote);
             $(document).on('click', '[data-show-hide-comment]', function (event) {
                 showHideComment(event);
             });

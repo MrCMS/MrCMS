@@ -19,6 +19,10 @@ namespace MrCMS.Web.Apps.Commenting.Controllers
         public ActionResult Upvote([IoCModelBinder(typeof(SetIPAddressModelBinder))]VoteModel voteModel)
         {
             var response = _commentVotingUiService.Upvote(voteModel);
+            if (Request.IsAjaxRequest())
+            {
+                return Json(response.IsSuccess());
+            }
             return RedirectToPage(response);
         }
 
@@ -26,8 +30,9 @@ namespace MrCMS.Web.Apps.Commenting.Controllers
         public ActionResult Downvote([IoCModelBinder(typeof(SetIPAddressModelBinder))]VoteModel voteModel)
         {
             var response = _commentVotingUiService.Downvote(voteModel);
-            return RedirectToPage(response);
+            return Request.IsAjaxRequest() ? Json(response.IsSuccess()) : RedirectToPage(response);
         }
+        
         
     }
 }

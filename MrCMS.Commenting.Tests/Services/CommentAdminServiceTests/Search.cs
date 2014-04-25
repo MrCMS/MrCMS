@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using MrCMS.Commenting.Tests.Support;
+using MrCMS.DbConfiguration;
 using MrCMS.Paging;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Commenting.Entities;
@@ -148,7 +149,8 @@ namespace MrCMS.Commenting.Tests.Services.CommentAdminServiceTests
         {
             _session = session;
             _listeners = _session.GetSessionImplementation().Listeners.PreInsertEventListeners;
-            _session.GetSessionImplementation().Listeners.PreInsertEventListeners = new IPreInsertEventListener[0];
+            _session.GetSessionImplementation().Listeners.PreInsertEventListeners =
+                _listeners.Where(listener => listener != MrCMSListeners.SaveOrUpdateListener).ToArray();
         }
 
         public void Dispose()

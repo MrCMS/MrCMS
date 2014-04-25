@@ -30,6 +30,11 @@ namespace MrCMS.Web.Apps.Commenting.Controllers
             return ReturnView(info);
         }
 
+        public ActionResult Votes(Comment comment)
+        {
+            return PartialView(comment);
+        }
+
         public ActionResult ReplyTo(Comment comment)
         {
             CommentsViewInfo info = _commentsUiService.GetReplyToInfo(comment);

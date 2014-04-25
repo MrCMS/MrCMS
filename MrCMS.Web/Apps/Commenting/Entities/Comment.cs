@@ -41,14 +41,5 @@ namespace MrCMS.Web.Apps.Commenting.Entities
             int iNextSpace = Message.LastIndexOf(" ", maxSize, StringComparison.Ordinal);
             return string.Format("{0}...", Message.Substring(0, (iNextSpace > 0) ? iNextSpace : maxSize).Trim());
         }
-
-        public virtual int Upvotes
-        {
-            get { return Votes.Count(vote => vote.IsUpvote); }
-        }
-        public virtual int Downvotes
-        {
-            get { return Votes.Count(vote => !vote.IsUpvote); }
-        }
     }
 }

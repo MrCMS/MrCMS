@@ -258,6 +258,7 @@
     <Compile Include="Apps\Commenting\Entities\CommentReportedMessageTemplate.cs" />
     <Compile Include="Apps\Commenting\Entities\Vote.cs" />
     <Compile Include="Apps\Commenting\Extensions\CommentingExtensions.cs" />
+    <Compile Include="Apps\Commenting\Helpers\CommentExtensions.cs" />
     <Compile Include="Apps\Commenting\ModelBinders\CommentingSettingsModelBinder.cs" />
     <Compile Include="Apps\Commenting\ModelBinders\SetIPAddressModelBinder.cs" />
     <Compile Include="Apps\Commenting\Models\ApprovalStatus.cs" />
@@ -1624,6 +1625,7 @@
     <Content Include="Apps\Commenting\Views\Shared\_BaseLayout.cshtml" />
     <Content Include="Apps\Commenting\Views\Web.config" />
     <Content Include="Apps\Commenting\Views\Widgets\CommentingWidget.cshtml" />
+    <Content Include="Apps\Commenting\Views\Comments\Votes.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\CommentingBootstrapV2\Apps\Articles\Views\Pages\Article.cshtml" />
     <Content Include="Themes\CommentingBootstrapV2\Apps\Articles\Views\Pages\ArticleList.cshtml" />

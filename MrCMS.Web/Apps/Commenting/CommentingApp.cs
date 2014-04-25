@@ -25,6 +25,9 @@ namespace MrCMS.Web.Apps.Commenting
             context.MapRoute("Add Comments Form", "comments/add/{id}",
                              new { controller = "Comments", action = "Add" },
                              new[] { typeof(CommentsController).Namespace });
+            context.MapRoute("Show Comment Votes", "comments/votes/{id}",
+                             new { controller = "Comments", action = "Votes" },
+                             new[] { typeof(CommentsController).Namespace });
             context.MapRoute("Show Comments", "comments/Show/{id}",
                              new { controller = "Comments", action = "Show" },
                              new[] { typeof(CommentsController).Namespace });

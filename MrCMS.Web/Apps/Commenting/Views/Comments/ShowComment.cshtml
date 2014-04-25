@@ -1,7 +1,7 @@
 ﻿@using MrCMS.Web.Apps.Commenting.Settings
 @using MrCMS.Website
 @model MrCMS.Web.Apps.Commenting.Entities.Comment
-<li class="post">
+<li class="post" data-post="true">
     <div class="comment-container">
         <div class="comment-header">
             <div class="row">
@@ -10,7 +10,7 @@
                 </div>
                 <div class="col-lg-2 text-right">
                     <ul class="inline unstyled comment-actions reply">
-                        <li><a class="showhide"><i class="glyphicon glyphicon-minus"></i></a></li>
+                        <li><a data-show-hide-comment="true"><i class="glyphicon glyphicon-minus"></i></a></li>
                         @*<li><a href="#"><i class="icon-chevron-up"></i></a></li>*@
                     </ul>
                 </div>
@@ -23,24 +23,8 @@
         </div>
         <div class="comment-footer">
 
+            @{Html.RenderAction("Votes", "Comments", new { comment = Model });}
             <ul class="inline unstyled comment-actions">
-                @if (SiteSettings<CommentingSettings>().AllowVoting)
-                {
-                    <li>
-                        @using (Html.BeginForm("Upvote", "CommentVoting", new { CommentId = Model.Id }, FormMethod.Post, new { @class = "inline" }))
-                        {
-                            @Model.Upvotes
-                            <a href="#" data-link-action="true"><i class="glyphicon glyphicon-chevron-up"></i></a>
-                        }
-                    </li>
-                    <li>
-                        @using (Html.BeginForm("Downvote", "CommentVoting", new { CommentId = Model.Id }, FormMethod.Post, new { @class = "inline" }))
-                        {
-                            @Model.Downvotes
-                            <a href="#" data-link-action="true"><i class="glyphicon glyphicon-chevron-down"></i></a>
-                        }
-                    </li>
-                }
                 @if (CurrentRequestData.CurrentUser != null || SiteSettings<CommentingSettings>().AllowGuestComments)
                 {
                     <li><a class="btn btn-default reply" data-show-reply-to="@Model.Id">Reply</a></li>
