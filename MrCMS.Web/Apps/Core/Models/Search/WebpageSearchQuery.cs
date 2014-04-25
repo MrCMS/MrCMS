@@ -1,13 +1,11 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Indexes;
 using MrCMS.Indexing;
 using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Utils;
@@ -39,31 +37,24 @@ namespace MrCMS.Web.Apps.Core.Models.Search
                                        {
                                            new TermRangeQuery(
                                            FieldDefinition.GetFieldName<PublishedOnFieldDefinition>(), null,
-                                           DateTools.DateToString(CurrentRequestData.Now,
-                                                                  DateTools.Resolution.SECOND), false, true),
+                                           DateTools.DateToString(CurrentRequestData.Now, DateTools.Resolution.SECOND), false, true),
                                            Occur.MUST
                                        }
                                    };
             if (!String.IsNullOrWhiteSpace(Term))
             {
-                var analyser = IndexingHelper.Get<WebpageSearchIndexDefinition>().GetAnalyser();
-                var q = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
-                    new[]
-                    {
-                        FieldDefinition.GetFieldName<NameFieldDefinition>(),
-                        FieldDefinition.GetFieldName<BodyContentFieldDefinition>(),
-                        FieldDefinition.GetFieldName<MetaTitleFieldDefinition>(),
-                        FieldDefinition.GetFieldName<MetaKeywordsFieldDefinition>(),
-                        FieldDefinition.GetFieldName<MetaDescriptionFieldDefinition>()
-                    },
-                    analyser);
-                Query query = Term.SafeGetSearchQuery(q, analyser);
-                booleanQuery.Add(query, Occur.SHOULD);
+                var indexDefinition = IndexingHelper.Get<WebpageSearchIndexDefinition>();
+                var analyser = indexDefinition.GetAnalyser();
+                var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, indexDefinition.SearchableFieldNames, analyser);
+                Query query = Term.SafeGetSearchQuery(parser, analyser);
+
+                booleanQuery.Add(query, Occur.MUST);
             }
             if (CreatedOnFrom.HasValue || CreatedOnTo.HasValue)
                 booleanQuery.Add(GetDateQuery(), Occur.MUST);
             if (!string.IsNullOrEmpty(Type))
-                booleanQuery.Add(new TermQuery(new Term("type", Type)), Occur.MUST);
+                booleanQuery.Add(new TermQuery(new Term(FieldDefinition.GetFieldName<TypeFieldDefinition>(), Type)),
+                                 Occur.MUST);
             if (Parent != null)
                 booleanQuery.Add(
                     new TermQuery(new Term(FieldDefinition.GetFieldName<ParentIdFieldDefinition>(), Parent.Id.ToString())), Occur.MUST);

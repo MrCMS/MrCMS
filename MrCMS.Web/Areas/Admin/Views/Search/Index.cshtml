@@ -91,7 +91,7 @@
                 <div class="btn-group display-inline">
                     @Html.ActionLink("Edit", "Edit", "Webpage", new { id = result.Id }, new { @class = "btn btn-mini" })
 
-                    @if (result.Children.Any())
+                    @if (result.AnyChildren())
                     {
                         <a href="/Admin/Search?parent.id=@result.Id" class="btn btn-mini">View Children</a>
                     }
