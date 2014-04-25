@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Linq;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
@@ -71,12 +70,5 @@ namespace MrCMS.Web.Apps.Core.Models.Search
                     ? DateTools.DateToString(CreatedOnTo.Value, DateTools.Resolution.SECOND)
                     : null, CreatedOnFrom.HasValue, CreatedOnTo.HasValue);
         }
-
-        private string MakeFuzzy(string keywords)
-        {
-            var split = keywords.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            return string.Join(" ", split.Select(s => s + "~"));
-        }
-
     }
 }
