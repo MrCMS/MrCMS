@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using Elmah;
 using Iesi.Collections.Generic;
+using MrCMS.Commenting.Tests.Stubs;
 using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Settings;
+using MrCMS.Web;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cfg;
@@ -29,43 +31,44 @@ namespace MrCMS.Commenting.Tests
             {
                 lock (lockObject)
                 {
-                    var assemblies = new List<Assembly> {typeof (InMemoryDatabaseTest).Assembly};
+                    var assemblies = new List<Assembly>
+                                     {
+                                         typeof (BasicMappedWebpage).Assembly,
+                                         typeof (MrCMSApplication).Assembly,
+                                         typeof (Startup).Assembly
+                                     };
                     var nHibernateModule = new NHibernateConfigurator
-                                               {
-                                                   CacheEnabled = true,
-                                                   DatabaseType = DatabaseType.Sqlite,
-                                                   InDevelopment = true,
-                                                   ManuallyAddedAssemblies = assemblies
-                                               };
+                    {
+                        CacheEnabled = true,
+                        DatabaseType = DatabaseType.Sqlite,
+                        InDevelopment = true,
+                        ManuallyAddedAssemblies = assemblies
+                    };
                     Configuration = nHibernateModule.GetConfiguration();
 
                     SessionFactory = Configuration.BuildSessionFactory();
                 }
             }
-
             Session = SessionFactory.OpenFilteredSession();
+            Kernel.Bind<ISession>().ToMethod(context => Session);
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
-            CurrentRequestData.DatabaseIsInstalled = true;
 
             SetupUser();
 
 
             CurrentSite = Session.Transact(session =>
-                                               {
-                                                   var site = new Site
-                                                                  {
-                                                                      Name = "Current Site",
-                                                                      BaseUrl = "www.currentsite.com"
-                                                                  };
-                                                   CurrentRequestData.CurrentSite = site;
-                                                   session.SaveOrUpdate(site);
-                                                   return site;
-                                               });
+            {
+                var site = new Site { Name = "Current Site", BaseUrl = "www.currentsite.com", Id = 1 };
+                CurrentRequestData.CurrentSite = site;
+                session.Save(site);
+                return site;
+            });
 
-            CurrentRequestData.SiteSettings = new SiteSettings {TimeZone = TimeZoneInfo.Local.Id};
+            CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.Local.Id };
 
             CurrentRequestData.ErrorSignal = new ErrorSignal();
+            CurrentRequestData.DatabaseIsInstalled = true;
         }
 
         protected Site CurrentSite { get; set; }

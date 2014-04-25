@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 
@@ -70,6 +71,11 @@ namespace MrCMS.Web.Apps.Commenting.Settings
         {
             AllowedPageTypes = string.Join(",", types.Select(type => type.FullName));
             return this;
+        }
+
+        public bool IsAllowedType(Webpage webpage)
+        {
+            return webpage != null && AllowedTypes.Contains(webpage.GetType());
         }
     }
 

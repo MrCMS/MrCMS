@@ -1,13 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using MrCMS.Commenting.Tests.Support;
 using MrCMS.Paging;
+using MrCMS.Settings;
 using MrCMS.Web.Apps.Commenting.Entities;
 using MrCMS.Web.Apps.Commenting.Models;
 using MrCMS.Web.Apps.Commenting.Services;
 using MrCMS.Website;
+using NHibernate;
 using NHibernate.Event;
+using NHibernate.Event.Default;
+using Ninject;
 using Xunit;
 using Xunit.Extensions;
 
@@ -27,8 +32,9 @@ namespace MrCMS.Commenting.Tests.Services.CommentAdminServiceTests
             CommentAdminService adminService = new CommentAdminServiceBuilder().WithSite(CurrentSite).WithSession(Session).Build();
             var commentSearchQuery = new CommentSearchQuery { Page = page };
 
+            Session.QueryOver<Comment>().RowCount().Should().Be(39);
+            Kernel.Get<SiteSettings>().DefaultPageSize.Should().Be(10);
             IPagedList<Comment> pagedList = adminService.Search(commentSearchQuery);
-
             pagedList.Should().BeEquivalentTo(comments.Skip(skip).Take(take));
         }
 
@@ -44,8 +50,10 @@ namespace MrCMS.Commenting.Tests.Services.CommentAdminServiceTests
             2.Times(() => Session.SaveAndAddEntityTo(new CommentBuilder().IsNotApproved().Build(), comments));
             2.Times(() => Session.SaveAndAddEntityTo(new CommentBuilder().IsPending().Build(), comments));
             CommentAdminService adminService = new CommentAdminServiceBuilder().WithSite(CurrentSite).WithSession(Session).Build();
-            var commentSearchQuery = new CommentSearchQuery {ApprovalStatus = approved};
+            var commentSearchQuery = new CommentSearchQuery { ApprovalStatus = approved };
 
+            Kernel.Get<SiteSettings>().DefaultPageSize.Should().Be(10);
+            Session.QueryOver<Comment>().RowCount().Should().Be(6);
             IPagedList<Comment> pagedList = adminService.Search(commentSearchQuery);
 
             pagedList.Should().BeEquivalentTo(comments.Skip(skip).Take(take));
@@ -61,6 +69,7 @@ namespace MrCMS.Commenting.Tests.Services.CommentAdminServiceTests
             CommentAdminService adminService = new CommentAdminServiceBuilder().WithSite(CurrentSite).WithSession(Session).Build();
             var commentSearchQuery = new CommentSearchQuery { Email = "1@exam" };
 
+            Session.QueryOver<Comment>().RowCount().Should().Be(20);
             IPagedList<Comment> pagedList = adminService.Search(commentSearchQuery);
 
             pagedList.Should().HaveCount(2);
@@ -90,17 +99,19 @@ namespace MrCMS.Commenting.Tests.Services.CommentAdminServiceTests
         {
             // We are disabling MrCMS.DbConfiguration.Configuration.SaveOrUpdateListener here, 
             // to allow us to control the CreatedOn of the comments
-            Session.GetSessionImplementation().Listeners.PreInsertEventListeners = new IPreInsertEventListener[0];
-            var today = CurrentRequestData.Now.Date;
-            var comments = new List<Comment>();
-            10.Times(i => Session.SaveAndAddEntityTo(new CommentBuilder().WithSite(CurrentSite).WithCreatedOn(today.AddDays(i)).Build(), comments));
+            using (new MrCMSSaveHandlerDisabler(Session))
+            {
+                var today = CurrentRequestData.Now.Date;
+                var comments = new List<Comment>();
+                10.Times(i => Session.SaveAndAddEntityTo(new CommentBuilder().WithSite(CurrentSite).WithCreatedOn(today.AddDays(i)).Build(), comments));
 
-            CommentAdminService adminService = new CommentAdminServiceBuilder().WithSite(CurrentSite).WithSession(Session).Build();
-            var commentSearchQuery = new CommentSearchQuery { DateFrom = today.AddDays(5) };
+                CommentAdminService adminService = new CommentAdminServiceBuilder().WithSite(CurrentSite).WithSession(Session).Build();
+                var commentSearchQuery = new CommentSearchQuery { DateFrom = today.AddDays(5) };
 
-            IPagedList<Comment> pagedList = adminService.Search(commentSearchQuery);
+                IPagedList<Comment> pagedList = adminService.Search(commentSearchQuery);
 
-            pagedList.Should().BeEquivalentTo(comments.Skip(5));
+                pagedList.Should().BeEquivalentTo(comments.Skip(5));
+            }
         }
 
         [Fact]
@@ -108,17 +119,41 @@ namespace MrCMS.Commenting.Tests.Services.CommentAdminServiceTests
         {
             // We are disabling MrCMS.DbConfiguration.Configuration.SaveOrUpdateListener here, 
             // to allow us to control the CreatedOn of the comments
-            Session.GetSessionImplementation().Listeners.PreInsertEventListeners = new IPreInsertEventListener[0];
-            var today = CurrentRequestData.Now.Date;
-            var comments = new List<Comment>();
-            10.Times(i => Session.SaveAndAddEntityTo(new CommentBuilder().WithSite(CurrentSite).WithCreatedOn(today.AddDays(i)).Build(), comments));
+            using (new MrCMSSaveHandlerDisabler(Session))
+            {
+                var today = CurrentRequestData.Now.Date;
+                var comments = new List<Comment>();
+                10.Times(
+                    i =>
+                        Session.SaveAndAddEntityTo(
+                            new CommentBuilder().WithSite(CurrentSite).WithCreatedOn(today.AddDays(i)).Build(), comments));
 
-            CommentAdminService adminService = new CommentAdminServiceBuilder().WithSite(CurrentSite).WithSession(Session).Build();
-            var commentSearchQuery = new CommentSearchQuery {DateTo = today.AddDays(5)};
+                CommentAdminService adminService =
+                    new CommentAdminServiceBuilder().WithSite(CurrentSite).WithSession(Session).Build();
+                var commentSearchQuery = new CommentSearchQuery {DateTo = today.AddDays(5)};
 
-            IPagedList<Comment> pagedList = adminService.Search(commentSearchQuery);
+                IPagedList<Comment> pagedList = adminService.Search(commentSearchQuery);
 
-            pagedList.Should().BeEquivalentTo(comments.Take(5));
+                pagedList.Should().BeEquivalentTo(comments.Take(5));
+            }
+        }
+    }
+
+    public class MrCMSSaveHandlerDisabler : IDisposable
+    {
+        private readonly ISession _session;
+        private readonly IPreInsertEventListener[] _listeners;
+
+        public MrCMSSaveHandlerDisabler(ISession session)
+        {
+            _session = session;
+            _listeners = _session.GetSessionImplementation().Listeners.PreInsertEventListeners;
+            _session.GetSessionImplementation().Listeners.PreInsertEventListeners = new IPreInsertEventListener[0];
+        }
+
+        public void Dispose()
+        {
+            _session.GetSessionImplementation().Listeners.PreInsertEventListeners = _listeners;
         }
     }
 }

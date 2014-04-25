@@ -35,7 +35,7 @@ namespace MrCMS.Commenting.Tests.Settings.CommentingSettingsTests
         {
             var commentingSettings = new CommentSettingsBuilder().Build();
 
-            commentingSettings.NotifyCommentAddedEmail.Should().BeBlank();
+            commentingSettings.NotifyCommentAddedEmail.Should().BeNullOrWhiteSpace();
         }
 
         //[Fact]

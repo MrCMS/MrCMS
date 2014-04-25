@@ -2,6 +2,7 @@
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Commenting.Extensions;
+using MrCMS.Web.Apps.Commenting.Settings;
 using MrCMS.Web.Apps.Commenting.Widgets;
 using MrCMS.Website;
 using NHibernate;
@@ -20,6 +21,9 @@ namespace MrCMS.Web.Apps.Commenting.DbConfiguration.Listeners
                                                     {
                                                         var session = kernel.Get<ISession>();
                                                         var webpage = @event.Entity as Webpage;
+                                                        if (webpage == null ||  !kernel.Get<CommentingSettings>().IsAllowedType(webpage))
+                                                            return;
+
                                                         var layoutArea = webpage.GetCommentsLayoutArea();
                                                         if (layoutArea == null) return;
                                                         if (webpage.Widgets.OfType<CommentingWidget>().Any(widget => widget.LayoutArea == layoutArea))

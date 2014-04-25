@@ -24,6 +24,7 @@ namespace MrCMS.Entities.Documents.Web
         {
             InheritFrontEndRolesFromParent = true;
             Urls = new List<UrlHistory>();
+            Widgets = new List<Widget.Widget>();
         }
         private Layout.Layout _layout;
 
