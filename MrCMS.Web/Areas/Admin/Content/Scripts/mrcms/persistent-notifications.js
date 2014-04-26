@@ -1,7 +1,9 @@
 ﻿var PersistentNotifications = function () {
     var initialized = false;
     var updateNotificationCount = function () {
-        $('[data-notification-count]').html($('[data-notification-list] > [data-notification]').length);
+        $.get("/Admin/PersistentNotification/GetCount", function (data) {
+            $('[data-notification-count]').html(data);
+        });
     };
     var container = $('[data-notification-list]');
     var initializeNotifications = function () {
@@ -9,7 +11,7 @@
             container.empty();
             if (notifications.length) {
                 notifications.reverse();
-                $.each(notifications, function (idx, notification) {
+                $.each(notifications, function (idx, notification) { 
                     prependNotification(notification);
                 });
                 updateNotificationCount();
