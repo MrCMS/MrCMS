@@ -378,6 +378,7 @@
     <Compile Include="Models\WebpageCount.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\EventContext.cs" />
+    <Compile Include="Services\FileMigration\FileMigrationService.cs" />
     <Compile Include="Services\Events\Args\OnUserAddedEventArgs.cs" />
     <Compile Include="Services\Events\IOnUserAdded.cs" />
     <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
@@ -669,6 +670,8 @@
     <Compile Include="Tasks\LuceneActionComparison.cs" />
     <Compile Include="Tasks\LuceneActionExecutor.cs" />
     <Compile Include="Tasks\LuceneIndexTaskExecutionHandler.cs" />
+    <Compile Include="Tasks\MoveFile.cs" />
+    <Compile Include="Tasks\MoveFileData.cs" />
     <Compile Include="Tasks\QueuedTaskSearchQuery.cs" />
     <Compile Include="Tasks\TaskManager.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
