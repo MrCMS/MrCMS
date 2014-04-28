@@ -9,8 +9,8 @@
     <fieldset>
         <legend>
             Edit @Model.GetType().Name.BreakUpString()
-            <span class="pull-right">
-                @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn btn-mini" })
+            <span class="pull-right btn-group">
+                @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn" })
                 <input class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-message-template" type="submit" value="Add Message Template" /> 
             </span>
         </legend>

@@ -1144,7 +1144,6 @@
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-site.js" />
-    <Content Include="Areas\Admin\Content\Scripts\mrcms\edit-message-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\form-sort.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\move-webpage.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\edit-webpage.js" />

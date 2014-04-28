@@ -36,6 +36,9 @@ namespace MrCMS.Services
                 queryOver =
                     queryOver.Where(message => message.ToAddress.IsInsensitiveLike(searchQuery.ToQuery, MatchMode.Anywhere) || message.ToName.IsInsensitiveLike(searchQuery.ToQuery, MatchMode.Anywhere));
 
+            if (!string.IsNullOrWhiteSpace(searchQuery.Subject))
+                queryOver = queryOver.Where(message => message.Subject.IsInsensitiveLike(searchQuery.Subject, MatchMode.Anywhere));
+            
             return queryOver.OrderBy(message => message.CreatedOn).Desc.Paged(searchQuery.Page, _siteSettings.DefaultPageSize);
         }
     }
