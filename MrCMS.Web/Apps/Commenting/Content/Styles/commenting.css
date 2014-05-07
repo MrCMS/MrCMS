@@ -1,0 +1,31 @@
+﻿.comments-container { font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+    .comments-container ul { list-style: none; margin-left: 0;padding-left: 0;}
+    .comments-container > ul > li { border-bottom: #cccccc solid 1px; margin-bottom: 10px; }
+    .comments-container .child { margin-left: 45px; }
+.comment-container { margin-bottom: 10px; }
+    .comment-container .comment-actions li:first-child { border-right: 1px solid #eef1f3; }
+    .comment-container .comment-footer .comment-actions li:first-child { padding-left: 0; }
+    .comment-container .author { color: #cccccc; font-weight: bold; margin-bottom: 0; line-height: 24px; }
+.comments-container .btn { font-size: 11px; font-weight: normal; font-family: Helvetica, sans-serif; padding: 0 22px; }
+.comments-container .comment-post { padding-top: 10px; display: none; }
+.comments-container [class^="icon-"], .comments-container [class*=" icon-"] { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; filter: alpha(opacity=50); -moz-opacity: 0.5; opacity: 0.5; }
+.comments-container a:hover [class^="icon-"], .comments-container a:hover [class*=" icon-"] { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"; filter: alpha(opacity=100); -moz-opacity: 1; opacity: 1; }
+.comment-body p { color: #000; margin: 0 0 5px 0; line-height: 15px; }
+.comments-container h4 { font-size: 18px; font-weight: normal; color: #656566; margin: 25px 0 10px 0; }
+
+.comment-actions { line-height: 24px;display: inline;}
+ul.comment-actions li { display: inline;}
+.comments-container label { margin-bottom: 5px; color: #656566; font-size: 12px; }
+.comments-container textarea, .comments-container input, .comments-container select { border-radius: 0; -moz-border-radius: 0; -webkit-border-radius: 0; }
+.add-comment .notloggedin-actions { padding-right: 15px; line-height: 24px; }
+.comments-heading { border-bottom: 1px solid #ccc; }
+.comment-header .row-fluid [class*="span"] { min-height: 24px; }
+.comments-heading ul { margin-bottom: 7px; }
+    .comments-heading ul li.first { border-right: 1px solid #ccc; padding-left: 0; }
+.comments-container form { margin: 0; }
+.vis { visibility: visible; }
+.no-vis { visibility: hidden; }
+.post.collapsed-post .comment-container > .comment-body, .post.collapsed-post .comment-container > .comment-post, .post.collapsed-post .comment-container > .comment-footer, .post.collapsed-post .child { display: none; }
+
+textarea.inline-reply { width: 100%;}
+.inline { display: inline;}

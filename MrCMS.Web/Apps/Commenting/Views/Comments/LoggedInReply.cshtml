@@ -1,0 +1,14 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Core.Pages
+@using MrCMS.Website
+@model MrCMS.Web.Apps.Commenting.Models.LoggedInUserAddCommentModel
+<h4>Reply as <a href="@(UniquePageHelper.GetUrl<UserAccountPage>())">@CurrentRequestData.CurrentUser.Name</a> </h4>
+@using (Html.BeginForm("LoggedIn", "Comments", new { Model.WebpageId, Model.InReplyTo }, FormMethod.Post, new { @class = "add-comment" }))
+{
+    @Html.TextAreaFor(model => model.Message, new { @class = "input-block-level inline-reply" })
+    @Html.ValidationMessageFor(model => model.Message)
+   
+    <div class="text-right">
+        <input type="submit" class="btn btn-primary btn-mini" value="Post Comment" />
+    </div>
+}

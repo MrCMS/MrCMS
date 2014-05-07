@@ -1,0 +1,22 @@
+﻿@using MrCMS.Web.Apps.Commenting.Helpers
+@using MrCMS.Web.Apps.Commenting.Settings
+@model MrCMS.Web.Apps.Commenting.Entities.Comment
+<ul class="inline unstyled comment-actions" data-votes="@Model.Id">
+    @if (SiteSettings<CommentingSettings>().AllowVoting)
+    {
+        <li>
+            @using (Html.BeginForm("Upvote", "CommentVoting", new { CommentId = Model.Id }, FormMethod.Post, new { @class = "inline" }))
+            {
+                @Model.Upvotes()
+                <a href="#" data-link-action="true"><i class="glyphicon glyphicon-chevron-up"></i></a>
+            }
+        </li>
+        <li>
+            @using (Html.BeginForm("Downvote", "CommentVoting", new { CommentId = Model.Id }, FormMethod.Post, new { @class = "inline" }))
+            {
+                @Model.Downvotes()
+                <a href="#" data-link-action="true"><i class="glyphicon glyphicon-chevron-down"></i></a>
+            }
+        </li>
+    }
+</ul>
