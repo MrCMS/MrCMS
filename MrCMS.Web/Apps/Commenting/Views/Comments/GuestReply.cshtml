@@ -6,18 +6,24 @@
 <h4>Reply as guest</h4>
 @using (Html.BeginForm("Guest", "Comments", new { Model.WebpageId, Model.InReplyTo }, FormMethod.Post, new { @class = "add-comment" }))
 {
-    @Html.TextAreaFor(model => model.Message, new { @class = "input-block-level" })
-    @Html.ValidationMessageFor(model => model.Message)
-    <div class="row-fluid">
-        <div class="span6">
-            @Html.LabelFor(model => model.Name)
-            @Html.TextBoxFor(model => model.Name, new { @class = "input-block-level" })
-            @Html.ValidationMessageFor(model => model.Name)
+    <div class="form-group">
+        @Html.TextAreaFor(model => model.Message, new { @class = " form-control input-block-level", rows = 3 })
+        @Html.ValidationMessageFor(model => model.Message)
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name)
+                @Html.TextBoxFor(model => model.Name, new { @class = "input-block-level form-control" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
         </div>
-        <div class="span6">
-            @Html.LabelFor(model => model.Email)
-            @Html.TextBoxFor(model => model.Email, new { @class = "input-block-level" })
-            @Html.ValidationMessageFor(model => model.Email)
+        <div class="col-lg-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email)
+                @Html.TextBoxFor(model => model.Email, new { @class = "input-block-level form-control" })
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
         </div>
     </div>
     <div class="text-right">
