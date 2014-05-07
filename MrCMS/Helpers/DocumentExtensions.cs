@@ -18,12 +18,18 @@ namespace MrCMS.Helpers
     {
         public static bool CanDelete(this Document document)
         {
-            return !MrCMSApplication.Get<ISession>()
+            return !document.AnyChildren();
+        }
+        
+        public static bool AnyChildren(this Document document)
+        {
+            return MrCMSApplication.Get<ISession>()
                 .QueryOver<Document>()
                 .Where(doc => doc.Parent != null && doc.Parent.Id == document.Id)
                 .Cacheable()
                 .Any();
         }
+
         public static int FormPostingsCount(this Webpage webpage)
         {
             return MrCMSApplication.Get<ISession>()
@@ -60,7 +66,7 @@ namespace MrCMS.Helpers
         private static List<VersionChange> GetVersionChanges(Document currentVersion, Document previousVersion)
         {
             var changes = new List<VersionChange>();
-            
+
             if (previousVersion == null)
                 return changes;
 
@@ -72,9 +78,9 @@ namespace MrCMS.Helpers
                              select new VersionChange
                                         {
                                             Property =
-                                                propertyInfo.GetCustomAttributes(typeof (DisplayNameAttribute), true).
+                                                propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), true).
                                                     Any()
-                                                    ? propertyInfo.GetCustomAttributes(typeof (DisplayNameAttribute),
+                                                    ? propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute),
                                                                                        true).OfType
                                                           <DisplayNameAttribute>().First().DisplayName
                                                     : propertyInfo.Name,
@@ -107,9 +113,9 @@ namespace MrCMS.Helpers
             return type.GetProperties().Where(
                 info =>
                 info.CanWrite &&
-                !typeof (SystemEntity).IsAssignableFrom(info.PropertyType) &&
+                !typeof(SystemEntity).IsAssignableFrom(info.PropertyType) &&
                 (!info.PropertyType.IsGenericType ||
-                 (info.PropertyType.IsGenericType && info.PropertyType.GetGenericTypeDefinition() == typeof (Nullable<>)))
+                 (info.PropertyType.IsGenericType && info.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
                 &&
                 !ignorePropertyNames.Contains(info.Name)).ToList();
         }

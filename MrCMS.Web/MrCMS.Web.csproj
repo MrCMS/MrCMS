@@ -28,6 +28,7 @@
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <TargetFrameworkProfile />
+    <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +50,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
@@ -226,6 +230,9 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WebActivator">
       <HintPath>..\packages\WebActivator.1.5\lib\net40\WebActivator.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -1195,7 +1202,6 @@
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-category.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-site.js" />
-    <Content Include="Areas\Admin\Content\Scripts\mrcms\edit-message-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\form-sort.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\move-webpage.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\edit-webpage.js" />

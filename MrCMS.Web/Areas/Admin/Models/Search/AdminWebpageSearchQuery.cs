@@ -7,9 +7,9 @@ using Lucene.Net.Search;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Indexes;
 using MrCMS.Indexing;
+using MrCMS.Indexing.Definitions;
 using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Utils;
-using MrCMS.Web.Apps.Core.Indexing.WebpageSearch;
 
 namespace MrCMS.Web.Areas.Admin.Models.Search
 {
@@ -36,24 +36,18 @@ namespace MrCMS.Web.Areas.Admin.Models.Search
             var booleanQuery = new BooleanQuery();
             if (!String.IsNullOrWhiteSpace(Term))
             {
-                var analyser = IndexingHelper.Get<AdminWebpageIndexDefinition>().GetAnalyser();
-                var q = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
-                    new[]
-                    {
-                        FieldDefinition.GetFieldName<NameFieldDefinition>(),
-                        FieldDefinition.GetFieldName<BodyContentFieldDefinition>(),
-                        FieldDefinition.GetFieldName<MetaTitleFieldDefinition>(),
-                        FieldDefinition.GetFieldName<MetaKeywordsFieldDefinition>(),
-                        FieldDefinition.GetFieldName<MetaDescriptionFieldDefinition>()
-                    }, analyser);
-                Query query = Term.SafeGetSearchQuery(q, analyser);
+                var indexDefinition = IndexingHelper.Get<AdminWebpageIndexDefinition>();
+                var analyser = indexDefinition.GetAnalyser();
+                var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, indexDefinition.SearchableFieldNames, analyser);
+                Query query = Term.SafeGetSearchQuery(parser, analyser);
 
-                booleanQuery.Add(query, Occur.SHOULD);
+                booleanQuery.Add(query, Occur.MUST);
             }
             if (CreatedOnFrom.HasValue || CreatedOnTo.HasValue)
                 booleanQuery.Add(GetDateQuery(), Occur.MUST);
             if (!string.IsNullOrEmpty(Type))
-                booleanQuery.Add(new TermQuery(new Term("type", Type)), Occur.MUST);
+                booleanQuery.Add(new TermQuery(new Term(FieldDefinition.GetFieldName<TypeFieldDefinition>(), Type)),
+                                 Occur.MUST);
             if (Parent != null)
                 booleanQuery.Add(
                     new TermQuery(new Term(FieldDefinition.GetFieldName<ParentIdFieldDefinition>(), Parent.Id.ToString())), Occur.MUST);

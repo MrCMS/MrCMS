@@ -32,6 +32,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return Json(_service.GetNotifications(), JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetCount()
+        {
+            return Json(_service.GetNotificationCount(), JsonRequestBehavior.AllowGet);
+        }
+
         public PartialViewResult Navbar()
         {
             return PartialView();
@@ -48,6 +53,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public interface IPersistentNotificationUIService
     {
         IList<NotificationModel> GetNotifications();
+        int GetNotificationCount();
         void MarkAllAsRead();
     }
 
@@ -82,6 +88,17 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                             .Take(15)
                             .Cacheable()
                             .List<NotificationModel>();
+        }
+
+        public int GetNotificationCount()
+        {
+            var user = CurrentRequestData.CurrentUser;
+            var queryOver = _session.QueryOver<Notification>();
+
+            if (user.LastNotificationReadDate.HasValue)
+                queryOver = queryOver.Where(notification => notification.CreatedOn >= user.LastNotificationReadDate);
+
+            return queryOver.RowCount();
         }
 
         public void MarkAllAsRead()
