@@ -116,7 +116,17 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MessageTemplateController_EditPost_ShouldRedirectToIndex()
+        public void MessageTemplateController_EditPost_ShouldRedirectToEditForTheMessageTemplate()
+        {
+            var basicMessageTemplate = new BasicMessageTemplate { Id = 123 };
+            var result = _messageTemplateController.Edit_POST(basicMessageTemplate);
+
+            result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
+            result.As<RedirectToRouteResult>().RouteValues["id"].Should().Be(123);
+        }
+
+        [Fact]
+        public void MessageTemplateController_EditPost_ShouldRedirectToIndexForNullTemplate()
         {
             var result = _messageTemplateController.Edit_POST(null);
 

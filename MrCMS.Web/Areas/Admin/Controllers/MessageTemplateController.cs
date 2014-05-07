@@ -64,8 +64,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             {
                 _messageTemplateService.Save(messageTemplate);
                 TempData.SuccessMessages().Add(string.Format("{0} successfully edited", messageTemplate.MessageTemplateType.BreakUpString()));
+                return RedirectToAction("Edit", new { id = messageTemplate.Id });
             }
-            return RedirectToAction("Edit", messageTemplate.Id);
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
