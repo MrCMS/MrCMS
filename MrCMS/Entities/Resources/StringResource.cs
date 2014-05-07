@@ -1,5 +1,7 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using MrCMS.Helpers;
 
 namespace MrCMS.Entities.Resources
 {
@@ -14,6 +16,24 @@ namespace MrCMS.Entities.Resources
         public virtual string DisplayUICulture
         {
             get { return IsDefault ? "Default" : CultureInfo.GetCultureInfo(UICulture).DisplayName; }
+        }
+        public virtual string DisplayKey
+        {
+            get
+            {
+                if (Key == null || Key.LastIndexOf(".", StringComparison.Ordinal) == -1)
+                {
+                    return Key;
+                }
+                var typeName = Key.Substring(0, Key.LastIndexOf(".", StringComparison.Ordinal));
+                var type = TypeHelper.GetTypeByName(typeName);
+                if (type != null)
+                {
+                    return type.Name.BreakUpString() + " - " +
+                           Key.Substring(Key.LastIndexOf(".", StringComparison.Ordinal) + 1).BreakUpString();
+                }
+                return Key;
+            }
         }
 
         public virtual bool IsDefault

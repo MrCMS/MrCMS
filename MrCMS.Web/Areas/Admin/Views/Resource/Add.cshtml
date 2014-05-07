@@ -9,20 +9,19 @@
 @using (Html.BeginForm("Add", "Resource", FormMethod.Post))
 {
     <fieldset>
-        <legend>Edit resource
+        <legend>
+            Add an override for @Model.DisplayKey
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="Edit resource" />
+                <input type="submit" class="btn-primary btn" value="Add Override" />
             </span>
         </legend>
         @Html.ReturnToReferrer()
-        @Html.LabelFor(task => task.Key)
-        @Html.DisplayFor(task => task.Key)
         @Html.HiddenFor(task => task.Key)
         @Html.LabelFor(task => task.Value)
         @Html.TextBoxFor(task => task.Value)
         @Html.ValidationMessageFor(resource => resource.Value)
         @Html.LabelFor(task => task.UICulture)
-        @Html.DropDownListFor(task => task.UICulture, languageOptions,new{@data_val="true",data_val_required = "Please select a culture."})
+        @Html.DropDownListFor(task => task.UICulture, languageOptions, new { @data_val = "true", data_val_required = "Please select a culture." })
         @Html.ValidationMessageFor(resource => resource.UICulture)
     </fieldset>
 }
