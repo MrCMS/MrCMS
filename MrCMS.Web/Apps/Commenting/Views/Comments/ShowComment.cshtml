@@ -1,6 +1,10 @@
 ﻿@using MrCMS.Web.Apps.Commenting.Settings
 @using MrCMS.Website
 @model MrCMS.Web.Apps.Commenting.Entities.Comment
+@{
+    var depth = ViewData["depth"] is int ? (int)ViewData["depth"] : 1;
+    var maxDepth = SiteSettings<CommentingSettings>().MaxUINestingDepth;
+}
 <li class="post" data-post="true">
     <div class="comment-container">
         <div class="comment-header">
@@ -37,10 +41,10 @@
     </div>
     @if (Model.Children.Any())
     {
-        <ul class="child">
+        <ul class="@(depth<maxDepth ? "child":"")">
             @foreach (var comment in Model.Children.Where(comment => comment.Approved == true))
             {
-                Html.RenderPartial("ShowComment", comment);
+                Html.RenderPartial("ShowComment", comment, new ViewDataDictionary { { "depth", depth + 1 } });
             }
         </ul>
     }

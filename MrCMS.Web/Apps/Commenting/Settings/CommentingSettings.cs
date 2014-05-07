@@ -19,6 +19,8 @@ namespace MrCMS.Web.Apps.Commenting.Settings
 
             CommentAddedMessage = "Thanks for posting!";
             CommentPendingApprovalMessage = "Thanks for posting! Your comment is pending approval by admins, and will be shown shortly.";
+            MaxUINestingDepth = 3;
+
         }
 
         [DisplayName("Allow guest comments?")]
@@ -41,6 +43,7 @@ namespace MrCMS.Web.Apps.Commenting.Settings
         public string CommentAddedMessage { get; set; }
         public string CommentPendingApprovalMessage { get; set; }
 
+        public int MaxUINestingDepth { get; set; }
         public IEnumerable<string> EmailsToNotify
         {
             get
