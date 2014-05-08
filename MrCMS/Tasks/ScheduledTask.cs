@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Website;
+using Ninject;
 
 namespace MrCMS.Tasks
 {
@@ -43,20 +44,23 @@ namespace MrCMS.Tasks
                                                   emptyItemText: "Select a type");
         }
 
-        public virtual void OnStarting()
+        public virtual void OnStarting(IExecutableTask executableTask)
         {
             Status = TaskExecutionStatus.Executing;
+            executableTask.OnStarting();
         }
 
-        public virtual void OnSuccess()
+        public virtual void OnSuccess(IExecutableTask executableTask)
         {
             Status = TaskExecutionStatus.Pending;
             LastComplete = CurrentRequestData.Now;
+            executableTask.OnSuccess();
         }
 
-        public virtual void OnFailure()
+        public virtual void OnFailure(IExecutableTask executableTask, Exception exception)
         {
             Status = TaskExecutionStatus.Pending;
+            executableTask.OnFailure(exception);
         }
     }
 
