@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MrCMS.Helpers;
 using NHibernate;
 
@@ -14,47 +15,45 @@ namespace MrCMS.Tasks
             _session = session;
         }
 
-        public void BeginExecution(IExecutableTask executableTask)
-        {
-            SetStatus(executableTask, status => status.OnStarting());
-        }
-
         public void BeginExecution(IEnumerable<IExecutableTask> executableTasks)
         {
-            SetStatus(executableTasks, status => status.OnStarting());
+            SetStatus(executableTasks, (status, task) => status.OnStarting(task));
         }
 
-        public void SuccessfulCompletion(IExecutableTask executableTask)
+        public void CompleteExecution(IEnumerable<TaskExecutionResult> results)
         {
-            SetStatus(executableTask, status => status.OnSuccess());
-        }
-
-        public void SuccessfulCompletion(IEnumerable<IExecutableTask> executableTasks)
-        {
-            SetStatus(executableTasks, status => status.OnSuccess());
-        }
-
-        public void FailedExecution(IExecutableTask executableTask)
-        {
-            SetStatus(executableTask, status => status.OnFailure());
-        }
-
-        public void FailedExecution(IEnumerable<IExecutableTask> executableTasks)
-        {
-            SetStatus(executableTasks, status => status.OnFailure());
-        }
-
-        private void SetStatus(IExecutableTask executableTask, Action<IHaveExecutionStatus> action)
-        {
+            IList<TaskExecutionResult> taskExecutionResults = results as IList<TaskExecutionResult> ?? results.ToList();
             _session.Transact(session =>
-                                  {
-                                      action(executableTask.Entity);
-                                      session.Update(executableTask.Entity);
-                                  });
+                              {
+                                  SuccessfulCompletion(taskExecutionResults.Where(result => result.Success));
+                                  FailedExecution(taskExecutionResults.Where(result => !result.Success));
+                              });
         }
-        private void SetStatus(IEnumerable<IExecutableTask> executableTasks, Action<IHaveExecutionStatus> action)
+
+        private void SuccessfulCompletion(IEnumerable<TaskExecutionResult> executableTasks)
         {
-            _session.Transact(session => executableTasks.ForEach(task => SetStatus(task, action)));
+            SetStatus(executableTasks.Select(result => result.Task), (status, task) => status.OnSuccess(task));
+        }
+
+        private void FailedExecution(IEnumerable<TaskExecutionResult> taskFailureInfos)
+        {
+            _session.Transact(session => taskFailureInfos.ForEach(
+                taskFailureInfo =>
+                {
+                    IExecutableTask executableTask = taskFailureInfo.Task;
+                    executableTask.Entity.OnFailure(executableTask, taskFailureInfo.Exception);
+                    session.Update(executableTask.Entity);
+                }));
+        }
+
+        private void SetStatus(IEnumerable<IExecutableTask> executableTasks,
+            Action<IHaveExecutionStatus, IExecutableTask> action)
+        {
+            _session.Transact(session => executableTasks.ForEach(task =>
+                                                                 {
+                                                                     action(task.Entity, task);
+                                                                     session.Update(task.Entity);
+                                                                 }));
         }
     }
 }
