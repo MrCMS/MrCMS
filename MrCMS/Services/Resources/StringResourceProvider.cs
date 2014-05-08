@@ -23,6 +23,8 @@ namespace MrCMS.Services.Resources
             _siteSettings = siteSettings;
         }
 
+
+        private static readonly object s_lock = new object();
         public string GetValue(string key, string defaultValue = null)
         {
             var languageValue =
@@ -30,15 +32,18 @@ namespace MrCMS.Services.Resources
                     resource => resource.Key == key && resource.UICulture == _siteSettings.UICulture);
             if (languageValue != null)
                 return languageValue.Value;
-            var defaultResource =
-                ResourcesForSite.SingleOrDefault(resource => resource.Key == key && resource.UICulture == null);
-            if (defaultResource == null)
+            lock (s_lock)
             {
-                defaultResource = new StringResource { Key = key, Value = defaultValue ?? key };
-                _session.Transact(session => session.Save(defaultResource));
-                AllResources.Add(defaultResource);
+                var defaultResource =
+                    ResourcesForSite.SingleOrDefault(resource => resource.Key == key && resource.UICulture == null);
+                if (defaultResource == null)
+                {
+                    defaultResource = new StringResource { Key = key, Value = defaultValue ?? key };
+                    _session.Transact(session => session.Save(defaultResource));
+                    AllResources.Add(defaultResource);
+                }
+                return defaultResource.Value;
             }
-            return defaultResource.Value;
         }
 
         public IEnumerable<string> GetOverriddenLanguages()

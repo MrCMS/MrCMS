@@ -7,8 +7,8 @@
             self = this;
             if (element.find(settings.fileUploadSelector).length) {
                 element.find(settings.fileUploadSelector).fileupload({
-                    url: $(settings.uploadUrlSelector).val(),
-                    formData: { id: $(settings.uploadMediaCategoryIdSelector).val() }, //required because if nested within form uploader take form id instead of URL id
+                    url: element.find(settings.uploadUrlSelector).val(),
+                    formData: { id: element.find(settings.uploadMediaCategoryIdSelector).val() }, //required because if nested within form uploader take form id instead of URL id
                     dataType: 'json',
                     type: 'POST',
                     autoUpload: true,
@@ -20,7 +20,7 @@
                     dropZone: element.find(settings.dropZoneSelector)
                 });
 
-                element.find(settings.fileUploadSelector).on('fileuploadstopped', function(e) {
+                element.find(settings.fileUploadSelector).on('fileuploadstopped', function (e) {
                     settings.onFileUploadStopped(e, element);
                     element.find(settings.progressBarSelector).hide();
                 });
@@ -32,10 +32,6 @@
                     self.validateFiles(e, data);
                 }).on('fileuploadadded', function (e, data) {
                     element.find(settings.filesSelector).html('');
-                }).on('fileuploadstart', function () {
-                    $("#loading").show();
-                }).on('#fileuploadstop', function () {
-                    $("#loading").hide();
                 });
 
             }
@@ -43,7 +39,9 @@
             return self;
         },
         fileUploaded: function (e, data) {
-            $("#loading").hide();
+            //$.each(data.files, function (index, file) {
+            //    $('<p/>').text(file.name + ' uploaded').appendTo(settings.filesSelector);
+            //});
         },
         progressBar: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);

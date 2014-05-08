@@ -1,12 +1,12 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Media.MediaCategory 
-@{
-    if (Model != null)
-    {
-        Html.RenderAction("Upload", "MediaCategory", new {category = Model});
+@if (Model != null)
+{<div id="upload-anywhere">
+      @{ Html.RenderAction("Upload", "MediaCategory", new { category = Model }); }
         <hr class="small-margin" />
-        Html.RenderAction("ShowFilesSimple", "MediaCategory", new { category = Model });
+     @{ Html.RenderAction("ShowFilesSimple", "MediaCategory", new {category = Model}); }
+        </div>
     }
-
+@{
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-show-files-simple.js");
 }

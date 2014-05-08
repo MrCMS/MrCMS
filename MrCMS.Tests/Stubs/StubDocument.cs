@@ -5,7 +5,6 @@ using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Tests.Stubs
 {
-    [MrCMSMapClass]
     public class StubDocument : Document
     {
         public virtual void SetVersions(List<DocumentVersion> versions)
@@ -13,7 +12,6 @@ namespace MrCMS.Tests.Stubs
             Versions = versions;
         }
     }
-    [MrCMSMapClass]
     public class StubUniquePage : IUniquePage
     {
     }

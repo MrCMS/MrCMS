@@ -42,7 +42,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                 resources = resources.Where(resource => resource.UICulture == searchQuery.Language);
             }
 
-            return new PagedList<StringResource>(resources.OrderBy(resource => resource.Key), searchQuery.Page,
+            return new PagedList<StringResource>(resources.OrderBy(resource => resource.DisplayKey), searchQuery.Page,
                 _siteSettings.DefaultPageSize);
         }
 

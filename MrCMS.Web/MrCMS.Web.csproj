@@ -249,62 +249,6 @@
     <Compile Include="Apps\Articles\Services\IArticleService.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
-    <Compile Include="Apps\Commenting\ACL\CommentingAdminACL.cs" />
-    <Compile Include="Apps\Commenting\Areas\Admin\Controllers\CommentController.cs" />
-    <Compile Include="Apps\Commenting\Areas\Admin\Controllers\CommentingSettingsController.cs" />
-    <Compile Include="Apps\Commenting\Areas\Admin\ModelBinders\CommentApprovalModelBinder.cs" />
-    <Compile Include="Apps\Commenting\CommentingApp.cs" />
-    <Compile Include="Apps\Commenting\Controllers\BaseCommentUiController.cs" />
-    <Compile Include="Apps\Commenting\Controllers\CommentReportingController.cs" />
-    <Compile Include="Apps\Commenting\Controllers\CommentsController.cs" />
-    <Compile Include="Apps\Commenting\Controllers\CommentVotingController.cs" />
-    <Compile Include="Apps\Commenting\DbConfiguration\CommentOverride.cs" />
-    <Compile Include="Apps\Commenting\DbConfiguration\Listeners\CommentWidgetAppender.cs" />
-    <Compile Include="Apps\Commenting\Entities\Comment.cs" />
-    <Compile Include="Apps\Commenting\Entities\CommentAddedMessageTemplate.cs" />
-    <Compile Include="Apps\Commenting\Entities\CommentReportedMessageTemplate.cs" />
-    <Compile Include="Apps\Commenting\Entities\Vote.cs" />
-    <Compile Include="Apps\Commenting\Extensions\CommentingExtensions.cs" />
-    <Compile Include="Apps\Commenting\Helpers\CommentExtensions.cs" />
-    <Compile Include="Apps\Commenting\ModelBinders\CommentingSettingsModelBinder.cs" />
-    <Compile Include="Apps\Commenting\ModelBinders\SetIPAddressModelBinder.cs" />
-    <Compile Include="Apps\Commenting\Models\ApprovalStatus.cs" />
-    <Compile Include="Apps\Commenting\Models\CommentedEnabledChangedResult.cs" />
-    <Compile Include="Apps\Commenting\Models\CommentResponseType.cs" />
-    <Compile Include="Apps\Commenting\Models\CommentSearchQuery.cs" />
-    <Compile Include="Apps\Commenting\Models\CommentsViewInfo.cs" />
-    <Compile Include="Apps\Commenting\Models\GuestAddCommentModel.cs" />
-    <Compile Include="Apps\Commenting\Models\ICommentResponseInfo.cs" />
-    <Compile Include="Apps\Commenting\Models\LoggedInUserAddCommentModel.cs" />
-    <Compile Include="Apps\Commenting\Models\Menu\CommentingAdminMenuModel.cs" />
-    <Compile Include="Apps\Commenting\Models\PostCommentResponse.cs" />
-    <Compile Include="Apps\Commenting\Models\ReportModel.cs" />
-    <Compile Include="Apps\Commenting\Models\ReportResponse.cs" />
-    <Compile Include="Apps\Commenting\Models\VoteModel.cs" />
-    <Compile Include="Apps\Commenting\Models\VoteResponse.cs" />
-    <Compile Include="Apps\Commenting\Services\AddCommentWidgets.cs" />
-    <Compile Include="Apps\Commenting\Services\CommentAdminService.cs" />
-    <Compile Include="Apps\Commenting\Services\CommentingSettingsAdminService.cs" />
-    <Compile Include="Apps\Commenting\Services\CommentReportingUiService.cs" />
-    <Compile Include="Apps\Commenting\Services\CommentsUIService.cs" />
-    <Compile Include="Apps\Commenting\Services\CommentVotingUiService.cs" />
-    <Compile Include="Apps\Commenting\Services\IAddCommentWidgets.cs" />
-    <Compile Include="Apps\Commenting\Services\ICommentAdminService.cs" />
-    <Compile Include="Apps\Commenting\Services\ICommentingSettingsAdminService.cs" />
-    <Compile Include="Apps\Commenting\Services\ICommentReportingUiService.cs" />
-    <Compile Include="Apps\Commenting\Services\ICommentsUIService.cs" />
-    <Compile Include="Apps\Commenting\Services\ICommentVotingUiService.cs" />
-    <Compile Include="Apps\Commenting\Services\IOnCommentAdded.cs" />
-    <Compile Include="Apps\Commenting\Services\IOnCommentReported.cs" />
-    <Compile Include="Apps\Commenting\Services\IProcessCommentWidgetChanges.cs" />
-    <Compile Include="Apps\Commenting\Services\IRemoveCommentWidgets.cs" />
-    <Compile Include="Apps\Commenting\Services\ProcessCommentWidgetChanges.cs" />
-    <Compile Include="Apps\Commenting\Services\QueueCommentAddedNotificationEmails.cs" />
-    <Compile Include="Apps\Commenting\Services\QueueCommentReportedNotificationEmails.cs" />
-    <Compile Include="Apps\Commenting\Services\RemoveCommentWidgets.cs" />
-    <Compile Include="Apps\Commenting\Settings\CommentingSettings.cs" />
-    <Compile Include="Apps\Commenting\Tasks\AppendCommentWidget.cs" />
-    <Compile Include="Apps\Commenting\Widgets\CommentingWidget.cs" />
     <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
     <Compile Include="Apps\Core\Controllers\RegistrationController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
@@ -500,8 +444,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps\Articles\Areas\Admin\Content\Scripts\articles.js" />
-    <Content Include="Apps\Commenting\Content\Scripts\ui.js" />
-    <Content Include="Apps\Commenting\Content\Styles\commenting.css" />
     <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-theme.css" />
     <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.css" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.svg" />
@@ -1308,38 +1250,6 @@
     <Content Include="Content\install\scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.signalR-2.0.2.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.signalR-2.0.2.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Content\Scripts\ui.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Content\Styles\commenting.css" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Bootstrap\css\bootstrap-responsive.css" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Bootstrap\css\bootstrap-responsive.min.css" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Bootstrap\css\bootstrap.css" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Bootstrap\css\bootstrap.min.css" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Bootstrap\img\glyphicons-halflings-white.png" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Bootstrap\img\glyphicons-halflings.png" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Bootstrap\js\bootstrap.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Bootstrap\js\bootstrap.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Images\mrcms-logo.png" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Scripts\forgot-password.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Scripts\jquery.validate.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Scripts\respond.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Content\Styles\style.css" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Bootstrap\css\bootstrap-responsive.css" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Bootstrap\css\bootstrap-responsive.min.css" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Bootstrap\css\bootstrap.css" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Bootstrap\css\bootstrap.min.css" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Bootstrap\img\glyphicons-halflings-white.png" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Bootstrap\img\glyphicons-halflings.png" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Bootstrap\js\bootstrap.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Bootstrap\js\bootstrap.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Images\mrcms-logo.png" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Scripts\forgot-password.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Scripts\jquery.validate.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Scripts\respond.min.js" />
-    <Content Include="Themes\CommentingBootstrapV2\Content\Styles\style.css" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1609,75 +1519,7 @@
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\TextWidgetAdd.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryAdd.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryListAdd.cshtml" />
-    <Content Include="Apps\Commenting\Areas\Admin\Views\CommentingSettings\Index.cshtml" />
-    <Content Include="Apps\Commenting\Areas\Admin\Views\Comment\Delete.cshtml" />
-    <Content Include="Apps\Commenting\Areas\Admin\Views\Comment\Index.cshtml" />
-    <Content Include="Apps\Commenting\Areas\Admin\Views\Comment\Show.cshtml" />
-    <Content Include="Apps\Commenting\Areas\Admin\Views\Web.config" />
-    <Content Include="Apps\Commenting\Areas\Admin\Views\_ViewStart.cshtml" />
-    <Content Include="Apps\Commenting\Views\Comments\Guest.cshtml" />
-    <Content Include="Apps\Commenting\Views\Comments\GuestReply.cshtml" />
-    <Content Include="Apps\Commenting\Views\Comments\LoggedIn.cshtml" />
-    <Content Include="Apps\Commenting\Views\Comments\LoggedInReply.cshtml" />
-    <Content Include="Apps\Commenting\Views\Comments\Login.cshtml" />
-    <Content Include="Apps\Commenting\Views\Comments\Show.cshtml" />
-    <Content Include="Apps\Commenting\Views\Comments\ShowComment.cshtml" />
-    <Content Include="Apps\Commenting\Views\Shared\_BaseLayout.cshtml" />
-    <Content Include="Apps\Commenting\Views\Web.config" />
-    <Content Include="Apps\Commenting\Views\Widgets\CommentingWidget.cshtml" />
-    <Content Include="Apps\Commenting\Views\Comments\Votes.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Articles\Views\Pages\Article.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Articles\Views\Pages\ArticleList.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Articles\Views\Shared\ShowCategories.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Articles\Views\Web.config" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Articles\Views\Widgets\ArticleCategories.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Articles\Views\Widgets\LatestXArticles.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Comments\Guest.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Comments\GuestReply.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Comments\LoggedIn.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Comments\LoggedInReply.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Comments\Login.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Comments\Show.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Comments\ShowComment.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Shared\_BaseLayout.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Shared\_TwoColumn.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Web.config" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Commenting\Views\Widgets\CommentingWidget.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Pages\ForgottenPasswordPage.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Pages\LoginPage.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Pages\RegisterPage.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Pages\ResetPasswordPage.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Pages\SearchPage.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Pages\TextPage.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Pages\UserAccountPage.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Shared\ChangePassword.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Shared\LoginBox.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Shared\PasswordReset.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Shared\RegisterForm.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Shared\RegistrationDetails.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Shared\UserAccountDetails.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Shared\_BaseLayout.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Shared\_TwoColumn.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\web.config" />
-    <None Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Web.Debug.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
-    <None Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Web.Release.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Widgets\LinkedImage.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Widgets\Navigation.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Widgets\PlainTextWidget.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Widgets\TextWidget.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Apps\Core\Views\Widgets\UserLinks.cshtml" />
-    <Content Include="Themes\CommentingBootstrapV2\Views\web.config" />
-    <None Include="Themes\CommentingBootstrapV2\Views\Web.Debug.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
-    <None Include="Themes\CommentingBootstrapV2\Views\Web.Release.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
     <None Include="Themes\Default\Views\Web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
