@@ -1,7 +1,6 @@
 ﻿using System;
 using MrCMS.Entities.Multisite;
 using MrCMS.Website;
-using Ninject;
 
 namespace MrCMS.Tasks
 {
@@ -9,12 +8,12 @@ namespace MrCMS.Tasks
     {
         int Priority { get; }
         bool Schedulable { get; }
+        Site Site { get; set; }
+        IHaveExecutionStatus Entity { get; set; }
         TaskExecutionResult Execute();
         string GetData();
         void SetData(string data);
 
-        Site Site { get; set; }
-        IHaveExecutionStatus Entity { get; set; }
         void OnFailure(Exception exception);
         void OnSuccess();
         void OnFinalFailure(Exception exception);
@@ -25,6 +24,7 @@ namespace MrCMS.Tasks
     {
         public abstract int Priority { get; }
         public abstract bool Schedulable { get; }
+
         public TaskExecutionResult Execute()
         {
             try
@@ -39,32 +39,51 @@ namespace MrCMS.Tasks
             }
         }
 
-        protected abstract void OnExecute();
         public abstract string GetData();
         public abstract void SetData(string data);
         public Site Site { get; set; }
         public IHaveExecutionStatus Entity { get; set; }
 
-        public virtual void OnFailure(Exception exception) { }
-        public virtual void OnSuccess() { }
-        public virtual void OnFinalFailure(Exception exception) { }
-        public virtual void OnStarting() { }
+        public virtual void OnFailure(Exception exception)
+        {
+        }
+
+        public virtual void OnSuccess()
+        {
+        }
+
+        public virtual void OnFinalFailure(Exception exception)
+        {
+        }
+
+        public virtual void OnStarting()
+        {
+        }
+
+        protected abstract void OnExecute();
     }
 
-    public abstract partial class AdHocTask : BaseExecutableTask
+    public abstract class AdHocTask : BaseExecutableTask
     {
-        public sealed override bool Schedulable { get { return false; } }
+        public override sealed bool Schedulable
+        {
+            get { return false; }
+        }
     }
 
-    public abstract partial class SchedulableTask : BaseExecutableTask
+    public abstract class SchedulableTask : BaseExecutableTask
     {
-        public sealed override bool Schedulable { get { return true; } }
-        public sealed override string GetData()
+        public override sealed bool Schedulable
+        {
+            get { return true; }
+        }
+
+        public override sealed string GetData()
         {
             return string.Empty;
         }
 
-        public sealed override void SetData(string data)
+        public override sealed void SetData(string data)
         {
         }
     }

@@ -22,7 +22,7 @@ namespace MrCMS.Tasks
 
         public void CompleteExecution(IEnumerable<TaskExecutionResult> results)
         {
-            var taskExecutionResults = results as IList<TaskExecutionResult> ?? results.ToList();
+            IList<TaskExecutionResult> taskExecutionResults = results as IList<TaskExecutionResult> ?? results.ToList();
             _session.Transact(session =>
                               {
                                   SuccessfulCompletion(taskExecutionResults.Where(result => result.Success));
@@ -30,33 +30,30 @@ namespace MrCMS.Tasks
                               });
         }
 
-        public void SuccessfulCompletion(IEnumerable<TaskExecutionResult> executableTasks)
+        private void SuccessfulCompletion(IEnumerable<TaskExecutionResult> executableTasks)
         {
             SetStatus(executableTasks.Select(result => result.Task), (status, task) => status.OnSuccess(task));
         }
 
-        public void FailedExecution(IEnumerable<TaskExecutionResult> taskFailureInfos)
+        private void FailedExecution(IEnumerable<TaskExecutionResult> taskFailureInfos)
         {
-
-            _session.Transact(session => taskFailureInfos.ForEach(taskFailureInfo =>
-                                                                  {
-                                                                      var executableTask = taskFailureInfo.Task;
-                                                                      executableTask.Entity.OnFailure(executableTask, taskFailureInfo.Exception);
-                                                                      session.Update(executableTask.Entity);
-                                                                  }));
+            _session.Transact(session => taskFailureInfos.ForEach(
+                taskFailureInfo =>
+                {
+                    IExecutableTask executableTask = taskFailureInfo.Task;
+                    executableTask.Entity.OnFailure(executableTask, taskFailureInfo.Exception);
+                    session.Update(executableTask.Entity);
+                }));
         }
 
-        private void SetStatus(IExecutableTask executableTask, Action<IHaveExecutionStatus, IExecutableTask> action)
+        private void SetStatus(IEnumerable<IExecutableTask> executableTasks,
+            Action<IHaveExecutionStatus, IExecutableTask> action)
         {
-            _session.Transact(session =>
-                              {
-                                  action(executableTask.Entity, executableTask);
-                                  session.Update(executableTask.Entity);
-                              });
-        }
-        private void SetStatus(IEnumerable<IExecutableTask> executableTasks, Action<IHaveExecutionStatus, IExecutableTask> action)
-        {
-            _session.Transact(session => executableTasks.ForEach(task => SetStatus(task, action)));
+            _session.Transact(session => executableTasks.ForEach(task =>
+                                                                 {
+                                                                     action(task.Entity, task);
+                                                                     session.Update(task.Entity);
+                                                                 }));
         }
     }
 }

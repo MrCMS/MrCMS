@@ -3,17 +3,13 @@ using System.Linq;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Website;
-using Ninject;
 
 namespace MrCMS.Tasks
 {
     public class QueuedTask : SiteEntity, IHaveExecutionStatus
     {
         public virtual string Type { get; set; }
-        public virtual Type GetTaskType()
-        {
-            return TypeHelper.GetGenericTypeByName(Type);
-        }
+
         public virtual string Data { get; set; }
         public virtual TaskExecutionStatus Status { get; set; }
         public virtual int Tries { get; set; }
@@ -27,7 +23,7 @@ namespace MrCMS.Tasks
         {
             get
             {
-                var taskType = GetTaskType();
+                Type taskType = GetTaskType();
                 if (taskType == null)
                     return Type;
                 if (!taskType.IsGenericType)
@@ -63,6 +59,11 @@ namespace MrCMS.Tasks
                 executableTask.OnFinalFailure(exception);
             }
             Tries++;
+        }
+
+        public virtual Type GetTaskType()
+        {
+            return TypeHelper.GetGenericTypeByName(Type);
         }
     }
 }
