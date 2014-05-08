@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MrCMS.Helpers;
 using NHibernate;
 
@@ -14,45 +15,46 @@ namespace MrCMS.Tasks
             _session = session;
         }
 
-        public void BeginExecution(IExecutableTask executableTask)
-        {
-            SetStatus(executableTask, status => status.OnStarting());
-        }
-
         public void BeginExecution(IEnumerable<IExecutableTask> executableTasks)
         {
-            SetStatus(executableTasks, status => status.OnStarting());
+            SetStatus(executableTasks, (status, task) => status.OnStarting(task));
         }
 
-        public void SuccessfulCompletion(IExecutableTask executableTask)
+        public void CompleteExecution(IEnumerable<TaskExecutionResult> results)
         {
-            SetStatus(executableTask, status => status.OnSuccess());
+            var taskExecutionResults = results as IList<TaskExecutionResult> ?? results.ToList();
+            _session.Transact(session =>
+                              {
+                                  SuccessfulCompletion(taskExecutionResults.Where(result => result.Success));
+                                  FailedExecution(taskExecutionResults.Where(result => !result.Success));
+                              });
         }
 
-        public void SuccessfulCompletion(IEnumerable<IExecutableTask> executableTasks)
+        public void SuccessfulCompletion(IEnumerable<TaskExecutionResult> executableTasks)
         {
-            SetStatus(executableTasks, status => status.OnSuccess());
+            SetStatus(executableTasks.Select(result => result.Task), (status, task) => status.OnSuccess(task));
         }
 
-        public void FailedExecution(IExecutableTask executableTask)
+        public void FailedExecution(IEnumerable<TaskExecutionResult> taskFailureInfos)
         {
-            SetStatus(executableTask, status => status.OnFailure());
+
+            _session.Transact(session => taskFailureInfos.ForEach(taskFailureInfo =>
+                                                                  {
+                                                                      var executableTask = taskFailureInfo.Task;
+                                                                      executableTask.Entity.OnFailure(executableTask, taskFailureInfo.Exception);
+                                                                      session.Update(executableTask.Entity);
+                                                                  }));
         }
 
-        public void FailedExecution(IEnumerable<IExecutableTask> executableTasks)
-        {
-            SetStatus(executableTasks, status => status.OnFailure());
-        }
-
-        private void SetStatus(IExecutableTask executableTask, Action<IHaveExecutionStatus> action)
+        private void SetStatus(IExecutableTask executableTask, Action<IHaveExecutionStatus, IExecutableTask> action)
         {
             _session.Transact(session =>
-                                  {
-                                      action(executableTask.Entity);
-                                      session.Update(executableTask.Entity);
-                                  });
+                              {
+                                  action(executableTask.Entity, executableTask);
+                                  session.Update(executableTask.Entity);
+                              });
         }
-        private void SetStatus(IEnumerable<IExecutableTask> executableTasks, Action<IHaveExecutionStatus> action)
+        private void SetStatus(IEnumerable<IExecutableTask> executableTasks, Action<IHaveExecutionStatus, IExecutableTask> action)
         {
             _session.Transact(session => executableTasks.ForEach(task => SetStatus(task, action)));
         }

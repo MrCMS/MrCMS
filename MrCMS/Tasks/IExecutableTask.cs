@@ -1,6 +1,7 @@
 ﻿using System;
 using MrCMS.Entities.Multisite;
 using MrCMS.Website;
+using Ninject;
 
 namespace MrCMS.Tasks
 {
@@ -14,6 +15,10 @@ namespace MrCMS.Tasks
 
         Site Site { get; set; }
         IHaveExecutionStatus Entity { get; set; }
+        void OnFailure(Exception exception);
+        void OnSuccess();
+        void OnFinalFailure(Exception exception);
+        void OnStarting();
     }
 
     public abstract class BaseExecutableTask : IExecutableTask
@@ -25,12 +30,12 @@ namespace MrCMS.Tasks
             try
             {
                 OnExecute();
-                return new TaskExecutionResult {Success = true};
+                return TaskExecutionResult.Successful(this);
             }
             catch (Exception ex)
             {
                 CurrentRequestData.ErrorSignal.Raise(ex);
-                return new TaskExecutionResult{Exception =ex,Success = false};
+                return TaskExecutionResult.Failure(this, ex);
             }
         }
 
@@ -39,6 +44,11 @@ namespace MrCMS.Tasks
         public abstract void SetData(string data);
         public Site Site { get; set; }
         public IHaveExecutionStatus Entity { get; set; }
+
+        public virtual void OnFailure(Exception exception) { }
+        public virtual void OnSuccess() { }
+        public virtual void OnFinalFailure(Exception exception) { }
+        public virtual void OnStarting() { }
     }
 
     public abstract partial class AdHocTask : BaseExecutableTask

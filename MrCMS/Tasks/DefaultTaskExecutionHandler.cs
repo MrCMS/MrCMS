@@ -23,26 +23,24 @@ namespace MrCMS.Tasks
 
         public List<TaskExecutionResult> ExecuteTasks(IList<IExecutableTask> list)
         {
-            return list.Select(Execute).ToList();
+            _taskStatusUpdater.BeginExecution(list);
+            var results = list.Select(Execute).ToList();
+
+            // we are batching these to increase performance (no need for 1 transaction per update)
+            _taskStatusUpdater.CompleteExecution(results);
+            return results;
         }
 
         private TaskExecutionResult Execute(IExecutableTask executableTask)
         {
-            _taskStatusUpdater.BeginExecution(executableTask);
             try
             {
-                var result = executableTask.Execute();
-                if (result.Success)
-                    _taskStatusUpdater.SuccessfulCompletion(executableTask);
-                else
-                    _taskStatusUpdater.FailedExecution(executableTask);
-                return result;
+                return executableTask.Execute();
             }
             catch (Exception exception)
             {
                 CurrentRequestData.ErrorSignal.Raise(exception);
-                _taskStatusUpdater.FailedExecution(executableTask);
-                return new TaskExecutionResult { Exception = exception };
+                return TaskExecutionResult.Failure(executableTask, exception);
             }
         }
     }

@@ -38,8 +38,9 @@ namespace MrCMS.Tasks
                     .ToList();
 
             LuceneActionExecutor.PerformActions(_indexService, luceneActions);
-            _taskStatusUpdater.SuccessfulCompletion(list);
-            return new List<TaskExecutionResult> { new TaskExecutionResult { Success = true } };
+            var results = list.Select(TaskExecutionResult.Successful).ToList();
+            _taskStatusUpdater.CompleteExecution(results);
+            return results;
         }
     }
 }
