@@ -24,6 +24,7 @@ using MrCMS.Website;
 using MySql.Data.MySqlClient;
 using NHibernate;
 using Ninject;
+using Ninject.Planning.Bindings;
 using AuthorizationRuleCollection = System.Security.AccessControl.AuthorizationRuleCollection;
 
 namespace MrCMS.Installation
@@ -45,8 +46,213 @@ namespace MrCMS.Installation
             if (model.DatabaseConnectionString != null)
                 model.DatabaseConnectionString = model.DatabaseConnectionString.Trim();
 
-            //SQL Server
+            ValidateDbInfo(model, result);
 
+            EnsureAccessToFileSystem(result);
+
+            if (result.Success)
+            {
+                var kernel = MrCMSApplication.Get<IKernel>();
+                IEnumerable<IBinding> bindings = new List<IBinding>();
+                try
+                {
+                    bindings = kernel.GetBindings(typeof(IEventContext));
+
+                    kernel.Rebind<IEventContext>().ToMethod(context => new InstallationEventContext());
+                    var connectionString = CreateDatabase(model);
+
+                    //save settings
+                    SetUpInitialData(model, connectionString, model.DatabaseType);
+
+                    CurrentRequestData.OnEndRequest.Add(k =>
+                                                            {
+                                                                var connectionStringSettings =
+                                                                    new ConnectionStringSettings("mrcms",
+                                                                                                 connectionString)
+                                                                        {
+                                                                            ProviderName =
+                                                                                GetProviderName(model.DatabaseType)
+
+                                                                        };
+                                                                Configuration cfg =
+                                                                    WebConfigurationManager.OpenWebConfiguration(@"/");
+                                                                cfg.ConnectionStrings.ConnectionStrings.Remove("mrcms");
+                                                                cfg.ConnectionStrings.ConnectionStrings.Add(
+                                                                    connectionStringSettings);
+                                                                cfg.Save();
+
+                                                                RestartAppDomain();
+                                                            });
+                }
+                catch (Exception exception)
+                {
+                    result.AddModelError("Setup failed: " + exception);
+                }
+                finally
+                {
+                    kernel.GetBindings(typeof(IEventContext)).ForEach(kernel.RemoveBinding);
+                    bindings.ForEach(kernel.AddBinding);
+                }
+            }
+
+            return result;
+        }
+
+        class InstallationEventContext : IEventContext
+        {
+            public void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
+            {
+
+            }
+        }
+
+        private string CreateDatabase(InstallModel model)
+        {
+            string connectionString = null;
+            switch (model.DatabaseType)
+            {
+                case DatabaseType.Sqlite:
+                    //SQLite
+                    string databaseFileName = "MrCMS.Db.db";
+                    string databasePath = @"|DataDirectory|\" + databaseFileName;
+                    connectionString = "Data Source=" + databasePath;
+
+                    //drop database if exists
+                    string databaseFullPath = HostingEnvironment.MapPath("~/App_Data/") + databaseFileName;
+                    if (File.Exists(databaseFullPath))
+                    {
+                        File.Delete(databaseFullPath);
+                    }
+                    using (File.Create(databaseFullPath))
+                    {
+                    }
+                    break;
+                case DatabaseType.MsSql:
+                    if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
+                                                       StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        //raw connection string
+                        connectionString = model.DatabaseConnectionString;
+                    }
+                    else
+                    {
+                        //values
+                        connectionString =
+                            createConnectionString(model.SqlAuthenticationType == "windowsauthentication",
+                                                   model.SqlServerName, model.SqlDatabaseName,
+                                                   model.SqlServerUsername, model.SqlServerPassword);
+                    }
+
+                    if (model.SqlServerCreateDatabase)
+                    {
+                        if (!sqlServerDatabaseExists(connectionString))
+                        {
+                            //create database
+                            string errorCreatingDatabase = createSqlDatabase(connectionString);
+                            if (!String.IsNullOrEmpty(errorCreatingDatabase))
+                                throw new Exception(errorCreatingDatabase);
+                            else
+                            {
+                                //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
+                                //that's just wait 3 seconds
+                                Thread.Sleep(3000);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //check whether database exists
+                        if (!sqlServerDatabaseExists(connectionString))
+                            throw new Exception(
+                                "Database does not exist or you don't have permissions to connect to it");
+                    }
+                    break;
+                case DatabaseType.MySQL:
+                    if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
+                                                       StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        //raw connection string
+                        connectionString = model.DatabaseConnectionString;
+                    }
+                    else
+                    {
+                        //values
+                        connectionString =
+                            createMySqlConnectionString(model.SqlAuthenticationType == "windowsauthentication",
+                                                        model.SqlServerName, model.SqlDatabaseName,
+                                                        model.SqlServerUsername, model.SqlServerPassword);
+                    }
+
+                    if (model.SqlServerCreateDatabase)
+                    {
+                        if (!mySqlServerDatabaseExists(connectionString))
+                        {
+                            //create database
+                            string errorCreatingDatabase = createMySqlDatabase(connectionString);
+                            if (!String.IsNullOrEmpty(errorCreatingDatabase))
+                                throw new Exception(errorCreatingDatabase);
+                            else
+                            {
+                                //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
+                                //that's just wait 3 seconds
+                                Thread.Sleep(3000);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //check whether database exists
+                        if (!mySqlServerDatabaseExists(connectionString))
+                            throw new Exception(
+                                "Database does not exist or you don't have permissions to connect to it");
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return connectionString;
+        }
+
+        private void EnsureAccessToFileSystem(InstallationResult result)
+        {
+            //validate permissions
+            string rootDir = _context.Server.MapPath("~/");
+            var dirsToCheck = new List<string>();
+            dirsToCheck.Add(rootDir);
+            dirsToCheck.Add(rootDir + "App_Data");
+            dirsToCheck.Add(rootDir + "bin");
+            dirsToCheck.Add(rootDir + "content");
+            dirsToCheck.Add(rootDir + "content/upload");
+            foreach (string dir in dirsToCheck)
+                if (!checkPermissions(dir, false, true, true, true))
+                    result.AddModelError(
+                        string.Format(
+                            "The '{0}' account is not granted with Modify permission on folder '{1}'. Please configure these permissions.",
+                            WindowsIdentity.GetCurrent().Name, dir));
+                else
+                {
+                    var directoryInfo = new DirectoryInfo(dir);
+                    if (!directoryInfo.Exists)
+                    {
+                        directoryInfo.Create();
+                    }
+                }
+
+
+            var filesToCheck = new List<string>();
+            filesToCheck.Add(rootDir + "web.config");
+            filesToCheck.Add(rootDir + "ConnectionStrings.config");
+            foreach (string file in filesToCheck)
+                if (!checkPermissions(file, false, true, true, true))
+                    result.AddModelError(
+                        string.Format(
+                            "The '{0}' account is not granted with Modify permission on file '{1}'. Please configure these permissions.",
+                            WindowsIdentity.GetCurrent().Name, file));
+        }
+
+        private static void ValidateDbInfo(InstallModel model, InstallationResult result)
+        {
+            //SQL Server
             switch (model.DatabaseType)
             {
                 case DatabaseType.Sqlite:
@@ -130,187 +336,8 @@ namespace MrCMS.Installation
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            //Consider granting access rights to the resource to the ASP.NET request identity. 
-            //ASP.NET has a base process identity 
-            //(typically {MACHINE}\ASPNET on IIS 5 or Network Service on IIS 6 and IIS 7, 
-            //and the configured application pool identity on IIS 7.5) that is used if the application is not impersonating.
-            //If the application is impersonating via <identity impersonate="true"/>, 
-            //the identity will be the anonymous user (typically IUSR_MACHINENAME) or the authenticated request user.
-
-            //validate permissions
-            string rootDir = _context.Server.MapPath("~/");
-            var dirsToCheck = new List<string>();
-            dirsToCheck.Add(rootDir);
-            dirsToCheck.Add(rootDir + "App_Data");
-            dirsToCheck.Add(rootDir + "bin");
-            dirsToCheck.Add(rootDir + "content");
-            dirsToCheck.Add(rootDir + "content/upload");
-            foreach (string dir in dirsToCheck)
-                if (!checkPermissions(dir, false, true, true, true))
-                    result.AddModelError(
-                        string.Format(
-                            "The '{0}' account is not granted with Modify permission on folder '{1}'. Please configure these permissions.",
-                            WindowsIdentity.GetCurrent().Name, dir));
-                else
-                {
-                    var directoryInfo = new DirectoryInfo(dir);
-                    if (!directoryInfo.Exists)
-                    {
-                        directoryInfo.Create();
-                    }
-                }
-
-
-            var filesToCheck = new List<string>();
-            filesToCheck.Add(rootDir + "web.config");
-            filesToCheck.Add(rootDir + "ConnectionStrings.config");
-            foreach (string file in filesToCheck)
-                if (!checkPermissions(file, false, true, true, true))
-                    result.AddModelError(
-                        string.Format(
-                            "The '{0}' account is not granted with Modify permission on file '{1}'. Please configure these permissions.",
-                            WindowsIdentity.GetCurrent().Name, file));
-
-            if (result.Success)
-            {
-                try
-                {
-                    string connectionString = null;
-                    switch (model.DatabaseType)
-                    {
-                        case DatabaseType.Sqlite:
-                            //SQLite
-                            string databaseFileName = "MrCMS.Db.db";
-                            string databasePath = @"|DataDirectory|\" + databaseFileName;
-                            connectionString = "Data Source=" + databasePath;
-
-                            //drop database if exists
-                            string databaseFullPath = HostingEnvironment.MapPath("~/App_Data/") + databaseFileName;
-                            if (File.Exists(databaseFullPath))
-                            {
-                                File.Delete(databaseFullPath);
-                            }
-                            using (File.Create(databaseFullPath))
-                            {
-                            }
-                            break;
-                        case DatabaseType.MsSql:
-                            if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
-                                                               StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                //raw connection string
-                                connectionString = model.DatabaseConnectionString;
-                            }
-                            else
-                            {
-                                //values
-                                connectionString =
-                                    createConnectionString(model.SqlAuthenticationType == "windowsauthentication",
-                                                           model.SqlServerName, model.SqlDatabaseName,
-                                                           model.SqlServerUsername, model.SqlServerPassword);
-                            }
-
-                            if (model.SqlServerCreateDatabase)
-                            {
-                                if (!sqlServerDatabaseExists(connectionString))
-                                {
-                                    //create database
-                                    string errorCreatingDatabase = createSqlDatabase(connectionString);
-                                    if (!String.IsNullOrEmpty(errorCreatingDatabase))
-                                        throw new Exception(errorCreatingDatabase);
-                                    else
-                                    {
-                                        //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
-                                        //that's just wait 3 seconds
-                                        Thread.Sleep(3000);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                //check whether database exists
-                                if (!sqlServerDatabaseExists(connectionString))
-                                    throw new Exception(
-                                        "Database does not exist or you don't have permissions to connect to it");
-                            }
-                            break;
-                        case DatabaseType.MySQL:
-                            if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
-                                                               StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                //raw connection string
-                                connectionString = model.DatabaseConnectionString;
-                            }
-                            else
-                            {
-                                //values
-                                connectionString =
-                                    createMySqlConnectionString(model.SqlAuthenticationType == "windowsauthentication",
-                                                                model.SqlServerName, model.SqlDatabaseName,
-                                                                model.SqlServerUsername, model.SqlServerPassword);
-                            }
-
-                            if (model.SqlServerCreateDatabase)
-                            {
-                                if (!mySqlServerDatabaseExists(connectionString))
-                                {
-                                    //create database
-                                    string errorCreatingDatabase = createMySqlDatabase(connectionString);
-                                    if (!String.IsNullOrEmpty(errorCreatingDatabase))
-                                        throw new Exception(errorCreatingDatabase);
-                                    else
-                                    {
-                                        //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
-                                        //that's just wait 3 seconds
-                                        Thread.Sleep(3000);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                //check whether database exists
-                                if (!mySqlServerDatabaseExists(connectionString))
-                                    throw new Exception(
-                                        "Database does not exist or you don't have permissions to connect to it");
-                            }
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-
-
-                    //save settings
-                    SetUpInitialData(model, connectionString, model.DatabaseType);
-
-                    CurrentRequestData.OnEndRequest.Add(kernel =>
-                                                        {
-
-
-                                                            var connectionStringSettings =
-                                                                new ConnectionStringSettings("mrcms", connectionString)
-                                                                {
-                                                                    ProviderName = GetProviderName(model.DatabaseType)
-
-                                                                };
-                                                            Configuration cfg =
-                                                                WebConfigurationManager.OpenWebConfiguration(@"/");
-                                                            cfg.ConnectionStrings.ConnectionStrings.Remove("mrcms");
-                                                            cfg.ConnectionStrings.ConnectionStrings.Add(
-                                                                connectionStringSettings);
-                                                            cfg.Save();
-
-                                                            RestartAppDomain();
-                                                        });
-                }
-                catch (Exception exception)
-                {
-                    result.AddModelError("Setup failed: " + exception);
-                }
-            }
-
-            return result;
         }
+
         private string GetProviderName(DatabaseType databaseType)
         {
             switch (databaseType)
@@ -351,7 +378,7 @@ namespace MrCMS.Installation
 
             ISessionFactory sessionFactory = configurator.CreateSessionFactory();
             ISession session = sessionFactory.OpenFilteredSession();
-
+            MrCMSApplication.Get<IKernel>().Rebind<ISession>().ToMethod(context => session);
             var site = new Site { Name = model.SiteName, BaseUrl = model.SiteUrl };
             session.Transact(s => s.Save(site));
 

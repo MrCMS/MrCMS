@@ -11,28 +11,30 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
+using MrCMS.Events;
+using MrCMS.Events.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NHibernate.Transform;
+using EnumerableHelper = MrCMS.Helpers.EnumerableHelper;
 
 namespace MrCMS.Services
 {
     public class DocumentService : IDocumentService
     {
         private readonly ISession _session;
-        private readonly IDocumentEventService _documentEventService;
         private readonly SiteSettings _siteSettings;
         private readonly Site _currentSite;
         private Dictionary<string, int> _counts;
 
-        public DocumentService(ISession session, IDocumentEventService documentEventService, SiteSettings siteSettings, Site currentSite)
+        public DocumentService(ISession session, SiteSettings siteSettings, Site currentSite)
         {
             _session = session;
-            _documentEventService = documentEventService;
             _siteSettings = siteSettings;
             _currentSite = currentSite;
         }
@@ -43,22 +45,20 @@ namespace MrCMS.Services
                                   {
                                       document.DisplayOrder = GetMaxParentDisplayOrder(document);
                                       document.CustomInitialization(this, _session);
-                                      if (document.Parent != null)
-                                          document.Parent.Children.Add(document);
                                       session.SaveOrUpdate(document);
 
                                   });
-            _documentEventService.OnDocumentAdded(document);
+            EventContext.Instance.Publish<IOnDocumentAdded, OnDocumentAddedEventArgs>(new OnDocumentAddedEventArgs(document));
         }
 
         private int GetMaxParentDisplayOrder(Document document)
         {
             if (document.Parent != null)
             {
-                var enumerable = document.Parent.Children.Where(d => d != document).ToList();
-                return enumerable.Any()
-                           ? enumerable.Max(d => d.DisplayOrder) + 1
-                           : 0;
+                return _session.QueryOver<Document>()
+                            .Where(doc => doc.Parent.Id == document.Parent.Id)
+                            .Select(Projections.Max<Document>(d => d.DisplayOrder))
+                            .SingleOrDefault<int>();
             }
             if (document is MediaCategory)
             {
@@ -92,8 +92,9 @@ namespace MrCMS.Services
             _session.Transact(session =>
             {
                 document.OnSaving(session);
-                session.SaveOrUpdate(document);
+                session.Update(document);
             });
+            EventContext.Instance.Publish<IOnDocumentUpdated, OnDocumentUpdatedEventArgs>(new OnDocumentUpdatedEventArgs(document, CurrentRequestData.CurrentUser));
             return document;
         }
 
@@ -135,7 +136,11 @@ namespace MrCMS.Services
         public IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document
         {
             IEnumerable<T> list = parent != null
-                ? parent.Children.OfType<T>()
+                ? _session.QueryOver<T>()
+                    .Where(arg => arg.Parent.Id == parent.Id && arg.Site.Id == _currentSite.Id)
+                    .OrderBy(arg => arg.DisplayOrder)
+                    .Asc.Cacheable()
+                    .List()
                 : _session.QueryOver<T>()
                     .Where(arg => arg.Parent == null && arg.Site.Id == _currentSite.Id)
                     .OrderBy(arg => arg.DisplayOrder)
@@ -214,7 +219,7 @@ namespace MrCMS.Services
 
             var existingTags = document.Tags.ToList();
 
-            tagNames.ForEach(name =>
+            EnumerableHelper.ForEach(tagNames, name =>
             {
                 var tag = GetTag(name) ?? new Tag { Name = name };
                 if (!document.Tags.Contains(tag))
@@ -284,7 +289,8 @@ namespace MrCMS.Services
                     document.OnDeleting(session);
                     session.Delete(document);
                 });
-                _documentEventService.OnDocumentDeleted(document);
+
+                EventContext.Instance.Publish<IOnDocumentDeleted, OnDocumentDeletedEventArgs>(new OnDocumentDeletedEventArgs(document));
             }
         }
 
@@ -293,15 +299,16 @@ namespace MrCMS.Services
             if (document.PublishOn == null)
             {
                 document.PublishOn = CurrentRequestData.Now;
-                SaveDocument(document);
+                _session.Transact(session => session.Update(document));
+                EventContext.Instance.Publish<IOnWebpagePublished, OnWebpagePublishedEventArgs>(new OnWebpagePublishedEventArgs(document));
             }
         }
 
         public void Unpublish(Webpage document)
         {
             document.PublishOn = null;
-            SaveDocument(document);
-            _documentEventService.OnDocumentUnpublished(document);
+            _session.Transact(session => session.Update(document));
+            EventContext.Instance.Publish<IOnWebpageUnpublished, OnWebpageUnpublishedEventArgs>(new OnWebpageUnpublishedEventArgs(document));
         }
 
         public void HideWidget(Webpage document, int widgetId)
@@ -343,7 +350,7 @@ namespace MrCMS.Services
 
             var parent = parentVal.HasValue ? GetDocument<Webpage>(parentVal.Value) : null;
 
-            document.SetParent(parent);
+            document.Parent = parent;
 
             SaveDocument(document);
         }
@@ -376,7 +383,7 @@ namespace MrCMS.Services
             }
             else
             {
-                roleNames.ForEach(name =>
+                EnumerableHelper.ForEach(roleNames, name =>
                 {
                     var role = GetRole(name);
                     if (role != null)
@@ -445,16 +452,12 @@ namespace MrCMS.Services
         public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
         {
             var validParentTypes = DocumentMetadataHelper.GetValidParentTypes(webpage);
-            var potentialParents = new List<Webpage>();
 
-            foreach (var metadata in validParentTypes)
-            {
-                potentialParents.AddRange(
-                    _session.CreateCriteria(metadata.Type)
-                        .Add(Restrictions.Eq(Projections.Property("Site.Id"), _currentSite.Id))
-                        .SetCacheable(true)
-                        .List<Webpage>());
-            }
+            List<string> validParentTypeNames = validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
+            var potentialParents =
+                _session.QueryOver<Webpage>()
+                    .Where(page => page.DocumentType.IsIn(validParentTypeNames) && page.Site.Id == _currentSite.Id)
+                    .Cacheable().List<Webpage>();
 
             var result = potentialParents.Distinct()
                 .Where(page => !page.ActivePages.Contains(webpage))

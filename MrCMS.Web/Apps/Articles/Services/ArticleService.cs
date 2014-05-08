@@ -32,6 +32,19 @@ namespace MrCMS.Web.Apps.Articles.Services
                 query = query.JoinAlias(article => article.Tags, () => tagAlias).Where(() => tagAlias.Name.IsInsensitiveLike(model.Category, MatchMode.Exact));
             }
 
+            if (model.Month.HasValue)
+            {
+                query =
+                    query.Where(
+                        article => article.PublishOn != null && article.PublishOn.Value.MonthPart() == model.Month);
+            }
+            if (model.Year.HasValue)
+            {
+                query =
+                    query.Where(
+                        article => article.PublishOn != null && article.PublishOn.Value.YearPart() == model.Year);
+            }
+
             return query.OrderBy(x => x.PublishOn).Desc.Paged(model.Page, page.PageSize);
         }
 

@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using HtmlAgilityPack;
+using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Areas.Admin.Models.SEOAnalysis;
+using MrCMS.Website;
 using NHibernate;
+using NHibernate.Event;
 
 namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
 {
@@ -14,7 +18,7 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
         private readonly IEnumerable<ISEOAnalysisFacetProvider> _analysisFacetProviders;
         private readonly ISession _session;
 
-        public SEOAnalysisService(IEnumerable<ISEOAnalysisFacetProvider> analysisFacetProviders,ISession session)
+        public SEOAnalysisService(IEnumerable<ISEOAnalysisFacetProvider> analysisFacetProviders, ISession session)
         {
             _analysisFacetProviders = analysisFacetProviders;
             _session = session;
@@ -22,8 +26,16 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
 
         public SEOAnalysisResult Analyze(Webpage webpage, string analysisTerm)
         {
-            HtmlNode htmlNode = GetDocument(webpage);
-            return new SEOAnalysisResult(_analysisFacetProviders.SelectMany(provider => provider.GetFacets(webpage, htmlNode, analysisTerm)));
+            HtmlNode htmlNode;
+            using (new ListenerDisabler(_session, ListenerType.PostCommitUpdate, MrCMSListeners.UpdateIndexesListener))
+            using (new ListenerDisabler(_session, ListenerType.PostCollectionUpdate, MrCMSListeners.UpdateIndexesListener))
+            using (new TemporaryPublisher(_session, webpage))
+            {
+                htmlNode = GetDocument(webpage);
+            }
+            return
+                new SEOAnalysisResult(
+                    _analysisFacetProviders.SelectMany(provider => provider.GetFacets(webpage, htmlNode, analysisTerm)));
         }
 
         public void UpdateAnalysisTerm(Webpage webpage)
@@ -31,14 +43,46 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
             _session.Transact(session => session.Update(webpage));
         }
 
-        private static HtmlNode GetDocument(Webpage webpage)
+        private HtmlNode GetDocument(Webpage webpage)
         {
             string absoluteUrl = webpage.AbsoluteUrl;
             WebRequest request = WebRequest.Create(absoluteUrl);
+
             var document = new HtmlDocument();
             document.Load(request.GetResponse().GetResponseStream());
+
             var htmlNode = document.DocumentNode;
             return htmlNode;
+        }
+
+        public class TemporaryPublisher : IDisposable
+        {
+            private readonly DateTime? _publishOn;
+            private readonly bool _published;
+            private readonly ISession _session;
+            private readonly Webpage _webpage;
+
+            public TemporaryPublisher(ISession session, Webpage webpage)
+            {
+                _session = session;
+                _webpage = webpage;
+                _published = webpage.Published;
+                if (!_published)
+                {
+                    _publishOn = _webpage.PublishOn;
+                    webpage.PublishOn = CurrentRequestData.Now.AddDays(-1);
+                    _session.Transact(s => s.Update(_webpage));
+                }
+            }
+
+            public void Dispose()
+            {
+                if (!_published)
+                {
+                    _webpage.PublishOn = _publishOn;
+                    _session.Transact(s => s.Update(_webpage));
+                }
+            }
         }
     }
 }

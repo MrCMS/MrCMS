@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
@@ -37,10 +38,7 @@ namespace MrCMS.Services
 
         public void CopyLayouts(Site @from, Site to)
         {
-            var layouts =
-                _session.QueryOver<Layout>().Where(layout => layout.Site == @from && layout.Parent == null).List();
-
-            var copies = layouts.Select(layout => CopyLayout(layout, to));
+            var copies = GetLayoutCopies(@from, to);
 
             _session.Transact(session => copies.ForEach(layout =>
             {
@@ -53,31 +51,39 @@ namespace MrCMS.Services
             }));
         }
 
-        private Layout CopyLayout(Layout layout, Site to)
+        private IEnumerable<Layout> GetLayoutCopies(Site @from, Site to, Layout parent = null)
         {
-            var copy = GetCopy(layout, to);
-            copy.LayoutAreas = layout.LayoutAreas.Select(area =>
+            var queryOver = _session.QueryOver<Layout>().Where(layout => layout.Site.Id == @from.Id);
+            queryOver = parent == null
+                            ? queryOver.Where(layout => layout.Parent == null)
+                            : queryOver.Where(layout => layout.Parent.Id == parent.Id);
+            var layouts = queryOver.List();
+
+            foreach (var layout in layouts)
             {
-                var areaCopy = GetCopy(area, to);
-                areaCopy.Layout = copy;
-                areaCopy.Widgets = area.Widgets
-                                       .Where(widget => widget.Webpage == null)
-                                       .Select(widget =>
-                                       {
-                                           var widgetCopy = GetCopy(widget, to);
-                                           widgetCopy.LayoutArea = areaCopy;
-                                           return widgetCopy;
-                                       })
-                                       .ToList();
-                return areaCopy;
-            }).ToList();
-            copy.Children = layout.Children.OfType<Layout>().Select(childLayout =>
-            {
-                var child = CopyLayout(childLayout, to);
-                child.Parent = copy;
-                return child;
-            }).Cast<Document>().ToList();
-            return copy;
+                var copy = GetCopy(layout, to);
+                copy.LayoutAreas = layout.LayoutAreas.Select(area =>
+                {
+                    var areaCopy = GetCopy(area, to);
+                    areaCopy.Layout = copy;
+                    areaCopy.Widgets = area.Widgets
+                                           .Where(widget => widget.Webpage == null)
+                                           .Select(widget =>
+                                           {
+                                               var widgetCopy = GetCopy(widget, to);
+                                               widgetCopy.LayoutArea = areaCopy;
+                                               return widgetCopy;
+                                           })
+                                           .ToList();
+                    return areaCopy;
+                }).ToList();
+                copy.Parent = parent;
+                yield return copy;
+                foreach (var child in GetLayoutCopies(@from, to, layout))
+                {
+                    yield return child;
+                }
+            }
         }
 
         private T GetCopy<T>(T entity, Site site) where T : SiteEntity
@@ -89,27 +95,28 @@ namespace MrCMS.Services
 
         public void CopyMediaCategories(Site @from, Site to)
         {
-            var mediaCategories = _session.QueryOver<MediaCategory>().Where(category => category.Site == @from && category.Parent == null).List();
-
-            var copies = mediaCategories.Select(category => CopyMediaCategory(category, to));
+            var copies = GetMediaCategoryCopies(@from, to);
 
             _session.Transact(session => copies.ForEach(category => session.Save(category)));
         }
 
-        private MediaCategory CopyMediaCategory(MediaCategory category, Site to)
+        private IEnumerable<MediaCategory> GetMediaCategoryCopies(Site @from, Site to, MediaCategory parent = null)
         {
-            var copy = GetCopy(category, to);
-            copy.Children =
-                category.Children.OfType<MediaCategory>()
-                        .Select(childLayout =>
-                        {
-                            var child = CopyMediaCategory(childLayout, to);
-                            child.Parent = copy;
-                            return child;
-                        })
-                        .Cast<Document>()
-                        .ToList();
-            return copy;
+            var queryOver = _session.QueryOver<MediaCategory>().Where(layout => layout.Site.Id == @from.Id);
+            queryOver = parent == null
+                            ? queryOver.Where(layout => layout.Parent == null)
+                            : queryOver.Where(layout => layout.Parent.Id == parent.Id);
+            var categories = queryOver.List();
+            foreach (var category in categories)
+            {
+                var copy = GetCopy(category, to);
+                copy.Parent = parent;
+                yield return copy;
+                foreach (var child in GetMediaCategoryCopies(@from, to, category))
+                {
+                    yield return child;
+                }
+            }
         }
 
         public void CopyHome(Site @from, Site to)

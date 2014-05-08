@@ -1,18 +1,16 @@
 using System;
 using System.ComponentModel;
-using System.Linq;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Indexes;
 using MrCMS.Indexing;
 using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Utils;
 using MrCMS.Web.Apps.Core.Indexing;
 using MrCMS.Web.Apps.Core.Indexing.WebpageSearch;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Models.Search
 {
@@ -33,30 +31,29 @@ namespace MrCMS.Web.Apps.Core.Models.Search
 
         public Query GetQuery()
         {
-            if (String.IsNullOrWhiteSpace(Term) && String.IsNullOrWhiteSpace(Type) && !CreatedOnTo.HasValue && !CreatedOnFrom.HasValue && Parent == null)
-                return new MatchAllDocsQuery();
-
-            var booleanQuery = new BooleanQuery();
+            var booleanQuery = new BooleanQuery
+                                   {
+                                       {
+                                           new TermRangeQuery(
+                                           FieldDefinition.GetFieldName<PublishedOnFieldDefinition>(), null,
+                                           DateTools.DateToString(CurrentRequestData.Now, DateTools.Resolution.SECOND), false, true),
+                                           Occur.MUST
+                                       }
+                                   };
             if (!String.IsNullOrWhiteSpace(Term))
             {
-                var analyser = IndexingHelper.Get<WebpageSearchIndexDefinition>().GetAnalyser();
-                var q = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
-                    new[]
-                    {
-                        FieldDefinition.GetFieldName<NameFieldDefinition>(),
-                        FieldDefinition.GetFieldName<BodyContentFieldDefinition>(),
-                        FieldDefinition.GetFieldName<MetaTitleFieldDefinition>(),
-                        FieldDefinition.GetFieldName<MetaKeywordsFieldDefinition>(),
-                        FieldDefinition.GetFieldName<MetaDescriptionFieldDefinition>()
-                    },
-                    analyser);
-                Query query = Term.SafeGetSearchQuery(q, analyser);
-                booleanQuery.Add(query, Occur.SHOULD);
+                var indexDefinition = IndexingHelper.Get<WebpageSearchIndexDefinition>();
+                var analyser = indexDefinition.GetAnalyser();
+                var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, indexDefinition.SearchableFieldNames, analyser);
+                Query query = Term.SafeGetSearchQuery(parser, analyser);
+
+                booleanQuery.Add(query, Occur.MUST);
             }
             if (CreatedOnFrom.HasValue || CreatedOnTo.HasValue)
                 booleanQuery.Add(GetDateQuery(), Occur.MUST);
             if (!string.IsNullOrEmpty(Type))
-                booleanQuery.Add(new TermQuery(new Term("type", Type)), Occur.MUST);
+                booleanQuery.Add(new TermQuery(new Term(FieldDefinition.GetFieldName<TypeFieldDefinition>(), Type)),
+                                 Occur.MUST);
             if (Parent != null)
                 booleanQuery.Add(
                     new TermQuery(new Term(FieldDefinition.GetFieldName<ParentIdFieldDefinition>(), Parent.Id.ToString())), Occur.MUST);
@@ -73,12 +70,5 @@ namespace MrCMS.Web.Apps.Core.Models.Search
                     ? DateTools.DateToString(CreatedOnTo.Value, DateTools.Resolution.SECOND)
                     : null, CreatedOnFrom.HasValue, CreatedOnTo.HasValue);
         }
-
-        private string MakeFuzzy(string keywords)
-        {
-            var split = keywords.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            return string.Join(" ", split.Select(s => s + "~"));
-        }
-
     }
 }

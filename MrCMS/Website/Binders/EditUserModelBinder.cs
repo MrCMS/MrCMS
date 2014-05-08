@@ -1,18 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Services;
-using NHibernate;
 using System.Linq;
+using Ninject;
 
 namespace MrCMS.Website.Binders
 {
     public class EditUserModelBinder : MrCMSDefaultModelBinder
     {
-        public EditUserModelBinder(ISession session)
-            : base(() => session)
+        public EditUserModelBinder(IKernel kernel) : base(kernel)
         {
         }
 

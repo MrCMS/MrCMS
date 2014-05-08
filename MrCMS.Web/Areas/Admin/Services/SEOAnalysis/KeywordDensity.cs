@@ -17,10 +17,18 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
                 (HtmlNode.CreateNode("<div>" + webpage.BodyContent + "</div>").InnerText ?? string.Empty).Replace(
                     Environment.NewLine, " ");
 
+            if (text.Count() < 10)
+            {
+                yield return
+                    GetFacet("Keyword density", SEOAnalysisStatus.Problem, "There is not enough content to calculate keyword density.");
+            }
+
             var instances = Regex.Matches(text, analysisTerm, RegexOptions.IgnoreCase).Count;
 
             var strings = text.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             var words = strings.Count();
+            if (words == 0)
+                yield break;
             var termWordCount = analysisTerm.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).Count();
 
             var density = ((decimal)instances / (words - (termWordCount * (termWordCount - 1)))) * 100m;

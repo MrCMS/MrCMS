@@ -54,11 +54,7 @@ namespace MrCMS.Web.Apps.Core
 
             CurrentRequestData.SiteSettings = siteSettings;
 
-            var documentService = new DocumentService(session,
-                                                      new DocumentEventService(new List<IOnDocumentDeleted>(),
-                                                                               new List<IOnDocumentUnpublished>(),
-                                                                               new List<IOnDocumentAdded>()),
-                                                      siteSettings, site);
+            var documentService = new DocumentService(session, siteSettings, site);
             var layoutAreaService = new LayoutAreaService(session);
             var widgetService = new WidgetService(session);
             var fileSystem = new FileSystem();
@@ -141,7 +137,7 @@ namespace MrCMS.Web.Apps.Core
                 Site = site,
                 Name = "Two Column"
             };
-            
+
             documentService.AddDocument(layoutTwoColumn);
 
             var layoutAreasTwoColumn = new List<LayoutArea>
@@ -155,7 +151,7 @@ namespace MrCMS.Web.Apps.Core
             };
             foreach (LayoutArea l in layoutAreasTwoColumn)
                 layoutAreaService.SaveArea(l);
-            
+
             var navigationWidget = new Navigation();
             navigationWidget.LayoutArea = layoutAreas.Single(x => x.AreaName == "Main Navigation");
             widgetService.AddWidget(navigationWidget);
@@ -303,7 +299,7 @@ namespace MrCMS.Web.Apps.Core
             var fileStream1 = new FileStream(logoPath1, FileMode.Open);
             var dbFile1 = fileService.AddFile(fileStream1, Path.GetFileName(logoPath1), "image/gif", fileStream1.Length,
                                              defaultMediaCategory);
-            
+
             widgetService.AddWidget(new TextWidget
                                         {
                                             Name = "Mr CMS Logo",
@@ -322,7 +318,7 @@ namespace MrCMS.Web.Apps.Core
             var roleService = new RoleService(session);
             roleService.SaveRole(adminUserRole);
 
-            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication; 
+            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
             var userManager = new UserManager<User>(new UserStore(userService, roleService, session));
             userManager.UserValidator = new UserValidator<User>(userManager)
             {

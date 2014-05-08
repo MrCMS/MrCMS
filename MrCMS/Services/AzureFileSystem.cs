@@ -17,58 +17,66 @@ namespace MrCMS.Services
 
     public class AzureFileSystem : IFileSystem, IAzureFileSystem
     {
-        private readonly FileSystemSettings _fileSystemSettings;
-        private readonly CloudBlobContainer _container;
-        private readonly CloudStorageAccount _storageAccount;
+        private FileSystemSettings _fileSystemSettings;
+        private CloudBlobContainer _container;
+        private CloudStorageAccount _storageAccount;
+        bool initialized;
 
         public AzureFileSystem(FileSystemSettings fileSystemSettings)
         {
-
             _fileSystemSettings = fileSystemSettings;
+        }
+
+        private void EnsureInitialized()
+        {
+            if (initialized)
+            {
+                return;
+            }
             string connectionString = _fileSystemSettings.AzureUsingEmulator
                                           ? string.Format("UseDevelopmentStorage=true;")
                                           : string.Format(
                                               "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}",
                                               _fileSystemSettings.AzureAccountName, _fileSystemSettings.AzureAccountKey);
-            try
+            if (CloudStorageAccount.TryParse(connectionString, out _storageAccount))
             {
-                if (CloudStorageAccount.TryParse(connectionString, out _storageAccount))
+                var cloudBlobClient = _storageAccount.CreateCloudBlobClient();
+                _container =
+                    cloudBlobClient.GetContainerReference(
+                        SeoHelper.TidyUrl(
+                            FileService.RemoveInvalidUrlCharacters(_fileSystemSettings.AzureContainerName)));
+                if (_container.CreateIfNotExists())
                 {
-                    var cloudBlobClient = StorageAccount.CreateCloudBlobClient();
-                    var container =
-                        cloudBlobClient.GetContainerReference(
-                            SeoHelper.TidyUrl(
-                                FileService.RemoveInvalidUrlCharacters(_fileSystemSettings.AzureContainerName)));
-                    if (container.CreateIfNotExists())
-                    {
-                        container.SetPermissions(new BlobContainerPermissions
-                            {
-                                PublicAccess =
-                                    BlobContainerPublicAccessType.Blob
-                            });
-                    }
-                    _container = container;
+                    _container.SetPermissions(new BlobContainerPermissions
+                                                 {
+                                                     PublicAccess =
+                                                         BlobContainerPublicAccessType.Blob
+                                                 });
                 }
+                initialized = true;
             }
-            catch
-            {
-
-            }
-
         }
 
         public CloudBlobContainer Container
         {
-            get { return _container; }
+            get
+            {
+                EnsureInitialized();
+                return _container;
+            }
         }
 
         public CloudStorageAccount StorageAccount
         {
-            get { return _storageAccount; }
+            get
+            {
+                return _storageAccount;
+            }
         }
 
         public string SaveFile(Stream stream, string filePath, string contentType)
         {
+            EnsureInitialized();
             var blob = Container.GetBlockBlobReference(filePath);
             blob.Properties.ContentType = contentType;
 
@@ -84,6 +92,7 @@ namespace MrCMS.Services
 
         public void Delete(string filePath)
         {
+            EnsureInitialized();
             var blob = Container.GetBlockBlobReference(filePath);
             try
             {
@@ -94,6 +103,7 @@ namespace MrCMS.Services
 
         public bool Exists(string filePath)
         {
+            EnsureInitialized();
             if (string.IsNullOrWhiteSpace(filePath))
                 return false;
             var blob = Container.GetBlockBlobReference(filePath);
@@ -103,6 +113,7 @@ namespace MrCMS.Services
 
         public byte[] ReadAllBytes(string filePath)
         {
+            EnsureInitialized();
             var blob = Container.GetBlockBlobReference(filePath);
             using (var memoryStream = new MemoryStream())
             {
@@ -113,18 +124,21 @@ namespace MrCMS.Services
 
         public Stream GetReadStream(string filePath)
         {
+            EnsureInitialized();
             ICloudBlob blob = Container.GetBlockBlobReference(filePath);
             return blob.OpenRead();
         }
 
         public void WriteToStream(string filePath, Stream stream)
         {
+            EnsureInitialized();
             ICloudBlob blob = Container.GetBlockBlobReference(filePath);
             blob.DownloadToStream(stream);
         }
 
         public IEnumerable<string> GetFiles(string filePath)
         {
+            EnsureInitialized();
             var cloudBlobDirectory = Container.GetDirectoryReference(filePath);
 
             return cloudBlobDirectory.ListBlobs().Select(item => item.Uri.ToString());

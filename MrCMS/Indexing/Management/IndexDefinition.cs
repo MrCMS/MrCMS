@@ -6,7 +6,6 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using MrCMS.Entities;
-using MrCMS.Entities.Indexes;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Utils;
@@ -14,7 +13,6 @@ using MrCMS.Tasks;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Id.Insert;
 using Version = Lucene.Net.Util.Version;
 
 namespace MrCMS.Indexing.Management
@@ -33,6 +31,7 @@ namespace MrCMS.Indexing.Management
         {
             return Analyser ?? (Analyser = new StandardAnalyzer(Version.LUCENE_30));
         }
+
         public abstract string IndexName { get; }
 
         public string GetLocation(Site site)
@@ -61,6 +60,18 @@ namespace MrCMS.Indexing.Management
                 luceneActions.AddRange(action(systemEntity));
             }
             return luceneActions;
+        }
+
+        public virtual string[] SearchableFieldNames
+        {
+            get
+            {
+                return DefinitionInfos.Where(
+                    info => info.Index == Field.Index.ANALYZED || info.Index == Field.Index.ANALYZED_NO_NORMS)
+                               .Select(info => info.Name)
+                               .Distinct()
+                               .ToArray();
+            }
         }
     }
 

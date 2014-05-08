@@ -23,7 +23,7 @@ namespace MrCMS.Web.Apps.Articles.Pages
             viewData["users"] = session.QueryOver<User>()
                                        .List()
                                        .BuildSelectItemList(user => user.Name, user => user.Id.ToString(),
-                                                            user => user == User, "Please select ...");
+                                                            user => user == User, new SelectListItem{Text = "Please select...", Value = "0"});
         }
     }
 }

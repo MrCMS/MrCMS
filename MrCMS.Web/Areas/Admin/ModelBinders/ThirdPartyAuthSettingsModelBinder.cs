@@ -2,6 +2,7 @@
 using MrCMS.Settings;
 using MrCMS.Website.Binders;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Web.Areas.Admin.ModelBinders
 {
@@ -9,7 +10,7 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
     {
         private readonly IConfigurationProvider _configurationProvider;
 
-        public ThirdPartyAuthSettingsModelBinder(IConfigurationProvider configurationProvider, ISession session) : base(() => session)
+        public ThirdPartyAuthSettingsModelBinder(IKernel kernel, IConfigurationProvider configurationProvider) : base(kernel)
         {
             _configurationProvider = configurationProvider;
         }

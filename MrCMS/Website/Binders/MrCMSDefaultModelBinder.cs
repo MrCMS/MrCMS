@@ -1,49 +1,55 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Website.Controllers;
 using NHibernate;
+using Ninject;
 
 namespace MrCMS.Website.Binders
 {
     public class MrCMSDefaultModelBinder : DefaultModelBinder
     {
-        private readonly Func<ISession> _session;
+        protected readonly IKernel Kernel;
 
-        public MrCMSDefaultModelBinder(Func<ISession> session)
+        public MrCMSDefaultModelBinder(IKernel kernel)
         {
-            _session = session;
+            Kernel = kernel;
         }
 
         protected ISession Session
         {
-            get { return _session.Invoke(); }
+            get { return Get<ISession>(); }
         }
+
+        protected T Get<T>()
+        {
+            return Kernel.Get<T>();
+        }
+
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             if (controllerContext.Controller is MrCMSAdminController &&
-                typeof(SystemEntity).IsAssignableFrom(bindingContext.ModelType) &&
-                (CreateModel(controllerContext, bindingContext, bindingContext.ModelType) == null || ShouldReturnNull(controllerContext, bindingContext)))
+                typeof (SystemEntity).IsAssignableFrom(bindingContext.ModelType) &&
+                (CreateModel(controllerContext, bindingContext, bindingContext.ModelType) == null ||
+                 ShouldReturnNull(controllerContext, bindingContext)))
                 return null;
 
-            var bindModel = base.BindModel(controllerContext, bindingContext);
+            object bindModel = base.BindModel(controllerContext, bindingContext);
             if (bindModel is SiteEntity)
             {
-                var model = bindModel;
+                object model = bindModel;
                 bindingContext.ModelMetadata =
-                        ModelMetadataProviders.Current.GetMetadataForType(
-                            () => CreateModel(controllerContext, bindingContext, model.GetType()), bindModel.GetType());
+                    ModelMetadataProviders.Current.GetMetadataForType(
+                        () => CreateModel(controllerContext, bindingContext, model.GetType()), bindModel.GetType());
                 bindingContext.ModelMetadata.Model = bindModel;
                 bindModel = base.BindModel(controllerContext, bindingContext);
                 var baseEntity = bindModel as SiteEntity;
                 if (baseEntity != null)
                 {
-                    baseEntity.CustomBinding(controllerContext, Session);
+                    baseEntity.CustomBinding(controllerContext, Kernel);
                 }
             }
             return bindModel;
@@ -54,53 +60,56 @@ namespace MrCMS.Website.Binders
             return false;
         }
 
-        protected override object GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
+        protected override object GetPropertyValue(ControllerContext controllerContext,
+                                                   ModelBindingContext bindingContext,
+                                                   PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
-            if (propertyDescriptor.PropertyType.IsSubclassOf(typeof(SystemEntity)))
+            if (propertyDescriptor.PropertyType.IsSubclassOf(typeof (SystemEntity)))
             {
-                var id = controllerContext.HttpContext.Request[bindingContext.ModelName + ".Id"];
+                string id = controllerContext.HttpContext.Request[bindingContext.ModelName + ".Id"];
                 int idVal;
                 return int.TryParse(id, out idVal)
                            ? Session.Get(propertyDescriptor.PropertyType,
-                                                               idVal)
+                                         idVal)
                            : null;
             }
 
-            var value = base.GetPropertyValue(controllerContext, bindingContext, propertyDescriptor, propertyBinder);
+            object value = base.GetPropertyValue(controllerContext, bindingContext, propertyDescriptor, propertyBinder);
             return value;
         }
 
         protected static string GetValueFromContext(ControllerContext controllerContext, string request)
         {
-            return controllerContext.HttpContext.Request[request];
+            return controllerContext.GetValueFromRequest(request);
         }
 
-        protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
+        protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
+                                              Type modelType)
         {
-            var modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
+            object modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
             if (modelFromSession != null)
                 return modelFromSession;
-            if (modelType == typeof(Webpage))
+            if (modelType == typeof (Webpage))
                 return null;
-            var model = base.CreateModel(controllerContext, bindingContext, modelType);
+            object model = base.CreateModel(controllerContext, bindingContext, modelType);
 
             return model;
         }
 
         public object GetModelFromSession(ControllerContext controllerContext, string modelName, Type modelType)
         {
-            if (typeof(SystemEntity).IsAssignableFrom(modelType))
+            if (typeof (SystemEntity).IsAssignableFrom(modelType))
             {
-                var subItem = string.Format("{0}.Id", modelName);
+                string subItem = string.Format("{0}.Id", modelName);
 
-                var id =
+                string id =
                     Convert.ToString(controllerContext.RouteData.Values[subItem] ??
                                      controllerContext.HttpContext.Request[subItem]);
 
                 int intId;
                 if (int.TryParse(id, out intId))
                 {
-                    var obj = Session.Get(modelType, intId);
+                    object obj = Session.Get(modelType, intId);
                     return obj ?? Activator.CreateInstance(modelType);
                 }
 
@@ -110,7 +119,7 @@ namespace MrCMS.Website.Binders
 
                 if (int.TryParse(id, out intId))
                 {
-                    var obj = Session.Get(modelType, intId);
+                    object obj = Session.Get(modelType, intId);
                     return obj ?? Activator.CreateInstance(modelType);
                 }
             }

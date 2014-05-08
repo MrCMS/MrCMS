@@ -48,5 +48,25 @@ namespace MrCMS.Helpers
         {
             return !String.IsNullOrWhiteSpace(value);
         }
+
+        public static string StripHtml(this string htmlString, string replaceHtmlWith = " ")
+        {
+            if (string.IsNullOrWhiteSpace(htmlString))
+                return "";
+            return Regex.Replace(htmlString, @"<(.|\n)*?>", replaceHtmlWith);
+        }
+
+        public static string TruncateString(this string text, int maxCharacters, string trailingText = "...")
+        {
+            if (string.IsNullOrEmpty(text) || maxCharacters <= 0)
+                return text;
+            var returnString = "";
+            if (text.Length >= maxCharacters)
+                returnString = text.Substring(0, maxCharacters) + trailingText;
+            else
+                returnString = text;
+            
+            return returnString;
+        }
     }
 }

@@ -8,20 +8,20 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class SearchController : MrCMSAdminController
     {
-        private readonly INavigationService _navigationService;
+        private readonly ISiteMapService _siteMapService;
         private readonly IAdminWebpageSearchService _adminWebpageSearchService;
 
-        public SearchController(INavigationService navigationService, IAdminWebpageSearchService adminWebpageSearchService)
+        public SearchController(ISiteMapService siteMapService, IAdminWebpageSearchService adminWebpageSearchService)
         {
-            _navigationService = navigationService;
+            _siteMapService = siteMapService;
             _adminWebpageSearchService = adminWebpageSearchService;
         }
 
         [HttpGet]
         public ActionResult Index(AdminWebpageSearchQuery model)
         {
-            ViewData["parents"] = _navigationService.GetParentsList();
-            ViewData["doc-types"] = _navigationService.GetDocumentTypes(model.Type);
+            ViewData["parents"] = _adminWebpageSearchService.GetParentsList();
+            ViewData["doc-types"] = _adminWebpageSearchService.GetDocumentTypes(model.Type);
             ViewData["results"] = _adminWebpageSearchService.Search(model);
 
             return View(model);

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
+using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website;
 using Newtonsoft.Json;
@@ -16,12 +18,18 @@ namespace MrCMS.Helpers
     {
         public static bool CanDelete(this Document document)
         {
-            return !MrCMSApplication.Get<ISession>()
+            return !document.AnyChildren();
+        }
+        
+        public static bool AnyChildren(this Document document)
+        {
+            return MrCMSApplication.Get<ISession>()
                 .QueryOver<Document>()
                 .Where(doc => doc.Parent != null && doc.Parent.Id == document.Id)
                 .Cacheable()
                 .Any();
         }
+
         public static int FormPostingsCount(this Webpage webpage)
         {
             return MrCMSApplication.Get<ISession>()
@@ -31,17 +39,9 @@ namespace MrCMS.Helpers
                 .RowCount();
         }
 
-
-        public static void SetParent(this Document document, Document parent)
+        public static string GetAdminController(this Document document)
         {
-            var existingParent = document.Parent;
-            if (existingParent == parent)
-                return;
-            document.Parent = parent;
-            if (parent != null && !parent.Children.Contains(document))
-                parent.Children.Add(document);
-            if (existingParent != null)
-                existingParent.Children.Remove(document);
+            return document is Layout ? "Layout" : document is MediaCategory ? "MediaCategory" : "Webpage";
         }
 
         public static T GetVersion<T>(this T doc, int id) where T : Document
@@ -66,7 +66,7 @@ namespace MrCMS.Helpers
         private static List<VersionChange> GetVersionChanges(Document currentVersion, Document previousVersion)
         {
             var changes = new List<VersionChange>();
-            
+
             if (previousVersion == null)
                 return changes;
 
@@ -78,9 +78,9 @@ namespace MrCMS.Helpers
                              select new VersionChange
                                         {
                                             Property =
-                                                propertyInfo.GetCustomAttributes(typeof (DisplayNameAttribute), true).
+                                                propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), true).
                                                     Any()
-                                                    ? propertyInfo.GetCustomAttributes(typeof (DisplayNameAttribute),
+                                                    ? propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute),
                                                                                        true).OfType
                                                           <DisplayNameAttribute>().First().DisplayName
                                                     : propertyInfo.Name,
@@ -113,9 +113,9 @@ namespace MrCMS.Helpers
             return type.GetProperties().Where(
                 info =>
                 info.CanWrite &&
-                !typeof (SystemEntity).IsAssignableFrom(info.PropertyType) &&
+                !typeof(SystemEntity).IsAssignableFrom(info.PropertyType) &&
                 (!info.PropertyType.IsGenericType ||
-                 (info.PropertyType.IsGenericType && info.PropertyType.GetGenericTypeDefinition() == typeof (Nullable<>)))
+                 (info.PropertyType.IsGenericType && info.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
                 &&
                 !ignorePropertyNames.Contains(info.Name)).ToList();
         }

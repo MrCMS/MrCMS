@@ -1,27 +1,24 @@
-﻿$(document).ready(function () {
-    $("#loading").ajaxStart(function () {
-        $(this).show();
+﻿$.ajaxSetup({ cache: false });
+$(document).ready(function () {
+    $(document).ajaxStart(function () {
+        $("#loading").show();
     });
-    $("#loading").ajaxStop(function () {
-        $(this).hide();
+    $(document).ajaxStop(function () {
+        $("#loading").hide();
     });
-    
-    $.ajaxSetup({ cache: false });
-    
-    $.validator.methods.number = function (value, element) {
-        return this.optional(element) ||
-            !isNaN(Globalize.parseFloat(value));
-    }
-
-    $.validator.methods.date = function (value, element) {
-        return this.optional(element) ||
-            !isNaN(Globalize.parseDate(value));
-    }
-    Globalize.culture($("#UICulture").val());
-    
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 
+    Globalize.culture($("#UICulture").val());
+    $.validator.methods.number = function(value, element) {
+        return this.optional(element) ||
+            !isNaN(Globalize.parseFloat(value));
+    };
+
+    $.validator.methods.date = function(value, element) {
+        return this.optional(element) ||
+            !isNaN(Globalize.parseDate(value));
+    };
 
     $(".datepicker").datepicker();
 
@@ -43,7 +40,7 @@
             autoSize: true,
             minHeight: 200,
             padding: 0,
-            afterShow: function (){
+            afterShow: function () {
                 $('.fancybox-iframe').contents().find('form').attr('target', '_parent').css('margin', '0');
             }
         }).click().remove();
@@ -71,7 +68,7 @@
             resizeModal($(element));
         });
     });
-    
+
     $(document).on('click', 'div[data-paging-type="async"] .pagination a[href]', function () {
         var self = $(this);
         $.get(this.href, function (response) {
@@ -126,9 +123,22 @@ function getRemoteModel(href) {
 }
 
 $(function () {
-    CKEDITOR.replaceAll('ckedit-enabled');
-    CKEDITOR.on('instanceReady', function () { $(window).resize(); });
+    admin.initializePlugins();
 });
+window.admin = {
+    initializePlugins: function () {
+        CKEDITOR.replaceAll('ckedit-enabled');
+        CKEDITOR.on('instanceReady', function () { $(window).resize(); });
+        $('[data-type=media-selector], [class=media-selector]').mediaSelector();
+        var form = $('form');
+        form.removeData("validator");
+        form.removeData("unobtrusiveValidation");
+        form.find('input, select').each(function () {
+            $.data(this, "previousValue", null);
+        });
+        $.validator.unobtrusive.parse("form");
+    }
+};
 
 
 function post_to_url(path, params, method) {
@@ -152,3 +162,13 @@ function post_to_url(path, params, method) {
     document.body.appendChild(form);
     form.submit();
 }
+$.fn.delayKeyup = function (e, callback, ms) {
+    var timer = 0;
+    $(this).keyup(function (event) {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            callback(event);
+        }, ms);
+    });
+    return $(this);
+};

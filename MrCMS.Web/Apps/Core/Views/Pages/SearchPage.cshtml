@@ -2,28 +2,30 @@
 @using MrCMS.Helpers
 @using MrCMS.Models
 @using MrCMS.Paging
-@using MrCMS.Web.Apps.Core.Helpers
 @using MrCMS.Web.Apps.Core.Models.Search
 @using MrCMS.Web.Apps.Core.Pages
 @model MrCMS.Web.Apps.Core.Pages.SearchPage
 @{
-    var model = ViewData["webpageSearchQueryModel"] as WebpageSearchQuery;
+    var searchModel = ViewData["webpageSearchQueryModel"] as WebpageSearchQuery;
     var results = ViewData["searchResults"] as IPagedList<Webpage>;
 }
 @Editable(Model, page => page.BodyContent, true)
-@{Html.RenderPartial("SearchQuery", model);}
+@{Html.RenderPartial("SearchQuery", searchModel);}
 <p></p>
-@if (results.Any())
+@if (results !=null && results.Any())
 {
+    <p>There are @results.TotalItemCount items matching your search @searchModel.Term</p>
     foreach (var result in results)
     {
         <div class="row">
             <div class="col-lg-12">
-                <a href="/@result.LiveUrlSegment"><h4 class="margin-top-10 margin-bottom-5">@result.Name</h4></a>
+                <a href="/@result.LiveUrlSegment"><h4 class="margin-top-10 margin-bottom-5">
+                 @result.Name.StripHtml().TruncateString(200)
+                                                  </h4></a>
                 @{
                     if (result is TextPage)
                     {
-                        <p>@Html.Raw(result.BodyContent.StripHtml().TruncateAndBoldSearchAbstract(20, (model.Term != null ? model.Term.Split(' ').ToArray() : null), "..."))</p>
+                        <p>@result.BodyContent.StripHtml().TruncateString(200)</p>
                     }
                 }
                 <p class="font-small">Last updated @result.CreatedOn.ToShortDateString()</p>

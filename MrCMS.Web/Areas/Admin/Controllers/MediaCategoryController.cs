@@ -25,7 +25,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
          * Need to do media category specific stuff before generic stuff. In this case
          * create a directory for media files.
          */
-        public override ActionResult Add([IoCModelBinder(typeof(AddDocumentModelBinder))] MediaCategory doc)
+        public override ActionResult Add(MediaCategory doc)
         {
             base.Add(doc);
             _fileService.CreateFolder(doc);
@@ -46,7 +46,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public override ActionResult Edit([IoCModelBinder(typeof(EditDocumentModelBinder))] MediaCategory doc)
+        public override ActionResult Edit( MediaCategory doc)
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
@@ -75,7 +75,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult MediaSelector(int? categoryId, bool imagesOnly = false, int page = 1)
         {
             ViewData["categories"] = _documentService.GetAllDocuments<MediaCategory>()
-                                                     .Where(category => category.ShowInAdminNav)
+                                                     .Where(category => !category.HideInAdminNav)
                                                      .OrderBy(category => category.Name)
                                                      .BuildSelectItemList
                 (category => category.Name, category => category.Id.ToString(),

@@ -1,0 +1,27 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Website
+@model MrCMS.Entities.Resources.StringResource
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var languageOptions = ViewData["language-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+@using (Html.BeginForm("Add", "Resource", FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            Add an override for @Model.DisplayKey
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-primary btn" value="Add Override" />
+            </span>
+        </legend>
+        @Html.ReturnToReferrer()
+        @Html.HiddenFor(task => task.Key)
+        @Html.LabelFor(task => task.Value)
+        @Html.TextBoxFor(task => task.Value)
+        @Html.ValidationMessageFor(resource => resource.Value)
+        @Html.LabelFor(task => task.UICulture)
+        @Html.DropDownListFor(task => task.UICulture, languageOptions, new { @data_val = "true", data_val_required = "Please select a culture." })
+        @Html.ValidationMessageFor(resource => resource.UICulture)
+    </fieldset>
+}

@@ -1,9 +1,8 @@
-using MrCMS.Entities.People;
+using MrCMS.Events;
 
 namespace MrCMS.Web.Apps.Core.Services
 {
-    public interface IOnUserRegistered
+    public interface IOnUserRegistered : IEvent<OnUserRegisteredEventArgs>
     {
-        void UserRegistered(User user);
     }
 }

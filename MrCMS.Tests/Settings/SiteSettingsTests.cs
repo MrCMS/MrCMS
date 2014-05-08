@@ -42,7 +42,7 @@ namespace MrCMS.Tests.Settings
             var items = new List<SelectListItem>();
             A.CallTo(
                 () =>
-                _siteSettingsOptionGenerator.GetLayoutOptions(session, _siteSettings.Site, _siteSettings.DefaultLayoutId))
+                _siteSettingsOptionGenerator.GetLayoutOptions(session, _siteSettings.DefaultLayoutId))
              .Returns(items);
 
             _siteSettings.SetViewData(session, viewDataDictionary);
@@ -59,7 +59,7 @@ namespace MrCMS.Tests.Settings
             var items = new List<SelectListItem>();
             A.CallTo(
                 () =>
-                _siteSettingsOptionGenerator.GetErrorPageOptions(session, _siteSettings.Site, _siteSettings.Error403PageId))
+                _siteSettingsOptionGenerator.GetErrorPageOptions(session,  _siteSettings.Error403PageId))
              .Returns(items);
 
             _siteSettings.SetViewData(session, viewDataDictionary);
@@ -76,7 +76,7 @@ namespace MrCMS.Tests.Settings
             var items = new List<SelectListItem>();
             A.CallTo(
                 () =>
-                _siteSettingsOptionGenerator.GetErrorPageOptions(session, _siteSettings.Site, _siteSettings.Error404PageId))
+                _siteSettingsOptionGenerator.GetErrorPageOptions(session, _siteSettings.Error404PageId))
              .Returns(items);
 
             _siteSettings.SetViewData(session, viewDataDictionary);
@@ -93,7 +93,7 @@ namespace MrCMS.Tests.Settings
             var items = new List<SelectListItem>();
             A.CallTo(
                 () =>
-                _siteSettingsOptionGenerator.GetErrorPageOptions(session, _siteSettings.Site, _siteSettings.Error500PageId))
+                _siteSettingsOptionGenerator.GetErrorPageOptions(session, _siteSettings.Error500PageId))
              .Returns(items);
 
             _siteSettings.SetViewData(session, viewDataDictionary);

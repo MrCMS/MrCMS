@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Lucene.Net.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Indexing.Management;
 
@@ -7,7 +8,7 @@ namespace MrCMS.Web.Apps.Core.Indexing.WebpageSearch
     public class TypeFieldDefinition : StringFieldDefinition<WebpageSearchIndexDefinition, Webpage>
     {
         public TypeFieldDefinition(ILuceneSettingsService luceneSettingsService)
-            : base(luceneSettingsService, "type")
+            : base(luceneSettingsService, "type", index: Field.Index.NOT_ANALYZED)
         {
         }
 

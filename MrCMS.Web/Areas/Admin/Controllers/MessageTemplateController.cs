@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using MrCMS.Entities.Messaging;
+using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
@@ -62,6 +63,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (messageTemplate != null)
             {
                 _messageTemplateService.Save(messageTemplate);
+                TempData.SuccessMessages().Add(string.Format("{0} successfully edited", messageTemplate.MessageTemplateType.BreakUpString()));
+                return RedirectToAction("Edit", new { id = messageTemplate.Id });
             }
             return RedirectToAction("Index");
         }
@@ -83,7 +86,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (messageTemplate != null)
             {
                 _messageTemplateService.Reset(messageTemplate);
-
                 return RedirectToAction("Edit", new { id = messageTemplate.Id });
             }
             return RedirectToAction("Index");

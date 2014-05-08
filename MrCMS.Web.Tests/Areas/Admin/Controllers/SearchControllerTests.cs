@@ -3,7 +3,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     public class SearchControllerTests
     {
         //private static IAdminWebpageSearchService searchService;
-        //private static INavigationService navigationService;
+        //private static ISiteMapService navigationService;
 
         //[Fact]
         //public void SearchController_GetSearchResults_NullStringShouldReturnEmptyObject()
@@ -18,7 +18,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         //private static SearchController GetSearchController()
         //{
         //    searchService = A.Fake<IAdminWebpageSearchService>();
-        //    navigationService = A.Fake<INavigationService>();
+        //    navigationService = A.Fake<ISiteMapService>();
         //    var searchController = new SearchController(searchService, navigationService, A.Fake<IDocumentService>());
         //    return searchController;
         //}

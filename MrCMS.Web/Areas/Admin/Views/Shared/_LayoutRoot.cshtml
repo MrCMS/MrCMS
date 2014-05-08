@@ -25,13 +25,13 @@
         <img src="/Areas/Admin/Content/Images/ajax-loader2.gif" />
     </div>
     @RenderBody()
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-    <script src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
-    <script src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CurrentRequestData.CultureInfo.Name).js"></script>
-    
-
-    <script src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")" type="text/javascript"> </script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CurrentRequestData.CultureInfo.Name).js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jquery.signalR-2.0.2.js")" > </script>
+    <script type="text/javascript" src="/signalr/hubs"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")" > </script>
 
     @{
         //Validate
@@ -47,7 +47,7 @@
         Html.IncludeScript("~/Areas/Admin/Content/Styles/bootstrap/js/bootstrap.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/tag-it.min.js");
-        
+
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery-ui-1.10.4/ui/i18n/jquery.ui.datepicker-" + CurrentRequestData.CultureInfo.Name + ".js");
 
 
@@ -63,7 +63,7 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-validate.js");
         // The File Upload user interface plugin
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-ui.js");
-        
+
 
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/menu.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/stickyTabs.js");
@@ -72,6 +72,12 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/search.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.noty.packaged.js");
+    }
+    @if (!CurrentRequestData.CurrentUser.DisableNotifications)
+    {
+        Html.RenderAction("Show", "TransientNotification");
+        Html.RenderAction("Show", "PersistentNotification");
     }
     @Html.RenderScripts()
 

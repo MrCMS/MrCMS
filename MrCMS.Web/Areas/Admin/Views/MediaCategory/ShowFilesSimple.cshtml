@@ -25,7 +25,7 @@
 
                     </td>
                     <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? MvcHtmlString.Create("<br />" + file.Description) : null)</td>
-                    <th><a href="@Url.Action("Delete", "File", new{Id=file.Id})" class="btn btn-danger btn-mini delete-file-simple" onclick="if (!confirm('Are you sure?')) return false;">Delete</a></th>
+                    <th><a href="@Url.Action("Delete", "File", new{Id=file.Id})" class="btn btn-danger btn-mini delete-file-simple">Delete</a></th>
                 </tr>
             }
 

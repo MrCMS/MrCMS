@@ -11,15 +11,13 @@ namespace MrCMS.Web.Apps.Core.Services
         private readonly IUserService _userService;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IAuthorisationService _authorisationService;
-        private readonly IUserEventService _userEventService;
 
         public RegistrationService(IUserService userService, IPasswordManagementService passwordManagementService,
-                                   IAuthorisationService authorisationService, IUserEventService userEventService)
+                                   IAuthorisationService authorisationService)
         {
             _userService = userService;
             _passwordManagementService = passwordManagementService;
             _authorisationService = authorisationService;
-            _userEventService = userEventService;
         }
 
         public async Task<User> RegisterUser(RegisterModel model)
@@ -34,7 +32,7 @@ namespace MrCMS.Web.Apps.Core.Services
             _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
             _userService.AddUser(user);
             await _authorisationService.SetAuthCookie(user, false);
-            _userEventService.OnUserRegistered(user);
+            EventContext.Instance.Publish<IOnUserRegistered, OnUserRegisteredEventArgs>(new OnUserRegisteredEventArgs(user));
             return user;
         }
 

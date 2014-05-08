@@ -1,9 +1,9 @@
 ﻿@model MrCMS.Web.Apps.Articles.Pages.Article
 <article>
     <div class="row">
-        <div class="col-md-2"><a href="/@Model.Parent.UrlSegment" class="btn btn-default">Back</a></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <h1 class="margin-top-0">@Editable(Model, p => p.Name, false)</h1>
+            <a href="/@Model.Parent.UrlSegment" class="btn btn-default">Back</a>
             @Model.CreatedOn.Day @Model.CreatedOn.ToString("MMMMM") @Model.CreatedOn.Year
             <br />
             @if (!String.IsNullOrEmpty(Model.FeatureImage))

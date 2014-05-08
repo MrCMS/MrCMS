@@ -73,8 +73,8 @@ namespace MrCMS.Settings
             get
             {
                 return !String.IsNullOrWhiteSpace(UICulture)
-                           ? CultureInfo.GetCultureInfo(UICulture)
-                           : CultureInfo.CurrentCulture;
+                    ? CultureInfo.GetCultureInfo(UICulture)
+                    : CultureInfo.CurrentCulture;
             }
         }
 
@@ -144,14 +144,10 @@ namespace MrCMS.Settings
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-            viewDataDictionary["DefaultLayoutOptions"] = SiteSettingsOptionGenerator.GetLayoutOptions(session, Site,
-                                                                                                      DefaultLayoutId);
-            viewDataDictionary["403Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
-                                                                                               Error403PageId);
-            viewDataDictionary["404Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
-                                                                                               Error404PageId);
-            viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Site,
-                                                                                               Error500PageId);
+            viewDataDictionary["DefaultLayoutOptions"] = SiteSettingsOptionGenerator.GetLayoutOptions(session, DefaultLayoutId);
+            viewDataDictionary["403Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error403PageId);
+            viewDataDictionary["404Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error404PageId);
+            viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error500PageId);
             viewDataDictionary["Themes"] = SiteSettingsOptionGenerator.GetThemeNames(ThemeName);
 
             viewDataDictionary["UiCultures"] = SiteSettingsOptionGenerator.GetUiCultures(UICulture);

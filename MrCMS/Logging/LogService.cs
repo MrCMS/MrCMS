@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Elmah;
+using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Paging;
@@ -59,28 +60,31 @@ namespace MrCMS.Logging
 
         public IPagedList<Log> GetEntriesPaged(LogSearchQuery searchQuery)
         {
-            var query = BaseQuery();
-            if (searchQuery.Type.HasValue)
-                query = query.Where(log => log.Type == searchQuery.Type);
+            using (new SiteFilterDisabler(_session))
+            {
+                var query = BaseQuery();
+                if (searchQuery.Type.HasValue)
+                    query = query.Where(log => log.Type == searchQuery.Type);
 
-            if (!string.IsNullOrWhiteSpace(searchQuery.Message))
-                query =
-                    query.Where(
-                        log =>
-                        log.Message.IsInsensitiveLike(searchQuery.Message, MatchMode.Anywhere));
+                if (!string.IsNullOrWhiteSpace(searchQuery.Message))
+                    query =
+                        query.Where(
+                            log =>
+                                log.Message.IsInsensitiveLike(searchQuery.Message, MatchMode.Anywhere));
 
-            if (!string.IsNullOrWhiteSpace(searchQuery.Detail))
-                query = query.Where(log => log.Detail.IsInsensitiveLike(searchQuery.Detail, MatchMode.Anywhere));
+                if (!string.IsNullOrWhiteSpace(searchQuery.Detail))
+                    query = query.Where(log => log.Detail.IsInsensitiveLike(searchQuery.Detail, MatchMode.Anywhere));
 
-            if (searchQuery.SiteId.HasValue)
-                query = query.Where(log => log.Site.Id == searchQuery.SiteId);
-            
-            if (searchQuery.From.HasValue)
-                query = query.Where(log => log.CreatedOn >= searchQuery.From);
-            if (searchQuery.To.HasValue)
-                query = query.Where(log => log.CreatedOn <= searchQuery.To);
+                if (searchQuery.SiteId.HasValue)
+                    query = query.Where(log => log.Site.Id == searchQuery.SiteId);
 
-            return query.Paged(searchQuery.Page, _siteSettings.DefaultPageSize);
+                if (searchQuery.From.HasValue)
+                    query = query.Where(log => log.CreatedOn >= searchQuery.From);
+                if (searchQuery.To.HasValue)
+                    query = query.Where(log => log.CreatedOn <= searchQuery.To);
+
+                return query.Paged(searchQuery.Page, _siteSettings.DefaultPageSize);
+            }
         }
 
         private IQueryOver<Log, Log> BaseQuery()

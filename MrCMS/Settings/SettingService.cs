@@ -167,11 +167,11 @@ namespace MrCMS.Settings
                 return
                     _allSettings =
                     _allSettings ??
-                    GetAllSettingForSite();
+                    GetAllSettingsFromDb();
             }
         }
 
-        private IList<Setting> GetAllSettingForSite()
+        private IList<Setting> GetAllSettingsFromDb()
         {
             return _session.QueryOver<Setting>().Cacheable().List();
         }

@@ -9,6 +9,7 @@ using System.Web.Mvc.Html;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Helpers;
 
@@ -17,10 +18,16 @@ namespace MrCMS.Website
     public abstract class MrCMSPage<TModel> : WebViewPage<TModel>
     {
         private IConfigurationProvider _configurationProvider;
+        private IStringResourceProvider _stringResourceProvider;
 
         public T SiteSettings<T>() where T : SiteSettingsBase, new()
         {
             return _configurationProvider.GetSiteSettings<T>();
+        }
+
+        public string Resource(string key, string defaultValue = null)
+        {
+            return _stringResourceProvider.GetValue(key, defaultValue);
         }
 
         public override void InitHelpers()
@@ -30,6 +37,7 @@ namespace MrCMS.Website
             if (CurrentRequestData.DatabaseIsInstalled)
             {
                 _configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
+                _stringResourceProvider = MrCMSApplication.Get<IStringResourceProvider>();
             }
         }
 

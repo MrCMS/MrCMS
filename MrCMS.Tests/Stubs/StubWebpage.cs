@@ -12,13 +12,5 @@ namespace MrCMS.Tests.Stubs
         {
             FormProperties = new List<FormProperty>();
         }
-        public virtual void SetChildren(IList<Webpage> children)
-        {
-            Children = children.OfType<Document>().ToList();
-            foreach (var document in Children)
-            {
-                document.Parent = this;
-            }
-        }
     }
 }

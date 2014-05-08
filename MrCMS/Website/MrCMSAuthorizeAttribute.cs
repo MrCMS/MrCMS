@@ -10,8 +10,9 @@ namespace MrCMS.Website
             var currentUser = CurrentRequestData.CurrentUser;
             return base.AuthorizeCore(httpContext) && currentUser != null &&
                    currentUser.IsActive &&
-                   currentUser.Email != null && currentUser.Email.Equals(httpContext.User.Identity.Name, StringComparison.OrdinalIgnoreCase) &&
-                   currentUser.CanAccess<AdminAccessACL>("Allowed");
+                   currentUser.Email != null &&
+                   currentUser.Email.Equals(httpContext.User.Identity.Name, StringComparison.OrdinalIgnoreCase) &&
+                   currentUser.CanAccess<AdminAccessACL>(AdminAccessACL.Allowed);
         }
     }
 }

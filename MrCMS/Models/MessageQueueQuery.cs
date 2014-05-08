@@ -18,5 +18,7 @@ namespace MrCMS.Models
         public string FromQuery { get; set; }
         [DisplayName("Email To")]
         public string ToQuery { get; set; }
+
+        public string Subject { get; set; }
     }
 }

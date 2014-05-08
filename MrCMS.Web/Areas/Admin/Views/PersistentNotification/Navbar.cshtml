@@ -1,0 +1,29 @@
+﻿@model dynamic
+
+<ul class="nav pull-right">
+    <li class="dropdown">
+        <a href="#" data-toggle="dropdown"><i class="icon-bullhorn icon-white"></i> <span class="badge badge-important" style="background:#d90000;" data-notification-count="true">-</span></a>
+        <div class="dropdown-menu notifications-dropdown reset-corners">
+            @using (Html.BeginForm("MarkAllAsRead", "PersistentNotification", FormMethod.Post, new { @style = "margin:0", data_mark_all_as_read = true }))
+            {
+                <div class="row-fluid">
+                    <div class="span12 text-center">
+                        <div class="row-fluid">
+                            <div class="span6" style="padding-left:10px;">
+                                <button type="submit" class="btn reset-corners btn-block">
+                                    Dismiss all
+                                </button>
+                            </div>
+                            <div class="span6" style="padding-right:10px;">
+                                <a href="@Url.Action("Index", "Notification")" class="btn reset-corners btn-block">View All</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <ul data-notification-list="true" class="persistent-notification">
+                <li>No notifications</li>
+            </ul>
+        </div>
+    </li>
+</ul>

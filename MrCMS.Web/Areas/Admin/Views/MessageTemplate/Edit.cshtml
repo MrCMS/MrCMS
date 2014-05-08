@@ -54,11 +54,11 @@
                 @Html.ValidationMessageFor(x => x.Subject)
             </div>
         </div>
-
+        
         <div class="row-fluid">
             <div class="span12">
                 @Html.LabelFor(x => x.Body)
-                @Html.TextAreaFor(x => x.Body, new { @class = "span12", style = "min-height:200px;" })
+                @Html.TextAreaFor(x => x.Body, new { @class = (Model.IsHtml ? "ckedit-enabled span12" : "span12"), style = "min-height:200px;" })
                 @Html.ValidationMessageFor(x => x.Body)
             </div>
         </div>
@@ -68,4 +68,3 @@
         @{ Html.RenderAction("Tokens", "MessageTemplate", new { messageTemplate = Model });}
     </fieldset>
 }
-@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-message-template.js");}

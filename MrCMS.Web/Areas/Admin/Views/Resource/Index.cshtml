@@ -1,0 +1,105 @@
+﻿@using MrCMS.Entities.Resources
+@using MrCMS.Helpers
+@using MrCMS.Paging
+@model MrCMS.Web.Areas.Admin.Models.StringResourceSearchQuery
+@{
+    var resources = ViewData["results"] as IPagedList<StringResource> ?? PagedList<StringResource>.Empty;
+    var languageOptions = ViewData["language-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+@using (Html.BeginForm("Index", "Resource", FormMethod.Get))
+{
+    <fieldset>
+        <legend>
+            Resources
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn btn-primary" value="Search" />
+                @Html.ActionLink("Export All", "Export", "ResourceUpdate", new { }, new { @class = "btn" })
+                @Html.ActionLink("Export As Filtered", "Export", "ResourceUpdate", new { Model.Key, Model.Value }, new { @class = "btn" })
+            </span>
+        </legend>
+
+        <div class="row-fluid">
+            <div class="span4">
+                @Html.LabelFor(query => query.Key)
+                @Html.TextBoxFor(query => query.Key, new { @class = "span12" })
+            </div>
+            <div class="span4">
+                @Html.LabelFor(query => query.Value)
+                @Html.TextBoxFor(query => query.Value, new { @class = "span12" })
+            </div>
+            <div class="span4">
+                @Html.LabelFor(query => query.Language)
+                @Html.DropDownListFor(query => query.Language, languageOptions, new { @class = "span12" })
+            </div>
+        </div>
+    </fieldset>
+}
+
+@if (!resources.Any())
+{
+    @:No resources.
+        }
+else
+{
+    <table class="table table-striped table-condensed" style="overflow: scroll">
+        <thead>
+            <tr>
+                <th>
+                    Key
+                </th>
+                <th>
+                    Value
+                </th>
+                <th>
+                    Language
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var resource in resources)
+            {
+                <tr>
+                    <td>
+                        @resource.DisplayKey
+                    </td>
+                    <td>
+                        @resource.Value
+                    </td>
+                    <td>
+                        @resource.DisplayUICulture
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            @Html.ActionLink("Edit", "Edit", "Resource", new { id = resource.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+                            @if (resource.IsDefault)
+                            {
+                                @Html.ActionLink("Add an override", "Add", "Resource", new { resource.Key }, new { @class = "btn btn-success btn-mini", data_toggle = "fb-modal" })
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Delete", "Delete", "Resource", new { id = resource.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "fb-modal" })
+                            }
+
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@Html.Pager(resources, "Index", i => new { page = i })
+
+<fieldset>
+    <legend>
+        Import Resources
+    </legend>
+    @using (Html.BeginForm("Import", "ResourceUpdate", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="file" />
+        <button class="btn btn-primary">Import</button>
+    }
+</fieldset>
