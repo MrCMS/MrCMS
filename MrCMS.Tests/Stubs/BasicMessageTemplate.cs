@@ -10,7 +10,6 @@ using NHibernate;
 
 namespace MrCMS.Tests.Stubs
 {
-    [MrCMSMapClass]
     public class BasicMessageTemplate : MessageTemplate
     {
         public override MessageTemplate GetInitialTemplate(ISession session)

@@ -272,7 +272,7 @@
     <Compile Include="DbConfiguration\Filters\SiteFilter.cs" />
     <Compile Include="DbConfiguration\ListenerDisabler.cs" />
     <Compile Include="DbConfiguration\LogOverride.cs" />
-    <Compile Include="DbConfiguration\Mapping\MrCMSMapClassAttribute.cs" />
+    <Compile Include="DbConfiguration\Mapping\DoNotMapAttribute.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCmsMappingConfiguration.cs" />
     <Compile Include="DbConfiguration\Mapping\StringResourceOverride.cs" />
     <Compile Include="DbConfiguration\MrCMSListeners.cs" />

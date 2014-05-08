@@ -39,18 +39,15 @@ namespace MrCMS.DbConfiguration
         private readonly IRefreshEventListener[] _refreshEventListeners;
         private readonly IReplicateEventListener[] _replicateEventListeners;
         private readonly ISaveOrUpdateEventListener[] _saveEventListeners;
-        private readonly IMergeEventListener[] _saveOrUpdateCopyEventListeners;
         private readonly ISaveOrUpdateEventListener[] _saveOrUpdateEventListeners;
         private readonly ISession _session;
         private readonly ListenerType _type;
-        private readonly object _listener;
         private readonly ISaveOrUpdateEventListener[] _updateEventListeners;
 
         public ListenerDisabler(ISession session, ListenerType type, object listener)
         {
             _session = session;
             _type = type;
-            _listener = listener;
             EventListeners eventListeners = _session.GetSessionImplementation().Listeners;
 
             switch (type)
