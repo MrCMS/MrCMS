@@ -350,6 +350,7 @@
     <Compile Include="Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
     <Compile Include="Helpers\DocumentVersionRenderingExtensions.cs" />
+    <Compile Include="Helpers\FormContextEnsurer.cs" />
     <Compile Include="Helpers\HoneypotHtmlHelper.cs" />
     <Compile Include="Helpers\HtmlFormExtensions.cs" />
     <Compile Include="Helpers\ImageRenderingExtensions.cs" />
