@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.DbConfiguration;
+using MrCMS.DbConfiguration.Filters;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
 using MrCMS.Settings;
+using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Services.Resources
@@ -24,16 +27,19 @@ namespace MrCMS.Services.Resources
         }
 
 
-        private static readonly object s_lock = new object();
+        private static readonly object LockObject = new object();
+        private bool _retryingAllResources;
+
         public string GetValue(string key, string defaultValue = null)
         {
-            var languageValue =
-                ResourcesForSite.SingleOrDefault(
-                    resource => resource.Key == key && resource.UICulture == _siteSettings.UICulture);
-            if (languageValue != null)
-                return languageValue.Value;
-            lock (s_lock)
+            lock (LockObject)
             {
+                var languageValue =
+                    ResourcesForSite.SingleOrDefault(
+                        resource => resource.Key == key && resource.UICulture == _siteSettings.UICulture);
+                if (languageValue != null)
+                    return languageValue.Value;
+
                 var defaultResource =
                     ResourcesForSite.SingleOrDefault(resource => resource.Key == key && resource.UICulture == null);
                 if (defaultResource == null)
@@ -60,32 +66,44 @@ namespace MrCMS.Services.Resources
 
         public void Insert(StringResource resource)
         {
-            _session.Transact(session => session.Save(resource));
-            AllResources.Add(resource);
+            lock (LockObject)
+            {
+                _session.Transact(session => session.Save(resource));
+                AllResources.Add(resource);
+            }
         }
 
         public void AddOverride(StringResource resource)
         {
-            if (resource.UICulture == null)
-                return;
-            _session.Transact(session => session.Save(resource));
-            AllResources.Add(resource);
+            lock (LockObject)
+            {
+                if (resource.UICulture == null)
+                    return;
+                _session.Transact(session => session.Save(resource));
+                AllResources.Add(resource);
+            }
         }
 
         public void Update(StringResource resource)
         {
-            var firstOrDefault =
-                AllResources.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
-            if (firstOrDefault != null) firstOrDefault.Value = resource.Value;
-            _session.Transact(session => session.Update(resource));
+            lock (LockObject)
+            {
+                var firstOrDefault =
+                    AllResources.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
+                if (firstOrDefault != null) firstOrDefault.Value = resource.Value;
+                _session.Transact(session => session.Update(resource));
+            }
         }
 
         public void Delete(StringResource resource)
         {
-            var firstOrDefault =
-                AllResources.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
-            if (firstOrDefault != null) AllResources.Remove(firstOrDefault);
-            _session.Transact(session => session.Delete(resource));
+            lock (LockObject)
+            {
+                var firstOrDefault =
+                    AllResources.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
+                if (firstOrDefault != null) AllResources.Remove(firstOrDefault);
+                _session.Transact(session => session.Delete(resource));
+            }
         }
 
         public IEnumerable<StringResource> ResourcesForSite
@@ -98,21 +116,47 @@ namespace MrCMS.Services.Resources
             get { return AllResources; }
         }
 
-
+        // retry added to try and help mitigate issues with duplicates being added and causing errors
         private HashSet<StringResource> AllResources
         {
             get
             {
-                return
-                    _allResources =
-                        _allResources ??
-                        GetAllResourcesFromDb();
+                var allSettings = _allResources = _allResources ?? GetAllResourcesFromDb();
+                if (!allSettings.Any())
+                {
+                    try
+                    {
+                        if (!_retryingAllResources)
+                        {
+                            CurrentRequestData.ErrorSignal.Raise(new Exception("Settings list empty"));
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                    if (!_retryingAllResources)
+                    {
+                        _retryingAllResources = true;
+                        ResetResourceCache();
+                        return AllResources;
+                    }
+                }
+                return allSettings;
             }
+        }
+
+        private void ResetResourceCache()
+        {
+            _allResources = null;
         }
 
         private HashSet<StringResource> GetAllResourcesFromDb()
         {
-            return new HashSet<StringResource>(_session.QueryOver<StringResource>().Cacheable().List());
+            using (new SiteFilterDisabler(_session))
+            {
+                return new HashSet<StringResource>(_session.QueryOver<StringResource>().List());
+            }
         }
     }
 }

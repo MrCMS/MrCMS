@@ -108,7 +108,7 @@ namespace MrCMS.Website
                             if (CurrentRequestData.CurrentContext.User != null)
                             {
                                 var currentUser = Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
-                                if (currentUser == null || !currentUser.IsActive)
+                                if (!Request.Url.AbsolutePath.StartsWith("/signalr/") && currentUser == null || !currentUser.IsActive)
                                     Get<IAuthorisationService>().Logout();
                                 else
                                     CurrentRequestData.CurrentUser = currentUser;
