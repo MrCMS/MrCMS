@@ -5,7 +5,6 @@ using System.Reflection;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Settings;
 using MrCMS.Helpers;
-using NHibernate;
 
 namespace MrCMS.Settings
 {
@@ -13,6 +12,7 @@ namespace MrCMS.Settings
     {
         private readonly ISettingService _settingService;
         private readonly Site _currentSite;
+        private static readonly object SaveSettingsLockObject = new object();
 
         public ConfigurationProvider(ISettingService settingService, Site currentSite)
         {
@@ -23,24 +23,27 @@ namespace MrCMS.Settings
 
         public void SaveSettings(SiteSettingsBase settings)
         {
-            var type = settings.GetType();
-            IEnumerable<PropertyInfo> properties = from prop in type.GetProperties()
-                                                   where prop.CanWrite && prop.CanRead
-                                                   where prop.Name != "Site"
-                                                   where
-                                                       prop.PropertyType
-                                                           .GetCustomTypeConverter()
-                                                           .CanConvertFrom(typeof(string))
-                                                   select prop;
-
-            foreach (PropertyInfo prop in properties)
+            lock (SaveSettingsLockObject)
             {
-                string key = type.FullName + "." + prop.Name;
-                //Duck typing is not supported in C#. That's why we're using dynamic type
-                dynamic value = prop.GetValue(settings, null);
-                _settingService.SetSetting(key, value ?? "");
+                var type = settings.GetType();
+                IEnumerable<PropertyInfo> properties = from prop in type.GetProperties()
+                                                       where prop.CanWrite && prop.CanRead
+                                                       where prop.Name != "Site"
+                                                       where
+                                                           prop.PropertyType
+                                                               .GetCustomTypeConverter()
+                                                               .CanConvertFrom(typeof(string))
+                                                       select prop;
+
+                foreach (PropertyInfo prop in properties)
+                {
+                    string key = type.FullName + "." + prop.Name;
+                    //Duck typing is not supported in C#. That's why we're using dynamic type
+                    dynamic value = prop.GetValue(settings, null);
+                    _settingService.SetSetting(key, value ?? "");
+                }
+                _settingService.ResetSettingCache();
             }
-            _settingService.ResetSettingCache();
         }
 
         public void DeleteSettings(SiteSettingsBase settings)
