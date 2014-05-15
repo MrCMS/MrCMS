@@ -2,7 +2,8 @@
     var showNotification = function (notification) {
         noty({
             text: '<div class="notification-date">' + notification.Date + '</div><div class="notification-msg">' + notification.Message + "</div>",
-            layout: 'bottomRight'
+            layout: 'bottomRight',
+            timeout: 5000
         });
     };
     return {
