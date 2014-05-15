@@ -122,9 +122,10 @@ namespace MrCMS.Website
                 .Where(
                     q =>
                         q.IsPublic &&
-                        (typeof(ActionResult).IsAssignableFrom(q.ReturnType) ||
-                         (q.ReturnType.IsGenericType && q.ReturnType.GetGenericTypeDefinition() == typeof(Task<>) &&
-                          typeof(ActionResult).IsAssignableFrom(q.ReturnType.GetGenericArguments()[0]))));
+                        (typeof (ActionResult).IsAssignableFrom(q.ReturnType) ||
+                         (q.ReturnType.IsGenericType && q.ReturnType.GetGenericTypeDefinition() == typeof (Task<>) &&
+                          q.ReturnType.GetGenericArguments().Count() == 1 &&
+                          typeof (ActionResult).IsAssignableFrom(q.ReturnType.GetGenericArguments()[0]))));
         }
 
         public static List<ActionMethodInfo<T>> GetActionMethodsWithAttribute<T>() where T : Attribute
