@@ -90,6 +90,7 @@
       <HintPath>..\packages\Ninject.MockingKernel.3.0.0.5\lib\net40-full\Ninject.MockingKernel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.82.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -157,6 +158,7 @@
     <Compile Include="Helpers\DocumentExtensionsTests.cs" />
     <Compile Include="Helpers\StringHelperTests.cs" />
     <Compile Include="Helpers\TypeHelperTests.cs" />
+    <Compile Include="Helpers\Validation\EmailValidatorTests.cs" />
     <Compile Include="IoC\NinjectScopingTests.cs" />
     <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
     <Compile Include="Logging\LogServiceTests.cs" />

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MrCMS.Helpers.Validation;
 
 namespace MrCMS.Web.Apps.Core.Models.RegisterAndLogin
 {
@@ -14,7 +15,7 @@ namespace MrCMS.Web.Apps.Core.Models.RegisterAndLogin
         [Required(ErrorMessage = "Email is required")]
         [StringLength(128, MinimumLength = 5)]
         [Remote("IsUniqueEmail", "UserAccount", ErrorMessage = "This email is already registered.")]
-        [RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "E-mail is not valid")]
+        [EmailValidator]
         public string Email { get; set; }
     }
 }
