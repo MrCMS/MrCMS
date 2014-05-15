@@ -52,7 +52,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                     queryOver.Where(notification => notification.NotificationType == searchQuery.NotificationType);
             }
 
-            return queryOver.Paged(searchQuery.Page);
+            return queryOver.OrderBy(notification => notification.CreatedOn).Desc.Paged(searchQuery.Page);
         }
 
         public void PushNotification(PushNotificationModel model)
