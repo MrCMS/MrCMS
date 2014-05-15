@@ -48,6 +48,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <MvcBuildViews>true</MvcBuildViews>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime">
@@ -1270,7 +1271,6 @@
     <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleList.cshtml" />
     <Content Include="Apps\Articles\Views\Pages\Article.cshtml" />
     <Content Include="Apps\Articles\Views\Pages\ArticleList.cshtml" />
-    <Content Include="Apps\Articles\Views\Shared\ShowCategories.cshtml" />
     <Content Include="Apps\Articles\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1394,7 +1394,6 @@
     <Content Include="Areas\Admin\Views\Webpage\FormMessage.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\PageVersions.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Permissions.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\PermissionsAdmin.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Preview.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\RedirectEdit.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\SortFiles.cshtml" />
@@ -1571,7 +1570,6 @@
     <Content Include="Areas\Admin\Views\Shared\AdminNavigation.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Navbar.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\UserList.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\User\Add.cshtml" />
     <Content Include="Areas\Admin\Views\User\Edit.cshtml" />
@@ -1582,12 +1580,10 @@
     <Content Include="Areas\Admin\Views\Webpage\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Content.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\IncludeInNavigation.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Layout.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Media.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Sort.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\Show.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Edit.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\TextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\Edit.cshtml" />
@@ -1600,8 +1596,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Shared\TreeChildren.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\CategoryList.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Upload.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImageSelector.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ImageList.cshtml" />
