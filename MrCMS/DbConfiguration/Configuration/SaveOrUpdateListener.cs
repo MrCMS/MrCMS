@@ -49,7 +49,7 @@ namespace MrCMS.DbConfiguration.Configuration
 
         private void SetSite(IEntityPersister persister, object[] state, SiteEntity siteEntity, Site site)
         {
-            Set(persister, state, "Website", site);
+            Set(persister, state, "Site", site);
 
             siteEntity.Site = site;
         }
