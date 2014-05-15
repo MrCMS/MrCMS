@@ -48,7 +48,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _userService.AddUser(user);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Edit", new { id = user.Id });
         }
 
         [HttpGet]
