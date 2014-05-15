@@ -378,6 +378,7 @@
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
     <Compile Include="Models\WebpageCount.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
+    <Compile Include="Services\CloneSiteService.cs" />
     <Compile Include="Services\EventContext.cs" />
     <Compile Include="Services\FileMigration\FileMigrationService.cs" />
     <Compile Include="Services\Events\Args\OnUserAddedEventArgs.cs" />
