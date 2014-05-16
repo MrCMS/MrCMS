@@ -97,31 +97,34 @@ namespace MrCMS.Settings
         {
             lock (SetSettingLockObject)
             {
-                if (key == null)
-                    throw new ArgumentNullException("key");
-                key = key.Trim().ToLowerInvariant();
+                using (new SiteFilterDisabler(_session))
+                {
+                    if (key == null)
+                        throw new ArgumentNullException("key");
+                    key = key.Trim().ToLowerInvariant();
 
-                Setting setting =
-                    _session.QueryOver<Setting>().Where(s => s.Site == _site && s.Name == key).SingleOrDefault();
-                string valueStr = typeof(T).GetCustomTypeConverter().ConvertToInvariantString(value);
-                if (setting != null)
-                {
-                    //update
-                    setting.Value = valueStr;
-                    setting.Site = _site;
+                    Setting setting =
+                        _session.QueryOver<Setting>().Where(s => s.Site == _site && s.Name == key).SingleOrDefault();
+                    string valueStr = typeof(T).GetCustomTypeConverter().ConvertToInvariantString(value);
+                    if (setting != null)
+                    {
+                        //update
+                        setting.Value = valueStr;
+                        setting.Site = _site;
+                    }
+                    else
+                    {
+                        //insert
+                        setting = new Setting
+                        {
+                            Name = key,
+                            Value = valueStr,
+                            Site = _site
+                        };
+                        AllSettings.Add(setting);
+                    }
+                    _session.Transact(session => session.SaveOrUpdate(setting));
                 }
-                else
-                {
-                    //insert
-                    setting = new Setting
-                              {
-                                  Name = key,
-                                  Value = valueStr,
-                                  Site = _site
-                              };
-                    AllSettings.Add(setting);
-                }
-                _session.Transact(session => session.SaveOrUpdate(setting));
             }
         }
 
@@ -161,7 +164,7 @@ namespace MrCMS.Settings
         {
             //format: <name, <id, value>>
             var dictionary = new Dictionary<string, KeyValuePair<int, string>>();
-            foreach (var s in AllSettings.Where(setting => setting.Site.Id == _site.Id))
+            foreach (var s in AllSettings.Where(setting => setting.Site != null && setting.Site.Id == _site.Id))
             {
                 var resourceName = s.Name.ToLowerInvariant();
                 if (!dictionary.ContainsKey(resourceName))
