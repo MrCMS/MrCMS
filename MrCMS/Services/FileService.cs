@@ -85,7 +85,13 @@ namespace MrCMS.Services
 
         private ViewDataUploadFilesResult GetUploadFilesResult(MediaFile mediaFile)
         {
-            return new ViewDataUploadFilesResult(mediaFile, GetUrl(mediaFile, GetImageSizes().Find(size => size.Name == "Thumbnail").Size));
+            return new ViewDataUploadFilesResult(mediaFile, GetUrl(mediaFile, GetThumbnailSize()));
+        }
+
+        private Size GetThumbnailSize()
+        {
+            var imageSize = GetImageSizes().Find(size => size.Name == "Thumbnail");
+            return imageSize != null ? imageSize.Size : new Size(50, 50);
         }
 
         /// <summary>
