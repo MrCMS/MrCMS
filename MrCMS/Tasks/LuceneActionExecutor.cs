@@ -32,6 +32,8 @@ namespace MrCMS.Tasks
                                           var luceneAction in
                                               thisGroup.Where(action => action.Operation == LuceneOperation.Delete).ToList())
                                           luceneAction.Execute(writer);
+
+                                      writer.Optimize();
                                   });
             }
         }
