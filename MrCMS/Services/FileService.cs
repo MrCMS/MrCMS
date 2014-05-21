@@ -153,7 +153,8 @@ namespace MrCMS.Services
             var requestedImageFileUrl = ImageProcessor.RequestedImageFileUrl(file, size);
 
             // if we've cached the file existing then we're fine
-            if (file.ResizedImages.Any(image => image.Url == requestedImageFileUrl))
+            var resizedImages = _session.QueryOver<ResizedImage>().Where(image => image.MediaFile.Id == file.Id).Cacheable().List();
+            if (resizedImages.Any(image => image.Url == requestedImageFileUrl))
                 return requestedImageFileUrl;
 
             // if it exists but isn't cached, we should add it to the cache
