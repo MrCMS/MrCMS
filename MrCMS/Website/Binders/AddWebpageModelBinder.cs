@@ -28,7 +28,7 @@ namespace MrCMS.Website.Binders
             //set include as navigation as default 
             if (webpage != null)
             {
-                webpage.RevealInNavigation = true;
+                webpage.RevealInNavigation = webpage.GetMetadata().RevealInNavigation;
             }
 
             return webpage;

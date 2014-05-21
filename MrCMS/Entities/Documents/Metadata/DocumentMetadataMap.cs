@@ -120,6 +120,11 @@ namespace MrCMS.Entities.Documents.Metadata
         public virtual bool ChildrenMaintainHierarchy { get { return true; } }
 
         /// <summary>
+        /// Specifies whether child pages will have Maintain Hierarchy checked by default
+        /// </summary>
+        public virtual bool RevealInNavigation { get { return true; } }
+
+        /// <summary>
         /// Specifies whether the page type is able to have body content
         /// </summary>
         public virtual bool HasBodyContent { get { return true; } }
@@ -151,6 +156,7 @@ namespace MrCMS.Entities.Documents.Metadata
                                ShowChildrenInAdminNav = ShowChildrenInAdminNav,
                                App = App,
                                ChildrenMaintainHierarchy = ChildrenMaintainHierarchy,
+                               RevealInNavigation = RevealInNavigation,
                                HasBodyContent = HasBodyContent
                            };
             }
