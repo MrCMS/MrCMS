@@ -37,6 +37,11 @@ namespace MrCMS.Web.Apps.Articles.Metadata
         {
             get { yield break; }
         }
+
+        public override bool RevealInNavigation
+        {
+            get { return false; }
+        }
     }
 }
 
