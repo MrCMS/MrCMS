@@ -20,12 +20,13 @@ namespace MrCMS.Services
 
         public void Delete(UrlHistory urlHistory)
         {
+            if (urlHistory.Webpage != null) urlHistory.Webpage.Urls.Remove(urlHistory);
             _session.Transact(session => _session.Delete(urlHistory));
         }
 
         public void Add(UrlHistory urlHistory)
         {
-            urlHistory.Webpage.Urls.Add(urlHistory);
+            if (urlHistory.Webpage != null) urlHistory.Webpage.Urls.Add(urlHistory);
             _session.Transact(session => session.Save(urlHistory));
         }
 
