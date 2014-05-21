@@ -62,6 +62,8 @@ namespace MrCMS.Entities.Documents
                 return new List<Type>();
             }
         }
+
+        public bool RevealInNavigation { get; set; }
     }
 
     public enum SortBy 
