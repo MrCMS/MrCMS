@@ -29,6 +29,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _session = session;
         }
 
+        [ForceImmediateLuceneUpdate]
         public override ActionResult Add([IoCModelBinder(typeof(AddWebpageModelBinder))] Webpage doc)
         {
             if (_documentService.UrlIsValidForWebpage(doc.UrlSegment, null))
@@ -89,6 +90,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [MrCMSTypeACL(typeof(Webpage), TypeACLRule.Delete)]
+        [ForceImmediateLuceneUpdate]
         public override ActionResult Delete(Webpage document)
         {
             return base.Delete(document);
