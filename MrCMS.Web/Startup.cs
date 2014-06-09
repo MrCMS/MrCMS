@@ -20,6 +20,7 @@ namespace MrCMS.Web
                 () => hubActivator);
 
             app.ConfigureAuth();
+            
             ConfigureSignalR(app);
         }
         public static void ConfigureSignalR(IAppBuilder app)
