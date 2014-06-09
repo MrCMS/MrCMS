@@ -186,6 +186,7 @@ namespace MrCMS.Website.Optimization
             hash = FileService.RemoveInvalidUrlCharacters(hash);
 
             var sb = new StringBuilder(prefix);
+            sb.Append(_seoSettings.Site.Id);
             sb.Append(hash);
             sb.Append(postfix);
             return sb.ToString();
