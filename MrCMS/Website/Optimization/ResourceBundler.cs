@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
+using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Settings;
 
@@ -14,10 +15,12 @@ namespace MrCMS.Website.Optimization
     public class ResourceBundler : IResourceBundler
     {
         private readonly SEOSettings _seoSettings;
+        private readonly Site _site;
 
-        public ResourceBundler(SEOSettings seoSettings)
+        public ResourceBundler(SEOSettings seoSettings,Site site)
         {
             _seoSettings = seoSettings;
+            _site = site;
         }
 
         private Dictionary<string, List<ResourceData>> CssData
@@ -186,7 +189,7 @@ namespace MrCMS.Website.Optimization
             hash = FileService.RemoveInvalidUrlCharacters(hash);
 
             var sb = new StringBuilder(prefix);
-            sb.Append(_seoSettings.Site.Id);
+            sb.Append(_seoSettings.SiteId);
             sb.Append(hash);
             sb.Append(postfix);
             return sb.ToString();

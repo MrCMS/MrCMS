@@ -7,7 +7,7 @@ namespace MrCMS.Settings
 {
     public abstract class SiteSettingsBase
     {
-        public Site Site { get; set; }
+        public int SiteId { get; set; }
 
         public virtual string TypeName
         {
