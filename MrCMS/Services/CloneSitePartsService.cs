@@ -15,16 +15,18 @@ namespace MrCMS.Services
     public class CloneSitePartsService : ICloneSitePartsService
     {
         private readonly ISession _session;
+        private readonly ILegacySettingsProvider _legacySettingsProvider;
 
-        public CloneSitePartsService(ISession session)
+        public CloneSitePartsService(ISession session, ILegacySettingsProvider legacySettingsProvider)
         {
             _session = session;
+            _legacySettingsProvider = legacySettingsProvider;
         }
 
         public void CopySettings(Site @from, Site to)
         {
-            var fromProvider = new ConfigurationProvider(@from);
-            var toProvider = new ConfigurationProvider(@to);
+            var fromProvider = new ConfigurationProvider(@from, _legacySettingsProvider);
+            var toProvider = new ConfigurationProvider(@to, _legacySettingsProvider);
             var siteSettingsBases = fromProvider.GetAllSiteSettings();
             siteSettingsBases.ForEach(toProvider.SaveSettings);
         }
@@ -127,8 +129,8 @@ namespace MrCMS.Services
 
         public void Copy404(Site @from, Site to)
         {
-            var fromProvider = new ConfigurationProvider(@from);
-            var toProvider = new ConfigurationProvider(@to);
+            var fromProvider = new ConfigurationProvider(@from, _legacySettingsProvider);
+            var toProvider = new ConfigurationProvider(@to, _legacySettingsProvider);
             var siteSettings = fromProvider.GetSiteSettings<SiteSettings>();
             var error404 = _session.Get<Webpage>(siteSettings.Error404PageId);
 
@@ -142,8 +144,8 @@ namespace MrCMS.Services
 
         public void Copy403(Site @from, Site to)
         {
-            var fromProvider = new ConfigurationProvider(@from);
-            var toProvider = new ConfigurationProvider(@to);
+            var fromProvider = new ConfigurationProvider(@from,_legacySettingsProvider);
+            var toProvider = new ConfigurationProvider(@to,_legacySettingsProvider);
             var siteSettings = fromProvider.GetSiteSettings<SiteSettings>();
             var error403 = _session.Get<Webpage>(siteSettings.Error403PageId);
 
@@ -157,8 +159,8 @@ namespace MrCMS.Services
 
         public void Copy500(Site @from, Site to)
         {
-            var fromProvider = new ConfigurationProvider(@from);
-            var toProvider = new ConfigurationProvider(@to);
+            var fromProvider = new ConfigurationProvider(@from, _legacySettingsProvider);
+            var toProvider = new ConfigurationProvider(@to, _legacySettingsProvider);
             var siteSettings = fromProvider.GetSiteSettings<SiteSettings>();
             var error500 = _session.Get<Webpage>(siteSettings.Error500PageId);
 

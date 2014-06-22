@@ -16,13 +16,15 @@ namespace MrCMS.Settings
     public class ConfigurationProvider : IConfigurationProvider
     {
         private readonly Site _site;
+        private readonly ILegacySettingsProvider _legacySettingsProvider;
         private static readonly object SettingsLockObject = new object();
 
         private static Dictionary<int, Dictionary<Type, object>> _settingCache = new Dictionary<int, Dictionary<Type, object>>();
 
-        public ConfigurationProvider(Site site)
+        public ConfigurationProvider(Site site, ILegacySettingsProvider legacySettingsProvider)
         {
             _site = site;
+            _legacySettingsProvider = legacySettingsProvider;
         }
 
         public string GetFolder()
@@ -86,7 +88,8 @@ namespace MrCMS.Settings
         {
             if (!GetSiteCache().ContainsKey(typeof(TSettings)))
             {
-                GetSiteCache()[typeof(TSettings)] = GetSettingObject<TSettings>();
+                var settingObject = GetSettingObject<TSettings>();
+                SaveSettings(settingObject);
             }
             return GetSiteCache()[typeof(TSettings)] as TSettings;
         }
@@ -99,7 +102,14 @@ namespace MrCMS.Settings
                 string readAllText = File.ReadAllText(fileLocation);
                 return JsonConvert.DeserializeObject<TSettings>(readAllText);
             }
-            return new TSettings {SiteId = _site.Id};
+            return GetNewSettingsObject<TSettings>();
+        }
+
+        private TSettings GetNewSettingsObject<TSettings>() where TSettings : SiteSettingsBase, new()
+        {
+            var settings = new TSettings {SiteId = _site.Id};
+            _legacySettingsProvider.ApplyLegacySettings(settings,_site.Id);
+            return settings;
         }
     }
 }

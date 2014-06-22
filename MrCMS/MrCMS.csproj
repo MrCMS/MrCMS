@@ -402,6 +402,8 @@
     <Compile Include="Services\Resources\IStringResourceProvider.cs" />
     <Compile Include="Services\Resources\StringResourceProvider.cs" />
     <Compile Include="Services\StandardAuthConfigurationService.cs" />
+    <Compile Include="Settings\ILegacySettingsProvider.cs" />
+    <Compile Include="Settings\LegacySettingsProvider.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />
     <Compile Include="Entities\SystemEntity.cs" />
     <Compile Include="Events\Documents\IOnDocumentAdded.cs" />

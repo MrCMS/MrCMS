@@ -283,7 +283,7 @@ namespace MrCMS.Web.Apps.Core
             mediaSettings.ResizeQuality = 90;
             mediaSettings.DefaultCategory = defaultMediaCategory.Id;
 
-            var configurationProvider = new ConfigurationProvider(site);
+            var configurationProvider = new ConfigurationProvider(site, new LegacySettingsProvider(session));
             var fileSystemSettings = new FileSystemSettings { SiteId = site.Id, StorageType = typeof(FileSystem).FullName };
             configurationProvider.SaveSettings(siteSettings);
             configurationProvider.SaveSettings(mediaSettings);
