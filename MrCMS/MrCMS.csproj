@@ -774,6 +774,7 @@
     <Compile Include="Website\MrCMSPage.cs" />
     <Compile Include="Website\Routing\MrCMSRoutingErrorHandler.cs" />
     <Compile Include="Website\Routing\MrCMSSSLRedirectHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSStandardRouteHandler.cs" />
     <Compile Include="Website\Routing\NotInstalledHandler.cs" />
     <Compile Include="Website\Routing\PageNotFoundHandler.cs" />
     <Compile Include="Website\Routing\UrlHistoryHandler.cs" />

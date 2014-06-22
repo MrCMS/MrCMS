@@ -8,11 +8,11 @@ namespace MrCMS.Website.Routing
 {
     public sealed class MrCMSHttpHandler : IHttpHandler, IRequiresSessionState
     {
-        private readonly IEnumerable<IMrCMSRouteHandler> _routeHandlers;
+        private readonly List<IMrCMSRouteHandler> _routeHandlers;
 
         public MrCMSHttpHandler(IEnumerable<IMrCMSRouteHandler> routeHandlers)
         {
-            _routeHandlers = routeHandlers;
+            _routeHandlers = routeHandlers.ToList();
         }
 
         public void ProcessRequest(HttpContext context)
