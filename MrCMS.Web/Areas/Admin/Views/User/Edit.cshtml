@@ -1,5 +1,7 @@
-﻿@using MrCMS.Entities.People
+﻿@using MrCMS.ACL.Rules
+@using MrCMS.Entities.People
 @using MrCMS.Helpers
+@using MrCMS.Website
 @model User
 @{
     ViewBag.Title = "Edit | " + Model.Name;
@@ -47,18 +49,22 @@
             <div class="span6">
                 <h4>Roles</h4>
                 <div class="form-inline">
-                    @if (userRoles != null)
+                    @if (userRoles != null && CurrentRequestData.CurrentUser.CanAccess<UserACL>(UserACL.Roles))
                     {
                         foreach (var role in userRoles)
                         {
                             bool isChecked = Model.Roles.Any(x => x.Id == role.Id);
                             bool isEnabled = !role.IsAdmin || !onlyAdmin;
 
-                        @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new { disabled = "disabled" })
-                        @:&nbsp;
-                        @Html.Label("Role-" + role.Id, role.Name)
-                        <br />
+                            @Html.CheckBox("Role-" + role.Id, isChecked, isEnabled ? null : new {disabled = "disabled"})
+                            @:&nbsp;
+                            @Html.Label("Role-" + role.Id, role.Name)
+                            <br />
                         }
+                    }
+                    else
+                    {
+                        <p>You do not have access to administer roles.</p>
                     }
                 </div>
                 <h4>Notifications</h4>
