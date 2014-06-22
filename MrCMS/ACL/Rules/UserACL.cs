@@ -9,6 +9,7 @@ namespace MrCMS.ACL.Rules
         public const string Edit = "Edit";
         public const string Delete = "Delete";
         public const string SetPassword = "Set Password";
+        public const string Roles = "Edit User Roles";
 
         public override string DisplayName
         {
@@ -17,7 +18,7 @@ namespace MrCMS.ACL.Rules
 
         protected override List<string> GetOperations()
         {
-            return new List<string> { View, Add, Edit, Delete, SetPassword };
+            return new List<string> { View, Add, Edit, Delete, SetPassword, Roles };
         }
     }
 }
