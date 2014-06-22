@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Web.Mvc;
 using MrCMS.ACL;
+using MrCMS.ACL.Rules;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 
@@ -25,6 +27,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [MrCMSACLRule(typeof(AclAdminACL), AclAdminACL.View)]
         public ViewResult Index()
         {
             ViewData["settings"] = _aclSettings;
@@ -32,6 +35,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [MrCMSACLRule(typeof(AclAdminACL), AclAdminACL.Edit)]
         public RedirectToRouteResult Index([IoCModelBinder(typeof(ACLUpdateModelBinder))] List<ACLUpdateRecord> model)
         {
             _aclService.UpdateACL(model);
@@ -39,6 +43,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [MrCMSACLRule(typeof(AclAdminACL), AclAdminACL.Edit)]
         public ActionResult Disable()
         {
             _aclSettings.ACLEnabled = false;
@@ -47,6 +52,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [MrCMSACLRule(typeof(AclAdminACL), AclAdminACL.Edit)]
         public ActionResult Enable()
         {
             _aclSettings.ACLEnabled = true;
