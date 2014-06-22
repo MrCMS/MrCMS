@@ -238,6 +238,7 @@
     <Compile Include="ACL\ACLSettings.cs" />
     <Compile Include="ACL\Rules\AdminAccessACL.cs" />
     <Compile Include="ACL\Rules\AdminBarACL.cs" />
+    <Compile Include="ACL\Rules\AclAdminACL.cs" />
     <Compile Include="ACL\Rules\IndexACL.cs" />
     <Compile Include="ACL\Rules\InlineEditingACL.cs" />
     <Compile Include="ACL\Rules\RoleACL.cs" />
