@@ -1,64 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web.Helpers;
+using System.Web.Hosting;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Settings;
 using MrCMS.Helpers;
+using Newtonsoft.Json;
 
 namespace MrCMS.Settings
 {
     public class ConfigurationProvider : IConfigurationProvider
     {
-        private readonly ISettingService _settingService;
-        private readonly Site _currentSite;
-        private static readonly object SaveSettingsLockObject = new object();
+        private readonly Site _site;
+        private readonly ILegacySettingsProvider _legacySettingsProvider;
+        private static readonly object SettingsLockObject = new object();
 
-        public ConfigurationProvider(ISettingService settingService, Site currentSite)
+        private static Dictionary<int, Dictionary<Type, object>> _settingCache = new Dictionary<int, Dictionary<Type, object>>();
+
+        public ConfigurationProvider(Site site, ILegacySettingsProvider legacySettingsProvider)
         {
-            _settingService = settingService;
-            _currentSite = currentSite;
+            _site = site;
+            _legacySettingsProvider = legacySettingsProvider;
+        }
+
+        public string GetFolder()
+        {
+            string location = string.Format("~/App_Data/Settings/{0}/", _site.Id);
+            string mapPath = HostingEnvironment.MapPath(location);
+            Directory.CreateDirectory(mapPath);
+            return mapPath;
+        }
+
+        private string GetFileLocation(SiteSettingsBase settings)
+        {
+            return GetFileLocation(settings.GetType());
         }
 
 
+        private string GetFileLocation(Type type)
+        {
+            return string.Format("{0}{1}.json", GetFolder(), type.FullName.ToLower());
+        }
+
         public void SaveSettings(SiteSettingsBase settings)
         {
-            lock (SaveSettingsLockObject)
+            lock (SettingsLockObject)
             {
-                var type = settings.GetType();
-                IEnumerable<PropertyInfo> properties = from prop in type.GetProperties()
-                                                       where prop.CanWrite && prop.CanRead
-                                                       where prop.Name != "Site"
-                                                       where
-                                                           prop.PropertyType
-                                                               .GetCustomTypeConverter()
-                                                               .CanConvertFrom(typeof(string))
-                                                       select prop;
-
-                foreach (PropertyInfo prop in properties)
-                {
-                    string key = type.FullName + "." + prop.Name;
-                    //Duck typing is not supported in C#. That's why we're using dynamic type
-                    dynamic value = prop.GetValue(settings, null);
-                    _settingService.SetSetting(key, value ?? "");
-                }
-                _settingService.ResetSettingCache();
+                string location = GetFileLocation(settings);
+                File.WriteAllText(location, JsonConvert.SerializeObject(settings));
+                GetSiteCache()[settings.GetType()] = settings;
             }
+        }
+
+        private Dictionary<Type, object> GetSiteCache()
+        {
+            if (!_settingCache.ContainsKey(_site.Id))
+            {
+                _settingCache[_site.Id] = new Dictionary<Type, object>();
+            }
+            return _settingCache[_site.Id];
         }
 
         public void DeleteSettings(SiteSettingsBase settings)
         {
-            var type = settings.GetType();
-            IEnumerable<PropertyInfo> properties = from prop in type.GetProperties()
-                                                   select prop;
-
-            List<Setting> settingList =
-                properties.Select(prop => type.FullName + "." + prop.Name)
-                          .Select(key => _settingService.GetSettingByKey(key))
-                          .Where(setting => setting != null).ToList();
-
-            foreach (Setting setting in settingList)
-                _settingService.DeleteSetting(setting);
+            string fileLocation = GetFileLocation(settings);
+            if (File.Exists(fileLocation))
+            {
+                File.Delete(fileLocation);
+            }
         }
 
         public List<SiteSettingsBase> GetAllSiteSettings()
@@ -73,24 +86,29 @@ namespace MrCMS.Settings
 
         public TSettings GetSiteSettings<TSettings>() where TSettings : SiteSettingsBase, new()
         {
-            var settings = Activator.CreateInstance<TSettings>();
+            if (!GetSiteCache().ContainsKey(typeof(TSettings)))
+            {
+                var settingObject = GetSettingObject<TSettings>();
+                SaveSettings(settingObject);
+            }
+            return GetSiteCache()[typeof(TSettings)] as TSettings;
+        }
 
-            // get properties we can write to
-            var properties = from prop in typeof(TSettings).GetProperties()
-                             where prop.CanWrite && prop.CanRead
-                             where prop.Name != "Site"
-                             let setting =
-                                 _settingService.GetSettingValueByKey<string>(string.Format("{0}.{1}", typeof(TSettings).FullName, prop.Name))
-                             where setting != null
-                             where prop.PropertyType.GetCustomTypeConverter().CanConvertFrom(typeof(string))
-                             where prop.PropertyType.GetCustomTypeConverter().IsValid(setting)
-                             let value = prop.PropertyType.GetCustomTypeConverter().ConvertFromInvariantString(setting)
-                             select new { prop, value };
+        private TSettings GetSettingObject<TSettings>() where TSettings : SiteSettingsBase, new()
+        {
+            string fileLocation = GetFileLocation(typeof(TSettings));
+            if (File.Exists(fileLocation))
+            {
+                string readAllText = File.ReadAllText(fileLocation);
+                return JsonConvert.DeserializeObject<TSettings>(readAllText);
+            }
+            return GetNewSettingsObject<TSettings>();
+        }
 
-            // assign properties
-            properties.ToList().ForEach(p => p.prop.SetValue(settings, p.value, null));
-            settings.Site = _currentSite;
-
+        private TSettings GetNewSettingsObject<TSettings>() where TSettings : SiteSettingsBase, new()
+        {
+            var settings = new TSettings {SiteId = _site.Id};
+            _legacySettingsProvider.ApplyLegacySettings(settings,_site.Id);
             return settings;
         }
     }

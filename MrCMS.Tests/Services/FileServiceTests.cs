@@ -42,7 +42,7 @@ namespace MrCMS.Tests.Services
                                     SmallImageWidth = 100,
                                     ThumbnailImageHeight = 64,
                                     ThumbnailImageWidth = 64,
-                                    Site = CurrentSite
+                                    SiteId = CurrentSite.Id
                                 };
             _siteSettings = new SiteSettings();
             return new FileService(session ?? Session, fileSystem ?? _fileSystem,

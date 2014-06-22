@@ -1,3 +1,4 @@
+using System;
 using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Entities.Settings
@@ -5,6 +6,8 @@ namespace MrCMS.Entities.Settings
     /// <summary>
     /// Represents a setting
     /// </summary>
+    [Obsolete("Settings are now stored as JSON in App_Data, this class is left in to allow auto-migration from the DB based " +
+              "settings of previous versions, but will be removed in a later version.")]
     public partial class Setting : SiteEntity
     {
         /// <summary>

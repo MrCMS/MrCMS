@@ -54,7 +54,7 @@ namespace MrCMS.Website.Routing
         {
             var urlHistory =
                 _session.QueryOver<UrlHistory>()
-                        .Where(history => history.UrlSegment == Data && history.Site.Id == _siteSettings.Site.Id)
+                        .Where(history => history.UrlSegment == Data && history.Site.Id == _siteSettings.SiteId)
                         .Take(1)
                         .Cacheable()
                         .SingleOrDefault();
