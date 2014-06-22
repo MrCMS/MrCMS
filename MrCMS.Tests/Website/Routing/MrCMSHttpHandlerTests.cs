@@ -19,7 +19,7 @@ using Xunit;
 
 namespace MrCMS.Tests.Website.Routing
 {
-    public class MrCMSHttpHandlerTests : MrCMSTest
+    /*public class MrCMSHttpHandlerTests : MrCMSTest
     {
         private SiteSettings siteSettings;
         private IDocumentService documentService;
@@ -429,5 +429,5 @@ namespace MrCMS.Tests.Website.Routing
             mrCMSHttpHandler.SetRequestContext(requestContext);
             return mrCMSHttpHandler;
         }
-    }
+    }*/
 }
