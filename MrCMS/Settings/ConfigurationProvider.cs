@@ -15,16 +15,13 @@ namespace MrCMS.Settings
 {
     public class ConfigurationProvider : IConfigurationProvider
     {
-        //private readonly ISettingService _settingService;
         private readonly Site _site;
         private static readonly object SettingsLockObject = new object();
 
-        private static Dictionary<int, Dictionary<Type, object>> _settingCache =
-            new Dictionary<int, Dictionary<Type, object>>();
+        private static Dictionary<int, Dictionary<Type, object>> _settingCache = new Dictionary<int, Dictionary<Type, object>>();
 
         public ConfigurationProvider(Site site)
         {
-            //_settingService = settingService;
             _site = site;
         }
 
@@ -102,7 +99,7 @@ namespace MrCMS.Settings
                 string readAllText = File.ReadAllText(fileLocation);
                 return JsonConvert.DeserializeObject<TSettings>(readAllText);
             }
-            return new TSettings();
+            return new TSettings {SiteId = _site.Id};
         }
     }
 }
