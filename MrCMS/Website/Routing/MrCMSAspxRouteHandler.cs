@@ -4,12 +4,12 @@ using System.Web.Routing;
 
 namespace MrCMS.Website.Routing
 {
-    public class MrCMSRouteHandler : MvcRouteHandler
+    public class MrCMSAspxRouteHandler : MvcRouteHandler
     {
         protected override IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
             return CurrentRequestData.DatabaseIsInstalled
-                ? (IHttpHandler) MrCMSApplication.Get<MrCMSHttpHandler>()
+                ? (IHttpHandler) MrCMSApplication.Get<MrCMSAspxHttpHandler>()
                 : new NotInstalledHandler();
         }
     }

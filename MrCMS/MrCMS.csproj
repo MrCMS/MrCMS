@@ -755,9 +755,30 @@
     <Compile Include="Website\OutOfContextSession.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
+    <Compile Include="Website\Routing\FileHandler.cs" />
+    <Compile Include="Website\Routing\GetErrorPage.cs" />
+    <Compile Include="Website\Routing\GetWebpageByUrlHistoryForRequest.cs" />
+    <Compile Include="Website\Routing\GetWebpageForRequest.cs" />
+    <Compile Include="Website\Routing\IGetErrorPage.cs" />
+    <Compile Include="Website\Routing\IGetWebpageByUrlHistoryForRequest.cs" />
+    <Compile Include="Website\Routing\IGetWebpageForRequest.cs" />
+    <Compile Include="Website\Routing\IMrCMSRouteHandler.cs" />
+    <Compile Include="Website\Routing\IMrCMSRoutingErrorHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSAspxHttpHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSAspxRouteHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSDisallowedHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSHomePageRedirectHandler.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSRedirectHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSRequiresSiteRedirectRouteHandler.cs" />
     <Compile Include="Website\Routing\MrCMSRouteHandler.cs" />
     <Compile Include="Website\MrCMSPage.cs" />
+    <Compile Include="Website\Routing\MrCMSRoutingErrorHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSSSLRedirectHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSStandardRouteHandler.cs" />
+    <Compile Include="Website\Routing\NotInstalledHandler.cs" />
+    <Compile Include="Website\Routing\PageNotFoundHandler.cs" />
+    <Compile Include="Website\Routing\UrlHistoryHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
