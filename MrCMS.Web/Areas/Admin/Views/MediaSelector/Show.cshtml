@@ -3,7 +3,7 @@
 @using MrCMS.Helpers
 @using MrCMS.Settings
 @using MrCMS.Website
-@model MrCMS.Web.Areas.Admin.Controllers.MediaSelectorSearchQuery
+@model MrCMS.Web.Areas.Admin.Models.MediaSelectorSearchQuery
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var categories = ViewData["categories"] as List<SelectListItem> ?? new List<SelectListItem>();

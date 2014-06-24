@@ -9,10 +9,7 @@ namespace MrCMS.Services
 {
     public interface IFileService
     {
-        ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory);
-        ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory);
-        MediaFile GetFile(int id);
-        IPagedList<MediaFile> GetFilesForSearchPaged(MediaCategorySearchModel mediaCategorySearchModel);
+        MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory);
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);
         string GetFileLocation(MediaFile mediaFile, Size imageSize);
@@ -21,7 +18,6 @@ namespace MrCMS.Services
         string GetFileUrl(string value);
         void RemoveFolder(MediaCategory mediaCategory);
         void CreateFolder(MediaCategory mediaCategory);
-        void SetOrders(List<SortItem> items);
         bool IsValidFileType(string fileName);
     }
 }

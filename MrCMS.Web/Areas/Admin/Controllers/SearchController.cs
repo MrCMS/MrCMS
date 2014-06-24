@@ -1,5 +1,4 @@
 ﻿using System.Web.Mvc;
-using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models.Search;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
@@ -8,12 +7,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class SearchController : MrCMSAdminController
     {
-        private readonly ISiteMapService _siteMapService;
         private readonly IAdminWebpageSearchService _adminWebpageSearchService;
 
-        public SearchController(ISiteMapService siteMapService, IAdminWebpageSearchService adminWebpageSearchService)
+        public SearchController(IAdminWebpageSearchService adminWebpageSearchService)
         {
-            _siteMapService = siteMapService;
             _adminWebpageSearchService = adminWebpageSearchService;
         }
 

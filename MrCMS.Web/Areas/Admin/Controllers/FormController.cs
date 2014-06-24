@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;

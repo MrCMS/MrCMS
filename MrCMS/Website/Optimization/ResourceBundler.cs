@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
 
@@ -186,7 +187,7 @@ namespace MrCMS.Website.Optimization
                 hash = HttpServerUtility.UrlTokenEncode(input);
             }
             //ensure only valid chars
-            hash = FileService.RemoveInvalidUrlCharacters(hash);
+            hash = hash.RemoveInvalidUrlCharacters();
 
             var sb = new StringBuilder(prefix);
             sb.Append(_seoSettings.SiteId);

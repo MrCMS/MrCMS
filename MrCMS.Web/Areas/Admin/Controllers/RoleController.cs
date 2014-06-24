@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using MrCMS.ACL.Rules;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 
@@ -15,21 +13,21 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class RoleController : MrCMSAdminController
     {
-        private readonly IRoleService _roleService;
+        private readonly IRoleAdminService _roleAdminService;
 
-        public RoleController(IRoleService roleService)
+        public RoleController(IRoleAdminService roleAdminService)
         {
-            _roleService = roleService;
+            _roleAdminService = roleAdminService;
         }
 
-        [MrCMSACLRule(typeof(RoleACL),RoleACL.View)]
+        [MrCMSACLRule(typeof(RoleACL), RoleACL.View)]
         public ActionResult Index()
         {
-            return View(_roleService.GetAllRoles());
+            return View(_roleAdminService.GetAllRoles());
         }
 
         [HttpGet]
-        [MrCMSACLRule(typeof(RoleACL),RoleACL.Add)]
+        [MrCMSACLRule(typeof(RoleACL), RoleACL.Add)]
         public PartialViewResult Add()
         {
             var model = new UserRole();
@@ -37,23 +35,18 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [MrCMSACLRule(typeof(RoleACL),RoleACL.Add)]
+        [MrCMSACLRule(typeof(RoleACL), RoleACL.Add)]
         public ActionResult Add(UserRole model)
         {
-            if (ModelState.IsValid)
-            {
-                if (_roleService.GetRoleByName(model.Name) == null)
-                    _roleService.SaveRole(model);
-                else
-                    TempData.ErrorMessages().Add(string.Format("{0} already exists.", model.Name));
-            }
-
+            var addRoleResult = _roleAdminService.AddRole(model);
+            if (!addRoleResult.Success)
+                TempData.ErrorMessages().Add(addRoleResult.Error);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         [ActionName("Edit")]
-        [MrCMSACLRule(typeof(RoleACL),RoleACL.Edit)]
+        [MrCMSACLRule(typeof(RoleACL), RoleACL.Edit)]
         public ActionResult Edit_Get(UserRole role)
         {
             if (role == null)
@@ -63,17 +56,17 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [MrCMSACLRule(typeof(RoleACL),RoleACL.Edit)]
+        [MrCMSACLRule(typeof(RoleACL), RoleACL.Edit)]
         public ActionResult Edit(UserRole model)
         {
-            _roleService.SaveRole(model);
+            _roleAdminService.SaveRole(model);
 
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         [ActionName("Delete")]
-        [MrCMSACLRule(typeof(RoleACL),RoleACL.Delete)]
+        [MrCMSACLRule(typeof(RoleACL), RoleACL.Delete)]
         public ActionResult Delete_Get(UserRole role)
         {
             if (role == null)
@@ -83,29 +76,28 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [MrCMSACLRule(typeof(RoleACL),RoleACL.Delete)]
+        [MrCMSACLRule(typeof(RoleACL), RoleACL.Delete)]
         public ActionResult Delete(UserRole role)
         {
-            if (role != null) _roleService.DeleteRole(role);
+            if (role != null) _roleAdminService.DeleteRole(role);
             return RedirectToAction("Index");
         }
 
         public JsonResult Search(string term)
         {
-            var result = _roleService.Search(term);
+            IEnumerable<AutoCompleteResult> result = _roleAdminService.Search(term);
 
             return Json(result);
         }
 
         /// <summary>
-        /// Used with Tag-it javascript to act as data source for roles available for securing web pages. See permissions tab in edit view of a webpage.
+        ///     Used with Tag-it javascript to act as data source for roles available for securing web pages. See permissions tab
+        ///     in edit view of a webpage.
         /// </summary>
         /// <returns></returns>
         public JsonResult GetRolesForPermissions()
         {
-            var roles = _roleService.GetAllRoles().Select(x=>x.Name).ToArray();
-            var result = new JavaScriptSerializer().Serialize(roles);
-            return Json(result);
+            return Json(_roleAdminService.GetRolesForPermissions());
         }
     }
 }

@@ -9,6 +9,7 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -16,14 +17,14 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     public class MediaCategoryControllerTests
     {
         private readonly IDocumentService _documentService;
-        private readonly IFileService _fileService;
+        private readonly IFileAdminService _fileService;
         private readonly Site _site;
         private readonly MediaCategoryController _mediaCategoryController;
 
         public MediaCategoryControllerTests()
         {
             _documentService = A.Fake<IDocumentService>();
-            _fileService = A.Fake<IFileService>();
+            _fileService = A.Fake<IFileAdminService>();
             _site = new Site();
             _mediaCategoryController = new MediaCategoryController(_documentService, _fileService, _site);
         }
@@ -180,68 +181,5 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             _mediaCategoryController.RemoveMedia().Should().BeOfType<PartialViewResult>();
         }
 
-        [Fact]
-        public void MediaCategoryController_FileResult_ReturnsAPartialViewResult()
-        {
-            _mediaCategoryController.FileResult(new MediaFile()).Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void MediaCategoryController_FileResult_ReturnsTheMediaFilePassedToIt()
-        {
-            var mediaFile = new MediaFile();
-
-            _mediaCategoryController.FileResult(mediaFile).Model.Should().Be(mediaFile);
-        }
-
-        [Fact]
-        public void MediaCategoryController_MiniUploader_ReturnsPartialView()
-        {
-            _mediaCategoryController.MiniUploader(1).Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void MediaCategoryController_MiniUploader_ReturnsIdPassedToTheMethod()
-        {
-            _mediaCategoryController.MiniUploader(1).Model.Should().Be(1);
-        }
-
-        [Fact]
-        public void MediaCategoryController_GetFileUrl_CallsFileServiceGetFileUrlWithPassedValue()
-        {
-            _mediaCategoryController.GetFileUrl("test");
-
-            A.CallTo(() => _fileService.GetFileUrl("test")).MustHaveHappened();
-        }
-
-        [Fact]
-        public void MediaCategoryController_GetFileUrl_ReturnsResultOfCallToFileUrl()
-        {
-            A.CallTo(() => _fileService.GetFileUrl("test")).Returns("test-result");
-
-            _mediaCategoryController.GetFileUrl("test").Should().Be("test-result");
-        }
-
-        [Fact]
-        public void MediaCategoryController_MediaSelector_ReturnsAPartialViewResult()
-        {
-            _mediaCategoryController.MediaSelector(null, false, 1).Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void MediaCategoryController_MediaSelector_CallsGetFilesPagedOnFileService()
-        {
-            _mediaCategoryController.MediaSelector(1, false, 1);
-
-            A.CallTo(() => _fileService.GetFilesPaged(1, false, 1)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void MediaCategoryController_MediaSelector_ShouldHaveViewDataSet()
-        {
-            _mediaCategoryController.MediaSelector(1, false, 1);
-
-            _mediaCategoryController.ViewData["categories"].Should().BeOfType<List<SelectListItem>>();
-        }
     }
 }

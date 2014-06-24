@@ -5,6 +5,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Binders;
 using System.Linq;
 using MrCMS.Helpers;
@@ -13,12 +14,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class MediaCategoryController : BaseDocumentController<MediaCategory>
     {
-        private readonly IFileService _fileService;
+        private readonly IFileAdminService _fileAdminService;
 
-        public MediaCategoryController(IDocumentService documentService, IFileService fileService, Site site)
+        public MediaCategoryController(IDocumentService documentService, IFileAdminService fileAdminService, Site site)
             : base(documentService, site)
         {
-            _fileService = fileService;
+            _fileAdminService = fileAdminService;
         }
 
         /**
@@ -28,7 +29,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public override ActionResult Add(MediaCategory doc)
         {
             base.Add(doc);
-            _fileService.CreateFolder(doc);
+            _fileAdminService.CreateFolder(doc);
             return RedirectToAction("Show", new { id = doc.Id });
         }
 
@@ -72,33 +73,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(category);
         }
 
-        public PartialViewResult MediaSelector(int? categoryId, bool imagesOnly = false, int page = 1)
-        {
-            ViewData["categories"] = _documentService.GetAllDocuments<MediaCategory>()
-                                                     .Where(category => !category.HideInAdminNav)
-                                                     .OrderBy(category => category.Name)
-                                                     .BuildSelectItemList
-                (category => category.Name, category => category.Id.ToString(),
-                 emptyItem: SelectListItemHelper.EmptyItem("Select a category..."));
-            return PartialView(_fileService.GetFilesPaged(categoryId, imagesOnly, page));
-        }
-
-        public string GetFileUrl(string value)
-        {
-            return _fileService.GetFileUrl(value);
-        }
-
-        public PartialViewResult MiniUploader(int id)
-        {
-            return PartialView(id);
-        }
-
-        public PartialViewResult FileResult(MediaFile mediaFile)
-        {
-            ViewData["upload"] = "upload-";
-            return PartialView(mediaFile);
-        }
-
         public PartialViewResult RemoveMedia()
         {
             return PartialView();
@@ -107,7 +81,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult ShowFiles(MediaCategorySearchModel searchModel)
         {
-            ViewData["files"] = _fileService.GetFilesForSearchPaged(searchModel);
+            ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(searchModel);
             return PartialView(searchModel);
         }
 
@@ -123,7 +97,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             ViewData["categoryId"] = parent.Id;
             var sortItems =
-            _fileService.GetFiles(parent).OrderBy(arg => arg.display_order)
+            _fileAdminService.GetFiles(parent).OrderBy(arg => arg.display_order)
                                 .Select(
                                     arg => new ImageSortItem { Order = arg.display_order, Id = arg.Id, Name = arg.name, ImageUrl = arg.url, IsImage = arg.is_image })
                                 .ToList();
@@ -134,7 +108,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult SortFiles(MediaCategory parent, List<SortItem> items)
         {
-            _fileService.SetOrders(items);
+            _fileAdminService.SetOrders(items);
             return RedirectToAction("SortFiles", new { id = parent.Id });
         }
 

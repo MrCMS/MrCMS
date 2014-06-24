@@ -44,7 +44,7 @@ namespace MrCMS.Services
                 _container =
                     cloudBlobClient.GetContainerReference(
                         SeoHelper.TidyUrl(
-                            FileService.RemoveInvalidUrlCharacters(_fileSystemSettings.AzureContainerName)));
+                            _fileSystemSettings.AzureContainerName.RemoveInvalidUrlCharacters()));
                 if (_container.CreateIfNotExists())
                 {
                     _container.SetPermissions(new BlobContainerPermissions

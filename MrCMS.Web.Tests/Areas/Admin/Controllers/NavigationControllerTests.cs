@@ -4,6 +4,8 @@ using FluentAssertions;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers

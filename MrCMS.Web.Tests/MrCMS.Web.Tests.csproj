@@ -134,6 +134,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\Core\Services\ResetPasswordServiceTests.cs" />
+    <Compile Include="Apps\Core\Services\SearchServiceTests.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\FileControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\FormControllerTests.cs" />
@@ -150,6 +152,13 @@
     <Compile Include="Areas\Admin\Controllers\WidgetControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateControllerTests.cs" />
+    <Compile Include="Areas\Admin\Services\FileAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\LayoutAreaAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\LogAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\MessageTemplateAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\SitesServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\TagServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\UrlHistoryServiceTests.cs" />
     <Compile Include="Controllers\FormControllerTests.cs" />
     <Compile Include="Controllers\LoginControllerTests.cs" />
     <Compile Include="MrCMSTest.cs" />
@@ -158,6 +167,7 @@
     <Compile Include="Stubs\FakeHttpFileCollectionBase.cs" />
     <Compile Include="Stubs\FakeHttpPostedFileBase.cs" />
     <Compile Include="Stubs\StubDocument.cs" />
+    <Compile Include="Stubs\StubWebpage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

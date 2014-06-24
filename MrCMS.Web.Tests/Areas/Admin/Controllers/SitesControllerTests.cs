@@ -6,19 +6,20 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class SitesControllerTests
     {
-        private readonly ISiteService _siteService;
+        private readonly ISiteAdminService _siteAdminService;
         private readonly SitesController _sitesController;
 
         public SitesControllerTests()
         {
-            _siteService = A.Fake<ISiteService>();
-            _sitesController = new SitesController(_siteService);
+            _siteAdminService = A.Fake<ISiteAdminService>();
+            _sitesController = new SitesController(_siteAdminService);
         }
 
         [Fact]
@@ -26,14 +27,14 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             _sitesController.Index_Get();
 
-            A.CallTo(() => _siteService.GetAllSites()).MustHaveHappened();
+            A.CallTo(() => _siteAdminService.GetAllSites()).MustHaveHappened();
         }
 
         [Fact]
         public void SitesController_IndexGet_IfSitesReturnsViewIndexWithResultOfServiceCallAsModel()
         {
             var sites = new List<Site> { new Site() };
-            A.CallTo(() => _siteService.GetAllSites()).Returns(sites);
+            A.CallTo(() => _siteAdminService.GetAllSites()).Returns(sites);
 
             ViewResult result = _sitesController.Index_Get();
 
@@ -58,7 +59,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _sitesController.Add(site, options);
 
-            A.CallTo(() => _siteService.AddSite(site, options)).MustHaveHappened();
+            A.CallTo(() => _siteAdminService.AddSite(site, options)).MustHaveHappened();
         }
 
         [Fact]
@@ -90,7 +91,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _sitesController.Edit(site);
 
-            A.CallTo(() => _siteService.SaveSite(site)).MustHaveHappened();
+            A.CallTo(() => _siteAdminService.SaveSite(site)).MustHaveHappened();
         }
 
         [Fact]
@@ -121,7 +122,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _sitesController.Delete(site);
 
-            A.CallTo(() => _siteService.DeleteSite(site)).MustHaveHappened();
+            A.CallTo(() => _siteAdminService.DeleteSite(site)).MustHaveHappened();
         }
 
         [Fact]

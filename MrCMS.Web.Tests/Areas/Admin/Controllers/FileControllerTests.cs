@@ -8,6 +8,7 @@ using FluentAssertions;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Web.Tests.Stubs;
 using MrCMS.Website.ActionResults;
 using MrCMS.Website.Controllers;
@@ -17,12 +18,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class FileControllerTests
     {
-        private static IFileService fileService;
+        private static IFileAdminService fileAdminService;
 
         private static FileController GetFileController()
         {
-            fileService = A.Fake<IFileService>();
-            var fileController = new FileController(fileService);
+            fileAdminService = A.Fake<IFileAdminService>();
+            var fileController = new FileController(fileAdminService);
             return fileController;
         }
 
@@ -53,7 +54,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             FileController fileController = GetFileController();
 
             var mediaFile = new MediaFile();
-            A.CallTo(() => fileService.SaveFile(mediaFile)).Throws(new Exception("Test exception"));
+            A.CallTo(() => fileAdminService.SaveFile(mediaFile)).Throws(new Exception("Test exception"));
             fileController.UpdateSEO(mediaFile, "test-title", "test-description")
                           .Should()
                           .Be("There was an error saving the SEO values: Test exception");
@@ -75,7 +76,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             mediaFile.MediaCategory = new MediaCategory{Id = 1};
             fileController.Delete_POST(mediaFile);
 
-            A.CallTo(() => fileService.DeleteFile(mediaFile)).MustHaveHappened();
+            A.CallTo(() => fileAdminService.DeleteFile(mediaFile)).MustHaveHappened();
         }
 
         [Fact]
@@ -94,7 +95,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             
             fileController.Files(mediaCategory);
 
-            A.CallTo(() => fileService.GetFiles(mediaCategory)).MustHaveHappened();
+            A.CallTo(() => fileAdminService.GetFiles(mediaCategory)).MustHaveHappened();
         }
 
         [Fact]
@@ -125,13 +126,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
                                                        }
                                                    });
             A.CallTo(() => httpRequestBase.Files).Returns(httpFileCollectionWrapper);
-            A.CallTo(() => fileService.IsValidFileType("test.txt")).Returns(true);
+            A.CallTo(() => fileAdminService.IsValidFileType("test.txt")).Returns(true);
             fileController.RequestMock = httpRequestBase;
 
             var mediaCategory = new MediaCategory();
             fileController.Files_Post(mediaCategory);
 
-            A.CallTo(() => fileService.AddFile(memoryStream, fileName, contentType, contentLength, mediaCategory))
+            A.CallTo(() => fileAdminService.AddFile(memoryStream, fileName, contentType, contentLength, mediaCategory))
              .MustHaveHappened();
         }
 
@@ -154,13 +155,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
                                                        }
                                                    });
             A.CallTo(() => httpRequestBase.Files).Returns(httpFileCollectionWrapper);
-            A.CallTo(() => fileService.IsValidFileType("test.txt")).Returns(false);
+            A.CallTo(() => fileAdminService.IsValidFileType("test.txt")).Returns(false);
             fileController.RequestMock = httpRequestBase;
 
             var mediaCategory = new MediaCategory();
             fileController.Files_Post(mediaCategory);
 
-            A.CallTo(() => fileService.AddFile(memoryStream, fileName, contentType, contentLength, mediaCategory))
+            A.CallTo(() => fileAdminService.AddFile(memoryStream, fileName, contentType, contentLength, mediaCategory))
                 .MustNotHaveHappened();
         }
     }

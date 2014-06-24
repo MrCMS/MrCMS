@@ -22,6 +22,7 @@ using MrCMS.Tasks;
 using MrCMS.Web.Apps.Core.MessageTemplates;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using NHibernate;
 
@@ -55,7 +56,7 @@ namespace MrCMS.Web.Apps.Core
             CurrentRequestData.SiteSettings = siteSettings;
 
             var documentService = new DocumentService(session, siteSettings, site);
-            var layoutAreaService = new LayoutAreaService(session);
+            var layoutAreaService = new LayoutAreaAdminService(session);
             var widgetService = new WidgetService(session);
             var fileSystem = new FileSystem();
             var imageProcessor = new ImageProcessor(session, fileSystem, mediaSettings);

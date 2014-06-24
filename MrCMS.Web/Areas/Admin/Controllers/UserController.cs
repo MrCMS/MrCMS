@@ -4,6 +4,7 @@ using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website;
 using MrCMS.Website.Binders;

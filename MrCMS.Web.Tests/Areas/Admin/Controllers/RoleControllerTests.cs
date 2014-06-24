@@ -5,13 +5,14 @@ using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class RoleControllerTests
     {
-        private IRoleService roleService;
+        private IRoleAdminService roleService;
 
         [Fact]
         public void RoleController_Index_ReturnsViewResult()
@@ -69,15 +70,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void RoleController_AddPost_ShouldCallSaveRoleWithPassedRole()
+        public void RoleController_AddPost_ShouldCallAddRoleWithPassedRole()
         {
             RoleController roleController = GetRoleController();
             var userRole = new UserRole {Name = "test"};
-            A.CallTo(() => roleService.GetRoleByName("test")).Returns(null);
-
             roleController.Add(userRole);
 
-            A.CallTo(() => roleService.SaveRole(userRole)).MustHaveHappened();
+            A.CallTo(() => roleService.AddRole(userRole)).MustHaveHappened();
         }
 
 
@@ -222,7 +221,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
         private RoleController GetRoleController()
         {
-            roleService = A.Fake<IRoleService>();
+            roleService = A.Fake<IRoleAdminService>();
             return new RoleController(roleService);
         }
     }

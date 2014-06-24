@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Settings;
+using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;

@@ -6,6 +6,7 @@ using FluentAssertions;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Web.Tests.Stubs;
 using Xunit;
 
@@ -16,7 +17,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void TagController_Search_ShouldCallTagServiceSearch()
         {
-            var tagService = A.Fake<ITagService>();
+            var tagService = A.Fake<ITagAdminService>();
             var tagController = new TagController(tagService);
 
             var stubDocument = new StubDocument();
@@ -28,7 +29,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void TagController_Search_ShouldReturnTheResultOfTheServiceQuery()
         {
-            var tagService = A.Fake<ITagService>();
+            var tagService = A.Fake<ITagAdminService>();
             var tagController = new TagController(tagService);
             IEnumerable<AutoCompleteResult> results = Enumerable.Empty<AutoCompleteResult>();
             var stubDocument = new StubDocument();

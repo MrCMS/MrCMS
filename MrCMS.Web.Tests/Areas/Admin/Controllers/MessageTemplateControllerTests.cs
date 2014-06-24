@@ -8,6 +8,8 @@ using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Web.Tests.Stubs;
 using MrCMS.Website;
 using Xunit;
@@ -16,13 +18,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class MessageTemplateControllerTests
     {
-        private readonly IMessageTemplateService _messageTemplateService;
+        private readonly IMessageTemplateAdminService _messageTemplateAdminService;
         private readonly MessageTemplateController _messageTemplateController;
 
         public MessageTemplateControllerTests()
         {
-            _messageTemplateService = A.Fake<IMessageTemplateService>();
-            _messageTemplateController = new MessageTemplateController(_messageTemplateService)
+            _messageTemplateAdminService = A.Fake<IMessageTemplateAdminService>();
+            _messageTemplateController = new MessageTemplateController(_messageTemplateAdminService)
                                   {
                                       RequestMock = A.Fake<HttpRequestBase>()
                                   };
@@ -41,7 +43,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             _messageTemplateController.Index();
 
-            A.CallTo(() => _messageTemplateService.GetAllMessageTemplateTypesWithDetails()).MustHaveHappened();
+            A.CallTo(() => _messageTemplateAdminService.GetAllMessageTemplateTypesWithDetails()).MustHaveHappened();
         }
 
         [Fact]
@@ -49,7 +51,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var items = new List<MessageTemplateInfo>();
 
-            A.CallTo(() => _messageTemplateService.GetAllMessageTemplateTypesWithDetails()).Returns(items);
+            A.CallTo(() => _messageTemplateAdminService.GetAllMessageTemplateTypesWithDetails()).Returns(items);
 
             var result = _messageTemplateController.Index();
 
@@ -59,7 +61,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MessageTemplateController_Add_IfTemplateIsFoundShouldReturnViewResult()
         {
-            A.CallTo(() => _messageTemplateService.GetNew("test-type")).Returns(A.Fake<MessageTemplate>());
+            A.CallTo(() => _messageTemplateAdminService.GetNew("test-type")).Returns(A.Fake<MessageTemplate>());
 
             var result = _messageTemplateController.Add("test-type");
 
@@ -70,7 +72,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void MessageTemplateController_Add_IfTemplateIsFoundShouldReturnTheResultOfServiceCallAsModel()
         {
             var messageTemplate = A.Fake<MessageTemplate>();
-            A.CallTo(() => _messageTemplateService.GetNew("test-type")).Returns(messageTemplate);
+            A.CallTo(() => _messageTemplateAdminService.GetNew("test-type")).Returns(messageTemplate);
 
             var result = _messageTemplateController.Add("test-type");
 
@@ -80,7 +82,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MessageTemplateController_Add_IfTemplateIsNotFoundShouldRedirectToIndex()
         {
-            A.CallTo(() => _messageTemplateService.GetNew("test-type")).Returns(null);
+            A.CallTo(() => _messageTemplateAdminService.GetNew("test-type")).Returns(null);
 
             var result = _messageTemplateController.Add("test-type");
 
@@ -94,7 +96,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _messageTemplateController.Add_POST(messageTemplate);
 
-            A.CallTo(() => _messageTemplateService.Save(messageTemplate)).MustHaveHappened();
+            A.CallTo(() => _messageTemplateAdminService.Save(messageTemplate)).MustHaveHappened();
         }
 
         [Fact]
@@ -112,7 +114,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _messageTemplateController.Edit_POST(messageTemplate);
 
-            A.CallTo(() => _messageTemplateService.Save(messageTemplate)).MustHaveHappened();
+            A.CallTo(() => _messageTemplateAdminService.Save(messageTemplate)).MustHaveHappened();
         }
 
         [Fact]
@@ -168,7 +170,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _messageTemplateController.Reset_POST(messageTemplate);
 
-            A.CallTo(() => _messageTemplateService.Reset(messageTemplate)).MustHaveHappened();
+            A.CallTo(() => _messageTemplateAdminService.Reset(messageTemplate)).MustHaveHappened();
         }
 
         [Fact]
