@@ -79,7 +79,7 @@ namespace MrCMS.Services
                 }).ToList();
                 copy.Parent = parent;
                 yield return copy;
-                foreach (var child in GetLayoutCopies(@from, to, layout))
+                foreach (var child in GetLayoutCopies(@from, to, copy))
                 {
                     yield return child;
                 }
