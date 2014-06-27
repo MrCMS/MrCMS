@@ -1,11 +1,12 @@
 using MrCMS.Entities.Documents;
+using MrCMS.Models;
 using MrCMS.Paging;
 
-namespace MrCMS.Models
+namespace MrCMS.Web.Areas.Admin.Models
 {
     public class VersionsModel : AsyncListModel<DocumentVersion>
     {
-        public VersionsModel(PagedList<DocumentVersion> items, int id)
+        public VersionsModel(IPagedList<DocumentVersion> items, int id)
             : base(items, id)
         {
         }

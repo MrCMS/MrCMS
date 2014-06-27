@@ -19,6 +19,7 @@ using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Controllers;
 using MrCMS.Website.Filters;
 using MrCMS.Website.Routing;
 using NHibernate;
@@ -180,7 +181,8 @@ namespace MrCMS.Website
             routes.MapRoute("ajax content save", "admintools/savebodycontent",
                 new {controller = "AdminTools", action = "SaveBodyContent"});
 
-            routes.MapRoute("form save", "save-form/{id}", new {controller = "Form", action = "Save"});
+            routes.MapRoute("form save", "save-form/{id}", new {controller = "Form", action = "Save"},
+                new[] {typeof (FormController).Namespace});
 
             routes.Add(new Route("{*data}", new RouteValueDictionary(),
                 new RouteValueDictionary(new {data = @".*\.aspx"}),

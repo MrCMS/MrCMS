@@ -1,19 +1,19 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane" id="postings-tab">
-      <div class="row-fluid">
+    <div class="row-fluid">
         <div class="span7">
-                <h4>Entries (@Model.FormPostingsCount())</h4>
+            <h4>Entries (@Model.FormPostingsCount())</h4>
         </div>
         <div class="span5">
             <div class="pull-right btn-group">
                 @if (Model.FormPostingsCount() > 0)
                 {
-                    @Html.ActionLink("Delete all entries", "ClearFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-mini btn-danger", data_toggle = "fb-modal"})
-                    @Html.ActionLink("Export Entries", "ExportFormData", "Form", new {id = Model.Id}, new {@class = "btn btn-mini btn-primary"})
+                    @Html.ActionLink("Delete all entries", "ClearFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
+                    @Html.ActionLink("Export Entries", "ExportFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-mini btn-primary" })
                 }
             </div>
         </div>
-      </div>
-      @Html.Action("Postings", new { id = Model.Id })
+    </div>
+    @{ Html.RenderAction("Postings", "Form", new { id = Model.Id });}
 </div>

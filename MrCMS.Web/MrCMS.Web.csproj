@@ -54,6 +54,10 @@
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\CsvHelper.2.4.1\lib\net40-client\CsvHelper.dll</HintPath>
+    </Reference>
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
@@ -307,6 +311,7 @@
     <Compile Include="Areas\Admin\Controllers\SEOAnalysisController.cs" />
     <Compile Include="Areas\Admin\Controllers\TransientNotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\VersionsController.cs" />
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
     <Compile Include="Areas\Admin\Helpers\FileHelper.cs" />
@@ -335,12 +340,14 @@
     <Compile Include="Areas\Admin\Models\AddWidgetModel.cs" />
     <Compile Include="Areas\Admin\Models\AdminTree.cs" />
     <Compile Include="Areas\Admin\Models\AdminTreeNode.cs" />
+    <Compile Include="Areas\Admin\Models\AsyncListModel.cs" />
     <Compile Include="Areas\Admin\Models\GetPropertyData.cs" />
     <Compile Include="Areas\Admin\Models\MediaCategorySearchModel.cs" />
     <Compile Include="Areas\Admin\Models\MediaSelectorSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\MessageTemplateInfo.cs" />
     <Compile Include="Areas\Admin\Models\NotificationSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Notifications\NotificationModel.cs" />
+    <Compile Include="Areas\Admin\Models\PostingsModel.cs" />
     <Compile Include="Areas\Admin\Models\SaveResult.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
@@ -426,6 +433,7 @@
     <Compile Include="Areas\Admin\Models\StringResourceSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\UpdatePropertyData.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
+    <Compile Include="Areas\Admin\Models\VersionsModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewDataUploadFilesResult.cs" />
     <Compile Include="Areas\Admin\Services\ACLService.cs" />
     <Compile Include="Areas\Admin\Services\AdminNavLinksService.cs" />
@@ -435,8 +443,10 @@
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
+    <Compile Include="Areas\Admin\Services\DocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\Events\SendPersistentNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
+    <Compile Include="Areas\Admin\Services\FormAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IACLService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminNavLinksService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminPageStatsService.cs" />
@@ -444,7 +454,9 @@
     <Compile Include="Areas\Admin\Services\IAdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\IClearCachesService.cs" />
+    <Compile Include="Areas\Admin\Services\IDocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFileAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IFormAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IInPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ILayoutAreaAdminService.cs" />
@@ -501,7 +513,6 @@
     <Compile Include="Areas\Admin\Services\UrlHistoryAdminService.cs" />
     <Compile Include="Controllers\CKEditorController.cs" />
     <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
-    <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Apps\Core\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\InPageAdminController.cs" />
@@ -1423,9 +1434,9 @@
     <Content Include="Areas\Admin\Views\MediaCategory\MediaSelector.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\FileResult.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\ViewChanges.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\Postings.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\ViewPosting.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\Versions.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\Postings.cshtml" />
+    <Content Include="Areas\Admin\Views\Form\ViewPosting.cshtml" />
+    <Content Include="Areas\Admin\Views\Versions\Show.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\RemoveMedia.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Settings.cshtml" />

@@ -50,14 +50,6 @@ namespace MrCMS.Entities.Documents
 
         protected internal virtual IList<DocumentVersion> Versions { get; set; }
 
-        public virtual VersionsModel GetVersions(int page)
-        {
-            var documentVersions = Versions.OrderByDescending(version => version.CreatedOn).ToList();
-            return
-               new VersionsModel(
-                   new PagedList<DocumentVersion>(
-                       documentVersions, page, 10), Id);
-        }
 
         protected internal virtual void CustomInitialization(IDocumentService service, ISession session) { }
 

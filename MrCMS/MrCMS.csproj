@@ -381,6 +381,7 @@
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
+    <Compile Include="Models\RequiredFieldException.cs" />
     <Compile Include="Models\WebpageCount.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\CloneSiteService.cs" />
@@ -522,7 +523,6 @@
     <Compile Include="Models\ACLGroup.cs" />
     <Compile Include="Models\ACLOperation.cs" />
     <Compile Include="Models\ACLUpdateRecord.cs" />
-    <Compile Include="Models\AsyncListModel.cs" />
     <Compile Include="Models\AutoCompleteResult.cs" />
     <Compile Include="Models\ChildMenuItem.cs" />
     <Compile Include="Models\FilesPagedResult.cs" />
@@ -531,7 +531,6 @@
     <Compile Include="Models\IMenuItem.cs" />
     <Compile Include="Models\ISystemAdminMenuItem.cs" />
     <Compile Include="Models\PageWidgetSortModel.cs" />
-    <Compile Include="Models\PostingsModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\SearchResult.cs" />
     <Compile Include="Models\SearchResultModel.cs" />
@@ -539,7 +538,6 @@
     <Compile Include="Models\SortItem.cs" />
     <Compile Include="Models\SystemAdminMenuItem.cs" />
     <Compile Include="Models\UsersAdminMenuItem.cs" />
-    <Compile Include="Models\VersionsModel.cs" />
     <Compile Include="Models\WidgetPageOrder.cs" />
     <Compile Include="Paging\BasePagedList.cs" />
     <Compile Include="Paging\IPagedList.cs" />
@@ -572,11 +570,10 @@
     <Compile Include="Services\DocumentService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\FileSystem.cs" />
-    <Compile Include="Services\FormService.cs" />
     <Compile Include="Services\IDocumentService.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IFileSystem.cs" />
-    <Compile Include="Services\IFormService.cs" />
+    <Compile Include="Services\IFormAdminService.cs" />
     <Compile Include="Services\IImageProcessor.cs" />
     <Compile Include="Services\IIndexService.cs" />
     <Compile Include="Services\ImageProcessor.cs" />
@@ -675,6 +672,7 @@
     <Compile Include="Tasks\ITaskBuilder.cs" />
     <Compile Include="Tasks\ITaskRunner.cs" />
     <Compile Include="Tasks\ITaskExecutor.cs" />
+    <Compile Include="Website\Controllers\FormController.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
     <Compile Include="Tasks\TaskQueuer.cs" />
     <Compile Include="Tasks\QueuedTask.cs" />

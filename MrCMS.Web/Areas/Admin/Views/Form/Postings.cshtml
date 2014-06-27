@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Models.PostingsModel
+@model MrCMS.Web.Areas.Admin.Models.PostingsModel
 
 
 <div data-paging-type="async">
@@ -7,7 +7,7 @@
         @Html.LabelFor(model => model.Search)
         @Html.TextBoxFor(model => model.Search)
         <p>
-            <button class="btn btn-mini" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">Search</button>
+            <button class="btn btn-mini" id="search-postings" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">Search</button>
         </p>
     </div>
     @if (Model.Items.Any())

@@ -153,13 +153,13 @@
     <Compile Include="Areas\Admin\Controllers\LayoutAreaControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateControllerTests.cs" />
     <Compile Include="Areas\Admin\Services\FileAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\FormServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\LogAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\MessageTemplateAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\SitesServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\TagServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryServiceTests.cs" />
-    <Compile Include="Controllers\FormControllerTests.cs" />
     <Compile Include="Controllers\LoginControllerTests.cs" />
     <Compile Include="MrCMSTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -10,6 +10,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.ModelBinders;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Filters;
@@ -19,13 +20,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class WebpageController : BaseDocumentController<Webpage>
     {
-        private readonly IFormService _formService;
+        private readonly IFormAdminService _formAdminService;
         private readonly ISession _session;
 
-        public WebpageController(IDocumentService documentService, IFormService formService, ISession session, Site site)
+        public WebpageController(IDocumentService documentService, IFormAdminService formAdminService, ISession session, Site site)
             : base(documentService, site)
         {
-            _formService = formService;
+            _formAdminService = formAdminService;
             _session = session;
         }
 
@@ -156,25 +157,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(documentVersion);
         }
 
-        public PartialViewResult Postings(Webpage webpage, int page = 1, string search = null)
-        {
-            var data = _formService.GetFormPostings(webpage, page, search);
-
-            return PartialView(data);
-        }
-
-        public ActionResult ViewPosting(FormPosting formPosting)
-        {
-            return PartialView(formPosting);
-        }
-
-        public ActionResult Versions(Document doc, int page = 1)
-        {
-            var data = doc.GetVersions(page);
-
-            return PartialView(data);
-        }
-
         public string SuggestDocumentUrl(Webpage parent, string pageName)
         {
             return _documentService.GetDocumentUrl(pageName, parent, true);
@@ -189,12 +171,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// <summary>
         /// Finds out if the URL entered is valid for a webpage
         /// </summary>
-        /// <param name="UrlSegment">The URL Segment entered</param>
-        /// <param name="DocumentType">The type of document</param>
+        /// <param name="urlSegment">The URL Segment entered</param>
+        /// <param name="id">The Id of the current document if it is set</param>
         /// <returns></returns>
-        public ActionResult ValidateUrlIsAllowed(string UrlSegment, int? Id)
+        public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_documentService.UrlIsValidForWebpage(UrlSegment, Id) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
+            return !_documentService.UrlIsValidForWebpage(urlSegment, id) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// Returns server date used for publishing (can't use JS date as can be out compared to server date)

@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using System.Web;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Models;
+using MrCMS.Web.Areas.Admin.Models;
 
-namespace MrCMS.Services
+namespace MrCMS.Web.Areas.Admin.Services
 {
-    public interface IFormService
+    public interface IFormAdminService
     {
-        List<string> SaveFormData(Webpage webpage, HttpRequestBase request);
         PostingsModel GetFormPostings(Webpage webpage, int page, string search);
         void AddFormProperty(FormProperty formProperty);
         void SaveFormProperty(FormProperty property);

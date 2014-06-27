@@ -3,12 +3,12 @@ using System.Linq;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Paging;
 
-namespace MrCMS.Models
+namespace MrCMS.Web.Areas.Admin.Models
 {
     public class PostingsModel : AsyncListModel<FormPosting>
     {
         public string Search { get; set; }
-        public PostingsModel(PagedList<FormPosting> items, int id)
+        public PostingsModel(IPagedList<FormPosting> items, int id)
             : base(items, id)
         {
         }

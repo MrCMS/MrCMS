@@ -164,7 +164,6 @@
     <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
     <Compile Include="Helpers\SessionHelperTests.cs" />
     <Compile Include="Optimization\ResourceDataTests.cs" />
-    <Compile Include="Services\FormServiceTests.cs" />
     <Compile Include="Services\CurrentSiteLocatorTests.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsService_AddingDocuments.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsService_GetHierarchyDepthTests.cs" />
@@ -210,6 +209,7 @@
     <Compile Include="Stubs\StubDisallowedWebpage.cs" />
     <Compile Include="Stubs\StubDocument.cs" />
     <Compile Include="Stubs\StubWebpage.cs" />
+    <Compile Include="Website\Controllers\FormControllerTests.cs" />
     <Compile Include="Website\CurrentRequestDataTests.cs" />
     <Compile Include="Website\Routing\ControllerManagerTests.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandlerTests.cs" />

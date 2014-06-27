@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using MrCMS.DbConfiguration.Mapping;
+﻿using System.Collections.Generic;
 using MrCMS.Entities.Messaging;
-using MrCMS.Entities.People;
 using MrCMS.Services;
-using MrCMS.Settings;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Tests.Stubs
@@ -14,7 +9,7 @@ namespace MrCMS.Tests.Stubs
     {
         public override MessageTemplate GetInitialTemplate(ISession session)
         {
-            return new BasicMessageTemplate()
+            return new BasicMessageTemplate
             {
                 ToAddress = "{Email}",
             };

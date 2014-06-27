@@ -18,23 +18,6 @@ namespace MrCMS.Tests.Entities
     public class DocumentTests : InMemoryDatabaseTest
     {
         [Fact]
-        public void Document_GetVersions_ReturnsVersionsInDescendingCreatedOnOrder()
-        {
-            var document = new StubDocument();
-            var version1 = new DocumentVersion {CreatedOn = CurrentRequestData.Now};
-            var version2 = new DocumentVersion {CreatedOn = CurrentRequestData.Now.AddDays(1)};
-            document.SetVersions(new List<DocumentVersion>
-                {
-                    version1,
-                    version2
-                });
-
-            var versionsModel = document.GetVersions(1);
-
-            versionsModel.Items.Should().ContainInOrder(new List<DocumentVersion> {version2, version1});
-        }
-
-        [Fact]
         public void Document_Grouping_CanGroupByDocumentType()
         {
             var document1 = new BasicMappedNoChildrenInNavWebpage();
