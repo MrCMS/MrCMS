@@ -61,7 +61,7 @@ namespace MrCMS.Services
         private IWebpageUrlGenerator GetGenerator(string documentType)
         {
             IWebpageUrlGenerator generator = null;
-            if (_webpageGenerators.ContainsKey(documentType))
+            if (documentType != null && _webpageGenerators.ContainsKey(documentType))
             {
                 generator = _kernel.Get(_webpageGenerators[documentType]) as IWebpageUrlGenerator;
             }
