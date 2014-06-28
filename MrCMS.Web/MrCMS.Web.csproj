@@ -1601,12 +1601,6 @@
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryAdd.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryListAdd.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
-    <None Include="Themes\Default\Views\Web.Debug.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
-    <None Include="Themes\Default\Views\Web.Release.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
