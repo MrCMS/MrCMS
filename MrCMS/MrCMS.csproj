@@ -381,6 +381,7 @@
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
+    <Compile Include="Models\SubMenu.cs" />
     <Compile Include="Models\WebpageCount.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\CloneSiteService.cs" />
@@ -529,7 +530,6 @@
     <Compile Include="Models\ImageSize.cs" />
     <Compile Include="Models\IAdminMenuItem.cs" />
     <Compile Include="Models\IMenuItem.cs" />
-    <Compile Include="Models\ISystemAdminMenuItem.cs" />
     <Compile Include="Models\PageWidgetSortModel.cs" />
     <Compile Include="Models\PostingsModel.cs" />
     <Compile Include="Models\RoleModel.cs" />

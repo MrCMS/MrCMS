@@ -6,15 +6,15 @@ using MrCMS.Website;
 
 namespace MrCMS.Models
 {
-    public class UserAdminMenuItem : ISystemAdminMenuItem
+    public class UserAdminMenuItem : IAdminMenuItem
     {
-        private Dictionary<string, List<IMenuItem>> _children;
+        private SubMenu _children;
         public string Text { get { return "Users"; } }
         public string Url { get; private set; }
         public bool CanShow { get { return new UserAdminMenuACL().CanAccess(CurrentRequestData.CurrentUser, UserAdminMenuACL.ShowMenu); }
         }
 
-        public IDictionary<string, List<IMenuItem>> Children
+        public SubMenu Children
         {
             get
             {
@@ -23,14 +23,14 @@ namespace MrCMS.Models
             }
         }
 
-        private static Dictionary<string, List<IMenuItem>> GetChildren()
+        private static SubMenu GetChildren()
         {
             var userAdminMenuACL = new UserAdminMenuACL();
-            return new Dictionary<string, List<IMenuItem>>
+            return new SubMenu
                        {
                            {
                                "",
-                               new List<IMenuItem>
+                               new List<ChildMenuItem>
                                    {
                                        new ChildMenuItem("Users", "/Admin/User",
                                                          ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.Users)),
