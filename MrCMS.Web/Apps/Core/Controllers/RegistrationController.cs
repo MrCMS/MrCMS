@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using MrCMS.Helpers;
-using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
@@ -50,8 +49,8 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 await _registrationService.RegisterUser(model);
 
                 return !string.IsNullOrEmpty(model.ReturnUrl)
-                           ? Redirect("~/" + model.ReturnUrl)
-                           : Redirect("~/");
+                    ? Redirect("~/" + model.ReturnUrl)
+                    : Redirect("~/");
             }
             return Redirect(UniquePageHelper.GetUrl<RegisterPage>());
         }

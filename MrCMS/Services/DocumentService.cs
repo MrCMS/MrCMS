@@ -161,18 +161,6 @@ namespace MrCMS.Services
                 .SingleOrDefault();
         }
 
-        public IEnumerable<Document> GetParents(int? parent)
-        {
-            if (parent > 0)
-            {
-                var document = _session.Get<Document>(parent);
-                while (document != null)
-                {
-                    yield return document;
-                    document = document.Parent;
-                }
-            }
-        }
 
         private int GetMaxParentDisplayOrder(Document document)
         {

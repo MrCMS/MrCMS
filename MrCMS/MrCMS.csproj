@@ -393,9 +393,13 @@
     <Compile Include="Services\Events\Args\OnUserAddedEventArgs.cs" />
     <Compile Include="Services\Events\IOnUserAdded.cs" />
     <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
+    <Compile Include="Services\GetBreadcrumbs.cs" />
+    <Compile Include="Services\GetCurrentLayout.cs" />
     <Compile Include="Services\GetHomePage.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
     <Compile Include="Services\IExistAnyWebpageService.cs" />
+    <Compile Include="Services\IGetBreadcrumbs.cs" />
+    <Compile Include="Services\IGetCurrentLayout.cs" />
     <Compile Include="Services\IGetHomePage.cs" />
     <Compile Include="Services\IUniquePageService.cs" />
     <Compile Include="Services\IUrlValidationService.cs" />

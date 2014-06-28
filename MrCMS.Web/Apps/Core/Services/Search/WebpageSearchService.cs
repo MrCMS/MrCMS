@@ -13,12 +13,12 @@ namespace MrCMS.Web.Apps.Core.Services.Search
     public class WebpageSearchService : IWebpageSearchService
     {
         private readonly ISearcher<Webpage, WebpageSearchIndexDefinition> _documentSearcher;
-        private readonly IDocumentService _documentService;
+        private readonly IGetBreadcrumbs _getBreadcrumbs;
 
-        public WebpageSearchService(ISearcher<Webpage, WebpageSearchIndexDefinition> documentSearcher, IDocumentService documentService)
+        public WebpageSearchService(ISearcher<Webpage, WebpageSearchIndexDefinition> documentSearcher, IGetBreadcrumbs getBreadcrumbs)
         {
             _documentSearcher = documentSearcher;
-            _documentService = documentService;
+            _getBreadcrumbs = getBreadcrumbs;
         }
 
         public IPagedList<Webpage> Search(WebpageSearchQuery model)
@@ -28,7 +28,7 @@ namespace MrCMS.Web.Apps.Core.Services.Search
 
         public IEnumerable<Document> GetBreadCrumb(int? parentId)
         {
-            return _documentService.GetParents(parentId).Reverse();
+            return _getBreadcrumbs.Get(parentId).Reverse();
         }
     }
 }

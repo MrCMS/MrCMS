@@ -9,9 +9,10 @@
         <label>Layout Areas</label>
         <div class="accordion" id="accordion-layout-areas">
             @{
-                if (Model.CurrentLayout.GetLayoutAreas().Any())
+                var currentLayout = GetCurrentLayout.Get(Model);
+                if (currentLayout.GetLayoutAreas().Any())
                 {
-                    foreach (LayoutArea layoutArea in Model.CurrentLayout.GetLayoutAreas())
+                    foreach (LayoutArea layoutArea in currentLayout.GetLayoutAreas())
                     {
                         List<Widget> widgets = layoutArea.GetWidgets(Model, true);
                 <div class="accordion-group">
@@ -32,8 +33,6 @@
                                             <tr>
                                                 <td>
                                                     @(!string.IsNullOrWhiteSpace(widget.Name) ? string.Format("{0} ({1})", widget.Name, widget.WidgetTypeFormatted) : widget.WidgetTypeFormatted)
-
-
                                                 </td>
                                                 <td>
                                                     <div class="btn-group">
@@ -71,7 +70,6 @@
                                     @Html.FormLink("Reset sorting", "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })
                                     }
                                 }
-
                             </div>
                         </div>
                     </div>

@@ -99,7 +99,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (document == null)
                 return RedirectToAction("Index");
 
-            return View((object)document);
+            return View(document);
         }
 
         [HttpPost]
@@ -117,6 +117,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             return RedirectToAction("Edit", new { id = webpage.Id });
         }
+
         public ActionResult ViewChanges(DocumentVersion documentVersion)
         {
             if (documentVersion == null)
