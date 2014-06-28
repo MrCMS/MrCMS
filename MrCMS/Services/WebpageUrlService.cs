@@ -65,11 +65,7 @@ namespace MrCMS.Services
             {
                 generator = _kernel.Get(_webpageGenerators[documentType]) as IWebpageUrlGenerator;
             }
-            if (generator == null)
-            {
-                generator = new DefaultWebpageUrlGenerator();
-            }
-            return generator;
+            return generator ?? new DefaultWebpageUrlGenerator();
         }
     }
 }
