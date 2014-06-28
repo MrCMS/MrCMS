@@ -9,9 +9,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
-using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
@@ -29,6 +27,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private readonly IDocumentService _documentService;
         private readonly Site _site = new Site();
         private readonly IUrlValidationService _urlValidationService;
+        private readonly IValidWebpageChildrenService _validWebpageChildrenService;
         private readonly WebpageController _webpageController;
         private readonly ISession session;
 
@@ -39,12 +38,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             A.Fake<IFormAdminService>();
             session = A.Fake<ISession>();
             _urlValidationService = A.Fake<IUrlValidationService>();
-            _webpageController = new WebpageController(_documentService, session, _urlValidationService, _site)
+            _validWebpageChildrenService = A.Fake<IValidWebpageChildrenService>();
+            _webpageController = new WebpageController(_validWebpageChildrenService, _documentService, session,
+                _urlValidationService, _site)
             {
                 RouteDataMock = new RouteData()
             };
-
-            DocumentMetadataHelper.OverrideExistAny = type => false;
         }
 
         [Fact]
@@ -346,112 +345,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             result.Should().BeOfType<RedirectToRouteResult>();
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
-        }
-
-        [Fact]
-        public void WebpageController_HideWidget_CallsDocumentServiceHideWidgetWithPassedArguments()
-        {
-            var stubWebpage = new StubWebpage();
-
-            _webpageController.HideWidget(stubWebpage, 2, 3);
-
-            A.CallTo(() => _documentService.HideWidget(stubWebpage, 2)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void WebpageController_HideWidget_ReturnsARedirectToRouteResult()
-        {
-            var stubWebpage = new StubWebpage();
-
-            _webpageController.HideWidget(stubWebpage, 2, 3).Should().BeOfType<RedirectToRouteResult>();
-        }
-
-        [Fact]
-        public void WebpageController_HideWidget_SetsRouteValuesForIdAndLayoutAreaId()
-        {
-            var stubWebpage = new StubWebpage {Id = 1};
-
-            var redirectToRouteResult = _webpageController.HideWidget(stubWebpage, 2, 3).As<RedirectToRouteResult>();
-
-            redirectToRouteResult.RouteValues["action"].Should().Be("Edit");
-            redirectToRouteResult.RouteValues["id"].Should().Be(stubWebpage.Id);
-            redirectToRouteResult.RouteValues["layoutAreaId"].Should().Be(3);
-        }
-
-        [Fact]
-        public void WebpageController_ShowWidget_CallsDocumentServiceShowWidgetWithPassedArguments()
-        {
-            var stubWebpage = new StubWebpage();
-
-            _webpageController.ShowWidget(stubWebpage, 2, 3);
-
-            A.CallTo(() => _documentService.ShowWidget(stubWebpage, 2)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void WebpageController_ShowWidget_ReturnsARedirectToRouteResult()
-        {
-            var stubWebpage = new StubWebpage();
-
-            _webpageController.ShowWidget(stubWebpage, 2, 3).Should().BeOfType<RedirectToRouteResult>();
-        }
-
-        [Fact]
-        public void WebpageController_ShowWidget_SetsRouteValuesForIdAndLayoutAreaId()
-        {
-            var stubWebpage = new StubWebpage {Id = 1};
-
-            var redirectToRouteResult = _webpageController.ShowWidget(stubWebpage, 2, 3).As<RedirectToRouteResult>();
-
-            redirectToRouteResult.RouteValues["action"].Should().Be("Edit");
-            redirectToRouteResult.RouteValues["id"].Should().Be(stubWebpage.Id);
-            redirectToRouteResult.RouteValues["layoutAreaId"].Should().Be(3);
-        }
-
-        ~WebpageControllerTests()
-        {
-            DocumentMetadataHelper.OverrideExistAny = null;
-        }
-    }
-
-    public class VersionsControllerTests
-    {
-        private readonly IDocumentVersionsAdminService _documentVersionsAdminService;
-        private readonly VersionsController _versionsController;
-
-        public VersionsControllerTests()
-        {
-            _documentVersionsAdminService = A.Fake<IDocumentVersionsAdminService>();
-            _versionsController = new VersionsController(_documentVersionsAdminService);
-        }
-
-        [Fact]
-        public void VersionsController_Show_ReturnsPartialViewResult()
-        {
-            var document = new StubDocument();
-            _versionsController.Show(document, 1).Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void VersionsController_Show_CallsTheGetVersionsMethodOnTheService()
-        {
-            var document = new StubDocument();
-
-            _versionsController.Show(document, 1);
-
-            A.CallTo(() => _documentVersionsAdminService.GetVersions(document, 1)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void VersionsController_Show_ReturnsTheResultOfTheServiceCallAsTheModel()
-        {
-            var document = new StubDocument();
-            var versionsModel = new VersionsModel(PagedList<DocumentVersion>.Empty, document.Id);
-            A.CallTo(() => _documentVersionsAdminService.GetVersions(document, 1)).Returns(versionsModel);
-
-            PartialViewResult result = _versionsController.Show(document, 1);
-
-            result.Model.Should().Be(versionsModel);
         }
     }
 }

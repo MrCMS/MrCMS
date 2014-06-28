@@ -16,11 +16,13 @@ namespace MrCMS.Web.Areas.Admin.Services
 {
     public class TreeNavService : ITreeNavService
     {
+        private readonly IValidWebpageChildrenService _validWebpageChildrenService;
         private readonly ISession _session;
         private readonly Site _site;
 
-        public TreeNavService(ISession session, Site site)
+        public TreeNavService(IValidWebpageChildrenService validWebpageChildrenService, ISession session, Site site)
         {
+            _validWebpageChildrenService = validWebpageChildrenService;
             _session = session;
             _site = site;
         }
@@ -59,7 +61,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                             NodeType = "Webpage",
                             HasChildren = _session.QueryOver<Webpage>().Where(webpage => webpage.Parent.Id == doc.Id).Cacheable().Any(),
                             Sortable = documentMetadata.Sortable,
-                            CanAddChild = doc.GetValidWebpageDocumentTypes().Any(),
+                            CanAddChild = _validWebpageChildrenService.AnyValidWebpageDocumentTypes(doc),
                             IsPublished = doc.Published,
                             RevealInNavigation = doc.RevealInNavigation
                         };

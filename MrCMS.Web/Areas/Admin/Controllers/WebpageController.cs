@@ -19,11 +19,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class WebpageController : BaseDocumentController<Webpage>
     {
+        private readonly IValidWebpageChildrenService _validWebpageChildrenService;
         private readonly ISession _session;
 
-        public WebpageController(IDocumentService documentService, ISession session, IUrlValidationService urlValidationService, Site site)
+        public WebpageController(IValidWebpageChildrenService validWebpageChildrenService, IDocumentService documentService, ISession session, IUrlValidationService urlValidationService, Site site)
             : base(documentService, urlValidationService, site)
         {
+            _validWebpageChildrenService = validWebpageChildrenService;
             _session = session;
         }
 
@@ -50,12 +52,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                                                              SelectListItemHelper.EmptyItem("Default Layout", "0"));
 
             var documentTypeDefinitions =
-                (doc.Parent as Webpage).GetValidWebpageDocumentTypes()
-                                       .Where(
-                                           metadata =>
-                                           CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Add,
-                                                                                             metadata.Type.FullName))
-                                       .ToList();
+                _validWebpageChildrenService.GetValidWebpageDocumentTypes(doc.Parent as Webpage,
+                    metadata => CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Add, metadata.Type.FullName))
+                    .ToList();
+
             ViewData["DocumentTypes"] = documentTypeDefinitions;
 
             doc.AdminViewData(ViewData, _session);
@@ -117,35 +117,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             return RedirectToAction("Edit", new { id = webpage.Id });
         }
-        [HttpPost]
-        public ActionResult HideWidget(Webpage document, int widgetId, int layoutAreaId)
-        {
-            _documentService.HideWidget(document, widgetId);
-            return RedirectToAction("Edit", new { id = document.Id, layoutAreaId });
-        }
-
-        [HttpPost]
-        public ActionResult ShowWidget(Webpage document, int widgetId, int layoutAreaId)
-        {
-            _documentService.ShowWidget(document, widgetId);
-            return RedirectToAction("Edit", new { id = document.Id, layoutAreaId });
-        }
-
-        [HttpGet]
-        public PartialViewResult SetParent(Webpage webpage)
-        {
-            ViewData["valid-parents"] = _documentService.GetValidParents(webpage);
-            return PartialView(webpage);
-        }
-
-        [HttpPost]
-        public RedirectToRouteResult SetParent(Webpage webpage, int? parentVal)
-        {
-            _documentService.SetParent(webpage, parentVal);
-
-            return RedirectToAction("Edit", new { id = webpage.Id });
-        }
-
         public ActionResult ViewChanges(DocumentVersion documentVersion)
         {
             if (documentVersion == null)
@@ -177,20 +148,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public string GetServerDate()
         {
             return CurrentRequestData.Now.ToString(CurrentRequestData.CultureInfo);
-        }
-
-        [HttpGet]
-        public PartialViewResult RevertToVersion(DocumentVersion documentVersion)
-        {
-            return PartialView(documentVersion);
-        }
-
-        [HttpPost]
-        [ActionName("RevertToVersion")]
-        public RedirectToRouteResult RevertToVersion_POST(DocumentVersion documentVersion)
-        {
-            _documentService.RevertToVersion(documentVersion);
-            return RedirectToAction("Edit", new { id = documentVersion.Document.Id });
         }
 
         [HttpGet]

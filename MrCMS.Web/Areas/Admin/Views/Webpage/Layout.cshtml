@@ -41,11 +41,11 @@
                                                         {
                                                             if (!Model.IsHidden(widget))
                                                             {
-                                                            @Html.FormLink("Hide Widget", "HideWidget", "Webpage", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
+                                                            @Html.FormLink("Hide Widget", "Hide", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
                                                             }
                                                             else
                                                             {
-                                                            @Html.FormLink("Show Widget", "ShowWidget", "Webpage", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
+                                                            @Html.FormLink("Show Widget", "Show", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
                                                             }
                                                         }
                                                         else

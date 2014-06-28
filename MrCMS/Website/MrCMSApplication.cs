@@ -114,7 +114,7 @@ namespace MrCMS.Website
                         CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
                         CurrentRequestData.CurrentSite = Get<ICurrentSiteLocator>().GetCurrentSite();
                         CurrentRequestData.SiteSettings = Get<SiteSettings>();
-                        CurrentRequestData.HomePage = Get<IDocumentService>().GetHomePage();
+                        CurrentRequestData.HomePage = Get<IGetHomePage>().Get();
                         Thread.CurrentThread.CurrentCulture = CurrentRequestData.SiteSettings.CultureInfo;
                         Thread.CurrentThread.CurrentUICulture = CurrentRequestData.SiteSettings.CultureInfo;
                     }

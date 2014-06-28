@@ -1,7 +1,7 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using (Html.BeginForm("SetParent", "Webpage", new { id = "" }, FormMethod.Post, new { @class = "update-parent-form" }))
+@using (Html.BeginForm("Set", "WebpageParent", new { id = "" }, FormMethod.Post, new { @class = "update-parent-form" }))
 {
     <fieldset>
         <legend>Set parent

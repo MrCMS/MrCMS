@@ -388,13 +388,18 @@
     <Compile Include="Services\CloneSiteService.cs" />
     <Compile Include="Services\DefaultWebpageUrlGenerator.cs" />
     <Compile Include="Services\EventContext.cs" />
+    <Compile Include="Services\ExistAnyWebpageService.cs" />
     <Compile Include="Services\FileMigration\FileMigrationService.cs" />
     <Compile Include="Services\Events\Args\OnUserAddedEventArgs.cs" />
     <Compile Include="Services\Events\IOnUserAdded.cs" />
     <Compile Include="Services\FileMigration\MediaFileExtensions.cs" />
+    <Compile Include="Services\GetHomePage.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
+    <Compile Include="Services\IExistAnyWebpageService.cs" />
+    <Compile Include="Services\IGetHomePage.cs" />
     <Compile Include="Services\IUniquePageService.cs" />
     <Compile Include="Services\IUrlValidationService.cs" />
+    <Compile Include="Services\IValidWebpageChildrenService.cs" />
     <Compile Include="Services\IWebpageUrlGenerator.cs" />
     <Compile Include="Services\IWebpageUrlService.cs" />
     <Compile Include="Services\IEventContext.cs" />
@@ -415,6 +420,7 @@
     <Compile Include="Services\StandardAuthConfigurationService.cs" />
     <Compile Include="Services\UniquePageService.cs" />
     <Compile Include="Services\UrlValidationService.cs" />
+    <Compile Include="Services\ValidWebpageChildrenService.cs" />
     <Compile Include="Services\WebpageUrlGenerator.cs" />
     <Compile Include="Services\WebpageUrlService.cs" />
     <Compile Include="Settings\ILegacySettingsProvider.cs" />

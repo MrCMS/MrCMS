@@ -148,11 +148,15 @@
     <Compile Include="Areas\Admin\Controllers\SitesControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\TagControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\UserControllerTests.cs" />
+    <Compile Include="Areas\Admin\Controllers\VersionsControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageUrlControllerTests.cs" />
+    <Compile Include="Areas\Admin\Controllers\WebpageWidgetControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateControllerTests.cs" />
+    <Compile Include="Areas\Admin\Services\DocumentTagsAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\DocumentVersionsAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\FileAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\FormServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminServiceTests.cs" />
@@ -161,9 +165,11 @@
     <Compile Include="Areas\Admin\Services\SitesServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\TagServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\WebpageWidgetAdminServiceTests.cs" />
     <Compile Include="Controllers\LoginControllerTests.cs" />
     <Compile Include="MrCMSTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stubs\BasicMappedWidget.cs" />
     <Compile Include="Stubs\BasicMessageTemplate.cs" />
     <Compile Include="Stubs\FakeHttpFileCollectionBase.cs" />
     <Compile Include="Stubs\FakeHttpPostedFileBase.cs" />

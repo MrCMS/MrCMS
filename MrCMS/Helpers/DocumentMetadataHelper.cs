@@ -4,7 +4,6 @@ using System.Linq;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Metadata;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Services;
 using MrCMS.Website;
 
 namespace MrCMS.Helpers
@@ -15,7 +14,7 @@ namespace MrCMS.Helpers
 
         public static IEnumerable<DocumentMetadata> WebpageMetadata
         {
-            get { return DocumentMetadatas.Where(x => x.Type != null && x.Type.IsSubclassOf(typeof(Webpage))); }
+            get { return DocumentMetadatas.Where(x => x.Type != null && x.Type.IsSubclassOf(typeof (Webpage))); }
         }
 
         public static List<DocumentMetadata> DocumentMetadatas
@@ -27,9 +26,13 @@ namespace MrCMS.Helpers
         {
             var list = new List<DocumentMetadata>();
 
-            foreach (var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>().Where(type => !type.ContainsGenericParameters))
+            foreach (
+                Type type in
+                    TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
+                        .Where(type => !type.ContainsGenericParameters))
             {
-                var types = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(DocumentMetadataMap<>).MakeGenericType(type));
+                List<Type> types =
+                    TypeHelper.GetAllConcreteTypesAssignableFrom(typeof (DocumentMetadataMap<>).MakeGenericType(type));
                 if (types.Any())
                 {
                     var definition = Activator.CreateInstance(types.First()) as IGetDocumentMetadata;
@@ -38,8 +41,8 @@ namespace MrCMS.Helpers
                 else
                 {
                     var definition =
-                        Activator.CreateInstance(typeof(DefaultDocumentMetadata<>).MakeGenericType(type)) as
-                        IGetDocumentMetadata;
+                        Activator.CreateInstance(typeof (DefaultDocumentMetadata<>).MakeGenericType(type)) as
+                            IGetDocumentMetadata;
                     list.Add(definition.Metadata);
                 }
             }
@@ -53,8 +56,9 @@ namespace MrCMS.Helpers
 
         public static string GetIconClass(Document document)
         {
-            var documentTypeDefinition =
-                DocumentMetadatas.FirstOrDefault(x => document.GetType().Name.Equals(x.TypeName, StringComparison.OrdinalIgnoreCase));
+            DocumentMetadata documentTypeDefinition =
+                DocumentMetadatas.FirstOrDefault(
+                    x => document.GetType().Name.Equals(x.TypeName, StringComparison.OrdinalIgnoreCase));
 
             return documentTypeDefinition != null ? documentTypeDefinition.IconClass : null;
         }
@@ -69,60 +73,17 @@ namespace MrCMS.Helpers
             return DocumentMetadatas.FirstOrDefault(x => x.Type.Name == document.DocumentType);
         }
 
-        public static IEnumerable<DocumentMetadata> GetValidWebpageDocumentTypes(this Webpage parent)
-        {
-            var documentTypeDefinitions = new HashSet<DocumentMetadata>();
-            if (parent == null)
-                documentTypeDefinitions = new HashSet<DocumentMetadata>(
-                    WebpageMetadata.Where(definition => !definition.RequiresParent));
-            else
-            {
-                var documentTypeDefinition =
-                    WebpageMetadata.FirstOrDefault(
-                        definition => definition.TypeName == parent.Unproxy().GetType().Name);
-
-                if (documentTypeDefinition == null) return Enumerable.Empty<DocumentMetadata>();
-
-                IEnumerable<DocumentMetadata> metadatas = documentTypeDefinition.ChildrenList.Select(GetMetadataByType);
-                switch (documentTypeDefinition.ChildrenListType)
-                {
-                    case ChildrenListType.BlackList:
-                        IEnumerable<DocumentMetadata> documentMetadatas =
-                            WebpageMetadata.Except(metadatas).Where(def => !def.AutoBlacklist);
-                        documentMetadatas.ForEach(item => documentTypeDefinitions.Add(item));
-                        break;
-                    case ChildrenListType.WhiteList:
-                        metadatas.ForEach(metadata => documentTypeDefinitions.Add(metadata));
-                        break;
-                }
-            }
-
-            documentTypeDefinitions.RemoveWhere(
-                definition => !(!typeof (IUniquePage).IsAssignableFrom(definition.Type) ||
-                                (OverrideExistAny != null
-                                    ? !OverrideExistAny(definition.Type)
-                                    : !MrCMSApplication.Get<IDocumentService>().ExistAny(definition.Type))));
-
-            return documentTypeDefinitions;
-        }
-
-        public static Func<Type, bool> OverrideExistAny
-        {
-            get { return (Func<Type, bool>) CurrentRequestData.CurrentContext.Items["current.override.existany"]; }
-            set { CurrentRequestData.CurrentContext.Items["current.override.existany"] = value; }
-        }
-
         public static int? GetMaxChildNodes(this Document document)
         {
-            var documentTypeDefinition = document.GetMetadata();
+            DocumentMetadata documentTypeDefinition = document.GetMetadata();
             return documentTypeDefinition != null && documentTypeDefinition.MaxChildNodes > 0
-                       ? documentTypeDefinition.MaxChildNodes
-                       : (int?)null;
+                ? documentTypeDefinition.MaxChildNodes
+                : (int?) null;
         }
 
         public static List<DocumentMetadata> GetValidParentTypes(Webpage webpage)
         {
-            var type = webpage.Unproxy().GetType();
+            Type type = webpage.Unproxy().GetType();
             return DocumentMetadatas.FindAll(metadata => metadata.ValidChildrenTypes.Contains(type));
         }
 

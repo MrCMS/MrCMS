@@ -24,5 +24,23 @@ namespace MrCMS.Web.Areas.Admin.Services
 
             return new VersionsModel(versions, document.Id);
         }
+
+        public DocumentVersion GetDocumentVersion(int id)
+        {
+            return _session.Get<DocumentVersion>(id);
+        }
+
+        public void RevertToVersion(DocumentVersion documentVersion)
+        {
+            var currentVersion = documentVersion.Document;
+            var previousVersion = currentVersion.GetVersion(documentVersion.Id);
+
+            var versionProperties = currentVersion.GetType().GetVersionProperties();
+            foreach (var versionProperty in versionProperties)
+            {
+                versionProperty.SetValue(currentVersion, versionProperty.GetValue(previousVersion, null), null);
+            }
+            _session.Transact(session => session.Update(currentVersion));
+        }
     }
 }
