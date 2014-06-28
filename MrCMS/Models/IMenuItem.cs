@@ -2,13 +2,6 @@
 
 namespace MrCMS.Models
 {
-    public interface IMenuItem
-    {
-        string Text { get; }
-        string Url { get; }
-        bool CanShow { get; }
-    }
-
     public class ACLOption
     {
         public ACLRule Rule { get; set; }
