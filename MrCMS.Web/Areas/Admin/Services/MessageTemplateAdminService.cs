@@ -49,7 +49,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public MessageTemplate GetNew(string type)
         {
-            var newType = TypeHelper.GetTypeByClassName(type);
+            var newType = TypeHelper.GetTypeByName(type);
             if (newType != null)
             {
                 var messageTemplate = Activator.CreateInstance(newType) as MessageTemplate;

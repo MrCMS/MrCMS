@@ -16,8 +16,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IFileAdminService _fileAdminService;
 
-        public MediaCategoryController(IDocumentService documentService, IFileAdminService fileAdminService, Site site)
-            : base(documentService, site)
+        public MediaCategoryController(IFileAdminService fileAdminService, IDocumentService documentService, IUrlValidationService urlValidationService, Site site)
+            : base(documentService, urlValidationService, site)
         {
             _fileAdminService = fileAdminService;
         }
@@ -120,7 +120,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public ActionResult ValidateUrlIsAllowed(string UrlSegment, int? Id)
         {
-            return !_documentService.UrlIsValidForMediaCategory(UrlSegment, Id) ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
+            return !_urlValidationService.UrlIsValidForMediaCategory(UrlSegment, Id) ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
     }
 

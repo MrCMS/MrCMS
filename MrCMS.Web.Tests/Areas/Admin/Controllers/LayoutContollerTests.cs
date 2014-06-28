@@ -2,13 +2,11 @@
 using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
-using MrCMS.Web.Areas.Admin.Models;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -16,14 +14,16 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     public class LayoutContollerTests
     {
         private readonly IDocumentService _documentService;
+        private readonly LayoutController _layoutController;
         private readonly Site _site;
-        private LayoutController _layoutController;
+        private IUrlValidationService _urlValidationService;
 
         public LayoutContollerTests()
         {
             _documentService = A.Fake<IDocumentService>();
             _site = new Site();
-            _layoutController = new LayoutController(_documentService, _site);
+            _urlValidationService = A.Fake<IUrlValidationService>();
+            _layoutController = new LayoutController(_documentService, _urlValidationService, _site);
         }
 
         [Fact]
@@ -37,9 +37,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutController_AddGet_ShouldSetParentOfModelToParentInMethod()
         {
-            var parent = new Layout() {Id = 1, Site = _site};
+            var parent = new Layout {Id = 1, Site = _site};
             A.CallTo(() => _documentService.GetDocument<Layout>(1)).Returns(parent);
-            
+
             var actionResult = _layoutController.Add_Get(1) as ViewResult;
 
             actionResult.Model.As<Layout>().Parent.Should().Be(parent);

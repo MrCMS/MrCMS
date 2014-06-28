@@ -9,5 +9,6 @@ namespace MrCMS.Web.Areas.Admin.Services
         void Add(UrlHistory urlHistory);
         UrlHistory GetByUrlSegment(string url);
         UrlHistory GetByUrlSegmentWithSite(string url, Site site, Webpage page);
+        UrlHistory GetUrlHistoryToAdd(int webpageId);
     }
 }

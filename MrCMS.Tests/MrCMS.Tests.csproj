@@ -165,6 +165,7 @@
     <Compile Include="Helpers\SessionHelperTests.cs" />
     <Compile Include="Optimization\ResourceDataTests.cs" />
     <Compile Include="Services\CurrentSiteLocatorTests.cs" />
+    <Compile Include="Services\WebpageUrlGeneratorTests.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsService_AddingDocuments.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsService_GetHierarchyDepthTests.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsService_GetRootParentUrlTests.cs" />

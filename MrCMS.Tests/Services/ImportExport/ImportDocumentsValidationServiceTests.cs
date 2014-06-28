@@ -22,11 +22,14 @@ namespace MrCMS.Tests.Services.ImportExport
     {
         private readonly IDocumentService _documentService;
         private readonly ImportDocumentsValidationService _importDocumentsValidationService;
+        private IWebpageUrlService _webpageUrlService;
 
         public ImportDocumentsValidationServiceTests()
         {
             _documentService = A.Fake<IDocumentService>();
-            _importDocumentsValidationService = new ImportDocumentsValidationService(_documentService);
+            _webpageUrlService = A.Fake<IWebpageUrlService>();
+            _importDocumentsValidationService = new ImportDocumentsValidationService(_documentService,
+                _webpageUrlService);
         }
 
         [Fact]

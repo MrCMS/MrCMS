@@ -10,7 +10,6 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.ModelBinders;
-using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Filters;
@@ -20,20 +19,18 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class WebpageController : BaseDocumentController<Webpage>
     {
-        private readonly IFormAdminService _formAdminService;
         private readonly ISession _session;
 
-        public WebpageController(IDocumentService documentService, IFormAdminService formAdminService, ISession session, Site site)
-            : base(documentService, site)
+        public WebpageController(IDocumentService documentService, ISession session, IUrlValidationService urlValidationService, Site site)
+            : base(documentService, urlValidationService, site)
         {
-            _formAdminService = formAdminService;
             _session = session;
         }
 
         [ForceImmediateLuceneUpdate]
         public override ActionResult Add([IoCModelBinder(typeof(AddWebpageModelBinder))] Webpage doc)
         {
-            if (_documentService.UrlIsValidForWebpage(doc.UrlSegment, null))
+            if (_urlValidationService.UrlIsValidForWebpage(doc.UrlSegment, null))
                 return base.Add(doc);
 
             DocumentTypeSetup(doc);
@@ -157,11 +154,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(documentVersion);
         }
 
-        public string SuggestDocumentUrl(Webpage parent, string pageName)
-        {
-            return _documentService.GetDocumentUrl(pageName, parent, true);
-        }
-
         [HttpGet]
         public PartialViewResult FormProperties(Webpage webpage)
         {
@@ -176,7 +168,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_documentService.UrlIsValidForWebpage(urlSegment, id) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
+            return !_urlValidationService.UrlIsValidForWebpage(urlSegment, id) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// Returns server date used for publishing (can't use JS date as can be out compared to server date)

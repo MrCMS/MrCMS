@@ -16,11 +16,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public abstract class BaseDocumentController<T> : MrCMSAdminController where T : Document
     {
         protected readonly IDocumentService _documentService;
+        protected readonly IUrlValidationService _urlValidationService;
         protected readonly Site Site;
 
-        protected BaseDocumentController(IDocumentService documentService, Site site)
+        protected BaseDocumentController(IDocumentService documentService, IUrlValidationService urlValidationService, Site site)
         {
             _documentService = documentService;
+            _urlValidationService = urlValidationService;
             Site = site;
         }
 

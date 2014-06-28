@@ -1,15 +1,18 @@
 ﻿var AddWebpage = function () {
     var previousValue = '';
     var timer = 0;
-    var setStandardUrl = function () {
-        $("#UrlSegment").val($("#Name").val().trim().replace(/[^a-zA-Z0-9-/]/g, '-').toLowerCase());
-        previousValue = getCurrentValue();
-    };
     var suggestUrl = function () {
         var pageName = $("#Name").val(),
-            parentId = $("#Parent_Id").val();
+            documentType = $("#DocumentType:checked").val(),
+            parentId = $("#Parent_Id").val(),
+            useHierarchy = $("#mode").is(':checked');
         if (pageName != "") {
-            $.get('/Admin/Webpage/SuggestDocumentUrl', { pageName: pageName, id: parentId }, function (data) {
+            $.get('/Admin/WebpageUrl/Suggest', {
+                pageName: pageName,
+                id: parentId,
+                documentType: documentType,
+                useHierarchy: useHierarchy
+            }, function (data) {
                 $("#UrlSegment").val(data);
             });
             previousValue = getCurrentValue();
@@ -19,20 +22,30 @@
         }
     };
     var getCurrentValue = function () {
-        return $('#Name').val();
+        return {
+            name: $('#Name').val(),
+            mode: $('#mode').is(':checked'),
+            documentType: $("#DocumentType:checked").val()
+        };
     };
     var delayedUpdateUrl = function (event) {
         clearTimeout(timer);
         timer = setTimeout(function () { updateUrl(event); }, 300);
     };
+    var areValuesChanged=function() {
+        var value = previousValue;
+        var currentValue = getCurrentValue();
+        if (value == null)
+            return true;
+
+        return value.documentType != currentValue.documentType
+            || value.mode != currentValue.mode
+            || value.name != currentValue.name;
+    }
     var updateUrl = function (event) {
         event.preventDefault();
-        if (previousValue != getCurrentValue()) {
-            if ($("#mode").is(':checked')) {
+        if (areValuesChanged()) {
                 suggestUrl();
-            } else {
-                setStandardUrl();
-            }
         }
     };
     var triggerKeyUp = function (event) {
@@ -45,7 +58,7 @@
     };
     var updateAdditionalProperties = function (event) {
         var webpageType = $(':radio[name=DocumentType]:checked').val();
-        $.get('/Admin/Webpage/AddProperties', { type: webpageType }, function(data) {
+        $.get('/Admin/Webpage/AddProperties', { type: webpageType }, function (data) {
             $("[data-additional-properties]").html(data);
             admin.initializePlugins();
         });
@@ -55,6 +68,8 @@
             $(document).on('focus', '#Name', logCurrentValue);
             $(document).on('blur', '#Name', triggerKeyUp);
             $(document).on('keyup', '#Name', delayedUpdateUrl);
+            $(document).on('change', '#mode', delayedUpdateUrl);
+            $(document).on('change', '#DocumentType', delayedUpdateUrl);
             $(document).on('change', ':radio[name=DocumentType]', updateAdditionalProperties);
             if ($(':radio[name=DocumentType]:checked').length) {
                 updateAdditionalProperties();

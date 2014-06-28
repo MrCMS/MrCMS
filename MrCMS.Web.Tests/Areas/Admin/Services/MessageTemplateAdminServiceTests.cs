@@ -52,7 +52,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         [Fact]
         public void MessageTemplateAdminService_GetNew_IfValidTypeIsPassedReturnsTemplate()
         {
-            MessageTemplate messageTemplate = _messageTemplateAdminService.GetNew(typeof (BasicMessageTemplate).Name);
+            MessageTemplate messageTemplate = _messageTemplateAdminService.GetNew(typeof (BasicMessageTemplate).FullName);
 
             messageTemplate.Should().NotBeNull();
         }

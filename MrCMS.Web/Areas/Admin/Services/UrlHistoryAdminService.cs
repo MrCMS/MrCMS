@@ -1,7 +1,6 @@
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
-using MrCMS.Services;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
@@ -39,6 +38,14 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             return _session.QueryOver<UrlHistory>().Where(x => x.Site == site && x.Webpage == page
                 && x.UrlSegment.IsInsensitiveLike(url, MatchMode.Exact)).SingleOrDefault();
+        }
+
+        public UrlHistory GetUrlHistoryToAdd(int webpageId)
+        {
+            return new UrlHistory
+            {
+                Webpage = _session.Get<Webpage>(webpageId)
+            };
         }
     }
 }

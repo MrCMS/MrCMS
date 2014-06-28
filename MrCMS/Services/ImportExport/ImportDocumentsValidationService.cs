@@ -12,10 +12,12 @@ namespace MrCMS.Services.ImportExport
     public class ImportDocumentsValidationService : IImportDocumentsValidationService
     {
         private readonly IDocumentService _documentService;
+        private readonly IWebpageUrlService _webpageUrlService;
 
-        public ImportDocumentsValidationService(IDocumentService documentService)
+        public ImportDocumentsValidationService(IDocumentService documentService, IWebpageUrlService webpageUrlService)
         {
             _documentService = documentService;
+            _webpageUrlService = webpageUrlService;
         }
 
         /// <summary>
@@ -70,7 +72,7 @@ namespace MrCMS.Services.ImportExport
                             List<string> errors = parseErrors.ContainsKey(handle)
                                                       ? parseErrors[handle]
                                                       : new List<string>();
-                                
+
                             var item = GetDocumentImportDataTransferObject(worksheet, rowId, name, ref errors);
                             parseErrors[handle] = errors;
 
@@ -93,12 +95,14 @@ namespace MrCMS.Services.ImportExport
                                                                                      string name, ref List<string> parseErrors)
         {
             var item = new DocumentImportDTO();
-            item.UrlSegment = worksheet.GetValue<string>(rowId, 1).HasValue()
-                                  ? worksheet.GetValue<string>(rowId, 1)
-                                  : _documentService.GetDocumentUrl(name, null);
             item.ParentUrl = worksheet.GetValue<string>(rowId, 2);
             if (worksheet.GetValue<string>(rowId, 3).HasValue())
+            {
                 item.DocumentType = worksheet.GetValue<string>(rowId, 3);
+                item.UrlSegment = worksheet.GetValue<string>(rowId, 1).HasValue()
+                    ? worksheet.GetValue<string>(rowId, 1)
+                    : _webpageUrlService.Suggest(name, null, item.DocumentType);
+            }
             else
                 parseErrors.Add("Document Type is required.");
             if (worksheet.GetValue<string>(rowId, 4).HasValue())

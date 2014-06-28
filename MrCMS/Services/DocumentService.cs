@@ -19,9 +19,7 @@ using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Linq;
 using NHibernate.Transform;
-using EnumerableHelper = MrCMS.Helpers.EnumerableHelper;
 
 namespace MrCMS.Services
 {
@@ -149,36 +147,6 @@ namespace MrCMS.Services
             return list;
         }
 
-        public string GetDocumentUrl(string pageName, Webpage parent, bool useHierarchy = false)
-        {
-            var stringBuilder = new StringBuilder();
-
-            if (useHierarchy)
-            {
-                //get breadcrumb from parent
-                if (parent != null)
-                {
-                    stringBuilder.Insert(0, SeoHelper.TidyUrl(parent.UrlSegment) + "/");
-                }
-            }
-            //add page name
-
-            stringBuilder.Append(SeoHelper.TidyUrl(pageName));
-
-            //make sure the URL is unique
-
-            if (!UrlIsValidForWebpage(stringBuilder.ToString(), null))
-            {
-                var counter = 1;
-
-                while (!UrlIsValidForWebpage(string.Format("{0}-{1}", stringBuilder, counter), null))
-                    counter++;
-
-                stringBuilder.AppendFormat("-{0}", counter);
-            }
-            return stringBuilder.ToString();
-        }
-
         public Layout GetDefaultLayout(Webpage currentPage)
         {
             if (currentPage != null)
@@ -219,7 +187,7 @@ namespace MrCMS.Services
 
             var existingTags = document.Tags.ToList();
 
-            EnumerableHelper.ForEach(tagNames, name =>
+            tagNames.ForEach(name =>
             {
                 var tag = GetTag(name) ?? new Tag { Name = name };
                 if (!document.Tags.Contains(tag))
@@ -383,7 +351,7 @@ namespace MrCMS.Services
             }
             else
             {
-                EnumerableHelper.ForEach(roleNames, name =>
+                roleNames.ForEach(name =>
                 {
                     var role = GetRole(name);
                     if (role != null)
@@ -418,35 +386,6 @@ namespace MrCMS.Services
                         .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
                         .Take(1).Cacheable()
                         .SingleOrDefault();
-        }
-
-        public bool UrlIsValidForWebpage(string url, int? id)
-        {
-            if (string.IsNullOrEmpty(url))
-                return false;
-
-            if (id.HasValue)
-            {
-                var document = GetDocument<Webpage>(id.Value);
-                var documentHistory = document.Urls.Any(x => x.UrlSegment == url);
-                if (url.Trim() == document.UrlSegment.Trim() || documentHistory) //if url is the same or has been used for the same page before lets go
-                    return true;
-
-                return !WebpageExists(url) && !ExistsInUrlHistory(url);
-            }
-
-            return !WebpageExists(url) && !ExistsInUrlHistory(url);
-        }
-
-        /// <summary>
-        /// Check to see if the supplied URL is ok to be added to the URL history table
-        /// </summary>
-        public bool UrlIsValidForWebpageUrlHistory(string url)
-        {
-            if (string.IsNullOrEmpty(url))
-                return false;
-
-            return !WebpageExists(url) && !ExistsInUrlHistory(url);
         }
 
         public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
@@ -510,97 +449,12 @@ namespace MrCMS.Services
             _session.Transact(session => session.Update(currentVersion));
         }
 
-        public bool UrlIsValidForMediaCategory(string url, int? id)
-        {
-            if (string.IsNullOrEmpty(url))
-                return false;
-
-            if (id.HasValue)
-            {
-                var document = GetDocument<MediaCategory>(id.Value);
-                if (url.Trim() == document.UrlSegment.Trim())
-                    return true;
-                return !MediaCategoryExists(url);
-            }
-
-            return !MediaCategoryExists(url);
-        }
-
-        public bool UrlIsValidForLayout(string url, int? id)
-        {
-            if (string.IsNullOrEmpty(url))
-                return false;
-
-            if (id.HasValue)
-            {
-                var document = GetDocument<Layout>(id.Value);
-                if (url.Trim() == document.UrlSegment.Trim())
-                    return true;
-                return !LayoutExists(url);
-            }
-
-            return !LayoutExists(url);
-        }
-
         public UrlHistory GetHistoryItemByUrl(string url)
         {
             return _session.QueryOver<UrlHistory>()
                         .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
                         .Take(1).Cacheable()
                         .SingleOrDefault();
-        }
-
-        /// <summary>
-        /// Checks to see if the supplied url is unique for media category / folder.
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns>bool</returns>
-        private bool MediaCategoryExists(string url)
-        {
-            return _session.QueryOver<MediaCategory>()
-                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
-                        .Cacheable()
-                        .RowCount() > 0;
-        }
-
-        /// <summary>
-        /// Checks to see if the supplied url is unique for layouts
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        private bool LayoutExists(string url)
-        {
-            return _session.QueryOver<Layout>()
-                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
-                        .Cacheable()
-                        .RowCount() > 0;
-        }
-
-        /// <summary>
-        /// Checks to see if a webpage exists with the supplied URL
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns>bool</returns>
-        private bool WebpageExists(string url)
-        {
-            return _session.QueryOver<Webpage>()
-                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
-                        .Cacheable()
-                        .RowCount() > 0;
-        }
-
-        /// <summary>
-        /// Checks to see if the supplied URL exists in webpage URL history table
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns>bool</returns>
-        private bool ExistsInUrlHistory(string url)
-        {
-            return
-                _session.QueryOver<UrlHistory>()
-                        .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
-                        .Cacheable()
-                        .RowCount() > 0;
         }
     }
 }

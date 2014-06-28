@@ -20,13 +20,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private readonly IFileAdminService _fileService;
         private readonly Site _site;
         private readonly MediaCategoryController _mediaCategoryController;
+        private IUrlValidationService _urlValidationService;
 
         public MediaCategoryControllerTests()
         {
             _documentService = A.Fake<IDocumentService>();
             _fileService = A.Fake<IFileAdminService>();
             _site = new Site();
-            _mediaCategoryController = new MediaCategoryController(_documentService, _fileService, _site);
+            _urlValidationService = A.Fake<IUrlValidationService>();
+            _mediaCategoryController = new MediaCategoryController(_fileService, _documentService, _urlValidationService, _site);
         }
 
         [Fact]
@@ -52,7 +54,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void MediaCategoryController_AddPost_ShouldCallSaveDocument()
         {
             var mediaCategory = new MediaCategory();
-            
+
             _mediaCategoryController.Add(mediaCategory);
 
             A.CallTo(() => _documentService.AddDocument(mediaCategory)).MustHaveHappened(Repeated.Exactly.Once);

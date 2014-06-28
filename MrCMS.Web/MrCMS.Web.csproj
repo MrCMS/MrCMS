@@ -261,6 +261,7 @@
     <Compile Include="Apps\Articles\RouteHandlers\ArticleListRSSRouteHandler.cs" />
     <Compile Include="Apps\Articles\Services\ArticleService.cs" />
     <Compile Include="Apps\Articles\Services\IArticleService.cs" />
+    <Compile Include="Apps\Articles\UrlGenerators\ArticleUrlGenerator.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
     <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
@@ -312,6 +313,7 @@
     <Compile Include="Areas\Admin\Controllers\TransientNotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Controllers\VersionsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\WebpageUrlController.cs" />
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
     <Compile Include="Areas\Admin\Helpers\FileHelper.cs" />

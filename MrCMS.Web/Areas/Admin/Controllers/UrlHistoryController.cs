@@ -9,12 +9,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class UrlHistoryController : MrCMSAdminController
     {
         private readonly IUrlHistoryAdminService _urlHistoryAdminService;
-        private readonly IDocumentService _documentService;
+        private readonly IUrlValidationService _urlValidationService;
 
-        public UrlHistoryController(IUrlHistoryAdminService urlHistoryAdminService, IDocumentService documentService)
+        public UrlHistoryController(IUrlHistoryAdminService urlHistoryAdminService, IUrlValidationService urlValidationService)
         {
             _urlHistoryAdminService = urlHistoryAdminService;
-            _documentService = documentService;
+            _urlValidationService = urlValidationService;
         }
 
         [HttpGet]
@@ -36,12 +36,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Add")]
         public ActionResult Add_Get(int webpageId)
         {
-            var urlHistroy = new UrlHistory
-                                 {
-                                     Webpage = _documentService.GetDocument<Webpage>(webpageId)
-                                 };
+            var urlHistory = _urlHistoryAdminService.GetUrlHistoryToAdd(webpageId);
 
-            return View(urlHistroy);
+            return View(urlHistory);
         }
 
         [HttpPost]
@@ -54,7 +51,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public ActionResult ValidateUrlIsAllowed(string urlsegment)
         {
-            return !_documentService.UrlIsValidForWebpageUrlHistory(urlsegment) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
+            return !_urlValidationService.UrlIsValidForWebpageUrlHistory(urlsegment) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
     }
 }

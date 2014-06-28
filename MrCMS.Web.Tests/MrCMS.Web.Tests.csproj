@@ -149,6 +149,7 @@
     <Compile Include="Areas\Admin\Controllers\TagControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\UserControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageControllerTests.cs" />
+    <Compile Include="Areas\Admin\Controllers\WebpageUrlControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateControllerTests.cs" />

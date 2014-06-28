@@ -7,8 +7,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class LayoutController : BaseDocumentController<Layout>
     {
-        public LayoutController(IDocumentService documentService, Site site)
-            : base(documentService, site)
+        public LayoutController(IDocumentService documentService, IUrlValidationService urlValidationService, Site site)
+            : base(documentService, urlValidationService, site)
         {
         }
 
@@ -47,7 +47,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_documentService.UrlIsValidForLayout(urlSegment, id)
+            return !_urlValidationService.UrlIsValidForLayout(urlSegment, id)
                 ? Json("Path already in use.", JsonRequestBehavior.AllowGet)
                 : Json(true, JsonRequestBehavior.AllowGet);
         }
