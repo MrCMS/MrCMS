@@ -366,6 +366,7 @@
     <Compile Include="Helpers\ReturnUrlExtensions.cs" />
     <Compile Include="Helpers\ShortcodeParsingExtensions.cs" />
     <Compile Include="Helpers\TweetParsingExtensions.cs" />
+    <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Indexing\Definitions\BodyContentFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\CreatedOnFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\DisplayOrderFieldDefinition.cs" />
