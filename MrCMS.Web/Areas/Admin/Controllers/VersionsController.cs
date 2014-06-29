@@ -18,5 +18,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             return PartialView(_service.GetVersions(document, page));
         }
+
+        [HttpGet]
+        public PartialViewResult Revert(DocumentVersion documentVersion)
+        {
+            return PartialView(documentVersion);
+        }
+
+        [HttpPost]
+        [ActionName("Revert")]
+        public RedirectToRouteResult Revert_POST(DocumentVersion documentVersion)
+        {
+            _service.RevertToVersion(documentVersion);
+            return RedirectToAction("Edit", "Webpage", new { id = documentVersion.Document.Id });
+        }
     }
 }

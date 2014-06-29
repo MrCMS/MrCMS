@@ -313,7 +313,9 @@
     <Compile Include="Areas\Admin\Controllers\TransientNotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Controllers\VersionsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\WebpageParentController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageUrlController.cs" />
+    <Compile Include="Areas\Admin\Controllers\WebpageWidgetController.cs" />
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
     <Compile Include="Areas\Admin\Helpers\FileHelper.cs" />
@@ -445,6 +447,8 @@
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
+    <Compile Include="Areas\Admin\Services\DocumentRolesAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\DocumentTagsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\DocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\Events\SendPersistentNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
@@ -456,6 +460,8 @@
     <Compile Include="Areas\Admin\Services\IAdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\IClearCachesService.cs" />
+    <Compile Include="Areas\Admin\Services\IDocumentRolesAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IDocumentTagsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFileAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFormAdminService.cs" />
@@ -479,6 +485,8 @@
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ITreeNavService.cs" />
     <Compile Include="Areas\Admin\Services\IUrlHistoryAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IWebpageParentAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IWebpageWidgetAdminService.cs" />
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminService.cs" />
     <Compile Include="Areas\Admin\Services\LogAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MediaSelectorService.cs" />
@@ -513,6 +521,8 @@
     <Compile Include="Areas\Admin\Services\ThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\TreeNavService.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\WebpageParentAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\WebpageWidgetAdminService.cs" />
     <Compile Include="Controllers\CKEditorController.cs" />
     <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
@@ -1492,7 +1502,7 @@
     <Content Include="Areas\Admin\Views\UrlHistory\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\UrlHistory\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\FileSystem.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\SetParent.cshtml" />
+    <Content Include="Areas\Admin\Views\WebpageParent\Set.cshtml" />
     <Content Include="Areas\Admin\Views\Form\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\ACL\Index.cshtml" />
     <Content Include="Content\install\images\mr-cms-thumb.jpg" />
@@ -1519,7 +1529,7 @@
     <Content Include="Areas\Admin\Views\MessageQueue\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MessageQueue\Show.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutWithoutWebTree.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\RevertToVersion.cshtml" />
+    <Content Include="Areas\Admin\Views\Versions\Revert.cshtml" />
     <Content Include="Areas\Admin\Views\FileMigration\Show.cshtml" />
     <Content Include="Areas\Admin\Views\File\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\File\Edit.cshtml" />

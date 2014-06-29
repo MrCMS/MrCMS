@@ -25,7 +25,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         [Fact]
         public void MessageTemplateAdminService_Save_SavesAMessageTemplateToSession()
         {
-            MessageTemplate messageTemplate = new BasicMessageTemplate().GetInitialTemplate(A<ISession>._);
+            MessageTemplate messageTemplate = new BasicMessageTemplate().GetInitialTemplate(Session);
 
             _messageTemplateAdminService.Save(messageTemplate);
 

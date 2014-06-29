@@ -3,22 +3,21 @@ using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using MrCMS.Services;
-using MrCMS.Website.Binders;
+using MrCMS.Web.Areas.Admin.Services;
 using Ninject;
 
 namespace MrCMS.Web.Areas.Admin.ModelBinders
 {
     public class AddWebpageModelBinder : WebpageModelBinder
     {
-        public AddWebpageModelBinder(IKernel kernel, IDocumentService documentService)
-            : base(kernel, documentService)
+        public AddWebpageModelBinder(IKernel kernel, IDocumentTagsAdminService documentTagsAdminService)
+            : base(kernel, documentTagsAdminService)
         {
         }
 
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            var type = GetTypeByName(controllerContext);
+            Type type = GetTypeByName(controllerContext);
             bindingContext.ModelMetadata =
                 ModelMetadataProviders.Current.GetMetadataForType(
                     () => CreateModel(controllerContext, bindingContext, type), type);
@@ -34,9 +33,10 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
             return webpage;
         }
 
-        protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
+        protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
+            Type modelType)
         {
-            var type = GetTypeByName(controllerContext);
+            Type type = GetTypeByName(controllerContext);
             return Activator.CreateInstance(type);
         }
 

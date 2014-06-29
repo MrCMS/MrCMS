@@ -1,6 +1,6 @@
 ﻿@model MrCMS.Entities.Documents.DocumentVersion
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using (Html.BeginForm("RevertToVersion", "Webpage", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+@using (Html.BeginForm("Revert", "Versions", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
     <fieldset>
         <legend>Revert to version

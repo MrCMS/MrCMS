@@ -9,6 +9,7 @@ using System.Web.Mvc.Html;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Helpers;
@@ -19,6 +20,7 @@ namespace MrCMS.Website
     {
         private IConfigurationProvider _configurationProvider;
         private IStringResourceProvider _stringResourceProvider;
+        private IGetCurrentLayout _getCurrentLayout;
 
         public T SiteSettings<T>() where T : SiteSettingsBase, new()
         {
@@ -38,6 +40,7 @@ namespace MrCMS.Website
             {
                 _configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
                 _stringResourceProvider = MrCMSApplication.Get<IStringResourceProvider>();
+                GetCurrentLayout = MrCMSApplication.Get<IGetCurrentLayout>();
             }
         }
 
@@ -81,16 +84,22 @@ namespace MrCMS.Website
             }
         }
 
+        public IGetCurrentLayout GetCurrentLayout
+        {
+            get { return _getCurrentLayout; }
+            set { _getCurrentLayout = value; }
+        }
+
         public MvcHtmlString RenderZone(string areaName, Webpage page = null, bool allowFrontEndEditing = true)
         {
             page = page ?? CurrentRequestData.CurrentPage;
 
-            if (page != null && page.CurrentLayout != null)
+            var currentLayout = GetCurrentLayout.Get(page);
+            if (page != null && currentLayout != null)
             {
                 var allowEdit = EditingEnabled && allowFrontEndEditing;
-                var layout = page.CurrentLayout;
 
-                var layoutArea = layout.GetLayoutAreas().FirstOrDefault(area => area.AreaName == areaName);
+                var layoutArea = currentLayout.GetLayoutAreas().FirstOrDefault(area => area.AreaName == areaName);
 
                 if (layoutArea == null) return MvcHtmlString.Empty;
 
@@ -101,7 +110,7 @@ namespace MrCMS.Website
                     stringBuilder.AppendFormat(
                         "<div data-layout-area-id=\"{0}\" data-layout-area-name=\"{1}\" " +
                         "data-layout-area-hascustomsort=\"{2}\" class=\"layout-area\"> ",
-                        layoutArea.Id, layoutArea.AreaName, customSort.ToString());
+                        layoutArea.Id, layoutArea.AreaName, customSort);
 
                 foreach (var widget in layoutArea.GetWidgets(page))
                 {
