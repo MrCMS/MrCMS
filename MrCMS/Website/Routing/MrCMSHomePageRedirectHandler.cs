@@ -12,7 +12,7 @@ namespace MrCMS.Website.Routing
             _getWebpageForRequest = getWebpageForRequest;
         }
 
-        public int Priority { get { return 960; } }
+        public int Priority { get { return 1020; } }
         public bool Handle(RequestContext context)
         {
             Webpage webpage = _getWebpageForRequest.Get(context);

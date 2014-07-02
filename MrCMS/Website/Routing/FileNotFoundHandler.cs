@@ -3,7 +3,7 @@ using System.Web.Routing;
 
 namespace MrCMS.Website.Routing
 {
-    public class FileHandler : IMrCMSRouteHandler
+    public class FileNotFoundHandler : IMrCMSRouteHandler
     {
         public bool Handle(RequestContext context)
         {
@@ -19,6 +19,6 @@ namespace MrCMS.Website.Routing
             return false;
         }
 
-        public int Priority { get { return 20000; } }
+        public int Priority { get { return 10; } }
     }
 }

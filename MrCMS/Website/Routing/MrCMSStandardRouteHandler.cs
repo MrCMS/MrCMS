@@ -28,11 +28,14 @@ namespace MrCMS.Website.Routing
             _errorHandler = errorHandler;
         }
 
-        public int Priority { get { return 0; } }
+        public int Priority { get { return 1000; } }
         public bool Handle(RequestContext context)
         {
             Webpage webpage = _getWebpageForRequest.Get(context);
-
+            if (webpage == null)
+            {
+                return false;
+            }
             var controller = _controllerManager.GetController(context, webpage, context.HttpContext.Request.HttpMethod);
 
             _controllerManager.SetViewData(webpage, controller, _session);

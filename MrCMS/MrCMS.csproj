@@ -735,7 +735,7 @@
     <Compile Include="Website\OutOfContextSession.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
-    <Compile Include="Website\Routing\FileHandler.cs" />
+    <Compile Include="Website\Routing\FileNotFoundHandler.cs" />
     <Compile Include="Website\Routing\GetErrorPage.cs" />
     <Compile Include="Website\Routing\GetWebpageByUrlHistoryForRequest.cs" />
     <Compile Include="Website\Routing\GetWebpageForRequest.cs" />

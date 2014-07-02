@@ -15,7 +15,7 @@ namespace MrCMS.Website.Routing
             _errorHandler = errorHandler;
         }
 
-        public int Priority { get { return 950; } }
+        public int Priority { get { return 1010; } }
         public bool Handle(RequestContext context)
         {
             Webpage webpage = _getWebpageForRequest.Get(context);

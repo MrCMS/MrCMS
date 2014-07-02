@@ -3,7 +3,6 @@ using System.IO;
 using System.Web.Mvc;
 using System.Web.Mvc.Async;
 using System.Web.Routing;
-using FluentNHibernate.Infrastructure;
 using MrCMS.Apps;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -14,8 +13,8 @@ namespace MrCMS.Web.Apps.Articles.RouteHandlers
 {
     public class ArticleListRSSRouteHandler : IMrCMSRouteHandler
     {
-        private readonly IDocumentService _documentService;
         private readonly IControllerManager _controllerManager;
+        private readonly IDocumentService _documentService;
 
         public ArticleListRSSRouteHandler(IDocumentService documentService, IControllerManager controllerManager)
         {
@@ -23,7 +22,11 @@ namespace MrCMS.Web.Apps.Articles.RouteHandlers
             _controllerManager = controllerManager;
         }
 
-        public int Priority { get { return 50000; } }
+        public int Priority
+        {
+            get { return 50; }
+        }
+
         public bool Handle(RequestContext context)
         {
             string absolutePath = context.HttpContext.Request.Url.AbsolutePath;
@@ -34,7 +37,7 @@ namespace MrCMS.Web.Apps.Articles.RouteHandlers
                 var articleList = _documentService.GetDocumentByUrl<ArticleList>(containerName);
                 if (articleList != null)
                 {
-                    var controllerFactory = _controllerManager.ControllerFactory;
+                    IControllerFactory controllerFactory = _controllerManager.ControllerFactory;
                     var controller = controllerFactory.CreateController(context, "ArticleRSS") as Controller;
                     controller.ControllerContext = new ControllerContext(context, controller);
                     var routeValueDictionary = new RouteValueDictionary();
