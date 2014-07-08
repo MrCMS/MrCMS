@@ -220,7 +220,7 @@ namespace MrCMS.Helpers
         /// <returns>The converted value.</returns>
         public static object To(this object value, Type destinationType)
         {
-            return To(value, destinationType, CurrentRequestData.CultureInfo);
+            return To(value, destinationType, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
