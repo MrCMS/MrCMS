@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using MrCMS.Entities;
-using MrCMS.Helpers;
-using Ninject;
 
 namespace MrCMS.Indexing.Management
 {
-    public interface IIndexManager<in TEntity, TDefinition> : IIndexManagerBase
-        where TEntity : SystemEntity where TDefinition : IndexDefinition<TEntity>
+    public interface IIndexManager<TEntity, TDefinition> : IIndexManagerBase
+        where TEntity : SystemEntity
+        where TDefinition : IndexDefinition<TEntity>
     {
         IndexResult Insert(IEnumerable<TEntity> entities);
         IndexResult Insert(TEntity entity);
@@ -19,7 +17,7 @@ namespace MrCMS.Indexing.Management
         IndexResult Delete(IEnumerable<TEntity> entities);
         IndexResult Delete(TEntity entity);
 
-        IndexResult ReIndex(IEnumerable<TEntity> entities);
+        IndexResult ReIndex(List<TEntity> entities);
     }
 
     public interface IIndexManagerBase

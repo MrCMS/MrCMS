@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Documents;
 using MrCMS.Entities;
-using MrCMS.Entities.Indexes;
 
 namespace MrCMS.Indexing.Management
 {
@@ -19,16 +18,24 @@ namespace MrCMS.Indexing.Management
 
         public override FieldDefinition<T2> GetDefinition
         {
-            get { return new DecimalFieldDefinition<T2>(Name, arg => GetValues(arg), Store, Index, Boost); }
+            get { return new DecimalFieldDefinition<T2>(Name, GetValues, GetValues, Store, Index, Boost); }
         }
 
         protected abstract IEnumerable<decimal> GetValues(T2 obj);
+
+        protected virtual Dictionary<T2, IEnumerable<decimal>> GetValues(List<T2> objs)
+        {
+            return objs.ToDictionary(arg => arg, GetValues);
+        }
     }
+
     public class DecimalFieldDefinition<T> : FieldDefinition<T>
     {
-        public Func<T, IEnumerable<decimal>> GetValues { get; set; }
-        public DecimalFieldDefinition(string fieldName, Func<T, IEnumerable<decimal>> getValues, Field.Store store, Field.Index index, float boost = 1)
+        public DecimalFieldDefinition(string fieldName, Func<T, IEnumerable<decimal>> getValues,
+            Func<List<T>, Dictionary<T, IEnumerable<decimal>>> getAllValues, Field.Store store, Field.Index index,
+            float boost = 1)
         {
+            GetAllValues = getAllValues;
             FieldName = fieldName;
             GetValues = getValues;
             Store = store;
@@ -36,21 +43,26 @@ namespace MrCMS.Indexing.Management
             Boost = boost;
         }
 
-        public DecimalFieldDefinition(string fieldName, Func<T, decimal> getValue, Field.Store store, Field.Index index, float boost = 1)
-        {
-            FieldName = fieldName;
-            GetValues = arg => new List<decimal> { getValue(arg) };
-            Store = store;
-            Index = index;
-            Boost = boost;
-        }
+        public Func<List<T>, Dictionary<T, IEnumerable<decimal>>> GetAllValues { get; set; }
+        public Func<T, IEnumerable<decimal>> GetValues { get; set; }
+
         public override List<AbstractField> GetFields(T obj)
         {
-            var values = GetValues(obj).ToList();
-            return
-                values.Select(
-                    value =>
-                    new NumericField(FieldName, Store, Index != Field.Index.NO) { Boost = Boost }.SetDoubleValue(
+            return GetFields(GetValues(obj));
+        }
+
+        public override Dictionary<T, List<AbstractField>> GetFields(List<T> obj)
+        {
+            Dictionary<T, IEnumerable<decimal>> values = GetAllValues(obj);
+            return values.ToDictionary(pair => pair.Key,
+                pair => GetFields(pair.Value));
+        }
+
+        private List<AbstractField> GetFields(IEnumerable<decimal> values)
+        {
+            return values.Select(
+                value =>
+                    new NumericField(FieldName, Store, Index != Field.Index.NO) {Boost = Boost}.SetDoubleValue(
                         Convert.ToDouble(value))).Cast<AbstractField>().ToList();
         }
     }

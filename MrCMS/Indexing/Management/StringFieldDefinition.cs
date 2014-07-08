@@ -18,40 +18,50 @@ namespace MrCMS.Indexing.Management
 
         public override FieldDefinition<T2> GetDefinition
         {
-            get { return new StringFieldDefinition<T2>(Name, arg => GetValues(arg), Store, Index, Boost); }
+            get { return new StringFieldDefinition<T2>(Name, GetValues, GetValues, Store, Index, Boost); }
         }
 
         protected abstract IEnumerable<string> GetValues(T2 obj);
+
+        protected virtual Dictionary<T2, IEnumerable<string>> GetValues(List<T2> objs)
+        {
+            return objs.ToDictionary(arg => arg, GetValues);
+        }
     }
+
     public class StringFieldDefinition<T> : FieldDefinition<T>
     {
-        public Func<T, IEnumerable<string>> GetValues { get; set; }
-
-        public StringFieldDefinition(string fieldName, Func<T, IEnumerable<string>> getValues, Field.Store store, Field.Index index, float boost = 1)
+        public StringFieldDefinition(string fieldName, Func<T, IEnumerable<string>> getValues, Func<List<T>, Dictionary<T, IEnumerable<string>>> getAllValues,
+            Field.Store store, Field.Index index, float boost = 1)
         {
             FieldName = fieldName;
             GetValues = getValues;
+            GetAllValues = getAllValues;
             Store = store;
             Index = index;
             Boost = boost;
         }
 
-        public StringFieldDefinition(string fieldName, Func<T, string> getValue, Field.Store store, Field.Index index, float boost = 1)
-        {
-            FieldName = fieldName;
-            GetValues = arg => new List<string> { getValue(arg) };
-            Store = store;
-            Index = index;
-            Boost = boost;
-        }
+        public Func<T, IEnumerable<string>> GetValues { get; set; }
+        public Func<List<T>, Dictionary<T, IEnumerable<string>>> GetAllValues { get; set; }
 
         public override List<AbstractField> GetFields(T obj)
         {
-            var values = GetValues(obj).ToList();
-            return
-                values.Select(s => new Field(FieldName, s ?? string.Empty, Store, Index) { Boost = Boost })
-                      .Cast<AbstractField>()
-                      .ToList();
+            return GetFields(GetValues(obj));
+        }
+
+        public override Dictionary<T, List<AbstractField>> GetFields(List<T> obj)
+        {
+            List<KeyValuePair<T, IEnumerable<string>>> values = GetAllValues(obj).ToList();
+            return values.ToDictionary(pair => pair.Key,
+                pair => GetFields(pair.Value));
+        }
+
+        private List<AbstractField> GetFields(IEnumerable<string> values)
+        {
+            return values.Select(s => new Field(FieldName, s ?? string.Empty, Store, Index) { Boost = Boost })
+                .Cast<AbstractField>()
+                .ToList();
         }
     }
 }
