@@ -388,6 +388,7 @@
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\CloneSiteService.cs" />
     <Compile Include="Services\DefaultWebpageUrlGenerator.cs" />
+    <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\EventContext.cs" />
     <Compile Include="Services\ExistAnyWebpageService.cs" />
     <Compile Include="Services\FileMigration\FileMigrationService.cs" />
@@ -398,6 +399,7 @@
     <Compile Include="Services\GetCurrentLayout.cs" />
     <Compile Include="Services\GetHomePage.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
+    <Compile Include="Services\IEmailSender.cs" />
     <Compile Include="Services\IExistAnyWebpageService.cs" />
     <Compile Include="Services\IGetBreadcrumbs.cs" />
     <Compile Include="Services\IGetCurrentLayout.cs" />

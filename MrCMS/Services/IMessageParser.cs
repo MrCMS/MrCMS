@@ -7,6 +7,6 @@ namespace MrCMS.Services
         QueuedMessage GetMessage(T2 obj, string fromAddress = null, string fromName = null, string toAddress = null, string toName = null,
                                  string cc = null, string bcc = null);
 
-        void QueueMessage(QueuedMessage queuedMessage);
+        void QueueMessage(QueuedMessage queuedMessage, bool trySendImmediately = true);
     }
 }

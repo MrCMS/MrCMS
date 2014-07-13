@@ -38,10 +38,16 @@ namespace MrCMS.Services
             };
         }
 
-        public void QueueMessage(QueuedMessage queuedMessage)
+        public void QueueMessage(QueuedMessage queuedMessage, bool trySendImmediately = true)
         {
             if (queuedMessage != null)
+            {
+                if (trySendImmediately)
+                {
+                    
+                }
                 _session.Transact(session => session.Save(queuedMessage));
+            }
         }
     }
 }
