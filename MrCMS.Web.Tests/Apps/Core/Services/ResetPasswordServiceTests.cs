@@ -68,7 +68,7 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
 
             _resetPasswordService.SetResetPassword(user);
 
-            A.CallTo(() => _messageParser.QueueMessage(queuedMessage)).MustHaveHappened();
+            A.CallTo(() => _messageParser.QueueMessage(queuedMessage, true)).MustHaveHappened();
         }
 
         [Fact]
