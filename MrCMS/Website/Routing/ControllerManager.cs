@@ -13,17 +13,6 @@ using NHibernate;
 
 namespace MrCMS.Website.Routing
 {
-    public interface IControllerManager
-    {
-        IControllerFactory OverridenControllerFactory { get; set; }
-        IControllerFactory ControllerFactory { get; }
-        void SetViewData(Webpage webpage, Controller controller, ISession session);
-        void SetFormData(Webpage webpage, Controller controller, NameValueCollection form);
-        string GetActionName(Webpage webpage, string httpMethod);
-        Controller GetController(RequestContext requestContext, Webpage webpage, string httpMethod);
-        string GetControllerName(Webpage webpage, string httpMethod);
-    }
-
     public class ControllerManager : IControllerManager
     {
         public IControllerFactory OverridenControllerFactory { get; set; }

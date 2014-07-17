@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Web.Mvc;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using NHibernate;
 
@@ -28,7 +27,6 @@ namespace MrCMS.Settings
 
         public virtual void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-
         }
     }
 }

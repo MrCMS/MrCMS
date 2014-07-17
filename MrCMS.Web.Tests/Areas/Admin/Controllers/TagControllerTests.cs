@@ -4,10 +4,8 @@ using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Models;
-using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Services;
-using MrCMS.Web.Tests.Stubs;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -20,10 +18,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var tagService = A.Fake<ITagAdminService>();
             var tagController = new TagController(tagService);
 
-            var stubDocument = new StubDocument();
-            tagController.Search(stubDocument, "test");
+            tagController.Search("test");
 
-            A.CallTo(() => tagService.Search(stubDocument, "test")).MustHaveHappened();
+            A.CallTo(() => tagService.Search("test")).MustHaveHappened();
         }
 
         [Fact]
@@ -32,10 +29,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var tagService = A.Fake<ITagAdminService>();
             var tagController = new TagController(tagService);
             IEnumerable<AutoCompleteResult> results = Enumerable.Empty<AutoCompleteResult>();
-            var stubDocument = new StubDocument();
-            A.CallTo(() => tagService.Search(stubDocument, "test")).Returns(results);
+            A.CallTo(() => tagService.Search("test")).Returns(results);
 
-            JsonResult result = tagController.Search(stubDocument, "test");
+            JsonResult result = tagController.Search("test");
             result.Data.As<IEnumerable<AutoCompleteResult>>().Should().BeEquivalentTo(results);
         }
     }

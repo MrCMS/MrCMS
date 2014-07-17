@@ -14,7 +14,7 @@ namespace MrCMS.Helpers
 
         public static IEnumerable<DocumentMetadata> WebpageMetadata
         {
-            get { return DocumentMetadatas.Where(x => x.Type != null && x.Type.IsSubclassOf(typeof (Webpage))); }
+            get { return DocumentMetadatas.Where(x => x.Type != null && x.Type.IsSubclassOf(typeof(Webpage))); }
         }
 
         public static List<DocumentMetadata> DocumentMetadatas
@@ -31,8 +31,8 @@ namespace MrCMS.Helpers
                     TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
                         .Where(type => !type.ContainsGenericParameters))
             {
-                List<Type> types =
-                    TypeHelper.GetAllConcreteTypesAssignableFrom(typeof (DocumentMetadataMap<>).MakeGenericType(type));
+                var types =
+                    TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(DocumentMetadataMap<>).MakeGenericType(type));
                 if (types.Any())
                 {
                     var definition = Activator.CreateInstance(types.First()) as IGetDocumentMetadata;
@@ -41,7 +41,7 @@ namespace MrCMS.Helpers
                 else
                 {
                     var definition =
-                        Activator.CreateInstance(typeof (DefaultDocumentMetadata<>).MakeGenericType(type)) as
+                        Activator.CreateInstance(typeof(DefaultDocumentMetadata<>).MakeGenericType(type)) as
                             IGetDocumentMetadata;
                     list.Add(definition.Metadata);
                 }
@@ -78,7 +78,7 @@ namespace MrCMS.Helpers
             DocumentMetadata documentTypeDefinition = document.GetMetadata();
             return documentTypeDefinition != null && documentTypeDefinition.MaxChildNodes > 0
                 ? documentTypeDefinition.MaxChildNodes
-                : (int?) null;
+                : (int?)null;
         }
 
         public static List<DocumentMetadata> GetValidParentTypes(Webpage webpage)

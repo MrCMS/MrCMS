@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
@@ -14,7 +13,6 @@ using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Transform;
 
 namespace MrCMS.Services
 {
@@ -82,33 +80,6 @@ namespace MrCMS.Services
             return list;
         }
 
-        public Layout GetDefaultLayout(Webpage currentPage)
-        {
-            if (currentPage != null)
-            {
-                string defaultLayoutName = currentPage.GetMetadata().DefaultLayoutName;
-                if (!String.IsNullOrEmpty(defaultLayoutName))
-                {
-                    Layout layout =
-                        _session.QueryOver<Layout>()
-                            .Where(x => x.Name == defaultLayoutName)
-                            .Cacheable()
-                            .List()
-                            .FirstOrDefault();
-                    if (layout != null)
-                        return layout;
-                }
-            }
-            int settingValue = _siteSettings.DefaultLayoutId;
-
-            return _session.Get<Layout>(settingValue) ??
-                   _session.QueryOver<Layout>()
-                       .Where(layout => layout.Site == currentPage.Site)
-                       .Take(1)
-                       .Cacheable()
-                       .SingleOrDefault();
-        }
-
         public void SetOrders(List<SortItem> items)
         {
             _session.Transact(session => items.ForEach(item =>
@@ -159,6 +130,33 @@ namespace MrCMS.Services
                 .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
                 .Take(1).Cacheable()
                 .SingleOrDefault();
+        }
+
+        public Layout GetDefaultLayout(Webpage currentPage)
+        {
+            if (currentPage != null)
+            {
+                string defaultLayoutName = currentPage.GetMetadata().DefaultLayoutName;
+                if (!String.IsNullOrEmpty(defaultLayoutName))
+                {
+                    Layout layout =
+                        _session.QueryOver<Layout>()
+                            .Where(x => x.Name == defaultLayoutName)
+                            .Cacheable()
+                            .List()
+                            .FirstOrDefault();
+                    if (layout != null)
+                        return layout;
+                }
+            }
+            int settingValue = _siteSettings.DefaultLayoutId;
+
+            return _session.Get<Layout>(settingValue) ??
+                   _session.QueryOver<Layout>()
+                       .Where(layout => layout.Site == currentPage.Site)
+                       .Take(1)
+                       .Cacheable()
+                       .SingleOrDefault();
         }
 
 

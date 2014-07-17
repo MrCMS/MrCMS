@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
@@ -153,16 +152,5 @@ namespace MrCMS.Website
 
     public abstract class MrCMSPage : MrCMSPage<dynamic>
     {
-    }
-
-    public class PropertyFinder
-    {
-        public static PropertyInfo GetProperty(Expression expression)
-        {
-            return expression is LambdaExpression && (expression as LambdaExpression).Body is MemberExpression &&
-                   ((expression as LambdaExpression).Body as MemberExpression).Member is PropertyInfo
-                       ? ((expression as LambdaExpression).Body as MemberExpression).Member as PropertyInfo
-                       : null;
-        }
     }
 }

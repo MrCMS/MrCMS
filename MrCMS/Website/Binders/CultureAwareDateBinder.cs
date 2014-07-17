@@ -17,8 +17,6 @@ namespace MrCMS.Website.Binders
             if (value == null)
                 throw new ArgumentNullException(bindingContext.ModelName);
 
-
-
             bindingContext.ModelState.SetModelValue(bindingContext.ModelName, value);
 
             try

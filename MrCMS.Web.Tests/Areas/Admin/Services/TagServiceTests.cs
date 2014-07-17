@@ -7,7 +7,6 @@ using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Web.Areas.Admin.Services;
-using MrCMS.Web.Tests.Stubs;
 using NHibernate;
 using Xunit;
 
@@ -31,8 +30,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
                 Session.SaveOrUpdate(tag3);
             });
 
-            Document document = new StubDocument {Site = CurrentSite};
-            IEnumerable<AutoCompleteResult> tags = tagService.Search(document, "tag");
+            IEnumerable<AutoCompleteResult> tags = tagService.Search("tag");
 
             tags.Should().HaveCount(2);
             tags.First().label.Should().Be("tag-1");

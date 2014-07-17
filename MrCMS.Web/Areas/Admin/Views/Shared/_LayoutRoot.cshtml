@@ -73,6 +73,7 @@
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
         Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.noty.packaged.js");
+        Html.AddAppAdminScripts();
     }
     @if (!CurrentRequestData.CurrentUser.DisableNotifications)
     {

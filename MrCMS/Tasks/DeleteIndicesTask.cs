@@ -9,7 +9,7 @@ namespace MrCMS.Tasks
     internal class DeleteIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
         public DeleteIndicesTask(ISession session, IKernel kernel, IIndexService indexService)
-            : base(session, kernel, indexService)
+            : base(session, indexService)
         {
         }
 

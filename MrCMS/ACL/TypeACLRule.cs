@@ -37,18 +37,18 @@ namespace MrCMS.ACL
             return _rules = _rules ?? GetRuleTypes()
                                                 .Select(
                                                     type => new ACLGroup
-                                                                {
-                                                                    Name = type.Name.BreakUpString(),
-                                                                    Type = type,
-                                                                    AppName = GetAppName(type),
-                                                                    Operations =
-                                                                        Operations.Select(s =>
-                                                                                          new ACLOperation
-                                                                                              {
-                                                                                                  Name = s,
-                                                                                                  Key = GetKey(s, type.FullName),
-                                                                                              }).ToList()
-                                                                }).ToList();
+                                                    {
+                                                        Name = type.Name.BreakUpString(),
+                                                        Type = type,
+                                                        AppName = GetAppName(type),
+                                                        Operations =
+                                                            Operations.Select(s =>
+                                                                              new ACLOperation
+                                                                              {
+                                                                                  Name = s,
+                                                                                  Key = GetKey(s, type.FullName),
+                                                                              }).ToList()
+                                                    }).ToList();
         }
 
         private string GetAppName(Type type)
@@ -60,7 +60,7 @@ namespace MrCMS.ACL
             return "System";
         }
 
-        private static List<Type> GetRuleTypes()
+        private static HashSet<Type> GetRuleTypes()
         {
             return TypeHelper.GetAllConcreteMappedClassesAssignableFrom<SystemEntity>().FindAll(type => type.IsSubclassOf(typeof(Widget)) || type.IsSubclassOf(typeof(Webpage)));
         }

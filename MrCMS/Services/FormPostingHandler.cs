@@ -16,11 +16,6 @@ using NHibernate;
 
 namespace MrCMS.Services
 {
-    public interface IFormPostingHandler
-    {
-        List<string> SaveFormData(Webpage webpage, HttpRequestBase request);
-    }
-
     public class FormPostingHandler : IFormPostingHandler
     {
         private readonly IDocumentService _documentService;

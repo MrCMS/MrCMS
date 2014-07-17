@@ -9,7 +9,7 @@ namespace MrCMS.Tasks
     internal class InsertIndicesTask<T> : IndexManagementTask<T> where T : SiteEntity
     {
         public InsertIndicesTask(ISession session, IKernel kernel, IIndexService indexService)
-            : base(session, kernel, indexService)
+            : base(session, indexService)
         {
         }
 

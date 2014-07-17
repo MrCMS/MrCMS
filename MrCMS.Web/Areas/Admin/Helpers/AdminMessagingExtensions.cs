@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 
-namespace MrCMS.Helpers
+namespace MrCMS.Web.Areas.Admin.Helpers
 {
     public static class AdminMessagingExtensions
     {

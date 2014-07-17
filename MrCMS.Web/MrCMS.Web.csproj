@@ -316,6 +316,7 @@
     <Compile Include="Areas\Admin\Controllers\WebpageParentController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageUrlController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageWidgetController.cs" />
+    <Compile Include="Areas\Admin\Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
     <Compile Include="Areas\Admin\Helpers\FileHelper.cs" />
@@ -447,6 +448,7 @@
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
+    <Compile Include="Areas\Admin\Services\DefaultWebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\DocumentRolesAdminService.cs" />
     <Compile Include="Areas\Admin\Services\DocumentTagsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\DocumentVersionsAdminService.cs" />
@@ -486,6 +488,7 @@
     <Compile Include="Areas\Admin\Services\ITreeNavService.cs" />
     <Compile Include="Areas\Admin\Services\IUrlHistoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageParentAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IWebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageWidgetAdminService.cs" />
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminService.cs" />
     <Compile Include="Areas\Admin\Services\LogAdminService.cs" />
@@ -522,6 +525,7 @@
     <Compile Include="Areas\Admin\Services\TreeNavService.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageParentAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\WebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\WebpageWidgetAdminService.cs" />
     <Compile Include="Controllers\CKEditorController.cs" />
     <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
