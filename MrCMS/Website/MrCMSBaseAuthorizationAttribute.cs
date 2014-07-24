@@ -10,8 +10,7 @@ namespace MrCMS.Website
     public abstract class MrCMSBaseAuthorizationAttribute : AuthorizeAttribute
     {
         public bool ReturnEmptyResult { get; set; }
-
-        protected override bool AuthorizeCore(HttpContextBase httpContext)
+        protected override bool AuthorizeCore(System.Web.HttpContextBase httpContext)
         {
             if (!CurrentRequestData.CurrentContext.Request.IsLocal && CurrentRequestData.SiteSettings.AllowedIPs.Any() &&
                 !CurrentRequestData.SiteSettings.AllowedIPs.Contains(CurrentRequestData.CurrentContext.GetCurrentIP()))
@@ -27,20 +26,20 @@ namespace MrCMS.Website
             }
             else
             {
-                if (filterContext.Controller.GetType().GetCustomAttributes(typeof (MrCMSAuthorizeAttribute), true).Any())
+                if (filterContext.Controller.GetType().GetCustomAttributes(typeof(MrCMSAuthorizeAttribute), true).Any())
                 {
                     if (filterContext.HttpContext.User.Identity.IsAuthenticated)
                     {
                         var routingErrorHandler = MrCMSApplication.Get<IMrCMSRoutingErrorHandler>();
-                        RouteData routeData = filterContext.RouteData;
+                        var routeData = filterContext.RouteData;
                         routeData.Route = RouteTable.Routes.Last();
                         routeData.DataTokens.Remove("area");
 
                         var requestContext = new RequestContext(filterContext.HttpContext, routeData);
                         string message = string.Format("Not allowed to view {0}", requestContext.HttpContext.Request.Url);
-                        int code = CurrentRequestData.CurrentUser != null ? 403 : 401;
+                        var code = CurrentRequestData.CurrentUser != null ? 403 : 401;
                         routingErrorHandler.HandleError(requestContext, code, new HttpException(code, message));
-
+                        
                         filterContext.Result = new EmptyResult();
                     }
                     else

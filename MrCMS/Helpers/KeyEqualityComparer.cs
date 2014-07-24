@@ -5,21 +5,21 @@ namespace MrCMS.Helpers
 {
     public class KeyEqualityComparer<T, TKey> : IEqualityComparer<T>
     {
-        protected readonly Func<T, TKey> KeyExtractor;
+        protected readonly Func<T, TKey> keyExtractor;
 
         public KeyEqualityComparer(Func<T, TKey> keyExtractor)
         {
-            KeyExtractor = keyExtractor;
+            this.keyExtractor = keyExtractor;
         }
 
         public virtual bool Equals(T x, T y)
         {
-            return KeyExtractor(x).Equals(KeyExtractor(y));
+            return this.keyExtractor(x).Equals(this.keyExtractor(y));
         }
 
         public int GetHashCode(T obj)
         {
-            return KeyExtractor(obj).GetHashCode();
+            return this.keyExtractor(obj).GetHashCode();
         }
     }
 }

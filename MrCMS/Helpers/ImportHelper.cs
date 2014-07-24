@@ -10,7 +10,7 @@ namespace MrCMS.Helpers
             {
                 if (value.HasValue())
                 {
-                    object convertedValue = Convert.ChangeType(value, typeof (T));
+                    var convertedValue = Convert.ChangeType(value, typeof(T));
                 }
                 return true;
             }

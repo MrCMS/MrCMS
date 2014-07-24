@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Web.Tests.Stubs;
 using NHibernate;
 using Xunit;
 

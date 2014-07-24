@@ -13,7 +13,7 @@ namespace MrCMS.Helpers
         {
             // This will use the overload that accepts a TKey parameter
             // instead of an object parameter.
-            return this.KeyExtractor(x).Equals(this.KeyExtractor(y));
+            return this.keyExtractor(x).Equals(this.keyExtractor(y));
         }
     }
 }

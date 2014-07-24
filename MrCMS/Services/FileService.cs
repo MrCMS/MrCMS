@@ -1,30 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Settings;
 using NHibernate;
+using MrCMS.Helpers;
 using NHibernate.Criterion;
 
 namespace MrCMS.Services
 {
     public class FileService : IFileService
     {
-        private readonly Site _currentSite;
+        private readonly ISession _session;
         private readonly IFileSystem _fileSystem;
         private readonly IImageProcessor _imageProcessor;
         private readonly MediaSettings _mediaSettings;
-        private readonly ISession _session;
+        private readonly Site _currentSite;
         private readonly SiteSettings _siteSettings;
 
-        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor,
-            MediaSettings mediaSettings, Site currentSite, SiteSettings siteSettings)
+        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor, MediaSettings mediaSettings, Site currentSite, SiteSettings siteSettings)
         {
             _session = session;
             _fileSystem = fileSystem;
@@ -34,8 +35,7 @@ namespace MrCMS.Services
             _siteSettings = siteSettings;
         }
 
-        public MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength,
-            MediaCategory mediaCategory)
+        public MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory)
         {
             if (mediaCategory == null) throw new ArgumentNullException("mediaCategory");
 
@@ -44,14 +44,14 @@ namespace MrCMS.Services
             fileName = fileName.GetTidyFileName();
 
             var mediaFile = new MediaFile
-            {
-                FileName = fileName,
-                ContentType = contentType,
-                ContentLength = contentLength,
-                MediaCategory = mediaCategory,
-                FileExtension = Path.GetExtension(fileName),
-                DisplayOrder = mediaCategory.Files.Count
-            };
+                                {
+                                    FileName = fileName,
+                                    ContentType = contentType,
+                                    ContentLength = contentLength,
+                                    MediaCategory = mediaCategory,
+                                    FileExtension = Path.GetExtension(fileName),
+                                    DisplayOrder = mediaCategory.Files.Count
+                                };
 
             if (mediaFile.IsImage)
             {
@@ -59,114 +59,22 @@ namespace MrCMS.Services
                 _imageProcessor.SetFileDimensions(mediaFile, stream);
             }
 
-            string fileLocation = GetFileLocation(fileName, mediaCategory);
+            var fileLocation = GetFileLocation(fileName, mediaCategory);
 
             mediaFile.FileUrl = _fileSystem.SaveFile(stream, fileLocation, contentType);
 
             mediaCategory.Files.Add(mediaFile);
             _session.Transact(session =>
-            {
-                session.SaveOrUpdate(mediaFile);
-                session.SaveOrUpdate(mediaCategory);
-            });
+                                  {
+                                      session.SaveOrUpdate(mediaFile);
+                                      session.SaveOrUpdate(mediaCategory);
+                                  });
             return mediaFile;
-        }
-
-        public void DeleteFile(MediaFile mediaFile)
-        {
-            // remove file from the file list for its category, to prevent missing item exception
-            if (mediaFile.MediaCategory != null)
-                mediaFile.MediaCategory.Files.Remove(mediaFile);
-
-            foreach (ResizedImage resizedImage in
-                mediaFile.ResizedImages
-                    .Where(path => _fileSystem.Exists(path.Url)))
-            {
-                _fileSystem.Delete(resizedImage.Url);
-            }
-            _fileSystem.Delete(mediaFile.FileUrl);
-
-            _session.Transact(session => session.Delete(mediaFile));
-        }
-
-        public void SaveFile(MediaFile mediaFile)
-        {
-            _session.Transact(session => session.SaveOrUpdate(mediaFile));
-        }
-
-        public string GetFileLocation(MediaFile mediaFile, Size imageSize)
-        {
-            return GetUrl(mediaFile, imageSize);
-        }
-
-        public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1)
-        {
-            IQueryOver<MediaFile, MediaFile> queryOver =
-                _session.QueryOver<MediaFile>().Where(file => file.Site == _currentSite);
-
-            if (categoryId.HasValue)
-                queryOver = queryOver.Where(file => file.MediaCategory.Id == categoryId);
-
-            if (imagesOnly)
-                queryOver.Where(file => file.FileExtension.IsIn(MediaFile.ImageExtensions));
-
-            IPagedList<MediaFile> mediaFiles = queryOver.OrderBy(file => file.CreatedOn)
-                .Desc.Paged(page, _siteSettings.DefaultPageSize);
-            return new FilesPagedResult(mediaFiles, mediaFiles.GetMetaData(), categoryId, imagesOnly);
-        }
-
-        public MediaFile GetFileByUrl(string value)
-        {
-            return
-                _session.QueryOver<MediaFile>()
-                    .Where(file => file.FileUrl == value)
-                    .Take(1)
-                    .Cacheable()
-                    .SingleOrDefault();
-        }
-
-        public string GetFileUrl(string value)
-        {
-            MediaFile mediaFile = GetFileByUrl(value);
-            if (mediaFile != null)
-                return mediaFile.FileUrl;
-
-            string[] split = value.Split('-');
-            int id = Convert.ToInt32(split[0]);
-            var file = _session.Get<MediaFile>(id);
-            ImageSize imageSize =
-                file.Sizes.FirstOrDefault(
-                    size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
-            return GetFileLocation(file, imageSize.Size);
-        }
-
-        public void RemoveFolder(MediaCategory mediaCategory)
-        {
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id,
-                mediaCategory.UrlSegment);
-
-            _fileSystem.Delete(folderLocation);
-        }
-
-        public void CreateFolder(MediaCategory mediaCategory)
-        {
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id,
-                mediaCategory.UrlSegment);
-
-            _fileSystem.CreateDirectory(folderLocation);
-        }
-
-        public bool IsValidFileType(string fileName)
-        {
-            string extension = Path.GetExtension(fileName);
-            if (string.IsNullOrWhiteSpace(extension) || extension.Length < 1)
-                return false;
-            return _mediaSettings.AllowedFileTypeList.Contains(extension.Substring(1), StringComparer.OrdinalIgnoreCase);
         }
 
         private string GetFileLocation(string fileName, MediaCategory mediaCategory)
         {
-            string fileNameOriginal = fileName.GetTidyFileName();
+            var fileNameOriginal = fileName.GetTidyFileName();
 
             string folderLocation = string.Format("{0}/{1}/", _currentSite.Id, mediaCategory.UrlSegment);
 
@@ -195,11 +103,10 @@ namespace MrCMS.Services
                 return file.FileUrl;
 
             //check to see if the image already exists, if it does simply return it
-            string requestedImageFileUrl = ImageProcessor.RequestedImageFileUrl(file, size);
+            var requestedImageFileUrl = ImageProcessor.RequestedImageFileUrl(file, size);
 
             // if we've cached the file existing then we're fine
-            IList<ResizedImage> resizedImages =
-                _session.QueryOver<ResizedImage>().Where(image => image.MediaFile.Id == file.Id).Cacheable().List();
+            var resizedImages = _session.QueryOver<ResizedImage>().Where(image => image.MediaFile.Id == file.Id).Cacheable().List();
             if (resizedImages.Any(image => image.Url == requestedImageFileUrl))
                 return requestedImageFileUrl;
 
@@ -211,7 +118,7 @@ namespace MrCMS.Services
             }
 
             //if we have got this far the image doesn't exist yet so we need to create the image at the requested size
-            byte[] fileBytes = LoadFile(file);
+            var fileBytes = LoadFile(file);
             if (fileBytes.Length == 0)
                 return "";
 
@@ -225,14 +132,99 @@ namespace MrCMS.Services
 
         private void CacheResizedImage(MediaFile file, string requestedImageFileUrl)
         {
-            var resizedImage = new ResizedImage {Url = requestedImageFileUrl, MediaFile = file};
+            var resizedImage = new ResizedImage { Url = requestedImageFileUrl, MediaFile = file };
             file.ResizedImages.Add(resizedImage);
             _session.Transact(session => session.Save(resizedImage));
+        }
+
+        public void DeleteFile(MediaFile mediaFile)
+        {
+            // remove file from the file list for its category, to prevent missing item exception
+            if (mediaFile.MediaCategory != null)
+                mediaFile.MediaCategory.Files.Remove(mediaFile);
+
+            foreach (var resizedImage in
+                mediaFile.ResizedImages
+                    .Where(path => _fileSystem.Exists(path.Url)))
+            {
+                _fileSystem.Delete(resizedImage.Url);
+            }
+            _fileSystem.Delete(mediaFile.FileUrl);
+
+            _session.Transact(session => session.Delete(mediaFile));
+        }
+
+        public void SaveFile(MediaFile mediaFile)
+        {
+            _session.Transact(session => session.SaveOrUpdate(mediaFile));
         }
 
         public List<ImageSize> GetImageSizes()
         {
             return _mediaSettings.ImageSizes.ToList();
+        }
+
+        public string GetFileLocation(MediaFile mediaFile, Size imageSize)
+        {
+            return GetUrl(mediaFile, imageSize);
+        }
+
+        public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1)
+        {
+            var queryOver = _session.QueryOver<MediaFile>().Where(file => file.Site == _currentSite);
+
+            if (categoryId.HasValue)
+                queryOver = queryOver.Where(file => file.MediaCategory.Id == categoryId);
+
+            if (imagesOnly)
+                queryOver.Where(file => file.FileExtension.IsIn(MediaFile.ImageExtensions));
+
+            var mediaFiles = queryOver.OrderBy(file => file.CreatedOn).Desc.Paged(page, _siteSettings.DefaultPageSize);
+            return new FilesPagedResult(mediaFiles, mediaFiles.GetMetaData(), categoryId, imagesOnly);
+        }
+
+        public MediaFile GetFileByUrl(string value)
+        {
+            return _session.QueryOver<MediaFile>().Where(file => file.FileUrl == value).Take(1).Cacheable().SingleOrDefault();
+        }
+
+        public string GetFileUrl(string value)
+        {
+            var mediaFile = GetFileByUrl(value);
+            if (mediaFile != null)
+                return mediaFile.FileUrl;
+
+            var split = value.Split('-');
+            var id = Convert.ToInt32(split[0]);
+            var file = _session.Get<MediaFile>(id);
+            var imageSize =
+                file.Sizes.FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
+            return GetFileLocation(file, imageSize.Size);
+        }
+
+        public void RemoveFolder(MediaCategory mediaCategory)
+        {
+            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id,
+                                                  mediaCategory.UrlSegment);
+
+            _fileSystem.Delete(folderLocation);
+        }
+
+        public void CreateFolder(MediaCategory mediaCategory)
+        {
+            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id,
+                                                  mediaCategory.UrlSegment);
+
+            _fileSystem.CreateDirectory(folderLocation);
+
+        }
+
+        public bool IsValidFileType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName);
+            if (string.IsNullOrWhiteSpace(extension) || extension.Length < 1)
+                return false;
+            return _mediaSettings.AllowedFileTypeList.Contains(extension.Substring(1), StringComparer.OrdinalIgnoreCase);
         }
     }
 }

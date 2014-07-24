@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using System.Web.Security;
 
@@ -7,16 +8,9 @@ namespace MrCMS.Services
     {
         public byte[] GenerateSaltedHash(byte[] plainText, byte[] salt)
         {
-            return
-                Encoding.UTF8.GetBytes(
-                    FormsAuthentication.HashPasswordForStoringInConfigFile(
-                        string.Format("{0}{1}", Encoding.UTF8.GetString(plainText), Encoding.UTF8.GetString(salt)),
-                        "SHA1"));
+            return Encoding.UTF8.GetBytes(FormsAuthentication.HashPasswordForStoringInConfigFile(string.Format("{0}{1}", Encoding.UTF8.GetString(plainText), Encoding.UTF8.GetString(salt)), "SHA1"));
         }
 
-        public string Type
-        {
-            get { return "NopSHA1"; }
-        }
+        public string Type { get { return "NopSHA1"; } }
     }
 }

@@ -1,15 +1,15 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
+using MrCMS.Paging;
 
 namespace MrCMS.Services
 {
     public interface IFileService
     {
-        MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength,
-            MediaCategory mediaCategory);
-
+        MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory);
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);
         string GetFileLocation(MediaFile mediaFile, Size imageSize);

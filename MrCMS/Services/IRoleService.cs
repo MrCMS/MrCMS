@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MrCMS.Entities.Documents;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 

@@ -249,18 +249,59 @@
   <ItemGroup>
     <Compile Include="Apps\Articles\ActionResults\RssActionResult.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Controllers\ArticleController.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Controllers\ArticlesController.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Controllers\AuthorInfoController.cs" />
-    <Compile Include="Apps\Articles\Controllers\ArticleController.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Controllers\FeaturesController.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Helpers\ArticleDisplayHelper.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Models\ArticlesAdminMenu.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Models\ArticleSearchQuery.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Models\FeaturesSearchQuery.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\ArticleAdminService.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\ArticleSectionTreeNavListing.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\FeaturesAdminService.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\FeatureSectionTreeNavListing.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleAdminViewDataOtherSections.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleAdminViewDataUsers.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleSectionOptions.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\GetFeatureAdminViewDataOtherSections.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\GetFeatureAdminViewDataUsers.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\GetFeatureSectionOptions.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\IArticleAdminService.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\IFeaturesAdminService.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\IGetArticleSectionOptions.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\IGetFeatureSectionOptions.cs" />
+    <Compile Include="Apps\Articles\Controllers\ArticleSectionController.cs" />
     <Compile Include="Apps\Articles\Controllers\ArticleRSSController.cs" />
+    <Compile Include="Apps\Articles\DbConfiguration\ArticleSectionOverride.cs" />
     <Compile Include="Apps\Articles\DbConfiguration\AuthorInfoOverride.cs" />
+    <Compile Include="Apps\Articles\DbConfiguration\FeatureOverride.cs" />
+    <Compile Include="Apps\Articles\DbConfiguration\FeatureSectionOverride.cs" />
     <Compile Include="Apps\Articles\Entities\AuthorInfo.cs" />
-    <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
-    <Compile Include="Apps\Articles\ModelBinders\ArticleListModelBinder.cs" />
+    <Compile Include="Apps\Articles\Indexes\ArticleIndexDefinition.cs" />
+    <Compile Include="Apps\Articles\Indexes\ArticlePrimarySectionDefinition.cs" />
+    <Compile Include="Apps\Articles\Indexes\ArticlePublishedDefinition.cs" />
+    <Compile Include="Apps\Articles\Indexes\ArticleSectionsDefinition.cs" />
+    <Compile Include="Apps\Articles\Indexes\FeatureIndexDefinition.cs" />
+    <Compile Include="Apps\Articles\Indexes\FeaturePrimarySectionDefinition.cs" />
+    <Compile Include="Apps\Articles\Indexes\FeaturePublishedDefinition.cs" />
+    <Compile Include="Apps\Articles\Indexes\FeatureSectionsDefinition.cs" />
+    <Compile Include="Apps\Articles\Metadata\ArticleMetadata.cs" />
+    <Compile Include="Apps\Articles\Metadata\FeatureMetadata.cs" />
+    <Compile Include="Apps\Articles\Metadata\FeatureSectionMetadata.cs" />
+    <Compile Include="Apps\Articles\ModelBinders\ArticleSectionModelBinder.cs" />
     <Compile Include="Apps\Articles\Models\ArchiveModel.cs" />
     <Compile Include="Apps\Articles\Models\ArticleSearchModel.cs" />
-    <Compile Include="Apps\Articles\RouteHandlers\ArticleListRSSRouteHandler.cs" />
+    <Compile Include="Apps\Articles\Pages\Feature.cs" />
+    <Compile Include="Apps\Articles\Pages\FeatureSection.cs" />
+    <Compile Include="Apps\Articles\RouteHandlers\ArticleSectionRSSRouteHandler.cs" />
     <Compile Include="Apps\Articles\Services\ArticleService.cs" />
+    <Compile Include="Apps\Articles\Services\ArticlesScriptList.cs" />
+    <Compile Include="Apps\Articles\Services\GetOtherSectionFormData.cs" />
     <Compile Include="Apps\Articles\Services\IArticleService.cs" />
+    <Compile Include="Apps\Articles\Services\IGetOtherSectionFormData.cs" />
+    <Compile Include="Apps\Articles\Services\IOtherArticleSectionBinder.cs" />
+    <Compile Include="Apps\Articles\Services\OtherArticleSectionBinder.cs" />
+    <Compile Include="Apps\Articles\Services\OtherSectionBinder.cs" />
     <Compile Include="Apps\Articles\UrlGenerators\ArticleUrlGenerator.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
@@ -296,8 +337,10 @@
     <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginModel.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\ResetPasswordViewModel.cs" />
+    <Compile Include="Apps\Core\Services\AddFeaturedImageToSitemap.cs" />
     <Compile Include="Apps\Core\Services\OnUserRegisteredEventArgs.cs" />
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
+    <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\PersistentNotificationController.cs" />
@@ -316,11 +359,11 @@
     <Compile Include="Areas\Admin\Controllers\WebpageParentController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageUrlController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageWidgetController.cs" />
-    <Compile Include="Areas\Admin\Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\ChildNodeHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\DashboardRenderer.cs" />
     <Compile Include="Areas\Admin\Helpers\FileHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\SEOAnalysisExtensions.cs" />
+    <Compile Include="Areas\Admin\Helpers\SetAdminViewDataExtensions.cs" />
     <Compile Include="Areas\Admin\Hubs\NotificationHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\ACLUpdateModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\AddFormPropertyModelBinder.cs" />
@@ -388,10 +431,10 @@
     <Compile Include="Apps\Core\Widgets\TextWidget.cs" />
     <Compile Include="Apps\Core\CoreApp.cs" />
     <Compile Include="Apps\Articles\DbConfiguration\ArticleOverride.cs" />
-    <Compile Include="Apps\Articles\Metadata\ArticleListMetaData.cs" />
+    <Compile Include="Apps\Articles\Metadata\ArticleSectionMetadata.cs" />
     <Compile Include="Apps\Articles\ArticlesApp.cs" />
     <Compile Include="Apps\Articles\Pages\Article.cs" />
-    <Compile Include="Apps\Articles\Pages\ArticleList.cs" />
+    <Compile Include="Apps\Articles\Pages\ArticleSection.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleCategories.cs" />
     <Compile Include="Apps\Galleries\Metadata\GalleryListMetaData.cs" />
     <Compile Include="Apps\Galleries\Metadata\GalleryMetaData.cs" />
@@ -446,6 +489,7 @@
     <Compile Include="Areas\Admin\Services\AdminSiteListService.cs" />
     <Compile Include="Areas\Admin\Services\AdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
+    <Compile Include="Areas\Admin\Services\BaseAssignAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
     <Compile Include="Areas\Admin\Services\DefaultWebpageTreeNavListing.cs" />
@@ -479,6 +523,7 @@
     <Compile Include="Areas\Admin\Services\IPersistentNotificationUIService.cs" />
     <Compile Include="Areas\Admin\Services\IRedirectedDomainService.cs" />
     <Compile Include="Areas\Admin\Services\IRoleAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\ISetAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\ISiteAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IStringResourceAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IStringResourceUpdateService.cs" />
@@ -516,6 +561,7 @@
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleContainsTerm.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleIsCorrectLength.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\URLContainsTerm.cs" />
+    <Compile Include="Areas\Admin\Services\SetAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\SiteAdminService.cs" />
     <Compile Include="Areas\Admin\Services\StringResourceAdminService.cs" />
     <Compile Include="Areas\Admin\Services\StringResourceUpdateService.cs" />
@@ -541,6 +587,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps\Articles\Areas\Admin\Content\Scripts\articles.js" />
+    <Content Include="Apps\Articles\Areas\Admin\Content\Scripts\context-menu.js" />
     <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-theme.css" />
     <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.css" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.svg" />
@@ -1364,9 +1411,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\Article.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleList.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleSection.cshtml" />
     <Content Include="Apps\Articles\Views\Pages\Article.cshtml" />
-    <Content Include="Apps\Articles\Views\Pages\ArticleList.cshtml" />
+    <Content Include="Apps\Articles\Views\Pages\ArticleSection.cshtml" />
     <Content Include="Apps\Articles\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1603,7 +1650,7 @@
     <Content Include="Areas\Admin\Views\TransientNotification\Show.cshtml" />
     <Content Include="Areas\Admin\Views\PersistentNotification\Show.cshtml" />
     <Content Include="Areas\Admin\Views\PersistentNotification\Navbar.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleListAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleSectionAdd.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleCategoriesAdd.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Widget\LatestXArticlesAdd.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\TextPageAdd.cshtml" />
@@ -1614,9 +1661,16 @@
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\TextWidgetAdd.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryAdd.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryListAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\FeatureAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\Feature.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Articles\Index.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Features\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Apps\Articles\Helpers\" />
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Core\Entities\" />
     <Folder Include="Apps\Core\Settings\" />
@@ -1637,7 +1691,7 @@
     <Folder Include="Themes\Default\Shared\" />
     <Folder Include="Themes\Default\Views\Pages\" />
     <Folder Include="Themes\Default\Views\Widgets\" />
-    <Folder Include="Views\Article\" />
+    <Folder Include="Views\ArticleSection\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -1719,7 +1773,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>1834</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:8880/</IISUrl>
+          <IISUrl>http://localhost:8880</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

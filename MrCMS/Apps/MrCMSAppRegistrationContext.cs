@@ -29,24 +29,22 @@ namespace MrCMS.Apps
         public RouteCollection Routes { get; private set; }
         public object State { get; private set; }
 
-        public Route MapRoute(string name, string url, object defaults = null, string[] namespaces = null, object constraints = null)
+        public Route MapRoute(string name, string url, object defaults = null, string[] namespaces = null)
         {
             if (namespaces == null && Namespaces != null)
                 namespaces = Namespaces.ToArray();
-            var dictionary = new RouteValueDictionary(constraints) { { "app-route", new AppRouteConstraint(AppName, null) } };
-            Route route = Routes.MapRoute(name, url, defaults, dictionary, namespaces);
+            Route route = Routes.MapRoute(name, url, defaults, new { controller = new AppRouteConstraint(AppName, null) }, namespaces);
             route.DataTokens["app"] = AppName;
             bool flag = namespaces == null || namespaces.Length == 0;
             route.DataTokens["UseNamespaceFallback"] = (flag ? 1 : 0);
             return route;
         }
 
-        public Route MapAreaRoute(string name, string areaName, string url, object defaults = null, string[] namespaces = null, object constraints = null)
+        public Route MapAreaRoute(string name, string areaName, string url, object defaults = null, string[] namespaces = null)
         {
             if (namespaces == null && Namespaces != null)
                 namespaces = Namespaces.ToArray();
-            var dictionary = new RouteValueDictionary(constraints) { { "app-route", new AppRouteConstraint(AppName, areaName) } };
-            Route route = Routes.MapRoute(name, url, defaults, dictionary, namespaces);
+            Route route = Routes.MapRoute(name, url, defaults, new { controller = new AppRouteConstraint(AppName, areaName) }, namespaces);
             route.DataTokens["app"] = AppName;
             route.DataTokens["area"] = areaName;
             bool flag = namespaces == null || namespaces.Length == 0;

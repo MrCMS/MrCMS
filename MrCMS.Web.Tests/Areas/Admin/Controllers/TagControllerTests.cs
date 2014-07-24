@@ -4,8 +4,10 @@ using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Models;
+using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Web.Tests.Stubs;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -18,7 +20,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var tagService = A.Fake<ITagAdminService>();
             var tagController = new TagController(tagService);
 
-            tagController.Search("test");
+            tagController.Search( "test");
 
             A.CallTo(() => tagService.Search("test")).MustHaveHappened();
         }

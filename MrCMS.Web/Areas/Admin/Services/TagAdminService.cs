@@ -19,17 +19,17 @@ namespace MrCMS.Web.Areas.Admin.Services
             _session = session;
         }
 
-        public IEnumerable<AutoCompleteResult> Search(string term)
+        public IEnumerable<AutoCompleteResult> Search( string term)
         {
             return
                 _session.QueryOver<Tag>().Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start)).List().Select(
                     tag =>
                     new AutoCompleteResult
-                    {
-                        id = tag.Id,
-                        label = string.Format("{0}", tag.Name),
-                        value = tag.Name
-                    });
+                        {
+                            id = tag.Id,
+                            label = string.Format("{0}", tag.Name),
+                            value = tag.Name
+                        });
         }
 
         public IEnumerable<Tag> GetTags(Document document)

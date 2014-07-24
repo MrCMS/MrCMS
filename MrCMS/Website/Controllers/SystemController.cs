@@ -1,6 +1,9 @@
+using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using MrCMS.Entities;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Website.ActionResults;
 
@@ -24,7 +27,7 @@ namespace MrCMS.Website.Controllers
         }
 
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding,
-            JsonRequestBehavior behavior)
+                                           JsonRequestBehavior behavior)
         {
             return base.Json(data, contentType, contentEncoding, JsonRequestBehavior.AllowGet);
         }
@@ -32,23 +35,22 @@ namespace MrCMS.Website.Controllers
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding)
         {
             return new JsonNetResult
-            {
-                ContentEncoding = contentEncoding,
-                ContentType = contentType,
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                Data = data
-            };
+                {
+                    ContentEncoding = contentEncoding,
+                    ContentType = contentType,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    Data = data
+                };
         }
-
         protected JsonResult Json(string data)
         {
             return new JsonNetResult
-            {
-                ContentEncoding = null,
-                ContentType = null,
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                JsonData = data
-            };
+                {
+                    ContentEncoding = null,
+                    ContentType = null,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    JsonData = data
+                };
         }
     }
 }

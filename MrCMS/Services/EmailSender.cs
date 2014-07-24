@@ -37,22 +37,7 @@ namespace MrCMS.Services
         {
             try
             {
-                var mailMessage = new MailMessage(new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),
-                    new MailAddress(queuedMessage.ToAddress, queuedMessage.ToName))
-                {
-                    Subject = queuedMessage.Subject,
-                    Body = queuedMessage.Body
-                };
-
-                if (!string.IsNullOrWhiteSpace(queuedMessage.Cc))
-                    mailMessage.CC.Add(queuedMessage.Cc);
-                if (!string.IsNullOrWhiteSpace(queuedMessage.Bcc))
-                    mailMessage.Bcc.Add(queuedMessage.Bcc);
-
-                foreach (QueuedMessageAttachment attachment in queuedMessage.QueuedMessageAttachments)
-                    mailMessage.Attachments.Add(new Attachment(attachment.FileName));
-
-                mailMessage.IsBodyHtml = queuedMessage.IsHtml;
+                var mailMessage = BuildMailMessage(queuedMessage);
 
                 _smtpClient.Send(mailMessage);
                 queuedMessage.SentOn = CurrentRequestData.Now;
@@ -64,6 +49,27 @@ namespace MrCMS.Services
                 queuedMessage.Tries++;
             }
             _session.Transact(session => session.SaveOrUpdate(queuedMessage));
+        }
+
+        private static MailMessage BuildMailMessage(QueuedMessage queuedMessage)
+        {
+            var mailMessage = new MailMessage(new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),
+                new MailAddress(queuedMessage.ToAddress, queuedMessage.ToName))
+            {
+                Subject = queuedMessage.Subject,
+                Body = queuedMessage.Body
+            };
+
+            if (!string.IsNullOrWhiteSpace(queuedMessage.Cc))
+                mailMessage.CC.Add(queuedMessage.Cc);
+            if (!string.IsNullOrWhiteSpace(queuedMessage.Bcc))
+                mailMessage.Bcc.Add(queuedMessage.Bcc);
+
+            foreach (QueuedMessageAttachment attachment in queuedMessage.QueuedMessageAttachments)
+                mailMessage.Attachments.Add(new Attachment(attachment.FileName));
+
+            mailMessage.IsBodyHtml = queuedMessage.IsHtml;
+            return mailMessage;
         }
 
         public void Dispose()

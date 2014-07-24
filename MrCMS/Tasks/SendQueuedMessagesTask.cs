@@ -29,21 +29,21 @@ namespace MrCMS.Tasks
         protected override void OnExecute()
         {
             _session.Transact(session =>
-                                  {
-                                      foreach (
-                                          QueuedMessage queuedMessage in
-                                              session.QueryOver<QueuedMessage>().Where(
-                                                  message => message.SentOn == null && message.Tries < MAX_TRIES)
-                                                  .Where(message => message.Site.Id == _siteSettings.SiteId)
-                                                     .List())
-                                      {
-                                          if (_emailSender.CanSend(queuedMessage))
-                                              _emailSender.SendMailMessage(queuedMessage);
-                                          else
-                                              queuedMessage.SentOn = CurrentRequestData.Now;
-                                          session.SaveOrUpdate(queuedMessage);
-                                      }
-                                  });
+            {
+                foreach (
+                    QueuedMessage queuedMessage in
+                        session.QueryOver<QueuedMessage>().Where(
+                            message => message.SentOn == null && message.Tries < MAX_TRIES)
+                            .Where(message => message.Site.Id == _siteSettings.SiteId)
+                               .List())
+                {
+                    if (_emailSender.CanSend(queuedMessage))
+                        _emailSender.SendMailMessage(queuedMessage);
+                    else
+                        queuedMessage.SentOn = CurrentRequestData.Now;
+                    session.SaveOrUpdate(queuedMessage);
+                }
+            });
         }
     }
 }

@@ -10,13 +10,13 @@ namespace MrCMS.Web.Apps.Articles.Widgets
 {
     public class ArticleCategories : Widget
     {
-        public virtual ArticleList ArticleList { get; set; }
+        public virtual ArticleSection ArticleSection { get; set; }
         [DisplayName("Show Name As Title")]
         public virtual bool ShowNameAsTitle { get; set; }
 
         public override void SetDropdownData(System.Web.Mvc.ViewDataDictionary viewData, NHibernate.ISession session)
         {
-            viewData["ArticleLists"] = session.QueryOver<ArticleList>()
+            viewData["ArticleLists"] = session.QueryOver<ArticleSection>()
                                        .OrderBy(list => list.Name)
                                        .Desc.Cacheable()
                                        .List()

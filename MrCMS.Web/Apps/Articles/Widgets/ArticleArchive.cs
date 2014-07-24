@@ -12,7 +12,7 @@ namespace MrCMS.Web.Apps.Articles.Widgets
 {
     public class ArticleArchive : Widget
     {
-        public virtual ArticleList ArticleList { get; set; }
+        public virtual ArticleSection ArticleSection { get; set; }
 
         [DisplayName("Show Name As Title")]
         public virtual bool ShowNameAsTitle { get; set; }
@@ -22,8 +22,8 @@ namespace MrCMS.Web.Apps.Articles.Widgets
             var articleService = MrCMSApplication.Get<IArticleService>();
             var model = new ArticleArchiveModel
             {
-                ArticleYearsAndMonths = articleService.GetMonthsAndYears(ArticleList),
-                ArticleList = ArticleList,
+                ArticleYearsAndMonths = articleService.GetMonthsAndYears(ArticleSection),
+                ArticleSection = ArticleSection,
                 ArticleArchive = this
             };
 
@@ -32,7 +32,7 @@ namespace MrCMS.Web.Apps.Articles.Widgets
 
         public override void SetDropdownData(System.Web.Mvc.ViewDataDictionary viewData, NHibernate.ISession session)
         {
-            viewData["ArticleLists"] = session.QueryOver<ArticleList>()
+            viewData["ArticleLists"] = session.QueryOver<ArticleSection>()
                                        .OrderBy(list => list.Name)
                                        .Asc.Cacheable()
                                        .List()
@@ -44,7 +44,7 @@ namespace MrCMS.Web.Apps.Articles.Widgets
 
     public class ArticleArchiveModel
     {
-        public ArticleList ArticleList { get; set; }
+        public ArticleSection ArticleSection { get; set; }
         public ArticleArchive ArticleArchive { get; set; }
         public IList<ArchiveModel> ArticleYearsAndMonths { get; set; }
         public string Year { get { return CurrentRequestData.CurrentContext.Request["year"]; } }

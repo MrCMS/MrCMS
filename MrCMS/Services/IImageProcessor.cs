@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.IO;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Models;
 using MrCMS.Settings;
 
 namespace MrCMS.Services

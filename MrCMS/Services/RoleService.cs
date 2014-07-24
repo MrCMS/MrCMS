@@ -1,10 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
+using MrCMS.Entities.Documents;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using NHibernate;
 using NHibernate.Criterion;
+using System.Linq;
 
 namespace MrCMS.Services
 {
@@ -30,7 +31,7 @@ namespace MrCMS.Services
         public UserRole GetRoleByName(string name)
         {
             return _session.QueryOver<UserRole>().Where(role => role.Name.IsLike(name, MatchMode.Exact)).Cacheable().
-                SingleOrDefault();
+                                SingleOrDefault();
         }
 
         public void DeleteRole(UserRole role)
@@ -41,20 +42,19 @@ namespace MrCMS.Services
 
         public bool IsOnlyAdmin(User user)
         {
-            UserRole adminRole = GetRoleByName(UserRole.Administrator);
+            var adminRole = GetRoleByName(UserRole.Administrator);
 
-            List<User> users = adminRole.Users.Where(user1 => user1.IsActive).Distinct().ToList();
+            var users = adminRole.Users.Where(user1 => user1.IsActive).Distinct().ToList();
             return users.Count() == 1 && users.First() == user;
         }
 
         public IEnumerable<AutoCompleteResult> Search(string term)
         {
-            IList<UserRole> userRoles =
-                _session.QueryOver<UserRole>().Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start)).List();
+            var userRoles = _session.QueryOver<UserRole>().Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start)).List();
             return
                 userRoles.Select(
                     tag =>
-                        new AutoCompleteResult
+                    new AutoCompleteResult
                         {
                             id = tag.Id,
                             label = tag.Name,

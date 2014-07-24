@@ -10,8 +10,7 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 {
     public class AddPropertiesModelBinder : MrCMSDefaultModelBinder
     {
-        public AddPropertiesModelBinder(IKernel kernel)
-            : base(kernel)
+        public AddPropertiesModelBinder(IKernel kernel) : base(kernel)
         {
         }
 

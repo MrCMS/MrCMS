@@ -2,7 +2,6 @@ using System.Collections.Specialized;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Entities.Documents.Web;
-using NHibernate;
 
 namespace MrCMS.Website.Routing
 {
@@ -10,7 +9,6 @@ namespace MrCMS.Website.Routing
     {
         IControllerFactory OverridenControllerFactory { get; set; }
         IControllerFactory ControllerFactory { get; }
-        void SetViewData(Webpage webpage, Controller controller, ISession session);
         void SetFormData(Webpage webpage, Controller controller, NameValueCollection form);
         string GetActionName(Webpage webpage, string httpMethod);
         Controller GetController(RequestContext requestContext, Webpage webpage, string httpMethod);

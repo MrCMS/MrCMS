@@ -9,7 +9,6 @@ using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Website.Binders;
-using NHibernate;
 
 namespace MrCMS.Website.Routing
 {
@@ -21,14 +20,6 @@ namespace MrCMS.Website.Routing
         public IControllerFactory ControllerFactory
         {
             get { return OverridenControllerFactory ?? DefaultControllerFactory; }
-        }
-
-        public void SetViewData(Webpage webpage, Controller controller, ISession session)
-        {
-            if (controller.Request.HttpMethod == "GET" && webpage != null)
-            {
-                webpage.UiViewData(controller.ViewData, session, controller.Request);
-            }
         }
 
         public Func<Document, DocumentMetadata> GetMetadata = document => document.GetMetadata();

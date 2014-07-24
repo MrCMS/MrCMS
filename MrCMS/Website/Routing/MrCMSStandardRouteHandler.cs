@@ -38,8 +38,6 @@ namespace MrCMS.Website.Routing
             }
             var controller = _controllerManager.GetController(context, webpage, context.HttpContext.Request.HttpMethod);
 
-            _controllerManager.SetViewData(webpage, controller, _session);
-
             _controllerManager.SetFormData(webpage, controller, context.HttpContext.Request.Form);
 
             try

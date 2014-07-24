@@ -21,7 +21,7 @@ namespace MrCMS.Web.Apps.Articles.Services
             _session = session;
         }
 
-        public IPagedList<Article> GetArticles(ArticleList page, ArticleSearchModel model)
+        public IPagedList<Article> GetArticles(ArticleSection page, ArticleSearchModel model)
         {
             var query = _session.QueryOver<Article>()
                                 .Where(a => a.Parent == page);
@@ -48,10 +48,10 @@ namespace MrCMS.Web.Apps.Articles.Services
             return query.OrderBy(x => x.PublishOn).Desc.Paged(model.Page, page.PageSize);
         }
 
-        public List<ArchiveModel> GetMonthsAndYears(ArticleList articleList)
+        public List<ArchiveModel> GetMonthsAndYears(ArticleSection articleSection)
         {
             var query = (from article in _session.Query<Article>()
-                         where article.Parent == articleList && article.PublishOn != null
+                         where article.Parent == articleSection && article.PublishOn != null
                          group article by new { article.PublishOn.Value.Year, article.PublishOn.Value.Month } into entryGroup
                          select new ArchiveModel
                                     {

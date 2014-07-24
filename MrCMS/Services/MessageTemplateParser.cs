@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using Ninject;
+using Ninject.Parameters;
 
 namespace MrCMS.Services
 {
@@ -17,7 +18,7 @@ namespace MrCMS.Services
         public string Parse<T>(string template, T instance)
         {
             var stringBuilder = new StringBuilder(template);
-            IEnumerable<ITokenProvider<T>> tokenProviders = _kernel.GetAll<ITokenProvider<T>>();
+            var tokenProviders = _kernel.GetAll<ITokenProvider<T>>();
 
             foreach (var token in tokenProviders.SelectMany(tokenProvider => tokenProvider.Tokens))
             {
@@ -29,7 +30,7 @@ namespace MrCMS.Services
 
         public List<string> GetAllTokens<T>()
         {
-            IEnumerable<ITokenProvider<T>> tokenProviders = _kernel.GetAll<ITokenProvider<T>>();
+            var tokenProviders = _kernel.GetAll<ITokenProvider<T>>();
             return tokenProviders.SelectMany(provider => provider.Tokens.Select(pair => pair.Key)).ToList();
         }
     }
