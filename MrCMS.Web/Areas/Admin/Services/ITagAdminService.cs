@@ -6,7 +6,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 {
     public interface ITagAdminService
     {
-        IEnumerable<AutoCompleteResult> Search(Document document, string term);
+        IEnumerable<AutoCompleteResult> Search(string term);
         IEnumerable<Tag> GetTags(Document document);
         Tag GetByName(string name);
         void Add(Tag tag);

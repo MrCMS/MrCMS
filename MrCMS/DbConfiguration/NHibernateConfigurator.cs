@@ -21,6 +21,7 @@ using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
+using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cache;
@@ -122,16 +123,16 @@ namespace MrCMS.DbConfiguration
 
         public NHibernate.Cfg.Configuration GetConfiguration()
         {
-            List<Assembly> assemblies = TypeHelper.GetAllMrCMSAssemblies();
+            var assemblies = TypeHelper.GetAllMrCMSAssemblies();
             assemblies.AddRange(ManuallyAddedAssemblies);
 
             var finalAssemblies = new List<Assembly>();
 
             assemblies.ForEach(assembly =>
-                                   {
-                                       if (finalAssemblies.All(a => a.FullName != assembly.FullName))
-                                           finalAssemblies.Add(assembly);
-                                   });
+            {
+                if (finalAssemblies.All(a => a.FullName != assembly.FullName))
+                    finalAssemblies.Add(assembly);
+            });
 
             IPersistenceConfigurer iPersistenceConfigurer = GetPersistenceConfigurer();
             AutoPersistenceModel addFromAssemblyOf =
@@ -155,49 +156,49 @@ namespace MrCMS.DbConfiguration
                                                           .Database(iPersistenceConfigurer)
                                                           .Mappings(m => m.AutoMappings.Add(addFromAssemblyOf))
                                                           .Cache(builder =>
-                                                                     {
-                                                                         if (CacheEnabled)
-                                                                         {
-                                                                             builder.UseSecondLevelCache()
-                                                                                    .UseQueryCache()
-                                                                                    .QueryCacheFactory
-                                                                                 <StandardQueryCacheFactory>();
-                                                                             var mrCMSSection =
-                                                                                 WebConfigurationManager.GetSection(
-                                                                                     "mrcms") as MrCMSConfigSection;
-                                                                             if (mrCMSSection != null)
-                                                                             {
-                                                                                 builder.ProviderClass(
-                                                                                     mrCMSSection.CacheProvider
-                                                                                                 .AssemblyQualifiedName);
-                                                                                 if (mrCMSSection.MinimizePuts)
-                                                                                     builder.UseMinimalPuts();
-                                                                             }
-                                                                             else
-                                                                                 builder.ProviderClass<SysCacheProvider>
-                                                                                     ();
-                                                                         }
-                                                                     })
+                                                          {
+                                                              if (CacheEnabled)
+                                                              {
+                                                                  builder.UseSecondLevelCache()
+                                                                         .UseQueryCache()
+                                                                         .QueryCacheFactory
+                                                                      <StandardQueryCacheFactory>();
+                                                                  var mrCMSSection =
+                                                                      WebConfigurationManager.GetSection(
+                                                                          "mrcms") as MrCMSConfigSection;
+                                                                  if (mrCMSSection != null)
+                                                                  {
+                                                                      builder.ProviderClass(
+                                                                          mrCMSSection.CacheProvider
+                                                                                      .AssemblyQualifiedName);
+                                                                      if (mrCMSSection.MinimizePuts)
+                                                                          builder.UseMinimalPuts();
+                                                                  }
+                                                                  else
+                                                                      builder.ProviderClass<SysCacheProvider>
+                                                                          ();
+                                                              }
+                                                          })
                                                           .ExposeConfiguration(AppendListeners)
                                                           .ExposeConfiguration(AppSpecificConfiguration)
                                                           .ExposeConfiguration(c =>
-                                                                                   {
+                                                          {
 #if DEBUG
-                                                                                       c.SetProperty(
-                                                                                           Environment
-                                                                                               .GenerateStatistics,
-                                                                                           "true");
+                                                              c.SetProperty(
+                                                                  Environment
+                                                                      .GenerateStatistics,
+                                                                  "true");
 #endif
-                                                                                       c.SetProperty(
-                                                                                           Environment.Hbm2ddlKeyWords,
-                                                                                           "auto-quote");
-                                                                                       //c.SetProperty(
-                                                                                       //    Environment
-                                                                                       //        .DefaultBatchFetchSize,
-                                                                                       //    "25");
-                                                                                       c.SetProperty(
-                                                                                           Environment.BatchSize, "25");
-                                                                                   })
+                                                              c.SetProperty(
+                                                                  Environment.Hbm2ddlKeyWords,
+                                                                  "auto-quote");
+                                                              //c.SetProperty(
+                                                              //    Environment
+                                                              //        .DefaultBatchFetchSize,
+                                                              //    "25");
+                                                              c.SetProperty(
+                                                                  Environment.BatchSize, "25");
+                                                          })
                                                           .BuildConfiguration();
 
 

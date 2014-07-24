@@ -58,6 +58,9 @@ namespace MrCMS.IoC
                   .ToMethod(context => context.Kernel.GetAll<IHashAlgorithm>())
                   .InRequestScope();
 
+            Kernel.Bind<UrlHelper>()
+                .ToMethod(context => new UrlHelper(CurrentRequestData.CurrentContext.Request.RequestContext));
+
             // Allowing IFileSystem implementation to be set in the site settings
             Kernel.Rebind<IFileSystem>().ToMethod(context =>
                                                       {

@@ -24,7 +24,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public SaveResult SaveBodyContent(UpdatePropertyData updatePropertyData)
         {
-            List<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
+            HashSet<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
             Type entityType = types.FirstOrDefault(t => t.Name == updatePropertyData.Type);
             if (entityType == null)
                 return new SaveResult(false, string.Format("Could not find entity type '{0}'", updatePropertyData.Type));
@@ -70,7 +70,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         private ContentInfo GetContent(GetPropertyData getPropertyData)
         {
-            List<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
+            HashSet<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemEntity>();
             Type entityType = types.FirstOrDefault(t => t.Name == getPropertyData.Type);
             if (entityType == null)
                 return new ContentInfo();

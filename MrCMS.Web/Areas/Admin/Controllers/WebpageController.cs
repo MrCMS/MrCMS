@@ -9,24 +9,24 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Filters;
-using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class WebpageController : BaseDocumentController<Webpage>
     {
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
-        private readonly ISession _session;
 
-        public WebpageController(IValidWebpageChildrenService validWebpageChildrenService, IDocumentService documentService, ISession session, IUrlValidationService urlValidationService, Site site)
+        public WebpageController(IValidWebpageChildrenService validWebpageChildrenService,
+            IDocumentService documentService, IUrlValidationService urlValidationService, Site site)
             : base(documentService, urlValidationService, site)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
-            _session = session;
         }
 
         [ForceImmediateLuceneUpdate]
@@ -58,7 +58,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             ViewData["DocumentTypes"] = documentTypeDefinitions;
 
-            doc.AdminViewData(ViewData, _session);
+            doc.SetAdminViewData(ViewData);
 
             var documentMetadata = doc.GetMetadata();
             if (documentMetadata != null)
@@ -156,7 +156,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (webpage != null)
             {
-                webpage.AdminViewData(ViewData, _session);
+                webpage.SetAdminViewData(ViewData);
                 return PartialView(webpage);
             }
             return new EmptyResult();

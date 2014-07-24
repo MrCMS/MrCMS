@@ -29,17 +29,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private readonly IUrlValidationService _urlValidationService;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
         private readonly WebpageController _webpageController;
-        private readonly ISession session;
 
         public WebpageControllerTests()
         {
+            Kernel.Bind<ISetAdminViewData>().ToConstant(A.Fake<ISetAdminViewData>());
             CurrentRequestData.CurrentUser = new User();
             _documentService = A.Fake<IDocumentService>();
-            A.Fake<IFormAdminService>();
-            session = A.Fake<ISession>();
             _urlValidationService = A.Fake<IUrlValidationService>();
             _validWebpageChildrenService = A.Fake<IValidWebpageChildrenService>();
-            _webpageController = new WebpageController(_validWebpageChildrenService, _documentService, session,
+            _webpageController = new WebpageController(_validWebpageChildrenService, _documentService,
                 _urlValidationService, _site)
             {
                 RouteDataMock = new RouteData()

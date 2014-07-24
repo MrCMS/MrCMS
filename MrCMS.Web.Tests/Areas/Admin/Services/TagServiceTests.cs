@@ -31,8 +31,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
                 Session.SaveOrUpdate(tag3);
             });
 
-            Document document = new StubDocument {Site = CurrentSite};
-            IEnumerable<AutoCompleteResult> tags = tagService.Search(document, "tag");
+            IEnumerable<AutoCompleteResult> tags = tagService.Search("tag");
 
             tags.Should().HaveCount(2);
             tags.First().label.Should().Be("tag-1");

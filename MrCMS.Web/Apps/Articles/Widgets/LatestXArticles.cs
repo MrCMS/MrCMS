@@ -11,18 +11,18 @@ namespace MrCMS.Web.Apps.Articles.Widgets
     public class LatestXArticles : Widget
     {
         public virtual int NumberOfArticles { get; set; }
-        public virtual ArticleList RelatedNewsList { get; set; }
+        public virtual ArticleSection RelatedNewsSection { get; set; }
 
         public override object GetModel(NHibernate.ISession session)
         {
-            if (RelatedNewsList == null)
+            if (RelatedNewsSection == null)
                 return null;
 
 
             return new LatestXArticlesViewModel
                        {
                            Articles = session.QueryOver<Article>()
-                                           .Where(article => article.Parent.Id == RelatedNewsList.Id && article.PublishOn != null && article.PublishOn <= CurrentRequestData.Now)
+                                           .Where(article => article.Parent.Id == RelatedNewsSection.Id && article.PublishOn != null && article.PublishOn <= CurrentRequestData.Now)
                                            .OrderBy(x => x.PublishOn).Desc
                                            .Take(NumberOfArticles)
                                            .Cacheable()
@@ -34,7 +34,7 @@ namespace MrCMS.Web.Apps.Articles.Widgets
 
         public override void SetDropdownData(System.Web.Mvc.ViewDataDictionary viewData, NHibernate.ISession session)
         {
-            viewData["newsList"] = session.QueryOver<ArticleList>()
+            viewData["newsList"] = session.QueryOver<ArticleSection>()
                                                 .Where(article => article.PublishOn != null && article.PublishOn <= CurrentRequestData.Now)
                                                 .Cacheable()
                                                 .List()

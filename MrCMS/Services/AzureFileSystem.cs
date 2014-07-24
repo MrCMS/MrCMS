@@ -9,12 +9,6 @@ using MrCMS.Settings;
 
 namespace MrCMS.Services
 {
-    public interface IAzureFileSystem
-    {
-        CloudBlobContainer Container { get; }
-        CloudStorageAccount StorageAccount { get; }
-    }
-
     public class AzureFileSystem : IFileSystem, IAzureFileSystem
     {
         private FileSystemSettings _fileSystemSettings;

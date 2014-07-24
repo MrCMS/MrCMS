@@ -2,6 +2,12 @@
     var settings = $.extend({
     }, options);
     var self;
+    function getId(node) {
+        var id = node.data.id;
+        if (id == null)
+            id = "";
+        return id;
+    }
     return {
         init: function () {
             self = this;
@@ -41,39 +47,46 @@
             link.data('tree-initialized', true);
         },
         menuItems: function (node) {
-            var id = node.data.id;
-            if (id == null)
-                id = "";
             var items = {};
-            if (node.data.canAddChild === "True") {
-                items.addMenuItem = {
-                    label: "Add",
-                    action: function () { return location.href = "/Admin/" + node.data.controller + "/Add/" + id; }
-                };
-            }
-            if (node.data.sortable === "True") {
-                items.sortMenuItem = {
-                    label: "Sort",
-                    action: function () { return location.href = "/Admin/" + node.data.controller + "/Sort/" + node.parent; }
-                };
-            }
-            if (!isNaN(node.id)) {
-                items.editMenuItem = {
-                    label: "Edit",
-                    action: function () { return location.href = "/Admin/" + node.data.controller + "/Edit/" + id; }
-                };
-            }
-            if (node.data.haschildren !== "True") {
-                items.deleteMenuItem = {
-                    label: "Delete",
-                    action: function () { return getRemoteModel("/Admin/" + node.data.controller + "/Delete/" + id); }
-                };
+            for (var i = 0; i < self.rules.length; i++) {
+                self.rules[i](node, items);
             }
             return items;
-        }
+        },
+        rules: [
+            function (node, items) {
+                if (node.data.canAddChild === "True") {
+                    items.addMenuItem = {
+                        label: "Add",
+                        action: function () { return location.href = "/Admin/" + node.data.controller + "/Add/" + getId(node); }
+                    };
+                }
+            },
+            function (node, items) {
+                if (node.data.sortable === "True") {
+                    items.sortMenuItem = {
+                        label: "Sort",
+                        action: function () { return location.href = "/Admin/" + node.data.controller + "/Sort/" + node.parent; }
+                    };
+                }
+            },
+            function (node, items) {
+                if (!isNaN(node.id)) {
+                    items.editMenuItem = {
+                        label: "Edit",
+                        action: function () { return location.href = "/Admin/" + node.data.controller + "/Edit/" + getId(node); }
+                    };
+                }
+            },
+            function (node, items) {
+                if (node.data.candelete === "True") {
+                    items.deleteMenuItem = {
+                        label: "Delete",
+                        action: function () { return getRemoteModel("/Admin/" + node.data.controller + "/Delete/" + getId(node)); }
+                    };
+                }
+            }
+        ]
     };
 };
-var webMenu;
-$(function () {
-    webMenu = new WebMenu().init();
-});
+var webMenu = new WebMenu().init();

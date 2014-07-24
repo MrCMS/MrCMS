@@ -58,7 +58,7 @@
     };
     var updateAdditionalProperties = function (event) {
         var webpageType = $(':radio[name=DocumentType]:checked').val();
-        $.get('/Admin/Webpage/AddProperties', { type: webpageType }, function (data) {
+        $.get('/Admin/Webpage/AddProperties', { type: webpageType, parentId: $("#Parent_Id").val() }, function (data) {
             $("[data-additional-properties]").html(data);
             admin.initializePlugins();
         });

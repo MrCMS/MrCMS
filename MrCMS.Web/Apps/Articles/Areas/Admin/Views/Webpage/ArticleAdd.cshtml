@@ -2,13 +2,20 @@
 @model MrCMS.Web.Apps.Articles.Pages.Article
 @{
     var userOptions = ViewData["users"] as IEnumerable<SelectListItem>;
+    var otherSections = ViewData["other-sections"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
+
+@Html.LabelFor(model => model.PublishOn)
+@Html.EditorFor(model => model.PublishOn)
 
 @Html.LabelFor(model => model.FeatureImage, "Article Image")
 @Html.TextBoxFor(model => model.FeatureImage, new { data_type = "media-selector" })
 
 @Html.LabelFor(model => model.Abstract)
 @Html.TextAreaFor(model => model.Abstract, new { @rows = "4", @class = "span12" })
+<span id="abstract-character-count">
+    <span>@((160 - (Model.Abstract ?? string.Empty).Length) + " characters remaining")</span>
+</span>
 
 @Html.LabelFor(model => model.User.Id, "Author")
 @Html.DropDownListFor(model => model.User.Id, userOptions)
@@ -16,4 +23,24 @@
 @Html.LabelFor(x => x.TagList, "Tags")
 @Html.TextBoxFor(x => x.TagList, new { @class = "span12 system-tagging" })
 
-@Html.InfoBlock("Heads up! ", "Set the tags here you would like to use as your categories for this article.")
+@if (otherSections.Any())
+{
+    <h3>Other sections</h3>
+    foreach (var chunk in otherSections.Chunk(4))
+    {
+        <div class="row-fluid">
+            @foreach (var item in chunk)
+            {
+                <div class="span3">
+                    <label class="checkbox">
+                        @Html.CheckBox("other-section-" + item.Value, item.Selected) @item.Text
+                    </label>
+                </div>
+            }
+        </div>
+    }
+}
+<hr />
+<div class="pull-right">
+    <button type="submit" class="btn btn-primary">Save and continue</button>
+</div>

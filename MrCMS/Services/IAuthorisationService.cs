@@ -11,11 +11,4 @@ namespace MrCMS.Services
         void Logout();
         Task UpdateClaimsAsync(User user, IEnumerable<Claim> claims);
     }
-
-    public interface IPasswordManagementService
-    {
-        bool ValidatePassword(string password, string confirmation);
-        void SetPassword(User user, string password, string confirmation);
-        bool ValidateUser(User user, string password);
-    }
 }

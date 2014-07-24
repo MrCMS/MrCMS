@@ -18,9 +18,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _tagAdminService = tagAdminService;
         }
 
-        public JsonResult Search(Document document, string term)
+        public JsonResult Search(string term)
         {
-            IEnumerable<AutoCompleteResult> result = _tagAdminService.Search(document, term);
+            IEnumerable<AutoCompleteResult> result = _tagAdminService.Search(term);
 
             return Json(result);
         }

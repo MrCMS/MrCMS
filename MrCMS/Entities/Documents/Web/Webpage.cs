@@ -76,11 +76,6 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual Layout.Layout Layout { get; set; } //if we want to override the default layout
 
-        //public virtual Layout.Layout CurrentLayout
-        //{
-        //    get { return _layout ?? (_layout = Layout ?? MrCMSApplication.Get<IDocumentService>().GetDefaultLayout(this)); }
-        //}
-
         public virtual Iesi.Collections.Generic.ISet<Widget.Widget> ShownWidgets { get; set; }
         public virtual Iesi.Collections.Generic.ISet<Widget.Widget> HiddenWidgets { get; set; }
 
@@ -218,22 +213,5 @@ namespace MrCMS.Entities.Documents.Web
         {
             return this.GetMetadata().ValidChildrenTypes.Any();
         }
-
-        public override void CustomBinding(ControllerContext controllerContext, IKernel kernel)
-        {
-        }
-
-        public virtual void AdminViewData(ViewDataDictionary viewData, ISession session)
-        {
-        }
-
-        public virtual void AddCustomSitemapData(UrlHelper urlHelper, XmlNode url, XmlDocument xmlDocument)
-        {
-        }
-
-        public virtual void UiViewData(ViewDataDictionary viewData, ISession session, HttpRequestBase request)
-        {
-        }
-
     }
 }

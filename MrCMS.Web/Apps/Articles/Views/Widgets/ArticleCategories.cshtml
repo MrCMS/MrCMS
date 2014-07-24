@@ -2,7 +2,7 @@
 @using MrCMS.Web.Apps.Articles.Pages
 @model MrCMS.Web.Apps.Articles.Widgets.ArticleCategories
 @{
-    var list = ViewData["ArticleLists"] as ArticleList;
+    var list = ViewData["ArticleLists"] as ArticleSection;
 }
 @{
     if (Model.ShowNameAsTitle)
@@ -11,10 +11,10 @@
     }
 }
 <ul class="nav nav-pills nav-stacked">
-    @foreach (var category in Model.ArticleList.Tags)
+    @foreach (var category in Model.ArticleSection.Tags)
     {
         <li class="@((!string.IsNullOrEmpty(Model.Category) && Model.Category == category.Name) ? "active" : "")">
-            <a href="/@Model.ArticleList.LiveUrlSegment?category=@category.Name">@category.Name</a>
+            <a href="/@Model.ArticleSection.LiveUrlSegment?category=@category.Name">@category.Name</a>
         </li>
     }
 </ul>

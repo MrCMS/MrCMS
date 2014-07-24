@@ -18,7 +18,7 @@ namespace MrCMS.Web.Apps.Articles.Controllers
             _articlesRssService = articlesRssService;
         }
 
-        public RssActionResult Show(ArticleList page)
+        public RssActionResult Show(ArticleSection page)
         {
             var feed = _articlesRssService.GetSyndicationFeed(page);
             return new RssActionResult { Feed = feed };
@@ -27,7 +27,7 @@ namespace MrCMS.Web.Apps.Articles.Controllers
 
     public interface IArticlesRssService
     {
-        SyndicationFeed GetSyndicationFeed(ArticleList page);
+        SyndicationFeed GetSyndicationFeed(ArticleSection page);
     }
 
     public class ArticlesRssService : IArticlesRssService
@@ -39,7 +39,7 @@ namespace MrCMS.Web.Apps.Articles.Controllers
             _session = session;
         }
 
-        public SyndicationFeed GetSyndicationFeed(ArticleList page)
+        public SyndicationFeed GetSyndicationFeed(ArticleSection page)
         {
             var possiblyPublishedArticles =
                 _session.QueryOver<Article>()

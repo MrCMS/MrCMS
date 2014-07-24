@@ -49,7 +49,7 @@ namespace MrCMS.Website.Binders
                 var baseEntity = bindModel as SiteEntity;
                 if (baseEntity != null)
                 {
-                    baseEntity.CustomBinding(controllerContext, Kernel);
+                    baseEntity.ApplyCustomBinding(controllerContext);
                 }
             }
             return bindModel;
