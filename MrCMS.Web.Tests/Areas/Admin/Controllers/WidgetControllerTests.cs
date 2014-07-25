@@ -3,7 +3,6 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Multisite;
-using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
@@ -15,22 +14,25 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class WidgetControllerTests : MrCMSTest
     {
-        private readonly IWidgetService _widgetService;
         private readonly IDocumentService _documentService;
         private readonly WidgetController _widgetController;
+        private readonly IWidgetService _widgetService;
 
         public WidgetControllerTests()
         {
             Kernel.Bind<ISetWidgetAdminViewData>().ToConstant(A.Fake<ISetWidgetAdminViewData>());
             _documentService = A.Fake<IDocumentService>();
             _widgetService = A.Fake<IWidgetService>();
-            _widgetController = new WidgetController(_documentService, _widgetService) { ReferrerOverride = "http://www.example.com/" };
+            _widgetController = new WidgetController(_documentService, _widgetService)
+            {
+                ReferrerOverride = "http://www.example.com/"
+            };
         }
 
         [Fact]
         public void WidgetController_EditGet_ShouldReturnThePassedWidget()
         {
-            var textWidget = new TextWidget { Site = new Site() };
+            var textWidget = new TextWidget {Site = new Site()};
 
             ViewResultBase result = _widgetController.Edit_Get(textWidget);
 
@@ -40,7 +42,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_EditPost_ShouldCallSaveWidgetOnTheWidgetService()
         {
-            var textWidget = new TextWidget { LayoutArea = new LayoutArea() };
+            var textWidget = new TextWidget {LayoutArea = new LayoutArea()};
 
             _widgetController.Edit(textWidget);
 
@@ -50,7 +52,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_EditPost_ShouldByDefaultRedirectToLayoutIndex()
         {
-            var textWidget = new TextWidget { LayoutArea = new LayoutArea { Id = 1 } };
+            var textWidget = new TextWidget {LayoutArea = new LayoutArea {Id = 1}};
 
             ActionResult result = _widgetController.Edit(textWidget);
 
@@ -106,7 +108,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_DeletePost_NullReturnUrlWebpageSetRedirectsToEditWebpage()
         {
-            var textWidget = new TextWidget { Webpage = new TextPage { Id = 1 } };
+            var textWidget = new TextWidget {Webpage = new TextPage {Id = 1}};
 
             var result = _widgetController.Delete(textWidget, null).As<RedirectToRouteResult>();
 
@@ -118,7 +120,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_DeletePost_NullReturnUrlLayoutAreaIdSetRedirectsToEditLayoutArea()
         {
-            var textWidget = new TextWidget { LayoutArea = new LayoutArea { Id = 1 } };
+            var textWidget = new TextWidget {LayoutArea = new LayoutArea {Id = 1}};
 
             var result = _widgetController.Delete(textWidget, null).As<RedirectToRouteResult>();
 
@@ -130,7 +132,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WidgetController_DeletePost_ReturnUrlContainsWidgetEditIgnoreReturnUrl()
         {
-            var textWidget = new TextWidget { Id = 1, LayoutArea = new LayoutArea { Id = 1 } };
+            var textWidget = new TextWidget {Id = 1, LayoutArea = new LayoutArea {Id = 1}};
 
             var result = _widgetController.Delete(textWidget, "/widget/edit/1").As<RedirectToRouteResult>();
 
@@ -138,6 +140,5 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             result.RouteValues["action"].Should().Be("Edit");
             result.RouteValues["id"].Should().Be(1);
         }
-
     }
 }

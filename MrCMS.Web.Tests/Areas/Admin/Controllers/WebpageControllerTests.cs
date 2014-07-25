@@ -17,7 +17,6 @@ using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Web.Tests.Stubs;
 using MrCMS.Website;
-using NHibernate;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
