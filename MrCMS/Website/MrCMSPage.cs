@@ -89,8 +89,9 @@ namespace MrCMS.Website
             set { _getCurrentLayout = value; }
         }
 
-        public MvcHtmlString RenderZone(string areaName, Webpage page = null, bool allowFrontEndEditing = true)
+        public void RenderZone(string areaName, Webpage page = null, bool allowFrontEndEditing = true)
         {
+            
             page = page ?? CurrentRequestData.CurrentPage;
 
             var currentLayout = GetCurrentLayout.Get(page);
@@ -100,13 +101,12 @@ namespace MrCMS.Website
 
                 var layoutArea = currentLayout.GetLayoutAreas().FirstOrDefault(area => area.AreaName == areaName);
 
-                if (layoutArea == null) return MvcHtmlString.Empty;
+                if (layoutArea == null) return;
 
                 bool customSort = layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == page);
 
-                var stringBuilder = new StringBuilder();
                 if (allowEdit)
-                    stringBuilder.AppendFormat(
+                    ViewContext.Writer.Write(
                         "<div data-layout-area-id=\"{0}\" data-layout-area-name=\"{1}\" " +
                         "data-layout-area-hascustomsort=\"{2}\" class=\"layout-area\"> ",
                         layoutArea.Id, layoutArea.AreaName, customSort);
@@ -114,13 +114,14 @@ namespace MrCMS.Website
                 foreach (var widget in layoutArea.GetWidgets(page))
                 {
                     if (allowEdit)
-                        stringBuilder.AppendFormat(
+                        ViewContext.Writer.Write(
                             "<div data-widget-id=\"{0}\" data-widget-name=\"{1}\" class=\"widget\"> ", widget.Id,
                             widget.Name ?? widget.GetType().Name);
 
                     try
                     {
-                        stringBuilder.Append(Html.Action("Show", "Widget", new { widget }).ToHtmlString());
+                        
+                        Html.RenderAction("Show", "Widget", new {widget});
                     }
                     catch (Exception ex)
                     {
@@ -128,15 +129,14 @@ namespace MrCMS.Website
                     }
 
                     if (allowEdit)
-                        stringBuilder.Append("</div>");
+                        ViewContext.Writer.Write("</div>");
                 }
 
                 if (allowEdit)
-                    stringBuilder.Append("</div>");
+                    ViewContext.Writer.Write("</div>");
 
-                return MvcHtmlString.Create(stringBuilder.ToString());
+                
             }
-            return MvcHtmlString.Empty;
         }
 
         public MvcHtmlString RenderImage(string imageUrl, string alt = null, string title = null, object attributes = null)

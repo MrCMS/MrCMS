@@ -22,7 +22,11 @@ namespace MrCMS.Web.Apps.Articles.Controllers
         {
             ViewData["paged-articles"] = _articleService.GetArticles(page, model);
             ViewData["article-search-model"] = model;
-            return View(page);
+            if (model.Page > 1)
+            {
+                SetPageTitle(page.Name + ": page " + model.Page);
+            }
+            return View(page); 
         }
     }
 }
