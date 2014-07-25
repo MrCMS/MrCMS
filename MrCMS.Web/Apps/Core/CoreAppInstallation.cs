@@ -134,7 +134,6 @@ namespace MrCMS.Web.Apps.Core
             var layoutTwoColumn = new Layout
             {
                 Parent = model.BaseLayout,
-                UrlSegment = "~/Apps/Core/Views/Shared/_TwoColumn.cshtml",
                 Site = site,
                 Name = "Two Column"
             };

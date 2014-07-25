@@ -12,7 +12,7 @@ namespace MrCMS.Services
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
 
-        public GetCurrentLayout(ISession session,SiteSettings siteSettings)
+        public GetCurrentLayout(ISession session, SiteSettings siteSettings)
         {
             _session = session;
             _siteSettings = siteSettings;
@@ -25,6 +25,10 @@ namespace MrCMS.Services
                 if (webpage.Layout != null)
                 {
                     return webpage.Layout;
+                }
+                if (webpage.PageTemplate != null && webpage.PageTemplate.Layout != null)
+                {
+                    return webpage.PageTemplate.Layout;
                 }
                 string defaultLayoutName = webpage.GetMetadata().DefaultLayoutName;
                 if (!string.IsNullOrEmpty(defaultLayoutName))

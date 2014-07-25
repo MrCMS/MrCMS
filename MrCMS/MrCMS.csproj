@@ -329,6 +329,7 @@
     <Compile Include="Entities\Documents\Web\FormProperties\RadioButtonList.cs" />
     <Compile Include="Entities\Documents\Web\FormProperties\TextArea.cs" />
     <Compile Include="Entities\Documents\Web\FormProperties\TextBox.cs" />
+    <Compile Include="Entities\Documents\Web\PageTemplate.cs" />
     <Compile Include="Entities\Documents\Web\UrlHistory.cs" />
     <Compile Include="Entities\Multisite\RedirectedDomain.cs" />
     <Compile Include="Entities\Notifications\Notification.cs" />
@@ -364,6 +365,7 @@
     <Compile Include="Helpers\HtmlFormExtensions.cs" />
     <Compile Include="Helpers\HttpRequestHelper.cs" />
     <Compile Include="Helpers\ImageRenderingExtensions.cs" />
+    <Compile Include="Helpers\LayoutExtensions.cs" />
     <Compile Include="Helpers\ModelBinderExtensions.cs" />
     <Compile Include="Helpers\MrCMSPageExtensions.cs" />
     <Compile Include="Helpers\MrCMSResources.cs" />
@@ -374,6 +376,7 @@
     <Compile Include="Helpers\ShortcodeParsingExtensions.cs" />
     <Compile Include="Helpers\TweetParsingExtensions.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
+    <Compile Include="Helpers\WebpageExtensions.cs" />
     <Compile Include="Indexing\Definitions\BodyContentFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\CreatedOnFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\DisplayOrderFieldDefinition.cs" />
@@ -414,6 +417,7 @@
     <Compile Include="Services\FormPostingHandler.cs" />
     <Compile Include="Services\GetBreadcrumbs.cs" />
     <Compile Include="Services\GetCurrentLayout.cs" />
+    <Compile Include="Services\GetCurrentUser.cs" />
     <Compile Include="Services\GetHomePage.cs" />
     <Compile Include="Services\HashAlgorithmProvider.cs" />
     <Compile Include="Services\IAppScriptList.cs" />
@@ -426,12 +430,14 @@
     <Compile Include="Services\IFormPostingHandler.cs" />
     <Compile Include="Services\IGetBreadcrumbs.cs" />
     <Compile Include="Services\IGetCurrentLayout.cs" />
+    <Compile Include="Services\IGetCurrentUser.cs" />
     <Compile Include="Services\IGetHomePage.cs" />
     <Compile Include="Services\IHashAlgorithmProvider.cs" />
     <Compile Include="Services\IndexService.cs" />
     <Compile Include="Services\IPasswordManagementService.cs" />
     <Compile Include="Services\IUniquePageService.cs" />
     <Compile Include="Services\IUrlValidationService.cs" />
+    <Compile Include="Services\IUserUIPermissionsService.cs" />
     <Compile Include="Services\IValidWebpageChildrenService.cs" />
     <Compile Include="Services\IWebpageUrlGenerator.cs" />
     <Compile Include="Services\IWebpageUrlService.cs" />
@@ -455,6 +461,7 @@
     <Compile Include="Services\UniquePageService.cs" />
     <Compile Include="Services\UrlValidationService.cs" />
     <Compile Include="Services\UserProfileDataService.cs" />
+    <Compile Include="Services\UserUIPermissionsService.cs" />
     <Compile Include="Services\ValidWebpageChildrenService.cs" />
     <Compile Include="Services\WebpageUrlGenerator.cs" />
     <Compile Include="Services\WebpageUrlService.cs" />
@@ -802,6 +809,7 @@
     <Compile Include="Website\Routing\NotInstalledHandler.cs" />
     <Compile Include="Website\Routing\PageNotFoundHandler.cs" />
     <Compile Include="Website\Routing\UrlHistoryHandler.cs" />
+    <Compile Include="Website\ViewEngineFileLocations.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

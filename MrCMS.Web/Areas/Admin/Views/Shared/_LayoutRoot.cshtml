@@ -80,7 +80,7 @@
             Html.RenderAction("Show", "PersistentNotification");
         }
     
-        @Html.RenderScripts()
+        @{ Html.RenderScripts();}
 
         @Html.Hidden("UICulture", CurrentRequestData.CultureInfo.Name)
 

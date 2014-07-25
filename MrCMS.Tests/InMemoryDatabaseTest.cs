@@ -106,6 +106,7 @@ namespace MrCMS.Tests
         }
 
         protected Site CurrentSite { get; set; }
+        protected User CurrentUser { get; set; }
 
 
 
@@ -125,7 +126,7 @@ namespace MrCMS.Tests
             user.Roles = new HashedSet<UserRole> { adminUserRole };
             adminUserRole.Users = new HashedSet<User> { user };
 
-            CurrentRequestData.CurrentUser = user;
+            CurrentRequestData.CurrentUser = CurrentUser = user;
         }
 
         public override void Dispose()

@@ -11,7 +11,7 @@ namespace MrCMS.Services
     {
         private readonly IUrlValidationService _urlValidationService;
         private readonly IKernel _kernel;
-        private static readonly Dictionary<string, Type> _webpageGenerators;
+        private static readonly Dictionary<string, HashSet<Type>> _webpageGenerators;
 
         public WebpageUrlService(IUrlValidationService urlValidationService, IKernel kernel)
         {
@@ -21,19 +21,19 @@ namespace MrCMS.Services
 
         static WebpageUrlService()
         {
-            _webpageGenerators = new Dictionary<string, Type>();
+            _webpageGenerators = new Dictionary<string,HashSet< Type>>();
 
             foreach (var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>().Where(type => !type.ContainsGenericParameters))
             {
                 var types = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(WebpageUrlGenerator<>).MakeGenericType(type));
                 if (types.Any())
                 {
-                    _webpageGenerators.Add(type.FullName, types.First());
+                    _webpageGenerators.Add(type.FullName, types);
                 }
             }
         }
 
-        public static Dictionary<string, Type> WebpageGenerators
+        public static Dictionary<string, HashSet<Type>> WebpageGenerators
         {
             get { return _webpageGenerators; }
         }
@@ -63,7 +63,7 @@ namespace MrCMS.Services
             IWebpageUrlGenerator generator = null;
             if (documentType != null && _webpageGenerators.ContainsKey(documentType))
             {
-                generator = _kernel.Get(_webpageGenerators[documentType]) as IWebpageUrlGenerator;
+                generator = _kernel.Get(_webpageGenerators[documentType].First()) as IWebpageUrlGenerator;
             }
             return generator ?? new DefaultWebpageUrlGenerator();
         }
