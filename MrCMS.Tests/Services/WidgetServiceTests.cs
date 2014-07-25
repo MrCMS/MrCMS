@@ -11,7 +11,7 @@ namespace MrCMS.Tests.Services
 {
     public class WidgetServiceTests : InMemoryDatabaseTest
     {
-        private WidgetService _widgetService;
+        private readonly WidgetService _widgetService;
 
         public WidgetServiceTests()
         {
@@ -43,16 +43,6 @@ namespace MrCMS.Tests.Services
             _widgetService.SaveWidget(new BasicMappedWidget());
 
             Session.QueryOver<Widget>().RowCount().Should().Be(1);
-        }
-
-        [Fact]
-        public void WidgetService_GetModel_CallsWidgetGetModelOfTheWidgetWithTheSessionOfTheService()
-        {
-            var widget = A.Fake<Widget>();
-
-            _widgetService.GetModel(widget);
-
-            A.CallTo(() => widget.GetModel(Session)).MustHaveHappened();
         }
 
         [Fact]

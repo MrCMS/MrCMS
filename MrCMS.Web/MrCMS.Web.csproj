@@ -262,10 +262,12 @@
     <Compile Include="Apps\Articles\Areas\Admin\Services\FeatureSectionTreeNavListing.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleAdminViewDataOtherSections.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleAdminViewDataUsers.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleArchiveAdminViewData.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleSectionOptions.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetFeatureAdminViewDataOtherSections.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetFeatureAdminViewDataUsers.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetFeatureSectionOptions.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\GetLatestArticlesAdminViewData.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\IArticleAdminService.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\IFeaturesAdminService.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\IGetArticleSectionOptions.cs" />
@@ -290,7 +292,9 @@
     <Compile Include="Apps\Articles\Metadata\FeatureSectionMetadata.cs" />
     <Compile Include="Apps\Articles\ModelBinders\ArticleSectionModelBinder.cs" />
     <Compile Include="Apps\Articles\Models\ArchiveModel.cs" />
+    <Compile Include="Apps\Articles\Models\ArticleArchiveModel.cs" />
     <Compile Include="Apps\Articles\Models\ArticleSearchModel.cs" />
+    <Compile Include="Apps\Articles\Models\LatestXArticlesViewModel.cs" />
     <Compile Include="Apps\Articles\Pages\Feature.cs" />
     <Compile Include="Apps\Articles\Pages\FeatureSection.cs" />
     <Compile Include="Apps\Articles\RouteHandlers\ArticleSectionRSSRouteHandler.cs" />
@@ -302,6 +306,8 @@
     <Compile Include="Apps\Articles\Services\IOtherArticleSectionBinder.cs" />
     <Compile Include="Apps\Articles\Services\OtherArticleSectionBinder.cs" />
     <Compile Include="Apps\Articles\Services\OtherSectionBinder.cs" />
+    <Compile Include="Apps\Articles\Services\Widgets\GetArticleArchiveModel.cs" />
+    <Compile Include="Apps\Articles\Services\Widgets\GetLatestXArticlesModel.cs" />
     <Compile Include="Apps\Articles\UrlGenerators\ArticleUrlGenerator.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
@@ -331,6 +337,7 @@
     <Compile Include="Apps\Core\Metadata\UserAccountMetaData.cs" />
     <Compile Include="Apps\Core\ModelBinders\LoginModelModelBinder.cs" />
     <Compile Include="Apps\Core\ModelBinders\WebpageSearchQueryModelBinder.cs" />
+    <Compile Include="Apps\Core\Models\CurrentPageSubNavigationModel.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\ChangePasswordModel.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\ForgotPasswordModel.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\RegisterModel.cs" />
@@ -339,6 +346,9 @@
     <Compile Include="Apps\Core\Models\RegisterAndLogin\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Services\AddFeaturedImageToSitemap.cs" />
     <Compile Include="Apps\Core\Services\OnUserRegisteredEventArgs.cs" />
+    <Compile Include="Apps\Core\Services\Widgets\GetModelForCurrentPageSubNavigation.cs" />
+    <Compile Include="Apps\Core\Services\Widgets\GetNavigationRecords.cs" />
+    <Compile Include="Apps\Core\Services\Widgets\GetUserLinks.cs" />
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
     <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
@@ -489,7 +499,8 @@
     <Compile Include="Areas\Admin\Services\AdminSiteListService.cs" />
     <Compile Include="Areas\Admin\Services\AdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
-    <Compile Include="Areas\Admin\Services\BaseAssignAdminViewData.cs" />
+    <Compile Include="Areas\Admin\Services\BaseAssignWebpageAdminViewData.cs" />
+    <Compile Include="Areas\Admin\Services\BaseAssignWidgetAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
     <Compile Include="Areas\Admin\Services\DefaultWebpageTreeNavListing.cs" />
@@ -523,7 +534,8 @@
     <Compile Include="Areas\Admin\Services\IPersistentNotificationUIService.cs" />
     <Compile Include="Areas\Admin\Services\IRedirectedDomainService.cs" />
     <Compile Include="Areas\Admin\Services\IRoleAdminService.cs" />
-    <Compile Include="Areas\Admin\Services\ISetAdminViewData.cs" />
+    <Compile Include="Areas\Admin\Services\ISetWebpageAdminViewData.cs" />
+    <Compile Include="Areas\Admin\Services\ISetWidgetAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\ISiteAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IStringResourceAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IStringResourceUpdateService.cs" />
@@ -561,7 +573,8 @@
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleContainsTerm.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleIsCorrectLength.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\URLContainsTerm.cs" />
-    <Compile Include="Areas\Admin\Services\SetAdminViewData.cs" />
+    <Compile Include="Areas\Admin\Services\SetWebpageAdminViewData.cs" />
+    <Compile Include="Areas\Admin\Services\SetWidgetAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\SiteAdminService.cs" />
     <Compile Include="Areas\Admin\Services\StringResourceAdminService.cs" />
     <Compile Include="Areas\Admin\Services\StringResourceUpdateService.cs" />

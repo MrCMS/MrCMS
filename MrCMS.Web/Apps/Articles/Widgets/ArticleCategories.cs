@@ -1,10 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Web.Mvc;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Web.Apps.Articles.Pages;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
+using NHibernate;
 
 namespace MrCMS.Web.Apps.Articles.Widgets
 {
@@ -14,9 +17,19 @@ namespace MrCMS.Web.Apps.Articles.Widgets
         [DisplayName("Show Name As Title")]
         public virtual bool ShowNameAsTitle { get; set; }
 
-        public override void SetDropdownData(System.Web.Mvc.ViewDataDictionary viewData, NHibernate.ISession session)
+    }
+    public class GetArticleCategoriesViewData : BaseAssignWidgetAdminViewData<ArticleCategories>
+    {
+        private readonly ISession _session;
+
+        public GetArticleCategoriesViewData(ISession session)
         {
-            viewData["ArticleLists"] = session.QueryOver<ArticleSection>()
+            _session = session;
+        }
+
+        public override void AssignViewData(ArticleCategories widget, ViewDataDictionary viewData)
+        {
+            viewData["ArticleLists"] = _session.QueryOver<ArticleSection>()
                                        .OrderBy(list => list.Name)
                                        .Desc.Cacheable()
                                        .List()
@@ -24,9 +37,5 @@ namespace MrCMS.Web.Apps.Articles.Widgets
                                                             category => category.Id.ToString(),
                                                             emptyItemText: "Select an article list...");
         }
-
-
-        public virtual string Category { get { return CurrentRequestData.CurrentContext.Request["category"]; } }
     }
-
 }

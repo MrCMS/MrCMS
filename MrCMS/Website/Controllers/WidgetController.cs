@@ -8,11 +8,11 @@ namespace MrCMS.Website.Controllers
 {
     public class WidgetController : MrCMSUIController
     {
-        private readonly IWidgetService _widgetService;
+        private readonly IWidgetModelService _service;
 
-        public WidgetController(IWidgetService widgetService)
+        public WidgetController(IWidgetModelService service)
         {
-            _widgetService = widgetService;
+            _service = service;
         }
 
         public PartialViewResult Show(Widget widget)
@@ -21,7 +21,7 @@ namespace MrCMS.Website.Controllers
                 RouteData.DataTokens["app"] = MrCMSApp.AppWidgets[widget.Unproxy().GetType()];
             return PartialView(
                 !string.IsNullOrWhiteSpace(widget.CustomLayout) ? widget.CustomLayout : widget.WidgetType,
-                _widgetService.GetModel(widget));
+                _service.GetModel(widget));
         }
     }
 }

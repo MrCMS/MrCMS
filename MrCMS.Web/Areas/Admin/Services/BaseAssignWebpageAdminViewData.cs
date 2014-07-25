@@ -3,12 +3,12 @@ using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
-    public abstract class BaseAssignAdminViewData
+    public abstract class BaseAssignWebpageAdminViewData
     {
         public abstract void AssignViewData(Webpage webpage, ViewDataDictionary viewData);
     }
 
-    public abstract class BaseAssignAdminViewData<T> : BaseAssignAdminViewData where T : Webpage
+    public abstract class BaseAssignWebpageAdminViewData<T> : BaseAssignWebpageAdminViewData where T : Webpage
     {
         public abstract void AssignViewData(T webpage, ViewDataDictionary viewData);
 

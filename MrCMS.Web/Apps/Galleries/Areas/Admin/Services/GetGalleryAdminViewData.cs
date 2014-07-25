@@ -7,7 +7,7 @@ using NHibernate;
 
 namespace MrCMS.Web.Apps.Galleries.Areas.Admin.Services
 {
-    public class GetGalleryAdminViewData : BaseAssignAdminViewData<Gallery>
+    public class GetGalleryAdminViewData : BaseAssignWebpageAdminViewData<Gallery>
     {
         private readonly ISession _session;
 

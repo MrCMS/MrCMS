@@ -440,6 +440,7 @@
     <Compile Include="Services\ImportExport\UrlHistoryImportService.cs" />
     <Compile Include="Services\ImportExport\UrlHistoryInfo.cs" />
     <Compile Include="Services\IStandardAuthConfigurationService.cs" />
+    <Compile Include="Services\IWidgetModelService.cs" />
     <Compile Include="Services\Notifications\INotificationPublisher.cs" />
     <Compile Include="Services\Notifications\IOnPersistentNotificationPublished.cs" />
     <Compile Include="Services\Notifications\IOnTransientNotificationPublished.cs" />
@@ -456,6 +457,9 @@
     <Compile Include="Services\ValidWebpageChildrenService.cs" />
     <Compile Include="Services\WebpageUrlGenerator.cs" />
     <Compile Include="Services\WebpageUrlService.cs" />
+    <Compile Include="Services\WidgetModelService.cs" />
+    <Compile Include="Services\Widgets\DefaultGetWidgetModel.cs" />
+    <Compile Include="Services\Widgets\GetWidgetModelBase.cs" />
     <Compile Include="Settings\ILegacySettingsProvider.cs" />
     <Compile Include="Settings\LegacySettingsProvider.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />

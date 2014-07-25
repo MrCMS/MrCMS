@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Website
-@model MrCMS.Web.Apps.Core.Widgets.CurrentPageSubNavigationModel
+@model MrCMS.Web.Apps.Core.Models.CurrentPageSubNavigationModel
 @{
     var currentPage = CurrentRequestData.CurrentPage;
     var activePages = currentPage.ActivePages.Select(webpage => "/" + webpage.LiveUrlSegment).ToList();

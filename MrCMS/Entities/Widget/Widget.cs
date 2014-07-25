@@ -35,15 +35,8 @@ namespace MrCMS.Entities.Widget
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
 	
-        public virtual object GetModel(ISession session)
-        {
-            return this;
-        }
-
         public virtual Iesi.Collections.Generic.ISet<Webpage> HiddenOn { get; set; }
         public virtual Iesi.Collections.Generic.ISet<Webpage> ShownOn { get; set; }
-
-        public virtual void SetDropdownData(ViewDataDictionary viewData, ISession session) { }
 
         public virtual bool HasProperties { get { return true; } }
 

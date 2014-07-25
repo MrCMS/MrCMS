@@ -32,7 +32,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
         public WebpageControllerTests()
         {
-            Kernel.Bind<ISetAdminViewData>().ToConstant(A.Fake<ISetAdminViewData>());
+            Kernel.Bind<ISetWebpageAdminViewData>().ToConstant(A.Fake<ISetWebpageAdminViewData>());
             CurrentRequestData.CurrentUser = new User();
             _documentService = A.Fake<IDocumentService>();
             _urlValidationService = A.Fake<IUrlValidationService>();

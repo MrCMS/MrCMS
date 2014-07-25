@@ -8,11 +8,11 @@ using Ninject;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
-    public class SetAdminViewData : ISetAdminViewData
+    public class SetWebpageAdminViewData : ISetWebpageAdminViewData
     {
         private readonly IKernel _kernel;
 
-        static SetAdminViewData()
+        static SetWebpageAdminViewData()
         {
             AssignViewDataTypes = new Dictionary<Type, HashSet<Type>>();
 
@@ -24,7 +24,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                 while (typeof(Webpage).IsAssignableFrom(thisType))
                 {
                     foreach (var assignType in TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof(BaseAssignAdminViewData<>).MakeGenericType(type)))
+                        typeof(BaseAssignWebpageAdminViewData<>).MakeGenericType(type)))
                     {
                         hashSet.Add(assignType);
                     }
@@ -36,7 +36,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             }
         }
 
-        public SetAdminViewData(IKernel kernel)
+        public SetWebpageAdminViewData(IKernel kernel)
         {
             _kernel = kernel;
         }
@@ -57,7 +57,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                         AssignViewDataTypes[type].Select(assignViewDataType => _kernel.Get(assignViewDataType))
                     )
                 {
-                    var adminViewData = assignAdminViewData as BaseAssignAdminViewData;
+                    var adminViewData = assignAdminViewData as BaseAssignWebpageAdminViewData;
                     if (adminViewData != null) adminViewData.AssignViewData(webpage, viewData);
                 }
             }

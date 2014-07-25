@@ -7,7 +7,7 @@ using NHibernate;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Services
 {
-    public class GetFeatureAdminViewDataUsers : BaseAssignAdminViewData<Feature>
+    public class GetFeatureAdminViewDataUsers : BaseAssignWebpageAdminViewData<Feature>
     {
         private readonly ISession _session;
 

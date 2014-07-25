@@ -3,7 +3,7 @@ using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
-    public interface ISetAdminViewData
+    public interface ISetWebpageAdminViewData
     {
         void SetViewData<T>(T webpage, ViewDataDictionary viewData) where T : Webpage;
     }
