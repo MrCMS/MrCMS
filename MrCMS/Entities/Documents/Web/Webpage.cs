@@ -204,11 +204,6 @@ namespace MrCMS.Entities.Documents.Web
             return MrCMSApplication.Get<ISession>().Paged(query, pageNum, pageSize);
         }
 
-        public virtual string GetPageTitle()
-        {
-            return !string.IsNullOrWhiteSpace(MetaTitle) ? MetaTitle : Name;
-        }
-
         public virtual bool CanAddChildren()
         {
             return this.GetMetadata().ValidChildrenTypes.Any();

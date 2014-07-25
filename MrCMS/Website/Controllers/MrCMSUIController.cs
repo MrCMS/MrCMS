@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
+using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Widget;
+using MrCMS.Helpers;
 using MrCMS.Services;
 
 namespace MrCMS.Website.Controllers
@@ -15,17 +16,32 @@ namespace MrCMS.Website.Controllers
             set { _getCurrentLayout = value; }
         }
 
+        protected void SetPageTitle(string pageTitle)
+        {
+            ViewData[MrCMSPageExtensions.PageTitleKey] = pageTitle;
+        }
+
+        protected void SetPageMetaDescription(string pageDescription)
+        {
+            ViewData[MrCMSPageExtensions.PageDescriptionKey] = pageDescription;
+        }
+
+        protected void SetPageMetaKeywords(string pageKeywords)
+        {
+            ViewData[MrCMSPageExtensions.PageKeywordsKey] = pageKeywords;
+        }
+
         protected override ViewResult View(string viewName, string masterName, object model)
         {
-            if (!(model is Webpage) && !(model is Widget))
+            if (!(model is Webpage))
                 return base.View(viewName, masterName, model);
 
             if (string.IsNullOrWhiteSpace(viewName))
                 viewName = model.GetType().Name;
 
-            if (string.IsNullOrWhiteSpace(masterName) && model is Webpage)
+            if (string.IsNullOrWhiteSpace(masterName))
             {
-                var layout = GetCurrentLayout.Get(model as Webpage);
+                Layout layout = GetCurrentLayout.Get(model as Webpage);
                 if (layout != null)
                 {
                     masterName = layout.UrlSegment;

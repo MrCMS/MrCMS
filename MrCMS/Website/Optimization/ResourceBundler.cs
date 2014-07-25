@@ -69,10 +69,9 @@ namespace MrCMS.Website.Optimization
         }
 
         private static readonly object s_lock = new object();
-        public MvcHtmlString GetScripts()
+        public void GetScripts(ViewContext viewContext)
         {
 
-            var result = new StringBuilder();
             if (_seoSettings.EnableJsBundling)
             {
                 foreach (var key in ScriptData.Keys)
@@ -102,22 +101,18 @@ namespace MrCMS.Website.Optimization
                             }
                         }
 
-                        result.AppendLine(string.Format("<script src=\"{0}\" type=\"text/javascript\"></script>",
-                                                        bundleVirtualPath.Substring(1)));
+                        viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>", bundleVirtualPath.Substring(1));
                     }
 
                     foreach (var path in partsToNotBundle)
-                        result.AppendLine(string.Format("<script src=\"{0}\" type=\"text/javascript\"></script>", path));
+                        viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>", path);
                 }
-                return MvcHtmlString.Create(result.ToString());
 
             }
             foreach (var path in ScriptData.Values.SelectMany(x => x).Select(data => data.Url).Distinct())
             {
-                result.AppendLine(string.Format("<script src=\"{0}\" type=\"text/javascript\"></script>",
-                                                path.StartsWith("~") ? path.Substring(1) : path));
+                viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>", path.StartsWith("~") ? path.Substring(1) : path);
             }
-            return MvcHtmlString.Create(result.ToString());
         }
 
         public MvcHtmlString GetCss()

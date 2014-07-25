@@ -365,6 +365,7 @@
     <Compile Include="Helpers\HttpRequestHelper.cs" />
     <Compile Include="Helpers\ImageRenderingExtensions.cs" />
     <Compile Include="Helpers\ModelBinderExtensions.cs" />
+    <Compile Include="Helpers\MrCMSPageExtensions.cs" />
     <Compile Include="Helpers\MrCMSResources.cs" />
     <Compile Include="Helpers\OptimisationExtensions.cs" />
     <Compile Include="Helpers\PagedListRenderOptions.cs" />

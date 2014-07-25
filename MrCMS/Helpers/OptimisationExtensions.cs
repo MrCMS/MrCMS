@@ -16,9 +16,9 @@ namespace MrCMS.Helpers
             MrCMSApplication.Get<IResourceBundler>().AddScript(virtualPath, url);
         }
 
-        public static MvcHtmlString RenderScripts(this HtmlHelper helper)
+        public static void RenderScripts(this HtmlHelper helper)
         {
-            return MrCMSApplication.Get<IResourceBundler>().GetScripts();
+            MrCMSApplication.Get<IResourceBundler>().GetScripts(helper.ViewContext);
         }
 
         public static void IncludeCss(this HtmlHelper helper, string url)
