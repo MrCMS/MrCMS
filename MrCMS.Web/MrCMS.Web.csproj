@@ -329,12 +329,12 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
     <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\UserTokenProvider.cs" />
-    <Compile Include="Apps\Core\Metadata\RegisterPageMedatData.cs" />
-    <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetaData.cs" />
-    <Compile Include="Apps\Core\Metadata\ForgottenPasswordPageMetaData.cs" />
+    <Compile Include="Apps\Core\Metadata\RegisterPageMetadata.cs" />
+    <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetadata.cs" />
+    <Compile Include="Apps\Core\Metadata\ForgottenPasswordPageMetadata.cs" />
     <Compile Include="Apps\Core\Metadata\LoginPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
-    <Compile Include="Apps\Core\Metadata\UserAccountMetaData.cs" />
+    <Compile Include="Apps\Core\Metadata\UserAccountMetadata.cs" />
     <Compile Include="Apps\Core\ModelBinders\LoginModelModelBinder.cs" />
     <Compile Include="Apps\Core\ModelBinders\WebpageSearchQueryModelBinder.cs" />
     <Compile Include="Apps\Core\Models\CurrentPageSubNavigationModel.cs" />

@@ -6,7 +6,7 @@ using MrCMS.Web.Apps.Core.Pages;
 
 namespace MrCMS.Web.Apps.Core.Metadata
 {
-    public class ResetPasswordPageMetadata : DocumentMetadataMap<ResetPasswordPage>
+    public class ForgottenPasswordPageMetadata : DocumentMetadataMap<ForgottenPasswordPage>
     {
         public override string IconClass
         {
@@ -18,19 +18,19 @@ namespace MrCMS.Web.Apps.Core.Metadata
             get { return "Login"; }
         }
 
-        public override string WebGetAction
-        {
-            get { return "PasswordReset"; }
-        }
-
         public override string WebPostController
         {
             get { return "Login"; }
         }
 
+        public override string WebGetAction
+        {
+            get { return "ForgottenPassword"; }
+        }
+
         public override string WebPostAction
         {
-            get { return "PasswordReset"; }
+            get { return "ForgottenPassword"; }
         }
 
         public override IEnumerable<Type> ChildrenList
