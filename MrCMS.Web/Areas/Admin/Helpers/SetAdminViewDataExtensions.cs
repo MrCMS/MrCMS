@@ -12,6 +12,7 @@ namespace MrCMS.Web.Areas.Admin.Helpers
         {
             MrCMSApplication.Get<ISetWebpageAdminViewData>().SetViewData(webpage, viewDataDictionary);
         }
+
         public static void SetViewData<T>(this T widget, ViewDataDictionary viewDataDictionary) where T : Widget
         {
             MrCMSApplication.Get<ISetWidgetAdminViewData>().SetViewData(widget, viewDataDictionary);

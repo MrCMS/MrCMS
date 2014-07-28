@@ -13,9 +13,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _webpageUrlService = webpageUrlService;
         }
 
-        public string Suggest(Webpage parent, string pageName, string documentType, bool useHierarchy = true)
+        public string Suggest(Webpage parent, string pageName, string documentType, int? template, bool useHierarchy = true)
         {
-            return _webpageUrlService.Suggest(pageName, parent, documentType, useHierarchy);
+            return _webpageUrlService.Suggest(pageName, parent, documentType, template, useHierarchy);
         }
     }
 }

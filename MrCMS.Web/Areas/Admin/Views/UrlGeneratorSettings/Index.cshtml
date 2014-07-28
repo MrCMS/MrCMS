@@ -1,0 +1,38 @@
+﻿@model List<MrCMS.Web.Areas.Admin.Models.UrlGeneratorSettingInfo>
+
+<fieldset>
+    <legend>
+        Url Generator Settings
+    </legend>
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Page Type
+                </th>
+                <th>
+                    Default Generator
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var info in Model)
+            {
+                <tr>
+                    <td>
+                        @info.DisplayName
+                    </td>
+                    <td>
+                        @info.GeneratorDisplayName
+                    </td>
+                    <td>
+                        @Html.ActionLink("Set default", "Set", "UrlGeneratorSettings", new { type = info.TypeName }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</fieldset>

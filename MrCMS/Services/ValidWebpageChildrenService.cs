@@ -16,7 +16,7 @@ namespace MrCMS.Services
             _existAnyWebpageService = existAnyWebpageService;
         }
 
-        public IEnumerable<DocumentMetadata> GetValidWebpageDocumentTypes(Webpage webpage,Func<DocumentMetadata,bool> predicate)
+        public IEnumerable<DocumentMetadata> GetValidWebpageDocumentTypes(Webpage webpage, Func<DocumentMetadata, bool> predicate)
         {
             var documentTypeDefinitions = new HashSet<DocumentMetadata>();
             if (webpage == null)
@@ -30,7 +30,7 @@ namespace MrCMS.Services
 
                 if (documentTypeDefinition == null) return Enumerable.Empty<DocumentMetadata>();
 
-                IEnumerable<DocumentMetadata> metadatas = documentTypeDefinition.ChildrenList.Select(DocumentMetadataHelper.GetMetadataByType);
+                IEnumerable<DocumentMetadata> metadatas = documentTypeDefinition.ChildrenList.Select(DocumentMetadataHelper.GetMetadata);
                 switch (documentTypeDefinition.ChildrenListType)
                 {
                     case ChildrenListType.BlackList:
@@ -45,8 +45,7 @@ namespace MrCMS.Services
             }
 
             documentTypeDefinitions.RemoveWhere(
-                definition => !(!typeof(IUniquePage).IsAssignableFrom(definition.Type) ||
-                                _existAnyWebpageService.ExistAny(definition.Type)));
+                definition => typeof(IUniquePage).IsAssignableFrom(definition.Type) && _existAnyWebpageService.ExistAny(definition.Type));
             if (predicate != null)
             {
                 documentTypeDefinitions.RemoveWhere(metadata => !predicate(metadata));
@@ -55,7 +54,7 @@ namespace MrCMS.Services
             return documentTypeDefinitions;
         }
 
-        public bool AnyValidWebpageDocumentTypes(Webpage webpage,Func<DocumentMetadata,bool> predicate)
+        public bool AnyValidWebpageDocumentTypes(Webpage webpage, Func<DocumentMetadata, bool> predicate)
         {
             return GetValidWebpageDocumentTypes(webpage, predicate).Any();
         }

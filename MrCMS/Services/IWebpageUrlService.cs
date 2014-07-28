@@ -4,6 +4,6 @@ namespace MrCMS.Services
 {
     public interface IWebpageUrlService
     {
-        string Suggest(string pageName, Webpage parent, string documentType, bool useHierarchy = false);
+        string Suggest(string pageName, Webpage parent, string documentType, int? template, bool useHierarchy = false);
     }
 }

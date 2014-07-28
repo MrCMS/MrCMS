@@ -3,10 +3,11 @@
 @using (Html.BeginForm("Add", "Role", FormMethod.Post))
 {
     <fieldset>
-        <legend>Add Role
-                <span class="btn-group  display-inline  pull-right">
-                    <input type="submit" class="btn-primary btn" value="Add role" />
-                </span>
+        <legend>
+            Add Role
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-primary btn" value="Add role" />
+            </span>
         </legend>
         @Html.LabelFor(x => x.Name)
         @Html.TextBoxFor(x => x.Name)

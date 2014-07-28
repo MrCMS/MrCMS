@@ -33,16 +33,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Add")]
-        public virtual ActionResult Add_Get(int? id)
-        {
-            //Build list 
-            var model = new AddPageModel
-            {
-                Parent = id.HasValue ? _documentService.GetDocument<Document>(id.Value) : null
-            };
-            DocumentTypeSetup(model as T);
-            return View(model);
-        }
+        public abstract ActionResult Add_Get(int? id);
+        
 
         [HttpPost]
         public virtual ActionResult Add(T doc)
@@ -56,17 +48,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Edit")]
         public virtual ActionResult Edit_Get(T doc)
         {
-            DocumentTypeSetup(doc);
             return View(doc);
         }
 
-        protected virtual void DocumentTypeSetup(T doc)
-        {
-
-        }
-
         [HttpPost]
-        public virtual ActionResult Edit( T doc)
+        public virtual ActionResult Edit(T doc)
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));

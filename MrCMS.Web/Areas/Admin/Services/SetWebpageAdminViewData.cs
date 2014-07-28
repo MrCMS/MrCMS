@@ -21,10 +21,10 @@ namespace MrCMS.Web.Areas.Admin.Services
                 var hashSet = new HashSet<Type>();
 
                 var thisType = type;
-                while (typeof(Webpage).IsAssignableFrom(thisType))
+                while (thisType != null && typeof(Webpage).IsAssignableFrom(thisType))
                 {
                     foreach (var assignType in TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof(BaseAssignWebpageAdminViewData<>).MakeGenericType(type)))
+                        typeof(BaseAssignWebpageAdminViewData<>).MakeGenericType(thisType)))
                     {
                         hashSet.Add(assignType);
                     }
@@ -58,7 +58,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                     )
                 {
                     var adminViewData = assignAdminViewData as BaseAssignWebpageAdminViewData;
-                    if (adminViewData != null) adminViewData.AssignViewData(webpage, viewData);
+                    if (adminViewData != null) adminViewData.AssignViewDataBase(webpage, viewData);
                 }
             }
         }

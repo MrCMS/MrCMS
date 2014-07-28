@@ -36,15 +36,20 @@ namespace MrCMS.Website.Controllers
             if (!(model is Webpage))
                 return base.View(viewName, masterName, model);
 
+            var webpage = model as Webpage;
             if (string.IsNullOrWhiteSpace(viewName))
-                viewName = model.GetType().Name;
+            {
+                viewName = webpage.PageTemplate != null
+                    ? webpage.PageTemplate.PageTemplateName
+                    : model.GetType().Name;
+            }
 
             if (string.IsNullOrWhiteSpace(masterName))
             {
-                Layout layout = GetCurrentLayout.Get(model as Webpage);
+                Layout layout = GetCurrentLayout.Get(webpage);
                 if (layout != null)
                 {
-                    masterName = layout.UrlSegment;
+                    masterName = layout.GetLayoutName();
                 }
             }
 

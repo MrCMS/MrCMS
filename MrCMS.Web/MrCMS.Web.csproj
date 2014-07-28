@@ -329,12 +329,12 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
     <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\UserTokenProvider.cs" />
-    <Compile Include="Apps\Core\Metadata\RegisterPageMedatData.cs" />
-    <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetaData.cs" />
-    <Compile Include="Apps\Core\Metadata\ForgottenPasswordPageMetaData.cs" />
+    <Compile Include="Apps\Core\Metadata\RegisterPageMetadata.cs" />
+    <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetadata.cs" />
+    <Compile Include="Apps\Core\Metadata\ForgottenPasswordPageMetadata.cs" />
     <Compile Include="Apps\Core\Metadata\LoginPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\SearchPageMetaData.cs" />
-    <Compile Include="Apps\Core\Metadata\UserAccountMetaData.cs" />
+    <Compile Include="Apps\Core\Metadata\UserAccountMetadata.cs" />
     <Compile Include="Apps\Core\ModelBinders\LoginModelModelBinder.cs" />
     <Compile Include="Apps\Core\ModelBinders\WebpageSearchQueryModelBinder.cs" />
     <Compile Include="Apps\Core\Models\CurrentPageSubNavigationModel.cs" />
@@ -353,6 +353,7 @@
     <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PageTemplateController.cs" />
     <Compile Include="Areas\Admin\Controllers\PersistentNotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\ResourceUpdateController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteListController.cs" />
@@ -364,6 +365,7 @@
     <Compile Include="Areas\Admin\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Admin\Controllers\SEOAnalysisController.cs" />
     <Compile Include="Areas\Admin\Controllers\TransientNotificationController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UrlGeneratorSettingsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Controllers\VersionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageParentController.cs" />
@@ -385,6 +387,7 @@
     <Compile Include="Areas\Admin\ModelBinders\EditUserModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\EditWebpageModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\FileSystemSettingsModelBinder.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\GetUrlGeneratorOptionsTypeModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\HealthCheckProcessorModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\MessageTemplateModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\SiteSettingsModelBinder.cs" />
@@ -399,12 +402,14 @@
     <Compile Include="Areas\Admin\Models\AdminTree.cs" />
     <Compile Include="Areas\Admin\Models\AdminTreeNode.cs" />
     <Compile Include="Areas\Admin\Models\AsyncListModel.cs" />
+    <Compile Include="Areas\Admin\Models\DefaultGeneratorInfo.cs" />
     <Compile Include="Areas\Admin\Models\GetPropertyData.cs" />
     <Compile Include="Areas\Admin\Models\MediaCategorySearchModel.cs" />
     <Compile Include="Areas\Admin\Models\MediaSelectorSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\MessageTemplateInfo.cs" />
     <Compile Include="Areas\Admin\Models\NotificationSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Notifications\NotificationModel.cs" />
+    <Compile Include="Areas\Admin\Models\PageTemplateSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\PostingsModel.cs" />
     <Compile Include="Areas\Admin\Models\SaveResult.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
@@ -490,6 +495,7 @@
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisStatus.cs" />
     <Compile Include="Areas\Admin\Models\StringResourceSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\UpdatePropertyData.cs" />
+    <Compile Include="Areas\Admin\Models\UrlGeneratorSettingInfo.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
     <Compile Include="Areas\Admin\Models\VersionsModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewDataUploadFilesResult.cs" />
@@ -510,6 +516,8 @@
     <Compile Include="Areas\Admin\Services\Events\SendPersistentNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\FormAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\GetTemplateOptions.cs" />
+    <Compile Include="Areas\Admin\Services\GetUrlGeneratorOptions.cs" />
     <Compile Include="Areas\Admin\Services\IACLService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminNavLinksService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminPageStatsService.cs" />
@@ -522,6 +530,7 @@
     <Compile Include="Areas\Admin\Services\IDocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFileAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFormAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IGetUrlGeneratorOptions.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IInPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ILayoutAreaAdminService.cs" />
@@ -531,6 +540,7 @@
     <Compile Include="Areas\Admin\Services\IndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\INotificationAdminService.cs" />
     <Compile Include="Areas\Admin\Services\InPageAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IPageTemplateAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IPersistentNotificationUIService.cs" />
     <Compile Include="Areas\Admin\Services\IRedirectedDomainService.cs" />
     <Compile Include="Areas\Admin\Services\IRoleAdminService.cs" />
@@ -543,7 +553,9 @@
     <Compile Include="Areas\Admin\Services\ITaskAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ITreeNavService.cs" />
+    <Compile Include="Areas\Admin\Services\IUrlGeneratorSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IUrlHistoryAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IWebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageParentAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageWidgetAdminService.cs" />
@@ -552,6 +564,7 @@
     <Compile Include="Areas\Admin\Services\MediaSelectorService.cs" />
     <Compile Include="Areas\Admin\Services\MessageTemplateAdminService.cs" />
     <Compile Include="Areas\Admin\Services\NotificationAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\PageTemplateAdminService.cs" />
     <Compile Include="Areas\Admin\Services\PersistentNotificationUIService.cs" />
     <Compile Include="Areas\Admin\Services\RedirectedDomainService.cs" />
     <Compile Include="Areas\Admin\Services\RoleAdminService.cs" />
@@ -582,7 +595,9 @@
     <Compile Include="Areas\Admin\Services\TaskAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\TreeNavService.cs" />
+    <Compile Include="Areas\Admin\Services\UrlGeneratorSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\WebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageParentAdminService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\WebpageWidgetAdminService.cs" />
@@ -982,6 +997,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.min.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\add-page-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\persistent-notifications.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-show-files-simple.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\health-checks.js" />
@@ -1679,6 +1695,11 @@
     <Content Include="Apps\Articles\Areas\Admin\Views\Articles\Index.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Features\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\PageTemplate\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\PageTemplate\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\PageTemplate\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\UrlGeneratorSettings\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\UrlGeneratorSettings\Set.cshtml" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
   </ItemGroup>

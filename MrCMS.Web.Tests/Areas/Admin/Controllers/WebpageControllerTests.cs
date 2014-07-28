@@ -17,7 +17,6 @@ using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Web.Tests.Stubs;
 using MrCMS.Website;
-using NHibernate;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -27,7 +26,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private readonly IDocumentService _documentService;
         private readonly Site _site = new Site();
         private readonly IUrlValidationService _urlValidationService;
-        private readonly IValidWebpageChildrenService _validWebpageChildrenService;
+        private readonly IWebpageBaseViewDataService _baseViewDataService;
         private readonly WebpageController _webpageController;
 
         public WebpageControllerTests()
@@ -36,8 +35,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             CurrentRequestData.CurrentUser = new User();
             _documentService = A.Fake<IDocumentService>();
             _urlValidationService = A.Fake<IUrlValidationService>();
-            _validWebpageChildrenService = A.Fake<IValidWebpageChildrenService>();
-            _webpageController = new WebpageController(_validWebpageChildrenService, _documentService,
+            _baseViewDataService = A.Fake<IWebpageBaseViewDataService>();
+            _webpageController = new WebpageController(_baseViewDataService, _documentService,
                 _urlValidationService, _site)
             {
                 RouteDataMock = new RouteData()
@@ -56,7 +55,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
         {
             var textPage = new TextPage {Site = _site, Id = 1};
-            A.CallTo(() => _documentService.GetDocument<Document>(1)).Returns(textPage);
+            A.CallTo(() => _documentService.GetDocument<Webpage>(1)).Returns(textPage);
 
             var actionResult = _webpageController.Add_Get(1) as ViewResult;
 
@@ -64,14 +63,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WebpageController_AddGet_ShouldSetViewDataToSelectListItem()
+        public void WebpageController_AddGet_ShouldCallViewData()
         {
             var textPage = new TextPage {Site = _site};
-            A.CallTo(() => _documentService.GetDocument<Document>(1)).Returns(textPage);
+            A.CallTo(() => _documentService.GetDocument<Webpage>(1)).Returns(textPage);
 
             _webpageController.Add_Get(1);
 
-            _webpageController.ViewData["Layout"].Should().BeAssignableTo<IEnumerable<SelectListItem>>();
+            A.CallTo(() => _baseViewDataService.SetAddPageViewData(_webpageController.ViewData, textPage))
+                .MustHaveHappened();
         }
 
         [Fact]
@@ -138,44 +138,14 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WebpageController_EditGet_ShouldCallGetAllLayouts()
+        public void WebpageController_EditGet_ShouldSetViewData()
         {
-            _webpageController.Edit_Get(new TextPage());
+            var textPage = new TextPage();
 
-            A.CallTo(() => _documentService.GetAllDocuments<Layout>()).MustHaveHappened();
-        }
+            _webpageController.Edit_Get(textPage);
 
-        [Fact]
-        public void WebpageController_EditGet_ShouldSetViewDataToSelectListItem()
-        {
-            var result = _webpageController.Edit_Get(new TextPage()) as ViewResult;
-
-            _webpageController.ViewData["Layout"].Should().BeAssignableTo<IEnumerable<SelectListItem>>();
-        }
-
-        [Fact]
-        public void WebpageController_EditGet_ShouldSetLayoutDetailsToSelectListItems()
-        {
-            var layout = new Layout {Id = 1, Name = "Layout Name", Site = _site};
-            A.CallTo(() => _documentService.GetAllDocuments<Layout>()).Returns(new List<Layout> {layout});
-
-            _webpageController.Edit_Get(new TextPage());
-
-            _webpageController.ViewData["Layout"].As<IEnumerable<SelectListItem>>()
-                .Skip(1)
-                .First()
-                .Selected.Should()
-                .BeFalse();
-            _webpageController.ViewData["Layout"].As<IEnumerable<SelectListItem>>()
-                .Skip(1)
-                .First()
-                .Text.Should()
-                .Be("Layout Name");
-            _webpageController.ViewData["Layout"].As<IEnumerable<SelectListItem>>()
-                .Skip(1)
-                .First()
-                .Value.Should()
-                .Be("1");
+            A.CallTo(() => _baseViewDataService.SetEditPageViewData(_webpageController.ViewData, textPage))
+                .MustHaveHappened();
         }
 
         [Fact]

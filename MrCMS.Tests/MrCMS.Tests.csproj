@@ -157,6 +157,7 @@
     <Compile Include="Entities\DocumentTests.cs" />
     <Compile Include="Entities\MediaFileTests.cs" />
     <Compile Include="Helpers\DocumentExtensionsTests.cs" />
+    <Compile Include="Helpers\LayoutExtensionsTests.cs" />
     <Compile Include="Helpers\StringHelperTests.cs" />
     <Compile Include="Helpers\TypeHelperTests.cs" />
     <Compile Include="Helpers\Validation\EmailValidatorTests.cs" />
