@@ -13,8 +13,6 @@ namespace MrCMS.Entities.Documents.Web
 {
     public abstract class Webpage : Document
     {
-        private Layout.Layout _layout;
-
         protected Webpage()
         {
             InheritFrontEndRolesFromParent = true;
@@ -73,8 +71,6 @@ namespace MrCMS.Entities.Documents.Web
         [UIHint("DateTime")]
         [DisplayName("Publish On")]
         public virtual DateTime? PublishOn { get; set; }
-
-        public virtual Layout.Layout Layout { get; set; } //if we want to override the default layout
 
         public virtual Iesi.Collections.Generic.ISet<Widget.Widget> ShownWidgets { get; set; }
         public virtual Iesi.Collections.Generic.ISet<Widget.Widget> HiddenWidgets { get; set; }

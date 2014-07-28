@@ -11,6 +11,7 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
+using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
@@ -20,13 +21,24 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class WebpageController : BaseDocumentController<Webpage>
     {
-        private readonly IValidWebpageChildrenService _validWebpageChildrenService;
+        private readonly IWebpageBaseViewDataService _webpageBaseViewDataService;
 
-        public WebpageController(IValidWebpageChildrenService validWebpageChildrenService,
+        public WebpageController(IWebpageBaseViewDataService webpageBaseViewDataService,
             IDocumentService documentService, IUrlValidationService urlValidationService, Site site)
             : base(documentService, urlValidationService, site)
         {
-            _validWebpageChildrenService = validWebpageChildrenService;
+            _webpageBaseViewDataService = webpageBaseViewDataService;
+        }
+
+        public override ActionResult Add_Get(int? id)
+        {
+            //Build list 
+            var model = new AddPageModel
+            {
+                Parent = id.HasValue ? _documentService.GetDocument<Webpage>(id.Value) : null
+            };
+            _webpageBaseViewDataService.SetAddPageViewData(ViewData, model.Parent as Webpage);
+            return View(model);
         }
 
         [ForceImmediateLuceneUpdate]
@@ -35,42 +47,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             if (_urlValidationService.UrlIsValidForWebpage(doc.UrlSegment, null))
                 return base.Add(doc);
 
-            DocumentTypeSetup(doc);
+            _webpageBaseViewDataService.SetAddPageViewData(ViewData, doc.Parent as Webpage);
             return View(doc);
         }
 
-        protected override void DocumentTypeSetup(Webpage doc)
-        {
-            IEnumerable<Layout> layouts =
-                _documentService.GetAllDocuments<Layout>().Where(x => x.Hidden == false && x.Site == Site);
-
-            ViewData["Layout"] = layouts.BuildSelectItemList(layout => layout.Name,
-                                                             layout => layout.Id.ToString(CultureInfo.InvariantCulture),
-                                                             layout =>
-                                                             doc != null && doc.Layout != null &&
-                                                             doc.Layout.Id == layout.Id,
-                                                             SelectListItemHelper.EmptyItem("Default Layout", "0"));
-
-            var documentTypeDefinitions =
-                _validWebpageChildrenService.GetValidWebpageDocumentTypes(doc.Parent as Webpage,
-                    metadata => CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Add, metadata.Type.FullName))
-                    .ToList();
-
-            ViewData["DocumentTypes"] = documentTypeDefinitions;
-
-            doc.SetAdminViewData(ViewData);
-
-            var documentMetadata = doc.GetMetadata();
-            if (documentMetadata != null)
-            {
-                ViewData["EditView"] = documentMetadata.EditPartialView;
-                if (!string.IsNullOrWhiteSpace(documentMetadata.App))
-                    RouteData.DataTokens["app"] = documentMetadata.App;
-            }
-        }
         [MrCMSTypeACL(typeof(Webpage), TypeACLRule.Edit)]
         public override ActionResult Edit_Get(Webpage doc)
         {
+            _webpageBaseViewDataService.SetEditPageViewData(ViewData, doc);
+            doc.SetAdminViewData(ViewData);
             return base.Edit_Get(doc);
         }
 
@@ -133,17 +118,20 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// Finds out if the URL entered is valid for a webpage
+        ///     Finds out if the URL entered is valid for a webpage
         /// </summary>
         /// <param name="urlSegment">The URL Segment entered</param>
         /// <param name="id">The Id of the current document if it is set</param>
         /// <returns></returns>
         public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_urlValidationService.UrlIsValidForWebpage(urlSegment, id) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
+            return !_urlValidationService.UrlIsValidForWebpage(urlSegment, id)
+                ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet)
+                : Json(true, JsonRequestBehavior.AllowGet);
         }
+
         /// <summary>
-        /// Returns server date used for publishing (can't use JS date as can be out compared to server date)
+        ///     Returns server date used for publishing (can't use JS date as can be out compared to server date)
         /// </summary>
         /// <returns>Date</returns>
         public string GetServerDate()

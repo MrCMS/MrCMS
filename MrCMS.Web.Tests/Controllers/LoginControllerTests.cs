@@ -46,7 +46,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Show_ShouldReturnLoginPageAsModel()
         {
-            var result = _loginController.Show(new LoginPage { Layout = new Layout() }, new LoginModel());
+            var result = _loginController.Show(new LoginPage(), new LoginModel());
 
             result.Model.Should().BeOfType<LoginPage>();
         }

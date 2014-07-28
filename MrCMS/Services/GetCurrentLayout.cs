@@ -22,10 +22,6 @@ namespace MrCMS.Services
         {
             if (webpage != null)
             {
-                if (webpage.Layout != null)
-                {
-                    return webpage.Layout;
-                }
                 if (webpage.PageTemplate != null && webpage.PageTemplate.Layout != null)
                 {
                     return webpage.PageTemplate.Layout;

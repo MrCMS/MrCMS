@@ -17,17 +17,17 @@ namespace MrCMS.Entities.Documents.Layout
 
         public virtual IList<LayoutArea> LayoutAreas { get; set; }
 
-        public virtual IList<Webpage> Webpages { get; set; }
+        public virtual IList<PageTemplate> PageTemplates { get; set; }
 
         public virtual bool Hidden { get; set; }
 
         public override void OnDeleting(ISession session)
         {
-            foreach (Webpage webpage in Webpages)
+            foreach (var pageTemplate in PageTemplates)
             {
-                webpage.Layout = null;
+                pageTemplate.Layout = null;
             }
-            Webpages.Clear();
+            PageTemplates.Clear();
             base.OnDeleting(session);
         }
     }
