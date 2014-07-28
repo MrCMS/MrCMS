@@ -21,7 +21,9 @@ namespace MrCMS.Helpers
 
         public static string GetLayoutName(this Layout layout)
         {
-            return Regex.Replace(layout.Name, @"[^\w//]+", "");
+            return !string.IsNullOrWhiteSpace(layout.UrlSegment)
+                ? layout.UrlSegment
+                : string.Format("_{0}", Regex.Replace(layout.Name, @"[^\w//]+", ""));
         }
     }
 }

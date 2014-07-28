@@ -2,6 +2,7 @@
 using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Helpers;
+using Xunit;
 using Xunit.Extensions;
 
 namespace MrCMS.Tests.Helpers
@@ -12,19 +13,25 @@ namespace MrCMS.Tests.Helpers
         {
             get
             {
-                yield return new[] {"test", "test"};
-                yield return new[] {"test   ", "test"};
-                yield return new[] {"TEST", "TEST"};
-                yield return new[] {"Split Word Test", "SplitWordTest"};
-                yield return new[] {"Allow 2 Numbers", "Allow2Numbers"};
-                yield return new[] {"Remove-Dashes", "RemoveDashes"};
+                yield return new[] {"test", "_test"};
+                yield return new[] {"test   ", "_test"};
+                yield return new[] {"TEST", "_TEST"};
+                yield return new[] {"Split Word Test", "_SplitWordTest"};
+                yield return new[] {"Allow 2 Numbers", "_Allow2Numbers"};
+                yield return new[] {"Remove-Dashes", "_RemoveDashes"};
             }
         }
 
         [Theory, PropertyData("GetLayoutNameInputOutputValues")]
-        public void GetLayoutName_BehavesAsExpected(string input, string result)
+        public void GetLayoutName_BehavesAsExpectedForConventions(string input, string result)
         {
             new Layout {Name = input}.GetLayoutName().Should().Be(result);
+        }
+
+        [Fact]
+        public void GetLayoutName_IfUrlSegmentIsSetThatIsUsed()
+        {
+            new Layout {Name = "Layout", UrlSegment = "_LayoutOverride"}.GetLayoutName().Should().Be("_LayoutOverride");
         }
     }
 }

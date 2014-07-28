@@ -9,8 +9,8 @@ namespace MrCMS.Entities.Documents.Web
         public virtual string Name { get; set; }
 
         [Required]
-        [DisplayName("Page Name")]
-        public virtual string PageName { get; set; }
+        [DisplayName("Page Template Name")]
+        public virtual string PageTemplateName { get; set; }
 
         [Required]
         [DisplayName("Page Type")]

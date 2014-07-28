@@ -1687,6 +1687,7 @@
     <Content Include="Apps\Articles\Areas\Admin\Views\Features\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PageTemplate\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PageTemplate\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\PageTemplate\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
   </ItemGroup>

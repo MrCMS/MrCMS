@@ -1,22 +1,20 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Entities.Documents.Web.PageTemplate
+﻿@model MrCMS.Entities.Documents.Web.PageTemplate
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
-    var pageTypeOptions = ViewData["page-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
-    var layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
-    var urlGeneratorOptions = ViewData["url-generator-options"] as List<SelectListItem> ?? new List<SelectListItem>();
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/add-page-template.js");
+    List<SelectListItem> layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    List<SelectListItem> urlGeneratorOptions = ViewData["url-generator-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 
-@using (Html.BeginForm("Add", "PageTemplate", FormMethod.Post))
+@using (Html.BeginForm("Edit", "PageTemplate", new {id = Model.Id}, FormMethod.Post))
 {
     <fieldset>
         <legend>
-            Add Page Template
+            Edit Page Template
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="Add page template" />
+                <input type="submit" class="btn-primary btn" value="Edit page template" />
             </span>
         </legend>
+
         @Html.LabelFor(x => x.Name)
         @Html.TextBoxFor(x => x.Name)
         @Html.ValidationMessageFor(x => x.Name)
@@ -24,10 +22,6 @@
         @Html.LabelFor(x => x.PageTemplateName)
         @Html.TextBoxFor(x => x.PageTemplateName)
         @Html.ValidationMessageFor(x => x.PageTemplateName)
-
-        @Html.LabelFor(x => x.PageType)
-        @Html.DropDownListFor(x => x.PageType, pageTypeOptions)
-        @Html.ValidationMessageFor(x => x.PageType)
 
         @Html.LabelFor(x => x.Layout.Id, Resource("Layout"))
         @Html.DropDownListFor(x => x.Layout.Id, layoutOptions)

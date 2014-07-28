@@ -11,6 +11,7 @@ namespace MrCMS.Web.Areas.Admin.Services
     {
         IPagedList<PageTemplate> Search(PageTemplateSearchQuery query);
         void Add(PageTemplate template);
+        void Update(PageTemplate template);
 
         List<SelectListItem> GetPageTypeOptions();
         List<SelectListItem> GetLayoutOptions();

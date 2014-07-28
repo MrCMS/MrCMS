@@ -371,6 +371,7 @@
     <Compile Include="Helpers\MrCMSResources.cs" />
     <Compile Include="Helpers\OptimisationExtensions.cs" />
     <Compile Include="Helpers\PagedListRenderOptions.cs" />
+    <Compile Include="Helpers\PageTemplateExtensions.cs" />
     <Compile Include="Helpers\PropertyRenderingExtensions.cs" />
     <Compile Include="Helpers\ReturnUrlExtensions.cs" />
     <Compile Include="Helpers\ShortcodeParsingExtensions.cs" />

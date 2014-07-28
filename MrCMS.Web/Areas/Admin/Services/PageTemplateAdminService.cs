@@ -35,6 +35,11 @@ namespace MrCMS.Web.Areas.Admin.Services
             _session.Transact(session => session.Save(template));
         }
 
+        public void Update(PageTemplate template)
+        {
+            _session.Transact(session => session.Update(template));
+        }
+
         public List<SelectListItem> GetPageTypeOptions()
         {
             List<SelectListItem> selectListItems = GetNewList();

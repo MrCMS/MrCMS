@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
@@ -37,6 +38,22 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public RedirectToRouteResult Add(PageTemplate template)
         {
             _service.Add(template);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public PartialViewResult Edit(PageTemplate template)
+        {
+            ViewData["layout-options"] = _service.GetLayoutOptions();
+            ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(template.GetPageType());
+            return PartialView(template);
+        }
+
+        [HttpPost]
+        [ActionName("Edit")]
+        public RedirectToRouteResult Edit_POST(PageTemplate template)
+        {
+            _service.Update(template);
             return RedirectToAction("Index");
         }
 

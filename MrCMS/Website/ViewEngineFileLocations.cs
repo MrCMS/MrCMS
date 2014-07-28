@@ -15,10 +15,10 @@ namespace MrCMS.Website
             };
             AppMasterLocationFormats = new[]
             {
-                "~/Apps/{3}/Areas/{2}/Views/{1}/_{0}.cshtml",
-                "~/Apps/{3}/Areas/{2}/Views/Shared/_{0}.cshtml",
-                "~/Apps/{3}/Views/{1}/_{0}.cshtml",
-                "~/Apps/{3}/Views/Shared/_{0}.cshtml"
+                "~/Apps/{3}/Areas/{2}/Views/{1}/{0}.cshtml",
+                "~/Apps/{3}/Areas/{2}/Views/Shared/{0}.cshtml",
+                "~/Apps/{3}/Views/{1}/{0}.cshtml",
+                "~/Apps/{3}/Views/Shared/{0}.cshtml"
             };
             AppPartialViewLocationFormats = new[]
             {
@@ -37,8 +37,8 @@ namespace MrCMS.Website
             };
             AreaMasterLocationFormats = new[]
             {
-                "~/Areas/{2}/Views/{1}/_{0}.cshtml",
-                "~/Areas/{2}/Views/Shared/_{0}.cshtml"
+                "~/Areas/{2}/Views/{1}/{0}.cshtml",
+                "~/Areas/{2}/Views/Shared/{0}.cshtml"
             };
             AreaPartialViewLocationFormats = new[]
             {
@@ -54,8 +54,8 @@ namespace MrCMS.Website
             };
             MasterLocationFormats = new[]
             {
-                "~/Views/{1}/_{0}.cshtml",
-                "~/Views/Shared/_{0}.cshtml"
+                "~/Views/{1}/{0}.cshtml",
+                "~/Views/Shared/{0}.cshtml"
             };
             PartialViewLocationFormats = new[]
             {
