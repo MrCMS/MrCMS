@@ -48,7 +48,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                 select
                     new SelectListItem
                     {
-                        Text = string.Format("{0} ({1})", key.GetMetadataByType().Name, appName),
+                        Text = string.Format("{0} ({1})", key.GetMetadata().Name, appName),
                         Value = key.FullName
                     });
             return selectListItems;

@@ -39,7 +39,9 @@ namespace MrCMS.Website.Controllers
             var webpage = model as Webpage;
             if (string.IsNullOrWhiteSpace(viewName))
             {
-                viewName = model.GetType().Name;
+                viewName = webpage.PageTemplate != null
+                    ? webpage.PageTemplate.PageTemplateName
+                    : model.GetType().Name;
             }
 
             if (string.IsNullOrWhiteSpace(masterName))

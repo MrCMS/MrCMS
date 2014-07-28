@@ -3,8 +3,8 @@
 @using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane " id="layout-content">
-    @Html.LabelFor(x => x.Layout)
-    @Html.DropDownListFor(webpage => webpage.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
+    @Html.LabelFor(x => x.PageTemplate.Id, Resource("Page Template"))
+    @Html.DropDownListFor(webpage => webpage.PageTemplate.Id, ViewData["template-options"] as IEnumerable<SelectListItem>)
     <div id="custom-layout">
         <label>Layout Areas</label>
         <div class="accordion" id="accordion-layout-areas">

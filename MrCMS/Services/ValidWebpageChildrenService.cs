@@ -30,7 +30,7 @@ namespace MrCMS.Services
 
                 if (documentTypeDefinition == null) return Enumerable.Empty<DocumentMetadata>();
 
-                IEnumerable<DocumentMetadata> metadatas = documentTypeDefinition.ChildrenList.Select(DocumentMetadataHelper.GetMetadataByType);
+                IEnumerable<DocumentMetadata> metadatas = documentTypeDefinition.ChildrenList.Select(DocumentMetadataHelper.GetMetadata);
                 switch (documentTypeDefinition.ChildrenListType)
                 {
                     case ChildrenListType.BlackList:

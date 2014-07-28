@@ -18,12 +18,21 @@
         <table class="table table-striped table-condensed">
             <thead>
                 <tr>
-                    <td>
+                    <th>
                         Name
-                    </td>
-                    <td>
+                    </th>
+                    <th>
+                        Page Type
+                    </th>
+                    <th>
+                        Template Name
+                    </th>
+                    <th>
+                        Layout Name
+                    </th>
+                    <th>
                         Actions
-                    </td>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +41,15 @@
                     <tr>
                         <td>
                             @template.Name
+                        </td>
+                        <td>
+                            @template.GetPageTypeName()
+                        </td>
+                        <td>
+                            @template.PageTemplateName
+                        </td>
+                        <td>
+                            @template.GetLayoutName()
                         </td>
                         <td>
                             <div class="btn-group">
