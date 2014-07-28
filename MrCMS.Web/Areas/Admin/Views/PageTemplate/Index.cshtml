@@ -31,6 +31,9 @@
                         Layout Name
                     </th>
                     <th>
+                        Url Generator
+                    </th>
+                    <th>
                         Actions
                     </th>
                 </tr>
@@ -50,6 +53,9 @@
                         </td>
                         <td>
                             @template.GetLayoutName()
+                        </td>
+                        <td>
+                            @template.GetUrlGeneratorType().Name.BreakUpString()
                         </td>
                         <td>
                             <div class="btn-group">

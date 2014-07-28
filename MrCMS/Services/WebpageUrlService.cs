@@ -1,54 +1,40 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Settings;
+using NHibernate;
 using Ninject;
 
 namespace MrCMS.Services
 {
     public class WebpageUrlService : IWebpageUrlService
     {
-        private readonly IUrlValidationService _urlValidationService;
         private readonly IKernel _kernel;
-        private static readonly Dictionary<string, HashSet<Type>> _webpageGenerators;
+        private readonly ISession _session;
+        private readonly UrlGeneratorSettings _settings;
+        private readonly IUrlValidationService _urlValidationService;
 
-        public WebpageUrlService(IUrlValidationService urlValidationService, IKernel kernel)
+        public WebpageUrlService(IUrlValidationService urlValidationService, ISession session, IKernel kernel,
+            UrlGeneratorSettings settings)
         {
             _urlValidationService = urlValidationService;
+            _session = session;
             _kernel = kernel;
+            _settings = settings;
         }
 
-        static WebpageUrlService()
+        public string Suggest(string pageName, Webpage parent, string documentType, int? template,
+            bool useHierarchy = false)
         {
-            _webpageGenerators = new Dictionary<string,HashSet< Type>>();
+            IWebpageUrlGenerator generator = GetGenerator(documentType, template);
 
-            foreach (var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>().Where(type => !type.ContainsGenericParameters))
-            {
-                var types = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(WebpageUrlGenerator<>).MakeGenericType(type));
-                if (types.Any())
-                {
-                    _webpageGenerators.Add(type.FullName, types);
-                }
-            }
-        }
-
-        public static Dictionary<string, HashSet<Type>> WebpageGenerators
-        {
-            get { return _webpageGenerators; }
-        }
-
-        public string Suggest(string pageName, Webpage parent, string documentType, bool useHierarchy = false)
-        {
-            var generator = GetGenerator(documentType);
-
-            var url = generator.GetUrl(pageName, parent, useHierarchy);
+            string url = generator.GetUrl(pageName, parent, useHierarchy);
 
             //make sure the URL is unique
 
             if (!_urlValidationService.UrlIsValidForWebpage(url, null))
             {
-                var counter = 1;
+                int counter = 1;
 
                 while (!_urlValidationService.UrlIsValidForWebpage(string.Format("{0}-{1}", url, counter), null))
                     counter++;
@@ -58,12 +44,22 @@ namespace MrCMS.Services
             return url;
         }
 
-        private IWebpageUrlGenerator GetGenerator(string documentType)
+        private IWebpageUrlGenerator GetGenerator(string documentType, int? template)
         {
             IWebpageUrlGenerator generator = null;
-            if (documentType != null && _webpageGenerators.ContainsKey(documentType))
+            int id = template.GetValueOrDefault(0);
+            if (id > 0)
             {
-                generator = _kernel.Get(_webpageGenerators[documentType].First()) as IWebpageUrlGenerator;
+                var pageTemplate = _session.Get<PageTemplate>(id);
+                Type urlGeneratorType = pageTemplate.GetUrlGeneratorType();
+                if (pageTemplate != null && urlGeneratorType != null)
+                {
+                    generator = _kernel.Get(urlGeneratorType) as IWebpageUrlGenerator;
+                }
+            }
+            if (generator == null && documentType != null)
+            {
+                generator = _kernel.Get(_settings.GetGeneratorType(documentType)) as IWebpageUrlGenerator;
             }
             return generator ?? new DefaultWebpageUrlGenerator();
         }

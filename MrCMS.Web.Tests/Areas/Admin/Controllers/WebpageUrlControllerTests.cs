@@ -24,18 +24,18 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var textPage = new TextPage();
 
-            _webpageUrlController.Suggest(textPage, "test", typeof (TextPage).FullName, true);
+            _webpageUrlController.Suggest(textPage, "test", typeof (TextPage).FullName, null, true);
 
-            A.CallTo(() => _webpageUrlService.Suggest("test", textPage, typeof(TextPage).FullName, true)).MustHaveHappened();
+            A.CallTo(() => _webpageUrlService.Suggest("test", textPage, typeof(TextPage).FullName, null, true)).MustHaveHappened();
         }
 
         [Fact]
         public void WebpageController_SuggestDocumentUrl_ShouldReturnTheResultOfGetDocumentUrl()
         {
             var textPage = new TextPage();
-            A.CallTo(() => _webpageUrlService.Suggest("test", textPage, typeof(TextPage).FullName, true)).Returns("test/result");
+            A.CallTo(() => _webpageUrlService.Suggest("test", textPage, typeof(TextPage).FullName, null, true)).Returns("test/result");
 
-            string url = _webpageUrlController.Suggest(textPage, "test", typeof (TextPage).FullName, true);
+            string url = _webpageUrlController.Suggest(textPage, "test", typeof(TextPage).FullName, null, true);
 
             url.Should().BeEquivalentTo("test/result");
         }

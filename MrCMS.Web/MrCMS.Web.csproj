@@ -365,6 +365,7 @@
     <Compile Include="Areas\Admin\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Admin\Controllers\SEOAnalysisController.cs" />
     <Compile Include="Areas\Admin\Controllers\TransientNotificationController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UrlGeneratorSettingsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Controllers\VersionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageParentController.cs" />
@@ -401,6 +402,7 @@
     <Compile Include="Areas\Admin\Models\AdminTree.cs" />
     <Compile Include="Areas\Admin\Models\AdminTreeNode.cs" />
     <Compile Include="Areas\Admin\Models\AsyncListModel.cs" />
+    <Compile Include="Areas\Admin\Models\DefaultGeneratorInfo.cs" />
     <Compile Include="Areas\Admin\Models\GetPropertyData.cs" />
     <Compile Include="Areas\Admin\Models\MediaCategorySearchModel.cs" />
     <Compile Include="Areas\Admin\Models\MediaSelectorSearchQuery.cs" />
@@ -493,6 +495,7 @@
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisStatus.cs" />
     <Compile Include="Areas\Admin\Models\StringResourceSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\UpdatePropertyData.cs" />
+    <Compile Include="Areas\Admin\Models\UrlGeneratorSettingInfo.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
     <Compile Include="Areas\Admin\Models\VersionsModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewDataUploadFilesResult.cs" />
@@ -514,6 +517,7 @@
     <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\FormAdminService.cs" />
     <Compile Include="Areas\Admin\Services\GetTemplateOptions.cs" />
+    <Compile Include="Areas\Admin\Services\GetUrlGeneratorOptions.cs" />
     <Compile Include="Areas\Admin\Services\IACLService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminNavLinksService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminPageStatsService.cs" />
@@ -526,6 +530,7 @@
     <Compile Include="Areas\Admin\Services\IDocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFileAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFormAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IGetUrlGeneratorOptions.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IInPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ILayoutAreaAdminService.cs" />
@@ -548,6 +553,7 @@
     <Compile Include="Areas\Admin\Services\ITaskAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ITreeNavService.cs" />
+    <Compile Include="Areas\Admin\Services\IUrlGeneratorSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IUrlHistoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageParentAdminService.cs" />
@@ -589,6 +595,7 @@
     <Compile Include="Areas\Admin\Services\TaskAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\TreeNavService.cs" />
+    <Compile Include="Areas\Admin\Services\UrlGeneratorSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageParentAdminService.cs" />
@@ -1691,6 +1698,8 @@
     <Content Include="Areas\Admin\Views\PageTemplate\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PageTemplate\Add.cshtml" />
     <Content Include="Areas\Admin\Views\PageTemplate\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\UrlGeneratorSettings\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\UrlGeneratorSettings\Set.cshtml" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
   </ItemGroup>

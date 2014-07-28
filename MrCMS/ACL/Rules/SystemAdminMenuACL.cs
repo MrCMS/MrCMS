@@ -14,6 +14,7 @@ namespace MrCMS.ACL.Rules
         public const string ImportExport = "Import/Export";
         public const string MessageTemplates = "Message Templates";
         public const string PageTemplates = "Page Templates";
+        public const string UrlGenerators = "URL Generators";
         public const string ACL = "ACL";
         public const string Indices = "Indices";
         public const string MessageQueue = "Message Queue";
@@ -39,6 +40,7 @@ namespace MrCMS.ACL.Rules
                        ImportExport,
                        MessageTemplates,
                        PageTemplates,
+                       UrlGenerators,
                        ACL,
                        Indices,
                        MessageQueue,

@@ -17,10 +17,12 @@ namespace MrCMS.Web.Areas.Admin.Services
     public class PageTemplateAdminService : IPageTemplateAdminService
     {
         private readonly ISession _session;
+        private readonly IGetUrlGeneratorOptions _getUrlGeneratorOptions;
 
-        public PageTemplateAdminService(ISession session)
+        public PageTemplateAdminService(ISession session, IGetUrlGeneratorOptions getUrlGeneratorOptions)
         {
             _session = session;
+            _getUrlGeneratorOptions = getUrlGeneratorOptions;
         }
 
         public IPagedList<PageTemplate> Search(PageTemplateSearchQuery query)
@@ -44,13 +46,13 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             List<SelectListItem> selectListItems = GetNewList();
             selectListItems.AddRange(from key in MrCMSApp.AppWebpages.Keys.OrderBy(type => type.FullName)
-                let appName = MrCMSApp.AppWebpages[key]
-                select
-                    new SelectListItem
-                    {
-                        Text = string.Format("{0} ({1})", key.GetMetadata().Name, appName),
-                        Value = key.FullName
-                    });
+                                     let appName = MrCMSApp.AppWebpages[key]
+                                     select
+                                         new SelectListItem
+                                         {
+                                             Text = string.Format("{0} ({1})", key.GetMetadata().Name, appName),
+                                             Value = key.FullName
+                                         });
             return selectListItems;
         }
 
@@ -66,24 +68,9 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public List<SelectListItem> GetUrlGeneratorOptions(Type type)
         {
-            List<SelectListItem> selectListItems = GetNewList();
-            if (type != null)
-            {
-                Type defaultGenerator = typeof (DefaultWebpageUrlGenerator);
-                selectListItems.Add(new SelectListItem {Text = "Default", Value = defaultGenerator.FullName});
-                if (WebpageUrlService.WebpageGenerators.ContainsKey(type.FullName))
-                {
-                    selectListItems.AddRange(
-                        WebpageUrlService.WebpageGenerators[type.FullName].Select(
-                            generatorType =>
-                                new SelectListItem
-                                {
-                                    Text = generatorType.Name.BreakUpString(),
-                                    Value = generatorType.FullName
-                                }));
-                }
-            }
-            return selectListItems;
+            var urlGeneratorOptions = _getUrlGeneratorOptions.Get(type);
+            urlGeneratorOptions.Insert(0, new SelectListItem { Text = "Please select...", Value = "" });
+            return urlGeneratorOptions;
         }
 
         private static List<SelectListItem> GetNewList()

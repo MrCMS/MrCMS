@@ -101,7 +101,7 @@ namespace MrCMS.Services.ImportExport
                 item.DocumentType = worksheet.GetValue<string>(rowId, 3);
                 item.UrlSegment = worksheet.GetValue<string>(rowId, 1).HasValue()
                     ? worksheet.GetValue<string>(rowId, 1)
-                    : _webpageUrlService.Suggest(name, null, item.DocumentType);
+                    : _webpageUrlService.Suggest(name, null, item.DocumentType, null);
             }
             else
                 parseErrors.Add("Document Type is required.");

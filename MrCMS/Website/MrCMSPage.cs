@@ -91,7 +91,6 @@ namespace MrCMS.Website
 
         public void RenderZone(string areaName, Webpage page = null, bool allowFrontEndEditing = true)
         {
-            
             page = page ?? CurrentRequestData.CurrentPage;
 
             var currentLayout = GetCurrentLayout.Get(page);
