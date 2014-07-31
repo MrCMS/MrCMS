@@ -14,6 +14,7 @@ namespace MrCMS.Web.Apps.Articles.Pages
 
         [DisplayName("Page Size")]
         [RegularExpression("([0-9]+)", ErrorMessage = "Page size must be a number")]
+        [Range(1, 9999)]
         public virtual int PageSize { get; set; }
 
         [DisplayName("Allow Paging")]
