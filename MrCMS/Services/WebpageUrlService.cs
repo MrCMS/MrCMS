@@ -1,6 +1,7 @@
 using System;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Models;
 using MrCMS.Settings;
 using NHibernate;
 using Ninject;
@@ -23,12 +24,11 @@ namespace MrCMS.Services
             _settings = settings;
         }
 
-        public string Suggest(string pageName, Webpage parent, string documentType, int? template,
-            bool useHierarchy = false)
+        public string Suggest(Webpage parent,SuggestParams suggestParams)
         {
-            IWebpageUrlGenerator generator = GetGenerator(documentType, template);
+            IWebpageUrlGenerator generator = GetGenerator(suggestParams.DocumentType, suggestParams.Template);
 
-            string url = generator.GetUrl(pageName, parent, useHierarchy);
+            string url = generator.GetUrl(suggestParams.PageName, parent, suggestParams.UseHierarchy);
 
             //make sure the URL is unique
 

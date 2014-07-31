@@ -1,8 +1,10 @@
 using FakeItEasy;
 using FluentAssertions;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Models;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -24,18 +26,20 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             var textPage = new TextPage();
 
-            _webpageUrlController.Suggest(textPage, "test", typeof (TextPage).FullName, null, true);
+            var suggestParams = new SuggestParams();
+            _webpageUrlController.Suggest(textPage, suggestParams);
 
-            A.CallTo(() => _webpageUrlService.Suggest("test", textPage, typeof(TextPage).FullName, null, true)).MustHaveHappened();
+            A.CallTo(() => _webpageUrlService.Suggest(textPage,suggestParams)).MustHaveHappened();
         }
 
         [Fact]
         public void WebpageController_SuggestDocumentUrl_ShouldReturnTheResultOfGetDocumentUrl()
         {
             var textPage = new TextPage();
-            A.CallTo(() => _webpageUrlService.Suggest("test", textPage, typeof(TextPage).FullName, null, true)).Returns("test/result");
+            var suggestParams = new SuggestParams();
+            A.CallTo(() => _webpageUrlService.Suggest(textPage, suggestParams)).Returns("test/result");
 
-            string url = _webpageUrlController.Suggest(textPage, "test", typeof(TextPage).FullName, null, true);
+            string url = _webpageUrlController.Suggest(textPage, suggestParams);
 
             url.Should().BeEquivalentTo("test/result");
         }

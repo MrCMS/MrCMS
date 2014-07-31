@@ -400,6 +400,7 @@
     <Compile Include="Models\MrCMSIndex.cs" />
     <Compile Include="Models\RequiredFieldException.cs" />
     <Compile Include="Models\SubMenu.cs" />
+    <Compile Include="Models\SuggestParams.cs" />
     <Compile Include="Models\VersionChange.cs" />
     <Compile Include="Models\WebpageCount.cs" />
     <Compile Include="Models\WebsiteTreeListModel.cs" />
@@ -439,6 +440,8 @@
     <Compile Include="Services\IGetCurrentUser.cs" />
     <Compile Include="Services\IGetHomePage.cs" />
     <Compile Include="Services\IHashAlgorithmProvider.cs" />
+    <Compile Include="Services\IImageTagRenderingService.cs" />
+    <Compile Include="Services\ImageTagRenderingService.cs" />
     <Compile Include="Services\IndexService.cs" />
     <Compile Include="Services\IPasswordManagementService.cs" />
     <Compile Include="Services\IUniquePageService.cs" />

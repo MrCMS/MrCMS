@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Helpers;
+using MrCMS.Models;
 using MrCMS.Services.ImportExport.DTOs;
 using MrCMS.Services.ImportExport.Rules;
 using MrCMS.Website;
@@ -101,7 +102,8 @@ namespace MrCMS.Services.ImportExport
                 item.DocumentType = worksheet.GetValue<string>(rowId, 3);
                 item.UrlSegment = worksheet.GetValue<string>(rowId, 1).HasValue()
                     ? worksheet.GetValue<string>(rowId, 1)
-                    : _webpageUrlService.Suggest(name, null, item.DocumentType, null);
+                    : _webpageUrlService.Suggest(null,
+                        new SuggestParams {PageName = name, DocumentType = item.DocumentType});
             }
             else
                 parseErrors.Add("Document Type is required.");

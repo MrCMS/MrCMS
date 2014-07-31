@@ -16,7 +16,9 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            var typeName = GetValueFromContext(controllerContext, "type");
+            var typeName =
+                GetValueFromContext(controllerContext, "type").Split(new[] {"-"}, StringSplitOptions.RemoveEmptyEntries)
+                    [0];
             var entityType = TypeHelper.MappedClasses.FirstOrDefault(type => type.FullName == typeName);
 
             if (entityType != null && entityType.HasDefaultConstructor())
