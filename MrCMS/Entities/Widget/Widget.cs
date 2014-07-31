@@ -29,6 +29,12 @@ namespace MrCMS.Entities.Widget
         public virtual Webpage Webpage { get; set; }
         public virtual int DisplayOrder { get; set; }
 
+
+        [DisplayName("Cache output?")]
+        public virtual bool Cache { get; set; }
+        [DisplayName("Cache for how many seconds?")]
+        public virtual int CacheLength { get; set; }
+
         [DefaultValue(true)]
         [DisplayName("Show on child pages")]
         public virtual bool IsRecursive { get; set; }

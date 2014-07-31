@@ -153,6 +153,11 @@ namespace MrCMS.Settings
             }
         }
 
+        [DisplayName("Cache image rendering?")]
+        public virtual bool Cache { get; set; }
+        [DisplayName("Cache for how many seconds?")]
+        public virtual int CacheLength { get; set; }
+
         public int? ResizeQuality { get; set; }
 
         [DisplayName("Default Category")]

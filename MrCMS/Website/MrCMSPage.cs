@@ -119,8 +119,8 @@ namespace MrCMS.Website
 
                     try
                     {
-                        
-                        Html.RenderAction("Show", "Widget", new {widget});
+
+                        Html.RenderAction("Show", "Widget", new { widget });
                     }
                     catch (Exception ex)
                     {
@@ -133,17 +133,10 @@ namespace MrCMS.Website
 
                 if (allowEdit)
                     ViewContext.Writer.Write("</div>");
-
-                
             }
         }
 
-        public MvcHtmlString RenderImage(string imageUrl, string alt = null, string title = null, object attributes = null)
-        {
-            return Html.RenderImage(imageUrl, alt, title, attributes);
-        }
-
-        public MvcHtmlString RenderImage(string imageUrl, Size size, string alt = null, string title = null, object attributes = null)
+        public MvcHtmlString RenderImage(string imageUrl, Size size = default(Size), string alt = null, string title = null, object attributes = null)
         {
             return Html.RenderImage(imageUrl, size, alt, title, attributes);
         }

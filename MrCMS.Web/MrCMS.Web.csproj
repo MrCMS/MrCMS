@@ -391,6 +391,7 @@
     <Compile Include="Areas\Admin\ModelBinders\HealthCheckProcessorModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\MessageTemplateModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\SiteSettingsModelBinder.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\SuggestParamsModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\WebpageModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\ACLAvailableModel.cs" />
     <Compile Include="Areas\Admin\Models\ACLModel.cs" />
@@ -403,6 +404,7 @@
     <Compile Include="Areas\Admin\Models\AdminTreeNode.cs" />
     <Compile Include="Areas\Admin\Models\AsyncListModel.cs" />
     <Compile Include="Areas\Admin\Models\DefaultGeneratorInfo.cs" />
+    <Compile Include="Areas\Admin\Models\DocumentTypeToAdd.cs" />
     <Compile Include="Areas\Admin\Models\GetPropertyData.cs" />
     <Compile Include="Areas\Admin\Models\MediaCategorySearchModel.cs" />
     <Compile Include="Areas\Admin\Models\MediaSelectorSearchQuery.cs" />
@@ -1700,6 +1702,7 @@
     <Content Include="Areas\Admin\Views\PageTemplate\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\UrlGeneratorSettings\Index.cshtml" />
     <Content Include="Areas\Admin\Views\UrlGeneratorSettings\Set.cshtml" />
+    <Content Include="Apps\Core\Views\Shared\_OneColumn.cshtml" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
   </ItemGroup>

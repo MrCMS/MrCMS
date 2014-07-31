@@ -283,9 +283,9 @@ namespace MrCMS.Helpers
             return fileVersion != null ? fileVersion.Version : null;
         }
 
-        public static HtmlHelper GetHtmlHelper(Controller controller)
+        public static HtmlHelper GetHtmlHelper(this Controller controller)
         {
-            var viewContext = new ViewContext(controller.ControllerContext, new MrCMSHtmlHelper.FakeView(), controller.ViewData, controller.TempData, TextWriter.Null);
+            var viewContext = new ViewContext(controller.ControllerContext, new FakeView(), controller.ViewData, controller.TempData, TextWriter.Null);
             return new HtmlHelper(viewContext, new ViewPage());
         }
 

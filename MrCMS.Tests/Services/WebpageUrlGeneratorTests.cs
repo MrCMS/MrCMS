@@ -1,6 +1,7 @@
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Helpers;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tests.Stubs;
@@ -25,12 +26,16 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void WebpageUrlGenerator_GetDocumentUrl_ReturnsAUrlBasedOnTheHierarchyIfTheFlagIsSetToTrue()
         {
-            var textPage = new BasicMappedWebpage {Name = "Test Page", UrlSegment = "test-page", Site = CurrentSite};
+            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page", Site = CurrentSite };
 
             Session.Transact(session => session.SaveOrUpdate(textPage));
 
-            string documentUrl = _webpageUrlService.Suggest("Nested Page", textPage,
-                typeof (BasicMappedWebpage).FullName,null, useHierarchy: true);
+            string documentUrl = _webpageUrlService.Suggest(textPage, new SuggestParams
+            {
+                PageName = "Nested Page",
+                DocumentType = typeof(BasicMappedWebpage).FullName,
+                UseHierarchy = true
+            });
 
             documentUrl.Should().Be("test-page/nested-page");
         }
@@ -38,12 +43,16 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void WebpageUrlGenerator_GetDocumentUrl_ReturnsAUrlBasedOnTheNameIfTheFlagIsSetToFalse()
         {
-            var textPage = new BasicMappedWebpage {Name = "Test Page", UrlSegment = "test-page", Site = CurrentSite};
+            var textPage = new BasicMappedWebpage { Name = "Test Page", UrlSegment = "test-page", Site = CurrentSite };
 
             Session.Transact(session => session.SaveOrUpdate(textPage));
 
-            string documentUrl = _webpageUrlService.Suggest("Nested Page", textPage,
-                typeof(BasicMappedWebpage).FullName, null, useHierarchy: false);
+            string documentUrl = _webpageUrlService.Suggest(textPage, new SuggestParams
+            {
+                PageName = "Nested Page",
+                DocumentType = typeof(BasicMappedWebpage).FullName,
+                UseHierarchy = false
+            });
 
             documentUrl.Should().Be("nested-page");
         }
@@ -51,7 +60,7 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void WebpageUrlGenerator_GetDocumentUrlWithExistingName_ShouldReturnTheUrlWithADigitAppended()
         {
-            var parent = new BasicMappedWebpage {Name = "Parent", UrlSegment = "parent", Site = CurrentSite};
+            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Site = CurrentSite };
             var textPage = new BasicMappedWebpage
             {
                 Name = "Test Page",
@@ -67,8 +76,12 @@ namespace MrCMS.Tests.Services
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("parent/test-page/nested-page", null))
                 .Returns(false);
 
-            string documentUrl = _webpageUrlService.Suggest("Nested Page", textPage,
-                typeof(BasicMappedWebpage).FullName, null, useHierarchy: true);
+            string documentUrl = _webpageUrlService.Suggest(textPage,new SuggestParams
+            {
+                PageName = "Nested Page",
+                DocumentType = typeof(BasicMappedWebpage).FullName,
+                UseHierarchy = true
+            });
 
             documentUrl.Should().Be("parent/test-page/nested-page-1");
         }
@@ -77,7 +90,7 @@ namespace MrCMS.Tests.Services
         public void
             WebpageUrlGenerator_GetDocumentUrlWithExistingName_MultipleFilesWithSameNameShouldNotAppendMultipleDigits()
         {
-            var parent = new BasicMappedWebpage {Name = "Parent", UrlSegment = "parent", Site = CurrentSite};
+            var parent = new BasicMappedWebpage { Name = "Parent", UrlSegment = "parent", Site = CurrentSite };
             var textPage = new BasicMappedWebpage
             {
                 Name = "Test Page",
@@ -95,8 +108,12 @@ namespace MrCMS.Tests.Services
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage("parent/test-page/nested-page-1", null))
                 .Returns(false);
 
-            string documentUrl = _webpageUrlService.Suggest("Nested Page", textPage,
-                typeof(BasicMappedWebpage).FullName, null, useHierarchy: true);
+            string documentUrl = _webpageUrlService.Suggest(textPage, new SuggestParams
+            {
+                PageName = "Nested Page",
+                DocumentType = typeof(BasicMappedWebpage).FullName,
+                UseHierarchy = true
+            });
 
             documentUrl.Should().Be("parent/test-page/nested-page-2");
         }

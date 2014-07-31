@@ -1,9 +1,10 @@
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Models;
 
 namespace MrCMS.Services
 {
     public interface IWebpageUrlService
     {
-        string Suggest(string pageName, Webpage parent, string documentType, int? template, bool useHierarchy = false);
+        string Suggest(Webpage parent, SuggestParams suggestParams);
     }
 }

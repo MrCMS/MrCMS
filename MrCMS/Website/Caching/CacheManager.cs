@@ -7,6 +7,7 @@ namespace MrCMS.Website.Caching
 {
     public class CacheManager : ICacheManager
     {
+        public const string InternalCachePrefix = "MrCMS.Cache.";
         private readonly Cache _cache;
 
         public CacheManager(Cache cache)
@@ -16,7 +17,10 @@ namespace MrCMS.Website.Caching
 
         public T Get<T>(string key, Func<T> func, TimeSpan time)
         {
-            var o = _cache[key];
+            key = InternalCachePrefix + key;
+            object o = null;
+            if (time > TimeSpan.Zero)
+                o = _cache[key];
 
             if (o != null)
                 return o.To<T>();
@@ -25,11 +29,12 @@ namespace MrCMS.Website.Caching
 
             if (o != null)
             {
-                _cache.Add(key, o, null, DateTime.MaxValue, time, CacheItemPriority.AboveNormal, null);
+                if (time > TimeSpan.Zero)
+                    _cache.Add(key, o, null, DateTime.MaxValue, time, CacheItemPriority.AboveNormal, null);
 
                 return o.To<T>();
             }
-            return (T) (object) null;
+            return (T)(object)null;
         }
 
         public void Clear()
