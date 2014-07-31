@@ -366,6 +366,7 @@
     <Compile Include="Helpers\HttpRequestHelper.cs" />
     <Compile Include="Helpers\ImageRenderingExtensions.cs" />
     <Compile Include="Helpers\LayoutExtensions.cs" />
+    <Compile Include="Helpers\MediaSettingExtensions.cs" />
     <Compile Include="Helpers\ModelBinderExtensions.cs" />
     <Compile Include="Helpers\MrCMSPageExtensions.cs" />
     <Compile Include="Helpers\MrCMSResources.cs" />
@@ -378,6 +379,7 @@
     <Compile Include="Helpers\TweetParsingExtensions.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Helpers\WebpageExtensions.cs" />
+    <Compile Include="Helpers\WidgetCachingExtensions.cs" />
     <Compile Include="Indexing\Definitions\BodyContentFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\CreatedOnFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\DisplayOrderFieldDefinition.cs" />
@@ -393,6 +395,7 @@
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
+    <Compile Include="Models\CachingInfo.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
     <Compile Include="Models\MrCMSIndex.cs" />
     <Compile Include="Models\RequiredFieldException.cs" />
@@ -401,6 +404,8 @@
     <Compile Include="Models\WebpageCount.cs" />
     <Compile Include="Models\WebsiteTreeListModel.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
+    <Compile Include="Services\Caching\HtmlCacheService.cs" />
+    <Compile Include="Services\Caching\IHtmlCacheService.cs" />
     <Compile Include="Services\CurrentSiteLocator.cs" />
     <Compile Include="Services\CustomBinderBase.cs" />
     <Compile Include="Services\CloneSiteService.cs" />
@@ -783,6 +788,7 @@
     <Compile Include="Website\OutOfContextResponse.cs" />
     <Compile Include="Website\OutOfContextServerUtility.cs" />
     <Compile Include="Website\OutOfContextSession.cs" />
+    <Compile Include="Website\OutputCacheableAttribute.cs" />
     <Compile Include="Website\PropertyFinder.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
