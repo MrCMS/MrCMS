@@ -15,7 +15,7 @@ namespace MrCMS.Website.Caching
             _cache = cache;
         }
 
-        public T Get<T>(string key, Func<T> func, TimeSpan time)
+        public T Get<T>(string key, Func<T> func, TimeSpan time, CacheExpiryType cacheExpiryType)
         {
             key = InternalCachePrefix + key;
             object o = null;
@@ -30,8 +30,15 @@ namespace MrCMS.Website.Caching
             if (o != null)
             {
                 if (time > TimeSpan.Zero)
-                    _cache.Add(key, o, null, DateTime.MaxValue, time, CacheItemPriority.AboveNormal, null);
-
+                {
+                    var absoluteExpiration = cacheExpiryType == CacheExpiryType.Absolute
+                        ? DateTime.UtcNow.Add(time)
+                        : Cache.NoAbsoluteExpiration;
+                    var slidingExpiration = cacheExpiryType == CacheExpiryType.Sliding
+                        ? (time)
+                        : Cache.NoSlidingExpiration;
+                    _cache.Add(key, o, null, absoluteExpiration, slidingExpiration, CacheItemPriority.AboveNormal, null);
+                }
                 return o.To<T>();
             }
             return (T)(object)null;
@@ -45,5 +52,11 @@ namespace MrCMS.Website.Caching
                 _cache.Remove(enumerator.Key.ToString());
             }
         }
+    }
+
+    public enum CacheExpiryType
+    {
+        Sliding,
+        Absolute
     }
 }

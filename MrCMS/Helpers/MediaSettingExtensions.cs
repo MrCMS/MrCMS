@@ -11,7 +11,7 @@ namespace MrCMS.Helpers
         public static CachingInfo GetCachingInfo(this MediaSettings mediasettings, string imageUrl, Size targetSize = default(Size), string alt = null, string title = null, object attributes = null)
         {
             var cacheKey = GetCacheKey(imageUrl, targetSize, alt, title,attributes);
-            return new CachingInfo(mediasettings.Cache, cacheKey, TimeSpan.FromSeconds(mediasettings.CacheLength));
+            return new CachingInfo(mediasettings.Cache, cacheKey, TimeSpan.FromSeconds(mediasettings.CacheLength),mediasettings.CacheExpiryType);
         }
 
         private static string GetCacheKey(string imageUrl, Size targetSize, string alt, string title, object attributes)

@@ -588,6 +588,7 @@
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleContainsTerm.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\TitleIsCorrectLength.cs" />
     <Compile Include="Areas\Admin\Services\SEOAnalysis\URLContainsTerm.cs" />
+    <Compile Include="Areas\Admin\Services\SetCacheExpiryOptions.cs" />
     <Compile Include="Areas\Admin\Services\SetWebpageAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\SetWidgetAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\SiteAdminService.cs" />

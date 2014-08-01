@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Website.Caching;
 using NHibernate;
 using MrCMS.Helpers;
 
@@ -34,6 +35,8 @@ namespace MrCMS.Entities.Widget
         public virtual bool Cache { get; set; }
         [DisplayName("Cache for how many seconds?")]
         public virtual int CacheLength { get; set; }
+        [DisplayName("Cache expiry type")]
+        public virtual CacheExpiryType CacheExpiryType { get; set; }
 
         [DefaultValue(true)]
         [DisplayName("Show on child pages")]

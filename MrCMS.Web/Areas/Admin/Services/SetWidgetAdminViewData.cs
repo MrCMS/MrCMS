@@ -24,7 +24,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                 while (typeof(Widget).IsAssignableFrom(thisType))
                 {
                     foreach (var assignType in TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof(BaseAssignWidgetAdminViewData<>).MakeGenericType(type)))
+                        typeof(BaseAssignWidgetAdminViewData<>).MakeGenericType(thisType)))
                     {
                         hashSet.Add(assignType);
                     }
@@ -58,7 +58,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                     )
                 {
                     var adminViewData = assignAdminViewData as BaseAssignWidgetAdminViewData;
-                    if (adminViewData != null) adminViewData.AssignViewData(widget, viewData);
+                    if (adminViewData != null) adminViewData.AssignViewDataBase(widget, viewData);
                 }
             }
         }

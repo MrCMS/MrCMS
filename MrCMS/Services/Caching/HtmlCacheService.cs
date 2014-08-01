@@ -20,13 +20,13 @@ namespace MrCMS.Services.Caching
             return _cacheManager.Get(cachingInfo.CacheKey, () => new ContentResult
             {
                 Content = func(controller.GetHtmlHelper()).ToString()
-            }, cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero);
+            }, cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
 
         public MvcHtmlString GetString(Controller controller, CachingInfo cachingInfo, Func<HtmlHelper, MvcHtmlString> func)
         {
             return _cacheManager.Get(cachingInfo.CacheKey, () => func(controller.GetHtmlHelper()),
-                cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero);
+                cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
 
         public ActionResult GetContent(HtmlHelper helper, CachingInfo cachingInfo, Func<HtmlHelper, MvcHtmlString> func)
@@ -34,13 +34,13 @@ namespace MrCMS.Services.Caching
             return _cacheManager.Get(cachingInfo.CacheKey, () => new ContentResult
             {
                 Content = func(helper).ToString()
-            }, cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero);
+            }, cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
 
         public MvcHtmlString GetString(HtmlHelper helper, CachingInfo cachingInfo, Func<HtmlHelper, MvcHtmlString> func)
         {
             return _cacheManager.Get(cachingInfo.CacheKey, () => func(helper),
-                cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero);
+                cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
     }
 }
