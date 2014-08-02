@@ -5,6 +5,7 @@ using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Helpers;
 using NHibernate;
+using NHibernate.Impl;
 using Ninject;
 using Ninject.Modules;
 using Ninject.Parameters;

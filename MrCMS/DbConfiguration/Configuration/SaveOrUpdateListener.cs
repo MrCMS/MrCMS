@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Web;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
+using MrCMS.Events;
 using MrCMS.Website;
 using NHibernate.Event;
 using NHibernate.Event.Default;
@@ -10,18 +9,33 @@ using NHibernate.Persister.Entity;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
-    public class SaveOrUpdateListener : DefaultSaveOrUpdateEventListener, IPreUpdateEventListener, IPreInsertEventListener
+    public class SaveOrUpdateListener : DefaultSaveOrUpdateEventListener, IPreUpdateEventListener,
+        IPreInsertEventListener
     {
+        public bool OnPreInsert(PreInsertEvent @event)
+        {
+            //var systemEntity = @event.Entity as SystemEntity;
+            //if (systemEntity != null)
+            //{
+            //    var now = CurrentRequestData.Now;
+            //    SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
+            //    SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
+            //    if (systemEntity is SiteEntity && (systemEntity as SiteEntity).Site == null)
+            //        SetSite(@event.Persister, @event.State, systemEntity as SiteEntity, CurrentRequestData.CurrentSite);
+            //}
+            return false;
+        }
+
         public bool OnPreUpdate(PreUpdateEvent @event)
         {
-            var systemEntity = @event.Entity as SystemEntity;
-            if (systemEntity != null)
-            {
-                var now = CurrentRequestData.Now;
-                if (!DbHasSetCreatedOn(@event.Persister, @event.State))
-                    SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
-                SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
-            }
+            //var systemEntity = @event.Entity as SystemEntity;
+            //if (systemEntity != null)
+            //{
+            //    var now = CurrentRequestData.Now;
+            //    if (!DbHasSetCreatedOn(@event.Persister, @event.State))
+            //        SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
+            //    SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
+            //}
             return false;
         }
 
@@ -29,7 +43,7 @@ namespace MrCMS.DbConfiguration.Configuration
         {
             int index = Array.IndexOf(persister.PropertyNames, "CreatedOn");
 
-            var currentCreatedOn = (DateTime)state[index];
+            var currentCreatedOn = (DateTime) state[index];
             DateTime defaultDateTime = default(DateTime);
             return !DateTime.Equals(currentCreatedOn, defaultDateTime);
         }
@@ -40,6 +54,7 @@ namespace MrCMS.DbConfiguration.Configuration
 
             siteEntity.UpdatedOn = date;
         }
+
         private void SetCreatedOn(IEntityPersister persister, object[] state, SystemEntity siteEntity, DateTime date)
         {
             Set(persister, state, "CreatedOn", date);
@@ -61,19 +76,35 @@ namespace MrCMS.DbConfiguration.Configuration
                 return;
             state[index] = value;
         }
+    }
 
-        public bool OnPreInsert(PreInsertEvent @event)
+    public class SetOnAddingProperties : IOnAdding
+    {
+        private readonly Site _site;
+
+        public SetOnAddingProperties(Site site)
         {
-            var systemEntity = @event.Entity as SystemEntity;
-            if (systemEntity != null)
+            _site = site;
+        }
+
+        public void Execute(OnAddingArgs args)
+        {
+            DateTime now = CurrentRequestData.Now;
+            SystemEntity systemEntity = args.Item;
+            if (systemEntity.CreatedOn == DateTime.MinValue)
             {
-                var now = CurrentRequestData.Now;
-                SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
-                SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
-                if (systemEntity is SiteEntity && (systemEntity as SiteEntity).Site == null)
-                    SetSite(@event.Persister, @event.State, systemEntity as SiteEntity, CurrentRequestData.CurrentSite);
+                systemEntity.CreatedOn = now;
             }
-            return false;
+            if (systemEntity.UpdatedOn == DateTime.MinValue)
+            {
+                systemEntity.UpdatedOn = now;
+            }
+            var siteEntity = systemEntity as SiteEntity;
+            if (siteEntity == null) return;
+            if (siteEntity.Site == null)
+            {
+                siteEntity.Site = _site;
+            }
         }
     }
 }

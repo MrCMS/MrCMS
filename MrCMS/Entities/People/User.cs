@@ -114,14 +114,6 @@ namespace MrCMS.Entities.People
             return UserProfileData.OfType<T>();
         }
 
-        public override void OnDeleting(ISession session)
-        {
-            base.OnDeleting(session);
-            foreach (UserRole userRole in Roles)
-                userRole.Users.Remove(this);
-            Roles.Clear();
-        }
-
         public virtual bool CanAccess<T>(string operation, string type = null) where T : ACLRule, new()
         {
             return new T().CanAccess(this, operation, type);

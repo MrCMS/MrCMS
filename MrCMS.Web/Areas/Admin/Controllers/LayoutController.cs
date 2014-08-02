@@ -1,14 +1,13 @@
 ﻿using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class LayoutController : BaseDocumentController<Layout>
     {
-        public LayoutController(IDocumentService documentService, IUrlValidationService urlValidationService, Site site)
-            : base(documentService, urlValidationService, site)
+        public LayoutController(IDocumentService documentService, IUrlValidationService urlValidationService)
+            : base(documentService, urlValidationService)
         {
         }
 

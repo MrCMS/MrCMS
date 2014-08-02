@@ -55,17 +55,5 @@ namespace MrCMS.Tests.Services
 
             Session.QueryOver<Widget>().RowCount().Should().Be(0);
         }
-
-        [Fact]
-        public void WidgetService_Delete_CallsOnDeletingOnTheWidget()
-        {
-            var widget = A.Fake<Widget>();
-            var session = A.Fake<ISession>();
-            var widgetService = new WidgetService(session);
-
-            widgetService.DeleteWidget(widget);
-
-            A.CallTo(() => widget.OnDeleting(session)).MustHaveHappened();
-        }
     }
 }

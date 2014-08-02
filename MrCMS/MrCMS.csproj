@@ -281,6 +281,7 @@
     <Compile Include="DbConfiguration\Mapping\MrCmsMappingConfiguration.cs" />
     <Compile Include="DbConfiguration\Mapping\StringResourceOverride.cs" />
     <Compile Include="DbConfiguration\MrCMSListeners.cs" />
+    <Compile Include="DbConfiguration\MrCMSSession.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentVersionOverride.cs" />
@@ -348,6 +349,16 @@
     <Compile Include="Events\Documents\OnDocumentUpdatedEventArgs.cs" />
     <Compile Include="Events\Documents\WebpagePublishedNotification.cs" />
     <Compile Include="Events\Documents\WebpageUnpublishedNotification.cs" />
+    <Compile Include="Events\IOnAdding.cs" />
+    <Compile Include="Events\IOnDeleting.cs" />
+    <Compile Include="Events\IOnUpdating.cs" />
+    <Compile Include="Events\OnAddingArgs.cs" />
+    <Compile Include="Events\OnDeletingArgs.cs" />
+    <Compile Include="Events\OnDeletingLayout.cs" />
+    <Compile Include="Events\OnDeletingMediaCategory.cs" />
+    <Compile Include="Events\OnDeletingPageWidgetSort.cs" />
+    <Compile Include="Events\OnDeletingUser.cs" />
+    <Compile Include="Events\OnDeletingWidget.cs" />
     <Compile Include="HealthChecks\EmailSenderTaskCheck.cs" />
     <Compile Include="HealthChecks\HealthCheck.cs" />
     <Compile Include="HealthChecks\HealthCheckResult.cs" />

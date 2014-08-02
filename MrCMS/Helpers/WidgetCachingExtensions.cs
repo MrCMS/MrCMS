@@ -20,7 +20,8 @@ namespace MrCMS.Helpers
                 return CachingInfo.DoNotCache;
             }
             var shouldCache = widget.Cache && widget.CacheLength > 0;
-            return new CachingInfo(shouldCache, GetCacheKey(widget, attribute), TimeSpan.FromSeconds(widget.CacheLength),widget.CacheExpiryType);
+            return new CachingInfo(shouldCache, GetCacheKey(widget, attribute), TimeSpan.FromSeconds(widget.CacheLength),
+                widget.CacheExpiryType);
         }
 
         private static string GetCacheKey(Widget widget, OutputCacheableAttribute attribute)

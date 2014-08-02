@@ -20,15 +20,5 @@ namespace MrCMS.Entities.Documents.Layout
         public virtual IList<PageTemplate> PageTemplates { get; set; }
 
         public virtual bool Hidden { get; set; }
-
-        public override void OnDeleting(ISession session)
-        {
-            foreach (var pageTemplate in PageTemplates)
-            {
-                pageTemplate.Layout = null;
-            }
-            PageTemplates.Clear();
-            base.OnDeleting(session);
-        }
     }
 }

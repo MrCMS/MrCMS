@@ -104,11 +104,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             var webpage = _session.Get<Webpage>(pageId);
             var list = webpage.PageWidgetSorts.Where(sort => sort.LayoutArea == area).ToList();
 
-            _session.Transact(session => list.ForEach(sort =>
-                                                          {
-                                                              sort.OnDeleting(session);
-                                                              session.Delete(sort);
-                                                          }));
+            _session.Transact(session => list.ForEach(session.Delete));
         }
 
         public PageWidgetSortModel GetSortModel(LayoutArea area, int pageId)

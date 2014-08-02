@@ -43,22 +43,10 @@ namespace MrCMS.Entities.Widget
         public virtual bool IsRecursive { get; set; }
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
-	
+
         public virtual Iesi.Collections.Generic.ISet<Webpage> HiddenOn { get; set; }
         public virtual Iesi.Collections.Generic.ISet<Webpage> ShownOn { get; set; }
 
         public virtual bool HasProperties { get { return true; } }
-
-        public override void OnDeleting(ISession session)
-        {
-            ShownOn.ForEach(webpage => webpage.ShownWidgets.Remove(this));
-            HiddenOn.ForEach(webpage => webpage.HiddenWidgets.Remove(this));
-            if (LayoutArea != null) LayoutArea.Widgets.Remove(this); //required to clear cache
-            if (Webpage != null)
-            {
-                Webpage.Widgets.Remove(this);
-            }
-            base.OnDeleting(session);
-        }
     }
 }

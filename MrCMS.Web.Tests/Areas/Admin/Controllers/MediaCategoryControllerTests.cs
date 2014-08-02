@@ -18,7 +18,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private readonly IDocumentService _documentService;
         private readonly IFileAdminService _fileService;
-        private readonly Site _site;
         private readonly MediaCategoryController _mediaCategoryController;
         private IUrlValidationService _urlValidationService;
 
@@ -26,9 +25,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             _documentService = A.Fake<IDocumentService>();
             _fileService = A.Fake<IFileAdminService>();
-            _site = new Site();
             _urlValidationService = A.Fake<IUrlValidationService>();
-            _mediaCategoryController = new MediaCategoryController(_fileService, _documentService, _urlValidationService, _site);
+            _mediaCategoryController = new MediaCategoryController(_fileService, _documentService, _urlValidationService);
         }
 
         [Fact]

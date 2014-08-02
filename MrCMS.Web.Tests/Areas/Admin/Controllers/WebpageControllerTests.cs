@@ -24,7 +24,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     public class WebpageControllerTests : MrCMSTest
     {
         private readonly IDocumentService _documentService;
-        private readonly Site _site = new Site();
         private readonly IUrlValidationService _urlValidationService;
         private readonly IWebpageBaseViewDataService _baseViewDataService;
         private readonly WebpageController _webpageController;
@@ -37,7 +36,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             _urlValidationService = A.Fake<IUrlValidationService>();
             _baseViewDataService = A.Fake<IWebpageBaseViewDataService>();
             _webpageController = new WebpageController(_baseViewDataService, _documentService,
-                _urlValidationService, _site)
+                _urlValidationService)
             {
                 RouteDataMock = new RouteData()
             };
@@ -54,7 +53,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
         {
-            var textPage = new TextPage {Site = _site, Id = 1};
+            var textPage = new TextPage { Id = 1};
             A.CallTo(() => _documentService.GetDocument<Webpage>(1)).Returns(textPage);
 
             var actionResult = _webpageController.Add_Get(1) as ViewResult;
@@ -65,7 +64,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldCallViewData()
         {
-            var textPage = new TextPage {Site = _site};
+            var textPage = new TextPage {};
             A.CallTo(() => _documentService.GetDocument<Webpage>(1)).Returns(textPage);
 
             _webpageController.Add_Get(1);
@@ -77,7 +76,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddPost_ShouldCallSaveDocument()
         {
-            var webpage = new TextPage {Site = _site};
+            var webpage = new TextPage {};
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, null)).Returns(true);
 
             _webpageController.Add(webpage);

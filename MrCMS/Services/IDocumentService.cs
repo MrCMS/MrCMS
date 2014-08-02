@@ -6,7 +6,7 @@ using MrCMS.Models;
 
 namespace MrCMS.Services
 {
-    public interface IDocumentService
+    public interface IDocumentService :IGetDocumentParents
     {
         void AddDocument<T>(T document) where T : Document;
         T GetDocument<T>(int id) where T : Document;
@@ -14,7 +14,6 @@ namespace MrCMS.Services
         IEnumerable<T> GetAllDocuments<T>() where T : Document;
         void DeleteDocument<T>(T document) where T : Document;
 
-        IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document;
         T GetDocumentByUrl<T>(string url) where T : Document;
         void SetOrders(List<SortItem> items);
 

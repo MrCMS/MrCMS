@@ -25,11 +25,7 @@ namespace MrCMS.Services
 
         public void DeleteWidget(Widget widget)
         {
-            _session.Transact(session =>
-            {
-                widget.OnDeleting(session);
-                session.Delete(widget);
-            });
+            _session.Transact(session => session.Delete(widget));
         }
 
         public Widget AddWidget(Widget widget)

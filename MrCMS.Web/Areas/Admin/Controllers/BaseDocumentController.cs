@@ -1,15 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
-using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
-using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -17,13 +14,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         protected readonly IDocumentService _documentService;
         protected readonly IUrlValidationService _urlValidationService;
-        protected readonly Site Site;
 
-        protected BaseDocumentController(IDocumentService documentService, IUrlValidationService urlValidationService, Site site)
+        protected BaseDocumentController(IDocumentService documentService, IUrlValidationService urlValidationService)
         {
             _documentService = documentService;
             _urlValidationService = urlValidationService;
-            Site = site;
         }
 
         public ViewResult Index()
@@ -34,14 +29,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         [ActionName("Add")]
         public abstract ActionResult Add_Get(int? id);
-        
+
 
         [HttpPost]
         public virtual ActionResult Add(T doc)
         {
             _documentService.AddDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
-            return RedirectToAction("Edit", new { id = doc.Id });
+            return RedirectToAction("Edit", new {id = doc.Id});
         }
 
         [HttpGet]
@@ -56,7 +51,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
-            return RedirectToAction("Edit", new { id = doc.Id });
+            return RedirectToAction("Edit", new {id = doc.Id});
         }
 
         [HttpGet]
@@ -75,23 +70,23 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))]T parent)
+        public ActionResult Sort([IoCModelBinder(typeof (NullableEntityModelBinder))] T parent)
         {
-            var sortItems =
+            List<SortItem> sortItems =
                 _documentService.GetDocumentsByParent(parent)
-                                .Select(
-                                    arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
-                                    .OrderBy(x => x.Order)
-                                .ToList();
+                    .Select(
+                        arg => new SortItem {Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name})
+                    .OrderBy(x => x.Order)
+                    .ToList();
 
             return View(sortItems);
         }
 
         [HttpPost]
-        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))]T parent, List<SortItem> items)
+        public ActionResult Sort([IoCModelBinder(typeof (NullableEntityModelBinder))] T parent, List<SortItem> items)
         {
             _documentService.SetOrders(items);
-            return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
+            return RedirectToAction("Sort", parent == null ? null : new {id = parent.Id});
         }
     }
 }

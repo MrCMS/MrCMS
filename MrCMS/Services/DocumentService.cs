@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
+using MrCMS.Events;
 using MrCMS.Events.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -14,11 +13,15 @@ using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Transform;
 
 namespace MrCMS.Services
 {
-    public class DocumentService : IDocumentService
+    public interface IGetDocumentParents
+    {
+        IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document;
+    }
+
+    public class DocumentService : IDocumentService, IGetDocumentParents
     {
         private readonly Site _currentSite;
         private readonly ISession _session;
@@ -33,14 +36,8 @@ namespace MrCMS.Services
 
         public void AddDocument<T>(T document) where T : Document
         {
-            _session.Transact(session =>
-            {
-                document.DisplayOrder = GetMaxParentDisplayOrder(document);
-                document.CustomInitialization(this, _session);
-                session.SaveOrUpdate(document);
-            });
-            EventContext.Instance.Publish<IOnDocumentAdded, OnDocumentAddedEventArgs>(
-                new OnDocumentAddedEventArgs(document));
+            _session.Transact(session => session.Save(document));
+            EventContext.Instance.Publish<IOnDocumentAdded, OnDocumentAddedEventArgs>(new OnDocumentAddedEventArgs(document));
         }
 
         public T GetDocument<T>(int id) where T : Document
@@ -52,7 +49,7 @@ namespace MrCMS.Services
         {
             _session.Transact(session =>
             {
-                document.OnSaving(session);
+                //document.OnSaving(session);
                 session.Update(document);
             });
             EventContext.Instance.Publish<IOnDocumentUpdated, OnDocumentUpdatedEventArgs>(
@@ -82,33 +79,6 @@ namespace MrCMS.Services
             return list;
         }
 
-        public Layout GetDefaultLayout(Webpage currentPage)
-        {
-            if (currentPage != null)
-            {
-                string defaultLayoutName = currentPage.GetMetadata().DefaultLayoutName;
-                if (!String.IsNullOrEmpty(defaultLayoutName))
-                {
-                    Layout layout =
-                        _session.QueryOver<Layout>()
-                            .Where(x => x.Name == defaultLayoutName)
-                            .Cacheable()
-                            .List()
-                            .FirstOrDefault();
-                    if (layout != null)
-                        return layout;
-                }
-            }
-            int settingValue = _siteSettings.DefaultLayoutId;
-
-            return _session.Get<Layout>(settingValue) ??
-                   _session.QueryOver<Layout>()
-                       .Where(layout => layout.Site == currentPage.Site)
-                       .Take(1)
-                       .Cacheable()
-                       .SingleOrDefault();
-        }
-
         public void SetOrders(List<SortItem> items)
         {
             _session.Transact(session => items.ForEach(item =>
@@ -123,11 +93,7 @@ namespace MrCMS.Services
         {
             if (document != null)
             {
-                _session.Transact(session =>
-                {
-                    document.OnDeleting(session);
-                    session.Delete(document);
-                });
+                _session.Transact(session => { session.Delete(document); });
 
                 EventContext.Instance.Publish<IOnDocumentDeleted, OnDocumentDeletedEventArgs>(
                     new OnDocumentDeletedEventArgs(document));
@@ -160,34 +126,52 @@ namespace MrCMS.Services
                 .Take(1).Cacheable()
                 .SingleOrDefault();
         }
+    }
+    public class SetDocumentDisplayOrder : IOnAdding
+    {
+        private readonly IGetDocumentParents _getDocumentParents;
 
+        public SetDocumentDisplayOrder(IGetDocumentParents getDocumentParents)
+        {
+            _getDocumentParents = getDocumentParents;
+        }
 
-        private int GetMaxParentDisplayOrder(Document document)
+        public void Execute(OnAddingArgs args)
+        {
+            var document = args.Item as Document;
+            if (document != null)
+            {
+
+                document.DisplayOrder = GetMaxParentDisplayOrder(document, args.Session);
+            }
+        }
+
+        private int GetMaxParentDisplayOrder(Document document, ISession session)
         {
             if (document.Parent != null)
             {
-                return _session.QueryOver<Document>()
+                return session.QueryOver<Document>()
                     .Where(doc => doc.Parent.Id == document.Parent.Id)
                     .Select(Projections.Max<Document>(d => d.DisplayOrder))
                     .SingleOrDefault<int>();
             }
             if (document is MediaCategory)
             {
-                List<MediaCategory> documentsByParent = GetDocumentsByParent<MediaCategory>(null).ToList();
+                List<MediaCategory> documentsByParent = _getDocumentParents.GetDocumentsByParent<MediaCategory>(null).ToList();
                 return documentsByParent.Any()
                     ? documentsByParent.Max(category => category.DisplayOrder) + 1
                     : 0;
             }
             if (document is Layout)
             {
-                List<Layout> documentsByParent = GetDocumentsByParent<Layout>(null).ToList();
+                List<Layout> documentsByParent = _getDocumentParents.GetDocumentsByParent<Layout>(null).ToList();
                 return documentsByParent.Any()
                     ? documentsByParent.Max(category => category.DisplayOrder) + 1
                     : 0;
             }
             else
             {
-                List<Webpage> documentsByParent = GetDocumentsByParent<Webpage>(null).ToList();
+                List<Webpage> documentsByParent = _getDocumentParents.GetDocumentsByParent<Webpage>(null).ToList();
                 return documentsByParent.Any()
                     ? documentsByParent.Max(category => category.DisplayOrder) + 1
                     : 0;
