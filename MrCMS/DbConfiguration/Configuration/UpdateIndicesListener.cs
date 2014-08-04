@@ -29,7 +29,7 @@ namespace MrCMS.DbConfiguration.Configuration
 
         private static bool ShouldBeUpdated(SiteEntity siteEntity)
         {
-            return siteEntity != null && !siteEntity.IsDeleted && !(siteEntity is IHaveExecutionStatus);
+            return siteEntity != null && !(siteEntity is IHaveExecutionStatus);
         }
 
         public void Execute(OnAddedArgs<SiteEntity> args)

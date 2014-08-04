@@ -22,7 +22,6 @@ using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
-using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Caches.SysCache2;
@@ -30,7 +29,6 @@ using NHibernate.Dialect;
 using NHibernate.Event;
 using NHibernate.Tool.hbm2ddl;
 using Environment = NHibernate.Cfg.Environment;
-using TypeHelper = MrCMS.Helpers.TypeHelper;
 
 namespace MrCMS.DbConfiguration
 {
@@ -69,36 +67,36 @@ namespace MrCMS.DbConfiguration
                     {
                         case "System.Data.SQLite":
                             return InDevelopment
-                                       ? SQLiteConfiguration.Standard.ConnectionString(
-                                           x => x.FromConnectionStringWithKey("mrcms-dev"))
-                                       : SQLiteConfiguration.Standard.ConnectionString(
-                                           x => x.FromConnectionStringWithKey("mrcms"));
+                                ? SQLiteConfiguration.Standard.ConnectionString(
+                                    x => x.FromConnectionStringWithKey("mrcms-dev"))
+                                : SQLiteConfiguration.Standard.ConnectionString(
+                                    x => x.FromConnectionStringWithKey("mrcms"));
                         case "System.Data.SqlClient":
                             return InDevelopment
-                                       ? MsSqlConfiguration.MsSql2008.ConnectionString(
-                                           x => x.FromConnectionStringWithKey("mrcms-dev"))
-                                       : MsSqlConfiguration.MsSql2008.ConnectionString(
-                                           x => x.FromConnectionStringWithKey("mrcms"));
+                                ? MsSqlConfiguration.MsSql2008.ConnectionString(
+                                    x => x.FromConnectionStringWithKey("mrcms-dev"))
+                                : MsSqlConfiguration.MsSql2008.ConnectionString(
+                                    x => x.FromConnectionStringWithKey("mrcms"));
                         case "MySql.Data.MySqlClient":
                             return InDevelopment
-                                       ? MySQLConfiguration.Standard.ConnectionString(
-                                           x => x.FromConnectionStringWithKey("mrcms-dev"))
-                                       : MySQLConfiguration.Standard.ConnectionString(
-                                           x => x.FromConnectionStringWithKey("mrcms"));
+                                ? MySQLConfiguration.Standard.ConnectionString(
+                                    x => x.FromConnectionStringWithKey("mrcms-dev"))
+                                : MySQLConfiguration.Standard.ConnectionString(
+                                    x => x.FromConnectionStringWithKey("mrcms"));
                     }
                     throw new DataException("Provider Name not recognised: " + connectionStringSettings.ProviderName);
                 case DatabaseType.MsSql:
                     return InDevelopment
-                               ? MsSqlConfiguration.MsSql2008.ConnectionString(
-                                   x => x.FromConnectionStringWithKey("mrcms-dev"))
-                               : MsSqlConfiguration.MsSql2008.ConnectionString(
-                                   x => x.FromConnectionStringWithKey("mrcms"));
+                        ? MsSqlConfiguration.MsSql2008.ConnectionString(
+                            x => x.FromConnectionStringWithKey("mrcms-dev"))
+                        : MsSqlConfiguration.MsSql2008.ConnectionString(
+                            x => x.FromConnectionStringWithKey("mrcms"));
                 case DatabaseType.MySQL:
                     return InDevelopment
-                               ? MySQLConfiguration.Standard.ConnectionString(
-                                   x => x.FromConnectionStringWithKey("mrcms-dev"))
-                               : MySQLConfiguration.Standard.ConnectionString(
-                                   x => x.FromConnectionStringWithKey("mrcms"));
+                        ? MySQLConfiguration.Standard.ConnectionString(
+                            x => x.FromConnectionStringWithKey("mrcms-dev"))
+                        : MySQLConfiguration.Standard.ConnectionString(
+                            x => x.FromConnectionStringWithKey("mrcms"));
                 case DatabaseType.Sqlite:
                     return SQLiteConfiguration.Standard.Dialect<SQLiteDialect>().InMemory().Raw(
                         Environment.ReleaseConnections, "on_close");
@@ -123,7 +121,7 @@ namespace MrCMS.DbConfiguration
 
         public NHibernate.Cfg.Configuration GetConfiguration()
         {
-            var assemblies = TypeHelper.GetAllMrCMSAssemblies();
+            HashSet<Assembly> assemblies = TypeHelper.GetAllMrCMSAssemblies();
             assemblies.AddRange(ManuallyAddedAssemblies);
 
             var finalAssemblies = new List<Assembly>();
@@ -137,69 +135,69 @@ namespace MrCMS.DbConfiguration
             IPersistenceConfigurer iPersistenceConfigurer = GetPersistenceConfigurer();
             AutoPersistenceModel addFromAssemblyOf =
                 AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
-                       .IgnoreBase<SystemEntity>()
-                       .IgnoreBase<SiteEntity>()
-                       .IncludeBase<Document>()
-                       .IncludeBase<Webpage>()
-                       .IncludeBase<MessageTemplate>()
-                       .IncludeBase<UserProfileData>()
-                       .IncludeBase<Widget>()
-                       .IncludeBase<FormProperty>()
-                       .IncludeBase<FormPropertyWithOptions>()
-                       .IncludeAppBases()
-                       .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
-                       .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
-                       .IncludeAppConventions();
-            addFromAssemblyOf.Add(typeof(NotDeletedFilter));
-            addFromAssemblyOf.Add(typeof(SiteFilter));
+                    .IgnoreBase<SystemEntity>()
+                    .IgnoreBase<SiteEntity>()
+                    .IncludeBase<Document>()
+                    .IncludeBase<Webpage>()
+                    .IncludeBase<MessageTemplate>()
+                    .IncludeBase<UserProfileData>()
+                    .IncludeBase<Widget>()
+                    .IncludeBase<FormProperty>()
+                    .IncludeBase<FormPropertyWithOptions>()
+                    .IncludeAppBases()
+                    .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
+                    .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
+                    .IncludeAppConventions();
+            addFromAssemblyOf.Add(typeof (NotDeletedFilter));
+            addFromAssemblyOf.Add(typeof (SiteFilter));
             NHibernate.Cfg.Configuration config = Fluently.Configure()
-                                                          .Database(iPersistenceConfigurer)
-                                                          .Mappings(m => m.AutoMappings.Add(addFromAssemblyOf))
-                                                          .Cache(builder =>
-                                                          {
-                                                              if (CacheEnabled)
-                                                              {
-                                                                  builder.UseSecondLevelCache()
-                                                                         .UseQueryCache()
-                                                                         .QueryCacheFactory
-                                                                      <StandardQueryCacheFactory>();
-                                                                  var mrCMSSection =
-                                                                      WebConfigurationManager.GetSection(
-                                                                          "mrcms") as MrCMSConfigSection;
-                                                                  if (mrCMSSection != null)
-                                                                  {
-                                                                      builder.ProviderClass(
-                                                                          mrCMSSection.CacheProvider
-                                                                                      .AssemblyQualifiedName);
-                                                                      if (mrCMSSection.MinimizePuts)
-                                                                          builder.UseMinimalPuts();
-                                                                  }
-                                                                  else
-                                                                      builder.ProviderClass<SysCacheProvider>
-                                                                          ();
-                                                              }
-                                                          })
-                                                          .ExposeConfiguration(AppendListeners)
-                                                          .ExposeConfiguration(AppSpecificConfiguration)
-                                                          .ExposeConfiguration(c =>
-                                                          {
+                .Database(iPersistenceConfigurer)
+                .Mappings(m => m.AutoMappings.Add(addFromAssemblyOf))
+                .Cache(builder =>
+                {
+                    if (CacheEnabled)
+                    {
+                        builder.UseSecondLevelCache()
+                            .UseQueryCache()
+                            .QueryCacheFactory
+                            <StandardQueryCacheFactory>();
+                        var mrCMSSection =
+                            WebConfigurationManager.GetSection(
+                                "mrcms") as MrCMSConfigSection;
+                        if (mrCMSSection != null)
+                        {
+                            builder.ProviderClass(
+                                mrCMSSection.CacheProvider
+                                    .AssemblyQualifiedName);
+                            if (mrCMSSection.MinimizePuts)
+                                builder.UseMinimalPuts();
+                        }
+                        else
+                            builder.ProviderClass<SysCacheProvider>
+                                ();
+                    }
+                })
+                .ExposeConfiguration(AppendListeners)
+                .ExposeConfiguration(AppSpecificConfiguration)
+                .ExposeConfiguration(c =>
+                {
 #if DEBUG
-                                                              c.SetProperty(
-                                                                  Environment
-                                                                      .GenerateStatistics,
-                                                                  "true");
+                    c.SetProperty(
+                        Environment
+                            .GenerateStatistics,
+                        "true");
 #endif
-                                                              c.SetProperty(
-                                                                  Environment.Hbm2ddlKeyWords,
-                                                                  "auto-quote");
-                                                              //c.SetProperty(
-                                                              //    Environment
-                                                              //        .DefaultBatchFetchSize,
-                                                              //    "25");
-                                                              c.SetProperty(
-                                                                  Environment.BatchSize, "25");
-                                                          })
-                                                          .BuildConfiguration();
+                    c.SetProperty(
+                        Environment.Hbm2ddlKeyWords,
+                        "auto-quote");
+                    //c.SetProperty(
+                    //    Environment
+                    //        .DefaultBatchFetchSize,
+                    //    "25");
+                    c.SetProperty(
+                        Environment.BatchSize, "25");
+                })
+                .BuildConfiguration();
 
 
             ValidateSchema(config);
@@ -216,7 +214,7 @@ namespace MrCMS.DbConfiguration
 
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)
         {
-            var softDeleteListener = new SoftDeleteListener(InDevelopment);
+            var softDeleteListener = new SoftDeleteListener();
             configuration.SetListener(ListenerType.Delete, softDeleteListener);
         }
     }
