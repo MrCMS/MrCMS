@@ -52,8 +52,6 @@ namespace MrCMS.Installation
 
             if (result.Success)
             {
-                var kernel = MrCMSApplication.Get<IKernel>();
-                IEnumerable<IBinding> bindings = new List<IBinding>();
                 try
                 {
                     var connectionString = CreateDatabase(model);
@@ -84,11 +82,6 @@ namespace MrCMS.Installation
                 catch (Exception exception)
                 {
                     result.AddModelError("Setup failed: " + exception);
-                }
-                finally
-                {
-                    kernel.GetBindings(typeof(IEventContext)).ForEach(kernel.RemoveBinding);
-                    bindings.ForEach(kernel.AddBinding);
                 }
             }
 
