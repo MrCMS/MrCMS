@@ -4,15 +4,15 @@ using NHibernate;
 
 namespace MrCMS.Events
 {
-    public abstract class OnAddingArgs
+    public abstract class OnDeletedArgs
     {
         public abstract SystemEntity ItemBase { get; }
         public ISession Session { get; protected set; }
     }
 
-    public class OnAddingArgs<T> : OnAddingArgs where T : SystemEntity
+    public class OnDeletedArgs<T> : OnDeletedArgs where T : SystemEntity
     {
-        public OnAddingArgs(EventInfo<T> info, ISession session)
+        public OnDeletedArgs(EventInfo<T> info, ISession session)
         {
             Item = info.Object;
             Session = session;

@@ -6,7 +6,7 @@ using MrCMS.Website;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
-    public class SetOnAddingProperties : IOnAdding
+    public class SetOnAddingProperties : IOnAdding<SystemEntity>
     {
         private readonly Site _site;
 
@@ -15,7 +15,7 @@ namespace MrCMS.DbConfiguration.Configuration
             _site = site;
         }
 
-        public void Execute(OnAddingArgs args)
+        public void Execute(OnAddingArgs<SystemEntity> args)
         {
             DateTime now = CurrentRequestData.Now;
             SystemEntity systemEntity = args.Item;

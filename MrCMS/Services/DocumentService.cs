@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
-using MrCMS.Events.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Website;
@@ -10,12 +9,7 @@ using NHibernate;
 
 namespace MrCMS.Services
 {
-    public interface IGetDocumentParents
-    {
-        IEnumerable<T> GetDocumentsByParent<T>(T parent) where T : Document;
-    }
-
-    public class DocumentService : IDocumentService, IGetDocumentParents
+    public class DocumentService : IDocumentService
     {
         private readonly Site _currentSite;
         private readonly ISession _session;
@@ -29,8 +23,6 @@ namespace MrCMS.Services
         public void AddDocument<T>(T document) where T : Document
         {
             _session.Transact(session => session.Save(document));
-            EventContext.Instance.Publish<IOnDocumentAdded, OnDocumentAddedEventArgs>(
-                new OnDocumentAddedEventArgs(document));
         }
 
         public T GetDocument<T>(int id) where T : Document
@@ -40,13 +32,7 @@ namespace MrCMS.Services
 
         public T SaveDocument<T>(T document) where T : Document
         {
-            _session.Transact(session =>
-            {
-                //document.OnSaving(session);
-                session.Update(document);
-            });
-            EventContext.Instance.Publish<IOnDocumentUpdated, OnDocumentUpdatedEventArgs>(
-                new OnDocumentUpdatedEventArgs(document, CurrentRequestData.CurrentUser));
+            _session.Transact(session => session.Update(document));
             return document;
         }
 
@@ -86,10 +72,7 @@ namespace MrCMS.Services
         {
             if (document != null)
             {
-                _session.Transact(session => { session.Delete(document); });
-
-                EventContext.Instance.Publish<IOnDocumentDeleted, OnDocumentDeletedEventArgs>(
-                    new OnDocumentDeletedEventArgs(document));
+                _session.Transact(session => session.Delete(document));
             }
         }
 
@@ -99,8 +82,6 @@ namespace MrCMS.Services
             {
                 document.PublishOn = CurrentRequestData.Now;
                 _session.Transact(session => session.Update(document));
-                EventContext.Instance.Publish<IOnWebpagePublished, OnWebpagePublishedEventArgs>(
-                    new OnWebpagePublishedEventArgs(document));
             }
         }
 
@@ -108,8 +89,6 @@ namespace MrCMS.Services
         {
             document.PublishOn = null;
             _session.Transact(session => session.Update(document));
-            EventContext.Instance.Publish<IOnWebpageUnpublished, OnWebpageUnpublishedEventArgs>(
-                new OnWebpageUnpublishedEventArgs(document));
         }
 
         public T GetDocumentByUrl<T>(string url) where T : Document

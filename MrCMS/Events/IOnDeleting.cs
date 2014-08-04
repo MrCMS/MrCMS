@@ -1,9 +1,12 @@
+using MrCMS.Entities;
+
 namespace MrCMS.Events
 {
-    public interface IOnDeleting: IEvent<OnDeletingArgs>
-    {
-    }
-    public interface IOnDeleted: IEvent<OnDeletedArgs>
+    /// <summary>
+    /// Interface to define events that are called before an item has been deleted
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IOnDeleting<T>: IEvent<OnDeletingArgs<T>> where T : SystemEntity
     {
     }
 }

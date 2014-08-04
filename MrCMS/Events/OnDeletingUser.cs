@@ -1,13 +1,12 @@
-using MrCMS.DbConfiguration;
 using MrCMS.Entities.People;
 
 namespace MrCMS.Events
 {
-    public class OnDeletingUser : IOnDeleting
+    public class OnDeletingUser : IOnDeleting<User>
     {
-        public void Execute(OnDeletingArgs args)
+        public void Execute(OnDeletingArgs<User> args)
         {
-            var user = args.Item as User;
+            User user = args.Item;
             if (user == null)
                 return;
 

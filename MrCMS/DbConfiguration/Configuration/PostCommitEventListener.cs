@@ -15,11 +15,26 @@ using Newtonsoft.Json.Linq;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
-    public class SaveDocumentVersions : IOnUpdated
+    public class SaveDocumentVersions : IOnUpdated<Document>
     {
-        public void Execute(OnUpdatedArgs args)
+        private User GetUser(ISession session)
         {
-            var document = args.Item as Document;
+            if (CurrentRequestData.CurrentUser != null)
+                return session.Load<User>(CurrentRequestData.CurrentUser.Id);
+            if (CurrentRequestData.CurrentContext != null && CurrentRequestData.CurrentContext.User != null)
+            {
+                var currentUser =
+                    session.QueryOver<User>().Where(
+                        user => user.Email == CurrentRequestData.CurrentContext.User.Identity.Name).
+                            SingleOrDefault();
+                return currentUser;
+            }
+            return null;
+        }
+
+        public void Execute(OnUpdatedArgs<Document> args)
+        {
+            var document = args.Item;
             if (document != null && !document.IsDeleted)
             {
                 var propertyInfos = document.GetType().GetVersionProperties();
@@ -61,21 +76,6 @@ namespace MrCMS.DbConfiguration.Configuration
                     s.Transact(session => session.Save(documentVersion));
                 }
             }
-        }
-
-        private User GetUser(ISession session)
-        {
-            if (CurrentRequestData.CurrentUser != null)
-                return session.Load<User>(CurrentRequestData.CurrentUser.Id);
-            if (CurrentRequestData.CurrentContext != null && CurrentRequestData.CurrentContext.User != null)
-            {
-                var currentUser =
-                    session.QueryOver<User>().Where(
-                        user => user.Email == CurrentRequestData.CurrentContext.User.Identity.Name).
-                            SingleOrDefault();
-                return currentUser;
-            }
-            return null;
         }
     }
 

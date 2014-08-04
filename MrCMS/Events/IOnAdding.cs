@@ -1,9 +1,12 @@
+using MrCMS.Entities;
+
 namespace MrCMS.Events
 {
-    public interface IOnAdding: IEvent<OnAddingArgs>
-    {
-    }
-    public interface IOnAdded: IEvent<OnAddedArgs>
+    /// <summary>
+    /// Interface to define events that are called before a new item has been persisted to the db
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IOnAdding<T>: IEvent<OnAddingArgs<T>> where T : SystemEntity
     {
     }
 }

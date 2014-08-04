@@ -5,9 +5,9 @@ using MrCMS.Website;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
-    public class SetOnUpdatingProperties : IOnUpdating
+    public class SetOnUpdatingProperties : IOnUpdating<SystemEntity>
     {
-        public void Execute(OnUpdatingArgs args)
+        public void Execute(OnUpdatingArgs<SystemEntity> args)
         {
             DateTime now = CurrentRequestData.Now;
             SystemEntity systemEntity = args.Item;

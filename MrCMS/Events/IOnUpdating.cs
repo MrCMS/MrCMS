@@ -1,9 +1,12 @@
+using MrCMS.Entities;
+
 namespace MrCMS.Events
 {
-    public interface IOnUpdating: IEvent<OnUpdatingArgs>
-    {
-    }
-    public interface IOnUpdated: IEvent<OnUpdatedArgs>
+    /// <summary>
+    /// Interface to define events that are called before an item has been updated in the db
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IOnUpdating<T>: IEvent<OnUpdatingArgs<T>> where T : SystemEntity
     {
     }
 }
