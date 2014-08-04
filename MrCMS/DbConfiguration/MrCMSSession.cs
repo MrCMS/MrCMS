@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using MrCMS.Entities;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using MrCMS.Services;
 using NHibernate;
 using NHibernate.Engine;
@@ -13,7 +14,6 @@ using NHibernate.Event;
 using NHibernate.Stat;
 using NHibernate.Transaction;
 using NHibernate.Type;
-using WebGrease.Css.Extensions;
 
 namespace MrCMS.DbConfiguration
 {
@@ -600,7 +600,8 @@ namespace MrCMS.DbConfiguration
 
         private static void HandlePostTransaction(MrCMSSession session)
         {
-            session.Added.ForEach(obj =>
+            var eventInfos = session.Added.ToHashSet();
+            eventInfos.ForEach(obj =>
             {
                 if (obj.PostTransactionHandled)
                     return;
@@ -610,8 +611,10 @@ namespace MrCMS.DbConfiguration
                     Item = obj.Object as SystemEntity,
                     Session = session
                 });
+                session.Added.Remove(obj);
             });
-            session.Updated.ForEach(obj =>
+            var updatedEventInfos = session.Updated.ToHashSet();
+            updatedEventInfos.ForEach(obj =>
             {
                 if (obj.PostTransactionHandled)
                     return;
@@ -622,8 +625,10 @@ namespace MrCMS.DbConfiguration
                     Item = obj.Object as SystemEntity,
                     Session = session
                 });
+                session.Updated.Remove(obj);
             });
-            session.Deleted.ForEach(obj =>
+            var hashSet = session.Deleted.ToHashSet();
+            hashSet.ForEach(obj =>
             {
                 if (obj.PostTransactionHandled)
                     return;
@@ -633,12 +638,14 @@ namespace MrCMS.DbConfiguration
                     Item = obj.Object as SystemEntity,
                     Session = session
                 });
+                session.Deleted.Remove(obj);
             });
         }
 
         private static void HandlePreTransaction(MrCMSSession session)
         {
-            session.Added.ForEach(obj =>
+            var eventInfos = session.Added.ToHashSet();
+            eventInfos.ForEach(obj =>
             {
                 if (obj.PreTransactionHandled)
                     return;
@@ -649,7 +656,8 @@ namespace MrCMS.DbConfiguration
                     Session = session
                 });
             });
-            session.Updated.ForEach(obj =>
+            var updatedEventInfos = session.Updated.ToHashSet();
+            updatedEventInfos.ForEach(obj =>
             {
                 if (obj.PreTransactionHandled)
                     return;
@@ -661,7 +669,8 @@ namespace MrCMS.DbConfiguration
                     Session = session
                 });
             });
-            session.Deleted.ForEach(obj =>
+            var hashSet = session.Deleted.ToHashSet();
+            hashSet.ForEach(obj =>
             {
                 if (obj.PreTransactionHandled)
                     return;

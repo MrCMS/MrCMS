@@ -3,7 +3,7 @@ using NHibernate;
 
 namespace MrCMS.Events
 {
-    public class OnAddingArgs
+    public class OnAddedArgs
     {
         public SystemEntity Item { get; set; }
         public ISession Session { get; set; }
