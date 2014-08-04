@@ -56,9 +56,6 @@ namespace MrCMS.Installation
                 IEnumerable<IBinding> bindings = new List<IBinding>();
                 try
                 {
-                    bindings = kernel.GetBindings(typeof(IEventContext));
-
-                    kernel.Rebind<IEventContext>().ToMethod(context => new InstallationEventContext());
                     var connectionString = CreateDatabase(model);
 
                     //save settings
@@ -96,19 +93,6 @@ namespace MrCMS.Installation
             }
 
             return result;
-        }
-
-        class InstallationEventContext : IEventContext
-        {
-            public void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
-            {
-
-            }
-
-            public void Publish(Type eventType, object args)
-            {
-                
-            }
         }
 
         private string CreateDatabase(InstallModel model)
