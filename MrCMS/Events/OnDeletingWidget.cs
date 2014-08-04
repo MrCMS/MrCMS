@@ -1,14 +1,13 @@
-using MrCMS.DbConfiguration;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 
 namespace MrCMS.Events
 {
-    public class OnDeletingWidget : IOnDeleting
+    public class OnDeletingWidget : IOnDeleting<Widget>
     {
-        public void Execute(OnDeletingArgs args)
+        public void Execute(OnDeletingArgs<Widget> args)
         {
-            var widget = args.Item as Widget;
+            Widget widget = args.Item;
             if (widget == null)
                 return;
 
@@ -22,7 +21,6 @@ namespace MrCMS.Events
             {
                 widget.Webpage.Widgets.Remove(widget);
             }
-
         }
     }
 }

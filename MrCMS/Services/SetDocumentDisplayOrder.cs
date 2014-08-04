@@ -10,7 +10,7 @@ using NHibernate.Criterion;
 
 namespace MrCMS.Services
 {
-    public class SetDocumentDisplayOrder : IOnAdding
+    public class SetDocumentDisplayOrder : IOnAdding<Document>
     {
         private readonly IGetDocumentParents _getDocumentParents;
 
@@ -19,9 +19,9 @@ namespace MrCMS.Services
             _getDocumentParents = getDocumentParents;
         }
 
-        public void Execute(OnAddingArgs args)
+        public void Execute(OnAddingArgs<Document> args)
         {
-            var document = args.Item as Document;
+            Document document = args.Item;
             if (document != null)
             {
                 document.DisplayOrder = GetMaxParentDisplayOrder(document, args.Session);

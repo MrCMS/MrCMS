@@ -3,11 +3,11 @@ using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Events
 {
-    public class OnDeletingPageWidgetSort : IOnDeleting
+    public class OnDeletingPageWidgetSort : IOnDeleting<PageWidgetSort>
     {
-        public void Execute(OnDeletingArgs args)
+        public void Execute(OnDeletingArgs<PageWidgetSort> args)
         {
-            var sort = args.Item as PageWidgetSort;
+            var sort = args.Item;
             if (sort == null) return;
 
             if (sort.LayoutArea.PageWidgetSorts.Contains(sort))

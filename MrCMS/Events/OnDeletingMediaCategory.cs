@@ -1,11 +1,11 @@
+using System.Collections.Generic;
 using System.Linq;
-using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Services;
 
 namespace MrCMS.Events
 {
-    public class OnDeletingMediaCategory : IOnDeleting
+    public class OnDeletingMediaCategory : IOnDeleting<MediaCategory>
     {
         private readonly IFileService _fileService;
 
@@ -14,14 +14,14 @@ namespace MrCMS.Events
             _fileService = fileService;
         }
 
-        public void Execute(OnDeletingArgs args)
+        public void Execute(OnDeletingArgs<MediaCategory> args)
         {
-            var category = args.Item as MediaCategory;
+            MediaCategory category = args.Item;
             if (category == null)
                 return;
-            var mediaFiles = category.Files.ToList();
+            List<MediaFile> mediaFiles = category.Files.ToList();
 
-            foreach (var mediaFile in mediaFiles)
+            foreach (MediaFile mediaFile in mediaFiles)
             {
                 _fileService.DeleteFile(mediaFile);
             }

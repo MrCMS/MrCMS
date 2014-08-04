@@ -104,6 +104,11 @@ namespace MrCMS.Installation
             {
 
             }
+
+            public void Publish(Type eventType, object args)
+            {
+                
+            }
         }
 
         private string CreateDatabase(InstallModel model)

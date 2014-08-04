@@ -4,15 +4,12 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using MrCMS.DbConfiguration.Helpers;
 using MrCMS.Entities;
-using MrCMS.Events;
-using MrCMS.Helpers;
-using MrCMS.Services;
 using NHibernate;
 using NHibernate.Engine;
 using NHibernate.Event;
 using NHibernate.Stat;
-using NHibernate.Transaction;
 using NHibernate.Type;
 
 namespace MrCMS.DbConfiguration
@@ -140,14 +137,18 @@ namespace MrCMS.DbConfiguration
         private readonly HashSet<EventInfo> _deleted = new HashSet<EventInfo>();
         public object Save(object obj)
         {
-            AddAddEvent(obj);
+            var systemEntity = obj as SystemEntity;
+            if (systemEntity != null)
+            {
+                AddAddEvent(systemEntity);
+            }
             return _session.Save(obj);
         }
 
-        private void AddAddEvent(object obj)
+        private void AddAddEvent(SystemEntity obj)
         {
-            if (Added.All(info => info.Object != obj))
-                Added.Add(new EventInfo { Object = obj });
+            if (Added.All(info => info.ObjectBase != obj))
+                Added.Add(obj.GetEventInfo());
         }
 
         public void Save(object obj, object id)
@@ -165,8 +166,8 @@ namespace MrCMS.DbConfiguration
             var entity = obj as SystemEntity;
             if (entity != null && entity.Id == 0)
                 AddAddEvent(entity);
-            else
-                AddUpdateEvent(obj);
+            else if (entity != null)
+                AddUpdateEvent(entity);
             _session.SaveOrUpdate(obj);
         }
 
@@ -177,30 +178,37 @@ namespace MrCMS.DbConfiguration
 
         public void Update(object obj)
         {
-            AddUpdateEvent(obj);
+            var systemEntity = obj as SystemEntity;
+            if (systemEntity != null)
+            {
+                AddUpdateEvent(systemEntity);
+            }
             _session.Update(obj);
         }
 
-        private void AddUpdateEvent(object obj)
+        private void AddUpdateEvent(SystemEntity obj)
         {
-            if (Updated.All(info => info.Object != obj))
-                Updated.Add(new UpdatedEventInfo { Object = obj, OriginalVersion = GetOriginalVersion(obj) });
+            if (Updated.All(info => info.ObjectBase != obj))
+            {
+                var originalVersion = GetOriginalVersion(obj);
+                Updated.Add(obj.GetUpdatedEventInfo(originalVersion));
+            }
         }
 
-        private object GetOriginalVersion(object o)
+        private SystemEntity GetOriginalVersion(SystemEntity entity)
         {
-            if (o == null)
+            if (entity == null)
                 return null;
             var sessionImplementation = GetSessionImplementation();
             var persistenceContext = sessionImplementation.PersistenceContext;
-            var entry = persistenceContext.GetEntry(o);
+            var entry = persistenceContext.GetEntry(entity);
             if (entry == null)
                 return null;
             var loadedState = entry.LoadedState;
             if (loadedState == null)
                 return null;
-            var type = o.GetType();
-            var instance = Activator.CreateInstance(type);
+            var type = entity.GetType();
+            var instance = Activator.CreateInstance(type) as SystemEntity;
             var entityPersister = entry.Persister;
             for (int index = 0; index < entityPersister.PropertyNames.Length; index++)
             {
@@ -275,14 +283,18 @@ namespace MrCMS.DbConfiguration
 
         public void Delete(object obj)
         {
-            if (Deleted.All(info => info.Object != obj))
-                Deleted.Add(new EventInfo { Object = obj });
-            //EventContext.Instance.Publish<IOnDeleting, OnDeletingArgs>(new OnDeletingArgs
-            //{
-            //    Item = obj as SystemEntity,
-            //    Session = this
-            //});
+            var entity = obj as SystemEntity;
+            if (entity != null)
+            {
+                AddDeletedEvent(entity);
+            }
             _session.Delete(obj);
+        }
+
+        private void AddDeletedEvent(SystemEntity obj)
+        {
+            if (Deleted.All(info => info.ObjectBase != obj))
+                Deleted.Add(obj.GetEventInfo());
         }
 
         public void Delete(string entityName, object obj)
@@ -554,163 +566,36 @@ namespace MrCMS.DbConfiguration
         }
     }
 
-    public class EventInfo
+    public abstract class UpdatedEventInfo
     {
-        public object Object { get; set; }
         public bool PreTransactionHandled { get; set; }
         public bool PostTransactionHandled { get; set; }
+        public abstract object ObjectBase { get; }
+        public abstract object OriginalVersionBase { get; }
     }
-    public class UpdatedEventInfo : EventInfo
+    public class UpdatedEventInfo<T> : UpdatedEventInfo where T : class
     {
-        public object OriginalVersion { get; set; }
-    }
-
-    public class MrCMSTransaction : ITransaction
-    {
-        private readonly ITransaction _transaction;
-        private readonly MrCMSSession _session;
-
-        public MrCMSTransaction(ITransaction transaction, MrCMSSession session)
+        public UpdatedEventInfo(T obj, T originalObj)
         {
-            _transaction = transaction;
-            _session = session;
+            Object = obj;
+            OriginalVersion = originalObj;
+        }
+        public UpdatedEventInfo(UpdatedEventInfo info)
+        {
+            Object = info.ObjectBase as T;
+            OriginalVersion = info.OriginalVersionBase as T;
+        }
+        public T OriginalVersion { get; private set; }
+        public T Object { get; private set; }
+
+        public override object ObjectBase
+        {
+            get { return Object; }
         }
 
-        public void Dispose()
+        public override object OriginalVersionBase
         {
-            _transaction.Dispose();
-        }
-
-        public void Begin()
-        {
-            _transaction.Begin();
-        }
-
-        public void Begin(IsolationLevel isolationLevel)
-        {
-            _transaction.Begin(isolationLevel);
-        }
-
-        public void Commit()
-        {
-            HandlePreTransaction(_session);
-            _transaction.Commit();
-            HandlePostTransaction(_session);
-        }
-
-        private static void HandlePostTransaction(MrCMSSession session)
-        {
-            var eventInfos = session.Added.ToHashSet();
-            eventInfos.ForEach(obj =>
-            {
-                if (obj.PostTransactionHandled)
-                    return;
-                obj.PostTransactionHandled = true;
-                EventContext.Instance.Publish<IOnAdded, OnAddedArgs>(new OnAddedArgs
-                {
-                    Item = obj.Object as SystemEntity,
-                    Session = session
-                });
-                session.Added.Remove(obj);
-            });
-            var updatedEventInfos = session.Updated.ToHashSet();
-            updatedEventInfos.ForEach(obj =>
-            {
-                if (obj.PostTransactionHandled)
-                    return;
-                obj.PostTransactionHandled = true;
-                EventContext.Instance.Publish<IOnUpdated, OnUpdatedArgs>(new OnUpdatedArgs
-                {
-                    Original = obj.OriginalVersion as SystemEntity,
-                    Item = obj.Object as SystemEntity,
-                    Session = session
-                });
-                session.Updated.Remove(obj);
-            });
-            var hashSet = session.Deleted.ToHashSet();
-            hashSet.ForEach(obj =>
-            {
-                if (obj.PostTransactionHandled)
-                    return;
-                obj.PostTransactionHandled = true;
-                EventContext.Instance.Publish<IOnDeleted, OnDeletedArgs>(new OnDeletedArgs
-                {
-                    Item = obj.Object as SystemEntity,
-                    Session = session
-                });
-                session.Deleted.Remove(obj);
-            });
-        }
-
-        private static void HandlePreTransaction(MrCMSSession session)
-        {
-            var eventInfos = session.Added.ToHashSet();
-            eventInfos.ForEach(obj =>
-            {
-                if (obj.PreTransactionHandled)
-                    return;
-                obj.PreTransactionHandled = true;
-                EventContext.Instance.Publish<IOnAdding, OnAddingArgs>(new OnAddingArgs
-                {
-                    Item = obj.Object as SystemEntity,
-                    Session = session
-                });
-            });
-            var updatedEventInfos = session.Updated.ToHashSet();
-            updatedEventInfos.ForEach(obj =>
-            {
-                if (obj.PreTransactionHandled)
-                    return;
-                obj.PreTransactionHandled = true;
-                EventContext.Instance.Publish<IOnUpdating, OnUpdatingArgs>(new OnUpdatingArgs
-                {
-                    Original = obj.OriginalVersion as SystemEntity,
-                    Item = obj.Object as SystemEntity,
-                    Session = session
-                });
-            });
-            var hashSet = session.Deleted.ToHashSet();
-            hashSet.ForEach(obj =>
-            {
-                if (obj.PreTransactionHandled)
-                    return;
-                obj.PreTransactionHandled = true;
-                EventContext.Instance.Publish<IOnDeleting, OnDeletingArgs>(new OnDeletingArgs
-                {
-                    Item = obj.Object as SystemEntity,
-                    Session = session
-                });
-            });
-        }
-
-        public void Rollback()
-        {
-            _transaction.Rollback();
-        }
-
-        public void Enlist(IDbCommand command)
-        {
-            _transaction.Enlist(command);
-        }
-
-        public void RegisterSynchronization(ISynchronization synchronization)
-        {
-            _transaction.RegisterSynchronization(synchronization);
-        }
-
-        public bool IsActive
-        {
-            get { return _transaction.IsActive; }
-        }
-
-        public bool WasRolledBack
-        {
-            get { return _transaction.WasRolledBack; }
-        }
-
-        public bool WasCommitted
-        {
-            get { return _transaction.WasCommitted; }
+            get { return OriginalVersion; }
         }
     }
 }

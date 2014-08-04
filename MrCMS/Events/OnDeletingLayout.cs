@@ -3,11 +3,11 @@ using MrCMS.Entities.Documents.Layout;
 
 namespace MrCMS.Events
 {
-    public class OnDeletingLayout : IOnDeleting
+    public class OnDeletingLayout : IOnDeleting<Layout>
     {
-        public void Execute(OnDeletingArgs args)
+        public void Execute(OnDeletingArgs<Layout> args)
         {
-            var layout = args.Item as Layout;
+            var layout = args.Item;
             if (layout == null) return;
             foreach (var pageTemplate in layout.PageTemplates)
             {
