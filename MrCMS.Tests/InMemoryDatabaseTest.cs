@@ -103,6 +103,9 @@ namespace MrCMS.Tests
             CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.Local.Id };
 
             CurrentRequestData.ErrorSignal = new ErrorSignal();
+
+            Kernel.Unbind<IEventContext>();
+            Kernel.Load(new ServiceModule(true));
         }
 
         protected Site CurrentSite { get; set; }

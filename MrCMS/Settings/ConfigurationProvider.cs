@@ -20,7 +20,7 @@ namespace MrCMS.Settings
         private static readonly object SaveLockObject = new object();
         private static readonly object ReadLockObject = new object();
 
-        private static Dictionary<int, Dictionary<Type, object>> _settingCache = new Dictionary<int, Dictionary<Type, object>>();
+        private static readonly Dictionary<int, Dictionary<Type, object>> _settingCache = new Dictionary<int, Dictionary<Type, object>>();
 
         public ConfigurationProvider(Site site, ILegacySettingsProvider legacySettingsProvider)
         {

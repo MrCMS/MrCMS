@@ -1,63 +1,37 @@
 ﻿using System;
 using System.Linq;
 using MrCMS.Entities;
-using MrCMS.Entities.Multisite;
 using MrCMS.Events;
 using MrCMS.Indexing;
 using MrCMS.Tasks;
 using MrCMS.Website;
-using NHibernate.Event;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
-    public class UpdateIndicesListener : IOnAdded,IOnUpdated,IOnDeleted,
-    IPostUpdateEventListener,
-    IPostInsertEventListener,
-    IPostDeleteEventListener,
-    IPostCollectionUpdateEventListener,
-    IPostCollectionRemoveEventListener,
-    IPostCollectionRecreateEventListener
+    public class UpdateIndicesListener : IOnAdded, IOnUpdated, IOnDeleted
     {
-        public void OnPostRecreateCollection(PostCollectionRecreateEvent @event)
+        public void Execute(OnAddedArgs args)
         {
-            //var siteEntity = @event.AffectedOwnerOrNull as SiteEntity;
-            //if (ShouldBeUpdated(siteEntity))
-            //    QueueTask(typeof (UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
+            var siteEntity = args.Item as SiteEntity;
+            if (siteEntity == null) return;
+            if (ShouldBeUpdated(siteEntity))
+                QueueTask(typeof (InsertIndicesTask<>), siteEntity, LuceneOperation.Insert);
         }
 
-        public void OnPostRemoveCollection(PostCollectionRemoveEvent @event)
+        public void Execute(OnDeletedArgs args)
         {
-            //var siteEntity = @event.AffectedOwnerOrNull as SiteEntity;
-            //if (ShouldBeUpdated(siteEntity))
-            //    QueueTask(typeof (UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
+            var siteEntity = args.Item as SiteEntity;
+            if (siteEntity == null) return;
+            if (ShouldBeUpdated(siteEntity))
+                QueueTask(typeof (DeleteIndicesTask<>), siteEntity, LuceneOperation.Delete);
         }
 
-        public void OnPostUpdateCollection(PostCollectionUpdateEvent @event)
+        public void Execute(OnUpdatedArgs args)
         {
-            //var siteEntity = @event.AffectedOwnerOrNull as SiteEntity;
-            //if (ShouldBeUpdated(siteEntity))
-            //    QueueTask(typeof (UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
-        }
-
-        public void OnPostDelete(PostDeleteEvent @event)
-        {
-            //var siteEntity = @event.Entity as SiteEntity;
-            //if (ShouldBeUpdated(siteEntity))
-            //    QueueTask(typeof (DeleteIndicesTask<>), siteEntity, LuceneOperation.Delete);
-        }
-
-        public void OnPostInsert(PostInsertEvent @event)
-        {
-            //var siteEntity = @event.Entity as SiteEntity;
-            //if (ShouldBeUpdated(siteEntity))
-            //    QueueTask(typeof (InsertIndicesTask<>), siteEntity, LuceneOperation.Insert);
-        }
-
-        public void OnPostUpdate(PostUpdateEvent @event)
-        {
-            //var siteEntity = @event.Entity as SiteEntity;
-            //if (ShouldBeUpdated(siteEntity))
-            //    QueueTask(typeof (UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
+            var siteEntity = args.Item as SiteEntity;
+            if (siteEntity == null) return;
+            if (ShouldBeUpdated(siteEntity))
+                QueueTask(typeof (UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
         }
 
         public static void QueueTask(Type type, SiteEntity siteEntity, LuceneOperation operation)
@@ -80,30 +54,6 @@ namespace MrCMS.DbConfiguration.Configuration
         private static bool ShouldBeUpdated(SiteEntity siteEntity)
         {
             return siteEntity != null && !siteEntity.IsDeleted && !(siteEntity is IHaveExecutionStatus);
-        }
-
-        public void Execute(OnAddedArgs args)
-        {
-            var siteEntity = args.Item as SiteEntity;
-            if (siteEntity == null) return;
-            if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof (InsertIndicesTask<>), siteEntity, LuceneOperation.Insert);
-        }
-
-        public void Execute(OnUpdatedArgs args)
-        {
-            var siteEntity = args.Item as SiteEntity;
-            if (siteEntity == null) return;
-            if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof(UpdateIndicesTask<>), siteEntity, LuceneOperation.Update);
-        }
-
-        public void Execute(OnDeletedArgs args)
-        {
-            var siteEntity = args.Item as SiteEntity;
-            if (siteEntity == null) return;
-            if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof (DeleteIndicesTask<>), siteEntity, LuceneOperation.Delete);
         }
     }
 }

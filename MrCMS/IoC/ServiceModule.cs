@@ -24,22 +24,40 @@ namespace MrCMS.IoC
     //Wires up IOC automatically
     public class ServiceModule : NinjectModule
     {
+        private readonly bool _forTest;
+
+        public ServiceModule(bool forTest = false)
+        {
+            _forTest = forTest;
+        }
+
         public override void Load()
         {
             Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
                 .Where(
                     t =>
-                        !typeof (SiteSettingsBase).IsAssignableFrom(t) &&
-                        !typeof (IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
+                        !typeof(SiteSettingsBase).IsAssignableFrom(t) &&
+                        !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
                 .BindWith<NinjectServiceToInterfaceBinder>()
                 .Configure(onSyntax => onSyntax.InRequestScope()));
-            Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
-                .Where(
-                    t =>
-                        typeof (SiteSettingsBase).IsAssignableFrom(t) && !typeof (IController).IsAssignableFrom(t) &&
-                        !Kernel.GetBindings(t).Any())
-                .BindWith<NinjectSiteSettingsBinder>()
-                .Configure(onSyntax => onSyntax.InRequestScope()));
+            Kernel.Bind(syntax =>
+            {
+                var joinExcludeIncludeBindSyntax = syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
+                    .Where(
+                        t =>
+                            typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) &&
+                            !Kernel.GetBindings(t).Any());
+
+                if (_forTest)
+                {
+                    joinExcludeIncludeBindSyntax.BindToSelf();
+                }
+                else
+                {
+                    joinExcludeIncludeBindSyntax
+                                              .BindWith<NinjectSiteSettingsBinder>()
+                                              .Configure(onSyntax => onSyntax.InRequestScope());}
+            });
 
             Kernel.Bind<HttpRequestBase>().ToMethod(context => CurrentRequestData.CurrentContext.Request);
             Kernel.Bind<HttpResponseBase>().ToMethod(context => CurrentRequestData.CurrentContext.Response);

@@ -11,6 +11,7 @@ using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
+using MrCMS.IoC;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Web.Tests.Stubs;
@@ -106,6 +107,10 @@ namespace MrCMS.Web.Tests
             CurrentRequestData.SiteSettings = new SiteSettings {TimeZone = TimeZoneInfo.Local.Id};
 
             CurrentRequestData.ErrorSignal = new ErrorSignal();
+
+            Kernel.Unbind<IEventContext>();
+            Kernel.Load(new ServiceModule(true));
+            //Kernel.Rebind<IEventContext>().To<EventContext>();
         }
 
         protected Site CurrentSite { get; set; }

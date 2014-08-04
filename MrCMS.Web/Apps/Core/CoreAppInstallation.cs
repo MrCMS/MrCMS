@@ -55,7 +55,7 @@ namespace MrCMS.Web.Apps.Core
 
             CurrentRequestData.SiteSettings = siteSettings;
 
-            var documentService = new DocumentService(session, siteSettings, site);
+            var documentService = new DocumentService(session, site);
             var layoutAreaService = new LayoutAreaAdminService(session);
             var widgetService = new WidgetService(session);
             var fileSystem = new FileSystem();

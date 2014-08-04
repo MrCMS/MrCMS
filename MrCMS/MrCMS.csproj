@@ -260,6 +260,7 @@
     <Compile Include="DbConfiguration\Caches\Azure\SerializationProvider.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
     <Compile Include="DbConfiguration\Configuration\DatabaseType.cs" />
+    <Compile Include="DbConfiguration\Configuration\SetOnUpdatingProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SoftDeleteListener.cs" />
     <Compile Include="DbConfiguration\Configuration\PostCommitEventListener.cs" />
     <Compile Include="DbConfiguration\Configuration\SaveOrUpdateListener.cs" />
@@ -280,7 +281,6 @@
     <Compile Include="DbConfiguration\Mapping\DoNotMapAttribute.cs" />
     <Compile Include="DbConfiguration\Mapping\MrCmsMappingConfiguration.cs" />
     <Compile Include="DbConfiguration\Mapping\StringResourceOverride.cs" />
-    <Compile Include="DbConfiguration\MrCMSListeners.cs" />
     <Compile Include="DbConfiguration\MrCMSSession.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentOverride.cs" />
@@ -477,6 +477,7 @@
     <Compile Include="Services\Notifications\PublishType.cs" />
     <Compile Include="Services\Resources\IStringResourceProvider.cs" />
     <Compile Include="Services\Resources\StringResourceProvider.cs" />
+    <Compile Include="Services\SetDocumentDisplayOrder.cs" />
     <Compile Include="Services\StandardAuthConfigurationService.cs" />
     <Compile Include="Services\UniquePageService.cs" />
     <Compile Include="Services\UrlValidationService.cs" />

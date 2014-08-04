@@ -1,18 +1,12 @@
 using System.Collections.Generic;
-using System.Linq;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
-using MrCMS.Events;
 using MrCMS.Events.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
-using NHibernate.Criterion;
 
 namespace MrCMS.Services
 {
@@ -25,19 +19,18 @@ namespace MrCMS.Services
     {
         private readonly Site _currentSite;
         private readonly ISession _session;
-        private readonly SiteSettings _siteSettings;
 
-        public DocumentService(ISession session, SiteSettings siteSettings, Site currentSite)
+        public DocumentService(ISession session, Site currentSite)
         {
             _session = session;
-            _siteSettings = siteSettings;
             _currentSite = currentSite;
         }
 
         public void AddDocument<T>(T document) where T : Document
         {
             _session.Transact(session => session.Save(document));
-            EventContext.Instance.Publish<IOnDocumentAdded, OnDocumentAddedEventArgs>(new OnDocumentAddedEventArgs(document));
+            EventContext.Instance.Publish<IOnDocumentAdded, OnDocumentAddedEventArgs>(
+                new OnDocumentAddedEventArgs(document));
         }
 
         public T GetDocument<T>(int id) where T : Document
@@ -125,57 +118,6 @@ namespace MrCMS.Services
                 .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
                 .Take(1).Cacheable()
                 .SingleOrDefault();
-        }
-    }
-    public class SetDocumentDisplayOrder : IOnAdding
-    {
-        private readonly IGetDocumentParents _getDocumentParents;
-
-        public SetDocumentDisplayOrder(IGetDocumentParents getDocumentParents)
-        {
-            _getDocumentParents = getDocumentParents;
-        }
-
-        public void Execute(OnAddingArgs args)
-        {
-            var document = args.Item as Document;
-            if (document != null)
-            {
-
-                document.DisplayOrder = GetMaxParentDisplayOrder(document, args.Session);
-            }
-        }
-
-        private int GetMaxParentDisplayOrder(Document document, ISession session)
-        {
-            if (document.Parent != null)
-            {
-                return session.QueryOver<Document>()
-                    .Where(doc => doc.Parent.Id == document.Parent.Id)
-                    .Select(Projections.Max<Document>(d => d.DisplayOrder))
-                    .SingleOrDefault<int>();
-            }
-            if (document is MediaCategory)
-            {
-                List<MediaCategory> documentsByParent = _getDocumentParents.GetDocumentsByParent<MediaCategory>(null).ToList();
-                return documentsByParent.Any()
-                    ? documentsByParent.Max(category => category.DisplayOrder) + 1
-                    : 0;
-            }
-            if (document is Layout)
-            {
-                List<Layout> documentsByParent = _getDocumentParents.GetDocumentsByParent<Layout>(null).ToList();
-                return documentsByParent.Any()
-                    ? documentsByParent.Max(category => category.DisplayOrder) + 1
-                    : 0;
-            }
-            else
-            {
-                List<Webpage> documentsByParent = _getDocumentParents.GetDocumentsByParent<Webpage>(null).ToList();
-                return documentsByParent.Any()
-                    ? documentsByParent.Max(category => category.DisplayOrder) + 1
-                    : 0;
-            }
         }
     }
 }

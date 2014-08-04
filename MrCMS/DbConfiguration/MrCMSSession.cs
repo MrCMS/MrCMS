@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using MrCMS.Entities;
 using MrCMS.Events;
 using MrCMS.Services;
@@ -135,13 +136,18 @@ namespace MrCMS.DbConfiguration
             _session.Replicate(entityName, obj, replicationMode);
         }
         private readonly HashSet<EventInfo> _added = new HashSet<EventInfo>();
-        private readonly HashSet<EventInfo> _updated = new HashSet<EventInfo>();
+        private readonly HashSet<UpdatedEventInfo> _updated = new HashSet<UpdatedEventInfo>();
         private readonly HashSet<EventInfo> _deleted = new HashSet<EventInfo>();
         public object Save(object obj)
         {
+            AddAddEvent(obj);
+            return _session.Save(obj);
+        }
+
+        private void AddAddEvent(object obj)
+        {
             if (Added.All(info => info.Object != obj))
                 Added.Add(new EventInfo { Object = obj });
-            return _session.Save(obj);
         }
 
         public void Save(object obj, object id)
@@ -156,6 +162,11 @@ namespace MrCMS.DbConfiguration
 
         public void SaveOrUpdate(object obj)
         {
+            var entity = obj as SystemEntity;
+            if (entity != null && entity.Id == 0)
+                AddAddEvent(entity);
+            else
+                AddUpdateEvent(obj);
             _session.SaveOrUpdate(obj);
         }
 
@@ -166,9 +177,50 @@ namespace MrCMS.DbConfiguration
 
         public void Update(object obj)
         {
-            if (Updated.All(info => info.Object != obj))
-                Updated.Add(new EventInfo { Object = obj });
+            AddUpdateEvent(obj);
             _session.Update(obj);
+        }
+
+        private void AddUpdateEvent(object obj)
+        {
+            if (Updated.All(info => info.Object != obj))
+                Updated.Add(new UpdatedEventInfo { Object = obj, OriginalVersion = GetOriginalVersion(obj) });
+        }
+
+        private object GetOriginalVersion(object o)
+        {
+            if (o == null)
+                return null;
+            var sessionImplementation = GetSessionImplementation();
+            var persistenceContext = sessionImplementation.PersistenceContext;
+            var entry = persistenceContext.GetEntry(o);
+            if (entry == null)
+                return null;
+            var loadedState = entry.LoadedState;
+            if (loadedState == null)
+                return null;
+            var type = o.GetType();
+            var instance = Activator.CreateInstance(type);
+            var entityPersister = entry.Persister;
+            for (int index = 0; index < entityPersister.PropertyNames.Length; index++)
+            {
+                var propertyName = entityPersister.PropertyNames[index];
+                var value = loadedState[index];
+                var propertyInfos = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                var propertyInfo = propertyInfos.FirstOrDefault(info => info.Name == propertyName);
+                try
+                {
+                    if (propertyInfo.CanWrite)
+                    {
+                        propertyInfo.SetValue(instance, value);
+                    }
+                }
+                catch
+                {
+                    throw new Exception(propertyName + " not found");
+                }
+            }
+            return instance;
         }
 
         public void Update(object obj, object id)
@@ -491,7 +543,7 @@ namespace MrCMS.DbConfiguration
             get { return _added; }
         }
 
-        public HashSet<EventInfo> Updated
+        public HashSet<UpdatedEventInfo> Updated
         {
             get { return _updated; }
         }
@@ -502,11 +554,15 @@ namespace MrCMS.DbConfiguration
         }
     }
 
-    public struct EventInfo
+    public class EventInfo
     {
         public object Object { get; set; }
         public bool PreTransactionHandled { get; set; }
         public bool PostTransactionHandled { get; set; }
+    }
+    public class UpdatedEventInfo : EventInfo
+    {
+        public object OriginalVersion { get; set; }
     }
 
     public class MrCMSTransaction : ITransaction
@@ -562,6 +618,7 @@ namespace MrCMS.DbConfiguration
                 obj.PostTransactionHandled = true;
                 EventContext.Instance.Publish<IOnUpdated, OnUpdatedArgs>(new OnUpdatedArgs
                 {
+                    Original = obj.OriginalVersion as SystemEntity,
                     Item = obj.Object as SystemEntity,
                     Session = session
                 });
@@ -599,6 +656,7 @@ namespace MrCMS.DbConfiguration
                 obj.PreTransactionHandled = true;
                 EventContext.Instance.Publish<IOnUpdating, OnUpdatingArgs>(new OnUpdatingArgs
                 {
+                    Original = obj.OriginalVersion as SystemEntity,
                     Item = obj.Object as SystemEntity,
                     Session = session
                 });

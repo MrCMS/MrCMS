@@ -13,6 +13,7 @@ namespace MrCMS.Events
     {
         public SystemEntity Item { get; set; }
         public ISession Session { get; set; }
+        public SystemEntity Original { get; set; }
     }
     public class OnAddedArgs
     {
@@ -23,5 +24,6 @@ namespace MrCMS.Events
     {
         public SystemEntity Item { get; set; }
         public ISession Session { get; set; }
+        public SystemEntity Original { get; set; }
     }
 }

@@ -216,61 +216,8 @@ namespace MrCMS.DbConfiguration
 
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)
         {
-            configuration.EventListeners.SaveOrUpdateEventListeners =
-                new ISaveOrUpdateEventListener[]
-                    {
-                        MrCMSListeners.SaveOrUpdateListener
-                    };
-
-            configuration.AppendListeners(ListenerType.PreInsert,
-                                          new[]
-                                              {
-                                                  MrCMSListeners.SaveOrUpdateListener
-                                              });
-            configuration.AppendListeners(ListenerType.PreUpdate,
-                                          new IPreUpdateEventListener[]
-                                              {
-                                                  MrCMSListeners.SaveOrUpdateListener
-                                              });
-
-            configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
-                                                                             {
-                                                                                 MrCMSListeners.PostCommitEventListener, MrCMSListeners.UrlHistoryListener
-                                                                             });
-
             var softDeleteListener = new SoftDeleteListener(InDevelopment);
             configuration.SetListener(ListenerType.Delete, softDeleteListener);
-
-            if (!InDevelopment && CurrentRequestData.DatabaseIsInstalled)
-            {
-                configuration.AppendListeners(ListenerType.PostCommitUpdate, new IPostUpdateEventListener[]
-                                                                                 {
-                                                                                     MrCMSListeners.UpdateIndexesListener
-                                                                                 });
-                configuration.AppendListeners(ListenerType.PostCommitInsert, new IPostInsertEventListener[]
-                                                                                 {
-                                                                                     MrCMSListeners.UpdateIndexesListener
-                                                                                 });
-                configuration.AppendListeners(ListenerType.PostCommitDelete, new IPostDeleteEventListener[]
-                                                                                 {
-                                                                                     MrCMSListeners.UpdateIndexesListener
-                                                                                 });
-                configuration.AppendListeners(ListenerType.PostCollectionRecreate,
-                                              new IPostCollectionRecreateEventListener[]
-                                                  {
-                                                      MrCMSListeners.UpdateIndexesListener
-                                                  });
-                configuration.AppendListeners(ListenerType.PostCollectionRemove,
-                                              new IPostCollectionRemoveEventListener[]
-                                                  {
-                                                      MrCMSListeners.UpdateIndexesListener
-                                                  });
-                configuration.AppendListeners(ListenerType.PostCollectionUpdate,
-                                              new IPostCollectionUpdateEventListener[]
-                                                  {
-                                                      MrCMSListeners.UpdateIndexesListener
-                                                  });
-            }
         }
     }
 }

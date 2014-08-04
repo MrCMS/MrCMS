@@ -1,7 +1,10 @@
-﻿using MrCMS.Entities;
-using MrCMS.Entities.Documents;
+﻿using Iesi.Collections;
+using MrCMS.Entities;
 using MrCMS.Tasks;
+using NHibernate.Engine;
+using NHibernate.Event;
 using NHibernate.Event.Default;
+using NHibernate.Persister.Entity;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
@@ -14,11 +17,12 @@ namespace MrCMS.DbConfiguration.Configuration
             _inDevelopment = inDevelopment;
         }
 
-        protected override void DeleteEntity(NHibernate.Event.IEventSource session, object entity, NHibernate.Engine.EntityEntry entityEntry, bool isCascadeDeleteEnabled, NHibernate.Persister.Entity.IEntityPersister persister, Iesi.Collections.ISet transientEntities)
+        protected override void DeleteEntity(IEventSource session, object entity, EntityEntry entityEntry,
+            bool isCascadeDeleteEnabled, IEntityPersister persister, ISet transientEntities)
         {
             if (entity is SystemEntity)
             {
-                var e = (SystemEntity)entity;
+                var e = (SystemEntity) entity;
                 e.IsDeleted = true;
 
                 CascadeBeforeDelete(session, persister, entity, entityEntry, transientEntities);
@@ -31,7 +35,7 @@ namespace MrCMS.DbConfiguration.Configuration
             else
             {
                 base.DeleteEntity(session, entity, entityEntry, isCascadeDeleteEnabled,
-                                  persister, transientEntities);
+                    persister, transientEntities);
             }
         }
     }
