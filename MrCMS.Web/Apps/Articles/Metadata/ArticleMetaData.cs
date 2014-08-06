@@ -6,7 +6,7 @@ using MrCMS.Web.Apps.Articles.Pages;
 
 namespace MrCMS.Web.Apps.Articles.Metadata
 {
-    public class ArticleMetadata : DocumentMetadataMap<Article>
+    public class ArticleMetaData : DocumentMetadataMap<Article>
     {
         public override ChildrenListType ChildrenListType
         {

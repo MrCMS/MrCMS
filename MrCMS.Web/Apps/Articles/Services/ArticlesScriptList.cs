@@ -12,7 +12,6 @@ namespace MrCMS.Web.Apps.Articles.Services
             get
             {
                 yield return "~/Apps/Articles/Areas/Admin/Content/Scripts/articles.js";
-                yield return "~/Apps/Articles/Areas/Admin/Content/Scripts/context-menu.js";
             }
         }
     }

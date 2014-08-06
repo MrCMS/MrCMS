@@ -34,7 +34,7 @@ namespace MrCMS.Web.Apps.Articles.RouteHandlers
             if (fileName != null && fileName.Equals("rss.xml", StringComparison.InvariantCultureIgnoreCase))
             {
                 string containerName = absolutePath.Substring(1, absolutePath.Length - 9);
-                var articleList = _documentService.GetDocumentByUrl<ArticleSection>(containerName);
+                var articleList = _documentService.GetDocumentByUrl<ArticleList>(containerName);
                 if (articleList != null)
                 {
                     IControllerFactory controllerFactory = _controllerManager.ControllerFactory;

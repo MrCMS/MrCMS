@@ -7,20 +7,20 @@ using NHibernate;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Services
 {
-    public class GetArticleArchiveAdminViewData:BaseAssignWidgetAdminViewData<ArticleArchive>
+    public class GetArticleCategoriesViewData : BaseAssignWidgetAdminViewData<ArticleCategories>
     {
         private readonly ISession _session;
 
-        public GetArticleArchiveAdminViewData(ISession session)
+        public GetArticleCategoriesViewData(ISession session)
         {
             _session = session;
         }
 
-        public override void AssignViewData(ArticleArchive widget, ViewDataDictionary viewData)
+        public override void AssignViewData(ArticleCategories widget, ViewDataDictionary viewData)
         {
             viewData["ArticleLists"] = _session.QueryOver<ArticleList>()
                 .OrderBy(list => list.Name)
-                .Asc.Cacheable()
+                .Desc.Cacheable()
                 .List()
                 .BuildSelectItemList(category => category.Name,
                     category => category.Id.ToString(),

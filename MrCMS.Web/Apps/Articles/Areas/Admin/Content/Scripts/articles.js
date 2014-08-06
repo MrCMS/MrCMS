@@ -16,4 +16,4 @@
 
     $(document).on('keyup', '#Abstract', updateCharacterCount);
     updateCharacterCount();
-})
+});

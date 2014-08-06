@@ -249,67 +249,35 @@
   <ItemGroup>
     <Compile Include="Apps\Articles\ActionResults\RssActionResult.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Controllers\ArticleController.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Controllers\ArticlesController.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Controllers\AuthorInfoController.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Controllers\FeaturesController.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Helpers\ArticleDisplayHelper.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Models\ArticlesAdminMenu.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Models\ArticleSearchQuery.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Models\FeaturesSearchQuery.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\ArticleAdminService.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\ArticleSectionTreeNavListing.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\FeaturesAdminService.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\FeatureSectionTreeNavListing.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleAdminViewDataOtherSections.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleAdminViewDataUsers.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleArchiveAdminViewData.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleSectionOptions.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\GetFeatureAdminViewDataOtherSections.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\GetFeatureAdminViewDataUsers.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\GetFeatureSectionOptions.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleCategoriesViewData.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetLatestArticlesAdminViewData.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\IArticleAdminService.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\IFeaturesAdminService.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\IGetArticleSectionOptions.cs" />
-    <Compile Include="Apps\Articles\Areas\Admin\Services\IGetFeatureSectionOptions.cs" />
-    <Compile Include="Apps\Articles\Controllers\ArticleSectionController.cs" />
-    <Compile Include="Apps\Articles\Controllers\ArticleRSSController.cs" />
-    <Compile Include="Apps\Articles\DbConfiguration\ArticleSectionOverride.cs" />
+    <Compile Include="Apps\Articles\ArticlesApp.cs" />
+    <Compile Include="Apps\Articles\Controllers\ArticleController.cs" />
+    <Compile Include="Apps\Articles\DbConfiguration\ArticleOverride.cs" />
     <Compile Include="Apps\Articles\DbConfiguration\AuthorInfoOverride.cs" />
-    <Compile Include="Apps\Articles\DbConfiguration\FeatureOverride.cs" />
-    <Compile Include="Apps\Articles\DbConfiguration\FeatureSectionOverride.cs" />
     <Compile Include="Apps\Articles\Entities\AuthorInfo.cs" />
-    <Compile Include="Apps\Articles\Indexes\ArticleIndexDefinition.cs" />
-    <Compile Include="Apps\Articles\Indexes\ArticlePrimarySectionDefinition.cs" />
-    <Compile Include="Apps\Articles\Indexes\ArticlePublishedDefinition.cs" />
-    <Compile Include="Apps\Articles\Indexes\ArticleSectionsDefinition.cs" />
-    <Compile Include="Apps\Articles\Indexes\FeatureIndexDefinition.cs" />
-    <Compile Include="Apps\Articles\Indexes\FeaturePrimarySectionDefinition.cs" />
-    <Compile Include="Apps\Articles\Indexes\FeaturePublishedDefinition.cs" />
-    <Compile Include="Apps\Articles\Indexes\FeatureSectionsDefinition.cs" />
-    <Compile Include="Apps\Articles\Metadata\ArticleMetadata.cs" />
-    <Compile Include="Apps\Articles\Metadata\FeatureMetadata.cs" />
-    <Compile Include="Apps\Articles\Metadata\FeatureSectionMetadata.cs" />
-    <Compile Include="Apps\Articles\ModelBinders\ArticleSectionModelBinder.cs" />
+    <Compile Include="Apps\Articles\Metadata\ArticleListMetaData.cs" />
+    <Compile Include="Apps\Articles\Metadata\ArticleMetaData.cs" />
+    <Compile Include="Apps\Articles\ModelBinders\ArticleListModelBinder.cs" />
     <Compile Include="Apps\Articles\Models\ArchiveModel.cs" />
     <Compile Include="Apps\Articles\Models\ArticleArchiveModel.cs" />
     <Compile Include="Apps\Articles\Models\ArticleSearchModel.cs" />
     <Compile Include="Apps\Articles\Models\LatestXArticlesViewModel.cs" />
-    <Compile Include="Apps\Articles\Pages\Feature.cs" />
-    <Compile Include="Apps\Articles\Pages\FeatureSection.cs" />
+    <Compile Include="Apps\Articles\Pages\Article.cs" />
+    <Compile Include="Apps\Articles\Pages\ArticleList.cs" />
+    <Compile Include="Apps\Articles\RouteHandlers\ArticleListRSSRouteHandler.cs" />
     <Compile Include="Apps\Articles\RouteHandlers\ArticleSectionRSSRouteHandler.cs" />
     <Compile Include="Apps\Articles\Services\ArticleService.cs" />
     <Compile Include="Apps\Articles\Services\ArticlesScriptList.cs" />
-    <Compile Include="Apps\Articles\Services\GetOtherSectionFormData.cs" />
     <Compile Include="Apps\Articles\Services\IArticleService.cs" />
-    <Compile Include="Apps\Articles\Services\IGetOtherSectionFormData.cs" />
-    <Compile Include="Apps\Articles\Services\IOtherArticleSectionBinder.cs" />
-    <Compile Include="Apps\Articles\Services\OtherArticleSectionBinder.cs" />
-    <Compile Include="Apps\Articles\Services\OtherSectionBinder.cs" />
     <Compile Include="Apps\Articles\Services\Widgets\GetArticleArchiveModel.cs" />
     <Compile Include="Apps\Articles\Services\Widgets\GetLatestXArticlesModel.cs" />
     <Compile Include="Apps\Articles\UrlGenerators\ArticleUrlGenerator.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
+    <Compile Include="Apps\Articles\Widgets\ArticleCategories.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
     <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
     <Compile Include="Apps\Core\Controllers\RegistrationController.cs" />
@@ -447,12 +415,6 @@
     <Compile Include="Apps\Core\Widgets\PlainTextWidget.cs" />
     <Compile Include="Apps\Core\Widgets\TextWidget.cs" />
     <Compile Include="Apps\Core\CoreApp.cs" />
-    <Compile Include="Apps\Articles\DbConfiguration\ArticleOverride.cs" />
-    <Compile Include="Apps\Articles\Metadata\ArticleSectionMetadata.cs" />
-    <Compile Include="Apps\Articles\ArticlesApp.cs" />
-    <Compile Include="Apps\Articles\Pages\Article.cs" />
-    <Compile Include="Apps\Articles\Pages\ArticleSection.cs" />
-    <Compile Include="Apps\Articles\Widgets\ArticleCategories.cs" />
     <Compile Include="Apps\Galleries\Metadata\GalleryListMetaData.cs" />
     <Compile Include="Apps\Galleries\Metadata\GalleryMetaData.cs" />
     <Compile Include="Apps\Galleries\Pages\GalleryList.cs" />
@@ -618,7 +580,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps\Articles\Areas\Admin\Content\Scripts\articles.js" />
-    <Content Include="Apps\Articles\Areas\Admin\Content\Scripts\context-menu.js" />
     <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap-theme.css" />
     <Content Include="Apps\Core\Content\Bootstrap\css\bootstrap.css" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.svg" />
@@ -1439,31 +1400,17 @@
     <Content Include="Apps\Core\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Apps\Articles\Areas\Admin\Views\Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\Article.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleSection.cshtml" />
-    <Content Include="Apps\Articles\Views\Pages\Article.cshtml" />
-    <Content Include="Apps\Articles\Views\Pages\ArticleSection.cshtml" />
-    <Content Include="Apps\Articles\Views\Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Apps\Articles\Views\Widgets\LatestXArticles.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Apps\Galleries\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Apps\Articles\Views\Widgets\ArticleCategories.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\LatestXArticles.cshtml" />
     <Content Include="Apps\Galleries\Views\Pages\Gallery.cshtml" />
     <Content Include="Apps\Galleries\Views\Pages\GalleryList.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\Gallery.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryList.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\SearchPage.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleCategories.cshtml" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\scayt\LICENSE.md" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\scayt\README.md" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\LICENSE.md" />
@@ -1484,13 +1431,7 @@
     <Content Include="Apps\Core\Views\Widgets\UserLinks.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\LinkedImage.cshtml" />
     <Content Include="Apps\Core\Views\Widgets\LinkedImage.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\User\AuthorInfo.cshtml" />
     <Content Include="Apps\Core\Views\Shared\ChangePassword.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Add.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Show.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Edit.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\User\Article.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Article\ForUser.cshtml" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.validate.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1631,8 +1572,6 @@
     <Content Include="Areas\Admin\Views\Indexes\Boosts.cshtml" />
     <Content Include="Apps\Core\Views\Shared\_TwoColumn.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\Navigation.cshtml" />
-    <Content Include="Apps\Articles\Views\Widgets\ArticleArchive.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchive.cshtml" />
     <Content Include="Apps\Core\Views\Shared\SearchQuery.cshtml" />
     <Content Include="Apps\Core\Views\Shared\SearchForm.cshtml" />
     <Content Include="Areas\Admin\Views\Form\DeleteEntry.cshtml" />
@@ -1673,18 +1612,13 @@
     <Content Include="Areas\Admin\Views\Shared\Messages.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\AddProperties.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\TextPageAdd.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleAdd.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\AddProperties.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchiveAdd.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\Push.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\TransientNotification\Show.cshtml" />
     <Content Include="Areas\Admin\Views\PersistentNotification\Show.cshtml" />
     <Content Include="Areas\Admin\Views\PersistentNotification\Navbar.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleSectionAdd.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleCategoriesAdd.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\LatestXArticlesAdd.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\TextPageAdd.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\CurrentPageSubNavigationAdd.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\LinkedImageAdd.cshtml" />
@@ -1693,19 +1627,35 @@
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\TextWidgetAdd.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryAdd.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryListAdd.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\FeatureAdd.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\Feature.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Articles\Index.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\_ViewStart.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Features\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PageTemplate\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PageTemplate\Add.cshtml" />
     <Content Include="Areas\Admin\Views\PageTemplate\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\UrlGeneratorSettings\Index.cshtml" />
     <Content Include="Areas\Admin\Views\UrlGeneratorSettings\Set.cshtml" />
     <Content Include="Apps\Core\Views\Shared\_OneColumn.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\FeatureSectionAdd.cshtml" />
-    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\FeatureSection.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Article\ForUser.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Add.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Edit.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Show.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\User\Article.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\User\AuthorInfo.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Web.config" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\Article.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleList.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Webpage\ArticleListAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchive.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleArchiveAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleCategories.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\ArticleCategoriesAdd.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\LatestXArticles.cshtml" />
+    <Content Include="Apps\Articles\Areas\Admin\Views\Widget\LatestXArticlesAdd.cshtml" />
+    <Content Include="Apps\Articles\Views\Pages\Article.cshtml" />
+    <Content Include="Apps\Articles\Views\Pages\ArticleList.cshtml" />
+    <Content Include="Apps\Articles\Views\Web.config" />
+    <Content Include="Apps\Articles\Views\Widgets\ArticleArchive.cshtml" />
+    <Content Include="Apps\Articles\Views\Widgets\ArticleCategories.cshtml" />
+    <Content Include="Apps\Articles\Views\Widgets\LatestXArticles.cshtml" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
@@ -1713,7 +1663,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Apps\Articles\Helpers\" />
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
     <Folder Include="Apps\Core\Entities\" />
     <Folder Include="Apps\Core\Settings\" />
