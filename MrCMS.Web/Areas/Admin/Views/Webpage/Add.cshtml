@@ -19,8 +19,8 @@
                 <input type="submit" class="btn-primary btn" value="Save and continue" />
             </span>
         </legend>
-        <div class="row-fluid">
-            <div class="span2">
+        <div class="row">
+            <div class="col-lg-2">
                 @foreach (var documentType in types)
                 {
                     <label class="radio">
@@ -31,14 +31,14 @@
                 }
                 @Html.ValidationMessage("DocumentType")
             </div>
-            <div class="span10">
+            <div class="col-lg-10">
                 @Html.HiddenFor(x => x.Parent.Id)
                 @Html.LabelFor(x => x.Name, "Page Name")
-                @Html.TextBoxFor(x => x.Name, new { @class = "span12", autocomplete = "off" })
+                @Html.TextBoxFor(x => x.Name, new { @class = "col-lg-12", autocomplete = "off" })
                 @Html.ValidationMessageFor(x => x.Name)
 
                 @Html.LabelFor(x => x.UrlSegment, "Url")
-                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
+                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "col-lg-12" })
                 @Html.ValidationMessageFor(x => x.UrlSegment)
 
                 <label class="checkbox">

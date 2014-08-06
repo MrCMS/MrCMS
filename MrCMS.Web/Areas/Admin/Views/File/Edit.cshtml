@@ -9,11 +9,11 @@
             </span>
         </legend>
         @Html.LabelFor(x => x.Title)
-        @Html.TextBoxFor(x => x.Title, new { @class = "span12" })
+        @Html.TextBoxFor(x => x.Title, new { @class = "col-lg-12" })
         @Html.ValidationMessageFor(x => x.Title)
 
         @Html.LabelFor(x => x.Description)
-        @Html.TextAreaFor(x => x.Description, new { @class = "span12" })
+        @Html.TextAreaFor(x => x.Description, new { @class = "col-lg-12" })
         @Html.ValidationMessageFor(x => x.Description)
     </fieldset>
 }

@@ -14,8 +14,8 @@
         @if (Model.Webpage != null)
         {
             @Html.HiddenFor(model => model.Webpage.Id);
-            <div class="row-fluid">
-                <div class="span12">
+            <div class="row">
+                <div class="col-lg-12">
                     <label class="radio">@Html.RadioButton("AddType", "global", true, new { id = "add-global" }) all pages using this layout</label>
 
                     <label class="radio">@Html.RadioButton("AddType", "page", false, new { id = "add-page" }) this page</label>

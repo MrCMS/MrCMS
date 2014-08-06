@@ -19,7 +19,7 @@
         @Html.HiddenFor(widget => widget.Id)
         @Html.Hidden("ReturnUrl", ViewData["return-url"])
         @Html.LabelFor(widget => widget.Name)
-        @Html.TextBoxFor(widget => widget.Name, new { @class = "span12" })
+        @Html.TextBoxFor(widget => widget.Name, new { @class = "col-lg-12" })
         @if (Model.Webpage != null)
         {
             @Html.InlineCheckboxFor(widget => widget.IsRecursive, null, null, "Is Recursive (shows on child pages)")

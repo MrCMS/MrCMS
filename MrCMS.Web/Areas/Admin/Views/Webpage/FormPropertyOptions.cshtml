@@ -1,11 +1,11 @@
 ﻿@model MrCMS.Entities.Documents.Web.FormProperties.FormPropertyWithOptions
-<div class="row-fluid">
-    <div class="span7">
+<div class="row">
+    <div class="col-lg-7">
     <h5>Options</h5>
     </div>
-    <div class="span5">
+    <div class="col-lg-5">
         <div class="pull-right btn-group">
-            @Html.ActionLink("Add Option", "AddOption", "Form", new { id = Model.Id }, new { @class = "btn btn-mini btn-primary", data_toggle = "fb-modal" })
+            @Html.ActionLink("Add Option", "AddOption", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-primary", data_toggle = "fb-modal" })
         </div>
     </div>
     <table class="table table-condensed table-striped table-bordered">
@@ -24,8 +24,8 @@
                     <td>@option.Selected</td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink("Edit", "EditOption", "Form", new { id = option.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
-                            @Html.ActionLink("Delete", "DeleteOption", "Form", new { id = option.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
+                            @Html.ActionLink("Edit", "EditOption", "Form", new { id = option.Id }, new { @class = "btn btn-xs", data_toggle = "fb-modal" })
+                            @Html.ActionLink("Delete", "DeleteOption", "Form", new { id = option.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
                         </div>
                     </td>
                 </tr>

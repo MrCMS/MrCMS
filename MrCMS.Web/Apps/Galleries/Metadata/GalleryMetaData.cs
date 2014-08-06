@@ -12,7 +12,7 @@ namespace MrCMS.Web.Apps.Galleries.Metadata
         {
             get
             {
-                return "icon-picture";
+                return "glyphicon glyphicon-picture";
             }
         }
 

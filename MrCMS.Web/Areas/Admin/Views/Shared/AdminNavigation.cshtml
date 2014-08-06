@@ -1,10 +1,10 @@
 ﻿@using MrCMS.Helpers
 <div class="left-nav">
     <div id="nav-tabs">
-        <ul class="nav nav-tabs" data-stickytabs="admin-navigation">
-            <li id="web-nav"><a href="#web" data-toggle="tab" data-tree="webpage-tree" id="pages-tab" data-tree-url="@Url.Action("WebSiteTree", "Navigation")">@Resource("Admin Nav Pages","Pages")</a></li>
-            <li id="media-tree-nav"><a href="#media" data-toggle="tab" data-tree="media-tree" id="media-tab" data-tree-url="@Url.Action("MediaTree", "Navigation")">@Resource("Admin Nav Media","Media")</a></li>
-            <li id="layout-nav"><a href="#layout" data-toggle="tab" data-tree="layout-tree" id="layout-tab" data-tree-url="@Url.Action("LayoutTree", "Navigation")">@Resource("Admin Nav Layout","Layout")</a></li>
+        <ul class="nav nav-tabs" data-stickytabs="admin-navigation" role="tablist">
+            <li id="web-nav"><a href="#web"  role="tab" data-toggle="tab" data-tree="webpage-tree" id="pages-tab" data-tree-url="@Url.Action("WebSiteTree", "Navigation")">@Resource("Admin Nav Pages", "Pages")</a></li>
+            <li id="media-tree-nav"><a href="#media" role="tab" data-toggle="tab" data-tree="media-tree" id="media-tab" data-tree-url="@Url.Action("MediaTree", "Navigation")">@Resource("Admin Nav Media", "Media")</a></li>
+            <li id="layout-nav"><a href="#layout" role="tab" data-toggle="tab" data-tree="layout-tree" id="layout-tab" data-tree-url="@Url.Action("LayoutTree", "Navigation")">@Resource("Admin Nav Layout", "Layout")</a></li>
         </ul>
         <div class="tab-content">
             <div id="web" class="tab-pane">

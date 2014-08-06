@@ -3,11 +3,11 @@
 
 
 <div data-paging-type="async">
-    <div class="row-fluid">
+    <div class="row">
         @Html.LabelFor(model => model.Search)
         @Html.TextBoxFor(model => model.Search)
         <p>
-            <button class="btn btn-mini" id="search-postings" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">Search</button>
+            <button class="btn btn-xs" id="search-postings" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">Search</button>
         </p>
     </div>
     @if (Model.Items.Any())
@@ -47,9 +47,9 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink("View full entry", "ViewPosting", new { id = posting.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+                                @Html.ActionLink("View full entry", "ViewPosting", new { id = posting.Id }, new { @class = "btn btn-xs", data_toggle = "fb-modal" })
 
-                                @Html.ActionLink("Delete", "DeleteEntry", "Form", new { id = posting.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
+                                @Html.ActionLink("Delete", "DeleteEntry", "Form", new { id = posting.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
                             </div>
                         </td>
                     </tr>

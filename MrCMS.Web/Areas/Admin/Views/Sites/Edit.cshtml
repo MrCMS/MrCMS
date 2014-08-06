@@ -22,11 +22,11 @@
 
         @Html.HiddenFor(x => x.Id)
         @Html.LabelFor(x => x.Name)
-        @Html.TextBoxFor(x => x.Name, new { @class = "span6" })
+        @Html.TextBoxFor(x => x.Name, new { @class = "col-lg-6" })
         @Html.ValidationMessageFor(x => x.Name)
 
         @Html.LabelFor(x => x.BaseUrl)
-        @Html.TextBoxFor(x => x.BaseUrl, new { @class = "span6" })
+        @Html.TextBoxFor(x => x.BaseUrl, new { @class = "col-lg-6" })
         @Html.ValidationMessageFor(x => x.BaseUrl)
 
         @{ Html.RenderPartial("RestrictedDomains", Model); }

@@ -40,18 +40,18 @@
                                                         {
                                                             if (!Model.IsHidden(widget))
                                                             {
-                                                            @Html.FormLink("Hide Widget", "Hide", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
+                                                            @Html.FormLink("Hide Widget", "Hide", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-xs" })
                                                             }
                                                             else
                                                             {
-                                                            @Html.FormLink("Show Widget", "Show", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
+                                                            @Html.FormLink("Show Widget", "Show", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-xs" })
                                                             }
                                                         }
                                                         else
                                                         {
-                                                            <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete Widget</a>
+                                                            <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-xs btn-danger" data-toggle="fb-modal">Delete Widget</a>
                                                         }
-                                                        @Html.ActionLink("Edit Widget", "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini", @data_toggle = "fb-modal" })
+                                                        @Html.ActionLink("Edit Widget", "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-xs", @data_toggle = "fb-modal" })
                                                     </div>
                                                 </td>
                                             </tr>
@@ -60,14 +60,14 @@
                                 </table>
                             }
                             <div class="btn-group">
-                                <a href="@Url.Action("Add", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-mini btn-primary" data-toggle="fb-modal">Add widget to area
+                                <a href="@Url.Action("Add", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-xs btn-primary" data-toggle="fb-modal">Add widget to area
                                 </a>
                                 @if (widgets.Any())
                                 {
-                                    @Html.ActionLink("Sort", "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini", @data_toggle = "fb-modal" })
+                                    @Html.ActionLink("Sort", "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-xs", @data_toggle = "fb-modal" })
                                     if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == Model))
                                     {
-                                    @Html.FormLink("Reset sorting", "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })
+                                    @Html.FormLink("Reset sorting", "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-xs" })
                                     }
                                 }
                             </div>

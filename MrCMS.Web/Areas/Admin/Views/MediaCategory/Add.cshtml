@@ -17,16 +17,16 @@
         </legend>
 
 
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-lg-12">
 
                 @Html.HiddenFor(x => x.Parent.Id)
                 @Html.LabelFor(x => x.Name, "Folder Name")
-                @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
+                @Html.TextBoxFor(x => x.Name, new { @class = "col-lg-12" })
                 @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
 
                 @Html.LabelFor(x => x.UrlSegment, "Path")
-                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
+                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "col-lg-12" })
                 @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
                 <br />
                 @Html.Hidden("DocumentType", "MediaCategory")

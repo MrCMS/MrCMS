@@ -19,18 +19,18 @@
             </span>
         </legend>
 
-        <div class="row-fluid">
-            <div class="span4">
+        <div class="row">
+            <div class="col-lg-4">
                 @Html.LabelFor(query => query.Key)
-                @Html.TextBoxFor(query => query.Key, new { @class = "span12" })
+                @Html.TextBoxFor(query => query.Key, new { @class = "col-lg-12" })
             </div>
-            <div class="span4">
+            <div class="col-lg-4">
                 @Html.LabelFor(query => query.Value)
-                @Html.TextBoxFor(query => query.Value, new { @class = "span12" })
+                @Html.TextBoxFor(query => query.Value, new { @class = "col-lg-12" })
             </div>
-            <div class="span4">
+            <div class="col-lg-4">
                 @Html.LabelFor(query => query.Language)
-                @Html.DropDownListFor(query => query.Language, languageOptions, new { @class = "span12" })
+                @Html.DropDownListFor(query => query.Language, languageOptions, new { @class = "col-lg-12" })
             </div>
         </div>
     </fieldset>
@@ -74,14 +74,14 @@ else
                     </td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink("Edit", "Edit", "Resource", new { id = resource.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+                            @Html.ActionLink("Edit", "Edit", "Resource", new { id = resource.Id }, new { @class = "btn btn-xs", data_toggle = "fb-modal" })
                             @if (resource.IsDefault)
                             {
-                                @Html.ActionLink("Add an override", "Add", "Resource", new { resource.Key }, new { @class = "btn btn-success btn-mini", data_toggle = "fb-modal" })
+                                @Html.ActionLink("Add an override", "Add", "Resource", new { resource.Key }, new { @class = "btn btn-success btn-xs", data_toggle = "fb-modal" })
                             }
                             else
                             {
-                                @Html.ActionLink("Delete", "Delete", "Resource", new { id = resource.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "fb-modal" })
+                                @Html.ActionLink("Delete", "Delete", "Resource", new { id = resource.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })
                             }
 
                         </div>

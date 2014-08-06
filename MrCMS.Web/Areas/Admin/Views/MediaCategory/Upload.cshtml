@@ -5,8 +5,8 @@
 
 @if (Model != null)
 {
-    <div class="row-fluid">
-        <div class="span3">
+    <div class="row">
+        <div class="col-lg-3">
             <span class="btn btn-success fileinput-button">
                 <i class="icon-plus"></i>
                 <span>Upload files...</span>
@@ -15,7 +15,7 @@
                 <input type="hidden" value="@Model.Id" id="action-category-id"/>
             </span>
         </div>
-        <div class="span9">
+        <div class="col-lg-9">
             <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 0px;">
                 <div class="bar"><span id="percent-complete" style="text-align: center;"></span></div>
             </div>

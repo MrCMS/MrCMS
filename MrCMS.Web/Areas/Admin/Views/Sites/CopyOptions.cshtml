@@ -8,14 +8,14 @@
 @Html.ValidationMessageFor(options => options.SiteId)
 
 <div id="other-site-copy-options">
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-lg-6">
             @Html.InlineCheckboxFor(options => options.CopyLayouts)
             @Html.InlineCheckboxFor(options => options.CopyMediaCategories)
             @Html.InlineCheckboxFor(options => options.CopyHome)
             @Html.InlineCheckboxFor(options => options.CopyLogin)
         </div>
-        <div class="span6">
+        <div class="col-lg-6">
             @Html.InlineCheckboxFor(options => options.Copy404)
             @Html.InlineCheckboxFor(options => options.Copy403)
             @Html.InlineCheckboxFor(options => options.Copy500)

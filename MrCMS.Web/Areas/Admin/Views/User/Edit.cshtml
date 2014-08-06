@@ -29,15 +29,15 @@
         </legend>
 
         @Html.HiddenFor(x => x.Id)
-        <div class="row-fluid">
-            <div class="span6">
+        <div class="row">
+            <div class="col-lg-6">
                 <h4>Properties</h4>
                 @Html.LabelFor(x => x.Email)
-                @Html.TextBoxFor(x => x.Email, new { @class = "span12" })
+                @Html.TextBoxFor(x => x.Email, new { @class = "col-lg-12" })
                 @Html.LabelFor(x => x.FirstName)
-                @Html.TextBoxFor(x => x.FirstName, new { @class = "span12" })
+                @Html.TextBoxFor(x => x.FirstName, new { @class = "col-lg-12" })
                 @Html.LabelFor(x => x.LastName)
-                @Html.TextBoxFor(x => x.LastName, new { @class = "span12" })
+                @Html.TextBoxFor(x => x.LastName, new { @class = "col-lg-12" })
                 @if (!onlyAdmin)
                 {
                     <div class="form-inline">
@@ -46,7 +46,7 @@
                 }
 
             </div>
-            <div class="span6">
+            <div class="col-lg-6">
                 <h4>Roles</h4>
                 <div class="form-inline">
                     @if (userRoles != null && CurrentRequestData.CurrentUser.CanAccess<UserACL>(UserACL.Roles))

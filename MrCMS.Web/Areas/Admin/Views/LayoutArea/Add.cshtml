@@ -9,11 +9,11 @@
                 <input type="submit" class="btn-success btn" value="Add layout area" />
             </span>
         </legend>
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-lg-12">
                 @Html.HiddenFor(x => x.Layout.Id)
                 @Html.LabelFor(x => x.AreaName)
-                @Html.EditorFor(x => x.AreaName, new { @class = "span12" })
+                @Html.EditorFor(x => x.AreaName, new { @class = "col-lg-12" })
                 @Html.ValidationMessageFor(x => x.AreaName, "", new { @class = "error" })
             </div>
         </div>

@@ -5,7 +5,7 @@
 @{
     var results = ViewData["results"] as IPagedList<Webpage>;
 }
-<div class="row-fluid">
+<div class="row">
     @using (Html.BeginForm("Index", "Search", FormMethod.Get))
     {
         <fieldset>
@@ -15,36 +15,36 @@
 
                 </span>
             </legend>
-            <div class="row-fluid">
-                <div class="span6">
+            <div class="row">
+                <div class="col-lg-6">
                     @Html.LabelFor(x => x.Term)
-                    @Html.TextBoxFor(x => x.Term, new { @class = "span12" })
+                    @Html.TextBoxFor(x => x.Term, new { @class = "col-lg-12" })
                     @Html.ValidationMessageFor(x => x.Term)
                 </div>
-                <div class="span6">
+                <div class="col-lg-6">
 
                     @Html.LabelFor(x => x.CreatedOnFrom)
                     @Html.TextBoxFor(x => x.CreatedOnFrom, new { @class = "date-time-picker" })
                     @Html.ValidationMessageFor(x => x.CreatedOnFrom)
                 </div>
             </div>
-            <div class="row-fluid">
-                <div class="span6">
-                    <div class="row-fluid">
-                        <div class="span6">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-6">
                             @Html.LabelFor(x => x.Parent.Id, "Parent")
-                            @Html.DropDownListFor(x => x.Parent.Id, ViewData["parents"] as IEnumerable<SelectListItem>, new { @class = "span12" })
+                            @Html.DropDownListFor(x => x.Parent.Id, ViewData["parents"] as IEnumerable<SelectListItem>, new { @class = "col-lg-12" })
                             @Html.ValidationMessageFor(x => x.Parent.Id)
                         </div>
-                        <div class="span6">
+                        <div class="col-lg-6">
                             @Html.LabelFor(x => x.Type)
-                            @Html.DropDownListFor(x => x.Type, ViewData["doc-types"] as IEnumerable<SelectListItem>, new { @class = "span12" })
+                            @Html.DropDownListFor(x => x.Type, ViewData["doc-types"] as IEnumerable<SelectListItem>, new { @class = "col-lg-12" })
                             @Html.ValidationMessageFor(x => x.Type)
                         </div>
                     </div>
 
                 </div>
-                <div class="span6">
+                <div class="col-lg-6">
                     @Html.LabelFor(x => x.CreatedOnTo)
                     @Html.TextBoxFor(x => x.CreatedOnTo, new { @class = "date-time-picker" })
                     @Html.ValidationMessageFor(x => x.CreatedOnTo)
@@ -72,8 +72,8 @@
         
         foreach (var result in results)
         {
-        <div class="row-fluid">
-            <div class="span6">
+        <div class="row">
+            <div class="col-lg-6">
                 <a href="@Url.Action("Edit", "Webpage", new { id = result.Id })" class="">
                     <strong>@result.Name</strong>
                 </a>
@@ -84,16 +84,16 @@
                  }
                 <p>Last updated on @result.UpdatedOn</p>
             </div>
-            <div class="span2">
+            <div class="col-lg-2">
                 @result.DocumentType
             </div>
-            <div class="span4">
+            <div class="col-lg-4">
                 <div class="btn-group display-inline">
-                    @Html.ActionLink("Edit", "Edit", "Webpage", new { id = result.Id }, new { @class = "btn btn-mini" })
+                    @Html.ActionLink("Edit", "Edit", "Webpage", new { id = result.Id }, new { @class = "btn btn-xs" })
 
                     @if (result.AnyChildren())
                     {
-                        <a href="/Admin/Search?parent.id=@result.Id" class="btn btn-mini">View Children</a>
+                        <a href="/Admin/Search?parent.id=@result.Id" class="btn btn-xs">View Children</a>
                     }
                 </div>
             </div>

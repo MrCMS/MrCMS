@@ -18,7 +18,7 @@
 
         @Html.HiddenFor(x => x.Id)
         @Html.LabelFor(x => x.AreaName)
-        @Html.TextBoxFor(x => x.AreaName, new {@class = "span12"})
+        @Html.TextBoxFor(x => x.AreaName, new {@class = "col-lg-12"})
 
         @{
             if (Model.GetWidgets().Any())
@@ -44,8 +44,8 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        @Html.ActionLink("Edit", "Edit", "Widget", new {id = widget.Id}, new {@class = "btn btn-mini", @data_toggle="fb-modal"})
-                                        <a href="@Url.Action("Delete", "Widget", new {id = widget.Id})" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete</a>
+                                        @Html.ActionLink("Edit", "Edit", "Widget", new {id = widget.Id}, new {@class = "btn btn-xs", @data_toggle="fb-modal"})
+                                        <a href="@Url.Action("Delete", "Widget", new {id = widget.Id})" class="btn btn-xs btn-danger" data-toggle="fb-modal">Delete</a>
                                     </div>
                                 </td>
                             </tr>
@@ -60,11 +60,11 @@
         }
         
         <div class="btn-group">
-            <a href="@Url.Action("Add", "Widget", new {id = Model.Id, returnUrl = Request.Url})" class="btn btn-mini" data-toggle="fb-modal">Add widget</a>
+            <a href="@Url.Action("Add", "Widget", new {id = Model.Id, returnUrl = Request.Url})" class="btn btn-xs" data-toggle="fb-modal">Add widget</a>
             @{
                 if (Model.GetWidgets().Any())
                 {
-                    @Html.ActionLink("Sort widgets", "SortWidgets", "LayoutArea", new {id = Model.Id, returnUrl = Request.Url.ToString()}, new {@class = "btn btn-mini", @data_toggle="fb-modal"})
+                    @Html.ActionLink("Sort widgets", "SortWidgets", "LayoutArea", new {id = Model.Id, returnUrl = Request.Url.ToString()}, new {@class = "btn btn-xs", @data_toggle="fb-modal"})
                 }
             }
 

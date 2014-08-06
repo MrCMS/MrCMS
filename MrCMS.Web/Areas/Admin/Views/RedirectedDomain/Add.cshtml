@@ -10,7 +10,7 @@
         </legend>
         @Html.HiddenFor(domain => domain.Site.Id)
         @Html.LabelFor(domain => domain.Url)
-        @Html.TextBoxFor(domain => domain.Url, new { @class = "span5" })
+        @Html.TextBoxFor(domain => domain.Url, new { @class = "col-lg-5" })
         @Html.ValidationMessageFor(domain => domain.Url)
     </fieldset>
 }

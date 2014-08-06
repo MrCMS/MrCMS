@@ -14,19 +14,17 @@
         </ul>
     </li>
     <li><a href="#versions" data-toggle="tab" id="versions-link" data-id="@Url.RequestContext.RouteData.Values["id"]">Versions</a></li>
-    <li><a href="#permissions"  data-toggle="tab">Permissions&nbsp;</a></li>
+    <li><a href="#permissions" data-toggle="tab">Permissions&nbsp;</a></li>
 </ul>
-<div class="row-fluid">
-    <div class="tab-content">
-        @{Html.RenderPartial("Properties", Model);}
-        @{Html.RenderPartial("SEO", Model);}
-        @{Html.RenderPartial("Layout", Model); }
-        @{Html.RenderPartial("FormProperties", Model);}
-        @{Html.RenderPartial("FormDesign", Model);}
-        @{Html.RenderPartial("FormPostings", Model);}
-        @{Html.RenderPartial("FormMessage", Model);}
-        @{Html.RenderPartial("PageVersions", Model);}
-        @{Html.RenderPartial("Permissions", Model);}
-    </div>
+<div class="tab-content">
+    @{Html.RenderPartial("Properties", Model);}
+    @{Html.RenderPartial("SEO", Model);}
+    @{Html.RenderPartial("Layout", Model); }
+    @{Html.RenderPartial("FormProperties", Model);}
+    @{Html.RenderPartial("FormDesign", Model);}
+    @{Html.RenderPartial("FormPostings", Model);}
+    @{Html.RenderPartial("FormMessage", Model);}
+    @{Html.RenderPartial("PageVersions", Model);}
+    @{Html.RenderPartial("Permissions", Model);}
 </div>
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-webpage.js"); }

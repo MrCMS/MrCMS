@@ -12,7 +12,7 @@ namespace MrCMS.Web.Apps.Galleries.Metadata
         {
             get
             {
-                return "icon-th";
+                return "glyphicon glyphicon-th";
             }
         }
         public override ChildrenListType ChildrenListType

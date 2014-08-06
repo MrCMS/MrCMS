@@ -1,14 +1,14 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane" id="form-message-tab">
-    <div class="row-fluid margin-top-0">
-        <div class="span12">
+    <div class="row margin-top-0">
+        <div class="col-lg-12">
             @Html.InfoBlock("Heads up! ", "To include this form in your page simply use the short code [form] where you would like it rendered. Should you want to render this form in another page you can use [form-" + Url.RequestContext.RouteData.Values["id"] + "]")
             
             <h4 class="margin-top-0">Message to show after form is submitted</h4>
 
             @Html.LabelFor(webpage => webpage.FormSubmittedMessage)
-            @Html.TextBoxFor(webpage => webpage.FormSubmittedMessage, new { @class = "span12" })
+            @Html.TextBoxFor(webpage => webpage.FormSubmittedMessage, new { @class = "col-lg-12" })
             @Html.ValidationMessageFor(x => x.FormSubmittedMessage, "", new { @class = "error" })
             
             <h4 class="margin-top-0">Submit Button settings</h4>
@@ -16,21 +16,21 @@
             @Html.InfoBlock("Heads up! ", "If you are using a custom design these properties will be ignored.")
 
             @Html.LabelFor(webpage => webpage.SubmitButtonText)
-            @Html.TextBoxFor(webpage => webpage.SubmitButtonText, new { @class = "span4" })
+            @Html.TextBoxFor(webpage => webpage.SubmitButtonText, new { @class = "col-lg-4" })
             @Html.ValidationMessageFor(x => x.SubmitButtonText, "", new { @class = "error" })
             
             @Html.LabelFor(webpage => webpage.SubmitButtonCssClass)
-            @Html.TextBoxFor(webpage => webpage.SubmitButtonCssClass, new { @class = "span4" })
+            @Html.TextBoxFor(webpage => webpage.SubmitButtonCssClass, new { @class = "col-lg-4" })
             @Html.ValidationMessageFor(x => x.SubmitButtonCssClass, "", new { @class = "error" })
             
 
             <h4>Email Settings</h4>
             @Html.LabelFor(webpage => webpage.FormEmailTitle, "Subject")
-            @Html.TextBoxFor(webpage => webpage.FormEmailTitle, new { @class = "span12" })
+            @Html.TextBoxFor(webpage => webpage.FormEmailTitle, new { @class = "col-lg-12" })
             @Html.ValidationMessageFor(x => x.FormEmailTitle, "", new { @class = "error" })
 
             @Html.LabelFor(webpage => webpage.SendFormTo, "To")
-            @Html.TextBoxFor(webpage => webpage.SendFormTo, new { @class = "span12" })
+            @Html.TextBoxFor(webpage => webpage.SendFormTo, new { @class = "col-lg-12" })
             @Html.ValidationMessageFor(x => x.SendFormTo, "", new { @class = "error" })
             
             @Html.LabelFor(webpage => webpage.FormMessage, "Message")

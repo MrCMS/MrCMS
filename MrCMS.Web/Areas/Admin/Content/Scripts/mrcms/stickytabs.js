@@ -9,7 +9,7 @@
             $("[data-stickytabs]").each(function() {
                 self.setActiveTab(this);
 
-                $(this).on('shown', function (e) {
+                $(this).on('shown.bs.tab', function (e) {
                     self.persistTab(e);
                 });
             });

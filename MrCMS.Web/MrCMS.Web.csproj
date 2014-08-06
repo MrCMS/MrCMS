@@ -1313,8 +1313,11 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\tag-it.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\tmpl.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\transient-notifications.js" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Areas\Admin\Content\Styles\mrcms-admin.css" />
-    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\img\glyphicons-halflings-white.png" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\img\glyphicons-halflings.png" />
@@ -1656,6 +1659,11 @@
     <Content Include="Apps\Articles\Views\Widgets\ArticleArchive.cshtml" />
     <Content Include="Apps\Articles\Views\Widgets\ArticleCategories.cshtml" />
     <Content Include="Apps\Articles\Views\Widgets\LatestXArticles.cshtml" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.css.map" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.css.map" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
