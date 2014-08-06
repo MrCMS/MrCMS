@@ -12,6 +12,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Shortcodes.Forms;
+using MrCMS.Website.Caching;
 using NHibernate;
 
 namespace MrCMS.Settings
@@ -84,6 +85,14 @@ namespace MrCMS.Settings
                 .BuildSelectItemList(type => type.ToString().BreakUpString(),
                     type => type.ToString(),
                     type => type == defaultFormRendererType,
+                    emptyItem: null);
+        }
+
+        public virtual List<SelectListItem> GetCacheExpiryTypeOptions()
+        {
+            return Enum.GetValues(typeof (CacheExpiryType)).Cast<CacheExpiryType>()
+                .BuildSelectItemList(type => type.ToString().BreakUpString(),
+                    type => type.ToString(),
                     emptyItem: null);
         }
     }

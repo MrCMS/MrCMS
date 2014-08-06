@@ -3,9 +3,13 @@ using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Paging;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Areas.Admin;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Web.Tests.Stubs;
 using Xunit;
 
@@ -13,15 +17,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class FormControllerTests
     {
-        private IFormService _formService;
+        private IFormAdminService _formAdminService;
         private FormController _formController;
         private IDocumentService _documentService;
 
         public FormControllerTests()
         {
             _documentService = A.Fake<IDocumentService>();
-            _formService = A.Fake<IFormService>();
-            _formController = new FormController(_documentService, _formService)
+            _formAdminService = A.Fake<IFormAdminService>();
+            _formController = new FormController(_formAdminService)
                                   {
                                       RequestMock =
                                           A.Fake<HttpRequestBase>(),
@@ -66,7 +70,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _formController.ClearFormData_POST(stubWebpage);
 
-            A.CallTo(() => _formService.ClearFormData(stubWebpage)).MustHaveHappened();
+            A.CallTo(() => _formAdminService.ClearFormData(stubWebpage)).MustHaveHappened();
         }
 
         [Fact]
@@ -86,7 +90,44 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _formController.ExportFormData(stubWebpage);
 
-            A.CallTo(() => _formService.ExportFormData(stubWebpage)).MustHaveHappened();
+            A.CallTo(() => _formAdminService.ExportFormData(stubWebpage)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void FormController_ViewPosting_ShouldReturnAPartialViewResult()
+        {
+            _formController.ViewPosting(new FormPosting()).Should().BeOfType<PartialViewResult>();
+        }
+
+        [Fact]
+        public void FormController_ViewPosting_ReturnsTheResultOfTheCallToGetFormPostingAsTheModel()
+        {
+            var formPosting = new FormPosting();
+            _formController.ViewPosting(formPosting).As<PartialViewResult>().Model.Should().Be(formPosting);
+        }
+
+        [Fact]
+        public void FormController_Postings_ReturnsAPartialViewResult()
+        {
+            _formController.Postings(new TextPage(), 1, null).Should().BeOfType<PartialViewResult>();
+        }
+
+        [Fact]
+        public void FormController_Postings_CallsFormServiceGetFormPostingsWithPassedArguments()
+        {
+            var textPage = new TextPage();
+            _formController.Postings(textPage, 1, null);
+
+            A.CallTo(() => _formAdminService.GetFormPostings(textPage, 1, null)).MustHaveHappened();
+        }
+
+        [Fact]
+        public void FormController_Posting_ReturnsTheResultOfTheCallToGetFormPostings()
+        {
+            var textPage = new TextPage();
+            var postingsModel = new PostingsModel(PagedList<FormPosting>.Empty, 1);
+            A.CallTo(() => _formAdminService.GetFormPostings(textPage, 1, null)).Returns(postingsModel);
+            _formController.Postings(textPage, 1, null).As<PartialViewResult>().Model.Should().Be(postingsModel);
         }
     }
 }

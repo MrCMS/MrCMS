@@ -2,90 +2,91 @@
 @using MrCMS.Website
 <!DOCTYPE html>
 <html>
-<head>
-    <title>@ViewBag.Title</title>
-    @{
-        Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css");
-        Html.IncludeCss("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload.css");
-        Html.IncludeCss("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload-ui.css");
-        Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.css");
-        Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery.tagit.css");
-        Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery-ui-bootstrap/jquery-ui-1.9.2.custom.css");
-        Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/jstree/themes/default/style.css");
-        Html.IncludeCss("~/Areas/Admin/Content/Styles/bootstrap/css/bootstrap.css");
-        Html.IncludeCss("~/Areas/Admin/Content/Styles/mrcms-admin.css");
-        
-    }
-    @Html.RenderCss()
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"> </script><![endif]-->
-</head>
-<body>
-    <div id="loading" style="display: none;">
-        <img src="/Areas/Admin/Content/Images/ajax-loader2.gif" />
-    </div>
-    @RenderBody()
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
-    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CurrentRequestData.CultureInfo.Name).js"></script>
-    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jquery.signalR-2.0.2.js")" > </script>
-    <script type="text/javascript" src="/signalr/hubs"></script>
-    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")" > </script>
+    <head>
+        <title>@ViewBag.Title</title>
+        @{
+            Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css");
+            Html.IncludeCss("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload.css");
+            Html.IncludeCss("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload-ui.css");
+            Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.css");
+            Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery.tagit.css");
+            Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery-ui-bootstrap/jquery-ui-1.9.2.custom.css");
+            Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/jstree/themes/default/style.css");
+            Html.IncludeCss("~/Areas/Admin/Content/Styles/bootstrap/css/bootstrap.css");
+            Html.IncludeCss("~/Areas/Admin/Content/Styles/mrcms-admin.css");
+        }
+        @Html.RenderCss()
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"> </script><![endif]-->
+    </head>
+    <body>
+        <div id="loading" style="display: none;">
+            <img src="/Areas/Admin/Content/Images/ajax-loader2.gif" />
+        </div>
+        @RenderBody()
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
+        <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CurrentRequestData.CultureInfo.Name).js"></script>
+        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jquery.signalR-2.0.2.js")" > </script>
+        <script type="text/javascript" src="/signalr/hubs"></script>
+        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")" > </script>
 
-    @{
-        //Validate
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.validate.min.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.validate.unobtrusive.min.js");
-        //end validate
+        @{
+            //Validate
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.validate.min.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.validate.unobtrusive.min.js");
+            //end validate
 
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jstree/jstree.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jstree/jstree.js");
 
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery-ui-timepicker-addon.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/store.js"); //used for local storage
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery-ui-timepicker-addon.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/store.js"); //used for local storage
 
-        Html.IncludeScript("~/Areas/Admin/Content/Styles/bootstrap/js/bootstrap.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/tag-it.min.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Styles/bootstrap/js/bootstrap.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/tag-it.min.js");
 
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery-ui-1.10.4/ui/i18n/jquery.ui.datepicker-" + CurrentRequestData.CultureInfo.Name + ".js");
-
-
-        //file uploading
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/load-image.js");
-        // The basic File Upload plugin 
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload.js");
-        // The File Upload processing plugin
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-process.js");
-        //IE 9 and other kenk browsers
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.iframe-transport.js");
-        // The File Upload validation plugin 
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-validate.js");
-        // The File Upload user interface plugin
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-ui.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery-ui-1.10.4/ui/i18n/jquery.ui.datepicker-" + CurrentRequestData.CultureInfo.Name + ".js");
 
 
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/menu.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/stickyTabs.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/admin.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/tagging.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/search.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
-        Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.noty.packaged.js");
-    }
-    @if (!CurrentRequestData.CurrentUser.DisableNotifications)
-    {
-        Html.RenderAction("Show", "TransientNotification");
-        Html.RenderAction("Show", "PersistentNotification");
-    }
-    @Html.RenderScripts()
+            //file uploading
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/load-image.js");
+            // The basic File Upload plugin
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload.js");
+            // The File Upload processing plugin
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-process.js");
+            //IE 9 and other kenk browsers
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.iframe-transport.js");
+            // The File Upload validation plugin
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-validate.js");
+            // The File Upload user interface plugin
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-ui.js");
 
-    @Html.Hidden("UICulture", CurrentRequestData.CultureInfo.Name)
 
-    @if (IsSectionDefined("JavaScriptBlock"))
-    {
-        @RenderSection("JavaScriptBlock")
-    }
-</body>
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/menu.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/stickyTabs.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/admin.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/tagging.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/search.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
+            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.noty.packaged.js");
+            Html.AddAppAdminScripts();
+        }
+        @if (!CurrentRequestData.CurrentUser.DisableNotifications)
+        {
+            Html.RenderAction("Show", "TransientNotification");
+            Html.RenderAction("Show", "PersistentNotification");
+        }
+    
+        @{ Html.RenderScripts();}
+
+        @Html.Hidden("UICulture", CurrentRequestData.CultureInfo.Name)
+
+        @if (IsSectionDefined("JavaScriptBlock"))
+        {
+            @RenderSection("JavaScriptBlock")
+        }
+    </body>
 </html>

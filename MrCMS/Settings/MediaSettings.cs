@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Web.Mvc;
 using MrCMS.Models;
+using MrCMS.Website.Caching;
 using NHibernate;
 
 namespace MrCMS.Settings
@@ -153,6 +154,14 @@ namespace MrCMS.Settings
             }
         }
 
+        [DisplayName("Cache image rendering?")]
+        public virtual bool Cache { get; set; }
+        [DisplayName("Cache for how many seconds?")]
+        public virtual int CacheLength { get; set; }
+        [DisplayName("Cache expiry type")]
+        [DropDownSelection("CacheExpiryTypeOptions")]
+        public CacheExpiryType CacheExpiryType { get; set; }
+
         public int? ResizeQuality { get; set; }
 
         [DisplayName("Default Category")]
@@ -167,6 +176,7 @@ namespace MrCMS.Settings
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
             viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(session, DefaultCategory);
+            viewDataDictionary["CacheExpiryTypeOptions"] = _siteSettingsOptionGenerator.GetCacheExpiryTypeOptions();
         }
     }
 }

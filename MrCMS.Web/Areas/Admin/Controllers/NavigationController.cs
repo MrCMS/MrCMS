@@ -1,9 +1,8 @@
-﻿using System;
-using System.Web.Mvc;
-using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Documents.Web;
+﻿using System.Web.Mvc;
+using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -19,19 +18,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public PartialViewResult WebSiteTree(int? id)
         {
-            var admintree = _treeNavService.GetWebpageNodes(id);
+            AdminTree admintree = _treeNavService.GetWebpageNodes(id);
             return PartialView("TreeList", admintree);
         }
 
         public PartialViewResult MediaTree(int? id)
         {
-            var admintree = _treeNavService.GetMediaCategoryNodes(id);
+            AdminTree admintree = _treeNavService.GetMediaCategoryNodes(id);
             return PartialView("TreeList", admintree);
         }
 
         public PartialViewResult LayoutTree(int? id)
         {
-            var admintree = _treeNavService.GetLayoutNodes(id);
+            AdminTree admintree = _treeNavService.GetLayoutNodes(id);
             return PartialView("TreeList", admintree);
         }
     }

@@ -63,13 +63,4 @@ namespace MrCMS.Tasks
             executableTask.OnFailure(exception);
         }
     }
-
-    public enum TaskExecutionStatus
-    {
-        Pending,
-        AwaitingExecution,
-        Executing,
-        Completed,
-        Failed
-    }
 }

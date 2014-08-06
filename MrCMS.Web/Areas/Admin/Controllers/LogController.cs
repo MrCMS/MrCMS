@@ -1,23 +1,24 @@
 ﻿using System.Web.Mvc;
 using MrCMS.Logging;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class LogController : MrCMSAdminController
     {
-        private readonly ILogService _service;
+        private readonly ILogAdminService _adminService;
 
-        public LogController(ILogService service)
+        public LogController(ILogAdminService adminService)
         {
-            _service = service;
+            _adminService = adminService;
         }
 
         [HttpGet]
         public ViewResult Index(LogSearchQuery searchQuery)
         {
-            ViewData["site-options"] = _service.GetSiteOptions();
-            ViewData["logs"] = _service.GetEntriesPaged(searchQuery);
+            ViewData["site-options"] = _adminService.GetSiteOptions();
+            ViewData["logs"] = _adminService.GetEntriesPaged(searchQuery);
             return View(searchQuery);
         }
 
@@ -36,7 +37,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Delete()
         {
-            _service.DeleteAllLogs();
+            _adminService.DeleteAllLogs();
 
             return RedirectToAction("Index");
         }
@@ -51,7 +52,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult DeleteLog(Log log)
         {
-            _service.DeleteLog(log);
+            _adminService.DeleteLog(log);
 
             return RedirectToAction("Index");
         }

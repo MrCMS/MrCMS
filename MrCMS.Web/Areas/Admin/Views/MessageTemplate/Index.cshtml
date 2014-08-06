@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Helpers
-@model List<MrCMS.Services.MessageTemplateInfo>
+@model List<MrCMS.Web.Areas.Admin.Models.MessageTemplateInfo>
 @{
     ViewBag.Title = "Message Templates";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -20,7 +20,7 @@
                         <div class="btn-group">
                             @(item.Id.HasValue
                         ? Html.ActionLink("Edit", "Edit", new { Id = item.Id }, new { @class = "btn btn-mini" })
-                        : Html.ActionLink("Add", "Add", new { type = item.Type.Name }, new { @class = "btn btn-mini btn-primary" }))
+                        : Html.ActionLink("Add", "Add", new { type = item.Type.FullName }, new { @class = "btn btn-mini btn-primary" }))
                             @if (item.CanPreview)
                             {
                                 @Html.ActionLink("Preview", "Preview", "MessageTemplate", new { id = item.Id }, new { @class = "btn btn-mini ", data_toggle="fb-modal" })

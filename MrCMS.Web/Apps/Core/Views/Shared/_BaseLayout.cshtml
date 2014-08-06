@@ -5,92 +5,94 @@
 @model MrCMS.Entities.Documents.Web.Webpage
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>@Model.GetPageTitle()</title>
-    <meta name="description" content="@Model.MetaDescription" />
-    <meta name="keywords" content="@Model.MetaKeywords" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @{
-        Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap.css");
-        Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap-theme.css");
-        Html.IncludeCss("~/Apps/Core/Content/Styles/style.css");
-        Html.IncludeCss("~/Apps/Commenting/Content/Styles/commenting.css");
-    }
-    @Html.RenderCss()
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><script src="/Apps/Core/Content/Scripts/respond.min.js"></script><![endif]-->
+    <head>
+        <title>@(this.PageTitle())</title>
+        <meta name="description" content="@(this.Description())" />
+        <meta name="keywords" content="@(this.Keywords())" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        @{
+            Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap.css");
+            Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap-theme.css");
+            Html.IncludeCss("~/Apps/Core/Content/Styles/style.css");
+        }
+        @Html.RenderCss()
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><script src="/Apps/Core/Content/Scripts/respond.min.js"></script><![endif]-->
 
-    @Html.Raw(SiteSettings<SEOSettings>().TrackingScripts)
-    @Html.Raw(Model.CustomHeaderScripts)
-</head>
-<body>
+        @Html.Raw(SiteSettings<SEOSettings>().TrackingScripts)
+        @Html.Raw(Model.CustomHeaderScripts)
+    </head>
+    <body>
 
-    <nav class="navbar navbar-mrcms" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">
-                    <img src="/Apps/Core/Content/Images/mrcms-hat.gif" style="width: 40px; height: auto;" alt="Mr CMS Logo" />
-                    Mr CMS</a>
+        <nav class="navbar navbar-mrcms" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">
+                        <img src="/Apps/Core/Content/Images/mrcms-hat.gif" style="height: auto; width: 40px;" alt="Mr CMS Logo" />
+                        Mr CMS</a>
+                </div>
+                <div class="collapse navbar-collapse navbar-left" id="bs-example-navbar-collapse-1">
+                    @{ RenderZone("Main Navigation", allowFrontEndEditing: false);}
+                </div>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav" id="nav-links-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </a>
+                            <div class="dropdown-menu">
+                                @{ Html.RenderPartial("SearchForm");}
+                            </div>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-user"></span>
+                            </a>
+                            @{ RenderZone("Header Right", allowFrontEndEditing: false); }
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="collapse navbar-collapse navbar-left" id="bs-example-navbar-collapse-1">
-                @RenderZone("Main Navigation", allowFrontEndEditing: false)
-            </div>
-            <div class="navbar-right">
-                <ul class="nav navbar-nav" id="nav-links-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-search"></span>
-                        </a>
-                        <div class="dropdown-menu">
-                            @Html.Partial("SearchForm")
-                        </div>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-user"></span>
-                        </a>
-                        @RenderZone("Header Right", allowFrontEndEditing: false)
-                    </li>
-                </ul>
-            </div>
+        </nav>
+        <div class="container mrcms-content">
+            @{ RenderZone("Before Content");}
+
+            @RenderBody()
+            @{RenderZone("Comments");}
+            @{RenderZone("After Content");}
         </div>
-    </nav>
-    <div class="container mrcms-content">
-        @RenderZone("Before Content")
-        @RenderBody()
-        @RenderZone("Comments")
-        @RenderZone("After Content")
-    </div>
 
-    <hr />
-    <div class="container">
-        <footer>
-            @RenderZone("Footer")
-        </footer>
-    </div>
+        <hr />
+        <div class="container">
+            <footer>
+                @{ RenderZone("Footer"); }
+            </footer>
+        </div>
     
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    @{ Html.IncludeScript("~/Apps/Core/Content/bootstrap/js/bootstrap.js");
-       Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.min.js");
-       Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.unobtrusive.min.js");}
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        @{
+            Html.IncludeScript("~/Apps/Core/Content/bootstrap/js/bootstrap.js");
+            Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.min.js");
+            Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.unobtrusive.min.js");
+        }
 
     
-    @if (CurrentRequestData.CurrentUser != null && CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") && SiteSettings<SiteSettings>().EnableInlineEditing)
-    {
-        Html.RenderAction("InPageEditor", "InPageAdmin", new { id = Model.Id, area = "Admin" });
-    }
-    @if (IsSectionDefined("JavascriptBlockInclude"))
-    {
-        @RenderSection("JavascriptBlockInclude")
-    }
-    @Html.Raw(Model.CustomFooterScripts)
+        @if (CurrentRequestData.CurrentUser != null && CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") && SiteSettings<SiteSettings>().EnableInlineEditing)
+        {
+            Html.RenderAction("InPageEditor", "InPageAdmin", new {id = Model.Id, area = "Admin"});
+        }
+        @if (IsSectionDefined("JavascriptBlockInclude"))
+        {
+            @RenderSection("JavascriptBlockInclude")
+        }
+        @Html.Raw(Model.CustomFooterScripts)
     
-    @Html.RenderScripts()
-</body>
+        @{ Html.RenderScripts(); }
+    </body>
 </html>

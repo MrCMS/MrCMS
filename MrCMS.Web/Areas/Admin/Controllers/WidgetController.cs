@@ -5,13 +5,13 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
-using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
+using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
-using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -19,13 +19,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly IDocumentService _documentService;
         private readonly IWidgetService _widgetService;
-        private readonly ISession _session;
 
-        public WidgetController(IDocumentService documentService, IWidgetService widgetService, ISession session)
+        public WidgetController(IDocumentService documentService, IWidgetService widgetService)
         {
             _documentService = documentService;
             _widgetService = widgetService;
-            _session = session;
         }
 
         [HttpGet]
@@ -34,17 +32,17 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             TempData["returnUrl"] = returnUrl;
             var model = new AddWidgetModel
-                {
-                    LayoutArea = layoutArea,
-                    Webpage = _documentService.GetDocument<Webpage>(pageId)
-                };
+            {
+                LayoutArea = layoutArea,
+                Webpage = _documentService.GetDocument<Webpage>(pageId)
+            };
             return PartialView(model);
         }
 
         [HttpPost]
         [ValidateInput(false)]
         [ActionName("Add")]
-        public JsonResult Add_POST([IoCModelBinder(typeof(AddWidgetModelBinder))] Widget widget)
+        public JsonResult Add_POST([IoCModelBinder(typeof (AddWidgetModelBinder))] Widget widget)
         {
             _widgetService.AddWidget(widget);
 
@@ -54,10 +52,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         [ValidateInput(false)]
         [ActionName("Edit")]
-        [MrCMSTypeACL(typeof(Widget), TypeACLRule.Edit)]
+        [MrCMSTypeACL(typeof (Widget), TypeACLRule.Edit)]
         public ViewResultBase Edit_Get(Widget widget, string returnUrl = null)
         {
-            widget.SetDropdownData(ViewData, _session);
+            widget.SetViewData(ViewData);
 
             if (!string.IsNullOrEmpty(returnUrl))
                 ViewData["return-url"] = Referrer;
@@ -69,33 +67,33 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        [MrCMSTypeACL(typeof(Widget), TypeACLRule.Edit)]
+        [MrCMSTypeACL(typeof (Widget), TypeACLRule.Edit)]
         public ActionResult Edit(Widget widget,
-                                 string returnUrl = null)
+            string returnUrl = null)
         {
             _widgetService.SaveWidget(widget);
 
             return string.IsNullOrWhiteSpace(returnUrl)
-                       ? widget.Webpage != null
-                             ? RedirectToAction("Edit", "Webpage", new { id = widget.Webpage.Id })
-                             : (ActionResult)RedirectToAction("Edit", "LayoutArea", new { id = widget.LayoutArea.Id })
-                       : Redirect(returnUrl);
+                ? widget.Webpage != null
+                    ? RedirectToAction("Edit", "Webpage", new {id = widget.Webpage.Id})
+                    : (ActionResult) RedirectToAction("Edit", "LayoutArea", new {id = widget.LayoutArea.Id})
+                : Redirect(returnUrl);
         }
 
         [HttpGet]
         [ActionName("Delete")]
-        [MrCMSTypeACL(typeof(Widget), TypeACLRule.Delete)]
+        [MrCMSTypeACL(typeof (Widget), TypeACLRule.Delete)]
         public ActionResult Delete_Get(Widget widget)
         {
             return PartialView(widget);
         }
 
         [HttpPost]
-        [MrCMSTypeACL(typeof(Widget), TypeACLRule.Delete)]
+        [MrCMSTypeACL(typeof (Widget), TypeACLRule.Delete)]
         public ActionResult Delete(Widget widget, string returnUrl)
         {
-            var webpageId = 0;
-            var layoutAreaId = 0;
+            int webpageId = 0;
+            int layoutAreaId = 0;
             if (widget.Webpage != null)
                 webpageId = widget.Webpage.Id;
             if (widget.LayoutArea != null)
@@ -104,18 +102,18 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             return !string.IsNullOrWhiteSpace(returnUrl) &&
                    !returnUrl.Contains("widget/edit/", StringComparison.OrdinalIgnoreCase)
-                       ? (ActionResult)Redirect(returnUrl)
-                       : webpageId > 0
-                             ? RedirectToAction("Edit", "Webpage", new { id = webpageId, layoutAreaId })
-                             : RedirectToAction("Edit", "LayoutArea", new { id = layoutAreaId });
+                ? (ActionResult) Redirect(returnUrl)
+                : webpageId > 0
+                    ? RedirectToAction("Edit", "Webpage", new {id = webpageId, layoutAreaId})
+                    : RedirectToAction("Edit", "LayoutArea", new {id = layoutAreaId});
         }
 
         [HttpGet]
-        public ActionResult AddProperties([IoCModelBinder(typeof(AddPropertiesModelBinder))] Widget widget)
+        public ActionResult AddProperties([IoCModelBinder(typeof (AddPropertiesModelBinder))] Widget widget)
         {
             if (widget != null)
             {
-                widget.SetDropdownData(ViewData, _session);
+                widget.SetViewData(ViewData);
                 return PartialView(widget);
             }
             return new EmptyResult();

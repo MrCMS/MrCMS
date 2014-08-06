@@ -42,7 +42,7 @@ namespace MrCMS.Tests.Services
                                     SmallImageWidth = 100,
                                     ThumbnailImageHeight = 64,
                                     ThumbnailImageWidth = 64,
-                                    Site = CurrentSite
+                                    SiteId = CurrentSite.Id
                                 };
             _siteSettings = new SiteSettings();
             return new FileService(session ?? Session, fileSystem ?? _fileSystem,
@@ -75,7 +75,7 @@ namespace MrCMS.Tests.Services
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
             var mediaFile = fileService.AddFile(GetDefaultStream(), "test-file.txt", null, 0, mediaCategory);
 
-            mediaFile.name.Should().Be("test-file.txt");
+            mediaFile.FileName.Should().Be("test-file.txt");
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace MrCMS.Tests.Services
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
             var mediaFile = fileService.AddFile(GetDefaultStream(), "test.txt", "text/plain", 0, mediaCategory);
 
-            mediaFile.Type.Should().Be("text/plain");
+            mediaFile.ContentType.Should().Be("text/plain");
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace MrCMS.Tests.Services
             Session.Transact(session => session.SaveOrUpdate(mediaCategory));
             var mediaFile = fileService.AddFile(GetDefaultStream(), "test.txt", "text/plain", 1234, mediaCategory);
 
-            mediaFile.size.Should().Be(1234);
+            mediaFile.ContentLength.Should().Be(1234);
         }
 
         [Fact]
@@ -168,44 +168,6 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void FileService_GetFiles_ShouldReturnFilesWhichHaveTheCorrectMediaCategoryId()
-        {
-            var mediaCategory = GetDefaultMediaCategory();
-            Session.Transact(session => session.SaveOrUpdate(mediaCategory));
-            var file1 = new MediaFile { MediaCategory = mediaCategory, FileUrl = "/test1.txt" };
-            var file2 = new MediaFile { MediaCategory = mediaCategory, FileUrl = "/test2.txt" };
-            var file3 = new MediaFile { FileUrl = "/test3.txt" };
-            mediaCategory.Files.Add(file1);
-            mediaCategory.Files.Add(file2);
-            Session.Transact(session =>
-                                 {
-                                     session.SaveOrUpdate(file1);
-                                     session.SaveOrUpdate(file2);
-                                     session.SaveOrUpdate(file3);
-                                 });
-            var fileService = GetFileService();
-
-            var files = fileService.GetFiles(mediaCategory);
-
-            files.Should().HaveCount(2);
-
-            files.Select(x => x.Id).Should().Contain(file1.Id);
-            files.Select(x => x.Id).Should().Contain(file2.Id);
-            files.Select(x => x.Id).Should().NotContain(file3.Id);
-        }
-
-        [Fact]
-        public void FileService_GetFile_ShouldCallSessionGetById()
-        {
-            var session = A.Fake<ISession>();
-            var fileService = GetFileService(session);
-
-            var mediaFile = fileService.GetFile(1);
-
-            A.CallTo(() => session.Get<MediaFile>(1)).MustHaveHappened();
-        }
-
-        [Fact]
         public void FileService_GetFileByLocation_ReturnsAMediaFileIfOneIsSavedWithAMatchingLocation()
         {
             var fileService = GetFileService();
@@ -220,18 +182,6 @@ namespace MrCMS.Tests.Services
             var fileByLocation = fileService.GetFileByUrl(fileUrl);
 
             fileByLocation.Should().Be(mediaFile);
-        }
-
-        [Fact]
-        public void FileService_SaveFile_CallsSessionSaveOrUpdateOnThePassedFile()
-        {
-            var session = A.Fake<ISession>();
-            var fileService = GetFileService(session);
-            var mediaFile = new MediaFile();
-
-            fileService.SaveFile(mediaFile);
-
-            A.CallTo(() => session.SaveOrUpdate(mediaFile)).MustHaveHappened();
         }
     }
 }

@@ -182,18 +182,6 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void UserService_DeleteUser_ShouldCallOnDeleteOnTheUser()
-        {
-            var user = A.Fake<User>();
-            _session = A.Fake<ISession>();
-            _userService = new UserService(_session, _siteSettings);
-
-            _userService.DeleteUser(user);
-
-            A.CallTo(() => user.OnDeleting(_session)).MustHaveHappened();
-        }
-
-        [Fact]
         public void UserService_IsUniqueEmail_ShouldReturnTrueIfThereAreNoOtherUsers()
         {
             _userService.IsUniqueEmail("test@example.com").Should().BeTrue();

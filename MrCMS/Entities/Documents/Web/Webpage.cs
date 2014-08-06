@@ -2,19 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Web;
+using System.Linq;
 using System.Web.Mvc;
-using System.Xml;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
-using MrCMS.Paging;
-using MrCMS.Services;
-using MrCMS.Website;
 using MrCMS.Helpers;
-using System.Linq;
-using NHibernate;
-using NHibernate.Criterion;
-using Ninject;
+using MrCMS.Website;
 
 namespace MrCMS.Entities.Documents.Web
 {
@@ -26,11 +19,11 @@ namespace MrCMS.Entities.Documents.Web
             Urls = new List<UrlHistory>();
             Widgets = new List<Widget.Widget>();
         }
-        private Layout.Layout _layout;
 
         [Required]
         [Remote("ValidateUrlIsAllowed", "Webpage", AdditionalFields = "Id")]
-        [RegularExpression("[a-zA-Z0-9\\-\\.\\~\\/_\\\\]+$", ErrorMessage = "Url must alphanumeric characters only with dashes or underscore for spaces.")]
+        [RegularExpression("[a-zA-Z0-9\\-\\.\\~\\/_\\\\]+$",
+            ErrorMessage = "Url must alphanumeric characters only with dashes or underscore for spaces.")]
         [DisplayName("Url Segment")]
         public override string UrlSegment { get; set; }
 
@@ -41,17 +34,22 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Meta Title")]
         [StringLength(250, ErrorMessage = "Meta title cannot be longer than 250 characters.")]
         public virtual string MetaTitle { get; set; }
+
         [DisplayName("Meta Description")]
         [StringLength(250, ErrorMessage = "Meta description cannot be longer than 250 characters.")]
         public virtual string MetaDescription { get; set; }
+
         [DisplayName("Meta Keywords")]
         [StringLength(250, ErrorMessage = "Meta keywords cannot be longer than 250 characters.")]
         public virtual string MetaKeywords { get; set; }
+
         [DisplayName("Include in navigation")]
         public virtual bool RevealInNavigation { get; set; }
+
         [DisplayName("Custom header scripts")]
         [StringLength(8000)]
         public virtual string CustomHeaderScripts { get; set; }
+
         [DisplayName("Custom footer scripts")]
         [StringLength(8000)]
         public virtual string CustomFooterScripts { get; set; }
@@ -74,13 +72,6 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Publish On")]
         public virtual DateTime? PublishOn { get; set; }
 
-        public virtual Layout.Layout Layout { get; set; } //if we want to override the default layout
-
-        public virtual Layout.Layout CurrentLayout
-        {
-            get { return _layout ?? (_layout = Layout ?? MrCMSApplication.Get<IDocumentService>().GetDefaultLayout(this)); }
-        }
-
         public virtual Iesi.Collections.Generic.ISet<Widget.Widget> ShownWidgets { get; set; }
         public virtual Iesi.Collections.Generic.ISet<Widget.Widget> HiddenWidgets { get; set; }
 
@@ -96,7 +87,7 @@ namespace MrCMS.Entities.Documents.Web
         {
             get
             {
-                var page = this;
+                Webpage page = this;
                 while (page != null)
                 {
                     yield return page;
@@ -105,24 +96,6 @@ namespace MrCMS.Entities.Documents.Web
             }
         }
 
-        public virtual bool IsHidden(Widget.Widget widget)
-        {
-            if (widget.Webpage == this)
-                return false;
-
-            foreach (var item in ActivePages)
-            {
-                if (item.HiddenWidgets.Contains(widget))
-                    return true;
-                if (item.ShownWidgets.Contains(widget))
-                    return false;
-
-                // if it's not overidden somehow and it is from the item we're looking at, use the recursive flag from the widget
-                if (widget.Webpage.Unproxy() == item)
-                    return !widget.IsRecursive;
-            }
-            return false;
-        }
 
         [DisplayName("Block Anonymous Access")]
         public virtual bool BlockAnonymousAccess { get; set; }
@@ -132,20 +105,26 @@ namespace MrCMS.Entities.Documents.Web
         [AllowHtml]
         [StringLength(500, ErrorMessage = "Form submitted messsage cannot be longer than 500 characters.")]
         public virtual string FormSubmittedMessage { get; set; }
+
         [DisplayName("Subject")]
         [StringLength(250, ErrorMessage = "Subject cannot be longer than 250 characters.")]
         public virtual string FormEmailTitle { get; set; }
+
         [DisplayName("Send Form To")]
         [StringLength(500, ErrorMessage = "Send to cannot be longer than 500 characters.")]
         public virtual string SendFormTo { get; set; }
+
         [DisplayName("Form Email Message")]
         public virtual string FormMessage { get; set; }
+
         public virtual IList<FormProperty> FormProperties { get; set; }
         public virtual IList<FormPosting> FormPostings { get; set; }
         public virtual string FormDesign { get; set; }
+
         [StringLength(100)]
         [DisplayName("Submit Button Css Class")]
         public virtual string SubmitButtonCssClass { get; set; }
+
         [StringLength(100)]
         [DisplayName("Submit button custom text")]
         public virtual string SubmitButtonText { get; set; }
@@ -153,6 +132,7 @@ namespace MrCMS.Entities.Documents.Web
 
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }
+
         public virtual Iesi.Collections.Generic.ISet<UserRole> FrontEndAllowedRoles { get; set; }
 
         [DisplayName("Roles")]
@@ -165,8 +145,8 @@ namespace MrCMS.Entities.Documents.Web
         {
             get
             {
-                var scheme = RequiresSSL ? "https://" : "http://";
-                var authority = Site.BaseUrl;
+                string scheme = RequiresSSL ? "https://" : "http://";
+                string authority = Site.BaseUrl;
                 if (authority.EndsWith("/"))
                     authority = authority.TrimEnd('/');
 
@@ -176,64 +156,6 @@ namespace MrCMS.Entities.Documents.Web
 
         public virtual IList<UrlHistory> Urls { get; set; }
 
-        public virtual bool IsAllowed(User currentUser)
-        {
-            if (currentUser != null && currentUser.IsAdmin) return true;
-            if (InheritFrontEndRolesFromParent)
-            {
-                if (Parent is Webpage)
-                    return (Parent as Webpage).IsAllowed(currentUser);
-                return true;
-            }
-            if (!FrontEndAllowedRoles.Any()) return true;
-            if (FrontEndAllowedRoles.Any() && currentUser == null) return false;
-            return currentUser != null && currentUser.Roles.Intersect(FrontEndAllowedRoles).Any();
-        }
-
-        /// <summary>
-        /// Method to page child items with default filter and ordering implementation
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="query"></param>
-        /// <param name="pageNum"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        public virtual IPagedList<T> PagedChildren<T>(QueryOver<T> query = null, int pageNum = 1, int pageSize = 10) where T : Webpage
-        {
-            query = query ??
-                    QueryOver.Of<T>()
-                             .Where(a => a.Parent == this && a.PublishOn != null && a.PublishOn <= CurrentRequestData.Now)
-                             .ThenBy(arg => arg.PublishOn)
-                             .Desc;
-
-            return MrCMSApplication.Get<ISession>().Paged(query, pageNum, pageSize);
-        }
-
-        public virtual string GetPageTitle()
-        {
-            return !string.IsNullOrWhiteSpace(MetaTitle) ? MetaTitle : Name;
-        }
-
-        public virtual bool CanAddChildren()
-        {
-            return this.GetMetadata().ValidChildrenTypes.Any();
-        }
-
-        public override void CustomBinding(ControllerContext controllerContext, IKernel kernel)
-        {
-        }
-
-        public virtual void AdminViewData(ViewDataDictionary viewData, ISession session)
-        {
-        }
-
-        public virtual void AddCustomSitemapData(UrlHelper urlHelper, XmlNode url, XmlDocument xmlDocument)
-        {
-        }
-
-        public virtual void UiViewData(ViewDataDictionary viewData, ISession session, HttpRequestBase request)
-        {
-        }
-
+        public virtual PageTemplate PageTemplate { get; set; }
     }
 }

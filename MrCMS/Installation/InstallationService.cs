@@ -52,13 +52,8 @@ namespace MrCMS.Installation
 
             if (result.Success)
             {
-                var kernel = MrCMSApplication.Get<IKernel>();
-                IEnumerable<IBinding> bindings = new List<IBinding>();
                 try
                 {
-                    bindings = kernel.GetBindings(typeof(IEventContext));
-
-                    kernel.Rebind<IEventContext>().ToMethod(context => new InstallationEventContext());
                     var connectionString = CreateDatabase(model);
 
                     //save settings
@@ -88,22 +83,9 @@ namespace MrCMS.Installation
                 {
                     result.AddModelError("Setup failed: " + exception);
                 }
-                finally
-                {
-                    kernel.GetBindings(typeof(IEventContext)).ForEach(kernel.RemoveBinding);
-                    bindings.ForEach(kernel.AddBinding);
-                }
             }
 
             return result;
-        }
-
-        class InstallationEventContext : IEventContext
-        {
-            public void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
-            {
-
-            }
         }
 
         private string CreateDatabase(InstallModel model)

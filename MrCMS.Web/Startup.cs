@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNet.SignalR;
+﻿using System;
+using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.Owin;
 using MrCMS.Web;
 using MrCMS.Website;
 using Owin;
 using MrCMS.Helpers;
-
 [assembly: OwinStartup(typeof(Startup))]
 namespace MrCMS.Web
 {
@@ -20,6 +20,7 @@ namespace MrCMS.Web
                 () => hubActivator);
 
             app.ConfigureAuth();
+            
             ConfigureSignalR(app);
         }
         public static void ConfigureSignalR(IAppBuilder app)

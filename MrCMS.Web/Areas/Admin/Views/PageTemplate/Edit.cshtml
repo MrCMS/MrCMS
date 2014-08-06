@@ -1,0 +1,34 @@
+﻿@model MrCMS.Entities.Documents.Web.PageTemplate
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    List<SelectListItem> layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    List<SelectListItem> urlGeneratorOptions = ViewData["url-generator-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+@using (Html.BeginForm("Edit", "PageTemplate", new {id = Model.Id}, FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            Edit Page Template
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-primary btn" value="Edit page template" />
+            </span>
+        </legend>
+
+        @Html.LabelFor(x => x.Name)
+        @Html.TextBoxFor(x => x.Name)
+        @Html.ValidationMessageFor(x => x.Name)
+
+        @Html.LabelFor(x => x.PageTemplateName)
+        @Html.TextBoxFor(x => x.PageTemplateName)
+        @Html.ValidationMessageFor(x => x.PageTemplateName)
+
+        @Html.LabelFor(x => x.Layout.Id, Resource("Layout"))
+        @Html.DropDownListFor(x => x.Layout.Id, layoutOptions)
+        @Html.ValidationMessageFor(x => x.Layout.Id)
+
+        @Html.LabelFor(x => x.UrlGeneratorType)
+        @Html.DropDownListFor(x => x.UrlGeneratorType, urlGeneratorOptions)
+        @Html.ValidationMessageFor(x => x.UrlGeneratorType)
+    </fieldset>
+}

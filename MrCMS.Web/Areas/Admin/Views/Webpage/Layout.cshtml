@@ -3,15 +3,16 @@
 @using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane " id="layout-content">
-    @Html.LabelFor(x => x.Layout)
-    @Html.DropDownListFor(webpage => webpage.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
+    @Html.LabelFor(x => x.PageTemplate.Id, Resource("Page Template"))
+    @Html.DropDownListFor(webpage => webpage.PageTemplate.Id, ViewData["template-options"] as IEnumerable<SelectListItem>)
     <div id="custom-layout">
         <label>Layout Areas</label>
         <div class="accordion" id="accordion-layout-areas">
             @{
-                if (Model.CurrentLayout.GetLayoutAreas().Any())
+                var currentLayout = GetCurrentLayout.Get(Model);
+                if (currentLayout.GetLayoutAreas().Any())
                 {
-                    foreach (LayoutArea layoutArea in Model.CurrentLayout.GetLayoutAreas())
+                    foreach (LayoutArea layoutArea in currentLayout.GetLayoutAreas())
                     {
                         List<Widget> widgets = layoutArea.GetWidgets(Model, true);
                 <div class="accordion-group">
@@ -32,8 +33,6 @@
                                             <tr>
                                                 <td>
                                                     @(!string.IsNullOrWhiteSpace(widget.Name) ? string.Format("{0} ({1})", widget.Name, widget.WidgetTypeFormatted) : widget.WidgetTypeFormatted)
-
-
                                                 </td>
                                                 <td>
                                                     <div class="btn-group">
@@ -41,11 +40,11 @@
                                                         {
                                                             if (!Model.IsHidden(widget))
                                                             {
-                                                            @Html.FormLink("Hide Widget", "HideWidget", "Webpage", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
+                                                            @Html.FormLink("Hide Widget", "Hide", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
                                                             }
                                                             else
                                                             {
-                                                            @Html.FormLink("Show Widget", "ShowWidget", "Webpage", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
+                                                            @Html.FormLink("Show Widget", "Show", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-mini" })
                                                             }
                                                         }
                                                         else
@@ -71,7 +70,6 @@
                                     @Html.FormLink("Reset sorting", "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-mini" })
                                     }
                                 }
-
                             </div>
                         </div>
                     </div>

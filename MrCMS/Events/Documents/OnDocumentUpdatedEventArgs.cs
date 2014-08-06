@@ -1,17 +1,16 @@
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.People;
 
 namespace MrCMS.Events.Documents
 {
     public class OnDocumentUpdatedEventArgs
     {
-        public OnDocumentUpdatedEventArgs(Document document, User user)
+        public OnDocumentUpdatedEventArgs(Document document, string action = null)
         {
             Document = document;
-            User = user;
+            Action = action ?? "updated";
         }
 
-        public Document Document { get; set; }
-        public User User { get; set; }
+        public Document Document { get; private set; }
+        public string Action { get; private set; }
     }
 }

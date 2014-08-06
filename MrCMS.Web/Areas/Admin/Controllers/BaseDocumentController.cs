@@ -1,27 +1,24 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
-using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
-using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public abstract class BaseDocumentController<T> : MrCMSAdminController where T : Document
     {
         protected readonly IDocumentService _documentService;
-        protected readonly Site Site;
+        protected readonly IUrlValidationService _urlValidationService;
 
-        protected BaseDocumentController(IDocumentService documentService, Site site)
+        protected BaseDocumentController(IDocumentService documentService, IUrlValidationService urlValidationService)
         {
             _documentService = documentService;
-            Site = site;
+            _urlValidationService = urlValidationService;
         }
 
         public ViewResult Index()
@@ -31,44 +28,30 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Add")]
-        public virtual ActionResult Add_Get(int? id)
-        {
-            //Build list 
-            var model = new AddPageModel
-            {
-                Parent = id.HasValue ? _documentService.GetDocument<Document>(id.Value) : null
-            };
-            DocumentTypeSetup(model as T);
-            return View(model);
-        }
+        public abstract ActionResult Add_Get(int? id);
+
 
         [HttpPost]
         public virtual ActionResult Add(T doc)
         {
             _documentService.AddDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
-            return RedirectToAction("Edit", new { id = doc.Id });
+            return RedirectToAction("Edit", new {id = doc.Id});
         }
 
         [HttpGet]
         [ActionName("Edit")]
         public virtual ActionResult Edit_Get(T doc)
         {
-            DocumentTypeSetup(doc);
             return View(doc);
         }
 
-        protected virtual void DocumentTypeSetup(T doc)
-        {
-
-        }
-
         [HttpPost]
-        public virtual ActionResult Edit( T doc)
+        public virtual ActionResult Edit(T doc)
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
-            return RedirectToAction("Edit", new { id = doc.Id });
+            return RedirectToAction("Edit", new {id = doc.Id});
         }
 
         [HttpGet]
@@ -87,23 +70,23 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))]T parent)
+        public ActionResult Sort([IoCModelBinder(typeof (NullableEntityModelBinder))] T parent)
         {
-            var sortItems =
+            List<SortItem> sortItems =
                 _documentService.GetDocumentsByParent(parent)
-                                .Select(
-                                    arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
-                                    .OrderBy(x => x.Order)
-                                .ToList();
+                    .Select(
+                        arg => new SortItem {Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name})
+                    .OrderBy(x => x.Order)
+                    .ToList();
 
             return View(sortItems);
         }
 
         [HttpPost]
-        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))]T parent, List<SortItem> items)
+        public ActionResult Sort([IoCModelBinder(typeof (NullableEntityModelBinder))] T parent, List<SortItem> items)
         {
             _documentService.SetOrders(items);
-            return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
+            return RedirectToAction("Sort", parent == null ? null : new {id = parent.Id});
         }
     }
 }

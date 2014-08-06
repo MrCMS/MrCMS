@@ -18,14 +18,15 @@ namespace MrCMS.Web.Areas.Admin.Services
     public class AdminWebpageSearchService : IAdminWebpageSearchService
     {
         private readonly ISearcher<Webpage, AdminWebpageIndexDefinition> _documentSearcher;
-        private readonly IDocumentService _documentService;
+        private readonly IGetBreadcrumbs _getBreadcrumbs;
         private readonly ISession _session;
         private readonly Site _site;
 
-        public AdminWebpageSearchService(ISearcher<Webpage, AdminWebpageIndexDefinition> documentSearcher, IDocumentService documentService, ISession session, Site site)
+        public AdminWebpageSearchService(ISearcher<Webpage, AdminWebpageIndexDefinition> documentSearcher,
+            IGetBreadcrumbs getBreadcrumbs, ISession session, Site site)
         {
             _documentSearcher = documentSearcher;
-            _documentService = documentService;
+            _getBreadcrumbs = getBreadcrumbs;
             _session = session;
             _site = site;
         }
@@ -48,7 +49,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public IEnumerable<Document> GetBreadCrumb(int? parentId)
         {
-            return _documentService.GetParents(parentId).Reverse();
+            return _getBreadcrumbs.Get(parentId).Reverse();
         }
 
         public List<SelectListItem> GetDocumentTypes(string type)

@@ -6,6 +6,6 @@ namespace MrCMS.Services
 {
     public interface ISiteMapService
     {
-        string GetSiteMap(UrlHelper urlHelper);
+        string GetSiteMap();
     }
 }

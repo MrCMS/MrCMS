@@ -223,7 +223,7 @@ section.admin-header h3 {
     overflow-x: hidden;
 }
 
-#PublishOn {
+#edit-webpage-options #PublishOn {
     margin: 0;
     height: 20px;
     border-left: 0;

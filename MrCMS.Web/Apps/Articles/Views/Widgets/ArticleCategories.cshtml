@@ -1,20 +1,21 @@
-﻿@using System.Activities.Statements
+﻿@using MrCMS.Entities.Documents
 @using MrCMS.Web.Apps.Articles.Pages
 @model MrCMS.Web.Apps.Articles.Widgets.ArticleCategories
 @{
-    var list = ViewData["ArticleLists"] as ArticleList;
+    var list = ViewData["ArticleLists"] as ArticleSection;
+    string currentCategory = Request["category"];
 }
 @{
     if (Model.ShowNameAsTitle)
     {
-    <h4>@Model.Name</h4>
+        <h4>@Model.Name</h4>
     }
 }
 <ul class="nav nav-pills nav-stacked">
-    @foreach (var category in Model.ArticleList.Tags)
+    @foreach (Tag category in Model.ArticleSection.Tags)
     {
-        <li class="@((!string.IsNullOrEmpty(Model.Category) && Model.Category == category.Name) ? "active" : "")">
-            <a href="/@Model.ArticleList.LiveUrlSegment?category=@category.Name">@category.Name</a>
+        <li class="@((!string.IsNullOrEmpty(currentCategory) && currentCategory == category.Name) ? "active" : "")">
+            <a href="/@Model.ArticleSection.LiveUrlSegment?category=@category.Name">@category.Name</a>
         </li>
     }
 </ul>

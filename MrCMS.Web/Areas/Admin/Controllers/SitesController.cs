@@ -2,6 +2,7 @@
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 using MrCMS.Helpers;
 
@@ -9,18 +10,18 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class SitesController : MrCMSAdminController
     {
-        private readonly ISiteService _siteService;
+        private readonly ISiteAdminService _siteAdminService;
 
-        public SitesController(ISiteService siteService)
+        public SitesController(ISiteAdminService siteAdminService)
         {
-            _siteService = siteService;
+            _siteAdminService = siteAdminService;
         }
 
         [HttpGet]
         [ActionName("Index")]
         public ViewResult Index_Get()
         {
-            var sites = _siteService.GetAllSites();
+            var sites = _siteAdminService.GetAllSites();
             return View("Index", sites);
         }
 
@@ -28,7 +29,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Add")]
         public PartialViewResult Add_Get()
         {
-            ViewData["other-sites"] = _siteService.GetAllSites()
+            ViewData["other-sites"] = _siteAdminService.GetAllSites()
                                                   .BuildSelectItemList(site => site.Name, site => site.Id.ToString(),
                                                                        emptyItemText: "Do not copy");
 
@@ -38,7 +39,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public RedirectToRouteResult Add(Site site, SiteCopyOptions options)
         {
-            _siteService.AddSite(site, options);
+            _siteAdminService.AddSite(site, options);
             return RedirectToAction("Index");
         }
 
@@ -52,7 +53,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public RedirectToRouteResult Edit(Site site)
         {
-            _siteService.SaveSite(site);
+            _siteAdminService.SaveSite(site);
             return RedirectToAction("Index");
         }
 
@@ -66,7 +67,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public RedirectToRouteResult Delete(Site site)
         {
-            _siteService.DeleteSite(site);
+            _siteAdminService.DeleteSite(site);
             return RedirectToAction("Index");
         }
     }

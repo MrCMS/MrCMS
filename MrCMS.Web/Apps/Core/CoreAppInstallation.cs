@@ -22,6 +22,7 @@ using MrCMS.Tasks;
 using MrCMS.Web.Apps.Core.MessageTemplates;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using NHibernate;
 
@@ -38,24 +39,24 @@ namespace MrCMS.Web.Apps.Core
             SetupMessageTemplates(session, site, model);
             var siteSettings = new SiteSettings
                                    {
-                                       Site = site,
+                                       SiteId = site.Id,
                                        TimeZone = model.TimeZone,
                                        UICulture = model.UiCulture
                                    };
             var mediaSettings = new MediaSettings
                                     {
-                                        Site = site
+                                        SiteId = site.Id,
                                     };
             var mailSettings = new MailSettings
                                    {
-                                       Site = site
+                                       SiteId = site.Id,
                                    };
             mailSettings.Port = 25;
 
             CurrentRequestData.SiteSettings = siteSettings;
 
-            var documentService = new DocumentService(session, siteSettings, site);
-            var layoutAreaService = new LayoutAreaService(session);
+            var documentService = new DocumentService(session, site);
+            var layoutAreaService = new LayoutAreaAdminService(session);
             var widgetService = new WidgetService(session);
             var fileSystem = new FileSystem();
             var imageProcessor = new ImageProcessor(session, fileSystem, mediaSettings);
@@ -133,7 +134,6 @@ namespace MrCMS.Web.Apps.Core
             var layoutTwoColumn = new Layout
             {
                 Parent = model.BaseLayout,
-                UrlSegment = "~/Apps/Core/Views/Shared/_TwoColumn.cshtml",
                 Site = site,
                 Name = "Two Column"
             };
@@ -283,9 +283,8 @@ namespace MrCMS.Web.Apps.Core
             mediaSettings.ResizeQuality = 90;
             mediaSettings.DefaultCategory = defaultMediaCategory.Id;
 
-            var configurationProvider = new ConfigurationProvider(new SettingService(session, site),
-                                                                  site);
-            var fileSystemSettings = new FileSystemSettings { Site = site, StorageType = typeof(FileSystem).FullName };
+            var configurationProvider = new ConfigurationProvider(site, new LegacySettingsProvider(session));
+            var fileSystemSettings = new FileSystemSettings { SiteId = site.Id, StorageType = typeof(FileSystem).FullName };
             configurationProvider.SaveSettings(siteSettings);
             configurationProvider.SaveSettings(mediaSettings);
             configurationProvider.SaveSettings(fileSystemSettings);

@@ -1,19 +1,20 @@
 ﻿using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class UrlHistoryController : MrCMSAdminController
     {
-        private readonly IUrlHistoryService _urlHistoryService;
-        private readonly IDocumentService _documentService;
+        private readonly IUrlHistoryAdminService _urlHistoryAdminService;
+        private readonly IUrlValidationService _urlValidationService;
 
-        public UrlHistoryController(IUrlHistoryService urlHistoryService, IDocumentService documentService)
+        public UrlHistoryController(IUrlHistoryAdminService urlHistoryAdminService, IUrlValidationService urlValidationService)
         {
-            _urlHistoryService = urlHistoryService;
-            _documentService = documentService;
+            _urlHistoryAdminService = urlHistoryAdminService;
+            _urlValidationService = urlValidationService;
         }
 
         [HttpGet]
@@ -26,7 +27,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Delete(UrlHistory history)
         {
-            _urlHistoryService.Delete(history);
+            _urlHistoryAdminService.Delete(history);
 
             return RedirectToAction("Edit", "Webpage", new { id = history.Webpage.Id });
         }
@@ -35,25 +36,22 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Add")]
         public ActionResult Add_Get(int webpageId)
         {
-            var urlHistroy = new UrlHistory
-                                 {
-                                     Webpage = _documentService.GetDocument<Webpage>(webpageId)
-                                 };
+            var urlHistory = _urlHistoryAdminService.GetUrlHistoryToAdd(webpageId);
 
-            return View(urlHistroy);
+            return View(urlHistory);
         }
 
         [HttpPost]
         public ActionResult Add(UrlHistory history)
         {
-            _urlHistoryService.Add(history);
+            _urlHistoryAdminService.Add(history);
 
             return RedirectToAction("Edit", "Webpage", new { id = history.Webpage.Id });
         }
 
         public ActionResult ValidateUrlIsAllowed(string urlsegment)
         {
-            return !_documentService.UrlIsValidForWebpageUrlHistory(urlsegment) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
+            return !_urlValidationService.UrlIsValidForWebpageUrlHistory(urlsegment) ? Json("Please choose a different URL as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
         }
     }
 }

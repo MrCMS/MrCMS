@@ -4,18 +4,18 @@
 @{
     ViewBag.Title = "Edit | " + Model.WidgetType.BreakUpString();
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var cacheExpiryOptions = ViewData["cache-expiry-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 @using (Html.BeginForm("Edit", "Widget", new { }, FormMethod.Post, new { id = "edit-widget" }))
 {
-    
     <fieldset>
-        <legend>@(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : Model.WidgetType.BreakUpString())
+        <legend>
+            @(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : Model.WidgetType.BreakUpString())
 
             <span class="btn-group  display-inline  pull-right">
                 <input type="submit" class="btn-success btn" value="Save widget" />
             </span>
         </legend>
-
         @Html.HiddenFor(widget => widget.Id)
         @Html.Hidden("ReturnUrl", ViewData["return-url"])
         @Html.LabelFor(widget => widget.Name)
@@ -24,9 +24,19 @@
         {
             @Html.InlineCheckboxFor(widget => widget.IsRecursive, null, null, "Is Recursive (shows on child pages)")
         }
+        @if (Model.IsTypeCachable())
+        {
+            <hr class="small-margin" />
+            @Html.InlineCheckboxFor(widget => widget.Cache)
+            @Html.LabelFor(widget => widget.CacheLength)
+            @Html.TextBoxFor(widget => widget.CacheLength)
+            @Html.ValidationMessageFor(widget => widget.CacheLength)
+
+            @Html.LabelFor(widget => widget.CacheExpiryType)
+            @Html.DropDownListFor(widget => widget.CacheExpiryType, cacheExpiryOptions)
+            @Html.ValidationMessageFor(widget => widget.CacheExpiryType)
+        }
         <hr class="small-margin" />
         @Html.RenderCustomAdminProperties()
     </fieldset>
-    
-    
 }

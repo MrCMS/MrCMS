@@ -10,12 +10,14 @@ namespace MrCMS.Services
         private readonly IMessageTemplateParser _messageTemplateParser;
         private readonly Site _site;
         private readonly ISession _session;
+        private readonly IEmailSender _emailSender;
 
-        public MessageParser(IMessageTemplateParser messageTemplateParser, Site site, ISession session)
+        public MessageParser(IMessageTemplateParser messageTemplateParser, Site site, ISession session,IEmailSender emailSender)
         {
             _messageTemplateParser = messageTemplateParser;
             _site = site;
             _session = session;
+            _emailSender = emailSender;
         }
 
         public QueuedMessage GetMessage(T2 obj, string fromAddress = null, string fromName = null, string toAddress = null, string toName = null, string cc = null, string bcc = null)
@@ -38,10 +40,16 @@ namespace MrCMS.Services
             };
         }
 
-        public void QueueMessage(QueuedMessage queuedMessage)
+        public void QueueMessage(QueuedMessage queuedMessage, bool trySendImmediately = true)
         {
             if (queuedMessage != null)
+            {
+                if (trySendImmediately)
+                {
+                    _emailSender.SendMailMessage(queuedMessage);
+                }
                 _session.Transact(session => session.Save(queuedMessage));
+            }
         }
     }
 }

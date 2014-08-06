@@ -67,12 +67,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Ninject.3.0.1.10\lib\net40\Ninject.dll</HintPath>
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Ninject.MockingKernel">
-      <HintPath>..\packages\Ninject.MockingKernel.3.0.0.5\lib\net40-full\Ninject.MockingKernel.dll</HintPath>
+      <HintPath>..\packages\Ninject.MockingKernel.3.2.0.0\lib\net45-full\Ninject.MockingKernel.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -85,29 +86,29 @@
       <HintPath>..\packages\System.Data.SQLite.1.0.82.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.Helpers.dll</HintPath>
+    <Reference Include="System.Web.Helpers">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.1\lib\net45\System.Web.Mvc.dll</HintPath>
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.2\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.1\lib\net45\System.Web.Razor.dll</HintPath>
+    <Reference Include="System.Web.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.2\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.dll</HintPath>
+    <Reference Include="System.Web.WebPages">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    <Reference Include="System.Web.WebPages.Deployment">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    <Reference Include="System.Web.WebPages.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -133,6 +134,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\Core\Services\ResetPasswordServiceTests.cs" />
+    <Compile Include="Apps\Core\Services\SearchServiceTests.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\FileControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\FormControllerTests.cs" />
@@ -145,18 +148,33 @@
     <Compile Include="Areas\Admin\Controllers\SitesControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\TagControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\UserControllerTests.cs" />
+    <Compile Include="Areas\Admin\Controllers\VersionsControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageControllerTests.cs" />
+    <Compile Include="Areas\Admin\Controllers\WebpageUrlControllerTests.cs" />
+    <Compile Include="Areas\Admin\Controllers\WebpageWidgetControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateControllerTests.cs" />
-    <Compile Include="Controllers\FormControllerTests.cs" />
+    <Compile Include="Areas\Admin\Services\DocumentTagsAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\DocumentVersionsAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\FileAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\FormServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\LayoutAreaAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\LogAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\MessageTemplateAdminServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\SitesServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\TagServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\UrlHistoryServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\WebpageWidgetAdminServiceTests.cs" />
     <Compile Include="Controllers\LoginControllerTests.cs" />
     <Compile Include="MrCMSTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stubs\BasicMappedWidget.cs" />
     <Compile Include="Stubs\BasicMessageTemplate.cs" />
     <Compile Include="Stubs\FakeHttpFileCollectionBase.cs" />
     <Compile Include="Stubs\FakeHttpPostedFileBase.cs" />
     <Compile Include="Stubs\StubDocument.cs" />
+    <Compile Include="Stubs\StubWebpage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

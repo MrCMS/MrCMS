@@ -19,7 +19,7 @@ namespace MrCMS.Web.Controllers
 
         public ActionResult Sitemap()
         {
-            var content = _siteMapService.GetSiteMap(Url);
+            var content = _siteMapService.GetSiteMap();
             return Content(content, "application/xml", Encoding.UTF8);
         }
 

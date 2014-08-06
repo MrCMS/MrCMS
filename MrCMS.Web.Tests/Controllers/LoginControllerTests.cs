@@ -35,6 +35,8 @@ namespace MrCMS.Web.Tests.Controllers
             _loginService = A.Fake<ILoginService>();
             _uniquePageService = A.Fake<IUniquePageService>();
             _loginController = new LoginController(_userService, _resetPasswordService, _authorisationService, _uniquePageService, _loginService);
+            _loginController.GetCurrentLayout = A.Fake<IGetCurrentLayout>();
+
             // initial setup as this is reused
             A.CallTo(() => _uniquePageService.RedirectTo<LoginPage>(null)).Returns(new RedirectResult("~/login-page"));
             A.CallTo(() => _uniquePageService.RedirectTo<ForgottenPasswordPage>(null))
@@ -44,7 +46,7 @@ namespace MrCMS.Web.Tests.Controllers
         [Fact]
         public void LoginController_Show_ShouldReturnLoginPageAsModel()
         {
-            var result = _loginController.Show(new LoginPage { Layout = new Layout() }, new LoginModel());
+            var result = _loginController.Show(new LoginPage(), new LoginModel());
 
             result.Model.Should().BeOfType<LoginPage>();
         }

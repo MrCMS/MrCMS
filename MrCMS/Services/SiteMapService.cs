@@ -2,78 +2,73 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Web.Mvc;
 using System.Xml;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
-using MrCMS.Models;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Services
 {
     public class SiteMapService : ISiteMapService
     {
+        private readonly ICustomSiteMapService _customSiteMapService;
         private readonly ISession _session;
         private readonly Site _site;
 
-        public SiteMapService(ISession session, Site site)
+        public SiteMapService(ISession session, Site site, ICustomSiteMapService customSiteMapService)
         {
             _session = session;
             _site = site;
+            _customSiteMapService = customSiteMapService;
         }
 
-        public string GetSiteMap(UrlHelper urlHelper)
+        public string GetSiteMap()
         {
-            //var websiteTree = GetWebsiteTree();
-            var allWebpages =
+            IEnumerable<Webpage> allWebpages =
                 _session.QueryOver<Webpage>()
-                        .Where(webpage => webpage.Site.Id == _site.Id)
-                        .Cacheable()
-                        .List()
-                        .Where(webpage => webpage.Published);
+                    .Where(webpage => webpage.Site.Id == _site.Id)
+                    .Cacheable()
+                    .List()
+                    .Where(webpage => webpage.Published);
 
             var xmlDocument = new XmlDocument();
-            var xmlDeclaration = xmlDocument.CreateXmlDeclaration("1.0", "utf-8", null);
+            XmlDeclaration xmlDeclaration = xmlDocument.CreateXmlDeclaration("1.0", "utf-8", null);
             xmlDocument.InsertBefore(xmlDeclaration, xmlDocument.DocumentElement);
 
-            var urlset =
-                xmlDocument.AppendChild(xmlDocument.CreateElement("urlset"));
+            XmlNode urlset = xmlDocument.AppendChild(xmlDocument.CreateElement("urlset"));
 
-
-            var standardNs = xmlDocument.CreateAttribute("xmlns");
+            XmlAttribute standardNs = xmlDocument.CreateAttribute("xmlns");
             standardNs.Value = "http://www.google.com/schemas/sitemap/0.9";
             urlset.Attributes.Append(standardNs);
-            var imageNs = xmlDocument.CreateAttribute("xmlns:image");
+            XmlAttribute imageNs = xmlDocument.CreateAttribute("xmlns:image");
             imageNs.Value = "http://www.google.com/schemas/sitemap-image/1.1";
             urlset.Attributes.Append(imageNs);
 
-            AppendChildren(allWebpages, urlset, xmlDocument, urlHelper);
+            AppendChildren(allWebpages, urlset, xmlDocument);
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             TextWriter tw = new StringWriter(sb);
             xmlDocument.WriteTo(new XmlTextWriter(tw));
 
-            var content = sb.ToString();
+            string content = sb.ToString();
             return content;
         }
 
-        private void AppendChildren(IEnumerable<Webpage> allWebpages, XmlNode urlset, XmlDocument xmlDocument, UrlHelper urlHelper)
+        private void AppendChildren(IEnumerable<Webpage> allWebpages, XmlNode urlset, XmlDocument xmlDocument)
         {
-            foreach (var webpage in allWebpages)
+            foreach (Webpage webpage in allWebpages)
             {
                 if (webpage != null && webpage.Published)
                 {
-                    var url = urlset.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "url", ""));
-                    var loc = url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "loc", ""));
-                    loc.InnerText = urlHelper.AbsoluteContent(webpage.LiveUrlSegment);
-                    webpage.AddCustomSitemapData(urlHelper, url, xmlDocument);
-                    var lastMod = url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "lastmod", ""));
+                    XmlNode url = urlset.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "url", ""));
+                    XmlNode loc = url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "loc", ""));
+                    loc.InnerText = webpage.AbsoluteUrl;
+                    _customSiteMapService.AddCustomSiteMapData(webpage, url, xmlDocument);
+
+                    XmlNode lastMod = url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "lastmod", ""));
                     lastMod.InnerText = webpage.UpdatedOn.ToString("yyyy-MM-dd");
                 }
             }
         }
-
     }
 }

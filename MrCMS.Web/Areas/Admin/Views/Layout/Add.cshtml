@@ -17,10 +17,9 @@
                 @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
                 @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
 
-                @Html.LabelFor(x => x.UrlSegment, "Path")
+                @Html.LabelFor(x => x.UrlSegment)
                 @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
                 @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
-                @Html.Hidden("DocumentType", "Layout")
             </div>
         </div>
     </fieldset>

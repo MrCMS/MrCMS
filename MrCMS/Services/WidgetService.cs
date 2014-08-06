@@ -23,18 +23,9 @@ namespace MrCMS.Services
             _session.Transact(session => session.SaveOrUpdate(widget));
         }
 
-        public object GetModel(Widget widget)
-        {
-            return widget.GetModel(_session);
-        }
-
         public void DeleteWidget(Widget widget)
         {
-            _session.Transact(session =>
-                {
-                    widget.OnDeleting(session);
-                    session.Delete(widget);
-                });
+            _session.Transact(session => session.Delete(widget));
         }
 
         public Widget AddWidget(Widget widget)

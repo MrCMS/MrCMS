@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using MrCMS.DbConfiguration;
 using MrCMS.Entities;
+using MrCMS.IoC;
 using MrCMS.Paging;
 using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Impl;
 
 namespace MrCMS.Helpers
 {
@@ -13,7 +16,7 @@ namespace MrCMS.Helpers
     {
         public static ISession OpenFilteredSession(this ISessionFactory sessionFactory)
         {
-            var session = sessionFactory.OpenSession();
+            var session = new MrCMSSession(sessionFactory.OpenSession());
             session.EnableFilter("NotDeletedFilter");
             return session;
         }

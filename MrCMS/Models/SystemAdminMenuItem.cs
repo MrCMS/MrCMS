@@ -4,9 +4,9 @@ using MrCMS.Website;
 
 namespace MrCMS.Models
 {
-    public class SystemAdminMenuItem : ISystemAdminMenuItem
+    public class SystemAdminMenuItem : IAdminMenuItem
     {
-        private Dictionary<string, List<IMenuItem>> _children;
+        private SubMenu _children;
         public string Text { get { return "System"; } }
         public string Url { get; private set; }
         public bool CanShow
@@ -14,7 +14,7 @@ namespace MrCMS.Models
             get { return new SystemAdminMenuACL().CanAccess(CurrentRequestData.CurrentUser, SystemAdminMenuACL.ShowMenu); }
         }
 
-        public IDictionary<string, List<IMenuItem>> Children
+        public SubMenu Children
         {
             get
             {
@@ -23,23 +23,35 @@ namespace MrCMS.Models
             }
         }
 
-        private static Dictionary<string, List<IMenuItem>> GetChildren()
+        private static SubMenu GetChildren()
         {
             var systemAdminMenuACL = new SystemAdminMenuACL();
-            return new Dictionary<string, List<IMenuItem>>
+            return new SubMenu
                    {
                        {
                            "",
-                           new List<IMenuItem>
+                           new List<ChildMenuItem>
                            {
+                               new ChildMenuItem("Settings","#",subMenu: new SubMenu
+                               {
+                                   {"",new List<ChildMenuItem>
+                                   {
                                new ChildMenuItem("Site Settings", "/Admin/Settings",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.SiteSettings)),
                                new ChildMenuItem("Filesystem Settings", "/Admin/Settings/FileSystem",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.FileSystemSettings)),
+                               new ChildMenuItem("ACL", "/Admin/ACL",
+                                   ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.ACL))
+                                   }}
+                               }),
                                new ChildMenuItem("Import/Export Documents", "/Admin/ImportExport/Documents",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.ImportExport)),
                                new ChildMenuItem("Message Templates", "/Admin/MessageTemplate",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.MessageTemplates)),
+                               new ChildMenuItem("Page Templates", "/Admin/PageTemplate",
+                                   ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.PageTemplates)),
+                               new ChildMenuItem("Url Generators", "/Admin/UrlGeneratorSettings",
+                                   ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.UrlGenerators)),
                                new ChildMenuItem("Sites", "/Admin/Sites",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Sites)),
                                new ChildMenuItem("Resources", "/Admin/Resource",
@@ -48,8 +60,6 @@ namespace MrCMS.Models
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Logs)),
                                new ChildMenuItem("Tasks", "/Admin/Task",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Tasks)),
-                               new ChildMenuItem("ACL", "/Admin/ACL",
-                                   ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.ACL)),
                                new ChildMenuItem("Indexes", "/Admin/Indexes",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Indices)),
                                new ChildMenuItem("Message Queue", "/Admin/MessageQueue",

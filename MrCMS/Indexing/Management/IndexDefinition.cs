@@ -13,6 +13,7 @@ using MrCMS.Tasks;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
+using Ninject.Infrastructure.Language;
 using Version = Lucene.Net.Util.Version;
 
 namespace MrCMS.Indexing.Management
@@ -78,7 +79,9 @@ namespace MrCMS.Indexing.Management
     public abstract class IndexDefinition<T> : IndexDefinition where T : SystemEntity
     {
         private static readonly FieldDefinition<T> _id =
-            new StringFieldDefinition<T>("id", entity => entity.Id.ToString(), Field.Store.YES,
+            new StringFieldDefinition<T>("id", entity => new List<string> { entity.Id.ToString() }.ToEnumerable(),
+                entity => entity.ToDictionary(arg => arg, arg => new List<string> { arg.Id.ToString() }.ToEnumerable()),
+                Field.Store.YES,
                 Field.Index.NOT_ANALYZED);
         protected readonly ISession _session;
         protected IndexDefinition(ISession session)
@@ -94,6 +97,25 @@ namespace MrCMS.Indexing.Management
         public Document Convert(T entity)
         {
             return new Document().SetFields(new List<FieldDefinition<T>> { Id }.Concat(Definitions), entity);
+        }
+        public List<Document> ConvertAll(List<T> entities)
+        {
+            var fieldDefinitions = new List<FieldDefinition<T>> { Id };
+            fieldDefinitions.AddRange(Definitions);
+            var list = fieldDefinitions.Select(fieldDefinition => fieldDefinition.GetFields(entities)).ToList();
+            var documents = new List<Document>();
+            foreach (var entity in entities)
+            {
+                var document = new Document();
+                foreach (var fieldInfo in list)
+                {
+                    List<AbstractField> abstractFields = fieldInfo[entity];
+                    abstractFields.ForEach(document.Add);
+                }
+                documents.Add(document);
+            }
+
+            return documents;
         }
 
         public Term GetIndex(T entity)
@@ -184,11 +206,11 @@ namespace MrCMS.Indexing.Management
         {
             if (arg is T)
                 yield return new LuceneAction
-                             {
-                                 Entity = arg,
-                                 IndexDefinition = this,
-                                 Operation = operation,
-                             };
+                {
+                    Entity = arg,
+                    IndexDefinition = this,
+                    Operation = operation,
+                };
         }
     }
 }

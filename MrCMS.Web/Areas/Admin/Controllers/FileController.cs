@@ -4,15 +4,17 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class FileController : MrCMSAdminController
     {
-        private readonly IFileService _fileService;
+        private readonly IFileAdminService _fileService;
 
-        public FileController(IFileService fileService)
+        public FileController(IFileAdminService fileService)
         {
             _fileService = fileService;
         }

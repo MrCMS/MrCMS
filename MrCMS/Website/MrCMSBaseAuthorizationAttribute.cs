@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Helpers;
@@ -29,13 +30,16 @@ namespace MrCMS.Website
                 {
                     if (filterContext.HttpContext.User.Identity.IsAuthenticated)
                     {
-                        var mrCMSHttpHandler = MrCMSApplication.Get<MrCMSHttpHandler>();
+                        var routingErrorHandler = MrCMSApplication.Get<IMrCMSRoutingErrorHandler>();
                         var routeData = filterContext.RouteData;
                         routeData.Route = RouteTable.Routes.Last();
                         routeData.DataTokens.Remove("area");
-                        mrCMSHttpHandler.SetRequestContext(new RequestContext(filterContext.HttpContext,
-                                                                              routeData));
-                        mrCMSHttpHandler.Handle403(filterContext.HttpContext);
+
+                        var requestContext = new RequestContext(filterContext.HttpContext, routeData);
+                        string message = string.Format("Not allowed to view {0}", requestContext.HttpContext.Request.Url);
+                        var code = CurrentRequestData.CurrentUser != null ? 403 : 401;
+                        routingErrorHandler.HandleError(requestContext, code, new HttpException(code, message));
+                        
                         filterContext.Result = new EmptyResult();
                     }
                     else

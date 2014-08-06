@@ -11,7 +11,7 @@ namespace MrCMS.Tests.Services
 {
     public class WidgetServiceTests : InMemoryDatabaseTest
     {
-        private WidgetService _widgetService;
+        private readonly WidgetService _widgetService;
 
         public WidgetServiceTests()
         {
@@ -46,16 +46,6 @@ namespace MrCMS.Tests.Services
         }
 
         [Fact]
-        public void WidgetService_GetModel_CallsWidgetGetModelOfTheWidgetWithTheSessionOfTheService()
-        {
-            var widget = A.Fake<Widget>();
-
-            _widgetService.GetModel(widget);
-
-            A.CallTo(() => widget.GetModel(Session)).MustHaveHappened();
-        }
-
-        [Fact]
         public void WidgetService_Delete_RemovesWidgetFromDatabase()
         {
             var widget = new BasicMappedWidget();
@@ -64,18 +54,6 @@ namespace MrCMS.Tests.Services
             _widgetService.DeleteWidget(widget);
 
             Session.QueryOver<Widget>().RowCount().Should().Be(0);
-        }
-
-        [Fact]
-        public void WidgetService_Delete_CallsOnDeletingOnTheWidget()
-        {
-            var widget = A.Fake<Widget>();
-            var session = A.Fake<ISession>();
-            var widgetService = new WidgetService(session);
-
-            widgetService.DeleteWidget(widget);
-
-            A.CallTo(() => widget.OnDeleting(session)).MustHaveHappened();
         }
     }
 }

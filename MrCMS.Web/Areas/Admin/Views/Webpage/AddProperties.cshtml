@@ -1,7 +1,12 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
-
+@{
+}
 @if (Model != null)
 {
+    @*@Html.LabelFor(webpage => webpage.PageTemplate.Id, Resource("Page Template"))
+    @Html.DropDownListFor(webpage => webpage.PageTemplate.Id, templateOptions)
+    @Html.ValidationMessageFor(webpage => webpage.PageTemplate.Id)*@
+    
     @Html.RenderCustomAdminProperties("Add")
 }

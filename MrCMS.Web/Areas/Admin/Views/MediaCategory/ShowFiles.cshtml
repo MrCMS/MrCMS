@@ -3,7 +3,7 @@
 @using MrCMS.Helpers
 @using MrCMS.Paging
 @{ var files = ViewData["files"] as IPagedList<MediaFile> ?? PagedList<MediaFile>.Empty;}
-@model MrCMS.Models.MediaCategorySearchModel
+@model MrCMS.Web.Areas.Admin.Models.MediaCategorySearchModel
 <div id="file-list" data-category-id="@Model.Id">
     @if (files.Any())
     {

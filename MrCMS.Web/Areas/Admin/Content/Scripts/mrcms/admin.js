@@ -137,6 +137,7 @@ window.admin = {
             $.data(this, "previousValue", null);
         });
         $.validator.unobtrusive.parse("form");
+        initTagging();
     }
 };
 

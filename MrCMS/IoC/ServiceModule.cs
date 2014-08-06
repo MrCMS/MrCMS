@@ -24,22 +24,58 @@ namespace MrCMS.IoC
     //Wires up IOC automatically
     public class ServiceModule : NinjectModule
     {
+        private readonly bool _forTest;
+
+        public ServiceModule(bool forTest = false)
+        {
+            _forTest = forTest;
+        }
+
         public override void Load()
         {
             Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
                 .Where(
                     t =>
-                        !typeof (SiteSettingsBase).IsAssignableFrom(t) &&
-                        !typeof (IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
+                        !typeof(SiteSettingsBase).IsAssignableFrom(t) &&
+                        !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
                 .BindWith<NinjectServiceToInterfaceBinder>()
                 .Configure(onSyntax => onSyntax.InRequestScope()));
-            Kernel.Bind(syntax => syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
-                .Where(
-                    t =>
-                        typeof (SiteSettingsBase).IsAssignableFrom(t) && !typeof (IController).IsAssignableFrom(t) &&
-                        !Kernel.GetBindings(t).Any())
-                .BindWith<NinjectSiteSettingsBinder>()
-                .Configure(onSyntax => onSyntax.InRequestScope()));
+            Kernel.Bind(syntax =>
+            {
+                var joinExcludeIncludeBindSyntax = syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
+                    .Where(
+                        t =>
+                            typeof(SiteSettingsBase).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any());
+
+                if (_forTest)
+                {
+                    joinExcludeIncludeBindSyntax.BindToSelf();
+                }
+                else
+                {
+                    joinExcludeIncludeBindSyntax
+                                              .BindWith<NinjectSiteSettingsBinder>()
+                                              .Configure(onSyntax => onSyntax.InRequestScope());
+                }
+            });
+            Kernel.Bind(syntax =>
+            {
+                var joinExcludeIncludeBindSyntax = syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
+                    .Where(
+                        t =>
+                            typeof(SystemSettingsBase).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any());
+
+                if (_forTest)
+                {
+                    joinExcludeIncludeBindSyntax.BindToSelf();
+                }
+                else
+                {
+                    joinExcludeIncludeBindSyntax
+                                              .BindWith<NinjectSystemSettingsBinder>()
+                                              .Configure(onSyntax => onSyntax.InRequestScope());
+                }
+            });
 
             Kernel.Bind<HttpRequestBase>().ToMethod(context => CurrentRequestData.CurrentContext.Request);
             Kernel.Bind<HttpResponseBase>().ToMethod(context => CurrentRequestData.CurrentContext.Response);
@@ -57,6 +93,9 @@ namespace MrCMS.IoC
             Kernel.Bind<IEnumerable<IHashAlgorithm>>()
                   .ToMethod(context => context.Kernel.GetAll<IHashAlgorithm>())
                   .InRequestScope();
+
+            Kernel.Bind<UrlHelper>()
+                .ToMethod(context => new UrlHelper(CurrentRequestData.CurrentContext.Request.RequestContext));
 
             // Allowing IFileSystem implementation to be set in the site settings
             Kernel.Rebind<IFileSystem>().ToMethod(context =>

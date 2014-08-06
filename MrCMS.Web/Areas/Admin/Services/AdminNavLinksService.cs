@@ -18,8 +18,9 @@ namespace MrCMS.Web.Areas.Admin.Services
         public IEnumerable<IAdminMenuItem> GetNavLinks()
         {
             return TypeHelper.GetAllConcreteTypesAssignableFrom<IAdminMenuItem>()
-                             .Select(type => _kernel.Get(type)).Cast<IAdminMenuItem>()
-                             .OrderBy(item => item.DisplayOrder);
+                .Where(type => type != typeof (ChildMenuItem))
+                .Select(type => _kernel.Get(type)).Cast<IAdminMenuItem>()
+                .OrderBy(item => item.DisplayOrder);
         }
     }
 }

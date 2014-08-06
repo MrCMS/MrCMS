@@ -28,10 +28,12 @@ namespace MrCMS.Indexing.Management
                 service.Optimise(index.TypeName);
             }
         }
-        public static void EnsureIndexExists<T1,T2>() where T1 :SystemEntity  where T2 : IndexDefinition<T1>
+        public static void EnsureIndexExists<T1, T2>()
+            where T1 : SystemEntity
+            where T2 : IndexDefinition<T1>
         {
             var service = MrCMSApplication.Get<IIndexService>();
-            var indexManagerBase = service.GetIndexManagerBase(typeof (T2));
+            var indexManagerBase = service.GetIndexManagerBase(typeof(T2));
             if (!indexManagerBase.IndexExists)
             {
                 service.Reindex(indexManagerBase.GetIndexDefinitionType().FullName);
@@ -142,10 +144,10 @@ namespace MrCMS.Indexing.Management
         public IndexResult Insert(IEnumerable<TEntity> entities)
         {
             return IndexResult.GetResult(() => Write(writer =>
-                                                         {
-                                                             foreach (var entity in entities)
-                                                                 writer.AddDocument(Definition.Convert(entity));
-                                                         }));
+            {
+                foreach (var entity in entities)
+                    writer.AddDocument(Definition.Convert(entity));
+            }));
         }
 
         public IndexResult Insert(TEntity entity)
@@ -186,26 +188,26 @@ namespace MrCMS.Indexing.Management
         public IndexResult Update(IEnumerable<TEntity> entities)
         {
             return IndexResult.GetResult(() => Write(writer =>
-                                                         {
-                                                             foreach (var entity in entities)
-                                                                 writer.UpdateDocument(Definition.GetIndex(entity),
-                                                                                       Definition.Convert(entity));
-                                                         }));
+            {
+                foreach (var entity in entities)
+                    writer.UpdateDocument(Definition.GetIndex(entity),
+                                          Definition.Convert(entity));
+            }));
         }
 
         public IndexResult Update(TEntity entity)
         {
             return IndexResult.GetResult(() => Write(writer =>
-                                                         {
-                                                             using (var indexSearcher = new IndexSearcher(GetDirectory(_currentSite), true))
-                                                             {
-                                                                 var topDocs = indexSearcher.Search(new TermQuery(Definition.GetIndex(entity)), int.MaxValue);
-                                                                 if (!topDocs.ScoreDocs.Any())
-                                                                     return;
-                                                             }
-                                                             writer.UpdateDocument(Definition.GetIndex(entity),
-                                                                                   Definition.Convert(entity));
-                                                         }));
+            {
+                using (var indexSearcher = new IndexSearcher(GetDirectory(_currentSite), true))
+                {
+                    var topDocs = indexSearcher.Search(new TermQuery(Definition.GetIndex(entity)), int.MaxValue);
+                    if (!topDocs.ScoreDocs.Any())
+                        return;
+                }
+                writer.UpdateDocument(Definition.GetIndex(entity),
+                                      Definition.Convert(entity));
+            }));
         }
 
         public IndexResult Update(object entity)
@@ -224,10 +226,10 @@ namespace MrCMS.Indexing.Management
         public IndexResult Delete(IEnumerable<TEntity> entities)
         {
             return IndexResult.GetResult(() => Write(writer =>
-                                                         {
-                                                             foreach (var entity in entities)
-                                                                 writer.DeleteDocuments(Definition.GetIndex(entity));
-                                                         }));
+            {
+                foreach (var entity in entities)
+                    writer.DeleteDocuments(Definition.GetIndex(entity));
+            }));
         }
 
         public IndexResult Delete(TEntity entity)
@@ -245,18 +247,18 @@ namespace MrCMS.Indexing.Management
             return IndexResult.GetResult(() => Write(writer => writer.Optimize()));
         }
 
-        public IndexResult ReIndex(IEnumerable<TEntity> entities)
+        public IndexResult ReIndex(List<TEntity> entities)
         {
             return IndexResult.GetResult(() =>
-                                             {
-                                                 Write(writer => { }, true);
-                                                 Write(writer =>
-                                                           {
-                                                               foreach (var entity in entities)
-                                                                   writer.AddDocument(Definition.Convert(entity));
-                                                               writer.Optimize();
-                                                           });
-                                             });
+            {
+                Write(writer => { }, true);
+                Write(writer =>
+                {
+                    foreach (var document in Definition.ConvertAll(entities))
+                        writer.AddDocument(document);
+                    writer.Optimize();
+                });
+            });
         }
     }
 }

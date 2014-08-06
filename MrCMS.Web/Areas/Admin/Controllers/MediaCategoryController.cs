@@ -1,35 +1,36 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
-using MrCMS.Website.Binders;
-using System.Linq;
-using MrCMS.Helpers;
+using MrCMS.Web.Areas.Admin.Services;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class MediaCategoryController : BaseDocumentController<MediaCategory>
     {
-        private readonly IFileService _fileService;
+        private readonly IFileAdminService _fileAdminService;
 
-        public MediaCategoryController(IDocumentService documentService, IFileService fileService, Site site)
-            : base(documentService, site)
+        public MediaCategoryController(IFileAdminService fileAdminService, IDocumentService documentService,
+            IUrlValidationService urlValidationService)
+            : base(documentService, urlValidationService)
         {
-            _fileService = fileService;
+            _fileAdminService = fileAdminService;
         }
 
         /**
          * Need to do media category specific stuff before generic stuff. In this case
          * create a directory for media files.
          */
+
         public override ActionResult Add(MediaCategory doc)
         {
             base.Add(doc);
-            _fileService.CreateFolder(doc);
-            return RedirectToAction("Show", new { id = doc.Id });
+            _fileAdminService.CreateFolder(doc);
+            return RedirectToAction("Show", new {id = doc.Id});
         }
 
         [HttpGet]
@@ -37,7 +38,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public override ActionResult Add_Get(int? id)
         {
             //Build list 
-            var model = new MediaCategory()
+            var model = new MediaCategory
             {
                 Parent = id.HasValue ? _documentService.GetDocument<MediaCategory>(id.Value) : null
             };
@@ -46,11 +47,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public override ActionResult Edit( MediaCategory doc)
+        public override ActionResult Edit(MediaCategory doc)
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
-            return RedirectToAction("Show", new { id = doc.Id });
+            return RedirectToAction("Show", new {id = doc.Id});
         }
 
         public ActionResult Show(MediaCategorySearchModel mediaCategorySearchModel)
@@ -72,33 +73,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(category);
         }
 
-        public PartialViewResult MediaSelector(int? categoryId, bool imagesOnly = false, int page = 1)
-        {
-            ViewData["categories"] = _documentService.GetAllDocuments<MediaCategory>()
-                                                     .Where(category => !category.HideInAdminNav)
-                                                     .OrderBy(category => category.Name)
-                                                     .BuildSelectItemList
-                (category => category.Name, category => category.Id.ToString(),
-                 emptyItem: SelectListItemHelper.EmptyItem("Select a category..."));
-            return PartialView(_fileService.GetFilesPaged(categoryId, imagesOnly, page));
-        }
-
-        public string GetFileUrl(string value)
-        {
-            return _fileService.GetFileUrl(value);
-        }
-
-        public PartialViewResult MiniUploader(int id)
-        {
-            return PartialView(id);
-        }
-
-        public PartialViewResult FileResult(MediaFile mediaFile)
-        {
-            ViewData["upload"] = "upload-";
-            return PartialView(mediaFile);
-        }
-
         public PartialViewResult RemoveMedia()
         {
             return PartialView();
@@ -107,7 +81,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult ShowFiles(MediaCategorySearchModel searchModel)
         {
-            ViewData["files"] = _fileService.GetFilesForSearchPaged(searchModel);
+            ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(searchModel);
             return PartialView(searchModel);
         }
 
@@ -122,11 +96,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult SortFiles(MediaCategory parent)
         {
             ViewData["categoryId"] = parent.Id;
-            var sortItems =
-            _fileService.GetFiles(parent).OrderBy(arg => arg.display_order)
-                                .Select(
-                                    arg => new ImageSortItem { Order = arg.display_order, Id = arg.Id, Name = arg.name, ImageUrl = arg.url, IsImage = arg.is_image })
-                                .ToList();
+            List<ImageSortItem> sortItems =
+                _fileAdminService.GetFiles(parent).OrderBy(arg => arg.display_order)
+                    .Select(
+                        arg =>
+                            new ImageSortItem
+                            {
+                                Order = arg.display_order,
+                                Id = arg.Id,
+                                Name = arg.name,
+                                ImageUrl = arg.url,
+                                IsImage = arg.is_image
+                            })
+                    .ToList();
 
             return View(sortItems);
         }
@@ -134,20 +116,21 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult SortFiles(MediaCategory parent, List<SortItem> items)
         {
-            _fileService.SetOrders(items);
-            return RedirectToAction("SortFiles", new { id = parent.Id });
+            _fileAdminService.SetOrders(items);
+            return RedirectToAction("SortFiles", new {id = parent.Id});
         }
 
         /// <summary>
-        /// Finds out if the URL entered is valid.
+        ///     Finds out if the URL entered is valid.
         /// </summary>
         /// <param name="UrlSegment">The URL Segment entered</param>
         /// <param name="DocumentType">The type of mediaCategorySearchModel</param>
         /// <returns></returns>
         public ActionResult ValidateUrlIsAllowed(string UrlSegment, int? Id)
         {
-            return !_documentService.UrlIsValidForMediaCategory(UrlSegment, Id) ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet) : Json(true, JsonRequestBehavior.AllowGet);
+            return !_urlValidationService.UrlIsValidForMediaCategory(UrlSegment, Id)
+                ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet)
+                : Json(true, JsonRequestBehavior.AllowGet);
         }
     }
-
 }

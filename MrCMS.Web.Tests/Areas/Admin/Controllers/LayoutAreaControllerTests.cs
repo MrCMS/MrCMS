@@ -9,21 +9,26 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class LayoutAreaControllerTests
     {
-        private IDocumentService _documentService;
-        private ILayoutAreaService _layoutAreaService;
+        private ILayoutAreaAdminService _layoutAreaAdminService;
+        private LayoutAreaController _layoutAreaController;
+
+        public LayoutAreaControllerTests()
+        {
+            _layoutAreaAdminService = A.Fake<ILayoutAreaAdminService>();
+            _layoutAreaController = new LayoutAreaController(_layoutAreaAdminService);
+        }
 
         [Fact]
         public void LayoutAreaController_AddGet_ShouldReturnPartialViewWithAddLayoutAreaModel()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
-
-            PartialViewResult partialViewResult = layoutAreaController.Add(new Layout());
+            PartialViewResult partialViewResult = _layoutAreaController.Add(new Layout());
 
             partialViewResult.Model.Should().BeOfType<LayoutArea>();
         }
@@ -31,10 +36,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_AddGet_ShouldSetTheLayoutIdToTheValueFromTheConstructor()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layout = new Layout();
 
-            PartialViewResult partialViewResult = layoutAreaController.Add(layout);
+            PartialViewResult partialViewResult = _layoutAreaController.Add(layout);
 
             partialViewResult.Model.As<LayoutArea>().Layout.Should().Be(layout);
         }
@@ -42,25 +46,23 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_AddPost_ShouldCallSaveArea()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
-            var layout = new Layout {Id = 1};
+            var layout = new Layout { Id = 1 };
             layoutArea.Layout = layout;
 
-            layoutAreaController.Add(layoutArea);
+            _layoutAreaController.Add(layoutArea);
 
-            A.CallTo(() => _layoutAreaService.SaveArea(layoutArea)).MustHaveHappened();
+            A.CallTo(() => _layoutAreaAdminService.SaveArea(layoutArea)).MustHaveHappened();
         }
 
         [Fact]
         public void LayoutAreaController_AddPost_ShouldRedirectToEditLayout()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
-            var layout = new Layout {Id = 1};
+            var layout = new Layout { Id = 1 };
             layoutArea.Layout = layout;
 
-            ActionResult actionResult = layoutAreaController.Add(layoutArea);
+            ActionResult actionResult = _layoutAreaController.Add(layoutArea);
 
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
             actionResult.As<RedirectToRouteResult>().RouteValues["controller"].Should().Be("Layout");
@@ -70,10 +72,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_EditGet_IfIdIsValidShouldReturnViewResult()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
 
-            ActionResult actionResult = layoutAreaController.Edit_Get(layoutArea);
+            ActionResult actionResult = _layoutAreaController.Edit_Get(layoutArea);
 
             actionResult.Should().BeOfType<ViewResult>();
             actionResult.As<ViewResult>().Model.Should().Be(layoutArea);
@@ -82,9 +83,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_EditGet_IfIdIsInvalidRedirectToLayoutIndex()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
-
-            ActionResult actionResult = layoutAreaController.Edit_Get(null);
+            ActionResult actionResult = _layoutAreaController.Edit_Get(null);
 
             actionResult.Should().BeOfType<RedirectToRouteResult>();
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
@@ -94,25 +93,23 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_EditPost_ShouldCallLayoutServicesSaveArea()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
-            var layout = new Layout {Id = 1};
+            var layout = new Layout { Id = 1 };
             layoutArea.Layout = layout;
 
-            layoutAreaController.Edit(layoutArea);
+            _layoutAreaController.Edit(layoutArea);
 
-            A.CallTo(() => _layoutAreaService.SaveArea(layoutArea)).MustHaveHappened();
+            A.CallTo(() => _layoutAreaAdminService.SaveArea(layoutArea)).MustHaveHappened();
         }
 
         [Fact]
         public void LayoutAreaController_EditPost_ShouldRedirectBackToTheLayoutOnceDone()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
-            var layout = new Layout {Id = 1};
+            var layout = new Layout { Id = 1 };
             layoutArea.Layout = layout;
 
-            ActionResult actionResult = layoutAreaController.Edit(layoutArea);
+            ActionResult actionResult = _layoutAreaController.Edit(layoutArea);
 
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
             actionResult.As<RedirectToRouteResult>().RouteValues["controller"].Should().Be("Layout");
@@ -122,154 +119,66 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutAreaController_Delete_Get_ReturnsAPartialViewResult()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
 
-            layoutAreaController.Delete_Get(null).Should().BeOfType<PartialViewResult>();
+            _layoutAreaController.Delete_Get(null).Should().BeOfType<PartialViewResult>();
         }
 
         [Fact]
         public void LayoutAreaController_Delete_Get_ShouldReturnObjectPassedAsModel()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = new LayoutArea();
 
-            layoutAreaController.Delete_Get(layoutArea).As<PartialViewResult>().Model.Should().Be(layoutArea);
+            _layoutAreaController.Delete_Get(layoutArea).As<PartialViewResult>().Model.Should().Be(layoutArea);
         }
 
         [Fact]
         public void LayoutAreaController_DeletePost_ShouldCallDeleteAreaForThePassedArea()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
-            var layoutArea = new LayoutArea {Layout = new Layout {Id = 1}};
+            var layoutArea = new LayoutArea { Layout = new Layout { Id = 1 } };
 
-            layoutAreaController.Delete(layoutArea);
+            _layoutAreaController.Delete(layoutArea);
 
-            A.CallTo(() => _layoutAreaService.DeleteArea(layoutArea)).MustHaveHappened();
+            A.CallTo(() => _layoutAreaAdminService.DeleteArea(layoutArea)).MustHaveHappened();
         }
 
         [Fact]
         public void LayoutAreaController_SortWidgets_ReturnsAViewResult()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = A.Fake<LayoutArea>();
             var widgets = new List<Widget>();
             A.CallTo(() => layoutArea.GetWidgets(null, false)).Returns(widgets);
 
-            layoutAreaController.SortWidgets(layoutArea).Should().BeOfType<ViewResult>();
+            _layoutAreaController.SortWidgets(layoutArea).Should().BeOfType<ViewResult>();
         }
 
         [Fact]
         public void LayoutAreaController_SortWidgets_ReturnsGetWidgetsOfArea()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
             var layoutArea = A.Fake<LayoutArea>();
             var widgets = new List<Widget>();
             A.CallTo(() => layoutArea.GetWidgets(null, false)).Returns(widgets);
 
-            layoutAreaController.SortWidgets(layoutArea)
+            _layoutAreaController.SortWidgets(layoutArea)
                                 .Model.As<PageWidgetSortModel>()
                                 .Widgets.Should()
                                 .BeEquivalentTo(widgets);
         }
 
-        //[Fact]
-        //public void LayoutAreaController_SortWidgetsAction_CallsSetWidgetsOrderWithOrdersAsIntList()
-        //{
-        //    LayoutAreaController layoutAreaController = GetLayoutAreaController();
-
-        //    layoutAreaController.SortWidgetsAction("1,2,3");
-
-        //    A.CallTo(() => _layoutAreaService.SetWidgetOrders("1,2,3")).MustHaveHappened();
-        //}
-
-        [Fact]
-        public void LayoutAreaController_SortWidgetsForPage_CallsDocumentServiceGetWebpageForPageId()
-        {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
-
-            layoutAreaController.SortWidgetsForPage(GetNewLayoutArea(), 2);
-
-            A.CallTo(() => _documentService.GetDocument<Webpage>(2)).MustHaveHappened();
-        }
-
         [Fact]
         public void LayoutAreaController_SortWidgetsForPage_ReturnsViewResult()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
-
-            layoutAreaController.SortWidgetsForPage(GetNewLayoutArea(), 2).Should().BeOfType<ViewResult>();
+            _layoutAreaController.SortWidgetsForPage(GetNewLayoutArea(), 2).Should().BeOfType<ViewResult>();
         }
 
         [Fact]
-        public void LayoutAreaController_SortWidgetsForPage_ViewResultModelIsPageWidgetSortModel()
+        public void LayoutAreaController_SortWidgetsForPage_IsResultOfCallToGetSortModel()
         {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
-
-            layoutAreaController.SortWidgetsForPage(GetNewLayoutArea(), 2)
-                                .As<ViewResult>()
-                                .Model.Should()
-                                .BeOfType<PageWidgetSortModel>();
-        }
-
-        [Fact]
-        public void LayoutAreaController_SortWidgetsForPage_ViewResultModelWidgetsResultOfLayoutAreaGetWidgets()
-        {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
-
-            var layoutArea = A.Fake<LayoutArea>();
-            var widgets = new List<Widget>();
-            A.CallTo(() => layoutArea.GetWidgets(null, false)).Returns(widgets);
-            A.CallTo(() => _layoutAreaService.GetArea(1)).Returns(layoutArea);
-
-            var model =
-                layoutAreaController.SortWidgetsForPage(layoutArea, 2)
-                                    .As<ViewResult>()
-                                    .Model.As<PageWidgetSortModel>();
-
-            model.Widgets.Should().BeEquivalentTo(widgets);
-        }
-
-        [Fact]
-        public void LayoutAreaController_SortWidgetsForPage_ViewResultModelAreaShouldBeResultOfLayoutAreaServiceGetArea()
-        {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
-
-            var layoutArea = A.Fake<LayoutArea>();
-            var widgets = new List<Widget>();
-            A.CallTo(() => layoutArea.Id).Returns(1);
-            A.CallTo(() => layoutArea.GetWidgets(null, false)).Returns(widgets);
-            A.CallTo(() => _layoutAreaService.GetArea(1)).Returns(layoutArea);
-
-            var model =
-                layoutAreaController.SortWidgetsForPage(layoutArea, 2)
-                                    .As<ViewResult>()
-                                    .Model.As<PageWidgetSortModel>();
-
-            model.LayoutAreaId.Should().Be(1);
-        }
-
-        [Fact]
-        public void LayoutAreaController_SortWidgetsForPage_ViewResultModelPageShouldBeResultOFGetDocument()
-        {
-            LayoutAreaController layoutAreaController = GetLayoutAreaController();
-
-            var document = new TextPage{Id = 2};
-            A.CallTo(() => _documentService.GetDocument<Webpage>(2)).Returns(document);
-
-            var model =
-                layoutAreaController.SortWidgetsForPage(GetNewLayoutArea(), 2)
-                                    .As<ViewResult>()
-                                    .Model.As<PageWidgetSortModel>();
-            
-            model.WebpageId.Should().Be(2);
-        }
-
-        private LayoutAreaController GetLayoutAreaController()
-        {
-            _layoutAreaService = A.Fake<ILayoutAreaService>();
-            _documentService = A.Fake<IDocumentService>();
-            var layoutAreaController = new LayoutAreaController(_layoutAreaService, _documentService);
-            return layoutAreaController;
+            var newLayoutArea = GetNewLayoutArea();
+            var pageWidgetSortModel = new PageWidgetSortModel();
+            A.CallTo(() => _layoutAreaAdminService.GetSortModel(newLayoutArea, 2)).Returns(pageWidgetSortModel);
+            _layoutAreaController.SortWidgetsForPage(newLayoutArea, 2)
+                .Model.Should()
+                .Be(pageWidgetSortModel);
         }
 
         private LayoutArea GetNewLayoutArea()

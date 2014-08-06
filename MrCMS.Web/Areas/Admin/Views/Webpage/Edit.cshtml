@@ -11,11 +11,11 @@
  
     <div class="row-fluid">
         <div class="span12">
-            <div class="btn-group display-inline">
+            <div class="btn-group display-inline" id="edit-webpage-options">
                 <button class="btn btn-primary">Save</button>
                 <a href="/@Model.LiveUrlSegment" class="btn btn-default">View</a>
                 
-                @Html.ActionLink("Move", "SetParent", "Webpage", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-default" })
+                @Html.ActionLink("Move", "Set", "WebpageParent", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-default" })
                 @if (Model.CanAddChildren())
                 {
                     @Html.ActionLink("Add a child page", "Add", new {Model.Id}, new {@class = "btn btn-default"})

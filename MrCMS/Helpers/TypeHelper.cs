@@ -14,78 +14,78 @@ namespace MrCMS.Helpers
 {
     public static class TypeHelper
     {
-        private static List<Type> _alltypes;
-        static List<Assembly> _mrCMSAssemblies;
+        private static HashSet<Type> _alltypes;
+        static HashSet<Assembly> _mrCMSAssemblies;
 
-        public static List<Type> MappedClasses { get { return GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type => !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any()); } }
+        public static HashSet<Type> MappedClasses { get { return GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type => !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any()); } }
 
-        public static List<Type> GetAllTypes()
+        public static HashSet<Type> GetAllTypes()
         {
             return _alltypes ??
-                   (_alltypes = GetAllMrCMSAssemblies().SelectMany(GetLoadableTypes).Distinct().ToList());
+                   (_alltypes = GetAllMrCMSAssemblies().SelectMany(GetLoadableTypes).Distinct().ToHashSet());
         }
-        
-        public static List<Assembly> GetAllMrCMSAssemblies()
+
+        public static HashSet<Assembly> GetAllMrCMSAssemblies()
         {
             return
                 _mrCMSAssemblies =
                 _mrCMSAssemblies ??
                 AppDomain.CurrentDomain.GetAssemblies()
-                         .Where(assembly => assembly.GetCustomAttributes<MrCMSAssemblyAttribute>().Any()).ToList();
+                         .Where(assembly => assembly.GetCustomAttributes<MrCMSAssemblyAttribute>().Any()).ToHashSet();
         }
 
-        public static List<Type> GetMappedClassesAssignableFrom<T>()
+        public static HashSet<Type> GetMappedClassesAssignableFrom<T>()
         {
             return MappedClasses.FindAll(type => typeof(T).IsAssignableFrom(type));
         }
 
-        public static List<Type> GetAllConcreteMappedClassesAssignableFrom<T>()
+        public static HashSet<Type> GetAllConcreteMappedClassesAssignableFrom<T>()
         {
             return GetMappedClassesAssignableFrom<T>().FindAll(type => !type.IsAbstract);
         }
 
-        public static List<Type> GetAllTypesAssignableFrom<T>()
+        public static HashSet<Type> GetAllTypesAssignableFrom<T>()
         {
             return GetAllTypes().FindAll(type => typeof(T).IsAssignableFrom(type));
         }
 
-        public static List<Type> GetAllConcreteTypesAssignableFrom<T>()
+        public static HashSet<Type> GetAllConcreteTypesAssignableFrom<T>()
         {
             return GetAllTypesAssignableFrom<T>().FindAll(type => !type.IsAbstract);
         }
 
-        public static List<Type> GetAllTypesAssignableFrom(Type type)
+        public static HashSet<Type> GetAllTypesAssignableFrom(Type type)
         {
             return GetAllTypes().FindAll(t =>
-                                             {
-                                                 if (type.IsGenericTypeDefinition)
-                                                 {
-                                                     return type.IsInterface
-                                                                ? t.GetBaseTypes(true)
-                                                                   .Any(
-                                                                       t2 => t2.GetInterfaces().Any(
-                                                                           tInt => tInt.IsGenericType
-                                                                                   &&
-                                                                                   tInt.GetGenericTypeDefinition() ==
-                                                                                   type))
-                                                                : t.GetBaseTypes()
-                                                                   .Any(
-                                                                       t2 =>
-                                                                       t2.IsGenericType &&
-                                                                       t2.GetGenericTypeDefinition() == type);
-                                                 }
-                                                 return type.IsAssignableFrom(t);
-                                             });
+            {
+                if (type.IsGenericTypeDefinition)
+                {
+                    return type.IsInterface
+                               ? t.GetBaseTypes(true)
+                                  .Any(
+                                      t2 => t2.GetInterfaces().Any(
+                                          tInt => tInt.IsGenericType
+                                                  &&
+                                                  tInt.GetGenericTypeDefinition() ==
+                                                  type))
+                               : t.GetBaseTypes()
+                                  .Any(
+                                      t2 =>
+                                      t2.IsGenericType &&
+                                      t2.GetGenericTypeDefinition() == type);
+                }
+                return type.IsAssignableFrom(t);
+            });
         }
 
-        public static List<Type> GetAllConcreteTypesAssignableFrom(Type t)
+        public static HashSet<Type> GetAllConcreteTypesAssignableFrom(Type t)
         {
             return GetAllTypesAssignableFrom(t).FindAll(type => !type.IsAbstract);
         }
 
-        private static List<Type> GetLoadableTypes(this Assembly assembly)
+        private static HashSet<Type> GetLoadableTypes(this Assembly assembly)
         {
-            var loadableTypes = new List<Type>();
+            var loadableTypes = new HashSet<Type>();
             if (assembly == null) return loadableTypes;
             try
             {
@@ -220,7 +220,7 @@ namespace MrCMS.Helpers
         /// <returns>The converted value.</returns>
         public static object To(this object value, Type destinationType)
         {
-            return To(value, destinationType, CurrentRequestData.CultureInfo);
+            return To(value, destinationType, CultureInfo.InvariantCulture);
         }
 
         /// <summary>

@@ -6,7 +6,8 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.ModelBinders;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
@@ -15,13 +16,23 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class FormController : MrCMSAdminController
     {
-        private readonly IDocumentService _documentService;
-        private readonly IFormService _formService;
+        private readonly IFormAdminService _formAdminService;
 
-        public FormController(IDocumentService documentService, IFormService formService)
+        public FormController(IFormAdminService formAdminService)
         {
-            _documentService = documentService;
-            _formService = formService;
+            _formAdminService = formAdminService;
+        }
+
+        public PartialViewResult Postings(Webpage webpage, int page = 1, string search = null)
+        {
+            var data = _formAdminService.GetFormPostings(webpage, page, search);
+
+            return PartialView(data);
+        }
+
+        public ActionResult ViewPosting(FormPosting formPosting)
+        {
+            return PartialView(formPosting);
         }
 
         [HttpGet]
@@ -45,7 +56,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public JsonResult AddProperty([IoCModelBinder(typeof(AddFormPropertyModelBinder))] FormProperty formProperty)
         {
-            _formService.AddFormProperty(formProperty);
+            _formAdminService.AddFormProperty(formProperty);
             return Json(new FormActionResult { success = true });
         }
 
@@ -59,7 +70,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("EditProperty")]
         public JsonResult EditProperty_POST(FormProperty property)
         {
-            _formService.SaveFormProperty(property);
+            _formAdminService.SaveFormProperty(property);
             return Json(new FormActionResult { success = true });
         }
 
@@ -72,7 +83,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("DeleteProperty")]
         public JsonResult DeleteProperty_POST(FormProperty property)
         {
-            _formService.DeleteFormProperty(property);
+            _formAdminService.DeleteFormProperty(property);
             return Json(new FormActionResult { success = true });
         }
 
@@ -85,7 +96,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult AddOption(FormListOption formListOption)
         {
-            _formService.SaveFormListOption(formListOption);
+            _formAdminService.SaveFormListOption(formListOption);
             return Json(new FormActionResult { success = true });
         }
 
@@ -99,7 +110,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("EditOption")]
         public ActionResult EditOption_POST(FormListOption formListOption)
         {
-            _formService.UpdateFormListOption(formListOption);
+            _formAdminService.UpdateFormListOption(formListOption);
             return Json(new FormActionResult { success = true });
         }
 
@@ -113,7 +124,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("DeleteOption")]
         public ActionResult DeleteOption_POST(FormListOption formListOption)
         {
-            _formService.DeleteFormListOption(formListOption);
+            _formAdminService.DeleteFormListOption(formListOption);
             return Json(new FormActionResult { success = true });
         }
 
@@ -132,7 +143,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public void Sort(List<SortItem> items)
         {
-            _formService.SetOrders(items);
+            _formAdminService.SetOrders(items);
         }
 
         [HttpGet]
@@ -145,7 +156,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("ClearFormData")]
         public RedirectToRouteResult ClearFormData_POST(Webpage webpage)
         {
-            _formService.ClearFormData(webpage);
+            _formAdminService.ClearFormData(webpage);
             return RedirectToAction("Edit","Webpage", new { id = webpage.Id });
         }
 
@@ -154,7 +165,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             try
             {
-                var file = _formService.ExportFormData(webpage);
+                var file = _formAdminService.ExportFormData(webpage);
                 return File(file, "text/csv", "MrCMS-FormData-[" + webpage.UrlSegment + "]-" + DateTime.UtcNow + ".csv");
             }
             catch (Exception ex)
@@ -173,7 +184,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("DeleteEntry")]
         public ActionResult DeleteEntry_POST(FormPosting posting)
         {
-            _formService.DeletePosting(posting);
+            _formAdminService.DeletePosting(posting);
             return RedirectToAction("Edit", "Webpage", new { id = posting.Webpage.Id });
         }
     }

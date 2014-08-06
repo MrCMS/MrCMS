@@ -9,12 +9,6 @@ using MrCMS.Settings;
 
 namespace MrCMS.Services
 {
-    public interface IAzureFileSystem
-    {
-        CloudBlobContainer Container { get; }
-        CloudStorageAccount StorageAccount { get; }
-    }
-
     public class AzureFileSystem : IFileSystem, IAzureFileSystem
     {
         private FileSystemSettings _fileSystemSettings;
@@ -44,7 +38,7 @@ namespace MrCMS.Services
                 _container =
                     cloudBlobClient.GetContainerReference(
                         SeoHelper.TidyUrl(
-                            FileService.RemoveInvalidUrlCharacters(_fileSystemSettings.AzureContainerName)));
+                            _fileSystemSettings.AzureContainerName.RemoveInvalidUrlCharacters()));
                 if (_container.CreateIfNotExists())
                 {
                     _container.SetPermissions(new BlobContainerPermissions

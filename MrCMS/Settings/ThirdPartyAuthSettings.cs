@@ -2,7 +2,7 @@
 
 namespace MrCMS.Settings
 {
-    public class ThirdPartyAuthSettings : SiteSettingsBase
+    public class ThirdPartyAuthSettings : SystemSettingsBase
     {
         [DisplayName("Is Google Login Enabled?")]
         public bool GoogleEnabled { get; set; }

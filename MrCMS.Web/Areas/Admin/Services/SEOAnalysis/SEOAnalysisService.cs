@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using HtmlAgilityPack;
-using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Areas.Admin.Models.SEOAnalysis;
 using MrCMS.Website;
 using NHibernate;
-using NHibernate.Event;
 
 namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
 {
@@ -27,8 +25,6 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
         public SEOAnalysisResult Analyze(Webpage webpage, string analysisTerm)
         {
             HtmlNode htmlNode;
-            using (new ListenerDisabler(_session, ListenerType.PostCommitUpdate, MrCMSListeners.UpdateIndexesListener))
-            using (new ListenerDisabler(_session, ListenerType.PostCollectionUpdate, MrCMSListeners.UpdateIndexesListener))
             using (new TemporaryPublisher(_session, webpage))
             {
                 htmlNode = GetDocument(webpage);
@@ -51,7 +47,7 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
             var document = new HtmlDocument();
             document.Load(request.GetResponse().GetResponseStream());
 
-            var htmlNode = document.DocumentNode;
+            HtmlNode htmlNode = document.DocumentNode;
             return htmlNode;
         }
 

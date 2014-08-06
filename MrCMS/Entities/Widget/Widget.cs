@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Website.Caching;
 using NHibernate;
 using MrCMS.Helpers;
 
@@ -29,34 +30,23 @@ namespace MrCMS.Entities.Widget
         public virtual Webpage Webpage { get; set; }
         public virtual int DisplayOrder { get; set; }
 
+
+        [DisplayName("Cache output?")]
+        public virtual bool Cache { get; set; }
+        [DisplayName("Cache for how many seconds?")]
+        public virtual int CacheLength { get; set; }
+        [DisplayName("Cache expiry type")]
+        public virtual CacheExpiryType CacheExpiryType { get; set; }
+
         [DefaultValue(true)]
         [DisplayName("Show on child pages")]
         public virtual bool IsRecursive { get; set; }
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
-	
-        public virtual object GetModel(ISession session)
-        {
-            return this;
-        }
 
         public virtual Iesi.Collections.Generic.ISet<Webpage> HiddenOn { get; set; }
         public virtual Iesi.Collections.Generic.ISet<Webpage> ShownOn { get; set; }
 
-        public virtual void SetDropdownData(ViewDataDictionary viewData, ISession session) { }
-
         public virtual bool HasProperties { get { return true; } }
-
-        public override void OnDeleting(ISession session)
-        {
-            ShownOn.ForEach(webpage => webpage.ShownWidgets.Remove(this));
-            HiddenOn.ForEach(webpage => webpage.HiddenWidgets.Remove(this));
-            if (LayoutArea != null) LayoutArea.Widgets.Remove(this); //required to clear cache
-            if (Webpage != null)
-            {
-                Webpage.Widgets.Remove(this);
-            }
-            base.OnDeleting(session);
-        }
     }
 }

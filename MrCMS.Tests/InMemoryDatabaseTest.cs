@@ -103,9 +103,13 @@ namespace MrCMS.Tests
             CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.Local.Id };
 
             CurrentRequestData.ErrorSignal = new ErrorSignal();
+
+            Kernel.Unbind<IEventContext>();
+            Kernel.Load(new ServiceModule(true));
         }
 
         protected Site CurrentSite { get; set; }
+        protected User CurrentUser { get; set; }
 
 
 
@@ -125,7 +129,7 @@ namespace MrCMS.Tests
             user.Roles = new HashedSet<UserRole> { adminUserRole };
             adminUserRole.Users = new HashedSet<User> { user };
 
-            CurrentRequestData.CurrentUser = user;
+            CurrentRequestData.CurrentUser = CurrentUser = user;
         }
 
         public override void Dispose()

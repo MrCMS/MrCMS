@@ -7,29 +7,12 @@ using System.Web.Mvc;
 using Iesi.Collections.Generic;
 using Microsoft.AspNet.Identity;
 using MrCMS.ACL;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Helpers.Validation;
 using NHibernate;
 
 namespace MrCMS.Entities.People
 {
-    public class UserLogin : SystemEntity
-    {
-        public virtual string LoginProvider { get; set; }
-
-        public virtual string ProviderKey { get; set; }
-
-        public virtual User User { get; set; }
-    }
-    public class UserClaim : SystemEntity
-    {
-        public virtual string Issuer { get; set; }
-        public virtual string Claim { get; set; }
-        public virtual string Value { get; set; }
-
-        public virtual User User { get; set; }
-    }
     public class User : SystemEntity, IUser
     {
         public User()
@@ -47,9 +30,20 @@ namespace MrCMS.Entities.People
 
         [DisplayName("First Name")]
         public virtual string FirstName { get; set; }
+
         [DisplayName("Last Name")]
         public virtual string LastName { get; set; }
-        public virtual string Name { get { return string.IsNullOrWhiteSpace(string.Format("{0} {1}", FirstName, LastName)) ? Email : string.Format("{0} {1}", FirstName, LastName); } }
+
+        public virtual string Name
+        {
+            get
+            {
+                return string.IsNullOrWhiteSpace(string.Format("{0} {1}", FirstName, LastName))
+                    ? Email
+                    : string.Format("{0} {1}", FirstName, LastName);
+            }
+        }
+
         public virtual byte[] PasswordHash { get; set; }
         public virtual byte[] PasswordSalt { get; set; }
 
@@ -75,41 +69,12 @@ namespace MrCMS.Entities.People
         public virtual Iesi.Collections.Generic.ISet<UserRole> Roles { get; set; }
         protected internal virtual IList<UserProfileData> UserProfileData { get; set; }
 
-        public virtual T Get<T>() where T : UserProfileData
-        {
-            return UserProfileData.OfType<T>().FirstOrDefault();
-        }
-
-        public virtual T2 Get<T1, T2>(Func<T1, T2> func) where T1 : UserProfileData
-        {
-            var firstOrDefault = UserProfileData.OfType<T1>().FirstOrDefault();
-            return firstOrDefault == null ? default(T2) : func(firstOrDefault);
-        }
-
-        public virtual IEnumerable<T> GetAll<T>() where T : UserProfileData
-        {
-            return UserProfileData.OfType<T>();
-        }
-
         public virtual bool IsAdmin
         {
             get { return Roles != null && Roles.Any(role => role.Name == UserRole.Administrator); }
         }
 
-        public override void OnDeleting(ISession session)
-        {
-            base.OnDeleting(session);
-            foreach (var userRole in Roles)
-                userRole.Users.Remove(this);
-            Roles.Clear();
-        }
-
-        public virtual bool CanAccess<T>(string operation, string type = null) where T : ACLRule, new()
-        {
-            return new T().CanAccess(this, operation, type);
-        }
-
-        public static List<Type> OwnedObjectTypes
+        public static HashSet<Type> OwnedObjectTypes
         {
             get { return TypeHelper.GetAllConcreteMappedClassesAssignableFrom<IBelongToUser>(); }
         }
@@ -118,6 +83,10 @@ namespace MrCMS.Entities.People
         {
             get { return Id.ToString(); }
         }
+
+        public virtual bool DisableNotifications { get; set; }
+        public virtual DateTime? LastNotificationReadDate { get; set; }
+
         string IUser.Id
         {
             get { return OwinId; }
@@ -129,7 +98,25 @@ namespace MrCMS.Entities.People
             set { Email = value; }
         }
 
-        public virtual bool DisableNotifications { get; set; }
-        public virtual DateTime? LastNotificationReadDate { get; set; }
+        public virtual T Get<T>() where T : UserProfileData
+        {
+            return UserProfileData.OfType<T>().FirstOrDefault();
+        }
+
+        public virtual T2 Get<T1, T2>(Func<T1, T2> func) where T1 : UserProfileData
+        {
+            T1 firstOrDefault = UserProfileData.OfType<T1>().FirstOrDefault();
+            return firstOrDefault == null ? default(T2) : func(firstOrDefault);
+        }
+
+        public virtual IEnumerable<T> GetAll<T>() where T : UserProfileData
+        {
+            return UserProfileData.OfType<T>();
+        }
+
+        public virtual bool CanAccess<T>(string operation, string type = null) where T : ACLRule, new()
+        {
+            return new T().CanAccess(this, operation, type);
+        }
     }
 }

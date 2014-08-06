@@ -1,12 +1,14 @@
 ﻿@using MrCMS.Entities.Documents
 @using MrCMS.Helpers
+@using MrCMS.Web.Areas.Admin.Models
+@using MrCMS.Web.Areas.Admin.Services
 @model MrCMS.Entities.Documents.Web.Webpage
 @{
     ViewBag.Title = "Add Webpage";
 }
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/add-webpage.js");}
 @{ //pre select radio if there is only one option
-    var documentMetadatas = ViewData["DocumentTypes"] as List<DocumentMetadata>;
+    var types = ViewData["DocumentTypes"] as List<DocumentTypeToAdd>;
 }
 
 @using (Html.BeginForm("Add", "Webpage", new { id = "" }, FormMethod.Post))
@@ -19,12 +21,12 @@
         </legend>
         <div class="row-fluid">
             <div class="span2">
-                @foreach (var documentType in documentMetadatas)
+                @foreach (var documentType in types)
                 {
                     <label class="radio">
-                        <i class="@documentType.IconClass">&nbsp;</i>
-                        @Html.RadioButton("DocumentType", documentType.Type.FullName, documentMetadatas.Count == 1, new { data_val = "true", data_val_required = "Please select a page type" })
-                        @documentType.Name
+                        <i class="@documentType.Type.IconClass">&nbsp;</i>
+                        @Html.RadioButton("DocumentType", documentType.DisplayId, types.Count == 1, new { data_val = "true", data_val_required = "Please select a page type" })
+                        @documentType.DisplayName
                     </label>
                 }
                 @Html.ValidationMessage("DocumentType")
@@ -50,9 +52,6 @@
                     }
                     Maintain Hierarchy
                 </label>
-                @Html.LabelFor(x => x.Layout)
-                @Html.DropDownListFor(x => x.Layout.Id, ViewData["Layout"] as IEnumerable<SelectListItem>)
-
                 <div data-additional-properties="true">
                 </div>
             </div>

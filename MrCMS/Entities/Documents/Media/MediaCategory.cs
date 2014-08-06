@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Web.Mvc;
-using MrCMS.Services;
 using MrCMS.Website;
 using NHibernate;
 
@@ -28,18 +26,6 @@ namespace MrCMS.Entities.Documents.Media
         {
             get { return _files; }
             protected internal set { _files = value; }
-        }
-
-        public override void OnDeleting(ISession session)
-        {
-            base.OnDeleting(session);
-            
-            var mediaFiles = Files.ToList();
-
-            var fileService = MrCMSApplication.Get<IFileService>();
-            foreach (var mediaFile in mediaFiles)
-                fileService.DeleteFile(mediaFile);
-            fileService.RemoveFolder(this);
         }
     }
 }

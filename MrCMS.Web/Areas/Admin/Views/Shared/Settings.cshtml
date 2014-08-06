@@ -16,12 +16,12 @@
         var mediaSelectorAttribute = property.GetCustomAttributes(typeof(MediaSelectorAttribute), true).OfType<MediaSelectorAttribute>().FirstOrDefault();
         var readonlyAttribute = property.GetCustomAttributes(typeof(ReadOnlyAttribute), true).OfType<ReadOnlyAttribute>().FirstOrDefault(attribute => attribute.IsReadOnly);
 
-        @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
         if (readonlyAttribute != null)
         {
-        @property.GetValue(Model, null)
+            continue;
         }
-        else if (textAreaAttribute != null)
+        @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
+        if (textAreaAttribute != null)
         {
             var cssClass = textAreaAttribute.CKEnabled ? "ckedit-enabled settings-textarea" : "settings-textarea";
         @Html.TextArea(name, Convert.ToString(property.GetValue(Model, null)), new { @class = cssClass })
