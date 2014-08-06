@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Entities.Documents;
@@ -16,12 +17,14 @@ namespace MrCMS.Web.Areas.Admin.Services
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
         private readonly ISession _session;
         private readonly UrlHelper _urlHelper;
+        private readonly ITreeNavService _treeNavService;
 
-        public DefaultWebpageTreeNavListing(IValidWebpageChildrenService validWebpageChildrenService, ISession session, UrlHelper urlHelper)
+        public DefaultWebpageTreeNavListing(IValidWebpageChildrenService validWebpageChildrenService, ISession session, UrlHelper urlHelper,ITreeNavService treeNavService)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _session = session;
             _urlHelper = urlHelper;
+            _treeNavService = treeNavService;
         }
 
         public AdminTree GetTree(int? id)
@@ -57,7 +60,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                     IconClass = documentMetadata.IconClass,
                     NodeType = "Webpage",
                     Type = documentMetadata.Type.FullName,
-                    HasChildren = _session.QueryOver<Webpage>().Where(webpage => webpage.Parent.Id == doc.Id).Cacheable().Any(),
+                    HasChildren = _treeNavService.GetWebpageNodes(doc.Id).Nodes.Any(),
                     Sortable = documentMetadata.Sortable,
                     CanAddChild = _validWebpageChildrenService.AnyValidWebpageDocumentTypes(doc),
                     IsPublished = doc.Published,
