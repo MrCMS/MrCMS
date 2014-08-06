@@ -1319,8 +1319,6 @@
     <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Areas\Admin\Content\Styles\mrcms-admin.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.css" />
-    <Content Include="Areas\Admin\Content\Styles\bootstrap\img\glyphicons-halflings-white.png" />
-    <Content Include="Areas\Admin\Content\Styles\bootstrap\img\glyphicons-halflings.png" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\js\bootstrap.js" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\js\bootstrap.min.js" />
     <Content Include="Areas\Admin\Content\Styles\mrcms-frontendediting.css" />
