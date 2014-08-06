@@ -7,7 +7,7 @@ namespace MrCMS.Web.Apps.Articles.Models
 {
     public class ArticleArchiveModel
     {
-        public ArticleSection ArticleSection { get; set; }
+        public ArticleList ArticleList { get; set; }
         public ArticleArchive ArticleArchive { get; set; }
         public IList<ArchiveModel> ArticleYearsAndMonths { get; set; }
         public string Year { get { return CurrentRequestData.CurrentContext.Request["year"]; } }

@@ -1,10 +1,6 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Web.Apps.Articles.Pages.Article
-@{
-    var userOptions = ViewData["users"] as IEnumerable<SelectListItem>;
-    var otherSections = ViewData["other-sections"] as List<SelectListItem> ?? new List<SelectListItem>();
-}
-
+@model MrCMS.Web.Apps.Articles.Pages.Article 
+           
 @Html.LabelFor(model => model.FeatureImage, "Article Image")
 @Html.TextBoxFor(model => model.FeatureImage, new { data_type = "media-selector" })
 
@@ -15,25 +11,9 @@
 </span>
 
 @Html.LabelFor(model => model.User.Id, "Author")
-@Html.DropDownListFor(model => model.User.Id, userOptions)
+@Html.DropDownListFor(model => model.User.Id, ViewData["users"] as IEnumerable<SelectListItem>)
 
 @Html.LabelFor(x => x.TagList, "Tags")
 @Html.TextBoxFor(x => x.TagList, new { @class = "span12 system-tagging" })
 
-@if (otherSections.Any())
-{
-    <h3>Other sections</h3>
-    foreach (var chunk in otherSections.Chunk(4))
-    {
-        <div class="row-fluid">
-            @foreach (var item in chunk)
-            {
-                <div class="span3">
-                    <label class="checkbox">
-                        @Html.CheckBox("other-section-" + item.Value, item.Selected) @item.Text
-                    </label>
-                </div>
-            }
-        </div>
-    }
-}
+@Html.InfoBlock("Heads up! ", "Set the tags here you would like to use as your categories for this article.")

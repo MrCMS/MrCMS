@@ -3,7 +3,7 @@
 @using MrCMS.Paging
 @using MrCMS.Web.Apps.Articles.Models
 @using MrCMS.Web.Apps.Articles.Pages
-@model ArticleSection     
+@model ArticleList     
 @Editable(Model, p=>p.BodyContent, true)
 @{
     var pagedList = ViewData["paged-articles"] as IPagedList<Article>;

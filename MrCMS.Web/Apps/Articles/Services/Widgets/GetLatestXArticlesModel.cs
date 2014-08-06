@@ -18,14 +18,14 @@ namespace MrCMS.Web.Apps.Articles.Services.Widgets
 
         public override object GetModel(LatestXArticles widget)
         {
-            if (widget.RelatedNewsSection == null)
+            if (widget.RelatedNewsList == null)
                 return null;
 
 
             return new LatestXArticlesViewModel
             {
                 Articles = _session.QueryOver<Article>()
-                    .Where(article => article.Parent.Id == widget.RelatedNewsSection.Id && article.PublishOn != null && article.PublishOn <= CurrentRequestData.Now)
+                    .Where(article => article.Parent.Id == widget.RelatedNewsList.Id && article.PublishOn != null && article.PublishOn <= CurrentRequestData.Now)
                     .OrderBy(x => x.PublishOn).Desc
                     .Take(widget.NumberOfArticles)
                     .Cacheable()
