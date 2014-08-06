@@ -1,37 +1,19 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MrCMS.Settings;
+﻿using MrCMS.Settings;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
     public class ThirdPartyAuthSettingsAdminService : IThirdPartyAuthSettingsAdminService
     {
-        private readonly IConfigurationProvider _configurationProvider;
+        private readonly ISystemConfigurationProvider _configurationProvider;
 
-        public ThirdPartyAuthSettingsAdminService(IConfigurationProvider configurationProvider)
+        public ThirdPartyAuthSettingsAdminService(ISystemConfigurationProvider configurationProvider)
         {
             _configurationProvider = configurationProvider;
         }
 
-        public async Task<ThirdPartyAuthSettings> GetSettingsAsync()
-        {
-            return
-                await
-                Task.Factory.StartNew(() => GetSettings(), CancellationToken.None, TaskCreationOptions.None,
-                                      TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
         public ThirdPartyAuthSettings GetSettings()
         {
-            return _configurationProvider.GetSiteSettings<ThirdPartyAuthSettings>();
-        }
-
-        public async Task SaveSettingsAsync(ThirdPartyAuthSettings thirdPartyAuthSettings)
-        {
-            await
-                Task.Factory.StartNew(() => SaveSettings(thirdPartyAuthSettings), CancellationToken.None,
-                                      TaskCreationOptions.None,
-                                      TaskScheduler.FromCurrentSynchronizationContext());
+            return _configurationProvider.GetSystemSettings<ThirdPartyAuthSettings>();
         }
 
         public void SaveSettings(ThirdPartyAuthSettings thirdPartyAuthSettings)

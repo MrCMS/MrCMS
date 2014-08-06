@@ -45,8 +45,7 @@ namespace MrCMS.IoC
                 var joinExcludeIncludeBindSyntax = syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
                     .Where(
                         t =>
-                            typeof(SiteSettingsBase).IsAssignableFrom(t) && !typeof(IController).IsAssignableFrom(t) &&
-                            !Kernel.GetBindings(t).Any());
+                            typeof(SiteSettingsBase).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any());
 
                 if (_forTest)
                 {
@@ -56,7 +55,26 @@ namespace MrCMS.IoC
                 {
                     joinExcludeIncludeBindSyntax
                                               .BindWith<NinjectSiteSettingsBinder>()
-                                              .Configure(onSyntax => onSyntax.InRequestScope());}
+                                              .Configure(onSyntax => onSyntax.InRequestScope());
+                }
+            });
+            Kernel.Bind(syntax =>
+            {
+                var joinExcludeIncludeBindSyntax = syntax.From(TypeHelper.GetAllMrCMSAssemblies()).SelectAllClasses()
+                    .Where(
+                        t =>
+                            typeof(SystemSettingsBase).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any());
+
+                if (_forTest)
+                {
+                    joinExcludeIncludeBindSyntax.BindToSelf();
+                }
+                else
+                {
+                    joinExcludeIncludeBindSyntax
+                                              .BindWith<NinjectSystemSettingsBinder>()
+                                              .Configure(onSyntax => onSyntax.InRequestScope());
+                }
             });
 
             Kernel.Bind<HttpRequestBase>().ToMethod(context => CurrentRequestData.CurrentContext.Request);

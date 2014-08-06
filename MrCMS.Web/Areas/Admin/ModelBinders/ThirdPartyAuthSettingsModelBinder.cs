@@ -8,16 +8,16 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 {
     public class ThirdPartyAuthSettingsModelBinder : MrCMSDefaultModelBinder
     {
-        private readonly IConfigurationProvider _configurationProvider;
+        private readonly ISystemConfigurationProvider _configurationProvider;
 
-        public ThirdPartyAuthSettingsModelBinder(IKernel kernel, IConfigurationProvider configurationProvider) : base(kernel)
+        public ThirdPartyAuthSettingsModelBinder(IKernel kernel, ISystemConfigurationProvider configurationProvider) : base(kernel)
         {
             _configurationProvider = configurationProvider;
         }
 
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, System.Type modelType)
         {
-            return _configurationProvider.GetSiteSettings<ThirdPartyAuthSettings>();
+            return _configurationProvider.GetSystemSettings<ThirdPartyAuthSettings>();
         }
     }
 }

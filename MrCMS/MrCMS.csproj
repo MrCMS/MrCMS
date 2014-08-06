@@ -416,6 +416,7 @@
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
+    <Compile Include="IoC\NinjectSystemSettingsBinder.cs" />
     <Compile Include="Models\CachingInfo.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
     <Compile Include="Models\MrCMSIndex.cs" />
@@ -501,7 +502,10 @@
     <Compile Include="Services\Widgets\DefaultGetWidgetModel.cs" />
     <Compile Include="Services\Widgets\GetWidgetModelBase.cs" />
     <Compile Include="Settings\ILegacySettingsProvider.cs" />
+    <Compile Include="Settings\ISystemConfigurationProvider.cs" />
     <Compile Include="Settings\LegacySettingsProvider.cs" />
+    <Compile Include="Settings\SystemConfigurationProvider.cs" />
+    <Compile Include="Settings\SystemSettingsBase.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />
     <Compile Include="Entities\SystemEntity.cs" />
     <Compile Include="Helpers\KeyEqualityComparer.cs" />

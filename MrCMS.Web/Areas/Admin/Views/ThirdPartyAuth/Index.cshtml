@@ -12,7 +12,7 @@
         </legend>
         <div class="row-fluid">
             <div class="span12">
-                @Html.InfoBlock("Heads up!", " After enabling third party auth you will need to restart your application.")
+                @Html.InfoBlock("Heads up!", " These settings are system wide. After changing third party auth settings you will need to restart your application for the changes to take effect.")
                 @Html.InlineCheckboxFor(settings => settings.GoogleEnabled)
                 <hr />
                 @Html.InlineCheckboxFor(settings => settings.FacebookEnabled)

@@ -10,7 +10,7 @@ using Ninject.Syntax;
 
 namespace MrCMS.IoC
 {
-    public class NinjectSiteSettingsBinder : IBindingGenerator
+    public class NinjectSystemSettingsBinder : IBindingGenerator
     {
         public IEnumerable<IBindingWhenInNamedWithOrOnSyntax<object>> CreateBindings(Type type, IBindingRoot bindingRoot)
         {
@@ -28,9 +28,9 @@ namespace MrCMS.IoC
         private static object GetValue(Type type, IContext context)
         {
             var configProvider =
-                context.Kernel.Get<IConfigurationProvider>();
+                context.Kernel.Get<ISystemConfigurationProvider>();
             MethodInfo method =
-                typeof (IConfigurationProvider).GetMethodExt("GetSiteSettings");
+                typeof (ISystemConfigurationProvider).GetMethodExt("GetSystemSettings");
 
             return method != null
                 ? method.MakeGenericMethod(type)

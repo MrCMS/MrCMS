@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Web.Mvc;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using NHibernate;
 
