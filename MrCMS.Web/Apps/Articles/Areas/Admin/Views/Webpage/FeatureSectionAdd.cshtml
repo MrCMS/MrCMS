@@ -1,9 +1,0 @@
-﻿@using MrCMS.Helpers
-@model MrCMS.Web.Apps.Articles.Pages.FeatureSection
-@{ Html.IncludeScript("~/Apps/Articles/Areas/Admin/Content/Scripts/articles.js"); }
-
-@Html.LabelFor(model => model.PageSize)
-@Html.EditorFor(model => model.PageSize)
-@Html.ValidationMessageFor(model => model.PageSize)
-
-@Html.InlineCheckboxFor(model => model.AllowPaging, null, null, "Allow paging?")

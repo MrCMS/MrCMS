@@ -19,7 +19,7 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Services
 
         public override void AssignViewData(LatestXArticles widget, ViewDataDictionary viewData)
         {
-            viewData["newsList"] = _session.QueryOver<ArticleSection>()
+            viewData["newsList"] = _session.QueryOver<ArticleList>()
                 .Where(article => article.PublishOn != null && article.PublishOn <= CurrentRequestData.Now)
                 .Cacheable()
                 .List()

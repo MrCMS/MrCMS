@@ -12,7 +12,7 @@ namespace MrCMS.Web.Apps.Articles.Services
 {
     public interface IArticleService
     {
-        IPagedList<Article> GetArticles(ArticleSection page, ArticleSearchModel model);
-        List<ArchiveModel> GetMonthsAndYears(ArticleSection articleSection);
+        IPagedList<Article> GetArticles(ArticleList page, ArticleSearchModel model);
+        List<ArchiveModel> GetMonthsAndYears(ArticleList articleList);
     }
 }

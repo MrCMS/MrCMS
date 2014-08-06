@@ -6,7 +6,7 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
 {
-    public class ArticleController : MrCMSAppAdminController<ArticlesApp>
+    public class ArticleController :MrCMSAppAdminController<ArticlesApp>
     {
         private readonly IUserService _userService;
 

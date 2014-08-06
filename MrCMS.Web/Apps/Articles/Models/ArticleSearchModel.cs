@@ -1,4 +1,7 @@
-﻿namespace MrCMS.Web.Apps.Articles.Models
+﻿using MrCMS.DbConfiguration.Mapping;
+using MrCMS.Web.Apps.Articles.Pages;
+
+namespace MrCMS.Web.Apps.Articles.Models
 {
     public class ArticleSearchModel
     {

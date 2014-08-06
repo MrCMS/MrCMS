@@ -17,8 +17,8 @@ namespace MrCMS.Web.Apps.Articles.Services.Widgets
         {
             var model = new ArticleArchiveModel
             {
-                ArticleYearsAndMonths = _articleService.GetMonthsAndYears(widget.ArticleSection),
-                ArticleSection = widget.ArticleSection,
+                ArticleYearsAndMonths = _articleService.GetMonthsAndYears(widget.ArticleList),
+                ArticleList = widget.ArticleList,
                 ArticleArchive = widget
             };
 
