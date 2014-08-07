@@ -349,6 +349,7 @@
     <Compile Include="Events\Documents\IDocumentModifiedUser.cs" />
     <Compile Include="Events\Documents\LayoutUpdatedNotification.cs" />
     <Compile Include="Events\Documents\MediaCategoryUpdatedNotification.cs" />
+    <Compile Include="Events\ICoreEvent.cs" />
     <Compile Include="Events\IEvent.cs" />
     <Compile Include="Events\Documents\OnWebpagePublishedEventArgs.cs" />
     <Compile Include="Events\Documents\OnDocumentUpdatedEventArgs.cs" />
