@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using FakeItEasy;
 using FakeItEasy.Core;
@@ -8,7 +8,7 @@ using MrCMS.Website;
 using Ninject;
 using Ninject.MockingKernel;
 
-namespace MrCMS.Web.Tests
+namespace MrCMS.Tests
 {
     public abstract class MrCMSTest : IDisposable
     {

@@ -167,6 +167,7 @@
     <Compile Include="Areas\Admin\Services\UrlHistoryServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\WebpageWidgetAdminServiceTests.cs" />
     <Compile Include="Controllers\LoginControllerTests.cs" />
+    <Compile Include="InMemoryDatabaseTest.cs" />
     <Compile Include="MrCMSTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stubs\BasicMappedWidget.cs" />
@@ -175,6 +176,8 @@
     <Compile Include="Stubs\FakeHttpPostedFileBase.cs" />
     <Compile Include="Stubs\StubDocument.cs" />
     <Compile Include="Stubs\StubWebpage.cs" />
+    <Compile Include="TestableEventContext.cs" />
+    <Compile Include="TestContextModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

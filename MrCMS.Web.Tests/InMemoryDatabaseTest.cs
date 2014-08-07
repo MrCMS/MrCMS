@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Elmah;
@@ -17,7 +17,7 @@ using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using Ninject;
 
-namespace MrCMS.Tests
+namespace MrCMS.Web.Tests
 {
     public abstract class InMemoryDatabaseTest : MrCMSTest
     {
@@ -32,7 +32,7 @@ namespace MrCMS.Tests
             {
                 lock (lockObject)
                 {
-                    var assemblies = new List<Assembly> { typeof(InMemoryDatabaseTest).Assembly };
+                    var assemblies = new List<Assembly> {typeof (InMemoryDatabaseTest).Assembly};
                     var nHibernateModule = new NHibernateConfigurator
                     {
                         CacheEnabled = true,
@@ -55,13 +55,13 @@ namespace MrCMS.Tests
 
             CurrentSite = Session.Transact(session =>
             {
-                var site = new Site { Name = "Current Site", BaseUrl = "www.currentsite.com", Id = 1 };
+                var site = new Site {Name = "Current Site", BaseUrl = "www.currentsite.com", Id = 1};
                 CurrentRequestData.CurrentSite = site;
                 session.Save(site);
                 return site;
             });
 
-            CurrentRequestData.SiteSettings = new SiteSettings { TimeZone = TimeZoneInfo.Local.Id };
+            CurrentRequestData.SiteSettings = new SiteSettings {TimeZone = TimeZoneInfo.Local.Id};
 
             CurrentRequestData.ErrorSignal = new ErrorSignal();
 
@@ -87,8 +87,8 @@ namespace MrCMS.Tests
                 Name = UserRole.Administrator
             };
 
-            user.Roles = new HashedSet<UserRole> { adminUserRole };
-            adminUserRole.Users = new HashedSet<User> { user };
+            user.Roles = new HashedSet<UserRole> {adminUserRole};
+            adminUserRole.Users = new HashedSet<User> {user};
 
             CurrentRequestData.CurrentUser = user;
         }
