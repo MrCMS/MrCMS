@@ -8,28 +8,34 @@
     <fieldset>
         <legend>Global Settings
 
-        <span class="btn-group  display-inline  pull-right">
-            <button class="btn btn-primary">
-                Save</button>
-        </span>
+            <span class="btn-group  display-inline  pull-right">
+                <button class="btn btn-primary">
+                    Save</button>
+            </span>
         </legend>
-        <div class="row-fluid">
+        <div class="form-group">
             @Html.LabelFor(settings => settings.StorageType)
-            @Html.DropDownListFor(settings => settings.StorageType, Model.StorageTypeOptions)
-
-            <h4>Azure Settings</h4>
-            @Html.LabelFor(settings => settings.AzureAccountName)
-            @Html.TextBoxFor(settings => settings.AzureAccountName)
-            @Html.LabelFor(settings => settings.AzureAccountKey)
-            @Html.TextBoxFor(settings => settings.AzureAccountKey)
-            @Html.LabelFor(settings => settings.AzureContainerName)
-            @Html.TextBoxFor(settings => settings.AzureContainerName)
-
-            @Html.InlineCheckboxFor(settings => settings.AzureUsingEmulator)
-
-            @Html.InlineCheckboxFor(settings => settings.UseAzureForLucene)
-
+            @Html.DropDownListFor(settings => settings.StorageType, Model.StorageTypeOptions, new{@class="form-control"})
         </div>
-    </fieldset>
+        <h4>Azure Settings</h4>
+        <div class="form-group">
+            @Html.LabelFor(settings => settings.AzureAccountName)
+            @Html.TextBoxFor(settings => settings.AzureAccountName, new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(settings => settings.AzureAccountKey)
+            @Html.TextBoxFor(settings => settings.AzureAccountKey, new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(settings => settings.AzureContainerName)
+            @Html.TextBoxFor(settings => settings.AzureContainerName, new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(settings => settings.UseAzureForLucene)
+        </div>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(settings => settings.AzureUsingEmulator)
+        </div>
+</fieldset>
 }
 @{ Html.RenderAction("Show", "FileMigration");}

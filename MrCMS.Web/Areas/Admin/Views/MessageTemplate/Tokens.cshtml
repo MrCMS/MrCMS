@@ -1,7 +1,5 @@
 ﻿@model List<string>
 <hr />
-<p>
-    <strong>Available Tokens:</strong>
-    @string.Join(", ", Model.Select(s => string.Format("{{{0}}}", s)))
-</p>
+<strong>Available Tokens:</strong>
+@string.Join(", ", Model.Select(s => string.Format("{{{0}}}", s)))
 <p>Add tokens in format {TOKEN_NAME} e.g: {@(Model.First())}.</p>

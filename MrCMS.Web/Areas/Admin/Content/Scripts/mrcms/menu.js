@@ -14,7 +14,7 @@
             $(document.body).on('click', '.jstree-anchor', function (event) {
                 location.href = this.href;
             });
-            $(document).on("show", 'a[data-toggle="tab"]', function (e) {
+            $(document).on("shown.bs.tab", 'a[data-toggle="tab"]', function (e) {
                 self.initTree($(e.target));
             });
             return self;

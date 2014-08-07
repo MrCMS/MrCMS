@@ -3,7 +3,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @model MrCMS.Entities.Documents.DocumentVersion
 <fieldset>
-    <legend>Edited by @Html.ActionLink(Model.User.Email, "Edit", "User", new { id = Model.User.Id }, null) on @Model.CreatedOn
+    <legend>Version @Model.Id 
         <span class="btn-group  display-inline  pull-right">
             @using (Html.BeginForm("RevertToVersion", "Webpage", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
             {
@@ -11,6 +11,7 @@
             }
         </span>
     </legend>
+    Editied by @Html.ActionLink(Model.User.Email, "Edit", "User", new { id = Model.User.Id }, null) on @Model.CreatedOn
     <table class="table table-bordered" id="changes-table">
         <thead>
             <tr>

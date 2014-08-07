@@ -16,8 +16,8 @@
     <fieldset>
         <legend>@Model.Name
             <span class="btn-group display-inline pull-right">
-                @Html.ActionLink("Back to list", "Index", "User", null, new { @class = "btn" })
-                <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn" data-toggle="fb-modal">Reset Password</a>
+                @Html.ActionLink("Back to list", "Index", "User", null, new { @class = "btn btn-default" })
+                <a href="@Url.Action("SetPassword", "User", new { id = Model.Id })" type="button" class="btn btn-default" data-toggle="fb-modal">Reset Password</a>
 
                 @if (!onlyAdmin)
                 {
@@ -29,15 +29,24 @@
         </legend>
 
         @Html.HiddenFor(x => x.Id)
-        <div class="row-fluid">
-            <div class="span6">
+        <div class="row">
+            <div class="col-lg-6">
                 <h4>Properties</h4>
-                @Html.LabelFor(x => x.Email)
-                @Html.TextBoxFor(x => x.Email, new { @class = "span12" })
-                @Html.LabelFor(x => x.FirstName)
-                @Html.TextBoxFor(x => x.FirstName, new { @class = "span12" })
-                @Html.LabelFor(x => x.LastName)
-                @Html.TextBoxFor(x => x.LastName, new { @class = "span12" })
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Email)
+                    @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Email)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.FirstName)
+                    @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.FirstName)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.LastName)
+                    @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.LastName)
+                </div>
                 @if (!onlyAdmin)
                 {
                     <div class="form-inline">
@@ -46,7 +55,7 @@
                 }
 
             </div>
-            <div class="span6">
+            <div class="col-lg-6">
                 <h4>Roles</h4>
                 <div class="form-inline">
                     @if (userRoles != null && CurrentRequestData.CurrentUser.CanAccess<UserACL>(UserACL.Roles))

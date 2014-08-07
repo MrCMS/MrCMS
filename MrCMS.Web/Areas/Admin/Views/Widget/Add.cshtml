@@ -5,7 +5,8 @@
 @using (Html.BeginForm("Add", "Widget", new { id = "" }, FormMethod.Post, new { id = "add-widget-form" }))
 {
     <fieldset>
-        <legend>Add Widget
+        <legend>
+            Add Widget
             <span class="btn-group  display-inline  pull-right">
                 <input type="submit" class="btn-success btn" value="Add widget" id="add-widget" />
             </span>
@@ -14,31 +15,32 @@
         @if (Model.Webpage != null)
         {
             @Html.HiddenFor(model => model.Webpage.Id);
-            <div class="row-fluid">
-                <div class="span12">
-                    <label class="radio">@Html.RadioButton("AddType", "global", true, new { id = "add-global" }) all pages using this layout</label>
-
-                    <label class="radio">@Html.RadioButton("AddType", "page", false, new { id = "add-page" }) this page</label>
-                    <div id="show-recursive">
-                        @Html.InlineCheckboxFor(x => x.IsRecursive, null, null, "...and all child pages")
-                    </div>
-                </div>
+            <div class="radio">
+                <label>@Html.RadioButton("AddType", "global", true, new { id = "add-global" }) all pages using this layout</label>
+            </div>
+            <div class="radio">
+                <label>@Html.RadioButton("AddType", "page", false, new { id = "add-page" }) this page</label>
+            </div>
+            <div id="show-recursive" class="form-group">
+                @Html.InlineCheckboxFor(x => x.IsRecursive, null, null, "...and all child pages")
             </div>
         }
-
-        @Html.Label("WidgetType", "Widget Type")
-        @Html.DropDownList("WidgetType", WidgetHelper.AllowedWidgetTypeDropdownItems, new { data_val = "true", data_val_required = "Please select a widget type" })
-        @Html.ValidationMessage("WidgetType")
-        <br />
-        @Html.LabelFor(model => model.Name)
-        @Html.EditorFor(model => model.Name, Model.Name)
-        @Html.ValidationMessageFor(model => model.Name)
+        <div class="form-group">
+            @Html.Label("WidgetType", "Widget Type")
+            @Html.DropDownList("WidgetType", WidgetHelper.AllowedWidgetTypeDropdownItems, new { data_val = "true", data_val_required = "Please select a widget type", @class = "form-control" })
+            @Html.ValidationMessage("WidgetType")
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name)
+            @Html.TextBoxFor(model => model.Name, Model.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
         <div data-additional-properties="true">
-            
+
         </div>
     </fieldset>
-    
-    
+
+
 }
 
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/add-page-widget.js"); }

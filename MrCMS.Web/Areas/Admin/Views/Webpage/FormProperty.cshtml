@@ -2,46 +2,40 @@
 @using MrCMS.Entities.Documents.Web.FormProperties
 @using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.FormProperties.FormProperty
-<div class="form-item well">
-    <div class="span7">
+<div class="row">
+    <div class="col-lg-7">
         <h4>@Model.GetType().Name.BreakUpString()</h4>
     </div>
-    <div class="span5">
+    <div class="col-lg-5">
         <div class="pull-right btn-group">
-            @Html.ActionLink("Edit Field", "EditProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
-            @Html.ActionLink("Delete Field", "DeleteProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
-        </div>
-    </div>
-    <div class="row-fluid">
-        <div class="span12">
-            <table class="table table-bordered table-striped table-condensed">
-                <tbody>
-                    <tr>
-                        <td>Name</td>
-                        <td>@Model.Name</td>
-                    </tr>
-                    <tr>
-                        <td>Label Text</td>
-                        <td>@Model.LabelText</td>
-                    </tr>
-                    <tr>
-                        <td>Required</td>
-                        <td>@Model.Required</td>
-                    </tr>
-@*                    <tr>
-                        <td>CSS Class</td>
-                        <td>@Model.CssClass</td>
-                    </tr>
-                    <tr>
-                        <td>HTML Id</td>
-                        <td>@Model.HtmlId</td>
-                    </tr>*@
-                </tbody>
-            </table>
-            @if (Model is FormPropertyWithOptions)
-            {
-                Html.RenderPartial("FormPropertyOptions", Model);
-            }
+            @Html.ActionLink("Edit Field", "EditProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+            @Html.ActionLink("Delete Field", "DeleteProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <table class="table table-bordered table-striped table-condensed">
+            <tbody>
+                <tr>
+                    <td class="col-lg-2">Name</td>
+                    <td>@Model.Name</td>
+                </tr>
+                <tr>
+                    <td>Label Text</td>
+                    <td>@Model.LabelText</td>
+                </tr>
+                <tr>
+                    <td>Required</td>
+                    <td>@Model.Required</td>
+                </tr>
+            </tbody>
+        </table>
+        @if (Model is FormPropertyWithOptions)
+        {
+            Html.RenderPartial("FormPropertyOptions", Model);
+        }
+    </div>
+</div>
+

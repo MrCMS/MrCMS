@@ -1,5 +1,9 @@
-﻿@model MrCMS.Web.Apps.Articles.Widgets.ArticleCategories
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Articles.Widgets.ArticleCategories
 @Html.LabelFor(x => x.ArticleList, "Article List Page")
-@Html.DropDownListFor(x => x.ArticleList.Id, ViewData["ArticleLists"] as IEnumerable<SelectListItem>, new { data_val = "true", data_val_required = "Article list needs to be selected." })
-@Html.LabelFor(x=>x.ShowNameAsTitle)
-@Html.CheckBoxFor(x=>x.ShowNameAsTitle)
+<div class="form-group">
+    @Html.DropDownListFor(x => x.ArticleList.Id, ViewData["ArticleLists"] as IEnumerable<SelectListItem>, new { data_val = "true", data_val_required = "Article list needs to be selected.", @class="form-control" })
+</div>
+<div class="form-group">
+    @Html.InlineCheckboxFor(x => x.ShowNameAsTitle)
+</div>

@@ -19,11 +19,11 @@
                     <td>
                         <div class="btn-group">
                             @(item.Id.HasValue
-                        ? Html.ActionLink("Edit", "Edit", new { Id = item.Id }, new { @class = "btn btn-mini" })
-                        : Html.ActionLink("Add", "Add", new { type = item.Type.FullName }, new { @class = "btn btn-mini btn-primary" }))
+                        ? Html.ActionLink("Edit", "Edit", new { Id = item.Id }, new { @class = "btn btn-default btn-xs" })
+                        : Html.ActionLink("Add", "Add", new { type = item.Type.FullName }, new { @class = "btn btn-xs btn-primary" }))
                             @if (item.CanPreview)
                             {
-                                @Html.ActionLink("Preview", "Preview", "MessageTemplate", new { id = item.Id }, new { @class = "btn btn-mini ", data_toggle="fb-modal" })
+                                @Html.ActionLink("Preview", "Preview", "MessageTemplate", new { id = item.Id }, new { @class = "btn btn-xs btn-default ", data_toggle = "fb-modal" })
                             }
                         </div>
                     </td>

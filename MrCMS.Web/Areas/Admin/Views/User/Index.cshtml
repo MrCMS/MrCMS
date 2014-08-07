@@ -12,22 +12,27 @@
 @using (Html.BeginForm("Index", "User", FormMethod.Get))
 {
     <fieldset>
-        <legend>Users
+        <legend>
+            Users
             <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-success", data_toggle = "fb-modal" })
+                @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-default", data_toggle = "fb-modal" })
                 <input type="submit" class="btn btn-primary" value="Search" />
             </span>
         </legend>
 
-        <div class="row-fluid">
-            <div class="span6">
-                @Html.LabelFor(query => query.Query)
-                @Html.TextBoxFor(query => query.Query, new { @class = "span12", placeholder = "Search" })
-                @Html.ValidationMessageFor(query => query.Query)
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Query)
+                    @Html.TextBoxFor(query => query.Query, new { @class = "form-control", placeholder = "Search" })
+                    @Html.ValidationMessageFor(query => query.Query)
+                </div>
             </div>
-            <div class="span6">
-                @Html.LabelFor(query => query.UserRoleId, "Role")
-                @Html.DropDownListFor(query => query.UserRoleId, roleOptions, new{@class="span12"})
+            <div class="col-lg-6">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.UserRoleId, "Role")
+                    @Html.DropDownListFor(query => query.UserRoleId, roleOptions, new { @class = "form-control" })
+                </div>
             </div>
         </div>
     </fieldset>
@@ -36,13 +41,17 @@
 {
     <table class="table table-condensed table-striped">
         <tr>
-            <th>Email
+            <th>
+                Email
             </th>
-            <th>Name
+            <th>
+                Name
             </th>
-            <th>Roles
+            <th>
+                Roles
             </th>
-            <th>Created On
+            <th>
+                Created On
             </th>
         </tr>
         @foreach (User user in users)

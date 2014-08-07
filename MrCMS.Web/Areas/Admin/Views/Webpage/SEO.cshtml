@@ -4,18 +4,20 @@
 @model Webpage
 <div class="tab-pane" id="edit-seo">
     <div class="display-inline">
-        <i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar. 
+        <i class="glyphicon glyphicon-question-sign" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar.
             For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>
 
-        Permalink: /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span5", style = "display:none;" })
+        Permalink: /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control", style = "display:none;" })
         @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
-        <button id="change-url" class="btn btn-mini">Change</button>
+        <button id="change-url" class="btn btn-default btn-xs">Change</button>
 
 
         <hr />
-        <p><i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History</p>
+        <div class="display-inline">
+            <i class="glyphicon glyphicon-question-sign" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History
 
-        @Html.ActionLink("Add", "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-mini btn-success", data_toggle = "fb-modal" })
+            @Html.ActionLink("Add", "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-xs btn-success", data_toggle = "fb-modal" })
+        </div>
         @if (Model.Urls.Any())
         {
             <table class="table table-striped table-condensed margin-top-10">
@@ -27,7 +29,7 @@
                                 <a href="http://@Model.Site.BaseUrl/@url.UrlSegment" target="_blank">http://@Model.Site.BaseUrl/@url.UrlSegment</a>
                             </td>
                             <td>
-                                @Html.ActionLink("Delete", "Delete", "UrlHistory", new { id = url.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
+                                @Html.ActionLink("Delete", "Delete", "UrlHistory", new { id = url.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
                             </td>
                         </tr>
                     }
@@ -44,51 +46,62 @@
     @if (!(Model is Redirect))
     {       
         <hr />
-        @Html.LabelFor(x => x.MetaTitle)
-        @Html.TextBoxFor(x => x.MetaTitle, new { @class = "span12" })
-        @Html.ValidationMessageFor(x => x.MetaTitle, "", new { @class = "error" })
-        @Html.LabelFor(x => x.MetaDescription)
-        @Html.TextBoxFor(x => x.MetaDescription, new { @class = "span12" })
-        @Html.ValidationMessageFor(x => x.MetaDescription, "", new { @class = "error" })
-        @Html.LabelFor(x => x.MetaKeywords)
-        @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "span12" })
-        @Html.ValidationMessageFor(x => x.MetaKeywords, "", new { @class = "error" })
+        <div class="form-group">
+            @Html.LabelFor(x => x.MetaTitle)
+            @Html.TextBoxFor(x => x.MetaTitle, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.MetaTitle, "", new { @class = "error" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.MetaDescription)
+            @Html.TextBoxFor(x => x.MetaDescription, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.MetaDescription, "", new { @class = "error" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.MetaKeywords)
+            @Html.TextBoxFor(x => x.MetaKeywords, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.MetaKeywords, "", new { @class = "error" })
+        </div>
 
         <hr />
         <h4>SEO Analysis </h4>
-        <div class="input-append">
-            @Html.LabelFor(webpage => webpage.SEOTargetPhrase)
-            @Html.TextBoxFor(webpage => webpage.SEOTargetPhrase)
-            <button data-seo-analyze="true" class="btn">Analyze</button>
+        @Html.LabelFor(webpage => webpage.SEOTargetPhrase)
+        <div class="input-group">            
+            @Html.TextBoxFor(webpage => webpage.SEOTargetPhrase, new { @class = "form-control" })
+            <span class="input-group-btn">
+                <button data-seo-analyze="true" class="btn btn-default">Analyze</button>
+            </span>
         </div>
 
         <div data-seo-analysis-summary="true">
         </div>
         
         <hr />
-        <div class="form-inline">
-            <i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="If ticked, the page will be included in any navigation widgets"></i>
-            @Html.CheckBoxFor(x => x.RevealInNavigation)
-            @Html.LabelFor(x => x.RevealInNavigation)
-        </div>
-        @Html.ValidationMessageFor(x => x.RevealInNavigation)
-        <label>
-            <i class="icon-question-sign" rel="tooltip" data-placement="top" data-original-title="If slected, Mr CMS will make sure the page has SSL enabled. Note this must be enabled on the server also.">&nbsp;</i>
-            @Html.CheckBoxFor(webpage => webpage.RequiresSSL) Requires SSL
 
-        </label>
+        <div class="form-group">
+            <label class="checkbox-inline">
+                @Html.CheckBoxFor(x => x.RevealInNavigation)
+                Include in navigation
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label class="checkbox-inline">
+                @Html.CheckBoxFor(webpage => webpage.RequiresSSL) Requires SSL
+            </label>
+        </div>
     }
     <hr />
 
-    @Html.LabelFor(x => x.CustomHeaderScripts)
-    @Html.TextAreaFor(x => x.CustomHeaderScripts, new { @class = "span12" })
-    @Html.ValidationMessageFor(x => x.CustomHeaderScripts, "", new { @class = "error" })
-
-    @Html.LabelFor(x => x.CustomFooterScripts)
-    @Html.TextAreaFor(x => x.CustomFooterScripts, new { @class = "span12" })
-    @Html.ValidationMessageFor(x => x.CustomFooterScripts, "", new { @class = "error" })
-
-
+    <div class="form-group">
+        @Html.LabelFor(x => x.CustomHeaderScripts)
+        @Html.TextAreaFor(x => x.CustomHeaderScripts, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.CustomHeaderScripts, "", new { @class = "error" })    
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.CustomFooterScripts)
+        @Html.TextAreaFor(x => x.CustomFooterScripts, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.CustomFooterScripts, "", new { @class = "error" })
+    </div>
     <hr />
     <strong>Page type:</strong> @Model.GetMetadata().Name
     <br />

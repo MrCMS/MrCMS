@@ -11,23 +11,27 @@
 @using (Html.BeginForm("Edit", "Sites", FormMethod.Post, new { id = "edit-site" }))
 {
     <fieldset>
-        <legend>@Model.Name
+        <legend>
+            @Model.Name
 
             <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Back to list", "Index", "Sites", null, new { @class = "btn" })
+                @Html.ActionLink("Back to list", "Index", "Sites", null, new { @class = "btn btn-default" })
                 <button class="btn btn-primary">
-                    Save</button>
+                    Save
+                </button>
             </span>
         </legend>
-
-        @Html.HiddenFor(x => x.Id)
-        @Html.LabelFor(x => x.Name)
-        @Html.TextBoxFor(x => x.Name, new { @class = "span6" })
-        @Html.ValidationMessageFor(x => x.Name)
-
-        @Html.LabelFor(x => x.BaseUrl)
-        @Html.TextBoxFor(x => x.BaseUrl, new { @class = "span6" })
-        @Html.ValidationMessageFor(x => x.BaseUrl)
+        <div class="form-group">
+            @Html.HiddenFor(x => x.Id)
+            @Html.LabelFor(x => x.Name)
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Name)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.BaseUrl)
+            @Html.TextBoxFor(x => x.BaseUrl, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.BaseUrl)
+        </div>
 
         @{ Html.RenderPartial("RestrictedDomains", Model); }
     </fieldset>

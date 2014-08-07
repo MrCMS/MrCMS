@@ -9,8 +9,8 @@
             <input type="button" class="btn-primary btn submit-form-btn" value="Update form option" />
         </span>
         </legend>
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-lg-12">
                 @Html.LabelFor(option => option.Value)
                 @Html.TextBoxFor(option => option.Value)
                 @Html.ValidationMessageFor(option => option.Value)

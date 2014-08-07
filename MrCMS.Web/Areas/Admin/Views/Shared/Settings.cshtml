@@ -20,27 +20,43 @@
         {
             continue;
         }
-        @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
+
+        
         if (textAreaAttribute != null)
         {
+            @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
             var cssClass = textAreaAttribute.CKEnabled ? "ckedit-enabled settings-textarea" : "settings-textarea";
-        @Html.TextArea(name, Convert.ToString(property.GetValue(Model, null)), new { @class = cssClass })
+            @Html.TextArea(name, Convert.ToString(property.GetValue(Model, null)), new { @class = cssClass })
         }
         else if (dropDownSelectionAttribute != null)
         {
-        @Html.DropDownList(name, ViewData[dropDownSelectionAttribute.ViewDataName] as IEnumerable<SelectListItem>)
+            <div class="form-group">
+                @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
+                @Html.DropDownList(name, ViewData[dropDownSelectionAttribute.ViewDataName] as IEnumerable<SelectListItem>, new { @class = "form-control" })
+            </div>
         }
         else if (property.PropertyType == typeof(bool))
         {
-        @Html.CheckBox(name, (bool)property.GetValue(Model, null))
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBox(name, (bool)property.GetValue(Model, null))
+                    @(displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
+                </label>
+            </div>
         }
         else if (mediaSelectorAttribute != null)
         {
-        @Html.TextBox(name, Convert.ToString(property.GetValue(Model, null)), new { @class = "media-selector" })
+            <div class="form-group">
+                @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
+                @Html.TextBox(name, Convert.ToString(property.GetValue(Model, null)), new { @class = "media-selector" })
+            </div>
         }
         else
         {
-        @Html.TextBox(name, property.GetValue(Model, null))
+            <div class="form-group">
+                @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
+                @Html.TextBox(name, property.GetValue(Model, null), new { @class = "form-control" })
+            </div>
         }
     }
 </div>

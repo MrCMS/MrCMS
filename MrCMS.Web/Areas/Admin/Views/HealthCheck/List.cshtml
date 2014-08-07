@@ -13,7 +13,7 @@
         @foreach (var healthCheck in Model)
         {
             <tr data-process-url=" @Url.Action("Process", "HealthCheck", new { typeName = healthCheck.TypeName })">
-                <td data-status="true" class="text-center"><i class="icon-refresh"></i></td>
+                <td data-status="true" class="text-center"><i class="glyphicon glyphicon-refresh"></i></td>
                 <td>@healthCheck.DisplayName</td>
                 <td data-messages="true">
                 <td>

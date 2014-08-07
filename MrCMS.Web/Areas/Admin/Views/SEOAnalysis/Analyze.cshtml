@@ -1,7 +1,7 @@
 ﻿@using MrCMS.Web.Areas.Admin.Helpers
 @using MrCMS.Web.Areas.Admin.Models.SEOAnalysis
 @model MrCMS.Web.Areas.Admin.Models.SEOAnalysis.SEOAnalysisResult
-<table class="table table-striped table-condensed analysis-table">
+<table class="table table-condensed analysis-table">
     <thead>
         <tr>
             <th></th>
@@ -15,7 +15,7 @@
         @foreach (var facet in Model.OrderByDescending(facet => facet.Status).ThenBy(facet => facet.Importance).ThenBy(x=>x.Name))
         {
             <tr class="@facet.Status.GetTableClass()">
-                <td data-status="true" class="text-center"><i class="@facet.Status.GetIconClass()"></i></td>
+                <td data-status="true" class="text-center"><i class="glyphicon @facet.Status.GetIconClass()"></i></td>
                 <td>
                     @facet.Name
                 </td>

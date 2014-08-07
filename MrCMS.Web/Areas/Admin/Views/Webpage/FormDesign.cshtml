@@ -3,17 +3,17 @@
 <div id="form-design-tab" class="tab-pane">
     <h4>Form Design</h4>
     
-    @Html.InfoBlock("Heads up! ", "By default, Mr CMS creates the for HTML form you. " +
+    @Html.InfoBlock("Heads up!", "By default, Mr CMS creates the for HTML form you. " +
                                   "However if you want a custom form design then you can manually create the form using " +
                                   "{label:Name}, {input:Name}, {validation:Name} and {submitted-message} where 'Name' is the name " +
                                   "of the field provided by yourself and {submitted-message} is where you would like to see the success message. " +
                                   "Note you need a button element and there is no need to open or close the form.")
 
-    @Html.TextAreaFor(webpage => webpage.FormDesign, new { @style = "width: 98%; height: 200px;" })
+    @Html.TextAreaFor(webpage => webpage.FormDesign, new { @style = "width: 100%; height: 200px;" })
 
     
     <h5>Example</h5>
-    <textarea style="width: 98%; height: 200px;">
+    <textarea style="width: 100%; height: 200px;">
 <table>
         <tbody>
             <tr>

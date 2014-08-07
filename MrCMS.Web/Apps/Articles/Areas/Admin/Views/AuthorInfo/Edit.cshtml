@@ -8,8 +8,10 @@
                 <input type="submit" class="btn-primary btn" value="Edit Author Info" />
             </span>
         </legend>
-        @Html.LabelFor(info => info.Bio)
-        @Html.TextAreaFor(info => info.Bio)
-        @Html.ValidationMessageFor(info => info.Bio)
+        <div class="form-group">
+            @Html.LabelFor(info => info.Bio)
+            @Html.TextAreaFor(info => info.Bio, new { @class = "form-control" })
+            @Html.ValidationMessageFor(info => info.Bio)
+        </div>
     </fieldset>
 }

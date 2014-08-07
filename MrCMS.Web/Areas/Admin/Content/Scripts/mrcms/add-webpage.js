@@ -61,6 +61,8 @@
         previousValue = getCurrentValue();
     };
     var updateAdditionalProperties = function (event) {
+        $(".hide-until-document-selected").show();
+        $("#message-choose-document").hide();
         var webpageType = $(':radio[name=DocumentType]:checked').val();
         $.get('/Admin/Webpage/AddProperties', { type: webpageType, parentId: $("#Parent_Id").val() }, function (data) {
             $("[data-additional-properties]").html(data);
@@ -85,4 +87,5 @@
 
 $(function () {
     new AddWebpage().init();
+
 })

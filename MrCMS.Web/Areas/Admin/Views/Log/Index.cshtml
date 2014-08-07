@@ -9,46 +9,59 @@
 }
 @using (Html.BeginForm("Index", "Log", FormMethod.Get))
 {
-<fieldset>
-    <legend>Logs 
+    <fieldset>
+        <legend>
+            Logs
             <span class="btn-group display-inline pull-right">
                 <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">Delete logs</a>
                 <input type="submit" class="btn btn-primary" value="Search" />
             </span>
-    </legend>
+        </legend>
 
-    <div class="row-fluid">
-        <div class="span2">
-            @Html.LabelFor(query => query.Type)
-            @Html.DropDownListFor(query => query.Type, Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All"), new { @class = "span12" })
-        </div>
-        @if (siteOptions.Any())
-        {
-            <div class="span2">
-                @Html.LabelFor(query => query.SiteId)
-                @Html.DropDownListFor(query => query.SiteId, siteOptions, new { @class = "span12" })
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Type)
+                    @Html.DropDownListFor(query => query.Type, Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All"), new { @class = "form-control" })
+                </div>
             </div>
-        }
-        <div class="span4">
-            @Html.LabelFor(query => query.Message)
-            @Html.TextBoxFor(query => query.Message, new { @class = "span12" })
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.SiteId)
+                    @Html.DropDownListFor(query => query.SiteId, siteOptions, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.From)
+                    @Html.TextBoxFor(query => query.From, new { @class = "date-time-picker form-control" })
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.To)
+                    @Html.TextBoxFor(query => query.To, new { @class = "date-time-picker form-control" })
+                </div>
+            </div>
         </div>
-        <div class="span4">
-            @Html.LabelFor(query => query.Detail)
-            @Html.TextBoxFor(query => query.Detail, new { @class = "span12" })
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Message)
+                    @Html.TextBoxFor(query => query.Message, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Detail)
+                    @Html.TextBoxFor(query => query.Detail, new { @class = "form-control" })
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row-fluid">
-        <div class="span2">
-            @Html.LabelFor(query => query.From)
-            @Html.TextBoxFor(query => query.From, new { @class = "date-time-picker span12" })
+        <div class="row">
+
         </div>
-        <div class="span2">
-            @Html.LabelFor(query => query.To)
-            @Html.TextBoxFor(query => query.To, new { @class = "date-time-picker span12" })
-        </div>
-    </div>
-</fieldset>
+    </fieldset>
 }
 
 @if (logs.Count == 0)
@@ -60,15 +73,20 @@ else
     <table class="table table-striped table-condensed" style="overflow: scroll">
         <thead>
             <tr>
-                <th>Date
+                <th>
+                    Date
                 </th>
-                <th>Site
+                <th>
+                    Site
                 </th>
-                <th>Message
+                <th>
+                    Message
                 </th>
-                <th>Type
+                <th>
+                    Type
                 </th>
-                <th>Actions
+                <th>
+                    Actions
                 </th>
             </tr>
         </thead>
@@ -89,7 +107,7 @@ else
                         @entry.Type
                     </td>
                     <td>
-                        @Html.ActionLink("Show", "Show", new { id = entry.Id })
+                        @Html.ActionLink("Show", "Show", new { id = entry.Id }, new { @class = "btn btn-xs btn-default" })
                     </td>
                 </tr>
             }

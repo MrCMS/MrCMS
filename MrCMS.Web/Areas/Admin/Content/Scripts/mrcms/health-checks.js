@@ -10,11 +10,11 @@
         }
     };
     var onSuccess = function (row, statusCell) {
-        statusCell.html('<i class="icon-ok"></i>');
+        statusCell.html('<i class="glyphicon glyphicon-ok"></i>');
         row.addClass('success');
     };
     var onFailure = function (row, statusCell) {
-        statusCell.html('<i class="icon-remove"></i>');
+        statusCell.html('<i class="glyphicon glyphicon-remove"></i>');
         row.addClass('error');
     };
     var processRow = function (row) {

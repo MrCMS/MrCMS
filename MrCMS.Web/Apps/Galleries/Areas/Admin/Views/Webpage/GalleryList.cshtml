@@ -1,9 +1,12 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Web.Apps.Galleries.Pages.GalleryList 
+@model MrCMS.Web.Apps.Galleries.Pages.GalleryList
 @{ Html.IncludeScript("~/Apps/Galleries/Areas/Admin/Content/Scripts/gallery.js"); }
+<div class="form-group">
+    @Html.LabelFor(model => model.PageSize)
+    @Html.TextBoxFor(model => model.PageSize, new { @class = "form-control" })
+</div>
+<div class="form-group">
+    @Html.InlineCheckboxFor(model => model.AllowPaging, null, null, "Allow paging")
+</div>
 
-@Html.LabelFor(model => model.PageSize)
-@Html.EditorFor(model => model.PageSize)
-
-@Html.InlineCheckboxFor(model => model.AllowPaging, null, null, "Allow paging")
 

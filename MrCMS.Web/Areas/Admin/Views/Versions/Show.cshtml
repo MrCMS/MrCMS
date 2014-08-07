@@ -26,10 +26,10 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink("View Changes", "ViewChanges", "Webpage", new { id = version.Id }, new { data_toggle = "fb-modal",@class="btn btn-primary btn-mini" })
+                                @Html.ActionLink("View Changes", "ViewChanges", "Webpage", new { id = version.Id }, new { data_toggle = "fb-modal",@class="btn btn-primary btn-xs" })
                                 @if (version.AnyDifferencesFromCurrent())
                                 {
-                                    @Html.ActionLink("Revert to this version", "Revert", "Versions", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-warning btn-mini"})
+                                    @Html.ActionLink("Revert to this version", "Revert", "Versions", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-warning btn-xs"})
                                 }
                             </div>
                         </td>

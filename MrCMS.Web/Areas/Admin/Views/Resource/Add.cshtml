@@ -10,18 +10,23 @@
 {
     <fieldset>
         <legend>
-            Add an override for @Model.DisplayKey
+            Add override 
             <span class="btn-group display-inline pull-right">
                 <input type="submit" class="btn-primary btn" value="Add Override" />
             </span>
         </legend>
+        <p>Default: @Model.DisplayKey</p>
         @Html.ReturnToReferrer()
         @Html.HiddenFor(task => task.Key)
-        @Html.LabelFor(task => task.Value)
-        @Html.TextBoxFor(task => task.Value)
-        @Html.ValidationMessageFor(resource => resource.Value)
-        @Html.LabelFor(task => task.UICulture)
-        @Html.DropDownListFor(task => task.UICulture, languageOptions, new { @data_val = "true", data_val_required = "Please select a culture." })
-        @Html.ValidationMessageFor(resource => resource.UICulture)
+        <div class="form-group">
+            @Html.LabelFor(task => task.Value)
+            @Html.TextBoxFor(task => task.Value, new { @class = "form-control" })
+            @Html.ValidationMessageFor(resource => resource.Value)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(task => task.UICulture)
+            @Html.DropDownListFor(task => task.UICulture, languageOptions, new { @data_val = "true", data_val_required = "Please select a culture.", @class = "form-control" })
+            @Html.ValidationMessageFor(resource => resource.UICulture)
+        </div>
     </fieldset>
 }
