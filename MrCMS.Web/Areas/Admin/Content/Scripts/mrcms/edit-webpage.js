@@ -74,7 +74,7 @@
 
 
 
-    $('a[data-toggle="tab"]').on('shown', function (e) {
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         if (e.currentTarget.id === "versions-link") {
             $.get('/Admin/Versions/Show/' + $(this).data('id'), function (data) {
                 $("#versions").html(data);

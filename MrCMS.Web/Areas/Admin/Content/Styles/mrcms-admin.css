@@ -2,6 +2,7 @@
 }
 .navbar { border-radius: 0;}
 .nav-tabs { margin-bottom: 15px;}
+legend { font-size: 26px;}
 .mrcms-navbar {
     min-width: 1000px;
 }

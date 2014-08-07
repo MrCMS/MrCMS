@@ -206,9 +206,9 @@ namespace MrCMS.Helpers
             var labelHtmlAttributes = AnonymousObjectToHtmlAttributes(labelAttributes);
             // add checkbox style to label, for Bootstrap
             if (labelHtmlAttributes.ContainsKey("class"))
-                labelHtmlAttributes["class"] += " checkbox";
+                labelHtmlAttributes["class"] += " checkbox-inline";
             else
-                labelHtmlAttributes["class"] = "checkbox";
+                labelHtmlAttributes["class"] = "checkbox-inline";
 
             text = text ?? metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
             return LabelHelper(htmlHelper, metadata,
@@ -316,22 +316,30 @@ namespace MrCMS.Helpers
             return routeValueDictionary;
         }
 
-        public static MvcHtmlString InfoBlock(this HtmlHelper helper, string boldText, string text)
+        public static MvcHtmlString InfoBlock(this HtmlHelper helper, string boldText, string text, AlertType alterType = AlertType.info)
         {
             var tagBulder = new TagBuilder("div");
-            tagBulder.AddCssClass("alert alert-info");
+            tagBulder.AddCssClass("alert alert-" + alterType);
 
             if (!string.IsNullOrEmpty(boldText))
             {
                 var strongText = new TagBuilder("strong");
                 strongText.SetInnerText(boldText);
 
-                tagBulder.InnerHtml += strongText + text;
+                tagBulder.InnerHtml += strongText + " " + text;
 
                 return MvcHtmlString.Create(tagBulder.ToString());
             }
             tagBulder.SetInnerText(text);
             return MvcHtmlString.Create(tagBulder.ToString());
         }
+    }
+
+    public enum AlertType
+    {
+        success,
+        info,
+        warning,
+        danger
     }
 }
