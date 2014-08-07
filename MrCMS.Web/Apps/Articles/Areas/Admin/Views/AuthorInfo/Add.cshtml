@@ -9,8 +9,10 @@
             </span>
         </legend>
         @Html.HiddenFor(info => info.User.Id)
-        @Html.LabelFor(info => info.Bio)
-        @Html.TextAreaFor(info => info.Bio)
-        @Html.ValidationMessageFor(info => info.Bio)
+        <div class="form-group">
+            @Html.LabelFor(info => info.Bio)
+            @Html.TextAreaFor(info => info.Bio, new{@class="form-control"})
+            @Html.ValidationMessageFor(info => info.Bio)
+        </div>
     </fieldset>
 }
