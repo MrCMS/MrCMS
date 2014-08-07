@@ -4,35 +4,43 @@
 @using (Html.BeginForm("Add", "User", FormMethod.Post))
 {
     <fieldset>
-        <legend>Add user
+        <legend>
+            Add user
             <span class="btn-group  display-inline  pull-right">
                 <input type="submit" class="btn-primary btn" value="Add user" />
             </span>
         </legend>
         @Html.ValidationSummary()
 
-        @Html.LabelFor(x => x.Email)
-        @Html.TextBoxFor(x => x.Email)
-        @Html.ValidationMessageFor(x => x.Email)
-        <br />
-        @Html.LabelFor(x => x.FirstName)
-        @Html.TextBoxFor(x => x.FirstName)
-        @Html.ValidationMessageFor(x => x.FirstName)
-        <br />
-        @Html.LabelFor(x => x.LastName)
-        @Html.TextBoxFor(x => x.LastName)
-        @Html.ValidationMessageFor(x => x.LastName)
-        <br />
-        @Html.LabelFor(x => x.Password)
-        @Html.PasswordFor(x => x.Password)
-        @Html.ValidationMessageFor(x => x.Password)
-        <br />
-        @Html.LabelFor(x => x.ConfirmPassword)
-        @Html.PasswordFor(x => x.ConfirmPassword)
-        @Html.ValidationMessageFor(x => x.ConfirmPassword)
-        <br />
-        @Html.InlineCheckboxFor(x => x.IsActive, null, null, "User is active")
-        @Html.ValidationMessageFor(x => x.IsActive)
-        <br />
+        <div class="form-group">
+            @Html.LabelFor(x => x.Email)
+            @Html.TextBoxFor(x => x.Email, new{@class="form-control"})
+            @Html.ValidationMessageFor(x => x.Email)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.FirstName)
+            @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.FirstName)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.LastName)
+            @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.LastName)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Password)
+            @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Password)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.ConfirmPassword)
+            @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.ConfirmPassword)
+        </div>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(x => x.IsActive, null, null, "User is active")
+            @Html.ValidationMessageFor(x => x.IsActive)
+        </div>
+
     </fieldset>
 }

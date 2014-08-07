@@ -30,7 +30,7 @@
             var headerName = keys[index];
             if (!string.IsNullOrWhiteSpace(headerName))
             {
-                <li class="nav-header">@headerName</li>
+                <li class="dropdown-header">@headerName</li>
             }
             foreach (var child in subMenu[headerName].Where(menuItem => menuItem.CanShow))
             {

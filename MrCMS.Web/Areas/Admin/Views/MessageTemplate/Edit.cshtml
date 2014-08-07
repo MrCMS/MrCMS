@@ -7,10 +7,11 @@
 @using (Html.BeginForm("Edit", "MessageTemplate", FormMethod.Post, new { id = "edit-message-template" }))
 {
     <fieldset>
-        <legend>Edit @Model.GetType().Name.BreakUpString()
+        <legend>
+            Edit @Model.GetType().Name.BreakUpString()
             <span class="pull-right btn-group  display-inline ">
-                @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn" })
-                @Html.ActionLink("Reset", "Reset", "MessageTemplate", new { Id = Model.Id }, new { @class = "btn", data_toggle = "fb-modal" })
+                @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
+                @Html.ActionLink("Reset", "Reset", "MessageTemplate", new { Id = Model.Id }, new { @class = "btn btn-default", data_toggle = "fb-modal" })
                 <input class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-message-template" type="submit" value="Save" />
             </span>
         </legend>
@@ -18,26 +19,38 @@
         @Html.HiddenFor(x => x.MessageTemplateType)
         <div class="row">
             <div class="col-lg-6">
-                @Html.LabelFor(x => x.FromAddress)
-                @Html.TextBoxFor(x => x.FromAddress, new { @class = "col-lg-12" })
-                @Html.ValidationMessageFor(x => x.FromAddress)
-                @Html.LabelFor(x => x.FromName)
-                @Html.TextBoxFor(x => x.FromName, new { @class = "col-lg-12" })
-                @Html.ValidationMessageFor(x => x.FromName)
-                @Html.LabelFor(x => x.Cc)
-                @Html.TextBoxFor(x => x.Cc, new { @class = "col-lg-12" })
-                @Html.ValidationMessageFor(x => x.Cc)
+                <div class="form-group">
+                    @Html.LabelFor(x => x.FromAddress)
+                    @Html.TextBoxFor(x => x.FromAddress, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.FromAddress)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.FromName)
+                    @Html.TextBoxFor(x => x.FromName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.FromName)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Cc)
+                    @Html.TextBoxFor(x => x.Cc, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Cc)
+                </div>
             </div>
             <div class="col-lg-6">
-                @Html.LabelFor(x => x.ToAddress)
-                @Html.TextBoxFor(x => x.ToAddress, new { @class = "col-lg-12" })
-                @Html.ValidationMessageFor(x => x.ToAddress)
-                @Html.LabelFor(x => x.ToName)
-                @Html.TextBoxFor(x => x.ToName, new { @class = "col-lg-12" })
-                @Html.ValidationMessageFor(x => x.ToName)
-                @Html.LabelFor(x => x.Bcc)
-                @Html.TextBoxFor(x => x.Bcc, new { @class = "col-lg-12" })
-                @Html.ValidationMessageFor(x => x.Bcc)
+                <div class="form-group">
+                    @Html.LabelFor(x => x.ToAddress)
+                    @Html.TextBoxFor(x => x.ToAddress, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.ToAddress)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.ToName)
+                    @Html.TextBoxFor(x => x.ToName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.ToName)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Bcc)
+                    @Html.TextBoxFor(x => x.Bcc, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Bcc)
+                </div>
             </div>
         </div>
         <div class="row">
@@ -49,22 +62,24 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                @Html.LabelFor(x => x.Subject)
-                @Html.TextBoxFor(x => x.Subject, new { @class = "col-lg-12" })
-                @Html.ValidationMessageFor(x => x.Subject)
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Subject)
+                    @Html.TextBoxFor(x => x.Subject, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Subject)
+                </div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-lg-12">
-                @Html.LabelFor(x => x.Body)
-                @Html.TextAreaFor(x => x.Body, new { @class = (Model.IsHtml ? "ckedit-enabled col-lg-12" : "col-lg-12"), style = "min-height:200px;" })
-                @Html.ValidationMessageFor(x => x.Body)
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Body)
+                    @Html.TextAreaFor(x => x.Body, new { @class = (Model.IsHtml ? "ckedit-enabled form-control" : "form-control"), style = "min-height:200px;" })
+                    @Html.ValidationMessageFor(x => x.Body)
+                </div>
             </div>
         </div>
-        <br />
-        @Html.CheckBoxFor(x => x.IsHtml, new { @class = "pull-left" }) <span>&nbsp;Is HTML?</span>
+        @Html.InlineCheckboxFor(x=>x.IsHtml)
 
-        @{ Html.RenderAction("Tokens", "MessageTemplate", new { messageTemplate = Model });}
     </fieldset>
 }

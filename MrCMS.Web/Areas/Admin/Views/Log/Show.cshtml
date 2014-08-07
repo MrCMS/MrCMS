@@ -8,13 +8,12 @@
         <legend>Log #@Model.Id
 
             <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Back to list", "Index", null, new { @class = "btn " })
+                @Html.ActionLink("Back to list", "Index", null, new { @class = "btn btn-default" })
                 <a href="@Url.Action("DeleteLog", "Log", new { Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete log</a>
             </span>
         </legend>
     </fieldset>
 </form>
-<div class="row">
     <table class="table table-striped table-condensed">
 
         <tbody>
@@ -85,4 +84,3 @@
             </table>
         </div>
     }
-</div>
