@@ -1,7 +1,7 @@
 ﻿h1,h4 { font-weight: normal;}
 body { padding-top: 20px;}
 hr {padding-top: 0;}
-
+.margin-top-10{ margin-top: 10px;}
 .field-validation-error { color: red;}
 
 #throbber {

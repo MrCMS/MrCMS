@@ -4,26 +4,26 @@
 @{
     ViewBag.Title = "Install MrCMS";
     Layout = "~/Views/Shared/_Installation.cshtml";
-    var installationResult = ViewData["installationResult"] as InstallationResult; 
+    var installationResult = ViewData["installationResult"] as InstallationResult;
 }
 
-@using (Html.BeginForm("Setup", "Install", FormMethod.Post, new { id = "installationform", @class = "form-horizontal" }))
+@using (Html.BeginForm("Setup", "Install", FormMethod.Post, new { id = "installationform" }))
 {
     if (installationResult != null)
     {
         if (installationResult.Errors.Any())
         {
-    <div class="alert alert-error">
-        <strong>Sorry there was a problem installing - please see errors below</strong>
-        <ul>
-            @{
+            <div class="alert alert-danger">
+                <strong>Sorry there was a problem installing - please see errors below</strong>
+                <ul>
+                    @{
             foreach (var error in installationResult.Errors)
             {
                 <li>@error</li>
             }
-            }
-        </ul>
-    </div>
+                    }
+                </ul>
+            </div>
         }
     }
     <div class="row">
@@ -32,59 +32,48 @@
                 <h4>Site Information</h4>
                 <hr class="small-margin" />
 
-                <div class="control-group">
-                    <label class="control-label" for="SiteName">Site Name</label>
-                    <div class="controls">
-                        @Html.TextBoxFor(x => x.SiteName)
-                        @Html.ValidationMessageFor(x => x.SiteName)
-                    </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.SiteName)
+                    @Html.TextBoxFor(x => x.SiteName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.SiteName)
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label" for="SiteUrl">Site Url</label>
-                    <div class="controls">
-                        @Html.TextBoxFor(x => x.SiteUrl)
-                        @Html.ValidationMessageFor(x => x.SiteUrl)
-                    </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.SiteUrl)
+                    @Html.TextBoxFor(x => x.SiteUrl, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.SiteUrl)
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label" for="AdminEmail">Admin Email</label>
-                    <div class="controls">
-                        @Html.TextBoxFor(x => x.AdminEmail)
-                        @Html.ValidationMessageFor(x => x.AdminEmail)
-                    </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.AdminEmail)
+                    @Html.TextBoxFor(x => x.AdminEmail, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.AdminEmail)
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label" for="AdminPassword">Admin Password</label>
-                    <div class="controls">
-                        @Html.PasswordFor(x => x.AdminPassword)
-                        @Html.ValidationMessageFor(x => x.AdminPassword)
-                    </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.AdminPassword)
+                    @Html.TextBoxFor(x => x.AdminPassword, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.AdminPassword)
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label" for="ConfirmPassword">Confirm Password</label>
-                    <div class="controls">
-                        @Html.PasswordFor(x => x.ConfirmPassword)
-                        @Html.ValidationMessageFor(x => x.ConfirmPassword)
-                    </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.ConfirmPassword)
+                    @Html.TextBoxFor(x => x.ConfirmPassword, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.ConfirmPassword)
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label" for="UiCulture">Ui Culture</label>
-                    <div class="controls">
-                        @Html.DropDownListFor(x => x.UiCulture, Model.CultureOptions)
-                    </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.CultureOptions)
+                    @Html.DropDownListFor(x => x.CultureOptions, Model.CultureOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.CultureOptions)
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label" for="TimeZone">Time Zone</label>
-                    <div class="controls">
-                        @Html.DropDownListFor(x => x.TimeZone, Model.TimeZoneOptions)
-                    </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.TimeZone)
+                    @Html.DropDownListFor(x => x.TimeZone, Model.TimeZoneOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.TimeZone)
                 </div>
+
             </fieldset>
         </div>
         <div class="col-lg-6">
@@ -93,115 +82,99 @@
                 <hr class="small-margin" />
 
 
-                <div class="control-group">
-                    <div class="">
-                        <label class="checkbox" for="provider_sqlite">
-                            @Html.RadioButton("DatabaseType", DatabaseType.Sqlite, (Model.DatabaseType == DatabaseType.Sqlite), new { id = "provider_sqlite" })
-                            Use built-in data storage (Sqlite) (limited compatibility).
-                        </label>
-                    </div>
+                <div class="form-group">
+                    <label class="radio-inline">
+                        @Html.RadioButton("DatabaseType", DatabaseType.Sqlite, (Model.DatabaseType == DatabaseType.Sqlite), new { id = "provider_sqlite" })
+                        Use built-in data storage (Sqlite) (limited compatibility).
+                    </label>
                 </div>
 
-                <div class="control-group">
-                    <div class="">
-                        <label class="checkbox" for="provider_mysql">
-                            @Html.RadioButton("DatabaseType", DatabaseType.MySQL, (Model.DatabaseType == DatabaseType.MySQL), new { id = "provider_mysql" })
-                            Use MySQL
-                        </label>
-                    </div>
+                <div class="form-group">
+                    <label class="radio-inline">
+                        @Html.RadioButton("DatabaseType", DatabaseType.MySQL, (Model.DatabaseType == DatabaseType.MySQL), new { id = "provider_mysql" })
+                        Use MySQL
+                    </label>
                 </div>
 
-                <div class="control-group">
-                    <div class="">
-                        <label class="checkbox" for="provider_sqlserver">
-                            @Html.RadioButton("DatabaseType", DatabaseType.MsSql, (Model.DatabaseType == DatabaseType.MsSql), new { id = "provider_sqlserver" })
-                            Use SQL Server (or SQL Express) database. <b>[Recommended]</b>
-                        </label>
-                    </div>
+                <div class="form-group">
+                    <label class="radio-inline">
+                        @Html.RadioButton("DatabaseType", DatabaseType.MsSql, (Model.DatabaseType == DatabaseType.MsSql), new { id = "provider_sqlserver" })
+                        Use SQL Server (or SQL Express) database.
+                    </label>
                 </div>
-
                 <hr />
 
                 <div id="sqlConnectionInfo">
 
-                    <div class="control-group">
-                        <div class="" style="margin-left: 20px;">
-                            <label class="checkbox" for="SqlServerCreateDatabase">
-                                @Html.CheckBoxFor(x => x.SqlServerCreateDatabase)
-                                Create database if it doesn't exist
-                            </label>
-                        </div>
+                    <div class="form-group">
+                        <label class="checkbox-inline">
+                            @Html.CheckBoxFor(x => x.SqlServerCreateDatabase)
+                            Create database if it doesn't exist
+                        </label>
                     </div>
 
-                    <div class="control-group">
-                        <div class="">
-                            <label class="checkbox" for="sqlconnectioninfo_values">
-                                @Html.RadioButton("SqlConnectionInfo", "sqlconnectioninfo_values", (Model.SqlConnectionInfo == "sqlconnectioninfo_values"), new { id = "sqlconnectioninfo_values" })
-                                Enter SQL connection values
-                            </label>
-                            <label class="checkbox" for="sqlconnectioninfo_raw">
-                                @Html.RadioButton("SqlConnectionInfo", "sqlconnectioninfo_raw", (Model.SqlConnectionInfo == "sqlconnectioninfo_raw"), new { id = "sqlconnectioninfo_raw" })
-                                Enter raw connection string (advanced)
-                            </label>
-                        </div>
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            @Html.RadioButton("SqlConnectionInfo", "sqlconnectioninfo_values", (Model.SqlConnectionInfo == "sqlconnectioninfo_values"), new { id = "sqlconnectioninfo_values" })
+                            Enter SQL connection values
+                        </label>
                     </div>
-
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            @Html.RadioButton("SqlConnectionInfo", "sqlconnectioninfo_raw", (Model.SqlConnectionInfo == "sqlconnectioninfo_raw"), new { id = "sqlconnectioninfo_raw" })
+                            Enter raw connection string (advanced)
+                        </label>
+                    </div>
 
                     <div id="sqlDatabaseInfo">
-                        <div class="control-group">
-                            <label class="control-label" for="SqlServerName">SQL Server Name </label>
-                            <div class="controls">
-                                @Html.TextBoxFor(x => x.SqlServerName)
-                                @Html.ValidationMessageFor(x => x.SqlServerName)
-                            </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.SqlServerName)
+                            @Html.TextBoxFor(x => x.SqlServerName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.SqlServerName)
                         </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="SqlDatabaseName">SQL Database Name</label>
-                            <div class="controls">
-                                @Html.TextBoxFor(x => x.SqlDatabaseName)
-                                @Html.ValidationMessageFor(x => x.SqlDatabaseName)
-                            </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.SqlDatabaseName)
+                            @Html.TextBoxFor(x => x.SqlDatabaseName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.SqlDatabaseName)
                         </div>
 
-                        <div class="control-group">
-                            <div class="">
-                                <label class="checkbox" for="sqlauthenticationtype_sql">
-                                    @Html.RadioButton("SqlAuthenticationType", "sqlauthentication", (Model.SqlAuthenticationType == "sqlauthentication"), new { id = "sqlauthenticationtype_sql" })
-                                    Use SQL Server account
-                                </label>
-                                <label class="checkbox" for="sqlauthenticationtype_windows">
-                                    @Html.RadioButton("SqlAuthenticationType", "windowsauthentication", (Model.SqlAuthenticationType == "windowsauthentication"), new { id = "sqlauthenticationtype_windows" })
-                                    Use integrated Windows authentication
-                                </label>
-                            </div>
+                        <div class="form-group">
+                            <label class="radio-inline">
+                                @Html.RadioButton("SqlAuthenticationType", "sqlauthentication", (Model.SqlAuthenticationType == "sqlauthentication"), new { id = "sqlauthenticationtype_sql" })
+                                Use SQL Server account
+                            </label>
                         </div>
 
-                        <div class="control-group" id="pnlSqlServerUsername">
-                            <label class="control-label" for="SqlDatabaseName">SQL Server Username</label>
-                            <div class="controls">
-                                @Html.TextBoxFor(x => x.SqlServerUsername)
-                                @Html.ValidationMessageFor(x => x.SqlServerUsername)
-                            </div>
+                        <div class="form-group">
+                            <label class="radio-inline">
+                                @Html.RadioButton("SqlAuthenticationType", "windowsauthentication", (Model.SqlAuthenticationType == "windowsauthentication"), new { id = "sqlauthenticationtype_windows" })
+                                Use integrated Windows authentication
+                            </label>
                         </div>
 
-                        <div class="control-group" id="pnlSqlServerPassword">
-                            <label class="control-label" for="SqlServerPassword">SQL Server Password</label>
-                            <div class="controls">
-                                @Html.PasswordFor(x => x.SqlServerPassword, new { @class = "textbox" })
-                                @Html.ValidationMessageFor(x => x.SqlServerPassword)
-                            </div>
+                        <div class="form-group" id="pnlSqlServerUsername">
+                            @Html.LabelFor(x => x.SqlServerName)
+                            @Html.TextBoxFor(x => x.SqlServerName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.SqlServerName)
+                        </div>
+
+                        <div class="form-group" id="pnlSqlServerPassword">
+                            @Html.LabelFor(x => x.SqlServerPassword)
+                            @Html.TextBoxFor(x => x.SqlServerPassword, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.SqlServerPassword)
                         </div>
 
                     </div>
                     <div id="sqlDatabaseConnectionString">
-                        <span style="white-space: nowrap;">
-                            <label for="DatabaseConnectionString">
-                                Connection string:</label>
-                            @Html.TextBoxFor(x => x.DatabaseConnectionString, new { @class = "textbox", style = "width:90%;" })
-                        </span>
-                        <br />
-                        <span class="hint">Example:<br />
+                        <div class="form-group" id="pnlSqlServerUsername">
+                            @Html.LabelFor(x => x.DatabaseConnectionString)
+                            @Html.TextBoxFor(x => x.DatabaseConnectionString, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.DatabaseConnectionString)
+                        </div>
+                        <span class="hint">
+                            Example:<br />
                             Data Source=sqlServerName;Initial Catalog=dbName;Persist Security Info=True;User
                             ID=userName;Password=password
                             <br />
@@ -210,14 +183,13 @@
                     </div>
                 </div>
 
-
             </fieldset>
         </div>
     </div>
     <hr />
-    
-    <div class="text-center">
-        <input type="submit" value="Install" class="btn btn-primary btn-large" />
+
+    <div class="text-right">
+        <input type="submit" value="Install" class="btn btn-lg btn-primary" />
     </div>
-       
+
 }

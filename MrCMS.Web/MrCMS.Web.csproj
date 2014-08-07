@@ -1364,14 +1364,6 @@
     <Content Include="Areas\Admin\Content\Styles\jquery.mrcms-mediaselector.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.tagit.css" />
     <Content Include="Content\install\images\install-synchronizing.gif" />
-    <Content Include="Content\install\bootstrap\css\bootstrap-responsive.css" />
-    <Content Include="Content\install\bootstrap\css\bootstrap-responsive.min.css" />
-    <Content Include="Content\install\bootstrap\css\bootstrap.css" />
-    <Content Include="Content\install\bootstrap\css\bootstrap.min.css" />
-    <Content Include="Content\install\bootstrap\img\glyphicons-halflings-white.png" />
-    <Content Include="Content\install\bootstrap\img\glyphicons-halflings.png" />
-    <Content Include="Content\install\bootstrap\js\bootstrap.js" />
-    <Content Include="Content\install\bootstrap\js\bootstrap.min.js" />
     <Content Include="Content\install\scripts\jquery.validate.js" />
     <Content Include="Content\install\style.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.fileupload-ui.css" />
@@ -1689,7 +1681,6 @@
     <Folder Include="Themes\Default\Shared\" />
     <Folder Include="Themes\Default\Views\Pages\" />
     <Folder Include="Themes\Default\Views\Widgets\" />
-    <Folder Include="Views\ArticleSection\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
