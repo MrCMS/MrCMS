@@ -1692,12 +1692,9 @@
     <Content Include="Areas\Admin\Views\Layout\Add.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Layout\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Layout\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Layout\Sort.cshtml" />
-    <Content Include="Areas\Admin\Views\Layout\Show.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Add.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Media.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\AdminNavigation.cshtml" />

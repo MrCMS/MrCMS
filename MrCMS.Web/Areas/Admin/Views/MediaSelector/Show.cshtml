@@ -14,18 +14,23 @@
     @using (Html.BeginForm("Show", "MediaSelector", FormMethod.Get, new { id = "search-form", style = "margin:0px;" }))
     {
         <fieldset>
-            <legend>Media Selector
+            <legend>
+                Media Selector
             </legend>
             <div class="row">
-                <div class="col-lg-5">
-                    @Html.DropDownListFor(query => query.CategoryId, categories, new { @class = "col-lg-12" })
-                    @Html.ValidationMessageFor(query => query.CategoryId)
+                <div class="col-xs-5">
+                    <div class="form-group">
+                        @Html.DropDownListFor(query => query.CategoryId, categories, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(query => query.CategoryId)
+                    </div>
                 </div>
-                <div class="col-lg-5">
-                    @Html.TextBoxFor(query => query.Query, new { @class = "col-lg-12" })
-                    @Html.ValidationMessageFor(query => query.Query)
+                <div class="col-xs-5">
+                    <div class="form-group">
+                        @Html.TextBoxFor(query => query.Query, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(query => query.Query)
+                    </div>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-xs-2">
                     <input type="submit" class="btn btn-primary col-lg-12" value="Search" />
                 </div>
             </div>
@@ -38,7 +43,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <span class="btn btn-success fileinput-button">
-                        <i class="icon-plus"></i>
+                        <i class="glyphicon glyphicon-plus"></i>
                         <span>Select files...</span>
                         <input id="fileupload" type="file" name="files[]" multiple />
                     </span>
@@ -53,8 +58,8 @@
         }
 
         <input type="hidden" id="allowedFileTypes" value="
-                                                                 @mediaSettings.AllowedFileTypes"/>
-        <input type="hidden" id="maxFileSizeUpload" value="@mediaSettings.MaxFileSizeUpload"/>
+               @mediaSettings.AllowedFileTypes " />
+        <input type="hidden" id="maxFileSizeUpload" value="@mediaSettings.MaxFileSizeUpload" />
 
         <div id="dropzone"><span>Drop files here</span></div>
         @if (results.Any())

@@ -22,19 +22,22 @@
     <fieldset>
         <legend>@mediaCategory.Name
             <span class="btn-group  display-inline  pull-right">
-                <a href="@Url.Action("SortFiles", "MediaCategory", new { id = mediaCategory.Id })" class="btn ">Sort</a>
                 @if (mediaCategory.CanDelete())
                 {
                     <a href="@Url.Action("Delete", "MediaCategory", new { id = mediaCategory.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                 }
-                <a href="@Url.Action("Edit", "MediaCategory", new { id = mediaCategory.Id })" class="btn">Edit</a>
+
+                <a href="@Url.Action("SortFiles", "MediaCategory", new { id = mediaCategory.Id })" class="btn btn-default">Sort</a>
+                <a href="@Url.Action("Edit", "MediaCategory", new { id = mediaCategory.Id })" class="btn  btn-default">Edit</a>
 
                 <input type="submit" value="Search" class="btn btn-primary" />
             </span>
         </legend>
     </fieldset>
-    @Html.LabelFor(x => x.SearchText)
-    @Html.TextBoxFor(x => x.SearchText)
+    <div class="form-group">
+        @Html.LabelFor(x => x.SearchText)
+        @Html.TextBoxFor(x => x.SearchText, new{@class="form-control"})
+    </div>
 </form>
 @{ Html.RenderAction("Upload", "MediaCategory", new { category = mediaCategory } ); }
 <hr class="small-margin" />
