@@ -30,22 +30,24 @@
         }
 
         @Html.HiddenFor(x => x.Id)
-        <div class="row-fluid">
-            <div class="span12">
-                @Html.LabelFor(x => x.Name)
-                @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
-                @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Name)
+                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.UrlSegment)
+                    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+                </div>
 
-                @Html.LabelFor(x => x.UrlSegment)
-                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
-                @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
-
-                <label class="checkbox">
-                    @Html.CheckBoxFor(x => x.Hidden)  Hidden
-                </label>
+                <div class="form-group">
+                    @Html.InlineCheckboxFor(x => x.Hidden) 
+                </div>
             </div>
         </div>
-        <hr />
         <h4 class="light">Areas</h4>
         @{
         if (Model.LayoutAreas.Any())
@@ -61,8 +63,8 @@
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    @Html.ActionLink("Edit", "Edit", "LayoutArea", new { id = area.Id }, new { @class = "btn btn-mini" })
-                                    <a href="@Url.Action("Delete", "LayoutArea", new { id = area.Id })" class="btn btn-mini btn-danger" data-toggle="fb-modal">Delete</a>
+                                    @Html.ActionLink("Edit", "Edit", "LayoutArea", new { id = area.Id }, new { @class = "btn btn-default btn-xs" })
+                                    <a href="@Url.Action("Delete", "LayoutArea", new { id = area.Id })" class="btn btn-xs btn-danger" data-toggle="fb-modal">Delete</a>
                                 </div>
                             </td>
                         </tr>
@@ -76,7 +78,7 @@
         }
         }
 
-        <a href="@Url.Action("Add", "LayoutArea", new { id = Model.Id })" class="btn btn-mini" data-toggle="fb-modal">Add layout area</a>
+        <a href="@Url.Action("Add", "LayoutArea", new { id = Model.Id })" class="btn btn-xs btn-default" data-toggle="fb-modal">Add layout area</a>
 
     </fieldset>
 }

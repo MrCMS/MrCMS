@@ -1,10 +1,10 @@
 ﻿@model MrCMS.Models.UserSearchQuery
-<div class="row-fluid">
-    <div class="span12">
+<div class="row">
+    <div class="col-lg-12">
         @using (Html.BeginForm("Index", "User", FormMethod.Get))
         {
             @Html.TextBoxFor(query => query.Query, new { @class = "search-query", placeholder = "Search" })
-            <input type="submit" class="btn btn-mini btn-primary" value="Search" />
+            <input type="submit" class="btn btn-xs btn-primary" value="Search" />
             @Html.ValidationMessageFor(query => query.Query)
         }
     </div>

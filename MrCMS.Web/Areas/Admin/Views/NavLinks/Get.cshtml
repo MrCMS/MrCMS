@@ -1,8 +1,7 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Models
 @model IEnumerable<IAdminMenuItem>
-<ul class="nav">
-    <li><a href="/admin" style="padding-left: 0;">Dashboard</a></li>
+<ul class="nav navbar-nav">
     <li><a href="/">Home</a></li>
     @foreach (var item in Model.Where(item => item.CanShow))
     {
@@ -31,7 +30,7 @@
             var headerName = keys[index];
             if (!string.IsNullOrWhiteSpace(headerName))
             {
-                <li class="nav-header">@headerName</li>
+                <li class="dropdown-header">@headerName</li>
             }
             foreach (var child in subMenu[headerName].Where(menuItem => menuItem.CanShow))
             {

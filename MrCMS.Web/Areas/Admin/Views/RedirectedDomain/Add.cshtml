@@ -8,9 +8,11 @@
                 <input type="submit" class="btn-primary btn" value="Add" />
             </span>
         </legend>
-        @Html.HiddenFor(domain => domain.Site.Id)
-        @Html.LabelFor(domain => domain.Url)
-        @Html.TextBoxFor(domain => domain.Url, new { @class = "span5" })
-        @Html.ValidationMessageFor(domain => domain.Url)
+        <div class="form-group">
+            @Html.HiddenFor(x => x.Site.Id)
+            @Html.LabelFor(x => x.Url)
+            @Html.TextBoxFor(x => x.Url, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Url)
+        </div>
     </fieldset>
 }

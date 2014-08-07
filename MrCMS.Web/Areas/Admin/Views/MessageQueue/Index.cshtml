@@ -9,29 +9,37 @@
 @using (Html.BeginForm("Index", "MessageQueue", FormMethod.Get))
 {
     <fieldset>
-        <legend>Queued Messages
-        <span class="btn-group  display-inline  pull-right">
-            <input type="submit" value="Search" class="btn btn-primary" />
-        </span>
+        <legend>
+            Queued Messages
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </span>
         </legend>
 
-        <div class="row-fluid">
-            <div class="span8">
-                @Html.LabelFor(query => query.FromQuery)
-                @Html.TextBoxFor(query => query.FromQuery, new { @class = "span12" })
-                
-                @Html.LabelFor(query => query.ToQuery)
-                @Html.TextBoxFor(query => query.ToQuery, new { @class = "span12" })
-                
-                @Html.LabelFor(query => query.Subject)
-                @Html.TextBoxFor(query => query.Subject, new { @class = "span12" })
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.FromQuery)
+                    @Html.TextBoxFor(query => query.FromQuery, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(query => query.ToQuery)
+                    @Html.TextBoxFor(query => query.ToQuery, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Subject)
+                    @Html.TextBoxFor(query => query.Subject, new { @class = "form-control" })
+                </div>
             </div>
-            <div class="span4">
-                @Html.LabelFor(query => query.From)
-                @Html.EditorFor(query => query.From)
-                
-                @Html.LabelFor(query => query.To)
-                @Html.EditorFor(query => query.To)
+            <div class="col-lg-4">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.From)
+                    @Html.EditorFor(query => query.From)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(query => query.To)
+                    @Html.EditorFor(query => query.To)
+                </div>
             </div>
         </div>
     </fieldset>
@@ -41,17 +49,23 @@
     <table class="table table-condensed table-striped">
         <thead>
             <tr>
-                <th>From
+                <th>
+                    From
                 </th>
-                <th>To
+                <th>
+                    To
                 </th>
-                <th>Subject
+                <th>
+                    Subject
                 </th>
-                <th>Created On
+                <th>
+                    Created On
                 </th>
-                <th>Sent On?
+                <th>
+                    Sent On?
                 </th>
-                <th>Actions
+                <th>
+                    Actions
                 </th>
             </tr>
         </thead>
@@ -76,7 +90,7 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink("View", "Show", "MessageQueue", new { id = message.Id }, new { @class = "btn btn-mini" })
+                            @Html.ActionLink("View", "Show", "MessageQueue", new { id = message.Id }, new { @class = "btn btn-xs btn-default" })
                         </div>
                     </td>
                 </tr>

@@ -6,13 +6,17 @@
 @using (Html.BeginForm("Edit", "Resource", FormMethod.Post))
 {
     <fieldset>
-        <legend>Edit resource @Model.DisplayKey for @Model.DisplayUICulture
+        <legend>Edit resource 
             <span class="btn-group display-inline pull-right">
                 <input type="submit" class="btn-primary btn" value="Edit resource" />
             </span>
         </legend>
+        "@Model.DisplayKey" for @Model.DisplayUICulture
         @Html.ReturnToReferrer()
-        @Html.LabelFor(task => task.Value)
-        @Html.TextBoxFor(task => task.Value)
+        <div class="form-group">
+            @Html.LabelFor(task => task.Value)
+            @Html.TextBoxFor(task => task.Value, new { @class = "form-control" })
+            @Html.ValidationMessageFor(resource => resource.Value)
+        </div>
     </fieldset>
 }

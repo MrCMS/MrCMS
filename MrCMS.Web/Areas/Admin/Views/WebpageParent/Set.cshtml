@@ -10,8 +10,10 @@
             </span>
         </legend>
         @Html.HiddenFor(x => x.Id)
-        @Html.Label("parentVal", "Page")
-        @Html.DropDownList("parentVal", ViewData["valid-parents"] as IEnumerable<SelectListItem>, new{@class="input-xlarge select2"})
+        <div class="form-group">
+            @Html.Label("parentVal", "Page")
+            @Html.DropDownList("parentVal", ViewData["valid-parents"] as IEnumerable<SelectListItem>, new { @class = "select2", @style="width:100%;" })
+        </div>
     </fieldset>
 }
 @{

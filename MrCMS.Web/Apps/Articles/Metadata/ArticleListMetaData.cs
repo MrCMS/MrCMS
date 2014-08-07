@@ -14,7 +14,7 @@ namespace MrCMS.Web.Apps.Articles.Metadata
         }
         public override string IconClass
         {
-            get { return "icon-list"; }
+            get { return "glyphicon glyphicon-list"; }
         }
         
         public override ChildrenListType ChildrenListType

@@ -14,47 +14,60 @@
 @using (Html.BeginForm("Add", "Webpage", new { id = "" }, FormMethod.Post))
 {
     <fieldset>
-        <legend>Add page to @(Model.Parent != null ? Model.Parent.Name : "Root")
+        <legend>
+            Add page to @(Model.Parent != null ? Model.Parent.Name : "Root")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-primary btn" value="Save and continue" />
+                <input type="submit" class="btn-primary btn hide-until-document-selected" value="Save and continue" style="display: none;" />
             </span>
         </legend>
-        <div class="row-fluid">
-            <div class="span2">
+        <div class="row">
+            <div class="col-lg-2">
+
                 @foreach (var documentType in types)
                 {
-                    <label class="radio">
-                        <i class="@documentType.Type.IconClass">&nbsp;</i>
-                        @Html.RadioButton("DocumentType", documentType.DisplayId, types.Count == 1, new { data_val = "true", data_val_required = "Please select a page type" })
-                        @documentType.DisplayName
-                    </label>
+                    <div class="radio">
+                        <label class="radio">
+                            @Html.RadioButton("DocumentType", documentType.DisplayId, types.Count == 1, new { data_val = "true", data_val_required = "Please select a page type" })
+                            <i class="@documentType.Type.IconClass"></i>
+                            @documentType.DisplayName
+                        </label>
+                    </div>
                 }
                 @Html.ValidationMessage("DocumentType")
             </div>
-            <div class="span10">
-                @Html.HiddenFor(x => x.Parent.Id)
-                @Html.LabelFor(x => x.Name, "Page Name")
-                @Html.TextBoxFor(x => x.Name, new { @class = "span12", autocomplete = "off" })
-                @Html.ValidationMessageFor(x => x.Name)
 
-                @Html.LabelFor(x => x.UrlSegment, "Url")
-                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
-                @Html.ValidationMessageFor(x => x.UrlSegment)
-
-                <label class="checkbox">
-                    @if (Model.Parent != null && Model.Parent.GetMetadata().ChildrenMaintainHierarchy)
-                    {
-                        <input type="checkbox" name="mode" id="mode" value="1" checked />
-                    }
-                    else
-                    {
-                        <input type="checkbox" name="mode" id="mode" value="1" />
-                    }
-                    Maintain Hierarchy
-                </label>
+            <div class="col-lg-10 hide-until-document-selected" style="display: none;">
+                <div class="form-group">
+                    @Html.HiddenFor(x => x.Parent.Id)
+                    @Html.LabelFor(x => x.Name, "Page Name")
+                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control", autocomplete = "off" })
+                    @Html.ValidationMessageFor(x => x.Name)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.UrlSegment, "Url")
+                    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.UrlSegment)
+                </div>
+                <div class="checkbox">
+                    <label>
+                        @if (Model.Parent != null && Model.Parent.GetMetadata().ChildrenMaintainHierarchy)
+                        {
+                            <input type="checkbox" name="mode" id="mode" value="1" checked />
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="mode" id="mode" value="1" />
+                        }
+                        Maintain Hierarchy
+                    </label>
+                </div>
                 <div data-additional-properties="true">
                 </div>
             </div>
+            <div class="col-lg-10" id="message-choose-document">
+                <p>Please select a document type</p>
+            </div>
+
         </div>
     </fieldset>
 }

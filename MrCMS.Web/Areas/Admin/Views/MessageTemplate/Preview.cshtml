@@ -9,11 +9,11 @@
                 <input type="submit" class="btn btn-danger" value="Preview" />
             </span>
         </legend>
-        <div class="row-fluid">
+        <div class="row">
             @Html.Label("itemId", @Model.PreviewType.Name.BreakUpString() + " Id")
             @Html.TextBox("itemId")
         </div>
-        <input class="btn btn-mini" value="Preview" id="preview-message" type="submit" />
+        <input class="btn btn-xs btn-default" value="Preview" id="preview-message" type="submit" />
         <div id="preview">
         </div>
     </fieldset>

@@ -53,14 +53,14 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public AdminTree GetMediaCategoryNodes(int? id)
         {
-            AdminTree adminTree = GetSimpleAdminTree<MediaCategory>(id, "icon-picture");
+            AdminTree adminTree = GetSimpleAdminTree<MediaCategory>(id, "glyphicon glyphicon-picture");
             adminTree.RootContoller = "MediaCategory";
             return adminTree;
         }
 
         public AdminTree GetLayoutNodes(int? id)
         {
-            AdminTree adminTree = GetSimpleAdminTree<Layout>(id, "icon-th-large");
+            AdminTree adminTree = GetSimpleAdminTree<Layout>(id, "glyphicon glyphicon-th-large");
             adminTree.RootContoller = "Layout";
             return adminTree;
         }

@@ -8,26 +8,30 @@
 @Html.Hidden("controller-name", ViewData["controller-name"])
 @{ Html.RenderPartial("Navbar"); }
 
+
 <div class="container-mrcms">
     @{ Html.RenderPartial("AdminNavigation"); }
     <div class="main-content">
         <div class="inner-content">
             <section class="admin-header">
-            @{ Html.RenderPartial("Messages");}
+                @{ Html.RenderPartial("Messages");}
             </section>
             @RenderBody()
         </div>
     </div>
 </div>
-
 <footer>
     <hr />
-    <img src="/Areas/Admin/Content/Images/logo.png" class="display-inline" style="margin-left: 20px;" />
     <p class="display-inline">
         &copy; Mr CMS 2012-@CurrentRequestData.Now.Year - v@(Html.AssemblyVersion()) - Installed apps: @MrCMSApp.CurrentAppSummary
         <span class="pull-right" style="margin-right: 20px;">Logged in from @CurrentRequestData.CurrentContext.GetCurrentIP()</span>
     </p>
 </footer>
+
+<!--[if lt IE 10]><br /><br />@{
+                              @Html.InfoBlock("Warning!", "You are using an outdated browser. For maximum functionality and experience please upgrade to Chrome, Firefox or IE 11.", AlertType.warning)
+                          }<![endif]-->
+
 
 @if (IsSectionDefined("JavaScriptBlock"))
 {

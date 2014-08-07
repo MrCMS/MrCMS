@@ -18,25 +18,38 @@
         </legend>
         @Html.HiddenFor(widget => widget.Id)
         @Html.Hidden("ReturnUrl", ViewData["return-url"])
-        @Html.LabelFor(widget => widget.Name)
-        @Html.TextBoxFor(widget => widget.Name, new { @class = "span12" })
+        <div class="form-group">
+            @Html.LabelFor(widget => widget.Name)
+            @Html.TextBoxFor(widget => widget.Name, new { @class = "form-control" })
+        </div>
         @if (Model.Webpage != null)
         {
-            @Html.InlineCheckboxFor(widget => widget.IsRecursive, null, null, "Is Recursive (shows on child pages)")
-        }
-        @if (Model.IsTypeCachable())
-        {
-            <hr class="small-margin" />
-            @Html.InlineCheckboxFor(widget => widget.Cache)
-            @Html.LabelFor(widget => widget.CacheLength)
-            @Html.TextBoxFor(widget => widget.CacheLength)
-            @Html.ValidationMessageFor(widget => widget.CacheLength)
-
-            @Html.LabelFor(widget => widget.CacheExpiryType)
-            @Html.DropDownListFor(widget => widget.CacheExpiryType, cacheExpiryOptions)
-            @Html.ValidationMessageFor(widget => widget.CacheExpiryType)
+            <div class="form-group">
+                @Html.InlineCheckboxFor(widget => widget.IsRecursive, null, null, "Is Recursive (shows on child pages)")
+            </div>
         }
         <hr class="small-margin" />
         @Html.RenderCustomAdminProperties()
+
+        
+        @if (Model.IsTypeCachable())
+        {
+            <hr />
+            <h4>Advanced</h4>
+            <hr class="small-margin" />
+            <div class="form-group">
+                @Html.InlineCheckboxFor(widget => widget.Cache)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(widget => widget.CacheLength)
+                @Html.TextBoxFor(widget => widget.CacheLength, new { @class = "form-control" })
+                @Html.ValidationMessageFor(widget => widget.CacheLength)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(widget => widget.CacheExpiryType)
+                @Html.DropDownListFor(widget => widget.CacheExpiryType, cacheExpiryOptions, new { @class = "form-control" })
+                @Html.ValidationMessageFor(widget => widget.CacheExpiryType)
+            </div>
+        }
     </fieldset>
 }

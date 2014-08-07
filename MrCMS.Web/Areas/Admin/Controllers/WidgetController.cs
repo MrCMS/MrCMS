@@ -109,7 +109,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult AddProperties([IoCModelBinder(typeof (AddPropertiesModelBinder))] Widget widget)
+        public ActionResult AddProperties([IoCModelBinder(typeof(AddWidgetPropertiesModelBinder))] Widget widget)
         {
             if (widget != null)
             {

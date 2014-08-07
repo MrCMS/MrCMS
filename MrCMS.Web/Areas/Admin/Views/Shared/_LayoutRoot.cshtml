@@ -4,20 +4,19 @@
 <html>
     <head>
         <title>@ViewBag.Title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         @{
             Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css");
             Html.IncludeCss("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload.css");
-            Html.IncludeCss("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload-ui.css");
             Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery.tagit.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery-ui-bootstrap/jquery-ui-1.9.2.custom.css");
             Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/jstree/themes/default/style.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/bootstrap/css/bootstrap.css");
+            Html.IncludeCss("~/Areas/Admin/Content/Styles/bootstrap/css/bootstrap-theme.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/mrcms-admin.css");
         }
         @Html.RenderCss()
-        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-        <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"> </script><![endif]-->
     </head>
     <body>
         <div id="loading" style="display: none;">

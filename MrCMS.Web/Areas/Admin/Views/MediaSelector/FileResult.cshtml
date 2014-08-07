@@ -19,6 +19,7 @@
                         <td>
                             @Html.RenderImage(Model.FileUrl, new Size(64, 64))
                         </td>
+                        <td width="10"></td>
                         <td>
                             @foreach (var size in Model.Sizes)
                             {
@@ -31,7 +32,7 @@
                                 </div>
                             }
 
-                            <input type="button" class="btn-primary btn" data-file="@Model.Id" data-action="select" disabled="disabled" value="Choose file" />
+                            <input type="button" class="btn-primary btn btn-sm" data-file="@Model.Id" data-action="select" disabled="disabled" value="Choose file" />
                         </td>
                     </tr>
                 </tbody>

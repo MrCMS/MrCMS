@@ -1,19 +1,18 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 <div class="tab-pane active" id="edit-content">
-    <div class="span12">
-        @Html.HiddenFor(x => x.LiveUrlSegment)
-        @Html.HiddenFor(x => x.DocumentType)
-        @Html.HiddenFor(x => x.Id)
-        <div class="accordion" id="accordion-page-edit">
-            @Html.TextBoxFor(x => x.Name, new { @class = "span12" })
-            @Html.ValidationMessageFor(x => x.Name)
+    @Html.HiddenFor(x => x.LiveUrlSegment)
+    @Html.HiddenFor(x => x.DocumentType)
+    @Html.HiddenFor(x => x.Id)
 
-            @if (Model.GetMetadata().HasBodyContent)
-            {
-                    Html.RenderPartial("Content", Model);
-            }
-            @Html.RenderCustomAdminProperties()
-        </div>
+    <div class="form-group">
+        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
     </div>
+    @Html.ValidationMessageFor(x => x.Name)
+
+    @if (Model.GetMetadata().HasBodyContent)
+    {
+        Html.RenderPartial("Content", Model);
+    }
+    @Html.RenderCustomAdminProperties()
 </div>

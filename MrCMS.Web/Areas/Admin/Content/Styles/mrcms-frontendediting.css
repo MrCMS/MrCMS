@@ -22,7 +22,7 @@ div.layout-area, div.widget { position: relative; }
 .mrcms-edit-menu ul { margin: 0; padding: 0; list-style-type: none; }
     .mrcms-edit-menu ul li { margin: 5px; }
 
-.mrcms-btn { display: inline-block; padding: 6px 12px; margin-bottom: 0; font-size: 14px; font-weight: 500; line-height: 1.428571429; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; border: 1px solid transparent; border-radius: 4px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; }
+.mrcms-btn { display: inline-block; padding: 5px 6px; margin-bottom: 0; font-size: 12px; font-weight: 500; line-height: 14px; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; border: 1px solid transparent; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none;border-radius: 4px; }
 
     .mrcms-btn:focus { outline: thin dotted #333; outline: 5px auto -webkit-focus-ring-color; outline-offset: -2px; }
 

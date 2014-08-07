@@ -19,7 +19,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public List<SelectListItem> GetSiteOptions()
         {
-            var sites = _session.QueryOver<Site>().Cacheable().List();
+            var sites = _session.QueryOver<Site>().OrderBy(x=>x.Name).Asc.Cacheable().List();
 
             return sites.BuildSelectItemList(site => site.Name, site => string.Format((string) "http://{0}/admin/", (object) site.BaseUrl),
                                              site => site.Id == _site.Id,

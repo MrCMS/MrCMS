@@ -6,9 +6,9 @@
     {
         <table class="table table-striped table-condensed">
             <tr>
-                <th class="span6">File Name</th>
-                <th class="span4">Alt / Description</th>
-                <th class="span2"><a href="@Url.Action("Show", "MediaCategory", new {Id = Model.Id})" class="btn btn-mini" target="_new">Manage folder</a></th>
+                <th class="col-lg-6">File Name</th>
+                <th class="col-lg-4">Alt / Description</th>
+                <th class="col-lg-2"><a href="@Url.Action("Show", "MediaCategory", new {Id = Model.Id})" class="btn btn-xs btn-default" target="_new">Manage folder</a></th>
             </tr>
 
             @foreach (var file in Model.Files.OrderByDescending(x=>x.CreatedOn))
@@ -25,7 +25,7 @@
 
                     </td>
                     <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? MvcHtmlString.Create("<br />" + file.Description) : null)</td>
-                    <th><a href="@Url.Action("Delete", "File", new{Id=file.Id})" class="btn btn-danger btn-mini delete-file-simple">Delete</a></th>
+                    <th><a href="@Url.Action("Delete", "File", new{Id=file.Id})" class="btn btn-danger btn-xs delete-file-simple">Delete</a></th>
                 </tr>
             }
 

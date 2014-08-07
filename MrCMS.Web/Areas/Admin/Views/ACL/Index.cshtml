@@ -12,18 +12,18 @@
             <span class="btn-group display-inline pull-right">
                 @if (settings.ACLEnabled)
                 {
-                    @Html.ActionLink("Disable ACL", "Disable", "ACL", null, new { id = "disable-acl", @class = "btn" })
+                    @Html.ActionLink("Disable ACL", "Disable", "ACL", null, new { id = "disable-acl", @class = "btn btn-default" })
                 }
                 else
                 {
-                    @Html.ActionLink("Enable ACL", "Enable", "ACL", null, new { id = "enable-acl", @class = "btn" })
+                    @Html.ActionLink("Enable ACL", "Enable", "ACL", null, new { id = "enable-acl", @class = "btn btn-default" })
                 }
                 <input class="btn btn-primary" type="submit" value="Update" />
             </span>
         </legend>
     </fieldset>
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-lg-12">
             @if (settings.ACLEnabled)
             {
                 <h3>Features</h3>

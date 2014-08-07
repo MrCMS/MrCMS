@@ -3,22 +3,31 @@
 @{
     var otherSites = ViewData["other-sites"] as IEnumerable<SelectListItem>;
 }
-@Html.LabelFor(options => options.SiteId)
-@Html.DropDownListFor(options => options.SiteId, otherSites)
-@Html.ValidationMessageFor(options => options.SiteId)
-
+<div class="form-group">
+    @Html.LabelFor(options => options.SiteId)
+    @Html.DropDownListFor(options => options.SiteId, otherSites, new{@class="form-control"})
+    @Html.ValidationMessageFor(options => options.SiteId)
+</div>
 <div id="other-site-copy-options">
-    <div class="row-fluid">
-        <div class="span6">
-            @Html.InlineCheckboxFor(options => options.CopyLayouts)
-            @Html.InlineCheckboxFor(options => options.CopyMediaCategories)
-            @Html.InlineCheckboxFor(options => options.CopyHome)
-            @Html.InlineCheckboxFor(options => options.CopyLogin)
-        </div>
-        <div class="span6">
-            @Html.InlineCheckboxFor(options => options.Copy404)
-            @Html.InlineCheckboxFor(options => options.Copy403)
-            @Html.InlineCheckboxFor(options => options.Copy500)
-        </div>
+    <div class="form-group">
+        @Html.InlineCheckboxFor(options => options.CopyLayouts)
+    </div>
+    <div class="form-group">
+        @Html.InlineCheckboxFor(options => options.CopyMediaCategories)
+    </div>
+    <div class="form-group">
+        @Html.InlineCheckboxFor(options => options.CopyHome)
+    </div>
+    <div class="form-group">
+        @Html.InlineCheckboxFor(options => options.CopyLogin)
+    </div>
+    <div class="form-group">
+        @Html.InlineCheckboxFor(options => options.Copy404)
+    </div>
+    <div class="form-group">
+        @Html.InlineCheckboxFor(options => options.Copy403)
+    </div>
+    <div class="form-group">
+        @Html.InlineCheckboxFor(options => options.Copy500)
     </div>
 </div>

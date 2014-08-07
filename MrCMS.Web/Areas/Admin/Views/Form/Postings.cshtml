@@ -3,13 +3,14 @@
 
 
 <div data-paging-type="async">
-    <div class="row-fluid">
-        @Html.LabelFor(model => model.Search)
-        @Html.TextBoxFor(model => model.Search)
-        <p>
-            <button class="btn btn-mini" id="search-postings" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">Search</button>
-        </p>
+    @Html.LabelFor(model => model.Search)
+    <div class="input-group">
+        @Html.TextBoxFor(webpage => webpage.Search, new { @class = "form-control" })
+        <span class="input-group-btn">
+            <button class="btn btn-default" id="search-postings" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">Search</button>
+        </span>
     </div>
+    <br />
     @if (Model.Items.Any())
     {
         <table class="table table-condensed table-striped">
@@ -47,9 +48,9 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink("View full entry", "ViewPosting", new { id = posting.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+                                @Html.ActionLink("View full entry", "ViewPosting", new { id = posting.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
 
-                                @Html.ActionLink("Delete", "DeleteEntry", "Form", new { id = posting.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
+                                @Html.ActionLink("Delete", "DeleteEntry", "Form", new { id = posting.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
                             </div>
                         </td>
                     </tr>

@@ -2,7 +2,7 @@
 <div id="restricted-domains">
     <hr />
     <div class="pull-right">
-        @Html.ActionLink("Add", "Add", "RedirectedDomain", new { id = Model.Id }, new { @class = "btn btn-primary btn-mini", data_toggle = "fb-modal" })
+        @Html.ActionLink("Add", "Add", "RedirectedDomain", new { id = Model.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
     </div>
     <h4>Redirected Domains</h4>
     @if (Model.RedirectedDomains.Any())
@@ -20,7 +20,7 @@
                 {
                     <tr>
                         <td>@domain.Url</td>
-                        <td>@Html.ActionLink("Remove", "Delete", "RedirectedDomain", new {id = domain.Id}, new {@class = "btn btn-danger btn-mini", data_toggle = "fb-modal"})</td>
+                        <td>@Html.ActionLink("Remove", "Delete", "RedirectedDomain", new {id = domain.Id}, new {@class = "btn btn-danger btn-xs", data_toggle = "fb-modal"})</td>
                     </tr>
                 }
             </tbody>

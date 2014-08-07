@@ -10,12 +10,12 @@
         }
     };
     var onSuccess = function (row, statusCell) {
-        statusCell.html('<i class="icon-ok"></i>');
+        statusCell.html('<i class="glyphicon glyphicon-ok"></i>');
         row.addClass('success');
     };
     var onFailure = function (row, statusCell) {
-        statusCell.html('<i class="icon-remove"></i>');
-        row.addClass('error');
+        statusCell.html('<i class="glyphicon glyphicon-remove"></i>');
+        row.addClass('danger');
     };
     var processRow = function (row) {
         var url = row.data('process-url');

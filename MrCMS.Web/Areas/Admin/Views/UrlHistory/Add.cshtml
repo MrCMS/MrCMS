@@ -5,12 +5,14 @@
     <fieldset>
         <legend>Add Url
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-primary btn" value="Add" />
+                <input type="submit" class="btn btn-default btn-primary" value="Add" />
             </span>
         </legend>
         @Html.HiddenFor(x => x.Webpage.Id)
-        @Html.LabelFor(x => x.UrlSegment, "Url")
-        @Html.TextBoxFor(x => x.UrlSegment, new { @class = "span12" })
-        @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+        <div class="form-group">
+            @Html.LabelFor(x => x.UrlSegment, "Url")
+            @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+        </div>
     </fieldset>
 }

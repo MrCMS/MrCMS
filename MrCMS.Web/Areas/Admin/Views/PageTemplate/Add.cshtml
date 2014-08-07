@@ -17,24 +17,30 @@
                 <input type="submit" class="btn-primary btn" value="Add page template" />
             </span>
         </legend>
-        @Html.LabelFor(x => x.Name)
-        @Html.TextBoxFor(x => x.Name)
-        @Html.ValidationMessageFor(x => x.Name)
-
-        @Html.LabelFor(x => x.PageTemplateName)
-        @Html.TextBoxFor(x => x.PageTemplateName)
-        @Html.ValidationMessageFor(x => x.PageTemplateName)
-
-        @Html.LabelFor(x => x.PageType)
-        @Html.DropDownListFor(x => x.PageType, pageTypeOptions)
-        @Html.ValidationMessageFor(x => x.PageType)
-
-        @Html.LabelFor(x => x.Layout.Id, Resource("Layout"))
-        @Html.DropDownListFor(x => x.Layout.Id, layoutOptions)
-        @Html.ValidationMessageFor(x => x.Layout.Id)
-
-        @Html.LabelFor(x => x.UrlGeneratorType)
-        @Html.DropDownListFor(x => x.UrlGeneratorType, urlGeneratorOptions)
-        @Html.ValidationMessageFor(x => x.UrlGeneratorType)
+        <div class="form-group">
+            @Html.LabelFor(x => x.Name)
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Name)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.PageTemplateName)
+            @Html.TextBoxFor(x => x.PageTemplateName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.PageTemplateName)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.PageType)
+            @Html.DropDownListFor(x => x.PageType, pageTypeOptions, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.PageType)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Layout.Id, Resource("Layout"))
+            @Html.DropDownListFor(x => x.Layout.Id, layoutOptions, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Layout.Id)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.UrlGeneratorType)
+            @Html.DropDownListFor(x => x.UrlGeneratorType, urlGeneratorOptions, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.UrlGeneratorType)
+        </div>
     </fieldset>
 }

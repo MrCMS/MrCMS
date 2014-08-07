@@ -73,7 +73,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             {
                 adminTree.Nodes.Add(new AdminTreeNode
                 {
-                    IconClass = "icon-plus",
+                    IconClass = "glyphicon glyphicon-plus",
                     IsMoreLink = true,
                     ParentId = id,
                     Name = (rowCount - maxChildNodes) + " More",

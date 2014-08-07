@@ -9,7 +9,7 @@
         <legend>User roles
 
             <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-success", data_toggle = "fb-modal" })
+                @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
             </span>
         </legend>
         <table class="table table-striped table-condensed">
@@ -32,7 +32,7 @@
                     <td>
                         @Html.ActionLink(role.Name, "Edit", new { id = role.Id }, new { @class = "", data_toggle = "fb-modal" })
                     </td>
-                    <td>@Html.ActionLink("Delete", "Delete", new { id = role.Id }, new { @class = "btn btn-danger btn-mini", data_toggle = "fb-modal" })</td>
+                    <td>@Html.ActionLink("Delete", "Delete", new { id = role.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })</td>
                 </tr>
                 }
             }

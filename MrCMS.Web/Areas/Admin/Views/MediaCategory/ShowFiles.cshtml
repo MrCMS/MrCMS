@@ -9,12 +9,12 @@
     {
         <table class="table table-striped table-condensed">
             <tr>
-                <th class="span6">File Name</th>
-                <th class="span4">Alt / Description</th>
-                <th class="span2">Actions</th>
+                <th class="col-lg-6">File Name</th>
+                <th class="col-lg-4">Alt / Description</th>
+                <th class="col-lg-2">Actions</th>
             </tr>
 
-            @foreach (var file in files)
+            @foreach (var file in files.OrderBy(x=>x.DisplayOrder))
             {
                 <tr>
                     <td>
@@ -30,8 +30,8 @@
                     <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? MvcHtmlString.Create("<br />" + file.Description) : MvcHtmlString.Create("<span style='font-size: 10px;'><em>None set</em></span>"))</td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink("Delete", "Delete", "File", new { Id = file.Id }, new { @class = "btn btn-mini btn-danger", data_toggle = "fb-modal" })
-                            @Html.ActionLink("Edit", "Edit", "File", new { Id = file.Id }, new { @class = "btn btn-mini", data_toggle = "fb-modal" })
+                            @Html.ActionLink("Delete", "Delete", "File", new { Id = file.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
+                            @Html.ActionLink("Edit", "Edit", "File", new { Id = file.Id }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
                         </div>
                     </td>
                 </tr>

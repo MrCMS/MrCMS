@@ -4,18 +4,17 @@
 @using (Html.BeginForm("Add", "LayoutArea", new { id = "" }, FormMethod.Post))
 {
     <fieldset>
-        <legend>Add layout area
+        <legend>
+            Add layout area
             <span class="btn-group  display-inline  pull-right">
                 <input type="submit" class="btn-success btn" value="Add layout area" />
             </span>
         </legend>
-        <div class="row-fluid">
-            <div class="span12">
-                @Html.HiddenFor(x => x.Layout.Id)
-                @Html.LabelFor(x => x.AreaName)
-                @Html.EditorFor(x => x.AreaName, new { @class = "span12" })
-                @Html.ValidationMessageFor(x => x.AreaName, "", new { @class = "error" })
-            </div>
+        @Html.HiddenFor(x => x.Layout.Id)
+        <div class="form-group">
+            @Html.LabelFor(x => x.AreaName)
+            @Html.TextBoxFor(x => x.AreaName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.AreaName, "", new { @class = "error" })
         </div>
     </fieldset>
 }

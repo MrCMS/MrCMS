@@ -3,20 +3,23 @@
 @{
     var userOptions = ViewData["users"] as IEnumerable<SelectListItem>;
 }
-
-@Html.LabelFor(model => model.FeatureImage, "Article Image")
-@Html.TextBoxFor(model => model.FeatureImage, new { data_type = "media-selector" })
-
-@Html.LabelFor(model => model.Abstract)
-@Html.TextAreaFor(model => model.Abstract, new { @rows = "4", @class = "span12" })
-<span id="abstract-character-count">
-    <span>@((160 - (Model.Abstract ?? string.Empty).Length) + " characters remaining")</span>
-</span>
-
-@Html.LabelFor(model => model.User.Id, "Author")
-@Html.DropDownListFor(model => model.User.Id, userOptions)
-
-@Html.LabelFor(x => x.TagList, "Tags")
-@Html.TextBoxFor(x => x.TagList, new { @class = "span12 system-tagging" })
-
+<div class="form-group">
+    @Html.LabelFor(model => model.FeatureImage, "Article Image") <br />
+    @Html.TextBoxFor(model => model.FeatureImage, new { data_type = "media-selector" })
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.Abstract)
+    @Html.TextAreaFor(model => model.Abstract, new { @rows = "2", @class = "form-control" })
+    <span id="abstract-character-count">
+        <span>@((160 - (Model.Abstract ?? string.Empty).Length) + " characters remaining")</span>
+    </span>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.User.Id, "Author")
+    @Html.DropDownListFor(model => model.User.Id, userOptions, new { @class = "form-control" })
+</div>
+<div class="form-group">
+    @Html.LabelFor(x => x.TagList, "Tags")
+    @Html.TextBoxFor(x => x.TagList, new { @class = "form-control system-tagging" })
+</div>
 @Html.InfoBlock("Heads up! ", "Set the tags here you would like to use as your categories for this article.")

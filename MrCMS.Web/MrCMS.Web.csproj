@@ -352,6 +352,7 @@
     <Compile Include="Areas\Admin\ModelBinders\AddUserModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\AddWebpageModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\AddWidgetModelBinder.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\AddWidgetPropertiesModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\EditUserModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\EditWebpageModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\FileSystemSettingsModelBinder.cs" />
@@ -1313,11 +1314,12 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\tag-it.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\tmpl.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\transient-notifications.js" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Areas\Admin\Content\Styles\mrcms-admin.css" />
-    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.css" />
-    <Content Include="Areas\Admin\Content\Styles\bootstrap\img\glyphicons-halflings-white.png" />
-    <Content Include="Areas\Admin\Content\Styles\bootstrap\img\glyphicons-halflings.png" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\js\bootstrap.js" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\js\bootstrap.min.js" />
     <Content Include="Areas\Admin\Content\Styles\mrcms-frontendediting.css" />
@@ -1363,14 +1365,6 @@
     <Content Include="Areas\Admin\Content\Styles\jquery.mrcms-mediaselector.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.tagit.css" />
     <Content Include="Content\install\images\install-synchronizing.gif" />
-    <Content Include="Content\install\bootstrap\css\bootstrap-responsive.css" />
-    <Content Include="Content\install\bootstrap\css\bootstrap-responsive.min.css" />
-    <Content Include="Content\install\bootstrap\css\bootstrap.css" />
-    <Content Include="Content\install\bootstrap\css\bootstrap.min.css" />
-    <Content Include="Content\install\bootstrap\img\glyphicons-halflings-white.png" />
-    <Content Include="Content\install\bootstrap\img\glyphicons-halflings.png" />
-    <Content Include="Content\install\bootstrap\js\bootstrap.js" />
-    <Content Include="Content\install\bootstrap\js\bootstrap.min.js" />
     <Content Include="Content\install\scripts\jquery.validate.js" />
     <Content Include="Content\install\style.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.fileupload-ui.css" />
@@ -1545,7 +1539,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Admin\Views\User\Filter.cshtml" />
-    <Content Include="Areas\Admin\Views\Log\Filter.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Preview.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\RestrictedDomains.cshtml" />
     <Content Include="Areas\Admin\Views\RedirectedDomain\Add.cshtml" />
@@ -1656,6 +1649,11 @@
     <Content Include="Apps\Articles\Views\Widgets\ArticleArchive.cshtml" />
     <Content Include="Apps\Articles\Views\Widgets\ArticleCategories.cshtml" />
     <Content Include="Apps\Articles\Views\Widgets\LatestXArticles.cshtml" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.css.map" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.css.map" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
@@ -1683,7 +1681,6 @@
     <Folder Include="Themes\Default\Shared\" />
     <Folder Include="Themes\Default\Views\Pages\" />
     <Folder Include="Themes\Default\Views\Widgets\" />
-    <Folder Include="Views\ArticleSection\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -1695,12 +1692,9 @@
     <Content Include="Areas\Admin\Views\Layout\Add.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Layout\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Layout\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Layout\Sort.cshtml" />
-    <Content Include="Areas\Admin\Views\Layout\Show.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Add.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Media.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\AdminNavigation.cshtml" />

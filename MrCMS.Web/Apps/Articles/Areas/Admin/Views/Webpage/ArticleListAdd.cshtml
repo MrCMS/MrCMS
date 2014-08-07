@@ -2,16 +2,18 @@
 @model MrCMS.Web.Apps.Articles.Pages.ArticleList
 @{ Html.IncludeScript("~/Apps/Articles/Areas/Admin/Content/Scripts/articles.js"); }
 
-@Html.LabelFor(model => model.PageSize)
-@Html.EditorFor(model => model.PageSize)
-@Html.ValidationMessageFor(model => model.PageSize)
-
-@Html.InlineCheckboxFor(model => model.AllowPaging, null, null, "Allow paging?")
-
-
-@Html.LabelFor(x => x.TagList, "Tags")
-@Html.TextBoxFor(x => x.TagList, new { @class = "span12 system-tagging" })
-
+<div class="form-group">
+    @Html.LabelFor(model => model.PageSize)
+    @Html.TextBoxFor(model => model.PageSize, new{@class="form-control"})
+    @Html.ValidationMessageFor(model => model.PageSize)
+</div>
+<div class="form-group">
+    @Html.InlineCheckboxFor(model => model.AllowPaging, null, null, "Allow paging?")
+</div>
+<div class="form-group">
+    @Html.LabelFor(x => x.TagList, "Tags")
+    @Html.TextBoxFor(x => x.TagList, new { @class = "col-lg-12 system-tagging" })
+</div>
 
 @Html.InfoBlock("Heads up! ", "Set the tags here you would like to use as your categories for articles added to this listing page.")
 
