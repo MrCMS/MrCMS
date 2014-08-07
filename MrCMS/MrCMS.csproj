@@ -260,10 +260,10 @@
     <Compile Include="DbConfiguration\Caches\Azure\SerializationProvider.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
     <Compile Include="DbConfiguration\Configuration\DatabaseType.cs" />
+    <Compile Include="DbConfiguration\Configuration\SetCoreProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SetOnUpdatingProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SoftDeleteListener.cs" />
     <Compile Include="DbConfiguration\Configuration\PostCommitEventListener.cs" />
-    <Compile Include="DbConfiguration\Configuration\SaveOrUpdateListener.cs" />
     <Compile Include="DbConfiguration\Configuration\UpdateIndicesListener.cs" />
     <Compile Include="DbConfiguration\Configuration\UrlHistoryListener.cs" />
     <Compile Include="DbConfiguration\Conventions\AddIndexConvention.cs" />

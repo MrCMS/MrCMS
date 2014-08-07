@@ -33,8 +33,6 @@ namespace MrCMS.Web.Apps.Core
         public static void Install(ISession session, InstallModel model, Site site)
         {
             //settings
-            session.Transact(sess => sess.Save(site));
-            CurrentRequestData.CurrentSite = site;
             SetupTasks(session, site);
             SetupMessageTemplates(session, site, model);
             var siteSettings = new SiteSettings

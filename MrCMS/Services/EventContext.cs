@@ -11,11 +11,11 @@ namespace MrCMS.Services
     {
         public static IEventContext Instance { get { return MrCMSApplication.Get<IEventContext>(); } }
 
-        private readonly IEnumerable<IEvent> _events;
+        private readonly HashSet<IEvent> _events;
 
         public EventContext(IEnumerable<IEvent> events)
         {
-            _events = events;
+            _events = events.ToHashSet();
         }
 
         public void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
