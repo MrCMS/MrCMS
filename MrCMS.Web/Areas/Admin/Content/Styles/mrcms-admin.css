@@ -4,7 +4,7 @@
 .nav-tabs { margin-bottom: 15px;}
 legend { font-size: 26px;}
 
-.navbar-default .navbar-nav > li > a, .btn-default, a, .dropdown-menu > li > a { color: #00adef  ;}
+.navbar-default .navbar-nav > li > a, .btn-default, a, .dropdown-menu > li > a { color: #428bca;}
 .dropdown-submenu {
     position:relative;
 }
