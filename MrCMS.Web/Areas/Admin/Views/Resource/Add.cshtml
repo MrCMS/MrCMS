@@ -10,11 +10,12 @@
 {
     <fieldset>
         <legend>
-            Add an override for @Model.DisplayKey
+            Add override 
             <span class="btn-group display-inline pull-right">
                 <input type="submit" class="btn-primary btn" value="Add Override" />
             </span>
         </legend>
+        <p>Default: @Model.DisplayKey</p>
         @Html.ReturnToReferrer()
         @Html.HiddenFor(task => task.Key)
         <div class="form-group">

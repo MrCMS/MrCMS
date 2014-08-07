@@ -1538,7 +1538,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Admin\Views\User\Filter.cshtml" />
-    <Content Include="Areas\Admin\Views\Log\Filter.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Preview.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\RestrictedDomains.cshtml" />
     <Content Include="Areas\Admin\Views\RedirectedDomain\Add.cshtml" />

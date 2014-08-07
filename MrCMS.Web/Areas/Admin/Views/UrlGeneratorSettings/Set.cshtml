@@ -13,9 +13,10 @@
                 <input type="submit" class="btn-primary btn" value="Set default generator" />
             </span>
         </legend>
-
-        @Html.LabelFor(x => x.GeneratorTypeName)
-        @Html.DropDownListFor(x => x.GeneratorTypeName, urlGeneratorOptions)
-        @Html.ValidationMessageFor(x => x.GeneratorTypeName)
+        <div class="form-group">
+            @Html.LabelFor(x => x.GeneratorTypeName)
+            @Html.DropDownListFor(x => x.GeneratorTypeName, urlGeneratorOptions, new{@class="form-control"})
+            @Html.ValidationMessageFor(x => x.GeneratorTypeName)
+        </div>
     </fieldset>
 }

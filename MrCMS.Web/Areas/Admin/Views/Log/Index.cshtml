@@ -19,22 +19,33 @@
         </legend>
 
         <div class="row">
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <div class="form-group">
                     @Html.LabelFor(query => query.Type)
                     @Html.DropDownListFor(query => query.Type, Enum.GetValues(typeof(LogEntryType)).OfType<LogEntryType>().BuildSelectItemList(type => type.ToString(), type => type.ToString(), type => type == Model.Type, "All"), new { @class = "form-control" })
                 </div>
             </div>
-            @if (siteOptions.Any())
-            {
-                <div class="col-lg-2">
-                    <div class="form-group">
-                        @Html.LabelFor(query => query.SiteId)
-                        @Html.DropDownListFor(query => query.SiteId, siteOptions, new { @class = "form-control" })
-                    </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.SiteId)
+                    @Html.DropDownListFor(query => query.SiteId, siteOptions, new { @class = "form-control" })
                 </div>
-            }
-            <div class="col-lg-4">
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.From)
+                    @Html.TextBoxFor(query => query.From, new { @class = "date-time-picker form-control" })
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.To)
+                    @Html.TextBoxFor(query => query.To, new { @class = "date-time-picker form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
                 <div class="form-group">
                     @Html.LabelFor(query => query.Message)
                     @Html.TextBoxFor(query => query.Message, new { @class = "form-control" })
@@ -48,18 +59,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-2">
-                <div class="form-group">
-                    @Html.LabelFor(query => query.From)
-                    @Html.TextBoxFor(query => query.From, new { @class = "date-time-picker form-control" })
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="form-group">
-                    @Html.LabelFor(query => query.To)
-                    @Html.TextBoxFor(query => query.To, new { @class = "date-time-picker form-control" })
-                </div>
-            </div>
+
         </div>
     </fieldset>
 }
@@ -107,7 +107,7 @@ else
                         @entry.Type
                     </td>
                     <td>
-                        @Html.ActionLink("Show", "Show", new { id = entry.Id }, new{@class = "btn btn-xs btn-default"})
+                        @Html.ActionLink("Show", "Show", new { id = entry.Id }, new { @class = "btn btn-xs btn-default" })
                     </td>
                 </tr>
             }
