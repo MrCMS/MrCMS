@@ -15,7 +15,7 @@
     };
     var onFailure = function (row, statusCell) {
         statusCell.html('<i class="glyphicon glyphicon-remove"></i>');
-        row.addClass('error');
+        row.addClass('danger');
     };
     var processRow = function (row) {
         var url = row.data('process-url');

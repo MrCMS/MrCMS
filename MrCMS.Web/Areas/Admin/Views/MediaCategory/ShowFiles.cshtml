@@ -14,7 +14,7 @@
                 <th class="col-lg-2">Actions</th>
             </tr>
 
-            @foreach (var file in files)
+            @foreach (var file in files.OrderBy(x=>x.DisplayOrder))
             {
                 <tr>
                     <td>

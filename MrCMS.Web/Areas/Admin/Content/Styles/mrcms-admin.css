@@ -183,8 +183,8 @@ input.input-validation-error, select.input-validation-error {
 
 #admin-site-selector {
     font-size: 12px;
-    background: slategray;
-    color: white;
+    background: #e7e7e7;
+    color: #428bca;
     border: none;
     margin-right: 0;
 }

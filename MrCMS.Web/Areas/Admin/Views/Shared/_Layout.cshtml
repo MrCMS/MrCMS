@@ -28,6 +28,11 @@
     </p>
 </footer>
 
+<!--[if lt IE 10]><br /><br />@{
+                              @Html.InfoBlock("Warning!", "You are using an outdated browser. For maximum functionality and experience please upgrade to Chrome, Firefox or IE 11.", AlertType.warning)
+                          }<![endif]-->
+
+
 @if (IsSectionDefined("JavaScriptBlock"))
 {
     DefineSection("JavaScriptBlock", () => Write(RenderSection("JavaScriptBlock")));
