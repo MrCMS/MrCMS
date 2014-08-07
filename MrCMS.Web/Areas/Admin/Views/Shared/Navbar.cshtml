@@ -3,23 +3,30 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <a href="/Admin"> <img src="/Areas/Admin/Content/Images/logo.png" class="display-inline" style="display: inline; float: left; margin-top: 5px;" /></a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
         </div>
-        @{ Html.RenderAction("Get", "NavLinks");}
-
-        <form class="navbar-form navbar-left" role="search" action="@Url.Action("Index", "Search")" method="GET">
-            <div class="input-group">
-                @Html.TextBox("term", "", new { @class = "search-query form-control", placeholder = "Search", autocomplete = "off" })
-                <span class="input-group-btn">
-                    <button type="submit" class="btn btn-default">GO</button>
-                </span>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            @{ Html.RenderAction("Get", "NavLinks");}
+            <form class="navbar-form navbar-left" role="search" action="@Url.Action("Index", "Search")" method="GET">
+                <div class="input-group">
+                    @Html.TextBox("term", "", new { @class = "search-query form-control", placeholder = "Search", autocomplete = "off" })
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default">GO</button>
+                    </span>
+                </div>
+            </form>
+            <div class="nav pull-right">
+                @{ Html.RenderAction("Get", "SiteList"); }
             </div>
-        </form>
-        <div class="nav pull-right">
-            @{ Html.RenderAction("Get", "SiteList"); }
+            @if (!CurrentRequestData.CurrentUser.DisableNotifications)
+            {
+                Html.RenderAction("Navbar", "PersistentNotification");
+            }
         </div>
-        @if (!CurrentRequestData.CurrentUser.DisableNotifications)
-        {
-            Html.RenderAction("Navbar", "PersistentNotification");
-        }
     </div>
 </nav>
