@@ -164,6 +164,7 @@
     <Compile Include="IoC\NinjectScopingTests.cs" />
     <Compile Include="IoC\NinjectSettingsBinderTests.cs" />
     <Compile Include="Helpers\SessionHelperTests.cs" />
+    <Compile Include="MrCMSTest.cs" />
     <Compile Include="Optimization\ResourceDataTests.cs" />
     <Compile Include="Services\CurrentSiteLocatorTests.cs" />
     <Compile Include="Services\WebpageUrlGeneratorTests.cs" />
@@ -210,6 +211,8 @@
     <Compile Include="Stubs\StubDisallowedWebpage.cs" />
     <Compile Include="Stubs\StubDocument.cs" />
     <Compile Include="Stubs\StubWebpage.cs" />
+    <Compile Include="TestableEventContext.cs" />
+    <Compile Include="TestContextModule.cs" />
     <Compile Include="Website\Controllers\FormControllerTests.cs" />
     <Compile Include="Website\CurrentRequestDataTests.cs" />
     <Compile Include="Website\Routing\ControllerManagerTests.cs" />
