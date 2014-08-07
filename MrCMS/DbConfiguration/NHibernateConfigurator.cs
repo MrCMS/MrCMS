@@ -148,8 +148,8 @@ namespace MrCMS.DbConfiguration
                     .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
                     .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
                     .IncludeAppConventions();
-            addFromAssemblyOf.Add(typeof (NotDeletedFilter));
-            addFromAssemblyOf.Add(typeof (SiteFilter));
+            addFromAssemblyOf.Add(typeof(NotDeletedFilter));
+            addFromAssemblyOf.Add(typeof(SiteFilter));
             NHibernate.Cfg.Configuration config = Fluently.Configure()
                 .Database(iPersistenceConfigurer)
                 .Mappings(m => m.AutoMappings.Add(addFromAssemblyOf))
@@ -214,6 +214,11 @@ namespace MrCMS.DbConfiguration
 
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)
         {
+            configuration.AppendListeners(ListenerType.PreInsert,
+                                                   new[]
+                                              {
+                                                  new SetCoreProperties()
+                                              });
             var softDeleteListener = new SoftDeleteListener();
             configuration.SetListener(ListenerType.Delete, softDeleteListener);
         }

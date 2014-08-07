@@ -6,9 +6,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 using MrCMS.DbConfiguration.Helpers;
 using MrCMS.Entities;
+using MrCMS.Events;
 using NHibernate;
 using NHibernate.Engine;
-using NHibernate.Event;
+using NHibernate.Persister.Entity;
 using NHibernate.Stat;
 using NHibernate.Type;
 
@@ -16,11 +17,29 @@ namespace MrCMS.DbConfiguration
 {
     public class MrCMSSession : ISession
     {
+        private readonly HashSet<EventInfo> _added = new HashSet<EventInfo>();
+        private readonly HashSet<EventInfo> _deleted = new HashSet<EventInfo>();
         private readonly ISession _session;
+        private readonly HashSet<UpdatedEventInfo> _updated = new HashSet<UpdatedEventInfo>();
 
         public MrCMSSession(ISession session)
         {
             _session = session;
+        }
+
+        public HashSet<EventInfo> Added
+        {
+            get { return _added; }
+        }
+
+        public HashSet<UpdatedEventInfo> Updated
+        {
+            get { return _updated; }
+        }
+
+        public HashSet<EventInfo> Deleted
+        {
+            get { return _deleted; }
         }
 
         public void Dispose()
@@ -132,9 +151,7 @@ namespace MrCMS.DbConfiguration
         {
             _session.Replicate(entityName, obj, replicationMode);
         }
-        private readonly HashSet<EventInfo> _added = new HashSet<EventInfo>();
-        private readonly HashSet<UpdatedEventInfo> _updated = new HashSet<UpdatedEventInfo>();
-        private readonly HashSet<EventInfo> _deleted = new HashSet<EventInfo>();
+
         public object Save(object obj)
         {
             var systemEntity = obj as SystemEntity;
@@ -143,12 +160,6 @@ namespace MrCMS.DbConfiguration
                 AddAddEvent(systemEntity);
             }
             return _session.Save(obj);
-        }
-
-        private void AddAddEvent(SystemEntity obj)
-        {
-            if (Added.All(info => info.ObjectBase != obj))
-                Added.Add(obj.GetEventInfo());
         }
 
         public void Save(object obj, object id)
@@ -184,51 +195,6 @@ namespace MrCMS.DbConfiguration
                 AddUpdateEvent(systemEntity);
             }
             _session.Update(obj);
-        }
-
-        private void AddUpdateEvent(SystemEntity obj)
-        {
-            if (Updated.All(info => info.ObjectBase != obj))
-            {
-                var originalVersion = GetOriginalVersion(obj);
-                Updated.Add(obj.GetUpdatedEventInfo(originalVersion));
-            }
-        }
-
-        private SystemEntity GetOriginalVersion(SystemEntity entity)
-        {
-            if (entity == null)
-                return null;
-            var sessionImplementation = GetSessionImplementation();
-            var persistenceContext = sessionImplementation.PersistenceContext;
-            var entry = persistenceContext.GetEntry(entity);
-            if (entry == null)
-                return null;
-            var loadedState = entry.LoadedState;
-            if (loadedState == null)
-                return null;
-            var type = entity.GetType();
-            var instance = Activator.CreateInstance(type) as SystemEntity;
-            var entityPersister = entry.Persister;
-            for (int index = 0; index < entityPersister.PropertyNames.Length; index++)
-            {
-                var propertyName = entityPersister.PropertyNames[index];
-                var value = loadedState[index];
-                var propertyInfos = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                var propertyInfo = propertyInfos.FirstOrDefault(info => info.Name == propertyName);
-                try
-                {
-                    if (propertyInfo.CanWrite)
-                    {
-                        propertyInfo.SetValue(instance, value);
-                    }
-                }
-                catch
-                {
-                    throw new Exception(propertyName + " not found");
-                }
-            }
-            return instance;
         }
 
         public void Update(object obj, object id)
@@ -289,12 +255,6 @@ namespace MrCMS.DbConfiguration
                 AddDeletedEvent(entity);
             }
             _session.Delete(obj);
-        }
-
-        private void AddDeletedEvent(SystemEntity obj)
-        {
-            if (Deleted.All(info => info.ObjectBase != obj))
-                Deleted.Add(obj.GetEventInfo());
         }
 
         public void Delete(string entityName, object obj)
@@ -550,19 +510,78 @@ namespace MrCMS.DbConfiguration
             get { return _session.Statistics; }
         }
 
-        public HashSet<EventInfo> Added
+        private void AddAddEvent(SystemEntity obj)
         {
-            get { return _added; }
+            if (Added.All(info => info.ObjectBase != obj))
+            {
+                EventInfo eventInfo = obj.GetEventInfo();
+                Added.Add(eventInfo);
+                eventInfo.PreTransactionHandled = true;
+                eventInfo.Publish(this, typeof(IOnAdding<>),
+                    (info, ses, t) => info.GetTypedInfo(t).ToAddingArgs(ses, t));
+            }
         }
 
-        public HashSet<UpdatedEventInfo> Updated
+        private void AddUpdateEvent(SystemEntity obj)
         {
-            get { return _updated; }
+            if (Updated.All(info => info.ObjectBase != obj))
+            {
+                SystemEntity originalVersion = GetOriginalVersion(obj);
+                UpdatedEventInfo eventInfo = obj.GetUpdatedEventInfo(originalVersion);
+                Updated.Add(eventInfo);
+                eventInfo.PreTransactionHandled = true;
+                eventInfo.Publish(this, typeof(IOnUpdating<>),
+                    (info, ses, t) => info.GetTypedInfo(t).ToUpdatingArgs(ses, t));
+            }
         }
 
-        public HashSet<EventInfo> Deleted
+        private SystemEntity GetOriginalVersion(SystemEntity entity)
         {
-            get { return _deleted; }
+            if (entity == null)
+                return null;
+            ISessionImplementor sessionImplementation = GetSessionImplementation();
+            IPersistenceContext persistenceContext = sessionImplementation.PersistenceContext;
+            EntityEntry entry = persistenceContext.GetEntry(entity);
+            if (entry == null)
+                return null;
+            object[] loadedState = entry.LoadedState;
+            if (loadedState == null)
+                return null;
+            Type type = entity.GetType();
+            var instance = Activator.CreateInstance(type) as SystemEntity;
+            IEntityPersister entityPersister = entry.Persister;
+            for (int index = 0; index < entityPersister.PropertyNames.Length; index++)
+            {
+                string propertyName = entityPersister.PropertyNames[index];
+                object value = loadedState[index];
+                PropertyInfo[] propertyInfos =
+                    type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                PropertyInfo propertyInfo = propertyInfos.FirstOrDefault(info => info.Name == propertyName);
+                try
+                {
+                    if (propertyInfo.CanWrite)
+                    {
+                        propertyInfo.SetValue(instance, value);
+                    }
+                }
+                catch
+                {
+                    throw new Exception(propertyName + " not found");
+                }
+            }
+            return instance;
+        }
+
+        private void AddDeletedEvent(SystemEntity obj)
+        {
+            if (Deleted.All(info => info.ObjectBase != obj))
+            {
+                EventInfo eventInfo = obj.GetEventInfo();
+                Deleted.Add(eventInfo);
+                eventInfo.PreTransactionHandled = true;
+                eventInfo.Publish(this, typeof(IOnDeleting<>),
+                    (info, ses, t) => info.GetTypedInfo(t).ToDeletingArgs(ses, t));
+            }
         }
     }
 
@@ -573,6 +592,7 @@ namespace MrCMS.DbConfiguration
         public abstract object ObjectBase { get; }
         public abstract object OriginalVersionBase { get; }
     }
+
     public class UpdatedEventInfo<T> : UpdatedEventInfo where T : class
     {
         public UpdatedEventInfo(T obj, T originalObj)
@@ -580,11 +600,13 @@ namespace MrCMS.DbConfiguration
             Object = obj;
             OriginalVersion = originalObj;
         }
+
         public UpdatedEventInfo(UpdatedEventInfo info)
         {
             Object = info.ObjectBase as T;
             OriginalVersion = info.OriginalVersionBase as T;
         }
+
         public T OriginalVersion { get; private set; }
         public T Object { get; private set; }
 
