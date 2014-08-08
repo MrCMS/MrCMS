@@ -1678,7 +1678,6 @@
     <Folder Include="Apps\Galleries\Widgets\" />
     <Folder Include="Themes\Default\Apps\Core\Views\Pages\" />
     <Folder Include="Themes\Default\Content\" />
-    <Folder Include="Themes\Default\Shared\" />
     <Folder Include="Themes\Default\Views\Pages\" />
     <Folder Include="Themes\Default\Views\Widgets\" />
   </ItemGroup>

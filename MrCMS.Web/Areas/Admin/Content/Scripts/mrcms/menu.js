@@ -90,3 +90,15 @@
     };
 };
 var webMenu = new WebMenu().init();
+
+//used for Bootstrap 3 click sub menu function
+(function ($) {
+    $(document).ready(function () {
+        $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            $(this).parent().siblings().removeClass('open');
+            $(this).parent().toggleClass('open');
+        });
+    });
+})(jQuery);
