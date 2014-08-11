@@ -6,6 +6,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
+using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -15,12 +16,13 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private readonly IDocumentService _documentService;
         private readonly LayoutController _layoutController;
         private readonly IUrlValidationService _urlValidationService;
+        private readonly ILayoutAreaAdminService _layoutAreaAdminService;
 
         public LayoutContollerTests()
         {
             _documentService = A.Fake<IDocumentService>();
             _urlValidationService = A.Fake<IUrlValidationService>();
-            _layoutController = new LayoutController(_documentService, _urlValidationService);
+            _layoutController = new LayoutController(_documentService, _urlValidationService, _layoutAreaAdminService);
         }
 
         [Fact]
