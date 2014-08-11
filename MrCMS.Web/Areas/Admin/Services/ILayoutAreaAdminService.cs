@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
@@ -14,5 +16,8 @@ namespace MrCMS.Web.Areas.Admin.Services
         void SetWidgetForPageOrders(PageWidgetSortModel pageWidgetSortModel);
         void ResetSorting(LayoutArea area, int pageId);
         PageWidgetSortModel GetSortModel(LayoutArea area, int pageId);
+
+        IEnumerable<SelectListItem> GetValidParents(Layout doc);
+        void Set(Layout doc, int? parentId);
     }
 }

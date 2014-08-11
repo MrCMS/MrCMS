@@ -1,6 +1,7 @@
 using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
@@ -10,9 +11,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
     {
         private readonly LayoutAreaAdminService _layoutAreaAdminService;
 
-        public LayoutAreaAdminServiceTests()
+        public LayoutAreaAdminServiceTests(IDocumentService documentService)
         {
-            _layoutAreaAdminService = new LayoutAreaAdminService(Session);
+            _layoutAreaAdminService = new LayoutAreaAdminService(Session, documentService);
         }
 
         [Fact]

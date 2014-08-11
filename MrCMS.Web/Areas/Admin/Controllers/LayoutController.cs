@@ -1,14 +1,18 @@
 ﻿using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Services;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class LayoutController : BaseDocumentController<Layout>
     {
-        public LayoutController(IDocumentService documentService, IUrlValidationService urlValidationService)
+        private readonly ILayoutAreaAdminService _layoutAreaAdminService;
+
+        public LayoutController(IDocumentService documentService, IUrlValidationService urlValidationService, ILayoutAreaAdminService layoutAreaAdminService)
             : base(documentService, urlValidationService)
         {
+            _layoutAreaAdminService = layoutAreaAdminService;
         }
 
         [HttpGet]
@@ -49,6 +53,21 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return !_urlValidationService.UrlIsValidForLayout(urlSegment, id)
                 ? Json("Path already in use.", JsonRequestBehavior.AllowGet)
                 : Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public PartialViewResult Set(Layout doc)
+        {
+            ViewData["valid-parents"] = _layoutAreaAdminService.GetValidParents(doc);
+            return PartialView();
+        }
+
+        [HttpPost]
+        public RedirectToRouteResult Set(Layout doc, int? parentVal)
+        {
+            _layoutAreaAdminService.Set(doc, parentVal);
+
+            return RedirectToAction("Edit", "Layout", new { id = doc.Id });
         }
     }
 }

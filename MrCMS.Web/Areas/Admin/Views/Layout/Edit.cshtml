@@ -16,6 +16,7 @@
                 {
                     <a href="@Url.Action("Delete", "Layout", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                 }
+                @Html.ActionLink("Move", "Set", "Layout", new { id = Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-default" })
                 <button class="btn btn-primary" id="save-edit">Save</button>
 
             </span>
