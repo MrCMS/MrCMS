@@ -9,7 +9,7 @@ namespace MrCMS.Entities.Documents.Web
         public virtual string Name { get; set; }
 
         [Required]
-        [DisplayName("Page View Name (E.G TextPage)")]
+        [DisplayName("Page View Name (e.g. TextPage)")]
         public virtual string PageTemplateName { get; set; }
 
         [Required]
@@ -21,5 +21,8 @@ namespace MrCMS.Entities.Documents.Web
         [Required]
         [DisplayName("URL Generator Type")]
         public virtual string UrlGeneratorType { get; set; }
+
+        [DisplayName("Single Use?")]
+        public virtual bool SingleUse { get; set; }
     }
 }

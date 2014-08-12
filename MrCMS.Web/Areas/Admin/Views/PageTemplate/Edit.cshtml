@@ -1,4 +1,5 @@
-﻿@model MrCMS.Entities.Documents.Web.PageTemplate
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.PageTemplate
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     List<SelectListItem> layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
@@ -34,6 +35,9 @@
             @Html.LabelFor(x => x.UrlGeneratorType)
             @Html.DropDownListFor(x => x.UrlGeneratorType, urlGeneratorOptions, new { @class = "form-control" })
             @Html.ValidationMessageFor(x => x.UrlGeneratorType)
+        </div>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(template => template.SingleUse)
         </div>
     </fieldset>
 }

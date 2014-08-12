@@ -333,7 +333,7 @@
     <Compile Include="Areas\Admin\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Admin\Controllers\SEOAnalysisController.cs" />
     <Compile Include="Areas\Admin\Controllers\TransientNotificationController.cs" />
-    <Compile Include="Areas\Admin\Controllers\UrlGeneratorSettingsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PageDefaultsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Controllers\VersionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageParentController.cs" />
@@ -460,7 +460,7 @@
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisStatus.cs" />
     <Compile Include="Areas\Admin\Models\StringResourceSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\UpdatePropertyData.cs" />
-    <Compile Include="Areas\Admin\Models\UrlGeneratorSettingInfo.cs" />
+    <Compile Include="Areas\Admin\Models\PageDefaultsInfo.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
     <Compile Include="Areas\Admin\Models\VersionsModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewDataUploadFilesResult.cs" />
@@ -481,6 +481,7 @@
     <Compile Include="Areas\Admin\Services\Events\SendPersistentNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\FormAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\GetLayoutOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetTemplateOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetUrlGeneratorOptions.cs" />
     <Compile Include="Areas\Admin\Services\IACLService.cs" />
@@ -495,6 +496,7 @@
     <Compile Include="Areas\Admin\Services\IDocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFileAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFormAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IGetLayoutOptions.cs" />
     <Compile Include="Areas\Admin\Services\IGetUrlGeneratorOptions.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IInPageAdminService.cs" />
@@ -518,7 +520,7 @@
     <Compile Include="Areas\Admin\Services\ITaskAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ITreeNavService.cs" />
-    <Compile Include="Areas\Admin\Services\IUrlGeneratorSettingsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IPageDefaultsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IUrlHistoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageParentAdminService.cs" />
@@ -561,7 +563,7 @@
     <Compile Include="Areas\Admin\Services\TaskAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\TreeNavService.cs" />
-    <Compile Include="Areas\Admin\Services\UrlGeneratorSettingsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\PageDefaultsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageParentAdminService.cs" />
@@ -1623,8 +1625,8 @@
     <Content Include="Areas\Admin\Views\PageTemplate\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PageTemplate\Add.cshtml" />
     <Content Include="Areas\Admin\Views\PageTemplate\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\UrlGeneratorSettings\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\UrlGeneratorSettings\Set.cshtml" />
+    <Content Include="Areas\Admin\Views\PageDefaults\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\PageDefaults\Set.cshtml" />
     <Content Include="Apps\Core\Views\Shared\_OneColumn.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\Article\ForUser.cshtml" />
     <Content Include="Apps\Articles\Areas\Admin\Views\AuthorInfo\Add.cshtml" />

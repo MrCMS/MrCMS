@@ -8,11 +8,11 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class UrlGeneratorSettingsController : MrCMSAdminController
+    public class PageDefaultsController : MrCMSAdminController
     {
-        private readonly IUrlGeneratorSettingsAdminService _service;
+        private readonly IPageDefaultsAdminService _service;
 
-        public UrlGeneratorSettingsController(IUrlGeneratorSettingsAdminService service)
+        public PageDefaultsController(IPageDefaultsAdminService service)
         {
             _service = service;
         }
@@ -26,13 +26,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult Set([IoCModelBinder(typeof(GetUrlGeneratorOptionsTypeModelBinder))] Type type)
         {
             ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(type);
+            ViewData["layout-options"] = _service.GetLayoutOptions();
             return PartialView(_service.GetInfo(type));
         }
 
         [HttpPost]
-        public RedirectToRouteResult Set(DefaultGeneratorInfo info)
+        public RedirectToRouteResult Set(DefaultsInfo info)
         {
-            _service.SetDefault(info);
+            _service.SetDefaults(info);
             return RedirectToAction("Index");
         }
     }

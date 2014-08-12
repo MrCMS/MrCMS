@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -20,7 +21,14 @@ namespace MrCMS.Web.Areas.Admin.Services
                 return;
             var typeName = webpage.GetType().FullName;
             var templates = _session.QueryOver<PageTemplate>().Where(template => template.PageType == typeName)
-                .OrderBy(template => template.Name).Asc.Cacheable().List();
+                .OrderBy(template => template.Name).Asc.Cacheable().List().ToList();
+
+            templates = templates.FindAll(template =>
+            {
+                if (!template.SingleUse)
+                    return true;
+                return !_session.QueryOver<Webpage>().Where(page => page.PageTemplate.Id == template.Id && page.Id != webpage.Id).Any();
+            });
 
             viewData["template-options"] = templates.BuildSelectItemList(template => template.Name,
                 template => template.Id.ToString(),

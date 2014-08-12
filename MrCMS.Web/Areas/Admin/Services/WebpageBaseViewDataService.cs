@@ -34,9 +34,16 @@ namespace MrCMS.Web.Areas.Admin.Services
 
             List<string> typeNames = validWebpageDocumentTypes.Select(metadata => metadata.Type.FullName).ToList();
 
-            IList<PageTemplate> templates =
+            List<PageTemplate> templates =
                 _session.QueryOver<PageTemplate>().Where(template => template.PageType.IsIn(typeNames))
-                    .OrderBy(template => template.Name).Asc.Cacheable().List();
+                    .OrderBy(template => template.Name).Asc.Cacheable().List().ToList();
+
+            templates = templates.FindAll(template =>
+                        {
+                            if (!template.SingleUse)
+                                return true;
+                            return !_session.QueryOver<Webpage>().Where(webpage => webpage.PageTemplate.Id == template.Id).Any();
+                        });
 
             var documentTypeToAdds = new List<DocumentTypeToAdd>();
 
@@ -61,7 +68,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                 }
                 else
                 {
-                    documentTypeToAdds.Add(new DocumentTypeToAdd {Type = type, DisplayName = type.Name});
+                    documentTypeToAdds.Add(new DocumentTypeToAdd { Type = type, DisplayName = type.Name });
                 }
             }
 
