@@ -42,5 +42,8 @@
             @Html.DropDownListFor(x => x.UrlGeneratorType, urlGeneratorOptions, new { @class = "form-control" })
             @Html.ValidationMessageFor(x => x.UrlGeneratorType)
         </div>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(template => template.SingleUse)
+        </div>
     </fieldset>
 }

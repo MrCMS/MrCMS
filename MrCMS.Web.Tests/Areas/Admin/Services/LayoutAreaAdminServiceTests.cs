@@ -1,3 +1,4 @@
+using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Helpers;
@@ -11,9 +12,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
     {
         private readonly LayoutAreaAdminService _layoutAreaAdminService;
 
-        public LayoutAreaAdminServiceTests(IDocumentService documentService)
+        public LayoutAreaAdminServiceTests()
         {
-            _layoutAreaAdminService = new LayoutAreaAdminService(Session, documentService);
+            _layoutAreaAdminService = new LayoutAreaAdminService(Session, A.Fake<IDocumentService>());
         }
 
         [Fact]

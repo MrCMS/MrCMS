@@ -12,11 +12,11 @@ namespace MrCMS.Services
     {
         private readonly IKernel _kernel;
         private readonly ISession _session;
-        private readonly UrlGeneratorSettings _settings;
+        private readonly PageDefaultsSettings _settings;
         private readonly IUrlValidationService _urlValidationService;
 
         public WebpageUrlService(IUrlValidationService urlValidationService, ISession session, IKernel kernel,
-            UrlGeneratorSettings settings)
+            PageDefaultsSettings settings)
         {
             _urlValidationService = urlValidationService;
             _session = session;
