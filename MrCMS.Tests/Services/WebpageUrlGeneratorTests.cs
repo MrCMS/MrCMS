@@ -13,14 +13,14 @@ namespace MrCMS.Tests.Services
     {
         private readonly IUrlValidationService _urlValidationService;
         private readonly WebpageUrlService _webpageUrlService;
-        private readonly UrlGeneratorSettings _urlGeneratorSettings;
+        private readonly PageDefaultsSettings _pageDefaultsSettings;
 
         public WebpageUrlGeneratorTests()
         {
             _urlValidationService = A.Fake<IUrlValidationService>();
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(A<string>.Ignored, A<int?>.Ignored)).Returns(true);
-            _urlGeneratorSettings = new UrlGeneratorSettings();
-            _webpageUrlService = new WebpageUrlService(_urlValidationService, Session, Kernel, _urlGeneratorSettings);
+            _pageDefaultsSettings = new PageDefaultsSettings();
+            _webpageUrlService = new WebpageUrlService(_urlValidationService, Session, Kernel, _pageDefaultsSettings);
         }
 
         [Fact]

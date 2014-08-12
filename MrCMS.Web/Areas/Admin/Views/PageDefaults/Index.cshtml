@@ -1,8 +1,8 @@
-﻿@model List<MrCMS.Web.Areas.Admin.Models.UrlGeneratorSettingInfo>
+﻿@model List<MrCMS.Web.Areas.Admin.Models.PageDefaultsInfo>
 
 <fieldset>
     <legend>
-        Url Generator Settings
+        Page Defaults
     </legend>
     <table class="table table-condensed table-striped">
         <thead>
@@ -12,6 +12,9 @@
                 </th>
                 <th>
                     Default Generator
+                </th>
+                <th>
+                    Default Layout
                 </th>
                 <th>
                     Actions
@@ -29,7 +32,10 @@
                         @info.GeneratorDisplayName
                     </td>
                     <td>
-                        @Html.ActionLink("Set default", "Set", "UrlGeneratorSettings", new { type = info.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
+                        @info.LayoutName
+                    </td>
+                    <td>
+                        @Html.ActionLink("Set default", "Set", "PageDefaults", new { type = info.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
                     </td>
                 </tr>
             }

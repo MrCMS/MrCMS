@@ -50,7 +50,7 @@ namespace MrCMS.Models
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.MessageTemplates)),
                                new ChildMenuItem("Page Templates", "/Admin/PageTemplate",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.PageTemplates)),
-                               new ChildMenuItem("Url Generators", "/Admin/UrlGeneratorSettings",
+                               new ChildMenuItem("Page Defaults", "/Admin/PageDefaults",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.UrlGenerators)),
                                new ChildMenuItem("Sites", "/Admin/Sites",
                                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Sites)),

@@ -5,11 +5,12 @@ using MrCMS.Web.Areas.Admin.Models;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
-    public interface IUrlGeneratorSettingsAdminService
+    public interface IPageDefaultsAdminService
     {
-        List<UrlGeneratorSettingInfo> GetAll();
+        List<PageDefaultsInfo> GetAll();
         List<SelectListItem> GetUrlGeneratorOptions(Type type);
-        DefaultGeneratorInfo GetInfo(Type type);
-        void SetDefault(DefaultGeneratorInfo info);
+        List<SelectListItem> GetLayoutOptions();
+        DefaultsInfo GetInfo(Type type);
+        void SetDefaults(DefaultsInfo info);
     }
 }
