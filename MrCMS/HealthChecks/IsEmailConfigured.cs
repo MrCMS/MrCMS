@@ -25,12 +25,9 @@ namespace MrCMS.HealthChecks
                 unsetFacets.Add("System email address is not set");
             if (string.IsNullOrWhiteSpace(_mailSettings.Host))
                 unsetFacets.Add("Host is not set");
-            if (string.IsNullOrWhiteSpace(_mailSettings.UserName))
-                unsetFacets.Add("Username is not set");
-            if (string.IsNullOrWhiteSpace(_mailSettings.Password))
-                unsetFacets.Add("Password is not set");
             if (_mailSettings.Port <= 0)
                 unsetFacets.Add("Port is not set");
+
             return !unsetFacets.Any()
                 ? HealthCheckResult.Success
                 : new HealthCheckResult { Messages = unsetFacets };

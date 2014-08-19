@@ -375,7 +375,8 @@
     <Compile Include="HealthChecks\HealthCheckResult.cs" />
     <Compile Include="HealthChecks\IHealthCheck.cs" />
     <Compile Include="HealthChecks\IsEmailConfigured.cs" />
-    <Compile Include="HealthChecks\StalledTasks.cs" />
+    <Compile Include="HealthChecks\StalledQueuedTasks.cs" />
+    <Compile Include="HealthChecks\TaskRunnerCheck.cs" />
     <Compile Include="Helpers\ACLHelper.cs" />
     <Compile Include="Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
@@ -830,6 +831,7 @@
     <Compile Include="Website\Routing\IGetWebpageForRequest.cs" />
     <Compile Include="Website\Routing\IMrCMSRouteHandler.cs" />
     <Compile Include="Website\Routing\IMrCMSRoutingErrorHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSAdminSSLRedirectHandler.cs" />
     <Compile Include="Website\Routing\MrCMSAspxHttpHandler.cs" />
     <Compile Include="Website\Routing\MrCMSAspxRouteHandler.cs" />
     <Compile Include="Website\Routing\MrCMSDisallowedHandler.cs" />
