@@ -3,11 +3,12 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Paging;
+using MrCMS.Services;
 using MrCMS.Settings;
 using NHibernate;
 using NHibernate.Criterion;
 
-namespace MrCMS.Services
+namespace MrCMS.Web.Areas.Admin.Services
 {
     public class MessageQueueAdminService : IMessageQueueAdminService
     {

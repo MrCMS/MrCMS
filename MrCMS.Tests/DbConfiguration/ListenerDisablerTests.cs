@@ -76,10 +76,6 @@ namespace MrCMS.Tests.DbConfiguration
         {
         }
 
-        protected override void OnInstallation(ISession session, InstallModel model, Site site)
-        {
-        }
-
         protected override void AppendConfiguration(Configuration configuration)
         {
             TestListener.Reset();

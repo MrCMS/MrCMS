@@ -28,32 +28,8 @@ namespace MrCMS.Shortcodes.Forms
                 cbLabelBuilder.InnerHtml = checkbox.Value;
                 cbLabelBuilder.AddCssClass("checkbox");
 
-                var checkboxBuilder = new TagBuilder("input");
-                checkboxBuilder.Attributes["type"] = "checkbox";
-                checkboxBuilder.Attributes["value"] = checkbox.Value;
-                checkboxBuilder.AddCssClass(formProperty.CssClass);
+                var checkboxBuilder = GetCheckbox(formProperty, existingValue, checkbox, values);
 
-                if (existingValue != null)
-                {
-                    if (values.Contains(checkbox.Value))
-                        checkboxBuilder.Attributes["checked"] = "checked";
-                }
-                else if (checkbox.Selected)
-                    checkboxBuilder.Attributes["checked"] = "checked";
-
-                if (formProperty.Required)
-                {
-                    var requiredMessage = string.Format("The field {0} is required",
-                        string.IsNullOrWhiteSpace(formProperty.LabelText)
-                            ? formProperty.Name
-                            : formProperty.LabelText);
-                    checkboxBuilder.Attributes["data-val"] = "true";
-                    checkboxBuilder.Attributes["data-val-mandatory"] = requiredMessage;
-                    checkboxBuilder.Attributes["data-val-required"] = requiredMessage;
-                }
-
-                checkboxBuilder.Attributes["name"] = formProperty.Name;
-                checkboxBuilder.Attributes["id"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
                 cbLabelBuilder.InnerHtml += checkboxBuilder.ToString();
                 if (formRenderingType == FormRenderingType.Bootstrap3)
                 {
@@ -75,6 +51,37 @@ namespace MrCMS.Shortcodes.Forms
             tagBuilder.InnerHtml += cbHiddenBuilder.ToString();
 
             return tagBuilder;
+        }
+
+        private static TagBuilder GetCheckbox(CheckboxList formProperty, string existingValue, FormListOption checkbox, List<string> values)
+        {
+            var checkboxBuilder = new TagBuilder("input");
+            checkboxBuilder.Attributes["type"] = "checkbox";
+            checkboxBuilder.Attributes["value"] = checkbox.Value;
+            checkboxBuilder.AddCssClass(formProperty.CssClass);
+
+            if (existingValue != null)
+            {
+                if (values.Contains(checkbox.Value))
+                    checkboxBuilder.Attributes["checked"] = "checked";
+            }
+            else if (checkbox.Selected)
+                checkboxBuilder.Attributes["checked"] = "checked";
+
+            if (formProperty.Required)
+            {
+                var requiredMessage = string.Format("The field {0} is required",
+                    string.IsNullOrWhiteSpace(formProperty.LabelText)
+                        ? formProperty.Name
+                        : formProperty.LabelText);
+                checkboxBuilder.Attributes["data-val"] = "true";
+                checkboxBuilder.Attributes["data-val-mandatory"] = requiredMessage;
+                checkboxBuilder.Attributes["data-val-required"] = requiredMessage;
+            }
+
+            checkboxBuilder.Attributes["name"] = formProperty.Name;
+            checkboxBuilder.Attributes["id"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
+            return checkboxBuilder;
         }
 
         public TagBuilder AppendElement(FormProperty formProperty, string existingValue, FormRenderingType formRenderingType)

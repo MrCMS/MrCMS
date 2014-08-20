@@ -12,7 +12,6 @@ using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
-using MrCMS.Web.Controllers;
 using MrCMS.Website;
 using Xunit;
 

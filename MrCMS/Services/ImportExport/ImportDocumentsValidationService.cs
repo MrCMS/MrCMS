@@ -12,12 +12,10 @@ namespace MrCMS.Services.ImportExport
 {
     public class ImportDocumentsValidationService : IImportDocumentsValidationService
     {
-        private readonly IDocumentService _documentService;
         private readonly IWebpageUrlService _webpageUrlService;
 
-        public ImportDocumentsValidationService(IDocumentService documentService, IWebpageUrlService webpageUrlService)
+        public ImportDocumentsValidationService(IWebpageUrlService webpageUrlService)
         {
-            _documentService = documentService;
             _webpageUrlService = webpageUrlService;
         }
 
@@ -52,38 +50,38 @@ namespace MrCMS.Services.ImportExport
         {
             var items = new List<DocumentImportDTO>();
 
-            if (spreadsheet != null)
+            if (spreadsheet != null && spreadsheet.Workbook != null)
             {
-                if (spreadsheet.Workbook != null)
+                var worksheet = spreadsheet.Workbook.Worksheets.SingleOrDefault(x => x.Name == "Items");
+                if (worksheet == null)
                 {
-                    var worksheet = spreadsheet.Workbook.Worksheets.SingleOrDefault(x => x.Name == "Items");
-                    if (worksheet != null)
-                    {
-                        var totalRows = worksheet.Dimension.End.Row;
-                        for (var rowId = 2; rowId <= totalRows; rowId++)
-                        {
-
-                            //Prepare handle name for storing and grouping errors
-                            string urlSegment = worksheet.GetValue<string>(rowId, 1), name = worksheet.GetValue<string>(rowId, 2);
-                            var handle = urlSegment.HasValue() ? urlSegment : name;
-
-                            if (items.Any(x => x.Name == name || x.UrlSegment == urlSegment)) continue;
-                            if (string.IsNullOrWhiteSpace(handle)) continue;
-
-                            List<string> errors = parseErrors.ContainsKey(handle)
-                                                      ? parseErrors[handle]
-                                                      : new List<string>();
-
-                            var item = GetDocumentImportDataTransferObject(worksheet, rowId, name, ref errors);
-                            parseErrors[handle] = errors;
-
-                            items.Add(item);
-                        }
-
-                        //Remove duplicate errors
-                        parseErrors = parseErrors.GroupBy(x => x.Value).Select(x => x.First()).ToDictionary(pair => pair.Key, pair => pair.Value);
-                    }
+                    return items;
                 }
+                var totalRows = worksheet.Dimension.End.Row;
+                for (var rowId = 2; rowId <= totalRows; rowId++)
+                {
+                    //Prepare handle name for storing and grouping errors
+                    var urlSegment = worksheet.GetValue<string>(rowId, 1);
+                    var name = worksheet.GetValue<string>(rowId, 4);
+                    var handle = urlSegment.HasValue() ? urlSegment : name;
+
+                    if (string.IsNullOrWhiteSpace(handle) || items.Any(x => x.Name == name || x.UrlSegment == urlSegment))
+                        continue;
+
+                    List<string> errors = parseErrors.ContainsKey(handle)
+                        ? parseErrors[handle]
+                        : new List<string>();
+
+                    var item = GetDocumentImportDataTransferObject(worksheet, rowId, name, ref errors);
+                    parseErrors[handle] = errors;
+
+                    items.Add(item);
+                }
+
+                //Remove duplicate errors
+                parseErrors = parseErrors.GroupBy(x => x.Value)
+                    .Select(x => x.First())
+                    .ToDictionary(pair => pair.Key, pair => pair.Value);
             }
 
             //Remove handles with no errors
@@ -103,7 +101,7 @@ namespace MrCMS.Services.ImportExport
                 item.UrlSegment = worksheet.GetValue<string>(rowId, 1).HasValue()
                     ? worksheet.GetValue<string>(rowId, 1)
                     : _webpageUrlService.Suggest(null,
-                        new SuggestParams {PageName = name, DocumentType = item.DocumentType});
+                        new SuggestParams { PageName = name, DocumentType = item.DocumentType });
             }
             else
                 parseErrors.Add("Document Type is required.");
@@ -115,24 +113,7 @@ namespace MrCMS.Services.ImportExport
             item.MetaTitle = worksheet.GetValue<string>(rowId, 6);
             item.MetaDescription = worksheet.GetValue<string>(rowId, 7);
             item.MetaKeywords = worksheet.GetValue<string>(rowId, 8);
-            //Tags
-            try
-            {
-                var value = worksheet.GetValue<string>(rowId, 9);
-                if (!String.IsNullOrWhiteSpace(value))
-                {
-                    var tags = value.Split(',');
-                    foreach (var tag in tags.Where(tag => !String.IsNullOrWhiteSpace(tag)))
-                    {
-                        item.Tags.Add(tag);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                parseErrors.Add(
-                    "Url History field value contains illegal characters / not in correct format.");
-            }
+            item.Tags = GetTags(worksheet, rowId, parseErrors);
             if (worksheet.GetValue<string>(rowId, 10).HasValue())
             {
                 if (!worksheet.GetValue<string>(rowId, 10).IsValidInput<bool>())
@@ -172,7 +153,13 @@ namespace MrCMS.Services.ImportExport
                     item.PublishDate = worksheet.GetValue<DateTime>(rowId, 13);
             }
 
-            //Url History
+            item.UrlHistory = GetUrlHistory(worksheet, rowId, parseErrors);
+            return item;
+        }
+
+        private static List<string> GetUrlHistory(ExcelWorksheet worksheet, int rowId, List<string> parseErrors)
+        {
+            var list = new List<String>();
             try
             {
                 var value = worksheet.GetValue<string>(rowId, 14);
@@ -181,7 +168,7 @@ namespace MrCMS.Services.ImportExport
                     var urls = value.Split(',');
                     foreach (var url in urls.Where(url => !String.IsNullOrWhiteSpace(url)))
                     {
-                        item.UrlHistory.Add(url);
+                        list.Add(url);
                     }
                 }
             }
@@ -189,7 +176,30 @@ namespace MrCMS.Services.ImportExport
             {
                 parseErrors.Add("Url History field value contains illegal characters / not in correct format.");
             }
-            return item;
+            return list;
+        }
+
+        private static List<string> GetTags(ExcelWorksheet worksheet, int rowId, List<string> parseErrors)
+        {
+            List<string> tagList = new List<string>();
+            try
+            {
+                var value = worksheet.GetValue<string>(rowId, 9);
+                if (!String.IsNullOrWhiteSpace(value))
+                {
+                    var tags = value.Split(',');
+                    foreach (var tag in tags.Where(tag => !String.IsNullOrWhiteSpace(tag)))
+                    {
+                        tagList.Add(tag);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                parseErrors.Add(
+                    "Url History field value contains illegal characters / not in correct format.");
+            }
+            return tagList;
         }
 
         /// <summary>

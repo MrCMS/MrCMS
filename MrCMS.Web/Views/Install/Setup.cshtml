@@ -52,13 +52,13 @@
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.AdminPassword)
-                    @Html.TextBoxFor(x => x.AdminPassword, new { @class = "form-control" })
+                    @Html.PasswordFor(x => x.AdminPassword, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.AdminPassword)
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.ConfirmPassword)
-                    @Html.TextBoxFor(x => x.ConfirmPassword, new { @class = "form-control" })
+                    @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.ConfirmPassword)
                 </div>
 

@@ -20,16 +20,13 @@ namespace MrCMS.Tests.Services.ImportExport
 {
     public class ImportDocumentsValidationServiceTests : InMemoryDatabaseTest
     {
-        private readonly IDocumentService _documentService;
         private readonly ImportDocumentsValidationService _importDocumentsValidationService;
         private IWebpageUrlService _webpageUrlService;
 
         public ImportDocumentsValidationServiceTests()
         {
-            _documentService = A.Fake<IDocumentService>();
             _webpageUrlService = A.Fake<IWebpageUrlService>();
-            _importDocumentsValidationService = new ImportDocumentsValidationService(_documentService,
-                _webpageUrlService);
+            _importDocumentsValidationService = new ImportDocumentsValidationService(_webpageUrlService);
         }
 
         [Fact]
@@ -55,8 +52,7 @@ namespace MrCMS.Tests.Services.ImportExport
         [Fact]
         public void ImportDocumentsValidationService_ValidateImportFile_ShouldReturnNoErrors()
         {
-            Dictionary<string, List<string>> errors =
-                _importDocumentsValidationService.ValidateImportFile(GetSpreadsheet());
+            Dictionary<string, List<string>> errors = _importDocumentsValidationService.ValidateImportFile(GetSpreadsheet());
 
             errors.Count.Should().Be(0);
         }
@@ -65,8 +61,7 @@ namespace MrCMS.Tests.Services.ImportExport
         public void ImportDocumentsValidationService_ValidateAndImportDocuments_ShouldReturnListOfDocumentsAndNoErrors()
         {
             var parseErrors = new Dictionary<string, List<string>>();
-            List<DocumentImportDTO> items =
-                _importDocumentsValidationService.ValidateAndImportDocuments(GetSpreadsheet(), ref parseErrors);
+            List<DocumentImportDTO> items = _importDocumentsValidationService.ValidateAndImportDocuments(GetSpreadsheet(), ref parseErrors);
 
             items.Count.Should().Be(1);
             parseErrors.Count.Should().Be(0);
@@ -134,9 +129,9 @@ namespace MrCMS.Tests.Services.ImportExport
                 RequiresSSL = false,
                 PublishOn = currentTime
             };
-            document.Tags.Add(new Tag {Id = 1, Name = "Test"});
-            document.Urls.Add(new UrlHistory {UrlSegment = "test-url-old"});
-            var items = new List<Webpage> {document};
+            document.Tags.Add(new Tag { Id = 1, Name = "Test" });
+            document.Urls.Add(new UrlHistory { UrlSegment = "test-url-old" });
+            var items = new List<Webpage> { document };
 
             ExcelPackage exportExcelPackage = new ExportDocumentsService().GetExportExcelPackage(items);
 

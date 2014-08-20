@@ -29,11 +29,6 @@ namespace MrCMS.Web.Apps.Core
 
         }
 
-        protected override void OnInstallation(ISession session, InstallModel model, Site site)
-        {
-            CoreAppInstallation.Install(session, model, site);
-        }
-
         protected override void RegisterApp(MrCMSAppRegistrationContext context)
         {
             context.MapRoute("External Login", "external-login", new { controller = "ExternalLogin", action = "Login" });

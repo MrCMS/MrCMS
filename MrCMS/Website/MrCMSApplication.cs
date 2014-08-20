@@ -217,6 +217,13 @@ namespace MrCMS.Website
         private static IKernel CreateKernel()
         {
             var kernel = new StandardKernel(new ServiceModule(),
+                new SettingsModule(),
+                new LuceneModule(),
+                new FileSystemModule(),
+                new GenericBindingsModule(),
+                new SystemWebModule(),
+                new SiteModule(),
+                new AuthModule(),
                 new NHibernateModule(DatabaseType.Auto, InDevelopment));
             kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();

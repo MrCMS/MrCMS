@@ -66,7 +66,10 @@ namespace MrCMS.Web.Tests
             CurrentRequestData.ErrorSignal = new ErrorSignal();
 
             Kernel.Unbind<IEventContext>();
-            Kernel.Load(new ServiceModule(true));
+            Kernel.Load(new ServiceModule());
+            Kernel.Load(new SettingsModule(true));
+            Kernel.Load(new FileSystemModule());
+            Kernel.Load(new SiteModule());
             _eventContext = new TestableEventContext(Kernel.Get<EventContext>());
             Kernel.Rebind<IEventContext>().ToMethod(context => EventContext);
         }

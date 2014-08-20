@@ -342,6 +342,7 @@
     <Compile Include="Entities\People\UserLogin.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Entities\Resources\StringResource.cs" />
+    <Compile Include="Events\AssignLayoutAreaToLayout.cs" />
     <Compile Include="Events\Documents\DocumentAddedNotification.cs" />
     <Compile Include="Events\Documents\DocumentDeletedNotification.cs" />
     <Compile Include="Events\Documents\DocumentModifiedUser.cs" />
@@ -364,6 +365,7 @@
     <Compile Include="Events\OnDeletedArgs.cs" />
     <Compile Include="Events\OnDeletingArgs.cs" />
     <Compile Include="Events\OnDeletingLayout.cs" />
+    <Compile Include="Events\OnDeletingLayoutArea.cs" />
     <Compile Include="Events\OnDeletingMediaCategory.cs" />
     <Compile Include="Events\OnDeletingPageWidgetSort.cs" />
     <Compile Include="Events\OnDeletingUser.cs" />
@@ -417,6 +419,16 @@
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
+    <Compile Include="Installation\FileSystemAccessService.cs" />
+    <Compile Include="Installation\ICreateInitialUser.cs" />
+    <Compile Include="Installation\IDatabaseCreationService.cs" />
+    <Compile Include="Installation\IDatabaseInfoValidationService.cs" />
+    <Compile Include="Installation\IFileSystemAccessService.cs" />
+    <Compile Include="Installation\InitializeDatabase.cs" />
+    <Compile Include="Installation\IInitializeDatabase.cs" />
+    <Compile Include="Installation\IOnInstallation.cs" />
+    <Compile Include="Installation\PermissionsChecker.cs" />
+    <Compile Include="Installation\RequiredCheck.cs" />
     <Compile Include="IoC\NinjectSystemSettingsBinder.cs" />
     <Compile Include="Models\CachingInfo.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
@@ -525,7 +537,6 @@
     <Compile Include="Services\IAuthorisationService.cs" />
     <Compile Include="Services\IExternalLoginService.cs" />
     <Compile Include="Services\IHashAlgorithm.cs" />
-    <Compile Include="Services\IMessageQueueAdminService.cs" />
     <Compile Include="Services\ImportExport\IUpdateTagsService.cs" />
     <Compile Include="Services\ImportExport\IUpdateUrlHistoryService.cs" />
     <Compile Include="Services\ImportExport\UpdateTagsService.cs" />
@@ -533,7 +544,6 @@
     <Compile Include="Services\IPasswordEncryptionManager.cs" />
     <Compile Include="Services\ITokenProvider.cs" />
     <Compile Include="Services\IUserSearchService.cs" />
-    <Compile Include="Services\MessageQueueAdminService.cs" />
     <Compile Include="Services\IMessageParser.cs" />
     <Compile Include="Entities\Messaging\IMessageTemplate.cs" />
     <Compile Include="Services\IMessageTemplateParser.cs" />
@@ -774,7 +784,9 @@
     <Compile Include="Tasks\ITaskBuilder.cs" />
     <Compile Include="Tasks\ITaskRunner.cs" />
     <Compile Include="Tasks\ITaskExecutor.cs" />
+    <Compile Include="Website\Controllers\CKEditorController.cs" />
     <Compile Include="Website\Controllers\FormController.cs" />
+    <Compile Include="Website\Controllers\InstallController.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
     <Compile Include="Tasks\TaskQueuer.cs" />
     <Compile Include="Tasks\QueuedTask.cs" />
@@ -783,6 +795,7 @@
     <Compile Include="Tasks\TaskExecutionResult.cs" />
     <Compile Include="Tasks\TaskRunner.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Website\Controllers\SEOController.cs" />
     <Compile Include="Website\Filters\ForceImmediateLuceneUpdateAttribute.cs" />
     <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
     <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
