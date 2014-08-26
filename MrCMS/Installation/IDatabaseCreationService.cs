@@ -1,162 +1,156 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.IO;
-using System.Threading;
-using System.Web.Hosting;
-using MrCMS.DbConfiguration.Configuration;
+using System.Linq;
+using MrCMS.DbConfiguration;
+using MrCMS.Helpers;
+using MrCMS.Settings;
 using MySql.Data.MySqlClient;
+using Ninject;
 
 namespace MrCMS.Installation
 {
     public interface IDatabaseCreationService
     {
-        string CreateDatabase(InstallModel model);
+        IDatabaseProvider CreateDatabase(InstallModel model);
     }
-
-
 
     public class DatabaseCreationService : IDatabaseCreationService
     {
-        public DatabaseCreationService()
+        private readonly IKernel _kernel;
+        private readonly ISystemConfigurationProvider _systemConfigurationProvider;
+
+        public DatabaseCreationService(IKernel kernel,
+            ISystemConfigurationProvider systemConfigurationProvider)
         {
             
+            _kernel = kernel;
+            _systemConfigurationProvider = systemConfigurationProvider;
         }
-        public string CreateDatabase(InstallModel model)
+
+        public IDatabaseProvider CreateDatabase(InstallModel model)
         {
-            string connectionString = null;
-            switch (model.DatabaseType)
-            {
-                case DatabaseType.Sqlite:
-                    //SQLite
-                    string databaseFileName = "MrCMS.Db.db";
-                    string databasePath = @"|DataDirectory|\" + databaseFileName;
-                    connectionString = "Data Source=" + databasePath;
 
-                    //drop database if exists
-                    string databaseFullPath = HostingEnvironment.MapPath("~/App_Data/") + databaseFileName;
-                    if (File.Exists(databaseFullPath))
-                    {
-                        File.Delete(databaseFullPath);
-                    }
-                    using (File.Create(databaseFullPath))
-                    {
-                    }
-                    break;
-                case DatabaseType.MsSql:
-                    if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
-                        StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        //raw connection string
-                        connectionString = model.DatabaseConnectionString;
-                    }
-                    else
-                    {
-                        //values
-                        connectionString =
-                            createConnectionString(model.SqlAuthenticationType == "windowsauthentication",
-                                model.SqlServerName, model.SqlDatabaseName,
-                                model.SqlServerUsername, model.SqlServerPassword);
-                    }
+            var creatorType =
+                TypeHelper.GetAllConcreteTypesAssignableFrom(
+                    typeof (ICreateDatabase<>).MakeGenericType(TypeHelper.GetTypeByName(model.DatabaseProvider))).FirstOrDefault();
+            if (creatorType == null)
+                return null;
+            var createDatabase = _kernel.Get(creatorType) as ICreateDatabase;
+            createDatabase.CreateDatabase(model);
+            SaveConnectionSettings(createDatabase, model);
+            return _kernel.GetAll<IDatabaseProvider>().FirstOrDefault(provider => provider.Type == model.DatabaseProvider);
 
-                    if (model.SqlServerCreateDatabase)
-                    {
-                        if (!sqlServerDatabaseExists(connectionString))
-                        {
-                            //create database
-                            string errorCreatingDatabase = CreateSqlDatabase(connectionString);
-                            if (!String.IsNullOrEmpty(errorCreatingDatabase))
-                                throw new Exception(errorCreatingDatabase);
-                            //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
-                            //that's just wait 3 seconds
-                            Thread.Sleep(3000);
-                        }
-                    }
-                    else
-                    {
-                        //check whether database exists
-                        if (!sqlServerDatabaseExists(connectionString))
-                            throw new Exception(
-                                "Database does not exist or you don't have permissions to connect to it");
-                    }
-                    break;
-                case DatabaseType.MySQL:
-                    if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
-                        StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        //raw connection string
-                        connectionString = model.DatabaseConnectionString;
-                    }
-                    else
-                    {
-                        //values
-                        connectionString =
-                            createMySqlConnectionString(model.SqlAuthenticationType == "windowsauthentication",
-                                model.SqlServerName, model.SqlDatabaseName,
-                                model.SqlServerUsername, model.SqlServerPassword);
-                    }
+            //string connectionString = null;
+            //switch (model.DatabaseType)
+            //{
+            //    case DatabaseType.Sqlite:
+            //        //SQLite
+            //        string databaseFileName = "MrCMS.Db.db";
+            //        string databasePath = @"|DataDirectory|\" + databaseFileName;
+            //        connectionString = "Data Source=" + databasePath;
 
-                    if (model.SqlServerCreateDatabase)
-                    {
-                        if (!mySqlServerDatabaseExists(connectionString))
-                        {
-                            //create database
-                            string errorCreatingDatabase = createMySqlDatabase(connectionString);
-                            if (!String.IsNullOrEmpty(errorCreatingDatabase))
-                                throw new Exception(errorCreatingDatabase);
-                            //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
-                            //that's just wait 3 seconds
-                            Thread.Sleep(3000);
-                        }
-                    }
-                    else
-                    {
-                        //check whether database exists
-                        if (!mySqlServerDatabaseExists(connectionString))
-                            throw new Exception(
-                                "Database does not exist or you don't have permissions to connect to it");
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            return connectionString;
+            //        //drop database if exists
+            //        string databaseFullPath = HostingEnvironment.MapPath("~/App_Data/") + databaseFileName;
+            //        if (File.Exists(databaseFullPath))
+            //        {
+            //            File.Delete(databaseFullPath);
+            //        }
+            //        using (File.Create(databaseFullPath))
+            //        {
+            //        }
+            //        break;
+            //    case DatabaseType.MsSql:
+            //        if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
+            //            StringComparison.InvariantCultureIgnoreCase))
+            //        {
+            //            //raw connection string
+            //            connectionString = model.DatabaseConnectionString;
+            //        }
+            //        else
+            //        {
+            //            //values
+            //            connectionString =
+            //                createConnectionString(model.SqlAuthenticationType == "windowsauthentication",
+            //                    model.SqlServerName, model.SqlDatabaseName,
+            //                    model.SqlServerUsername, model.SqlServerPassword);
+            //        }
+
+            //        if (model.SqlServerCreateDatabase)
+            //        {
+            //            if (!sqlServerDatabaseExists(connectionString))
+            //            {
+            //                //create database
+            //                string errorCreatingDatabase = CreateSqlDatabase(connectionString);
+            //                if (!String.IsNullOrEmpty(errorCreatingDatabase))
+            //                    throw new Exception(errorCreatingDatabase);
+            //                //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
+            //                //that's just wait 3 seconds
+            //                Thread.Sleep(3000);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            //check whether database exists
+            //            if (!sqlServerDatabaseExists(connectionString))
+            //                throw new Exception(
+            //                    "Database does not exist or you don't have permissions to connect to it");
+            //        }
+            //        break;
+            //    case DatabaseType.MySQL:
+            //        if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
+            //            StringComparison.InvariantCultureIgnoreCase))
+            //        {
+            //            //raw connection string
+            //            connectionString = model.DatabaseConnectionString;
+            //        }
+            //        else
+            //        {
+            //            //values
+            //            connectionString =
+            //                createMySqlConnectionString(model.SqlAuthenticationType == "windowsauthentication",
+            //                    model.SqlServerName, model.SqlDatabaseName,
+            //                    model.SqlServerUsername, model.SqlServerPassword);
+            //        }
+
+            //        if (model.SqlServerCreateDatabase)
+            //        {
+            //            if (!mySqlServerDatabaseExists(connectionString))
+            //            {
+            //                //create database
+            //                string errorCreatingDatabase = createMySqlDatabase(connectionString);
+            //                if (!String.IsNullOrEmpty(errorCreatingDatabase))
+            //                    throw new Exception(errorCreatingDatabase);
+            //                //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
+            //                //that's just wait 3 seconds
+            //                Thread.Sleep(3000);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            //check whether database exists
+            //            if (!mySqlServerDatabaseExists(connectionString))
+            //                throw new Exception(
+            //                    "Database does not exist or you don't have permissions to connect to it");
+            //        }
+            //        break;
+            //    default:
+            //        throw new ArgumentOutOfRangeException();
+            //}
+            //return connectionString;
         }
 
-
-        /// <summary>
-        ///     Create contents of connection strings used by the SqlConnection class
-        /// </summary>
-        /// <param name="trustedConnection">
-        ///     Avalue that indicates whether User ID and Password are specified in the connection
-        ///     (when false) or whether the current Windows account credentials are used for authentication (when true)
-        /// </param>
-        /// <param name="serverName">The name or network address of the instance of SQL Server to connect to</param>
-        /// <param name="databaseName">The name of the database associated with the connection</param>
-        /// <param name="userName">The user ID to be used when connecting to SQL Server</param>
-        /// <param name="password">The password for the SQL Server account</param>
-        /// <param name="timeout">The connection timeout</param>
-        /// <returns>Connection string</returns>
-        private string createConnectionString(bool trustedConnection,
-            string serverName, string databaseName, string userName, string password,
-            int timeout = 0)
+        public void SaveConnectionSettings(ICreateDatabase provider, InstallModel installModel)
         {
-            var builder = new SqlConnectionStringBuilder();
-            builder.IntegratedSecurity = trustedConnection;
-            builder.DataSource = serverName;
-            builder.InitialCatalog = databaseName;
-            if (!trustedConnection)
-            {
-                builder.UserID = userName;
-                builder.Password = password;
-            }
-            builder.PersistSecurityInfo = false;
-            builder.MultipleActiveResultSets = true;
-            if (timeout > 0)
-            {
-                builder.ConnectTimeout = timeout;
-            }
-            return builder.ConnectionString;
+            var databaseSettings = _systemConfigurationProvider.GetSystemSettings<DatabaseSettings>();
+
+            databaseSettings.ConnectionString = provider.GetConnectionString(installModel);
+            databaseSettings.DatabaseProviderType = installModel.DatabaseProvider;
+
+            _systemConfigurationProvider.SaveSettings(databaseSettings);
         }
+
+
 
 
         /// <summary>

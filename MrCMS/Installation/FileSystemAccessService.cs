@@ -54,6 +54,20 @@ namespace MrCMS.Installation
             return result;
         }
 
+        public void EmptyAppData()
+        {
+            string appData = _context.Server.MapPath("~/App_Data");
+            var directoryInfo = new DirectoryInfo(appData);
+            foreach (FileInfo file in directoryInfo.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in directoryInfo.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+
         /// <summary>
         ///     Check permissions
         /// </summary>

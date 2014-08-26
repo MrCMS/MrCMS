@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Web.Configuration;
@@ -25,19 +22,23 @@ using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Caches.SysCache2;
-using NHibernate.Dialect;
+using NHibernate.Cfg;
 using NHibernate.Event;
 using NHibernate.Tool.hbm2ddl;
-using Environment = NHibernate.Cfg.Environment;
 
 namespace MrCMS.DbConfiguration
 {
     public class NHibernateConfigurator
     {
+        private readonly IDatabaseProvider _databaseProvider;
         private List<Assembly> _manuallyAddedAssemblies = new List<Assembly>();
 
-        public DatabaseType DatabaseType { get; set; }
-        public bool InDevelopment { get; set; }
+        public NHibernateConfigurator(IDatabaseProvider databaseProvider)
+        {
+            _databaseProvider = databaseProvider;
+            CacheEnabled = true;
+        }
+
         public bool CacheEnabled { get; set; }
 
         public IPersistenceConfigurer PersistenceOverride { get; set; }
@@ -53,56 +54,6 @@ namespace MrCMS.DbConfiguration
             NHibernate.Cfg.Configuration configuration = GetConfiguration();
 
             return configuration.BuildSessionFactory();
-        }
-
-        private IPersistenceConfigurer GetPersistenceConfigurer()
-        {
-            if (PersistenceOverride != null)
-                return PersistenceOverride;
-            switch (DatabaseType)
-            {
-                case DatabaseType.Auto:
-                    ConnectionStringSettings connectionStringSettings = ConfigurationManager.ConnectionStrings["mrcms"];
-                    switch (connectionStringSettings.ProviderName)
-                    {
-                        case "System.Data.SQLite":
-                            return InDevelopment
-                                ? SQLiteConfiguration.Standard.ConnectionString(
-                                    x => x.FromConnectionStringWithKey("mrcms-dev"))
-                                : SQLiteConfiguration.Standard.ConnectionString(
-                                    x => x.FromConnectionStringWithKey("mrcms"));
-                        case "System.Data.SqlClient":
-                            return InDevelopment
-                                ? MsSqlConfiguration.MsSql2008.ConnectionString(
-                                    x => x.FromConnectionStringWithKey("mrcms-dev"))
-                                : MsSqlConfiguration.MsSql2008.ConnectionString(
-                                    x => x.FromConnectionStringWithKey("mrcms"));
-                        case "MySql.Data.MySqlClient":
-                            return InDevelopment
-                                ? MySQLConfiguration.Standard.ConnectionString(
-                                    x => x.FromConnectionStringWithKey("mrcms-dev"))
-                                : MySQLConfiguration.Standard.ConnectionString(
-                                    x => x.FromConnectionStringWithKey("mrcms"));
-                    }
-                    throw new DataException("Provider Name not recognised: " + connectionStringSettings.ProviderName);
-                case DatabaseType.MsSql:
-                    return InDevelopment
-                        ? MsSqlConfiguration.MsSql2008.ConnectionString(
-                            x => x.FromConnectionStringWithKey("mrcms-dev"))
-                        : MsSqlConfiguration.MsSql2008.ConnectionString(
-                            x => x.FromConnectionStringWithKey("mrcms"));
-                case DatabaseType.MySQL:
-                    return InDevelopment
-                        ? MySQLConfiguration.Standard.ConnectionString(
-                            x => x.FromConnectionStringWithKey("mrcms-dev"))
-                        : MySQLConfiguration.Standard.ConnectionString(
-                            x => x.FromConnectionStringWithKey("mrcms"));
-                case DatabaseType.Sqlite:
-                    return SQLiteConfiguration.Standard.Dialect<SQLiteDialect>().InMemory().Raw(
-                        Environment.ReleaseConnections, "on_close");
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
         }
 
         public static void ValidateSchema(NHibernate.Cfg.Configuration config)
@@ -132,7 +83,7 @@ namespace MrCMS.DbConfiguration
                     finalAssemblies.Add(assembly);
             });
 
-            IPersistenceConfigurer iPersistenceConfigurer = GetPersistenceConfigurer();
+            IPersistenceConfigurer iPersistenceConfigurer = _databaseProvider.GetPersistenceConfigurer();
             AutoPersistenceModel addFromAssemblyOf =
                 AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
                     .IgnoreBase<SystemEntity>()
@@ -148,8 +99,8 @@ namespace MrCMS.DbConfiguration
                     .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
                     .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
                     .IncludeAppConventions();
-            addFromAssemblyOf.Add(typeof(NotDeletedFilter));
-            addFromAssemblyOf.Add(typeof(SiteFilter));
+            addFromAssemblyOf.Add(typeof (NotDeletedFilter));
+            addFromAssemblyOf.Add(typeof (SiteFilter));
             NHibernate.Cfg.Configuration config = Fluently.Configure()
                 .Database(iPersistenceConfigurer)
                 .Mappings(m => m.AutoMappings.Add(addFromAssemblyOf))
@@ -159,11 +110,8 @@ namespace MrCMS.DbConfiguration
                     {
                         builder.UseSecondLevelCache()
                             .UseQueryCache()
-                            .QueryCacheFactory
-                            <StandardQueryCacheFactory>();
-                        var mrCMSSection =
-                            WebConfigurationManager.GetSection(
-                                "mrcms") as MrCMSConfigSection;
+                            .QueryCacheFactory<StandardQueryCacheFactory>();
+                        var mrCMSSection = WebConfigurationManager.GetSection("mrcms") as MrCMSConfigSection;
                         if (mrCMSSection != null)
                         {
                             builder.ProviderClass(
@@ -215,10 +163,10 @@ namespace MrCMS.DbConfiguration
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)
         {
             configuration.AppendListeners(ListenerType.PreInsert,
-                                                   new[]
-                                              {
-                                                  new SetCoreProperties()
-                                              });
+                new[]
+                {
+                    new SetCoreProperties()
+                });
             var softDeleteListener = new SoftDeleteListener();
             configuration.SetListener(ListenerType.Delete, softDeleteListener);
         }
