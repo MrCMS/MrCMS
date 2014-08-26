@@ -21,11 +21,18 @@ namespace MrCMS.Website
             var databaseSettings = _systemConfigurationProvider.GetSystemSettings<DatabaseSettings>();
             if (!string.IsNullOrWhiteSpace(databaseSettings.ConnectionString))
                 return true;
-
-            // otherwise check the connection string
-            var connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
-            if (connectionString == null)
+            ConnectionStringSettings connectionString;
+            try
+            {
+                // otherwise check the connection string
+                connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
+                if (connectionString == null)
+                    return false;
+            }
+            catch
+            {
                 return false;
+            }
 
             databaseSettings.ConnectionString = connectionString.ConnectionString;
             databaseSettings.DatabaseProviderType = GetProviderType(connectionString.ProviderName);
@@ -36,10 +43,10 @@ namespace MrCMS.Website
         private string GetProviderType(string providerName)
         {
             if (providerName.Contains("sqlite", StringComparison.OrdinalIgnoreCase))
-                return typeof (SqliteProvider).FullName;
-            if (providerName.Contains("mysql", StringComparison.OrdinalIgnoreCase))
                 return typeof(SqliteProvider).FullName;
-            return typeof (SqlServer2008Provider).FullName;
+            if (providerName.Contains("mysql", StringComparison.OrdinalIgnoreCase))
+                return typeof(MySqlProvider).FullName;
+            return typeof(SqlServer2008Provider).FullName;
         }
     }
 }

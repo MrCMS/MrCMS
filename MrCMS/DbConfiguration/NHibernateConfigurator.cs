@@ -41,8 +41,6 @@ namespace MrCMS.DbConfiguration
 
         public bool CacheEnabled { get; set; }
 
-        public IPersistenceConfigurer PersistenceOverride { get; set; }
-
         public List<Assembly> ManuallyAddedAssemblies
         {
             get { return _manuallyAddedAssemblies; }
@@ -84,7 +82,7 @@ namespace MrCMS.DbConfiguration
             });
 
             IPersistenceConfigurer iPersistenceConfigurer = _databaseProvider.GetPersistenceConfigurer();
-            AutoPersistenceModel addFromAssemblyOf =
+            AutoPersistenceModel autoPersistenceModel =
                 AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
                     .IgnoreBase<SystemEntity>()
                     .IgnoreBase<SiteEntity>()
@@ -99,11 +97,12 @@ namespace MrCMS.DbConfiguration
                     .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
                     .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
                     .IncludeAppConventions();
-            addFromAssemblyOf.Add(typeof (NotDeletedFilter));
-            addFromAssemblyOf.Add(typeof (SiteFilter));
+
+            autoPersistenceModel.Add(typeof (NotDeletedFilter));
+            autoPersistenceModel.Add(typeof (SiteFilter));
             NHibernate.Cfg.Configuration config = Fluently.Configure()
                 .Database(iPersistenceConfigurer)
-                .Mappings(m => m.AutoMappings.Add(addFromAssemblyOf))
+                .Mappings(m => m.AutoMappings.Add(autoPersistenceModel))
                 .Cache(builder =>
                 {
                     if (CacheEnabled)
@@ -154,6 +153,7 @@ namespace MrCMS.DbConfiguration
 
             return config;
         }
+
 
         private void AppSpecificConfiguration(NHibernate.Cfg.Configuration configuration)
         {

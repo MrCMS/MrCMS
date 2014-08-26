@@ -83,33 +83,13 @@
 
                 @foreach (var providerType in providerTypes)
                 {
-                   <div class="form-group">
-                    <label class="radio-inline">
-                        @Html.RadioButton("DatabaseProvider", providerType.TypeName, (Model.DatabaseProvider == providerType.TypeName), new { data_connection_string_required = providerType.RequiresConnectionStringBuilding })
-                        @providerType.Description
-                    </label>
-                </div> 
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            @Html.RadioButton("DatabaseProvider", providerType.TypeName, (Model.DatabaseProvider == providerType.TypeName), new { data_connection_string_required = providerType.RequiresConnectionStringBuilding })
+                            @providerType.Description
+                        </label>
+                    </div>
                 }
-                @*<div class="form-group">
-                    <label class="radio-inline">
-                        @Html.RadioButton("DatabaseType", DatabaseType.Sqlite, (Model.DatabaseType == DatabaseType.Sqlite), new { id = "provider_sqlite" })
-                        Use built-in data storage (Sqlite) (limited compatibility).
-                    </label>
-                </div>
-
-                <div class="form-group">
-                    <label class="radio-inline">
-                        @Html.RadioButton("DatabaseType", DatabaseType.MySQL, (Model.DatabaseType == DatabaseType.MySQL), new { id = "provider_mysql" })
-                        Use MySQL
-                    </label>
-                </div>
-
-                <div class="form-group">
-                    <label class="radio-inline">
-                        @Html.RadioButton("DatabaseType", DatabaseType.MsSql, (Model.DatabaseType == DatabaseType.MsSql), new { id = "provider_sqlserver" })
-                        Use SQL Server (or SQL Express) database.
-                    </label>
-                </div>*@
                 <hr />
 
                 <div id="sqlConnectionInfo">

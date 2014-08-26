@@ -1,5 +1,7 @@
 using System.Web.Mvc;
+using MrCMS.DbConfiguration;
 using MrCMS.Installation;
+using NHibernate.Dialect;
 
 namespace MrCMS.Website.Controllers
 {
@@ -29,6 +31,7 @@ namespace MrCMS.Website.Controllers
                                 SiteUrl = Request.Url.Authority,
                                 AdminEmail = "admin@yoursite.com",
                                 DatabaseConnectionString = "",
+                                DatabaseProvider = typeof(SqlServer2012Provider).FullName,
                                 SqlAuthenticationType = SqlAuthenticationType.SQL,
                                 SqlConnectionInfo = SqlConnectionInfo.Values,
                                 SqlServerCreateDatabase = false,

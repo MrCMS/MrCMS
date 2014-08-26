@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 using FluentNHibernate.Automapping;
+using FluentNHibernate.Conventions;
+using FluentNHibernate.Conventions.Instances;
 using FluentNHibernate.Mapping;
 using MrCMS.Apps;
 using MrCMS.DbConfiguration.Types;
@@ -52,4 +54,5 @@ namespace MrCMS.DbConfiguration
             return propertyPart.CustomType<VarcharMax>().Length(4001);
         }
     }
+
 }

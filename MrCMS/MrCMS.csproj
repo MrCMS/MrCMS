@@ -288,6 +288,7 @@
     <Compile Include="DbConfiguration\Mapping\StringResourceOverride.cs" />
     <Compile Include="DbConfiguration\MrCMSSession.cs" />
     <Compile Include="DbConfiguration\MrCMSTransaction.cs" />
+    <Compile Include="DbConfiguration\MySqlDatabaseCreator.cs" />
     <Compile Include="DbConfiguration\MySqlProvider.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
     <Compile Include="DbConfiguration\NoConnectionStringBuilderAttribute.cs" />
@@ -428,6 +429,7 @@
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
+    <Compile Include="Installation\DatabaseCreationService.cs" />
     <Compile Include="Installation\FileSystemAccessService.cs" />
     <Compile Include="Installation\ICreateInitialUser.cs" />
     <Compile Include="Installation\IDatabaseCreationService.cs" />

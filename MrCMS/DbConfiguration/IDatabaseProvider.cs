@@ -1,5 +1,4 @@
 using FluentNHibernate.Cfg.Db;
-using MrCMS.Installation;
 
 namespace MrCMS.DbConfiguration
 {
