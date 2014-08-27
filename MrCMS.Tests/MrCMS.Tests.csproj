@@ -214,7 +214,15 @@
     <Compile Include="Stubs\StubWebpage.cs" />
     <Compile Include="TestableEventContext.cs" />
     <Compile Include="TestContextModule.cs" />
+    <Compile Include="Website\Controllers\Builders\CKEditorControllerBuilder.cs" />
+    <Compile Include="Website\Controllers\Builders\WebpageControllerBuilder.cs" />
+    <Compile Include="Website\Controllers\Builders\WidgetControllerBuilder.cs" />
+    <Compile Include="Website\Controllers\CKEditorControllerTests.cs" />
+    <Compile Include="Website\Controllers\Dummies\DummyUIController.cs" />
     <Compile Include="Website\Controllers\FormControllerTests.cs" />
+    <Compile Include="Website\Controllers\MrCMSUIControllerTests.cs" />
+    <Compile Include="Website\Controllers\WebpageControllerTests.cs" />
+    <Compile Include="Website\Controllers\WidgetControllerTests.cs" />
     <Compile Include="Website\CurrentRequestDataTests.cs" />
     <Compile Include="Website\Routing\ControllerManagerTests.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandlerTests.cs" />
