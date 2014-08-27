@@ -11,7 +11,7 @@ namespace MrCMS.Shortcodes.Forms
         {
             var message = new TagBuilder("div");
             message.AddCssClass("alert");
-            message.AddCssClass(submittedStatus.Success ? "alert-success" : "alert-error");
+            message.AddCssClass(submittedStatus.Success ? "alert-success" : "alert-danger");
             message.InnerHtml +=
                 "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">x</button>" +
                 (submittedStatus.Errors.Any()

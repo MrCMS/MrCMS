@@ -10,7 +10,7 @@
 }
 @if (TempData.ErrorMessages().Any())
 {
-    <div class="alert alert-error">
+    <div class="alert alert-danger">
         <button type="button" class="close" data-dismiss="alert">×</button>
         @Html.Raw(string.Join("<br />", TempData.ErrorMessages()))
     </div>

@@ -91,17 +91,18 @@ namespace MrCMS.Website.Optimization
                             if (bundleFor == null)
                             {
                                 var bundle = new ScriptBundle(bundleVirtualPath)
-                                                 {
-                                                     Orderer = new AsIsBundleOrderer(),
-                                                     EnableFileExtensionReplacements = false
-                                                 };
+                                {
+                                    Orderer = new AsIsBundleOrderer(),
+                                    EnableFileExtensionReplacements = false
+                                };
                                 bundle.Include(partsToBundle);
                                 BundleTable.Bundles.Add(bundle);
                                 BundleTable.Bundles.IgnoreList.Clear();
                             }
                         }
 
-                        viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>", bundleVirtualPath.Substring(1));
+                        viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>",
+                            bundleVirtualPath.Substring(1));
                     }
 
                     foreach (var path in partsToNotBundle)
@@ -109,9 +110,13 @@ namespace MrCMS.Website.Optimization
                 }
 
             }
-            foreach (var path in ScriptData.Values.SelectMany(x => x).Select(data => data.Url).Distinct())
+            else
             {
-                viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>", path.StartsWith("~") ? path.Substring(1) : path);
+                foreach (var path in ScriptData.Values.SelectMany(x => x).Select(data => data.Url).Distinct())
+                {
+                    viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>",
+                        path.StartsWith("~") ? path.Substring(1) : path);
+                }
             }
         }
 
@@ -154,7 +159,7 @@ namespace MrCMS.Website.Optimization
                 }
                 return MvcHtmlString.Create(result.ToString());
             }
-
+            
             foreach (var path in CssData.Values.SelectMany(x => x).Select(x => x.Url).Distinct())
                 result.AppendLine(string.Format("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
                                                 path.StartsWith("~") ? path.Substring(1) : path));
