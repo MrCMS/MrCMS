@@ -387,6 +387,7 @@
     <Compile Include="HealthChecks\IHealthCheck.cs" />
     <Compile Include="HealthChecks\IsEmailConfigured.cs" />
     <Compile Include="HealthChecks\StalledQueuedTasks.cs" />
+    <Compile Include="HealthChecks\SiteIsLiveCheck.cs" />
     <Compile Include="HealthChecks\TaskRunnerCheck.cs" />
     <Compile Include="Helpers\ACLHelper.cs" />
     <Compile Include="Helpers\AdminMessagingExtensions.cs" />
