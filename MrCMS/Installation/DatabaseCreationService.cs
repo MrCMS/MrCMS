@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using MrCMS.DbConfiguration;
+using MrCMS.DbConfiguration.Helpers;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using Ninject;
@@ -19,7 +20,34 @@ namespace MrCMS.Installation
             _systemConfigurationProvider = systemConfigurationProvider;
         }
 
+        public InstallationResult ValidateConnectionString(InstallModel model)
+        {
+            var result = new InstallationResult();
+            ICreateDatabase createDatabase = GetDatabaseCreator(model);
+            if (createDatabase == null)
+            {
+                result.AddModelError("Cannot validate connection string for model.");
+                return result;
+            }
+            if (!createDatabase.ValidateConnectionString(model))
+            {
+                result.AddModelError("Unable to create the connection string with the provided details.");
+            }
+            return result;
+        }
+
         public IDatabaseProvider CreateDatabase(InstallModel model)
+        {
+            ICreateDatabase createDatabase = GetDatabaseCreator(model);
+            if (createDatabase == null)
+                return null;
+            createDatabase.CreateDatabase(model);
+            SaveConnectionSettings(createDatabase, model);
+            return
+                _kernel.GetAll<IDatabaseProvider>().FirstOrDefault(provider => provider.Type == model.DatabaseProvider);
+        }
+
+        private ICreateDatabase GetDatabaseCreator(InstallModel model)
         {
             Type creatorType =
                 TypeHelper.GetAllConcreteTypesAssignableFrom(
@@ -27,11 +55,7 @@ namespace MrCMS.Installation
                     .FirstOrDefault();
             if (creatorType == null)
                 return null;
-            var createDatabase = _kernel.Get(creatorType) as ICreateDatabase;
-            createDatabase.CreateDatabase(model);
-            SaveConnectionSettings(createDatabase, model);
-            return
-                _kernel.GetAll<IDatabaseProvider>().FirstOrDefault(provider => provider.Type == model.DatabaseProvider);
+            return _kernel.Get(creatorType) as ICreateDatabase;
         }
 
         public void SaveConnectionSettings(ICreateDatabase provider, InstallModel installModel)

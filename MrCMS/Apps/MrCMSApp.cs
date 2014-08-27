@@ -125,8 +125,6 @@ namespace MrCMS.Apps
 
         protected virtual void AppendConfiguration(Configuration configuration) { }
 
-        protected virtual int InstallOrder { get { return 10; } }
-
         public static IEnumerable<string> AppNames { get { return AllApps.Select(app => app.AppName); } }
 
 

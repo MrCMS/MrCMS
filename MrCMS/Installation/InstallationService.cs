@@ -14,15 +14,12 @@ namespace MrCMS.Installation
     {
         private readonly IDatabaseCreationService _databaseCreationService;
         private readonly IRestartApplication _restartApplication;
-        private readonly IDatabaseInfoValidationService _databaseInfoValidationService;
         private readonly IFileSystemAccessService _fileSystemAccessService;
 
-        public InstallationService(IDatabaseInfoValidationService databaseInfoValidationService,
-            IFileSystemAccessService fileSystemAccessService,
+        public InstallationService(IFileSystemAccessService fileSystemAccessService,
             IDatabaseCreationService databaseCreationService,
             IRestartApplication restartApplication)
         {
-            _databaseInfoValidationService = databaseInfoValidationService;
             _fileSystemAccessService = fileSystemAccessService;
             _databaseCreationService = databaseCreationService;
             _restartApplication = restartApplication;
@@ -33,7 +30,7 @@ namespace MrCMS.Installation
             if (model.DatabaseConnectionString != null)
                 model.DatabaseConnectionString = model.DatabaseConnectionString.Trim();
 
-            InstallationResult result = _databaseInfoValidationService.ValidateDbInfo(model);
+            InstallationResult result = _databaseCreationService.ValidateConnectionString(model);
             if (!result.Success)
                 return result;
 

@@ -7,6 +7,7 @@ namespace MrCMS.DbConfiguration
         void CreateDatabase(InstallModel model);
         string GetConnectionString(InstallModel model);
     }
+
     public interface ICreateDatabase<T> : ICreateDatabase
     {
     }

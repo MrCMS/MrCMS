@@ -278,6 +278,7 @@
     <Compile Include="DbConfiguration\EventInfo.cs" />
     <Compile Include="DbConfiguration\Filters\NotDeletedFilter.cs" />
     <Compile Include="DbConfiguration\Filters\SiteFilter.cs" />
+    <Compile Include="DbConfiguration\Helpers\CreateDatabaseExtensions.cs" />
     <Compile Include="DbConfiguration\Helpers\EventInfoExtensions.cs" />
     <Compile Include="DbConfiguration\ICreateDatabase.cs" />
     <Compile Include="DbConfiguration\IDatabaseProvider.cs" />
@@ -434,7 +435,6 @@
     <Compile Include="Installation\FileSystemAccessService.cs" />
     <Compile Include="Installation\ICreateInitialUser.cs" />
     <Compile Include="Installation\IDatabaseCreationService.cs" />
-    <Compile Include="Installation\IDatabaseInfoValidationService.cs" />
     <Compile Include="Installation\IFileSystemAccessService.cs" />
     <Compile Include="Installation\InitializeDatabase.cs" />
     <Compile Include="Installation\IInitializeDatabase.cs" />
