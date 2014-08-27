@@ -4,9 +4,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Entities;
+using MrCMS.Website.Filters;
 
 namespace MrCMS.Website.Controllers
 {
+    [ReturnUrlHandler(Order = 999)]
     public abstract class MrCMSController : Controller
     {
         protected override void OnActionExecuting(ActionExecutingContext filterContext)

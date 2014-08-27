@@ -12,7 +12,6 @@ namespace MrCMS.Website.Controllers
 {
     [MrCMSAuthorize]
     [ValidateInput(false)]
-    [ReturnUrlHandler(Order = 999)]
     public abstract class MrCMSAdminController : MrCMSController
     {
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
