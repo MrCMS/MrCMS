@@ -1,7 +1,6 @@
 using System.Web.Mvc;
 using MrCMS.DbConfiguration;
 using MrCMS.Installation;
-using NHibernate.Dialect;
 
 namespace MrCMS.Website.Controllers
 {

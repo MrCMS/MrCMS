@@ -1,18 +1,14 @@
 using System;
-using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Website.ActionResults;
-using MrCMS.Helpers;
-using MrCMS.Website.Filters;
 
 namespace MrCMS.Website.Controllers
 {
     [MrCMSAuthorize]
     [ValidateInput(false)]
-    [ReturnUrlHandler(Order = 999)]
     public abstract class MrCMSAdminController : MrCMSController
     {
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -31,7 +27,8 @@ namespace MrCMS.Website.Controllers
 
             // HTTP POST
             // if model state is invalid and it's a post
-            if (!ModelState.IsValid && filterContext.HttpContext.Request.HttpMethod.Equals("POST", StringComparison.OrdinalIgnoreCase))
+            if (!ModelState.IsValid &&
+                filterContext.HttpContext.Request.HttpMethod.Equals("POST", StringComparison.OrdinalIgnoreCase))
             {
                 // persist the model state to the tempdata dictionary
                 TempData["MrCMS-invalid-modelstate"] = ModelState;
@@ -40,7 +37,7 @@ namespace MrCMS.Website.Controllers
             }
 
             ViewData["controller-name"] = ControllerContext.RouteData.Values["controller"];
-            var url = Request.Url.ToString();
+            string url = Request.Url.ToString();
             if (MrCMSApplication.Get<SiteSettings>().SSLAdmin && url.ToLower().Contains("/admin"))
             {
                 if (!Request.IsSecureConnection && !Request.IsLocal)
@@ -56,10 +53,10 @@ namespace MrCMS.Website.Controllers
         protected virtual void SetDefaultPageTitle(ActionExecutingContext filterContext)
         {
             ViewBag.Title = string.Format("{0} - {1}",
-                                          filterContext.RequestContext.RouteData.Values["controller"].ToString()
-                                                                                                     .BreakUpString(),
-                                          filterContext.RequestContext.RouteData.Values["action"].ToString()
-                                                                                                 .BreakUpString());
+                filterContext.RequestContext.RouteData.Values["controller"].ToString()
+                    .BreakUpString(),
+                filterContext.RequestContext.RouteData.Values["action"].ToString()
+                    .BreakUpString());
         }
 
         protected override RedirectResult AuthenticationFailureRedirect()
@@ -68,7 +65,7 @@ namespace MrCMS.Website.Controllers
         }
 
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding,
-                                           JsonRequestBehavior behavior)
+            JsonRequestBehavior behavior)
         {
             return base.Json(data, contentType, contentEncoding, JsonRequestBehavior.AllowGet);
         }
@@ -83,6 +80,7 @@ namespace MrCMS.Website.Controllers
                 Data = data
             };
         }
+
         protected JsonResult Json(string data)
         {
             return new JsonNetResult

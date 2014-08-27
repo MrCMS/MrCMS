@@ -5,35 +5,31 @@ using MrCMS.Entities.Widget;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Helpers;
-using MrCMS.Services.Caching;
 
 namespace MrCMS.Website.Controllers
 {
     public class WidgetController : MrCMSUIController
     {
-        private readonly IWidgetModelService _service;
-        private readonly IHtmlCacheService _htmlCacheService;
+        private readonly IWidgetUIService _widgetUIService;
 
-        public WidgetController(IWidgetModelService service, IHtmlCacheService htmlCacheService)
+        public WidgetController(IWidgetUIService widgetUIService)
         {
-            _service = service;
-            _htmlCacheService = htmlCacheService;
+            _widgetUIService = widgetUIService;
         }
 
         public ActionResult Show(Widget widget)
         {
-            CachingInfo cachingInfo = widget.GetCachingInfo();
-            return _htmlCacheService.GetContent(this, cachingInfo,
-                helper => helper.Action("Internal", "Widget", new { widget }));
+            return _widgetUIService.GetContent(this, widget, helper => helper.Action("Internal", "Widget", new { widget }));
         }
 
         public PartialViewResult Internal(Widget widget)
         {
-            if (MrCMSApp.AppWidgets.ContainsKey(widget.Unproxy().GetType()))
-                RouteData.DataTokens["app"] = MrCMSApp.AppWidgets[widget.Unproxy().GetType()];
-            return PartialView(
-                !string.IsNullOrWhiteSpace(widget.CustomLayout) ? widget.CustomLayout : widget.WidgetType,
-                _service.GetModel(widget));
+            _widgetUIService.SetAppDataToken(RouteData, widget);
+
+            return PartialView(!string.IsNullOrWhiteSpace(widget.CustomLayout)
+                ? widget.CustomLayout
+                : widget.WidgetType,
+                _widgetUIService.GetModel(widget));
         }
     }
 }
