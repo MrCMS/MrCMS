@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
-using System.IO;
 using System.Web;
-using System.Web.Hosting;
 using Elmah;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
@@ -71,9 +68,9 @@ namespace MrCMS.Website
             get
             {
                 return SiteSettings != null
-                           ? CurrentContext.Items["current.cultureinfo"] as CultureInfo ??
-                             (CurrentContext.Items["current.cultureinfo"] = SiteSettings.CultureInfo) as CultureInfo
-                           : CultureInfo.CurrentCulture;
+                    ? CurrentContext.Items["current.cultureinfo"] as CultureInfo ??
+                      (CurrentContext.Items["current.cultureinfo"] = SiteSettings.CultureInfo) as CultureInfo
+                    : CultureInfo.CurrentCulture;
             }
         }
 
@@ -83,8 +80,8 @@ namespace MrCMS.Website
             {
                 //return TimeZoneInfo.Local;
                 return SiteSettings != null
-                           ? (SiteSettings.TimeZoneInfo ?? TimeZoneInfo.Local)
-                           : TimeZoneInfo.Local;
+                    ? (SiteSettings.TimeZoneInfo ?? TimeZoneInfo.Local)
+                    : TimeZoneInfo.Local;
             }
         }
 
@@ -109,18 +106,7 @@ namespace MrCMS.Website
             {
                 if (!_databaseIsInstalled.HasValue)
                 {
-                    string applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath;
-
-                    string connectionStrings = Path.Combine(applicationPhysicalPath, "ConnectionStrings.config");
-
-                    if (!File.Exists(connectionStrings))
-                    {
-                        File.WriteAllText(connectionStrings, "<connectionStrings></connectionStrings>");
-                    }
-
-                    ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
-                    _databaseIsInstalled = connectionString != null &&
-                                           !String.IsNullOrEmpty(connectionString.ConnectionString);
+                    return MrCMSApplication.Get<IEnsureDatabaseIsInstalled>().IsInstalled();
                 }
                 return _databaseIsInstalled.Value;
             }
@@ -141,8 +127,8 @@ namespace MrCMS.Website
                     return UserGuidOverride.Value;
                 if (CurrentUser != null) return CurrentUser.Guid;
                 string o = CurrentContext.Request.Cookies[UserSessionId] != null
-                               ? CurrentContext.Request.Cookies[UserSessionId].Value
-                               : null;
+                    ? CurrentContext.Request.Cookies[UserSessionId].Value
+                    : null;
                 Guid result;
                 if (o == null || !Guid.TryParse(o, out result))
                 {
@@ -160,7 +146,7 @@ namespace MrCMS.Website
             {
                 return (HashSet<Action<IKernel>>) (CurrentContext.Items["current.on-end-request"] ??
                                                    (CurrentContext.Items["current.on-end-request"] =
-                                                    new HashSet<Action<IKernel>>()));
+                                                       new HashSet<Action<IKernel>>()));
             }
             set { CurrentContext.Items["current.on-end-request"] = value; }
         }
@@ -195,10 +181,10 @@ namespace MrCMS.Website
         private static void AddCookieToResponse(string key, string value, DateTime expiry)
         {
             var userGuidCookie = new HttpCookie(key)
-                {
-                    Value = value,
-                    Expires = expiry
-                };
+            {
+                Value = value,
+                Expires = expiry
+            };
             CurrentContext.Response.Cookies.Add(userGuidCookie);
         }
     }

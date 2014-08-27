@@ -10,7 +10,6 @@ using System.Web.Routing;
 using Elmah;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using MrCMS.Apps;
-using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.IoC;
@@ -216,18 +215,19 @@ namespace MrCMS.Website
         /// <returns>The created kernel.</returns>
         private static IKernel CreateKernel()
         {
-            var kernel = new StandardKernel(new ServiceModule(),
+            var kernel = new StandardKernel(new NinjectSettings { AllowNullInjection = true },
+                new ServiceModule(),
                 new SettingsModule(),
                 new LuceneModule(),
                 new FileSystemModule(),
                 new GenericBindingsModule(),
                 new SystemWebModule(),
                 new SiteModule(),
-                new AuthModule(),
-                new NHibernateModule(DatabaseType.Auto, InDevelopment));
+                new AuthModule());
             kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
 
+            kernel.Load(new NHibernateModule());
             return kernel;
         }
 

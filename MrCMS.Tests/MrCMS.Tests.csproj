@@ -204,6 +204,7 @@
     <Compile Include="Shortcodes\Forms\SubmittedMessageRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\TextAreaRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\TextBoxRendererTests.cs" />
+    <Compile Include="SqliteInMemoryProvider.cs" />
     <Compile Include="Stubs\BasicMappedWebpage.cs" />
     <Compile Include="Stubs\BasicMappedWidget.cs" />
     <Compile Include="Stubs\BasicMessageTemplate.cs" />

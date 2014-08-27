@@ -291,12 +291,12 @@ namespace MrCMS.Helpers
 
         public static Type GetTypeByName(string typeName)
         {
-            return _alltypes.FirstOrDefault(type => type.FullName == typeName);
+            return GetAllTypes().FirstOrDefault(type => type.FullName == typeName);
         }
 
         public static Type GetTypeByClassName(string typeName)
         {
-            return _alltypes.FirstOrDefault(type => type.Name == typeName);
+            return GetAllTypes().FirstOrDefault(type => type.Name == typeName);
         }
 
         public static Type GetGenericTypeByName(string type)

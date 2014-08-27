@@ -139,6 +139,7 @@ namespace MrCMS.IoC
                 .Where(
                     t =>
                         !typeof(SiteSettingsBase).IsAssignableFrom(t) &&
+                        !typeof(SystemSettingsBase).IsAssignableFrom(t) &&
                         !typeof(IController).IsAssignableFrom(t) && !Kernel.GetBindings(t).Any())
                 .BindWith<NinjectServiceToInterfaceBinder>()
                 .Configure(onSyntax => onSyntax.InRequestScope()));

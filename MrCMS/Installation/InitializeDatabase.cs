@@ -12,7 +12,7 @@ namespace MrCMS.Installation
     public class InitializeDatabase : IInitializeDatabase
     {
         private readonly ISession _session;
-        private readonly Site _site;
+        private Site _site;
         private readonly IConfigurationProvider _configurationProvider;
 
         public InitializeDatabase(ISession session, Site site, IConfigurationProvider configurationProvider)
@@ -24,10 +24,10 @@ namespace MrCMS.Installation
 
         public void Initialize(InstallModel model)
         {
+            CurrentRequestData.CurrentSite = _site = _session.Get<Site>(_site.Id);
             SetupTasks();
             var siteSettings = new SiteSettings
             {
-                SiteId = _site.Id,
                 TimeZone = model.TimeZone,
                 UICulture = model.UiCulture,
                 EnableInlineEditing = true,
@@ -36,7 +36,6 @@ namespace MrCMS.Installation
             };
             var mediaSettings = new MediaSettings
             {
-                SiteId = _site.Id,
                 ThumbnailImageHeight = 50,
                 ThumbnailImageWidth = 50,
                 LargeImageHeight = 800,
@@ -49,12 +48,10 @@ namespace MrCMS.Installation
             };
             var mailSettings = new MailSettings
             {
-                SiteId = _site.Id,
                 Port = 25,
             };
             var fileSystemSettings = new FileSystemSettings
             {
-                SiteId = _site.Id,
                 StorageType = typeof (FileSystem).FullName
             };
 
@@ -68,21 +65,18 @@ namespace MrCMS.Installation
         {
             var deleteLogsTask = new ScheduledTask
             {
-                Site = _site,
                 Type = typeof(DeleteExpiredLogsTask).FullName,
                 EveryXSeconds = 60
             };
 
             var deleteQueuedTask = new ScheduledTask
             {
-                Site = _site,
                 Type = typeof(DeleteOldQueuedTasks).FullName,
                 EveryXSeconds = 60
             };
 
             var sendQueueEmailsTask = new ScheduledTask
             {
-                Site = _site,
                 Type = typeof(SendQueuedMessagesTask).FullName,
                 EveryXSeconds = 60
             };
