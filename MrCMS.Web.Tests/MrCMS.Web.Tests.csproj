@@ -170,6 +170,7 @@
     <Compile Include="InMemoryDatabaseTest.cs" />
     <Compile Include="MrCMSTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqliteInMemoryProvider.cs" />
     <Compile Include="Stubs\BasicMappedWidget.cs" />
     <Compile Include="Stubs\BasicMessageTemplate.cs" />
     <Compile Include="Stubs\FakeHttpFileCollectionBase.cs" />

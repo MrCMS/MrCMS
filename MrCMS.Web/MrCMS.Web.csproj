@@ -1375,6 +1375,7 @@
     <Content Include="Areas\Admin\Content\Styles\jquery.mrcms-mediaselector.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.tagit.css" />
     <Content Include="Content\install\images\install-synchronizing.gif" />
+    <Content Include="Content\install\scripts\install.js" />
     <Content Include="Content\install\scripts\jquery.validate.js" />
     <Content Include="Content\install\style.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.fileupload-ui.css" />

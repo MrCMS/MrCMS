@@ -1,6 +1,7 @@
 using System.Web.Mvc;
-using MrCMS.DbConfiguration.Configuration;
+using MrCMS.DbConfiguration;
 using MrCMS.Installation;
+using NHibernate.Dialect;
 
 namespace MrCMS.Website.Controllers
 {
@@ -20,11 +21,9 @@ namespace MrCMS.Website.Controllers
             if (CurrentRequestData.DatabaseIsInstalled)
                 return Redirect("~");
 
-            //set page timeout to 5 minutes
-            Server.ScriptTimeout = 300;
 
             // if it is a new setup
-            if (installModel.DatabaseType == DatabaseType.Auto)
+            if (string.IsNullOrWhiteSpace(installModel.DatabaseProvider))
             {
                 ModelState.Clear();
                 installModel = new InstallModel
@@ -32,17 +31,23 @@ namespace MrCMS.Website.Controllers
                                 SiteUrl = Request.Url.Authority,
                                 AdminEmail = "admin@yoursite.com",
                                 DatabaseConnectionString = "",
-                                DatabaseType = DatabaseType.MsSql,
-                                SqlAuthenticationType = "sqlauthentication",
-                                SqlConnectionInfo = "sqlconnectioninfo_values",
+                                DatabaseProvider = typeof(SqlServer2012Provider).FullName,
+                                SqlAuthenticationType = SqlAuthenticationType.SQL,
+                                SqlConnectionInfo = SqlConnectionInfo.Values,
                                 SqlServerCreateDatabase = false,
                             };
             }
+            return ShowPage(installModel);
+        }
+
+        private ActionResult ShowPage(InstallModel installModel)
+        {
+            ViewData["provider-types"] = _installationService.GetProviderTypes();
             return View(installModel);
         }
 
         [HttpPost]
-        public ActionResult Setup(InstallModel model)
+        public ActionResult Setup(InstallModel installModel)
         {
             if (CurrentRequestData.DatabaseIsInstalled)
                 return Redirect("~");
@@ -50,12 +55,13 @@ namespace MrCMS.Website.Controllers
             //set page timeout to 5 minutes
             Server.ScriptTimeout = 300;
 
-            var installationResult = _installationService.Install(model);
+            var installationResult = _installationService.Install(installModel);
 
             if (!installationResult.Success)
             {
                 ViewData["installationResult"] = installationResult;
-                return View(model);
+
+                return ShowPage(installModel);
             }
             return Redirect("~");
         }

@@ -259,7 +259,6 @@
     <Compile Include="DbConfiguration\Caches\Azure\ISerializationProvider.cs" />
     <Compile Include="DbConfiguration\Caches\Azure\SerializationProvider.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
-    <Compile Include="DbConfiguration\Configuration\DatabaseType.cs" />
     <Compile Include="DbConfiguration\Configuration\SetCoreProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SetOnUpdatingProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SoftDeleteListener.cs" />
@@ -274,10 +273,14 @@
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
+    <Compile Include="DbConfiguration\CreateSQLiteDatabase.cs" />
+    <Compile Include="DbConfiguration\CreateSqlServerDatabase.cs" />
     <Compile Include="DbConfiguration\EventInfo.cs" />
     <Compile Include="DbConfiguration\Filters\NotDeletedFilter.cs" />
     <Compile Include="DbConfiguration\Filters\SiteFilter.cs" />
     <Compile Include="DbConfiguration\Helpers\EventInfoExtensions.cs" />
+    <Compile Include="DbConfiguration\ICreateDatabase.cs" />
+    <Compile Include="DbConfiguration\IDatabaseProvider.cs" />
     <Compile Include="DbConfiguration\ListenerDisabler.cs" />
     <Compile Include="DbConfiguration\LogOverride.cs" />
     <Compile Include="DbConfiguration\Mapping\DoNotMapAttribute.cs" />
@@ -285,7 +288,10 @@
     <Compile Include="DbConfiguration\Mapping\StringResourceOverride.cs" />
     <Compile Include="DbConfiguration\MrCMSSession.cs" />
     <Compile Include="DbConfiguration\MrCMSTransaction.cs" />
+    <Compile Include="DbConfiguration\MySqlDatabaseCreator.cs" />
+    <Compile Include="DbConfiguration\MySqlProvider.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
+    <Compile Include="DbConfiguration\NoConnectionStringBuilderAttribute.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentVersionOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\FormListOptionOverride.cs" />
@@ -310,6 +316,9 @@
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WidgetOverride.cs" />
     <Compile Include="DbConfiguration\SiteFilterDisabler.cs" />
+    <Compile Include="DbConfiguration\SqliteProvider.cs" />
+    <Compile Include="DbConfiguration\SqlServer2008Provider.cs" />
+    <Compile Include="DbConfiguration\SqlServer2012Provider.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
     <Compile Include="DbConfiguration\Types\BinaryData.cs" />
     <Compile Include="DbConfiguration\Types\DateTimeData.cs" />
@@ -421,6 +430,7 @@
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
+    <Compile Include="Installation\DatabaseCreationService.cs" />
     <Compile Include="Installation\FileSystemAccessService.cs" />
     <Compile Include="Installation\ICreateInitialUser.cs" />
     <Compile Include="Installation\IDatabaseCreationService.cs" />
@@ -429,8 +439,12 @@
     <Compile Include="Installation\InitializeDatabase.cs" />
     <Compile Include="Installation\IInitializeDatabase.cs" />
     <Compile Include="Installation\IOnInstallation.cs" />
+    <Compile Include="Installation\IRestartApplication.cs" />
     <Compile Include="Installation\PermissionsChecker.cs" />
     <Compile Include="Installation\RequiredCheck.cs" />
+    <Compile Include="Installation\RestartApplication.cs" />
+    <Compile Include="Installation\SetupInitialTemplates.cs" />
+    <Compile Include="Installation\SqlAuthenticationType.cs" />
     <Compile Include="IoC\NinjectSystemSettingsBinder.cs" />
     <Compile Include="Models\CachingInfo.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
@@ -516,6 +530,7 @@
     <Compile Include="Services\WidgetModelService.cs" />
     <Compile Include="Services\Widgets\DefaultGetWidgetModel.cs" />
     <Compile Include="Services\Widgets\GetWidgetModelBase.cs" />
+    <Compile Include="Settings\DatabaseSettings.cs" />
     <Compile Include="Settings\ILegacySettingsProvider.cs" />
     <Compile Include="Settings\ISystemConfigurationProvider.cs" />
     <Compile Include="Settings\LegacySettingsProvider.cs" />
@@ -798,9 +813,11 @@
     <Compile Include="Tasks\TaskRunner.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\Controllers\SEOController.cs" />
+    <Compile Include="Website\EnsureDatabaseIsInstalled.cs" />
     <Compile Include="Website\Filters\ForceImmediateLuceneUpdateAttribute.cs" />
     <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
     <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
+    <Compile Include="Website\IEnsureDatabaseIsInstalled.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSAssemblyAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
