@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
 using MrCMS.Entities.Widget;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Widgets
 {
+    [OutputCacheable(PerPage = true)]
     public class CurrentPageSubNavigation : Widget
     {
         [DisplayName("Show Name As Title")]
