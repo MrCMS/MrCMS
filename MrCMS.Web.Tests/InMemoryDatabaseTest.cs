@@ -4,7 +4,6 @@ using System.Reflection;
 using Elmah;
 using Iesi.Collections.Generic;
 using MrCMS.DbConfiguration;
-using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -33,11 +32,9 @@ namespace MrCMS.Web.Tests
                 lock (lockObject)
                 {
                     var assemblies = new List<Assembly> {typeof (InMemoryDatabaseTest).Assembly};
-                    var nHibernateModule = new NHibernateConfigurator
+                    var nHibernateModule = new NHibernateConfigurator(new SqliteInMemoryProvider())
                     {
                         CacheEnabled = true,
-                        DatabaseType = DatabaseType.Sqlite,
-                        InDevelopment = true,
                         ManuallyAddedAssemblies = assemblies
                     };
                     Configuration = nHibernateModule.GetConfiguration();
@@ -66,7 +63,10 @@ namespace MrCMS.Web.Tests
             CurrentRequestData.ErrorSignal = new ErrorSignal();
 
             Kernel.Unbind<IEventContext>();
-            Kernel.Load(new ServiceModule(true));
+            Kernel.Load(new ServiceModule());
+            Kernel.Load(new SettingsModule(true));
+            Kernel.Load(new FileSystemModule());
+            Kernel.Load(new SiteModule());
             _eventContext = new TestableEventContext(Kernel.Get<EventContext>());
             Kernel.Rebind<IEventContext>().ToMethod(context => EventContext);
         }

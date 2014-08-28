@@ -29,5 +29,12 @@ namespace MrCMS.Helpers
                     helper.ViewContext.HttpContext.Request.Url.ToString());
             return MvcHtmlString.Empty;
         }
+
+        public static MvcHtmlString ReturnTo(this HtmlHelper helper, string url)
+        {
+            return !string.IsNullOrWhiteSpace(url)
+                ? helper.Hidden(ReturnUrlHandlerAttribute.ReturnUrlKey, url)
+                : MvcHtmlString.Empty;
+        }
     }
 }

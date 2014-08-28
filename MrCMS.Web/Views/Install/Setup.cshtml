@@ -1,10 +1,10 @@
-﻿@using MrCMS.DbConfiguration.Configuration
-@using MrCMS.Installation
+﻿@using MrCMS.Installation
 @model MrCMS.Installation.InstallModel
 @{
     ViewBag.Title = "Install MrCMS";
     Layout = "~/Views/Shared/_Installation.cshtml";
     var installationResult = ViewData["installationResult"] as InstallationResult;
+    var providerTypes = ViewData["provider-types"] as List<DatabaseProviderInfo> ?? new List<DatabaseProviderInfo>();
 }
 
 @using (Html.BeginForm("Setup", "Install", FormMethod.Post, new { id = "installationform" }))
@@ -52,13 +52,13 @@
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.AdminPassword)
-                    @Html.TextBoxFor(x => x.AdminPassword, new { @class = "form-control" })
+                    @Html.PasswordFor(x => x.AdminPassword, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.AdminPassword)
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.ConfirmPassword)
-                    @Html.TextBoxFor(x => x.ConfirmPassword, new { @class = "form-control" })
+                    @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.ConfirmPassword)
                 </div>
 
@@ -81,27 +81,15 @@
                 <h4>Database information</h4>
                 <hr class="small-margin" />
 
-
-                <div class="form-group">
-                    <label class="radio-inline">
-                        @Html.RadioButton("DatabaseType", DatabaseType.Sqlite, (Model.DatabaseType == DatabaseType.Sqlite), new { id = "provider_sqlite" })
-                        Use built-in data storage (Sqlite) (limited compatibility).
-                    </label>
-                </div>
-
-                <div class="form-group">
-                    <label class="radio-inline">
-                        @Html.RadioButton("DatabaseType", DatabaseType.MySQL, (Model.DatabaseType == DatabaseType.MySQL), new { id = "provider_mysql" })
-                        Use MySQL
-                    </label>
-                </div>
-
-                <div class="form-group">
-                    <label class="radio-inline">
-                        @Html.RadioButton("DatabaseType", DatabaseType.MsSql, (Model.DatabaseType == DatabaseType.MsSql), new { id = "provider_sqlserver" })
-                        Use SQL Server (or SQL Express) database.
-                    </label>
-                </div>
+                @foreach (var providerType in providerTypes)
+                {
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            @Html.RadioButton("DatabaseProvider", providerType.TypeName, (Model.DatabaseProvider == providerType.TypeName), new { data_connection_string_required = providerType.RequiresConnectionStringBuilding })
+                            @providerType.Description
+                        </label>
+                    </div>
+                }
                 <hr />
 
                 <div id="sqlConnectionInfo">
@@ -115,13 +103,13 @@
 
                     <div class="form-group">
                         <label class="radio-inline">
-                            @Html.RadioButton("SqlConnectionInfo", "sqlconnectioninfo_values", (Model.SqlConnectionInfo == "sqlconnectioninfo_values"), new { id = "sqlconnectioninfo_values" })
+                            @Html.RadioButton("SqlConnectionInfo", SqlConnectionInfo.Values, (Model.SqlConnectionInfo == SqlConnectionInfo.Values), new { id = "sqlconnectioninfo_values" })
                             Enter SQL connection values
                         </label>
                     </div>
                     <div class="form-group">
                         <label class="radio-inline">
-                            @Html.RadioButton("SqlConnectionInfo", "sqlconnectioninfo_raw", (Model.SqlConnectionInfo == "sqlconnectioninfo_raw"), new { id = "sqlconnectioninfo_raw" })
+                            @Html.RadioButton("SqlConnectionInfo", SqlConnectionInfo.Raw, (Model.SqlConnectionInfo == SqlConnectionInfo.Raw), new { id = "sqlconnectioninfo_raw" })
                             Enter raw connection string (advanced)
                         </label>
                     </div>
@@ -142,22 +130,22 @@
 
                         <div class="form-group">
                             <label class="radio-inline">
-                                @Html.RadioButton("SqlAuthenticationType", "sqlauthentication", (Model.SqlAuthenticationType == "sqlauthentication"), new { id = "sqlauthenticationtype_sql" })
+                                @Html.RadioButton("SqlAuthenticationType", SqlAuthenticationType.SQL, (Model.SqlAuthenticationType == SqlAuthenticationType.SQL), new { id = "sqlauthenticationtype_sql" })
                                 Use SQL Server account
                             </label>
                         </div>
 
                         <div class="form-group">
                             <label class="radio-inline">
-                                @Html.RadioButton("SqlAuthenticationType", "windowsauthentication", (Model.SqlAuthenticationType == "windowsauthentication"), new { id = "sqlauthenticationtype_windows" })
+                                @Html.RadioButton("SqlAuthenticationType", SqlAuthenticationType.Windows, (Model.SqlAuthenticationType == SqlAuthenticationType.Windows), new { id = "sqlauthenticationtype_windows" })
                                 Use integrated Windows authentication
                             </label>
                         </div>
 
                         <div class="form-group" id="pnlSqlServerUsername">
-                            @Html.LabelFor(x => x.SqlServerName)
-                            @Html.TextBoxFor(x => x.SqlServerName, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(x => x.SqlServerName)
+                            @Html.LabelFor(x => x.SqlServerUsername)
+                            @Html.TextBoxFor(x => x.SqlServerUsername, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.SqlServerUsername)
                         </div>
 
                         <div class="form-group" id="pnlSqlServerPassword">

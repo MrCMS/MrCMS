@@ -2,6 +2,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.Messaging;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers

@@ -158,7 +158,8 @@ namespace MrCMS.Tests.Services
         {
             for (int i = 0; i < 4; i++)
             {
-                Session.Transact(session => session.Save(new StubWebpage {DisplayOrder = i, Site = CurrentSite}));
+                int order = i;
+                Session.Transact(session => session.Save(new StubWebpage {DisplayOrder = order, Site = CurrentSite}));
             }
 
             var stubDocument = new StubWebpage {Site = CurrentSite};

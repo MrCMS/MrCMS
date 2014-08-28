@@ -112,10 +112,5 @@ namespace MrCMS.Tests.Helpers
         {
             
         }
-
-        protected override void OnInstallation(ISession session, InstallModel model, Site site)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

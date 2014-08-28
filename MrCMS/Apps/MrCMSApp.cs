@@ -109,11 +109,6 @@ namespace MrCMS.Apps
             AllApps.ForEach(app => app.RegisterServices(kernel));
         }
 
-        public static void InstallApps(ISession session, InstallModel model, Site site)
-        {
-            AllApps.OrderBy(app => app.InstallOrder).ForEach(app => app.OnInstallation(session, model, site));
-        }
-
         private static List<MrCMSApp> AllApps
         {
             get
@@ -130,13 +125,9 @@ namespace MrCMS.Apps
 
         protected virtual void AppendConfiguration(Configuration configuration) { }
 
-        protected virtual int InstallOrder { get { return 10; } }
-
         public static IEnumerable<string> AppNames { get { return AllApps.Select(app => app.AppName); } }
 
 
         protected abstract void RegisterServices(IKernel kernel);
-
-        protected abstract void OnInstallation(ISession session, InstallModel model, Site site);
     }
 }

@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Web.Mvc;
-using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -37,10 +36,12 @@ namespace MrCMS.Installation
         [DisplayName("Database Connection String")]
         public string DatabaseConnectionString { get; set; }
 
-        public DatabaseType DatabaseType { get; set; }
+        [DisplayName("Database Provider")]
+        public string DatabaseProvider { get; set; }
+
         //SQL Server properties
         [DisplayName("SQL Connection Info")]
-        public string SqlConnectionInfo { get; set; }
+        public SqlConnectionInfo SqlConnectionInfo { get; set; }
 
         [AllowHtml]
         [DisplayName("SQL Server Name/IP")]
@@ -59,7 +60,7 @@ namespace MrCMS.Installation
         public string SqlServerPassword { get; set; }
 
         [DisplayName("SQL Authentication Type")]
-        public string SqlAuthenticationType { get; set; }
+        public SqlAuthenticationType SqlAuthenticationType { get; set; }
 
         [DisplayName("SQL Server Create Database")]
         public bool SqlServerCreateDatabase { get; set; }
@@ -104,13 +105,11 @@ namespace MrCMS.Installation
                                                             : info.Id == TimeZone, emptyItem: null);
             }
         }
+    }
 
-        public Webpage HomePage { get; set; }
-        public Webpage Page2 { get; set; }
-        public Webpage Page3 { get; set; }
-        public Webpage Error403 { get; set; }
-        public Webpage Error404 { get; set; }
-        public Webpage Error500 { get; set; }
-        public Layout BaseLayout { get; set; }
+    public enum SqlConnectionInfo
+    {
+        Values,
+        Raw
     }
 }

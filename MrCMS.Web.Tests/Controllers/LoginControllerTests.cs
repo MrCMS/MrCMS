@@ -12,7 +12,6 @@ using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
-using MrCMS.Web.Controllers;
 using MrCMS.Website;
 using Xunit;
 
@@ -35,7 +34,6 @@ namespace MrCMS.Web.Tests.Controllers
             _loginService = A.Fake<ILoginService>();
             _uniquePageService = A.Fake<IUniquePageService>();
             _loginController = new LoginController(_userService, _resetPasswordService, _authorisationService, _uniquePageService, _loginService);
-            _loginController.GetCurrentLayout = A.Fake<IGetCurrentLayout>();
 
             // initial setup as this is reused
             A.CallTo(() => _uniquePageService.RedirectTo<LoginPage>(null)).Returns(new RedirectResult("~/login-page"));
@@ -51,15 +49,27 @@ namespace MrCMS.Web.Tests.Controllers
             result.Model.Should().BeOfType<LoginPage>();
         }
 
-        //[Fact]
-        //public void LoginController_Get_ShouldReturnPassedModel()
-        //{
-        //    var loginModel = new LoginController.LoginModel();
+        [Fact]
+        public void LoginController_Show_ShouldSetViewDataAsModel()
+        {
+            var loginModel = new LoginModel();
 
-        //    var result = _loginController.Get(loginModel);
+            var result = _loginController.Show(null, loginModel);
 
-        //    result.Model.Should().Be(loginModel);
-        //}
+            result.ViewData["login-model"].Should().Be(loginModel);
+        }
+
+        [Fact]
+        public void LoginController_Show_ShouldUseTempDataModelBeforePassedModel()
+        {
+            var model1 = new LoginModel();
+            var model2 = new LoginModel();
+            _loginController.TempData["login-model"] = model1;
+
+            var result = _loginController.Show(null, model2);
+
+            result.ViewData["login-model"].Should().Be(model1);
+        }
 
         [Fact]
         public void LoginController_Post_IfModelIsNullReturnsRedirectToLoginPage()

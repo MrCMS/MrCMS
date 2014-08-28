@@ -20,13 +20,13 @@ namespace MrCMS.Services
 
             foreach (
                 Type type in
-                    TypeHelper.GetAllConcreteMappedClassesAssignableFrom<SystemEntity>()
+                    TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
                         .Where(type => !type.ContainsGenericParameters))
             {
                 var hashSet = new HashSet<Type>();
 
                 Type thisType = type;
-                while (typeof(SystemEntity).IsAssignableFrom(thisType))
+                while (typeof(Webpage).IsAssignableFrom(thisType))
                 {
                     foreach (Type assignType in TypeHelper.GetAllConcreteTypesAssignableFrom(
                         typeof(CustomSiteMapBase<>).MakeGenericType(type)))

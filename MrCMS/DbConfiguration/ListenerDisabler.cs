@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHibernate;
 using NHibernate.Event;
@@ -43,6 +44,7 @@ namespace MrCMS.DbConfiguration
         private readonly ISession _session;
         private readonly ListenerType _type;
         private readonly ISaveOrUpdateEventListener[] _updateEventListeners;
+
 
         public ListenerDisabler(ISession session, ListenerType type, object listener)
         {

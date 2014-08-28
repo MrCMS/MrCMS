@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
 using MrCMS.Website;
@@ -7,20 +6,18 @@ using NHibernate;
 
 namespace MrCMS.HealthChecks
 {
-    public class StalledTasks : HealthCheck
+    public class StalledQueuedTasks : HealthCheck
     {
         private readonly ISession _session;
-        private readonly Site _site;
 
-        public StalledTasks(ISession session, Site site)
+        public StalledQueuedTasks(ISession session)
         {
             _session = session;
-            _site = site;
         }
 
         public override string DisplayName
         {
-            get { return "Stalled tasks"; }
+            get { return "Stalled Queued Tasks"; }
         }
 
         public override HealthCheckResult PerformCheck()
@@ -29,16 +26,16 @@ namespace MrCMS.HealthChecks
                 .Where(
                     task =>
                         task.Status == TaskExecutionStatus.Pending &&
-                        task.CreatedOn <= CurrentRequestData.Now.AddMinutes(-30) && task.Site.Id == _site.Id)
+                        task.CreatedOn <= CurrentRequestData.Now.AddMinutes(-30))
                 .Any();
             return any
                 ? new HealthCheckResult
                 {
                     Messages = new List<string>
-                                 {
-                                     "One or more tasks have not been run in the last 30 minutes. " +
-                                     "Please check that your scheduler is still configured correctly."
-                                 }
+                    {
+                        "One or more tasks have not been run in the last 30 minutes. " +
+                        "Please check that your scheduler is still configured correctly."
+                    }
                 }
                 : HealthCheckResult.Success;
         }

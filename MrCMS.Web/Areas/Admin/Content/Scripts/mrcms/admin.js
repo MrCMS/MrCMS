@@ -10,12 +10,12 @@ $(document).ready(function () {
     $("[rel='tooltip']").tooltip();
 
     Globalize.culture($("#UICulture").val());
-    $.validator.methods.number = function(value, element) {
+    $.validator.methods.number = function (value, element) {
         return this.optional(element) ||
             !isNaN(Globalize.parseFloat(value));
     };
 
-    $.validator.methods.date = function(value, element) {
+    $.validator.methods.date = function (value, element) {
         return this.optional(element) ||
             !isNaN(Globalize.parseDate(value));
     };
@@ -128,7 +128,49 @@ $(function () {
 window.admin = {
     initializePlugins: function () {
         CKEDITOR.replaceAll('ckedit-enabled');
-        CKEDITOR.on('instanceReady', function () { $(window).resize(); });
+        CKEDITOR.on('instanceReady', function (ev) {
+            $(window).resize();
+            ev.editor.dataProcessor.htmlFilter.addRules(
+                {
+                    elements:
+                    {
+                        $: function (element) {
+                            // Output dimensions of images as width and height
+                            if (element.name == 'img') {
+                                var style = element.attributes.style;
+
+                                if (style) {
+                                    // Get the width from the style.
+                                    var match = /(?:^|\s)width\s*:\s*(\d+)px/i.exec(style),
+                                        width = match && match[1];
+
+                                    // Get the height from the style.
+                                    match = /(?:^|\s)height\s*:\s*(\d+)px/i.exec(style);
+                                    var height = match && match[1];
+
+                                    if (width) {
+                                        element.attributes.style = element.attributes.style.replace(/(?:^|\s)width\s*:\s*(\d+)px;?/i, '');
+                                        element.attributes.width = width;
+                                    }
+
+                                    if (height) {
+                                        element.attributes.style = element.attributes.style.replace(/(?:^|\s)height\s*:\s*(\d+)px;?/i, '');
+                                        element.attributes.height = height;
+                                    }
+                                }
+
+                                element.attributes.class = "img-responsive";
+                            }
+
+                            if (!element.attributes.style)
+                                delete element.attributes.style;
+
+
+                            return element;
+                        }
+                    }
+                });
+        });
         $('[data-type=media-selector], [class=media-selector]').mediaSelector();
         var form = $('form');
         form.removeData("validator");

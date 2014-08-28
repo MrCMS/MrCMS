@@ -1,370 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
-using System.Security;
-using System.Security.AccessControl;
-using System.Security.Principal;
-using System.Threading;
-using System.Web;
-using System.Web.Configuration;
-using System.Web.Hosting;
-using FluentNHibernate.Cfg.Db;
-using MrCMS.Apps;
 using MrCMS.DbConfiguration;
-using MrCMS.DbConfiguration.Configuration;
-using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
-using MrCMS.Events;
 using MrCMS.Helpers;
-using MrCMS.Services;
 using MrCMS.Website;
-using MySql.Data.MySqlClient;
 using NHibernate;
 using Ninject;
-using Ninject.Planning.Bindings;
-using AuthorizationRuleCollection = System.Security.AccessControl.AuthorizationRuleCollection;
 
 namespace MrCMS.Installation
 {
     public class InstallationService : IInstallationService
     {
-        private static AspNetHostingPermissionLevel? _trustLevel;
-        private readonly HttpContextBase _context;
+        private readonly IDatabaseCreationService _databaseCreationService;
+        private readonly IRestartApplication _restartApplication;
+        private readonly IFileSystemAccessService _fileSystemAccessService;
 
-        public InstallationService(HttpContextBase context)
+        public InstallationService(IFileSystemAccessService fileSystemAccessService,
+            IDatabaseCreationService databaseCreationService,
+            IRestartApplication restartApplication)
         {
-            _context = context;
+            _fileSystemAccessService = fileSystemAccessService;
+            _databaseCreationService = databaseCreationService;
+            _restartApplication = restartApplication;
         }
 
         public InstallationResult Install(InstallModel model)
         {
-            var result = new InstallationResult();
-
             if (model.DatabaseConnectionString != null)
                 model.DatabaseConnectionString = model.DatabaseConnectionString.Trim();
 
-            ValidateDbInfo(model, result);
+            InstallationResult result = _databaseCreationService.ValidateConnectionString(model);
+            if (!result.Success)
+                return result;
 
-            EnsureAccessToFileSystem(result);
+            result = _fileSystemAccessService.EnsureAccessToFileSystem();
+            if (!result.Success)
+                return result;
+            _fileSystemAccessService.EmptyAppData();
 
-            if (result.Success)
+            try
             {
-                try
-                {
-                    var connectionString = CreateDatabase(model);
+                var provider = _databaseCreationService.CreateDatabase(model);
 
-                    //save settings
-                    SetUpInitialData(model, connectionString, model.DatabaseType);
+                //save settings
+                SetUpInitialData(model, provider);
 
-                    CurrentRequestData.OnEndRequest.Add(k =>
-                                                            {
-                                                                var connectionStringSettings =
-                                                                    new ConnectionStringSettings("mrcms",
-                                                                                                 connectionString)
-                                                                        {
-                                                                            ProviderName =
-                                                                                GetProviderName(model.DatabaseType)
-
-                                                                        };
-                                                                Configuration cfg =
-                                                                    WebConfigurationManager.OpenWebConfiguration(@"/");
-                                                                cfg.ConnectionStrings.ConnectionStrings.Remove("mrcms");
-                                                                cfg.ConnectionStrings.ConnectionStrings.Add(
-                                                                    connectionStringSettings);
-                                                                cfg.Save();
-
-                                                                RestartAppDomain();
-                                                            });
-                }
-                catch (Exception exception)
-                {
-                    result.AddModelError("Setup failed: " + exception);
-                }
+                CurrentRequestData.OnEndRequest.Add(k => _restartApplication.Restart());
+            }
+            catch (Exception exception)
+            {
+                result.AddModelError("Setup failed: " + exception);
+                _fileSystemAccessService.EmptyAppData();
             }
 
             return result;
         }
 
-        private string CreateDatabase(InstallModel model)
+        public List<DatabaseProviderInfo> GetProviderTypes()
         {
-            string connectionString = null;
-            switch (model.DatabaseType)
-            {
-                case DatabaseType.Sqlite:
-                    //SQLite
-                    string databaseFileName = "MrCMS.Db.db";
-                    string databasePath = @"|DataDirectory|\" + databaseFileName;
-                    connectionString = "Data Source=" + databasePath;
-
-                    //drop database if exists
-                    string databaseFullPath = HostingEnvironment.MapPath("~/App_Data/") + databaseFileName;
-                    if (File.Exists(databaseFullPath))
-                    {
-                        File.Delete(databaseFullPath);
-                    }
-                    using (File.Create(databaseFullPath))
-                    {
-                    }
-                    break;
-                case DatabaseType.MsSql:
-                    if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
-                                                       StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        //raw connection string
-                        connectionString = model.DatabaseConnectionString;
-                    }
-                    else
-                    {
-                        //values
-                        connectionString =
-                            createConnectionString(model.SqlAuthenticationType == "windowsauthentication",
-                                                   model.SqlServerName, model.SqlDatabaseName,
-                                                   model.SqlServerUsername, model.SqlServerPassword);
-                    }
-
-                    if (model.SqlServerCreateDatabase)
-                    {
-                        if (!sqlServerDatabaseExists(connectionString))
-                        {
-                            //create database
-                            string errorCreatingDatabase = createSqlDatabase(connectionString);
-                            if (!String.IsNullOrEmpty(errorCreatingDatabase))
-                                throw new Exception(errorCreatingDatabase);
-                            else
-                            {
-                                //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
-                                //that's just wait 3 seconds
-                                Thread.Sleep(3000);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //check whether database exists
-                        if (!sqlServerDatabaseExists(connectionString))
-                            throw new Exception(
-                                "Database does not exist or you don't have permissions to connect to it");
-                    }
-                    break;
-                case DatabaseType.MySQL:
-                    if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
-                                                       StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        //raw connection string
-                        connectionString = model.DatabaseConnectionString;
-                    }
-                    else
-                    {
-                        //values
-                        connectionString =
-                            createMySqlConnectionString(model.SqlAuthenticationType == "windowsauthentication",
-                                                        model.SqlServerName, model.SqlDatabaseName,
-                                                        model.SqlServerUsername, model.SqlServerPassword);
-                    }
-
-                    if (model.SqlServerCreateDatabase)
-                    {
-                        if (!mySqlServerDatabaseExists(connectionString))
-                        {
-                            //create database
-                            string errorCreatingDatabase = createMySqlDatabase(connectionString);
-                            if (!String.IsNullOrEmpty(errorCreatingDatabase))
-                                throw new Exception(errorCreatingDatabase);
-                            else
-                            {
-                                //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
-                                //that's just wait 3 seconds
-                                Thread.Sleep(3000);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //check whether database exists
-                        if (!mySqlServerDatabaseExists(connectionString))
-                            throw new Exception(
-                                "Database does not exist or you don't have permissions to connect to it");
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            return connectionString;
+            return TypeHelper.GetAllConcreteTypesAssignableFrom<IDatabaseProvider>()
+                .Select(type => new DatabaseProviderInfo(type)).ToList();
         }
 
-        private void EnsureAccessToFileSystem(InstallationResult result)
+        private void SetUpInitialData(InstallModel model, IDatabaseProvider provider)
         {
-            //validate permissions
-            string rootDir = _context.Server.MapPath("~/");
-            var dirsToCheck = new List<string>();
-            dirsToCheck.Add(rootDir);
-            dirsToCheck.Add(rootDir + "App_Data");
-            dirsToCheck.Add(rootDir + "bin");
-            dirsToCheck.Add(rootDir + "content");
-            dirsToCheck.Add(rootDir + "content/upload");
-            foreach (string dir in dirsToCheck)
-                if (!checkPermissions(dir, false, true, true, true))
-                    result.AddModelError(
-                        string.Format(
-                            "The '{0}' account is not granted with Modify permission on folder '{1}'. Please configure these permissions.",
-                            WindowsIdentity.GetCurrent().Name, dir));
-                else
-                {
-                    var directoryInfo = new DirectoryInfo(dir);
-                    if (!directoryInfo.Exists)
-                    {
-                        directoryInfo.Create();
-                    }
-                }
-
-
-            var filesToCheck = new List<string>();
-            filesToCheck.Add(rootDir + "web.config");
-            filesToCheck.Add(rootDir + "ConnectionStrings.config");
-            foreach (string file in filesToCheck)
-                if (!checkPermissions(file, false, true, true, true))
-                    result.AddModelError(
-                        string.Format(
-                            "The '{0}' account is not granted with Modify permission on file '{1}'. Please configure these permissions.",
-                            WindowsIdentity.GetCurrent().Name, file));
-        }
-
-        private static void ValidateDbInfo(InstallModel model, InstallationResult result)
-        {
-            //SQL Server
-            switch (model.DatabaseType)
-            {
-                case DatabaseType.Sqlite:
-                    break;
-                case DatabaseType.MsSql:
-                    if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
-                                                       StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        //raw connection string
-                        if (string.IsNullOrEmpty(model.DatabaseConnectionString))
-                            result.AddModelError("A SQL connection string is required");
-
-                        try
-                        {
-                            //try to create connection string
-                            new SqlConnectionStringBuilder(model.DatabaseConnectionString);
-                        }
-                        catch
-                        {
-                            result.AddModelError("Wrong SQL connection string format");
-                        }
-                    }
-                    else
-                    {
-                        //values
-                        if (string.IsNullOrEmpty(model.SqlServerName))
-                            result.AddModelError("SQL Server name is required");
-                        if (string.IsNullOrEmpty(model.SqlDatabaseName))
-                            result.AddModelError("Database name is required");
-
-                        //authentication type
-                        if (model.SqlAuthenticationType.Equals("sqlauthentication",
-                                                               StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            //SQL authentication
-                            if (string.IsNullOrEmpty(model.SqlServerUsername))
-                                result.AddModelError("SQL Username is required");
-                            if (string.IsNullOrEmpty(model.SqlServerPassword))
-                                result.AddModelError("SQL Password is required");
-                        }
-                    }
-                    break;
-                case DatabaseType.MySQL:
-                    if (model.SqlConnectionInfo.Equals("sqlconnectioninfo_raw",
-                                                       StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        //raw connection string
-                        if (string.IsNullOrEmpty(model.DatabaseConnectionString))
-                            result.AddModelError("A SQL connection string is required");
-
-                        try
-                        {
-                            //try to create connection string
-                            new MySqlConnectionStringBuilder(model.DatabaseConnectionString);
-                        }
-                        catch
-                        {
-                            result.AddModelError("Wrong SQL connection string format");
-                        }
-                    }
-                    else
-                    {
-                        //values
-                        if (string.IsNullOrEmpty(model.SqlServerName))
-                            result.AddModelError("SQL Server name is required");
-                        if (string.IsNullOrEmpty(model.SqlDatabaseName))
-                            result.AddModelError("Database name is required");
-
-                        //authentication type
-                        if (model.SqlAuthenticationType.Equals("sqlauthentication",
-                                                               StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            //SQL authentication
-                            if (string.IsNullOrEmpty(model.SqlServerUsername))
-                                result.AddModelError("SQL Username is required");
-                            if (string.IsNullOrEmpty(model.SqlServerPassword))
-                                result.AddModelError("SQL Password is required");
-                        }
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private string GetProviderName(DatabaseType databaseType)
-        {
-            switch (databaseType)
-            {
-                case DatabaseType.Sqlite:
-                    return "System.Data.SQLite";
-                case DatabaseType.MsSql:
-                    return "System.Data.SqlClient";
-                case DatabaseType.MySQL:
-                    return "MySql.Data.MySqlClient";
-                default:
-                    throw new ArgumentOutOfRangeException("databaseType");
-            }
-        }
-
-        private void SetUpInitialData(InstallModel model, string connectionString, DatabaseType databaseType)
-        {
-            IPersistenceConfigurer connection;
-            switch (databaseType)
-            {
-                case DatabaseType.Sqlite:
-                    connection = SQLiteConfiguration.Standard.ConnectionString(connectionString);
-                    break;
-                case DatabaseType.MsSql:
-                    connection = MsSqlConfiguration.MsSql2008.ConnectionString(connectionString);
-                    break;
-                case DatabaseType.MySQL:
-                    connection = MySQLConfiguration.Standard.ConnectionString(connectionString);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("databaseType");
-            }
-            var configurator = new NHibernateConfigurator
-                {
-                    CacheEnabled = true,
-                    PersistenceOverride = connection
-                };
+            var configurator = new NHibernateConfigurator(provider);
 
             ISessionFactory sessionFactory = configurator.CreateSessionFactory();
             ISession session = sessionFactory.OpenFilteredSession();
-            MrCMSApplication.Get<IKernel>().Rebind<ISession>().ToMethod(context => session);
-            var site = new Site { Name = model.SiteName, BaseUrl = model.SiteUrl,CreatedOn = DateTime.UtcNow,UpdatedOn = DateTime.UtcNow};
-            using (var statelessSession = sessionFactory.OpenStatelessSession())
+            var kernel = MrCMSApplication.Get<IKernel>();
+            kernel.Rebind<ISession>().ToMethod(context => session);
+            var site = new Site
             {
-                using (var transaction = statelessSession.BeginTransaction())
+                Name = model.SiteName,
+                BaseUrl = model.SiteUrl,
+                CreatedOn = DateTime.UtcNow,
+                UpdatedOn = DateTime.UtcNow
+            };
+            using (IStatelessSession statelessSession = sessionFactory.OpenStatelessSession())
+            {
+                using (ITransaction transaction = statelessSession.BeginTransaction())
                 {
                     statelessSession.Insert(site);
                     transaction.Commit();
@@ -372,427 +88,11 @@ namespace MrCMS.Installation
             }
             CurrentRequestData.CurrentSite = site;
 
-            MrCMSApp.InstallApps(session, model, site);
-
-            SetupInitialTemplates(session);
-        }
-
-        private static void SetupInitialTemplates(ISession session)
-        {
-            session.Transact(s =>
-                                 {
-                                     foreach (var type in TypeHelper.GetAllConcreteMappedClassesAssignableFrom<MessageTemplate>())
-                                     {
-                                         if (s.CreateCriteria(type).List().Count == 0)
-                                         {
-                                             var messageTemplate = Activator.CreateInstance(type) as MessageTemplate;
-                                             if (messageTemplate != null && messageTemplate.GetInitialTemplate(s) != null)
-                                                 s.Save(messageTemplate.GetInitialTemplate(s));
-                                         }
-                                     }
-                                 });
-        }
-
-        public static void RestartAppDomain()
-        {
-            if (GetTrustLevel() > AspNetHostingPermissionLevel.Medium)
-            {
-                //full trust
-                HttpRuntime.UnloadAppDomain();
-            }
-            else
-            {
-                //medium trust
-                bool success = TryWriteWebConfig();
-
-                if (!success)
-                {
-                    throw new Exception(
-                        "MrCMS needs to be restarted due to a configuration change, but was unable to do so.\r\n" +
-                        "To prevent this issue in the future, a change to the web server configuration is required:\r\n" +
-                        "- run the application in a full trust environment, or\r\n" +
-                        "- give the application write access to the 'web.config' file.");
-                }
-            }
-        }
-
-        private static bool TryWriteWebConfig()
-        {
-            try
-            {
-                // In medium trust, "UnloadAppDomain" is not supported. Touch web.config
-                // to force an AppDomain restart.
-                File.SetLastWriteTimeUtc(MapPath("~/web.config"), CurrentRequestData.Now);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        ///     Maps a virtual path to a physical disk path.
-        /// </summary>
-        /// <param name="path">The path to map. E.g. "~/bin"</param>
-        /// <returns>The physical path. E.g. "c:\inetpub\wwwroot\bin"</returns>
-        public static string MapPath(string path)
-        {
-            if (HttpContext.Current != null)
-                return HostingEnvironment.MapPath(path);
-
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            int binIndex = baseDirectory.IndexOf("\\bin\\", StringComparison.Ordinal);
-            if (binIndex >= 0)
-                baseDirectory = baseDirectory.Substring(0, binIndex);
-            else if (baseDirectory.EndsWith("\\bin"))
-                baseDirectory = baseDirectory.Substring(0, baseDirectory.Length - 4);
-
-            path = path.Replace("~/", "").TrimStart('/').Replace('/', '\\');
-            return Path.Combine(baseDirectory, path);
-        }
-
-
-        /// <summary>
-        ///     Finds the trust level of the running application (http://blogs.msdn.com/dmitryr/archive/2007/01/23/finding-out-the-current-trust-level-in-asp-net.aspx)
-        /// </summary>
-        /// <returns>The current trust level.</returns>
-        private static AspNetHostingPermissionLevel GetTrustLevel()
-        {
-            if (!_trustLevel.HasValue)
-            {
-                //set minimum
-                _trustLevel = AspNetHostingPermissionLevel.None;
-
-                //determine maximum
-                foreach (AspNetHostingPermissionLevel trustLevel in
-                    new[]
-                        {
-                            AspNetHostingPermissionLevel.Unrestricted,
-                            AspNetHostingPermissionLevel.High,
-                            AspNetHostingPermissionLevel.Medium,
-                            AspNetHostingPermissionLevel.Low,
-                            AspNetHostingPermissionLevel.Minimal
-                        })
-                {
-                    try
-                    {
-                        new AspNetHostingPermission(trustLevel).Demand();
-                        _trustLevel = trustLevel;
-                        break; //we've set the highest permission we can
-                    }
-                    catch (SecurityException)
-                    {
-                    }
-                }
-            }
-            return _trustLevel.Value;
-        }
-
-
-        /// <summary>
-        ///     Checks if the specified database exists, returns true if database exists
-        /// </summary>
-        /// <param name="connectionString">Connection string</param>
-        /// <returns>Returns true if the database exists.</returns>
-        private bool sqlServerDatabaseExists(string connectionString)
-        {
-            try
-            {
-                //just try to connect
-                using (var conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-
-        /// <summary>
-        ///     Checks if the specified database exists, returns true if database exists
-        /// </summary>
-        /// <param name="connectionString">Connection string</param>
-        /// <returns>Returns true if the database exists.</returns>
-        private bool mySqlServerDatabaseExists(string connectionString)
-        {
-            try
-            {
-                //just try to connect
-                using (var conn = new MySqlConnection(connectionString))
-                {
-                    conn.Open();
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        ///     Creates a database on the server.
-        /// </summary>
-        /// <param name="connectionString">Connection string</param>
-        /// <returns>Error</returns>
-        private string createSqlDatabase(string connectionString)
-        {
-            try
-            {
-                //parse database name
-                var builder = new SqlConnectionStringBuilder(connectionString);
-                string databaseName = builder.InitialCatalog;
-                //now create connection string to 'master' dabatase. It always exists.
-                builder.InitialCatalog = "master";
-                string masterCatalogConnectionString = builder.ToString();
-                string query = string.Format("CREATE DATABASE [{0}] COLLATE SQL_Latin1_General_CP1_CI_AS", databaseName);
-
-                using (var conn = new SqlConnection(masterCatalogConnectionString))
-                {
-                    conn.Open();
-                    using (var command = new SqlCommand(query, conn))
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                }
-
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                return string.Format("An error occured when creating database: {0}", ex.Message);
-            }
-        }
-
-        /// <summary>
-        ///     Creates a database on the server.
-        /// </summary>
-        /// <param name="connectionString">Connection string</param>
-        /// <returns>Error</returns>
-        private string createMySqlDatabase(string connectionString)
-        {
-            try
-            {
-                //parse database name
-                var builder = new MySqlConnectionStringBuilder(connectionString);
-                string databaseName = builder.Database;
-                //now create connection string to 'master' dabatase. It always exists.
-                builder.Database = "";
-                string masterCatalogConnectionString = builder.ToString();
-                string query = string.Format("CREATE DATABASE {0}", databaseName);
-
-                using (var conn = new MySqlConnection(masterCatalogConnectionString))
-                {
-                    conn.Open();
-                    using (var command = new MySqlCommand(query, conn))
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                }
-
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                return string.Format("An error occured when creating database: {0}", ex.Message);
-            }
-        }
-
-        /// <summary>
-        ///     Check permissions
-        /// </summary>
-        /// <param name="path">Path</param>
-        /// <param name="checkRead">Check read</param>
-        /// <param name="checkWrite">Check write</param>
-        /// <param name="checkModify">Check modify</param>
-        /// <param name="checkDelete">Check delete</param>
-        /// <returns>Resulr</returns>
-        private bool checkPermissions(string path, bool checkRead, bool checkWrite, bool checkModify, bool checkDelete)
-        {
-            bool flag = false;
-            bool flag2 = false;
-            bool flag3 = false;
-            bool flag4 = false;
-            bool flag5 = false;
-            bool flag6 = false;
-            bool flag7 = false;
-            bool flag8 = false;
-            WindowsIdentity current = WindowsIdentity.GetCurrent();
-            AuthorizationRuleCollection rules = null;
-            try
-            {
-                rules = Directory.GetAccessControl(path).GetAccessRules(true, true, typeof(SecurityIdentifier));
-            }
-            catch
-            {
-                return true;
-            }
-            try
-            {
-                foreach (
-                    FileSystemAccessRule rule in
-                        rules.Cast<FileSystemAccessRule>().Where(rule => current.User.Equals(rule.IdentityReference)))
-                {
-                    if (AccessControlType.Deny.Equals(rule.AccessControlType))
-                    {
-                        if ((FileSystemRights.Delete & rule.FileSystemRights) == FileSystemRights.Delete)
-                            flag4 = true;
-                        if ((FileSystemRights.Modify & rule.FileSystemRights) == FileSystemRights.Modify)
-                            flag3 = true;
-
-                        if ((FileSystemRights.Read & rule.FileSystemRights) == FileSystemRights.Read)
-                            flag = true;
-
-                        if ((FileSystemRights.Write & rule.FileSystemRights) == FileSystemRights.Write)
-                            flag2 = true;
-
-                        continue;
-                    }
-                    if (AccessControlType.Allow.Equals(rule.AccessControlType))
-                    {
-                        if ((FileSystemRights.Delete & rule.FileSystemRights) == FileSystemRights.Delete)
-                        {
-                            flag8 = true;
-                        }
-                        if ((FileSystemRights.Modify & rule.FileSystemRights) == FileSystemRights.Modify)
-                        {
-                            flag7 = true;
-                        }
-                        if ((FileSystemRights.Read & rule.FileSystemRights) == FileSystemRights.Read)
-                        {
-                            flag5 = true;
-                        }
-                        if ((FileSystemRights.Write & rule.FileSystemRights) == FileSystemRights.Write)
-                        {
-                            flag6 = true;
-                        }
-                    }
-                }
-                foreach (FileSystemAccessRule rule2 in
-                    from reference in current.Groups
-                    from FileSystemAccessRule rule2 in rules
-                    where reference.Equals(rule2.IdentityReference)
-                    select rule2)
-                {
-                    if (AccessControlType.Deny.Equals(rule2.AccessControlType))
-                    {
-                        if ((FileSystemRights.Delete & rule2.FileSystemRights) == FileSystemRights.Delete)
-                            flag4 = true;
-                        if ((FileSystemRights.Modify & rule2.FileSystemRights) == FileSystemRights.Modify)
-                            flag3 = true;
-                        if ((FileSystemRights.Read & rule2.FileSystemRights) == FileSystemRights.Read)
-                            flag = true;
-                        if ((FileSystemRights.Write & rule2.FileSystemRights) == FileSystemRights.Write)
-                            flag2 = true;
-                        continue;
-                    }
-                    if (AccessControlType.Allow.Equals(rule2.AccessControlType))
-                    {
-                        if ((FileSystemRights.Delete & rule2.FileSystemRights) == FileSystemRights.Delete)
-                            flag8 = true;
-                        if ((FileSystemRights.Modify & rule2.FileSystemRights) == FileSystemRights.Modify)
-                            flag7 = true;
-                        if ((FileSystemRights.Read & rule2.FileSystemRights) == FileSystemRights.Read)
-                            flag5 = true;
-                        if ((FileSystemRights.Write & rule2.FileSystemRights) == FileSystemRights.Write)
-                            flag6 = true;
-                    }
-                }
-                bool flag9 = !flag4 && flag8;
-                bool flag10 = !flag3 && flag7;
-                bool flag11 = !flag && flag5;
-                bool flag12 = !flag2 && flag6;
-                bool flag13 = true;
-                if (checkRead)
-                {
-                    flag13 = flag13 && flag11;
-                }
-                if (checkWrite)
-                {
-                    flag13 = flag13 && flag12;
-                }
-                if (checkModify)
-                {
-                    flag13 = flag13 && flag10;
-                }
-                if (checkDelete)
-                {
-                    flag13 = flag13 && flag9;
-                }
-                return flag13;
-            }
-            catch (IOException)
-            {
-            }
-            return false;
-        }
-
-        /// <summary>
-        ///     Create contents of connection strings used by the SqlConnection class
-        /// </summary>
-        /// <param name="trustedConnection">Avalue that indicates whether User ID and Password are specified in the connection (when false) or whether the current Windows account credentials are used for authentication (when true)</param>
-        /// <param name="serverName">The name or network address of the instance of SQL Server to connect to</param>
-        /// <param name="databaseName">The name of the database associated with the connection</param>
-        /// <param name="userName">The user ID to be used when connecting to SQL Server</param>
-        /// <param name="password">The password for the SQL Server account</param>
-        /// <param name="timeout">The connection timeout</param>
-        /// <returns>Connection string</returns>
-        private string createConnectionString(bool trustedConnection,
-                                              string serverName, string databaseName, string userName, string password,
-                                              int timeout = 0)
-        {
-            var builder = new SqlConnectionStringBuilder();
-            builder.IntegratedSecurity = trustedConnection;
-            builder.DataSource = serverName;
-            builder.InitialCatalog = databaseName;
-            if (!trustedConnection)
-            {
-                builder.UserID = userName;
-                builder.Password = password;
-            }
-            builder.PersistSecurityInfo = false;
-            builder.MultipleActiveResultSets = true;
-            if (timeout > 0)
-            {
-                builder.ConnectTimeout = timeout;
-            }
-            return builder.ConnectionString;
-        }
-
-        /// <summary>
-        ///     Create contents of connection strings used by the SqlConnection class
-        /// </summary>
-        /// <param name="trustedConnection">Avalue that indicates whether User ID and Password are specified in the connection (when false) or whether the current Windows account credentials are used for authentication (when true)</param>
-        /// <param name="serverName">The name or network address of the instance of SQL Server to connect to</param>
-        /// <param name="databaseName">The name of the database associated with the connection</param>
-        /// <param name="userName">The user ID to be used when connecting to SQL Server</param>
-        /// <param name="password">The password for the SQL Server account</param>
-        /// <param name="timeout">The connection timeout</param>
-        /// <returns>Connection string</returns>
-        private string createMySqlConnectionString(bool trustedConnection,
-                                                   string serverName, string databaseName, string userName, string password,
-                                                   int timeout = 0)
-        {
-            var builder = new MySqlConnectionStringBuilder();
-            builder.IntegratedSecurity = trustedConnection;
-            builder.Server = serverName;
-            builder.Database = databaseName;
-            if (!trustedConnection)
-            {
-                builder.UserID = userName;
-                builder.Password = password;
-            }
-            builder.PersistSecurityInfo = false;
-            if (timeout > 0)
-            {
-                builder.ConnectionTimeout = Convert.ToUInt32(timeout);
-            }
-            return builder.ConnectionString;
+            kernel.Get<IInitializeDatabase>().Initialize(model);
+            kernel.Get<ICreateInitialUser>().Create(model);
+            kernel.GetAll<IOnInstallation>()
+                .OrderBy(installation => installation.Priority)
+                .ForEach(installation => installation.Install(model));
         }
     }
 }

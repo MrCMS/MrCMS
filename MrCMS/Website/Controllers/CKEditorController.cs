@@ -1,8 +1,7 @@
 using System.Web.Mvc;
 using MrCMS.Settings;
-using MrCMS.Website.Controllers;
 
-namespace MrCMS.Web.Controllers
+namespace MrCMS.Website.Controllers
 {
     public class CKEditorController : MrCMSUIController
     {

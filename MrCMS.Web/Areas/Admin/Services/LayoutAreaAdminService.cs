@@ -27,21 +27,16 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public LayoutArea GetArea(Layout layout, string name)
         {
-            return _session.QueryOver<LayoutArea>().Where(x => x.Layout == layout && x.AreaName == name).Fetch(
-                area => area.Widgets).Eager.TransformUsing(Transformers.DistinctRootEntity).SingleOrDefault();
+            return _session.QueryOver<LayoutArea>()
+                .Where(x => x.Layout == layout && x.AreaName == name)
+                .Fetch(area => area.Widgets).Eager
+                .TransformUsing(Transformers.DistinctRootEntity)
+                .SingleOrDefault();
         }
 
         public void SaveArea(LayoutArea layoutArea)
         {
-            _session.Transact(session =>
-                                  {
-                                      var layout = layoutArea.Layout;
-                                      if (layout != null)
-                                      {
-                                          layout.LayoutAreas.Add(layoutArea);
-                                      }
-                                      session.SaveOrUpdate(layoutArea);
-                                  });
+            _session.Transact(session => session.SaveOrUpdate(layoutArea));
         }
 
         public LayoutArea GetArea(int layoutAreaId)
@@ -51,12 +46,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public void DeleteArea(LayoutArea area)
         {
-            _session.Transact(session =>
-                                  {
-                                      if (area.Layout != null)
-                                          area.Layout.LayoutAreas.Remove(area); //required to clear cache
-                                      session.Delete(area);
-                                  });
+            _session.Transact(session => session.Delete(area));
         }
 
         public void SetWidgetOrders(PageWidgetSortModel pageWidgetSortModel)

@@ -295,6 +295,9 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\PublishedOnFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\TypeFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
+    <Compile Include="Apps\Core\Services\Installation\ISetupCoreLayouts.cs" />
+    <Compile Include="Apps\Core\Services\Installation\ISetupCoreMedia.cs" />
+    <Compile Include="Apps\Core\Services\Installation\ISetupCoreWebpages.cs" />
     <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\UserTokenProvider.cs" />
     <Compile Include="Apps\Core\Metadata\RegisterPageMetadata.cs" />
@@ -313,10 +316,14 @@
     <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Services\AddFeaturedImageToSitemap.cs" />
+    <Compile Include="Apps\Core\Services\Installation\SetupCoreMedia.cs" />
+    <Compile Include="Apps\Core\Services\Installation\SetupResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\Services\OnUserRegisteredEventArgs.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetModelForCurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetNavigationRecords.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetUserLinks.cs" />
+    <Compile Include="Apps\Core\Services\Installation\SetupCoreLayouts.cs" />
+    <Compile Include="Apps\Core\Services\Installation\SetupCoreWebpages.cs" />
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
     <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
@@ -484,6 +491,7 @@
     <Compile Include="Areas\Admin\Services\GetLayoutOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetTemplateOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetUrlGeneratorOptions.cs" />
+    <Compile Include="Areas\Admin\Services\GetValidPageTemplatesToAdd.cs" />
     <Compile Include="Areas\Admin\Services\IACLService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminNavLinksService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminPageStatsService.cs" />
@@ -498,11 +506,13 @@
     <Compile Include="Areas\Admin\Services\IFormAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IGetLayoutOptions.cs" />
     <Compile Include="Areas\Admin\Services\IGetUrlGeneratorOptions.cs" />
+    <Compile Include="Areas\Admin\Services\IGetValidPageTemplatesToAdd.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IInPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ILayoutAreaAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ILogAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMediaSelectorService.cs" />
+    <Compile Include="Areas\Admin\Services\IMessageQueueAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMessageTemplateAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\INotificationAdminService.cs" />
@@ -529,6 +539,7 @@
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminService.cs" />
     <Compile Include="Areas\Admin\Services\LogAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MediaSelectorService.cs" />
+    <Compile Include="Areas\Admin\Services\MessageQueueAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MessageTemplateAdminService.cs" />
     <Compile Include="Areas\Admin\Services\NotificationAdminService.cs" />
     <Compile Include="Areas\Admin\Services\PageTemplateAdminService.cs" />
@@ -569,12 +580,9 @@
     <Compile Include="Areas\Admin\Services\WebpageParentAdminService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\WebpageWidgetAdminService.cs" />
-    <Compile Include="Controllers\CKEditorController.cs" />
     <Compile Include="Apps\Core\Controllers\ExternalLoginController.cs" />
-    <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Apps\Core\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\InPageAdminController.cs" />
-    <Compile Include="Controllers\SEOController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1367,6 +1375,7 @@
     <Content Include="Areas\Admin\Content\Styles\jquery.mrcms-mediaselector.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.tagit.css" />
     <Content Include="Content\install\images\install-synchronizing.gif" />
+    <Content Include="Content\install\scripts\install.js" />
     <Content Include="Content\install\scripts\jquery.validate.js" />
     <Content Include="Content\install\style.css" />
     <Content Include="Areas\Admin\Content\Styles\jquery.fileupload-ui.css" />

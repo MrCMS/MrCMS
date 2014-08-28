@@ -259,7 +259,6 @@
     <Compile Include="DbConfiguration\Caches\Azure\ISerializationProvider.cs" />
     <Compile Include="DbConfiguration\Caches\Azure\SerializationProvider.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
-    <Compile Include="DbConfiguration\Configuration\DatabaseType.cs" />
     <Compile Include="DbConfiguration\Configuration\SetCoreProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SetOnUpdatingProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SoftDeleteListener.cs" />
@@ -274,10 +273,15 @@
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
+    <Compile Include="DbConfiguration\CreateSQLiteDatabase.cs" />
+    <Compile Include="DbConfiguration\CreateSqlServerDatabase.cs" />
     <Compile Include="DbConfiguration\EventInfo.cs" />
     <Compile Include="DbConfiguration\Filters\NotDeletedFilter.cs" />
     <Compile Include="DbConfiguration\Filters\SiteFilter.cs" />
+    <Compile Include="DbConfiguration\Helpers\CreateDatabaseExtensions.cs" />
     <Compile Include="DbConfiguration\Helpers\EventInfoExtensions.cs" />
+    <Compile Include="DbConfiguration\ICreateDatabase.cs" />
+    <Compile Include="DbConfiguration\IDatabaseProvider.cs" />
     <Compile Include="DbConfiguration\ListenerDisabler.cs" />
     <Compile Include="DbConfiguration\LogOverride.cs" />
     <Compile Include="DbConfiguration\Mapping\DoNotMapAttribute.cs" />
@@ -285,7 +289,10 @@
     <Compile Include="DbConfiguration\Mapping\StringResourceOverride.cs" />
     <Compile Include="DbConfiguration\MrCMSSession.cs" />
     <Compile Include="DbConfiguration\MrCMSTransaction.cs" />
+    <Compile Include="DbConfiguration\MySqlDatabaseCreator.cs" />
+    <Compile Include="DbConfiguration\MySqlProvider.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
+    <Compile Include="DbConfiguration\NoConnectionStringBuilderAttribute.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentVersionOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\FormListOptionOverride.cs" />
@@ -310,6 +317,9 @@
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WidgetOverride.cs" />
     <Compile Include="DbConfiguration\SiteFilterDisabler.cs" />
+    <Compile Include="DbConfiguration\SqliteProvider.cs" />
+    <Compile Include="DbConfiguration\SqlServer2008Provider.cs" />
+    <Compile Include="DbConfiguration\SqlServer2012Provider.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
     <Compile Include="DbConfiguration\Types\BinaryData.cs" />
     <Compile Include="DbConfiguration\Types\DateTimeData.cs" />
@@ -342,6 +352,7 @@
     <Compile Include="Entities\People\UserLogin.cs" />
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Entities\Resources\StringResource.cs" />
+    <Compile Include="Events\AssignLayoutAreaToLayout.cs" />
     <Compile Include="Events\Documents\DocumentAddedNotification.cs" />
     <Compile Include="Events\Documents\DocumentDeletedNotification.cs" />
     <Compile Include="Events\Documents\DocumentModifiedUser.cs" />
@@ -364,6 +375,7 @@
     <Compile Include="Events\OnDeletedArgs.cs" />
     <Compile Include="Events\OnDeletingArgs.cs" />
     <Compile Include="Events\OnDeletingLayout.cs" />
+    <Compile Include="Events\OnDeletingLayoutArea.cs" />
     <Compile Include="Events\OnDeletingMediaCategory.cs" />
     <Compile Include="Events\OnDeletingPageWidgetSort.cs" />
     <Compile Include="Events\OnDeletingUser.cs" />
@@ -375,7 +387,9 @@
     <Compile Include="HealthChecks\HealthCheckResult.cs" />
     <Compile Include="HealthChecks\IHealthCheck.cs" />
     <Compile Include="HealthChecks\IsEmailConfigured.cs" />
-    <Compile Include="HealthChecks\StalledTasks.cs" />
+    <Compile Include="HealthChecks\StalledQueuedTasks.cs" />
+    <Compile Include="HealthChecks\SiteIsLiveCheck.cs" />
+    <Compile Include="HealthChecks\TaskRunnerCheck.cs" />
     <Compile Include="Helpers\ACLHelper.cs" />
     <Compile Include="Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
@@ -417,6 +431,20 @@
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
+    <Compile Include="Installation\DatabaseCreationService.cs" />
+    <Compile Include="Installation\FileSystemAccessService.cs" />
+    <Compile Include="Installation\ICreateInitialUser.cs" />
+    <Compile Include="Installation\IDatabaseCreationService.cs" />
+    <Compile Include="Installation\IFileSystemAccessService.cs" />
+    <Compile Include="Installation\InitializeDatabase.cs" />
+    <Compile Include="Installation\IInitializeDatabase.cs" />
+    <Compile Include="Installation\IOnInstallation.cs" />
+    <Compile Include="Installation\IRestartApplication.cs" />
+    <Compile Include="Installation\PermissionsChecker.cs" />
+    <Compile Include="Installation\RequiredCheck.cs" />
+    <Compile Include="Installation\RestartApplication.cs" />
+    <Compile Include="Installation\SetupInitialTemplates.cs" />
+    <Compile Include="Installation\SqlAuthenticationType.cs" />
     <Compile Include="IoC\NinjectSystemSettingsBinder.cs" />
     <Compile Include="Models\CachingInfo.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
@@ -449,6 +477,7 @@
     <Compile Include="Services\GetCurrentLayout.cs" />
     <Compile Include="Services\GetCurrentUser.cs" />
     <Compile Include="Services\GetHomePage.cs" />
+    <Compile Include="Services\GetWidgetCachingInfo.cs" />
     <Compile Include="Services\HashAlgorithmProvider.cs" />
     <Compile Include="Services\IAppScriptList.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
@@ -463,6 +492,7 @@
     <Compile Include="Services\IGetCurrentUser.cs" />
     <Compile Include="Services\IGetDocumentParents.cs" />
     <Compile Include="Services\IGetHomePage.cs" />
+    <Compile Include="Services\IGetWidgetCachingInfo.cs" />
     <Compile Include="Services\IHashAlgorithmProvider.cs" />
     <Compile Include="Services\IImageTagRenderingService.cs" />
     <Compile Include="Services\ImageTagRenderingService.cs" />
@@ -481,6 +511,7 @@
     <Compile Include="Services\ImportExport\UrlHistoryInfo.cs" />
     <Compile Include="Services\IStandardAuthConfigurationService.cs" />
     <Compile Include="Services\IWidgetModelService.cs" />
+    <Compile Include="Services\IWidgetUIService.cs" />
     <Compile Include="Services\Notifications\INotificationPublisher.cs" />
     <Compile Include="Services\Notifications\IOnPersistentNotificationPublished.cs" />
     <Compile Include="Services\Notifications\IOnTransientNotificationPublished.cs" />
@@ -502,6 +533,8 @@
     <Compile Include="Services\WidgetModelService.cs" />
     <Compile Include="Services\Widgets\DefaultGetWidgetModel.cs" />
     <Compile Include="Services\Widgets\GetWidgetModelBase.cs" />
+    <Compile Include="Services\WidgetUIService.cs" />
+    <Compile Include="Settings\DatabaseSettings.cs" />
     <Compile Include="Settings\ILegacySettingsProvider.cs" />
     <Compile Include="Settings\ISystemConfigurationProvider.cs" />
     <Compile Include="Settings\LegacySettingsProvider.cs" />
@@ -525,7 +558,6 @@
     <Compile Include="Services\IAuthorisationService.cs" />
     <Compile Include="Services\IExternalLoginService.cs" />
     <Compile Include="Services\IHashAlgorithm.cs" />
-    <Compile Include="Services\IMessageQueueAdminService.cs" />
     <Compile Include="Services\ImportExport\IUpdateTagsService.cs" />
     <Compile Include="Services\ImportExport\IUpdateUrlHistoryService.cs" />
     <Compile Include="Services\ImportExport\UpdateTagsService.cs" />
@@ -533,7 +565,6 @@
     <Compile Include="Services\IPasswordEncryptionManager.cs" />
     <Compile Include="Services\ITokenProvider.cs" />
     <Compile Include="Services\IUserSearchService.cs" />
-    <Compile Include="Services\MessageQueueAdminService.cs" />
     <Compile Include="Services\IMessageParser.cs" />
     <Compile Include="Entities\Messaging\IMessageTemplate.cs" />
     <Compile Include="Services\IMessageTemplateParser.cs" />
@@ -774,7 +805,12 @@
     <Compile Include="Tasks\ITaskBuilder.cs" />
     <Compile Include="Tasks\ITaskRunner.cs" />
     <Compile Include="Tasks\ITaskExecutor.cs" />
+    <Compile Include="Website\Caching\CacheExpiryType.cs" />
+    <Compile Include="Website\Caching\HttpCache.cs" />
+    <Compile Include="Website\Caching\ICacheWrapper.cs" />
+    <Compile Include="Website\Controllers\CKEditorController.cs" />
     <Compile Include="Website\Controllers\FormController.cs" />
+    <Compile Include="Website\Controllers\InstallController.cs" />
     <Compile Include="Website\Controllers\MrCMSAppUIController.cs" />
     <Compile Include="Tasks\TaskQueuer.cs" />
     <Compile Include="Tasks\QueuedTask.cs" />
@@ -783,9 +819,14 @@
     <Compile Include="Tasks\TaskExecutionResult.cs" />
     <Compile Include="Tasks\TaskRunner.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Website\Controllers\SEOController.cs" />
+    <Compile Include="Website\EnsureDatabaseIsInstalled.cs" />
     <Compile Include="Website\Filters\ForceImmediateLuceneUpdateAttribute.cs" />
     <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
     <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
+    <Compile Include="Website\HandleWebpageViewsAttribute.cs" />
+    <Compile Include="Website\IEnsureDatabaseIsInstalled.cs" />
+    <Compile Include="Website\IProcessWebpageViews.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSAssemblyAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
@@ -817,6 +858,7 @@
     <Compile Include="Website\OutOfContextServerUtility.cs" />
     <Compile Include="Website\OutOfContextSession.cs" />
     <Compile Include="Website\OutputCacheableAttribute.cs" />
+    <Compile Include="Website\ProcessWebpageViews.cs" />
     <Compile Include="Website\PropertyFinder.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
@@ -830,6 +872,7 @@
     <Compile Include="Website\Routing\IGetWebpageForRequest.cs" />
     <Compile Include="Website\Routing\IMrCMSRouteHandler.cs" />
     <Compile Include="Website\Routing\IMrCMSRoutingErrorHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSAdminSSLRedirectHandler.cs" />
     <Compile Include="Website\Routing\MrCMSAspxHttpHandler.cs" />
     <Compile Include="Website\Routing\MrCMSAspxRouteHandler.cs" />
     <Compile Include="Website\Routing\MrCMSDisallowedHandler.cs" />

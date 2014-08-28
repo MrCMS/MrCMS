@@ -23,10 +23,6 @@ namespace MrCMS.Web.Apps.Articles
             
         }
 
-        protected override void OnInstallation(ISession session, InstallModel model, Site site)
-        {
-        }
-
         protected override void RegisterApp(MrCMSAppRegistrationContext context)
         {
         }

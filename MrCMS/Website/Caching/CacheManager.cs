@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Web.Caching;
 using MrCMS.Helpers;
 
@@ -8,9 +7,9 @@ namespace MrCMS.Website.Caching
     public class CacheManager : ICacheManager
     {
         public const string InternalCachePrefix = "MrCMS.Cache.";
-        private readonly Cache _cache;
+        private readonly ICacheWrapper _cache;
 
-        public CacheManager(Cache cache)
+        public CacheManager(ICacheWrapper cache)
         {
             _cache = cache;
         }
@@ -37,7 +36,7 @@ namespace MrCMS.Website.Caching
                     var slidingExpiration = cacheExpiryType == CacheExpiryType.Sliding
                         ? (time)
                         : Cache.NoSlidingExpiration;
-                    _cache.Add(key, o, null, absoluteExpiration, slidingExpiration, CacheItemPriority.AboveNormal, null);
+                    _cache.Add(key, o, absoluteExpiration, slidingExpiration, CacheItemPriority.AboveNormal);
                 }
                 return o.To<T>();
             }
@@ -46,17 +45,7 @@ namespace MrCMS.Website.Caching
 
         public void Clear()
         {
-            IDictionaryEnumerator enumerator = _cache.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                _cache.Remove(enumerator.Key.ToString());
-            }
+            _cache.Clear();
         }
-    }
-
-    public enum CacheExpiryType
-    {
-        Sliding,
-        Absolute
     }
 }
