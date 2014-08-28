@@ -308,6 +308,7 @@
     <Compile Include="DbConfiguration\Overrides\NotificationOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\PageWidgetSortOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\QueuedTaskOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SiteOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\UrlHistoryOverride.cs" />
