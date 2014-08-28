@@ -67,6 +67,7 @@ namespace MrCMS.Web.Tests
             Kernel.Load(new SettingsModule(true));
             Kernel.Load(new FileSystemModule());
             Kernel.Load(new SiteModule());
+            Kernel.Load(new GenericBindingsModule());
             _eventContext = new TestableEventContext(Kernel.Get<EventContext>());
             Kernel.Rebind<IEventContext>().ToMethod(context => EventContext);
         }
