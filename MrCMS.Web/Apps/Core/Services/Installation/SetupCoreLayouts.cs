@@ -29,7 +29,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 var baseLayout = new Layout
                 {
                     Name = "Base Layout",
-                    UrlSegment = "~/Apps/Core/Views/Shared/_BaseLayout.cshtml",
+                    UrlSegment = "_BaseLayout",
                     LayoutAreas = new List<LayoutArea>()
                 };
 
