@@ -72,7 +72,8 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             _session.Transact(session =>
             {
-                property.DisplayOrder = property.Webpage.FormProperties.Count;
+                if (property.Webpage.FormProperties != null)
+                    property.DisplayOrder = property.Webpage.FormProperties.Count;
 
                 session.Save(property);
             });
