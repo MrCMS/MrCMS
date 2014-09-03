@@ -20,6 +20,8 @@ namespace MrCMS.Website.Routing
             if (url != null)
             {
                 Webpage webpage = _getWebpageForRequest.Get(context);
+                if (webpage == null)
+                    return false;
                 var scheme = url.Scheme;
                 var authority = url.Authority;
                 var baseUrl = webpage.Site.BaseUrl;

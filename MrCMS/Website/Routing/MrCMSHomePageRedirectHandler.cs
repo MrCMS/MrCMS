@@ -16,6 +16,8 @@ namespace MrCMS.Website.Routing
         public bool Handle(RequestContext context)
         {
             Webpage webpage = _getWebpageForRequest.Get(context);
+            if (webpage == null)
+                return false;
             if (webpage.LiveUrlSegment != webpage.UrlSegment && context.HttpContext.Request.Url.AbsolutePath != "/")
             {
                 context.HttpContext.Response.Redirect("~/" + webpage.LiveUrlSegment);
