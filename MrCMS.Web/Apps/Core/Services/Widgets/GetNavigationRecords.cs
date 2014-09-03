@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
 using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Widgets;
@@ -53,7 +54,11 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                 var parentIds = parents.Select(p => p.Id).ToList();
                 queryOver = queryOver.Where(webpage => webpage.Parent.Id.IsIn(parentIds));
             }
-            return queryOver.Where(webpage => webpage.RevealInNavigation).Cacheable().List();
+            return
+                queryOver.Where(webpage => webpage.RevealInNavigation)
+                    .OrderBy(webpage => webpage.DisplayOrder).Asc
+                    .Cacheable()
+                    .List().ToList(x => x.Published);
         }
     }
 }
