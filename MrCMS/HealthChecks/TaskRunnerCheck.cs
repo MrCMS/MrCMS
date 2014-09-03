@@ -28,7 +28,13 @@ namespace MrCMS.HealthChecks
 
             if (stalledTasks.Any())
             {
-                var messages = stalledTasks.Select(task => string.Format("{0} has not been ran since {1}", task.TypeName, (task.LastComplete ?? new DateTime(2000,0,0,0,0,0)))).ToList();
+                var messages = stalledTasks.Select(task =>
+                {
+                    var lastComplete = task.LastComplete;
+                    return lastComplete.HasValue
+                        ? string.Format("{0} has not been ran since {1}", task.TypeName, lastComplete)
+                        : string.Format("{0} has never been run", task.TypeName);
+                }).ToList();
                 return new HealthCheckResult
                 {
                     Messages = messages,
