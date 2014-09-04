@@ -23,6 +23,8 @@ namespace MrCMS.Website.Routing
         public bool Handle(RequestContext context)
         {
             Webpage webpage = _getWebpageForRequest.Get(context);
+            if (webpage == null)
+                return false;
             if (!_userUIPermissionsService.IsCurrentUserAllowed(webpage))
             {
                 string message = string.Format("Not allowed to view {0}", context.RouteData.Values["data"]);
