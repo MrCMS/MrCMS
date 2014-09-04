@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web.Mvc.Async;
 using System.Web.Routing;
 using MrCMS.Apps;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Articles.Pages;
@@ -29,30 +30,38 @@ namespace MrCMS.Web.Apps.Articles.RouteHandlers
 
         public bool Handle(RequestContext context)
         {
-            string absolutePath = context.HttpContext.Request.Url.AbsolutePath;
-            string fileName = Path.GetFileName(absolutePath);
-            if (fileName != null && fileName.Equals("rss.xml", StringComparison.InvariantCultureIgnoreCase))
+            ArticleList articleList = GetArticleList(context.HttpContext.Request.Url.AbsolutePath);
+            if (articleList != null)
             {
-                string containerName = absolutePath.Substring(1, absolutePath.Length - 9);
-                var articleList = _documentService.GetDocumentByUrl<ArticleList>(containerName);
-                if (articleList != null)
-                {
-                    IControllerFactory controllerFactory = _controllerManager.ControllerFactory;
-                    var controller = controllerFactory.CreateController(context, "ArticleRSS") as Controller;
-                    controller.ControllerContext = new ControllerContext(context, controller);
-                    var routeValueDictionary = new RouteValueDictionary();
-                    routeValueDictionary["controller"] = "ArticleRSS";
-                    routeValueDictionary["action"] = "Show";
-                    routeValueDictionary["page"] = articleList;
-                    controller.RouteData.Values.Merge(routeValueDictionary);
-                    controller.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[articleList.GetType()];
+                IControllerFactory controllerFactory = _controllerManager.ControllerFactory;
+                var controller = controllerFactory.CreateController(context, "ArticleRSS") as Controller;
+                controller.ControllerContext = new ControllerContext(context, controller);
+                var routeValueDictionary = new RouteValueDictionary();
+                routeValueDictionary["controller"] = "ArticleRSS";
+                routeValueDictionary["action"] = "Show";
+                routeValueDictionary["page"] = articleList;
+                controller.RouteData.Values.Merge(routeValueDictionary);
+                controller.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[articleList.GetType()];
 
-                    var asyncController = (controller as IAsyncController);
-                    asyncController.BeginExecute(context, asyncController.EndExecute, null);
-                    return true;
-                }
+                var asyncController = (controller as IAsyncController);
+                asyncController.BeginExecute(context, asyncController.EndExecute, null);
+                return true;
             }
             return false;
+        }
+
+        public Webpage GetWebpage(string url)
+        {
+            return GetArticleList(url);
+        }
+
+        private ArticleList GetArticleList(string url)
+        {
+            string fileName = Path.GetFileName(url);
+            if (fileName == null || !fileName.Equals("rss.xml", StringComparison.InvariantCultureIgnoreCase))
+                return null;
+            string containerName = url.Substring(1, url.Length - 9);
+            return _documentService.GetDocumentByUrl<ArticleList>(containerName);
         }
     }
 }
