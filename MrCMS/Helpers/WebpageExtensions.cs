@@ -1,7 +1,9 @@
 using System.Linq;
+using System.Web;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Paging;
+using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
@@ -44,6 +46,15 @@ namespace MrCMS.Helpers
         public static bool CanAddChildren(this Webpage webpage)
         {
             return webpage.GetMetadata().ValidChildrenTypes.Any();
+        }
+
+        public static bool RequiresSSL(this Webpage webpage, HttpRequestBase request, SiteSettings siteSettings = null)
+        {
+            siteSettings = siteSettings ?? MrCMSApplication.Get<SiteSettings>();
+            var isLiveAdmin = CurrentRequestData.CurrentUserIsAdmin && siteSettings.SSLAdmin && siteSettings.SiteIsLive &&
+                              !request.IsLocal;
+
+            return siteSettings.SSLEverywhere || webpage.RequiresSSL || isLiveAdmin;
         }
     }
 }

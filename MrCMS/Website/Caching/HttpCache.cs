@@ -27,10 +27,19 @@ namespace MrCMS.Website.Caching
                 _cache.Remove(enumerator.Key.ToString());
             }
         }
+        public void Remove(string key)
+        {
+            _cache.Remove(key);
+        }
 
         public object this[string key]
         {
             get { return _cache[key]; }
+        }
+
+        public IDictionaryEnumerator GetEnumerator()
+        {
+            return _cache.GetEnumerator();
         }
     }
 }

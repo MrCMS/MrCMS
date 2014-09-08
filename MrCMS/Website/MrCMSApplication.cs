@@ -42,8 +42,7 @@ namespace MrCMS.Website
         {
             get
             {
-                yield return ".aspx";
-                yield return ".php";
+                return Get<SiteSettings>().WebExtensionsToRoute;
             }
         }
 
@@ -184,9 +183,6 @@ namespace MrCMS.Website
             routes.MapRoute("form save", "save-form/{id}", new { controller = "Form", action = "Save" },
                 new[] { typeof(FormController).Namespace });
 
-            routes.Add(new Route("{*data}", new RouteValueDictionary(),
-                new RouteValueDictionary(new { data = @".*\.aspx" }),
-                new MrCMSAspxRouteHandler()));
             routes.Add(new Route("{*data}", new RouteValueDictionary(), new RouteValueDictionary(),
                 new MrCMSRouteHandler()));
         }

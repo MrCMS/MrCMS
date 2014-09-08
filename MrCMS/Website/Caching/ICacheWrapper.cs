@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Web.Caching;
 
 namespace MrCMS.Website.Caching
@@ -10,5 +11,8 @@ namespace MrCMS.Website.Caching
 
         void Clear();
         object this[string key] { get; }
+        IDictionaryEnumerator GetEnumerator();
+
+        void Remove(string key);
     }
 }

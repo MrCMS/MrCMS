@@ -1,3 +1,5 @@
+using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Routing;
 
@@ -14,9 +16,13 @@ namespace MrCMS.Website.Routing
             _errorHandler = errorHandler;
         }
 
-        public int Priority { get { return 1000; } }
+        public int Priority { get { return 1050; } }
         public bool Handle(RequestContext context)
         {
+            var path = context.HttpContext.Request.Url.AbsolutePath;
+            var extension = Path.GetExtension(path);
+            if (!string.IsNullOrWhiteSpace(extension))
+                return false;
             if (_webpageForRequest.Get(context) == null)
             {
                 _errorHandler.HandleError(context, 404,
