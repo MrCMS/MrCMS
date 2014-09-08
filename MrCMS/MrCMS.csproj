@@ -877,8 +877,6 @@
     <Compile Include="Website\Routing\IMrCMSRouteHandler.cs" />
     <Compile Include="Website\Routing\IMrCMSRoutingErrorHandler.cs" />
     <Compile Include="Website\Routing\MrCMSAdminSSLRedirectHandler.cs" />
-    <Compile Include="Website\Routing\MrCMSAspxHttpHandler.cs" />
-    <Compile Include="Website\Routing\MrCMSAspxRouteHandler.cs" />
     <Compile Include="Website\Routing\MrCMSDisallowedHandler.cs" />
     <Compile Include="Website\Routing\MrCMSHomePageRedirectHandler.cs" />
     <Compile Include="Website\Routing\MrCMSHttpHandler.cs" />
