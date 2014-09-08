@@ -4,7 +4,7 @@ using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Website.Routing
 {
-    public class MrCMSRequiresSiteRedirectRouteHandler  : IMrCMSRouteHandler
+    public class MrCMSRequiresSiteRedirectRouteHandler : IMrCMSRouteHandler
     {
         private readonly IGetWebpageForRequest _getWebpageForRequest;
 
@@ -13,7 +13,7 @@ namespace MrCMS.Website.Routing
             _getWebpageForRequest = getWebpageForRequest;
         }
 
-        public int Priority { get { return 1030; } }
+        public int Priority { get { return 9750; } }
         public bool Handle(RequestContext context)
         {
             var url = context.HttpContext.Request.Url;

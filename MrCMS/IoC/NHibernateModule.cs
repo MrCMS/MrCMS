@@ -14,8 +14,6 @@ namespace MrCMS.IoC
     {
         private readonly bool _cacheEnabled = true;
         private readonly bool _forWebsite;
-        private readonly Func<ISession> _getSession;
-        private readonly Func<ISessionFactory> _getSessionFactory;
         private NHibernateConfigurator _configurator;
 
         public NHibernateModule(bool forWebsite = true, bool cacheEnabled = true)
@@ -43,25 +41,20 @@ namespace MrCMS.IoC
 
             Kernel.Bind<ISessionFactory>()
                 .ToMethod(
-                    context => _getSessionFactory != null ? _getSessionFactory() : _configurator.CreateSessionFactory())
+                    context => _configurator.CreateSessionFactory())
                 .InSingletonScope();
 
             if (_forWebsite)
             {
                 Kernel.Bind<ISession>().ToMethod(
                     context =>
-                        _getSession != null
-                            ? _getSession()
-                            : context.Kernel.Get<ISessionFactory>().OpenFilteredSession()).InRequestScope();
+                         context.Kernel.Get<ISessionFactory>().OpenFilteredSession()).InRequestScope();
             }
             else
             {
                 Kernel.Bind<ISession>()
                     .ToMethod(
-                        context =>
-                            _getSession != null
-                                ? _getSession()
-                                : context.Kernel.Get<ISessionFactory>().OpenFilteredSession())
+                        context => context.Kernel.Get<ISessionFactory>().OpenFilteredSession())
                     .InThreadScope();
             }
         }

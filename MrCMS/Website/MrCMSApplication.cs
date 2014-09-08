@@ -42,8 +42,7 @@ namespace MrCMS.Website
         {
             get
             {
-                yield return ".aspx";
-                yield return ".php";
+                return Get<SiteSettings>().WebExtensionsToRoute;
             }
         }
 
