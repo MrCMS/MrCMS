@@ -22,6 +22,7 @@ namespace MrCMS.Settings
             DaysToKeepLogs = 30;
             TaskExecutorKey = "executor";
             TaskExecutorPassword = Guid.NewGuid().ToString();
+            PageExtensionsToRoute = ".asp,.php,.aspx";
         }
 
         protected SiteSettingsOptionGenerator SiteSettingsOptionGenerator
@@ -61,12 +62,23 @@ namespace MrCMS.Settings
         [DisplayName("Use SSL in Admin")]
         public bool SSLAdmin { get; set; }
 
+        [DisplayName("Use SSL everywhere")]
+        public bool SSLEverywhere { get; set; }
+
         [DisplayName("Log 404 in admin logs")]
         public bool Log404s { get; set; }
 
         [DisplayName("Site UI Culture")]
         [DropDownSelection("UiCultures")]
         public string UICulture { get; set; }
+
+        [DisplayName("Page extensions you want Mr CMS to handle")]
+        public string PageExtensionsToRoute { get; set; }
+
+        public IEnumerable<string> WebExtensionsToRoute
+        {
+            get { return (PageExtensionsToRoute ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries); }
+        } 
 
         public CultureInfo CultureInfo
         {

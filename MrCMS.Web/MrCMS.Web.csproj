@@ -269,7 +269,6 @@
     <Compile Include="Apps\Articles\Pages\Article.cs" />
     <Compile Include="Apps\Articles\Pages\ArticleList.cs" />
     <Compile Include="Apps\Articles\RouteHandlers\ArticleListRSSRouteHandler.cs" />
-    <Compile Include="Apps\Articles\RouteHandlers\ArticleSectionRSSRouteHandler.cs" />
     <Compile Include="Apps\Articles\Services\ArticleService.cs" />
     <Compile Include="Apps\Articles\Services\ArticlesScriptList.cs" />
     <Compile Include="Apps\Articles\Services\IArticleService.cs" />

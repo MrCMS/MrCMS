@@ -1,5 +1,6 @@
 using System.Web.Routing;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
 using MrCMS.Settings;
 
 namespace MrCMS.Website.Routing
@@ -15,7 +16,7 @@ namespace MrCMS.Website.Routing
             _siteSettings = siteSettings;
         }
 
-        public int Priority { get { return 1041; } }
+        public int Priority { get { return 9850; } }
         public bool Handle(RequestContext context)
         {
             var url = context.HttpContext.Request.Url;
@@ -24,13 +25,13 @@ namespace MrCMS.Website.Routing
             Webpage webpage = _getWebpageForRequest.Get(context);
             if (webpage == null)
                 return false;
-            if (webpage.RequiresSSL && scheme != "https" && _siteSettings.SiteIsLive)
+            if (webpage.RequiresSSL(context.HttpContext.Request, _siteSettings) && scheme != "https")
             {
                 var redirectUrl = url.ToString().Replace(scheme + "://", "https://");
                 context.HttpContext.Response.RedirectPermanent(redirectUrl);
                 return true;
             }
-            if (!webpage.RequiresSSL && scheme != "http")
+            if (!webpage.RequiresSSL(context.HttpContext.Request, _siteSettings) && scheme != "http")
             {
                 var redirectUrl = url.ToString().Replace(scheme + "://", "http://");
                 context.HttpContext.Response.RedirectPermanent(redirectUrl);

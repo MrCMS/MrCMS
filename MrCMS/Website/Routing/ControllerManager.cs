@@ -37,35 +37,7 @@ namespace MrCMS.Website.Routing
             if (form != null)
             {
                 var formCollection = new FormCollection(form);
-                DocumentMetadata metadata = GetMetadata(webpage);
-                if (metadata != null && metadata.PostTypes != null && metadata.PostTypes.Any())
-                {
-                    foreach (Type type in metadata.PostTypes)
-                    {
-                        var modelBinder = ModelBinders.Binders.GetBinder(type) as MrCMSDefaultModelBinder;
-                        if (modelBinder != null)
-                        {
-                            var modelBindingContext = new ModelBindingContext
-                            {
-                                ValueProvider =
-                                    formCollection,
-                                ModelMetadata =
-                                    ModelMetadataProviders.Current.GetMetadataForType(
-                                        () =>
-                                            modelBinder.GetModelFromSession(
-                                                controller.ControllerContext,
-                                                string.Empty, type), type)
-                            };
-
-                            object model = modelBinder.BindModel(controller.ControllerContext, modelBindingContext);
-                            controller.RouteData.Values[type.Name.ToLower()] = model;
-                        }
-                    }
-                }
-                else
-                {
-                    controller.RouteData.Values["form"] = formCollection;
-                }
+                controller.RouteData.Values["form"] = formCollection;
             }
         }
 

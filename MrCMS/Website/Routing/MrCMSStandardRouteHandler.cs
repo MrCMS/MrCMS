@@ -5,7 +5,6 @@ using System.Web.Routing;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
 using MrCMS.Website.Optimization;
-using NHibernate;
 
 namespace MrCMS.Website.Routing
 {
@@ -13,17 +12,15 @@ namespace MrCMS.Website.Routing
     {
         private readonly IGetWebpageForRequest _getWebpageForRequest;
         private readonly IControllerManager _controllerManager;
-        private readonly ISession _session;
         private readonly SEOSettings _seoSettings;
         private readonly IMrCMSRoutingErrorHandler _errorHandler;
 
         public MrCMSStandardRouteHandler(IGetWebpageForRequest getWebpageForRequest,
-            IControllerManager controllerManager, ISession session, SEOSettings seoSettings,
+            IControllerManager controllerManager, SEOSettings seoSettings,
             IMrCMSRoutingErrorHandler errorHandler)
         {
             _getWebpageForRequest = getWebpageForRequest;
             _controllerManager = controllerManager;
-            _session = session;
             _seoSettings = seoSettings;
             _errorHandler = errorHandler;
         }
