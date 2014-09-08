@@ -31,7 +31,12 @@ namespace MrCMS.Web.Areas.Admin.Services
 
             tagNames.ForEach(name =>
             {
-                var tag = GetTag(name) ?? new Tag { Name = name };
+                var tag = GetTag(name);
+                if (tag == null)
+                {
+                    tag = new Tag {Name = name};
+                    _session.Transact(session => session.Save(tag));
+                }
                 if (!document.Tags.Contains(tag))
                 {
                     document.Tags.Add(tag);
