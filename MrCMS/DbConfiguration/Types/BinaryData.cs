@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using NHibernate;
@@ -6,6 +7,7 @@ using NHibernate.SqlTypes;
 
 namespace MrCMS.DbConfiguration.Types
 {
+    [Serializable]
     public class BinaryData<T> : BaseImmutableUserType<T> where T : class, new()
     {
         public override SqlType[] SqlTypes

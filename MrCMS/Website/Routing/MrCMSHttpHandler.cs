@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Routing;
 using System.Web.SessionState;
@@ -36,6 +37,10 @@ namespace MrCMS.Website.Routing
                         return;
                     }
                 }
+            }
+            // for the minimal missing file handler
+            catch (ThreadAbortException)
+            {
             }
             catch (Exception exception)
             {

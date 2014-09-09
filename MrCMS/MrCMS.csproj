@@ -543,6 +543,7 @@
     <Compile Include="Settings\ILegacySettingsProvider.cs" />
     <Compile Include="Settings\ISystemConfigurationProvider.cs" />
     <Compile Include="Settings\LegacySettingsProvider.cs" />
+    <Compile Include="Settings\NHibernateConfigurationData.cs" />
     <Compile Include="Settings\SystemConfigurationProvider.cs" />
     <Compile Include="Settings\SystemSettingsBase.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />
