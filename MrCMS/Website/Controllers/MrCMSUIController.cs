@@ -1,22 +1,21 @@
-﻿using System;
-using MrCMS.Helpers;
+﻿using MrCMS.Helpers;
 
 namespace MrCMS.Website.Controllers
 {
     [HandleWebpageViews]
     public abstract class MrCMSUIController : MrCMSController
     {
-        protected void SetPageTitle(string pageTitle)
+        public void SetPageTitle(string pageTitle)
         {
             ViewData[MrCMSPageExtensions.PageTitleKey] = pageTitle;
         }
 
-        protected void SetPageMetaDescription(string pageDescription)
+        public void SetPageMetaDescription(string pageDescription)
         {
             ViewData[MrCMSPageExtensions.PageDescriptionKey] = pageDescription;
         }
 
-        protected void SetPageMetaKeywords(string pageKeywords)
+        public void SetPageMetaKeywords(string pageKeywords)
         {
             ViewData[MrCMSPageExtensions.PageKeywordsKey] = pageKeywords;
         }

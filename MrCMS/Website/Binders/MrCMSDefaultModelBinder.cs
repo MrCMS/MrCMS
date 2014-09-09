@@ -32,7 +32,7 @@ namespace MrCMS.Website.Binders
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             if (controllerContext.Controller is MrCMSAdminController &&
-                typeof (SystemEntity).IsAssignableFrom(bindingContext.ModelType) &&
+                typeof(SystemEntity).IsAssignableFrom(bindingContext.ModelType) &&
                 (CreateModel(controllerContext, bindingContext, bindingContext.ModelType) == null ||
                  ShouldReturnNull(controllerContext, bindingContext)))
                 return null;
@@ -41,6 +41,7 @@ namespace MrCMS.Website.Binders
             if (bindModel is SiteEntity)
             {
                 object model = bindModel;
+                bindingContext.ModelState.Clear();
                 bindingContext.ModelMetadata =
                     ModelMetadataProviders.Current.GetMetadataForType(
                         () => CreateModel(controllerContext, bindingContext, model.GetType()), bindModel.GetType());
@@ -64,7 +65,7 @@ namespace MrCMS.Website.Binders
                                                    ModelBindingContext bindingContext,
                                                    PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
-            if (propertyDescriptor.PropertyType.IsSubclassOf(typeof (SystemEntity)))
+            if (propertyDescriptor.PropertyType.IsSubclassOf(typeof(SystemEntity)))
             {
                 string id = controllerContext.HttpContext.Request[bindingContext.ModelName + ".Id"];
                 int idVal;
@@ -89,7 +90,7 @@ namespace MrCMS.Website.Binders
             object modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
             if (modelFromSession != null)
                 return modelFromSession;
-            if (modelType == typeof (Webpage))
+            if (modelType == typeof(Webpage))
                 return null;
             object model = base.CreateModel(controllerContext, bindingContext, modelType);
 
@@ -98,7 +99,7 @@ namespace MrCMS.Website.Binders
 
         public object GetModelFromSession(ControllerContext controllerContext, string modelName, Type modelType)
         {
-            if (typeof (SystemEntity).IsAssignableFrom(modelType))
+            if (typeof(SystemEntity).IsAssignableFrom(modelType))
             {
                 string subItem = string.Format("{0}.Id", modelName);
 
