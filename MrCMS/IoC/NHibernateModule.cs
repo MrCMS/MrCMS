@@ -36,7 +36,7 @@ namespace MrCMS.IoC
                 }
                 return null;
             });
-            _configurator = _configurator ?? new NHibernateConfigurator(Kernel.Get<IDatabaseProvider>());
+            _configurator = _configurator ?? new NHibernateConfigurator(Kernel.Get<IDatabaseProvider>(),Kernel.Get<ISystemConfigurationProvider>());
             _configurator.CacheEnabled = _cacheEnabled;
 
             Kernel.Bind<ISessionFactory>()

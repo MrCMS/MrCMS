@@ -7,6 +7,7 @@ using NHibernate.Persister.Entity;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
+    [Serializable]
     public class SetCoreProperties : IPreInsertEventListener
     {
         public bool OnPreInsert(PreInsertEvent @event)
