@@ -1,31 +1,25 @@
-using System;
-using System.Web;
-using System.Web.Mvc.Async;
 using System.Web.Routing;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Settings;
-using MrCMS.Website.Optimization;
 
 namespace MrCMS.Website.Routing
 {
     public class MrCMSStandardRouteHandler : IMrCMSRouteHandler
     {
         private readonly IGetWebpageForRequest _getWebpageForRequest;
-        private readonly IControllerManager _controllerManager;
-        private readonly SEOSettings _seoSettings;
-        private readonly IMrCMSRoutingErrorHandler _errorHandler;
+        private readonly IHandleStandardMrCMSPageExecution _standardMrCMSPageExecution;
 
         public MrCMSStandardRouteHandler(IGetWebpageForRequest getWebpageForRequest,
-            IControllerManager controllerManager, SEOSettings seoSettings,
-            IMrCMSRoutingErrorHandler errorHandler)
+            IHandleStandardMrCMSPageExecution standardMrCMSPageExecution)
         {
             _getWebpageForRequest = getWebpageForRequest;
-            _controllerManager = controllerManager;
-            _seoSettings = seoSettings;
-            _errorHandler = errorHandler;
+            _standardMrCMSPageExecution = standardMrCMSPageExecution;
         }
 
-        public int Priority { get { return 1000; } }
+        public int Priority
+        {
+            get { return 1000; }
+        }
+
         public bool Handle(RequestContext context)
         {
             Webpage webpage = _getWebpageForRequest.Get(context);
@@ -33,23 +27,8 @@ namespace MrCMS.Website.Routing
             {
                 return false;
             }
-            var controller = _controllerManager.GetController(context, webpage, context.HttpContext.Request.HttpMethod);
-
-            _controllerManager.SetFormData(webpage, controller, context.HttpContext.Request.Form);
-
-            try
-            {
-                if (_seoSettings.EnableHtmlMinification)
-                    context.HttpContext.Response.Filter = new WhitespaceFilter(context.HttpContext.Response.Filter);
-                var asyncController = (controller as IAsyncController);
-                asyncController.BeginExecute(context, asyncController.EndExecute, null);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                _errorHandler.HandleError(context, 500, new HttpException(500, exception.Message, exception));
-            }
-            return false;
+            _standardMrCMSPageExecution.Handle(context, webpage);
+            return true;
         }
     }
 }

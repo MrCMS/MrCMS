@@ -871,10 +871,12 @@
     <Compile Include="Website\Routing\GetErrorPage.cs" />
     <Compile Include="Website\Routing\GetWebpageByUrlHistoryForRequest.cs" />
     <Compile Include="Website\Routing\GetWebpageForRequest.cs" />
+    <Compile Include="Website\Routing\HandleStandardMrCMSPageExecution.cs" />
     <Compile Include="Website\Routing\IControllerManager.cs" />
     <Compile Include="Website\Routing\IGetErrorPage.cs" />
     <Compile Include="Website\Routing\IGetWebpageByUrlHistoryForRequest.cs" />
     <Compile Include="Website\Routing\IGetWebpageForRequest.cs" />
+    <Compile Include="Website\Routing\IHandleStandardMrCMSPageExecution.cs" />
     <Compile Include="Website\Routing\IMrCMSRouteHandler.cs" />
     <Compile Include="Website\Routing\IMrCMSRoutingErrorHandler.cs" />
     <Compile Include="Website\Routing\MrCMSAdminSSLRedirectHandler.cs" />

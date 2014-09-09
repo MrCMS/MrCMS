@@ -45,22 +45,22 @@ namespace MrCMS.Website.Caching
         }
 
         public void Clear(string prefix = null)
-       {
-           if (string.IsNullOrWhiteSpace(prefix))
-               _cache.Clear();
-           else
-           {
-               IDictionaryEnumerator enumerator = _cache.GetEnumerator();
-               var fullPrefix = InternalCachePrefix + prefix;
-               while (enumerator.MoveNext())
-               {
-                   var key = enumerator.Key.ToString();
-                   if (key.StartsWith(fullPrefix, StringComparison.OrdinalIgnoreCase))
-                   {
-                       _cache.Remove(key);
-                   }
-               }
-           }
-       }
+        {
+            if (string.IsNullOrWhiteSpace(prefix))
+                _cache.Clear();
+            else
+            {
+                IDictionaryEnumerator enumerator = _cache.GetEnumerator();
+                var fullPrefix = InternalCachePrefix + prefix;
+                while (enumerator.MoveNext())
+                {
+                    var key = enumerator.Key.ToString();
+                    if (key.StartsWith(fullPrefix, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _cache.Remove(key);
+                    }
+                }
+            }
+        }
     }
 }
