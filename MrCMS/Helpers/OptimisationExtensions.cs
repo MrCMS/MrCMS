@@ -48,5 +48,21 @@ namespace MrCMS.Helpers
                 html.IncludeScript(script);
             }
         }
+
+        public static void AddAppUIStylesheets(this HtmlHelper html)
+        {
+            foreach (var script in MrCMSApplication.GetAll<IAppStylesheetList>().SelectMany(appScriptList => appScriptList.UIStylesheets))
+            {
+                html.IncludeCss(script);
+            }
+        }
+
+        public static void AddAppAdminStylesheets(this HtmlHelper html)
+        {
+            foreach (var script in MrCMSApplication.GetAll<IAppStylesheetList>().SelectMany(appScriptList => appScriptList.AdminStylesheets))
+            {
+                html.IncludeCss(script);
+            }
+        }
     }
 }

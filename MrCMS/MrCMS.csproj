@@ -484,6 +484,7 @@
     <Compile Include="Services\GetWidgetCachingInfo.cs" />
     <Compile Include="Services\HashAlgorithmProvider.cs" />
     <Compile Include="Services\IAppScriptList.cs" />
+    <Compile Include="Services\IAppStylesheetList.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
     <Compile Include="Services\IAzureFileSystem.cs" />
     <Compile Include="Services\ICustomBindingService.cs" />
