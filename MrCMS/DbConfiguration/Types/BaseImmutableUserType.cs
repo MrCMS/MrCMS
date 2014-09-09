@@ -5,6 +5,7 @@ using NHibernate.UserTypes;
 
 namespace MrCMS.DbConfiguration.Types
 {
+    [Serializable]
     public abstract class BaseImmutableUserType<T> : IUserType
     {
         public abstract object NullSafeGet(IDataReader rs, string[] names, object owner);

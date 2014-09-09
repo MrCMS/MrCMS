@@ -5,6 +5,7 @@ using NHibernate.SqlTypes;
 
 namespace MrCMS.DbConfiguration.Types
 {
+    [Serializable]
     public class VarcharMax : BaseImmutableUserType<String>
     {
         public override object NullSafeGet(IDataReader rs, string[] names, object owner)

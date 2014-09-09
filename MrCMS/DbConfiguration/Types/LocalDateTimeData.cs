@@ -5,6 +5,7 @@ using NHibernate.SqlTypes;
 
 namespace MrCMS.DbConfiguration.Types
 {
+    [Serializable]
     public class LocalDateTimeData : BaseImmutableUserType<DateTime>
     {
         public override object NullSafeGet(IDataReader rs, string[] names, object owner)

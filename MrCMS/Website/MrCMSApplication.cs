@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -18,6 +19,7 @@ using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Caching;
 using MrCMS.Website.Controllers;
 using MrCMS.Website.Filters;
 using MrCMS.Website.Routing;
@@ -37,6 +39,7 @@ namespace MrCMS.Website
         public const string AssemblyFileVersion = "0.4.2.0";
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
         private static IKernel _kernel;
+        private const string CachedMissingItemKey = "cached-missing-item";
 
         protected static IEnumerable<string> WebExtensions
         {
@@ -108,9 +111,10 @@ namespace MrCMS.Website
             {
                 BeginRequest += (sender, args) =>
                 {
+                    if (IsCachedMissingFileRequest()) return;
+                    CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
                     if (!IsFileRequest(Request.Url))
                     {
-                        CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
                         CurrentRequestData.CurrentSite = Get<ICurrentSiteLocator>().GetCurrentSite();
                         CurrentRequestData.SiteSettings = Get<SiteSettings>();
                         CurrentRequestData.HomePage = Get<IGetHomePage>().Get();
@@ -120,7 +124,7 @@ namespace MrCMS.Website
                 };
                 AuthenticateRequest += (sender, args) =>
                 {
-                    if (!IsFileRequest(Request.Url))
+                    if (!Context.Items.Contains(CachedMissingItemKey) && !IsFileRequest(Request.Url))
                     {
                         if (CurrentRequestData.CurrentContext.User != null)
                         {
@@ -135,6 +139,8 @@ namespace MrCMS.Website
                 };
                 EndRequest += (sender, args) =>
                 {
+                    if (Context.Items.Contains(CachedMissingItemKey))
+                        return;
                     if (CurrentRequestData.QueuedTasks.Any())
                     {
                         Kernel.Get<ISession>()
@@ -156,6 +162,18 @@ namespace MrCMS.Website
                         action(Kernel);
                 };
             }
+        }
+
+        private bool IsCachedMissingFileRequest()
+        {
+            var o = Get<ICacheWrapper>()[FileNotFoundHandler.GetMissingFileCacheKey(new HttpContextWrapper(Context))];
+            if (o != null)
+            {
+                Context.Items[CachedMissingItemKey] = true;
+                Context.ApplicationInstance.CompleteRequest();
+                return true;
+            }
+            return false;
         }
 
         public void RegisterRoutes(RouteCollection routes)

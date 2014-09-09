@@ -1,4 +1,5 @@
-﻿using Iesi.Collections;
+﻿using System;
+using Iesi.Collections;
 using MrCMS.Entities;
 using MrCMS.Tasks;
 using NHibernate.Engine;
@@ -8,6 +9,7 @@ using NHibernate.Persister.Entity;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
+    [Serializable]
     public class SoftDeleteListener : DefaultDeleteEventListener
     {
         protected override void DeleteEntity(IEventSource session, object entity, EntityEntry entityEntry,
