@@ -83,7 +83,7 @@ namespace MrCMS.Installation
 
         public bool IsValid()
         {
-            return InvalidReasons.Any();
+            return !InvalidReasons.Any();
         }
 
         private bool CheckGroups(FileSystemRights rights, AccessControlType controlType)
