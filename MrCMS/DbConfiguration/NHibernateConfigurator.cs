@@ -55,64 +55,11 @@ namespace MrCMS.DbConfiguration
 
         public ISessionFactory CreateSessionFactory()
         {
-            NHibernate.Cfg.Configuration configuration = null;
-            var saveConfig = true;
-            if (_systemConfigurationProvider != null)
-            {
-                var configurationData = _systemConfigurationProvider.GetSystemSettings<NHibernateConfigurationData>();
-                var cachedTypes = configurationData.Entities;
-                var currentTypes = TypeHelper.MappedClasses.Select(type => type.FullName).ToHashSet();
-                if (currentTypes.SetEquals(cachedTypes) && configurationData.Data != null && configurationData.Data.Length > 0)
-                {
-                    try
-                    {
-                        using (var stream = new MemoryStream(configurationData.Data))
-                        {
-                            var binaryFormatter = new BinaryFormatter();
-                            var deserialize = binaryFormatter.Deserialize(stream);
-                            var serialized = deserialize as NHibernate.Cfg.Configuration;
-                            if (serialized != null)
-                            {
-                                configuration = serialized;
-                                saveConfig = false;
-                            }
-                        }
-                    }
-                    catch
-                    {
-                    }
-                }
-                if (configuration == null)
-                    configuration = GetConfiguration();
-                if (saveConfig)
-                {
-                    try
-                    {
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            var binaryFormatter = new BinaryFormatter();
-                            binaryFormatter.Serialize(memoryStream, configuration);
-                            memoryStream.Position = 0;
-                            configurationData.Data = memoryStream.GetBuffer();
-                        }
-                        configurationData.Entities = currentTypes;
-                        _systemConfigurationProvider.SaveSettings(configurationData);
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
-            else
-            {
-                configuration = GetConfiguration();
-            }
+            var configuration = GetConfiguration();
 
             var sessionFactory = configuration.BuildSessionFactory();
 
             return sessionFactory;
-
         }
 
         public static void ValidateSchema(NHibernate.Cfg.Configuration config)
