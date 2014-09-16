@@ -21,7 +21,6 @@ namespace MrCMS.Installation
             _groups = _current.Groups.ToHashSet();
             _rules =
                 rules.Cast<FileSystemAccessRule>()
-                    .Where(rule => _current.User.Equals(rule.IdentityReference))
                     .ToHashSet();
             _requiredCheck = requiredCheck;
         }
@@ -96,7 +95,7 @@ namespace MrCMS.Installation
 
         private bool CheckUser(FileSystemRights rights, AccessControlType controlType)
         {
-            return _rules.Where(rule => controlType.Equals(rule.AccessControlType))
+            return _rules.Where(rule => _current.User.Equals(rule.IdentityReference)).Where(rule => controlType.Equals(rule.AccessControlType))
                 .Any(rule => (rights & rule.FileSystemRights) == rights);
         }
 
