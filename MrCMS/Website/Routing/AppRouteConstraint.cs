@@ -40,9 +40,11 @@ namespace MrCMS.Website.Routing
                 ? MrCMSControllerFactory.AppAdminControllers
                 : MrCMSControllerFactory.AppUiControllers;
 
-            Type controllerType =
-                controllers[_appName].FirstOrDefault(
-                    type => type.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
+            Type controllerType = null;
+            if (controllers.ContainsKey(_appName))
+            {
+                controllerType = controllers[_appName].FirstOrDefault(type => type.Name.Equals(string.Format("{0}Controller", controllerName), StringComparison.OrdinalIgnoreCase));
+            }
 
             if (controllerType == null)
                 return false;
