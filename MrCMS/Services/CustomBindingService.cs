@@ -24,7 +24,7 @@ namespace MrCMS.Services
                 while (typeof(SystemEntity).IsAssignableFrom(thisType))
                 {
                     foreach (var assignType in TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof(CustomBinderBase<>).MakeGenericType(type)))
+                        typeof(CustomBinderBase<>).MakeGenericType(thisType)))
                     {
                         hashSet.Add(assignType);
                     }
