@@ -63,7 +63,7 @@ namespace MrCMS.Services
             var path = GetPath(filePath);
 
             if (Directory.Exists(path))
-                Directory.Delete(path);
+                Directory.Delete(path, true);
             else
                 File.Delete(path);
         }
