@@ -35,8 +35,8 @@ namespace MrCMS.Website
 {
     public abstract class MrCMSApplication : HttpApplication
     {
-        public const string AssemblyVersion = "0.4.2.0";
-        public const string AssemblyFileVersion = "0.4.2.0";
+        public const string AssemblyVersion = "0.5.0.0";
+        public const string AssemblyFileVersion = "0.5.0.0";
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
         private static IKernel _kernel;
         private const string CachedMissingItemKey = "cached-missing-item";
