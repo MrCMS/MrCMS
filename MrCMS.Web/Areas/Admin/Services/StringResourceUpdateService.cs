@@ -50,7 +50,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             }
             string result = string.Join(Environment.NewLine, data.Select(list => string.Join(",", list)));
 
-            return new FileContentResult(Encoding.UTF8.GetBytes(result), "text/csv")
+            return new FileContentResult(Encoding.Default.GetBytes(result), "text/csv")
                        {
                            FileDownloadName =
                                "MrCMS-ResourceData-" + CurrentRequestData.Now +
@@ -61,7 +61,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         public void Import(HttpPostedFileBase file)
         {
             file.InputStream.Position = 0;
-            var reader = new StreamReader(file.InputStream);
+            var reader = new StreamReader(file.InputStream, Encoding.Default);
             string data = reader.ReadToEnd();
             string[] rows = data.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
             var resourceData = new List<StringResourceData>();
@@ -72,13 +72,18 @@ namespace MrCMS.Web.Areas.Admin.Services
                     continue;
                 try
                 {
-                    resourceData.Add(new StringResourceData
-                                         {
-                                             Key = ReadData(columns[0]),
-                                             Value = ReadData(columns[1]),
-                                             UICulture = ReadData(columns[2]),
-                                             SiteId = Convert.ToInt32(ReadData(columns[3]))
-                                         });
+                    string resourceKey = ReadData(columns[0]);
+
+                    if (resourceData.All(x => x.Key != resourceKey))
+                    {
+                        resourceData.Add(new StringResourceData
+                        {
+                            Key = resourceKey,
+                            Value = ReadData(columns[1]),
+                            UICulture = ReadData(columns[2]),
+                            SiteId = Convert.ToInt32(ReadData(columns[3]))
+                        });
+                    }
                 }
                 catch
                 {
