@@ -53,7 +53,11 @@
                                     content: el.html()
                                 },
                                 success: function (msg) {
-                                    showLiveForm(el);
+                                    if (msg.success == false) {
+                                        alert(msg.message);
+                                    } else {
+                                        showLiveForm(el);
+                                    }
                                 }
                             });
                         } else {
@@ -77,7 +81,11 @@
                                     content: html
                                 },
                                 success: function (msg) {
-                                    showLiveForm(el);
+                                    if (msg.success == false) {
+                                        alert(msg.message);
+                                    } else {
+                                        showLiveForm(el);
+                                    }
                                 }
                             });
                         }
