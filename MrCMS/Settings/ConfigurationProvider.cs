@@ -29,6 +29,10 @@ namespace MrCMS.Settings
 
         public void SaveSettings(SiteSettingsBase settings)
         {
+            if (settings.SiteId <= 0)
+            {
+                settings.SiteId = _site.Id;
+            }
             lock (SaveLockObject)
             {
                 string location = GetFileLocation(settings);
@@ -51,7 +55,7 @@ namespace MrCMS.Settings
             MethodInfo methodInfo = GetType().GetMethodExt("GetSiteSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()
-                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] {}))
+                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
                 .OfType<SiteSettingsBase>().ToList();
         }
 
@@ -59,12 +63,12 @@ namespace MrCMS.Settings
         {
             lock (ReadLockObject)
             {
-                if (!GetSiteCache().ContainsKey(typeof (TSettings)))
+                if (!GetSiteCache().ContainsKey(typeof(TSettings)))
                 {
                     var settingObject = GetSettingObject<TSettings>();
                     SaveSettings(settingObject);
                 }
-                return GetSiteCache()[typeof (TSettings)] as TSettings;
+                return GetSiteCache()[typeof(TSettings)] as TSettings;
             }
         }
 
@@ -98,7 +102,7 @@ namespace MrCMS.Settings
 
         private TSettings GetSettingObject<TSettings>() where TSettings : SiteSettingsBase, new()
         {
-            string fileLocation = GetFileLocation(typeof (TSettings));
+            string fileLocation = GetFileLocation(typeof(TSettings));
             if (File.Exists(fileLocation))
             {
                 string readAllText = File.ReadAllText(fileLocation);
@@ -109,7 +113,7 @@ namespace MrCMS.Settings
 
         private TSettings GetNewSettingsObject<TSettings>() where TSettings : SiteSettingsBase, new()
         {
-            var settings = new TSettings {SiteId = _site.Id};
+            var settings = new TSettings { SiteId = _site.Id };
             _legacySettingsProvider.ApplyLegacySettings(settings, _site.Id);
             return settings;
         }
