@@ -162,7 +162,7 @@
                 this.linkEditMode || (this.linkElement = c.document.createElement("a"));
                 this.commitContent(f, this.imageElement);
                 this.commitContent(2, this.linkElement);
-                this.imageElement.getAttribute("style") || this.imageElement.removeAttribute("style");
+                //this.imageElement.getAttribute("style") || this.imageElement.removeAttribute("style");
                 this.imageEditMode ? !this.linkEditMode && this.addLink ? (c.insertElement(this.linkElement),
                     this.imageElement.appendTo(this.linkElement)) : this.linkEditMode && !this.addLink && (c.getSelection().selectElement(this.linkElement), c.insertElement(this.imageElement)) : this.addLink ? this.linkEditMode ? c.insertElement(this.imageElement) : (c.insertElement(this.linkElement), this.linkElement.append(this.imageElement, !1)) : c.insertElement(this.imageElement)
             },
@@ -239,6 +239,7 @@
                                     var mediaSelector = new MediaSelector({
                                         onSelected: function (info) {
                                             e.data.button.getDialog().setValueOf('info', 'txtUrl', info.Url);
+                                            e.data.button.getDialog().setValueOf('advanced', 'txtGenClass', "img-responsive");
                                             $.get('/Admin/Image/GetImageData', { url: info.Url, v: new Date().getTime() }, function (response) {
                                                 e.data.button.getDialog().setValueOf('info', 'txtAlt', response.alt);
                                                 e.data.button.getDialog().setValueOf('advanced', 'txtGenTitle', response.title);
@@ -297,8 +298,8 @@
                                     setup: y,
                                     commit: function (a, b, d) {
                                         var c = this.getValue();
-                                        a == f ? (c ? b.setStyle("width",
-                                            CKEDITOR.tools.cssLength(c)) : b.removeStyle("width"), !d && b.removeAttribute("width")) : 4 == a ? c.match(k) ? b.setStyle("width", CKEDITOR.tools.cssLength(c)) : (a = this.getDialog().originalElement, "true" == a.getCustomData("isReady") && b.setStyle("width", a.$.width + "px")) : 8 == a && (b.removeAttribute("width"), b.removeStyle("width"))
+                                       b.removeStyle("width");
+                                        b.setAttribute("width", c);
                                     }
                                 }, {
                                     type: "text",
@@ -317,7 +318,8 @@
                                     setup: y,
                                     commit: function (a, b, d) {
                                         var c = this.getValue();
-                                        a == f ? (c ? b.setStyle("height", CKEDITOR.tools.cssLength(c)) : b.removeStyle("height"), !d && b.removeAttribute("height")) : 4 == a ? c.match(k) ? b.setStyle("height", CKEDITOR.tools.cssLength(c)) : (a = this.getDialog().originalElement, "true" == a.getCustomData("isReady") && b.setStyle("height", a.$.height + "px")) : 8 == a && (b.removeAttribute("height"), b.removeStyle("height"))
+                                         b.removeStyle("height");
+                                        b.setAttribute("height", c);
                                     }
                                 }
                                 ]
@@ -680,36 +682,6 @@
                         }
                     }
                     ]
-                }, {
-                    type: "text",
-                    id: "txtdlgGenStyle",
-                    requiredContent: "img{cke-xyz}",
-                    label: c.lang.common.cssStyle,
-                    validate: CKEDITOR.dialog.validate.inlineStyle(c.lang.common.invalidInlineStyle),
-                    "default": "",
-                    setup: function (a,
-                        b) {
-                        if (a == f) {
-                            var c = b.getAttribute("style");
-                            !c && b.$.style.cssText && (c = b.$.style.cssText);
-                            this.setValue(c);
-                            var e = b.$.style.height,
-                                c = b.$.style.width,
-                                e = (e ? e : "").match(k),
-                                c = (c ? c : "").match(k);
-                            this.attributesInStyle = {
-                                height: !!e,
-                                width: !!c
-                            }
-                        }
-                    },
-                    onChange: function () {
-                        i.call(this, "info:cmbFloat info:cmbAlign info:txtVSpace info:txtHSpace info:txtBorder info:txtWidth info:txtHeight".split(" "));
-                        g(this)
-                    },
-                    commit: function (a, b) {
-                        a == f && (this.getValue() || this.isChanged()) && b.setAttribute("style", this.getValue())
-                    }
                 }
                 ]
             }
