@@ -74,7 +74,10 @@ namespace MrCMS.Services
             var blob = Container.GetBlockBlobReference(filePath);
             blob.Properties.ContentType = contentType;
 
-            stream.Position = 0;
+            if (stream.CanSeek)
+            {
+                stream.Position = 0;
+            }
             blob.UploadFromStream(stream);
 
             return blob.Uri.ToString();

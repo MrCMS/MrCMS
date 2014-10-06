@@ -46,14 +46,14 @@ namespace MrCMS.Helpers
         {
             return FirstItem(html, list,
                              html.UrlWithCurrentQueryString(
-                                 GetCurrentPath(),
+                                 GetCurrentPath(html),
                                  getRouteValues(1)), getRouteValues, format);
         }
 
-        private static string GetCurrentPath()
+        private static string GetCurrentPath(HtmlHelper helper)
         {
-            if (CurrentRequestData.CurrentContext.Request.Url != null)
-                return CurrentRequestData.CurrentContext.Request.Url.GetComponents(UriComponents.Path,
+            if (helper.ViewContext.HttpContext.Request.Url != null)
+                return helper.ViewContext.HttpContext.Request.Url.GetComponents(UriComponents.Path,
                                                                                  UriFormat.SafeUnescaped);
             throw new InvalidOperationException("Request does not have a URL");
         }
@@ -70,7 +70,7 @@ namespace MrCMS.Helpers
                                            Func<int, object> getRouteValues, string format)
         {
             int targetPageNumber = list.PageNumber - 1;
-            var url = html.UrlWithCurrentQueryString(GetCurrentPath(), getRouteValues(targetPageNumber));
+            var url = html.UrlWithCurrentQueryString(GetCurrentPath(html), getRouteValues(targetPageNumber));
             return PreviousItem(html, list, url, getRouteValues, format);
         }
 
@@ -115,7 +115,7 @@ namespace MrCMS.Helpers
                                        Func<int, object> getRouteValues,
                                        Func<int, string> format)
         {
-            var url = html.UrlWithCurrentQueryString(GetCurrentPath(), getRouteValues(i));
+            var url = html.UrlWithCurrentQueryString(GetCurrentPath(html), getRouteValues(i));
             return PageItem(html, i, list, url, getRouteValues, format);
         }
 
@@ -147,7 +147,7 @@ namespace MrCMS.Helpers
         private static TagBuilder Next(HtmlHelper html, IPagedList list,
                                        Func<int, object> getRouteValues, string format)
         {
-            var url = html.UrlWithCurrentQueryString(GetCurrentPath(), getRouteValues(list.PageNumber + 1));
+            var url = html.UrlWithCurrentQueryString(GetCurrentPath(html), getRouteValues(list.PageNumber + 1));
             return NextItem(html, list, url, getRouteValues, format);
         }
 
@@ -178,7 +178,7 @@ namespace MrCMS.Helpers
         private static TagBuilder Last(HtmlHelper html, IPagedList list, 
                                        Func<int, object> getRouteValues, string format)
         {
-            var url = html.UrlWithCurrentQueryString(GetCurrentPath(), getRouteValues(list.PageCount));
+            var url = html.UrlWithCurrentQueryString(GetCurrentPath(html), getRouteValues(list.PageCount));
             return LastItem(html, list, url, getRouteValues, format);
         }
 

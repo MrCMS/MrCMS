@@ -45,5 +45,10 @@ namespace MrCMS.Web.Tests
                 _fakeEventContext.Publish(eventType, args);
             }
         }
+
+        public IDisposable Disable()
+        {
+            return _coreEventContext.Disable();
+        }
     }
 }

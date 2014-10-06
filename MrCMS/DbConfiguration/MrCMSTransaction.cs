@@ -156,15 +156,25 @@ namespace MrCMS.DbConfiguration
 
     public static class CoreEventPublisher
     {
-        public static void Publish<T>(this T onUpdatedArgs, ISession session, Type eventType,
-            Func<T, ISession, Type, object> getArgs)
+        public static void Publish(this EventInfo eventInfo, ISession session, Type eventType,
+            Func<EventInfo, ISession, Type, object> getArgs)
         {
-            Type type = onUpdatedArgs.GetType().GenericTypeArguments[0];
+            Type type = eventInfo.GetType().GenericTypeArguments[0];
 
             List<Type> types = GetEntityTypes(type).Reverse().ToList();
 
             types.ForEach(
-                t => EventContext.Instance.Publish(eventType.MakeGenericType(t), getArgs(onUpdatedArgs, session, t)));
+                t => EventContext.Instance.Publish(eventType.MakeGenericType(t), getArgs(eventInfo, session, t)));
+        }
+        public static void Publish(this UpdatedEventInfo updatedEventInfo, ISession session, Type eventType,
+            Func<UpdatedEventInfo, ISession, Type, object> getArgs)
+        {
+            Type type = updatedEventInfo.GetType().GenericTypeArguments[0];
+
+            List<Type> types = GetEntityTypes(type).Reverse().ToList();
+
+            types.ForEach(
+                t => EventContext.Instance.Publish(eventType.MakeGenericType(t), getArgs(updatedEventInfo, session, t)));
         }
 
 
