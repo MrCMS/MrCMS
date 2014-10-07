@@ -6,8 +6,8 @@
 }
 
 @Html.Hidden("controller-name", ViewData["controller-name"])
-@{ Html.RenderPartial("Navbar"); }
 
+@{ Html.RenderPartial("Navbar"); }
 
 <div class="container-mrcms">
     @{ Html.RenderPartial("AdminNavigation"); }
@@ -19,13 +19,13 @@
             @RenderBody()
         </div>
     </div>
+    <div class="clearfix"> </div>
 </div>
 <footer>
-    <hr />
-    <p class="display-inline">
+    <span class="display-inline">
         &copy; Mr CMS 2012-@CurrentRequestData.Now.Year - v@(Html.AssemblyVersion()) - Installed apps: @MrCMSApp.CurrentAppSummary
         <span class="pull-right" style="margin-right: 20px;">Logged in from @CurrentRequestData.CurrentContext.GetCurrentIP()</span>
-    </p>
+    </span>
 </footer>
 
 <!--[if lt IE 10]><br /><br />@{

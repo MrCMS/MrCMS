@@ -1,6 +1,17 @@
-﻿@{
-    ViewBag.Title = "Manage";
+﻿@using MrCMS.Helpers
+@{
+    ViewBag.Title = "Manage Pages";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-<iframe src="/" width="100%" height="800" scrolling="yes" frameborder="0" border="0">
-</iframe>
+<h1 class="page-header">@Resource("Admin Nav Pages", "Pages")</h1>
+<div id="web">
+    <div class="sidebar-nav" id="webpage-tree">
+    </div>
+    <br />
+    <strong>Key</strong>
+    <hr class="small-margin" />
+    <span class="grey">Not included in site navigation</span><br />
+    <span class="orange">Not published</span><br />
+</div>
+
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/pages.js"); }

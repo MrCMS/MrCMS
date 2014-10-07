@@ -974,6 +974,9 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.min.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-page-template.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\layout.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\media.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\pages.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\persistent-notifications.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-show-files-simple.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\health-checks.js" />
@@ -1667,6 +1670,9 @@
     <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\Admin\Views\Layout\Set.cshtml" />
+    <Content Include="Areas\Admin\Views\MediaCategory\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Layout\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\MediaCategory\ShowFolders.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>

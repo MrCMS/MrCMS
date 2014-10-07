@@ -1,0 +1,13 @@
+﻿@using MrCMS.Helpers
+@{
+    ViewBag.Title = "Manage Media";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<h1 class="page-header">@Resource("Admin Nav Media", "Media")</h1>
+<div id="media" class="tab-pane">
+    <div class="sidebar-nav" id="media-tree">
+    </div>
+    <br />
+</div>
+
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js"); }

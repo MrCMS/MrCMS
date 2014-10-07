@@ -1,0 +1,21 @@
+﻿@using System.Activities.Statements
+@using System.Drawing
+@using System.Linq
+@using MrCMS.Entities.Documents.Media
+@using MrCMS.Helpers
+@using MrCMS.Paging
+@model System.Collections.Generic.IList<MediaCategory>
+@if (Model.Any())
+{
+    foreach (var folder in Model.OrderBy(x => x.DisplayOrder))
+    {
+        <div class="folder-container">
+            <a href="@Url.Action("Show", "MediaCategory", new{id = folder.Id})" class="folder" title="@folder.Name">
+                <i class="glyphicon glyphicon-folder-open">&nbsp;</i> @folder.Name.TruncateString(28)
+            </a>
+        </div>
+
+    }
+
+    <div class="clearfix"></div>
+}
