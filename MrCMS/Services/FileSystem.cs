@@ -24,7 +24,10 @@ namespace MrCMS.Services
 
             using (Stream file = File.OpenWrite(path))
             {
-                stream.Position = 0;
+                if (stream.CanSeek)
+                {
+                    stream.Position = 0;
+                }
                 stream.CopyTo(file);
             }
             stream.Close();

@@ -1,4 +1,5 @@
 using MrCMS.Entities.Messaging;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
@@ -13,12 +14,14 @@ namespace MrCMS.Tasks
         private readonly ISession _session;
         private readonly IEmailSender _emailSender;
         private readonly SiteSettings _siteSettings;
+        private readonly Site _site;
 
-        public SendQueuedMessagesTask(ISession session, IEmailSender emailSender, SiteSettings siteSettings)
+        public SendQueuedMessagesTask(ISession session, IEmailSender emailSender, SiteSettings siteSettings,Site site)
         {
             _session = session;
             _emailSender = emailSender;
             _siteSettings = siteSettings;
+            _site = site;
         }
 
         public override int Priority
@@ -34,7 +37,7 @@ namespace MrCMS.Tasks
                     QueuedMessage queuedMessage in
                         session.QueryOver<QueuedMessage>().Where(
                             message => message.SentOn == null && message.Tries < MAX_TRIES)
-                            .Where(message => message.Site.Id == _siteSettings.SiteId)
+                            .Where(message => message.Site.Id == _site.Id)
                                .List())
                 {
                     if (_emailSender.CanSend(queuedMessage))

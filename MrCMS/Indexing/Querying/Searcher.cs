@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using MrCMS.Entities;
@@ -45,13 +46,41 @@ namespace MrCMS.Indexing.Querying
             return new StaticPagedList<TEntity>(entities, pageNumber, size, topDocs.TotalHits);
         }
 
+        public IPagedList<TSubclass> Search<TSubclass>(Query query, int pageNumber, int? pageSize = null,
+            Filter filter = null, Sort sort = null) where TSubclass : TEntity
+        {
+            var size = pageSize ?? _siteSettings.DefaultPageSize;
+            BooleanQuery booleanQuery = null;
+            if (query is MatchAllDocsQuery)
+            {
+                booleanQuery = new BooleanQuery();
+            }
+            else if (query is BooleanQuery)
+            {
+                booleanQuery = query as BooleanQuery;
+            }
+            if (booleanQuery != null)
+                booleanQuery.Add(
+                    new TermQuery(new Term(IndexDefinition<TEntity>.EntityType.FieldName, typeof (TSubclass).FullName)),
+                    Occur.MUST);
+
+            var topDocs = IndexSearcher.Search(booleanQuery ?? query, filter, pageNumber*size, sort ?? Sort.RELEVANCE);
+
+            var entities =
+                Definition.Convert<TSubclass>(topDocs.ScoreDocs.Skip((pageNumber - 1)*size)
+                    .Take(size)
+                    .Select(doc => IndexSearcher.Doc(doc.Doc)));
+
+            return new StaticPagedList<TSubclass>(entities, pageNumber, size, topDocs.TotalHits);
+        }
+
         public int Total(Query query, Filter filter = null)
         {
             var topDocs = IndexSearcher.Search(query, filter, int.MaxValue);
 
             return topDocs.TotalHits;
         }
-        
+
         public IList<TEntity> GetAll(Query query = null, Filter filter = null, Sort sort = null)
         {
             var topDocs = IndexSearcher.Search(query, filter, int.MaxValue, sort ?? Sort.RELEVANCE);

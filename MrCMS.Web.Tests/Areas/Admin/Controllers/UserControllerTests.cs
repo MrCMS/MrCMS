@@ -8,6 +8,7 @@ using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
@@ -19,6 +20,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private IUserService _userService;
         private IRoleService _roleService;
         private IPasswordManagementService _passwordManagementService;
+        private IGetUserCultureOptions _getUserCultureOptions;
 
         public UserControllerTests()
         {
@@ -26,12 +28,14 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             _userService = A.Fake<IUserService>();
             _roleService = A.Fake<IRoleService>();
             _passwordManagementService = A.Fake<IPasswordManagementService>();
-            _userController = new UserController(_userService, _userSearchService,_roleService,_passwordManagementService);
+            _getUserCultureOptions = A.Fake<IGetUserCultureOptions>();
+            _userController = new UserController(_userService, _userSearchService, _roleService, _passwordManagementService, _getUserCultureOptions);
         }
 
         [Fact]
         public void UserController_Index_ShouldReturnViewResult()
-        {            ActionResult actionResult = _userController.Index(null);
+        {
+            ActionResult actionResult = _userController.Index(null);
 
             actionResult.Should().BeOfType<ViewResult>();
         }
@@ -97,7 +101,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_AddPost_ShouldReturnRedirectEditForSavedUser()
         {
-            var user = new User {Id = 123};
+            var user = new User { Id = 123 };
 
             ActionResult result = _userController.Add(user);
 
@@ -150,7 +154,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_EditPost_ShouldReturnRedirectToEdit()
         {
-            var user = new User{Id = 123};
+            var user = new User { Id = 123 };
 
             ActionResult result = _userController.Edit(user);
 
@@ -174,7 +178,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_SetPasswordPost_ReturnsRedirectToEditUser()
         {
-            ActionResult result = _userController.SetPassword(new User {Id = 1}, "password");
+            ActionResult result = _userController.SetPassword(new User { Id = 1 }, "password");
 
             result.Should().BeOfType<RedirectToRouteResult>();
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
@@ -184,7 +188,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void UserController_SetPasswordPost_ShouldCallAuthorisationServiceSetPassword()
         {
-            var user = new User {Id = 1};
+            var user = new User { Id = 1 };
             const string password = "password";
 
             ActionResult result = _userController.SetPassword(user, password);

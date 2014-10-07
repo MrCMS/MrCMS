@@ -29,10 +29,6 @@ namespace MrCMS.Settings
 
         public void SaveSettings(SiteSettingsBase settings)
         {
-            if (settings.SiteId <= 0)
-            {
-                settings.SiteId = _site.Id;
-            }
             lock (SaveLockObject)
             {
                 string location = GetFileLocation(settings);
@@ -113,7 +109,7 @@ namespace MrCMS.Settings
 
         private TSettings GetNewSettingsObject<TSettings>() where TSettings : SiteSettingsBase, new()
         {
-            var settings = new TSettings { SiteId = _site.Id };
+            var settings = new TSettings();
             _legacySettingsProvider.ApplyLegacySettings(settings, _site.Id);
             return settings;
         }
