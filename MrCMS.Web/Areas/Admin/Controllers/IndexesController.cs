@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Indexing.Management;
+using MrCMS.Search;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
@@ -64,6 +65,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _indexAdminService.SaveBoosts(boosts);
             return RedirectToAction("Index");
+        }
+
+        public string UniversalIndex()
+        {
+            MrCMSApplication.Get<IUniversalSearchIndexManager>().ReindexAll();
+            return "Done";
         }
     }
 }
