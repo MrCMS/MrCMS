@@ -490,6 +490,7 @@
     <Compile Include="Areas\Admin\Services\GetLayoutOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetTemplateOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetUrlGeneratorOptions.cs" />
+    <Compile Include="Areas\Admin\Services\GetUserCultureOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetValidPageTemplatesToAdd.cs" />
     <Compile Include="Areas\Admin\Services\IACLService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminNavLinksService.cs" />
@@ -505,6 +506,7 @@
     <Compile Include="Areas\Admin\Services\IFormAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IGetLayoutOptions.cs" />
     <Compile Include="Areas\Admin\Services\IGetUrlGeneratorOptions.cs" />
+    <Compile Include="Areas\Admin\Services\IGetUserCultureOptions.cs" />
     <Compile Include="Areas\Admin\Services\IGetValidPageTemplatesToAdd.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IInPageAdminService.cs" />

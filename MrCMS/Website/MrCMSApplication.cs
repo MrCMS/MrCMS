@@ -133,7 +133,11 @@ namespace MrCMS.Website
                                 !currentUser.IsActive))
                                 Get<IAuthorisationService>().Logout();
                             else
+                            {
                                 CurrentRequestData.CurrentUser = currentUser;
+                                Thread.CurrentThread.CurrentCulture = currentUser.GetUICulture();
+                                Thread.CurrentThread.CurrentUICulture = currentUser.GetUICulture();
+                            }
                         }
                     }
                 };

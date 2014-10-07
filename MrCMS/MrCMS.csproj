@@ -418,6 +418,7 @@
     <Compile Include="Helpers\ShortcodeParsingExtensions.cs" />
     <Compile Include="Helpers\TweetParsingExtensions.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
+    <Compile Include="Helpers\UserExtensions.cs" />
     <Compile Include="Helpers\WebpageExtensions.cs" />
     <Compile Include="Helpers\WidgetCachingExtensions.cs" />
     <Compile Include="Indexing\Definitions\BodyContentFieldDefinition.cs" />
@@ -524,6 +525,10 @@
     <Compile Include="Services\Notifications\OnPersistentNotificationPublishedEventArgs.cs" />
     <Compile Include="Services\Notifications\OnTransientNotificationPublishedEventArgs.cs" />
     <Compile Include="Services\Notifications\PublishType.cs" />
+    <Compile Include="Services\Resources\GetCurrentUserCultureInfo.cs" />
+    <Compile Include="Services\Resources\GetUserCultureInfo.cs" />
+    <Compile Include="Services\Resources\IGetCurrentUserCultureInfo.cs" />
+    <Compile Include="Services\Resources\IGetUserCultureInfo.cs" />
     <Compile Include="Services\Resources\IStringResourceProvider.cs" />
     <Compile Include="Services\Resources\StringResourceProvider.cs" />
     <Compile Include="Services\SetDocumentDisplayOrder.cs" />

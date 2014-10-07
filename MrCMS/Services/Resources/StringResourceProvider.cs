@@ -6,7 +6,6 @@ using MrCMS.DbConfiguration.Filters;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
-using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 
@@ -16,14 +15,14 @@ namespace MrCMS.Services.Resources
     {
         private readonly ISession _session;
         private readonly Site _site;
-        private readonly SiteSettings _siteSettings;
+        private readonly IGetCurrentUserCultureInfo _getCurrentUserCultureInfo;
         private static HashSet<StringResource> _allResources;
 
-        public StringResourceProvider(ISession session, Site site, SiteSettings siteSettings)
+        public StringResourceProvider(ISession session, Site site, IGetCurrentUserCultureInfo getCurrentUserCultureInfo)
         {
             _session = session;
             _site = site;
-            _siteSettings = siteSettings;
+            _getCurrentUserCultureInfo = getCurrentUserCultureInfo;
         }
 
 
@@ -34,9 +33,10 @@ namespace MrCMS.Services.Resources
         {
             lock (LockObject)
             {
+                var currentUserCulture = _getCurrentUserCultureInfo.GetInfoString();
                 var languageValue =
                     ResourcesForSite.SingleOrDefault(
-                        resource => resource.Key == key && resource.UICulture == _siteSettings.UICulture);
+                        resource => resource.Key == key && resource.UICulture == currentUserCulture);
                 if (languageValue != null)
                     return languageValue.Value;
 
