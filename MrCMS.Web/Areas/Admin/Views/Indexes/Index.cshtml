@@ -3,61 +3,65 @@
 @{
     ViewBag.Title = "Indexes";
 }
-<form>
-    <fieldset>
-        <legend>
-            Indexes
-            <span class="btn-group display-inline pull-right"></span>
-        </legend>
 
-        <table class="table table-striped table-condensed">
-            <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Exists?
-                </th>
-                <th>
-                    Number of docs
-                </th>
-                <th>
-                    Last Modified
-                </th>
-                <th></th>
-            </tr>
-            @foreach (var index in Model)
+<fieldset>
+    <legend>
+        Indexes
+        <span class="btn-group display-inline pull-right">
+            @using (Html.BeginForm("ReindexUniversalSearch", "Indexes", FormMethod.Post))
             {
-                <tr>
-                    <td>
-                        @index.Name
-                    </td>
-                    <td>
-                        @index.DoesIndexExist
-                    </td>
-                    <td>
-                        @(index.NumberOfDocs.HasValue ? index.NumberOfDocs.ToString() : "-")
-                    </td>
-                    <td>
-                        @(index.LastModified.HasValue ? index.LastModified.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-")
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            @if (index.DoesIndexExist)
-                            {
-                                @Html.FormLink("Reindex", "Reindex", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
-                                @Html.FormLink("Optimise", "Optimise", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
-                            }
-                            else
-                            {
-                                @Html.FormLink("Create", "Create", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
-                            }
-
-                            @Html.ActionLink("Set Boosts", "Boosts", "Indexes", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
-                        </div>
-                    </td>
-                </tr>
+                <button class="btn btn-default" type="submit">Reindex Universal Search</button>
             }
-        </table>
-    </fieldset>
-</form>
+        </span>
+    </legend>
+
+    <table class="table table-striped table-condensed">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Exists?
+            </th>
+            <th>
+                Number of docs
+            </th>
+            <th>
+                Last Modified
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var index in Model)
+        {
+            <tr>
+                <td>
+                    @index.Name
+                </td>
+                <td>
+                    @index.DoesIndexExist
+                </td>
+                <td>
+                    @(index.NumberOfDocs.HasValue ? index.NumberOfDocs.ToString() : "-")
+                </td>
+                <td>
+                    @(index.LastModified.HasValue ? index.LastModified.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-")
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @if (index.DoesIndexExist)
+                        {
+                            @Html.FormLink("Reindex", "Reindex", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
+                            @Html.FormLink("Optimise", "Optimise", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
+                        }
+                        else
+                        {
+                            @Html.FormLink("Create", "Create", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
+                        }
+
+                        @Html.ActionLink("Set Boosts", "Boosts", "Indexes", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+</fieldset>

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Search.Models;
@@ -21,10 +22,21 @@ namespace MrCMS.Search
                 DisplayName = webpage.Name,
                 EditUrl = _urlHelper.Action("Edit", "Webpage", new { id = webpage.Id }),
                 Id = webpage.Id,
-                SearchTerms = webpage.Tags.Select(tag => tag.Name),
+                SearchTerms = GetSearchTerms( webpage) ,
                 SystemType = webpage.GetType().FullName,
                 ViewUrl = webpage.AbsoluteUrl,
             };
+        }
+
+        private IEnumerable<string> GetSearchTerms(Webpage webpage)
+        {
+            yield return webpage.Name;
+            yield return webpage.BodyContent;
+            yield return webpage.UrlSegment;
+            foreach (var tag in webpage.Tags)
+            {
+                yield return tag.Name;
+            }
         }
     }
 }

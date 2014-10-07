@@ -41,7 +41,7 @@ namespace MrCMS.Search
             }
             bool exists = false;
             Guid searchGuid = Guid.Empty;
-            using (var indexSearcher = new IndexSearcher(GetDirectory(_site), true))
+            using (var indexSearcher = GetSearcher())
             {
                 var topDocs = indexSearcher.Search(new TermQuery(new Term(UniversalSearchFieldNames.Id, entity.Id.ToString())), int.MaxValue);
                 if (topDocs.ScoreDocs.Any())
@@ -120,6 +120,11 @@ namespace MrCMS.Search
                     writer.AddDocument(document);
                 }
             });
+        }
+
+        public IndexSearcher GetSearcher()
+        {
+            return new IndexSearcher(GetDirectory(_site), true);
         }
 
         public virtual Analyzer GetAnalyser()

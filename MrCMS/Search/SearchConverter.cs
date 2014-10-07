@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Lucene.Net.Documents;
 using MrCMS.Entities;
 using MrCMS.Helpers;
@@ -30,7 +31,7 @@ namespace MrCMS.Search
             document.Add(new Field(UniversalSearchFieldNames.EditUrl, item.EditUrl ?? string.Empty, Field.Store.YES, Field.Index.NOT_ANALYZED));
             document.Add(new Field(UniversalSearchFieldNames.ViewUrl, item.ViewUrl ?? string.Empty, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
-            foreach (var searchTerm in item.SearchTerms)
+            foreach (var searchTerm in item.SearchTerms.Where(s => !string.IsNullOrWhiteSpace(s)))
             {
                 document.Add(new Field(UniversalSearchFieldNames.SearchTerms, searchTerm, Field.Store.NO, Field.Index.ANALYZED));
             }

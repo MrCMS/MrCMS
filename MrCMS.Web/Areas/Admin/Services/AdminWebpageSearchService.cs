@@ -8,6 +8,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Querying;
 using MrCMS.Paging;
+using MrCMS.Search;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models.Search;
 using NHibernate;
@@ -36,14 +37,15 @@ namespace MrCMS.Web.Areas.Admin.Services
             return _documentSearcher.Search(model.GetQuery(), model.Page);
         }
 
-        public IEnumerable<QuickSearchResults> QuickSearch(AdminWebpageSearchQuery model)
+        public IEnumerable<QuickSearchResult> QuickSearch(AdminWebpageSearchQuery model)
         {
-            return _documentSearcher.Search(model.GetQuery(), model.Page, 10).Select(x => new QuickSearchResults
+            return _documentSearcher.Search(model.GetQuery(), model.Page, 10).Select(x => new QuickSearchResult
                                                                                           {
-                                                                                              Id = x.Id,
-                                                                                              Name = x.Name,
-                                                                                              CreatedOn = x.CreatedOn.ToShortDateString().ToString(),
-                                                                                              Type = x.GetType().Name.ToString()
+                                                                                              id = x.Id,
+                                                                                              value = x.Name,
+                                                                                              url = x.AbsoluteUrl
+                                                                                              //CreatedOn = x.CreatedOn.ToShortDateString().ToString(),
+                                                                                              //Type = x.GetType().Name.ToString()
                                                                                           });
         }
 
