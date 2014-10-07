@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
 
@@ -26,6 +27,19 @@ namespace MrCMS.Entities.Documents.Media
         {
             get { return _files; }
             protected internal set { _files = value; }
+        }
+
+        public virtual IEnumerable<MediaCategory> BreadCrumbs
+        {
+            get
+            {
+                MediaCategory page = this;
+                while (page != null)
+                {
+                    yield return page;
+                    page = page.Parent.Unproxy() as MediaCategory;
+                }
+            }
         }
     }
 }

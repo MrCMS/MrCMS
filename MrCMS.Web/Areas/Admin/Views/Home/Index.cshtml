@@ -4,9 +4,8 @@
     ViewBag.Title = "Dashboard";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-<form>
-    <fieldset>
-        <legend>Dashboard</legend>
+
+        <h1 class="page-header">Dashboard</h1>
         @Html.RenderDashboardArea(DashboardArea.Top)
         <hr />
         <div class="row">
@@ -18,5 +17,3 @@
             </div>
         </div>
         <hr />
-    </fieldset>
-</form>

@@ -1,4 +1,5 @@
-﻿@using MrCMS.Entities.Documents.Media
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
 @using MrCMS.Paging
 @model MrCMS.Web.Areas.Admin.Models.MediaCategorySearchModel
@@ -10,7 +11,17 @@
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
     ViewData["MediaCategory"] = mediaCategory;
     
+    
 }
+<ol class="breadcrumb">
+    <li><a href="/Admin/MediaCategory">Media</a></li>
+    @foreach (var folder in mediaCategory.BreadCrumbs.Reverse())
+    {
+        <li><a href="@Url.Action("Show", "MediaCategory", new{Id = folder.Id})">@folder.Name</a></li>
+
+    }
+</ol>
+
 @if (TempData["saved"] != null)
 {
     <div class="alert alert-success">
@@ -18,6 +29,7 @@
         @TempData["saved"]
     </div>
 }
+
 <form action="@Url.Action("Show", "MediaCategory", new { mediaCategory.Id })" method="get" id="search-form" style="margin-bottom: 0;">
     <fieldset>
         <legend>@mediaCategory.Name
@@ -28,8 +40,8 @@
                 }
 
                 <a href="@Url.Action("SortFiles", "MediaCategory", new { id = mediaCategory.Id })" class="btn btn-default">Sort</a>
+                <a href="@Url.Action("Add", "MediaCategory", new { id = mediaCategory.Id })" class="btn  btn-default fn-modal">Add folder</a>
                 <a href="@Url.Action("Edit", "MediaCategory", new { id = mediaCategory.Id })" class="btn  btn-default">Edit</a>
-
                 <input type="submit" value="Search" class="btn btn-primary" />
             </span>
         </legend>
@@ -41,4 +53,6 @@
 </form>
 @{ Html.RenderAction("Upload", "MediaCategory", new { category = mediaCategory } ); }
 <hr class="small-margin" />
+@{ Html.RenderAction("ShowFolders", new { mediaCategory = Model });}
+
 @{ Html.RenderAction("ShowFiles", new { searchModel = Model });}

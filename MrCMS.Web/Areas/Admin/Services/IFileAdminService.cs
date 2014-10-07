@@ -26,6 +26,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         IPagedList<MediaFile> GetFilesForSearchPaged(MediaCategorySearchModel model);
         void CreateFolder(MediaCategory category);
         void SetOrders(List<SortItem> items);
+        IList<MediaCategory> GetSubFolders(MediaCategory folder);
     }
 
     public class FileAdminService : IFileAdminService
@@ -94,6 +95,11 @@ namespace MrCMS.Web.Areas.Admin.Services
                                                                mediaFile.DisplayOrder = item.Order;
                                                                session.Update(mediaFile);
                                                            }));
+        }
+
+        public IList<MediaCategory> GetSubFolders(MediaCategory folder)
+        {
+            return _session.QueryOver<MediaCategory>().Where(x => x.Parent == folder).Cacheable().List();
         }
     }
 }

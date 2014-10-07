@@ -84,6 +84,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(searchModel);
             return PartialView(searchModel);
         }
+        [HttpGet]
+        public ActionResult ShowFolders(MediaCategory folder)
+        {
+            return PartialView(_fileAdminService.GetSubFolders(folder));
+        }
 
         [HttpGet]
         public ActionResult ShowFilesSimple(MediaCategory category)

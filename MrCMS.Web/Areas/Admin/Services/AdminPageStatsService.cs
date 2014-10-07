@@ -38,7 +38,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                                         webpage =>
                                             webpage.Site.Id == _site.Id &&
                                             webpage.DocumentType == webpageAlias.DocumentType &&
-                                            (webpage.PublishOn == null || webpage.PublishOn > CurrentRequestData.Now))
+                                            (webpage.PublishOn == null || webpage.PublishOn > CurrentRequestData.Now && !webpage.IsDeleted))
                                     .ToRowCountQuery())
                             .WithAlias(() => countAlias.NumberOfUnPublishedPages))
                 .TransformUsing(Transformers.AliasToBean<WebpageStats>())
