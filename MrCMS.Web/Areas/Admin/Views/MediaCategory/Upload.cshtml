@@ -3,29 +3,32 @@
 @using MrCMS.Website
 @model MrCMS.Entities.Documents.Media.MediaCategory
 
-@if (Model != null)
-{
-    <div class="row">
-        <div class="col-lg-3">
-            <span class="btn btn-success fileinput-button">
-                <i class="glyphicon glyphicon-plus"></i>
-                <span>Upload files...</span>
-                <input id="fileupload" type="file" name="files[]" multiple />
-                <input type="hidden" value="@Url.Action("Files", "File", new { Id = Model.Id })" id="action-url"/>
-                <input type="hidden" value="@Model.Id" id="action-category-id"/>
-            </span>
-        </div>
-        <div class="col-lg-9">
-            <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 0px;">
-                <div class="bar"><span id="percent-complete" style="text-align: center;"></span></div>
-            </div>
+<div class="row">
+    <div class="col-lg-2 col-md-3">
+        <span class="btn btn-success fileinput-button">
+            <i class="glyphicon glyphicon-plus"></i>
+            <span>Upload files...</span>
+            <input id="fileupload" type="file" name="files[]" multiple />
+            @if (Model.Id > 0)
+            {
+                <input type="hidden" value="@Url.Action("Files", "File", new {Id = Model.Id})" id="action-url" />
+            }
+            else
+            {
+                <input type="hidden" value="@Url.Action("Files", "File")" id="action-url" />
+            }
+            <input type="hidden" value="@Model.Id" id="action-category-id" />
+        </span>
+    </div>
+    <div class="col-lg-10 col-md-9">
+        <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 0px;">
+            <div class="bar"><span id="percent-complete" style="text-align: center;"></span></div>
         </div>
     </div>
-    <div id="mrcmsfiles" class=""></div>
+</div>
+<div id="mrcmsfiles" class=""></div>
 
-    <input type="hidden" id="allowedFileTypes" value="@(MrCMSApplication.Get<MediaSettings>().AllowedFileTypes)"/>
-    <input type="hidden" id="maxFileSizeUpload" value="@(MrCMSApplication.Get<MediaSettings>().MaxFileSizeUpload)"/>
-    
-    <div id="dropzone"><span>Drop files here</span></div>
-    
-}
+<input type="hidden" id="allowedFileTypes" value="@(MrCMSApplication.Get<MediaSettings>().AllowedFileTypes)" />
+<input type="hidden" id="maxFileSizeUpload" value="@(MrCMSApplication.Get<MediaSettings>().MaxFileSizeUpload)" />
+
+<div id="dropzone"><span>Drop files here</span></div>

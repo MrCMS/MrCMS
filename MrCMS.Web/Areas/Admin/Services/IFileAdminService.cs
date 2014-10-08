@@ -74,8 +74,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         public IPagedList<MediaFile> GetFilesForSearchPaged(MediaCategorySearchModel model)
         {
             var query = _session.QueryOver<MediaFile>();
-            if (model.Id > 0)
-                query = query.Where(x => x.MediaCategory.Id == model.Id);
+            query = model.Id > 0 ? query.Where(x => x.MediaCategory.Id == model.Id) : query.Where(x => x.MediaCategory == null);
             if (model.SearchText != null)
                 query = query.Where(x => x.FileName.IsLike(model.SearchText, MatchMode.Anywhere) || x.Title.IsLike(model.SearchText, MatchMode.Anywhere) || x.Description.IsLike(model.SearchText, MatchMode.Anywhere));
 
@@ -97,9 +96,12 @@ namespace MrCMS.Web.Areas.Admin.Services
                                                            }));
         }
 
-        public IList<MediaCategory> GetSubFolders(MediaCategory folder)
+        public IList<MediaCategory> GetSubFolders(MediaCategory folder = null)
         {
-            return _session.QueryOver<MediaCategory>().Where(x => x.Parent == folder).Cacheable().List();
+            IQueryOver<MediaCategory, MediaCategory> queryOver = _session.QueryOver<MediaCategory>();
+            if (folder!= null && folder.Id > 0)
+                return queryOver.Where(x => x.Parent == folder).Cacheable().List();
+            return queryOver.Where(x=>x.Parent == null).Cacheable().List();
         }
     }
 }

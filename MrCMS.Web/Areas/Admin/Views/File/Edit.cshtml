@@ -1,10 +1,10 @@
 ﻿@model MrCMS.Entities.Documents.Media.MediaFile
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Edit", "File", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
     <fieldset>
         <legend>Edit
             <span class="btn-group  display-inline  pull-right">
+                <a href="javascript:history.go(-1)" class="btn btn-default">Back</a>
                 <input type="submit" class="btn-primary btn" value="Save" />
             </span>
         </legend>

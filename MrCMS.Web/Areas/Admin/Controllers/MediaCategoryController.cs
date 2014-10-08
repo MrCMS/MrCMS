@@ -7,6 +7,7 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Website.Binders;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -79,13 +80,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult ShowFiles(MediaCategorySearchModel searchModel)
+        public ActionResult ShowFiles(MediaCategorySearchModel searchModel = null)
         {
             ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(searchModel);
             return PartialView(searchModel);
         }
         [HttpGet]
-        public ActionResult ShowFolders(MediaCategory folder)
+        public ActionResult ShowFolders([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory folder = null)
         {
             return PartialView(_fileAdminService.GetSubFolders(folder));
         }

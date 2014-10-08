@@ -911,6 +911,8 @@
     <Content Include="Areas\Admin\Content\Images\no-image.jpg" />
     <Content Include="Areas\Admin\Content\Images\no-media-selected.jpg" />
     <Content Include="Areas\Admin\Content\Images\pencil.png" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\css\font-awesome.css" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.svg" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.noty.packaged.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.min.js" />
@@ -1669,6 +1671,10 @@
     <Content Include="Areas\Admin\Views\MediaCategory\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Layout\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\ShowFolders.cshtml" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.eot" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.woff" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\FontAwesome.otf" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
