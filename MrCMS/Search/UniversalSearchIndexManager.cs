@@ -1,61 +1,44 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
+using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Utils;
 using MrCMS.Search.Models;
 using MrCMS.Website;
-using Directory = Lucene.Net.Store.Directory;
 using Version = Lucene.Net.Util.Version;
 
 namespace MrCMS.Search
 {
     public class UniversalSearchIndexManager : IUniversalSearchIndexManager
     {
-        private readonly IUniversalSearchItemGenerator _universalSearchItemGenerator;
         private readonly HttpContextBase _context;
+        private readonly IGetLuceneDirectory _getLuceneDirectory;
         private readonly Site _site;
+        private readonly IUniversalSearchItemGenerator _universalSearchItemGenerator;
         protected Analyzer Analyser;
-        private FSDirectory _directory;
+        private Directory _directory;
 
-        public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, HttpContextBase context, Site site)
+        public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator,
+            HttpContextBase context, Site site, IGetLuceneDirectory getLuceneDirectory)
         {
             _universalSearchItemGenerator = universalSearchItemGenerator;
             _context = context;
             _site = site;
-
+            _getLuceneDirectory = getLuceneDirectory;
         }
 
-        private UniversalSearchIndexStatus GetStatus(SystemEntity entity)
+        private bool IndexExists
         {
-            if (!IndexExists)
-            {
-                Write(writer => { }, true);
-            }
-            bool exists = false;
-            Guid searchGuid = Guid.Empty;
-            using (var indexSearcher = GetSearcher())
-            {
-                var topDocs = indexSearcher.Search(new TermQuery(new Term(UniversalSearchFieldNames.Id, entity.Id.ToString())), int.MaxValue);
-                if (topDocs.ScoreDocs.Any())
-                {
-                    var doc = indexSearcher.Doc(topDocs.ScoreDocs[0].Doc);
-                    searchGuid = doc.GetValue<Guid>("search-guid");
-                    exists = true;
-                }
-            }
-            return new UniversalSearchIndexStatus
-            {
-                Exists = exists,
-                Guid = searchGuid
-            };
+            get { return IndexReader.IndexExists(GetDirectory(_site)); }
         }
 
         public void Index(SystemEntity entity)
@@ -66,10 +49,9 @@ namespace MrCMS.Search
             }
             CurrentRequestData.OnEndRequest.Add(kernel =>
             {
+                UniversalSearchIndexStatus status = GetStatus(entity);
 
-                var status = GetStatus(entity);
-
-                var document = _universalSearchItemGenerator.GenerateDocument(entity);
+                Document document = _universalSearchItemGenerator.GenerateDocument(entity);
                 if (document == null)
                     return;
 
@@ -88,11 +70,6 @@ namespace MrCMS.Search
             });
         }
 
-        private bool IndexExists
-        {
-            get { return IndexReader.IndexExists(GetDirectory(_site)); }
-        }
-
         public void Delete(SystemEntity entity)
         {
             if (!_universalSearchItemGenerator.CanGenerate(entity))
@@ -101,7 +78,7 @@ namespace MrCMS.Search
             }
             CurrentRequestData.OnEndRequest.Add(kernel =>
             {
-                var status = GetStatus(entity);
+                UniversalSearchIndexStatus status = GetStatus(entity);
                 Write(
                     writer =>
                         writer.DeleteDocuments(new Term(UniversalSearchFieldNames.SearchGuid, status.Guid.ToString())),
@@ -111,11 +88,11 @@ namespace MrCMS.Search
 
         public void ReindexAll()
         {
-            var allItems = _universalSearchItemGenerator.GetAllItems();
+            HashSet<Document> allItems = _universalSearchItemGenerator.GetAllItems();
             Write(writer => { }, true);
             Write(writer =>
             {
-                foreach (var document in allItems)
+                foreach (Document document in allItems)
                 {
                     writer.AddDocument(document);
                 }
@@ -127,22 +104,43 @@ namespace MrCMS.Search
             return new IndexSearcher(GetDirectory(_site), true);
         }
 
+        private UniversalSearchIndexStatus GetStatus(SystemEntity entity)
+        {
+            if (!IndexExists)
+            {
+                Write(writer => { }, true);
+            }
+            bool exists = false;
+            Guid searchGuid = Guid.Empty;
+            using (IndexSearcher indexSearcher = GetSearcher())
+            {
+                TopDocs topDocs =
+                    indexSearcher.Search(new TermQuery(new Term(UniversalSearchFieldNames.Id, entity.Id.ToString())),
+                        int.MaxValue);
+                if (topDocs.ScoreDocs.Any())
+                {
+                    Document doc = indexSearcher.Doc(topDocs.ScoreDocs[0].Doc);
+                    searchGuid = doc.GetValue<Guid>("search-guid");
+                    exists = true;
+                }
+            }
+            return new UniversalSearchIndexStatus
+            {
+                Exists = exists,
+                Guid = searchGuid
+            };
+        }
+
         public virtual Analyzer GetAnalyser()
         {
             return Analyser ?? (Analyser = new StandardAnalyzer(Version.LUCENE_30));
         }
 
-        protected Directory GetDirectory(Site site)
+        private Directory GetDirectory(Site site)
         {
-            return _directory = _directory ?? FSDirectory.Open(new DirectoryInfo(GetLocation(site)));
+            return _directory = _directory ?? _getLuceneDirectory.Get(site, "UniversalSearch");
         }
 
-        public string GetLocation(Site site)
-        {
-            string location = string.Format("~/App_Data/Indexes/{0}/UniversalSearch/", site.Id);
-            string mapPath = _context.Server.MapPath(location);
-            return mapPath;
-        }
 
         private void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
         {

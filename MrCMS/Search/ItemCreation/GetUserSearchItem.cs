@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Search.Models;
 
-namespace MrCMS.Search
+namespace MrCMS.Search.ItemCreation
 {
     public class GetUserSearchItem : GetUniversalSearchItemBase<User>
     {

@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Search.Models;
 
-namespace MrCMS.Search
+namespace MrCMS.Search.ItemCreation
 {
     public class GetLayoutSearchItem : GetUniversalSearchItemBase<Layout>
     {

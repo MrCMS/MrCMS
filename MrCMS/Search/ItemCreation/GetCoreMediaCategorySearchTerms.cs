@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using MrCMS.Entities.Documents.Media;
 
-namespace MrCMS.Search
+namespace MrCMS.Search.ItemCreation
 {
-    public class GetMediaCategorySearchTerms : IGetMediaCategorySearchTerms
+    public class GetCoreMediaCategorySearchTerms : IGetMediaCategorySearchTerms
     {
         public IEnumerable<string> Get(MediaCategory mediaCategory)
         {

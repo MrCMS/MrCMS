@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MrCMS.Entities.Documents.Layout;
 
-namespace MrCMS.Search
+namespace MrCMS.Search.ItemCreation
 {
     public interface IGetLayoutSearchTerms
     {
