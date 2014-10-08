@@ -14,6 +14,7 @@ using MrCMS.Apps;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.IoC;
+using MrCMS.IoC.Modules;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
@@ -236,7 +237,6 @@ namespace MrCMS.Website
             var kernel = new StandardKernel(new NinjectSettings { AllowNullInjection = true },
                 new ServiceModule(),
                 new SettingsModule(),
-                new LuceneModule(),
                 new FileSystemModule(),
                 new GenericBindingsModule(),
                 new SystemWebModule(),

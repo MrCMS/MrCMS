@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using MrCMS.ACL.Rules;
+using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
+using MrCMS.Search;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
@@ -63,6 +65,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public RedirectToRouteResult Boosts(List<LuceneFieldBoost> boosts)
         {
             _indexAdminService.SaveBoosts(boosts);
+            return RedirectToAction("Index");
+        }
+        
+        [HttpPost]
+        [MrCMSACLRule(typeof(IndexACL), IndexACL.Reindex)]
+        public RedirectToRouteResult ReindexUniversalSearch()
+        {
+            _indexAdminService.ReindexUniversalSearch();
+            TempData.SuccessMessages().Add("Univeral Search reindexed");
             return RedirectToAction("Index");
         }
     }

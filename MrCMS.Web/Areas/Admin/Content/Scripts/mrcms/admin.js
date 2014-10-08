@@ -1,5 +1,5 @@
 ﻿$.ajaxSetup({ cache: false });
-$(document).ready(function () {
+$(function () {
     $(document).ajaxStart(function () {
         $("#loading").show();
     });

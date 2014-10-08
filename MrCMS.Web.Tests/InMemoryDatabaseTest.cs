@@ -8,6 +8,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.IoC;
+using MrCMS.IoC.Modules;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Website;

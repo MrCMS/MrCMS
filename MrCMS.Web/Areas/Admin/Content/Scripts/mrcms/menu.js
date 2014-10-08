@@ -92,7 +92,7 @@
         localStorage.setItem(mrcmsOpenMenuItems, data);
     }
     function openNavItems() {
-        var items = localStorage.getItem(mrcmsOpenMenuItems);
+        var items = localStorage.getItem(mrcmsOpenMenuItems) || '';
         var keys = items.split(",");
         for (var i = 0; i < keys.length; i++) {
             $("li[data-menu=" + keys[i] + "]").addClass("open");

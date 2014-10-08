@@ -3,6 +3,7 @@ using System.Linq;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
+using MrCMS.Search;
 using NHibernate;
 using Ninject;
 
@@ -13,12 +14,14 @@ namespace MrCMS.Web.Areas.Admin.Services
         private readonly IKernel _kernel;
         private readonly ISession _session;
         private readonly Site _site;
+        private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
 
-        public IndexAdminService(IKernel kernel, ISession session, Site site)
+        public IndexAdminService(IKernel kernel, ISession session, Site site, IUniversalSearchIndexManager universalSearchIndexManager)
         {
             _kernel = kernel;
             _session = session;
             _site = site;
+            _universalSearchIndexManager = universalSearchIndexManager;
         }
 
         public List<LuceneFieldBoost> GetBoosts(string type)
@@ -44,6 +47,11 @@ namespace MrCMS.Web.Areas.Admin.Services
         public void SaveBoosts(List<LuceneFieldBoost> boosts)
         {
             _session.Transact(session => boosts.ForEach(session.SaveOrUpdate));
+        }
+
+        public void ReindexUniversalSearch()
+        {
+            _universalSearchIndexManager.ReindexAll();
         }
     }
 }
