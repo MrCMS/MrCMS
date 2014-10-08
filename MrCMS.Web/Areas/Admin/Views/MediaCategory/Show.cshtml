@@ -2,18 +2,13 @@
 @using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
 @using MrCMS.Paging
-@model MrCMS.Web.Areas.Admin.Models.MediaCategorySearchModel
+@model MediaCategory
 @{
-    var mediaCategory = ViewData["media-category"] as MediaCategory;
-    ViewBag.Title = mediaCategory.Name;
-
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
-    ViewData["MediaCategory"] = mediaCategory;
+    ViewBag.Title = Model.Name;
 }
 <ol class="breadcrumb">
     <li><a href="/Admin/MediaCategory">Media</a></li>
-    @foreach (var folder in mediaCategory.BreadCrumbs.Reverse())
+    @foreach (var folder in Model.BreadCrumbs.Reverse())
     {
         <li><a href="@Url.Action("Show", "MediaCategory", new{Id = folder.Id})">@folder.Name</a></li>
 
@@ -21,21 +16,17 @@
 </ol>
 
 <div class="inline-buttons-container">
-    <h1 class="page-header">@mediaCategory.Name</h1>
+    <h1 class="page-header">@Model.Name</h1>
     <span class="btn-group  display-inline  pull-right">
-        @if (mediaCategory.CanDelete())
+        @if (Model.CanDelete())
         {
-            <a href="@Url.Action("Delete", "MediaCategory", new { id = mediaCategory.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
+            <a href="@Url.Action("Delete", "MediaCategory", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
         }
 
-        <a href="@Url.Action("SortFiles", "MediaCategory", new { id = mediaCategory.Id })" class="btn btn-default">Sort</a>
-        <a href="@Url.Action("Add", "MediaCategory", new { id = mediaCategory.Id })" class="btn  btn-default fn-modal">Add folder</a>
-        <a href="@Url.Action("Edit", "MediaCategory", new { id = mediaCategory.Id })" class="btn  btn-default">Edit</a>
+        <a href="@Url.Action("SortFiles", "MediaCategory", new { id = Model.Id })" class="btn btn-default">Sort</a>
+        <a href="@Url.Action("Add", "MediaCategory", new { id = Model.Id })" class="btn  btn-default fn-modal">Add folder</a>
+        <a href="@Url.Action("Edit", "MediaCategory", new { id = Model.Id })" class="btn  btn-default">Edit</a>
     </span>
 </div>
 
-@{ Html.RenderAction("Upload", "MediaCategory", new { category = mediaCategory }); }
-<hr class="small-margin" />
-@{ Html.RenderAction("ShowFolders", new { mediaCategory = Model });}
-
-@{ Html.RenderAction("ShowFiles", new { searchModel = Model });}
+@{ Html.RenderPartial("Manage");}

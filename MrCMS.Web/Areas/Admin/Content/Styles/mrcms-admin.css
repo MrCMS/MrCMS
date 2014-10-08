@@ -57,13 +57,18 @@ legend { font-size: 26px; }
 .folder-container { width: 160px; float: left; margin-bottom: 20px; margin-right: 20px; }
 .folder { color: #808080; padding: 10px 10px; border: 1px solid #e7e7e7; display: block; white-space: nowrap; overflow: hidden; }
     .folder:hover { background: #e7e7e7; }
-.file { float: left; height: 150px; width: 160px; margin-bottom: 20px; margin-right: 20px; color: #808080; padding: 10px 10px; border: 1px solid #e7e7e7; display: block; white-space: nowrap; overflow: hidden; }
+.file { float: left; height: 150px;position: relative; width: 160px; margin-bottom: 20px; margin-right: 20px; color: #808080;border: 1px solid #e7e7e7; display: block; white-space: nowrap; overflow: hidden; }
     .file a { display: block; width: 100%; }
         .file a img { margin: 0 auto; display: block; }
         .file a i { font-size: 90px; margin: 0 auto; text-align: center; display: block; }
         .file a:hover { text-decoration: none; }
     .file .checkbox label { width: 100%; display: block; border: 1px solid #e7e7e7; }
         .file .checkbox label input { margin-left: 40px; }
+    .file .file-preview{ height: 115px; padding: 10px 10px;vertical-align: central; }
+    .file .file-link{ height: 25px;width: 100%;bottom: 0;position: absolute;}
+        .file .file-link a { display: block;}
+        .file .file-link .select-file { width: 20px;display: inline-block;text-align: center;}
+        .file .file-link .file-link-name { width: 140px;display: inline-block;line-height: 25px;}
 
 .main-content { float: left; width: 100%; display: inline; }
     .main-content .inner-content { margin: 20px 20px 0 20px; position: relative; }

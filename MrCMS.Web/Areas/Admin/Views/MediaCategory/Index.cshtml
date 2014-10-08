@@ -3,8 +3,6 @@
 @{
     ViewBag.Title = "Manage Media";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
 }
 
 <div class="inline-buttons-container">
@@ -14,10 +12,5 @@
     </div>
 </div>
 
-@{ Html.RenderAction("Upload", "MediaCategory"); }
-<hr class="small-margin" />
-@{ Html.RenderAction("ShowFolders");}
+@{ Html.RenderPartial("Manage", null);}
 
-@{ Html.RenderAction("ShowFiles");}
-
-@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js"); }

@@ -6,6 +6,7 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 using NHibernate.Linq;
 
@@ -14,12 +15,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class FileController : MrCMSAdminController
     {
         private readonly IFileAdminService _fileService;
-        private readonly IDocumentService _documentService;
+        //private readonly IDocumentService _documentService;
 
-        public FileController(IFileAdminService fileService, IDocumentService documentService)
+        public FileController(IFileAdminService fileService)
         {
             _fileService = fileService;
-            _documentService = documentService;
         }
 
         [HttpGet]
@@ -31,13 +31,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Files")]
-        public JsonResult Files_Post(int? id)
+        public JsonResult Files_Post([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory mediaCategory)
         {
             var list = new List<ViewDataUploadFilesResult>();
-            var mediaCategory = new MediaCategory();
-            if (id.HasValue)
-                mediaCategory = _documentService.GetDocument<MediaCategory>((int)id);
-
             foreach (string files in Request.Files)
             {
                 var file = Request.Files[files];

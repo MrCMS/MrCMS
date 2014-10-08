@@ -1,0 +1,13 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaCategory
+@{
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
+}
+
+@{ Html.RenderAction("Upload", "MediaCategory", new { category = Model }); }
+<hr class="small-margin" />
+@{ Html.RenderAction("ShowFolders", new { category = Model });}
+
+@{ Html.RenderAction("ShowFiles", new { category = Model });}

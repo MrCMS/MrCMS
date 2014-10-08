@@ -31,7 +31,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             base.Add(doc);
             _fileAdminService.CreateFolder(doc);
-            return RedirectToAction("Show", new {id = doc.Id});
+            return RedirectToAction("Show", new { id = doc.Id });
         }
 
         [HttpGet]
@@ -52,24 +52,19 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
-            return RedirectToAction("Show", new {id = doc.Id});
+            return RedirectToAction("Show", new { id = doc.Id });
         }
 
-        public ActionResult Show(MediaCategorySearchModel mediaCategorySearchModel)
+        public ActionResult Show(MediaCategory mediaCategory)
         {
-            if (mediaCategorySearchModel == null)
+            if (mediaCategory == null)
                 return RedirectToAction("Index");
 
-            var mediacategory = _documentService.GetDocument<MediaCategory>(mediaCategorySearchModel.Id);
-            if (mediacategory == null)
-                return RedirectToAction("Index");
-
-            ViewData["media-category"] = mediacategory;
-            return View(mediaCategorySearchModel);
+            return View(mediaCategory);
         }
 
 
-        public ActionResult Upload(MediaCategory category)
+        public ActionResult Upload([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory category)
         {
             return PartialView(category);
         }
@@ -80,15 +75,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult ShowFiles(MediaCategorySearchModel searchModel = null)
+        public ActionResult ShowFiles([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory category = null)
         {
-            ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(searchModel);
-            return PartialView(searchModel);
+            ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(category);
+            return PartialView(category);
         }
         [HttpGet]
-        public ActionResult ShowFolders([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory folder = null)
+        public ActionResult ShowFolders([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory category = null)
         {
-            return PartialView(_fileAdminService.GetSubFolders(folder));
+            return PartialView(_fileAdminService.GetSubFolders(category));
         }
 
         [HttpGet]
@@ -123,7 +118,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult SortFiles(MediaCategory parent, List<SortItem> items)
         {
             _fileAdminService.SetOrders(items);
-            return RedirectToAction("SortFiles", new {id = parent.Id});
+            return RedirectToAction("SortFiles", new { id = parent.Id });
         }
 
         /// <summary>

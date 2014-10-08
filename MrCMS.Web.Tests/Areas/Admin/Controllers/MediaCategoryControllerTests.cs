@@ -139,16 +139,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void MediaCategoryController_Show_ShouldReturnViewResultWithObjectAsModel()
-        {
-            var mediaCategorySearchModel = new MediaCategorySearchModel();
-            ActionResult actionResult = _mediaCategoryController.Show(mediaCategorySearchModel);
-
-            actionResult.Should().BeOfType<ViewResult>();
-            actionResult.As<ViewResult>().Model.Should().Be(mediaCategorySearchModel);
-        }
-
-        [Fact]
         public void MediaCategoryController_Show_IncorrectCategoryIdRedirectsToIndex()
         {
             ActionResult actionResult = _mediaCategoryController.Show(null);
