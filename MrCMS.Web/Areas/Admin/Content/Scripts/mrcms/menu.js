@@ -102,7 +102,7 @@
         $('li[data-menu] > [data-toggle=dropdown-mrcms]').on('click', function (event) {
             event.preventDefault();
             event.stopPropagation();
-            //$(this).parent().siblings().removeClass('open');
+            $(this).parent().siblings().removeClass('open');
             $(this).parent().toggleClass('open');
             if (supportsLocalStorage)
                 storeOpenTabs();

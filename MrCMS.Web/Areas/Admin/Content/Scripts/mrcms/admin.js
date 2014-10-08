@@ -124,6 +124,15 @@ function getRemoteModel(href) {
 
 $(function () {
     admin.initializePlugins();
+
+    var $message = $('.admin-message');
+    $message.show().addClass('fadeIn fast');
+    setTimeout(function () {
+        $message.removeClass('fadeIn').addClass('fadeOut');
+        setTimeout(function () {
+            $message.hide();
+        }, 1000);
+    }, 1500);
 });
 window.admin = {
     initializePlugins: function () {

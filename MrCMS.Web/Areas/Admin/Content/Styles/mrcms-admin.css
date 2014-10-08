@@ -4,6 +4,9 @@
 legend { font-size: 26px; }
 
 .home-link { font-size: 26px; padding: 12px 12px 12px 0; }
+.inline-buttons-container { width: 100%; position: relative; }
+.inline-buttons-containerh1 { position: relative; }
+.inline-buttons-container .btn-group { position: absolute; right: 0; top: 0; }
 
 .page-header { padding-top: 0; margin-top: 0; font-size: 26px; }
 .left-nav .nav > li > a { /*padding: 5px 10px;*/ }
@@ -17,36 +20,65 @@ legend { font-size: 26px; }
 
 .container-mrcms { padding-left: 230px; }
 
+.admin-message { position: absolute; top: -20px; width: 100%; display: none; }
+
+@-webkit-keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@-webkit-keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.fadeIn { -webkit-animation: fadeIn; animation: fadeIn; opacity: 1; }
+.fadeOut { -webkit-animation: fadeOut; animation: fadeOut; opacity: 0; }
+
+.fast { -webkit-animation-duration: 1s; animation-duration: 1s; }
+
+.message { width: 400px; margin: 0 auto; text-align: center; }
+
+
 .left-nav { float: left; width: 230px; margin-left: -230px; min-height: 100%; display: block; background: #f8f8f8; box-shadow: 3px 0px 3px #e7e7e7; }
 
     .left-nav ul { background-image: -webkit-linear-gradient(top, #fff 0%, #f8f8f8 100%); background-image: -o-linear-gradient(top, #fff 0%, #f8f8f8 100%); background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f8f8f8)); background-image: linear-gradient(to bottom, #fff 0%, #f8f8f8 100%); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff8f8f8', GradientType=0); filter: progid:DXImageTransform.Microsoft.gradient(enabled = false); }
 
-.folder-container { width: 160px;float: left;margin-bottom: 20px;margin-right: 20px;}
-.folder { color: #808080; padding: 10px 10px; border: 1px solid #e7e7e7; display: block; white-space: nowrap; overflow: hidden;}
+.folder-container { width: 160px; float: left; margin-bottom: 20px; margin-right: 20px; }
+.folder { color: #808080; padding: 10px 10px; border: 1px solid #e7e7e7; display: block; white-space: nowrap; overflow: hidden; }
     .folder:hover { background: #e7e7e7; }
+.file { float: left; height: 150px; width: 160px; margin-bottom: 20px; margin-right: 20px; color: #808080; padding: 10px 10px; border: 1px solid #e7e7e7; display: block; white-space: nowrap; overflow: hidden; }
+    .file a { display: block; width: 100%; }
+        .file a img { margin: 0 auto; display: block; }
+        .file a i { font-size: 90px; margin: 0 auto; text-align: center; display: block; }
+        .file a:hover { text-decoration: none; }
+    .file .checkbox label { width: 100%; display: block; border: 1px solid #e7e7e7; }
+        .file .checkbox label input { margin-left: 40px; }
 
 .main-content { float: left; width: 100%; display: inline; }
-
-    .main-content .inner-content { margin: 20px 20px 0 20px; }
+    .main-content .inner-content { margin: 20px 20px 0 20px; position: relative; }
 
 footer { border-top: 1px solid #ddd; clear: left; padding: 10px; }
-
     footer p { margin: 10px; }
 
 .search { margin-left: 30px; padding: 0px; }
-
     .search .search-query { margin-top: 5px; }
 
 .margin0 { margin: 0px; }
-
 .margin-top-0 { margin-top: 0px; }
-
 .display-inline { display: inline; }
-
 hr.small-margin { margin: 5px 0; }
-
 .light { font-weight: normal; }
-
 .grey { color: darkgrey !important; }
 
 .font-small { font-size: 0.8em; }
@@ -100,8 +132,6 @@ input.input-validation-error, select.input-validation-error { border: 1px solid 
 
 /*Removing bottom margin from forms in modal windows*/
 .modal form { margin: 0; }
-
-section.admin-header h3 { margin: 0px; }
 
 .tab-content { overflow-x: hidden; }
 

@@ -13,9 +13,9 @@
     @{ Html.RenderPartial("AdminNavigation"); }
     <div class="main-content">
         <div class="inner-content">
-            <section class="admin-header">
+            <div class="admin-message">
                 @{ Html.RenderPartial("Messages");}
-            </section>
+            </div>
             @RenderBody()
         </div>
     </div>

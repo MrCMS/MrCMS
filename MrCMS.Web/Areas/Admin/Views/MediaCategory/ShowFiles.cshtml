@@ -6,29 +6,28 @@
 @using MrCMS.Paging
 @{ var files = ViewData["files"] as IPagedList<MediaFile> ?? PagedList<MediaFile>.Empty;}
 @model MrCMS.Web.Areas.Admin.Models.MediaCategorySearchModel
+           
 <div id="file-list" data-category-id="@Model.Id">
     @if (files.Any())
     {
 
         foreach (var file in files.OrderBy(x => x.DisplayOrder))
         {
-            <div class="col-xs-2">
-                @if (file.IsImage)
-                {
-                    <a href="@file.FileUrl">
+            <div class="file">
+                <a href="@Url.Action("Edit", "File", new { Id = file.Id })" title="@file.FileName">
+                    @if (file.IsImage)
+                    {
                         @Html.RenderImage(file.FileUrl, new Size(100, 100))
-                    </a>
-                    <br />
-                }
-                @Html.Link(file.FileName, file.FileUrl)
-                <br />
-                <div class="btn-group">
-                    @Html.ActionLink("Delete", "Delete", "File", new { Id = file.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
-                    @Html.ActionLink("Edit", "Edit", "File", new { Id = file.Id }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
-                </div>
+                    }
+                    else
+                    {
+                        <i class="glyphicon glyphicon-file"> </i>
+                    }
+                    @Html.Link(file.FileName, file.FileUrl)
+                </a>
             </div>
         }
-
+        <div class="clearfix"> </div>
         @Html.Pager(files, "Show", page => new { page, Id = Model.Id })
     }
     else
