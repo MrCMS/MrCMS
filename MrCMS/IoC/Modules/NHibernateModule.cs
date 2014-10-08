@@ -1,4 +1,3 @@
-using System;
 using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
 using MrCMS.Settings;
@@ -8,7 +7,7 @@ using Ninject;
 using Ninject.Modules;
 using Ninject.Web.Common;
 
-namespace MrCMS.IoC
+namespace MrCMS.IoC.Modules
 {
     public class NHibernateModule : NinjectModule
     {

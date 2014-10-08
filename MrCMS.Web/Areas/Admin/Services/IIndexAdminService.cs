@@ -8,6 +8,8 @@ namespace MrCMS.Web.Areas.Admin.Services
     public interface IIndexAdminService
     {
         List<LuceneFieldBoost> GetBoosts(string type);
-        void SaveBoosts(List<LuceneFieldBoost> boosts); 
+        void SaveBoosts(List<LuceneFieldBoost> boosts);
+
+        void ReindexUniversalSearch();
     }
 }

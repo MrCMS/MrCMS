@@ -340,6 +340,7 @@
     <Compile Include="Areas\Admin\Controllers\SEOAnalysisController.cs" />
     <Compile Include="Areas\Admin\Controllers\TransientNotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageDefaultsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UniversalSearchController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Controllers\VersionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageParentController.cs" />
@@ -390,7 +391,7 @@
     <Compile Include="Areas\Admin\Models\PostingsModel.cs" />
     <Compile Include="Areas\Admin\Models\SaveResult.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
-    <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
+    <Compile Include="Areas\Admin\Models\Search\QuickSearchResult.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\UserAccountModel.cs" />
     <Compile Include="Apps\Core\Pages\UserAccountPage.cs" />
@@ -532,6 +533,7 @@
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ITreeNavService.cs" />
     <Compile Include="Areas\Admin\Services\IPageDefaultsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IUniversalSearchIndexSearcher.cs" />
     <Compile Include="Areas\Admin\Services\IUrlHistoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageParentAdminService.cs" />
