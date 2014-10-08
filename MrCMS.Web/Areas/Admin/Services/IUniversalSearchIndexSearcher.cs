@@ -3,6 +3,7 @@ using System.Linq;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Util;
+using MrCMS.Helpers;
 using MrCMS.Indexing.Utils;
 using MrCMS.Search;
 using MrCMS.Search.Models;
@@ -32,7 +33,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             {
                 var analyser = new StandardAnalyzer(Version.LUCENE_30);
                 var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
-                    new[] {UniversalSearchFieldNames.SearchTerms}, analyser);
+                    new[] { UniversalSearchFieldNames.SearchTerms }, analyser);
                 var topDocs = searcher.Search(term.SafeGetSearchQuery(parser, analyser), 10);
 
                 var universalSearchItems =
@@ -43,7 +44,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         }
     }
 
-    public class UniversalSearchItemQuickSearch 
+    public class UniversalSearchItemQuickSearch
     {
         private readonly UniversalSearchItem _item;
 
@@ -54,6 +55,17 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public string id { get { return _item.SearchGuid.ToString(); } }
         public string value { get { return _item.DisplayName; } }
-        public string url { get { return _item.EditUrl; } }
+        public string editUrl { get { return _item.EditUrl; } }
+        public string viewUrl { get { return _item.ViewUrl; } }
+        public string systemType { get { return _item.SystemType; } }
+        public string displayType
+        {
+            get
+            {
+                var typeByName = TypeHelper.GetTypeByName(_item.SystemType);
+                return typeByName == null ? "" : typeByName.Name.BreakUpString();
+            }
+        }
+        public string systemId { get { return _item.Id.ToString(); } }
     }
 }

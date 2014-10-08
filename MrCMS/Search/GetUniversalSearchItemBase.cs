@@ -11,7 +11,7 @@ namespace MrCMS.Search
 
     public abstract class GetUniversalSearchItemBase<T> : GetUniversalSearchItemBase where T : SystemEntity
     {
-        public abstract UniversalSearchItem GetSearchItem(T entity);
+        public abstract UniversalSearchItem GetSearchItem(T mediaCategory);
 
         public override UniversalSearchItem GetSearchItem(SystemEntity entity)
         {

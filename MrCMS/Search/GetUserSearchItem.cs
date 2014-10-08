@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.People;
 using MrCMS.Search.Models;
@@ -8,31 +9,24 @@ namespace MrCMS.Search
     public class GetUserSearchItem : GetUniversalSearchItemBase<User>
     {
         private readonly UrlHelper _urlHelper;
+        private readonly IEnumerable<IGetUserSearchTerms> _userSearchTerms;
 
-        public GetUserSearchItem(UrlHelper urlHelper)
+        public GetUserSearchItem(UrlHelper urlHelper, IEnumerable<IGetUserSearchTerms> userSearchTerms)
         {
             _urlHelper = urlHelper;
+            _userSearchTerms = userSearchTerms;
         }
 
-        public override UniversalSearchItem GetSearchItem(User user)
+        public override UniversalSearchItem GetSearchItem(User mediaCategory)
         {
             return new UniversalSearchItem
             {
-                DisplayName = user.Name,
-                EditUrl = _urlHelper.Action("Edit", "User", new { id = user.Id }),
-                Id = user.Id,
-                SearchTerms = GetSearchTerms(user),
-                SystemType = user.GetType().FullName
+                DisplayName = mediaCategory.Name,
+                EditUrl = _urlHelper.Action("Edit", "User", new { id = mediaCategory.Id }),
+                Id = mediaCategory.Id,
+                SearchTerms = _userSearchTerms.SelectMany(terms => terms.Get(mediaCategory)),
+                SystemType = mediaCategory.GetType().FullName
             };
-        }
-
-        private IEnumerable<string> GetSearchTerms(User user)
-        {
-            yield return user.Email;
-            if (!string.IsNullOrWhiteSpace(user.FirstName))
-                yield return user.FirstName;
-            if (!string.IsNullOrWhiteSpace(user.LastName))
-                yield return user.LastName;
         }
     }
 }

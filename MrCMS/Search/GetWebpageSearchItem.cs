@@ -9,34 +9,25 @@ namespace MrCMS.Search
     public class GetWebpageSearchItem : GetUniversalSearchItemBase<Webpage>
     {
         private readonly UrlHelper _urlHelper;
+        private readonly IEnumerable<IGetWebpageSearchTerms> _getWebpageSearchTerms;
 
-        public GetWebpageSearchItem(UrlHelper urlHelper)
+        public GetWebpageSearchItem(UrlHelper urlHelper, IEnumerable<IGetWebpageSearchTerms> getWebpageSearchTerms)
         {
             _urlHelper = urlHelper;
+            _getWebpageSearchTerms = getWebpageSearchTerms;
         }
 
-        public override UniversalSearchItem GetSearchItem(Webpage webpage)
+        public override UniversalSearchItem GetSearchItem(Webpage mediaCategory)
         {
             return new UniversalSearchItem
             {
-                DisplayName = webpage.Name,
-                EditUrl = _urlHelper.Action("Edit", "Webpage", new { id = webpage.Id }),
-                Id = webpage.Id,
-                SearchTerms = GetSearchTerms( webpage) ,
-                SystemType = webpage.GetType().FullName,
-                ViewUrl = webpage.AbsoluteUrl,
+                DisplayName = mediaCategory.Name,
+                EditUrl = _urlHelper.Action("Edit", "Webpage", new {id = mediaCategory.Id}),
+                Id = mediaCategory.Id,
+                SearchTerms = _getWebpageSearchTerms.SelectMany(terms => terms.Get(mediaCategory)),
+                SystemType = mediaCategory.GetType().FullName,
+                ViewUrl = mediaCategory.AbsoluteUrl,
             };
-        }
-
-        private IEnumerable<string> GetSearchTerms(Webpage webpage)
-        {
-            yield return webpage.Name;
-            yield return webpage.BodyContent;
-            yield return webpage.UrlSegment;
-            foreach (var tag in webpage.Tags)
-            {
-                yield return tag.Name;
-            }
         }
     }
 }

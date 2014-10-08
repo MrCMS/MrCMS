@@ -21,7 +21,7 @@ namespace MrCMS.Search
 
             var systemType = item.SystemType ?? string.Empty;
             document.Add(new Field(UniversalSearchFieldNames.SystemType, systemType, Field.Store.YES, Field.Index.NOT_ANALYZED));
-            foreach (var entityType in GetEntityTypes(systemType))
+            foreach (var entityType in item.EntityTypes)
             {
                 document.Add(new Field(UniversalSearchFieldNames.EntityType, entityType, Field.Store.NO, Field.Index.NOT_ANALYZED));
             }
@@ -50,16 +50,6 @@ namespace MrCMS.Search
                 ViewUrl = document.GetValue<string>(UniversalSearchFieldNames.ViewUrl),
             };
             return item;
-        }
-
-        private static IEnumerable<string> GetEntityTypes(string systemType)
-        {
-            Type entityType = TypeHelper.GetTypeByName(systemType);
-            while (entityType != null && typeof(SystemEntity).IsAssignableFrom(entityType))
-            {
-                yield return entityType.FullName;
-                entityType = entityType.BaseType;
-            }
         }
     }
 }
