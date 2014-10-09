@@ -89,10 +89,10 @@
         var data =  $("li[data-menu].open").map(function () {
             return $(this).data('menu');
         }).get().join(",");
-        localStorage.setItem(mrcmsOpenMenuItems, data);
+        store.set(mrcmsOpenMenuItems, data);
     }
     function openNavItems() {
-        var items = localStorage.getItem(mrcmsOpenMenuItems) || '';
+        var items = store.get(mrcmsOpenMenuItems) || '';
         var keys = items.split(",");
         for (var i = 0; i < keys.length; i++) {
             $("li[data-menu=" + keys[i] + "]").addClass("open");
@@ -104,16 +104,8 @@
             event.stopPropagation();
             $(this).parent().siblings().removeClass('open');
             $(this).parent().toggleClass('open');
-            if (supportsLocalStorage)
-                storeOpenTabs();
+            storeOpenTabs();
         });
         openNavItems();
     });
-    function supportsLocalStorage() {
-        try {
-            return 'localStorage' in window && window['localStorage'] !== null;
-        } catch (e) {
-            return false;
-        }
-    }
 })(jQuery);

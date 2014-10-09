@@ -31,7 +31,8 @@
         <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CurrentRequestData.CultureInfo.Name).js"></script>
         <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jquery.signalR-2.0.2.js")" > </script>
         <script type="text/javascript" src="/signalr/hubs"></script>
-        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")" > </script>
+        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"> </script>
+        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/store.js")"> </script>
 
         @{
             //Validate
@@ -42,7 +43,6 @@
             Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jstree/jstree.js");
 
             Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery-ui-timepicker-addon.js");
-            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/store.js"); //used for local storage
 
             Html.IncludeScript("~/Areas/Admin/Content/Styles/bootstrap/js/bootstrap.js");
             Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.js");

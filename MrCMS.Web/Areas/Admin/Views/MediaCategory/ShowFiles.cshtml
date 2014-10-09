@@ -1,4 +1,5 @@
 ﻿@using System.Activities.Statements
+@using System.Collections.Generic
 @using System.Drawing
 @using System.Linq
 @using MrCMS.Entities.Documents.Media
@@ -9,12 +10,20 @@
 }
 @model MediaCategory
 
+
+<span class="btn-group" id="file-tools">
+    <button id="cut-files" class="btn btn-default" disabled>Cut</button>
+    <button id="paste-files" class="btn btn-default" disabled>Paste</button>
+    <button id="delete-files" class="btn btn-default" disabled>Delete</button>
+    <button id="clear-files" class="btn btn-default" >Clear</button>
+</span>
+<div class="clearfix"></div>
 <div id="file-list" data-file-list="true" data-category-id="@(Model==null ? (int?)null : Model.Id)">
     @if (files.Any())
     {
         foreach (var file in files.OrderBy(x => x.DisplayOrder))
         {
-            <div class="file" data-file="@file.Id">
+            <div class="file" data-file="@file.Id" data-fileurl="@Url.Action("Edit", "File", new { Id = file.Id })">
                 <div class="file-preview">
                     <a title="@file.FileName">
                         @if (file.IsImage)
@@ -28,9 +37,9 @@
                     </a>
                 </div>
                 <div class="file-link">
-                    <div class="select-file">
-                        @Html.CheckBox("selected-files", false, new { data_file_id = file.Id, @class = "checkbox-inline" })
-                    </div>
+                    @*<div class="select-file">
+                            @Html.CheckBox("selected-files", false, new { data_file_id = file.Id, @class = "checkbox-inline" })
+                        </div>*@
                     <div class="file-link-name">
                         @Html.Link(file.FileName, file.FileUrl)
                     </div>
