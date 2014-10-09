@@ -53,7 +53,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             return _fileService.IsValidFileType(fileName);
         }
-        public IList<MediaFile> GetFilesForSearchPaged(MediaCategory category)
+        public IList<MediaFile> GetFilesForSearchPaged(MediaCategory category = null)
         {
             var query = _session.QueryOver<MediaFile>();
             query = category != null
@@ -84,6 +84,47 @@ namespace MrCMS.Web.Areas.Admin.Services
             if (folder != null && folder.Id > 0)
                 return queryOver.Where(x => x.Parent == folder).Cacheable().List();
             return queryOver.Where(x => x.Parent == null).Cacheable().List();
+        }
+
+        public string MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null)
+        {
+            var message = string.Empty;
+            if (folders != null)
+            {
+                _session.Transact(s => folders.ForEach(item =>
+                {
+                    var mediaFolder = s.Get<MediaCategory>(item.Id);
+                    if (parent != null && mediaFolder.Id != parent.Id)
+                    {
+                        mediaFolder.Parent = parent;
+                        s.Update(mediaFolder);
+                    }
+                    else if (parent == null)
+                    {
+                        mediaFolder.Parent = null;
+                        s.Update(mediaFolder);
+                    }
+                    else
+                    {
+                        message = "Cannot move folder to the same folder";
+                    }
+                }));
+            }
+            return message;
+        }
+
+        public void MoveFiles(IEnumerable<MediaFile> files, MediaCategory parent = null)
+        {
+            if (files != null)
+            {
+                _session.Transact(session => files.ForEach(item =>
+                {
+                    var mediaFile = session.Get<MediaFile>(item.Id);
+                    mediaFile.MediaCategory = parent;
+                    session.Update(mediaFile);
+                }));
+            }
+            
         }
     }
 }

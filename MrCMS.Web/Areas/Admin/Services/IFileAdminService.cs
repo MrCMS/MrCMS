@@ -19,5 +19,9 @@ namespace MrCMS.Web.Areas.Admin.Services
         void CreateFolder(MediaCategory category);
         void SetOrders(List<SortItem> items);
         IList<MediaCategory> GetSubFolders(MediaCategory folder);
+
+        string MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null);
+        void MoveFiles(IEnumerable<MediaFile> files, MediaCategory parent = null);
+
     }
 }

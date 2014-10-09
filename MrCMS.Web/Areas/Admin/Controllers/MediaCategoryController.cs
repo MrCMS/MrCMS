@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Binders;
@@ -59,8 +61,18 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (mediaCategory == null)
                 return RedirectToAction("Index");
+            ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(mediaCategory);
+            ViewData["folders"] = _fileAdminService.GetSubFolders(mediaCategory);
 
             return View(mediaCategory);
+        }
+
+        public override ViewResult Index()
+        {
+            ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(null);
+            ViewData["folders"] = _fileAdminService.GetSubFolders(null);
+
+            return View();
         }
 
 
@@ -72,18 +84,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult RemoveMedia()
         {
             return PartialView();
-        }
-
-        [HttpGet]
-        public ActionResult ShowFiles([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory category = null)
-        {
-            ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(category);
-            return PartialView(category);
-        }
-        [HttpGet]
-        public ActionResult ShowFolders([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory category = null)
-        {
-            return PartialView(_fileAdminService.GetSubFolders(category));
         }
 
         [HttpGet]
@@ -133,5 +133,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet)
                 : Json(true, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult MoveFilesAndFolders(
+            [IoCModelBinder(typeof(MoveFilesModelBinder))] MoveFilesAndFoldersModel model)
+        {
+            _fileAdminService.MoveFiles(model.Files, model.Folder);
+            string message = _fileAdminService.MoveFolders(model.Folders, model.Folder);
+            return Json(new FormActionResult { success = true, message = message});
+        }
+
+
     }
 }

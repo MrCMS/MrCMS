@@ -1,13 +1,72 @@
-﻿@using MrCMS.Helpers
+﻿@using System.Collections.Generic
+@using System.Drawing
+@using System.Linq
+@using MrCMS.Entities.Documents.Media
+@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Media.MediaCategory
 @{
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
+    var files = ViewData["files"] as IList<MediaFile> ?? new List<MediaFile>();
+    var folders = ViewData["folders"] as IList<MediaCategory> ?? new List<MediaCategory>();
+    
+    
 }
 
 @{ Html.RenderAction("Upload", "MediaCategory", new { category = Model }); }
 <hr class="small-margin" />
-@{ Html.RenderAction("ShowFolders", new { category = Model });}
 
-@{ Html.RenderAction("ShowFiles", new { category = Model });}
+<span class="btn-group margin-bottom-20" id="file-tools">
+    <button id="cut-files" class="btn btn-default" disabled>Cut</button>
+    <button id="paste-files" class="btn btn-default" disabled>Paste</button>
+    <button id="delete-files" class="btn btn-default" disabled>Delete</button>
+    <button id="clear-files" class="btn btn-default">Clear</button>
+</span>
+<div class="clearfix"></div>
+
+<div id="folder-container">
+    @if (folders.Any())
+    {
+        foreach (var folder in folders.OrderBy(x => x.DisplayOrder))
+        {
+            <div class="folder" data-id="folder-@folder.Id" data-url="@Url.Action("Show", "MediaCategory", new{id = folder.Id})" title="@folder.Name">
+                <i class="glyphicon glyphicon-folder-open">&nbsp;</i> @folder.Name.TruncateString(28)
+            </div>
+        }
+        <div class="clearfix"></div>
+    }
+    <div id="file-list" data-file-list="true" data-category-id="@(Model==null ? (int?)null : Model.Id)">
+        @if (files.Any())
+        {
+            foreach (var file in files.OrderBy(x => x.DisplayOrder))
+            {
+                <div class="file" data-id="file-@file.Id" data-type="file" data-url="@Url.Action("Edit", "File", new { Id = file.Id })">
+                    <div class="file-preview">
+                        <a title="@file.FileName">
+                            @if (file.IsImage)
+                            {
+                                @Html.RenderImage(file.FileUrl, new Size(100, 100))
+                            }
+                            else
+                            {
+                                <i class="glyphicon glyphicon-file"> </i>
+                            }
+                        </a>
+                    </div>
+                    <div class="file-link">
+                        <div class="file-link-name">
+                            @Html.Link(file.FileName, file.FileUrl)
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="clearfix"> </div>
+        }
+        else
+        {
+            <p>There are no files here yet - why not upload some?</p>
+        }
+
+    </div>
+</div>

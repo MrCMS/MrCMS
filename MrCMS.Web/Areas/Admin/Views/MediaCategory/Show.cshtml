@@ -27,5 +27,5 @@
         <a href="@Url.Action("Edit", "MediaCategory", new { id = Model.Id })" class="btn  btn-default">Edit</a>
     </span>
 </div>
-
+@Html.Hidden("FolderId", Model.Id)
 @{ Html.RenderPartial("Manage");}

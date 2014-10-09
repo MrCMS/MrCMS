@@ -326,6 +326,8 @@
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
     <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\MoveFilesModelBinder.cs" />
+    <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageTemplateController.cs" />
     <Compile Include="Areas\Admin\Controllers\PersistentNotificationController.cs" />
