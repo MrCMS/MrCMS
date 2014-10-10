@@ -1,4 +1,6 @@
-﻿@using MrCMS.Entities.Documents.Media
+﻿@using System.Collections.Generic
+@using System.Linq
+@using MrCMS.Entities.Documents.Media
 @using MrCMS.Paging
 @using MrCMS.Helpers
 @using MrCMS.Settings
@@ -38,7 +40,7 @@
     }
 
     <div id="results">
-        @using (Html.BeginForm("Files", "File", new { Id = (Model.CategoryId ?? mediaSettings.DefaultCategory) }, FormMethod.Post, new { id = "fileuploadform", enctype = "multipart/form-data", @class = "form-fileUpload" }))
+        @using (Html.BeginForm("Files", "File", new { Id = (Model.CategoryId ?? null) }, FormMethod.Post, new { id = "fileuploadform", enctype = "multipart/form-data", @class = "form-fileUpload" }))
         {
             <div class="row">
                 <div class="col-lg-3">

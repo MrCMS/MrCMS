@@ -3,6 +3,7 @@
 @using System.Linq
 @using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
+@using MrCMS.Media
 @model MrCMS.Entities.Documents.Media.MediaCategory
 @{
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
@@ -25,6 +26,17 @@
 </span>
 <div class="clearfix"></div>
 
+@if (Model != null)
+{
+    <ol class="breadcrumb">
+        <li><a href="/Admin/MediaCategory">Media</a></li>
+        @foreach (var folder in Model.BreadCrumbs.Reverse())
+        {
+            <li><a href="@Url.Action("Show", "MediaCategory", new{Id = folder.Id})">@folder.Name</a></li>
+
+        }
+    </ol>
+}
 <div id="folder-container">
     @if (folders.Any())
     {
@@ -50,7 +62,7 @@
                             }
                             else
                             {
-                                <i class="glyphicon glyphicon-file"> </i>
+                                <i class="@file.FileExtension.GetIconClass()"> </i>
                             }
                         </a>
                     </div>

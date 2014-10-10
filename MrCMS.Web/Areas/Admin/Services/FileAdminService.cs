@@ -5,9 +5,11 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Services.Resources;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.Models;
 using NHibernate;
+using NHibernate.Transform;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
@@ -15,11 +17,15 @@ namespace MrCMS.Web.Areas.Admin.Services
     {
         private readonly IFileService _fileService;
         private readonly ISession _session;
+        private readonly IStringResourceProvider _stringResourceProvider;
+        private readonly IDocumentService _documentService;
 
-        public FileAdminService(IFileService fileService, ISession session)
+        public FileAdminService(IFileService fileService, ISession session, IStringResourceProvider stringResourceProvider, IDocumentService documentService)
         {
             _fileService = fileService;
             _session = session;
+            _stringResourceProvider = stringResourceProvider;
+            _documentService = documentService;
         }
 
         public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory)
@@ -28,7 +34,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             return mediaFile.GetUploadFilesResult();
         }
 
-        public ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory)
+        public ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory = null)
         {
             return
                 _session.QueryOver<MediaFile>()
@@ -106,7 +112,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                     }
                     else
                     {
-                        message = "Cannot move folder to the same folder";
+                        message = _stringResourceProvider.GetValue("Cannot move folder to the same folder");
                     }
                 }));
             }
@@ -124,7 +130,55 @@ namespace MrCMS.Web.Areas.Admin.Services
                     session.Update(mediaFile);
                 }));
             }
-            
+
         }
+
+        public void DeleteFoldersSoft(IEnumerable<MediaCategory> folders)
+        {
+            if (folders != null)
+            {
+                IEnumerable<MediaCategory> foldersRecursive = GetFoldersRecursive(folders);
+                foreach (var f in foldersRecursive)
+                {
+                    var folder = _documentService.GetDocument<MediaCategory>(f.Id);
+                    var files = folder.Files.ToList();
+                    foreach (var file in files)
+                        _fileService.DeleteFileSoft(file);
+
+                    _documentService.DeleteDocument(folder);
+                }
+            }
+        }
+
+        private IEnumerable<MediaCategory> GetFoldersRecursive(IEnumerable<MediaCategory> categories)
+        {
+            foreach (var category in categories)
+            {
+                foreach (var child in GetFoldersRecursive(_documentService.GetDocumentsByParent<MediaCategory>(category)))
+                {
+                    yield return child;
+                }
+                yield return category;
+            }
+        }
+
+        public void DeleteFilesSoft(IEnumerable<MediaFile> files)
+        {
+            if (files != null)
+            {
+                foreach (var file in files)
+                    _fileService.DeleteFileSoft(file);
+            }
+        }
+
+        public void DeleteFilesHard(IEnumerable<MediaFile> files)
+        {
+            if (files != null)
+            {
+                foreach (var file in files)
+                    _fileService.DeleteFile(file);
+            }
+        }
+
     }
 }

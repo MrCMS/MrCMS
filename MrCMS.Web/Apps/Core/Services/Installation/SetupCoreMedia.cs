@@ -32,7 +32,6 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 };
                 session.Save(defaultMediaCategory);
                 var mediaSettings = _configurationProvider.GetSiteSettings<MediaSettings>();
-                mediaSettings.DefaultCategory = defaultMediaCategory.Id;
                 _configurationProvider.SaveSettings(mediaSettings);
 
                 string logoPath = HttpContext.Current.Server.MapPath("/Apps/Core/Content/images/mrcms-logo.png");

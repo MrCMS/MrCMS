@@ -52,9 +52,41 @@
                 self.paste();
             });
 
+            $(settings.deleteFilesBtn).on('click', function (e) {
+                e.preventDefault();
+                self.deleteFiles();
+            });
+
             self.setSelectedFiles();
             self.setButtonState();
             return self;
+        },
+        deleteFiles: function () {
+            var filesAndFolders = self.getSelectedFileData().split(',');
+            var files = filesAndFolders.filter(isFileId).join(',');
+            files = replaceAll("file-", "", files);
+            var folders = filesAndFolders.filter(isFolderId).join(',');
+            folders = replaceAll("folder-", "", folders);
+            if (confirm('Are you sure? This action cannot be undone.')) {
+               
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/MediaCategory/DeleteFilesAndFolders",
+                    data: {
+                        files: files,
+                        folders: folders
+                    },
+                    success: function (data) {
+                        self.clearCutStyles();
+                        self.clearSelectedFiles();
+                        self.setSelectedFileData('');
+                        self.setCutFileData('');
+                        if (data.message != '')
+                            alert(data.message);
+                        location.href = location.href;
+                    }
+                });
+            }
         },
         paste: function () {
             var filesAndFolders = self.getCutFileData().split(',');
@@ -98,10 +130,12 @@
             var data = $(".file.ui-selected, .folder.ui-selected").map(function () {
                 return $(this).data('id');
             }).get().join(",");
+            self.setSelectedFileData(data);
             if (data != '') {
-                self.setSelectedFileData(data);
                 self.enableCut();
                 self.enableDelete();
+            } else {
+                self.disableDelete();
             }
         },
         setSelectedFiles: function() {
@@ -120,7 +154,6 @@
                     $(selector).addClass(settings.fileCutCLass.replace('.', ''));
                 });
                 self.enableCut();
-                self.enableDelete();
             }
         },
         setButtonState: function () {
@@ -128,11 +161,11 @@
                 self.enableCut();
             } else if (self.getSelectedFileData() != '' && self.getCutFileData() == '') {
                 self.enableCut();
-                self.enableDelete();
             }
             if (self.getCutFileData() != '') {
                 self.enablePaste();
             }
+            self.enableDelete();
         },
         clearSelectedFiles: function() {
             $.each($(".file" + settings.uiSelectedClass + "," + " .folder" + settings.uiSelectedClass), function () {
@@ -163,7 +196,9 @@
             $(settings.cutFilesBtn).attr("disabled", "disabled");
         },
         enableDelete: function () {
-            $(settings.deleteFilesBtn).removeAttr("disabled");
+            $('.file.ui-selected, .folder.ui-selected').each(function () {
+                $(settings.deleteFilesBtn).removeAttr("disabled");
+            });
         },
         disableDelete: function () {
             $(settings.deleteFilesBtn).attr("disabled", "disabled");

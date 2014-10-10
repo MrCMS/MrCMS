@@ -23,7 +23,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public JsonResult Files(MediaCategory mediaCategory)
+        public JsonResult Files([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory mediaCategory)
         {
             return Json(_fileService.GetFiles(mediaCategory), "text/html", System.Text.Encoding.UTF8);
         }

@@ -6,15 +6,6 @@
 @{
     ViewBag.Title = Model.Name;
 }
-<ol class="breadcrumb">
-    <li><a href="/Admin/MediaCategory">Media</a></li>
-    @foreach (var folder in Model.BreadCrumbs.Reverse())
-    {
-        <li><a href="@Url.Action("Show", "MediaCategory", new{Id = folder.Id})">@folder.Name</a></li>
-
-    }
-</ol>
-
 <div class="inline-buttons-container">
     <h1 class="page-header">@Model.Name</h1>
     <span class="btn-group  display-inline  pull-right">

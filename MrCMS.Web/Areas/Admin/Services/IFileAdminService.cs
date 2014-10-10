@@ -22,6 +22,8 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         string MoveFolders(IEnumerable<MediaCategory> folders, MediaCategory parent = null);
         void MoveFiles(IEnumerable<MediaFile> files, MediaCategory parent = null);
-
+        void DeleteFilesSoft(IEnumerable<MediaFile> files);
+        void DeleteFilesHard(IEnumerable<MediaFile> files);
+        void DeleteFoldersSoft(IEnumerable<MediaCategory> folders);
     }
 }

@@ -1,8 +1,9 @@
-﻿body, html, .container-mrcms { height: 100%; }
+﻿body, html, .container-mrcms { height: 100%;overflow:hidden;}
 .no-border-radius { border-radius: 0; }
 .nav-tabs { margin-bottom: 15px; }
 legend { font-size: 26px; }
 
+.home-link-container { margin: 0 auto;}
 .home-link { font-size: 26px; padding: 12px 12px 12px 0; }
 .inline-buttons-container { width: 100%; position: relative; }
 .inline-buttons-containerh1 { position: relative; }
@@ -21,6 +22,7 @@ legend { font-size: 26px; }
 .container-mrcms { padding-left: 230px; }
 
 .admin-message { position: absolute; top: -20px; width: 100%; display: none; }
+.site-list { max-height: 800px;overflow: auto;}
 
 @-webkit-keyframes fadeIn {
     from { opacity: 0; }
@@ -50,9 +52,8 @@ legend { font-size: 26px; }
 .message { width: 400px; margin: 0 auto; text-align: center; }
 
 
-.left-nav { float: left; width: 230px; margin-left: -230px; min-height: 100%; display: block; background: #f8f8f8; box-shadow: 3px 0px 3px #e7e7e7;overflow: hidden;}
-
-    .left-nav ul { background-image: -webkit-linear-gradient(top, #fff 0%, #f8f8f8 100%); background-image: -o-linear-gradient(top, #fff 0%, #f8f8f8 100%); background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f8f8f8)); background-image: linear-gradient(to bottom, #fff 0%, #f8f8f8 100%); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff8f8f8', GradientType=0); filter: progid:DXImageTransform.Microsoft.gradient(enabled = false); }
+.left-nav { float: left; width: 230px; margin-left: -230px; height: 100%; display: block; background: #f8f8f8; box-shadow: 3px 0px 3px #e7e7e7;overflow: auto;}
+    .left-nav ul {   background-image: -webkit-linear-gradient(top, #fff 0%, #f8f8f8 100%); background-image: -o-linear-gradient(top, #fff 0%, #f8f8f8 100%); background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f8f8f8)); background-image: linear-gradient(to bottom, #fff 0%, #f8f8f8 100%); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff8f8f8', GradientType=0); filter: progid:DXImageTransform.Microsoft.gradient(enabled = false); }
 
 #file-list, #folder-container { height: 100%;width: 100%;}
 .file, .folder {cursor:default;}
@@ -70,10 +71,10 @@ legend { font-size: 26px; }
         .file .file-link a { display: block;}
         .file .file-link .select-file { width: 20px;display: inline-block;text-align: center;}
         .file .file-link .file-link-name { width: 140px;display: inline-block;line-height: 25px;}
-.file.ui-selected, .folder.ui-selected,.file.ui-selecting, .folder.ui-selecting { background: #e7e7e7; }
+.file.ui-selected, .folder.ui-selected,.file.ui-selecting, .folder.ui-selecting,.file.ui-selected a, .folder.ui-selected a,.file.ui-selecting a, .folder.ui-selecting a { background: #428bca;color: white;}
 .file, #file-list, .folder, #folder-container{-webkit-user-select: none;  /* Chrome all / Safari all */ -moz-user-select: none;     /* Firefox all */-ms-user-select: none;      /* IE 10+ *//* No support for these yet, use at own risk */-o-user-select: none;user-select: none;}
 .file.files-cut, .folder.files-cut{ border: 1px dotted black;opacity: 0.5;}
-.main-content { float: left; width: 100%; display: inline;height: 100%;}
+.main-content { float: left; width: 100%; display: inline;height: 100%;overflow: auto;}
     .main-content .inner-content { margin: 20px 20px 0 20px; position: relative;height: 100%;}
 
 footer { border-top: 1px solid #ddd; clear: left; padding: 10px; }
@@ -223,7 +224,9 @@ ul.persistent-notification { margin: 0; padding: 0 10px; }
         ul.persistent-notification li:last-child { border-bottom: 0; }
 .notification-date { font-size: 11px; }
 .notification-msg { font-size: 14px; }
-.notifications-dropdown { padding-bottom: 0; width: 350px; margin-left: 0px; }
+.notifications-dropdown { padding-bottom: 0; width: 350px; margin-left: 0px;max-height: 600px; overflow-x:auto; }
+.notifications-dropdown form { width: 100%;padding-top: 10px;text-align: center;}
+
 .padding-right-10 { padding-right: 10px; }
 .padding-left-10 { padding-left: 10px; }
 .padding-top-10 { padding-top: 10px; }
@@ -235,4 +238,6 @@ ul.persistent-notification { margin: 0; padding: 0 10px; }
 .reset-corners { -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0; }
 ul#noty_bottomRight_layout_container li { -webkit-border-radius: 0 !important; -moz-border-radius: 0 !important; border-radius: 0 !important; margin-bottom: 10px; background-color: #fff !important; background: #ffffff url('/Areas/Admin/Content/Images/black-cross.png') no-repeat 286px center !important; }
 .noty_message { padding: 8px 30px 9px 10px !important; }
-.noty_type_alert { }
+
+
+.right-dropdown > ul.dropdown-menu {right: 0;left: auto;}

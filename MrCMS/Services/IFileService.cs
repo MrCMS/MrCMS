@@ -19,5 +19,6 @@ namespace MrCMS.Services
         void RemoveFolder(MediaCategory mediaCategory);
         void CreateFolder(MediaCategory mediaCategory);
         bool IsValidFileType(string fileName);
+        void DeleteFileSoft(MediaFile mediaFile);
     }
 }

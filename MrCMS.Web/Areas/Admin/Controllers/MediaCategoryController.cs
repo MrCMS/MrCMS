@@ -142,6 +142,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return Json(new FormActionResult { success = true, message = message});
         }
 
+        public JsonResult DeleteFilesAndFolders(
+            [IoCModelBinder(typeof(DeleteFilesModelBinder))] DeleteFilesAndFoldersModel model)
+        {
+            _fileAdminService.DeleteFilesSoft(model.Files);
+            _fileAdminService.DeleteFoldersSoft(model.Folders);
+
+            return Json(new FormActionResult { success = true, message = "" });
+        }
+
 
     }
 }

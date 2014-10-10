@@ -236,5 +236,12 @@ namespace MrCMS.Services
                 return false;
             return _mediaSettings.AllowedFileTypeList.Contains(extension.Substring(1), StringComparer.OrdinalIgnoreCase);
         }
+
+        public void DeleteFileSoft(MediaFile mediaFile)
+        {
+            if (mediaFile.MediaCategory != null)
+                mediaFile.MediaCategory.Files.Remove(mediaFile);
+            _session.Transact(session => session.Delete(mediaFile));
+        }
     }
 }
