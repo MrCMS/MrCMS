@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <span class="display-inline">
-                <a href="/Admin"> <img src="/Areas/Admin/Content/Images/logo.png" style="margin-top: 5px;"/></a>
+                <a href="/Admin"> <img src="/Areas/Admin/Content/Images/logo.png" class="logo"/></a>
             </span>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                 <span class="sr-only">Toggle navigation</span>
@@ -13,7 +13,7 @@
             </button>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form class="navbar-form navbar-left" role="search" action="@Url.Action("Index", "Search")" method="GET">
+            <form class="navbar-form navbar-left site-search" role="search" action="@Url.Action("Index", "Search")" method="GET">
                 <div class="input-group">
                     @Html.TextBox("term", "", new { @class = "search-query form-control", placeholder = "Search", autocomplete = "off" })
                     <span class="input-group-btn">

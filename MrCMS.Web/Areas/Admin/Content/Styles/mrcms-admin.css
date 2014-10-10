@@ -1,11 +1,10 @@
 ﻿body, html { height: 100%;overflow:hidden;}
-
+* { border-radius: 0!important;}
 
 .home-link-container { margin: 0 auto;}
 .home-link { font-size: 26px; padding: 12px 12px 12px 0; }
 
-.search { margin-left: 30px; padding: 0px; }
-    .search .search-query { margin-top: 5px; }
+
 /*Navigation*/
 .left-nav .nav-pills > li > a { border-radius: 0; }
 .left-nav .dropdown-menu { position: relative; width: 100%; padding-left: 20px; border-radius: 0; border: none; -webkit-box-shadow: none; box-shadow: none; }
@@ -26,6 +25,11 @@ footer { border-top: 1px solid #ddd; padding: 5px;width: 100%;display: block;bac
 .left-nav { float: left; width: 230px; margin-left: -230px; height: 100%; display: block; background: #f8f8f8; box-shadow: 3px 0px 3px #e7e7e7;overflow: auto;}
     .left-nav ul {   background-image: -webkit-linear-gradient(top, #fff 0%, #f8f8f8 100%); background-image: -o-linear-gradient(top, #fff 0%, #f8f8f8 100%); background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f8f8f8)); background-image: linear-gradient(to bottom, #fff 0%, #f8f8f8 100%); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff8f8f8', GradientType=0); filter: progid:DXImageTransform.Microsoft.gradient(enabled = false); }
 #loading { position: fixed; bottom: 5px; right: 5px; z-index: 999999; }
+.site-search { margin-left: 70px;width: 500px;}
+.site-search .input-group { width: 100%;}
+
+
+.logo {margin-top: 5px; margin-left: -5px;}
 
 /*Notifications*/
 ul.persistent-notification { margin: 0; padding: 0 10px; }
