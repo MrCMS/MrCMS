@@ -11,13 +11,27 @@
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
     var files = ViewData["files"] as IList<MediaFile> ?? new List<MediaFile>();
     var folders = ViewData["folders"] as IList<MediaCategory> ?? new List<MediaCategory>();
-    
-    
+
+
 }
 
-@{ Html.RenderAction("Upload", "MediaCategory", new { category = Model }); }
-<hr class="small-margin" />
+<div class="margin-bottom-20">
+    @{ Html.RenderAction("Upload", "MediaCategory", new { category = Model }); }
+    <div class="clearfix"></div>
 
+</div>
+
+
+@if (Model != null)
+{
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "MediaCategory")">Media</a></li>
+        @foreach (var folder in Model.BreadCrumbs.Reverse())
+        {
+            <li><a href="@Url.Action("Show", "MediaCategory", new{Id = folder.Id})">@folder.Name</a></li>
+        }
+    </ol>
+}
 <span class="btn-group margin-bottom-20" id="file-tools">
     <button id="cut-files" class="btn btn-default" disabled>Cut</button>
     <button id="paste-files" class="btn btn-default" disabled>Paste</button>
@@ -25,19 +39,8 @@
     <button id="clear-files" class="btn btn-default">Clear</button>
 </span>
 <div class="clearfix"></div>
-
-@if (Model != null)
-{
-    <ol class="breadcrumb">
-        <li><a href="/Admin/MediaCategory">Media</a></li>
-        @foreach (var folder in Model.BreadCrumbs.Reverse())
-        {
-            <li><a href="@Url.Action("Show", "MediaCategory", new{Id = folder.Id})">@folder.Name</a></li>
-
-        }
-    </ol>
-}
 <div id="folder-container">
+
     @if (folders.Any())
     {
         foreach (var folder in folders.OrderBy(x => x.DisplayOrder))
@@ -67,13 +70,12 @@
                         </a>
                     </div>
                     <div class="file-link">
-                        <div class="file-link-name">
-                            @Html.Link(file.FileName, file.FileUrl)
-                        </div>
+                        @Html.Link(file.FileName, file.FileUrl)
                     </div>
                 </div>
             }
             <div class="clearfix"> </div>
+
         }
         else
         {
@@ -81,4 +83,6 @@
         }
 
     </div>
+    <div class="clearfix"> </div>
+
 </div>

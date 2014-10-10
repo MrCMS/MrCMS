@@ -15,6 +15,7 @@
             Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/jstree/themes/default/style.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/bootstrap/css/bootstrap.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/bootstrap/css/bootstrap-theme.css");
+            Html.IncludeCss("~/Areas/Admin/Content/plugins/sweetalert-master/lib/sweet-alert.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/mrcms-admin.css");
             Html.AddAppAdminStylesheets();
         }
@@ -33,7 +34,7 @@
         <script type="text/javascript" src="/signalr/hubs"></script>
         <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"> </script>
         <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/store.js")"> </script>
-
+        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/plugins/sweetalert-master/lib/sweet-alert.min.js")"> </script>
         @{
             //Validate
             Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.validate.min.js");

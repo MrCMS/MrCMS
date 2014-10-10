@@ -25,7 +25,7 @@ footer { border-top: 1px solid #ddd; padding: 5px;width: 100%;display: block;bac
 .left-nav { float: left; width: 230px; margin-left: -230px; height: 100%; display: block; background: #f8f8f8; box-shadow: 3px 0px 3px #e7e7e7;overflow: auto;}
     .left-nav ul {   background-image: -webkit-linear-gradient(top, #fff 0%, #f8f8f8 100%); background-image: -o-linear-gradient(top, #fff 0%, #f8f8f8 100%); background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f8f8f8)); background-image: linear-gradient(to bottom, #fff 0%, #f8f8f8 100%); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff8f8f8', GradientType=0); filter: progid:DXImageTransform.Microsoft.gradient(enabled = false); }
 #loading { position: fixed; bottom: 5px; right: 5px; z-index: 999999; }
-.site-search { margin-left: 70px;width: 500px;}
+.site-search { margin-left: 70px;width: 450px;}
 .site-search .input-group { width: 100%;}
 
 
@@ -67,7 +67,7 @@ ul.persistent-notification { margin: 0; padding: 0 10px; }
 }
 
 /*Media*/
-#file-list, #folder-container { height: 100%;width: 100%;}
+#file-list, #folder-container {height: auto;min-height: 400px;width: 100%;display: block;}
 .file, .folder {cursor:default;}
 .folder {width: 160px; float: left; margin-bottom: 20px; margin-right: 20px; color: #808080; padding: 10px 10px; border: 1px solid #e7e7e7; display: block; white-space: nowrap; overflow: hidden; }
     .folder:hover { background: #e7e7e7; }
@@ -80,9 +80,7 @@ ul.persistent-notification { margin: 0; padding: 0 10px; }
         .file .checkbox label input { margin-left: 40px; }
     .file .file-preview{ height: 115px; padding: 10px 10px;vertical-align: central; }
     .file .file-link{ height: 25px;width: 100%;bottom: 0;position: absolute;}
-        .file .file-link a { display: block;}
-        .file .file-link .select-file { width: 20px;display: inline-block;text-align: center;}
-        .file .file-link .file-link-name { width: 140px;display: inline-block;line-height: 25px;}
+        .file .file-link a { display: block;padding: 0 5px;}
 .file.ui-selected, .folder.ui-selected,.file.ui-selecting, .folder.ui-selecting,.file.ui-selected a, .folder.ui-selected a,.file.ui-selecting a, .folder.ui-selecting a { background: #428bca;color: white;}
 .file, #file-list, .folder, #folder-container{-webkit-user-select: none;  /* Chrome all / Safari all */ -moz-user-select: none;     /* Firefox all */-ms-user-select: none;      /* IE 10+ *//* No support for these yet, use at own risk */-o-user-select: none;user-select: none;}
 .file.files-cut, .folder.files-cut{ border: 1px dotted black;opacity: 0.5;}
@@ -177,7 +175,7 @@ input.input-validation-error, select.input-validation-error { border: 1px solid 
 
 @media (max-width: 979px) {
 
-
+    .site-search { margin-left: 70px;width: 250px;}
 }
 
 

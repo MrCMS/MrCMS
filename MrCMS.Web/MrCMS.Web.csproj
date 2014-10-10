@@ -918,6 +918,11 @@
     <Content Include="Areas\Admin\Content\Images\pencil.png" />
     <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\css\font-awesome.css" />
     <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.svg" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.css" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.html" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.js" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.min.js" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\sweetalert.gif" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.noty.packaged.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.min.js" />
@@ -1681,6 +1686,10 @@
     <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.woff" />
     <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\FontAwesome.otf" />
     <Content Include="Areas\Admin\Views\MediaCategory\Manage.cshtml" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\bower.json" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.scss" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\LICENSE" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\README.md" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>

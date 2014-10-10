@@ -54,7 +54,7 @@
 
             $(settings.deleteFilesBtn).on('click', function (e) {
                 e.preventDefault();
-                self.deleteFiles();
+                swal({ title: "Are you sure?", text: "Your will not be able to recover this!", type: "warning", showCancelButton: true, confirmButtonColor: "#DD6B55", confirmButtonText: "Yes, delete it!", closeOnConfirm: false }, function () { self.deleteFiles(); });       
             });
 
             self.setSelectedFiles();
@@ -67,7 +67,6 @@
             files = replaceAll("file-", "", files);
             var folders = filesAndFolders.filter(isFolderId).join(',');
             folders = replaceAll("folder-", "", folders);
-            if (confirm('Are you sure? This action cannot be undone.')) {
                
                 $.ajax({
                     type: "POST",
@@ -86,7 +85,6 @@
                         location.href = location.href;
                     }
                 });
-            }
         },
         paste: function () {
             var filesAndFolders = self.getCutFileData().split(',');
