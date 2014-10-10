@@ -10,6 +10,7 @@ namespace MrCMS.Models
     {
         private SubMenu _children;
         public string Text { get { return "Users"; } }
+        public string IconClass { get { return "fa fa-users"; } }
         public string Url { get; private set; }
         public bool CanShow
         {

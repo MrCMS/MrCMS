@@ -8,6 +8,7 @@ namespace MrCMS.Models
     {
         private SubMenu _children;
         public string Text { get { return "System"; } }
+        public string IconClass { get { return "fa fa-cogs"; } }
         public string Url { get; private set; }
         public bool CanShow
         {
