@@ -3,7 +3,8 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <span class="display-inline">
-                <a href="/Admin"> <img src="/Areas/Admin/Content/Images/logo.png" class="logo"/></a>
+                <a href="/Admin">
+                    <img src="/Areas/Admin/Content/Images/logo.png" class="logo" /></a>
             </span>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                 <span class="sr-only">Toggle navigation</span>
@@ -21,13 +22,7 @@
                     </span>
                 </div>
             </form>
-            
-            <ul class="nav navbar-nav pull-right">
-                <li class="dropdown right-dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sitemap"> </i> <span class="caret"></span></a>
-                    @{ Html.RenderAction("Get", "SiteList"); }
-                </li>
-            </ul>
+
             @if (!CurrentRequestData.CurrentUser.DisableNotifications)
             {
                 Html.RenderAction("Navbar", "PersistentNotification");
@@ -35,14 +30,18 @@
             <div class="nav pull-right">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="/" target="new"><i class="glyphicon glyphicon-home "></i> Home</a>
+                        <a href="/" target="new"><i class="glyphicon glyphicon-home"></i> Home</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"> </i> <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="/logout">Logout</a></li>
-                            <li><a href="@Url.Action("Edit", "User", new{Id = CurrentRequestData.CurrentUser.Id})">Your Account</a></li>
+                            <li><a href="@Url.Action("Edit", "User", new { Id = CurrentRequestData.CurrentUser.Id })">Your Account</a></li>
                         </ul>
+                    </li>
+                    <li class="dropdown right-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sitemap"></i><span class="caret"></span></a>
+                        @{ Html.RenderAction("Get", "SiteList"); }
                     </li>
                 </ul>
             </div>
