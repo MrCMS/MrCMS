@@ -1,10 +1,7 @@
 ﻿$(function () {
     function getUrl(item) {
-        if (item.editUrl) {
-            return item.editUrl;
-        } else if (item.viewUrl) {
-            return item.viewUrl;
-        }
+        if (item.actionUrl)
+            return item.actionUrl;
         return '/Admin';
     }
     var autoComplete = $("#term").autocomplete({

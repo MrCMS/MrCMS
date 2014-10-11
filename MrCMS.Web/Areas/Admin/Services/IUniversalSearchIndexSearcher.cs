@@ -54,7 +54,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public string id { get { return _item.SearchGuid.ToString(); } }
         public string value { get { return _item.DisplayName; } }
-        public string editUrl { get { return _item.ActionUrl; } }
+        public string actionUrl { get { return _item.ActionUrl; } }
         public string systemType { get { return _item.SystemType; } }
         public string displayType
         {
