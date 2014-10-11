@@ -84,7 +84,7 @@
     
         @{ Html.RenderScripts();}
 
-        @Html.Hidden("UICulture", CurrentRequestData.CultureInfo.Name)
+        @Html.Hidden("CurrentUICulture", CurrentRequestData.CultureInfo.Name)
 
         @if (IsSectionDefined("JavaScriptBlock"))
         {

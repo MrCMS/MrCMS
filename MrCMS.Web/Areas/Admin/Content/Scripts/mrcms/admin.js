@@ -9,7 +9,7 @@ $(function () {
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 
-    Globalize.culture($("#UICulture").val());
+    Globalize.culture($("#CurrentUICulture").val());
     $.validator.methods.number = function (value, element) {
         return this.optional(element) ||
             !isNaN(Globalize.parseFloat(value));
