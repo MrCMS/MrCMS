@@ -140,7 +140,7 @@
             //set ui selected on elements
             var files = self.getSelectedFileData();
             var cutFiles = self.getCutFileData();
-            if (files != '') {
+            if (files != '' && files != 'undefined') {
                 var fileIds = files.split(',');
                 $.each(fileIds, function (number) {
                     var selector = "[data-id=" + fileIds[number] + "]";

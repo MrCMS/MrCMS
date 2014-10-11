@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -22,11 +23,10 @@ namespace MrCMS.Search.ItemCreation
             return new UniversalSearchItem
             {
                 DisplayName = mediaCategory.Name,
-                EditUrl = _urlHelper.Action("Edit", "MediaCategory", new {id = mediaCategory.Id}),
                 Id = mediaCategory.Id,
                 SearchTerms = _getMediaCategorySearchTerms.SelectMany(terms => terms.Get(mediaCategory)),
                 SystemType = mediaCategory.GetType().FullName,
-                ViewUrl = _urlHelper.Action("Show", "MediaCategory", new {id = mediaCategory.Id}),
+                ActionUrl = _urlHelper.Action("Show", "MediaCategory", new { id = mediaCategory.Id }),
             };
         }
     }

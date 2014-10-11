@@ -28,8 +28,7 @@ namespace MrCMS.Search
 
             document.Add(new Field(UniversalSearchFieldNames.DisplayName, item.DisplayName, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
-            document.Add(new Field(UniversalSearchFieldNames.EditUrl, item.EditUrl ?? string.Empty, Field.Store.YES, Field.Index.NOT_ANALYZED));
-            document.Add(new Field(UniversalSearchFieldNames.ViewUrl, item.ViewUrl ?? string.Empty, Field.Store.YES, Field.Index.NOT_ANALYZED));
+            document.Add(new Field(UniversalSearchFieldNames.EditUrl, item.ActionUrl ?? string.Empty, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
             foreach (var searchTerm in item.SearchTerms.Where(s => !string.IsNullOrWhiteSpace(s)))
             {
@@ -46,8 +45,7 @@ namespace MrCMS.Search
                 DisplayName = document.GetValue<string>(UniversalSearchFieldNames.DisplayName),
                 SearchGuid = document.GetValue<Guid>(UniversalSearchFieldNames.SearchGuid),
                 SystemType = document.GetValue<string>(UniversalSearchFieldNames.SystemType),
-                EditUrl = document.GetValue<string>(UniversalSearchFieldNames.EditUrl),
-                ViewUrl = document.GetValue<string>(UniversalSearchFieldNames.ViewUrl),
+                ActionUrl = document.GetValue<string>(UniversalSearchFieldNames.EditUrl),
             };
             return item;
         }

@@ -17,15 +17,15 @@ namespace MrCMS.Search.ItemCreation
             _userSearchTerms = userSearchTerms;
         }
 
-        public override UniversalSearchItem GetSearchItem(User mediaCategory)
+        public override UniversalSearchItem GetSearchItem(User user)
         {
             return new UniversalSearchItem
             {
-                DisplayName = mediaCategory.Name,
-                EditUrl = _urlHelper.Action("Edit", "User", new { id = mediaCategory.Id }),
-                Id = mediaCategory.Id,
-                SearchTerms = _userSearchTerms.SelectMany(terms => terms.Get(mediaCategory)),
-                SystemType = mediaCategory.GetType().FullName
+                DisplayName = user.Name,
+                ActionUrl = _urlHelper.Action("Edit", "User", new { id = user.Id }),
+                Id = user.Id,
+                SearchTerms = _userSearchTerms.SelectMany(terms => terms.Get(user)),
+                SystemType = user.GetType().FullName
             };
         }
     }

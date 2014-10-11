@@ -22,11 +22,10 @@ namespace MrCMS.Search.ItemCreation
             return new UniversalSearchItem
             {
                 DisplayName = mediaCategory.Name,
-                EditUrl = _urlHelper.Action("Edit", "Webpage", new {id = mediaCategory.Id}),
+                ActionUrl = _urlHelper.Action("Edit", "Webpage", new {id = mediaCategory.Id}),
                 Id = mediaCategory.Id,
                 SearchTerms = _getWebpageSearchTerms.SelectMany(terms => terms.Get(mediaCategory)),
                 SystemType = mediaCategory.GetType().FullName,
-                ViewUrl = mediaCategory.AbsoluteUrl,
             };
         }
     }

@@ -32,8 +32,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             using (var searcher = _universalSearchIndexManager.GetSearcher())
             {
                 var analyser = new StandardAnalyzer(Version.LUCENE_30);
-                var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30,
-                    new[] { UniversalSearchFieldNames.SearchTerms }, analyser);
+                var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, new string[]  { UniversalSearchFieldNames.SearchTerms, UniversalSearchFieldNames.DisplayName, UniversalSearchFieldNames.Id, UniversalSearchFieldNames.EntityType}, analyser);
                 var topDocs = searcher.Search(term.SafeGetSearchQuery(parser, analyser), 10);
 
                 var universalSearchItems =
@@ -55,8 +54,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public string id { get { return _item.SearchGuid.ToString(); } }
         public string value { get { return _item.DisplayName; } }
-        public string editUrl { get { return _item.EditUrl; } }
-        public string viewUrl { get { return _item.ViewUrl; } }
+        public string editUrl { get { return _item.ActionUrl; } }
         public string systemType { get { return _item.SystemType; } }
         public string displayType
         {

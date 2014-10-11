@@ -475,6 +475,7 @@
     <Compile Include="Search\ItemCreation\GetMediaCategorySearchItem.cs" />
     <Compile Include="Search\ItemCreation\GetCoreMediaCategorySearchTerms.cs" />
     <Compile Include="Search\GetUniversalSearchItemBase.cs" />
+    <Compile Include="Search\ItemCreation\GetMediaFileSearchItem.cs" />
     <Compile Include="Search\ItemCreation\GetUserSearchItem.cs" />
     <Compile Include="Search\ItemCreation\GetWebpageSearchItem.cs" />
     <Compile Include="Search\ItemCreation\GetCoreWebpageSearchTerms.cs" />
