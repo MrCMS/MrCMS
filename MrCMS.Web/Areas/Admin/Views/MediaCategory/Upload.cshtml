@@ -2,28 +2,24 @@
 @using MrCMS.Settings
 @model MrCMS.Entities.Documents.Media.MediaCategory
 
-<div class="row">
-    <div class="col-lg-2 col-md-3">
-        <span class="btn btn-success fileinput-button">
-            <i class="glyphicon glyphicon-plus"></i>
-            <span>Upload files...</span>
-            <input id="fileupload" type="file" name="files[]" multiple />
-                <input type="hidden" value="@Url.Action("Files", "File", new {id = Model==null?(int?)null:Model.Id})" id="action-url" />
-            @if (Model != null)
-            {
-                <input type="hidden" value="@Model.Id" id="action-category-id" />
-            }
-        </span>
-    </div>
-    <div class="col-lg-10 col-md-9">
-        <div id="progress" class="progress" style="display: none; height: 30px; margin-bottom: 0;">
-            <div class="bar"><span id="percent-complete" style="text-align: center;"></span></div>
-        </div>
+
+<span class="btn btn-success fileinput-button">
+    <i class="glyphicon glyphicon-plus"></i>
+    <span>Upload files...</span>
+    <input id="fileupload" type="file" name="files[]" multiple />
+    <input type="hidden" value="@Url.Action("Files", "File", new { id = Model == null ? (int?)null : Model.Id })" id="action-url" />
+    @if (Model != null)
+    {
+        <input type="hidden" value="@Model.Id" id="action-category-id" />
+    }
+
+</span>
+<div id="dropzone"><span>Drop files here</span></div>
+
+<div class="progress" id="progress" style="display: none; height: 20px; margin-bottom: 0;">
+    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
     </div>
 </div>
 <div id="mrcmsfiles" class=""></div>
-
 <input type="hidden" id="allowedFileTypes" value="@(SiteSettings<MediaSettings>().AllowedFileTypes)" />
 <input type="hidden" id="maxFileSizeUpload" value="@(SiteSettings<MediaSettings>().MaxFileSizeUpload)" />
-
-<div id="dropzone"><span>Drop files here</span></div>
