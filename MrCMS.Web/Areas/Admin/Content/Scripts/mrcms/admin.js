@@ -93,7 +93,18 @@ $(function () {
     $(document).on('change', '#admin-site-selector', function () {
         location.href = $(this).val();
     });
-
+    
+    //fix ckeditor on scroll
+    $(".main-content").scroll(function (e) {
+        if ($('.body-content #cke_1_contents').height() > 500) {
+            if ($(this).scrollTop() > 110 && $(".body-content #cke_1_top").css('position') != 'fixed') {
+                $(".body-content #cke_1_top").css({ 'position': 'fixed', 'top': '51px' });
+            }
+            if ($(this).scrollTop() < 110 && $(".body-content #cke_1_top").css('position') != 'inherit') {
+                $(".body-content #cke_1_top").css({ 'position': 'inherit', 'top': 'auto;' });
+            }
+        }
+    });
 });
 
 function resizeModal(jqElement) {
