@@ -1,10 +1,11 @@
-﻿@model MrCMS.Entities.Multisite.Site
+﻿@using System.Linq
+@model MrCMS.Entities.Multisite.Site
 <div id="restricted-domains">
     <hr />
     <div class="pull-right">
         @Html.ActionLink("Add", "Add", "RedirectedDomain", new { id = Model.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
     </div>
-    <h4>Redirected Domains</h4>
+    <h4>@Resource("Admin Redirected Domains", "Redirected Domains")</h4>
     @if (Model.RedirectedDomains.Any())
     {
         <table class="table table-striped table-condensed">
@@ -28,6 +29,6 @@
     }
     else
     {
-        <p>There are currently no redirected domains for this site</p>
+        <p>@Resource("Admin Redirected Domains None", "There are currently no redirected domains for this site")</p>
     }
 </div>

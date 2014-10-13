@@ -1,83 +1,82 @@
-﻿@using MrCMS.Entities.Documents.Web
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
 @using MrCMS.Paging
 @model MrCMS.Web.Areas.Admin.Models.PageTemplateSearchQuery
 @{
     var results = ViewData["results"] as IPagedList<PageTemplate> ?? PagedList<PageTemplate>.Empty;
 }
+<h1 class="page-header">
+    @Resource("Admin Page Templates", "Page Templates")
+    <span class="btn-group display-inline pull-right">
+        @Html.ActionLink("Add", "Add", "PageTemplate", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
+    </span>
+</h1>
 
-<fieldset>
-    <legend>
-        Page Templates
-        <span class="btn-group display-inline pull-right">
-            @Html.ActionLink("Add", "Add", "PageTemplate", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
-        </span>
-    </legend>
-    @if (results.Any())
-    {
-        <table class="table table-striped table-condensed">
-            <thead>
+@if (results.Any())
+{
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th>
+                    @Resource("Name")
+                </th>
+                <th>
+                    @Resource("Page Type")
+                </th>
+                <th>
+                    @Resource("Template Name")
+                </th>
+                <th>
+                    @Resource("Layout Name")
+                </th>
+                <th>
+                    @Resource("Url Generator")
+                </th>
+                <th>
+                    @Resource("Admin Page Templates Single Use", "Single Use")?
+                </th>
+                <th>
+                    @Resource("Actions")
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var template in results)
+            {
                 <tr>
-                    <th>
-                        Name
-                    </th>
-                    <th>
-                        Page Type
-                    </th>
-                    <th>
-                        Template Name
-                    </th>
-                    <th>
-                        Layout Name
-                    </th>
-                    <th>
-                        Url Generator
-                    </th>
-                    <th>
-                        Single Use?
-                    </th>
-                    <th>
-                        Actions
-                    </th>
+                    <td>
+                        @template.Name
+                    </td>
+                    <td>
+                        @template.GetPageTypeName()
+                    </td>
+                    <td>
+                        @template.PageTemplateName
+                    </td>
+                    <td>
+                        @template.GetLayoutName()
+                    </td>
+                    <td>
+                        @template.GetUrlGeneratorType().Name.BreakUpString()
+                    </td>
+                    <td>
+                        @template.SingleUse
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            @Html.ActionLink(Resource("Edit"), "Edit", "PageTemplate", new { id = template.Id }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
+                        </div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var template in results)
-                {
-                    <tr>
-                        <td>
-                            @template.Name
-                        </td>
-                        <td>
-                            @template.GetPageTypeName()
-                        </td>
-                        <td>
-                            @template.PageTemplateName
-                        </td>
-                        <td>
-                            @template.GetLayoutName()
-                        </td>
-                        <td>
-                            @template.GetUrlGeneratorType().Name.BreakUpString()
-                        </td>
-                        <td>
-                            @template.SingleUse
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                @Html.ActionLink("Edit", "Edit", "PageTemplate", new {id = template.Id}, new {@class = "btn btn-xs btn-default", data_toggle = "fb-modal"})
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        @Html.Pager(results, "Index", page => new { page })
-    }
-    else
-    {
-        <p>
-            No page templates meet your criteria.
-        </p>
-    }
-</fieldset>
+            }
+        </tbody>
+    </table>
+    @Html.Pager(results, "Index", page => new { page })
+}
+else
+{
+    <p>
+        @Resource("Admin Page Templates None", "No page templates meet your criteria")
+    </p>
+}

@@ -1,41 +1,39 @@
 ﻿@using MrCMS.Entities.People
-@model IEnumerable<UserRole>
+@model System.Collections.Generic.IEnumerable<UserRole>
 @{
     ViewBag.Title = "Roles";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-<form>
-    <fieldset>
-        <legend>User roles
+<h1 class="page-header">
+    @Resource("Admin User Roles Title", "User roles")
+    <span class="btn-group  display-inline  pull-right">
+        @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
+    </span>
+</h1>
 
-            <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
-            </span>
-        </legend>
-        <table class="table table-striped table-condensed">
-            <tr>
-                <th>Name
-                </th>
-                <th></th>
-            </tr>
-            @foreach (UserRole role in Model)
-            {
-                if (role.IsAdmin)
-                {
-                <tr>
-                    <td colspan="2">@role.Name</td>
-                </tr>
-                }
-                else
-                {
-                <tr>
-                    <td>
-                        @Html.ActionLink(role.Name, "Edit", new { id = role.Id }, new { @class = "", data_toggle = "fb-modal" })
-                    </td>
-                    <td>@Html.ActionLink("Delete", "Delete", new { id = role.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })</td>
-                </tr>
-                }
-            }
-        </table>
-    </fieldset>
-</form>
+<table class="table table-striped table-condensed">
+    <tr>
+        <th>
+            @Resource("Name")
+    </th>
+    <th></th>
+</tr>
+@foreach (UserRole role in Model)
+{
+    if (role.IsAdmin)
+    {
+        <tr>
+            <td colspan="2">@role.Name</td>
+        </tr>
+    }
+    else
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(role.Name, "Edit", new { id = role.Id }, new { @class = "", data_toggle = "fb-modal" })
+            </td>
+            <td>@Html.ActionLink(Resource("Delete"), "Delete", new { id = role.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })</td>
+        </tr>
+    }
+}
+</table>

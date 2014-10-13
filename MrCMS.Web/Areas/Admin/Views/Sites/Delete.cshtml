@@ -1,14 +1,16 @@
-﻿@model MrCMS.Entities.Multisite.Site
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Multisite.Site
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
 @using (Html.BeginForm("Delete", "Sites", FormMethod.Post))
 {
     <fieldset>
-        <legend>Delete site
+        <legend>@Resource("Admin Delete site", "Delete site")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-danger btn" value="Delete site" />
+                <input type="submit" class="btn-danger btn" value="@Resource("Delete")" />
             </span>
         </legend>
-        Are you sure you want to delete the site @Model.Name? Deleting this site will delete all associated pages and settings and can not be undone.
+        @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+
     </fieldset>
 }

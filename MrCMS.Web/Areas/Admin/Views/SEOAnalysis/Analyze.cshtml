@@ -1,13 +1,14 @@
-﻿@using MrCMS.Web.Areas.Admin.Helpers
+﻿@using System.Linq
+@using MrCMS.Web.Areas.Admin.Helpers
 @using MrCMS.Web.Areas.Admin.Models.SEOAnalysis
 @model MrCMS.Web.Areas.Admin.Models.SEOAnalysis.SEOAnalysisResult
 <table class="table table-condensed analysis-table">
     <thead>
         <tr>
             <th></th>
-            <th>Check
+            <th>@Resource("Admin Seo Analysis Check", "Check")
             </th>
-            <th>Messages
+            <th>@Resource("Messages")
             </th>
         </tr>
     </thead>

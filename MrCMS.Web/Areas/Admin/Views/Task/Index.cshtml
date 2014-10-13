@@ -1,4 +1,6 @@
-﻿@using MrCMS.Helpers
+﻿@using System.Collections.Generic
+@using System.Linq
+@using MrCMS.Helpers
 @using MrCMS.Paging
 @using MrCMS.Settings
 @using MrCMS.Tasks
@@ -10,10 +12,9 @@
     var siteSettings = SiteSettings<SiteSettings>();
     string executionUrl = Url.Action("Execute", "TaskExecution", new RouteValueDictionary {{"area", ""}, {siteSettings.TaskExecutorKey, siteSettings.TaskExecutorPassword}}, "http");
 }
-<div class="alert alert-info">
-    <strong>Heads up!</strong> In order to execute tasks, you must poll the following url: <a href="@executionUrl">@executionUrl</a>. 
-    This will need to be polled by some sort of external task scheduler or cron system in order to run regularly.
-</div>
+
+@Html.InfoBlock(Resource("Heads up") + "!", string.Format(Resource("In order to execute tasks, you must poll the following url: <a href='{0}'>{1}</a> <br />This will need to be polled by some sort of external task scheduler or cron system in order to run regularly."), executionUrl, executionUrl))
+
 <fieldset>
     <legend>Scheduled Tasks
         <span class="btn-group display-inline pull-right">

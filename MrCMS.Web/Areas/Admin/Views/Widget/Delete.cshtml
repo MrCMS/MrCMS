@@ -4,10 +4,10 @@
 @using (Html.BeginForm("Delete", "Widget", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;", @target = "_top" }))
 {
     <fieldset>
-        <legend>Confirm Delete
+        <legend>@Resource("Admin Widget Confirm Delete", "Confirm Delete")
 
         <span class="btn-group  display-inline  pull-right">
-            <input type="submit" class="btn btn-danger" value="Confirm Delete Widget" />
+            <input type="submit" class="btn btn-danger" value="@Resource("Delete")" />
         </span>
         </legend>
         @if (Request.UrlReferrer != null)
@@ -17,6 +17,6 @@
             </text>
         }
         
-    @Html.InfoBlock("WARNING", "<p>Deleting this widget can not be undone.</p>")
+        @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
     </fieldset>
-}
+}   

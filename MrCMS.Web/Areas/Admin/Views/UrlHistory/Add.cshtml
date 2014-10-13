@@ -3,9 +3,9 @@
 @using (Html.BeginForm("Add", "UrlHistory", FormMethod.Post))
 {
     <fieldset>
-        <legend>Add Url
+        <legend>@Resource("Admin Webpage Url History Add", "Add Url")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn btn-default btn-primary" value="Add" />
+                <input type="submit" class="btn btn-default btn-primary" value="@Resource("Save")" />
             </span>
         </legend>
         @Html.HiddenFor(x => x.Webpage.Id)

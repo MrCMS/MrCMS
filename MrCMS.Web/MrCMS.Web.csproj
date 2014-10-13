@@ -1489,7 +1489,6 @@
     <Content Include="Areas\Admin\Views\Versions\Show.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Settings.cshtml" />
-    <Content Include="Areas\Admin\Views\Sites\SiteList.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\TreeList.cshtml" />
@@ -1523,7 +1522,6 @@
     <Content Include="Areas\Admin\Views\Webpage\FormMessage.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\PageVersions.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Permissions.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\Preview.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\RedirectEdit.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\SortFiles.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\TextPage.cshtml" />
@@ -1622,7 +1620,6 @@
     <Content Include="Areas\Admin\Views\Resource\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Messages.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\AddProperties.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\TextPageAdd.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\AddProperties.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\Push.cshtml" />
@@ -1739,7 +1736,6 @@
     <Content Include="Areas\Admin\Views\Webpage\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Layout.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\Media.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Edit.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\TextWidget.cshtml" />

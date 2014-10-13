@@ -1,7 +1,7 @@
 ﻿@model MrCMS.Entities.Documents.Web.FormProperties.FormPropertyWithOptions
 <div class="row">
     <div class="col-lg-7">
-    <h5>Options</h5>
+    <h5>@Resource("Admin Webpage Form Option","Options")</h5>
     </div>
     <div class="col-lg-5">
         <div class="pull-right btn-group">
@@ -11,9 +11,9 @@
     <table class="table table-condensed table-striped table-bordered">
         <thead>
             <tr>
-                <th>Value</th>
-                <th>Selected</th>
-                <th>Actions</th>
+                <th>@Resource("Value")</th>
+                <th>@Resource("Admin Webpage Form Option Selected", "Selected")</th>
+                <th>@Resource("Actions")</th>
             </tr>
         </thead>
         <tbody>
@@ -24,8 +24,8 @@
                     <td>@option.Selected</td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink("Edit", "EditOption", "Form", new { id = option.Id }, new { @class = "btn btn-xs", data_toggle = "fb-modal" })
-                            @Html.ActionLink("Delete", "DeleteOption", "Form", new { id = option.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Resource("Edit"), "EditOption", "Form", new { id = option.Id }, new { @class = "btn btn-xs", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Resource("Delete"), "DeleteOption", "Form", new { id = option.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
                         </div>
                     </td>
                 </tr>

@@ -3,9 +3,9 @@
 @using (Html.BeginForm("Add", "Task", FormMethod.Post))
 {
     <fieldset>
-        <legend>Add Task
+        <legend>@Resource("Admin Tasks", "Add Task")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-primary btn" value="Add task" />
+                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
             </span>
         </legend>
         <div class="form-group">

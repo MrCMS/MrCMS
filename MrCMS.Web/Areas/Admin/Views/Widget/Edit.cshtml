@@ -1,4 +1,5 @@
-﻿@using MrCMS.Entities.Widget
+﻿@using System.Collections.Generic
+@using MrCMS.Entities.Widget
 @using MrCMS.Helpers
 @model Widget
 @{
@@ -13,7 +14,7 @@
             @(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : Model.WidgetType.BreakUpString())
 
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-success btn" value="Save widget" />
+                <input type="submit" class="btn-success btn" value="@Resource("Save")" />
             </span>
         </legend>
         @Html.HiddenFor(widget => widget.Id)
@@ -35,7 +36,7 @@
         @if (Model.IsTypeCachable())
         {
             <hr />
-            <h4>Advanced</h4>
+            <h4>@Resource("Advanced")</h4>
             <hr class="small-margin" />
             <div class="form-group">
                 @Html.InlineCheckboxFor(widget => widget.Cache)

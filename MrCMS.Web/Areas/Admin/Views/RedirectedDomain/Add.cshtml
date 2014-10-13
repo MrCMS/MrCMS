@@ -3,9 +3,9 @@
 @using (Html.BeginForm("Add", "RedirectedDomain", new { id = "" }, FormMethod.Post))
 {
     <fieldset>
-        <legend>Add redirected domain
+        <legend>@Resource("Admin Redirected Domain Add Title", "Add redirected domain")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-primary btn" value="Add" />
+                <input type="submit" class="btn-primary btn" value="@Resource("Add")" />
             </span>
         </legend>
         <div class="form-group">

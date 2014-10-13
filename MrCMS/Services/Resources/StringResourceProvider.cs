@@ -35,13 +35,13 @@ namespace MrCMS.Services.Resources
             {
                 var currentUserCulture = _getCurrentUserCultureInfo.GetInfoString();
                 var languageValue =
-                    ResourcesForSite.SingleOrDefault(
+                    ResourcesForSite.FirstOrDefault(
                         resource => resource.Key == key && resource.UICulture == currentUserCulture);
                 if (languageValue != null)
                     return languageValue.Value;
 
                 var defaultResource =
-                    ResourcesForSite.SingleOrDefault(resource => resource.Key == key && resource.UICulture == null);
+                    ResourcesForSite.FirstOrDefault(resource => resource.Key == key && resource.UICulture == null);
                 if (defaultResource == null)
                 {
                     defaultResource = new StringResource { Key = key, Value = defaultValue ?? key };

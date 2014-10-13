@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Helpers
-@model List<MrCMS.Models.SortItem>
+@model System.Collections.Generic.List<MrCMS.Models.SortItem>
 @{
     ViewBag.Title = "Sort Pages";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -20,9 +20,9 @@
 }
 <form method="POST" id="sort-webpage">
     <fieldset>
-        <legend>Sort pages
+        <legend>@Resource("Sort")
      <span class="btn-group  display-inline  pull-right">
-         <input type="submit" class="btn btn-primary" value="save" />
+         <input type="submit" class="btn btn-primary" value="@Resource("Save")" />
      </span>
         </legend>
         <ul id="sortable">
@@ -38,4 +38,3 @@
         </ul>
     </fieldset>
 </form>
-@Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")

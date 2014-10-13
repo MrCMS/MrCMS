@@ -1,14 +1,16 @@
-﻿@model MrCMS.Entities.Documents.Web.Webpage
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.Webpage
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Delete", "Webpage", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
     <fieldset>
-        <legend>Delete page
+        <legend>@Resource("Admin Wepage Delete Page", "Delete page")
                 <span class="btn-group  display-inline  pull-right">
-                    <input type="submit" class="btn btn-danger" value="Delete" />
+                    <input type="submit" class="btn btn-danger" value="@Resource("Delete")" />
                 </span>
         </legend>
 
-        <p>Deleting this webpage can not be undone.</p>
+        @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+
     </fieldset>    
 }
