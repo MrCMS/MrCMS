@@ -5,6 +5,7 @@ using Elmah;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Core.ModelBinders;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
@@ -21,17 +22,19 @@ namespace MrCMS.Web.Apps.Core.Controllers
         private readonly IAuthorisationService _authorisationService;
         private readonly IUniquePageService _uniquePageService;
         private readonly ILoginService _loginService;
+        private readonly IStringResourceProvider _stringResourceProvider;
         private readonly IUserService _userService;
         private readonly IResetPasswordService _resetPasswordService;
 
         public LoginController(IUserService userService, IResetPasswordService resetPasswordService, IAuthorisationService authorisationService, IUniquePageService uniquePageService,
-            ILoginService loginService)
+            ILoginService loginService, IStringResourceProvider stringResourceProvider)
         {
             _userService = userService;
             _resetPasswordService = resetPasswordService;
             _authorisationService = authorisationService;
             _uniquePageService = uniquePageService;
             _loginService = loginService;
+            _stringResourceProvider = stringResourceProvider;
         }
 
         [HttpGet]
@@ -76,7 +79,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         {
             if (string.IsNullOrEmpty(email))
             {
-                TempData["message"] = "Email not recognized.";
+                TempData["message"] = _stringResourceProvider.GetValue("Login Email Not Recognized", "Email not recognized.");
                 return _uniquePageService.RedirectTo<ForgottenPasswordPage>();
             }
 
@@ -86,11 +89,11 @@ namespace MrCMS.Web.Apps.Core.Controllers
             {
                 _resetPasswordService.SetResetPassword(user);
                 TempData["message"] =
-                "We have sent password reset details to you. Please check your spam folder if this is not received shortly.";
+                _stringResourceProvider.GetValue("Login Password Reset", "We have sent password reset details to you. Please check your spam folder if this is not received shortly.");
             }
             else
             {
-                TempData["message"] = "Email not recognized.";
+                TempData["message"] = _stringResourceProvider.GetValue("Login Email Not Recognized", "Email not recognized.");
             }
 
             return _uniquePageService.RedirectTo<ForgottenPasswordPage>(); 

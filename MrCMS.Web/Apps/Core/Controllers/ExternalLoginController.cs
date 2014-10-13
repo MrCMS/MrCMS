@@ -6,6 +6,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MrCMS.Services;
+using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
@@ -20,13 +21,15 @@ namespace MrCMS.Web.Apps.Core.Controllers
         private readonly IAuthenticationManager _authenticationManager;
         private readonly IExternalLoginService _externalLoginService;
         private readonly IUniquePageService _uniquePageService;
+        private readonly IStringResourceProvider _stringResourceProvider;
 
         public ExternalLoginController(IAuthenticationManager authenticationManager,
-                                       IExternalLoginService externalLoginService, IUniquePageService uniquePageService)
+                                       IExternalLoginService externalLoginService, IUniquePageService uniquePageService, IStringResourceProvider stringResourceProvider)
         {
             _authenticationManager = authenticationManager;
             _externalLoginService = externalLoginService;
             _uniquePageService = uniquePageService;
+            _stringResourceProvider = stringResourceProvider;
         }
 
         public PartialViewResult Providers(string returnUrl)
@@ -58,7 +61,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 TempData["login-model"] = new LoginModel
                                               {
                                                   Message =
-                                                      "There was an error retrieving your email from the 3rd party provider"
+                                                      _stringResourceProvider.GetValue("3rd Party Auth Email Error","There was an error retrieving your email from the 3rd party provider")
                                               };
                 return _uniquePageService.RedirectTo<LoginPage>();
             }

@@ -2,6 +2,6 @@
 @{var returnUrl = ViewData["returnUrl"] as string;}
 @using (Html.BeginForm("Login", "ExternalLogin", new { ReturnUrl = returnUrl }))
 {
-    <button type="submit" class="zocial @Model.AuthenticationType.ToLower()" id="@Model.AuthenticationType" name="provider" value="@Model.AuthenticationType" title="Log in using your @Model.Caption account">Login with @Model.AuthenticationType</button>
+    <button type="submit" class="zocial @Model.AuthenticationType.ToLower()" id="@Model.AuthenticationType" name="provider" value="@Model.AuthenticationType" title="Log in using your @Model.Caption account">@Resource("Login with") @Model.AuthenticationType</button>
 }
 <br />
