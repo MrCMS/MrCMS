@@ -1,18 +1,18 @@
 ﻿@using MrCMS.Helpers
-@model List<MrCMS.HealthChecks.IHealthCheck>
-<h4>Health checks</h4>
+@model System.Collections.Generic.List<MrCMS.HealthChecks.IHealthCheck>
+<h4>@Resource("Admin Health Checks Title", "Health checks")</h4>
 <table class="table table-striped table-condensed" style="overflow: scroll" data-health-check-list="true">
     <thead>
         <tr>
-            <th>Status</th>
-            <th>Description</th>
-            <th>Messages</th>
+            <th>@Resource("Status")</th>
+            <th>@Resource("Description")</th>
+            <th>@Resource("Messages")</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var healthCheck in Model)
         {
-            <tr data-process-url=" @Url.Action("Process", "HealthCheck", new { typeName = healthCheck.TypeName })">
+            <tr data-process-url="@Url.Action("Process", "HealthCheck", new { typeName = healthCheck.TypeName })">
                 <td data-status="true" class="text-center"><i class="glyphicon glyphicon-refresh"></i></td>
                 <td>@healthCheck.DisplayName</td>
                 <td data-messages="true">

@@ -5,9 +5,9 @@
 {
     <fieldset>
         <legend>
-            Add layout area
+            @Resource("Admin Layout Areas Add Title", "Add layout area")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-success btn" value="Add layout area" />
+                <input type="submit" class="btn-success btn" value="@Resource("Save")" />
             </span>
         </legend>
         @Html.HiddenFor(x => x.Layout.Id)

@@ -1,13 +1,15 @@
-﻿@model MrCMS.Entities.Documents.Layout.LayoutArea
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Layout.LayoutArea
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Delete", "LayoutArea", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
-{ 
+{
     <fieldset>
-        <legend>Delete layout area
-                <span class="btn-group  display-inline  pull-right">
-                    <input type="submit" class="btn btn-danger" value="Delete" />
-                </span>
-        </legend>
-        <p>Deleting this area can not be undone.</p>
-    </fieldset>
+        <legend>
+            @Resource("Admin Layout Areas Delete Title", "Delete layout area")
+        <span class="btn-group  display-inline pull-right">
+            <input type="submit" class="btn btn-danger" value="@Resource("Delete")"  />
+        </span>
+    </legend>
+    <p>@Html.InfoBlock(Resource("Warning") + "!", Resource("Admin Layout Area Delete Info", "Deleting this area can not be undone."), AlertType.danger)</p>
+</fieldset>
 }

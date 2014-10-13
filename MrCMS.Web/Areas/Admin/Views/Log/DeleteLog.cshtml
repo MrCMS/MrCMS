@@ -1,13 +1,14 @@
-﻿@model MrCMS.Logging.Log
+﻿@using MrCMS.Helpers
+@model MrCMS.Logging.Log
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("DeleteLog", "Log", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
     <fieldset>
-        <legend>Delete log
+        <legend>@Resource("Admin Logs Delete Title", "Delete log")
                 <span class="btn-group  display-inline  pull-right">
-                    <input type="submit" class="btn btn-danger" value="Delete" />
+                    <input type="submit" class="btn btn-danger" value="@Resource("Delete")"/>
                 </span>
         </legend>
-        <p>Deleting this cannot be undone.</p>
+        @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
     </fieldset>
 }
