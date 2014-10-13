@@ -7,8 +7,7 @@ namespace MrCMS.Search
         public const string SystemType = "system-type";
         public const string EntityType = "entity-type";
         public const string DisplayName = "display-name";
-        public const string EditUrl = "edit-url";
-        public const string ViewUrl = "view-url";
+        public const string ActionUrl = "action-url";
         public const string SearchTerms = "search-terms";
     }
 }
