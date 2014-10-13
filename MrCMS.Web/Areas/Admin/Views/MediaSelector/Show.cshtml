@@ -17,7 +17,7 @@
     {
         <fieldset>
             <legend>
-                Media Selector
+                @Resource("Admin Media Selector Media Selector Title", "Media Selector")
             </legend>
             <div class="row">
                 <div class="col-xs-5">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="col-xs-2">
-                    <input type="submit" class="btn btn-primary col-lg-12" value="Search" />
+                    <input type="submit" class="btn btn-primary col-lg-12" value="@Resource("Search")" />
                 </div>
             </div>
         </fieldset>
@@ -46,7 +46,7 @@
                 <div class="col-lg-3">
                     <span class="btn btn-success fileinput-button">
                         <i class="glyphicon glyphicon-plus"></i>
-                        <span>Select files...</span>
+                        <span>@Resource("Admin Media Upload Files", "Upload files")...</span>
                         <input id="fileupload" type="file" name="files[]" multiple />
                     </span>
                 </div>
@@ -59,11 +59,10 @@
             <div id="files" class=""></div>
         }
 
-        <input type="hidden" id="allowedFileTypes" value="
-               @mediaSettings.AllowedFileTypes " />
+        <input type="hidden" id="allowedFileTypes" value="@mediaSettings.AllowedFileTypes" />
         <input type="hidden" id="maxFileSizeUpload" value="@mediaSettings.MaxFileSizeUpload" />
 
-        <div id="dropzone"><span>Drop files here</span></div>
+        <div id="dropzone"><span>@Resource("Admin Media Drop Files", "Drop files here")</span></div>
         @if (results.Any())
         {
             foreach (var file in results)
@@ -76,7 +75,7 @@
         else
         {
             <p>
-                No results found for your current search.
+                @Html.InfoBlock("", Resource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
             </p>
         }
     </div>
