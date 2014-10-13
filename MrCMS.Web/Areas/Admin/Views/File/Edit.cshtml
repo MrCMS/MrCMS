@@ -1,4 +1,5 @@
-﻿@model MrCMS.Entities.Documents.Media.MediaFile
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaFile
 @using (Html.BeginForm("Edit", "File", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
     <fieldset>
@@ -8,7 +9,8 @@
                 <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
             </span>
         </legend>
-        @Model.FileName<br />
+        @Html.Link(Model.FileName, Model.FileUrl)
+        <hr />
         <div class="form-group">
             @Html.LabelFor(x => x.Title)
             @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })

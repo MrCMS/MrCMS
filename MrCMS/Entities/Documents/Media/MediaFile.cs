@@ -27,7 +27,6 @@ namespace MrCMS.Entities.Documents.Media
 
         [DisplayName("Alt")]
         public virtual string Title { get; set; }
-        [DisplayName("Title")]
         public virtual string Description { get; set; }
 
         //images only
