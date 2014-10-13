@@ -22,7 +22,7 @@ namespace MrCMS.Search.ItemCreation
             return new UniversalSearchItem
             {
                 DisplayName = mediaCategory.Name,
-                ActionUrl = _urlHelper.Action("Edit", "Layout", new {id = mediaCategory.Id}),
+                ActionUrl = _urlHelper.Action("Edit", "Layout", new { id = mediaCategory.Id, area = "admin" }),
                 Id = mediaCategory.Id,
                 SearchTerms = _getLayoutSearchTerms.SelectMany(terms => terms.Get(mediaCategory)),
                 SystemType = mediaCategory.GetType().FullName

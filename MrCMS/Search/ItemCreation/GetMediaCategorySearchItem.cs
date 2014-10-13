@@ -26,7 +26,7 @@ namespace MrCMS.Search.ItemCreation
                 Id = mediaCategory.Id,
                 SearchTerms = _getMediaCategorySearchTerms.SelectMany(terms => terms.Get(mediaCategory)),
                 SystemType = mediaCategory.GetType().FullName,
-                ActionUrl = _urlHelper.Action("Show", "MediaCategory", new { id = mediaCategory.Id }),
+                ActionUrl = _urlHelper.Action("Show", "MediaCategory", new { id = mediaCategory.Id, area = "admin" }),
             };
         }
     }

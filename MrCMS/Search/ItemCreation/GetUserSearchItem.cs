@@ -22,7 +22,7 @@ namespace MrCMS.Search.ItemCreation
             return new UniversalSearchItem
             {
                 DisplayName = user.Name,
-                ActionUrl = _urlHelper.Action("Edit", "User", new { id = user.Id }),
+                ActionUrl = _urlHelper.Action("Edit", "User", new { id = user.Id, area="admin" }),
                 Id = user.Id,
                 SearchTerms = _userSearchTerms.SelectMany(terms => terms.Get(user)),
                 SystemType = user.GetType().FullName
