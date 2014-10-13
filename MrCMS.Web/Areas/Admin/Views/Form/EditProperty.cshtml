@@ -5,9 +5,9 @@
 @using (Html.BeginForm("EditProperty", "Form", new { id = Model.Id }, FormMethod.Post, new { @class = "form-update-form" }))
 {
     <fieldset>
-    <legend>Edit field
+    <legend>@Resource("Admin Form Edit Field Title", "Edit field")
         <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn btn-primary submit-form-btn" value="Edit field" />
+            <input type="submit" class="btn btn-primary" value="@Resource("Admin Form Edit Field Button", "Edit field")" />
         </span>
     </legend>
     <div class="row">

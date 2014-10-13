@@ -1,5 +1,6 @@
-﻿@using MrCMS.Helpers
-@model List<MrCMS.Models.SortItem>
+﻿@using System.Linq
+@using MrCMS.Helpers
+@model System.Collections.Generic.List<MrCMS.Models.SortItem>
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
 
@@ -7,10 +8,9 @@
 {
     
     <fieldset>
-        <legend>Sort fields
+        <legend>@Resource("Admin Form Sort Fields", "Sort fields")
         <span class="btn-group  display-inline  pull-right">
-            <button class="btn btn-primary" id="submit">
-                Save & Close</button>
+            <button class="btn btn-primary" id="submit">@Resource("Admin Form Sort Save", "Save & Close")</button>
         </span>
         </legend>
 
@@ -30,7 +30,7 @@
             }
             else
             {
-                <li>No form fields added.</li>
+                <li>@Resource("Admin Form No form fields", "No form field").</li>
             }
         </ul>
     </fieldset>

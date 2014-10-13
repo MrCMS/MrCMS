@@ -4,11 +4,11 @@
 {
     @Html.HiddenFor(x=>x.Id)
     <fieldset>
-        <legend>Delete All Entries
+        <legend>@Resource("Admin Form Delete Entries Title", "Delete All Entries")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn btn-danger" value="Delete All Entries" />
+                <input type="submit" class="btn btn-danger" value="@Resource("Admin Form Delete Entries Button", "Delete All Entries")" />
             </span>
         </legend>
-        Are you sure you want to delete all entries for @Model.Name? Deleting entries can not be undone.
+        @Resource("Admin Form Delete Entries Warning", "Deleting entries cannot be undone, do you want to proceed?")
     </fieldset>
 }

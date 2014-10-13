@@ -1,7 +1,9 @@
-﻿@using MrCMS.Entities.People
+﻿@using System.Collections.Generic
+@using System.Linq
+@using MrCMS.Entities.People
 @using MrCMS.Models
 @using MrCMS.Web.Areas.Admin.Models
-@model List<ACLRuleModel>
+@model System.Collections.Generic.List<ACLRuleModel>
 @{
     var roles = ViewData["roles"] as List<ACLRoleModel>;
 }

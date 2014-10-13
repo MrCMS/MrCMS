@@ -4,14 +4,13 @@
 @using (Html.BeginForm("DeleteProperty", "Form", FormMethod.Post))
 {
     <fieldset>
-        <legend>Delete Field
+        <legend>@Resource("Admin Form Delete Field Title", "Delete Field")
             <span class="btn-group  display-inline  pull-right">
-                <input type="button" class="btn btn-danger submit-form-btn" value="Delete field" />
+                <input type="button" class="btn btn-danger submit-form-btn" value="@Resource("Admin Form Delete Field Button", "Delete field")" />
             </span>
         </legend>
+        @Resource("Admin Form Delete Field Warning", "Deleting cannot be undone, do you want to proceed?")
 
-        Are you sure you want to delete the field @Model.Name? Deleting this property can not be undone.
     </fieldset>
 }
-
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/form-builder.js"); }

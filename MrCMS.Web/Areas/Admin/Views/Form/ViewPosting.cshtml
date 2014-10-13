@@ -1,36 +1,36 @@
 ﻿@model MrCMS.Entities.Documents.Web.FormPosting
 
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
-<h3>View Entry</h3>
-    <table class="table table-bordered table-striped">
-        <thead>
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+<h3>@Resource("Admin Form View Entry", "View Entry")</h3>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Resource("Name")
+            </th>
+            <th>
+                @Resource("Name")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var value in Model.FormValues)
+        {
             <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Value
-                </th>
+                <td>
+                    @value.Key
+                </td>
+                <td>
+                    @if (value.IsFile)
+                    {
+                        <a href="/@value.Value">@Resource("Download")</a>
+                    }
+                    else
+                    {
+                        @value.Value
+                    }
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var value in Model.FormValues)
-            {
-                <tr>
-                    <td>
-                        @value.Key
-                    </td>
-                    <td>
-                        @if (value.IsFile)
-                        {
-                            <a href="/@value.Value" download>Download</a>
-                        }
-                        else
-                        {
-                            @value.Value
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>

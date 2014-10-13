@@ -26,18 +26,18 @@
         <div class="col-lg-12">
             @if (settings.ACLEnabled)
             {
-                <h3>Features</h3>
+                <h3>@Resource("Admin ACL Features", "Features")</h3>
                 Html.RenderPartial("Group", new ViewDataDictionary(Model.Features) { { "roles", Model.Roles } });
                 <hr />
-                <h2>Webpages</h2>
+                <h2>@Resource("Admin ACL Webpages", "Webpages")</h2>
                 Html.RenderPartial("Group", new ViewDataDictionary(Model.Webpages) { { "roles", Model.Roles } });
                 <hr />
-                <h2>Widgets</h2>
+                <h2>@Resource("Admin ACL Widgets", "Widgets")</h2>
                 Html.RenderPartial("Group", new ViewDataDictionary(Model.Widgets) { { "roles", Model.Roles } });
             }
             else
             {
-                <p>ACL is disabled.</p>
+                <p>@Resource("Admin ACL Disabled", "ACL is disabled").</p>
             }
         </div>
     </div>
