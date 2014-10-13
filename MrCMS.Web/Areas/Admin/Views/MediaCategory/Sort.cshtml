@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Helpers
-@model List<MrCMS.Models.SortItem>
+@model System.Collections.Generic.List<MrCMS.Models.SortItem>
 @{
     ViewBag.Title = "Sort Catgeories";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -20,10 +20,10 @@
 }
 <form method="POST" id="sort-media-category">
     <fieldset>
-        <legend>Sort
+        <legend>@Resource("Sort")
         <span class="btn-group  display-inline  pull-right">
-            <button class="btn btn-primary" id="save" data-form-id="sort-media-category" data-action="save">
-                Save</button>
+            <button class="btn btn-primary">
+                @Resource("Save")</button>
         </span>
         </legend>
 
@@ -40,4 +40,3 @@
         </ul>
     </fieldset>
 </form>
-@Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")

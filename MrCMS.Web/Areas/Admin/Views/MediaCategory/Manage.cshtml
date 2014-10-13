@@ -11,21 +11,17 @@
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
     var files = ViewData["files"] as IList<MediaFile> ?? new List<MediaFile>();
     var folders = ViewData["folders"] as IList<MediaCategory> ?? new List<MediaCategory>();
-
-
 }
 
 <div class="margin-bottom-20">
     @{ Html.RenderAction("Upload", "MediaCategory", new { category = Model }); }
     <div class="clearfix"></div>
-
 </div>
-
 
 @if (Model != null)
 {
     <ol class="breadcrumb">
-        <li><a href="@Url.Action("Index", "MediaCategory")">Media</a></li>
+        <li><a href="@Url.Action("Index", "MediaCategory")">@Resource("Admin Media", "Media")</a></li>
         @foreach (var folder in Model.BreadCrumbs.Reverse())
         {
             <li><a href="@Url.Action("Show", "MediaCategory", new{Id = folder.Id})">@folder.Name</a></li>
@@ -33,10 +29,10 @@
     </ol>
 }
 <span class="btn-group margin-bottom-20" id="file-tools">
-    <button id="cut-files" class="btn btn-default" disabled>Cut</button>
-    <button id="paste-files" class="btn btn-default" disabled>Paste</button>
-    <button id="delete-files" class="btn btn-default" disabled>Delete</button>
-    <button id="clear-files" class="btn btn-default">Clear</button>
+    <button id="cut-files" class="btn btn-default" disabled>@Resource("Cut")</button>
+    <button id="paste-files" class="btn btn-default" disabled>@Resource("Paste")</button>
+    <button id="delete-files" class="btn btn-default" disabled>@Resource("Delete")</button>
+    <button id="clear-files" class="btn btn-default">@Resource("Clear")</button>
 </span>
 <div class="clearfix"></div>
 <div id="folder-container">
@@ -54,7 +50,7 @@
     <div id="file-list" data-file-list="true" data-category-id="@(Model==null ? (int?)null : Model.Id)">
         @if (files.Any())
         {
-            foreach (var file in files.OrderBy(x => x.DisplayOrder))
+            foreach (var file in files)
             {
                 <div class="file" data-id="file-@file.Id" data-type="file" data-url="@Url.Action("Edit", "File", new { Id = file.Id })">
                     <div class="file-preview">
@@ -79,9 +75,8 @@
         }
         else
         {
-            <p>There are no files here yet - why not upload some?</p>
+            @Html.InfoBlock("", Resource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
         }
-
     </div>
     <div class="clearfix"> </div>
 

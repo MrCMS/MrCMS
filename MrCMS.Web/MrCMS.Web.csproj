@@ -1469,8 +1469,6 @@
     <Content Include="Areas\Admin\Views\Webpage\Redirect.cshtml" />
     <Content Include="Apps\Core\Views\Widgets\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Add.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\Sizes.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\MiniUploader.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\User\SetPassword.cshtml" />
@@ -1484,13 +1482,11 @@
     <Content Include="Areas\Admin\Views\Role\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Search\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutRoot.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\MediaSelector.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\FileResult.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\ViewChanges.cshtml" />
     <Content Include="Areas\Admin\Views\Form\Postings.cshtml" />
     <Content Include="Areas\Admin\Views\Form\ViewPosting.cshtml" />
     <Content Include="Areas\Admin\Views\Versions\Show.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\RemoveMedia.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Settings.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\SiteList.cshtml" />
@@ -1581,7 +1577,6 @@
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\Admin\Views\MediaCategory\Show.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\ShowFiles.cshtml" />
     <Content Include="Apps\Core\Views\ExternalLogin\LinkedIn.cshtml" />
     <Content Include="Apps\Core\Views\ExternalLogin\Facebook.cshtml" />
     <Content Include="Areas\Admin\Views\ThirdPartyAuth\Index.cshtml" />
@@ -1680,7 +1675,6 @@
     <Content Include="Areas\Admin\Views\Layout\Set.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Layout\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\ShowFolders.cshtml" />
     <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.eot" />
     <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.ttf" />
     <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.woff" />
@@ -1729,7 +1723,6 @@
     <Content Include="Areas\Admin\Views\Layout\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Add.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\Media.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\AdminNavigation.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\EditorTemplates\DateTime.cshtml" />
@@ -1755,9 +1748,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\MediaCategory\Upload.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\ImageSelector.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\ImageList.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\ImagePreview.cshtml" />
     <Content Include="Apps\Core\Views\Pages\TextPage.cshtml" />
     <Content Include="Views\Install\Setup.cshtml" />
     <Content Include="Views\Shared\_Installation.cshtml" />

@@ -13,6 +13,7 @@ using MrCMS.Settings;
 using NHibernate;
 using MrCMS.Helpers;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
@@ -52,7 +53,8 @@ namespace MrCMS.Services
             if (mediaCategory != null)
             {
                 mediaFile.MediaCategory = mediaCategory;
-                mediaFile.DisplayOrder = mediaCategory.Files.Count;
+                int? max = _session.Query<MediaFile>().Where(x=>x.MediaCategory.Id == mediaFile.MediaCategory.Id).Max(x => (int?)x.DisplayOrder);
+                mediaFile.DisplayOrder = (max.HasValue ? (int)max + 1 : 1);
             }
 
             if (mediaFile.IsImage)
