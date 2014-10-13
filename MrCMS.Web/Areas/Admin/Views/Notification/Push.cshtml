@@ -1,4 +1,5 @@
-﻿@using MrCMS.Helpers
+﻿@using System.Collections.Generic
+@using MrCMS.Helpers
 @model MrCMS.Web.Areas.Admin.Controllers.PushNotificationModel
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
@@ -8,20 +9,27 @@
 @using (Html.BeginForm("Push", "Notification", FormMethod.Post))
 {
     <fieldset>
-        <legend>Push notification
-            <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="Push Notification" />
-            </span>
-        </legend>
-        @Html.ReturnToReferrer()
+        <legend>
+            @Resource("Admin Notifications Push Notification", "Push notification")
+        <span class="btn-group display-inline pull-right">
+            <input type="submit" class="btn-primary btn" value="@Resource("Admin Notifications Push", "Push")" />
+        </span>
+    </legend>
+    @Html.ReturnToReferrer()
+    <div class="form-group">
         @Html.LabelFor(model => model.Message)
-        @Html.TextBoxFor(model => model.Message)
+        @Html.TextBoxFor(model => model.Message, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.Message)
+    </div>
+    <div class="form-group">
         @Html.LabelFor(model => model.PublishType)
-        @Html.DropDownListFor(model => model.PublishType, publishTypeOptions)
+        @Html.DropDownListFor(model => model.PublishType, publishTypeOptions, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.PublishType)
+    </div>
+    <div class="form-group">
         @Html.LabelFor(model => model.NotificationType)
-        @Html.DropDownListFor(model => model.NotificationType, notificationTypeOptions)
+        @Html.DropDownListFor(model => model.NotificationType, notificationTypeOptions, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.NotificationType)
-    </fieldset>
+    </div>
+</fieldset>
 }

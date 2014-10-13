@@ -1,4 +1,5 @@
 ﻿@using System.Drawing
+@using System.Linq
 @using MrCMS.Entities.Messaging
 @using MrCMS.Helpers
 @using MrCMS.Paging
@@ -10,9 +11,9 @@
 {
     <fieldset>
         <legend>
-            Queued Messages
+            @Resource("Admin Queued Messages Title", "Queued Messages")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" value="Search" class="btn btn-primary" />
+                <input type="submit" value="@Resource("Search")" class="btn btn-primary" />
             </span>
         </legend>
 
@@ -50,22 +51,22 @@
         <thead>
             <tr>
                 <th>
-                    From
+                    @Resource("From")
                 </th>
                 <th>
-                    To
+                    @Resource("To")
                 </th>
                 <th>
-                    Subject
+                    @Resource("Subject")
                 </th>
                 <th>
-                    Created On
+                    @Resource("Created On")
                 </th>
                 <th>
-                    Sent On?
+                    @Resource("Sent On")
                 </th>
                 <th>
-                    Actions
+                    @Resource("Actions")
                 </th>
             </tr>
         </thead>
@@ -90,7 +91,7 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink("View", "Show", "MessageQueue", new { id = message.Id }, new { @class = "btn btn-xs btn-default" })
+                            @Html.ActionLink(Resource("View"), "Show", "MessageQueue", new { id = message.Id }, new { @class = "btn btn-xs btn-default" })
                         </div>
                     </td>
                 </tr>

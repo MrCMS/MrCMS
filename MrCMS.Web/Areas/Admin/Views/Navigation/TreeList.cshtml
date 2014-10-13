@@ -1,13 +1,13 @@
 ﻿
+@using System.Collections.Generic
 @using MrCMS.Models
 @using MrCMS.Web.Areas.Admin.Models
 @model MrCMS.Web.Areas.Admin.Models.AdminTree
-
 @if (Model.IsRootRequest)
 {
     <ul>
         <li class="jstree-open" id="@Model.RootContoller" data-can-add-child="True" data-sortable="True" data-haschildren="True" data-jstree='{"icon":"glyphicon glyphicon-certificate"}' data-controller="@Model.RootContoller">
-            <a href="#">Root</a>
+            <a href="#">@Resource("Root")</a>
             @RenderChildren(Model.Nodes)
         </li>
     </ul>

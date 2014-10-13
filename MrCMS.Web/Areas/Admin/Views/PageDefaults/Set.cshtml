@@ -1,4 +1,5 @@
-﻿@model MrCMS.Web.Areas.Admin.Models.DefaultsInfo
+﻿@using System.Collections.Generic
+@model MrCMS.Web.Areas.Admin.Models.DefaultsInfo
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var urlGeneratorOptions = ViewData["url-generator-options"] as List<SelectListItem> ?? new List<SelectListItem>();
@@ -9,9 +10,9 @@
     @Html.HiddenFor(info => info.PageTypeName)
     <fieldset>
         <legend>
-            Set Defaults for @Model.PageTypeDisplayName
+            @Resource("Admin Page Defaults Set Default For","Set Defaults for") @Model.PageTypeDisplayName
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="Set defaults" />
+                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
             </span>
         </legend>
         <div class="form-group">

@@ -1,4 +1,5 @@
-﻿@using MrCMS.Entities.Notifications
+﻿@using System.Collections.Generic
+@using MrCMS.Entities.Notifications
 @using MrCMS.Helpers
 @using MrCMS.Paging
 @using MrCMS.Web.Areas.Admin.ACL
@@ -11,10 +12,10 @@
 {
     <fieldset>
         <legend>
-            Notifications
+            @Resource("Admin Notifications Title", "Notifications")
             <span class="btn-group display-inline pull-right">
                 <input type="submit" class="btn btn-primary" value="Search" />
-                @Html.ActionLink("Push", "Push", "Notification", new { }, new { @class = "btn", data_toggle = "fb-modal" })
+                @Html.ActionLink(Resource("Admin Notifications Push", "Push"), "Push", "Notification", new { }, new { @class = "btn btn-default", data_toggle = "fb-modal" })
             </span>
         </legend>
 
@@ -49,27 +50,27 @@
 
 @if (results.Count == 0)
 {
-    @:No notifications.
-        }
+    @Resource("Admin Notifications None", "No notifications");
+}
 else
 {
     <table class="table table-striped table-condensed" style="overflow: scroll">
         <thead>
             <tr>
                 <th>
-                    Date
+                    @Resource("Date")
                 </th>
                 <th>
-                    Notification Type
+                    @Resource("Admin Notifications Notification Type", "Notification Type")
                 </th>
                 <th>
-                    Message
+                    @Resource("Message")
                 </th>
                 <th>
-                    User
+                    @Resource("User")
                 </th>
                 <th>
-                    Actions
+                    @Resource("Actions")
                 </th>
             </tr>
         </thead>
@@ -93,7 +94,7 @@ else
                         <div class="btn-group">
                             @if (Html.CanAccess<NotificationACL>(NotificationACL.Delete))
                             {
-                                @Html.ActionLink("Delete", "Delete", "Notification", new { id = notification.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
+                                @Html.ActionLink("Delete", "Delete", "Notification", new {id = notification.Id}, new {@class = "btn btn-xs btn-danger", data_toggle = "fb-modal"})
                             }
                         </div>
                     </td>

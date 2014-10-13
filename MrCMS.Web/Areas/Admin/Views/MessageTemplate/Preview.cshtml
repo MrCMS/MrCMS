@@ -3,20 +3,27 @@
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("GetPreview", "MessageTemplate", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
-    <fieldset>
-        <legend>Preview message template
+    <div style="min-height: 400px">
+        <h1 class="page-header">
+            @Resource("Admin Message Template Preview Title", "Preview message template")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn btn-danger" value="Preview" />
+                <input type="submit" class="btn btn-default" value="@Resource("Preview")" />
             </span>
-        </legend>
-        <div class="row">
+        </h1>
+
+        <div class="form-group">
             @Html.Label("itemId", @Model.PreviewType.Name.BreakUpString() + " Id")
             @Html.TextBox("itemId")
         </div>
-        <input class="btn btn-xs btn-default" value="Preview" id="preview-message" type="submit" />
+
+
+        <input class="btn btn-xs btn-default" value="@Resource("Preview")" id="preview-message" type="submit" />
+
+        <hr/>
+
         <div id="preview">
         </div>
-    </fieldset>
+    </div>
 }
 
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/preview-message-template.js");}

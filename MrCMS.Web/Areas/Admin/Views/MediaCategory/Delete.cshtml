@@ -3,6 +3,7 @@
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Delete", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
+
     <fieldset>
         <legend>@Resource("Admin Folders Delete Title", "Delete folder")
             <span class="btn-group  display-inline  pull-right">

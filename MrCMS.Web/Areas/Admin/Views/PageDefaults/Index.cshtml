@@ -1,44 +1,40 @@
-﻿@model List<MrCMS.Web.Areas.Admin.Models.PageDefaultsInfo>
+﻿@model System.Collections.Generic.List<MrCMS.Web.Areas.Admin.Models.PageDefaultsInfo>
 
-<fieldset>
-    <legend>
-        Page Defaults
-    </legend>
-    <table class="table table-condensed table-striped">
-        <thead>
+<h1 class="page-header">@Resource("Admin Page Defaults Title", "Page Defaults")</h1>
+
+<table class="table table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Resource("Admin Page Defaults Page Type", "Page Type")
+            </th>
+            <th>
+                @Resource("Admin Page Defaults Default Generator", "Default Generator")
+            </th>
+            <th>
+                @Resource("Admin Page Defaults Default Layout", "Default Layout")
+            </th>
+            <th>
+                @Resource("Actions")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var info in Model)
+        {
             <tr>
-                <th>
-                    Page Type
-                </th>
-                <th>
-                    Default Generator
-                </th>
-                <th>
-                    Default Layout
-                </th>
-                <th>
-                    Actions
-                </th>
+                <td>
+                    @info.DisplayName
+                </td>
+                <td>
+                    @info.GeneratorDisplayName
+                </td>
+                <td>
+                    @info.LayoutName
+                </td>
+                <td>
+                    @Html.ActionLink(Resource("Admin Page Defaults Set Default", "Set default"), "Set", "PageDefaults", new { type = info.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var info in Model)
-            {
-                <tr>
-                    <td>
-                        @info.DisplayName
-                    </td>
-                    <td>
-                        @info.GeneratorDisplayName
-                    </td>
-                    <td>
-                        @info.LayoutName
-                    </td>
-                    <td>
-                        @Html.ActionLink("Set default", "Set", "PageDefaults", new { type = info.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</fieldset>
+        }
+</table>
