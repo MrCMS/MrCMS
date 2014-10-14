@@ -86,6 +86,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public void DeleteFormProperty(FormProperty property)
         {
+            property.Webpage.FormProperties.Remove(property);
             _session.Transact(session => session.Delete(property));
         }
 

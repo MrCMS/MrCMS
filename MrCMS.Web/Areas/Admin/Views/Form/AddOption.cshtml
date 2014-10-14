@@ -12,9 +12,12 @@
         @Html.HiddenFor(x => x.FormProperty.Id)
         <div class="row">
             <div class="col-lg-12">
-                @Html.LabelFor(option => option.Value)
-                @Html.TextBoxFor(option => option.Value)
-                @Html.ValidationMessageFor(option => option.Value)
+                <div class="form-group">
+                    @Html.LabelFor(option => option.Value)
+                    @Html.TextBoxFor(option => option.Value, new{@class="form-control"})
+                    @Html.ValidationMessageFor(option => option.Value)
+                </div>
+
                 @Html.InlineCheckboxFor(option => option.Selected)
             </div>
         </div>

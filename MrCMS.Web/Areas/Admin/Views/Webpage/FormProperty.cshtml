@@ -30,12 +30,16 @@
                     <td>@Resource("Required")</td>
                     <td>@Model.Required</td>
                 </tr>
+                @if (Model is FormPropertyWithOptions)
+                {
+                    <tr>
+                        <td>@Resource("Admin Webpage Form Option", "Options")</td>
+                        <td>@{ Html.RenderPartial("FormPropertyOptions", Model); }</td>
+                    </tr>
+                }
             </tbody>
         </table>
-        @if (Model is FormPropertyWithOptions)
-        {
-            Html.RenderPartial("FormPropertyOptions", Model);
-        }
+        
     </div>
 </div>
 
