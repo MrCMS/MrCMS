@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
@@ -6,6 +7,7 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Website;
 using NHibernate;
+using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
@@ -91,8 +93,14 @@ namespace MrCMS.Services
             _session.Transact(session => session.Update(document));
         }
 
-        public T GetDocumentByUrl<T>(string url) where T : Document
+        public IList<Tag>  GetDocumentTags(Document document)
         {
+            return _session.Query<Tag>()
+                            .Where(x => x.Documents.Contains(document)).ToList();
+        }
+
+        public T GetDocumentByUrl<T>(string url) where T : Document                        
+        {   
             return _session.QueryOver<T>()
                 .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
                 .Take(1).Cacheable()
