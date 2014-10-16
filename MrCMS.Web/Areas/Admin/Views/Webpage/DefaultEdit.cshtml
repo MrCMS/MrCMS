@@ -1,30 +1,68 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
+@using MrCMS.Web.Areas.Admin.Models.WebpageEdit
 @model Webpage
+@{
+    var tabs = ViewData["edit-tabs"] as List<WebpageTabBase> ?? new List<WebpageTabBase>();
+}
 <ul class="nav nav-tabs margin-top-10" data-stickytabs="webpage-@Model.Id">
-    <li class="active"><a href="#edit-content" data-toggle="tab">@Resource("Admin Webpage Edit Tab", "Edit")</a></li>
-    <li><a href="#edit-seo" data-toggle="tab">@Resource("Admin Webpage SEO Tab", "SEO & Properties")</a></li>
-    <li><a href="#layout-content" data-toggle="tab">@Resource("Admin Webpage Layout Tab", "Layout")</a></li>
-    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">@Resource("Admin Webpage Form Tab", "Form")&nbsp;<b class="caret"></b></a>
-        <ul class="dropdown-menu">
-            <li><a href="#form-properties-tab" data-toggle="tab">@Resource("Admin Webpage Form Fields", "Fields")</a></li>
-            <li><a href="#form-design-tab" data-toggle="tab">@Resource("Admin Webpage Form Design", "Design")</a></li>
-            <li><a href="#postings-tab" data-toggle="tab">@Resource("Admin Webpage Form Entries", "Entries") (@Model.FormPostingsCount())</a></li>
-            <li><a href="#form-message-tab" data-toggle="tab">@Resource("Admin Webpage Form Settings", "Settings")</a></li>
-        </ul>
-    </li>
-    <li><a href="#versions" data-toggle="tab" id="versions-link" data-id="@Url.RequestContext.RouteData.Values["id"]">@Resource("Admin Webpage Tab Versions", "Versions")</a></li>
-    <li><a href="#permissions" data-toggle="tab">@Resource("Admin Webpage Tab Permission", "Permissions")&nbsp;</a></li>
+    @foreach (var @base in tabs)
+    {
+        @RenderTab(@base, @base == tabs.First())
+    }
 </ul>
 <div class="tab-content">
-    @{Html.RenderPartial("Properties", Model);}
-    @{Html.RenderPartial("SEO", Model);}
-    @{Html.RenderPartial("Layout", Model); }
-    @{Html.RenderPartial("FormProperties", Model);}
-    @{Html.RenderPartial("FormDesign", Model);}
-    @{Html.RenderPartial("FormPostings", Model);}
-    @{Html.RenderPartial("FormMessage", Model);}
-    @{Html.RenderPartial("PageVersions", Model);}
-    @{Html.RenderPartial("Permissions", Model);}
+    @foreach (var @base in tabs)
+    {
+        @RenderContent(@base, @base == tabs.First())
+    }
 </div>
+
+@helper RenderTab(WebpageTabBase @base, bool isFirst = false)
+{
+    if (@base is WebpageTab)
+    {
+        var tab = @base as WebpageTab;
+        <li class="@(isFirst ?"active":"")">
+            <a href="#@tab.TabHtmlId" data-toggle="tab">@tab.Name(Model)</a>
+        </li>
+    }
+    else
+    {
+        var @group = @base as WebpageTabGroup;
+        <li class="@(isFirst ?"active dropdown":"dropdown")">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@(@group.Name(Model))&nbsp;<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                @foreach (var tab in @group.Children)
+                {
+                    @RenderTab(tab)
+                }
+            </ul>
+        </li>
+    }
+}
+
+@helper RenderContent(WebpageTabBase @base, bool isFirst = false)
+{
+    if (@base is WebpageTab)
+    {
+        var tab = @base as WebpageTab;
+        <div class="tab-pane@(isFirst ? " active" : "")" id="@tab.TabHtmlId">
+            @{
+        tab.RenderTabPane(Html, Model);
+        //Html.RenderPartial(tab.PartialViewName, Model);
+            }
+        </div>
+    }
+    else
+    {
+        var @group = @base as WebpageTabGroup;
+        <text>
+            @foreach (var tab in @group.Children)
+            {
+                @RenderContent(tab)
+            }
+        </text>
+    }
+}
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-webpage.js"); }

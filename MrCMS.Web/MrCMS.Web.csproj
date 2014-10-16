@@ -474,6 +474,19 @@
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
     <Compile Include="Areas\Admin\Models\VersionsModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewDataUploadFilesResult.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\FormDesignTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\FormMessageTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\FormPostingsTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\FormPropertiesTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\FormTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\LayoutTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\PermissionsTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\PropertiesTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\SEOAndPropertiesTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\VersionsTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\WebpageTab.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\WebpageTabBase.cs" />
+    <Compile Include="Areas\Admin\Models\WebpageEdit\WebpageTabGroup.cs" />
     <Compile Include="Areas\Admin\Services\ACLService.cs" />
     <Compile Include="Areas\Admin\Services\AdminNavLinksService.cs" />
     <Compile Include="Areas\Admin\Services\AdminPageStatsService.cs" />
@@ -497,6 +510,7 @@
     <Compile Include="Areas\Admin\Services\GetUrlGeneratorOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetUserCultureOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetValidPageTemplatesToAdd.cs" />
+    <Compile Include="Areas\Admin\Services\GetWebpageEditTabsService.cs" />
     <Compile Include="Areas\Admin\Services\IACLService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminNavLinksService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminPageStatsService.cs" />
@@ -513,6 +527,7 @@
     <Compile Include="Areas\Admin\Services\IGetUrlGeneratorOptions.cs" />
     <Compile Include="Areas\Admin\Services\IGetUserCultureOptions.cs" />
     <Compile Include="Areas\Admin\Services\IGetValidPageTemplatesToAdd.cs" />
+    <Compile Include="Areas\Admin\Services\IGetWebpageEditTabsService.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IInPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ILayoutAreaAdminService.cs" />
