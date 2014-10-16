@@ -9,7 +9,7 @@ namespace MrCMS.Web.Areas.Admin.Models.WebpageEdit
     {
         public override int Order
         {
-            get { return 100; }
+            get { return 0; }
         }
 
         public override string Name(Webpage webpage)
