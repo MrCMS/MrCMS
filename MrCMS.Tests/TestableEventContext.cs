@@ -46,9 +46,14 @@ namespace MrCMS.Tests
             }
         }
 
-        public IDisposable Disable()
+        public IDisposable Disable<T>()
         {
-            return _coreEventContext.Disable();
+            return _coreEventContext.Disable<T>();
+        }
+
+        public IDisposable Disable(params Type[] types)
+        {
+            return _coreEventContext.Disable(types);
         }
     }
 }

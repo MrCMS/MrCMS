@@ -11,7 +11,7 @@ namespace MrCMS.Services
     public class EventContext : IEventContext
     {
         private readonly HashSet<IEvent> _events;
-        internal bool PublishEnabled = true;
+        private readonly HashSet<Type> _disabledEvents = new HashSet<Type>();
 
         public EventContext(IEnumerable<IEvent> events)
         {
@@ -23,52 +23,62 @@ namespace MrCMS.Services
             get { return MrCMSApplication.Get<IEventContext>(); }
         }
 
+        public HashSet<Type> DisabledEvents
+        {
+            get { return _disabledEvents; }
+        }
+
         public void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
         {
-            if (!PublishEnabled) 
-                return;
-
-            _events.OfType<TEvent>().ForEach(obj => obj.Execute(args));
+            Publish(typeof(TEvent), args);
         }
 
         public void Publish(Type eventType, object args)
         {
-            if (!PublishEnabled) 
-                return;
-
-            _events.Where(@eventType.IsInstanceOfType).ForEach(@event =>
+            _events.Where(@event => @eventType.IsInstanceOfType(@event) && !IsDisabled(@event)).ForEach(@event =>
             {
-                MethodInfo methodInfo = @event.GetType().GetMethod("Execute", new[] {args.GetType()});
-                methodInfo.Invoke(@event, new[] {args});
+                MethodInfo methodInfo = @event.GetType().GetMethod("Execute", new[] { args.GetType() });
+                methodInfo.Invoke(@event, new[] { args });
             });
         }
 
-        public IDisposable Disable()
+        private bool IsDisabled(IEvent @event)
         {
-            return new EventPublishingDisabler(this);
-        }
-    }
-
-    public class EventPublishingDisabler : IDisposable
-    {
-        private readonly bool _enableOnDispose;
-        private readonly EventContext _eventContext;
-
-        public EventPublishingDisabler(EventContext eventContext)
-        {
-            _eventContext = eventContext;
-            if (!_eventContext.PublishEnabled)
-                return;
-            _eventContext.PublishEnabled = false;
-            _enableOnDispose = true;
+            return DisabledEvents.Any(type => type.IsInstanceOfType(@event));
         }
 
-        public void Dispose()
+        public IDisposable Disable<T>()
         {
-            if (_enableOnDispose)
+            return new EventPublishingDisabler(this, typeof(T));
+        }
+
+        public IDisposable Disable(params Type[] types)
+        {
+            return new EventPublishingDisabler(this, types);
+        }
+
+        public class EventPublishingDisabler : IDisposable
+        {
+            private readonly EventContext _eventContext;
+            private readonly HashSet<Type> _toEnableOnDispose = new HashSet<Type>();
+
+            public EventPublishingDisabler(EventContext eventContext, params Type[] types)
             {
-                _eventContext.PublishEnabled = true;
+                _eventContext = eventContext;
+                foreach (var type in types.Where(type => _eventContext.DisabledEvents.Add(type)))
+                {
+                    _toEnableOnDispose.Add(type);
+                }
+            }
+
+            public void Dispose()
+            {
+                foreach (var type in _toEnableOnDispose)
+                {
+                    _eventContext.DisabledEvents.Remove(type);
+                }
             }
         }
     }
+
 }
