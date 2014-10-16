@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Helpers
-@model List<MrCMS.Models.SortItem>
+@model System.Collections.Generic.List<MrCMS.Models.SortItem>
 @{
     ViewBag.Title = "Sort Layouts";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -20,11 +20,8 @@
 }
 <form method="POST" id="sort-layouts">
     <fieldset>
-        <legend>Sort
-            <span class="btn-group  display-inline  pull-right"><button class="btn btn-primary">
-                    Save</button>
-
-            </span>
+        <legend>@Resource("Sort")
+            <span class="btn-group  display-inline  pull-right"><button class="btn btn-primary">@Resource("Save")</button></span>
         </legend>
         
         <ul id="sortable">
@@ -38,9 +35,6 @@
                 </li>
             }
         </ul>
-
-        
-        @Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")
-
+        @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Sort Drag Info", "Drag items in to the order you would like then click save"))
     </fieldset>
 </form>

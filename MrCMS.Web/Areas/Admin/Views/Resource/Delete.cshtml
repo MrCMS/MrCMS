@@ -7,11 +7,11 @@
 {
     @Html.ReturnToReferrer()
     <fieldset>
-        <legend>Delete resource
+        <legend>@Resource("Admin Resources Delete Override", "Delete resource") 
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="Delete resource" />
+                <input type="submit" class="btn-primary btn" value="@Resource("Delete")" />
             </span>
         </legend>
-        Are you sure you want to delete this resource? 
+        @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
     </fieldset>
 }

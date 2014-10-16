@@ -10,11 +10,10 @@
 @using (Html.BeginForm("SortWidgetsForPage", "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
 {
     <fieldset>
-        <legend>Sort Widgets for page
+        <legend>@Resource("Admin Widgets Sort For Page Title", "Sort Widgets for page")
 
             <span class="btn-group  display-inline  pull-right">
-                <button class="btn btn-primary" id="save" data-form-id="edit-sort" data-action="save">
-                    Save</button>
+                <button class="btn btn-primary">@Resource("Save")</button>
             </span>
         </legend>
 
@@ -36,4 +35,4 @@
 
     </fieldset>
 }
-@Html.InfoBlock("Heads up! ", "The sort you set here will only work on the current page. To order widgets for all pages please select 'Sort widgets' instead of 'Sort widgets for page.'")
+@Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Widgets Sort For Page info", "The sort you set here will only work on the current page. To order widgets for all pages please select 'Sort widgets' instead of 'Sort widgets for page.'"))

@@ -4,11 +4,11 @@
 
 @using (Html.BeginForm("Add", "Widget", new { id = "" }, FormMethod.Post, new { id = "add-widget-form" }))
 {
-    <fieldset>
+    <fieldset style="min-height: 500px">
         <legend>
-            Add Widget
+            @Resource("Admin Widget Add Widget", "Add Widget")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-success btn" value="Add widget" id="add-widget" />
+                <input type="submit" class="btn-success btn" value="@Resource("Save")" id="add-widget" />
             </span>
         </legend>
         @Html.HiddenFor(model => model.LayoutArea.Id)

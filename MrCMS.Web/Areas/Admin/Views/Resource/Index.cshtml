@@ -1,4 +1,6 @@
-﻿@using MrCMS.Entities.Resources
+﻿@using System.Collections.Generic
+@using System.Linq
+@using MrCMS.Entities.Resources
 @using MrCMS.Helpers
 @using MrCMS.Paging
 @model MrCMS.Web.Areas.Admin.Models.StringResourceSearchQuery
@@ -11,12 +13,12 @@
 {
     <fieldset>
         <legend>
-            Resources
+            @Resource("Admin Resources Title", "Resources")
             <span class="btn-group display-inline pull-right">
-                @Html.ActionLink("Export All", "Export", "ResourceUpdate", new { }, new { @class = "btn btn-default" })
-                @Html.ActionLink("Export As Filtered", "Export", "ResourceUpdate", new { Model.Key, Model.Value }, new { @class = "btn btn-default" })
+                @Html.ActionLink(Resource("Admin Resource Export", "Export All"), "Export", "ResourceUpdate", new { }, new { @class = "btn btn-default" })
+                @Html.ActionLink(Resource("Admin Resource Export Filtered", "Export As Filtered"), "Export", "ResourceUpdate", new { Model.Key, Model.Value }, new { @class = "btn btn-default" })
 
-                <input type="submit" class="btn btn-primary" value="Search" />
+                <input type="submit" class="btn btn-primary" value="@Resource("Search")" />
             </span>
         </legend>
 
@@ -45,7 +47,7 @@
 
 @if (!resources.Any())
 {
-    @:No resources.
+    @Resource("Admin Resources No Resources", "No resources")
         }
 else
 {
@@ -53,16 +55,16 @@ else
         <thead>
             <tr>
                 <th>
-                    Key
+                    @Resource("Key")
                 </th>
                 <th>
-                    Value
+                    @Resource("Value")
                 </th>
                 <th>
-                    Language
+                    @Resource("Language")
                 </th>
                 <th>
-                    Actions
+                    @Resource("Actions")
                 </th>
             </tr>
         </thead>
@@ -102,14 +104,14 @@ else
 
 <fieldset>
     <legend>
-        Import Resources
+        @Resource("Admin Resources Import Resources","Import Resources")
     </legend>
     @using (Html.BeginForm("Import", "ResourceUpdate", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <div class="input-group">
             <input type="file" name="file" class="form-control" />
             <span class="input-group-btn">
-                <button class="btn btn-default">Import</button>
+                <button class="btn btn-default">@Resource("Admin Resources Import Button", "Import")</button>
             </span>
         </div>
     }

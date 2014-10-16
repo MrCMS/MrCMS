@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Website
 @model dynamic
+<p>@string.Format(Resource("Admin Dashboard Greeting", "Hello {0}, you are currently administering web site {1}"), CurrentRequestData.CurrentUser.Name, CurrentRequestData.CurrentSite.DisplayName).</p>
 
-<p>Hello @CurrentRequestData.CurrentUser.Name, you are currently administering web site "@CurrentRequestData.CurrentSite.DisplayName."</p>
+   

@@ -1,4 +1,7 @@
-﻿@using MrCMS.Helpers
+﻿@using System
+@using System.Collections.Generic
+@using System.Linq
+@using MrCMS.Helpers
 @using MrCMS.Logging
 @using MrCMS.Paging
 @model LogSearchQuery
@@ -11,10 +14,10 @@
 {
     <fieldset>
         <legend>
-            Logs
+            @Resource("Admin Logs Title", "Logs")
             <span class="btn-group display-inline pull-right">
-                <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">Delete logs</a>
-                <input type="submit" class="btn btn-primary" value="Search" />
+                <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">@Resource("Admin Logs Delete Logs Button", "Delete logs")</a>
+                <input type="submit" class="btn btn-primary" value="@Resource("Search")" />
             </span>
         </legend>
 
@@ -66,7 +69,7 @@
 
 @if (logs.Count == 0)
 {
-    @:No logs.
+    @Resource("Admin Logs No Logs", "No logs")
         }
 else
 {
@@ -74,19 +77,19 @@ else
         <thead>
             <tr>
                 <th>
-                    Date
+                    @Resource("Date")
                 </th>
                 <th>
-                    Site
+                    @Resource("Site")
                 </th>
                 <th>
-                    Message
+                    @Resource("Message")
                 </th>
                 <th>
-                    Type
+                    @Resource("Type")
                 </th>
                 <th>
-                    Actions
+                    @Resource("Actions")
                 </th>
             </tr>
         </thead>
@@ -107,7 +110,7 @@ else
                         @entry.Type
                     </td>
                     <td>
-                        @Html.ActionLink("Show", "Show", new { id = entry.Id }, new { @class = "btn btn-xs btn-default" })
+                        @Html.ActionLink(Resource("Show"), "Show", new { id = entry.Id }, new { @class = "btn btn-xs btn-default" })
                     </td>
                 </tr>
             }

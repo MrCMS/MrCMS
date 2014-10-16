@@ -1,14 +1,14 @@
-﻿@model MrCMS.Entities.Documents.Layout.Layout
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Layout.Layout
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Delete", "Layout", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
     <fieldset>
-        <legend>Delete layout
+        <legend>@Resource("Admin Add Layout Delete Title", "Delete layout")
                  <span class="btn-group  display-inline  pull-right">
-                     <input type="submit" class="btn btn-danger" value="Confirm Delete Layout" />
+                     <input type="submit" class="btn btn-danger" value="@Resource("Delete")" />
                  </span>
         </legend>
-        <p>Deleting this layout can not be undone and will delete all areas within the layout.</p>
-        <p>This will also revert any pages that were using this layout to the site default</p>
+        @Html.InfoBlock("Warning", Resource("Admin Layout Delete Warning","Deleting this layout can not be undone and will delete all areas within the layout. This will also revert any pages that were using this layout to the site default"), AlertType.danger) 
     </fieldset>
 }

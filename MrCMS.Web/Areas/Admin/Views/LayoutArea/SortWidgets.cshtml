@@ -12,30 +12,29 @@
 
 @using (Html.BeginForm(action, "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
 {
-    
+
     @Html.Hidden("returnUrl", ViewData["returnUrl"])
     @Html.Hidden("LayoutAreaId", Model.LayoutAreaId)
     <fieldset>
-        <legend>Sort Widgets
-            <span class="btn-group  display-inline  pull-right">
-                <button class="btn btn-primary" id="save" data-form-id="edit-sort" data-action="save">
-        Save</button>
+        <legend>
+            @Resource("Admin Sort Widgets Title", "Sort Widgets")
+        <span class="btn-group  display-inline  pull-right">
+            <button class="btn btn-primary">@Resource("Save")</button>
             </span>
         </legend>
 
         <ul id="sortable">
-        @for (int i = 0; i < Model.Widgets.Count; i++)
-        {
-            var widget = Model.Widgets[i];
-            <li>
-                @Html.HiddenFor(model => model.Widgets[i].Id)
-                @Html.HiddenFor(model => model.Widgets[i].Order)
-                <i class="glyphicon glyphicon-resize-full"></i>&nbsp;&nbsp;
-                @widget.Name
-            </li>
-        }
-    </ul>
+            @for (int i = 0; i < Model.Widgets.Count; i++)
+            {
+                var widget = Model.Widgets[i];
+                <li>
+                    @Html.HiddenFor(model => model.Widgets[i].Id)
+                    @Html.HiddenFor(model => model.Widgets[i].Order)
+                    <i class="glyphicon glyphicon-resize-full"></i>&nbsp;&nbsp;
+                    @widget.Name
+                </li>
+            }
+        </ul>
     </fieldset>
 }
-@Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")
-
+@Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Widgets Sort info", "Drag items in to the order you would like then click save."))

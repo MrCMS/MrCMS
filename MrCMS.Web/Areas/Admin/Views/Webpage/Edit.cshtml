@@ -1,4 +1,5 @@
-﻿@using MrCMS.Entities.Documents.Web
+﻿@using System
+@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
 @model Webpage
 @{
@@ -12,22 +13,22 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="btn-group display-inline" id="edit-webpage-options">
-                <button class="btn btn-primary">Save</button>
+                <button class="btn btn-primary">@Resource("Save")</button>
                 <a href="/@Model.LiveUrlSegment" class="btn btn-default">View</a>
                 
-                @Html.ActionLink("Move", "Set", "WebpageParent", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-default" })
+                @Html.ActionLink(Resource("Move"), "Set", "WebpageParent", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-default" })
                 @if (Model.CanAddChildren())
                 {
-                    @Html.ActionLink("Add a child page", "Add", new {Model.Id}, new {@class = "btn btn-default"})
+                    @Html.ActionLink(Resource("Add a child page"), "Add", new { Model.Id }, new { @class = "btn btn-default" })
                 }
                 @if (Model.CanDelete())
                 {
-                    <a href="@Url.Action("Delete", "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
+                    <a href="@Url.Action(Resource("Delete"), "Webpage", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                 }
 
                 @(Model.PublishOn == null
-                      ? Html.ActionLink("Publish", "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" })
-                      : Html.ActionLink("Unpublish", "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
+                      ? Html.ActionLink(Resource("Publish"), "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" })
+              : Html.ActionLink(Resource("Unpublish"), "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
 
                 @Html.EditorFor(x => x.PublishOn)
                 @Html.ValidationMessageFor(x => x.PublishOn)

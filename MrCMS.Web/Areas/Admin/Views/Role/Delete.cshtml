@@ -1,13 +1,14 @@
-﻿@model MrCMS.Entities.People.UserRole
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.People.UserRole
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Delete", "Role", FormMethod.Post))
 {
     <fieldset>
-        <legend>Delete role
+        <legend>@Resource("Admin User Roles Delete", "Delete role")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-danger btn" value="Delete role" />
+                <input type="submit" class="btn-danger btn" value="@Resource("Delete")" />
             </span>
         </legend>
-        Are you sure you want to delete the role @Model.Name ? Deleting this role will delete all user mappings and can not be undone.
+        @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
     </fieldset>
 }

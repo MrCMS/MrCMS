@@ -83,6 +83,24 @@ namespace MrCMS.Indexing.Management
                 entity => entity.ToDictionary(arg => arg, arg => new List<string> { arg.Id.ToString() }.ToEnumerable()),
                 Field.Store.YES,
                 Field.Index.NOT_ANALYZED);
+        private static readonly FieldDefinition<T> _entityType =
+            new StringFieldDefinition<T>("entityType", GetEntityTypes,
+                entity => entity.ToDictionary(arg => arg, GetEntityTypes),
+                Field.Store.YES,
+                Field.Index.NOT_ANALYZED);
+
+        private static IEnumerable<string> GetEntityTypes(T entity)
+        {
+            if (entity == null)
+                yield break;
+            Type entityType = entity.GetType();
+            while (typeof(T).IsAssignableFrom(entityType))
+            {
+                yield return entityType.FullName;
+                entityType = entityType.BaseType;
+            }
+        }
+
         protected readonly ISession _session;
         protected IndexDefinition(ISession session)
         {
@@ -93,14 +111,24 @@ namespace MrCMS.Indexing.Management
         {
             get { return _id; }
         }
+        public static FieldDefinition<T> EntityType
+        {
+            get { return _entityType; }
+        }
 
         public Document Convert(T entity)
         {
-            return new Document().SetFields(new List<FieldDefinition<T>> { Id }.Concat(Definitions), entity);
+            return new Document().SetFields(GetCoreDefinitions().Concat(Definitions), entity);
         }
+
+        private static List<FieldDefinition<T>> GetCoreDefinitions()
+        {
+            return new List<FieldDefinition<T>> {Id, EntityType};
+        }
+
         public List<Document> ConvertAll(List<T> entities)
         {
-            var fieldDefinitions = new List<FieldDefinition<T>> { Id };
+            var fieldDefinitions = GetCoreDefinitions();
             fieldDefinitions.AddRange(Definitions);
             var list = fieldDefinitions.Select(fieldDefinition => fieldDefinition.GetFields(entities)).ToList();
             var documents = new List<Document>();
@@ -158,6 +186,19 @@ namespace MrCMS.Indexing.Management
                     .SelectMany(
                         ints =>
                             _session.QueryOver<T>()
+                                .Where(arg => arg.Id.IsIn(ints.ToList()))
+                                .Cacheable()
+                                .List()
+                                .OrderBy(arg => ids.IndexOf(arg.Id)));
+        }
+        public virtual IEnumerable<T2> Convert<T2>(IEnumerable<Document> documents) where T2 : T
+        {
+            List<int> ids = documents.Select(document => document.GetValue<int>("id")).ToList();
+            return
+                ids.Chunk(100)
+                    .SelectMany(
+                        ints =>
+                            _session.QueryOver<T2>()
                                 .Where(arg => arg.Id.IsIn(ints.ToList()))
                                 .Cacheable()
                                 .List()

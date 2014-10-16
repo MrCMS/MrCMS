@@ -1,6 +1,6 @@
 ﻿@using System.Drawing
 @using MrCMS.Helpers
-@model List<MrCMS.Models.ImageSortItem>
+@model System.Collections.Generic.List<MrCMS.Models.ImageSortItem>
 @{
     ViewBag.Title = "Sort Catgeories";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -21,11 +21,11 @@
 }
 <form method="POST" id="sort-media-category">
     <fieldset>
-        <legend>Sort files
+        <legend>@Resource("Admin Media Sort Files", "Sort files")
             <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Back to category", "Show", new { id = ViewData["categoryId"] }, new { @class = "btn btn-default" })
-                <button class="btn btn-primary" id="save" data-form-id="sort-media-category" data-action="save">
-                    Save</button>
+                @Html.ActionLink(Resource("Admin Media Back To Category","Back to folder"), "Show", new { id = ViewData["categoryId"] }, new { @class = "btn btn-default" })
+                <button class="btn btn-primary">
+                    @Resource("Save")</button>
             </span>
         </legend>
 
@@ -51,6 +51,5 @@
             }
         </ul>
     </fieldset>
-    @Html.InfoBlock("Heads up! ", "Drag items in to the order you would like then click save.")
 </form>
 

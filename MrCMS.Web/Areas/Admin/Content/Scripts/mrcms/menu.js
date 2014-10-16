@@ -9,21 +9,15 @@
         return id;
     }
     return {
-        init: function () {
+        init: function (tree, url) {
             self = this;
             $(document.body).on('click', '.jstree-anchor', function (event) {
                 location.href = this.href;
             });
-            $(document).on("shown.bs.tab", 'a[data-toggle="tab"]', function (e) {
-                self.initTree($(e.target));
-            });
+            self.initTree(tree, url);
             return self;
         },
-        initTree: function (link) {
-            if (link.data('tree-initialized'))
-                return;
-            var tree = link.data('tree');
-            var url = link.data('tree-url');
+        initTree: function (tree, url) {
             $("#" + tree).jstree({
                 "core": {
                     "animation": 0,
@@ -44,7 +38,6 @@
                 },
                 "plugins": ["state", "contextmenu"]
             });
-            link.data('tree-initialized', true);
         },
         menuItems: function (node) {
             var items = {};
@@ -89,16 +82,30 @@
         ]
     };
 };
-var webMenu = new WebMenu().init();
-
-//used for Bootstrap 3 click sub menu function
+//left hand nav open/close and persistence.
 (function ($) {
+    var mrcmsOpenMenuItems = "mrcms-open-menu-items";
+    function storeOpenTabs() {
+        var data =  $("li[data-menu].open").map(function () {
+            return $(this).data('menu');
+        }).get().join(",");
+        store.set(mrcmsOpenMenuItems, data);
+    }
+    function openNavItems() {
+        var items = store.get(mrcmsOpenMenuItems) || '';
+        var keys = items.split(",");
+        for (var i = 0; i < keys.length; i++) {
+            $("li[data-menu=" + keys[i] + "]").addClass("open");
+        }
+    }
     $(document).ready(function () {
-        $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function (event) {
+        $('li[data-menu] > [data-toggle=dropdown-mrcms]').on('click', function (event) {
             event.preventDefault();
             event.stopPropagation();
             $(this).parent().siblings().removeClass('open');
             $(this).parent().toggleClass('open');
+            storeOpenTabs();
         });
+        openNavItems();
     });
 })(jQuery);

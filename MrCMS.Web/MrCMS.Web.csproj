@@ -325,7 +325,10 @@
     <Compile Include="Apps\Core\Services\Installation\SetupCoreWebpages.cs" />
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
     <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
+    <Compile Include="Areas\Admin\ACL\MediaToolsACL.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\MoveFilesModelBinder.cs" />
+    <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageTemplateController.cs" />
     <Compile Include="Areas\Admin\Controllers\PersistentNotificationController.cs" />
@@ -340,6 +343,7 @@
     <Compile Include="Areas\Admin\Controllers\SEOAnalysisController.cs" />
     <Compile Include="Areas\Admin\Controllers\TransientNotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageDefaultsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UniversalSearchController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserStatsController.cs" />
     <Compile Include="Areas\Admin\Controllers\VersionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageParentController.cs" />
@@ -390,7 +394,7 @@
     <Compile Include="Areas\Admin\Models\PostingsModel.cs" />
     <Compile Include="Areas\Admin\Models\SaveResult.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
-    <Compile Include="Areas\Admin\Models\Search\QuickSearchResults.cs" />
+    <Compile Include="Areas\Admin\Models\Search\QuickSearchResult.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\UserAccountModel.cs" />
     <Compile Include="Apps\Core\Pages\UserAccountPage.cs" />
@@ -486,10 +490,12 @@
     <Compile Include="Areas\Admin\Services\DocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\Events\SendPersistentNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
+    <Compile Include="Areas\Admin\Services\FileAdminService.cs" />
     <Compile Include="Areas\Admin\Services\FormAdminService.cs" />
     <Compile Include="Areas\Admin\Services\GetLayoutOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetTemplateOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetUrlGeneratorOptions.cs" />
+    <Compile Include="Areas\Admin\Services\GetUserCultureOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetValidPageTemplatesToAdd.cs" />
     <Compile Include="Areas\Admin\Services\IACLService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminNavLinksService.cs" />
@@ -505,6 +511,7 @@
     <Compile Include="Areas\Admin\Services\IFormAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IGetLayoutOptions.cs" />
     <Compile Include="Areas\Admin\Services\IGetUrlGeneratorOptions.cs" />
+    <Compile Include="Areas\Admin\Services\IGetUserCultureOptions.cs" />
     <Compile Include="Areas\Admin\Services\IGetValidPageTemplatesToAdd.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IInPageAdminService.cs" />
@@ -530,6 +537,7 @@
     <Compile Include="Areas\Admin\Services\IThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ITreeNavService.cs" />
     <Compile Include="Areas\Admin\Services\IPageDefaultsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IUniversalSearchIndexSearcher.cs" />
     <Compile Include="Areas\Admin\Services\IUrlHistoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageParentAdminService.cs" />
@@ -760,8 +768,6 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\pagebreak\images\pagebreak.gif" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\pastefromword\filter\default.js" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\preview\preview.html" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\scayt\dialogs\options.js" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\scayt\dialogs\toolbar.css" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\showblocks\images\block_address.png" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\showblocks\images\block_blockquote.png" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\showblocks\images\block_div.png" />
@@ -911,6 +917,13 @@
     <Content Include="Areas\Admin\Content\Images\no-image.jpg" />
     <Content Include="Areas\Admin\Content\Images\no-media-selected.jpg" />
     <Content Include="Areas\Admin\Content\Images\pencil.png" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\css\font-awesome.css" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.svg" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.css" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.html" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.js" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.min.js" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\sweetalert.gif" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.noty.packaged.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\jstree.min.js" />
@@ -972,6 +985,9 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.min.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-page-template.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\layout.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\media.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\pages.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\persistent-notifications.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-show-files-simple.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\health-checks.js" />
@@ -1415,8 +1431,6 @@
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\Gallery.cshtml" />
     <Content Include="Apps\Galleries\Areas\Admin\Views\Webpage\GalleryList.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\SearchPage.cshtml" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\scayt\LICENSE.md" />
-    <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\scayt\README.md" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\LICENSE.md" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\plugins\wsc\README.md" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
@@ -1456,8 +1470,6 @@
     <Content Include="Areas\Admin\Views\Webpage\Redirect.cshtml" />
     <Content Include="Apps\Core\Views\Widgets\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Add.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\Sizes.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\MiniUploader.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\LayoutArea\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\User\SetPassword.cshtml" />
@@ -1471,16 +1483,13 @@
     <Content Include="Areas\Admin\Views\Role\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Search\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutRoot.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\MediaSelector.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\FileResult.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\ViewChanges.cshtml" />
     <Content Include="Areas\Admin\Views\Form\Postings.cshtml" />
     <Content Include="Areas\Admin\Views\Form\ViewPosting.cshtml" />
     <Content Include="Areas\Admin\Views\Versions\Show.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\RemoveMedia.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\PlainTextWidget.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Settings.cshtml" />
-    <Content Include="Areas\Admin\Views\Sites\SiteList.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Navigation\TreeList.cshtml" />
@@ -1514,7 +1523,6 @@
     <Content Include="Areas\Admin\Views\Webpage\FormMessage.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\PageVersions.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Permissions.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\Preview.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\RedirectEdit.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\SortFiles.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Webpage\TextPage.cshtml" />
@@ -1568,7 +1576,6 @@
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Apps\Core\Content\Bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\Admin\Views\MediaCategory\Show.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\ShowFiles.cshtml" />
     <Content Include="Apps\Core\Views\ExternalLogin\LinkedIn.cshtml" />
     <Content Include="Apps\Core\Views\ExternalLogin\Facebook.cshtml" />
     <Content Include="Areas\Admin\Views\ThirdPartyAuth\Index.cshtml" />
@@ -1614,7 +1621,6 @@
     <Content Include="Areas\Admin\Views\Resource\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\Messages.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\AddProperties.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\TextPageAdd.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\AddProperties.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\Push.cshtml" />
@@ -1665,6 +1671,17 @@
     <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\Admin\Views\Layout\Set.cshtml" />
+    <Content Include="Areas\Admin\Views\MediaCategory\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Layout\Index.cshtml" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.eot" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\fontawesome-webfont.woff" />
+    <Content Include="Areas\Admin\Content\plugins\font-awesome-4.2.0\fonts\FontAwesome.otf" />
+    <Content Include="Areas\Admin\Views\MediaCategory\Manage.cshtml" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\bower.json" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.scss" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\LICENSE" />
+    <Content Include="Areas\Admin\Content\plugins\sweetalert-master\README.md" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
@@ -1704,7 +1721,6 @@
     <Content Include="Areas\Admin\Views\Layout\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Add.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\Media.cshtml" />
     <Content Include="Areas\Admin\Views\MediaCategory\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\AdminNavigation.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\EditorTemplates\DateTime.cshtml" />
@@ -1721,7 +1737,6 @@
     <Content Include="Areas\Admin\Views\Webpage\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Layout.cshtml" />
-    <Content Include="Areas\Admin\Views\Webpage\Media.cshtml" />
     <Content Include="Areas\Admin\Views\Webpage\Sort.cshtml" />
     <Content Include="Areas\Admin\Views\Widget\Edit.cshtml" />
     <Content Include="Apps\Core\Areas\Admin\Views\Widget\TextWidget.cshtml" />
@@ -1730,9 +1745,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\MediaCategory\Upload.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\ImageSelector.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\ImageList.cshtml" />
-    <Content Include="Areas\Admin\Views\MediaCategory\ImagePreview.cshtml" />
     <Content Include="Apps\Core\Views\Pages\TextPage.cshtml" />
     <Content Include="Views\Install\Setup.cshtml" />
     <Content Include="Views\Shared\_Installation.cshtml" />

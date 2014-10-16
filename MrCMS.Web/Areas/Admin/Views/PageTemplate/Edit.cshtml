@@ -1,4 +1,5 @@
-﻿@using MrCMS.Helpers
+﻿@using System.Collections.Generic
+@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.PageTemplate
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
@@ -10,9 +11,9 @@
 {
     <fieldset>
         <legend>
-            Edit Page Template
+            @Resource("Admin Page Template Edit Title", "Edit Page Template")
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="Edit page template" />
+                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
             </span>
         </legend>
         

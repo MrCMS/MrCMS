@@ -8,8 +8,8 @@
     </div>
     <div class="col-lg-5">
         <div class="pull-right btn-group">
-            @Html.ActionLink("Edit Field", "EditProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
-            @Html.ActionLink("Delete Field", "DeleteProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
+            @Html.ActionLink(Resource("Edit"), "EditProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+            @Html.ActionLink(Resource("Delete"), "DeleteProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
         </div>
     </div>
 </div>
@@ -19,23 +19,27 @@
         <table class="table table-bordered table-striped table-condensed">
             <tbody>
                 <tr>
-                    <td class="col-lg-2">Name</td>
+                    <td class="col-lg-2">@Resource("Name")</td>
                     <td>@Model.Name</td>
                 </tr>
                 <tr>
-                    <td>Label Text</td>
+                    <td>@Resource("Admin Webpage Form Property Label", "Label Text")</td>
                     <td>@Model.LabelText</td>
                 </tr>
                 <tr>
-                    <td>Required</td>
+                    <td>@Resource("Required")</td>
                     <td>@Model.Required</td>
                 </tr>
+                @if (Model is FormPropertyWithOptions)
+                {
+                    <tr>
+                        <td>@Resource("Admin Webpage Form Option", "Options")</td>
+                        <td>@{ Html.RenderPartial("FormPropertyOptions", Model); }</td>
+                    </tr>
+                }
             </tbody>
         </table>
-        @if (Model is FormPropertyWithOptions)
-        {
-            Html.RenderPartial("FormPropertyOptions", Model);
-        }
+        
     </div>
 </div>
 

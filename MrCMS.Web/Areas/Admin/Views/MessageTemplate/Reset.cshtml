@@ -1,14 +1,16 @@
-﻿@model MrCMS.Entities.Messaging.MessageTemplate
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Messaging.MessageTemplate
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Reset", "MessageTemplate", new { id = Model.Id }, FormMethod.Post))
 {
-    <fieldset>
-        <legend>Reset Message Template
-            <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn btn-danger" value="Reset & Close" />
-            </span>
-        </legend>
-        Are you sure you want to reset this message template? This action cannot be undone.
-    </fieldset>
+
+    <h1 class="page-header">
+        @Resource("Admin Message Template Reset Title", "Reset Message Template")
+        <span class="btn-group  display-inline  pull-right">
+            <input type="submit" class="btn btn-danger" value="@Resource("Reset")" />
+        </span>
+    </h1>
+        
+    @Html.InfoBlock(Resource("Warning"), Resource("Admin Message Template Reset Warning", "Are you sure you want to reset this message template? This action cannot be undone"), alterType:AlertType.danger)
 }
 

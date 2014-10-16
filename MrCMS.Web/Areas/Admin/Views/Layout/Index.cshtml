@@ -1,0 +1,13 @@
+﻿@using MrCMS.Helpers
+@{
+    ViewBag.Title = "Manage Layouts";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<h1 class="page-header">@Resource("Admin Nav Layout", "Layouts")</h1>
+<div id="layout" class="tab-pane">
+    <div class="sidebar-nav" id="layout-tree">
+    </div>
+    <br />
+</div>
+
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/layout.js"); }

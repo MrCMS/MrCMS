@@ -1,4 +1,6 @@
-﻿@model MrCMS.Entities.Documents.Layout.LayoutArea
+﻿@using System.Linq
+@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Layout.LayoutArea
 @{
     ViewBag.Title = "Edit | " + Model.AreaName;
 }
@@ -7,12 +9,10 @@
 {
     <fieldset>
         <legend>@Model.AreaName
-            
             <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Back to Layout", "Edit", "Layout", new {id = Model.Layout.Id}, new {@class = "btn btn-default"})
-                <a href="@Url.Action("Delete", "LayoutArea", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
-                <button class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-document">
-                    Save</button>
+                @Html.ActionLink(Resource("Admin Layout Area Edit Back","Back to Layout"), "Edit", "Layout", new { id = Model.Layout.Id }, new { @class = "btn btn-default" })
+                <a href="@Url.Action("Delete", "LayoutArea", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">@Resource("Delete")</a>
+                <button class="btn btn-primary">@Resource("Save")</button>
             </span>
         </legend>
 
@@ -28,11 +28,11 @@
                 <table class="table table-condensed table-striped">
                     <thead>
                         <tr>
-                            <th>Name
+                            <th>@Resource("Name")
                             </th>
-                            <th>Type
+                            <th>@Resource("Type")
                             </th>
-                            <th>Actions
+                            <th>@Resource("Actions")
                             </th>
                         </tr>
                     </thead>
@@ -46,8 +46,8 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        @Html.ActionLink("Edit", "Edit", "Widget", new {id = widget.Id}, new {@class = "btn btn-default btn-xs", @data_toggle="fb-modal"})
-                                        <a href="@Url.Action("Delete", "Widget", new {id = widget.Id})" class="btn btn-xs btn-danger" data-toggle="fb-modal">Delete</a>
+                                        @Html.ActionLink(Resource("Edit"), "Edit", "Widget", new { id = widget.Id }, new { @class = "btn btn-default btn-xs", @data_toggle = "fb-modal" })
+                                        <a href="@Url.Action(Resource("Delete"), "Widget", new {id = widget.Id})" class="btn btn-xs btn-danger" data-toggle="fb-modal">@Resource("Delete")</a>
                                     </div>
                                 </td>
                             </tr>
@@ -57,16 +57,16 @@
             }
             else
             {
-                @:<p>Click add widget to add the first widget to this area.</p>
+                @Html.InfoBlock(Resource("Heads up"), Resource("Admin Layout Area Widgets Info","Click add widget to add the first widget to this area."));
             }
         }
         
         <div class="btn-group">
-            <a href="@Url.Action("Add", "Widget", new {id = Model.Id, returnUrl = Request.Url})" class="btn btn-xs btn-default" data-toggle="fb-modal">Add widget</a>
+            <a href="@Url.Action(Resource("Add"), "Widget", new {id = Model.Id, returnUrl = Request.Url})" class="btn btn-xs btn-default" data-toggle="fb-modal">@Resource("Admin Layout Area Add Widget", "Add widget")</a>
             @{
                 if (Model.GetWidgets().Any())
                 {
-                    @Html.ActionLink("Sort widgets", "SortWidgets", "LayoutArea", new { id = Model.Id, returnUrl = Request.Url.ToString() }, new { @class = "btn btn-xs btn-default", @data_toggle = "fb-modal" })
+                    @Html.ActionLink(Resource("Sort"), "SortWidgets", "LayoutArea", new { id = Model.Id, returnUrl = Request.Url.ToString() }, new { @class = "btn btn-xs btn-default", @data_toggle = "fb-modal" })
                 }
             }
 

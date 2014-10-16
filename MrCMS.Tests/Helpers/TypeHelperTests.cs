@@ -69,6 +69,7 @@ namespace MrCMS.Tests.Helpers
         private class TestAdminMenuItem : IAdminMenuItem
         {
             public string Text { get; private set; }
+            public string IconClass { get; private set; }
             public string Url { get; private set; }
             public bool CanShow { get; private set; }
             public SubMenu Children { get; private set; }

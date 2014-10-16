@@ -1,4 +1,5 @@
-﻿@using MrCMS.Helpers
+﻿@using System
+@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Core.Pages
 @model MrCMS.Web.Apps.Core.Models.RegisterAndLogin.LoginModel
 @using (Html.BeginForm())
@@ -18,16 +19,16 @@
             <div class="checkbox">
                 <label>
                     @Html.CheckBoxFor(model => model.RememberMe)
-                    Remember me
+                    @Resource("Remember me")
                 </label>
             </div>
 
             <div class="btn-group">
-                <button type="submit" value="Login" class="btn btn-primary"><span class="glyphicon glyphicon-user"></span> Login</button>
+                <button type="submit" value="@Resource("Login")" class="btn btn-primary"><span class="glyphicon glyphicon-user"></span> @Resource("Login")</button>
 
                 <a href="@(UniquePageHelper.GetUrl<ForgottenPasswordPage>())" class="btn btn-default">
                     <span class="glyphicon glyphicon glyphicon-question-sign"></span>
-                    Forgotten password?
+                    @Resource("Forgotten password")?
                 </a>
                 
             </div>

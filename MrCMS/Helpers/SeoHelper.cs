@@ -12,6 +12,7 @@ namespace MrCMS.Helpers
         {
             if (string.IsNullOrWhiteSpace(url))
                 return "";
+            url = RemoveDiacritics(url);
             url = url.ToLower().Replace("&", "and").Replace(".", "").Trim();
             url = Regex.Replace(url.ToLower(), @"[^\w-//]+", "-");
             url = Regex.Replace(url.ToLower(), @"\-+", "-"); //stops having --- in urls
@@ -20,6 +21,11 @@ namespace MrCMS.Helpers
             return url;
         }
 
+        private static string RemoveDiacritics(string url)
+        {
+            byte[] tempBytes = System.Text.Encoding.GetEncoding("ISO-8859-8").GetBytes(url);
+            return System.Text.Encoding.UTF8.GetString(tempBytes);
+        }
 
         /// <summary>
         ///     Get file se name

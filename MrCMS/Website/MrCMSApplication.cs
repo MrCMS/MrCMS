@@ -14,6 +14,7 @@ using MrCMS.Apps;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.IoC;
+using MrCMS.IoC.Modules;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
@@ -35,8 +36,8 @@ namespace MrCMS.Website
 {
     public abstract class MrCMSApplication : HttpApplication
     {
-        public const string AssemblyVersion = "0.4.2.0";
-        public const string AssemblyFileVersion = "0.4.2.0";
+        public const string AssemblyVersion = "0.4.3.0";
+        public const string AssemblyFileVersion = "0.4.3.0";
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
         private static IKernel _kernel;
         private const string CachedMissingItemKey = "cached-missing-item";
@@ -133,7 +134,11 @@ namespace MrCMS.Website
                                 !currentUser.IsActive))
                                 Get<IAuthorisationService>().Logout();
                             else
+                            {
                                 CurrentRequestData.CurrentUser = currentUser;
+                                Thread.CurrentThread.CurrentCulture = currentUser.GetUICulture();
+                                Thread.CurrentThread.CurrentUICulture = currentUser.GetUICulture();
+                            }
                         }
                     }
                 };
@@ -232,7 +237,6 @@ namespace MrCMS.Website
             var kernel = new StandardKernel(new NinjectSettings { AllowNullInjection = true },
                 new ServiceModule(),
                 new SettingsModule(),
-                new LuceneModule(),
                 new FileSystemModule(),
                 new GenericBindingsModule(),
                 new SystemWebModule(),

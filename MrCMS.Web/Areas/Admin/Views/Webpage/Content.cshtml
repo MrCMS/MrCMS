@@ -1,3 +1,4 @@
 ﻿@model MrCMS.Entities.Documents.Web.Webpage
-@Html.TextAreaFor(x => x.BodyContent, new { @class = "ckedit-enabled" })
-
+<div class="body-content"> <!-- leave this class here for fixing the bar to top only for body content -->
+    @Html.TextAreaFor(x => x.BodyContent, new { @class = "ckedit-enabled" })
+</div>

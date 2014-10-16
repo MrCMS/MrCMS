@@ -1,4 +1,5 @@
-﻿@using MrCMS.Entities.Documents.Layout
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Layout
 @using MrCMS.Helpers
 @model Layout
 @{
@@ -7,50 +8,49 @@
 }
 @using (Html.BeginForm("Edit", "Layout", FormMethod.Post, new { id = "edit-document" }))
 {
-    
+
     <fieldset>
-        <legend>@Model.Name
+        <legend>
+            @Model.Name
+        <span class="btn-group  display-inline  pull-right">
+            @if (Model.CanDelete())
+            {
+                <a href="@Url.Action("Delete", "Layout", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">@Resource("Delete")</a>
+            }
+            @Html.ActionLink(Resource("Move"), "Set", "Layout", new { id = Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-default" })
+            <button class="btn btn-primary" id="save-edit">@Resource("Save")</button>
+        </span>
+    </legend>
 
-            <span class="btn-group  display-inline  pull-right">
-                @if (Model.CanDelete())
-                {
-                    <a href="@Url.Action("Delete", "Layout", new { id = Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
-                }
-                @Html.ActionLink("Move", "Set", "Layout", new { id = Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-default" })
-                <button class="btn btn-primary" id="save-edit">Save</button>
+    @if (TempData["saved"] != null)
+    {
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @TempData["saved"]
+        </div>
+    }
 
-            </span>
-        </legend>
-
-        @if (TempData["saved"] != null)
-        {
-            <div class="alert alert-success">
-                <button type="button" class="close" data-dismiss="alert">×</button>
-                @TempData["saved"]
+    @Html.HiddenFor(x => x.Id)
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                @Html.LabelFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
             </div>
-        }
+            <div class="form-group">
+                @Html.LabelFor(x => x.UrlSegment)
+                @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
+            </div>
 
-        @Html.HiddenFor(x => x.Id)
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Name)
-                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(x => x.Name, "", new { @class = "error" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(x => x.UrlSegment)
-                    @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
-                </div>
-
-                <div class="form-group">
-                    @Html.InlineCheckboxFor(x => x.Hidden) 
-                </div>
+            <div class="form-group">
+                @Html.InlineCheckboxFor(x => x.Hidden)
             </div>
         </div>
-        <h4 class="light">Areas</h4>
-        @{
+    </div>
+    <h4 class="light">@Resource("Admin Layout Areas Title", "Areas")</h4>
+    @{
         if (Model.LayoutAreas.Any())
         {
             <table class="table table-condensed table-striped">
@@ -64,8 +64,8 @@
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    @Html.ActionLink("Edit", "Edit", "LayoutArea", new { id = area.Id }, new { @class = "btn btn-default btn-xs" })
-                                    <a href="@Url.Action("Delete", "LayoutArea", new { id = area.Id })" class="btn btn-xs btn-danger" data-toggle="fb-modal">Delete</a>
+                                    @Html.ActionLink("Edit", "Edit", "LayoutArea", new {id = area.Id}, new {@class = "btn btn-default btn-xs"})
+                                    <a href="@Url.Action("Delete", "LayoutArea", new {id = area.Id})" class="btn btn-xs btn-danger" data-toggle="fb-modal">@Resource("Delete")</a>
                                 </div>
                             </td>
                         </tr>
@@ -75,11 +75,11 @@
         }
         else
         {
-            @:Click Add layout area to add the first area to this layout.
+            @Resource("Admin Layout Add Info", "Click Add layout area to add the first area to this layout")
         }
-        }
+    }
 
-        <a href="@Url.Action("Add", "LayoutArea", new { id = Model.Id })" class="btn btn-xs btn-default" data-toggle="fb-modal">Add layout area</a>
+    <a href="@Url.Action("Add", "LayoutArea", new { id = Model.Id })" class="btn btn-xs btn-default" data-toggle="fb-modal">@Resource("Admin Layout Add Area", "Add layout area")</a>
 
-    </fieldset>
+</fieldset>
 }

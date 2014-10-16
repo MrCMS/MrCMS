@@ -22,7 +22,7 @@ div.layout-area, div.widget { position: relative; }
 .mrcms-edit-menu ul { margin: 0; padding: 0; list-style-type: none; }
     .mrcms-edit-menu ul li { margin: 5px; }
 
-.mrcms-btn { display: inline-block; padding: 5px 6px; margin-bottom: 0; font-size: 12px; font-weight: 500; line-height: 14px; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; border: 1px solid transparent; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none;border-radius: 4px; }
+.mrcms-btn { display: inline-block; padding: 5px 6px; margin-bottom: 0; font-size: 12px; font-weight: 500; line-height: 14px; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; border: 1px solid transparent; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none;border-radius: 0; }
 
     .mrcms-btn:focus { outline: thin dotted #333; outline: 5px auto -webkit-focus-ring-color; outline-offset: -2px; }
 
@@ -194,10 +194,10 @@ div.layout-area, div.widget { position: relative; }
             .mrcms-btn-link[disabled]:focus,
             fieldset[disabled] .mrcms-btn-link:focus { color: #333333; text-decoration: none; }
 
-.mrcms-btn-large { padding: 10px 16px; font-size: 18px; line-height: 1.33; border-radius: 6px; }
+.mrcms-btn-large { padding: 10px 16px; font-size: 18px; line-height: 1.33;border-radius: 0; }
 
 .mrcms-btn-small,
-.mrcms-btn-mini { padding: 5px 10px; font-size: 12px; line-height: 1.5; border-radius: 3px; }
+.mrcms-btn-mini { padding: 5px 10px; font-size: 12px; line-height: 1.5; border-radius: 0; }
 
 .mrcms-btn-mini { padding: 3px 5px; }
 

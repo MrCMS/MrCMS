@@ -1,13 +1,15 @@
-﻿@model MrCMS.Entities.Documents.Media.MediaCategory
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaCategory
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Delete", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
+
     <fieldset>
-        <legend>Delete folder
-                <span class="btn-group  display-inline  pull-right">
-                    <input type="submit" class="btn btn-danger" value="Delete" />
-                </span>
+        <legend>@Resource("Admin Folders Delete Title", "Delete folder")
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn btn-danger" value="@Resource("Delete")" />
+            </span>
         </legend>
-        <p>Deleting this cannot be undone.</p>
+        @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
     </fieldset>
 }

@@ -1,12 +1,13 @@
-﻿@using MrCMS.Helpers
+﻿@using System.Collections.Generic
+@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.Webpage
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Set", "Layout", new { id = "" }, FormMethod.Post, new { @class = "update-parent-form" }))
 {
     <fieldset>
-        <legend>Set parent
+        <legend>@Resource("Admin Layouts Move Title", "Move Layout")
             <span class="btn-group  display-inline  pull-right">
-                 <input type="submit" class="btn-danger btn submit-form-btn" value="Set parent" />
+                 <input type="submit" class="btn-primary btn" value="@Resource("Move")" />
             </span>
         </legend>
         @Html.HiddenFor(x => x.Id)

@@ -1,4 +1,5 @@
-﻿@using MrCMS.Helpers
+﻿@using System
+@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Core.Pages
 @model MrCMS.Web.Apps.Core.Models.RegisterAndLogin.RegisterModel
 
@@ -35,8 +36,8 @@
             </div>
             
             <div class="btn-group">
-            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Register</button>
-            <a href="@( UniquePageHelper.GetUrl<LoginPage>())" class="btn btn-default">Already Registered? Login here</a>            
+            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> @Resource("Register")</button>
+            <a href="@( UniquePageHelper.GetUrl<LoginPage>())" class="btn btn-default">@Resource("Already Registered? Login here")</a>            
             </div>
             <br />
             @if (!String.IsNullOrEmpty(ViewBag.Message))

@@ -13,6 +13,7 @@ using MrCMS.Settings;
 using NHibernate;
 using MrCMS.Helpers;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
@@ -35,9 +36,8 @@ namespace MrCMS.Services
             _siteSettings = siteSettings;
         }
 
-        public MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory)
+        public MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory = null)
         {
-            if (mediaCategory == null) throw new ArgumentNullException("mediaCategory");
 
             fileName = Path.GetFileName(fileName);
 
@@ -48,10 +48,14 @@ namespace MrCMS.Services
                                     FileName = fileName,
                                     ContentType = contentType,
                                     ContentLength = contentLength,
-                                    MediaCategory = mediaCategory,
                                     FileExtension = Path.GetExtension(fileName),
-                                    DisplayOrder = mediaCategory.Files.Count
                                 };
+            if (mediaCategory != null)
+            {
+                mediaFile.MediaCategory = mediaCategory;
+                int? max = _session.Query<MediaFile>().Where(x=>x.MediaCategory.Id == mediaFile.MediaCategory.Id).Max(x => (int?)x.DisplayOrder);
+                mediaFile.DisplayOrder = (max.HasValue ? (int)max + 1 : 1);
+            }
 
             if (mediaFile.IsImage)
             {
@@ -63,20 +67,28 @@ namespace MrCMS.Services
 
             mediaFile.FileUrl = _fileSystem.SaveFile(stream, fileLocation, contentType);
 
-            mediaCategory.Files.Add(mediaFile);
+            
             _session.Transact(session =>
                                   {
                                       session.SaveOrUpdate(mediaFile);
-                                      session.SaveOrUpdate(mediaCategory);
+                                      if (mediaCategory != null)
+                                      {
+                                          mediaCategory.Files.Add(mediaFile);
+                                          session.SaveOrUpdate(mediaCategory);
+                                      }
                                   });
             return mediaFile;
         }
 
-        private string GetFileLocation(string fileName, MediaCategory mediaCategory)
+        private string GetFileLocation(string fileName, MediaCategory mediaCategory = null)
         {
             var fileNameOriginal = fileName.GetTidyFileName();
 
-            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id, mediaCategory.UrlSegment);
+            string urlSegment = "root";
+            if (mediaCategory != null)
+                urlSegment = mediaCategory.UrlSegment;
+
+            string folderLocation = string.Format("{0}/{1}/", _currentSite.Id, urlSegment);
 
             //check for duplicates
             int i = 1;
@@ -86,7 +98,7 @@ namespace MrCMS.Services
                 i++;
             }
 
-            string fileLocation = string.Format("{0}/{1}/{2}", _currentSite.Id, mediaCategory.UrlSegment, fileName);
+            string fileLocation = string.Format("{0}/{1}/{2}", _currentSite.Id, urlSegment, fileName);
             return fileLocation;
         }
 
@@ -225,6 +237,13 @@ namespace MrCMS.Services
             if (string.IsNullOrWhiteSpace(extension) || extension.Length < 1)
                 return false;
             return _mediaSettings.AllowedFileTypeList.Contains(extension.Substring(1), StringComparer.OrdinalIgnoreCase);
+        }
+
+        public void DeleteFileSoft(MediaFile mediaFile)
+        {
+            if (mediaFile.MediaCategory != null)
+                mediaFile.MediaCategory.Files.Remove(mediaFile);
+            _session.Transact(session => session.Delete(mediaFile));
         }
     }
 }

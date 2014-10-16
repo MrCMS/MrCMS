@@ -1,4 +1,6 @@
-﻿@using MrCMS.Entities.People
+﻿@using System.Collections.Generic
+@using System.Linq
+@using MrCMS.Entities.People
 @using MrCMS.Helpers
 @using MrCMS.Models
 @using MrCMS.Paging
@@ -13,10 +15,10 @@
 {
     <fieldset>
         <legend>
-            Users
+            @Resource("Admin Users", "Users")
             <span class="btn-group  display-inline  pull-right">
                 @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-default", data_toggle = "fb-modal" })
-                <input type="submit" class="btn btn-primary" value="Search" />
+                <input type="submit" class="btn btn-primary" value="@Resource("Search")" />
             </span>
         </legend>
 
@@ -42,16 +44,16 @@
     <table class="table table-condensed table-striped">
         <tr>
             <th>
-                Email
+                @Resource("Email")
             </th>
             <th>
-                Name
+                @Resource("Name")
             </th>
             <th>
-                Roles
+                @Resource("Roles")
             </th>
             <th>
-                Created On
+                @Resource("Created On")
             </th>
         </tr>
         @foreach (User user in users)
@@ -75,7 +77,7 @@
 }
 else
 {
-    <p>No users matched your criteria.</p>
+    <p>@Resource("Admin Users None", "No users matched your criteria").</p>
 }
 @Html.Pager(users, "Index", page => new { page })
 

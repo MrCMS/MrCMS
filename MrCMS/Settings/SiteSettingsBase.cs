@@ -7,9 +7,6 @@ namespace MrCMS.Settings
 {
     public abstract class SiteSettingsBase
     {
-        [ReadOnly(true)]
-        public int SiteId { get; set; }
-
         public virtual string TypeName
         {
             get { return GetType().Name.BreakUpString(); }

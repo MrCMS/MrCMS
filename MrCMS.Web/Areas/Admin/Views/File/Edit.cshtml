@@ -1,14 +1,16 @@
-﻿@model MrCMS.Entities.Documents.Media.MediaFile
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Media.MediaFile
 @using (Html.BeginForm("Edit", "File", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
     <fieldset>
-        <legend>Edit
+        <legend>@Resource("Edit")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-primary btn" value="Save" />
+                <a href="javascript:history.go(-1)" class="btn btn-default">@Resource("Back")</a>
+                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
             </span>
         </legend>
-        @Model.FileName<br />
+        @Html.Link(Model.FileName, Model.FileUrl)
+        <hr />
         <div class="form-group">
             @Html.LabelFor(x => x.Title)
             @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })

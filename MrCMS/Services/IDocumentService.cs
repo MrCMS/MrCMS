@@ -19,5 +19,6 @@ namespace MrCMS.Services
 
         void PublishNow(Webpage document);
         void Unpublish(Webpage document);
+        IList<Tag> GetDocumentTags(Document document);
     }
 }

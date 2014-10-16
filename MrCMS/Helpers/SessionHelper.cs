@@ -74,10 +74,4 @@ namespace MrCMS.Helpers
             return query.RowCount() > 0;
         }
     }
-
-    public enum OrderType
-    {
-        Descending,
-        Ascending
-    }
 }

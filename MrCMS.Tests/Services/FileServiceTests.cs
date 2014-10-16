@@ -18,16 +18,6 @@ namespace MrCMS.Tests.Services
         private MediaSettings _mediaSettings;
         private SiteSettings _siteSettings;
 
-        [Fact]
-        public void FileService_AddFile_NullMediaCategoryThrowsArgumentNullException()
-        {
-            var fileService = GetFileService();
-
-            Stream stream = GetDefaultStream();
-            fileService.Invoking(service => service.AddFile(stream, "test.txt", "text/plain", 10, null)).ShouldThrow
-                <ArgumentNullException>();
-        }
-
         private FileService GetFileService(ISession session = null, IFileSystem fileSystem = null)
         {
             _fileSystem = A.Fake<IFileSystem>();
@@ -41,8 +31,7 @@ namespace MrCMS.Tests.Services
                                     SmallImageHeight = 75,
                                     SmallImageWidth = 100,
                                     ThumbnailImageHeight = 64,
-                                    ThumbnailImageWidth = 64,
-                                    SiteId = CurrentSite.Id
+                                    ThumbnailImageWidth = 64
                                 };
             _siteSettings = new SiteSettings();
             return new FileService(session ?? Session, fileSystem ?? _fileSystem,

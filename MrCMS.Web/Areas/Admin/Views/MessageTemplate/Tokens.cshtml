@@ -1,5 +1,5 @@
-﻿@model List<string>
+﻿@using System.Linq
+@model System.Collections.Generic.List<string>
 <hr />
-<strong>Available Tokens:</strong>
+<strong>@Resource("Admin Message Template Tokens", "Available Tokens"):</strong>
 @string.Join(", ", Model.Select(s => string.Format("{{{0}}}", s)))
-<p>Add tokens in format {TOKEN_NAME} e.g: {@(Model.First())}.</p>

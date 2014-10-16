@@ -52,15 +52,11 @@ namespace MrCMS.Website
 
             var value = Html.ParseShortcodes(method.Compile().Invoke(model)).ToHtmlString();
 
-            var typeName = "";
-            if (model is Webpage) //get base document type as using generic interfaces cause issues using Editable I.E DocumentContainer
-                typeName = (model as Webpage).DocumentType;
-            else
-                typeName = model.GetType().Name;
+            var typeName = model.GetType().Name;
 
             if (EditingEnabled && propertyInfo != null)
             {
-                var tagBuilder = new TagBuilder("div");
+                var tagBuilder = new TagBuilder(isHtml ? "div" : "span");
                 tagBuilder.AddCssClass("editable");
                 tagBuilder.Attributes["data-id"] = model.Id.ToString();
                 tagBuilder.Attributes["data-property"] = propertyInfo.Name;

@@ -1,31 +1,5 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Website
 <div class="left-nav">
-    <div id="nav-tabs">
-        <ul class="nav nav-tabs" data-stickytabs="admin-navigation" role="tablist">
-            <li id="web-nav"><a href="#web"  role="tab" data-toggle="tab" data-tree="webpage-tree" id="pages-tab" data-tree-url="@Url.Action("WebSiteTree", "Navigation")">@Resource("Admin Nav Pages", "Pages")</a></li>
-            <li id="media-tree-nav"><a href="#media" role="tab" data-toggle="tab" data-tree="media-tree" id="media-tab" data-tree-url="@Url.Action("MediaTree", "Navigation")">@Resource("Admin Nav Media", "Media")</a></li>
-            <li id="layout-nav"><a href="#layout" role="tab" data-toggle="tab" data-tree="layout-tree" id="layout-tab" data-tree-url="@Url.Action("LayoutTree", "Navigation")">@Resource("Admin Nav Layout", "Layout")</a></li>
-        </ul>
-        <div class="tab-content">
-            <div id="web" class="tab-pane">
-                <div class="sidebar-nav" id="webpage-tree">
-                </div>
-                <br />
-                <strong>Key</strong>
-                <hr class="small-margin" />
-                <span class="grey">Not included in site navigation</span><br />
-                <span class="orange">Not published</span><br />
-            </div>
-            <div id="media" class="tab-pane">
-                <div class="sidebar-nav" id="media-tree">
-                </div>
-                <br />
-            </div>
-            <div id="layout" class="tab-pane">
-                <div class="sidebar-nav" id="layout-tree">
-                </div>
-                <br />
-            </div>
-        </div>
-    </div>
+    @{ Html.RenderAction("Get", "NavLinks");}
 </div>

@@ -1,4 +1,5 @@
-﻿@using MrCMS.Entities.Documents
+﻿@using System.Collections.Generic
+@using MrCMS.Entities.Documents
 @using MrCMS.Helpers
 @using MrCMS.Web.Areas.Admin.Models
 @using MrCMS.Web.Areas.Admin.Services
@@ -15,9 +16,9 @@
 {
     <fieldset>
         <legend>
-            Add page to @(Model.Parent != null ? Model.Parent.Name : "Root")
+            @Resource("Admin Webpage Add page to", "Add page to") @(Model.Parent != null ? Model.Parent.Name : Resource("Root"))
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-primary btn hide-until-document-selected" value="Save and continue" style="display: none;" />
+                <input type="submit" class="btn-primary btn hide-until-document-selected" value="@Resource("Save")" style="display: none;" />
             </span>
         </legend>
         <div class="row">
@@ -65,7 +66,7 @@
                 </div>
             </div>
             <div class="col-lg-10" id="message-choose-document">
-                <p>Please select a document type</p>
+                <p>@Resource("Admin Webpage Please select a document type", "Please select a document type")</p>
             </div>
 
         </div>

@@ -4,19 +4,15 @@
     ViewBag.Title = "Dashboard";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-<form>
-    <fieldset>
-        <legend>Dashboard</legend>
-        @Html.RenderDashboardArea(DashboardArea.Top)
-        <hr />
-        <div class="row">
-            <div class="col-lg-6">
-                @Html.RenderDashboardArea(DashboardArea.LeftColumn)
-            </div>
-            <div class="col-lg-6">
-                @Html.RenderDashboardArea(DashboardArea.RightColumn)
-            </div>
-        </div>
-        <hr />
-    </fieldset>
-</form>
+<h1 class="page-header">@Resource("Dashboard")</h1>
+@Html.RenderDashboardArea(DashboardArea.Top)
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        @Html.RenderDashboardArea(DashboardArea.LeftColumn)
+    </div>
+    <div class="col-md-6">
+        @Html.RenderDashboardArea(DashboardArea.RightColumn)
+    </div>
+</div>
+<hr />

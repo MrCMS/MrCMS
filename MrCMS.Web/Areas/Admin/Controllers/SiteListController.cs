@@ -15,11 +15,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public ActionResult Get()
         {
-            var allSites = _siteListService.GetSiteOptions();
-
-            return allSites.Count == 1
-                       ? (ActionResult) new EmptyResult()
-                       : PartialView(allSites);
+            return PartialView(_siteListService.GetSites());
         }
     }
 }

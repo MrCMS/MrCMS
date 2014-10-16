@@ -1,12 +1,13 @@
-﻿@using MrCMS.Helpers
+﻿@using System.Collections.Generic
+@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.FormProperties.FormProperty
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("AddProperty", "Form", new { id = "" }, FormMethod.Post, new { @class = "form-update-form" }))
 {
     <fieldset>
-        <legend>Add Field
+        <legend>@Resource("Admin Form Add Field Title", "Add Field")
             <span class="btn-group  display-inline  pull-right">
-                <input type="button" class="btn-primary btn submit-form-btn" value="Add form property" />
+                <input type="button" class="btn-primary btn submit-form-btn" value="@Resource("Admin Form Add Field Button", "Add form property")" />
             </span>
         </legend>
         @Html.HiddenFor(x => x.Webpage.Id)
@@ -48,5 +49,4 @@
         </div>
     </fieldset>
 }
-
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/form-builder.js"); }

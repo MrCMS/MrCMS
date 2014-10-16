@@ -30,7 +30,7 @@ namespace MrCMS.Settings
                              page => page.Id == pageId, (string)null);
         }
 
-        public virtual List<SelectListItem> GetMediaCategoryOptions(ISession session,int categoryId)
+        public virtual List<SelectListItem> GetMediaCategoryOptions(ISession session, int? categoryId)
         {
             var list =
                 session.QueryOver<MediaCategory>()

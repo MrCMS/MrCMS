@@ -157,7 +157,6 @@
                 });
 
                 $('[data-action=post-link]').on('click', function (e) {
-                    alert("hi");
                     e.preventDefault();
                     var self = $(this);
                     var url = self.attr('href') || self.data('link');

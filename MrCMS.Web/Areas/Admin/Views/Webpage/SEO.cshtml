@@ -1,4 +1,5 @@
-﻿@using MrCMS.Entities.Documents.Web
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
 @using MrCMS.Website
 @model Webpage
@@ -7,7 +8,7 @@
         <i class="glyphicon glyphicon-question-sign" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar.
             For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>
 
-        Permalink: /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control", style = "display:none;" })
+        @Resource("Admin Webpage Seo Permalink", "Permalink"): /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control", style = "display:none;" })
         @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
         <button id="change-url" class="btn btn-default btn-xs">Change</button>
 
@@ -16,7 +17,7 @@
         <div class="display-inline">
             <i class="glyphicon glyphicon-question-sign" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History
 
-            @Html.ActionLink("Add", "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-xs btn-success", data_toggle = "fb-modal" })
+            @Html.ActionLink(Resource("Add"), "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-xs btn-success", data_toggle = "fb-modal" })
         </div>
         @if (Model.Urls.Any())
         {
@@ -38,13 +39,13 @@
         }
         else
         {
-            @:No URL History
-            }
+            @Resource("Admin Webpage Seo No URL History", "No URL History")
+        }
 
     </div>
 
     @if (!(Model is Redirect))
-    {       
+    {
         <hr />
         <div class="form-group">
             @Html.LabelFor(x => x.MetaTitle)
@@ -63,30 +64,30 @@
         </div>
 
         <hr />
-        <h4>SEO Analysis </h4>
+        <h4>@Resource("Admin Webpage Seo SEO Analysis", "SEO Analysis") </h4>
         @Html.LabelFor(webpage => webpage.SEOTargetPhrase)
-        <div class="input-group">            
+        <div class="input-group">
             @Html.TextBoxFor(webpage => webpage.SEOTargetPhrase, new { @class = "form-control" })
             <span class="input-group-btn">
-                <button data-seo-analyze="true" class="btn btn-default">Analyze</button>
+                <button data-seo-analyze="true" class="btn btn-default">@Resource("Admin Webpage Seo Analyze", "Analyze")</button>
             </span>
         </div>
 
         <div data-seo-analysis-summary="true">
         </div>
-        
+
         <hr />
 
         <div class="form-group">
             <label class="checkbox-inline">
                 @Html.CheckBoxFor(x => x.RevealInNavigation)
-                Include in navigation
+                @Resource("Admin Webpage Seo Include in navigation", "Include in navigation")
             </label>
         </div>
 
         <div class="form-group">
             <label class="checkbox-inline">
-                @Html.CheckBoxFor(webpage => webpage.RequiresSSL) Requires SSL
+                @Html.CheckBoxFor(webpage => webpage.RequiresSSL) @Resource("Admin Webpage Seo Requires SSL", "Requires SSL")
             </label>
         </div>
     }
@@ -95,7 +96,7 @@
     <div class="form-group">
         @Html.LabelFor(x => x.CustomHeaderScripts)
         @Html.TextAreaFor(x => x.CustomHeaderScripts, new { @class = "form-control" })
-        @Html.ValidationMessageFor(x => x.CustomHeaderScripts, "", new { @class = "error" })    
+        @Html.ValidationMessageFor(x => x.CustomHeaderScripts, "", new { @class = "error" })
     </div>
     <div class="form-group">
         @Html.LabelFor(x => x.CustomFooterScripts)
@@ -103,11 +104,11 @@
         @Html.ValidationMessageFor(x => x.CustomFooterScripts, "", new { @class = "error" })
     </div>
     <hr />
-    <strong>Page type:</strong> @Model.GetMetadata().Name
+    <strong>@Resource("Page type"):</strong> @Model.GetMetadata().Name
     <br />
-    <strong>Created On: </strong>@Model.CreatedOn
+    <strong>@Resource("Created On"): </strong>@Model.CreatedOn
     <br />
-    <strong>Last Updated: </strong>@Model.UpdatedOn
+    <strong>@Resource("Last Updated"): </strong>@Model.UpdatedOn
     <br />
     <strong>Page Id: </strong>@Model.Id
 

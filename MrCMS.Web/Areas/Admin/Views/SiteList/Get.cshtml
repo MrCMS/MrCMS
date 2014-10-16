@@ -1,3 +1,10 @@
-﻿@model List<SelectListItem>
+﻿@using MrCMS.Website
+@model System.Collections.Generic.IList<MrCMS.Entities.Multisite.Site>
 
-@Html.DropDownList("admin-site-selector", Model, new{@class="form-control", @style="width: 200px;"})
+<ul class="dropdown-menu site-list" role="menu">
+    @foreach (var site in Model)
+    {
+        <li><a href="@site.GetFullDomain">@site.Name</a></li>
+    }
+</ul>
+

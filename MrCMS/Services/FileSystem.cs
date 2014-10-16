@@ -24,7 +24,10 @@ namespace MrCMS.Services
 
             using (Stream file = File.OpenWrite(path))
             {
-                stream.Position = 0;
+                if (stream.CanSeek)
+                {
+                    stream.Position = 0;
+                }
                 stream.CopyTo(file);
             }
             stream.Close();
@@ -63,7 +66,7 @@ namespace MrCMS.Services
             var path = GetPath(filePath);
 
             if (Directory.Exists(path))
-                Directory.Delete(path);
+                Directory.Delete(path, true);
             else
                 File.Delete(path);
         }

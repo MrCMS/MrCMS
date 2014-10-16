@@ -8,7 +8,9 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Querying;
 using MrCMS.Paging;
+using MrCMS.Search;
 using MrCMS.Services;
+using MrCMS.Services.Resources;
 using MrCMS.Web.Areas.Admin.Models.Search;
 using NHibernate;
 using NHibernate.Criterion;
@@ -21,14 +23,16 @@ namespace MrCMS.Web.Areas.Admin.Services
         private readonly IGetBreadcrumbs _getBreadcrumbs;
         private readonly ISession _session;
         private readonly Site _site;
+        private readonly IStringResourceProvider _stringResourceProvider;
 
         public AdminWebpageSearchService(ISearcher<Webpage, AdminWebpageIndexDefinition> documentSearcher,
-            IGetBreadcrumbs getBreadcrumbs, ISession session, Site site)
+            IGetBreadcrumbs getBreadcrumbs, ISession session, Site site, IStringResourceProvider stringResourceProvider)
         {
             _documentSearcher = documentSearcher;
             _getBreadcrumbs = getBreadcrumbs;
             _session = session;
             _site = site;
+            _stringResourceProvider = stringResourceProvider;
         }
 
         public IPagedList<Webpage> Search(AdminWebpageSearchQuery model)
@@ -36,14 +40,15 @@ namespace MrCMS.Web.Areas.Admin.Services
             return _documentSearcher.Search(model.GetQuery(), model.Page);
         }
 
-        public IEnumerable<QuickSearchResults> QuickSearch(AdminWebpageSearchQuery model)
+        public IEnumerable<QuickSearchResult> QuickSearch(AdminWebpageSearchQuery model)
         {
-            return _documentSearcher.Search(model.GetQuery(), model.Page, 10).Select(x => new QuickSearchResults
+            return _documentSearcher.Search(model.GetQuery(), model.Page, 10).Select(x => new QuickSearchResult
                                                                                           {
-                                                                                              Id = x.Id,
-                                                                                              Name = x.Name,
-                                                                                              CreatedOn = x.CreatedOn.ToShortDateString().ToString(),
-                                                                                              Type = x.GetType().Name.ToString()
+                                                                                              id = x.Id,
+                                                                                              value = x.Name,
+                                                                                              url = x.AbsoluteUrl
+                                                                                              //CreatedOn = x.CreatedOn.ToShortDateString().ToString(),
+                                                                                              //Type = x.GetType().Name.ToString()
                                                                                           });
         }
 
@@ -56,7 +61,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             return DocumentMetadataHelper.DocumentMetadatas
                                    .BuildSelectItemList(definition => definition.Name, definition => definition.TypeName,
-                                                        definition => definition.TypeName == type, "Select type");
+                                                        definition => definition.TypeName == type, _stringResourceProvider.GetValue("Admin Select Type", "Select type"));
         }
 
         public List<SelectListItem> GetParentsList()
@@ -75,7 +80,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             var selectListItems =
                 GetPageListItems(
                     rootWebpages, parentIds, 1).ToList();
-            selectListItems.Insert(0, new SelectListItem { Selected = false, Text = "Root", Value = "0" });
+            selectListItems.Insert(0, new SelectListItem { Selected = false, Text = _stringResourceProvider.GetValue("Admin Root","Root"), Value = "0" });
             return selectListItems;
         }
 

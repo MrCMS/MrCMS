@@ -1,8 +1,9 @@
-﻿@model IEnumerable<Microsoft.Owin.Security.AuthenticationDescription>
+﻿@using System.Linq
+@model System.Collections.Generic.IEnumerable<Microsoft.Owin.Security.AuthenticationDescription>
 @{
     if (Model.Any())
     {
-    <h4>Use another service to login</h4>
+    <h4>@Resource("Use another service to login")</h4>
     <div id="socialLoginList">
         <p>
             @foreach (var p in Model)

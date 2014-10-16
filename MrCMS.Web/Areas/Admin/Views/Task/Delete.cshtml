@@ -1,14 +1,16 @@
-﻿@model MrCMS.Tasks.ScheduledTask
+﻿@using MrCMS.Helpers
+@model MrCMS.Tasks.ScheduledTask
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
 
 @using (Html.BeginForm("Delete", "Task", FormMethod.Post))
 {
     <fieldset>
-        <legend>Delete task
+        <legend>@Resource("Admin Tasks Delete", "Delete Task")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-primary btn" value="Delete task" />
+                <input type="submit" class="btn-primary btn" value="@Resource("Delete")" />
             </span>
         </legend>
-        Are you sure you want to delete the task @Model.Type? 
+        @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+
     </fieldset>
 }

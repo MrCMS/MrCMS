@@ -9,7 +9,6 @@ using Microsoft.AspNet.Identity;
 using MrCMS.ACL;
 using MrCMS.Helpers;
 using MrCMS.Helpers.Validation;
-using NHibernate;
 
 namespace MrCMS.Entities.People
 {
@@ -86,6 +85,9 @@ namespace MrCMS.Entities.People
 
         public virtual bool DisableNotifications { get; set; }
         public virtual DateTime? LastNotificationReadDate { get; set; }
+        
+        [DisplayName("Site UI Culture")]
+        public virtual string UICulture { get; set; }
 
         string IUser.Id
         {

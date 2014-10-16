@@ -11,16 +11,14 @@
 @using (Html.BeginForm("Add", "MediaCategory", new { id = "" }, FormMethod.Post, new { id = "add-media-category" }))
 {
     <fieldset>
-        <legend>Add Folder
+        <legend>@Resource("Admin Folders Add Title", "Add Folder")
             <button class="btn pull-right btn-primary">
-                Add</button>
+                @Resource("Add")</button>
         </legend>
-
-
         <div class="row">
             <div class="col-lg-12">
-
                 @Html.HiddenFor(x => x.Parent.Id)
+                @Html.HiddenFor(x => x.Parent.UrlSegment)
                 <div class="form-group">
                     @Html.LabelFor(x => x.Name, "Folder Name")
                     @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
@@ -33,7 +31,6 @@
                 </div>
                 <br />
                 @Html.Hidden("DocumentType", "MediaCategory")
-
             </div>
         </div>
     </fieldset>

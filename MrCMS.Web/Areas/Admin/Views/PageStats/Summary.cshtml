@@ -1,15 +1,15 @@
 ﻿@using MrCMS.Helpers
-@model List<MrCMS.Web.Areas.Admin.Models.WebpageStats>
+@model System.Collections.Generic.List<MrCMS.Web.Areas.Admin.Models.WebpageStats>
 
-<h4>Page stats</h4>
+<h4>@Resource("Admin Dashboard Page stats", "Page stats")</h4>
 <table class="table table-striped table-condensed" style="overflow: scroll">
     <thead>
         <tr>
-            <th>Page type
+            <th>@Resource("Admin Dashboard Page Stats", "Page type")
             </th>
-            <th>Total
+            <th>@Resource("Admin Dashboard Total", "Total")
             </th>
-            <th>Unpublished
+            <th>@Resource("Admin Dashboard Unpublished", "Unpublished")
             </th>
         </tr>
     </thead>

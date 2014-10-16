@@ -3,47 +3,44 @@
 @{
     ViewBag.Title = "Sites";
 }
-<form>
-    <fieldset>
-        <legend>
-            Multi-site setup
 
-            <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
-            </span>
-        </legend>
-        <table class="table table-striped table-condensed">
-            <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Url
-                </th>
-                <th>
-                    Created On
-                </th>
-                <th>
-                    Actions
-                </th>
-            </tr>
-            @foreach (var site in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.ActionLink(site.Name, "Edit", new { id = site.Id })
-                    </td>
-                    <td>
-                        @site.BaseUrl
-                    </td>
-                    <td>
-                        @site.CreatedOn
-                    </td>
-                    <td>
-                        @Html.ActionLink("Delete", "Delete", new { id = site.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })
-                    </td>
-                </tr>
-            }
-        </table>
-    </fieldset>
-</form>
+<h1 class="page-header">
+    @Resource("Admin Multi-site setup", "Multi-site setup")
+    <span class="btn-group  display-inline  pull-right">
+        @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
+    </span>
+</h1>
+
+<table class="table table-striped table-condensed">
+    <tr>
+        <th>
+            @Resource("Name")
+        </th>
+        <th>
+            Url
+        </th>
+        <th>
+            @Resource("Created On")
+        </th>
+        <th>
+            @Resource("Actions")
+        </th>
+    </tr>
+    @foreach (var site in Model)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(site.Name, "Edit", new { id = site.Id })
+            </td>
+            <td>
+                @site.BaseUrl
+            </td>
+            <td>
+                @site.CreatedOn
+            </td>
+            <td>
+                @Html.ActionLink(Resource("Delete"), "Delete", new { id = site.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })
+            </td>
+        </tr>
+    }
+</table>

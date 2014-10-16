@@ -24,13 +24,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View(model);
         }
 
-        [AcceptVerbs(HttpVerbs.Get)]
-        public JsonResult GetSearchResults(AdminWebpageSearchQuery model)
-        {
-            if (string.IsNullOrWhiteSpace(model.Term))
-                return Json(new object());
-            return Json(_adminWebpageSearchService.QuickSearch(model), JsonRequestBehavior.AllowGet);
-        }
 
         
         public PartialViewResult GetBreadCrumb(int? parentId)

@@ -4,11 +4,11 @@
 @using (Html.BeginForm("DeleteEntry", "Form", FormMethod.Post))
 {
     <fieldset>
-        <legend>Delete Entry
+        <legend>@Resource("Admin Form Delete Entry Title", "Delete Entry")
         <span class="btn-group  display-inline  pull-right">
-            <input type="submit" class="btn btn-danger" value="Delete entry" />
+            <input type="submit" class="btn btn-danger" value="@Resource("Admin Form Delete Entry Button", "Delete entry")" />
         </span>
         </legend>
-        Are you sure you want to delete this entry?
+        @Resource("Admin Form Delete Entry warning", "Are you sure you want to delete this entry?")
     </fieldset>
 }

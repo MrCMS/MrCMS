@@ -1,5 +1,5 @@
 ﻿$.ajaxSetup({ cache: false });
-$(document).ready(function () {
+$(function () {
     $(document).ajaxStart(function () {
         $("#loading").show();
     });
@@ -9,7 +9,7 @@ $(document).ready(function () {
     $().dropdown();
     $("[rel='tooltip']").tooltip();
 
-    Globalize.culture($("#UICulture").val());
+    Globalize.culture($("#CurrentUICulture").val());
     $.validator.methods.number = function (value, element) {
         return this.optional(element) ||
             !isNaN(Globalize.parseFloat(value));
@@ -93,7 +93,18 @@ $(document).ready(function () {
     $(document).on('change', '#admin-site-selector', function () {
         location.href = $(this).val();
     });
-
+    
+    //fix ckeditor on scroll
+    $(".main-content").scroll(function (e) {
+        if ($('.body-content #cke_1_contents').height() > 500) {
+            if ($(this).scrollTop() > 110 && $(".body-content #cke_1_top").css('position') != 'fixed') {
+                $(".body-content #cke_1_top").css({ 'position': 'fixed', 'top': '51px' });
+            }
+            if ($(this).scrollTop() < 110 && $(".body-content #cke_1_top").css('position') != 'inherit') {
+                $(".body-content #cke_1_top").css({ 'position': 'inherit', 'top': 'auto;' });
+            }
+        }
+    });
 });
 
 function resizeModal(jqElement) {
@@ -124,6 +135,15 @@ function getRemoteModel(href) {
 
 $(function () {
     admin.initializePlugins();
+
+    var $message = $('.admin-message');
+    $message.show().addClass('fadeIn fast');
+    setTimeout(function () {
+        $message.removeClass('fadeIn').addClass('fadeOut');
+        setTimeout(function () {
+            $message.hide();
+        }, 1000);
+    }, 1500);
 });
 window.admin = {
     initializePlugins: function () {

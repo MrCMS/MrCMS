@@ -3,23 +3,23 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @model MrCMS.Entities.Documents.DocumentVersion
 <fieldset>
-    <legend>Version @Model.Id 
+    <legend>@Resource("Admin Webpage Version", "Version") @Model.Id 
         <span class="btn-group  display-inline  pull-right">
             @using (Html.BeginForm("RevertToVersion", "Webpage", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
             {
-                <input type="submit" class="btn btn-primary" value="Revert to version" />
+                <input type="submit" class="btn btn-primary" value="@Resource("Admin Webpage Version Revert to version", "Revert to version")" />
             }
         </span>
     </legend>
-    Editied by @Html.ActionLink(Model.User.Email, "Edit", "User", new { id = Model.User.Id }, null) on @Model.CreatedOn
+    @Resource("Admin Webpage Version Edited By","Editied by") @Html.ActionLink(Model.User.Email, "Edit", "User", new { id = Model.User.Id }, null) on @Model.CreatedOn
     <table class="table table-bordered" id="changes-table">
         <thead>
             <tr>
-                <th>Property
+                <th>@Resource("Property")
                 </th>
-                <th>Previous
+                <th>@Resource("Previous")
                 </th>
-                <th>Current
+                <th>@Resource("Current")
                 </th>
             </tr>
         </thead>

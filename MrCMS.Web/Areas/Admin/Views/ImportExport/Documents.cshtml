@@ -1,43 +1,39 @@
-﻿@model dynamic
+﻿@using System.Collections.Generic
+@using System.Linq
+@using MrCMS.Helpers
+@model dynamic
 @{
     ViewBag.Title = "Import/Export Documents";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
 }
+<h1 class="page-header">@Resource("Admin Import / Export Documents Title", "Import / Export Documents")</h1>
+<span class="btn-group display-inline">
+    <a href="@Url.Action("ExportDocuments", "ImportExport")" class="btn btn-primary">@Resource("Admin Import / Export Documents Export Button", "Export Documents")</a>
+</span>
+<div class="clearfix"></div>
 
-<fieldset>
-    <legend>Import / Export Documents
-    </legend>
+@if (ViewBag.ExportStatus != null)
+{
+    <br />
+    <span class="alert alert-info">@ViewBag.ExportStatus</span><div class="clearfix"></div>
+}
+<hr />
+@Html.InfoBlock("",Resource("Admin Import / Export Documents Info", "Import File must be in .xslx format. After clicking on 'Import Documents' any new documents inside file will be added to database and existing ones will be updated with provided values in file."))
+<hr />
+@using (Html.BeginForm("ImportDocuments", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <label for="document">@Resource("Admin Import / Export Documents Choose Import File Label", "Choose Import File")</label>
 
-        <span class="btn-group display-inline">
-            <a href="@Url.Action("ExportDocuments", "ImportExport")" class="btn btn-primary">Export Documents</a>
-        </span>
-        <div class="clearfix"></div>
-
-        @if (ViewBag.ExportStatus != null)
+    <input type="file" name="document" id="document" />
+    <div class="clearfix"></div>
+    <br />
+    if (ViewBag.Messages != null)
+    {
+        foreach (var item in (Dictionary<string, List<string>>)ViewBag.Messages)
         {
-            <br />
-            <span class="alert alert-info">@ViewBag.ExportStatus</span><div class="clearfix"></div>
-        }
-        <hr />
-        <div class="alert alert-info">
-            Import File must be in .xslx format. After clicking on "Import Documents" any new documents inside file
-                       will be added to database and existing ones will be updated with provided values in file.
-        </div>
-        <hr />
-        @using (Html.BeginForm("ImportDocuments", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            <label for="document">Choose Import File</label>
-                     
-            <input type="file" name="document" id="document" /> 
-            <div class="clearfix"></div>
-            <br />
-            if (ViewBag.Messages != null)
-            {
-                foreach (var item in (Dictionary<string, List<string>>)ViewBag.Messages)
-                {
             <span>
-                <strong>@item.Key</strong> has the following errors:
+                @string.Format(Resource("Admin Import / Export Documents Choose Import File Errors", "{0} has the following errors"), @item.Key):
             </span>
             <ul>
                 @foreach (string error in (List<string>)item.Value)
@@ -47,20 +43,19 @@
                     </li>
                 }
             </ul>
-                }
-                if (!((Dictionary<string, List<string>>)ViewBag.Messages).Any())
-                {
-            <div class="alert alert-success">
-                All documents were successfully imported.
-            </div>
-                }
-            }
-            if (ViewBag.ImportStatus != null)
-            {
-            <div class="alert alert-danger">@ViewBag.ImportStatus</div>
-            <div class="clearfix"></div>
-            }
-                  
-            <input type="submit" class="btn btn-primary" value="Import Documents" />
         }
-</fieldset>
+        if (!((Dictionary<string, List<string>>)ViewBag.Messages).Any())
+        {
+            <div class="alert alert-success">
+                @Resource("Admin Import / Export Documents Choose Import Success","All documents were successfully imported").
+            </div>
+        }
+    }
+    if (ViewBag.ImportStatus != null)
+    {
+        <div class="alert alert-danger">@ViewBag.ImportStatus</div>
+        <div class="clearfix"></div>
+    }
+
+    <input type="submit" class="btn btn-primary" value="@Resource("Import Documents")" />
+}

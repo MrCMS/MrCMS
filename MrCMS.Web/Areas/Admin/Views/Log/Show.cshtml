@@ -3,84 +3,86 @@
     ViewBag.Title = "View Log #" + Model.Id;
 }
 
-<form>
-    <fieldset>
-        <legend>Log #@Model.Id
-
-            <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink("Back to list", "Index", null, new { @class = "btn btn-default" })
-                <a href="@Url.Action("DeleteLog", "Log", new { Model.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete log</a>
-            </span>
-        </legend>
-    </fieldset>
-</form>
-    <table class="table table-striped table-condensed">
-
-        <tbody>
-            <tr>
-                <td class="col-lg-2">Type
-                </td>
-                <td class="col-lg-10">
-                    @Model.Type
-                </td>
-            </tr>
-            <tr>
-                <td>Created on
-                </td>
-                <td>
-                    @Model.CreatedOn
-                </td>
-            </tr>
-            <tr>
-                <td>Site
-                </td>
-                <td>
-                    @Model.SiteName
-                </td>
-            </tr>
-            <tr>
-                <td>Message
-                </td>
-                <td>
-                    @Model.Message
-                </td>
-            </tr>
-            <tr>
-                <td>Detail
-                </td>
-                <td>
-                    @Html.Raw(Model.DetailFormatted)
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    @if (Model.Error != null)
-    {
-        <h4>Server Variables</h4>
-        <div style="overflow: scroll">
-            <table class="table table-striped table-condensed">
-                <thead>
+<h1 class="page-header">
+    @Resource("Admin Logs Log Title", "Log") #@Model.Id
+    <span class="btn-group  display-inline  pull-right">
+        @Html.ActionLink("Back to list", "Index", null, new { @class = "btn btn-default" })
+        <a href="@Url.Action("DeleteLog", "Log", new { Model.Id })" class="btn btn-danger" data-toggle="fb-modal">@Resource("Delete")</a>
+    </span>
+</h1>
+<table class="table table-striped table-condensed">
+    <tbody>
+        <tr>
+            <td class="col-lg-2">
+                @Resource("Type")
+            </td>
+            <td class="col-lg-10">
+                @Model.Type
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Resource("Created on")
+            </td>
+            <td>
+                @Model.CreatedOn
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Resource("Site")
+            </td>
+            <td>
+                @Model.SiteName
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Resource("Message")
+            </td>
+            <td>
+                @Model.Message
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Resource("Detail")
+            </td>
+            <td>
+                @Html.Raw(Model.DetailFormatted)
+            </td>
+        </tr>
+    </tbody>
+</table>
+@if (Model.Error != null)
+{
+    <h4>@Resource("Admin Logs Server Variables", "Server Variables")</h4>
+    <div style="overflow: scroll">
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th class="col-lg-2">
+                        @Resource("Key")
+                    </th>
+                    <th class="col-lg-10">
+                        @Resource("Value")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var key in Model.Error.ServerVariables.AllKeys)
+                {
                     <tr>
-                        <th class="col-lg-2">Key
-                        </th>
-                        <th class="col-lg-10">Value
-                        </th>
+                        <td>
+                            @key
+                        </td>
+                        <td>
+                            @Model.Error.ServerVariables[key]
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var key in Model.Error.ServerVariables.AllKeys)
-                    {
-                        <tr>
-                            <td>
-                                @key
-                            </td>
-                            <td>
-                                @Model.Error.ServerVariables[key]
-                            </td>
-                        </tr>
 
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -11,9 +11,11 @@
             Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery.tagit.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery-ui-bootstrap/jquery-ui-1.9.2.custom.css");
+            Html.IncludeCss("~/Areas/Admin/Content/plugins/font-awesome-4.2.0/css/font-awesome.css");
             Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/jstree/themes/default/style.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/bootstrap/css/bootstrap.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/bootstrap/css/bootstrap-theme.css");
+            Html.IncludeCss("~/Areas/Admin/Content/plugins/sweetalert-master/lib/sweet-alert.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/mrcms-admin.css");
             Html.AddAppAdminStylesheets();
         }
@@ -30,8 +32,9 @@
         <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CurrentRequestData.CultureInfo.Name).js"></script>
         <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jquery.signalR-2.0.2.js")" > </script>
         <script type="text/javascript" src="/signalr/hubs"></script>
-        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")" > </script>
-
+        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"> </script>
+        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/store.js")"> </script>
+        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/plugins/sweetalert-master/lib/sweet-alert.min.js")"> </script>
         @{
             //Validate
             Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery.validate.min.js");
@@ -41,7 +44,6 @@
             Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jstree/jstree.js");
 
             Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jquery-ui-timepicker-addon.js");
-            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/store.js"); //used for local storage
 
             Html.IncludeScript("~/Areas/Admin/Content/Styles/bootstrap/js/bootstrap.js");
             Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.js");
@@ -82,7 +84,7 @@
     
         @{ Html.RenderScripts();}
 
-        @Html.Hidden("UICulture", CurrentRequestData.CultureInfo.Name)
+        @Html.Hidden("CurrentUICulture", CurrentRequestData.CultureInfo.Name)
 
         @if (IsSectionDefined("JavaScriptBlock"))
         {

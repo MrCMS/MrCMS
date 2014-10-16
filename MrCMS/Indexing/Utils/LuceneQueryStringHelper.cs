@@ -29,7 +29,7 @@ namespace MrCMS.Indexing.Utils
         }
         public static string MakeFuzzy(this string keywords)
         {
-            var makeFuzzy = Regex.Replace(keywords, "[A-Za-z0-9_\\^\\?\\*\\:\\\"\\(\\)\\{\\}\\[\\]\\~]+",
+            var makeFuzzy = Regex.Replace(keywords, "[A-Za-z0-9_\\^\\?\\@\\-\\*\\:\\.\\\"\\(\\)\\{\\}\\[\\]\\~]+",
                 match =>
                     !match.Value.Equals("and", StringComparison.OrdinalIgnoreCase) &&
                     !match.Value.Equals("or", StringComparison.OrdinalIgnoreCase) &&

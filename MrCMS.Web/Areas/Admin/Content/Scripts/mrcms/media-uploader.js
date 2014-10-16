@@ -87,7 +87,7 @@
             window.dropZoneTimeout = setTimeout(function () {
                 window.dropZoneTimeout = null;
                 dropZone.removeClass('in hover');
-            }, 100);
+            }, 500);
         }
     };
 };
@@ -107,8 +107,8 @@ MediaUploader.defaults = {
         return maxFileSize || 5000000;
     },
     progressBarSelector: "#progress",
-    progressBarSelectorInner: "#progress .bar",
-    percentCompleteSelector: "#percent-complete",
+    progressBarSelectorInner: "#progress .progress-bar",
+    percentCompleteSelector: "#progress .progress-bar",
     filesSelector: "#mrcmsfiles",
     dropZoneSelector: "#dropzone",
     dragHereText: "Drop Files Here",

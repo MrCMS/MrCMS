@@ -20,7 +20,10 @@ namespace MrCMS.Settings
         public MediaSettings()
         {
             MaxFileSizeUpload = 5000000; //5mb
-            AllowedFileTypes = "gif|jpeg|jpg|png|rar|zip|pdf|mp3|mp4|wmv|doc|docx|xls|xlsx|ppt|avi|mpg|wav|mov|wma";
+            AllowedFileTypes = "gif|jpeg|jpg|png|rar|zip|pdf|mp3|mp4|wmv|doc|docx|xls|xlsx|ppt|pptx|avi|mpg|wav|mov|wma|webm|ogv|mpeg|flv|7z|txt|csv|html|htm";
+            EnforceMaxImageSize = true;
+            MaxImageSizeHeight = 1200;
+            MaxImageSizeWidth = 1200;
         }
 
         [DisplayName("Thumbnail Image Height")]
@@ -164,10 +167,6 @@ namespace MrCMS.Settings
 
         public int? ResizeQuality { get; set; }
 
-        [DisplayName("Default Category")]
-        [DropDownSelection("DefaultCategoryOptions")]
-        public virtual int DefaultCategory { get; set; }
-
         public override bool RenderInSettings
         {
             get { return true; }
@@ -175,7 +174,7 @@ namespace MrCMS.Settings
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-            viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(session, DefaultCategory);
+            viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(session, null);
             viewDataDictionary["CacheExpiryTypeOptions"] = _siteSettingsOptionGenerator.GetCacheExpiryTypeOptions();
         }
     }

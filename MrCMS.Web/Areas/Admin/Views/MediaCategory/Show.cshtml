@@ -1,44 +1,18 @@
-﻿@using MrCMS.Entities.Documents.Media
+﻿@using System.Linq
+@using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
 @using MrCMS.Paging
-@model MrCMS.Web.Areas.Admin.Models.MediaCategorySearchModel
+@model MediaCategory
 @{
-    var mediaCategory = ViewData["media-category"] as MediaCategory;
-    ViewBag.Title = mediaCategory.Name;
-
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
-    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
-    ViewData["MediaCategory"] = mediaCategory;
-    
+    ViewBag.Title = Model.Name;
 }
-@if (TempData["saved"] != null)
-{
-    <div class="alert alert-success">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        @TempData["saved"]
-    </div>
-}
-<form action="@Url.Action("Show", "MediaCategory", new { mediaCategory.Id })" method="get" id="search-form" style="margin-bottom: 0;">
-    <fieldset>
-        <legend>@mediaCategory.Name
-            <span class="btn-group  display-inline  pull-right">
-                @if (mediaCategory.CanDelete())
-                {
-                    <a href="@Url.Action("Delete", "MediaCategory", new { id = mediaCategory.Id })" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
-                }
-
-                <a href="@Url.Action("SortFiles", "MediaCategory", new { id = mediaCategory.Id })" class="btn btn-default">Sort</a>
-                <a href="@Url.Action("Edit", "MediaCategory", new { id = mediaCategory.Id })" class="btn  btn-default">Edit</a>
-
-                <input type="submit" value="Search" class="btn btn-primary" />
-            </span>
-        </legend>
-    </fieldset>
-    <div class="form-group">
-        @Html.LabelFor(x => x.SearchText)
-        @Html.TextBoxFor(x => x.SearchText, new{@class="form-control"})
-    </div>
-</form>
-@{ Html.RenderAction("Upload", "MediaCategory", new { category = mediaCategory } ); }
-<hr class="small-margin" />
-@{ Html.RenderAction("ShowFiles", new { searchModel = Model });}
+<div class="inline-buttons-container">
+    <h1 class="page-header">@Model.Name</h1>
+    <span class="btn-group  display-inline  pull-right">
+        <a href="@Url.Action("SortFiles", "MediaCategory", new { id = Model.Id })" class="btn btn-default">@Resource("Admin Media Sort Button", "Sort Files")</a>
+        <a href="@Url.Action("Edit", "MediaCategory", new { id = Model.Id })" class="btn  btn-default">@Resource("Admin Media Edit Folder Button", "Edit Folder")</a>
+        <a href="@Url.Action("Add", "MediaCategory", new { id = Model.Id })" class="btn  btn-primary">@Resource("Admin Media New Folder Button", "New folder")</a>
+    </span>
+</div>
+@Html.Hidden("FolderId", Model.Id)
+@{ Html.RenderPartial("Manage");}

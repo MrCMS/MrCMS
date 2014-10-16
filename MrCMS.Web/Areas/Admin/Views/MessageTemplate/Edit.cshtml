@@ -8,11 +8,11 @@
 {
     <fieldset>
         <legend>
-            Edit @Model.GetType().Name.BreakUpString()
+            @Resource("Edit") @Model.GetType().Name.BreakUpString()
             <span class="pull-right btn-group  display-inline ">
-                @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
-                @Html.ActionLink("Reset", "Reset", "MessageTemplate", new { Id = Model.Id }, new { @class = "btn btn-default", data_toggle = "fb-modal" })
-                <input class="btn btn-primary" id="save-edit" data-action="save" data-form-id="edit-message-template" type="submit" value="Save" />
+                @Html.ActionLink(Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
+                @Html.ActionLink(Resource("Reset"), "Reset", "MessageTemplate", new { Id = Model.Id }, new { @class = "btn btn-default", data_toggle = "fb-modal" })
+                <input class="btn btn-primary"  type="submit" value="@Resource("Save")" />
             </span>
         </legend>
         @Html.HiddenFor(x => x.Id)
@@ -55,9 +55,7 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <div class="alert alert-info">
-                    <strong>Quick tip:</strong> To send to multiple email addresses via To, Cc or Bcc, separate them with a comma, <em>not</em> a semi-colon.
-                </div>
+                @Html.InfoBlock(Resource("Heads up" + "!"), "To send to multiple email addresses via To, Cc or Bcc, separate them with a comma, not a semi-colon");
             </div>
         </div>
         <div class="row">

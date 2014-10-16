@@ -7,18 +7,18 @@
 @using (Html.BeginForm())
 {
     <fieldset>
-        <legend>Clear Caches
+        <legend>@Resource("Admin Clear Caches", "Clear Caches")
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn btn-primary" value="Clear" />
+                <input type="submit" class="btn btn-primary" value="@Resource("Clear")" />
             </span>
         </legend>
         <div class="row">
             <div class="col-lg-12">
-                <p>Click "clear" to clear database cache. </p>
+                <p>@Resource("Admin Caches Clear", "Click 'clear' to clear database cache"). </p>
                 @if (cleared)
                 {
                     <div class="alert alert-success">
-                        Caches successfully cleared.
+                        @Resource("Admin Caches Clear Success", "Caches successfully cleared").
                     </div>
                 }
             </div>

@@ -21,7 +21,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _urlValidationService = urlValidationService;
         }
 
-        public ViewResult Index()
+        public virtual ViewResult Index()
         {
             return View();
         }

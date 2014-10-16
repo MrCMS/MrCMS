@@ -16,7 +16,11 @@ $(function () {
     }, 100);
 
     function setStandardUrl() {
-        $("#UrlSegment").val($("#Name").val().trim().replace(/\W/g, '-').toLowerCase());
+        var parentUrl = $("#Parent_UrlSegment").val();
+        if (parentUrl != '') {
+            parentUrl += "/";
+        }
+        $("#UrlSegment").val(parentUrl + $("#Name").val().trim().replace(/\W/g, '-').toLowerCase());
     }
     
     $("form").validate();

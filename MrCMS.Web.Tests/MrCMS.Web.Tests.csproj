@@ -157,7 +157,6 @@
     <Compile Include="Areas\Admin\Controllers\MessageTemplateControllerTests.cs" />
     <Compile Include="Areas\Admin\Services\DocumentTagsAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\DocumentVersionsAdminServiceTests.cs" />
-    <Compile Include="Areas\Admin\Services\FileAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\FormServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\LogAdminServiceTests.cs" />

@@ -3,11 +3,11 @@
 @using (Html.BeginForm("Delete", "File", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
     <fieldset>
-        <legend>Delete file
+        <legend>@Resource("Admin Delete File", "Delete file")
                 <span class="btn-group  display-inline  pull-right">
-                    <input type="submit" class="btn btn-danger" value="Delete" />
+                    <input type="submit" class="btn btn-danger" value="@Resource("Delete")" />
                 </span>
         </legend>
-        <p>Deleting this cannot be undone. If this file is referenced anywhere, a broken image link will show. Make sure the file is not in use on your website.</p>
+        <p>@Resource("Admin Delete File Warning", "Deleting this cannot be undone. If this file is referenced anywhere, a broken image link will show. Make sure the file is not in use on your website.")</p>
     </fieldset>
 }

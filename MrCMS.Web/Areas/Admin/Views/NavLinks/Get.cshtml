@@ -1,57 +1,67 @@
-﻿@using MrCMS.Helpers
+﻿@using System
+@using System.Activities.Statements
+@using System.Collections.Generic
+@using System.Linq
+@using MrCMS.Helpers
 @using MrCMS.Models
-@model IEnumerable<IAdminMenuItem>
-<ul class="nav navbar-nav">
-    <li><a href="/">Home</a></li>
-    @foreach (var item in Model.Where(item => item.CanShow))
+@using NHibernate.Mapping
+@model System.Collections.Generic.IEnumerable<IAdminMenuItem>
+@{
+    var currentUrl = Request.Url.AbsolutePath;
+}
+<ul class="nav nav-pills nav-stacked">
+    <li class="@(currentUrl == Url.Action("Index", "Webpage") ? "active" : "")"><a href="@Url.Action("Index", "Webpage")"><i class="fa fa-file-code-o"></i> @Resource("Admin Nav Pages", "Pages")</a></li>
+    <li class="@(currentUrl == Url.Action("Index", "MediaCategory") ? "active" : "")"><a href="@Url.Action("Index", "MediaCategory")"><i class="fa fa-file-image-o"></i> @Resource("Admin Nav Media", "Media")</a></li>
+    <li class="@(currentUrl == Url.Action("Index", "Layout") ? "active" : "")"><a href="@Url.Action("Index", "Layout")"><i class="glyphicon glyphicon-th"></i> @Resource("Admin Nav Layout", "Layouts")</a></li>
+
+    @{
+        var adminMenuItems = Model.Where(item => item.CanShow).ToList();
+    }
+    @foreach (var item in adminMenuItems)
     {
         if (item.Children.Any())
         {
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            int indexOf = adminMenuItems.IndexOf(item);
+            <li class="dropdown-submenu @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@indexOf">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown-mrcms">
+                    <i class="@item.IconClass"> </i>
                     @item.Text
                     <b class="caret"></b>
+
                 </a>
-                @RenderMenu(item.Children)
+                @RenderMenu(item.Children, new List<int> { indexOf }, currentUrl)
+
             </li>
         }
         else
         {
-            <li><a href="@item.Url">@item.Text</a></li>
+            <li class="@(currentUrl == item.Url ? "active" : "")"><a href="@item.Url"><i class="@item.IconClass"> </i> @item.Text</a></li>
         }
     }
 </ul>
-@helper RenderMenu(SubMenu subMenu)
+@helper RenderMenu(SubMenu subMenu, IEnumerable<int> indexOf, string currentUrl)
 {
-    <ul class="dropdown-menu">
-        @{ var keys = subMenu.Keys.Where(s => subMenu[s].Any(menuItem => menuItem.CanShow)).ToList(); }
-        @for (int index = 0; index < keys.Count; index++)
+    <ul class="nav nav-pills nav-stacked dropdown-menu" data-menu="true">
+        @{ var items = subMenu.Where(menuItem => menuItem.CanShow).ToList(); }
+        @foreach (var item in items)
         {
-            var headerName = keys[index];
-            if (!string.IsNullOrWhiteSpace(headerName))
+            if (item.Children != null && item.Children.Any())
             {
-                <li class="dropdown-header">@headerName</li>
+                int index = items.IndexOf(item);
+                indexOf = indexOf.Concat(new List<int> { index });
+                <li class="dropdown-submenu @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@string.Join("-", indexOf)">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown-mrcms">
+                        @item.Text
+                        <b class="caret"></b>
+                    </a>
+                    @RenderMenu(item.Children, indexOf, currentUrl)
+                </li>
             }
-            foreach (var child in subMenu[headerName].Where(menuItem => menuItem.CanShow))
+            else
             {
-                if (child.Children != null && child.Children.Keys.Any())
-                {
-                    <li class="dropdown-submenu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">@child.Text</a>
-                        @RenderMenu(child.Children)
-                    </li>
-                }
-                else
-                {
-                    <li>
-                        <a href="@child.Url">@child.Text</a>
-                    </li>
-                }
-            }
-            if (index != keys.Count - 1)
-            {
-                <li class="divider"></li>
+                <li class="@(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")"> <a href="@item.Url">@item.Text</a></li>
             }
         }
-    </ul>
+</ul>
+    <div class="clearfix"></div>
 }
