@@ -110,15 +110,45 @@ namespace MrCMS.Services
             }
         }
 
+        public static void FixOrientation(Image image)
+        {
+            // 0x0112 is the EXIF byte address for the orientation tag
+            if (!image.PropertyIdList.Contains(0x0112))
+            {
+                return;
+            }
+
+            // get the first byte from the orientation tag and convert it to an integer
+            var orientationNumber = image.GetPropertyItem(0x0112).Value[0];
+
+            switch (orientationNumber)
+            {
+                // up is pointing to the right
+                case 8:
+                    image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    break;
+                // up is pointing to the bottom (image is upside-down)
+                case 3:
+                    image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    break;
+                // up is pointing to the left
+                case 6:
+                    image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    break;
+                // up is pointing up (correct orientation)
+                case 1:
+                    break;
+            }
+        }
+
         public void EnforceMaxSize(ref Stream stream, MediaFile file, MediaSettings mediaSettings)
         {
-            if (!mediaSettings.EnforceMaxImageSize)
-                return;
-
-
             using (var original = new Bitmap(stream))
             {
-                var newSize = CalculateDimensions(original.Size, mediaSettings.MaxSize);
+                FixOrientation(original);
+                var newSize = mediaSettings.EnforceMaxImageSize
+                    ? CalculateDimensions(original.Size, mediaSettings.MaxSize)
+                    : original.Size;
 
                 using (var newBitMap = new Bitmap(newSize.Width, newSize.Height))
                 {
