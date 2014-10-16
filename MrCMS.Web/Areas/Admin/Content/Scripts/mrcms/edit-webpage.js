@@ -73,10 +73,9 @@
     });
 
 
-
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        if (e.currentTarget.id === "versions-link") {
-            $.get('/Admin/Versions/Show/' + $(this).data('id'), function (data) {
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+        if (e.currentTarget.innerHTML === "Versions") {
+            $.get('/Admin/Versions/Show/' + $('#Id').val(), function(data) {
                 $("#versions").html(data);
             });
         }
