@@ -153,6 +153,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ACL\ACLRuleTests.cs" />
+    <Compile Include="ACL\ITestEvent.cs" />
+    <Compile Include="ACL\TestEventArgs.cs" />
+    <Compile Include="ACL\TestEventImplementation.cs" />
+    <Compile Include="ACL\TestEventImplementation2.cs" />
     <Compile Include="DbConfiguration\ListenerDisablerTests.cs" />
     <Compile Include="Entities\DocumentTests.cs" />
     <Compile Include="Entities\MediaFileTests.cs" />
@@ -167,6 +171,7 @@
     <Compile Include="MrCMSTest.cs" />
     <Compile Include="Optimization\ResourceDataTests.cs" />
     <Compile Include="Services\CurrentSiteLocatorTests.cs" />
+    <Compile Include="Services\Events\PublishingDisablerTests.cs" />
     <Compile Include="Services\WebpageUrlGeneratorTests.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsService_AddingDocuments.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsService_GetHierarchyDepthTests.cs" />

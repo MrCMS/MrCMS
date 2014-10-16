@@ -9,9 +9,14 @@ namespace MrCMS.Services
         void Publish(Type eventType, object args);
 
         /// <summary>
-        /// Disables the publishing of events in the event context until the result is disposed
+        /// Disables the publishing of events of the specified type in the event context until the result is disposed
         /// </summary>
         /// <returns></returns>
-        IDisposable Disable();
+        IDisposable Disable<T>();
+        /// <summary>
+        /// Disables the publishing of events of the specified type in the event context until the result is disposed
+        /// </summary>
+        /// <returns></returns>
+        IDisposable Disable(params Type[] types);
     }
 }
