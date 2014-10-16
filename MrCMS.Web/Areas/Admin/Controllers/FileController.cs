@@ -22,12 +22,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _fileService = fileService;
         }
 
-        [HttpGet]
-        public JsonResult Files([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory mediaCategory)
-        {
-            return Json(_fileService.GetFiles(mediaCategory), "text/html", System.Text.Encoding.UTF8);
-        }
-
 
         [HttpPost]
         [ActionName("Files")]

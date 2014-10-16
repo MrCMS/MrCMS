@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
 using MrCMS.Services;
+using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Core.Controllers;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
@@ -33,7 +34,7 @@ namespace MrCMS.Web.Tests.Controllers
             _authorisationService = A.Fake<IAuthorisationService>();
             _loginService = A.Fake<ILoginService>();
             _uniquePageService = A.Fake<IUniquePageService>();
-            _loginController = new LoginController(_userService, _resetPasswordService, _authorisationService, _uniquePageService, _loginService);
+            _loginController = new LoginController(_userService, _resetPasswordService, _authorisationService, _uniquePageService, _loginService, A.Fake<IStringResourceProvider>());
 
             // initial setup as this is reused
             A.CallTo(() => _uniquePageService.RedirectTo<LoginPage>(null)).Returns(new RedirectResult("~/login-page"));

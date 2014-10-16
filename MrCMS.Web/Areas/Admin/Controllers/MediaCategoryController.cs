@@ -61,7 +61,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (mediaCategory == null)
                 return RedirectToAction("Index");
-            ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(mediaCategory);
+            ViewData["files"] = _fileAdminService.GetFilesForFolder(mediaCategory);
             ViewData["folders"] = _fileAdminService.GetSubFolders(mediaCategory);
 
             return View(mediaCategory);
@@ -69,7 +69,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public override ViewResult Index()
         {
-            ViewData["files"] = _fileAdminService.GetFilesForSearchPaged(null);
+            ViewData["files"] = _fileAdminService.GetFilesForFolder(null);
             ViewData["folders"] = _fileAdminService.GetSubFolders(null);
 
             return View();
@@ -98,16 +98,16 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             ViewData["categoryId"] = parent.Id;
             List<ImageSortItem> sortItems =
-                _fileAdminService.GetFiles(parent).OrderBy(arg => arg.display_order)
+                _fileAdminService.GetFilesForFolder(parent).OrderBy(arg => arg.DisplayOrder)
                     .Select(
                         arg =>
                             new ImageSortItem
                             {
-                                Order = arg.display_order,
+                                Order = arg.DisplayOrder,
                                 Id = arg.Id,
-                                Name = arg.name,
-                                ImageUrl = arg.url,
-                                IsImage = arg.is_image
+                                Name = arg.FileName,
+                                ImageUrl = arg.FileUrl,
+                                IsImage = arg.IsImage
                             })
                     .ToList();
 

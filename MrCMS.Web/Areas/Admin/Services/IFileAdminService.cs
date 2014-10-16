@@ -15,7 +15,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);
         bool IsValidFileType(string fileName);
-        IList<MediaFile> GetFilesForSearchPaged(MediaCategory category);
+        IList<MediaFile> GetFilesForFolder(MediaCategory category);
         void CreateFolder(MediaCategory category);
         void SetOrders(List<SortItem> items);
         IList<MediaCategory> GetSubFolders(MediaCategory folder);

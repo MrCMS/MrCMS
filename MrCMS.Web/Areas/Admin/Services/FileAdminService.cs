@@ -59,7 +59,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             return _fileService.IsValidFileType(fileName);
         }
-        public IList<MediaFile> GetFilesForSearchPaged(MediaCategory category = null)
+        public IList<MediaFile> GetFilesForFolder(MediaCategory category = null)
         {
             var query = _session.QueryOver<MediaFile>();
             query = category != null
@@ -86,7 +86,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public IList<MediaCategory> GetSubFolders(MediaCategory folder = null)
         {
-            IQueryOver<MediaCategory, MediaCategory> queryOver = _session.QueryOver<MediaCategory>();
+            IQueryOver<MediaCategory, MediaCategory> queryOver = _session.QueryOver<MediaCategory>().Where(x=>!x.HideInAdminNav);
             if (folder != null && folder.Id > 0)
                 return queryOver.Where(x => x.Parent == folder).Cacheable().List();
             return queryOver.Where(x => x.Parent == null).Cacheable().List();

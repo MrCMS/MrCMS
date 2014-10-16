@@ -20,18 +20,15 @@ namespace MrCMS.Search
 {
     public class UniversalSearchIndexManager : IUniversalSearchIndexManager
     {
-        private readonly HttpContextBase _context;
         private readonly IGetLuceneDirectory _getLuceneDirectory;
         private readonly Site _site;
         private readonly IUniversalSearchItemGenerator _universalSearchItemGenerator;
         protected Analyzer Analyser;
         private Directory _directory;
 
-        public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator,
-            HttpContextBase context, Site site, IGetLuceneDirectory getLuceneDirectory)
+        public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, Site site, IGetLuceneDirectory getLuceneDirectory)
         {
             _universalSearchItemGenerator = universalSearchItemGenerator;
-            _context = context;
             _site = site;
             _getLuceneDirectory = getLuceneDirectory;
         }

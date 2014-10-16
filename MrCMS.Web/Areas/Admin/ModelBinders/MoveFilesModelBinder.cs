@@ -57,13 +57,11 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 
     public class DeleteFilesModelBinder : MrCMSDefaultModelBinder
     {
-        private readonly IDocumentService _documentService;
         private readonly ISession _session;
 
-        public DeleteFilesModelBinder(IKernel kernel, IDocumentService documentService, ISession session)
+        public DeleteFilesModelBinder(IKernel kernel, ISession session)
             : base(kernel)
         {
-            _documentService = documentService;
             _session = session;
         }
 

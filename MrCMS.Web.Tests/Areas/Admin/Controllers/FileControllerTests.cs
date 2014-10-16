@@ -80,25 +80,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void FileController_Files_ReturnsAJsonNetResult()
-        {
-            FileController fileController = GetFileController();
-
-            fileController.Files(new MediaCategory()).Should().BeOfType<JsonNetResult>();
-        }
-
-        [Fact]
-        public void FileController_Files_CallsFileServiceGetFilesWithPassedId()
-        {
-            FileController fileController = GetFileController();
-            var mediaCategory = new MediaCategory();
-            
-            fileController.Files(mediaCategory);
-
-            A.CallTo(() => fileAdminService.GetFiles(mediaCategory)).MustHaveHappened();
-        }
-
-        [Fact]
         public void FileController_FilesPost_ReturnsJsonNetResult()
         {
             FileController fileController = GetFileController();

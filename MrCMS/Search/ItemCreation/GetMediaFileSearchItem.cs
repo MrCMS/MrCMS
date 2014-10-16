@@ -19,9 +19,9 @@ namespace MrCMS.Search.ItemCreation
                        {
                            DisplayName = mediaFile.FileName,
                            Id = mediaFile.Id,
-                           SearchTerms = new string[] {mediaFile.FileName , mediaFile.FileExtension, mediaFile.FileUrl},
+                           SearchTerms = new string[] { mediaFile.FileName, mediaFile.FileExtension, mediaFile.FileUrl, mediaFile.Title, mediaFile.Description },
                            SystemType = mediaFile.GetType().FullName,
-                           ActionUrl = _urlHelper.Action("Edit", "MediaFile", new { id = mediaFile.Id, area = "admin" }),
+                           ActionUrl = _urlHelper.Action("Edit", "File", new { id = mediaFile.Id, area = "admin" }),
                        };
         }
     }
