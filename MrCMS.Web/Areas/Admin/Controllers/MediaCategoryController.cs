@@ -6,9 +6,11 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.ACL;
 using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Website;
 using MrCMS.Website.Binders;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -134,6 +136,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 : Json(true, JsonRequestBehavior.AllowGet);
         }
 
+        [MrCMSACLRule(typeof(MediaToolsACL), MediaToolsACL.Cut)]
         public JsonResult MoveFilesAndFolders(
             [IoCModelBinder(typeof(MoveFilesModelBinder))] MoveFilesAndFoldersModel model)
         {
@@ -142,6 +145,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return Json(new FormActionResult { success = true, message = message});
         }
 
+        [MrCMSACLRule(typeof(MediaToolsACL), MediaToolsACL.Delete)]
         public JsonResult DeleteFilesAndFolders(
             [IoCModelBinder(typeof(DeleteFilesModelBinder))] DeleteFilesAndFoldersModel model)
         {

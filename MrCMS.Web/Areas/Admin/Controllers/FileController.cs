@@ -15,7 +15,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     public class FileController : MrCMSAdminController
     {
         private readonly IFileAdminService _fileService;
-        //private readonly IDocumentService _documentService;
 
         public FileController(IFileAdminService fileService)
         {

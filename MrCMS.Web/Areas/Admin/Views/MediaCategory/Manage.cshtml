@@ -4,6 +4,8 @@
 @using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
 @using MrCMS.Media
+@using MrCMS.Web.Areas.Admin.ACL
+@using MrCMS.Website
 @model MrCMS.Entities.Documents.Media.MediaCategory
 @{
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
@@ -11,6 +13,8 @@
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
     var files = ViewData["files"] as IList<MediaFile> ?? new List<MediaFile>();
     var folders = ViewData["folders"] as IList<MediaCategory> ?? new List<MediaCategory>();
+    bool canAccessMediaToolsCut = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Cut);
+    bool canAccessMediaToolsDelete = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Delete); 
 }
 
 <div class="margin-bottom-20">
@@ -28,12 +32,24 @@
         }
     </ol>
 }
-<span class="btn-group margin-bottom-20" id="file-tools">
-    <button id="cut-files" class="btn btn-default" disabled>@Resource("Cut")</button>
+@if (canAccessMediaToolsCut || canAccessMediaToolsDelete)
+{
+    <span class="btn-group margin-bottom-20" id="file-tools">
+        @{
+    if (canAccessMediaToolsCut)
+    {
+        <button id="cut-files" class="btn btn-default" disabled>@Resource("Cut")</button>
+    }
     <button id="paste-files" class="btn btn-default" disabled>@Resource("Paste")</button>
-    <button id="delete-files" class="btn btn-default" disabled>@Resource("Delete")</button>
+    if (canAccessMediaToolsDelete)
+    {
+        <button id="delete-files" class="btn btn-default" disabled>@Resource("Delete")</button>
+    }
     <button id="clear-files" class="btn btn-default">@Resource("Clear")</button>
-</span>
+        }
+    </span>
+}
+
 <div class="clearfix"></div>
 <div id="folder-container">
 
