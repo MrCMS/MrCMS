@@ -14,12 +14,15 @@ namespace MrCMS.Web.Areas.Admin.Services
     public class WebpageBaseViewDataService : IWebpageBaseViewDataService
     {
         private readonly IGetValidPageTemplatesToAdd _getValidPageTemplatesToAdd;
+        private readonly IGetWebpageEditTabsService _getWebpageEditTabsService;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
-        public WebpageBaseViewDataService(IValidWebpageChildrenService validWebpageChildrenService, IGetValidPageTemplatesToAdd getValidPageTemplatesToAdd)
+        public WebpageBaseViewDataService(IValidWebpageChildrenService validWebpageChildrenService, IGetValidPageTemplatesToAdd getValidPageTemplatesToAdd,
+            IGetWebpageEditTabsService getWebpageEditTabsService)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _getValidPageTemplatesToAdd = getValidPageTemplatesToAdd;
+            _getWebpageEditTabsService = getWebpageEditTabsService;
         }
 
         public void SetAddPageViewData(ViewDataDictionary viewData, Webpage parent)
@@ -69,6 +72,8 @@ namespace MrCMS.Web.Areas.Admin.Services
             {
                 viewData["EditView"] = documentMetadata.EditPartialView;
             }
+
+            viewData["edit-tabs"] = _getWebpageEditTabsService.GetEditTabs(page);
         }
     }
 }

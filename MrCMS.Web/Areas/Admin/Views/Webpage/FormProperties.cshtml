@@ -2,36 +2,34 @@
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
 @model Webpage
-<div class="tab-pane" id="form-properties-tab">
-    @Html.InfoBlock("Heads up!", "Start by adding fields to your form using the Add Field button. Once all fields are added, use [form] in the page body content to embded the form where you would like it.")
+@Html.InfoBlock("Heads up!", "Start by adding fields to your form using the Add Field button. Once all fields are added, use [form] in the page body content to embded the form where you would like it.")
 
-    <div id="form-data" class="row">
-        <div class="col-lg-12">
-            <div class="row">
-                <div class="col-lg-7">
-                    <h4>@Resource("Admin Webpage Form Fields", "Form Fields")</h4>
-                </div>
-                <div class="col-lg-5">
-                    <div class="pull-right btn-group">
-                        @Html.ActionLink(Resource("Sort"), "Sort", "Form", new { id = Model.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
-                        @Html.ActionLink(Resource("Admin Webpage Form Add Field", "Add Field"), "AddProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-primary btn-xs", data_toggle = "fb-modal" })
-                    </div>
+<div id="form-data" class="row">
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-7">
+                <h4>@Resource("Admin Webpage Form Fields", "Form Fields")</h4>
+            </div>
+            <div class="col-lg-5">
+                <div class="pull-right btn-group">
+                    @Html.ActionLink(Resource("Sort"), "Sort", "Form", new { id = Model.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+                    @Html.ActionLink(Resource("Admin Webpage Form Add Field", "Add Field"), "AddProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-primary btn-xs", data_toggle = "fb-modal" })
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    @if (Model.FormProperties.Any())
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                @if (Model.FormProperties.Any())
+                {
+                    foreach (var property in Model.FormProperties.OrderBy(x => x.DisplayOrder))
                     {
-                        foreach (var property in Model.FormProperties.OrderBy(x=>x.DisplayOrder))
-                        {
-                                 Html.RenderPartial("FormProperty", property); 
-                        }
+                        Html.RenderPartial("FormProperty", property);
                     }
-                    else
-                    {
-                        @Resource("Admin Webpage Form No Fields", "No form fields added")
-                    }
-                </div>
+                }
+                else
+                {
+                    @Resource("Admin Webpage Form No Fields", "No form fields added")
+                }
             </div>
         </div>
     </div>
