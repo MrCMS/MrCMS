@@ -3,6 +3,7 @@ using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
+using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.Services
 {
@@ -22,17 +23,19 @@ namespace MrCMS.Web.Apps.Core.Services
 
         public async Task<User> RegisterUser(RegisterModel model)
         {
+            var guid = CurrentRequestData.UserGuid;
             var user = new User
-                           {
-                               FirstName = model.FirstName,
-                               LastName = model.LastName,
-                               Email = model.Email,
-                               IsActive = true
-                           };
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                IsActive = true
+            };
             _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
             _userService.AddUser(user);
             await _authorisationService.SetAuthCookie(user, false);
-            EventContext.Instance.Publish<IOnUserRegistered, OnUserRegisteredEventArgs>(new OnUserRegisteredEventArgs(user));
+            CurrentRequestData.CurrentUser = user;
+            EventContext.Instance.Publish<IOnUserRegistered, OnUserRegisteredEventArgs>(new OnUserRegisteredEventArgs(user, guid));
             return user;
         }
 

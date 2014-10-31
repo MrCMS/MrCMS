@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
-using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 
