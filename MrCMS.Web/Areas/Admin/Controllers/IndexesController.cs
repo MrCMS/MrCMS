@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using MrCMS.ACL.Rules;
-using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Search;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
