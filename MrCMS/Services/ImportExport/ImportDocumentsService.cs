@@ -124,21 +124,5 @@ namespace MrCMS.Services.ImportExport
 
             return webpage;
         }
-
-        private void SetUrlHistory(DocumentImportDTO documentDto, Webpage webpage)
-        {
-            foreach (var item in documentDto.UrlHistory)
-            {
-                if (!String.IsNullOrWhiteSpace(item) && webpage.Urls.All(x => x.UrlSegment != item))
-                {
-                    if (_urlHistories.FirstOrDefault(history => history.UrlSegment == item) == null)
-                    {
-                        var urlHistory = new UrlHistory { UrlSegment = item, Webpage = webpage };
-                        webpage.Urls.Add(urlHistory);
-                        _urlHistories.Add(urlHistory);
-                    }
-                }
-            }
-        }
     }
 }
