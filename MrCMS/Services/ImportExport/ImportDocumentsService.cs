@@ -66,9 +66,10 @@ namespace MrCMS.Services.ImportExport
         {
             var currentDto = dto;
             int depth = 0;
-            while (!string.IsNullOrWhiteSpace(currentDto.ParentUrl))
+            while (currentDto != null && !string.IsNullOrWhiteSpace(currentDto.ParentUrl))
             {
-                currentDto = allItems.First(o => o.UrlSegment == currentDto.ParentUrl);
+                DocumentImportDTO dto1 = currentDto;
+                currentDto = allItems.FirstOrDefault(o => o.UrlSegment == dto1.ParentUrl);
                 depth++;
             }
             return depth;
@@ -77,11 +78,13 @@ namespace MrCMS.Services.ImportExport
         public static string GetRootParentUrl(DocumentImportDTO dto, HashSet<DocumentImportDTO> allItems)
         {
             var currentDto = dto;
-            while (!string.IsNullOrWhiteSpace(currentDto.ParentUrl))
+            while (currentDto != null && !string.IsNullOrWhiteSpace(currentDto.ParentUrl))
             {
-                currentDto = allItems.First(o => o.UrlSegment == currentDto.ParentUrl);
+                DocumentImportDTO dto1 = currentDto;
+                currentDto = allItems.FirstOrDefault(o => o.UrlSegment == dto1.ParentUrl);
             }
-            return currentDto.UrlSegment;
+            if (currentDto != null) return currentDto.UrlSegment;
+            return "";
         }
 
         /// <summary>
@@ -120,22 +123,6 @@ namespace MrCMS.Services.ImportExport
                 _webpages.Add(webpage);
 
             return webpage;
-        }
-
-        private void SetUrlHistory(DocumentImportDTO documentDto, Webpage webpage)
-        {
-            foreach (var item in documentDto.UrlHistory)
-            {
-                if (!String.IsNullOrWhiteSpace(item) && webpage.Urls.All(x => x.UrlSegment != item))
-                {
-                    if (_urlHistories.FirstOrDefault(history => history.UrlSegment == item) == null)
-                    {
-                        var urlHistory = new UrlHistory { UrlSegment = item, Webpage = webpage };
-                        webpage.Urls.Add(urlHistory);
-                        _urlHistories.Add(urlHistory);
-                    }
-                }
-            }
         }
     }
 }
