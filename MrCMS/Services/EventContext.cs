@@ -44,7 +44,7 @@ namespace MrCMS.Services
 
         private bool IsDisabled(IEvent @event)
         {
-            return DisabledEvents.Any(type => type.IsInstanceOfType(@event));
+            return DisabledEvents.Any(type => @event.GetType().IsImplementationOf(type));
         }
 
         public IDisposable Disable<T>()

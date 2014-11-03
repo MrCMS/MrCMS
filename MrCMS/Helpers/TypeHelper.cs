@@ -56,26 +56,28 @@ namespace MrCMS.Helpers
 
         public static HashSet<Type> GetAllTypesAssignableFrom(Type type)
         {
-            return GetAllTypes().FindAll(t =>
+            return GetAllTypes().FindAll(t => t.IsImplementationOf(type));
+        }
+
+        public static bool IsImplementationOf(this Type type, Type baseType)
+        {
+            if (baseType.IsGenericTypeDefinition)
             {
-                if (type.IsGenericTypeDefinition)
-                {
-                    return type.IsInterface
-                               ? t.GetBaseTypes(true)
-                                  .Any(
-                                      t2 => t2.GetInterfaces().Any(
-                                          tInt => tInt.IsGenericType
-                                                  &&
-                                                  tInt.GetGenericTypeDefinition() ==
-                                                  type))
-                               : t.GetBaseTypes()
-                                  .Any(
-                                      t2 =>
-                                      t2.IsGenericType &&
-                                      t2.GetGenericTypeDefinition() == type);
-                }
-                return type.IsAssignableFrom(t);
-            });
+                return baseType.IsInterface
+                           ? type.GetBaseTypes(true)
+                              .Any(
+                                  t2 => t2.GetInterfaces().Any(
+                                      tInt => tInt.IsGenericType
+                                              &&
+                                              tInt.GetGenericTypeDefinition() ==
+                                              baseType))
+                           : type.GetBaseTypes()
+                              .Any(
+                                  t2 =>
+                                  t2.IsGenericType &&
+                                  t2.GetGenericTypeDefinition() == baseType);
+            }
+            return baseType.IsAssignableFrom(type);
         }
 
         public static HashSet<Type> GetAllConcreteTypesAssignableFrom(Type t)
