@@ -12,7 +12,7 @@ namespace MrCMS.Tests
     {
         private readonly IEventContext _coreEventContext;
         private readonly IEventContext _fakeEventContext;
-        public HashSet<Type> DisabledTypes = new HashSet<Type>();
+        public readonly HashSet<Type> DisabledTypes = new HashSet<Type>();
         public bool FakeNonCoreEvents = true;
 
         public TestableEventContext(IEventContext coreEventContext = null)
