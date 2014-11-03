@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using MrCMS.Services;
 
 namespace MrCMS.Tests
@@ -9,6 +12,7 @@ namespace MrCMS.Tests
     {
         private readonly IEventContext _coreEventContext;
         private readonly IEventContext _fakeEventContext;
+        public HashSet<Type> DisabledTypes = new HashSet<Type>();
         public bool FakeNonCoreEvents = true;
 
         public TestableEventContext(IEventContext coreEventContext = null)
@@ -30,7 +34,8 @@ namespace MrCMS.Tests
             }
             else
             {
-                _fakeEventContext.Publish<TEvent, TArgs>(args);
+                if (!IsDisabled(typeof(TEvent)))
+                    _fakeEventContext.Publish<TEvent, TArgs>(args);
             }
         }
 
@@ -42,18 +47,55 @@ namespace MrCMS.Tests
             }
             else
             {
-                _fakeEventContext.Publish(eventType, args);
+                if (!IsDisabled(eventType))
+                    _fakeEventContext.Publish(eventType, args);
             }
         }
 
         public IDisposable Disable<T>()
         {
-            return _coreEventContext.Disable<T>();
+            return new TestableEventContextDisabler(_coreEventContext.Disable<T>(), this, typeof(T));
         }
 
         public IDisposable Disable(params Type[] types)
         {
-            return _coreEventContext.Disable(types);
+            return new TestableEventContextDisabler(_coreEventContext.Disable(types), this, types);
+        }
+
+        private bool IsDisabled(Type eventType)
+        {
+            return DisabledTypes.Any(type => eventType.IsImplementationOf(eventType));
+        }
+
+        public class TestableEventContextDisabler : IDisposable
+        {
+            private readonly IDisposable _coreContextDisable;
+            private readonly TestableEventContext _testableEventContext;
+            private readonly HashSet<Type> _typesToDisable = new HashSet<Type>();
+
+            public TestableEventContextDisabler(IDisposable coreContextDisable,
+                TestableEventContext testableEventContext, params Type[] types)
+            {
+                _coreContextDisable = coreContextDisable;
+                _testableEventContext = testableEventContext;
+
+                foreach (Type type in types)
+                {
+                    if (_testableEventContext.DisabledTypes.Add(type))
+                    {
+                        _typesToDisable.Add(type);
+                    }
+                }
+            }
+
+            public void Dispose()
+            {
+                _coreContextDisable.Dispose();
+                foreach (Type type in _typesToDisable)
+                {
+                    _testableEventContext.DisabledTypes.Remove(type);
+                }
+            }
         }
     }
 }
