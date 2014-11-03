@@ -46,28 +46,33 @@ namespace MrCMS.Apps
             {
                 var webpageTypes =
                     TypeHelper.GetAllConcreteTypesAssignableFrom<Webpage>()
-                              .FindAll(type => type.Namespace.StartsWith(app.GetType().Namespace));
+                              .FindAll(type => CheckIsInApp(type, app));
                 webpageTypes.ForEach(type => AppWebpages[type] = app.AppName);
                 var widgetTypes =
                     TypeHelper.GetAllConcreteTypesAssignableFrom<Widget>()
-                              .FindAll(type => type.Namespace.StartsWith(app.GetType().Namespace));
+                              .FindAll(type => CheckIsInApp(type, app));
                 widgetTypes.ForEach(type => AppWidgets[type] = app.AppName);
                 var userProfileTypes =
                     TypeHelper.GetAllConcreteTypesAssignableFrom<UserProfileData>()
-                              .FindAll(type => type.Namespace.StartsWith(app.GetType().Namespace));
+                              .FindAll(type => CheckIsInApp(type, app));
                 userProfileTypes.ForEach(type => AppUserProfileDatas[type] = app.AppName);
                 var entities =
                     TypeHelper.GetAllConcreteMappedClassesAssignableFrom<SystemEntity>()
-                              .FindAll(type => type.Namespace.StartsWith(app.GetType().Namespace));
+                              .FindAll(type => CheckIsInApp(type, app));
                 entities.ForEach(type => AppEntities[type] = app.AppName);
                 var types =
                     TypeHelper.GetAllTypes()
                               .Where(
                                   type =>
                                   !string.IsNullOrWhiteSpace(type.Namespace) &&
-                                  type.Namespace.StartsWith(app.GetType().Namespace));
+                                  CheckIsInApp(type, app));
                 types.ForEach(type => AllAppTypes[type] = app.AppName);
             });
+        }
+
+        public static bool CheckIsInApp(Type type, MrCMSApp app)
+        {
+            return type.FullName.StartsWith(string.Format("{0}.", app.GetType().Namespace));
         }
         public static Dictionary<Type, string> AppTypes
         {
