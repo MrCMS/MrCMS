@@ -71,10 +71,10 @@
                 </div>
             </div>
         </div>
-        <br/>        @Html.InlineCheckboxFor(x => x.IsHtml)
+
+        <br/>
         
-        @{ Html.RenderAction("Tokens", "MessageTemplate", new { messageTemplate = Model });}
-        
+        @Html.InlineCheckboxFor(x => x.IsHtml)
 
     </fieldset>
 }
