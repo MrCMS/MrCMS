@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -18,6 +19,7 @@ namespace MrCMS.Entities.Documents.Web
             InheritFrontEndRolesFromParent = true;
             Urls = new List<UrlHistory>();
             Widgets = new List<Widget.Widget>();
+            FrontEndAllowedRoles = new HashedSet<UserRole>();
         }
 
         [Required]
