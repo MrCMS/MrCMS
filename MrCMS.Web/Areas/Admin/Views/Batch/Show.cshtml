@@ -1,0 +1,79 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Batching.Entities.Batch
+
+<fieldset>
+    <legend>
+        Batch #@Model.Id
+    </legend>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>
+                Runs
+            </h3>
+
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>
+                            Created On
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var run in Model.BatchRuns.OrderByDescending(run => run.Id))
+                    {
+                        <tr>
+                            <td>
+                                @run.CreatedOn
+                            </td>
+                            <td>
+                                @run.Status
+                            </td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>
+                Jobs
+            </h3>
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>
+                            Type
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var job in Model.BatchJobs)
+                    {
+                        <tr>
+                            <td>
+                                @job.Name
+                            </td>
+                            <td>
+                                @job.Status
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</fieldset>

@@ -9,6 +9,7 @@ using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using MrCMS.Apps;
+using MrCMS.Batching.Entities;
 using MrCMS.Config;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.DbConfiguration.Conventions;
@@ -101,6 +102,7 @@ namespace MrCMS.DbConfiguration
                     .IncludeBase<Widget>()
                     .IncludeBase<FormProperty>()
                     .IncludeBase<FormPropertyWithOptions>()
+                    .IncludeBase<BatchJob>()
                     .IncludeAppBases()
                     .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
                     .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()

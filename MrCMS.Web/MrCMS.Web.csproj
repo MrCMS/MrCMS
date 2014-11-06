@@ -328,8 +328,11 @@
     <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
     <Compile Include="Areas\Admin\ACL\MediaToolsACL.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
+    <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Helpers\AdminMessagingExtensions.cs" />
+    <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
     <Compile Include="Areas\Admin\ModelBinders\MoveFilesModelBinder.cs" />
+    <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageTemplateController.cs" />
@@ -497,6 +500,12 @@
     <Compile Include="Areas\Admin\Services\AdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\BaseAssignWebpageAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\BaseAssignWidgetAdminViewData.cs" />
+    <Compile Include="Areas\Admin\Services\BatchAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\Batching\BatchStatus.cs" />
+    <Compile Include="Areas\Admin\Services\Batching\GetBatchItemCount.cs" />
+    <Compile Include="Areas\Admin\Services\Batching\GetBatchStatus.cs" />
+    <Compile Include="Areas\Admin\Services\Batching\IGetBatchItemCount.cs" />
+    <Compile Include="Areas\Admin\Services\Batching\IGetBatchStatus.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
     <Compile Include="Areas\Admin\Services\DefaultWebpageTreeNavListing.cs" />
@@ -519,6 +528,7 @@
     <Compile Include="Areas\Admin\Services\IAdminSiteListService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminWebpageSearchService.cs" />
+    <Compile Include="Areas\Admin\Services\IBatchAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentRolesAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentTagsAdminService.cs" />
@@ -1699,6 +1709,8 @@
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.scss" />
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\LICENSE" />
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\README.md" />
+    <Content Include="Areas\Admin\Views\Batch\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Batch\Show.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
