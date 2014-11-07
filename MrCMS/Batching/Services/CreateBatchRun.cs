@@ -41,7 +41,8 @@ namespace MrCMS.Batching.Services
                     {
                         BatchJob = batchJob,
                         Status = JobExecutionStatus.Pending,
-                        ExecutionOrder = index
+                        ExecutionOrder = index,
+                        BatchRun = batchRun
                     };
                     batchRun.BatchRunResults.Add(batchRunResult);
                     session.Save(batchRunResult);

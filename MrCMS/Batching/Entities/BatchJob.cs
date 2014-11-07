@@ -3,7 +3,7 @@ using MrCMS.Entities;
 
 namespace MrCMS.Batching.Entities
 {
-    public abstract class BatchJob : SiteEntity
+    public abstract class BatchJob : SiteEntity, IHaveJobExecutionStatus
     {
         protected BatchJob()
         {

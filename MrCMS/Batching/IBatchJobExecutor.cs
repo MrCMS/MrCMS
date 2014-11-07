@@ -6,9 +6,4 @@ namespace MrCMS.Batching
     {
         BatchJobExecutionResult Execute(BatchJob batchJob);
     }
-
-    public interface IBatchJobExecutor<in T> where T : BatchJob
-    {
-        BatchJobExecutionResult Execute(T batchJob);
-    }
 }

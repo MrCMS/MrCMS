@@ -1,0 +1,16 @@
+﻿@using MrCMS.Batching.Entities
+@model MrCMS.Batching.Entities.BatchRun
+
+<div class="row" data-batch-run-id="@Model.Id" data-refresh-url="@Url.Action("Status", "BatchRun", new { Model.Id })">
+    <div class="col-xs-12">
+        <dl>
+            <dt>
+                Status
+            </dt>
+            <dd>
+                @Model.Status
+            </dd>
+        </dl>
+     @{Html.RenderPartial("ShowButton",Model);}
+    </div>
+</div>

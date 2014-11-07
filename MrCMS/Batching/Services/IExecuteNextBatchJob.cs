@@ -2,8 +2,8 @@
 
 namespace MrCMS.Batching.Services
 {
-    public interface IStartBatchRun
+    public interface IExecuteNextBatchJob
     {
-        void Start(BatchRun batchRun);
+        bool Execute(BatchRun batchRun);
     }
 }

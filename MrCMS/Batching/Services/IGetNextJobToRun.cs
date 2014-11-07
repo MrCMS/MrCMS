@@ -1,33 +1,16 @@
 ﻿using MrCMS.Batching.Entities;
-using NHibernate;
 
 namespace MrCMS.Batching.Services
 {
     public interface IGetNextJobToRun
     {
-        BatchRunResult Get(BatchRun batchRun);
+        NextJobToRunResult Get(BatchRun batchRun);
     }
 
-    public class GetNextJobToRun : IGetNextJobToRun
+    public struct NextJobToRunResult
     {
-        private readonly ISession _session;
-
-        public GetNextJobToRun(ISession session)
-        {
-            _session = session;
-        }
-
-        public BatchRunResult Get(BatchRun batchRun)
-        {
-            if (batchRun.Status != BatchRunStatus.Executing)
-                return null;
-
-            var runResult = _session.QueryOver<BatchRunResult>()
-                .Where(result => result.Status == JobExecutionStatus.Pending)
-                .OrderBy(result => result.ExecutionOrder).Asc
-                .Take(1).SingleOrDefault();
-
-            return runResult;
-        }
+        public bool Paused { get; set; }
+        public bool Complete { get; set; }
+        public BatchRunResult Result { get; set; }
     }
 }

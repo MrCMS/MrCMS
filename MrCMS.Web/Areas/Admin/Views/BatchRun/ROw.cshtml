@@ -1,0 +1,15 @@
+﻿@model MrCMS.Batching.Entities.BatchRun
+<tr data-batch-run-id="@Model.Id" data-refresh-url="@Url.Action("Row", "BatchRun", new { Model.Id })">
+    <td>
+        @Model.CreatedOn
+    </td>
+    <td>
+        @Model.Status
+    </td>
+    <td>
+        <div class="btn-group">
+            @Html.ActionLink("Show", "Show", "BatchRun", new { id = Model.Id }, new { @class = "btn btn-default btn-xs" })
+            @{Html.RenderPartial("ShowButton", Model, new ViewDataDictionary { { "classes", "btn-xs" } });}
+        </div>
+    </td>
+</tr>

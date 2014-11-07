@@ -29,7 +29,7 @@ namespace MrCMS.Website.Routing
                 ? CurrentRequestData.HomePage
                 : _documentService.GetDocumentByUrl<Webpage>(data);
 
-            if (!webpage.Published && !CurrentRequestData.CurrentUserIsAdmin)
+            if (webpage != null && !webpage.Published && !CurrentRequestData.CurrentUserIsAdmin)
             {
                 webpage = null;
             }

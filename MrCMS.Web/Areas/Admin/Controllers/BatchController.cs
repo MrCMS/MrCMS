@@ -26,5 +26,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             return View(batch);
         }
+
+        public ActionResult ShowPartial(Batch batch)
+        {
+            return PartialView("Show", batch);
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿@using MrCMS.Helpers
 @model MrCMS.Batching.Entities.Batch
 
-<fieldset>
+<fieldset data-batch-id="@Model.Id" data-refresh-url="@Url.Action("ShowPartial", "Batch", new { Model.Id })">
     <legend>
         Batch #@Model.Id
     </legend>
@@ -28,17 +28,7 @@
                 <tbody>
                     @foreach (var run in Model.BatchRuns.OrderByDescending(run => run.Id))
                     {
-                        <tr>
-                            <td>
-                                @run.CreatedOn
-                            </td>
-                            <td>
-                                @run.Status
-                            </td>
-                            <td>
-                                
-                            </td>
-                        </tr>
+                        Html.RenderAction("Row", "BatchRun", new { run.Id });
                     }
                 </tbody>
             </table>
@@ -63,14 +53,7 @@
                 <tbody>
                     @foreach (var job in Model.BatchJobs)
                     {
-                        <tr>
-                            <td>
-                                @job.Name
-                            </td>
-                            <td>
-                                @job.Status
-                            </td>
-                        </tr>
+                        Html.RenderAction("Row", "BatchJob", new { job.Id });
                     }
                 </tbody>
             </table>
