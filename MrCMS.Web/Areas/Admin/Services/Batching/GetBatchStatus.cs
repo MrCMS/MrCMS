@@ -26,7 +26,7 @@ namespace MrCMS.Web.Areas.Admin.Services.Batching
             var anyExecuting = _session.QueryOver<BatchRun>().Where(job => job.Batch.Id == batch.Id && job.Status == BatchRunStatus.Executing).Any();
             if (anyExecuting)
                 return BatchStatus.Executing;
-            if (anyRuns)
+            if (_session.QueryOver<BatchRun>().Where(job => job.Batch.Id == batch.Id && job.Status != BatchRunStatus.Complete).Any())
                 return BatchStatus.Pending;
             return BatchStatus.Complete;
         }
