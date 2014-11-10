@@ -562,6 +562,7 @@
     <Compile Include="Services\IImageTagRenderingService.cs" />
     <Compile Include="Services\ImageTagRenderingService.cs" />
     <Compile Include="Services\ImportExport\BatchJobs\ImportDocumentBatchJob.cs" />
+    <Compile Include="Services\ImportExport\BatchJobs\ImportDocumentBatchJobExecutor.cs" />
     <Compile Include="Services\ImportExport\ExportDocumentsService.cs" />
     <Compile Include="Services\ImportExport\IExportDocumentsService.cs" />
     <Compile Include="Services\IndexService.cs" />

@@ -333,6 +333,7 @@
     <Compile Include="Areas\Admin\Controllers\BatchJobController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunResultController.cs" />
+    <Compile Include="Areas\Admin\Events\RefreshUIOnBatchRunComplete.cs" />
     <Compile Include="Areas\Admin\Events\UpdateBatchJob.cs" />
     <Compile Include="Areas\Admin\Events\UpdateBatchRun.cs" />
     <Compile Include="Areas\Admin\Events\UpdateBatchRunResult.cs" />
@@ -340,6 +341,7 @@
     <Compile Include="Areas\Admin\Helpers\BatchEntityHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
     <Compile Include="Areas\Admin\Hubs\BatchProcessingHub.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\BatchRunGuidModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\MoveFilesModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />
@@ -510,6 +512,7 @@
     <Compile Include="Areas\Admin\Services\BaseAssignWebpageAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\BaseAssignWidgetAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\BatchAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\Batching\BatchCompletionStatus.cs" />
     <Compile Include="Areas\Admin\Services\Batching\BatchRunUIService.cs" />
     <Compile Include="Areas\Admin\Services\Batching\BatchStatus.cs" />
     <Compile Include="Areas\Admin\Services\Batching\GetBatchItemCount.cs" />
