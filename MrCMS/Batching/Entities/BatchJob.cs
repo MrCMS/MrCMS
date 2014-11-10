@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MrCMS.Entities;
 
@@ -7,9 +8,10 @@ namespace MrCMS.Batching.Entities
     {
         protected BatchJob()
         {
-            BatchRunResults = new List<BatchRunResult>();
+            Guid = Guid.NewGuid();
         }
 
+        public virtual Guid Guid { get; set; }
         public virtual string Data { get; set; }
         public virtual JobExecutionStatus Status { get; set; }
         public virtual int Tries { get; set; }

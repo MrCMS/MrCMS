@@ -251,6 +251,10 @@
     <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
     <Compile Include="Batching\BaseBatchJobExecutor.cs" />
     <Compile Include="Batching\BatchJobExecutionResult.cs" />
+    <Compile Include="Batching\CoreJobs\RebuildLuceneIndex.cs" />
+    <Compile Include="Batching\CoreJobs\RebuildLuceneIndexExecutor.cs" />
+    <Compile Include="Batching\CoreJobs\RebuildUniversalSearchIndex.cs" />
+    <Compile Include="Batching\CoreJobs\RebuildUniversalSearchIndexExecutor.cs" />
     <Compile Include="Batching\DbConfiguration\BatchJobOverride.cs" />
     <Compile Include="Batching\DefaultBatchJobExecutor.cs" />
     <Compile Include="Batching\Entities\Batch.cs" />

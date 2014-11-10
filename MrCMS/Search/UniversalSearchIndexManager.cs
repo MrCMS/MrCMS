@@ -135,7 +135,7 @@ namespace MrCMS.Search
 
         private Directory GetDirectory(Site site)
         {
-            return _directory = _directory ?? _getLuceneDirectory.Get(site, "UniversalSearch");
+            return _getLuceneDirectory.Get(site, "UniversalSearch");
         }
 
 
@@ -145,7 +145,7 @@ namespace MrCMS.Search
                 IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 writeFunc(indexWriter);
-                indexWriter.Optimize();
+                //indexWriter.Optimize();
             }
         }
     }

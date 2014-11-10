@@ -50,6 +50,8 @@ namespace MrCMS.Helpers
 
         public static bool RequiresSSL(this Webpage webpage, HttpRequestBase request, SiteSettings siteSettings = null)
         {
+            if (request.IsLocal)
+                return false;
             siteSettings = siteSettings ?? MrCMSApplication.Get<SiteSettings>();
             var isLiveAdmin = CurrentRequestData.CurrentUserIsAdmin && siteSettings.SSLAdmin && siteSettings.SiteIsLive &&
                               !request.IsLocal;
