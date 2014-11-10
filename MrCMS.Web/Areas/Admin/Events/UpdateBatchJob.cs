@@ -13,4 +13,5 @@ namespace MrCMS.Web.Areas.Admin.Events
             hubContext.Clients.All.updateJob(args.Item.Id);
         }
     }
+    
 }

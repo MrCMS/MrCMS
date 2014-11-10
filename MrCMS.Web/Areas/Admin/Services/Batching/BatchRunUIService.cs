@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Web;
-using System.Web.Mvc;
 using FluentNHibernate.Testing.Values;
 using MrCMS.Batching.Entities;
 using MrCMS.Batching.Services;
@@ -17,18 +13,16 @@ namespace MrCMS.Web.Areas.Admin.Services.Batching
     {
         private readonly IControlBatchRun _controlBatchRun;
         private readonly IExecuteNextBatchJob _executeNextBatchJob;
-        private readonly UrlHelper _urlHelper;
-        private readonly HttpContextBase _context;
+        private readonly IExecuteRequestForNextTask _executeRequestForNextTask;
         private readonly ISession _session;
 
         public BatchRunUIService(ISession session, IControlBatchRun controlBatchRun,
-            IExecuteNextBatchJob executeNextBatchJob, UrlHelper urlHelper, HttpContextBase context)
+            IExecuteNextBatchJob executeNextBatchJob, IExecuteRequestForNextTask executeRequestForNextTask)
         {
             _session = session;
             _controlBatchRun = controlBatchRun;
             _executeNextBatchJob = executeNextBatchJob;
-            _urlHelper = urlHelper;
-            _context = context;
+            _executeRequestForNextTask = executeRequestForNextTask;
         }
 
         public IList<BatchRunResult> GetResults(BatchRun batchRun)
@@ -41,10 +35,7 @@ namespace MrCMS.Web.Areas.Admin.Services.Batching
 
         public int? Start(BatchRun run)
         {
-            var start = _controlBatchRun.Start(run) ? run.Id : (int?)null;
-            if (start != null)
-                ExecuteRequestForNextTask(run);
-            return start;
+            return _controlBatchRun.Start(run) ? run.Id : (int?)null;
         }
 
         public bool Pause(BatchRun run)
@@ -104,14 +95,7 @@ namespace MrCMS.Web.Areas.Admin.Services.Batching
 
         public void ExecuteRequestForNextTask(BatchRun run)
         {
-            var cookieContainer = new CookieContainer();
-            var cookies = _context.Request.Cookies;
-            HttpCookie cookie = cookies[".AspNet.ApplicationCookie"];
-            cookieContainer.Add(new Cookie(cookie.Name, cookie.Value, cookie.Path, _context.Request.Url.Host));
-            var httpClientHandler = new HttpClientHandler { UseCookies = true, CookieContainer = cookieContainer };
-            var httpClient = new HttpClient(httpClientHandler);
-            var url = _urlHelper.Action("ExecuteNext", "BatchExecution", new { id = run.Guid }, "http");
-            httpClient.GetAsync(url);
+            _executeRequestForNextTask.Execute(run);
         }
 
         public int? ExecuteNextTask(BatchRun run)

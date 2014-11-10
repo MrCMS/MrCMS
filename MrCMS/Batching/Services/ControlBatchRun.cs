@@ -1,5 +1,7 @@
 ﻿using MrCMS.Batching.Entities;
+using MrCMS.Batching.Events;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using NHibernate;
 
 namespace MrCMS.Batching.Services
@@ -23,6 +25,10 @@ namespace MrCMS.Batching.Services
                 batchRun.Status = BatchRunStatus.Executing;
                 session.Update(batchRun);
             });
+            EventContext.Instance.Publish<IOnBatchRunStart, BatchRunStartArgs>(new BatchRunStartArgs
+            {
+                BatchRun = batchRun
+            });
             return true;
         }
 
@@ -35,6 +41,10 @@ namespace MrCMS.Batching.Services
             {
                 batchRun.Status = BatchRunStatus.Paused;
                 session.Update(batchRun);
+            });
+            EventContext.Instance.Publish<IOnBatchRunPause, BatchRunPauseArgs>(new BatchRunPauseArgs
+            {
+                BatchRun = batchRun
             });
             return true;
         }

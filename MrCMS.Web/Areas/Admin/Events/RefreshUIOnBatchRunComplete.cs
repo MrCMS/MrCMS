@@ -1,5 +1,6 @@
-using Microsoft.AspNet.SignalR;
+﻿using Microsoft.AspNet.SignalR;
 using MrCMS.Batching.Entities;
+using MrCMS.Batching.Services;
 using MrCMS.Events;
 using MrCMS.Web.Areas.Admin.Hubs;
 

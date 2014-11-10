@@ -20,10 +20,13 @@ namespace MrCMS.Services.ImportExport
     {
         private readonly ISession _session;
         private readonly ICreateBatchRun _createBatchRun;
-        public ImportDocumentsService(ISession session, ICreateBatchRun createBatchRun)
+        private readonly IControlBatchRun _controlBatchRun;
+
+        public ImportDocumentsService(ISession session, ICreateBatchRun createBatchRun,IControlBatchRun controlBatchRun)
         {
             _session = session;
             _createBatchRun = createBatchRun;
+            _controlBatchRun = controlBatchRun;
         }
 
         public void CreateBatch(List<DocumentImportDTO> items)
@@ -63,7 +66,8 @@ namespace MrCMS.Services.ImportExport
                     session.Save(luceneIndex);
                 }
             });
-            _createBatchRun.Create(batch);
+            var batchRun = _createBatchRun.Create(batch);
+            _controlBatchRun.Start(batchRun);
         }
     }
 }

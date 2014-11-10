@@ -334,6 +334,7 @@
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunResultController.cs" />
     <Compile Include="Areas\Admin\Events\RefreshUIOnBatchRunComplete.cs" />
+    <Compile Include="Areas\Admin\Events\StartBatchExecutionOnServer.cs" />
     <Compile Include="Areas\Admin\Events\UpdateBatchJob.cs" />
     <Compile Include="Areas\Admin\Events\UpdateBatchRun.cs" />
     <Compile Include="Areas\Admin\Events\UpdateBatchRunResult.cs" />
@@ -515,9 +516,11 @@
     <Compile Include="Areas\Admin\Services\Batching\BatchCompletionStatus.cs" />
     <Compile Include="Areas\Admin\Services\Batching\BatchRunUIService.cs" />
     <Compile Include="Areas\Admin\Services\Batching\BatchStatus.cs" />
+    <Compile Include="Areas\Admin\Services\Batching\ExecuteRequestForNextTask.cs" />
     <Compile Include="Areas\Admin\Services\Batching\GetBatchItemCount.cs" />
     <Compile Include="Areas\Admin\Services\Batching\GetBatchStatus.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IBatchRunUIService.cs" />
+    <Compile Include="Areas\Admin\Services\Batching\IExecuteRequestForNextTask.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchItemCount.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchStatus.cs" />
     <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
