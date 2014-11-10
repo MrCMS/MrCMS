@@ -10,6 +10,7 @@ namespace MrCMS.ACL.Rules
         public const string Sites = "Sites";
         public const string Resources = "Resources";
         public const string Logs = "Logs";
+        public const string Batch = "Batch";
         public const string Tasks = "Tasks";
         public const string ImportExport = "Import/Export";
         public const string MessageTemplates = "Message Templates";
@@ -36,6 +37,7 @@ namespace MrCMS.ACL.Rules
                        Sites,
                        Resources,
                        Logs,
+                       Batch,
                        Tasks,
                        ImportExport,
                        MessageTemplates,

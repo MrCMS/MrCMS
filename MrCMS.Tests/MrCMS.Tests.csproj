@@ -177,7 +177,6 @@
     <Compile Include="Services\ImportExport\ImportDocumentsService_GetHierarchyDepthTests.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsService_GetRootParentUrlTests.cs" />
     <Compile Include="Services\ImportExport\UpdateTagsService_SetTagsTests.cs" />
-    <Compile Include="Services\ImportExport\UpdateUrlHistoryService_SaveUrlHistoriesTests.cs" />
     <Compile Include="Services\ImportExport\UpdateUrlHistoryService_SetHistoriesTests.cs" />
     <Compile Include="Services\MessageTemplateParserTests.cs" />
     <Compile Include="Services\DocumentServiceTests.cs" />

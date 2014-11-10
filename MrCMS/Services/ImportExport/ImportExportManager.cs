@@ -39,7 +39,8 @@ namespace MrCMS.Services.ImportExport
             var businessLogicErrors = _importDocumentsValidationService.ValidateBusinessLogic(items);
             if (businessLogicErrors.Any())
                 return businessLogicErrors;
-            _importDocumentService.ImportDocumentsFromDTOs(items);
+            _importDocumentService.CreateBatch(items);
+            //_importDocumentService.ImportDocumentsFromDTOs(items);
             return new Dictionary<string, List<string>>();
         }
 
