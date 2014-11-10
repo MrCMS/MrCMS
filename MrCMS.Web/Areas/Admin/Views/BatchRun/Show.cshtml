@@ -8,28 +8,31 @@
 <fieldset data-batch-run-id="@Model.Id" data-refresh-url="@Url.Action("ShowPartial","BatchRun",new{Model.Id})">
     <legend>
         Batch Run for Batch @Model.Batch.Id
+        <span class="btn-group display-inline pull-right">
+            @Html.ActionLink("Back to batch", "Show", "Batch", new { id = Model.Batch.Id }, new { @class = "btn btn-default" })
+        </span>
     </legend>
     @{Html.RenderAction("Status", "BatchRun", new { Model.Id });}
     <div class="row">
         <div class="col-xs-12">
-            <table class="table table-condensed table-striped">
-                <thead>
-                    <tr>
-                        <th>
-                            Job
-                        </th>
-                        <th>
-                            Status
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var result in batchRunResults)
-                    {
-                        Html.RenderAction("Show", "BatchRunResult", new { result });
-                    }
-                </tbody>
-            </table>
+            @*<table class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                Job
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var result in batchRunResults)
+                        {
+                            Html.RenderAction("Show", "BatchRunResult", new { result });
+                        }
+                    </tbody>
+                </table>*@
         </div>
     </div>
 </fieldset>

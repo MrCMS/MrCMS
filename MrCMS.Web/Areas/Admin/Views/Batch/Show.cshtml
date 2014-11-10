@@ -4,6 +4,9 @@
 <fieldset data-batch-id="@Model.Id" data-refresh-url="@Url.Action("ShowPartial", "Batch", new { Model.Id })">
     <legend>
         Batch #@Model.Id
+        <span class="btn-group display-inline pull-right">
+            @Html.ActionLink("Back to list", "Index", "Batch", new { }, new { @class = "btn btn-default" })
+        </span>
     </legend>
     <div class="row">
         <div class="col-xs-12">
@@ -21,6 +24,12 @@
                             Status
                         </th>
                         <th>
+                            Completion
+                        </th>
+                        <th>
+                            Execution Time
+                        </th>
+                        <th>
                             Actions
                         </th>
                     </tr>
@@ -34,7 +43,7 @@
             </table>
         </div>
     </div>
-    <div class="row">
+    @*<div class="row">
         <div class="col-xs-12">
             <h3>
                 Jobs
@@ -58,5 +67,5 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </div>*@
 </fieldset>

@@ -1,34 +1,29 @@
 ﻿(function ($) {
     var batchHandler = function () {
-        function responseHandler(response) {
-            if (response) {
-                executeNext(response);
-            }
-        }
-        function executeNext(batchRunId) {
-            $.post('/admin/batchrun/executenext/' + batchRunId, responseHandler);
+        function refreshRun(id) {
+            var elements = $('[data-batch-run-id=' + id + ']');
+            refreshElements(elements);
         }
         function startBatch(event) {
             var batchRunId = $(event.target).data('batch-run-id');
-            $.post('/admin/batchrun/start/' + batchRunId, responseHandler);
+            $.post('/admin/batchrun/start/' + batchRunId, function () {
+                refreshRun(batchRunId);
+            });
         }
         function pauseBatch(event) {
             var batchRunId = $(event.target).data('batch-run-id');
-            $.post('/admin/batchrun/pause/' + batchRunId);
+            $.post('/admin/batchrun/pause/' + batchRunId, function () {
+                refreshRun(batchRunId);
+            });
         }
         function refreshElements(elements) {
             elements.each(function (index, el) {
                 var element = $(el);
                 var refreshUrl = element.data('refresh-url');
                 if (refreshUrl) {
-                    var refresh = element.data('refresh');
-                    if (refresh)
-                        clearTimeout(refresh);
-                    element.data('refresh', setTimeout(function() {
-                        $.get(refreshUrl, function(response) {
-                            element.replaceWith(response);
-                        });
-                    }, 300));
+                    $.get(refreshUrl, function (response) {
+                        element.replaceWith(response);
+                    });
                 }
             });
         }
@@ -37,9 +32,17 @@
             var elements = $('[data-batch-run-result-id=' + id + ']');
             refreshElements(elements);
         }
-        function updateRun(id) {
-            var elements = $('[data-batch-run-id=' + id + ']');
-            refreshElements(elements);
+        function updateRun(runInfo) {
+            var id = runInfo.id;
+            $('[data-batch-run-status=' + id + ']').html(runInfo.status);
+            var completionStatus = runInfo.completionStatus;
+            $('[data-batch-run-progress-bar=' + id + ']').css('width', completionStatus.PercentageCompleted);
+            $('[data-batch-run-full-status=' + id + ']').html(completionStatus.FullStatus);
+            $('[data-batch-run-average-time-taken=' + id + ']').html(completionStatus.AverageTimeTaken);
+            $('[data-batch-run-time-taken=' + id + ']').html(completionStatus.TimeTaken);
+            $('[data-batch-run-pending=' + id + ']').html(completionStatus.Pending);
+            $('[data-batch-run-succeeded=' + id + ']').html(completionStatus.Succeeded);
+            $('[data-batch-run-failed=' + id + ']').html(completionStatus.Failed);
         }
         function updateJob(id) {
             var elements = $('[data-batch-job-id=' + id + ']');
@@ -53,6 +56,7 @@
             batchHub.client.updateResult = updateResult;
             batchHub.client.updateRun = updateRun;
             batchHub.client.updateJob = updateJob;
+            batchHub.client.refreshBatchRunUI = refreshRun;
             $.connection.hub.start().fail(function () { console.log('Could not Connect!'); });
         }
         return {

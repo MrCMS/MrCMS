@@ -16,13 +16,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public ViewResult Show(BatchRun batchRun)
         {
-            GetResults(batchRun);
             return View(batchRun);
         }
 
         public PartialViewResult ShowPartial(BatchRun batchRun)
         {
-            GetResults(batchRun);
             return PartialView("Show", batchRun);
         }
 
@@ -44,18 +42,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return Json(_batchRunUIService.ExecuteNextTask(run));
         }
 
-        private void GetResults(BatchRun batchRun)
-        {
-            ViewData["results"] = _batchRunUIService.GetResults(batchRun);
-        }
-
         public ActionResult Status(BatchRun batchRun)
         {
+            ViewData["completion-status"] = _batchRunUIService.GetCompletionStatus(batchRun);
             return PartialView(batchRun);
         }
 
         public ActionResult Row(BatchRun batchRun)
         {
+            ViewData["completion-status"] = _batchRunUIService.GetCompletionStatus(batchRun);
             return PartialView(batchRun);
         }
     }

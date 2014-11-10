@@ -22,7 +22,7 @@ namespace MrCMS.Batching.Services
                 return new NextJobToRunResult { Paused = true };
 
             var runResult = _session.QueryOver<BatchRunResult>()
-                .Where(result => result.Status == JobExecutionStatus.Pending)
+                .Where(result => result.Status == JobExecutionStatus.Pending && result.BatchRun.Id == batchRun.Id)
                 .OrderBy(result => result.ExecutionOrder).Asc
                 .Take(1).SingleOrDefault();
             return runResult == null ? new NextJobToRunResult { Complete = true } : new NextJobToRunResult { Result = runResult };

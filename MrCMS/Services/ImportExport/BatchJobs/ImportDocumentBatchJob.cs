@@ -3,8 +3,11 @@ using System.Linq;
 using FluentNHibernate;
 using MrCMS.Batching;
 using MrCMS.Batching.Entities;
+using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Events.Documents;
 using MrCMS.Helpers;
+using MrCMS.Search;
 using MrCMS.Services.ImportExport.DTOs;
 using MrCMS.Services.Notifications;
 using Newtonsoft.Json;
@@ -56,6 +59,11 @@ namespace MrCMS.Services.ImportExport.BatchJobs
         {
             using (EventContext.Instance.Disable<IOnTransientNotificationPublished>())
             using (EventContext.Instance.Disable<IOnPersistentNotificationPublished>())
+            using (EventContext.Instance.Disable<UpdateIndicesListener>())
+            using (EventContext.Instance.Disable<UpdateUniversalSearch>())
+            using (EventContext.Instance.Disable<WebpageUpdatedNotification>())
+            using (EventContext.Instance.Disable<DocumentAddedNotification>())
+            using (EventContext.Instance.Disable<MediaCategoryUpdatedNotification>())
             {
                 var documentImportDto = batchJob.DocumentImportDto;
                 var webpage =

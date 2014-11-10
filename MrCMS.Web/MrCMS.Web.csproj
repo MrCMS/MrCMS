@@ -329,6 +329,7 @@
     <Compile Include="Areas\Admin\ACL\MediaToolsACL.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BatchExecutionController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchJobController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunResultController.cs" />
@@ -336,6 +337,7 @@
     <Compile Include="Areas\Admin\Events\UpdateBatchRun.cs" />
     <Compile Include="Areas\Admin\Events\UpdateBatchRunResult.cs" />
     <Compile Include="Areas\Admin\Helpers\AdminMessagingExtensions.cs" />
+    <Compile Include="Areas\Admin\Helpers\BatchEntityHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
     <Compile Include="Areas\Admin\Hubs\BatchProcessingHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\MoveFilesModelBinder.cs" />
