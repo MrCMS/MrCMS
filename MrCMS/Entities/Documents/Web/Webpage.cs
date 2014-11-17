@@ -8,6 +8,7 @@ using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
+using MrCMS.Settings;
 using MrCMS.Website;
 
 namespace MrCMS.Entities.Documents.Web
@@ -147,7 +148,7 @@ namespace MrCMS.Entities.Documents.Web
         {
             get
             {
-                string scheme = RequiresSSL ? "https://" : "http://";
+                string scheme = (RequiresSSL || MrCMSApplication.Get<SiteSettings>().SSLEverywhere) ? "https://" : "http://";
                 string authority = Site.BaseUrl;
                 if (authority.EndsWith("/"))
                     authority = authority.TrimEnd('/');
