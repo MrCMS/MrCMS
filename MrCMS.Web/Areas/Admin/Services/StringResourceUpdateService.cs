@@ -64,7 +64,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             inputStream.Position = 0;
             var reader = new StreamReader(inputStream, Encoding.Default);
             string data = reader.ReadToEnd();
-            string[] rows = data.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rows = data.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             var resourceData = new List<StringResourceData>();
             foreach (string row in rows.Skip(1)) //skip the header row
             {
