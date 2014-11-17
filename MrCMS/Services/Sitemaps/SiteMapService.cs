@@ -52,28 +52,7 @@ namespace MrCMS.Services.Sitemaps
 
                 AppendChildren(allWebpages, urlset, xmlDocument);
 
-                return xmlDocument.ToString(); // content;
-                //var xmlDocument = new XmlDocument();
-                //XmlDeclaration xmlDeclaration = xmlDocument.CreateXmlDeclaration("1.0", "utf-8", null);
-                //xmlDocument.InsertBefore(xmlDeclaration, xmlDocument.DocumentElement);
-
-                //XmlNode urlset = xmlDocument.AppendChild(xmlDocument.CreateElement("urlset"));
-
-                //XmlAttribute standardNs = xmlDocument.CreateAttribute("xmlns");
-                //standardNs.Value = "http://www.google.com/schemas/sitemap/0.9";
-                //urlset.Attributes.Append(standardNs);
-                //XmlAttribute imageNs = xmlDocument.CreateAttribute("xmlns:image");
-                //imageNs.Value = "http://www.google.com/schemas/sitemap-image/1.1";
-                //urlset.Attributes.Append(imageNs);
-
-                //AppendChildren(allWebpages, urlset, xmlDocument);
-
-                //var sb = new StringBuilder();
-                //TextWriter tw = new StringWriter(sb);
-                //xmlDocument.WriteTo(new XmlTextWriter(tw));
-
-                //string content = sb.ToString();
-                //return content;
+                return xmlDocument.ToString(); 
             }, GetCacheLength(), CacheExpiryType.Absolute);
         }
 
