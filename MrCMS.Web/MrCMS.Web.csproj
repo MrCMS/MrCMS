@@ -488,6 +488,9 @@
     <Compile Include="Areas\Admin\Models\StringResourceSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\UpdatePropertyData.cs" />
     <Compile Include="Areas\Admin\Models\PageDefaultsInfo.cs" />
+    <Compile Include="Areas\Admin\Models\UserEdit\UserTab.cs" />
+    <Compile Include="Areas\Admin\Models\UserEdit\UserTabBase.cs" />
+    <Compile Include="Areas\Admin\Models\UserEdit\UserTabGroup.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
     <Compile Include="Areas\Admin\Models\VersionsModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewDataUploadFilesResult.cs" />
@@ -537,6 +540,7 @@
     <Compile Include="Areas\Admin\Services\GetTemplateOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetUrlGeneratorOptions.cs" />
     <Compile Include="Areas\Admin\Services\GetUserCultureOptions.cs" />
+    <Compile Include="Areas\Admin\Services\GetUserEditTabsService.cs" />
     <Compile Include="Areas\Admin\Services\GetValidPageTemplatesToAdd.cs" />
     <Compile Include="Areas\Admin\Services\GetWebpageEditTabsService.cs" />
     <Compile Include="Areas\Admin\Services\IACLService.cs" />
@@ -555,6 +559,7 @@
     <Compile Include="Areas\Admin\Services\IGetLayoutOptions.cs" />
     <Compile Include="Areas\Admin\Services\IGetUrlGeneratorOptions.cs" />
     <Compile Include="Areas\Admin\Services\IGetUserCultureOptions.cs" />
+    <Compile Include="Areas\Admin\Services\IGetUserEditTabsService.cs" />
     <Compile Include="Areas\Admin\Services\IGetValidPageTemplatesToAdd.cs" />
     <Compile Include="Areas\Admin\Services\IGetWebpageEditTabsService.cs" />
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
