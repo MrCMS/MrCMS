@@ -8,15 +8,16 @@
 @Html.Hidden("controller-name", ViewData["controller-name"])
 @{ Html.RenderPartial("Navbar"); }
 
-<div class="main-content">
-    <div class="inner-content">
-        <section class="admin-header">
-            @{ Html.RenderPartial("Messages");}
-        </section>
-        @RenderBody()
+<div class="container-mrcms" style="padding-left: 0;">
+    <div class="main-content">
+        <div class="inner-content">
+            <section class="admin-header">
+                @{ Html.RenderPartial("Messages");}
+            </section>
+            @RenderBody()
+        </div>
     </div>
 </div>
-
 <footer>
     <hr />
     <img src="/Areas/Admin/Content/Images/logo.png" class="display-inline" style="margin-left: 20px;" />
