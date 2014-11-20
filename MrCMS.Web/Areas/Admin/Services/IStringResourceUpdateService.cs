@@ -7,6 +7,6 @@ namespace MrCMS.Web.Areas.Admin.Services
     public interface IStringResourceUpdateService
     {
         FileResult Export(StringResourceSearchQuery searchQuery);
-        void Import(HttpPostedFileBase file);
+        ResourceImportSummary Import(HttpPostedFileBase file);
     }
 }

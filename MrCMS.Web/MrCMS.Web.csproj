@@ -345,6 +345,7 @@
     <Compile Include="Areas\Admin\ModelBinders\BatchRunGuidModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\MoveFilesModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
+    <Compile Include="Areas\Admin\Models\ChooseSiteParams.cs" />
     <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageTemplateController.cs" />
@@ -409,6 +410,7 @@
     <Compile Include="Areas\Admin\Models\Notifications\NotificationModel.cs" />
     <Compile Include="Areas\Admin\Models\PageTemplateSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\PostingsModel.cs" />
+    <Compile Include="Areas\Admin\Models\ResourceImportSummary.cs" />
     <Compile Include="Areas\Admin\Models\SaveResult.cs" />
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResult.cs" />
@@ -1035,6 +1037,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-page-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\batch.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\choose-site.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\pages.js" />
@@ -1740,6 +1743,7 @@
     <Content Include="Areas\Admin\Views\BatchRun\Row.cshtml" />
     <Content Include="Areas\Admin\Views\BatchJob\Row.cshtml" />
     <Content Include="Areas\Admin\Views\BatchRun\ShowButton.cshtml" />
+    <Content Include="Areas\Admin\Views\Resource\ChooseSite.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>

@@ -3,11 +3,11 @@ using MrCMS.Website.Caching;
 
 namespace MrCMS.Events.Widgets
 {
-    public class ClearCacheWidget : IOnUpdated<Widget>
+    public class ClearWidgetsFromCache : IOnUpdated<Widget>
     {
         private readonly ICacheManager _cacheManager;
 
-        public ClearCacheWidget(ICacheManager cacheManager)
+        public ClearWidgetsFromCache(ICacheManager cacheManager)
         {
             _cacheManager = cacheManager;
         }

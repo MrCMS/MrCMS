@@ -1,4 +1,5 @@
 using System.Web.Mvc;
+using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
@@ -22,7 +23,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public RedirectToRouteResult Import()
         {
-            _stringResourceUpdateService.Import(Request.Files[0]);
+            var summary = _stringResourceUpdateService.Import(Request.Files[0]);
+            TempData.SuccessMessages()
+                .Add(string.Format("{0} resourced procesed - {1} added, {2} updated",
+                    summary.Processed, summary.Added, summary.Updated));
             return RedirectToAction("Index", "Resource");
         }
     }

@@ -7,27 +7,45 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     var languageOptions = ViewData["language-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
-@using (Html.BeginForm("Add", "Resource", FormMethod.Post))
+@using (Html.BeginForm("Add", "Resource", new { id = "" }, FormMethod.Post, new { target = "_parent" }))
 {
     <fieldset>
         <legend>
-            @Resource("Admin Resources Add Override", "Add override") 
+            @Resource("Admin Resources Add Override", "Add override")
             <span class="btn-group display-inline pull-right">
                 <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
             </span>
         </legend>
         <p>@Resource("Default"): @Model.DisplayKey</p>
-        @Html.ReturnToReferrer()
-        @Html.HiddenFor(task => task.Key)
+        @if (!string.IsNullOrWhiteSpace(Request.Params["referrer"]))
+        {
+            @Html.ReturnTo(Request.Params["referrer"])
+        }
+        else
+        {
+            @Html.ReturnToReferrer()
+        }
+        @Html.HiddenFor(resource => resource.Key)
+        @if (Model.Site != null)
+        {
+            <div class="form-group">
+                @Html.LabelFor(resource => resource.Site.Id, @Resource("For Site:"))
+                @Model.Site.DisplayName
+            </div>
+        }
         <div class="form-group">
-            @Html.LabelFor(task => task.Value)
-            @Html.TextBoxFor(task => task.Value, new { @class = "form-control" })
+            @Html.LabelFor(resource => resource.Value)
+            @Html.TextBoxFor(resource => resource.Value, new { @class = "form-control" })
             @Html.ValidationMessageFor(resource => resource.Value)
         </div>
-        <div class="form-group">
-            @Html.LabelFor(task => task.UICulture)
-            @Html.DropDownListFor(task => task.UICulture, languageOptions, new { @data_val = "true", data_val_required = "Please select a culture.", @class = "form-control" })
-            @Html.ValidationMessageFor(resource => resource.UICulture)
-        </div>
+        @if (languageOptions.Any())
+        {
+            <div class="form-group">
+                @Html.LabelFor(resource => resource.UICulture)
+                @Html.DropDownListFor(resource => resource.UICulture, languageOptions, new { @data_val = "true", data_val_required = "Please select a culture.", @class = "form-control" })
+                @Html.ValidationMessageFor(resource => resource.UICulture)
+            </div>
+        }
+        @Html.HiddenFor(resource => resource.Site.Id)
     </fieldset>
 }

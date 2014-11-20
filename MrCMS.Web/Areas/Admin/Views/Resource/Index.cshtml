@@ -7,6 +7,7 @@
 @{
     var resources = ViewData["results"] as IPagedList<StringResource> ?? PagedList<StringResource>.Empty;
     var languageOptions = ViewData["language-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 
 @using (Html.BeginForm("Index", "Resource", FormMethod.Get))
@@ -23,19 +24,25 @@
         </legend>
 
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-sm-6 col-lg-3">
                 <div class="form-group">
                     @Html.LabelFor(query => query.Key)
                     @Html.TextBoxFor(query => query.Key, new { @class = "form-control" })
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-sm-6 col-lg-3">
                 <div class="form-group">
                     @Html.LabelFor(query => query.Value)
                     @Html.TextBoxFor(query => query.Value, new { @class = "form-control" })
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-sm-6 col-lg-3">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.SiteId)
+                    @Html.DropDownListFor(query => query.SiteId, siteOptions, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
                 <div class="form-group">
                     @Html.LabelFor(query => query.Language)
                     @Html.DropDownListFor(query => query.Language, languageOptions, new { @class = "form-control" })
@@ -48,7 +55,7 @@
 @if (!resources.Any())
 {
     @Resource("Admin Resources No Resources", "No resources")
-        }
+}
 else
 {
     <table class="table table-striped table-condensed" style="overflow: scroll">
@@ -59,6 +66,9 @@ else
                 </th>
                 <th>
                     @Resource("Value")
+                </th>
+                <th>
+                    @Resource("Site")
                 </th>
                 <th>
                     @Resource("Language")
@@ -79,6 +89,9 @@ else
                         @resource.Value
                     </td>
                     <td>
+                        @resource.DisplaySite
+                    </td>
+                    <td>
                         @resource.DisplayUICulture
                     </td>
                     <td>
@@ -86,7 +99,21 @@ else
                             @Html.ActionLink("Edit", "Edit", "Resource", new { id = resource.Id }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
                             @if (resource.IsDefault)
                             {
-                                @Html.ActionLink("Add an override", "Add", "Resource", new { resource.Key }, new { @class = "btn btn-success btn-xs", data_toggle = "fb-modal" })
+                                @*<button type="button" class="btn btn-success btn-xs">Add override</button>
+                                    <button type="button" class="btn btn-success dropdown-toggle btn-xs" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>*@
+                                <button class="btn btn-success btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                    Add override <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        @Html.ActionLink("Site", "ChooseSite", "Resource", new { resource.Key }, new { data_toggle = "fb-modal" })
+                                        @Html.ActionLink("Language", "Add", "Resource", new { resource.Key, language = true }, new { data_toggle = "fb-modal" })
+                                        @Html.ActionLink("Site & Language", "ChooseSite", "Resource", new { resource.Key, language = true }, new { data_toggle = "fb-modal" })
+                                    </li>
+                                </ul>
                             }
                             else
                             {
@@ -104,7 +131,7 @@ else
 
 <fieldset>
     <legend>
-        @Resource("Admin Resources Import Resources","Import Resources")
+        @Resource("Admin Resources Import Resources", "Import Resources")
     </legend>
     @using (Html.BeginForm("Import", "ResourceUpdate", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
