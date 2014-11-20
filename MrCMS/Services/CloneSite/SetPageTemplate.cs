@@ -17,7 +17,7 @@ namespace MrCMS.Services.CloneSite
         {
             if (@from.PageTemplate == null) 
                 return;
-            to.PageTemplate = siteCloneContext.Find<PageTemplate>(@from.PageTemplate.Id);
+            to.PageTemplate = siteCloneContext.FindNew<PageTemplate>(@from.PageTemplate.Id);
             _session.Transact(session => session.Update(to));
         }
     }

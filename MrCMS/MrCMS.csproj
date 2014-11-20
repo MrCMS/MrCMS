@@ -548,6 +548,8 @@
     <Compile Include="Services\CloneSite\SiteCloneContext.cs" />
     <Compile Include="Services\CloneSite\SiteCloneContextEntry.cs" />
     <Compile Include="Services\CloneSite\SiteCopyOptionInfo.cs" />
+    <Compile Include="Services\CloneSite\UpdateSiteDefaultLayouts.cs" />
+    <Compile Include="Services\CloneSite\UpdateSiteSettings.cs" />
     <Compile Include="Services\CloneSite\UpdateWebpages.cs" />
     <Compile Include="Services\CurrentSiteLocator.cs" />
     <Compile Include="Services\CustomBinderBase.cs" />

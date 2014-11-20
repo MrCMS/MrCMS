@@ -25,7 +25,7 @@ namespace MrCMS.Services.CloneSite
             });
         }
 
-        public T Find<T>(int id) where T : SystemEntity
+        public T FindNew<T>(int id) where T : SystemEntity
         {
             SiteCloneContextEntry entry = Entries.FirstOrDefault(x => typeof (T).IsAssignableFrom(x.Type) && x.Id == id);
 

@@ -30,7 +30,7 @@ namespace MrCMS.Services.CloneSite
                     {
                         var copy = template.GetCopyForSite(to);
                         if (template.Layout != null)
-                            copy.Layout = siteCloneContext.Find<Layout>(template.Layout.Id);
+                            copy.Layout = siteCloneContext.FindNew<Layout>(template.Layout.Id);
                         session.Save(copy);
                         siteCloneContext.AddEntry(template, copy);
                     }
