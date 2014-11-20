@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
+using MrCMS.Services.Caching;
 
 namespace MrCMS.Services.Resources
 {
-    public interface IStringResourceProvider
+    public interface IStringResourceProvider:IClearCache
     {
         string GetValue(string key, string defaultValue = null);
         IEnumerable<string> GetOverriddenLanguages();

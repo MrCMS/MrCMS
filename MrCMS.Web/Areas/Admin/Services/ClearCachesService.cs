@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Web.Configuration;
 using MrCMS.Config;
 using MrCMS.DbConfiguration.Caches.Azure;
+using MrCMS.Services.Caching;
 using MrCMS.Website.Caching;
 
 namespace MrCMS.Web.Areas.Admin.Services
@@ -8,10 +10,12 @@ namespace MrCMS.Web.Areas.Admin.Services
     public class ClearCachesService : IClearCachesService
     {
         private readonly ICacheManager _cacheManager;
+        private readonly IEnumerable<IClearCache> _manualCacheClears;
 
-        public ClearCachesService(ICacheManager cacheManager)
+        public ClearCachesService(ICacheManager cacheManager, IEnumerable<IClearCache> manualCacheClears)
         {
             _cacheManager = cacheManager;
+            _manualCacheClears = manualCacheClears;
         }
 
         public void ClearCache()
@@ -28,6 +32,10 @@ namespace MrCMS.Web.Areas.Admin.Services
             }
             _cacheManager.Clear();
 
+            foreach (var cache in _manualCacheClears)
+            {
+                cache.ClearCache();
+            }
         }
     }
 }

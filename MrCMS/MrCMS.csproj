@@ -526,6 +526,7 @@
     <Compile Include="Search\UpdateUniversalSearch.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\Caching\HtmlCacheService.cs" />
+    <Compile Include="Services\Caching\IClearCache.cs" />
     <Compile Include="Services\Caching\IHtmlCacheService.cs" />
     <Compile Include="Services\CurrentSiteLocator.cs" />
     <Compile Include="Services\CustomBinderBase.cs" />

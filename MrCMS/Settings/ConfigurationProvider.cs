@@ -113,5 +113,10 @@ namespace MrCMS.Settings
             _legacySettingsProvider.ApplyLegacySettings(settings, _site.Id);
             return settings;
         }
+
+        public void ClearCache()
+        {
+            _settingCache.Clear();
+        }
     }
 }

@@ -71,7 +71,7 @@ namespace MrCMS.Services.Resources
 
                 if (ResourcesForSite.ContainsKey(key))
                 {
-                    var resources = ResourcesForSite[key];
+                    List<StringResource> resources = ResourcesForSite[key];
                     StringResource languageValue =
                         resources.FirstOrDefault(
                             resource => resource.UICulture == currentUserCulture);
@@ -84,9 +84,9 @@ namespace MrCMS.Services.Resources
                         return existingDefault.Value;
                 }
 
-                var defaultResource = new StringResource { Key = key, Value = defaultValue ?? key };
+                var defaultResource = new StringResource {Key = key, Value = defaultValue ?? key};
                 _session.Transact(session => session.Save(defaultResource));
-                AllResources[key] = new HashSet<StringResource> { defaultResource };
+                AllResources[key] = new HashSet<StringResource> {defaultResource};
                 return defaultResource.Value;
             }
         }
@@ -104,7 +104,7 @@ namespace MrCMS.Services.Resources
         {
             if (ResourcesForSite.ContainsKey(key))
             {
-                var stringResources = ResourcesForSite[key];
+                List<StringResource> stringResources = ResourcesForSite[key];
                 stringResources = site == null
                     ? stringResources.FindAll(resource => resource.Site == null)
                     : stringResources.FindAll(resource => resource.Site != null && resource.Site.Id == site.Id);
@@ -124,7 +124,7 @@ namespace MrCMS.Services.Resources
                     AllResources[resource.Key].Add(resource);
                 else
                 {
-                    AllResources[resource.Key] = new HashSet<StringResource> { resource };
+                    AllResources[resource.Key] = new HashSet<StringResource> {resource};
                 }
             }
         }
@@ -177,6 +177,11 @@ namespace MrCMS.Services.Resources
         IEnumerable<StringResource> IStringResourceProvider.AllResources
         {
             get { return AllStringResources; }
+        }
+
+        public void ClearCache()
+        {
+            ResetResourceCache();
         }
 
         private void ResetResourceCache()

@@ -88,5 +88,10 @@ namespace MrCMS.Settings
             }
             return new TSettings();
         }
+
+        public void ClearCache()
+        {
+            _settingCache.Clear();
+        }
     }
 }
