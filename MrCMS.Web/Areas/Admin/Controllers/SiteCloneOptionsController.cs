@@ -17,9 +17,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult Get()
         {
             ViewData["other-sites"] = _siteCloneOptionsAdminService.GetOtherSiteOptions();
-            //_siteAdminService.GetAllSites()
-            //                                      .BuildSelectItemList(site => site.Name, site => site.Id.ToString(),
-            //                                                           emptyItemText: "Do not copy");
 
             return PartialView(_siteCloneOptionsAdminService.GetClonePartOptions());
         }
