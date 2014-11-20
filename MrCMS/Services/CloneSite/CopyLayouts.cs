@@ -17,9 +17,9 @@ namespace MrCMS.Services.CloneSite
             _session = session;
         }
 
-        public void Clone(Site @from, Site to)
+        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            var copies = GetLayoutCopies(@from, to);
+            var copies = GetLayoutCopies(@from, to, siteCloneContext);
 
             _session.Transact(session => copies.ForEach(layout =>
             {
@@ -32,7 +32,7 @@ namespace MrCMS.Services.CloneSite
                 }
             }));
         }
-        private IEnumerable<Layout> GetLayoutCopies(Site @from, Site to, Layout fromParent = null, Layout toParent = null)
+        private IEnumerable<Layout> GetLayoutCopies(Site @from, Site to, SiteCloneContext siteCloneContext, Layout fromParent = null, Layout toParent = null)
         {
             var queryOver = _session.QueryOver<Layout>().Where(layout => layout.Site.Id == @from.Id);
             queryOver = fromParent == null
@@ -43,15 +43,18 @@ namespace MrCMS.Services.CloneSite
             foreach (var layout in layouts)
             {
                 var copy = layout.GetCopyForSite(to);
+                siteCloneContext.AddEntry(layout, copy);
                 copy.LayoutAreas = layout.LayoutAreas.Select(area =>
                 {
-                    var areaCopy = CloneSiteExtensions.GetCopyForSite<LayoutArea>(area, to);
+                    var areaCopy = area.GetCopyForSite(to);
+                    siteCloneContext.AddEntry(area, areaCopy);
                     areaCopy.Layout = copy;
                     areaCopy.Widgets = area.Widgets
                         .Where(widget => widget.Webpage == null)
                         .Select(widget =>
                         {
                             var widgetCopy = widget.GetCopyForSite(to);
+                            siteCloneContext.AddEntry(widget, widgetCopy);
                             widgetCopy.LayoutArea = areaCopy;
                             return widgetCopy;
                         })
@@ -60,7 +63,7 @@ namespace MrCMS.Services.CloneSite
                 }).ToList();
                 copy.Parent = toParent;
                 yield return copy;
-                foreach (var child in GetLayoutCopies(@from, to, layout, copy))
+                foreach (var child in GetLayoutCopies(@from, to, siteCloneContext, layout, copy))
                 {
                     yield return child;
                 }

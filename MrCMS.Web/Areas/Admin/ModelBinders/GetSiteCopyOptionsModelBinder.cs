@@ -22,7 +22,7 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 
             var form = controllerContext.HttpContext.Request.Form;
             var keys = form.AllKeys.Where(s => s.StartsWith("sco-"));
-
+            
             foreach (var key in keys)
             {
                 var value = form[key];

@@ -13,7 +13,7 @@ namespace MrCMS.Services.CloneSite
             _legacySettingsProvider = legacySettingsProvider;
         }
 
-        public void Clone(Site @from, Site to)
+        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
             var fromProvider = new ConfigurationProvider(@from, _legacySettingsProvider);
             var toProvider = new ConfigurationProvider(@to, _legacySettingsProvider);

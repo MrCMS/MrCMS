@@ -16,15 +16,14 @@ namespace MrCMS.Services.CloneSite
             _session = session;
         }
 
-        public void Clone(Site @from, Site to)
+        public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            IEnumerable<MediaCategory> copies = GetMediaCategoryCopies(@from, to);
+            IEnumerable<MediaCategory> copies = GetMediaCategoryCopies(@from, to, siteCloneContext);
 
             _session.Transact(session => copies.ForEach(category => session.Save(category)));
         }
 
-        private IEnumerable<MediaCategory> GetMediaCategoryCopies(Site @from, Site to, MediaCategory fromParent = null,
-            MediaCategory toParent = null)
+        private IEnumerable<MediaCategory> GetMediaCategoryCopies(Site @from, Site to, SiteCloneContext siteCloneContext, MediaCategory fromParent = null, MediaCategory toParent = null)
         {
             IQueryOver<MediaCategory, MediaCategory> queryOver =
                 _session.QueryOver<MediaCategory>().Where(layout => layout.Site.Id == @from.Id);
@@ -35,9 +34,10 @@ namespace MrCMS.Services.CloneSite
             foreach (MediaCategory category in categories)
             {
                 MediaCategory copy = category.GetCopyForSite(to);
+                siteCloneContext.AddEntry(category, copy);
                 copy.Parent = toParent;
                 yield return copy;
-                foreach (MediaCategory child in GetMediaCategoryCopies(@from, to, category, copy))
+                foreach (MediaCategory child in GetMediaCategoryCopies(@from, to, siteCloneContext, fromParent: category, toParent: copy))
                 {
                     yield return child;
                 }

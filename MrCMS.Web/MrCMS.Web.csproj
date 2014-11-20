@@ -294,10 +294,6 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\PublishedOnFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\TypeFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
-    <Compile Include="Apps\Core\Services\CloneSites\CopyForgottenPassword.cs" />
-    <Compile Include="Apps\Core\Services\CloneSites\CopyLogin.cs" />
-    <Compile Include="Apps\Core\Services\CloneSites\CopyRegister.cs" />
-    <Compile Include="Apps\Core\Services\CloneSites\CopyResetPassword.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreLayouts.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreMedia.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreWebpages.cs" />
