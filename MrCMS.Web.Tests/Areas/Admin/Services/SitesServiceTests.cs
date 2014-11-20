@@ -7,6 +7,7 @@ using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Services.CloneSite;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using Xunit;
@@ -42,7 +43,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
             Session.Transact(session => session.Save(user));
             CurrentRequestData.CurrentUser = user;
             var site = new Site();
-            var options = new SiteCopyOptions();
+            var options = new List<SiteCopyOption>();
 
             _siteService.AddSite(site, options);
 
@@ -54,7 +55,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         public void SiteAdminService_AddSite_SavesPassedSiteToSession()
         {
             var site = new Site();
-            var options = new SiteCopyOptions();
+            var options = new List<SiteCopyOption>();
 
             _siteService.AddSite(site, options);
 

@@ -4,6 +4,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Services.CloneSite;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Services
@@ -29,14 +30,11 @@ namespace MrCMS.Web.Areas.Admin.Services
             return _session.Get<Site>(id);
         }
 
-        public void AddSite(Site site, SiteCopyOptions options)
+        public void AddSite(Site site, List<SiteCopyOption> options)
         {
             _session.Transact(session => session.Save(site));
 
-            if (options.SiteId.HasValue)
-            {
-                _cloneSiteService.CloneData(site, options);
-            }
+            _cloneSiteService.CloneData(site, options);
         }
 
         public void SaveSite(Site site)

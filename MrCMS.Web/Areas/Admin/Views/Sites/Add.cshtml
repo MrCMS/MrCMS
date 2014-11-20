@@ -1,7 +1,7 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Models
 @model MrCMS.Entities.Multisite.Site
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@*@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}*@
 
 @using (Html.BeginForm("Add", "Sites", FormMethod.Post))
 {
@@ -28,7 +28,7 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                @{ Html.RenderPartial("CopyOptions", new ViewDataDictionary(new SiteCopyOptions()) { { "other-sites", ViewData["other-sites"] } });}
+                @{ Html.RenderAction("Get", "SiteCloneOptions");}
             </div>
         </div>
     </fieldset>

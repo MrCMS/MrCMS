@@ -1,8 +1,11 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 using MrCMS.Helpers;
 
@@ -27,17 +30,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("Add")]
-        public PartialViewResult Add_Get()
+        public ViewResult Add_Get()
         {
-            ViewData["other-sites"] = _siteAdminService.GetAllSites()
-                                                  .BuildSelectItemList(site => site.Name, site => site.Id.ToString(),
-                                                                       emptyItemText: "Do not copy");
 
-            return PartialView(new Site());
+            return View(new Site());
         }
 
         [HttpPost]
-        public RedirectToRouteResult Add(Site site, SiteCopyOptions options)
+        public RedirectToRouteResult Add(Site site, [IoCModelBinder(typeof(GetSiteCopyOptionsModelBinder))] List<SiteCopyOption> options)
         {
             _siteAdminService.AddSite(site, options);
             return RedirectToAction("Index");

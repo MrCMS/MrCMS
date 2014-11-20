@@ -294,6 +294,10 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\PublishedOnFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\TypeFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
+    <Compile Include="Apps\Core\Services\CloneSites\CopyForgottenPassword.cs" />
+    <Compile Include="Apps\Core\Services\CloneSites\CopyLogin.cs" />
+    <Compile Include="Apps\Core\Services\CloneSites\CopyRegister.cs" />
+    <Compile Include="Apps\Core\Services\CloneSites\CopyResetPassword.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreLayouts.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreMedia.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreWebpages.cs" />
@@ -333,6 +337,7 @@
     <Compile Include="Areas\Admin\Controllers\BatchJobController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunResultController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SiteCloneOptionsController.cs" />
     <Compile Include="Areas\Admin\Events\RefreshUIOnBatchRunComplete.cs" />
     <Compile Include="Areas\Admin\Events\StartBatchExecutionOnServer.cs" />
     <Compile Include="Areas\Admin\Events\UpdateBatchJob.cs" />
@@ -343,6 +348,7 @@
     <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
     <Compile Include="Areas\Admin\Hubs\BatchProcessingHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\BatchRunGuidModelBinder.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\GetSiteCopyOptionsModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\MoveFilesModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\ChooseSiteParams.cs" />
@@ -581,6 +587,7 @@
     <Compile Include="Areas\Admin\Services\ISetWebpageAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\ISetWidgetAdminViewData.cs" />
     <Compile Include="Areas\Admin\Services\ISiteAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\ISiteCloneOptionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IStringResourceAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IStringResourceUpdateService.cs" />
     <Compile Include="Areas\Admin\Services\ITagAdminService.cs" />
@@ -1744,6 +1751,7 @@
     <Content Include="Areas\Admin\Views\BatchJob\Row.cshtml" />
     <Content Include="Areas\Admin\Views\BatchRun\ShowButton.cshtml" />
     <Content Include="Areas\Admin\Views\Resource\ChooseSite.cshtml" />
+    <Content Include="Areas\Admin\Views\SiteCloneOptions\Get.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
