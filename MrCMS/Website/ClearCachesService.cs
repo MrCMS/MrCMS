@@ -5,7 +5,7 @@ using MrCMS.DbConfiguration.Caches.Azure;
 using MrCMS.Services.Caching;
 using MrCMS.Website.Caching;
 
-namespace MrCMS.Web.Areas.Admin.Services
+namespace MrCMS.Website
 {
     public class ClearCachesService : IClearCachesService
     {

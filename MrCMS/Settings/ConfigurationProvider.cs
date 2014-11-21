@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Web.Hosting;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Services.Caching;
 using Newtonsoft.Json;
 
 namespace MrCMS.Settings
@@ -114,9 +115,14 @@ namespace MrCMS.Settings
             return settings;
         }
 
-        public void ClearCache()
+        public static void ClearCache()
         {
             _settingCache.Clear();
+        }
+
+        void IClearCache.ClearCache()
+        {
+            ClearCache();
         }
     }
 }

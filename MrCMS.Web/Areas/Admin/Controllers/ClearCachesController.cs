@@ -1,5 +1,5 @@
 ﻿using System.Web.Mvc;
-using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Website;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers

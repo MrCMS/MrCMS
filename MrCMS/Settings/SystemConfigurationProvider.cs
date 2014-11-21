@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
 using MrCMS.Helpers;
+using MrCMS.Services.Caching;
 using Newtonsoft.Json;
 
 namespace MrCMS.Settings
@@ -89,9 +90,14 @@ namespace MrCMS.Settings
             return new TSettings();
         }
 
-        public void ClearCache()
+        public static void ClearCache()
         {
             _settingCache.Clear();
+        }
+
+        void IClearCache.ClearCache()
+        {
+            ClearCache();
         }
     }
 }

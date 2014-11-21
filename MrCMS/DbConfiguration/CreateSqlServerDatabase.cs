@@ -1,7 +1,9 @@
 using System;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading;
 using MrCMS.Installation;
+using MrCMS.Settings;
 
 namespace MrCMS.DbConfiguration
 {
@@ -20,9 +22,15 @@ namespace MrCMS.DbConfiguration
                     string errorCreatingDatabase = CreateSqlDatabase(connectionString);
                     if (!String.IsNullOrEmpty(errorCreatingDatabase))
                         throw new Exception(errorCreatingDatabase);
-                    //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
-                    //that's just wait 3 seconds
-                    Thread.Sleep(3000);
+
+                    int tries = 0;
+                    while (tries < 50)
+                    {
+                        if (NewDbIsReady(connectionString))
+                            break;
+                        tries++;
+                        Thread.Sleep(100);
+                    }
                 }
             }
             else
@@ -30,6 +38,22 @@ namespace MrCMS.DbConfiguration
                 //check whether database exists
                 if (!SqlServerDatabaseExists(connectionString))
                     throw new Exception("Database does not exist or you don't have permissions to connect to it");
+            }
+        }
+
+        private static bool NewDbIsReady(string connectionString)
+        {
+            try
+            {
+                new NHibernateConfigurator(new SqlServer2008Provider(new DatabaseSettings
+                {
+                    ConnectionString = connectionString
+                })).CreateSessionFactory();
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 

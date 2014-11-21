@@ -906,6 +906,7 @@
     <Compile Include="Website\Caching\CacheExpiryType.cs" />
     <Compile Include="Website\Caching\HttpCache.cs" />
     <Compile Include="Website\Caching\ICacheWrapper.cs" />
+    <Compile Include="Website\ClearCachesService.cs" />
     <Compile Include="Website\Controllers\CKEditorController.cs" />
     <Compile Include="Website\Controllers\FormController.cs" />
     <Compile Include="Website\Controllers\InstallController.cs" />
@@ -925,6 +926,7 @@
     <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
     <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
     <Compile Include="Website\HandleWebpageViewsAttribute.cs" />
+    <Compile Include="Website\IClearCachesService.cs" />
     <Compile Include="Website\IEnsureDatabaseIsInstalled.cs" />
     <Compile Include="Website\IProcessWebpageViews.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />

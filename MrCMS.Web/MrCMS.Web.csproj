@@ -531,7 +531,6 @@
     <Compile Include="Areas\Admin\Services\Batching\IExecuteRequestForNextTask.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchItemCount.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchStatus.cs" />
-    <Compile Include="Areas\Admin\Services\ClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
     <Compile Include="Areas\Admin\Services\DefaultWebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\DocumentRolesAdminService.cs" />
@@ -555,7 +554,6 @@
     <Compile Include="Areas\Admin\Services\IAdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\IBatchAdminService.cs" />
-    <Compile Include="Areas\Admin\Services\IClearCachesService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentRolesAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentTagsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentVersionsAdminService.cs" />

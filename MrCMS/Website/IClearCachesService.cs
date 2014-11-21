@@ -1,4 +1,4 @@
-namespace MrCMS.Web.Areas.Admin.Services
+namespace MrCMS.Website
 {
     public interface IClearCachesService
     {
