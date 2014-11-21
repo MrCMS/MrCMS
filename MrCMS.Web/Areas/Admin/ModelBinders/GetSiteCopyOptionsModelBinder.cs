@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Helpers;
@@ -20,15 +22,15 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
         {
             var siteCopyOptions = new List<SiteCopyOption>();
 
-            var form = controllerContext.HttpContext.Request.Form;
-            var keys = form.AllKeys.Where(s => s.StartsWith("sco-"));
-            
-            foreach (var key in keys)
+            NameValueCollection form = controllerContext.HttpContext.Request.Form;
+            IEnumerable<string> keys = form.AllKeys.Where(s => s.StartsWith("sco-"));
+
+            foreach (string key in keys)
             {
-                var value = form[key];
+                string value = form[key];
                 int id;
-                var typeName = key.Substring(4);
-                var type = TypeHelper.GetTypeByName(typeName);
+                string typeName = key.Substring(4);
+                Type type = TypeHelper.GetTypeByName(typeName);
                 if (int.TryParse(value, out id) && type != null)
                 {
                     siteCopyOptions.Add(new SiteCopyOption {SiteCopyActionType = type, SiteId = id});

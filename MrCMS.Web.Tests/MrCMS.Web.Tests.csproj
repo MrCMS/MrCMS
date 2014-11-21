@@ -161,7 +161,7 @@
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\LogAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\MessageTemplateAdminServiceTests.cs" />
-    <Compile Include="Areas\Admin\Services\SitesServiceTests.cs" />
+    <Compile Include="Areas\Admin\Services\SiteAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\TagServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\WebpageWidgetAdminServiceTests.cs" />
