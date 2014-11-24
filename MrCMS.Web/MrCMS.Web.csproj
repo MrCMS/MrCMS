@@ -294,6 +294,7 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\PublishedOnFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\TypeFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\TokenProviders\SiteTokenProvider.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreLayouts.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreMedia.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreWebpages.cs" />
@@ -1601,8 +1602,8 @@
     <Content Include="Areas\Admin\Views\ACL\Group.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\MessageTemplate\Add.cshtml" />
-    <Content Include="Areas\Admin\Views\MessageTemplate\Reset.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\AddSiteOverride.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\DeleteSiteOverride.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Documents.cshtml" />
     <Content Include="Areas\Admin\Views\Search\GetBreadCrumb.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\CopyOptions.cshtml" />

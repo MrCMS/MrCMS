@@ -1,28 +1,31 @@
 ﻿using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
+using MrCMS.Messages;
 using NHibernate;
 using MrCMS.Helpers;
 
 namespace MrCMS.Services
 {
-    public class MessageParser<T, T2> : IMessageParser<T, T2> where T : MessageTemplate, IMessageTemplate<T2>
+    public class MessageParser<T, T2> : IMessageParser<T, T2> where T : MessageTemplateBase<T2>, new()
     {
         private readonly IMessageTemplateParser _messageTemplateParser;
         private readonly Site _site;
-        private readonly ISession _session;
+        private readonly IMessageTemplateProvider _messageTemplateProvider;
+        //private readonly ISession _session;
         private readonly IEmailSender _emailSender;
 
-        public MessageParser(IMessageTemplateParser messageTemplateParser, Site site, ISession session,IEmailSender emailSender)
+        public MessageParser(IMessageTemplateParser messageTemplateParser, Site site, IMessageTemplateProvider messageTemplateProvider
+            , IEmailSender emailSender)
         {
             _messageTemplateParser = messageTemplateParser;
             _site = site;
-            _session = session;
+            _messageTemplateProvider = messageTemplateProvider;
             _emailSender = emailSender;
         }
 
         public QueuedMessage GetMessage(T2 obj, string fromAddress = null, string fromName = null, string toAddress = null, string toName = null, string cc = null, string bcc = null)
         {
-            var template = _session.QueryOver<T>().Where(arg => arg.Site == _site).Cacheable().SingleOrDefault();
+            var template = _messageTemplateProvider.GetMessageTemplate<T>(_site);
             if (template == null)
                 return null;
 
@@ -48,7 +51,7 @@ namespace MrCMS.Services
                 {
                     _emailSender.SendMailMessage(queuedMessage);
                 }
-                _session.Transact(session => session.Save(queuedMessage));
+                _emailSender.AddToQueue(queuedMessage);
             }
         }
     }

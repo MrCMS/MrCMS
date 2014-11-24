@@ -6,5 +6,6 @@ namespace MrCMS.Services
     {
         bool CanSend(QueuedMessage queuedMessage);
         void SendMailMessage(QueuedMessage queuedMessage);
+        void AddToQueue(QueuedMessage queuedMessage);
     }
 }

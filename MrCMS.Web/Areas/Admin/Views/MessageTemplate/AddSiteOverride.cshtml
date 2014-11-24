@@ -1,20 +1,20 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Entities.Messaging.MessageTemplate
+@model MrCMS.Messages.MessageTemplateBase
 @{
-    ViewBag.Title = "Add Message Template";
+    ViewBag.Title = "Add Message Template Site Override";
 }
 
-@using (Html.BeginForm("Add", "MessageTemplate", FormMethod.Post, new { id = "edit-message-template" }))
+@using (Html.BeginForm("AddSiteOverride", "MessageTemplate", new { TemplateType = Model.GetType().FullName }, FormMethod.Post, new { id = "edit-message-template" }))
 {
     <fieldset>
         <legend>
             @Resource("Add") @Model.GetType().Name.BreakUpString()
             <span class="pull-right btn-group">
-                @Html.ActionLink(Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn" })
-                <input class="btn btn-primary" type="submit" value="@Resource("Save")" /> 
+                @Html.ActionLink(Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
+                <input class="btn btn-primary" type="submit" value="@Resource("Save")" />
             </span>
         </legend>
-        @Html.HiddenFor(x => x.MessageTemplateType)
+        @Html.HiddenFor(@base => @base.SiteId)
         <div class="row">
             <div class="col-lg-6">
                 <div class="form-group">
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-       
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-group">
@@ -72,10 +72,11 @@
             </div>
         </div>
 
-        <br/>
-        
+        <br />
+
         @Html.InlineCheckboxFor(x => x.IsHtml)
 
+        @{ Html.RenderAction("Tokens", "MessageTemplate", new { messageTemplate = Model });}
     </fieldset>
 }
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-message-template.js");}

@@ -7,4 +7,8 @@ namespace MrCMS.Services
     {
         IDictionary<string, Func<T, string>> Tokens { get; }
     }
+    public interface ITokenProvider
+    {
+        IDictionary<string, Func<string>> Tokens { get; }
+    }
 }

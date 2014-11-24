@@ -1,17 +1,22 @@
 using System.Collections.Generic;
 using MrCMS.Entities.Messaging;
+using MrCMS.Messages;
 using MrCMS.Web.Areas.Admin.Models;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
     public interface IMessageTemplateAdminService
     {
-        void Save(MessageTemplate messageTemplate);
+        void Save(MessageTemplateBase messageTemplate);
         List<MessageTemplateInfo> GetAllMessageTemplateTypesWithDetails();
-        MessageTemplate GetNew(string type);
-        MessageTemplate Reset(MessageTemplate messageTemplate);
-        List<string> GetTokens(MessageTemplate messageTemplate);
-        T Get<T>() where T : MessageTemplate;
-        string GetPreview(MessageTemplate messageTemplate, int itemId);
+        MessageTemplateBase GetNewOverride(string type);
+        void AddOverride(MessageTemplateBase messageTemplate);
+        MessageTemplateBase Reset(MessageTemplateBase messageTemplate);
+        List<string> GetTokens(MessageTemplateBase messageTemplate);
+        T Get<T>() where T : MessageTemplateBase, new();
+        string GetPreview(MessageTemplateBase messageTemplate, int itemId);
+        MessageTemplateBase GetOverride(string type);
+        void DeleteOverride(MessageTemplateBase messageTemplate);
+        MessageTemplateBase GetTemplate(string type);
     }
 }

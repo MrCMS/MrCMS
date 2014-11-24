@@ -14,13 +14,23 @@
                 @item.Type.Name.BreakUpString()
             </td>
             <td>
+                @(item.IsOverride ? Resource("Site Override") : Resource("System Default"))
+            </td>
+            <td>
                 <div class="btn-group">
-                    @(item.Id.HasValue
-                        ? Html.ActionLink(Resource("Edit"), "Edit", new { Id = item.Id }, new { @class = "btn btn-default btn-xs" })
-                        : Html.ActionLink(Resource("Add"), "Add", new { type = item.Type.FullName }, new { @class = "btn btn-xs btn-primary" }))
+                    @*@Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })*@
+                    @if (!item.IsOverride)
+                    {
+                        @Html.ActionLink(Resource("Add site override"), "AddSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink(Resource("Delete site override"), "DeleteSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+                    }
+                    @Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })
                     @if (item.CanPreview)
                     {
-                        @Html.ActionLink(Resource("Preview"), "Preview", "MessageTemplate", new { id = item.Id }, new { @class = "btn btn-xs btn-default ", data_toggle = "fb-modal" })
+                        @Html.ActionLink(Resource("Preview"), "Preview", "MessageTemplate", new { id = item.TypeName }, new { @class = "btn btn-xs btn-default ", data_toggle = "fb-modal" })
                     }
                 </div>
             </td>

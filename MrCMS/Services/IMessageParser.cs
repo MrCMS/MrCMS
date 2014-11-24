@@ -1,8 +1,9 @@
 ﻿using MrCMS.Entities.Messaging;
+using MrCMS.Messages;
 
 namespace MrCMS.Services
 {
-    public interface IMessageParser<T, in T2> where T : MessageTemplate, IMessageTemplate<T2>
+    public interface IMessageParser<T, in T2> where T : MessageTemplateBase<T2>, new()
     {
         QueuedMessage GetMessage(T2 obj, string fromAddress = null, string fromName = null, string toAddress = null, string toName = null,
                                  string cc = null, string bcc = null);
