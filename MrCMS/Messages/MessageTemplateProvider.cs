@@ -1,74 +1,48 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web.Helpers;
 using System.Web.Hosting;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using Newtonsoft.Json;
+using Ninject;
 
 namespace MrCMS.Messages
 {
-    public interface IMessageTemplateProvider
-    {
-        void SaveTemplate(MessageTemplateBase messageTemplate);
-        void SaveSiteOverride(MessageTemplateBase messageTemplate, Site site);
-        void DeleteSiteOverride(MessageTemplateBase messageTemplate, Site site);
-        List<MessageTemplateBase> GetAllMessageTemplates(Site site);
-        T GetMessageTemplate<T>(Site site) where T : MessageTemplateBase, new();
-    }
-
-    public abstract class MessageTemplateBase<T> : MessageTemplateBase
-    {
-        public override sealed Type ModelType { get { return typeof(T); } }
-    }
-
-    public abstract class MessageTemplateBase
-    {
-        [Required]
-        [Display(Name = "From Address")]
-        public string FromAddress { get; set; }
-
-        [Required]
-        [Display(Name = "From Name")]
-        public string FromName { get; set; }
-
-        [Required]
-        [Display(Name = "To Address")]
-        public string ToAddress { get; set; }
-
-        [Display(Name = "To Name")]
-        public string ToName { get; set; }
-
-        public string Cc { get; set; }
-        public string Bcc { get; set; }
-
-        [Required]
-        public string Subject { get; set; }
-
-        [Required]
-        public string Body { get; set; }
-
-        [Required]
-        [Display(Name = "Is HTML?")]
-        public bool IsHtml { get; set; }
-
-        public virtual Type ModelType { get { return null; } }
-
-        public int? SiteId { get; set; }
-    }
-
     public class MessageTemplateProvider : IMessageTemplateProvider
     {
-
         private static readonly object SaveLockObject = new object();
-        private static readonly object ReadLockObject = new object();
+
+        private static readonly Dictionary<Type, Type> DefaultTemplateProviders = new Dictionary<Type, Type>();
 
         private static readonly MethodInfo GetMessageTemplateMethod = typeof (MessageTemplateProvider)
-            .GetMethodExt("GetMessageTemplate",typeof (Site));
+            .GetMethodExt("GetMessageTemplate", typeof (Site));
+
+        private readonly IKernel _kernel;
+
+        static MessageTemplateProvider()
+        {
+            foreach (
+                Type type in
+                    TypeHelper.GetAllConcreteTypesAssignableFrom<MessageTemplateBase>()
+                        .Where(type => !type.ContainsGenericParameters))
+            {
+                HashSet<Type> types =
+                    TypeHelper.GetAllConcreteTypesAssignableFrom(
+                        typeof (GetDefaultTemplate<>).MakeGenericType(type));
+                if (types.Any())
+                {
+                    DefaultTemplateProviders.Add(type, types.First());
+                }
+            }
+        }
+
+        public MessageTemplateProvider(IKernel kernel)
+        {
+            _kernel = kernel;
+        }
 
         public void SaveTemplate(MessageTemplateBase messageTemplate)
         {
@@ -98,29 +72,45 @@ namespace MrCMS.Messages
 
         public List<MessageTemplateBase> GetAllMessageTemplates(Site site)
         {
-            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<MessageTemplateBase>();
+            HashSet<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<MessageTemplateBase>();
 
             return types.Select(type => GetMessageTemplateMethod.MakeGenericMethod(type)
-                .Invoke(this, new[] { site }) as MessageTemplateBase).ToList();
+                .Invoke(this, new[] {site}) as MessageTemplateBase).ToList();
         }
 
         public T GetMessageTemplate<T>(Site site) where T : MessageTemplateBase, new()
         {
             T template;
-            var siteFileLocation = GetFileLocation(typeof(T), site);
-            var fileLocation = GetFileLocation(typeof(T));
+            Type templateType = typeof (T);
+            string siteFileLocation = GetFileLocation(templateType, site);
+            string fileLocation = GetFileLocation(templateType);
             if (File.Exists(siteFileLocation))
+            {
                 template = JsonConvert.DeserializeObject<T>(File.ReadAllText(siteFileLocation));
-
+            }
             else if (File.Exists(fileLocation))
             {
-                template= JsonConvert.DeserializeObject<T>(File.ReadAllText(fileLocation));
+                template = JsonConvert.DeserializeObject<T>(File.ReadAllText(fileLocation));
             }
             else
             {
-                template = new T();
-                SaveTemplate(template);
+                template = GetNewMessageTemplate<T>(templateType);
             }
+            return template;
+        }
+
+        private T GetNewMessageTemplate<T>(Type templateType) where T : MessageTemplateBase, new()
+        {
+            T template = null;
+            if (DefaultTemplateProviders.ContainsKey(templateType))
+            {
+                var getDefaultMessageTemplate = _kernel.Get(DefaultTemplateProviders[templateType]) as IGetDefaultMessageTemplate;
+                if (getDefaultMessageTemplate != null)
+                    template = getDefaultMessageTemplate.Get() as T;
+            }
+            if (template == null)
+                template = new T();
+            SaveTemplate(template);
             return template;
         }
 

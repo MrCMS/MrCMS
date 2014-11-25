@@ -294,6 +294,7 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\PublishedOnFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\TypeFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\GetDefaultResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\SiteTokenProvider.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreLayouts.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreMedia.cs" />
