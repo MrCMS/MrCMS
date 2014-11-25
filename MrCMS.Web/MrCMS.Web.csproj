@@ -294,6 +294,8 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\PublishedOnFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\TypeFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\GetDefaultResetPasswordMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\TokenProviders\SiteTokenProvider.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreLayouts.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreMedia.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreWebpages.cs" />
@@ -333,6 +335,8 @@
     <Compile Include="Areas\Admin\Controllers\BatchJobController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunResultController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MessageTemplatePreviewController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MessageTemplateTokensController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteCloneOptionsController.cs" />
     <Compile Include="Areas\Admin\Events\RefreshUIOnBatchRunComplete.cs" />
     <Compile Include="Areas\Admin\Events\StartBatchExecutionOnServer.cs" />
@@ -572,6 +576,8 @@
     <Compile Include="Areas\Admin\Services\IMediaSelectorService.cs" />
     <Compile Include="Areas\Admin\Services\IMessageQueueAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMessageTemplateAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\IMessageTemplatePreviewService.cs" />
+    <Compile Include="Areas\Admin\Services\IMessageTemplateTokensAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\INotificationAdminService.cs" />
     <Compile Include="Areas\Admin\Services\InPageAdminService.cs" />
@@ -601,6 +607,8 @@
     <Compile Include="Areas\Admin\Services\MediaSelectorService.cs" />
     <Compile Include="Areas\Admin\Services\MessageQueueAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MessageTemplateAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\MessageTemplatePreviewService.cs" />
+    <Compile Include="Areas\Admin\Services\MessageTemplateTokensAdminService.cs" />
     <Compile Include="Areas\Admin\Services\NotificationAdminService.cs" />
     <Compile Include="Areas\Admin\Services\PageTemplateAdminService.cs" />
     <Compile Include="Areas\Admin\Services\PersistentNotificationUIService.cs" />
@@ -1601,19 +1609,19 @@
     <Content Include="Areas\Admin\Views\ACL\Group.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Index.cshtml" />
     <Content Include="Areas\Admin\Views\MessageTemplate\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\MessageTemplate\Add.cshtml" />
-    <Content Include="Areas\Admin\Views\MessageTemplate\Reset.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\AddSiteOverride.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\DeleteSiteOverride.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Documents.cshtml" />
     <Content Include="Areas\Admin\Views\Search\GetBreadCrumb.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\CopyOptions.cshtml" />
-    <Content Include="Areas\Admin\Views\MessageTemplate\Tokens.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplateTokens\Tokens.cshtml" />
     <Content Include="Areas\Admin\Views\Form\ClearFormData.cshtml" />
     <Content Include="Apps\Core\Views\Widgets\Navigation.cshtml" />
     <Content Include="Themes\Default\Views\web.config">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Admin\Views\User\Filter.cshtml" />
-    <Content Include="Areas\Admin\Views\MessageTemplate\Preview.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplatePreview\Get.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\RestrictedDomains.cshtml" />
     <Content Include="Areas\Admin\Views\RedirectedDomain\Add.cshtml" />
     <Content Include="Areas\Admin\Views\RedirectedDomain\Delete.cshtml" />
@@ -1748,6 +1756,7 @@
     <Content Include="Areas\Admin\Views\BatchRun\ShowButton.cshtml" />
     <Content Include="Areas\Admin\Views\Resource\ChooseSite.cshtml" />
     <Content Include="Areas\Admin\Views\SiteCloneOptions\Get.cshtml" />
+    <Content Include="Areas\Admin\Views\MessageTemplatePreview\Preview.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>

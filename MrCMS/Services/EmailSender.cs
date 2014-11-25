@@ -51,6 +51,11 @@ namespace MrCMS.Services
             _session.Transact(session => session.SaveOrUpdate(queuedMessage));
         }
 
+        public void AddToQueue(QueuedMessage queuedMessage)
+        {
+            _session.Transact(session => session.SaveOrUpdate(queuedMessage));
+        }
+
         private static MailMessage BuildMailMessage(QueuedMessage queuedMessage)
         {
             var mailMessage = new MailMessage(new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),

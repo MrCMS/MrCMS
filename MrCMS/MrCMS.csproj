@@ -490,6 +490,11 @@
     <Compile Include="IoC\Modules\SiteModule.cs" />
     <Compile Include="IoC\Modules\SystemWebModule.cs" />
     <Compile Include="Media\MediaExtensions.cs" />
+    <Compile Include="Messages\GetDefaultTemplate.cs" />
+    <Compile Include="Messages\IGetDefaultMessageTemplate.cs" />
+    <Compile Include="Messages\IMessageTemplateProvider.cs" />
+    <Compile Include="Messages\MessageTemplateBase.cs" />
+    <Compile Include="Messages\MessageTemplateProvider.cs" />
     <Compile Include="Models\CachingInfo.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
     <Compile Include="Models\MrCMSIndex.cs" />

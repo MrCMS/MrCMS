@@ -8,12 +8,10 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
 {
     public class UserTokenProvider : ITokenProvider<User>
     {
-        private readonly ICurrentSiteLocator _currentSiteLocator;
         private readonly IUniquePageService _uniquePageService;
 
-        public UserTokenProvider(ICurrentSiteLocator currentSiteLocator, IUniquePageService uniquePageService)
+        public UserTokenProvider(IUniquePageService uniquePageService)
         {
-            _currentSiteLocator = currentSiteLocator;
             _uniquePageService = uniquePageService;
             _tokens = GetTokens();
         }
@@ -27,17 +25,8 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
 
         private IDictionary<string, Func<User, string>> GetTokens()
         {
-            var currentSite = _currentSiteLocator.GetCurrentSite();
             return new Dictionary<string, Func<User, string>>
                        {
-                           {"SiteName", user => currentSite != null ? currentSite.Name : null},
-                           {
-                               "SiteUrl",
-                               user =>
-                               currentSite != null
-                                   ? string.Format("http://{0}", currentSite.BaseUrl)
-                                   : null
-                           },
                            {
                                "ResetPasswordUrl",
                                user =>

@@ -316,10 +316,10 @@ namespace MrCMS.Helpers
             return routeValueDictionary;
         }
 
-        public static MvcHtmlString InfoBlock(this HtmlHelper helper, string boldText, string text, AlertType alterType = AlertType.info)
+        public static MvcHtmlString InfoBlock(this HtmlHelper helper, string boldText, string text, AlertType alertType = AlertType.info)
         {
             var tagBulder = new TagBuilder("div");
-            tagBulder.AddCssClass("alert alert-" + alterType);
+            tagBulder.AddCssClass("alert alert-" + alertType);
 
             if (!string.IsNullOrEmpty(boldText))
             {

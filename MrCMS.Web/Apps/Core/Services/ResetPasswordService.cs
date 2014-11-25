@@ -1,10 +1,8 @@
 using System;
+using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Services;
-using MrCMS.Settings;
-using MrCMS.Tasks;
 using MrCMS.Web.Apps.Core.MessageTemplates;
-using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Website;
 
@@ -12,16 +10,13 @@ namespace MrCMS.Web.Apps.Core.Services
 {
     public class ResetPasswordService : IResetPasswordService
     {
-        private readonly SiteSettings _siteSettings;
-        private readonly IUserService _userService;
-        private readonly IPasswordManagementService _passwordManagementService;
         private readonly IMessageParser<ResetPasswordMessageTemplate, User> _messageParser;
-        private readonly MailSettings _mailSettings;
+        private readonly IPasswordManagementService _passwordManagementService;
+        private readonly IUserService _userService;
 
-        public ResetPasswordService(SiteSettings siteSettings, MailSettings mailSettings, IUserService userService, IPasswordManagementService passwordManagementService, IMessageParser<ResetPasswordMessageTemplate, User> messageParser)
+        public ResetPasswordService(IUserService userService, IPasswordManagementService passwordManagementService,
+            IMessageParser<ResetPasswordMessageTemplate, User> messageParser)
         {
-            _siteSettings = siteSettings;
-            _mailSettings = mailSettings;
             _userService = userService;
             _passwordManagementService = passwordManagementService;
             _messageParser = messageParser;
@@ -33,13 +28,13 @@ namespace MrCMS.Web.Apps.Core.Services
             user.ResetPasswordGuid = Guid.NewGuid();
             _userService.SaveUser(user);
 
-            var queuedMessage = _messageParser.GetMessage(user);
+            QueuedMessage queuedMessage = _messageParser.GetMessage(user);
             _messageParser.QueueMessage(queuedMessage);
         }
 
         public void ResetPassword(ResetPasswordViewModel model)
         {
-            var user = _userService.GetUserByEmail(model.Email);
+            User user = _userService.GetUserByEmail(model.Email);
 
             if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > CurrentRequestData.Now &&
                 _passwordManagementService.ValidatePassword(model.Password, model.ConfirmPassword))

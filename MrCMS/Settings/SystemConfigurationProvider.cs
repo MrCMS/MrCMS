@@ -100,4 +100,5 @@ namespace MrCMS.Settings
             ClearCache();
         }
     }
+
 }

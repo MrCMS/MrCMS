@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
+using MrCMS.Messages;
 using MrCMS.Website.Binders;
 using Ninject;
 
@@ -21,9 +22,9 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
         }
     }
 
-    public class AddMessageTemplateModelBinder : MessageTemplateModelBinder
+    public class MessageTemplateOverrideModelBinder : MessageTemplateModelBinder
     {
-        public AddMessageTemplateModelBinder(IKernel kernel) : base(kernel)
+        public MessageTemplateOverrideModelBinder(IKernel kernel) : base(kernel)
         {
         }
 
@@ -35,7 +36,7 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
                 ModelMetadataProviders.Current.GetMetadataForType(
                     () => CreateModel(controllerContext, bindingContext, type), type);
 
-            var messageTemplate = base.BindModel(controllerContext, bindingContext) as MessageTemplate;
+            var messageTemplate = base.BindModel(controllerContext, bindingContext) as MessageTemplateBase;
 
             return messageTemplate;
         }
@@ -48,9 +49,8 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 
         private static Type GetTypeByName(ControllerContext controllerContext)
         {
-            var valueFromContext = GetValueFromContext(controllerContext, "MessageTemplateType");
-            return DocumentMetadataHelper.GetTypeByName(valueFromContext)
-                ?? TypeHelper.MappedClasses.FirstOrDefault(x => x.Name == valueFromContext);
+            var valueFromContext = GetValueFromContext(controllerContext, "TemplateType");
+            return TypeHelper.GetTypeByName(valueFromContext);
         }
     }
 }
