@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MrCMS.Entities.Multisite;
 
@@ -10,5 +11,6 @@ namespace MrCMS.Messages
         void DeleteSiteOverride(MessageTemplateBase messageTemplate, Site site);
         List<MessageTemplateBase> GetAllMessageTemplates(Site site);
         T GetMessageTemplate<T>(Site site) where T : MessageTemplateBase, new();
+        MessageTemplateBase GetNewMessageTemplate(Type type);
     }
 }

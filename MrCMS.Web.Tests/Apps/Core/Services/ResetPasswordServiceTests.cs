@@ -15,8 +15,6 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
 {
     public class ResetPasswordServiceTests : InMemoryDatabaseTest
     {
-        private readonly SiteSettings _siteSettings;
-        private readonly MailSettings _mailSettings;
         private readonly IUserService _userService;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IMessageParser<ResetPasswordMessageTemplate, User> _messageParser;
@@ -24,12 +22,10 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
 
         public ResetPasswordServiceTests()
         {
-            _siteSettings = new SiteSettings();
-            _mailSettings = new MailSettings();
             _userService = A.Fake<IUserService>();
             _passwordManagementService = A.Fake<IPasswordManagementService>();
             _messageParser = A.Fake<IMessageParser<ResetPasswordMessageTemplate, User>>();
-            _resetPasswordService = new ResetPasswordService(_siteSettings, _mailSettings, _userService,
+            _resetPasswordService = new ResetPasswordService(_userService,
                                                              _passwordManagementService,
                                                              _messageParser);
         }

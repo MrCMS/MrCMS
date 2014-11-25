@@ -30,7 +30,7 @@
                     @Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })
                     @if (item.CanPreview)
                     {
-                        @Html.ActionLink(Resource("Preview"), "Preview", "MessageTemplate", new { id = item.TypeName }, new { @class = "btn btn-xs btn-default ", data_toggle = "fb-modal" })
+                        @Html.ActionLink(Resource("Preview"), "Get", "MessageTemplatePreview", new { type = item.TypeName }, new { @class = "btn btn-xs btn-default" })
                     }
                 </div>
             </td>

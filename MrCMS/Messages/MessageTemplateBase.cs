@@ -33,6 +33,7 @@ namespace MrCMS.Messages
         [Display(Name = "Is HTML?")]
         public bool IsHtml { get; set; }
 
+        
         public virtual Type ModelType
         {
             get { return null; }

@@ -8,7 +8,7 @@
 {
     <fieldset>
         <legend>
-            @Resource("Add") @Model.GetType().Name.BreakUpString()
+            @string.Format(Resource("Add {0} Override"), Model.GetType().Name.BreakUpString())
             <span class="pull-right btn-group">
                 @Html.ActionLink(Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
                 <input class="btn btn-primary" type="submit" value="@Resource("Save")" />
@@ -76,7 +76,7 @@
 
         @Html.InlineCheckboxFor(x => x.IsHtml)
 
-        @{ Html.RenderAction("Tokens", "MessageTemplate", new { messageTemplate = Model });}
+        @{ Html.RenderAction("Tokens", "MessageTemplateTokens", new { messageTemplate = Model });}
     </fieldset>
 }
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-message-template.js");}

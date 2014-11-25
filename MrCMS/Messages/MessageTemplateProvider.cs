@@ -7,6 +7,7 @@ using System.Web.Hosting;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Ninject;
 
 namespace MrCMS.Messages
@@ -19,6 +20,9 @@ namespace MrCMS.Messages
 
         private static readonly MethodInfo GetMessageTemplateMethod = typeof (MessageTemplateProvider)
             .GetMethodExt("GetMessageTemplate", typeof (Site));
+
+        public static readonly MethodInfo GetNewMessageTemplateMethod = typeof (MessageTemplateProvider)
+            .GetMethodExt("GetNewMessageTemplate");
 
         private readonly IKernel _kernel;
 
@@ -50,7 +54,7 @@ namespace MrCMS.Messages
             {
                 string location = GetFileLocation(messageTemplate);
                 messageTemplate.SiteId = null;
-                File.WriteAllText(location, JsonConvert.SerializeObject(messageTemplate));
+                File.WriteAllText(location, Serialize(messageTemplate));
             }
         }
 
@@ -58,7 +62,7 @@ namespace MrCMS.Messages
         {
             string location = GetFileLocation(messageTemplate, site);
             messageTemplate.SiteId = site.Id;
-            File.WriteAllText(location, JsonConvert.SerializeObject(messageTemplate));
+            File.WriteAllText(location, Serialize(messageTemplate));
         }
 
         public void DeleteSiteOverride(MessageTemplateBase messageTemplate, Site site)
@@ -94,24 +98,38 @@ namespace MrCMS.Messages
             }
             else
             {
-                template = GetNewMessageTemplate<T>(templateType);
+                template = GetNewMessageTemplate<T>();
+                SaveTemplate(template);
             }
             return template;
         }
 
-        private T GetNewMessageTemplate<T>(Type templateType) where T : MessageTemplateBase, new()
+        public T GetNewMessageTemplate<T>() where T : MessageTemplateBase, new()
         {
             T template = null;
+            Type templateType = typeof (T);
             if (DefaultTemplateProviders.ContainsKey(templateType))
             {
-                var getDefaultMessageTemplate = _kernel.Get(DefaultTemplateProviders[templateType]) as IGetDefaultMessageTemplate;
+                var getDefaultMessageTemplate =
+                    _kernel.Get(DefaultTemplateProviders[templateType]) as IGetDefaultMessageTemplate;
                 if (getDefaultMessageTemplate != null)
                     template = getDefaultMessageTemplate.Get() as T;
             }
-            if (template == null)
-                template = new T();
-            SaveTemplate(template);
-            return template;
+            return template ?? new T();
+        }
+
+        public MessageTemplateBase GetNewMessageTemplate(Type type)
+        {
+            return GetNewMessageTemplateMethod.MakeGenericMethod(type).Invoke(this, new object[0]) as MessageTemplateBase;
+        }
+
+        private string Serialize(MessageTemplateBase template)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new WritablePropertiesOnlyResolver()
+            };
+            return JsonConvert.SerializeObject(template, settings);
         }
 
         private string GetFileLocation(MessageTemplateBase messageTemplate, Site site = null)
@@ -130,6 +148,15 @@ namespace MrCMS.Messages
             string mapPath = HostingEnvironment.MapPath(location);
             Directory.CreateDirectory(mapPath);
             return mapPath;
+        }
+
+        private class WritablePropertiesOnlyResolver : DefaultContractResolver
+        {
+            protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+            {
+                IList<JsonProperty> props = base.CreateProperties(type, memberSerialization);
+                return props.Where(p => p.Writable).ToList();
+            }
         }
     }
 }

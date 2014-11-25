@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Entities;
 using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -15,13 +16,11 @@ namespace MrCMS.Web.Areas.Admin.Services
     {
         private readonly IMessageTemplateProvider _messageTemplateProvider;
         private readonly Site _site;
-        private readonly IMessageTemplateParser _messageTemplateParser;
 
-        public MessageTemplateAdminService(IMessageTemplateProvider messageTemplateProvider, Site site, IMessageTemplateParser messageTemplateParser)
+        public MessageTemplateAdminService(IMessageTemplateProvider messageTemplateProvider, Site site)
         {
             _messageTemplateProvider = messageTemplateProvider;
             _site = site;
-            _messageTemplateParser = messageTemplateParser;
         }
 
         public List<MessageTemplateInfo> GetAllMessageTemplateTypesWithDetails()
@@ -31,24 +30,22 @@ namespace MrCMS.Web.Areas.Admin.Services
             {
                 Type = template.GetType(),
                 IsOverride = template.SiteId.HasValue,
-                CanPreview = false
+                CanPreview = CanPreview(template)
             }).ToList();
+        }
+
+        private bool CanPreview(MessageTemplateBase template)
+        {
+            return template.ModelType != null && typeof(SystemEntity).IsAssignableFrom(template.ModelType);
         }
 
         public MessageTemplateBase GetNewOverride(string type)
         {
             var typeByName = TypeHelper.GetTypeByName(type);
-            try
-            {
-                var messageTemplateBase = Activator.CreateInstance(typeByName) as MessageTemplateBase;
-                messageTemplateBase.SiteId = _site.Id;
-                return messageTemplateBase;
-            }
-            finally
-            {
-            }
-            return null;
-
+            var messageTemplateBase = _messageTemplateProvider.GetNewMessageTemplate(typeByName);
+            if (messageTemplateBase == null) return null;
+            messageTemplateBase.SiteId = _site.Id;
+            return messageTemplateBase;
         }
 
         public void AddOverride(MessageTemplateBase messageTemplate)
@@ -56,48 +53,9 @@ namespace MrCMS.Web.Areas.Admin.Services
             _messageTemplateProvider.SaveSiteOverride(messageTemplate, _site);
         }
 
-        public MessageTemplateBase Reset(MessageTemplateBase messageTemplate)
-        {
-            var initialTemplate = Activator.CreateInstance(messageTemplate.GetType()) as MessageTemplateBase;
-
-            messageTemplate.FromAddress = initialTemplate.FromAddress;
-            messageTemplate.FromName = initialTemplate.FromName;
-            messageTemplate.ToAddress = initialTemplate.ToAddress;
-            messageTemplate.ToName = initialTemplate.ToName;
-            messageTemplate.Bcc = initialTemplate.Bcc;
-            messageTemplate.Cc = initialTemplate.Cc;
-            messageTemplate.Subject = initialTemplate.Subject;
-            messageTemplate.Body = initialTemplate.Body;
-            messageTemplate.IsHtml = initialTemplate.IsHtml;
-
-            Save(messageTemplate);
-
-            return messageTemplate;
-        }
-
-        public List<string> GetTokens(MessageTemplateBase messageTemplate)
-        {
-            return _messageTemplateParser.GetAllTokens(messageTemplate);
-        }
-
-        public List<string> GetTokens(MessageTemplate messageTemplate)
-        {
-            return messageTemplate.GetTokens(_messageTemplateParser);
-        }
-
-        public T Get<T>() where T : MessageTemplateBase, new()
-        {
-            return _messageTemplateProvider.GetMessageTemplate<T>(_site);
-        }
-
-        public string GetPreview(MessageTemplateBase messageTemplate, int itemId)
-        {
-            return string.Empty;
-        }
-
         public MessageTemplateBase GetOverride(string type)
         {
-            var messageTemplateBase = _messageTemplateProvider.GetAllMessageTemplates(_site).FirstOrDefault(@base => @base.GetType().FullName == type);
+            var messageTemplateBase = GetTemplate(type);
             if (messageTemplateBase != null && messageTemplateBase.SiteId.HasValue)
                 return messageTemplateBase;
             return null;

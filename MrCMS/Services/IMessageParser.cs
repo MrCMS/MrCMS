@@ -5,8 +5,18 @@ namespace MrCMS.Services
 {
     public interface IMessageParser<T, in T2> where T : MessageTemplateBase<T2>, new()
     {
-        QueuedMessage GetMessage(T2 obj, string fromAddress = null, string fromName = null, string toAddress = null, string toName = null,
-                                 string cc = null, string bcc = null);
+        QueuedMessage GetMessage(T2 obj, string fromAddress = null, string fromName = null, string toAddress = null,
+            string toName = null,
+            string cc = null, string bcc = null);
+
+        void QueueMessage(QueuedMessage queuedMessage, bool trySendImmediately = true);
+    }
+
+    public interface IMessageParser<T> where T : MessageTemplateBase, new()
+    {
+        QueuedMessage GetMessage(string fromAddress = null, string fromName = null, string toAddress = null,
+            string toName = null,
+            string cc = null, string bcc = null);
 
         void QueueMessage(QueuedMessage queuedMessage, bool trySendImmediately = true);
     }

@@ -1,8 +1,6 @@
 ﻿using System.Web.Mvc;
-using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
 using MrCMS.Messages;
-using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Web.Areas.Admin.Services;
@@ -34,7 +32,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("AddSiteOverride")]
-        public ActionResult AddSiteOverride_POST([IoCModelBinder(typeof(MessageTemplateOverrideModelBinder))] MessageTemplateBase messageTemplate)
+        public ActionResult AddSiteOverride_POST(
+            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplateBase messageTemplate)
         {
             if (messageTemplate != null)
             {
@@ -51,7 +50,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("DeleteSiteOverride")]
-        public ActionResult DeleteSiteOverride_POST([IoCModelBinder(typeof(MessageTemplateOverrideModelBinder))] MessageTemplateBase messageTemplate)
+        public ActionResult DeleteSiteOverride_POST(
+            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplateBase messageTemplate)
         {
             if (messageTemplate != null)
             {
@@ -59,11 +59,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             }
             return RedirectToAction("Index");
         }
+
         [HttpGet]
         public ActionResult Edit(string type)
         {
             ModelState.Clear();
-            var template = _messageTemplateAdminService.GetTemplate(type);
+            MessageTemplateBase template = _messageTemplateAdminService.GetTemplate(type);
             if (template != null)
             {
                 return View(template);
@@ -73,52 +74,17 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Edit")]
-        public ActionResult Edit_POST([IoCModelBinder(typeof(MessageTemplateOverrideModelBinder))] MessageTemplateBase messageTemplate)
+        public ActionResult Edit_POST(
+            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplateBase messageTemplate)
         {
             if (messageTemplate != null)
             {
                 _messageTemplateAdminService.Save(messageTemplate);
-                TempData.SuccessMessages().Add(string.Format("{0} successfully edited", messageTemplate.GetType().Name.BreakUpString()));
-                return RedirectToAction("Edit", new { type = messageTemplate.GetType().FullName });
+                TempData.SuccessMessages()
+                    .Add(string.Format("{0} successfully edited", messageTemplate.GetType().Name.BreakUpString()));
+                return RedirectToAction("Edit", new {type = messageTemplate.GetType().FullName});
             }
             return RedirectToAction("Index");
         }
-
-        //[HttpGet]
-        //public ActionResult Reset(MessageTemplate messageTemplate)
-        //{
-        //    if (messageTemplate != null)
-        //    {
-        //        return PartialView(messageTemplate);
-        //    }
-        //    return RedirectToAction("Index");
-        //}
-
-        //[HttpPost]
-        //[ActionName("Reset")]
-        //public RedirectToRouteResult Reset_POST(MessageTemplate messageTemplate)
-        //{
-        //    if (messageTemplate != null)
-        //    {
-        //        _messageTemplateAdminService.Reset(messageTemplate);
-        //        return RedirectToAction("Edit", new { id = messageTemplate.Id });
-        //    }
-        //    return RedirectToAction("Index");
-        //}
-
-        public PartialViewResult Tokens(MessageTemplateBase messageTemplate)
-        {
-            return PartialView(_messageTemplateAdminService.GetTokens(messageTemplate));
-        }
-
-    //    public ActionResult Preview(MessageTemplate messageTemplate)
-    //    {
-    //        return PartialView(messageTemplate);
-    //    }
-
-    //    public string GetPreview(MessageTemplate messageTemplate, int itemId)
-    //    {
-    //        return _messageTemplateAdminService.GetPreview(messageTemplate, itemId);
-    //    }
     }
 }
