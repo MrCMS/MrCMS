@@ -196,8 +196,7 @@ namespace MrCMS.Services.Resources
                 HashSet<StringResource> allResourcesFromDb =
                     _session.QueryOver<StringResource>().Cacheable().List().ToHashSet();
                 IEnumerable<IGrouping<string, StringResource>> groupBy =
-                    allResourcesFromDb.GroupBy(resource => resource.Key,
-                        StringComparer.InvariantCultureIgnoreCase);
+                    allResourcesFromDb.GroupBy(resource => resource.Key);
                 return groupBy.ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
             }
         }
