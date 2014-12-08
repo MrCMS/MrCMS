@@ -8,6 +8,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services.Caching;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace MrCMS.Settings
 {
@@ -33,7 +34,7 @@ namespace MrCMS.Settings
             lock (SaveLockObject)
             {
                 string location = GetFileLocation(settings);
-                File.WriteAllText(location, JsonConvert.SerializeObject(settings));
+                File.WriteAllText(location, settings.Serialize());
                 GetSiteCache()[settings.GetType()] = settings;
             }
         }

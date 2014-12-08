@@ -1,9 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using MrCMS.Services;
 
 namespace MrCMS.Messages
 {
-    public abstract class MessageTemplateBase
+    public abstract class MessageTemplateBase : IStoredInAppData
     {
         [Required]
         [Display(Name = "From Address")]

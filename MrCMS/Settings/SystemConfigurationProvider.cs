@@ -23,7 +23,7 @@ namespace MrCMS.Settings
             lock (SaveLockObject)
             {
                 string location = GetFileLocation(settings);
-                File.WriteAllText(location, JsonConvert.SerializeObject(settings));
+                File.WriteAllText(location, settings.Serialize());
                 _settingCache[settings.GetType()] = settings;
             }
         }

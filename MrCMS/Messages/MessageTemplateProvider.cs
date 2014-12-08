@@ -7,7 +7,6 @@ using System.Web.Hosting;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Ninject;
 
 namespace MrCMS.Messages
@@ -54,7 +53,7 @@ namespace MrCMS.Messages
             {
                 string location = GetFileLocation(messageTemplate);
                 messageTemplate.SiteId = null;
-                File.WriteAllText(location, Serialize(messageTemplate));
+                File.WriteAllText(location, messageTemplate.Serialize());
             }
         }
 
@@ -62,7 +61,7 @@ namespace MrCMS.Messages
         {
             string location = GetFileLocation(messageTemplate, site);
             messageTemplate.SiteId = site.Id;
-            File.WriteAllText(location, Serialize(messageTemplate));
+            File.WriteAllText(location, messageTemplate.Serialize());
         }
 
         public void DeleteSiteOverride(MessageTemplateBase messageTemplate, Site site)
@@ -123,15 +122,6 @@ namespace MrCMS.Messages
             return GetNewMessageTemplateMethod.MakeGenericMethod(type).Invoke(this, new object[0]) as MessageTemplateBase;
         }
 
-        private string Serialize(MessageTemplateBase template)
-        {
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = new WritablePropertiesOnlyResolver()
-            };
-            return JsonConvert.SerializeObject(template, settings);
-        }
-
         private string GetFileLocation(MessageTemplateBase messageTemplate, Site site = null)
         {
             return GetFileLocation(messageTemplate.GetType(), site);
@@ -148,15 +138,6 @@ namespace MrCMS.Messages
             string mapPath = HostingEnvironment.MapPath(location);
             Directory.CreateDirectory(mapPath);
             return mapPath;
-        }
-
-        private class WritablePropertiesOnlyResolver : DefaultContractResolver
-        {
-            protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
-            {
-                IList<JsonProperty> props = base.CreateProperties(type, memberSerialization);
-                return props.Where(p => p.Writable).ToList();
-            }
         }
     }
 }
