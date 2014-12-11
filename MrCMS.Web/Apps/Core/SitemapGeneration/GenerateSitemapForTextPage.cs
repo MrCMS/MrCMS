@@ -25,7 +25,7 @@ namespace MrCMS.Web.Apps.Core.SitemapGeneration
             var publishOn = webpage.PublishOn;
             if (!publishOn.HasValue)
                 return;
-            var content = webpage.PublishOn.Value.ToString("O");
+            var content = webpage.PublishOn.Value.SitemapDateString();
             var urlNode = new XElement(SitemapService.RootNamespace + "url",
                    new XElement(SitemapService.RootNamespace + "loc", webpage.AbsoluteUrl),
                    new XElement(SitemapService.RootNamespace + "lastmod", content)
