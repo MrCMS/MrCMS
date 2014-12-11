@@ -447,6 +447,7 @@
     <Compile Include="Helpers\PropertyRenderingExtensions.cs" />
     <Compile Include="Helpers\ReturnUrlExtensions.cs" />
     <Compile Include="Helpers\ShortcodeParsingExtensions.cs" />
+    <Compile Include="Helpers\SitemapDateHelper.cs" />
     <Compile Include="Helpers\TweetParsingExtensions.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Helpers\UserExtensions.cs" />
