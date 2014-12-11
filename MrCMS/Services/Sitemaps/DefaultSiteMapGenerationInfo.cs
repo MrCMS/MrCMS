@@ -1,6 +1,7 @@
 using System.Xml;
 using System.Xml.Linq;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
 
 namespace MrCMS.Services.Sitemaps
 {
@@ -16,7 +17,7 @@ namespace MrCMS.Services.Sitemaps
             var publishOn = webpage.PublishOn;
             if (!publishOn.HasValue)
                 return;
-            var content = publishOn.Value.ToString("O");
+            var content = publishOn.Value.SitemapDateString();
             urlset.Add(new XElement(SitemapService.RootNamespace + "url",
                 new XElement(SitemapService.RootNamespace + "loc", webpage.AbsoluteUrl),
                 new XElement(SitemapService.RootNamespace + "lastmod", content)
