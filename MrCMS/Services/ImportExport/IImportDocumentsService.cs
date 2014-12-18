@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MrCMS.Batching.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services.ImportExport.DTOs;
 
@@ -8,6 +9,6 @@ namespace MrCMS.Services.ImportExport
     {
         //void ImportDocumentsFromDTOs(IEnumerable<DocumentImportDTO> items);
         //Webpage ImportDocument(DocumentImportDTO dto);
-        void CreateBatch(List<DocumentImportDTO> items);
+        Batch CreateBatch(List<DocumentImportDTO> items, bool autoStart = true);
     }
 }

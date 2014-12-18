@@ -3,7 +3,6 @@ using System.Diagnostics;
 using MrCMS.Batching.Entities;
 using MrCMS.Helpers;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Batching.Services
 {
@@ -13,16 +12,14 @@ namespace MrCMS.Batching.Services
         private readonly IBatchJobExecutionService _batchJobExecutionService;
         private readonly ISetBatchJobExecutionStatus _setBatchJobExecutionStatus;
         private readonly ISetRunStatus _setRunStatus;
-        private readonly ISession _session;
 
         public ExecuteNextBatchJob(IGetNextJobToRun getNextJobToRun, IBatchJobExecutionService batchJobExecutionService,
-            ISetBatchJobExecutionStatus setBatchJobExecutionStatus, ISetRunStatus setRunStatus, ISession session)
+            ISetBatchJobExecutionStatus setBatchJobExecutionStatus, ISetRunStatus setRunStatus)
         {
             _getNextJobToRun = getNextJobToRun;
             _batchJobExecutionService = batchJobExecutionService;
             _setBatchJobExecutionStatus = setBatchJobExecutionStatus;
             _setRunStatus = setRunStatus;
-            _session = session;
         }
 
         public bool Execute(BatchRun batchRun)

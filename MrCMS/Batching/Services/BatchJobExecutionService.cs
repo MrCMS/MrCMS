@@ -27,7 +27,9 @@ namespace MrCMS.Batching.Services
                 var type = typeof(BaseBatchJobExecutor<>).MakeGenericType(batchJobType);
                 var executorTypes = TypeHelper.GetAllTypesAssignableFrom(type);
                 if (executorTypes.Any())
+                {
                     _executorTypeList[batchJobType] = executorTypes.First();
+                }
             }
         }
 

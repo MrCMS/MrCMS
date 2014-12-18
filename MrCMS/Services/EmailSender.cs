@@ -70,8 +70,9 @@ namespace MrCMS.Services
             if (!string.IsNullOrWhiteSpace(queuedMessage.Bcc))
                 mailMessage.Bcc.Add(queuedMessage.Bcc);
 
-            foreach (QueuedMessageAttachment attachment in queuedMessage.QueuedMessageAttachments)
-                mailMessage.Attachments.Add(new Attachment(attachment.FileName));
+            if (queuedMessage.QueuedMessageAttachments != null)
+                foreach (QueuedMessageAttachment attachment in queuedMessage.QueuedMessageAttachments)
+                    mailMessage.Attachments.Add(new Attachment(attachment.FileName));
 
             mailMessage.IsBodyHtml = queuedMessage.IsHtml;
             return mailMessage;

@@ -29,9 +29,9 @@ namespace MrCMS.Services.ImportExport
             _controlBatchRun = controlBatchRun;
         }
 
-        public void CreateBatch(List<DocumentImportDTO> items)
+        public Batch CreateBatch(List<DocumentImportDTO> items, bool autoStart = true)
         {
-            var batch = new Batch { BatchJobs = new List<BatchJob>() };
+            var batch = new Batch { BatchJobs = new List<BatchJob>() ,BatchRuns = new List<BatchRun>()};
             _session.Transact(session => session.Save(batch));
             _session.Transact(session =>
             {
@@ -67,7 +67,10 @@ namespace MrCMS.Services.ImportExport
                 }
             });
             var batchRun = _createBatchRun.Create(batch);
-            _controlBatchRun.Start(batchRun);
+            batch.BatchRuns.Add(batchRun);
+            if (autoStart)
+                _controlBatchRun.Start(batchRun);
+            return batch;
         }
     }
 }
