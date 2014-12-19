@@ -27,22 +27,6 @@ namespace MrCMS.Tests.Services.ImportExport
         }
 
         [Fact]
-        public void ImportExportManager_ImportDocumentsFromExcel_ShouldNotBeNull()
-        {
-            var result = _importExportManager.ImportDocumentsFromExcel(GetDefaultStream());
-
-            result.Should().NotBeNull();
-        }
-
-        [Fact]
-        public void ImportExportManager_ImportDocumentsFromExcel_ShouldReturnDictionary()
-        {
-            var result = _importExportManager.ImportDocumentsFromExcel(GetDefaultStream());
-
-            result.Should().HaveCount(0);
-        }
-
-        [Fact]
         public void ImportExportManager_ExportDocumentsToExcel_ShouldReturnByteArray()
         {
             var result = _importExportManager.ExportDocumentsToExcel();
@@ -56,11 +40,6 @@ namespace MrCMS.Tests.Services.ImportExport
             _importExportManager.ExportDocumentsToExcel();
 
             A.CallTo(() => _documentService.GetAllDocuments<Webpage>()).MustHaveHappened();
-        }
-
-        private static Stream GetDefaultStream()
-        {
-            return new MemoryStream(0);
         }
     }
 }
