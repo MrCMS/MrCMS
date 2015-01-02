@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Web.Configuration;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
@@ -23,7 +20,6 @@ using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
-using MrCMS.Settings;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Caches.SysCache2;
@@ -36,13 +32,11 @@ namespace MrCMS.DbConfiguration
     public class NHibernateConfigurator
     {
         private readonly IDatabaseProvider _databaseProvider;
-        private readonly ISystemConfigurationProvider _systemConfigurationProvider;
         private List<Assembly> _manuallyAddedAssemblies = new List<Assembly>();
 
-        public NHibernateConfigurator(IDatabaseProvider databaseProvider, ISystemConfigurationProvider systemConfigurationProvider = null)
+        public NHibernateConfigurator(IDatabaseProvider databaseProvider)
         {
             _databaseProvider = databaseProvider;
-            _systemConfigurationProvider = systemConfigurationProvider;
             CacheEnabled = true;
         }
 
@@ -56,9 +50,9 @@ namespace MrCMS.DbConfiguration
 
         public ISessionFactory CreateSessionFactory()
         {
-            var configuration = GetConfiguration();
+            NHibernate.Cfg.Configuration configuration = GetConfiguration();
 
-            var sessionFactory = configuration.BuildSessionFactory();
+            ISessionFactory sessionFactory = configuration.BuildSessionFactory();
 
             return sessionFactory;
         }
@@ -108,8 +102,8 @@ namespace MrCMS.DbConfiguration
                     .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
                     .IncludeAppConventions();
 
-            autoPersistenceModel.Add(typeof(NotDeletedFilter));
-            autoPersistenceModel.Add(typeof(SiteFilter));
+            autoPersistenceModel.Add(typeof (NotDeletedFilter));
+            autoPersistenceModel.Add(typeof (SiteFilter));
             NHibernate.Cfg.Configuration config = Fluently.Configure()
                 .Database(iPersistenceConfigurer)
                 .Mappings(m => m.AutoMappings.Add(autoPersistenceModel))
