@@ -928,6 +928,7 @@
     <Compile Include="Website\Controllers\SEOController.cs" />
     <Compile Include="Website\Controllers\SitemapPlaceholderController.cs" />
     <Compile Include="Website\EnsureDatabaseIsInstalled.cs" />
+    <Compile Include="Website\Filters\AntiForgeryValidationAttribute.cs" />
     <Compile Include="Website\Filters\EnsureHomePageIsSet.cs" />
     <Compile Include="Website\Filters\ForceImmediateLuceneUpdateAttribute.cs" />
     <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
