@@ -248,37 +248,101 @@
     <Compile Include="ACL\TypeACLRule.cs" />
     <Compile Include="Apps\MrCMSApp.cs" />
     <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
-    <Compile Include="Batching\BaseBatchJobExecutor.cs" />
-    <Compile Include="Batching\BatchJobExecutionResult.cs" />
-    <Compile Include="Batching\CoreJobs\RebuildLuceneIndex.cs" />
-    <Compile Include="Batching\CoreJobs\RebuildLuceneIndexExecutor.cs" />
-    <Compile Include="Batching\CoreJobs\RebuildUniversalSearchIndex.cs" />
-    <Compile Include="Batching\CoreJobs\RebuildUniversalSearchIndexExecutor.cs" />
-    <Compile Include="Batching\DbConfiguration\BatchJobOverride.cs" />
-    <Compile Include="Batching\DefaultBatchJobExecutor.cs" />
-    <Compile Include="Batching\Entities\Batch.cs" />
-    <Compile Include="Batching\Entities\BatchJob.cs" />
-    <Compile Include="Batching\Entities\BatchRun.cs" />
-    <Compile Include="Batching\Entities\BatchRunResult.cs" />
-    <Compile Include="Batching\Entities\IHaveJobExecutionStatus.cs" />
-    <Compile Include="Batching\Entities\JobExecutionStatus.cs" />
-    <Compile Include="Batching\Events\IOnBatchRunPause.cs" />
-    <Compile Include="Batching\Events\IOnBatchRunStart.cs" />
-    <Compile Include="Batching\IBatchJobExecutor.cs" />
-    <Compile Include="Batching\ISetBatchJobExecutionStatus.cs" />
-    <Compile Include="Batching\Services\BatchJobExecutionService.cs" />
-    <Compile Include="Batching\Services\ControlBatchRun.cs" />
-    <Compile Include="Batching\Services\CreateBatchRun.cs" />
-    <Compile Include="Batching\Services\ExecuteNextBatchJob.cs" />
-    <Compile Include="Batching\Services\GetNextJobToRun.cs" />
-    <Compile Include="Batching\Services\IBatchJobExecutionService.cs" />
-    <Compile Include="Batching\Services\IControlBatchRun.cs" />
-    <Compile Include="Batching\Services\ICreateBatchRun.cs" />
-    <Compile Include="Batching\Services\IExecuteNextBatchJob.cs" />
-    <Compile Include="Batching\Services\IGetNextJobToRun.cs" />
-    <Compile Include="Batching\Services\ISetRunStatus.cs" />
-    <Compile Include="Batching\Services\SetRunStatus.cs" />
-    <Compile Include="Batching\SetBatchJobExecutionStatus.cs" />
+    <Compile Include="Batching\BaseBatchJobExecutor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\BatchJobExecutionResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\CoreJobs\RebuildLuceneIndex.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\CoreJobs\RebuildLuceneIndexExecutor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\CoreJobs\RebuildUniversalSearchIndex.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\CoreJobs\RebuildUniversalSearchIndexExecutor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\DbConfiguration\BatchJobOverride.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\DefaultBatchJobExecutor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Entities\Batch.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Entities\BatchJob.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Entities\BatchRun.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Entities\BatchRunResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Entities\IHaveJobExecutionStatus.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Entities\JobExecutionStatus.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Events\IOnBatchRunPause.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Events\IOnBatchRunStart.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\IBatchJobExecutor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\ISetBatchJobExecutionStatus.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\BatchJobExecutionService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\ControlBatchRun.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\CreateBatchRun.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\ExecuteNextBatchJob.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\GetNextJobToRun.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\IBatchJobExecutionService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\IControlBatchRun.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\ICreateBatchRun.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\IExecuteNextBatchJob.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\IGetNextJobToRun.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\ISetRunStatus.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\ISynchronousBatchRunExecution.cs" />
+    <Compile Include="Batching\Services\SetRunStatus.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Batching\Services\SynchronousBatchRunExecution.cs" />
+    <Compile Include="Batching\SetBatchJobExecutionStatus.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Config\MrCMSConfigSection.cs" />
     <Compile Include="DbConfiguration\Caches\Azure\AzureCacheAdapter.cs" />
     <Compile Include="DbConfiguration\Caches\Azure\AzureCacheAdapterFactory.cs" />
@@ -616,6 +680,8 @@
     <Compile Include="Services\Notifications\INotificationPublisher.cs" />
     <Compile Include="Services\Notifications\IOnPersistentNotificationPublished.cs" />
     <Compile Include="Services\Notifications\IOnTransientNotificationPublished.cs" />
+    <Compile Include="Services\Notifications\NotificationDisabler.cs" />
+    <Compile Include="Services\Notifications\ContextNotificationExtensions.cs" />
     <Compile Include="Services\Notifications\NotificationPublisher.cs" />
     <Compile Include="Services\Notifications\OnPersistentNotificationPublishedEventArgs.cs" />
     <Compile Include="Services\Notifications\OnTransientNotificationPublishedEventArgs.cs" />

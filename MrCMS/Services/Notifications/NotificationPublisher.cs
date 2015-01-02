@@ -17,6 +17,9 @@ namespace MrCMS.Services.Notifications
 
         public void PublishNotification(string message, PublishType publishType = PublishType.Both, NotificationType notificationType = NotificationType.All)
         {
+            if (CurrentRequestData.CurrentContext.AreNotificationsDisabled())
+                return;
+
             var notification = new Notification
                                    {
                                        Message = message,
