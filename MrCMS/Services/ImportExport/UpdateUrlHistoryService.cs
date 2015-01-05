@@ -30,6 +30,34 @@ namespace MrCMS.Services.ImportExport
                     history =>
                         !documentDto.UrlHistory.Contains(history.UrlSegment, StringComparer.InvariantCultureIgnoreCase))
                     .ToList();
+            if (!urlsToAdd.Any() && !urlsToRemove.Any())
+                return;
+            UpdateUrlHistories(webpage, urlsToAdd, urlsToRemove);
+        }
+
+        private void UpdateUrlHistories(Webpage webpage, List<string> urlsToAdd, List<UrlHistory> urlsToRemove)
+        {
+            _session.Transact(session =>
+            {
+                AddUrls(webpage, urlsToAdd, session);
+
+                RemoveUrls(webpage, urlsToRemove, session);
+            });
+        }
+
+        private static void RemoveUrls(Webpage webpage, List<UrlHistory> urlsToRemove, ISession session)
+        {
+            foreach (UrlHistory history in urlsToRemove)
+            {
+                webpage.Urls.Remove(history);
+                history.Webpage = null;
+                UrlHistory closureHistory = history;
+                session.Update(closureHistory);
+            }
+        }
+
+        private void AddUrls(Webpage webpage, List<string> urlsToAdd, ISession session)
+        {
             foreach (string item in urlsToAdd)
             {
                 UrlHistory history =
@@ -38,21 +66,13 @@ namespace MrCMS.Services.ImportExport
                 if (isNew)
                 {
                     history = new UrlHistory {UrlSegment = item, Webpage = webpage};
-                    _session.Transact(session => session.Save(history));
+                    session.Save(history);
                 }
                 else
                     history.Webpage = webpage;
                 if (!webpage.Urls.Contains(history))
                     webpage.Urls.Add(history);
-                _session.Transact(session => session.Update(history));
-            }
-
-            foreach (UrlHistory history in urlsToRemove)
-            {
-                webpage.Urls.Remove(history);
-                history.Webpage = null;
-                UrlHistory closureHistory = history;
-                _session.Transact(session => session.Update(closureHistory));
+                session.Update(history);
             }
         }
     }
