@@ -32,7 +32,6 @@ namespace MrCMS.DbConfiguration
     public class NHibernateConfigurator
     {
         private readonly IDatabaseProvider _databaseProvider;
-        private List<Assembly> _manuallyAddedAssemblies = new List<Assembly>();
 
         public NHibernateConfigurator(IDatabaseProvider databaseProvider)
         {
@@ -42,11 +41,7 @@ namespace MrCMS.DbConfiguration
 
         public bool CacheEnabled { get; set; }
 
-        public List<Assembly> ManuallyAddedAssemblies
-        {
-            get { return _manuallyAddedAssemblies; }
-            set { _manuallyAddedAssemblies = value; }
-        }
+        public List<Assembly> ManuallyAddedAssemblies { get; set; }
 
         public ISessionFactory CreateSessionFactory()
         {
@@ -73,61 +68,16 @@ namespace MrCMS.DbConfiguration
 
         public NHibernate.Cfg.Configuration GetConfiguration()
         {
-            HashSet<Assembly> assemblies = TypeHelper.GetAllMrCMSAssemblies();
-            assemblies.AddRange(ManuallyAddedAssemblies);
-
-            var finalAssemblies = new List<Assembly>();
-
-            assemblies.ForEach(assembly =>
-            {
-                if (finalAssemblies.All(a => a.FullName != assembly.FullName))
-                    finalAssemblies.Add(assembly);
-            });
+            List<Assembly> assemblies = GetAssemblies();
 
             IPersistenceConfigurer iPersistenceConfigurer = _databaseProvider.GetPersistenceConfigurer();
-            AutoPersistenceModel autoPersistenceModel =
-                AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
-                    .IgnoreBase<SystemEntity>()
-                    .IgnoreBase<SiteEntity>()
-                    .IncludeBase<Document>()
-                    .IncludeBase<Webpage>()
-                    .IncludeBase<MessageTemplate>()
-                    .IncludeBase<UserProfileData>()
-                    .IncludeBase<Widget>()
-                    .IncludeBase<FormProperty>()
-                    .IncludeBase<FormPropertyWithOptions>()
-                    .IncludeBase<BatchJob>()
-                    .IncludeAppBases()
-                    .UseOverridesFromAssemblies(assemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
-                    .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
-                    .IncludeAppConventions();
+            AutoPersistenceModel autoPersistenceModel = GetAutoPersistenceModel(assemblies);
+            ApplyCoreFilters(autoPersistenceModel);
 
-            autoPersistenceModel.Add(typeof (NotDeletedFilter));
-            autoPersistenceModel.Add(typeof (SiteFilter));
             NHibernate.Cfg.Configuration config = Fluently.Configure()
                 .Database(iPersistenceConfigurer)
                 .Mappings(m => m.AutoMappings.Add(autoPersistenceModel))
-                .Cache(builder =>
-                {
-                    if (CacheEnabled)
-                    {
-                        builder.UseSecondLevelCache()
-                            .UseQueryCache()
-                            .QueryCacheFactory<StandardQueryCacheFactory>();
-                        var mrCMSSection = WebConfigurationManager.GetSection("mrcms") as MrCMSConfigSection;
-                        if (mrCMSSection != null)
-                        {
-                            builder.ProviderClass(
-                                mrCMSSection.CacheProvider
-                                    .AssemblyQualifiedName);
-                            if (mrCMSSection.MinimizePuts)
-                                builder.UseMinimalPuts();
-                        }
-                        else
-                            builder.ProviderClass<SysCacheProvider>
-                                ();
-                    }
-                })
+                .Cache(SetupCache)
                 .ExposeConfiguration(AppendListeners)
                 .ExposeConfiguration(AppSpecificConfiguration)
                 .ExposeConfiguration(c =>
@@ -138,15 +88,8 @@ namespace MrCMS.DbConfiguration
                             .GenerateStatistics,
                         "true");
 #endif
-                    c.SetProperty(
-                        Environment.Hbm2ddlKeyWords,
-                        "auto-quote");
-                    //c.SetProperty(
-                    //    Environment
-                    //        .DefaultBatchFetchSize,
-                    //    "25");
-                    c.SetProperty(
-                        Environment.BatchSize, "25");
+                    c.SetProperty(Environment.Hbm2ddlKeyWords, "auto-quote");
+                    c.SetProperty(Environment.BatchSize, "25");
                 })
                 .BuildConfiguration();
 
@@ -156,6 +99,68 @@ namespace MrCMS.DbConfiguration
             config.BuildMappings();
 
             return config;
+        }
+
+        private List<Assembly> GetAssemblies()
+        {
+            HashSet<Assembly> assemblies = TypeHelper.GetAllMrCMSAssemblies();
+            assemblies.AddRange(ManuallyAddedAssemblies);
+
+            var finalAssemblies = new List<Assembly>();
+
+            assemblies.ForEach(assembly =>
+            {
+                if (finalAssemblies.All(a => a.FullName != assembly.FullName))
+                    finalAssemblies.Add(assembly);
+            });
+            return finalAssemblies;
+        }
+
+        private void SetupCache(CacheSettingsBuilder builder)
+        {
+            if (CacheEnabled)
+            {
+                builder.UseSecondLevelCache()
+                    .UseQueryCache()
+                    .QueryCacheFactory<StandardQueryCacheFactory>();
+                var mrCMSSection = WebConfigurationManager.GetSection("mrcms") as MrCMSConfigSection;
+                if (mrCMSSection != null)
+                {
+                    builder.ProviderClass(
+                        mrCMSSection.CacheProvider
+                            .AssemblyQualifiedName);
+                    if (mrCMSSection.MinimizePuts)
+                        builder.UseMinimalPuts();
+                }
+                else
+                    builder.ProviderClass<SysCacheProvider>
+                        ();
+            }
+        }
+
+        private static void ApplyCoreFilters(AutoPersistenceModel autoPersistenceModel)
+        {
+            autoPersistenceModel.Add(typeof (NotDeletedFilter));
+            autoPersistenceModel.Add(typeof (SiteFilter));
+        }
+
+        private static AutoPersistenceModel GetAutoPersistenceModel(List<Assembly> finalAssemblies)
+        {
+            return AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
+                .IgnoreBase<SystemEntity>()
+                .IgnoreBase<SiteEntity>()
+                .IncludeBase<Document>()
+                .IncludeBase<Webpage>()
+                .IncludeBase<MessageTemplate>()
+                .IncludeBase<UserProfileData>()
+                .IncludeBase<Widget>()
+                .IncludeBase<FormProperty>()
+                .IncludeBase<FormPropertyWithOptions>()
+                .IncludeBase<BatchJob>()
+                .IncludeAppBases()
+                .UseOverridesFromAssemblies(finalAssemblies.Where(assembly => !assembly.GlobalAssemblyCache).ToArray())
+                .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
+                .IncludeAppConventions();
         }
 
 
