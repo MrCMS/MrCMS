@@ -147,8 +147,8 @@ namespace MrCMS.Indexing.Management
             var fieldDefinitions = GetNewDefinitionList();
             fieldDefinitions.AddRange(Definitions);
             var list = fieldDefinitions.Select(fieldDefinition => fieldDefinition.GetFields(entities)).ToList();
-            var documents = new List<Document>();
             var additionalFields = GetAdditionalFields(entities);
+            var documents = new List<Document>();
             foreach (var entity in entities)
             {
                 var document = new Document();
