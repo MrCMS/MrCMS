@@ -47,24 +47,6 @@ namespace MrCMS.Indexing.Management
         public abstract Dictionary<T, List<AbstractField>> GetFields(List<T> obj);
     }
 
-    public interface IFieldDefinitionInfo
-    {
-        string Name { get; }
-        string DisplayName { get; }
-        string TypeName { get; }
-        Field.Store Store { get; }
-        Field.Index Index { get; }
-        float Boost { get; }
-        Dictionary<Type, Func<SystemEntity, IEnumerable<LuceneAction>>> GetRelatedEntities();
-    }
-
-    public interface IFieldDefinition<T1, T2> : IFieldDefinitionInfo
-        where T1 : IndexDefinition<T2>
-        where T2 : SystemEntity
-    {
-        FieldDefinition<T2> GetDefinition { get; }
-    }
-
     public abstract class FieldDefinition<T1, T2> : IFieldDefinition<T1, T2>
         where T1 : IndexDefinition<T2>
         where T2 : SystemEntity

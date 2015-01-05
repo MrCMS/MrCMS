@@ -529,6 +529,8 @@
     <Compile Include="Indexing\Definitions\UrlSegmentFieldDefinition.cs" />
     <Compile Include="Indexing\Management\AzureDirectoryHelper.cs" />
     <Compile Include="Indexing\Management\GetLuceneDirectory.cs" />
+    <Compile Include="Indexing\Management\IFieldDefinition.cs" />
+    <Compile Include="Indexing\Management\IFieldDefinitionInfo.cs" />
     <Compile Include="Indexing\Management\IGetLuceneDirectory.cs" />
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />

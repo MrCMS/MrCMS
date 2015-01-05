@@ -118,20 +118,37 @@ namespace MrCMS.Indexing.Management
 
         public Document Convert(T entity)
         {
-            return new Document().SetFields(GetCoreDefinitions().Concat(Definitions), entity);
+            var document = new Document();
+            document = document.SetFields(GetNewDefinitionList().Concat(Definitions), entity);
+
+            foreach (var additionalField in GetAdditionalFields(entity))
+                document.Add(additionalField);
+
+            return document;
         }
 
-        private static List<FieldDefinition<T>> GetCoreDefinitions()
+        protected virtual IEnumerable<IFieldable> GetAdditionalFields(T entity)
         {
-            return new List<FieldDefinition<T>> {Id, EntityType};
+            yield break;
+        }
+
+        protected virtual Dictionary<T, IEnumerable<IFieldable>> GetAdditionalFields(List<T> entities)
+        {
+            return entities.ToDictionary(arg => arg, arg => Enumerable.Empty<IFieldable>());
+        }
+
+        private static List<FieldDefinition<T>> GetNewDefinitionList()
+        {
+            return new List<FieldDefinition<T>> { Id, EntityType };
         }
 
         public List<Document> ConvertAll(List<T> entities)
         {
-            var fieldDefinitions = GetCoreDefinitions();
+            var fieldDefinitions = GetNewDefinitionList();
             fieldDefinitions.AddRange(Definitions);
             var list = fieldDefinitions.Select(fieldDefinition => fieldDefinition.GetFields(entities)).ToList();
             var documents = new List<Document>();
+            var additionalFields = GetAdditionalFields(entities);
             foreach (var entity in entities)
             {
                 var document = new Document();
@@ -139,6 +156,13 @@ namespace MrCMS.Indexing.Management
                 {
                     List<AbstractField> abstractFields = fieldInfo[entity];
                     abstractFields.ForEach(document.Add);
+                }
+                if (additionalFields.ContainsKey(entity))
+                {
+                    foreach (var additionalField in additionalFields[entity])
+                    {
+                        document.Add(additionalField);
+                    }
                 }
                 documents.Add(document);
             }
