@@ -45,7 +45,8 @@ namespace MrCMS.Web.Areas.Admin.Services
         public List<SelectListItem> GetPageTypeOptions()
         {
             List<SelectListItem> selectListItems = GetNewList();
-            selectListItems.AddRange(from key in MrCMSApp.AppWebpages.Keys.OrderBy(type => type.FullName)
+            var appWebpageTypes = MrCMSApp.AppWebpages.Keys;
+            selectListItems.AddRange(from key in appWebpageTypes.OrderBy(type => type.FullName)
                                      let appName = MrCMSApp.AppWebpages[key]
                                      select
                                          new SelectListItem
@@ -53,6 +54,14 @@ namespace MrCMS.Web.Areas.Admin.Services
                                              Text = string.Format("{0} ({1})", key.GetMetadata().Name, appName),
                                              Value = key.FullName
                                          });
+            selectListItems.AddRange(
+                TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
+                    .FindAll(type => !appWebpageTypes.Contains(type))
+                    .Select(type => new SelectListItem
+                    {
+                        Text = string.Format("{0} (System)", type.Name.BreakUpString()),
+                        Value = type.FullName
+                    }));
             return selectListItems;
         }
 
