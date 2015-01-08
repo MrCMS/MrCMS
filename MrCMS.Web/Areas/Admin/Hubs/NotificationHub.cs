@@ -6,6 +6,7 @@ using Microsoft.AspNet.SignalR.Hubs;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities.Notifications;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
 
