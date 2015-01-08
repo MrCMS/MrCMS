@@ -6,7 +6,6 @@ using System.Linq;
 using System.Web.Mvc;
 using Iesi.Collections.Generic;
 using Microsoft.AspNet.Identity;
-using MrCMS.ACL;
 using MrCMS.Helpers;
 using MrCMS.Helpers.Validation;
 
@@ -85,7 +84,7 @@ namespace MrCMS.Entities.People
 
         public virtual bool DisableNotifications { get; set; }
         public virtual DateTime? LastNotificationReadDate { get; set; }
-        
+
         [DisplayName("Site UI Culture")]
         public virtual string UICulture { get; set; }
 
@@ -98,27 +97,6 @@ namespace MrCMS.Entities.People
         {
             get { return Email; }
             set { Email = value; }
-        }
-
-        public virtual T Get<T>() where T : UserProfileData
-        {
-            return UserProfileData.OfType<T>().FirstOrDefault();
-        }
-
-        public virtual T2 Get<T1, T2>(Func<T1, T2> func) where T1 : UserProfileData
-        {
-            T1 firstOrDefault = UserProfileData.OfType<T1>().FirstOrDefault();
-            return firstOrDefault == null ? default(T2) : func(firstOrDefault);
-        }
-
-        public virtual IEnumerable<T> GetAll<T>() where T : UserProfileData
-        {
-            return UserProfileData.OfType<T>();
-        }
-
-        public virtual bool CanAccess<T>(string operation, string type = null) where T : ACLRule, new()
-        {
-            return new T().CanAccess(this, operation, type);
         }
     }
 }
