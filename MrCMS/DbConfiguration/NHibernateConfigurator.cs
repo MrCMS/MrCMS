@@ -104,7 +104,8 @@ namespace MrCMS.DbConfiguration
         private List<Assembly> GetAssemblies()
         {
             HashSet<Assembly> assemblies = TypeHelper.GetAllMrCMSAssemblies();
-            assemblies.AddRange(ManuallyAddedAssemblies);
+            if (ManuallyAddedAssemblies != null) 
+                assemblies.AddRange(ManuallyAddedAssemblies);
 
             var finalAssemblies = new List<Assembly>();
 
