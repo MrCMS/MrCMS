@@ -368,6 +368,7 @@
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\NotNullableAttributeConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
+    <Compile Include="DbConfiguration\Conventions\RootGuidConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
     <Compile Include="DbConfiguration\CreateSQLiteDatabase.cs" />
     <Compile Include="DbConfiguration\CreateSqlServerDatabase.cs" />
