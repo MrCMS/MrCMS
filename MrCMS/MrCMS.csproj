@@ -284,6 +284,7 @@
     <Compile Include="Batching\Entities\BatchRunResult.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\Entities\BatchRunStatus.cs" />
     <Compile Include="Batching\Entities\IHaveJobExecutionStatus.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -365,6 +366,7 @@
     <Compile Include="DbConfiguration\Conventions\NotDeletedFilterConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ForeignKeyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
+    <Compile Include="DbConfiguration\Conventions\NotNullableAttributeConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
     <Compile Include="DbConfiguration\CreateSQLiteDatabase.cs" />
@@ -387,6 +389,7 @@
     <Compile Include="DbConfiguration\MySqlProvider.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
     <Compile Include="DbConfiguration\NoConnectionStringBuilderAttribute.cs" />
+    <Compile Include="DbConfiguration\NotNullableAttribute.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\DocumentVersionOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\FormListOptionOverride.cs" />
@@ -411,10 +414,12 @@
     <Compile Include="DbConfiguration\Overrides\UserRoleOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WidgetOverride.cs" />
+    <Compile Include="DbConfiguration\ShouldMapAttribute.cs" />
     <Compile Include="DbConfiguration\SiteFilterDisabler.cs" />
     <Compile Include="DbConfiguration\SqliteProvider.cs" />
     <Compile Include="DbConfiguration\SqlServer2008Provider.cs" />
     <Compile Include="DbConfiguration\SqlServer2012Provider.cs" />
+    <Compile Include="DbConfiguration\SqlServerGuidHelper.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
     <Compile Include="DbConfiguration\Types\BinaryData.cs" />
     <Compile Include="DbConfiguration\Types\DateTimeData.cs" />

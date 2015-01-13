@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using FluentNHibernate.Automapping;
 using MrCMS.Entities;
 
@@ -15,12 +16,12 @@ namespace MrCMS.DbConfiguration.Mapping
 
         private bool HasDoNotMapAttribute(Type type)
         {
-            return type.GetCustomAttributes(typeof(DoNotMapAttribute), false).Any();
+            return type.GetCustomAttribute<DoNotMapAttribute>() != null;
         }
 
         public override bool ShouldMap(FluentNHibernate.Member member)
         {
-            return member.CanWrite && base.ShouldMap(member);
+            return (member.CanWrite || member.MemberInfo.GetCustomAttribute<ShouldMapAttribute>() != null) && base.ShouldMap(member);
         }
 
         public override bool IsId(FluentNHibernate.Member member)

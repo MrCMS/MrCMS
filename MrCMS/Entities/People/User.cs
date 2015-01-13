@@ -15,7 +15,6 @@ namespace MrCMS.Entities.People
     {
         public User()
         {
-            Guid = Guid.NewGuid();
             Roles = new HashedSet<UserRole>();
             UserProfileData = new List<UserProfileData>();
             UserLogins = new List<UserLogin>();
@@ -45,7 +44,6 @@ namespace MrCMS.Entities.People
         public virtual byte[] PasswordHash { get; set; }
         public virtual byte[] PasswordSalt { get; set; }
 
-        public virtual Guid Guid { get; set; }
 
         public virtual string CurrentEncryption { get; set; }
 

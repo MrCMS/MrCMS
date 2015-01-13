@@ -83,16 +83,17 @@ namespace MrCMS.DbConfiguration
                 .ExposeConfiguration(c =>
                 {
 #if DEBUG
-                    c.SetProperty(
-                        Environment
-                            .GenerateStatistics,
-                        "true");
+                    c.SetProperty(Environment.GenerateStatistics, "true");
+#else
+                    c.SetProperty(Environment.GenerateStatistics, "false");
 #endif
                     c.SetProperty(Environment.Hbm2ddlKeyWords, "auto-quote");
                     c.SetProperty(Environment.BatchSize, "25");
                 })
                 .BuildConfiguration();
 
+
+            _databaseProvider.AddProviderSpecificConfiguration(config);
 
             ValidateSchema(config);
 
@@ -104,7 +105,7 @@ namespace MrCMS.DbConfiguration
         private List<Assembly> GetAssemblies()
         {
             HashSet<Assembly> assemblies = TypeHelper.GetAllMrCMSAssemblies();
-            if (ManuallyAddedAssemblies != null) 
+            if (ManuallyAddedAssemblies != null)
                 assemblies.AddRange(ManuallyAddedAssemblies);
 
             var finalAssemblies = new List<Assembly>();
@@ -127,22 +128,19 @@ namespace MrCMS.DbConfiguration
                 var mrCMSSection = WebConfigurationManager.GetSection("mrcms") as MrCMSConfigSection;
                 if (mrCMSSection != null)
                 {
-                    builder.ProviderClass(
-                        mrCMSSection.CacheProvider
-                            .AssemblyQualifiedName);
+                    builder.ProviderClass(mrCMSSection.CacheProvider.AssemblyQualifiedName);
                     if (mrCMSSection.MinimizePuts)
                         builder.UseMinimalPuts();
                 }
                 else
-                    builder.ProviderClass<SysCacheProvider>
-                        ();
+                    builder.ProviderClass<SysCacheProvider>();
             }
         }
 
         private static void ApplyCoreFilters(AutoPersistenceModel autoPersistenceModel)
         {
-            autoPersistenceModel.Add(typeof (NotDeletedFilter));
-            autoPersistenceModel.Add(typeof (SiteFilter));
+            autoPersistenceModel.Add(typeof(NotDeletedFilter));
+            autoPersistenceModel.Add(typeof(SiteFilter));
         }
 
         private static AutoPersistenceModel GetAutoPersistenceModel(List<Assembly> finalAssemblies)

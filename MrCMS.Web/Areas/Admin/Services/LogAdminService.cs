@@ -25,7 +25,6 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             if (log.Error == null)
                 log.Error = new Error();
-            log.Guid = Guid.NewGuid();
             _session.Transact(session => session.Save(log));
         }
 

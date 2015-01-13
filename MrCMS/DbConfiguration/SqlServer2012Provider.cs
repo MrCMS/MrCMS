@@ -1,6 +1,8 @@
 using System.ComponentModel;
+using System.Linq;
 using FluentNHibernate.Cfg.Db;
 using MrCMS.Settings;
+using NHibernate.Mapping;
 
 namespace MrCMS.DbConfiguration
 {
@@ -17,6 +19,11 @@ namespace MrCMS.DbConfiguration
         public IPersistenceConfigurer GetPersistenceConfigurer()
         {
             return MsSqlConfiguration.MsSql2012.ConnectionString(x => x.Is(_databaseSettings.ConnectionString));
+        }
+
+        public void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config)
+        {
+            SqlServerGuidHelper.SetGuidToUniqueWithDefaultValue(config);
         }
 
         public string Type
