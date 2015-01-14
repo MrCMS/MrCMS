@@ -1047,6 +1047,7 @@
     <Content Include="Areas\Admin\Content\Scripts\mrcms\choose-site.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\message-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\pages.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\persistent-notifications.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-show-files-simple.js" />
