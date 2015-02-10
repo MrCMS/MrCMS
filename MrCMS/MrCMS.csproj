@@ -354,6 +354,7 @@
     <Compile Include="DbConfiguration\Caches\Azure\ISerializationProvider.cs" />
     <Compile Include="DbConfiguration\Caches\Azure\SerializationProvider.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
+    <Compile Include="DbConfiguration\Configuration\IsDBLengthAttribute.cs" />
     <Compile Include="DbConfiguration\Configuration\SetCoreProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SetOnUpdatingProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SoftDeleteListener.cs" />
@@ -370,6 +371,7 @@
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\RootGuidConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
+    <Compile Include="DbConfiguration\Conventions\StringLengthConvention.cs" />
     <Compile Include="DbConfiguration\CreateSQLiteDatabase.cs" />
     <Compile Include="DbConfiguration\CreateSqlServerDatabase.cs" />
     <Compile Include="DbConfiguration\EventInfo.cs" />
@@ -442,6 +444,7 @@
     <Compile Include="Entities\Documents\Web\FormProperties\FileUpload.cs" />
     <Compile Include="Entities\Documents\Web\FormProperties\FormListOption.cs" />
     <Compile Include="Entities\Documents\Web\FormProperties\FormProperty.cs" />
+    <Compile Include="Entities\Documents\Web\FormProperties\FormPropertyWithOptions.cs" />
     <Compile Include="Entities\Documents\Web\FormProperties\RadioButtonList.cs" />
     <Compile Include="Entities\Documents\Web\FormProperties\TextArea.cs" />
     <Compile Include="Entities\Documents\Web\FormProperties\TextBox.cs" />
