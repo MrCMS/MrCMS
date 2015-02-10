@@ -9,6 +9,9 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Elmah;
+using ImageResizer.Plugins.AnimatedGifs;
+using ImageResizer.Plugins.Basic;
+using ImageResizer.Plugins.PrettyGifs;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using MrCMS.Apps;
 using MrCMS.Entities.People;
@@ -76,7 +79,6 @@ namespace MrCMS.Website
             RegisterServices(bootstrapper.Kernel);
             MrCMSApp.RegisterAllServices(bootstrapper.Kernel);
 
-
             SetModelBinders();
 
             ViewEngines.Engines.Clear();
@@ -87,6 +89,16 @@ namespace MrCMS.Website
             GlobalFilters.Filters.Add(new HoneypotFilterAttribute());
 
             ModelMetadataProviders.Current = new MrCMSMetadataProvider(Kernel);
+
+            InstallImageResizerPlugins();
+        }
+
+        private static void InstallImageResizerPlugins()
+        {
+            // currently we will just enable all plugins, but possibly make it configurable in the future
+            new AutoRotate().Install(ImageResizer.Configuration.Config.Current);
+            new AnimatedGifs().Install(ImageResizer.Configuration.Config.Current);
+            new PrettyGifs().Install(ImageResizer.Configuration.Config.Current);
         }
 
         private static void SetModelBinders()
