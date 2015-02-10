@@ -12,14 +12,12 @@ namespace MrCMS.Services
     public class ImageProcessor : IImageProcessor
     {
         private readonly IFileSystem _fileSystem;
-        private readonly MediaSettings _mediaSettings;
         private readonly ISession _session;
 
-        public ImageProcessor(ISession session, IFileSystem fileSystem, MediaSettings mediaSettings)
+        public ImageProcessor(ISession session, IFileSystem fileSystem)
         {
             _session = session;
             _fileSystem = fileSystem;
-            _mediaSettings = mediaSettings;
         }
 
         public MediaFile GetImage(string imageUrl)
