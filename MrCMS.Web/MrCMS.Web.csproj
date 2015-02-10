@@ -247,6 +247,7 @@
     <Compile Include="Apps\Articles\ActionResults\RssActionResult.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Controllers\ArticleController.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Controllers\AuthorInfoController.cs" />
+    <Compile Include="Apps\Articles\Areas\Admin\Models\AuthorInfoUserTab.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleAdminViewDataUsers.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleArchiveAdminViewData.cs" />
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetArticleCategoriesViewData.cs" />
@@ -1986,7 +1987,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>1834</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
