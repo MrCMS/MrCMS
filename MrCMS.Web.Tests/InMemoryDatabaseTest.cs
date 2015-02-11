@@ -88,8 +88,8 @@ namespace MrCMS.Web.Tests
                 Name = UserRole.Administrator
             };
 
-            user.Roles = new HashedSet<UserRole> {adminUserRole};
-            adminUserRole.Users = new HashedSet<User> {user};
+            user.Roles = new HashSet<UserRole> {adminUserRole};
+            adminUserRole.Users = new HashSet<User> {user};
 
             CurrentRequestData.CurrentUser = user;
         }

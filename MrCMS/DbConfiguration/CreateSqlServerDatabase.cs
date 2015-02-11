@@ -3,12 +3,10 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading;
 using MrCMS.Installation;
-using MrCMS.Settings;
 
 namespace MrCMS.DbConfiguration
 {
-    public class CreateSqlServerDatabase : ICreateDatabase<SqlServer2008Provider>,
-        ICreateDatabase<SqlServer2012Provider>
+    public abstract class CreateSqlServerDatabase 
     {
         public void CreateDatabase(InstallModel model)
         {
@@ -41,14 +39,12 @@ namespace MrCMS.DbConfiguration
             }
         }
 
-        private static bool NewDbIsReady(string connectionString)
+        private bool NewDbIsReady(string connectionString)
         {
             try
             {
-                new NHibernateConfigurator(new SqlServer2008Provider(new DatabaseSettings
-                {
-                    ConnectionString = connectionString
-                })).CreateSessionFactory();
+                var provider = GetProvider(connectionString);
+                new NHibernateConfigurator(provider).CreateSessionFactory();
                 return true;
             }
             catch
@@ -56,6 +52,8 @@ namespace MrCMS.DbConfiguration
                 return false;
             }
         }
+
+        protected abstract IDatabaseProvider GetProvider(string connectionString);
 
         public string GetConnectionString(InstallModel model)
         {

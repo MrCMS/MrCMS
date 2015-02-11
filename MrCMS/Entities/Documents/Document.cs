@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Iesi.Collections.Generic;
 
 namespace MrCMS.Entities.Documents
 {
@@ -11,7 +10,7 @@ namespace MrCMS.Entities.Documents
         protected Document()
         {
             Versions = new List<DocumentVersion>();
-            Tags = new HashedSet<Tag>();
+            Tags = new HashSet<Tag>();
         }
 
         [Required]
@@ -26,7 +25,7 @@ namespace MrCMS.Entities.Documents
 
         public virtual string UrlSegment { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<Tag> Tags { get; set; }
+        public virtual ISet<Tag> Tags { get; set; }
 
         public virtual string TagList
         {

@@ -2,12 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
-using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Web.Areas.Admin.Services;
-using MrCMS.Web.Tests.Stubs;
 using NHibernate;
 using Xunit;
 
@@ -49,7 +47,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
             Session.Transact(session => Session.SaveOrUpdate(tag1));
 
             var container = new FakeContainer {Site = CurrentSite};
-            container.SetTags(new HashedSet<Tag> {tag1});
+            container.SetTags(new HashSet<Tag> {tag1});
             var containerItem = new FakeContainerItem {Parent = container, Site = CurrentSite};
 
             tagService.GetTags(containerItem).Should().HaveCount(1);
@@ -57,7 +55,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
 
         public class FakeContainer : Document
         {
-            public virtual void SetTags(Iesi.Collections.Generic.ISet<Tag> tags)
+            public virtual void SetTags(ISet<Tag> tags)
             {
                 Tags = tags;
             }

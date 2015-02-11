@@ -20,7 +20,7 @@ namespace MrCMS.Entities.Documents.Web
             InheritFrontEndRolesFromParent = true;
             Urls = new List<UrlHistory>();
             Widgets = new List<Widget.Widget>();
-            FrontEndAllowedRoles = new HashedSet<UserRole>();
+            FrontEndAllowedRoles = new HashSet<UserRole>();
         }
 
         [Required]
@@ -75,8 +75,8 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Publish On")]
         public virtual DateTime? PublishOn { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<Widget.Widget> ShownWidgets { get; set; }
-        public virtual Iesi.Collections.Generic.ISet<Widget.Widget> HiddenWidgets { get; set; }
+        public virtual ISet<Widget.Widget> ShownWidgets { get; set; }
+        public virtual ISet<Widget.Widget> HiddenWidgets { get; set; }
 
         public virtual IList<Widget.Widget> Widgets { get; set; }
 
@@ -136,7 +136,7 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<UserRole> FrontEndAllowedRoles { get; set; }
+        public virtual ISet<UserRole> FrontEndAllowedRoles { get; set; }
 
         [DisplayName("Roles")]
         public virtual string FrontEndRoles

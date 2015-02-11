@@ -15,7 +15,7 @@ namespace MrCMS.Entities.People
     {
         public User()
         {
-            Roles = new HashedSet<UserRole>();
+            Roles = new HashSet<UserRole>();
             UserProfileData = new List<UserProfileData>();
             UserLogins = new List<UserLogin>();
             UserClaims = new List<UserClaim>();
@@ -62,7 +62,7 @@ namespace MrCMS.Entities.People
         public virtual Guid? ResetPasswordGuid { get; set; }
         public virtual DateTime? ResetPasswordExpiry { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<UserRole> Roles { get; set; }
+        public virtual ISet<UserRole> Roles { get; set; }
         protected internal virtual IList<UserProfileData> UserProfileData { get; set; }
 
         public virtual bool IsAdmin

@@ -34,7 +34,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public IEnumerable<Tag> GetTags(Document document)
         {
-            Iesi.Collections.Generic.ISet<Tag> parentCategories = new HashedSet<Tag>();
+            ISet<Tag> parentCategories = new HashSet<Tag>();
 
             if (document != null)
             {

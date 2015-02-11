@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Iesi.Collections.Generic;
 
 namespace MrCMS.Entities.Documents
 {
@@ -7,10 +6,11 @@ namespace MrCMS.Entities.Documents
     {
         public Tag()
         {
-            Documents = new HashedSet<Document>();
+            Documents = new HashSet<Document>();
         }
+
         public virtual string Name { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<Document> Documents { get; set; }
+        public virtual ISet<Document> Documents { get; set; }
     }
 }

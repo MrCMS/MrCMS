@@ -113,7 +113,7 @@ namespace MrCMS.Tests.Services.ImportExport
             var tag = new Tag { Name = "Test" };
             Session.Transact(session => session.Save(tag));
             GetAllTags().Should().HaveCount(1);
-            var webpage = new BasicMappedWebpage { Tags = new HashedSet<Tag> { tag } };
+            var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
 
             _updateTagsService.SetTags(new DocumentImportDTO { Tags = new List<string> { } },
                                                       webpage);
@@ -127,7 +127,7 @@ namespace MrCMS.Tests.Services.ImportExport
             var tag = new Tag { Name = "Test" };
             Session.Transact(session => session.Save(tag));
             GetAllTags().Should().HaveCount(1);
-            var webpage = new BasicMappedWebpage { Tags = new HashedSet<Tag> { tag } };
+            var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
 
             _updateTagsService.SetTags(new DocumentImportDTO { Tags = new List<string> { } },
                                                       webpage);
@@ -141,7 +141,7 @@ namespace MrCMS.Tests.Services.ImportExport
             var tag = new Tag { Name = "Test" };
             Session.Transact(session => session.Save(tag));
             GetAllTags().Should().HaveCount(1);
-            var webpage = new BasicMappedWebpage { Tags = new HashedSet<Tag> { tag } };
+            var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
             tag.Documents.Add(webpage);
             tag.Documents.Should().HaveCount(1);
 

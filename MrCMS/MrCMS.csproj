@@ -59,8 +59,9 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="Iesi.Collections">
-      <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+    <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Iesi.Collections.4.0.0.4000\lib\net40\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="ImageResizer">
       <HintPath>..\packages\ImageResizer.3.4.3\lib\ImageResizer.dll</HintPath>
@@ -151,12 +152,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+    <Reference Include="NHibernate, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
+      <HintPath>..\packages\NHibernate.4.0.3.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate.Caches.SysCache2">
-      <HintPath>..\packages\NHibernate.Caches.SysCache2.3.2.0.4000\lib\Net35\NHibernate.Caches.SysCache2.dll</HintPath>
+      <HintPath>..\packages\NHibernate.Caches.SysCache2.4.0.0.4000\lib\net40\NHibernate.Caches.SysCache2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NHibernate.SqlAzure">
+      <HintPath>..\packages\NHibernate.SqlAzure.2.0.0\lib\NET45\NHibernate.SqlAzure.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -382,6 +387,9 @@
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\StringLengthConvention.cs" />
     <Compile Include="DbConfiguration\CreateSQLiteDatabase.cs" />
+    <Compile Include="DbConfiguration\CreateSqlServer2008Database.cs" />
+    <Compile Include="DbConfiguration\CreateSqlServer2012Database.cs" />
+    <Compile Include="DbConfiguration\CreateSqlServerAzureDatabase.cs" />
     <Compile Include="DbConfiguration\CreateSqlServerDatabase.cs" />
     <Compile Include="DbConfiguration\EventInfo.cs" />
     <Compile Include="DbConfiguration\Filters\NotDeletedFilter.cs" />
@@ -431,6 +439,7 @@
     <Compile Include="DbConfiguration\SqliteProvider.cs" />
     <Compile Include="DbConfiguration\SqlServer2008Provider.cs" />
     <Compile Include="DbConfiguration\SqlServer2012Provider.cs" />
+    <Compile Include="DbConfiguration\SqlServerAzureProvider.cs" />
     <Compile Include="DbConfiguration\SqlServerGuidHelper.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
     <Compile Include="DbConfiguration\Types\BinaryData.cs" />
