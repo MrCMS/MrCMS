@@ -7,9 +7,13 @@
 <h4>@Resource("Admin Webpage Form Message After Submitted", "Message to show after form is submitted")</h4>
 
 <div class="form-group">
-    @Html.LabelFor(webpage => webpage.FormSubmittedMessage)
-    @Html.TextBoxFor(webpage => webpage.FormSubmittedMessage, new { @class = "form-control" })
+    @Html.TextBoxFor(webpage => webpage.FormSubmittedMessage, new { @class = "form-control", placeholder = "e.g Thank you!" })
     @Html.ValidationMessageFor(x => x.FormSubmittedMessage, "", new { @class = "error" })
+</div>
+<h4>@Resource("Admin Webpage Form RedirectUrl", "Page to redirect to (Leave blank for current page and show success message above")</h4>
+<div class="form-group">
+    @Html.TextBoxFor(webpage => webpage.FormRedirectUrl, new { @class = "form-control", placeholder = "e.g http://www.example.com/thankyou" })
+    @Html.ValidationMessageFor(x => x.FormRedirectUrl, "", new { @class = "error" })
 </div>
 
 <h4>@Resource("Admin Webpage Form Submit Button settings", "Submit Button settings")</h4>
@@ -20,7 +24,7 @@
     <div class="col-lg-6">
         <div class="form-group">
             @Html.LabelFor(webpage => webpage.SubmitButtonText)
-            @Html.TextBoxFor(webpage => webpage.SubmitButtonText, new { @class = "form-control" })
+            @Html.TextBoxFor(webpage => webpage.SubmitButtonText, new { @class = "form-control", placeholder = "e.g Sign Up!" })
             @Html.ValidationMessageFor(x => x.SubmitButtonText, "", new { @class = "error" })
         </div>
     </div>
