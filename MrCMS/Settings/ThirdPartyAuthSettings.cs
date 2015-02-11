@@ -6,6 +6,11 @@ namespace MrCMS.Settings
     {
         [DisplayName("Is Google Login Enabled?")]
         public bool GoogleEnabled { get; set; }
+        [DisplayName("Google Client Id")]
+        public string GoogleClientId { get; set; }
+        [DisplayName("Google Secret")]
+        public string GoogleClientSecret { get; set; }
+
 
         [DisplayName("Is Facebook Login Enabled?")]
         public bool FacebookEnabled { get; set; }
