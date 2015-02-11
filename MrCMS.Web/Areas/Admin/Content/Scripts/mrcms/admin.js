@@ -42,6 +42,7 @@ $(function () {
             padding: 0,
             afterShow: function () {
                 $('.fancybox-iframe').contents().find('form').attr('target', '_parent').css('margin', '0');
+                $(".fancybox-inner").css("overflow", "");
             }
         }).click().remove();
         return false;

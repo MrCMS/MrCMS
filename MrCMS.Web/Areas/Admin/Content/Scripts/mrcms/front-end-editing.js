@@ -238,8 +238,11 @@ $(function () {
             minHeight: 400,
             minWidth: 500,
             padding: 0,
+            scrolling: "no",
             afterShow: function () {
                 $(".fancybox-iframe").contents().find('form').attr('target', '_parent').css('margin', '0');
+                $(".fancybox-inner").css("overflow", "");
+
             }
         }).click().remove();
         return false;
