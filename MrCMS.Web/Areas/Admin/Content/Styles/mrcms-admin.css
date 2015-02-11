@@ -41,30 +41,7 @@ ul.persistent-notification { margin: 0; padding: 0 10px; }
 .notifications-dropdown form { width: 100%;padding-top: 10px;text-align: center;}
 
 /*Admin message*/
-.admin-message { position: absolute; top: 0px;left: 0px; width: 100%; display: none;z-index: 100;}
-.admin-message > .alert { padding: 5px;font-size: 13px;border-radius: 0;font-size: 12px;}
-.fadeIn { -webkit-animation: fadeIn; animation: fadeIn; opacity: 1; }
-.fadeOut { -webkit-animation: fadeOut; animation: fadeOut; opacity: 0; }
-.fast { -webkit-animation-duration: 1s; animation-duration: 1s; }
-@-webkit-keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@-webkit-keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-}
-
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-}
 
 /*Media*/
 #file-list, #folder-container {height: auto;min-height: 400px;width: 100%;display: block;}
