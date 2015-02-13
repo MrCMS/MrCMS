@@ -2,13 +2,13 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Iesi.Collections.Generic;
+using Microsoft.AspNet.Identity;
 using MrCMS.Entities.ACL;
 using MrCMS.Entities.Documents.Web;
-using IRole = Microsoft.AspNet.Identity.IRole;
 
 namespace MrCMS.Entities.People
 {
-    public class UserRole : SystemEntity, IRole
+    public class UserRole : SystemEntity, IRole<int>
     {
         public UserRole()
         {
@@ -17,16 +17,6 @@ namespace MrCMS.Entities.People
             Users = new HashSet<User>();
         }
         public const string Administrator = "Administrator";
-
-        string IRole.Id
-        {
-            get { return OwinId; }
-        }
-
-        public virtual string OwinId
-        {
-            get { return Id.ToString(); }
-        }
 
         [Required]
         [DisplayName("Role Name")]

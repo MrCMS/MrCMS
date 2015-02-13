@@ -13,7 +13,8 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
         private readonly IMessageTemplateProvider _messageTemplateProvider;
         private readonly Site _site;
 
-        public DeleteMessageTemplateOverrideModelBinder(IMessageTemplateProvider messageTemplateProvider, Site site, IKernel kernel)
+        public DeleteMessageTemplateOverrideModelBinder(IMessageTemplateProvider messageTemplateProvider, Site site,
+            IKernel kernel)
             : base(kernel)
         {
             _messageTemplateProvider = messageTemplateProvider;
@@ -22,14 +23,15 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            var type = GetTypeByName(controllerContext);
+            Type type = GetTypeByName(controllerContext);
 
             return _messageTemplateProvider.GetAllMessageTemplates(_site)
                 .FirstOrDefault(template => template.SiteId == _site.Id && template.GetType() == type);
         }
+
         private static Type GetTypeByName(ControllerContext controllerContext)
         {
-            var valueFromContext = GetValueFromContext(controllerContext, "TemplateType");
+            string valueFromContext = GetValueFromContext(controllerContext, "TemplateType");
             return TypeHelper.GetTypeByName(valueFromContext);
         }
     }

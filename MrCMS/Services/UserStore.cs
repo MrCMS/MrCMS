@@ -11,7 +11,7 @@ using NHibernate;
 
 namespace MrCMS.Services
 {
-    public class UserStore : IUserLoginStore<User>, IUserClaimStore<User>, IUserRoleStore<User>
+    public class UserStore : IUserLoginStore<User, int>, IUserClaimStore<User, int>, IUserRoleStore<User, int>
     {
         private readonly IRoleService _roleService;
         private readonly ISession _session;
@@ -105,14 +105,9 @@ namespace MrCMS.Services
                 TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public async Task<User> FindByIdAsync(string userId)
+        public async Task<User> FindByIdAsync(int userId)
         {
-            return await Task.Factory.StartNew(() =>
-                                               {
-                                                   int id;
-                                                   int.TryParse(userId, out id);
-                                                   return _userService.GetUser(id);
-                                               }, CancellationToken.None,
+            return await Task.Factory.StartNew(() => _userService.GetUser(userId), CancellationToken.None,
                 TaskCreationOptions.None,
                 TaskScheduler.FromCurrentSynchronizationContext());
         }
