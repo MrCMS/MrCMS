@@ -25,7 +25,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             _session = session;
         }
 
-        public MessageTemplateBase GetTemplate(string type)
+        public MessageTemplate GetTemplate(string type)
         {
             return _messageTemplateProvider.GetAllMessageTemplates(_site).FirstOrDefault(x => x.GetType().FullName == type);
         }

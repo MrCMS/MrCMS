@@ -3,7 +3,7 @@ using MrCMS.Messages;
 
 namespace MrCMS.Web.Apps.Core.MessageTemplates
 {
-    public class ResetPasswordMessageTemplate : MessageTemplateBase<User>
+    public class ResetPasswordMessageTemplate : MessageTemplate<User>
     {
     }
 }

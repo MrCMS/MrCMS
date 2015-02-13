@@ -421,7 +421,7 @@
     <Compile Include="DbConfiguration\Overrides\LayoutOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaCategoryOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\MediaFileOverride.cs" />
-    <Compile Include="DbConfiguration\Overrides\MessageTemplateOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\LegacyMessageTemplateOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\NotificationOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\PageWidgetSortOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
@@ -574,7 +574,6 @@
     <Compile Include="Installation\PermissionsChecker.cs" />
     <Compile Include="Installation\RequiredCheck.cs" />
     <Compile Include="Installation\RestartApplication.cs" />
-    <Compile Include="Installation\SetupInitialTemplates.cs" />
     <Compile Include="Installation\SqlAuthenticationType.cs" />
     <Compile Include="IoC\Modules\AuthModule.cs" />
     <Compile Include="IoC\Modules\FileSystemModule.cs" />
@@ -585,9 +584,10 @@
     <Compile Include="IoC\Modules\SystemWebModule.cs" />
     <Compile Include="Media\MediaExtensions.cs" />
     <Compile Include="Messages\GetDefaultTemplate.cs" />
+    <Compile Include="Messages\Helpers\MessageTemplateExtensions.cs" />
     <Compile Include="Messages\IGetDefaultMessageTemplate.cs" />
     <Compile Include="Messages\IMessageTemplateProvider.cs" />
-    <Compile Include="Messages\MessageTemplateBase.cs" />
+    <Compile Include="Messages\MessageTemplate.cs" />
     <Compile Include="Messages\MessageTemplateProvider.cs" />
     <Compile Include="Models\CachingInfo.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
@@ -799,7 +799,7 @@
     <Compile Include="Entities\Documents\Web\Redirect.cs" />
     <Compile Include="Entities\Documents\Web\RoleStatus.cs" />
     <Compile Include="Entities\Documents\Web\Webpage.cs" />
-    <Compile Include="Entities\Messaging\MessageTemplate.cs" />
+    <Compile Include="Entities\Messaging\LegacyMessageTemplate.cs" />
     <Compile Include="Entities\Messaging\QueuedMessage.cs" />
     <Compile Include="Entities\Messaging\QueuedMessageAttachment.cs" />
     <Compile Include="Entities\Multisite\Site.cs" />
@@ -1029,6 +1029,7 @@
     <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
     <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
     <Compile Include="Website\HandleWebpageViewsAttribute.cs" />
+    <Compile Include="Website\HttpContextExtensions.cs" />
     <Compile Include="Website\IClearCachesService.cs" />
     <Compile Include="Website\IEnsureDatabaseIsInstalled.cs" />
     <Compile Include="Website\IProcessWebpageViews.cs" />

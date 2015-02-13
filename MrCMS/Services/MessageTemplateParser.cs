@@ -66,7 +66,7 @@ namespace MrCMS.Services
             return tokenProviders.SelectMany(provider => provider.Tokens.Select(pair => pair.Key)).ToList();
         }
 
-        public List<string> GetAllTokens(MessageTemplateBase template)
+        public List<string> GetAllTokens(MessageTemplate template)
         {
             var tokens = new List<string>();
             tokens.AddRange(GetAllTokens(template.ModelType));

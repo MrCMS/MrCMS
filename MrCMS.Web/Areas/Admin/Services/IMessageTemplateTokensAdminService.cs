@@ -5,6 +5,6 @@ namespace MrCMS.Web.Areas.Admin.Services
 {
     public interface IMessageTemplateTokensAdminService
     {
-        List<string> GetTokens(MessageTemplateBase messageTemplate);
+        List<string> GetTokens(MessageTemplate messageTemplate);
     }
 }

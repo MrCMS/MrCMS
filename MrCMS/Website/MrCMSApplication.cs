@@ -39,8 +39,8 @@ namespace MrCMS.Website
 {
     public abstract class MrCMSApplication : HttpApplication
     {
-        public const string AssemblyVersion = "0.4.3.0";
-        public const string AssemblyFileVersion = "0.4.3.0";
+        public const string AssemblyVersion = "0.4.4.0";
+        public const string AssemblyFileVersion = "0.4.4.0";
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
         private static IKernel _kernel;
         private const string CachedMissingItemKey = "cached-missing-item";
@@ -128,6 +128,7 @@ namespace MrCMS.Website
                     CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
                     if (!IsFileRequest(Request.Url))
                     {
+                        CurrentRequestData.CurrentContext.SetKernel(Kernel);
                         CurrentRequestData.CurrentSite = Get<ICurrentSiteLocator>().GetCurrentSite();
                         CurrentRequestData.SiteSettings = Get<SiteSettings>();
                         CurrentRequestData.HomePage = Get<IGetHomePage>().Get();

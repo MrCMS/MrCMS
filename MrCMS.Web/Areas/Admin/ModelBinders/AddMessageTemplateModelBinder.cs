@@ -36,7 +36,7 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
                 ModelMetadataProviders.Current.GetMetadataForType(
                     () => CreateModel(controllerContext, bindingContext, type), type);
 
-            var messageTemplate = base.BindModel(controllerContext, bindingContext) as MessageTemplateBase;
+            var messageTemplate = base.BindModel(controllerContext, bindingContext) as MessageTemplate;
 
             return messageTemplate;
         }

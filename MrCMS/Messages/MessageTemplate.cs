@@ -4,7 +4,7 @@ using MrCMS.Services;
 
 namespace MrCMS.Messages
 {
-    public abstract class MessageTemplateBase : IStoredInAppData
+    public abstract class MessageTemplate : IStoredInAppData
     {
         [Required]
         [Display(Name = "From Address")]
@@ -43,7 +43,7 @@ namespace MrCMS.Messages
         public int? SiteId { get; set; }
     }
 
-    public abstract class MessageTemplateBase<T> : MessageTemplateBase
+    public abstract class MessageTemplate<T> : MessageTemplate
     {
         public override sealed Type ModelType
         {

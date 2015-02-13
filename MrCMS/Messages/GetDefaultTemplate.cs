@@ -1,10 +1,10 @@
 namespace MrCMS.Messages
 {
-    public abstract class GetDefaultTemplate<T> : IGetDefaultMessageTemplate where T : MessageTemplateBase, new()
+    public abstract class GetDefaultTemplate<T> : IGetDefaultMessageTemplate where T : MessageTemplate, new()
     {
         public abstract T Get();
 
-        MessageTemplateBase IGetDefaultMessageTemplate.Get()
+        MessageTemplate IGetDefaultMessageTemplate.Get()
         {
             return Get();
         }

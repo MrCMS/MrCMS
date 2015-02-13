@@ -33,7 +33,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         [ActionName("AddSiteOverride")]
         public ActionResult AddSiteOverride_POST(
-            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplateBase messageTemplate)
+            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
@@ -51,7 +51,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         [ActionName("DeleteSiteOverride")]
         public ActionResult DeleteSiteOverride_POST(
-            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplateBase messageTemplate)
+            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
@@ -64,7 +64,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Edit(string type)
         {
             ModelState.Clear();
-            MessageTemplateBase template = _messageTemplateAdminService.GetTemplate(type);
+            MessageTemplate template = _messageTemplateAdminService.GetTemplate(type);
             if (template != null)
             {
                 return View(template);
@@ -75,7 +75,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         [ActionName("Edit")]
         public ActionResult Edit_POST(
-            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplateBase messageTemplate)
+            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
