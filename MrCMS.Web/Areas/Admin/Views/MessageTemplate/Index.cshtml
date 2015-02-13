@@ -39,6 +39,10 @@
                 <td>
                     <div class="btn-group">
                         @*@Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })*@
+                        @if (item.LegacyTemplateExists)
+                        {
+                            @Html.ActionLink(Resource("Import legacy template"), "ImportLegacyTemplate", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+                        }
                         @if (!item.IsOverride)
                         {
                             @Html.ActionLink(Resource("Add site override"), "AddSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })

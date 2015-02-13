@@ -69,8 +69,10 @@ namespace MrCMS.Installation
 
             ISessionFactory sessionFactory = configurator.CreateSessionFactory();
             ISession session = sessionFactory.OpenFilteredSession();
+            IStatelessSession statelessSession = sessionFactory.OpenStatelessSession();
             var kernel = MrCMSApplication.Get<IKernel>();
             kernel.Rebind<ISession>().ToMethod(context => session);
+            kernel.Rebind<IStatelessSession>().ToMethod(context => statelessSession);
             var site = new Site
             {
                 Name = model.SiteName,
@@ -78,13 +80,10 @@ namespace MrCMS.Installation
                 CreatedOn = DateTime.UtcNow,
                 UpdatedOn = DateTime.UtcNow
             };
-            using (IStatelessSession statelessSession = sessionFactory.OpenStatelessSession())
+            using (ITransaction transaction = statelessSession.BeginTransaction())
             {
-                using (ITransaction transaction = statelessSession.BeginTransaction())
-                {
-                    statelessSession.Insert(site);
-                    transaction.Commit();
-                }
+                statelessSession.Insert(site);
+                transaction.Commit();
             }
             CurrentRequestData.CurrentSite = site;
 

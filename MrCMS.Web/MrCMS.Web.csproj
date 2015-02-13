@@ -1912,6 +1912,7 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\README.md" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\readme.md" />
+    <Content Include="Areas\Admin\Views\MessageTemplate\ImportLegacyTemplate.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>

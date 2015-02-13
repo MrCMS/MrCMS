@@ -48,6 +48,9 @@ namespace MrCMS.IoC.Modules
                 Kernel.Bind<ISession>().ToMethod(
                     context =>
                          context.Kernel.Get<ISessionFactory>().OpenFilteredSession()).InRequestScope();
+                Kernel.Bind<IStatelessSession>().ToMethod(
+                    context =>
+                         context.Kernel.Get<ISessionFactory>().OpenStatelessSession()).InRequestScope();
             }
             else
             {
@@ -55,6 +58,9 @@ namespace MrCMS.IoC.Modules
                     .ToMethod(
                         context => context.Kernel.Get<ISessionFactory>().OpenFilteredSession())
                     .InThreadScope();
+                Kernel.Bind<IStatelessSession>().ToMethod(
+                    context =>
+                         context.Kernel.Get<ISessionFactory>().OpenStatelessSession()).InThreadScope();
             }
         }
     }

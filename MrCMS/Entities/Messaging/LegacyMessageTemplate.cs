@@ -34,5 +34,9 @@ namespace MrCMS.Entities.Messaging
         [Required]
         [Display(Name = "Is HTML?")]
         public virtual bool IsHtml { get; set; }
+
+        [Required]
+        [Display(Name = "Is Imported?")]
+        public virtual bool Imported { get; set; }
     }
 }
