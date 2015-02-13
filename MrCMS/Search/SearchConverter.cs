@@ -11,28 +11,53 @@ namespace MrCMS.Search
 {
     public class SearchConverter : ISearchConverter
     {
+        private static Dictionary<string, HashSet<string>> _entityTypes;
+
+        static SearchConverter()
+        {
+            _entityTypes = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<SystemEntity>()
+                .ToDictionary(type => type.FullName,
+                    type =>
+                    {
+                        var types = new HashSet<string>();
+                        var entityType = type;
+                        while (entityType != null && typeof(SystemEntity).IsAssignableFrom(entityType))
+                        {
+                            types.Add(entityType.FullName);
+                            entityType = entityType.BaseType;
+                        }
+                        return types;
+                    });
+        }
         public Document Convert(UniversalSearchItem item)
         {
             var document = new Document();
 
-            document.Add(new Field(UniversalSearchFieldNames.Id, item.Id.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-            var searchGuid = (item.SearchGuid ?? Guid.NewGuid()).ToString();
-            document.Add(new Field(UniversalSearchFieldNames.SearchGuid, searchGuid, Field.Store.YES, Field.Index.NOT_ANALYZED));
+            document.Add(new Field(UniversalSearchFieldNames.Id, item.Id.ToString(), Field.Store.YES,
+                Field.Index.NOT_ANALYZED));
+            string searchGuid = (item.SearchGuid ?? Guid.NewGuid()).ToString();
+            document.Add(new Field(UniversalSearchFieldNames.SearchGuid, searchGuid, Field.Store.YES,
+                Field.Index.NOT_ANALYZED));
 
-            var systemType = item.SystemType ?? string.Empty;
-            document.Add(new Field(UniversalSearchFieldNames.SystemType, systemType, Field.Store.YES, Field.Index.NOT_ANALYZED));
-            foreach (var entityType in item.EntityTypes)
+            string systemType = item.SystemType ?? string.Empty;
+            document.Add(new Field(UniversalSearchFieldNames.SystemType, systemType, Field.Store.YES,
+                Field.Index.NOT_ANALYZED));
+            foreach (string entityType in _entityTypes[systemType])
             {
-                document.Add(new Field(UniversalSearchFieldNames.EntityType, entityType, Field.Store.NO, Field.Index.NOT_ANALYZED));
+                document.Add(new Field(UniversalSearchFieldNames.EntityType, entityType, Field.Store.NO,
+                    Field.Index.NOT_ANALYZED));
             }
 
-            document.Add(new Field(UniversalSearchFieldNames.DisplayName, item.DisplayName, Field.Store.YES, Field.Index.NOT_ANALYZED));
+            document.Add(new Field(UniversalSearchFieldNames.DisplayName, item.DisplayName, Field.Store.YES,
+                Field.Index.NOT_ANALYZED));
 
-            document.Add(new Field(UniversalSearchFieldNames.ActionUrl, item.ActionUrl ?? string.Empty, Field.Store.YES, Field.Index.NOT_ANALYZED));
+            document.Add(new Field(UniversalSearchFieldNames.ActionUrl, item.ActionUrl ?? string.Empty, Field.Store.YES,
+                Field.Index.NOT_ANALYZED));
 
-            foreach (var searchTerm in item.SearchTerms.Where(s => !string.IsNullOrWhiteSpace(s)))
+            foreach (string searchTerm in item.SearchTerms.Where(s => !string.IsNullOrWhiteSpace(s)))
             {
-                document.Add(new Field(UniversalSearchFieldNames.SearchTerms, searchTerm, Field.Store.NO, Field.Index.ANALYZED));
+                document.Add(new Field(UniversalSearchFieldNames.SearchTerms, searchTerm, Field.Store.NO,
+                    Field.Index.ANALYZED));
             }
             return document;
         }

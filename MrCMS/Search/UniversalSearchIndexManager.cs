@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
@@ -12,8 +10,10 @@ using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Utils;
+using MrCMS.Models;
 using MrCMS.Search.Models;
 using MrCMS.Website;
+using StackExchange.Profiling;
 using Version = Lucene.Net.Util.Version;
 
 namespace MrCMS.Search
@@ -26,7 +26,8 @@ namespace MrCMS.Search
         protected Analyzer Analyser;
         private Directory _directory;
 
-        public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, Site site, IGetLuceneDirectory getLuceneDirectory)
+        public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, Site site,
+            IGetLuceneDirectory getLuceneDirectory)
         {
             _universalSearchItemGenerator = universalSearchItemGenerator;
             _site = site;
@@ -85,13 +86,15 @@ namespace MrCMS.Search
 
         public void ReindexAll()
         {
-            HashSet<Document> allItems = _universalSearchItemGenerator.GetAllItems();
-            Write(writer => { }, true);
+            InitializeIndex();
             Write(writer =>
             {
-                foreach (Document document in allItems)
+                using (MiniProfiler.Current.Step("Reindexing"))
                 {
-                    writer.AddDocument(document);
+                    foreach (Document document in _universalSearchItemGenerator.GetAllItems())
+                    {
+                        writer.AddDocument(document);
+                    }
                 }
             });
         }
@@ -101,11 +104,52 @@ namespace MrCMS.Search
             return new IndexSearcher(GetDirectory(_site), true);
         }
 
+        public MrCMSIndex GetUniversalIndexInfo()
+        {
+            return new MrCMSIndex
+            {
+                DoesIndexExist = IndexExists,
+                LastModified = GetLastModified(),
+                Name = "Universal Search Index",
+                NumberOfDocs = GetNumberOfDocs(),
+                TypeName = GetType().FullName
+            };
+        }
+
+        private int? GetNumberOfDocs()
+        {
+            if (!IndexExists)
+                return null;
+
+            using (IndexReader indexReader = IndexReader.Open(GetDirectory(_site), true))
+            {
+                return indexReader.NumDocs();
+            }
+        }
+
+        private DateTime? GetLastModified()
+        {
+            long lastModified = IndexReader.LastModified(GetDirectory(_site));
+            try
+            {
+                return new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
+            }
+            catch
+            {
+                return DateTime.FromFileTime(lastModified);
+            }
+        }
+
+        private void InitializeIndex()
+        {
+            Write(writer => { }, true);
+        }
+
         private UniversalSearchIndexStatus GetStatus(SystemEntity entity)
         {
             if (!IndexExists)
             {
-                Write(writer => { }, true);
+                InitializeIndex();
             }
             bool exists = false;
             Guid searchGuid = Guid.Empty;
@@ -145,7 +189,6 @@ namespace MrCMS.Search
                 IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 writeFunc(indexWriter);
-                //indexWriter.Optimize();
             }
         }
     }

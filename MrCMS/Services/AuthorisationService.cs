@@ -13,9 +13,9 @@ namespace MrCMS.Services
     public class AuthorisationService : IAuthorisationService
     {
         private readonly IAuthenticationManager _authenticationManager;
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<User, int> _userManager;
 
-        public AuthorisationService(IAuthenticationManager authenticationManager, UserManager<User> userManager)
+        public AuthorisationService(IAuthenticationManager authenticationManager, UserManager<User, int> userManager)
         {
             _authenticationManager = authenticationManager;
             _userManager = userManager;
@@ -36,19 +36,19 @@ namespace MrCMS.Services
 
         public async Task UpdateClaimsAsync(User user, IEnumerable<Claim> claims)
         {
-            var existingClaims = (await _userManager.GetClaimsAsync(user.OwinId)).ToList();
+            var existingClaims = (await _userManager.GetClaimsAsync(user.Id)).ToList();
             var list = claims as IList<Claim> ?? claims.ToList();
             var newClaims =
                 list.Where(claim => existingClaims.All(c => c.Type != claim.Type));
             var updatedClaims =
                 list.Where(claim => existingClaims.Any(c => c.Type == claim.Type && c.Value != claim.Value));
             foreach (var newClaim in newClaims)
-                await _userManager.AddClaimAsync(user.OwinId, newClaim);
+                await _userManager.AddClaimAsync(user.Id, newClaim);
             foreach (var updatedClaim in updatedClaims)
             {
                 var existing = existingClaims.First(c => c.Type == updatedClaim.Type);
-                await _userManager.RemoveClaimAsync(user.OwinId, existing);
-                await _userManager.AddClaimAsync(user.OwinId, updatedClaim);
+                await _userManager.RemoveClaimAsync(user.Id, existing);
+                await _userManager.AddClaimAsync(user.Id, updatedClaim);
             }
         }
     }

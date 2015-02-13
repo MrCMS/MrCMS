@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Messages.MessageTemplateBase
+@model MrCMS.Messages.MessageTemplate
 @{
     ViewBag.Title = "Add Message Template Site Override";
 }
@@ -75,6 +75,7 @@
         <br />
 
         @Html.InlineCheckboxFor(x => x.IsHtml)
+        @Html.InlineCheckboxFor(x => x.IsDisabled)
 
         @{ Html.RenderAction("Tokens", "MessageTemplateTokens", new { messageTemplate = Model });}
     </fieldset>

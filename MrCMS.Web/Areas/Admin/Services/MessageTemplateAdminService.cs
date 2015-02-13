@@ -30,16 +30,17 @@ namespace MrCMS.Web.Areas.Admin.Services
             {
                 Type = template.GetType(),
                 IsOverride = template.SiteId.HasValue,
-                CanPreview = CanPreview(template)
+                CanPreview = CanPreview(template),
+                IsEnabled = !template.IsDisabled
             }).ToList();
         }
 
-        private bool CanPreview(MessageTemplateBase template)
+        private bool CanPreview(MessageTemplate template)
         {
             return template.ModelType != null && typeof(SystemEntity).IsAssignableFrom(template.ModelType);
         }
 
-        public MessageTemplateBase GetNewOverride(string type)
+        public MessageTemplate GetNewOverride(string type)
         {
             var typeByName = TypeHelper.GetTypeByName(type);
             var messageTemplateBase = _messageTemplateProvider.GetNewMessageTemplate(typeByName);
@@ -48,12 +49,12 @@ namespace MrCMS.Web.Areas.Admin.Services
             return messageTemplateBase;
         }
 
-        public void AddOverride(MessageTemplateBase messageTemplate)
+        public void AddOverride(MessageTemplate messageTemplate)
         {
             _messageTemplateProvider.SaveSiteOverride(messageTemplate, _site);
         }
 
-        public MessageTemplateBase GetOverride(string type)
+        public MessageTemplate GetOverride(string type)
         {
             var messageTemplateBase = GetTemplate(type);
             if (messageTemplateBase != null && messageTemplateBase.SiteId.HasValue)
@@ -62,17 +63,17 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         }
 
-        public void DeleteOverride(MessageTemplateBase messageTemplate)
+        public void DeleteOverride(MessageTemplate messageTemplate)
         {
             _messageTemplateProvider.DeleteSiteOverride(messageTemplate, _site);
         }
 
-        public MessageTemplateBase GetTemplate(string type)
+        public MessageTemplate GetTemplate(string type)
         {
             return _messageTemplateProvider.GetAllMessageTemplates(_site).FirstOrDefault(@base => @base.GetType().FullName == type);
         }
 
-        public void Save(MessageTemplateBase messageTemplate)
+        public void Save(MessageTemplate messageTemplate)
         {
             _messageTemplateProvider.SaveTemplate(messageTemplate);
         }

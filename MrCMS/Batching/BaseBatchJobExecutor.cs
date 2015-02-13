@@ -23,10 +23,13 @@ namespace MrCMS.Batching
 
         public BatchJobExecutionResult Execute(BatchJob batchJob)
         {
-            var job = batchJob as T;
-            return job == null
-                ? BatchJobExecutionResult.Failure("Batch job is not of the correct type")
-                : Execute(job);
+            return BatchJobExecutionResult.Try(() =>
+            {
+                var job = batchJob as T;
+                return job == null
+                    ? BatchJobExecutionResult.Failure("Batch job is not of the correct type")
+                    : Execute(job);
+            });
         }
     }
 }

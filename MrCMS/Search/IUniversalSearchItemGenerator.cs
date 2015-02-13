@@ -8,6 +8,6 @@ namespace MrCMS.Search
     {
         bool CanGenerate(SystemEntity entity);
         Document GenerateDocument(SystemEntity entity);
-        HashSet<Document> GetAllItems();
+        IEnumerable<Document> GetAllItems();
     }
 }

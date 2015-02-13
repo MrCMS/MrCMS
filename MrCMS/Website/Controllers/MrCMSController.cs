@@ -6,12 +6,16 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Entities;
 using MrCMS.Website.Filters;
+using StackExchange.Profiling;
 
 namespace MrCMS.Website.Controllers
 {
     [ReturnUrlHandler(Order = 999)]
     public abstract class MrCMSController : Controller
     {
+        protected IDisposable ActionProfilerStep;
+        protected IDisposable ResultProfilerStep;
+        protected IDisposable EndToEndProfilerStep;
         public string ReferrerOverride { get; set; }
 
         protected Uri Referrer
@@ -47,8 +51,50 @@ namespace MrCMS.Website.Controllers
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            EndToEndProfilerStep =
+                GetEndToEndStep(filterContext);
+            ActionProfilerStep =
+                GetActionStep(filterContext);
             CheckCurrentSite(filterContext);
             base.OnActionExecuting(filterContext);
+        }
+
+        protected virtual IDisposable GetActionStep(ActionExecutingContext filterContext)
+        {
+            return MiniProfiler.Current.Step(string.Format("Executing action {0}/{1}",
+                filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
+                filterContext.ActionDescriptor.ActionName));
+        }
+
+        protected virtual IDisposable GetEndToEndStep(ActionExecutingContext filterContext)
+        {
+            return MiniProfiler.Current.Step(string.Format("End-to-end for {0}/{1}",
+                filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
+                filterContext.ActionDescriptor.ActionName));
+        }
+
+        protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            if (ActionProfilerStep != null)
+                ActionProfilerStep.Dispose();
+        }
+
+        protected override void OnResultExecuting(ResultExecutingContext filterContext)
+        {
+            ResultProfilerStep = GetResultStep(filterContext);
+        }
+
+        protected virtual IDisposable GetResultStep(ResultExecutingContext filterContext)
+        {
+            return MiniProfiler.Current.Step(("Executing result"));
+        }
+
+        protected override void OnResultExecuted(ResultExecutedContext filterContext)
+        {
+            if (ResultProfilerStep != null)
+                ResultProfilerStep.Dispose();
+            if (EndToEndProfilerStep != null)
+                EndToEndProfilerStep.Dispose();
         }
 
         private void CheckCurrentSite(ActionExecutingContext filterContext)

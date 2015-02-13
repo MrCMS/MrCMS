@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
 
 namespace MrCMS.Search.ItemCreation
 {
@@ -12,6 +14,11 @@ namespace MrCMS.Search.ItemCreation
                 yield return user.FirstName;
             if (!string.IsNullOrWhiteSpace(user.LastName))
                 yield return user.LastName;
+        }
+
+        public Dictionary<User, HashSet<string>> Get(HashSet<User> users)
+        {
+            return users.ToDictionary(user => user, user => Get(user).ToHashSet());
         }
     }
 }

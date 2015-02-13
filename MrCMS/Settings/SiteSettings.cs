@@ -30,27 +30,22 @@ namespace MrCMS.Settings
             get { return _siteSettingsOptionGeneratorOverride ?? _siteSettingsOptionGenerator; }
         }
 
-        [DropDownSelection("Themes")]
-        [DisplayName("Theme")]
+        [DropDownSelection("Themes"), DisplayName("Theme")]
         public string ThemeName { get; set; }
 
-        [DisplayName("Default Layout")]
-        [DropDownSelection("DefaultLayoutOptions")]
+        [DisplayName("Default Layout"), DropDownSelection("DefaultLayoutOptions")]
         public int DefaultLayoutId { get; set; }
 
         [DisplayName("Default Page Size")]
         public int DefaultPageSize { get; set; }
 
-        [DisplayName("Unauthorised Page")]
-        [DropDownSelection("403Options")]
+        [DisplayName("Unauthorised Page"), DropDownSelection("403Options")]
         public virtual int Error403PageId { get; set; }
 
-        [DisplayName("404 Page")]
-        [DropDownSelection("404Options")]
+        [DisplayName("404 Page"), DropDownSelection("404Options")]
         public virtual int Error404PageId { get; set; }
 
-        [DropDownSelection("500Options")]
-        [DisplayName("500 Page")]
+        [DropDownSelection("500Options"), DisplayName("500 Page")]
         public virtual int Error500PageId { get; set; }
 
         [DisplayName("Site is live")]
@@ -68,8 +63,7 @@ namespace MrCMS.Settings
         [DisplayName("Log 404 in admin logs")]
         public bool Log404s { get; set; }
 
-        [DisplayName("Site UI Culture")]
-        [DropDownSelection("UiCultures")]
+        [DisplayName("Site UI Culture"), DropDownSelection("UiCultures")]
         public string UICulture { get; set; }
 
         [DisplayName("Page extensions you want Mr CMS to handle")]
@@ -77,8 +71,11 @@ namespace MrCMS.Settings
 
         public IEnumerable<string> WebExtensionsToRoute
         {
-            get { return (PageExtensionsToRoute ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries); }
-        } 
+            get
+            {
+                return (PageExtensionsToRoute ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            }
+        }
 
         public CultureInfo CultureInfo
         {
@@ -90,8 +87,7 @@ namespace MrCMS.Settings
             }
         }
 
-        [DisplayName("Time zones")]
-        [DropDownSelection("TimeZones")]
+        [DisplayName("Time zones"), DropDownSelection("TimeZones")]
         public string TimeZone { get; set; }
 
         public TimeZoneInfo TimeZoneInfo
@@ -99,8 +95,8 @@ namespace MrCMS.Settings
             get
             {
                 return !String.IsNullOrWhiteSpace(TimeZone)
-                           ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone)
-                           : TimeZoneInfo.Local;
+                    ? TimeZoneInfo.FindSystemTimeZoneById(TimeZone)
+                    : TimeZoneInfo.Local;
             }
         }
 
@@ -116,14 +112,16 @@ namespace MrCMS.Settings
             get { return !string.IsNullOrWhiteSpace(HoneypotFieldName); }
         }
 
-        [DisplayName("CKEditor Config")]
-        [TextArea]
+        [DisplayName("CKEditor Config"), TextArea]
         public string CKEditorConfig { get; set; }
 
         public int DaysToKeepLogs { get; set; }
 
         [DisplayName("Allowed Admin IPs")]
         public string AllowedAdminIPs { get; set; }
+
+        [DisplayName("MiniProfiler Enabled?")]
+        public bool MiniProfilerEnabled { get; set; }
 
         public IEnumerable<string> AllowedIPs
         {
@@ -145,8 +143,7 @@ namespace MrCMS.Settings
             get { return true; }
         }
 
-        [DisplayName("Default Form Renderer Type")]
-        [DropDownSelection("DefaultFormRenderer")]
+        [DisplayName("Default Form Renderer Type"), DropDownSelection("DefaultFormRenderer")]
         public FormRenderingType FormRendererType { get; set; }
 
         public void SetSiteSettingsOptionGeneratorOverride(SiteSettingsOptionGenerator siteSettingsOptionGenerator)
@@ -156,7 +153,8 @@ namespace MrCMS.Settings
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-            viewDataDictionary["DefaultLayoutOptions"] = SiteSettingsOptionGenerator.GetLayoutOptions(session, DefaultLayoutId);
+            viewDataDictionary["DefaultLayoutOptions"] = SiteSettingsOptionGenerator.GetLayoutOptions(session,
+                DefaultLayoutId);
             viewDataDictionary["403Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error403PageId);
             viewDataDictionary["404Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error404PageId);
             viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error500PageId);
@@ -166,7 +164,8 @@ namespace MrCMS.Settings
 
             viewDataDictionary["TimeZones"] = SiteSettingsOptionGenerator.GetTimeZones(TimeZone);
 
-            viewDataDictionary["DefaultFormRenderer"] = SiteSettingsOptionGenerator.GetFormRendererOptions(FormRendererType);
+            viewDataDictionary["DefaultFormRenderer"] =
+                SiteSettingsOptionGenerator.GetFormRendererOptions(FormRendererType);
         }
 
         public TagBuilder GetHoneypot()
@@ -177,53 +176,5 @@ namespace MrCMS.Settings
             honeyPot.Attributes["name"] = HoneypotFieldName;
             return honeyPot;
         }
-    }
-
-    public enum FormRenderingType
-    {
-        Bootstrap2,
-        Bootstrap3
-    }
-
-    public static class SettingDefaults
-    {
-        public const string CkEditorConfig = @"/**
- * @license Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.html or http://ckeditor.com/license
- */
-
-CKEDITOR.editorConfig = function (config) {
-    config.extraPlugins = 'justify,autogrow,youtube,mediaembed';
-    config.removePlugins = 'elementspath';
-    config.forcePasteAsPlainText = true;
-    config.allowedContent = true;
-    config.contentsCss = ['/Apps/Core/Content/bootstrap/css/bootstrap.css', '/Apps/Core/Content/Styles/style.css'];
-
-    config.toolbar = 'Full';
-
-    config.toolbar_Full =
-    [
-        { name: 'document', items: ['Source', '-', 'Templates'] },
-        { name: 'styles', items: ['Format', 'Styles'] },
-        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-         ['Scayt'],
-        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
-
-        { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
-        {
-            name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl']
-        },
-        { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-        { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
-        { name: 'Media', items: ['Youtube', 'MediaEmbed'] }
-
-    ];
-
-    config.toolbar_Basic =
-    [
-        ['Templates', 'Bold', 'Italic', 'RemoveFormat', 'Outdent', 'Indent', '-', 'Blockquote', 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-', 'Image', 'Flash', 'Table', 'HorizontalRule', 'Format', 'Youtube', 'MediaEmbed']
-    ];
-
-};";
     }
 }

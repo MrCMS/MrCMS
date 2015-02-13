@@ -1,4 +1,7 @@
-﻿namespace MrCMS.Batching
+﻿using System;
+using MrCMS.Website;
+
+namespace MrCMS.Batching
 {
     public class BatchJobExecutionResult
     {
@@ -25,6 +28,19 @@
                 Successful = success,
                 Message = message
             };
+        }
+
+        internal static BatchJobExecutionResult Try(Func<BatchJobExecutionResult> func)
+        {
+            try
+            {
+                return func();
+            }
+            catch (Exception ex)
+            {
+                CurrentRequestData.ErrorSignal.Raise(ex);
+                return Failure(ex.Message);
+            }
         }
     }
 }

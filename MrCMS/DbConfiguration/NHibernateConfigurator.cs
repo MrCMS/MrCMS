@@ -150,7 +150,6 @@ namespace MrCMS.DbConfiguration
                 .IgnoreBase<SiteEntity>()
                 .IncludeBase<Document>()
                 .IncludeBase<Webpage>()
-                .IncludeBase<MessageTemplate>()
                 .IncludeBase<UserProfileData>()
                 .IncludeBase<Widget>()
                 .IncludeBase<FormProperty>()

@@ -17,6 +17,7 @@ namespace MrCMS.Batching.Services
 
         public bool Start(BatchRun batchRun)
         {
+            batchRun = GetBatchRunFromThisSession(batchRun);
             if (batchRun == null ||
                 (batchRun.Status == BatchRunStatus.Executing || batchRun.Status == BatchRunStatus.Complete))
                 return false;
@@ -34,6 +35,7 @@ namespace MrCMS.Batching.Services
 
         public bool Pause(BatchRun batchRun)
         {
+            batchRun = GetBatchRunFromThisSession(batchRun);
             if (batchRun == null ||
                 (batchRun.Status != BatchRunStatus.Executing))
                 return false;
@@ -47,6 +49,11 @@ namespace MrCMS.Batching.Services
                 BatchRun = batchRun
             });
             return true;
+        }
+
+        private BatchRun GetBatchRunFromThisSession(BatchRun batchRun)
+        {
+            return _session.Get<BatchRun>(batchRun.Id);
         }
     }
 }

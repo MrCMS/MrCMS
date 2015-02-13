@@ -71,7 +71,7 @@
                 <div class="file" data-id="file-@file.Id" data-type="file" data-url="@Url.Action("Edit", "File", new { Id = file.Id })">
                     <div class="file-preview">
                         <a title="@file.FileName">
-                            @if (file.IsImage)
+                            @if (file.IsImage())
                             {
                                 @Html.RenderImage(file.FileUrl, new Size(100, 100))
                             }

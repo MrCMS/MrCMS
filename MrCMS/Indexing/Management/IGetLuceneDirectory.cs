@@ -1,11 +1,10 @@
-using System;
+using Lucene.Net.Store;
 using MrCMS.Entities.Multisite;
-using Directory = Lucene.Net.Store.Directory;
 
 namespace MrCMS.Indexing.Management
 {
     public interface IGetLuceneDirectory
     {
-        Directory Get(Site site, string folderName);
+        Directory Get(Site site, string folderName, bool useRAMCache = false);
     }
 }

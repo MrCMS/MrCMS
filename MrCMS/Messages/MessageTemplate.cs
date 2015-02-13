@@ -1,24 +1,22 @@
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using MrCMS.Services;
 
 namespace MrCMS.Messages
 {
-    public abstract class MessageTemplateBase : IStoredInAppData
+    public abstract class MessageTemplate : IStoredInAppData
     {
-        [Required]
-        [Display(Name = "From Address")]
+        [Required, DisplayName("From Address")]
         public string FromAddress { get; set; }
 
-        [Required]
-        [Display(Name = "From Name")]
+        [Required, DisplayName("From Name")]
         public string FromName { get; set; }
 
-        [Required]
-        [Display(Name = "To Address")]
+        [Required, DisplayName("To Address")]
         public string ToAddress { get; set; }
 
-        [Display(Name = "To Name")]
+        [DisplayName("To Name")]
         public string ToName { get; set; }
 
         public string Cc { get; set; }
@@ -30,11 +28,12 @@ namespace MrCMS.Messages
         [Required]
         public string Body { get; set; }
 
-        [Required]
-        [Display(Name = "Is HTML?")]
+        [Required, DisplayName("Is HTML?")]
         public bool IsHtml { get; set; }
 
-        
+        [Required, DisplayName("Is disabled?")]
+        public bool IsDisabled { get; set; }
+
         public virtual Type ModelType
         {
             get { return null; }
@@ -43,11 +42,11 @@ namespace MrCMS.Messages
         public int? SiteId { get; set; }
     }
 
-    public abstract class MessageTemplateBase<T> : MessageTemplateBase
+    public abstract class MessageTemplate<T> : MessageTemplate
     {
         public override sealed Type ModelType
         {
-            get { return typeof (T); }
+            get { return typeof(T); }
         }
     }
 }

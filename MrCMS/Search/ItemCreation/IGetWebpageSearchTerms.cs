@@ -6,5 +6,6 @@ namespace MrCMS.Search.ItemCreation
     public interface IGetWebpageSearchTerms
     {
         IEnumerable<string> Get(Webpage webpage);
+        Dictionary<Webpage, HashSet<string>> Get(HashSet<Webpage> webpages);
     }
 }

@@ -6,5 +6,6 @@ namespace MrCMS.Search.ItemCreation
     public interface IGetUserSearchTerms
     {
         IEnumerable<string> Get(User user);
+        Dictionary<User, HashSet<string>> Get(HashSet<User> users);
     }
 }

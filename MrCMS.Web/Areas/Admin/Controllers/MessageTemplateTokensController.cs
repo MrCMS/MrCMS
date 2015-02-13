@@ -14,7 +14,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _messageTemplateTokensAdminService = messageTemplateTokensAdminService;
         }
 
-        public PartialViewResult Tokens(MessageTemplateBase messageTemplate)
+        public PartialViewResult Tokens(MessageTemplate messageTemplate)
         {
             return PartialView(_messageTemplateTokensAdminService.GetTokens(messageTemplate));
         }

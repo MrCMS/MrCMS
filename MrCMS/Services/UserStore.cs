@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using MrCMS.Entities.People;
@@ -11,7 +10,7 @@ using NHibernate;
 
 namespace MrCMS.Services
 {
-    public class UserStore : IUserLoginStore<User>, IUserClaimStore<User>, IUserRoleStore<User>
+    public class UserStore : IUserLoginStore<User, int>, IUserClaimStore<User, int>, IUserRoleStore<User, int>
     {
         private readonly IRoleService _roleService;
         private readonly ISession _session;
@@ -24,238 +23,176 @@ namespace MrCMS.Services
             _roleService = roleService;
         }
 
-        public async Task<IList<Claim>> GetClaimsAsync(User user)
+        public Task<IList<Claim>> GetClaimsAsync(User user)
         {
-            return await Task.Factory.StartNew(() =>
-                                               {
-                                                   IList<Claim> list = new List<Claim>();
-                                                   foreach (UserClaim claim in user.UserClaims)
-                                                       list.Add(new Claim(claim.Claim, claim.Value));
-                                                   return list;
-                                               }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            IList<Claim> list = user.UserClaims.Select(claim => new Claim(claim.Claim, claim.Value)).ToList();
+            return Task.FromResult(list);
         }
 
-        public async Task AddClaimAsync(User user, Claim claim)
+        public Task AddClaimAsync(User user, Claim claim)
         {
-            await Task.Factory.StartNew(() =>
-                                        {
-                                            var userClaim = new UserClaim
-                                                            {
-                                                                Claim = claim.Type,
-                                                                Value = claim.Value,
-                                                                Issuer = claim.Issuer,
-                                                                User = user
-                                                            };
-                                            user.UserClaims.Add(userClaim);
-                                            _session.Transact(session =>
-                                                              {
-                                                                  session.Save(userClaim);
-                                                                  session.Update(user);
-                                                              });
-                                        }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            var userClaim = new UserClaim
+                            {
+                                Claim = claim.Type,
+                                Value = claim.Value,
+                                Issuer = claim.Issuer,
+                                User = user
+                            };
+            user.UserClaims.Add(userClaim);
+            _session.Transact(session =>
+                              {
+                                  session.Save(userClaim);
+                                  session.Update(user);
+                              });
+            return Task.FromResult<object>(null);
         }
 
-        public async Task RemoveClaimAsync(User user, Claim claim)
+        public Task RemoveClaimAsync(User user, Claim claim)
         {
-            await Task.Factory.StartNew(() =>
-                                        {
-                                            UserClaim singleOrDefault =
-                                                user.UserClaims.SingleOrDefault(
-                                                    userClaim =>
-                                                        userClaim.Claim == claim.Type && userClaim.Value == claim.Value &&
-                                                        userClaim.Issuer == claim.Issuer);
-                                            if (singleOrDefault != null)
-                                                _session.Transact(session =>
-                                                                  {
-                                                                      user.UserClaims.Remove(singleOrDefault);
-                                                                      session.Delete(singleOrDefault);
-                                                                      session.Update(user);
-                                                                  });
-                                        }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            UserClaim singleOrDefault =
+                user.UserClaims.SingleOrDefault(
+                    userClaim =>
+                        userClaim.Claim == claim.Type && userClaim.Value == claim.Value &&
+                        userClaim.Issuer == claim.Issuer);
+            if (singleOrDefault != null)
+                _session.Transact(session =>
+                                  {
+                                      user.UserClaims.Remove(singleOrDefault);
+                                      session.Delete(singleOrDefault);
+                                      session.Update(user);
+                                  });
+            return Task.FromResult<object>(null);
         }
 
         public void Dispose()
         {
         }
 
-        public async Task CreateAsync(User user)
+        public Task CreateAsync(User user)
         {
-            await Task.Factory.StartNew(() => _userService.AddUser(user), CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            _userService.AddUser(user);
+            return Task.FromResult<object>(null);
         }
 
-        public async Task UpdateAsync(User user)
+        public Task UpdateAsync(User user)
         {
-            await Task.Factory.StartNew(() => _userService.SaveUser(user), CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            _userService.SaveUser(user);
+            return Task.FromResult<object>(null);
         }
 
-        public async Task DeleteAsync(User user)
+        public Task DeleteAsync(User user)
         {
-            await Task.Factory.StartNew(() => _userService.DeleteUser(user), CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            _userService.DeleteUser(user);
+            return Task.FromResult<object>(null);
         }
 
-        public async Task<User> FindByIdAsync(string userId)
+        public Task<User> FindByIdAsync(int userId)
         {
-            return await Task.Factory.StartNew(() =>
-                                               {
-                                                   int id;
-                                                   int.TryParse(userId, out id);
-                                                   return _userService.GetUser(id);
-                                               }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            var user = _userService.GetUser(userId);
+            return Task.FromResult(user);
         }
 
-        public async Task<User> FindByNameAsync(string userName)
+        public Task<User> FindByNameAsync(string userName)
         {
-            return await Task.Factory.StartNew(() =>
-                _userService.GetUserByEmail(userName), CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            var user = _userService.GetUserByEmail(userName);
+            return Task.FromResult(user);
         }
 
-        public async Task AddLoginAsync(User user, UserLoginInfo login)
+        public Task AddLoginAsync(User user, UserLoginInfo login)
         {
-            await Task.Factory.StartNew(() =>
-                                        {
-                                            var userLogin = new UserLogin
-                                                            {
-                                                                LoginProvider = login.LoginProvider,
-                                                                ProviderKey = login.ProviderKey,
-                                                                User = user
-                                                            };
-                                            user.UserLogins.Add(userLogin);
-                                            _session.Transact(session =>
-                                                              {
-                                                                  session.Save(userLogin);
-                                                                  session.Update(user);
-                                                              });
-                                        }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            var userLogin = new UserLogin
+                            {
+                                LoginProvider = login.LoginProvider,
+                                ProviderKey = login.ProviderKey,
+                                User = user
+                            };
+            user.UserLogins.Add(userLogin);
+            _session.Transact(session =>
+                              {
+                                  session.Save(userLogin);
+                                  session.Update(user);
+                              });
+            return Task.FromResult<object>(null);
         }
 
-        public async Task RemoveLoginAsync(User user, UserLoginInfo login)
+        public Task RemoveLoginAsync(User user, UserLoginInfo login)
         {
-            await Task.Factory.StartNew(() =>
-                                        {
-                                            UserLogin userLogin =
-                                                user.UserLogins.FirstOrDefault(l => l.ProviderKey == login.ProviderKey);
-                                            if (userLogin != null)
-                                                _session.Transact(session =>
-                                                                  {
-                                                                      user.UserLogins.Remove(userLogin);
-                                                                      session.Delete(userLogin);
-                                                                      session.Update(user);
-                                                                  });
-                                        }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            UserLogin userLogin =
+                user.UserLogins.FirstOrDefault(l => l.ProviderKey == login.ProviderKey);
+            if (userLogin != null)
+                _session.Transact(session =>
+                                  {
+                                      user.UserLogins.Remove(userLogin);
+                                      session.Delete(userLogin);
+                                      session.Update(user);
+                                  });
+            return Task.FromResult<object>(null);
         }
 
-        public async Task<IList<UserLoginInfo>> GetLoginsAsync(User user)
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(User user)
         {
-            return await Task.Factory.StartNew(() =>
-                                               {
-                                                   IList<UserLoginInfo> list = new List<UserLoginInfo>();
-                                                   foreach (UserLogin login in user.UserLogins)
-                                                       list.Add(new UserLoginInfo(login.LoginProvider, login.ProviderKey));
-                                                   return list;
-                                               }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            IList<UserLoginInfo> list =
+                user.UserLogins.Select(login => new UserLoginInfo(login.LoginProvider, login.ProviderKey)).ToList();
+            return Task.FromResult(list);
         }
 
-        public async Task<User> FindAsync(UserLoginInfo login)
+        public Task<User> FindAsync(UserLoginInfo login)
         {
-            return await Task.Factory.StartNew(() =>
-                                               {
-                                                   UserLogin singleOrDefault =
-                                                       _session.QueryOver<UserLogin>()
-                                                           .Where(
-                                                               userLogin =>
-                                                                   userLogin.ProviderKey == login.ProviderKey &&
-                                                                   userLogin.LoginProvider == login.LoginProvider)
-                                                           .SingleOrDefault();
+            UserLogin singleOrDefault =
+                _session.QueryOver<UserLogin>()
+                    .Where(
+                        userLogin =>
+                            userLogin.ProviderKey == login.ProviderKey &&
+                            userLogin.LoginProvider == login.LoginProvider)
+                    .SingleOrDefault();
 
-                                                   return singleOrDefault != null ? singleOrDefault.User : null;
-                                               }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            return Task.FromResult(singleOrDefault != null ? singleOrDefault.User : null);
         }
 
-        public async Task AddToRoleAsync(User user, string role)
+        public Task AddToRoleAsync(User user, string role)
         {
-            await Task.Factory.StartNew(() =>
-                                        {
-                                            UserRole userRole = _roleService.GetRoleByName(role);
-                                            if (userRole != null)
-                                            {
-                                                if (!user.Roles.Contains(userRole))
-                                                    user.Roles.Add(userRole);
-                                                if (!userRole.Users.Contains(user))
-                                                    userRole.Users.Add(user);
+            UserRole userRole = _roleService.GetRoleByName(role);
+            if (userRole != null)
+            {
+                if (!user.Roles.Contains(userRole))
+                    user.Roles.Add(userRole);
+                if (!userRole.Users.Contains(user))
+                    userRole.Users.Add(user);
 
-                                                _userService.SaveUser(user);
-                                                _roleService.SaveRole(userRole);
-                                            }
-                                        }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+                _userService.SaveUser(user);
+                _roleService.SaveRole(userRole);
+            }
+            return Task.FromResult<object>(null);
         }
 
-        public async Task RemoveFromRoleAsync(User user, string role)
+        public Task RemoveFromRoleAsync(User user, string role)
         {
-            await Task.Factory.StartNew(() =>
-                                        {
-                                            UserRole userRole = _roleService.GetRoleByName(role);
-                                            if (userRole != null)
-                                            {
-                                                if (user.Roles.Contains(userRole))
-                                                    user.Roles.Remove(userRole);
-                                                if (userRole.Users.Contains(user))
-                                                    userRole.Users.Remove(user);
+            UserRole userRole = _roleService.GetRoleByName(role);
+            if (userRole != null)
+            {
+                if (user.Roles.Contains(userRole))
+                    user.Roles.Remove(userRole);
+                if (userRole.Users.Contains(user))
+                    userRole.Users.Remove(user);
 
-                                                _userService.SaveUser(user);
-                                                _roleService.SaveRole(userRole);
-                                            }
-                                        }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+                _userService.SaveUser(user);
+                _roleService.SaveRole(userRole);
+            }
+            return Task.FromResult<object>(null);
         }
 
-        public async Task<IList<string>> GetRolesAsync(User user)
+        public Task<IList<string>> GetRolesAsync(User user)
         {
-            return await Task.Factory.StartNew(() =>
-                                               {
-                                                   IList<string> roles =
-                                                       _roleService.GetAllRoles().Select(role => role.Name).ToList();
-                                                   return roles;
-                                               }, CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            IList<string> roles =
+                _roleService.GetAllRoles().Select(role => role.Name).ToList();
+            return Task.FromResult(roles);
         }
 
-        public async Task<bool> IsInRoleAsync(User user, string role)
+        public Task<bool> IsInRoleAsync(User user, string role)
         {
-            return await Task.Factory.StartNew(() =>
-                user.Roles.Any(
-                    userRole =>
-                        userRole.Name.Equals(role, StringComparison.OrdinalIgnoreCase)),
-                CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            return Task.FromResult(user.Roles.Any(
+                 userRole =>
+                     userRole.Name.Equals(role, StringComparison.OrdinalIgnoreCase)));
         }
     }
 }

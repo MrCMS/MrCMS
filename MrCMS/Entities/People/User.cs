@@ -11,7 +11,7 @@ using MrCMS.Helpers.Validation;
 
 namespace MrCMS.Entities.People
 {
-    public class User : SystemEntity, IUser
+    public class User : SystemEntity, IUser<int>
     {
         public User()
         {
@@ -75,23 +75,14 @@ namespace MrCMS.Entities.People
             get { return TypeHelper.GetAllConcreteMappedClassesAssignableFrom<IBelongToUser>(); }
         }
 
-        public virtual string OwinId
-        {
-            get { return Id.ToString(); }
-        }
-
         public virtual bool DisableNotifications { get; set; }
         public virtual DateTime? LastNotificationReadDate { get; set; }
 
         [DisplayName("Site UI Culture")]
         public virtual string UICulture { get; set; }
 
-        string IUser.Id
-        {
-            get { return OwinId; }
-        }
 
-        string IUser.UserName
+        string IUser<int>.UserName
         {
             get { return Email; }
             set { Email = value; }

@@ -19,22 +19,23 @@ namespace MrCMS.Tasks
 
                 IGrouping<Type, LuceneAction> thisGroup = @group;
                 managerBase.Write(writer =>
-                                  {
-                                      foreach (
-                                          var luceneAction in
-                                              thisGroup.Where(action => action.Operation == LuceneOperation.Insert).ToList())
-                                          luceneAction.Execute(writer);
-                                      foreach (
-                                          var luceneAction in
-                                              thisGroup.Where(action => action.Operation == LuceneOperation.Update).ToList())
-                                          luceneAction.Execute(writer);
-                                      foreach (
-                                          var luceneAction in
-                                              thisGroup.Where(action => action.Operation == LuceneOperation.Delete).ToList())
-                                          luceneAction.Execute(writer);
+                {
+                    foreach (
+                        var luceneAction in
+                            thisGroup.Where(action => action.Operation == LuceneOperation.Insert).ToList())
+                        luceneAction.Execute(writer);
+                    foreach (
+                        var luceneAction in
+                            thisGroup.Where(action => action.Operation == LuceneOperation.Update).ToList())
+                        luceneAction.Execute(writer);
+                    foreach (
+                        var luceneAction in
+                            thisGroup.Where(action => action.Operation == LuceneOperation.Delete).ToList())
+                        luceneAction.Execute(writer);
 
-                                      writer.Optimize();
-                                  });
+                    writer.Optimize();
+                });
+                managerBase.ResetSearcher();
             }
         }
     }

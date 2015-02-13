@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Helpers;
 using Xunit;
 
 namespace MrCMS.Tests.Entities
@@ -11,7 +12,7 @@ namespace MrCMS.Tests.Entities
         {
             var mediaFile = new MediaFile {FileExtension = ".jpg"};
 
-            mediaFile.IsImage.Should().BeTrue();
+            mediaFile.IsImage().Should().BeTrue();
         }
 
         [Fact]
@@ -19,7 +20,7 @@ namespace MrCMS.Tests.Entities
         {
             var mediaFile = new MediaFile {FileExtension = ".jpeg"};
 
-            mediaFile.IsImage.Should().BeTrue();
+            mediaFile.IsImage().Should().BeTrue();
         }
 
         [Fact]
@@ -27,7 +28,7 @@ namespace MrCMS.Tests.Entities
         {
             var mediaFile = new MediaFile {FileExtension = ".gif"};
 
-            mediaFile.IsImage.Should().BeTrue();
+            mediaFile.IsImage().Should().BeTrue();
         }
 
         [Fact]
@@ -35,7 +36,7 @@ namespace MrCMS.Tests.Entities
         {
             var mediaFile = new MediaFile {FileExtension = ".png"};
 
-            mediaFile.IsImage.Should().BeTrue();
+            mediaFile.IsImage().Should().BeTrue();
         }
 
         [Fact]
@@ -43,7 +44,7 @@ namespace MrCMS.Tests.Entities
         {
             var mediaFile = new MediaFile {FileExtension = ".txt"};
 
-            mediaFile.IsImage.Should().BeFalse();
+            mediaFile.IsImage().Should().BeFalse();
         }
 
         [Fact]
@@ -51,7 +52,7 @@ namespace MrCMS.Tests.Entities
         {
             var mediaFile = new MediaFile {FileExtension = ".JPG"};
 
-            mediaFile.IsImage.Should().BeTrue();
+            mediaFile.IsImage().Should().BeTrue();
         }
 
         [Fact]
@@ -59,7 +60,7 @@ namespace MrCMS.Tests.Entities
         {
             var mediaFile = new MediaFile {FileExtension = ".JpG"};
 
-            mediaFile.IsImage.Should().BeTrue();
+            mediaFile.IsImage().Should().BeTrue();
         }
     }
 }

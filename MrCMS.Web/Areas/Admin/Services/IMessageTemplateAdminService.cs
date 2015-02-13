@@ -8,12 +8,12 @@ namespace MrCMS.Web.Areas.Admin.Services
     {
         List<MessageTemplateInfo> GetAllMessageTemplateTypesWithDetails();
 
-        MessageTemplateBase GetNewOverride(string type);
-        MessageTemplateBase GetOverride(string type);
-        MessageTemplateBase GetTemplate(string type);
+        MessageTemplate GetNewOverride(string type);
+        MessageTemplate GetOverride(string type);
+        MessageTemplate GetTemplate(string type);
 
-        void AddOverride(MessageTemplateBase messageTemplate);
-        void Save(MessageTemplateBase messageTemplate);
-        void DeleteOverride(MessageTemplateBase messageTemplate);
+        void AddOverride(MessageTemplate messageTemplate);
+        void Save(MessageTemplate messageTemplate);
+        void DeleteOverride(MessageTemplate messageTemplate);
     }
 }

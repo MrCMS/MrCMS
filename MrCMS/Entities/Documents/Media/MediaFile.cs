@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using MrCMS.Models;
-using MrCMS.Services;
-using MrCMS.Settings;
-using MrCMS.Website;
 
 namespace MrCMS.Entities.Documents.Media
 {
@@ -16,6 +10,7 @@ namespace MrCMS.Entities.Documents.Media
         {
             ResizedImages = new List<ResizedImage>();
         }
+
         public virtual string FileExtension { get; set; }
         public virtual string ContentType { get; set; }
         public virtual MediaCategory MediaCategory { get; set; }
@@ -27,35 +22,16 @@ namespace MrCMS.Entities.Documents.Media
 
         [DisplayName("Alt")]
         public virtual string Title { get; set; }
+
         public virtual string Description { get; set; }
 
         //images only
         public virtual int Width { get; set; }
         public virtual int Height { get; set; }
-        public virtual Size Size { get { return Width > 0 && Height > 0 ? new Size(Width, Height) : Size.Empty; } }
 
-        public static readonly List<string> ImageExtensions = new List<string> { ".jpg", ".jpeg", ".gif", ".png" };
-        public virtual bool IsImage
+        public virtual Size Size
         {
-            get { return ImageExtensions.Any(s => s.Equals(FileExtension, StringComparison.InvariantCultureIgnoreCase)); }
-        }
-
-        public virtual IEnumerable<ImageSize> Sizes
-        {
-            get
-            {
-                if (IsImage)
-                {
-                    yield return new ImageSize("Original", Size);
-                    foreach (
-                        var imageSize in
-                            MrCMSApplication.Get<MediaSettings>().ImageSizes.Where(size => ImageProcessor.RequiresResize(Size, size.Size)))
-                    {
-                        imageSize.ActualSize = ImageProcessor.CalculateDimensions(Size, imageSize.Size);
-                        yield return imageSize;
-                    }
-                }
-            }
+            get { return Width > 0 && Height > 0 ? new Size(Width, Height) : Size.Empty; }
         }
 
         public virtual IList<ResizedImage> ResizedImages { get; set; }

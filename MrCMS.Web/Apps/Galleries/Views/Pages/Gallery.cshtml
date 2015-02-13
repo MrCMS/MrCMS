@@ -5,7 +5,7 @@
 @Editable(Model, page => page.BodyContent, true)
 <div id="links">
     @{
-        foreach (var result in Model.MediaGallery.Files.Where(file => file.IsImage).OrderBy(x => x.DisplayOrder).Chunk(4))
+        foreach (var result in Model.MediaGallery.Files.Where(file => file.IsImage()).OrderBy(x => x.DisplayOrder).Chunk(4))
         {
             <div class="row margin-top-10">
                 @foreach (var mediaFile in result)

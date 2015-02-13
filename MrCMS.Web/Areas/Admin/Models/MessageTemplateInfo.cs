@@ -8,5 +8,6 @@ namespace MrCMS.Web.Areas.Admin.Models
         public string TypeName { get { return Type.FullName; } }
         public bool CanPreview { get; set; }
         public bool IsOverride { get; set; }
+        public bool IsEnabled { get; set; }
     }
 }

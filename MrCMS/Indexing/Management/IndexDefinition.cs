@@ -5,6 +5,7 @@ using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
+using Lucene.Net.Search;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -102,9 +103,12 @@ namespace MrCMS.Indexing.Management
         }
 
         protected readonly ISession _session;
-        protected IndexDefinition(ISession session)
+        private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
+
+        protected IndexDefinition(ISession session, IGetLuceneIndexSearcher getLuceneIndexSearcher)
         {
             _session = session;
+            _getLuceneIndexSearcher = getLuceneIndexSearcher;
         }
 
         public static FieldDefinition<T> Id
@@ -276,6 +280,25 @@ namespace MrCMS.Indexing.Management
                     IndexDefinition = this,
                     Operation = operation,
                 };
+        }
+
+        private static Lazy<Dictionary<Type, IndexSearcher>> IndexSearcherCache =
+            new Lazy<Dictionary<Type, IndexSearcher>>();
+        public IndexSearcher GetSearcher()
+        {
+            var indexDefinitionType = GetType();
+            if (!IndexSearcherCache.Value.ContainsKey(indexDefinitionType))
+            {
+                IndexSearcherCache.Value[indexDefinitionType] =
+                    _getLuceneIndexSearcher.Get(IndexFolderName);
+            }
+            return IndexSearcherCache.Value[indexDefinitionType];
+        }
+
+        public void ResetSearcher()
+        {
+            var indexDefinitionType = GetType();
+            IndexSearcherCache.Value.Remove(indexDefinitionType);
         }
     }
 }

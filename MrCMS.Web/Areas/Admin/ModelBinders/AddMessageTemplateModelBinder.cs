@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
@@ -9,22 +8,10 @@ using Ninject;
 
 namespace MrCMS.Web.Areas.Admin.ModelBinders
 {
-    public class AddMessageTemplateGetModelBinder : MessageTemplateModelBinder
-    {
-        public AddMessageTemplateGetModelBinder(IKernel kernel) : base(kernel)
-        {
-        }
-
-        public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
-        {
-            var model = CreateModel(controllerContext, bindingContext, bindingContext.ModelType);
-            return model;
-        }
-    }
-
     public class MessageTemplateOverrideModelBinder : MessageTemplateModelBinder
     {
-        public MessageTemplateOverrideModelBinder(IKernel kernel) : base(kernel)
+        public MessageTemplateOverrideModelBinder(IKernel kernel)
+            : base(kernel)
         {
         }
 
@@ -36,7 +23,7 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
                 ModelMetadataProviders.Current.GetMetadataForType(
                     () => CreateModel(controllerContext, bindingContext, type), type);
 
-            var messageTemplate = base.BindModel(controllerContext, bindingContext) as MessageTemplateBase;
+            var messageTemplate = base.BindModel(controllerContext, bindingContext) as MessageTemplate;
 
             return messageTemplate;
         }

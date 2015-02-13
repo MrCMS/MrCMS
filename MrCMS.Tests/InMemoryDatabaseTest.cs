@@ -45,6 +45,7 @@ namespace MrCMS.Tests
             }
             Session = SessionFactory.OpenFilteredSession();
             Kernel.Bind<ISession>().ToMethod(context => Session);
+            Kernel.Bind<IStatelessSession>().ToMethod(context => SessionFactory.OpenStatelessSession());
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 

@@ -13,11 +13,11 @@ namespace MrCMS.Helpers
     {
         public static CultureInfo GetUICulture(this User user, CultureInfo defaultCultureInfo = null)
         {
-            defaultCultureInfo = defaultCultureInfo ?? MrCMSApplication.Get<SiteSettings>().CultureInfo;
-            if (string.IsNullOrWhiteSpace(user.UICulture))
-                return defaultCultureInfo;
             try
             {
+                defaultCultureInfo = defaultCultureInfo ?? MrCMSApplication.Get<SiteSettings>().CultureInfo;
+                if (string.IsNullOrWhiteSpace(user.UICulture))
+                    return defaultCultureInfo;
                 return CultureInfo.GetCultureInfo(user.UICulture);
             }
             catch

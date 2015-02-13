@@ -4,7 +4,7 @@ using MrCMS.Messages;
 
 namespace MrCMS.Services
 {
-    public class MessageParser<T> : IMessageParser<T> where T : MessageTemplateBase, new()
+    public class MessageParser<T> : IMessageParser<T> where T : MessageTemplate, new()
     {
         private readonly IMessageTemplateParser _messageTemplateParser;
         private readonly IMessageTemplateProvider _messageTemplateProvider;
@@ -24,7 +24,7 @@ namespace MrCMS.Services
             string toName = null, string cc = null, string bcc = null)
         {
             var template = _messageTemplateProvider.GetMessageTemplate<T>(_site);
-            if (template == null)
+            if (template == null || template.IsDisabled)
                 return null;
 
             return new QueuedMessage
@@ -47,7 +47,7 @@ namespace MrCMS.Services
         }
     }
 
-    public class MessageParser<T, T2> : IMessageParser<T, T2> where T : MessageTemplateBase<T2>, new()
+    public class MessageParser<T, T2> : IMessageParser<T, T2> where T : MessageTemplate<T2>, new()
     {
         private readonly IMessageTemplateParser _messageTemplateParser;
         private readonly IMessageTemplateProvider _messageTemplateProvider;

@@ -19,7 +19,7 @@ namespace MrCMS.Indexing.Management
             where T2 : IndexDefinition<T1>
         {
             var service = MrCMSApplication.Get<IIndexService>();
-            IIndexManagerBase indexManagerBase = service.GetIndexManagerBase(typeof (T2));
+            IIndexManagerBase indexManagerBase = service.GetIndexManagerBase(typeof(T2));
             if (!indexManagerBase.IndexExists)
             {
                 service.Reindex(indexManagerBase.GetIndexDefinitionType().FullName);
@@ -84,7 +84,10 @@ namespace MrCMS.Indexing.Management
                 if (!IndexExists)
                     return null;
 
-                return IndexReader.Open(GetDirectory(_currentSite), true).NumDocs();
+                using (var indexReader = IndexReader.Open(GetDirectory(_currentSite), true))
+                {
+                    return indexReader.NumDocs();
+                }
             }
         }
 
@@ -112,12 +115,12 @@ namespace MrCMS.Indexing.Management
 
         public Type GetIndexDefinitionType()
         {
-            return typeof (TDefinition);
+            return typeof(TDefinition);
         }
 
         public Type GetEntityType()
         {
-            return typeof (TEntity);
+            return typeof(TEntity);
         }
 
         public void Write(Action<IndexWriter> action)
@@ -167,6 +170,11 @@ namespace MrCMS.Indexing.Management
                         entity,
                         GetType().Name));
             });
+        }
+
+        public void ResetSearcher()
+        {
+            Definition.ResetSearcher();
         }
 
         public IndexResult Update(IEnumerable<TEntity> entities)
@@ -258,6 +266,7 @@ namespace MrCMS.Indexing.Management
             {
                 writeFunc(indexWriter);
             }
+            Definition.ResetSearcher();
         }
     }
 }

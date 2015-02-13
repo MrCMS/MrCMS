@@ -13,9 +13,9 @@ namespace MrCMS.Services
     public class ExternalLoginService : IExternalLoginService
     {
         private readonly IAuthorisationService _authorisationService;
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<User, int> _userManager;
 
-        public ExternalLoginService(UserManager<User> userManager, IAuthorisationService authorisationService)
+        public ExternalLoginService(UserManager<User, int> userManager, IAuthorisationService authorisationService)
         {
             _userManager = userManager;
             _authorisationService = authorisationService;
@@ -35,7 +35,7 @@ namespace MrCMS.Services
 
         public async Task<bool> UserExistsAsync(string email)
         {
-            return await _userManager.FindByNameAsync(email)!= null;
+            return await _userManager.FindByNameAsync(email) != null;
         }
 
         public string GetEmail(AuthenticateResult authenticateResult)
@@ -57,10 +57,10 @@ namespace MrCMS.Services
         {
             if (string.IsNullOrWhiteSpace(email))
                 return;
-            var user =await _userManager.FindByNameAsync(email);
+            var user = await _userManager.FindByNameAsync(email);
             if (user == null)
                 return;
-            await _userManager.AddLoginAsync(user.OwinId, externalLoginInfo.Login);
+            await _userManager.AddLoginAsync(user.Id, externalLoginInfo.Login);
         }
 
         public bool RequiresAdditionalFieldsForRegistration()
@@ -74,7 +74,7 @@ namespace MrCMS.Services
         {
             var user = new User { Email = email, IsActive = true };
             await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.OwinId, externalLoginInfo.Login);
+            await _userManager.AddLoginAsync(user.Id, externalLoginInfo.Login);
         }
 
         public async Task<RedirectResult> RedirectAfterLogin(string email, string returnUrl)

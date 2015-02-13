@@ -16,7 +16,7 @@
             {
                 <tr>
                     <td>
-                        @if (file.IsImage)
+                        @if (file.IsImage())
                         {
                             <a href="@file.FileUrl">
                                 @Html.RenderImage(file.FileUrl, new Size(100, 100))

@@ -13,7 +13,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             _messageTemplateParser = messageTemplateParser;
         }
 
-        public List<string> GetTokens(MessageTemplateBase messageTemplate)
+        public List<string> GetTokens(MessageTemplate messageTemplate)
         {
             return _messageTemplateParser.GetAllTokens(messageTemplate);
         }

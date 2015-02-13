@@ -3,7 +3,7 @@
 @model MrCMS.Entities.Documents.Media.MediaFile
 <div class="file-result" data-file-result="@Model.Id">
     <div class="header">
-        @if (Model.IsImage)
+        @if (Model.IsImage())
         {
             @Html.RenderImage(Model.FileUrl, new Size(25, 25))
         }
@@ -11,7 +11,7 @@
         <a href="#" class="pull-right" data-media-toggle="@Model.Id">@Resource("Show")</a>
     </div>
     <div class="content" style="display: none" data-media-result="@Model.Id">
-        @if (Model.IsImage)
+        @if (Model.IsImage())
         {
             <table>
                 <tbody>
@@ -21,7 +21,7 @@
                         </td>
                         <td width="10"></td>
                         <td>
-                            @foreach (var size in Model.Sizes)
+                            @foreach (var size in Model.GetSizes())
                             {
                                 <div>
                                     @{

@@ -5,7 +5,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 {
     public interface IMessageTemplatePreviewService
     {
-        MessageTemplateBase GetTemplate(string type);
+        MessageTemplate GetTemplate(string type);
         QueuedMessage GetPreview(string type, int id);
     }
 }
