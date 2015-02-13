@@ -30,7 +30,8 @@ namespace MrCMS.Web.Areas.Admin.Services
             {
                 Type = template.GetType(),
                 IsOverride = template.SiteId.HasValue,
-                CanPreview = CanPreview(template)
+                CanPreview = CanPreview(template),
+                IsEnabled = !template.IsDisabled
             }).ToList();
         }
 

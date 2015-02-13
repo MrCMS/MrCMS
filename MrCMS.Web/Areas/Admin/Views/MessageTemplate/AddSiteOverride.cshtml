@@ -75,6 +75,7 @@
         <br />
 
         @Html.InlineCheckboxFor(x => x.IsHtml)
+        @Html.InlineCheckboxFor(x => x.IsDisabled)
 
         @{ Html.RenderAction("Tokens", "MessageTemplateTokens", new { messageTemplate = Model });}
     </fieldset>

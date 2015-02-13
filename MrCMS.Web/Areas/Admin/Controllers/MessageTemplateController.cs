@@ -51,7 +51,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         [ActionName("DeleteSiteOverride")]
         public ActionResult DeleteSiteOverride_POST(
-            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
+            [IoCModelBinder(typeof (DeleteMessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {

@@ -347,6 +347,7 @@
     <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
     <Compile Include="Areas\Admin\Hubs\BatchProcessingHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\BatchRunGuidModelBinder.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\DeleteMessageTemplateOverrideModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\GetSiteCopyOptionsModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\MoveFilesModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />

@@ -24,7 +24,7 @@ namespace MrCMS.Services
             string toName = null, string cc = null, string bcc = null)
         {
             var template = _messageTemplateProvider.GetMessageTemplate<T>(_site);
-            if (template == null)
+            if (template == null || template.IsDisabled)
                 return null;
 
             return new QueuedMessage
