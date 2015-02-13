@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Lucene.Net.Search;
+﻿using Lucene.Net.Search;
 using MrCMS.Entities;
+using MrCMS.Models;
 
 namespace MrCMS.Search
 {
@@ -10,5 +10,7 @@ namespace MrCMS.Search
         void Delete(SystemEntity entity);
         void ReindexAll();
         IndexSearcher GetSearcher();
+
+        MrCMSIndex GetUniversalIndexInfo();
     }
 }

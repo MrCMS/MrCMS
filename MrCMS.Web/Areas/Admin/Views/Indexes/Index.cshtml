@@ -1,7 +1,10 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Models
 @model System.Collections.Generic.List<MrCMS.Models.MrCMSIndex>
 @{
     ViewBag.Title = "Indexes";
+    var universalSearchIndexInfo = ViewData["universal-search-index-info"] as MrCMSIndex;
+    
 }
 
 <h1 class="page-header">@Resource("Admin Indexes Title", "Indexes")</h1>
@@ -56,7 +59,30 @@
         }
     </table>
     <hr />
-    @using (Html.BeginForm("ReindexUniversalSearch", "Indexes", FormMethod.Post))
+   @using (Html.BeginForm("ReindexUniversalSearch", "Indexes", FormMethod.Post))
+   {
+    <h4>Universal Search Index</h4>
+       if (universalSearchIndexInfo != null)
+       {
+        <strong>Exists:</strong> @universalSearchIndexInfo.DoesIndexExist
+        <br />
+           if (universalSearchIndexInfo.DoesIndexExist)
+           {
+            <strong>Number of records:</strong>
+            @universalSearchIndexInfo.NumberOfDocs
+            <br />
+            <strong>Last modified:</strong>
+            @GetLastModified(universalSearchIndexInfo)
+            <br />
+           }
+       }
+    <button class="btn btn-default" type="submit">@Resource("Admin Indexes Reindex Universal Search Button", "Reindex Universal Search")</button>
+   }
+@functions{
+
+    public string GetLastModified(MrCMSIndex index)
     {
-        <button class="btn btn-default" type="submit">@Resource("Admin Indexes Reindex Universal Search Button", "Reindex Universal Search")</button>
+        return index.LastModified.HasValue ? index.LastModified.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-";
     }
+
+}

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CsvHelper;
+using System.Text;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
@@ -11,7 +11,6 @@ using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Transform;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
@@ -35,31 +34,18 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public byte[] ExportFormData(Webpage webpage)
         {
-            using (var ms = new MemoryStream())
-            using (var sw = new StreamWriter(ms))
-            using (var w = new CsvWriter(sw))
+            var stringBuilder = new StringBuilder();
+
+            var headers = GetHeadersForExport(webpage).ToList();
+            stringBuilder.AppendLine(string.Join(",", headers.Select(FormatField)));
+
+            var formDataForExport = GetFormDataForExport(webpage);
+            foreach (var data in formDataForExport)
             {
-                foreach (string header in GetHeadersForExport(webpage))
-                {
-                    w.WriteField(header);
-                }
-                w.NextRecord();
-
-                foreach (var item in GetFormDataForExport(webpage))
-                {
-                    foreach (string value in item.Value)
-                    {
-                        w.WriteField(value);
-                    }
-                    w.NextRecord();
-                }
-
-                sw.Flush();
-                byte[] file = ms.ToArray();
-                sw.Close();
-
-                return file;
+                stringBuilder.AppendLine(string.Join(",", data.Value.Select(FormatField)));
             }
+
+            return Encoding.Default.GetBytes(stringBuilder.ToString());
         }
 
         public void DeletePosting(FormPosting posting)
@@ -183,5 +169,11 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             return _session.Get<FormPosting>(id);
         }
+
+        private string FormatField(string data)
+        {
+            return string.Format("{1}{0}{1}", (data ?? string.Empty).Replace(Quote, Quote + Quote), Quote);
+        }
+        public const string Quote = "\"";
     }
 }

@@ -37,6 +37,13 @@
             $('[data-batch-run-status=' + id + ']').html(runInfo.status);
             var completionStatus = runInfo.completionStatus;
             $('[data-batch-run-progress-bar=' + id + ']').css('width', completionStatus.PercentageCompleted);
+            if ($('[data-batch-run-progress-bar=' + id + ']').length) {
+                if (runInfo.status == 'Executing') {
+                    $('title').text(completionStatus.PercentageCompleted + ' Batch #' + id + ' - Executing');
+                } else if (runInfo.status == 'Complete') {
+                    $('title').text('Complete: Batch #' + id);
+                }
+            }
             $('[data-batch-run-full-status=' + id + ']').html(completionStatus.FullStatus);
             $('[data-batch-run-average-time-taken=' + id + ']').html(completionStatus.AverageTimeTaken);
             $('[data-batch-run-time-taken=' + id + ']').html(completionStatus.TimeTaken);

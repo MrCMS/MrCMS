@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
@@ -122,7 +121,7 @@ namespace MrCMS.Search
             if (!IndexExists)
                 return null;
 
-            using (var indexReader = IndexReader.Open(GetDirectory(_site), true))
+            using (IndexReader indexReader = IndexReader.Open(GetDirectory(_site), true))
             {
                 return indexReader.NumDocs();
             }
@@ -190,7 +189,6 @@ namespace MrCMS.Search
                 IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 writeFunc(indexWriter);
-                //indexWriter.Optimize();
             }
         }
     }

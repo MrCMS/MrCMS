@@ -42,7 +42,7 @@ namespace MrCMS.Website
     {
         public const string AssemblyVersion = "0.4.4.0";
         public const string AssemblyFileVersion = "0.4.4.0";
-        private static readonly Bootstrapper bootstrapper = new Bootstrapper();
+        private static readonly Bootstrapper Bootstrapper = new Bootstrapper();
         private static IKernel _kernel;
         private const string CachedMissingItemKey = "cached-missing-item";
 
@@ -56,7 +56,7 @@ namespace MrCMS.Website
 
         private static IKernel Kernel
         {
-            get { return _kernel ?? bootstrapper.Kernel; }
+            get { return _kernel ?? Bootstrapper.Kernel; }
         }
 
         protected void Application_Start()
@@ -66,8 +66,8 @@ namespace MrCMS.Website
 
             RegisterRoutes(RouteTable.Routes);
 
-            RegisterServices(bootstrapper.Kernel);
-            MrCMSApp.RegisterAllServices(bootstrapper.Kernel);
+            RegisterServices(Kernel);
+            MrCMSApp.RegisterAllServices(Kernel);
 
             SetModelBinders();
 
@@ -84,6 +84,7 @@ namespace MrCMS.Website
 
             MiniProfiler.Settings.Results_Authorize = IsUserAllowedToSeeMiniProfilerUI;
             MiniProfiler.Settings.Results_List_Authorize = IsUserAllowedToSeeMiniProfilerUI;
+
             OnApplicationStart();
         }
 
@@ -257,7 +258,7 @@ namespace MrCMS.Website
         {
             DynamicModuleUtility.RegisterModule(typeof(OnePerRequestHttpModule));
             DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
-            bootstrapper.Initialize(CreateKernel);
+            Bootstrapper.Initialize(CreateKernel);
         }
 
         /// <summary>
@@ -265,7 +266,7 @@ namespace MrCMS.Website
         /// </summary>
         public static void Stop()
         {
-            bootstrapper.ShutDown();
+            Bootstrapper.ShutDown();
         }
 
         /// <summary>

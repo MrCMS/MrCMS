@@ -42,10 +42,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\CsvHelper.2.10.0\lib\net40-client\CsvHelper.dll</HintPath>
-    </Reference>
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
@@ -543,6 +539,7 @@
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
     <Compile Include="Helpers\CustomBindingExtensions.cs" />
     <Compile Include="Helpers\DocumentVersionRenderingExtensions.cs" />
+    <Compile Include="Helpers\EventContextExtensions.cs" />
     <Compile Include="Helpers\FormContextEnsurer.cs" />
     <Compile Include="Helpers\HashsetExtensions.cs" />
     <Compile Include="Helpers\HoneypotHtmlHelper.cs" />
