@@ -120,7 +120,7 @@
         setOpacityOnCutFiles: function (files) {
             var fileIds = files.split(',');
             $.each(fileIds, function (number) {
-                var selector = "[data-id=" + fileIds[number] + "]";
+                var selector = "[data-id='" + fileIds[number] + "']";
                 $(selector).addClass("files-cut");
             });
         },
@@ -143,12 +143,12 @@
             if (files != '' && files != 'undefined') {
                 var fileIds = files.split(',');
                 $.each(fileIds, function (number) {
-                    var selector = "[data-id=" + fileIds[number] + "]";
+                    var selector = "[data-id='" + fileIds[number] + "']";
                     $(selector).addClass(settings.uiSelectedClass.replace('.', ''));
                 });
                 fileIds = cutFiles.split(',');
                 $.each(fileIds, function (number) {
-                    var selector = "[data-id=" + fileIds[number] + "]";
+                    var selector = "[data-id='" + fileIds[number] + "']";
                     $(selector).addClass(settings.fileCutCLass.replace('.', ''));
                 });
                 self.enableCut();
