@@ -10,9 +10,9 @@ namespace MrCMS.Web.Apps.Core.Indexing
     {
         private readonly HashSet<IFieldDefinition<WebpageSearchIndexDefinition, Webpage>> _definitions;
 
-        public WebpageSearchIndexDefinition(ISession session,
+        public WebpageSearchIndexDefinition(ISession session, IGetLuceneIndexSearcher getLuceneIndexSearcher,
             IEnumerable<IFieldDefinition<WebpageSearchIndexDefinition, Webpage>> definitions)
-            : base(session)
+            : base(session, getLuceneIndexSearcher)
         {
             _definitions = new HashSet<IFieldDefinition<WebpageSearchIndexDefinition, Webpage>>(definitions);
         }

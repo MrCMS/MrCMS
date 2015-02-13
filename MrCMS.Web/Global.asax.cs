@@ -11,13 +11,5 @@ namespace MrCMS.Web
 
     public class MvcApplication : MrCMSApplication
     {
-        public override string RootNamespace
-        {
-            get { return typeof(WidgetController).Namespace; }
-        }
-
-        protected override void RegisterServices(IKernel kernel)
-        {
-        }
     }
 }

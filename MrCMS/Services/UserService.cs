@@ -4,7 +4,6 @@ using System.Web;
 using MrCMS.Entities;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
-using MrCMS.Models;
 using MrCMS.Paging;
 using MrCMS.Services.Events;
 using MrCMS.Services.Events.Args;
@@ -28,10 +27,7 @@ namespace MrCMS.Services
 
         public void AddUser(User user)
         {
-            _session.Transact(session =>
-                                  {
-                                      session.Save(user);
-                                  });
+            _session.Transact(session => { session.Save(user); });
             EventContext.Instance.Publish<IOnUserAdded, OnUserAddedEventArgs>(new OnUserAddedEventArgs(user));
         }
 
@@ -45,22 +41,24 @@ namespace MrCMS.Services
             return _session.Get<User>(id);
         }
 
-        public IPagedList<User> GetAllUsersPaged(int page)
-        {
-            return _session.QueryOver<User>().Paged(page, _siteSettings.DefaultPageSize);
-        }
-
         public User GetUserByEmail(string email)
         {
             string trimmedEmail = (email ?? string.Empty).Trim();
-            return _session.QueryOver<User>().Where(user => user.Email == trimmedEmail).Take(1).Cacheable().SingleOrDefault();
+            return
+                _session.QueryOver<User>()
+                    .Where(user => user.Email == trimmedEmail)
+                    .Take(1)
+                    .Cacheable()
+                    .SingleOrDefault();
         }
 
         public User GetUserByResetGuid(Guid resetGuid)
         {
             return
                 _session.QueryOver<User>()
-                    .Where(user => user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= CurrentRequestData.Now)
+                    .Where(
+                        user =>
+                            user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= CurrentRequestData.Now)
                     .Cacheable().SingleOrDefault();
         }
 
@@ -75,7 +73,7 @@ namespace MrCMS.Services
         }
 
         /// <summary>
-        /// Checks to see if the supplied email address is unique
+        ///     Checks to see if the supplied email address is unique
         /// </summary>
         /// <param name="email"></param>
         /// <param name="id">The id of user to exlcude from check. Has to be string because of AdditionFields on Remote property</param>
@@ -99,9 +97,15 @@ namespace MrCMS.Services
             return _session.QueryOver<T>().Where(arg => arg.User == user).Cacheable().List();
         }
 
-        public IPagedList<T> GetPaged<T>(User user, QueryOver<T> query = null, int page = 1) where T : SystemEntity, IBelongToUser
+        public IPagedList<T> GetPaged<T>(User user, QueryOver<T> query = null, int page = 1)
+            where T : SystemEntity, IBelongToUser
         {
             return _session.Paged(query ?? QueryOver.Of<T>(), page, _siteSettings.DefaultPageSize);
+        }
+
+        public IPagedList<User> GetAllUsersPaged(int page)
+        {
+            return _session.QueryOver<User>().Paged(page, _siteSettings.DefaultPageSize);
         }
     }
 }

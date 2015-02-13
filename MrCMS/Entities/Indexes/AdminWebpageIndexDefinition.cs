@@ -10,8 +10,8 @@ namespace MrCMS.Entities.Indexes
     {
         private readonly HashSet<IFieldDefinition<AdminWebpageIndexDefinition, Webpage>> _definitions;
 
-        public AdminWebpageIndexDefinition(ISession session, IEnumerable<IFieldDefinition<AdminWebpageIndexDefinition, Webpage>> definitions)
-            : base(session)
+        public AdminWebpageIndexDefinition(ISession session, IGetLuceneIndexSearcher getLuceneIndexSearcher, IEnumerable<IFieldDefinition<AdminWebpageIndexDefinition, Webpage>> definitions)
+            : base(session, getLuceneIndexSearcher)
         {
             _definitions = new HashSet<IFieldDefinition<AdminWebpageIndexDefinition, Webpage>>(definitions);
         }

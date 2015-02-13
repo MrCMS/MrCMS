@@ -3,25 +3,25 @@
 @model MrCMS.Entities.Documents.Media.MediaFile
 <div class="file-result">
     <div class="header">
-        @if (Model.IsImage)
+        @if (Model.IsImage())
         {
-            @Html.RenderImage(Model.FileUrl,new Size(25,25))
+            @Html.RenderImage(Model.FileUrl, new Size(25, 25))
         }
         @Model.FileName - @Model.ContentLength bytes
-                                    <a href="#" class="pull-right show-hide-file-result">@Resource("Show")</a>
+        <a href="#" class="pull-right show-hide-file-result">@Resource("Show")</a>
     </div>
     <div class="content" style="display: none">
-        @if (Model.IsImage)
+        @if (Model.IsImage())
         {
             <table>
                 <tbody>
                     <tr>
                         <td>
-                            @Html.RenderImage(Model.FileUrl,new Size(64,64))
-                            
+                            @Html.RenderImage(Model.FileUrl, new Size(64, 64))
+
                         </td>
                         <td>
-                            @foreach (var size in Model.Sizes)
+                            @foreach (var size in Model.GetSizes())
                             {
                                 <div>
                                     @Html.RadioButton("SelectedFile", Model.Id + "-" + size.Width + "-" + size.Height, new { @class = "selected-file", id = ViewData["upload"] + "SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height }) @Html.Label(ViewData["upload"] + "SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height, new { style = "display:inline" }, size.Name + " (" + size.ActualWidth + "px x " + size.ActualHeight + "px)")
@@ -38,7 +38,7 @@
         {
             @Html.RadioButton("SelectedFile", Model.FileUrl, new { @class = "selected-file", id = ViewData["upload"] + "SelectedFile-" + Model.Id }) @Html.Label(ViewData["upload"] + "SelectedFile-" + Model.Id, "Select file")
 
-    <input type="button" class="btn-primary btn set-file" data-action="select" disabled="disabled" value="@Resource("Admin Media Choose File", "Choose File")" />
+            <input type="button" class="btn-primary btn set-file" data-action="select" disabled="disabled" value="@Resource("Admin Media Choose File", "Choose File")" />
         }
     </div>
 </div>

@@ -91,6 +91,5 @@ namespace MrCMS.Tests.Settings
             this.Invoking(tests =>
                           _mediaSettings.SetViewData(A.Fake<ISession>(), A.Fake<ViewDataDictionary>())).ShouldNotThrow();
         }
-
     }
 }

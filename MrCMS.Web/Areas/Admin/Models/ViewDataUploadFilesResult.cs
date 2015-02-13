@@ -1,4 +1,5 @@
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Helpers;
 
 namespace MrCMS.Web.Areas.Admin.Models
 {
@@ -15,9 +16,8 @@ namespace MrCMS.Web.Areas.Admin.Models
             title = file.Title ?? string.Empty;
             description = file.Description ?? string.Empty;
             display_order = file.DisplayOrder;
-            is_image = file.IsImage;
+            is_image = file.IsImage();
         }
-
 
 
         public int Id { get; set; }

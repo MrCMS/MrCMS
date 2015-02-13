@@ -35,5 +35,6 @@ namespace MrCMS.Indexing.Management
         IndexResult Update(object entity);
         IndexResult Insert(object entity);
         IndexResult Delete(object entity);
+        void ResetSearcher();
     }
 }

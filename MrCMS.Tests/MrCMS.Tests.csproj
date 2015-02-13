@@ -222,11 +222,13 @@
     <Compile Include="TestableEventContext.cs" />
     <Compile Include="TestContextModule.cs" />
     <Compile Include="Website\Controllers\Builders\CKEditorControllerBuilder.cs" />
+    <Compile Include="Website\Controllers\Builders\LogoutControllerBuilder.cs" />
     <Compile Include="Website\Controllers\Builders\WebpageControllerBuilder.cs" />
     <Compile Include="Website\Controllers\Builders\WidgetControllerBuilder.cs" />
     <Compile Include="Website\Controllers\CKEditorControllerTests.cs" />
     <Compile Include="Website\Controllers\Dummies\DummyUIController.cs" />
     <Compile Include="Website\Controllers\FormControllerTests.cs" />
+    <Compile Include="Website\Controllers\LogoutControllerTests.cs" />
     <Compile Include="Website\Controllers\MrCMSUIControllerTests.cs" />
     <Compile Include="Website\Controllers\WebpageControllerTests.cs" />
     <Compile Include="Website\Controllers\WidgetControllerTests.cs" />

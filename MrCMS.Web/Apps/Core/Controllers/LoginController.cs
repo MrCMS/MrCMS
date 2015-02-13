@@ -60,13 +60,6 @@ namespace MrCMS.Web.Apps.Core.Controllers
             return _uniquePageService.RedirectTo<LoginPage>();
         }
 
-
-        public RedirectResult Logout()
-        {
-            _authorisationService.Logout();
-            return Redirect("~");
-        }
-
         [HttpGet]
         public ViewResult ForgottenPassword(ForgottenPasswordPage page)
         {

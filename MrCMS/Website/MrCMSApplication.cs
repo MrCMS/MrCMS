@@ -30,6 +30,7 @@ using MrCMS.Website.Routing;
 using NHibernate;
 using Ninject;
 using Ninject.Web.Common;
+using StackExchange.Profiling;
 using WebActivatorEx;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(MrCMSApplication), "Start", Order = 1)]
@@ -50,17 +51,6 @@ namespace MrCMS.Website
             get
             {
                 return Get<SiteSettings>().WebExtensionsToRoute;
-            }
-        }
-
-        public abstract string RootNamespace { get; }
-
-        public static bool InDevelopment
-        {
-            get
-            {
-                return "true".Equals(ConfigurationManager.AppSettings["Development"],
-                    StringComparison.OrdinalIgnoreCase);
             }
         }
 
@@ -91,6 +81,20 @@ namespace MrCMS.Website
             ModelMetadataProviders.Current = new MrCMSMetadataProvider(Kernel);
 
             InstallImageResizerPlugins();
+
+            MiniProfiler.Settings.Results_Authorize = IsUserAllowedToSeeMiniProfilerUI;
+            MiniProfiler.Settings.Results_List_Authorize = IsUserAllowedToSeeMiniProfilerUI;
+            OnApplicationStart();
+        }
+
+        private bool IsUserAllowedToSeeMiniProfilerUI(HttpRequest arg)
+        {
+            User currentUser = Get<IUserService>().GetCurrentUser(arg.RequestContext.HttpContext);
+            return currentUser != null && currentUser.IsAdmin;
+        }
+
+        protected virtual void OnApplicationStart()
+        {
         }
 
         private static void InstallImageResizerPlugins()
@@ -124,7 +128,8 @@ namespace MrCMS.Website
             {
                 BeginRequest += (sender, args) =>
                 {
-                    if (IsCachedMissingFileRequest()) return;
+                    if (IsCachedMissingFileRequest())
+                        return;
                     CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
                     if (!IsFileRequest(Request.Url))
                     {
@@ -135,14 +140,21 @@ namespace MrCMS.Website
                         Thread.CurrentThread.CurrentCulture = CurrentRequestData.SiteSettings.CultureInfo;
                         Thread.CurrentThread.CurrentUICulture = CurrentRequestData.SiteSettings.CultureInfo;
                     }
+
+                    if (CurrentRequestData.SiteSettings != null && CurrentRequestData.SiteSettings.MiniProfilerEnabled &&
+                                                           !Request.RequestContext.HttpContext.Request.IsAjaxRequest() &&
+                                                           !Request.RawUrl.Contains("signalr", StringComparison.InvariantCultureIgnoreCase))
+                        MiniProfiler.Start();
+                    OnBeginRequest(sender, args);
                 };
                 AuthenticateRequest += (sender, args) =>
                 {
+                    User currentUser = null;
                     if (!Context.Items.Contains(CachedMissingItemKey) && !IsFileRequest(Request.Url))
                     {
                         if (CurrentRequestData.CurrentContext.User != null)
                         {
-                            User currentUser = Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
+                            currentUser = Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
                             if (!Request.Url.AbsolutePath.StartsWith("/signalr/") && (currentUser == null ||
                                 !currentUser.IsActive))
                                 Get<IAuthorisationService>().Logout();
@@ -154,6 +166,11 @@ namespace MrCMS.Website
                             }
                         }
                     }
+                    if (currentUser == null || !currentUser.IsAdmin)
+                    {
+                        MiniProfiler.Stop();
+                    }
+                    OnAuthenticateRequest(sender, args);
                 };
                 EndRequest += (sender, args) =>
                 {
@@ -170,6 +187,10 @@ namespace MrCMS.Website
                     }
                     foreach (var action in CurrentRequestData.OnEndRequest)
                         action(Kernel);
+
+                    OnEndRequest(sender, args);
+
+                    MiniProfiler.Stop();
                 };
             }
             else
@@ -181,6 +202,12 @@ namespace MrCMS.Website
                 };
             }
         }
+
+        protected virtual void OnEndRequest(object sender, EventArgs args) { }
+
+        protected virtual void OnAuthenticateRequest(object sender, EventArgs args) { }
+
+        protected virtual void OnBeginRequest(object sender, EventArgs args) { }
 
         private bool IsCachedMissingFileRequest()
         {
@@ -207,11 +234,11 @@ namespace MrCMS.Website
             routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",
                 new { controller = "CKEditor", action = "Config" });
 
-            routes.MapRoute("Logout", "logout", new { controller = "Login", action = "Logout" },
-                new[] { RootNamespace });
+            routes.MapRoute("Logout", "logout", new { controller = "Logout", action = "Logout" },
+                new[] { typeof(LogoutController).Namespace });
 
             routes.MapRoute("zones", "render-widget", new { controller = "Widget", action = "Show" },
-                new[] { RootNamespace });
+                new[] { typeof(WidgetController).Namespace });
 
             routes.MapRoute("ajax content save", "admintools/savebodycontent",
                 new { controller = "AdminTools", action = "SaveBodyContent" });
@@ -263,10 +290,13 @@ namespace MrCMS.Website
         }
 
         /// <summary>
-        ///     Load your modules or register your services here!
+        ///     Load your modules or register your non-app specific services here
         /// </summary>
         /// <param name="kernel">The kernel.</param>
-        protected abstract void RegisterServices(IKernel kernel);
+        protected virtual void RegisterServices(IKernel kernel)
+        {
+
+        }
 
         public static IEnumerable<T> GetAll<T>()
         {
