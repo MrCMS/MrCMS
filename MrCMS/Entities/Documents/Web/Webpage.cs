@@ -109,6 +109,9 @@ namespace MrCMS.Entities.Documents.Web
         [StringLength(500, ErrorMessage = "Form submitted messsage cannot be longer than 500 characters.")]
         public virtual string FormSubmittedMessage { get; set; }
 
+        [DisplayName("Form Success Redirect")]
+        public virtual string FormRedirectUrl { get; set; }
+
         [DisplayName("Subject")]
         [StringLength(250, ErrorMessage = "Subject cannot be longer than 250 characters.")]
         public virtual string FormEmailTitle { get; set; }

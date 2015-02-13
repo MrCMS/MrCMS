@@ -12,6 +12,8 @@ namespace MrCMS.Shortcodes.Forms
             tagBuilder.Attributes["type"] = "text";
             tagBuilder.Attributes["name"] = formProperty.Name;
             tagBuilder.Attributes["id"] = formProperty.GetHtmlId();
+            tagBuilder.Attributes["placeholder"] = formProperty.PlaceHolder;
+
 
             if (formProperty.Required)
             {

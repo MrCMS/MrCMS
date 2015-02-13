@@ -30,6 +30,14 @@
                     <td>@Resource("Required")</td>
                     <td>@Model.Required</td>
                 </tr>
+                @if (Model is TextBox)
+                {
+                    var placeholder = (Model as TextBox).PlaceHolder;
+                    <tr>
+                        <td>@Resource("Placeholder")</td>
+                        <td>@placeholder</td>
+                    </tr>   
+                }
                 @if (Model is FormPropertyWithOptions)
                 {
                     <tr>

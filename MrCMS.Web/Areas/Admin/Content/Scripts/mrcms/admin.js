@@ -42,6 +42,7 @@ $(function () {
             padding: 0,
             afterShow: function () {
                 $('.fancybox-iframe').contents().find('form').attr('target', '_parent').css('margin', '0');
+                $(".fancybox-inner").css("overflow", "");
             }
         }).click().remove();
         return false;
@@ -135,15 +136,6 @@ function getRemoteModel(href) {
 
 $(function () {
     admin.initializePlugins();
-
-    var $message = $('.admin-message');
-    $message.show().addClass('fadeIn fast');
-    setTimeout(function () {
-        $message.removeClass('fadeIn').addClass('fadeOut');
-        setTimeout(function () {
-            $message.hide();
-        }, 1000);
-    }, 1500);
 });
 window.admin = {
     initializePlugins: function () {
