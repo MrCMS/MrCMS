@@ -1,5 +1,6 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Website
+@using StackExchange.Profiling
 <!DOCTYPE html>
 <html>
     <head>
@@ -60,5 +61,6 @@
         {
             @RenderSection("JavaScriptBlock")
         }
+        @MiniProfiler.RenderIncludes()
     </body>
 </html>

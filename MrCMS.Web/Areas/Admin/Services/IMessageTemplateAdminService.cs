@@ -15,5 +15,6 @@ namespace MrCMS.Web.Areas.Admin.Services
         void AddOverride(MessageTemplate messageTemplate);
         void Save(MessageTemplate messageTemplate);
         void DeleteOverride(MessageTemplate messageTemplate);
+        void ImportLegacyTemplate(string type);
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using MrCMS.Batching.Entities;
 using MrCMS.Helpers;
@@ -9,17 +8,17 @@ namespace MrCMS.Batching.Services
     public class ExecuteNextBatchJob : IExecuteNextBatchJob
     {
         private readonly IGetNextJobToRun _getNextJobToRun;
-        private readonly IBatchJobExecutionService _batchJobExecutionService;
         private readonly ISetBatchJobExecutionStatus _setBatchJobExecutionStatus;
         private readonly ISetRunStatus _setRunStatus;
+        private readonly IRunBatchRunResult _runBatchRunResult;
 
-        public ExecuteNextBatchJob(IGetNextJobToRun getNextJobToRun, IBatchJobExecutionService batchJobExecutionService,
-            ISetBatchJobExecutionStatus setBatchJobExecutionStatus, ISetRunStatus setRunStatus)
+        public ExecuteNextBatchJob(IGetNextJobToRun getNextJobToRun,
+            ISetBatchJobExecutionStatus setBatchJobExecutionStatus, ISetRunStatus setRunStatus, IRunBatchRunResult runBatchRunResult)
         {
             _getNextJobToRun = getNextJobToRun;
-            _batchJobExecutionService = batchJobExecutionService;
             _setBatchJobExecutionStatus = setBatchJobExecutionStatus;
             _setRunStatus = setRunStatus;
+            _runBatchRunResult = runBatchRunResult;
         }
 
         public bool Execute(BatchRun batchRun)
@@ -40,14 +39,10 @@ namespace MrCMS.Batching.Services
                 _setBatchJobExecutionStatus.Complete(runResult,
                     BatchJobExecutionResult.Failure("No job associated to result"));
 
-            _setBatchJobExecutionStatus.Starting(runResult);
-
-            var batchJobExecutionResult = _batchJobExecutionService.Execute(runResult.BatchJob);
-            
-            runResult.MillisecondsTaken = Convert.ToDecimal(stopWatch.Elapsed.TotalMilliseconds);
-            _setBatchJobExecutionStatus.Complete(runResult, batchJobExecutionResult);
+            _runBatchRunResult.Run(runResult, stopWatch);
 
             return true;
         }
+
     }
 }

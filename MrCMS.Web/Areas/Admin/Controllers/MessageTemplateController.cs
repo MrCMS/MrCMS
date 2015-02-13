@@ -33,7 +33,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         [ActionName("AddSiteOverride")]
         public ActionResult AddSiteOverride_POST(
-            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
+            [IoCModelBinder(typeof(MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
@@ -51,7 +51,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         [ActionName("DeleteSiteOverride")]
         public ActionResult DeleteSiteOverride_POST(
-            [IoCModelBinder(typeof (DeleteMessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
+            [IoCModelBinder(typeof(DeleteMessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
@@ -75,15 +75,28 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         [ActionName("Edit")]
         public ActionResult Edit_POST(
-            [IoCModelBinder(typeof (MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
+            [IoCModelBinder(typeof(MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
                 _messageTemplateAdminService.Save(messageTemplate);
                 TempData.SuccessMessages()
                     .Add(string.Format("{0} successfully edited", messageTemplate.GetType().Name.BreakUpString()));
-                return RedirectToAction("Edit", new {type = messageTemplate.GetType().FullName});
+                return RedirectToAction("Edit", new { type = messageTemplate.GetType().FullName });
             }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult ImportLegacyTemplate(string type)
+        {
+            return View((object)type);
+        }
+
+        [HttpPost, ActionName("ImportLegacyTemplate")]
+        public ActionResult ImportLegacyTemplate_POST(string type)
+        {
+            _messageTemplateAdminService.ImportLegacyTemplate(type);
             return RedirectToAction("Index");
         }
     }

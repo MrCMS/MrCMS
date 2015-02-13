@@ -365,10 +365,12 @@
     <Compile Include="Batching\Services\IGetNextJobToRun.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\Services\IRunBatchRunResult.cs" />
     <Compile Include="Batching\Services\ISetRunStatus.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Batching\Services\ISynchronousBatchRunExecution.cs" />
+    <Compile Include="Batching\Services\RunBatchRunResult.cs" />
     <Compile Include="Batching\Services\SetRunStatus.cs">
       <SubType>Code</SubType>
     </Compile>
