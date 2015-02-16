@@ -25,6 +25,7 @@ namespace MrCMS.Search
         private readonly IUniversalSearchItemGenerator _universalSearchItemGenerator;
         protected Analyzer Analyser;
         private Directory _directory;
+        private static IndexSearcher _searcher;
 
         public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, Site site,
             IGetLuceneDirectory getLuceneDirectory)
@@ -45,27 +46,27 @@ namespace MrCMS.Search
             {
                 return;
             }
-            CurrentRequestData.OnEndRequest.Add(kernel =>
-            {
-                UniversalSearchIndexStatus status = GetStatus(entity);
+            CurrentRequestData.OnEndRequest.Add(new UpdateUniversalIndex(entity));
+            //{
+            //    UniversalSearchIndexStatus status = GetStatus(entity);
 
-                Document document = _universalSearchItemGenerator.GenerateDocument(entity);
-                if (document == null)
-                    return;
+            //    Document document = _universalSearchItemGenerator.GenerateDocument(entity);
+            //    if (document == null)
+            //        return;
 
-                Write(writer =>
-                {
-                    if (!status.Exists)
-                    {
-                        writer.AddDocument(document);
-                    }
-                    else
-                    {
-                        writer.UpdateDocument(new Term(UniversalSearchFieldNames.SearchGuid, status.Guid.ToString()),
-                            document);
-                    }
-                }, !IndexExists);
-            });
+            //    Write(writer =>
+            //    {
+            //        if (!status.Exists)
+            //        {
+            //            writer.AddDocument(document);
+            //        }
+            //        else
+            //        {
+            //            writer.UpdateDocument(new Term(UniversalSearchFieldNames.SearchGuid, status.Guid.ToString()),
+            //                document);
+            //        }
+            //    }, !IndexExists);
+            //});
         }
 
         public void Delete(SystemEntity entity)
@@ -74,14 +75,15 @@ namespace MrCMS.Search
             {
                 return;
             }
-            CurrentRequestData.OnEndRequest.Add(kernel =>
-            {
-                UniversalSearchIndexStatus status = GetStatus(entity);
-                Write(
-                    writer =>
-                        writer.DeleteDocuments(new Term(UniversalSearchFieldNames.SearchGuid, status.Guid.ToString())),
-                    !IndexExists);
-            });
+            CurrentRequestData.OnEndRequest.Add(new DeleteFromUniversalIndex(entity));
+            //CurrentRequestData.OnEndRequest.Add(kernel =>
+            //{
+            //    UniversalSearchIndexStatus status = GetStatus(entity);
+            //    Write(
+            //        writer =>
+            //            writer.DeleteDocuments(new Term(UniversalSearchFieldNames.SearchGuid, status.Guid.ToString())),
+            //        !IndexExists);
+            //});
         }
 
         public void ReindexAll()
@@ -99,9 +101,17 @@ namespace MrCMS.Search
             });
         }
 
+
         public IndexSearcher GetSearcher()
         {
-            return new IndexSearcher(GetDirectory(_site), true);
+            return _searcher ?? (_searcher = new IndexSearcher(GetDirectory(_site), true));
+        }
+
+
+        public void EnsureIndexExists()
+        {
+            if(!IndexExists)
+                InitializeIndex();
         }
 
         public MrCMSIndex GetUniversalIndexInfo()
@@ -153,17 +163,15 @@ namespace MrCMS.Search
             }
             bool exists = false;
             Guid searchGuid = Guid.Empty;
-            using (IndexSearcher indexSearcher = GetSearcher())
+            IndexSearcher indexSearcher = GetSearcher();
+            TopDocs topDocs =
+                indexSearcher.Search(new TermQuery(new Term(UniversalSearchFieldNames.Id, entity.Id.ToString())),
+                    int.MaxValue);
+            if (topDocs.ScoreDocs.Any())
             {
-                TopDocs topDocs =
-                    indexSearcher.Search(new TermQuery(new Term(UniversalSearchFieldNames.Id, entity.Id.ToString())),
-                        int.MaxValue);
-                if (topDocs.ScoreDocs.Any())
-                {
-                    Document doc = indexSearcher.Doc(topDocs.ScoreDocs[0].Doc);
-                    searchGuid = doc.GetValue<Guid>("search-guid");
-                    exists = true;
-                }
+                Document doc = indexSearcher.Doc(topDocs.ScoreDocs[0].Doc);
+                searchGuid = doc.GetValue<Guid>("search-guid");
+                exists = true;
             }
             return new UniversalSearchIndexStatus
             {
@@ -183,13 +191,14 @@ namespace MrCMS.Search
         }
 
 
-        private void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
+        public void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
         {
             using (var indexWriter = new IndexWriter(GetDirectory(_site), GetAnalyser(), recreateIndex,
                 IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 writeFunc(indexWriter);
             }
+            _searcher = null;
         }
     }
 }

@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using Lucene.Net.Documents;
+using Lucene.Net.Search;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Search.Models;
@@ -74,6 +76,36 @@ namespace MrCMS.Search
             if (item == null)
                 return null;
             return _searchConverter.Convert(item);
+        }
+
+        public Dictionary<SystemEntity, Document> GenerateDocuments(IEnumerable<SystemEntity> entities)
+        {
+            var dictionary = entities.GroupBy(entity => entity.GetType())
+                .ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
+
+            var documents = new Dictionary<SystemEntity, Document>();
+            foreach (var key in dictionary.Keys)
+            {
+                Dictionary<int, UniversalSearchItem> items;
+                if (!GetUniversalSearchItemTypes.ContainsKey(key))
+                    items = new Dictionary<int, UniversalSearchItem>();
+                else
+                {
+                    var getUniversalSearchItem = _kernel.Get(GetUniversalSearchItemTypes[key]) as GetUniversalSearchItemBase;
+                    if (getUniversalSearchItem == null)
+                        items = new Dictionary<int, UniversalSearchItem>();
+                    else
+                        items = getUniversalSearchItem.GetSearchItems(dictionary[key])
+                            .ToDictionary(searchItem => searchItem.Id, searchItem => searchItem);
+                }
+                foreach (var entity in dictionary[key])
+                {
+                    var item = items.ContainsKey(entity.Id) ? items[entity.Id] : null;
+                    documents.Add(entity, item == null ? null : _searchConverter.Convert(item));
+                }
+            }
+
+            return documents;
         }
 
         public IEnumerable<Document> GetAllItems()

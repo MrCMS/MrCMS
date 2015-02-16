@@ -1,13 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.QueryParsers;
-using Lucene.Net.Util;
+using Lucene.Net.Search;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Utils;
 using MrCMS.Search;
 using MrCMS.Search.Models;
-using MrCMS.Web.Areas.Admin.Models.Search;
+using Version = Lucene.Net.Util.Version;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
@@ -18,10 +19,11 @@ namespace MrCMS.Web.Areas.Admin.Services
 
     public class UniversalSearchIndexSearcher : IUniversalSearchIndexSearcher
     {
-        private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
         private readonly ISearchConverter _searchConverter;
+        private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
 
-        public UniversalSearchIndexSearcher(IUniversalSearchIndexManager universalSearchIndexManager, ISearchConverter searchConverter)
+        public UniversalSearchIndexSearcher(IUniversalSearchIndexManager universalSearchIndexManager,
+            ISearchConverter searchConverter)
         {
             _universalSearchIndexManager = universalSearchIndexManager;
             _searchConverter = searchConverter;
@@ -29,17 +31,20 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public List<UniversalSearchItemQuickSearch> QuickSearch(string term)
         {
-            using (var searcher = _universalSearchIndexManager.GetSearcher())
-            {
-                var analyser = new StandardAnalyzer(Version.LUCENE_30);
-                var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, new string[]  { UniversalSearchFieldNames.SearchTerms, UniversalSearchFieldNames.DisplayName, UniversalSearchFieldNames.Id, UniversalSearchFieldNames.EntityType}, analyser);
-                var topDocs = searcher.Search(term.SafeGetSearchQuery(parser, analyser), 10);
+            IndexSearcher searcher = _universalSearchIndexManager.GetSearcher();
+            var analyser = new StandardAnalyzer(Version.LUCENE_30);
+            var parser = new MultiFieldQueryParser(Version.LUCENE_30,
+                new[]
+                {
+                    UniversalSearchFieldNames.SearchTerms, UniversalSearchFieldNames.DisplayName,
+                    UniversalSearchFieldNames.Id, UniversalSearchFieldNames.EntityType
+                }, analyser);
+            TopDocs topDocs = searcher.Search(term.SafeGetSearchQuery(parser, analyser), 10);
 
-                var universalSearchItems =
-                    topDocs.ScoreDocs.Select(doc => _searchConverter.Convert(searcher.Doc(doc.Doc))).ToList();
+            List<UniversalSearchItem> universalSearchItems =
+                topDocs.ScoreDocs.Select(doc => _searchConverter.Convert(searcher.Doc(doc.Doc))).ToList();
 
-                return universalSearchItems.Select(item => new UniversalSearchItemQuickSearch(item)).ToList();
-            }
+            return universalSearchItems.Select(item => new UniversalSearchItemQuickSearch(item)).ToList();
         }
     }
 
@@ -52,18 +57,38 @@ namespace MrCMS.Web.Areas.Admin.Services
             _item = item;
         }
 
-        public string id { get { return _item.SearchGuid.ToString(); } }
-        public string value { get { return _item.DisplayName; } }
-        public string actionUrl { get { return _item.ActionUrl; } }
-        public string systemType { get { return _item.SystemType; } }
+        public string id
+        {
+            get { return _item.SearchGuid.ToString(); }
+        }
+
+        public string value
+        {
+            get { return _item.DisplayName; }
+        }
+
+        public string actionUrl
+        {
+            get { return _item.ActionUrl; }
+        }
+
+        public string systemType
+        {
+            get { return _item.SystemType; }
+        }
+
         public string displayType
         {
             get
             {
-                var typeByName = TypeHelper.GetTypeByName(_item.SystemType);
+                Type typeByName = TypeHelper.GetTypeByName(_item.SystemType);
                 return typeByName == null ? "" : typeByName.Name.BreakUpString();
             }
         }
-        public string systemId { get { return _item.Id.ToString(); } }
+
+        public string systemId
+        {
+            get { return _item.Id.ToString(); }
+        }
     }
 }

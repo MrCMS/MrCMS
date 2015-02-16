@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -51,15 +52,12 @@ namespace MrCMS.Services.FileMigration
                                         To = CurrentFileSystem.GetType().FullName
                                     }).ToList();
 
-            foreach (var queuedTask in filesToMove.Select(moveFileData => new QueuedTask
-                                                                          {
-                                                                              Data = JsonConvert.SerializeObject(moveFileData),
-                                                                              Type = typeof(MoveFile).FullName,
-                                                                              Status = TaskExecutionStatus.Pending
-                                                                          }))
-            {
-                CurrentRequestData.QueuedTasks.Add(queuedTask);
-            }
+            CurrentRequestData.OnEndRequest.AddRange(filesToMove.Select(moveFileData =>
+                new AddLuceneTaskInfo(new QueuedTaskInfo
+                {
+                    Data = JsonConvert.SerializeObject(moveFileData),
+                    Type = typeof (MoveFile)
+                })));
         }
     }
 }

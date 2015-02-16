@@ -214,17 +214,8 @@ namespace MrCMS.Website
                 {
                     if (Context.Items.Contains(CachedMissingItemKey))
                         return;
-                    if (CurrentRequestData.QueuedTasks.Any())
-                    {
-                        Kernel.Get<ISession>()
-                            .Transact(session =>
-                            {
-                                foreach (QueuedTask queuedTask in CurrentRequestData.QueuedTasks)
-                                    session.Save(queuedTask);
-                            });
-                    }
-                    foreach (var action in CurrentRequestData.OnEndRequest)
-                        action(Kernel);
+
+                    OnEndRequestExecutor.ExecuteTasks(CurrentRequestData.OnEndRequest);
 
                     OnEndRequest(sender, args);
 
@@ -233,12 +224,13 @@ namespace MrCMS.Website
             }
             else
             {
-                EndRequest += (sender, args) =>
-                {
-                    foreach (var action in CurrentRequestData.OnEndRequest)
-                        action(Kernel);
-                };
+                EndRequest += (sender, args) => OnEndRequestExecutor.ExecuteTasks(CurrentRequestData.OnEndRequest);
             }
+        }
+
+        private static IOnEndRequestExecutor OnEndRequestExecutor
+        {
+            get { return Kernel.Get<IOnEndRequestExecutor>(); }
         }
 
         protected virtual void OnEndRequest(object sender, EventArgs args) { }

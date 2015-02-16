@@ -4,6 +4,7 @@ using System.Linq;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Website;
 using NHibernate;
 using Ninject;
@@ -13,16 +14,12 @@ namespace MrCMS.Installation
     public class InstallationService : IInstallationService
     {
         private readonly IDatabaseCreationService _databaseCreationService;
-        private readonly IRestartApplication _restartApplication;
         private readonly IFileSystemAccessService _fileSystemAccessService;
 
-        public InstallationService(IFileSystemAccessService fileSystemAccessService,
-            IDatabaseCreationService databaseCreationService,
-            IRestartApplication restartApplication)
+        public InstallationService(IFileSystemAccessService fileSystemAccessService, IDatabaseCreationService databaseCreationService)
         {
             _fileSystemAccessService = fileSystemAccessService;
             _databaseCreationService = databaseCreationService;
-            _restartApplication = restartApplication;
         }
 
         public InstallationResult Install(InstallModel model)
@@ -41,12 +38,12 @@ namespace MrCMS.Installation
 
             try
             {
-                var provider = _databaseCreationService.CreateDatabase(model);
+                IDatabaseProvider provider = _databaseCreationService.CreateDatabase(model);
 
                 //save settings
                 SetUpInitialData(model, provider);
 
-                CurrentRequestData.OnEndRequest.Add(k => _restartApplication.Restart());
+                CurrentRequestData.OnEndRequest.Add(new ApplicationRestart());
             }
             catch (Exception exception)
             {

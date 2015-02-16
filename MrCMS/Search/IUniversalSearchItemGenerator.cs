@@ -8,6 +8,7 @@ namespace MrCMS.Search
     {
         bool CanGenerate(SystemEntity entity);
         Document GenerateDocument(SystemEntity entity);
+        Dictionary<SystemEntity, Document> GenerateDocuments(IEnumerable<SystemEntity> entities);
         IEnumerable<Document> GetAllItems();
     }
 }
