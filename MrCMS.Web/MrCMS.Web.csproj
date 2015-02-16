@@ -471,7 +471,6 @@
     <Compile Include="Apps\Galleries\Pages\Gallery.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\ACLController.cs" />
-    <Compile Include="Areas\Admin\Controllers\BaseDocumentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FileMigrationController.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaSelectorController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageQueueController.cs" />

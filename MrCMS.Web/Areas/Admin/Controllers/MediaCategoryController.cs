@@ -13,35 +13,25 @@ using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class MediaCategoryController : BaseDocumentController<MediaCategory>
+    public class MediaCategoryController : MrCMSAdminController
     {
         private readonly IFileAdminService _fileAdminService;
+        private readonly IUrlValidationService _urlValidationService;
+        private readonly IDocumentService _documentService;
 
-        public MediaCategoryController(IFileAdminService fileAdminService, IDocumentService documentService,
-            IUrlValidationService urlValidationService)
-            : base(documentService, urlValidationService)
+        public MediaCategoryController(IFileAdminService fileAdminService, IUrlValidationService urlValidationService, IDocumentService documentService)
         {
             _fileAdminService = fileAdminService;
+            _urlValidationService = urlValidationService;
+            _documentService = documentService;
         }
 
-        /**
-         * Need to do media category specific stuff before generic stuff. In this case
-         * create a directory for media files.
-         */
-
-        public override ActionResult Add(MediaCategory doc)
-        {
-            base.Add(doc);
-            _fileAdminService.CreateFolder(doc);
-            return RedirectToAction("Show", new { id = doc.Id });
-        }
-
-        [HttpGet]
-        [ActionName("Add")]
-        public override ActionResult Add_Get(int? id)
+        [HttpGet, ActionName("Add")]
+        public ActionResult Add_Get(int? id)
         {
             //Build list 
             var model = new MediaCategory
@@ -53,11 +43,60 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public override ActionResult Edit(MediaCategory doc)
+        public virtual ActionResult Add(MediaCategory doc)
+        {
+            _documentService.AddDocument(doc);
+            _fileAdminService.CreateFolder(doc);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
+            return RedirectToAction("Show", new { id = doc.Id });
+        }
+
+        [HttpGet, ActionName("Edit")]
+        public virtual ActionResult Edit_Get(MediaCategory doc)
+        {
+            return View(doc);
+        }
+
+        [HttpPost]
+        public virtual ActionResult Edit(MediaCategory doc)
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
             return RedirectToAction("Show", new { id = doc.Id });
+        }
+
+        [HttpGet, ActionName("Delete")]
+        public virtual ActionResult Delete_Get(MediaCategory document)
+        {
+            return PartialView(document);
+        }
+
+        [HttpPost]
+        public virtual ActionResult Delete(MediaCategory document)
+        {
+            _documentService.DeleteDocument(document);
+            TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] MediaCategory parent)
+        {
+            List<SortItem> sortItems =
+                _documentService.GetDocumentsByParent(parent)
+                    .Select(
+                        arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
+                    .OrderBy(x => x.Order)
+                    .ToList();
+
+            return View(sortItems);
+        }
+
+        [HttpPost]
+        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] MediaCategory parent, List<SortItem> items)
+        {
+            _documentService.SetOrders(items);
+            return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
         }
 
         public ActionResult Show(MediaCategory mediaCategory, int page = 1)
