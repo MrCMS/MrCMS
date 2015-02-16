@@ -15,6 +15,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _layoutAreaAdminService = layoutAreaAdminService;
         }
 
+        public ViewResult Index()
+        {
+            return View();
+        }
+
         [HttpGet]
         [ActionName("Add")]
         public override ActionResult Add_Get(int? id)

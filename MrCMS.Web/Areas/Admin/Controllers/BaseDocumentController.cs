@@ -21,10 +21,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _urlValidationService = urlValidationService;
         }
 
-        public virtual ViewResult Index()
-        {
-            return View();
-        }
 
         [HttpGet]
         [ActionName("Add")]

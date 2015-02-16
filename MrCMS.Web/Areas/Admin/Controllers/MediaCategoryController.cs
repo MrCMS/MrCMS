@@ -36,7 +36,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             base.Add(doc);
             _fileAdminService.CreateFolder(doc);
-            return RedirectToAction("Show", new {id = doc.Id});
+            return RedirectToAction("Show", new { id = doc.Id });
         }
 
         [HttpGet]
@@ -57,10 +57,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
-            return RedirectToAction("Show", new {id = doc.Id});
+            return RedirectToAction("Show", new { id = doc.Id });
         }
 
-        public ActionResult Show(MediaCategory mediaCategory, int page=1)
+        public ActionResult Show(MediaCategory mediaCategory, int page = 1)
         {
             if (mediaCategory == null)
                 return RedirectToAction("Index");
@@ -70,18 +70,16 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View(mediaCategory);
         }
 
-        public override ViewResult Index()
+        public ViewResult Index(int page = 1)
         {
-            var pageId = 1;
-            int.TryParse(Request.QueryString["page"], out pageId);
-            ViewData["files"] = _fileAdminService.GetFilesForFolder(null, pageId);
+            ViewData["files"] = _fileAdminService.GetFilesForFolder(null, page);
             ViewData["folders"] = _fileAdminService.GetSubFolders(null);
 
             return View();
         }
 
 
-        public ActionResult Upload([IoCModelBinder(typeof (NullableEntityModelBinder))] MediaCategory category)
+        public ActionResult Upload([IoCModelBinder(typeof(NullableEntityModelBinder))] MediaCategory category)
         {
             return PartialView(category);
         }
@@ -123,7 +121,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult SortFiles(MediaCategory parent, List<SortItem> items)
         {
             _fileAdminService.SetOrders(items);
-            return RedirectToAction("SortFiles", new {id = parent.Id});
+            return RedirectToAction("SortFiles", new { id = parent.Id });
         }
 
         /// <summary>
@@ -139,23 +137,23 @@ namespace MrCMS.Web.Areas.Admin.Controllers
                 : Json(true, JsonRequestBehavior.AllowGet);
         }
 
-        [MrCMSACLRule(typeof (MediaToolsACL), MediaToolsACL.Cut)]
+        [MrCMSACLRule(typeof(MediaToolsACL), MediaToolsACL.Cut)]
         public JsonResult MoveFilesAndFolders(
-            [IoCModelBinder(typeof (MoveFilesModelBinder))] MoveFilesAndFoldersModel model)
+            [IoCModelBinder(typeof(MoveFilesModelBinder))] MoveFilesAndFoldersModel model)
         {
             _fileAdminService.MoveFiles(model.Files, model.Folder);
             string message = _fileAdminService.MoveFolders(model.Folders, model.Folder);
-            return Json(new FormActionResult {success = true, message = message});
+            return Json(new FormActionResult { success = true, message = message });
         }
 
-        [MrCMSACLRule(typeof (MediaToolsACL), MediaToolsACL.Delete)]
+        [MrCMSACLRule(typeof(MediaToolsACL), MediaToolsACL.Delete)]
         public JsonResult DeleteFilesAndFolders(
-            [IoCModelBinder(typeof (DeleteFilesModelBinder))] DeleteFilesAndFoldersModel model)
+            [IoCModelBinder(typeof(DeleteFilesModelBinder))] DeleteFilesAndFoldersModel model)
         {
             _fileAdminService.DeleteFilesSoft(model.Files);
             _fileAdminService.DeleteFoldersSoft(model.Folders);
 
-            return Json(new FormActionResult {success = true, message = ""});
+            return Json(new FormActionResult { success = true, message = "" });
         }
     }
 }

@@ -24,6 +24,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _webpageBaseViewDataService = webpageBaseViewDataService;
         }
 
+        public ViewResult Index()
+        {
+            return View();
+        }
+
         public override ActionResult Add_Get(int? id)
         {
             //Build list 
