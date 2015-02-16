@@ -2,13 +2,14 @@
 $(function () {
 
     mediaUploaderSimple = new MediaUploader($('#upload-anywhere'), {
-        onFileUploadStopped: function (e, element) {
-            var fileList = element.find('#file-list-simple');
+        onFileUploadStopped: function (file, dropzone) {
+            var fileList = $(document).find('#file-list-simple');
             if (fileList) {
                 $.get('/Admin/MediaCategory/ShowFilesSimple/' + fileList.data('category-id'), function (response) {
                     fileList.replaceWith(response);
                 });
             }
+            dropzone.removeAllFiles();
         }
     }).init();
 

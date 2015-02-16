@@ -21,7 +21,7 @@
             $(settings.fileList).selectable({
                 filter: ".file, .folder",
                 stop: self.selectedStop,
-                cancel: ".ui-selected"
+                cancel: ".ui-selected, ul.pagination a"
             });
 
             //enbales double click

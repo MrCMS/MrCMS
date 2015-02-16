@@ -1,4 +1,5 @@
-﻿@using MrCMS.Helpers
+﻿@using System.Web.Optimization
+@using MrCMS.Helpers
 @using MrCMS.Website
 @using StackExchange.Profiling
 <!DOCTYPE html>
@@ -6,6 +7,8 @@
     <head>
         <title>@ViewBag.Title</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/gif" href="/Areas/Admin/Content/Images/mrcms-icon.gif">
+
         @{
             Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css");
             Html.IncludeCss("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload.css");
@@ -17,10 +20,12 @@
             Html.IncludeCss("~/Areas/Admin/Content/Styles/bootstrap/css/bootstrap.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/bootstrap/css/bootstrap-theme.css");
             Html.IncludeCss("~/Areas/Admin/Content/plugins/sweetalert-master/lib/sweet-alert.css");
+            Html.IncludeCss("~/Areas/Admin/Content/Styles/dropzone.css");            
             Html.IncludeCss("~/Areas/Admin/Content/Styles/mrcms-admin.css");
             Html.AddAppAdminStylesheets();
         }
         @Html.RenderCss()
+        
     </head>
     <body>
         <div id="loading" style="display: none;">
@@ -28,23 +33,16 @@
         </div>
         @RenderBody()
         
-        <script type="text/javascript" src="@Url.Content("~/admin/scripts/lib")"></script>
+        @Scripts.Render("~/admin/scripts/lib")
         <script type="text/javascript" src="@Url.Content("~/signalr/hubs")"></script>
         <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
         <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CurrentRequestData.CultureInfo.Name).js"></script>
         <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"> </script>
-        <script type="text/javascript" src="@Url.Content("~/admin/scripts/mrcms")"></script>
+        @Scripts.Render("~/admin/scripts/mrcms")
+        
+        
 
         @{
-            
-            //file uploading
-            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/load-image.js");
-            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload.js");
-            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-process.js");
-            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.iframe-transport.js");
-            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-validate.js");
-            Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-ui.js");
-
             Html.AddAppAdminScripts();
         }
         @if (!CurrentRequestData.CurrentUser.DisableNotifications)
