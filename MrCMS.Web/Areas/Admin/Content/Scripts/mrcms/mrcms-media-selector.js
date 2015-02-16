@@ -72,10 +72,11 @@
 
     var initializeMediaUploader = function () {
         mediaUploader = new MediaUploader(element, {
-            onFileUploadStopped: function (event) {
+            onFileUploadStopped: function (event, dropzone) {
                 var form = element.find(settings.formSelector);
                 var url = form.attr('action') + '?' + form.serialize();
                 updateResults(url);
+                dropzone.removeAllFiles();
             }
         });
         mediaUploader.init();

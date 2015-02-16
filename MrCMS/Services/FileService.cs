@@ -242,7 +242,7 @@ namespace MrCMS.Services
             var extension = Path.GetExtension(fileName);
             if (string.IsNullOrWhiteSpace(extension) || extension.Length < 1)
                 return false;
-            return _mediaSettings.AllowedFileTypeList.Contains(extension.Substring(1), StringComparer.OrdinalIgnoreCase);
+            return _mediaSettings.AllowedFileTypeList.Contains(extension, StringComparer.OrdinalIgnoreCase);
         }
 
         public void DeleteFileSoft(MediaFile mediaFile)

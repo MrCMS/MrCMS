@@ -22,6 +22,10 @@ $(function () {
 
     $(".datepicker").datepicker();
 
+    if (Dropzone) {
+        Dropzone.autoDiscover = false;
+    }
+
     $(document).on('click', '.date-time-picker', function () {
         var that = $(this);
         if (!that.hasClass('hasDatepicker')) {
