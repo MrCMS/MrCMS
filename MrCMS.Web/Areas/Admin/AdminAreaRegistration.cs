@@ -1,5 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Optimization;
+using MrCMS.Apps;
+using MrCMS.Settings;
 using MrCMS.Website;
 
 namespace MrCMS.Web.Areas.Admin
@@ -22,7 +24,6 @@ namespace MrCMS.Web.Areas.Admin
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional }
                 );
 
-
             BundleTable.Bundles.Add(GenerateAdminLiBundle());
             BundleTable.Bundles.Add(GenerateMrCmsAdminLiBundle());
         }
@@ -39,7 +40,7 @@ namespace MrCMS.Web.Areas.Admin
             adminMrCmsBundle.Include("~/Areas/Admin/Content/Scripts/mrcms/batch.js");
             adminMrCmsBundle.Include("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js");
             adminMrCmsBundle.Include("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
-
+            
             return adminMrCmsBundle;
         }
 
