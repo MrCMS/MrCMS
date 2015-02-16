@@ -4,8 +4,11 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Elmah;
@@ -14,6 +17,7 @@ using ImageResizer.Plugins.Basic;
 using ImageResizer.Plugins.PrettyGifs;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using MrCMS.Apps;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.IoC;
@@ -85,7 +89,40 @@ namespace MrCMS.Website
             MiniProfiler.Settings.Results_Authorize = IsUserAllowedToSeeMiniProfilerUI;
             MiniProfiler.Settings.Results_List_Authorize = IsUserAllowedToSeeMiniProfilerUI;
 
+
+            StartTaskRunning();
+
             OnApplicationStart();
+        }
+
+        private void StartTaskRunning()
+        {
+            var sites = Get<ISession>().QueryOver<Site>().Cacheable().List();
+            foreach (var site in sites)
+            {
+                QueueTaskExecution(site);
+            }
+        }
+
+        public static void QueueTaskExecution(Site site)
+        {
+            if (!HostingEnvironment.IsHosted)
+                return;
+            HostingEnvironment.QueueBackgroundWorkItem(async x =>
+            {
+                var siteSettings = new ConfigurationProvider(site, null).GetSiteSettings<SiteSettings>();
+
+                if (siteSettings.SelfExecuteTasks)
+                {
+                    var url = string.Format("{0}/execute-pending-tasks?{1}={2}", site.GetFullDomain.TrimEnd('/'),
+                        siteSettings.TaskExecutorKey,
+                        siteSettings.TaskExecutorPassword);
+                    await new HttpClient().GetAsync(url, x);
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(10), x);
+                QueueTaskExecution(site);
+            });
         }
 
         private bool IsUserAllowedToSeeMiniProfilerUI(HttpRequest arg)

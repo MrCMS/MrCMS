@@ -5,6 +5,7 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Services.CloneSite;
+using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Services
@@ -35,6 +36,8 @@ namespace MrCMS.Web.Areas.Admin.Services
             _session.Transact(session => session.Save(site));
 
             _cloneSiteService.CloneData(site, options);
+
+            MrCMSApplication.QueueTaskExecution(site);
         }
 
         public void SaveSite(Site site)
