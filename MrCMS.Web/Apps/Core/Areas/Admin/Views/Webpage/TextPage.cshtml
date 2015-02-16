@@ -6,8 +6,3 @@
     @Html.LabelFor(webpage => webpage.FeatureImage) <br />
     @Html.TextBoxFor(webpage => webpage.FeatureImage, new { data_type = "media-selector" })
 </div>
-
-@{
-    var mediaCategory = MrCMSApplication.Get<IDocumentService>().GetDocument<MediaCategory>(15);
-}
-@{ Html.RenderPartial("UploadAnywhere", mediaCategory);}
