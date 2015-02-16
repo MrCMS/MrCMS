@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
+using MrCMS.Paging;
 using MrCMS.Web.Areas.Admin.Models;
 
 namespace MrCMS.Web.Areas.Admin.Services
@@ -15,7 +16,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);
         bool IsValidFileType(string fileName);
-        IList<MediaFile> GetFilesForFolder(MediaCategory category);
+        IPagedList<MediaFile> GetFilesForFolder(MediaCategory category, int page);
         void CreateFolder(MediaCategory category);
         void SetOrders(List<SortItem> items);
         IList<MediaCategory> GetSubFolders(MediaCategory folder);

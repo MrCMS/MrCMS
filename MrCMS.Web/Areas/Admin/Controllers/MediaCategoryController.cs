@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.UI;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -59,11 +60,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Show", new {id = doc.Id});
         }
 
-        public ActionResult Show(MediaCategory mediaCategory)
+        public ActionResult Show(MediaCategory mediaCategory, int page=1)
         {
             if (mediaCategory == null)
                 return RedirectToAction("Index");
-            ViewData["files"] = _fileAdminService.GetFilesForFolder(mediaCategory);
+            ViewData["files"] = _fileAdminService.GetFilesForFolder(mediaCategory, page);
             ViewData["folders"] = _fileAdminService.GetSubFolders(mediaCategory);
 
             return View(mediaCategory);
@@ -71,7 +72,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public override ViewResult Index()
         {
-            ViewData["files"] = _fileAdminService.GetFilesForFolder(null);
+            var pageId = 1;
+            int.TryParse(Request.QueryString["page"], out pageId);
+            ViewData["files"] = _fileAdminService.GetFilesForFolder(null, pageId);
             ViewData["folders"] = _fileAdminService.GetSubFolders(null);
 
             return View();
@@ -100,7 +103,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             ViewData["categoryId"] = parent.Id;
             List<ImageSortItem> sortItems =
-                _fileAdminService.GetFilesForFolder(parent).OrderBy(arg => arg.DisplayOrder)
+                _fileAdminService.GetFilesForFolder(parent, 250).OrderBy(arg => arg.DisplayOrder)
                     .Select(
                         arg =>
                             new ImageSortItem

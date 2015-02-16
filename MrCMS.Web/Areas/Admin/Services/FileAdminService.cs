@@ -4,8 +4,10 @@ using System.Linq;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Models;
+using MrCMS.Paging;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
+using MrCMS.Settings;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.Models;
 using NHibernate;
@@ -19,13 +21,15 @@ namespace MrCMS.Web.Areas.Admin.Services
         private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly IDocumentService _documentService;
+        private readonly MediaSettings _mediaSettings;
 
-        public FileAdminService(IFileService fileService, ISession session, IStringResourceProvider stringResourceProvider, IDocumentService documentService)
+        public FileAdminService(IFileService fileService, ISession session, IStringResourceProvider stringResourceProvider, IDocumentService documentService, MediaSettings mediaSettings)
         {
             _fileService = fileService;
             _session = session;
             _stringResourceProvider = stringResourceProvider;
             _documentService = documentService;
+            _mediaSettings = mediaSettings;
         }
 
         public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory)
@@ -59,14 +63,15 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             return _fileService.IsValidFileType(fileName);
         }
-        public IList<MediaFile> GetFilesForFolder(MediaCategory category = null)
+        public IPagedList<MediaFile> GetFilesForFolder(MediaCategory category = null, int page = 1)
         {
             var query = _session.QueryOver<MediaFile>();
             query = category != null
                 ? query.Where(file => file.MediaCategory.Id == category.Id)
                 : query.Where(file => file.MediaCategory == null);
+            query = query.OrderBy(x => x.DisplayOrder).Desc;
 
-            return query.OrderBy(x => x.DisplayOrder).Desc.Cacheable().List();
+            return query.Paged(page, _mediaSettings.MediaPageSize);
         }
 
         public void CreateFolder(MediaCategory category)

@@ -25,6 +25,7 @@ namespace MrCMS.Settings
             EnforceMaxImageSize = true;
             MaxImageSizeHeight = 1200;
             MaxImageSizeWidth = 1200;
+            MediaPageSize = 72;
         }
 
         [DisplayName("Thumbnail Image Height")]
@@ -172,6 +173,9 @@ namespace MrCMS.Settings
         {
             get { return true; }
         }
+        
+        [DisplayName("Media Page Size")]
+        public int MediaPageSize { get; set; }
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {

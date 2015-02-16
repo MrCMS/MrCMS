@@ -4,6 +4,7 @@
 @using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
 @using MrCMS.Media
+@using MrCMS.Paging
 @using MrCMS.Web.Areas.Admin.ACL
 @using MrCMS.Website
 @model MrCMS.Entities.Documents.Media.MediaCategory
@@ -11,10 +12,10 @@
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
-    var files = ViewData["files"] as IList<MediaFile> ?? new List<MediaFile>();
+    var files = ViewData["files"] as IPagedList<MediaFile> ?? null;
     var folders = ViewData["folders"] as IList<MediaCategory> ?? new List<MediaCategory>();
     bool canAccessMediaToolsCut = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Cut);
-    bool canAccessMediaToolsDelete = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Delete); 
+    bool canAccessMediaToolsDelete = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Delete);
 }
 
 <div class="margin-bottom-20">
@@ -63,8 +64,8 @@
         }
         <div class="clearfix"></div>
     }
-    <div id="file-list" data-file-list="true" data-category-id="@(Model==null ? (int?)null : Model.Id)">
-        @if (files.Any())
+    <div id="file-list" data-file-list="true" data-category-id="@(Model==null ? (int?)null : Model.Id)" >
+        @if (files != null && files.Any())
         {
             foreach (var file in files)
             {
@@ -87,6 +88,7 @@
                 </div>
             }
             <div class="clearfix"> </div>
+            @Html.PageCurrentPage(files, i => new { Page = i }, PagedListRenderOptions.PageNumbersOnly)
 
         }
         else
