@@ -11,7 +11,6 @@ namespace MrCMS.Website
     public class OnEndRequestExecutor : IOnEndRequestExecutor
     {
         private readonly IKernel _kernel;
-        private readonly IStringResourceProvider _stringResourceProvider;
         private static readonly Dictionary<Type, Type> OnRequestExecutionTypes = new Dictionary<Type, Type>();
 
         static OnEndRequestExecutor()
@@ -25,10 +24,9 @@ namespace MrCMS.Website
                 OnRequestExecutionTypes.Add(type, executorType);
             }
         }
-        public OnEndRequestExecutor(IKernel kernel, IStringResourceProvider stringResourceProvider)
+        public OnEndRequestExecutor(IKernel kernel)
         {
             _kernel = kernel;
-            _stringResourceProvider = stringResourceProvider;
         }
 
         public void ExecuteTasks(HashSet<EndRequestTask> tasks)
@@ -52,9 +50,7 @@ namespace MrCMS.Website
                 CurrentRequestData.ErrorSignal.Raise(
                     new Exception(
                         string.Format(
-                        _stringResourceProvider
-                                .GetValue(
-                                    "Could not process tasks of type {0}. Please create a valid executor for the type"),
+                            "Could not process tasks of type {0}. Please create a valid executor for the type",
                             type.FullName)));
             }
         }

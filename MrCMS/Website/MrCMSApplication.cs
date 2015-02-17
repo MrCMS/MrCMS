@@ -97,10 +97,13 @@ namespace MrCMS.Website
 
         private void StartTaskRunning()
         {
-            var sites = Get<ISession>().QueryOver<Site>().Cacheable().List();
-            foreach (var site in sites)
+            if (CurrentRequestData.DatabaseIsInstalled)
             {
-                QueueTaskExecution(site);
+                var sites = Get<ISession>().QueryOver<Site>().Cacheable().List();
+                foreach (var site in sites)
+                {
+                    QueueTaskExecution(site);
+                }
             }
         }
 
