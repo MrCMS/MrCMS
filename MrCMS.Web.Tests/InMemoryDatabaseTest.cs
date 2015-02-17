@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Web;
 using Elmah;
 using Iesi.Collections.Generic;
 using MrCMS.DbConfiguration;
@@ -71,6 +72,7 @@ namespace MrCMS.Web.Tests
             Kernel.Load(new GenericBindingsModule());
             _eventContext = new TestableEventContext(Kernel.Get<EventContext>());
             Kernel.Rebind<IEventContext>().ToMethod(context => EventContext);
+
         }
 
         protected Site CurrentSite { get; set; }
