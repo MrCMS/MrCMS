@@ -2207,4 +2207,26 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.94.0\build\net451\System.Data.SQLite.Core.targets'))" />
   </Target>
+ <Target Name="CustomCollectFiles">
+    <ItemGroup>
+       <!-- Create an identity called _CustomFiles, and associate it to the files I created -->
+      <_CustomFiles Include="bin\**\*.dll" />
+      <FilesForPackagingFromProject Include="%(_CustomFiles.Identity)">
+        <DestinationRelativePath>bin\%(RecursiveDir)%(Filename)%(Extension)        </DestinationRelativePath>
+      </FilesForPackagingFromProject>
+    </ItemGroup>
+  </Target>
+
+ <!-- Hook into the pipeline responsible for gathering files and tell it to add my files -->
+  <PropertyGroup>
+    <CopyAllFilesToSingleFolderForPackageDependsOn>
+      CustomCollectFiles;
+      $(CopyAllFilesToSingleFolderForPackageDependsOn);
+    </CopyAllFilesToSingleFolderForPackageDependsOn>
+
+    <CopyAllFilesToSingleFolderForMsdeployDependsOn>
+       CustomCollectFiles;
+      $(CopyAllFilesToSingleFolderForPackageDependsOn);
+    </CopyAllFilesToSingleFolderForMsdeployDependsOn>
+  </PropertyGroup>
 </Project>
