@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -20,7 +18,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             _session = session;
         }
 
-        public IEnumerable<AutoCompleteResult> Search( string term)
+        public IEnumerable<AutoCompleteResult> Search(string term)
         {
             AutoCompleteResult alias = null;
             return
@@ -54,8 +52,10 @@ namespace MrCMS.Web.Areas.Admin.Services
         public Tag GetByName(string name)
         {
             return _session.QueryOver<Tag>().Where(x => x.Site == CurrentRequestData.CurrentSite
-                && x.Name.IsInsensitiveLike(name, MatchMode.Exact)).SingleOrDefault();
+                                                        && x.Name.IsInsensitiveLike(name, MatchMode.Exact))
+                .SingleOrDefault();
         }
+
         public void Add(Tag tag)
         {
             _session.Transact(session => session.Save(tag));
