@@ -120,21 +120,21 @@ namespace MrCMS.DbConfiguration
 
         private void SetupCache(CacheSettingsBuilder builder)
         {
-            if (CacheEnabled)
+            if (!CacheEnabled) 
+                return;
+
+            builder.UseSecondLevelCache()
+                .UseQueryCache()
+                .QueryCacheFactory<StandardQueryCacheFactory>();
+            var mrCMSSection = WebConfigurationManager.GetSection("mrcms") as MrCMSConfigSection;
+            if (mrCMSSection != null)
             {
-                builder.UseSecondLevelCache()
-                    .UseQueryCache()
-                    .QueryCacheFactory<StandardQueryCacheFactory>();
-                var mrCMSSection = WebConfigurationManager.GetSection("mrcms") as MrCMSConfigSection;
-                if (mrCMSSection != null)
-                {
-                    builder.ProviderClass(mrCMSSection.CacheProvider.AssemblyQualifiedName);
-                    if (mrCMSSection.MinimizePuts)
-                        builder.UseMinimalPuts();
-                }
-                else
-                    builder.ProviderClass<SysCacheProvider>();
+                builder.ProviderClass(mrCMSSection.CacheProvider.AssemblyQualifiedName);
+                if (mrCMSSection.MinimizePuts)
+                    builder.UseMinimalPuts();
             }
+            else
+                builder.ProviderClass<SysCacheProvider>();
         }
 
         private static void ApplyCoreFilters(AutoPersistenceModel autoPersistenceModel)

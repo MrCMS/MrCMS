@@ -7,6 +7,7 @@ using MrCMS.Models;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Transform;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
@@ -21,15 +22,20 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public IEnumerable<AutoCompleteResult> Search( string term)
         {
+            AutoCompleteResult alias = null;
             return
-                _session.QueryOver<Tag>().Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start)).List().Select(
-                    tag =>
-                    new AutoCompleteResult
-                        {
-                            id = tag.Id,
-                            label = string.Format("{0}", tag.Name),
-                            value = tag.Name
-                        });
+                _session.QueryOver<Tag>()
+                    .Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start))
+                    .OrderBy(tag => tag.Name).Asc
+                    .SelectList(builder =>
+                    {
+                        builder.Select(tag => tag.Id).WithAlias(() => alias.id);
+                        builder.Select(tag => tag.Name).WithAlias(() => alias.label);
+                        builder.Select(tag => tag.Name).WithAlias(() => alias.value);
+                        return builder;
+                    })
+                    .TransformUsing(Transformers.AliasToBean<AutoCompleteResult>())
+                    .List<AutoCompleteResult>();
         }
 
         public IEnumerable<Tag> GetTags(Document document)
