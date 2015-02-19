@@ -8,7 +8,7 @@ namespace MrCMS.Tests
     {
         public override void Load()
         {
-            Kernel.Bind<HttpContextBase>().To<OutOfContext>().InThreadScope();
+            Kernel.Rebind<HttpContextBase>().To<OutOfContext>().InThreadScope();
         }
     }
 }
