@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using MrCMS.Entities.Documents;
-using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Transform;
@@ -34,31 +32,6 @@ namespace MrCMS.Web.Areas.Admin.Services
                     })
                     .TransformUsing(Transformers.AliasToBean<AutoCompleteResult>())
                     .List<AutoCompleteResult>();
-        }
-
-        public IEnumerable<Tag> GetTags(Document document)
-        {
-            ISet<Tag> parentCategories = new HashSet<Tag>();
-
-            if (document != null)
-            {
-                if (document.Parent != null)
-                    parentCategories = document.Parent.Tags;
-            }
-
-            return parentCategories;
-        }
-
-        public Tag GetByName(string name)
-        {
-            return _session.QueryOver<Tag>().Where(x => x.Site == CurrentRequestData.CurrentSite
-                                                        && x.Name.IsInsensitiveLike(name, MatchMode.Exact))
-                .SingleOrDefault();
-        }
-
-        public void Add(Tag tag)
-        {
-            _session.Transact(session => session.Save(tag));
         }
     }
 }

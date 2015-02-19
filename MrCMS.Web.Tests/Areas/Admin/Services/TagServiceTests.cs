@@ -36,23 +36,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
             tags.Skip(1).First().label.Should().Be("tag-2");
         }
 
-        [Fact]
-        public void TagAdminService_GetTags_ShouldReturnTheTagsOfAParent()
-        {
-            var fakeSession = A.Fake<ISession>();
-
-            var tagService = new TagAdminService(fakeSession);
-            var tag1 = new Tag {Name = "tag-1", Site = CurrentSite};
-
-            Session.Transact(session => Session.SaveOrUpdate(tag1));
-
-            var container = new FakeContainer {Site = CurrentSite};
-            container.SetTags(new HashSet<Tag> {tag1});
-            var containerItem = new FakeContainerItem {Parent = container, Site = CurrentSite};
-
-            tagService.GetTags(containerItem).Should().HaveCount(1);
-        }
-
         public class FakeContainer : Document
         {
             public virtual void SetTags(ISet<Tag> tags)
