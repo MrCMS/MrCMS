@@ -20,6 +20,8 @@ namespace MrCMS.Website.Controllers
         public ActionResult Save(int id)
         {
             var webpage = _documentService.GetDocument<Webpage>(id);
+            if (webpage.IsDeleted)
+                return new EmptyResult();
             var saveFormData = _formPostingHandler.SaveFormData(webpage, Request);
 
             TempData["form-submitted"] = true;
