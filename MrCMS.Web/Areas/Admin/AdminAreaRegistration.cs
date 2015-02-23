@@ -61,11 +61,11 @@ namespace MrCMS.Web.Areas.Admin
             }
             adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/jquery/validate/jquery.validate.unobtrusive.min.js");
             adminBundle.Include("~/Areas/Admin/Content/Styles/bootstrap/js/bootstrap.js");
-            adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.js");
             adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/tag-it.min.js");
             adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/jquery.noty.packaged.js");
             adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/jstree/jstree.js");
             adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/dropzone.js");
+            adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/featherlight.js");
 
             return adminBundle;
         }

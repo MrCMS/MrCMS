@@ -12,7 +12,7 @@
     var results = ViewData["results"] as IPagedList<MediaFile> ?? PagedList<MediaFile>.Empty;
     var mediaSettings = MrCMSApplication.Get<MediaSettings>();
 }
-<div data-type="media-selector-popup">
+<div data-type="media-selector-popup" style="min-height: 450px;">
     @using (Html.BeginForm("Show", "MediaSelector", FormMethod.Get, new { id = "search-form", style = "margin:0px;" }))
     {
         <fieldset>

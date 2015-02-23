@@ -10,13 +10,11 @@
 
 <div class="container-mrcms" style="padding-left: 0;">
     <div class="main-content">
-        <div class="inner-content">
-            <section class="admin-header">
-                @{ Html.RenderPartial("Messages");}
-            </section>
-            @RenderBody()
-        </div>
+        @{ Html.RenderPartial("Messages");}
+        @RenderBody()
+        <div class="clearfix"> </div>
     </div>
+    <div class="clearfix"> </div>
 </div>
 <footer>
     <hr />
