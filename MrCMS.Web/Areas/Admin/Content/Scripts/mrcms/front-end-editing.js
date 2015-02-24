@@ -14,6 +14,7 @@
                 editor.on('configLoaded', function () {
                     editor.config.toolbar = 'Basic';
                 });
+                
             });
 
             $("#enable-editing").click(function () {
@@ -228,26 +229,14 @@
 $(function () {
     $('.editable', document).mrcmsinline();
 
-    $(document).on('click', '[data-toggle="fb-modal"]', function () {
-        var clone = $(this).clone();
-        clone.attr('data-toggle', '');
-        clone.hide();
-        clone.fancybox({
-            type: 'iframe',
-            autoSize: true,
-            minHeight: 400,
-            minWidth: 500,
-            padding: 0,
-            scrolling: "no",
-            afterShow: function () {
-                $(".fancybox-iframe").contents().find('form').attr('target', '_parent').css('margin', '0');
-                $(".fancybox-inner").css("overflow", "");
-
-            }
-        }).click().remove();
-        return false;
+    $(document).featherlight({
+        filter: '[data-toggle="fb-modal"]',
+        type: 'iframe',
+        iframeWidth: 800,
+        afterOpen: function () { },
+        beforeOpen: function () {
+            $(".mrcms-edit-menu", document).hide(); }
     });
-
     $("#unpublish-now").click(function () {
         if (window.top.location.pathname == '/') {
             if (!confirm('Are you sure you want to unpublish your home page?')) {

@@ -35,21 +35,14 @@ $(function () {
         }
     });
 
-    $(document).on('click', '[data-toggle="fb-modal"]', function () {
-        var clone = $(this).clone();
-        clone.attr('data-toggle', '');
-        clone.hide();
-        clone.fancybox({
-            type: 'iframe',
-            autoSize: true,
-            minHeight: 200,
-            padding: 0,
-            afterShow: function () {
-                $('.fancybox-iframe').contents().find('form').attr('target', '_parent').css('margin', '0');
-                $(".fancybox-inner").css("overflow", "");
-            }
-        }).click().remove();
-        return false;
+    
+    $(document).featherlight({
+        filter: '[data-toggle="fb-modal"]',
+        type: 'iframe',
+        iframeWidth: 800,
+        afterOpen: function () {  },
+        beforeOpen: function () {
+        }
     });
 
 
@@ -127,14 +120,9 @@ function resizeModal(jqElement) {
 function getRemoteModel(href) {
     var link = $("<a>");
     link.attr('href', href);
-    link.fancybox({
+    link.featherlight({
         type: 'iframe',
-        autoSize: true,
-        minHeight: 200,
-        padding: 0,
-        afterShow: function () {
-            $('.fancybox-iframe').contents().find('form').attr('target', '_parent').css('margin', '0');
-        }
+        iframeWidth: 820,
     }).click();
 }
 
@@ -145,7 +133,8 @@ window.admin = {
     initializePlugins: function () {
         CKEDITOR.replaceAll('ckedit-enabled');
         CKEDITOR.on('instanceReady', function (ev) {
-            $(window).resize();
+            if (window.location != window.parent.location) // if in iframe, trigger resize.
+                top.$(top).trigger('resize');
         });
         $('[data-type=media-selector], [class=media-selector]').mediaSelector();
         var form = $('form');

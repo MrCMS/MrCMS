@@ -65,7 +65,7 @@
                                                 e.data.button.getDialog().setValueOf('info', 'txtAlt', response.alt);
                                                 e.data.button.getDialog().setValueOf('advanced', 'txtGenTitle', response.title);
                                             });
-                                            $.fancybox.close();
+                                            $.featherlight.close();
                                         }
                                     });
                                     mediaSelector.show($);

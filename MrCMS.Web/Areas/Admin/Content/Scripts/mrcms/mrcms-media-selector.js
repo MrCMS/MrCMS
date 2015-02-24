@@ -88,15 +88,16 @@
             $ = jQ;
             var link = $('<a>').attr('href', settings.selectorUrl);
             link.hide();
-            link.fancybox({
+            link.featherlight({
                 type: 'iframe',
-                autoSize: true,
-                minHeight: 400,
-                padding: 0,
-                afterShow: function () {
-                    element = $('.fancybox-iframe').contents();
+                iframeWidth: 820,
+                afterOpen: function() {
+                    element = $('.featherlight-inner').contents();
                     element.find('form').css('margin', '0');
                     self.init();
+                },
+                beforeOpen: function () {
+                    $(".mrcms-edit-menu", document).hide();
                 }
             }).click().remove();
             return self;
@@ -229,7 +230,7 @@ var MediaSelectorWrapper = function (el, options) {
         },
         onSelected: function (data) {
             self.setValue(data.Url);
-            $.fancybox.close();
+            $.featherlight.close();
         }
     };
 };

@@ -11,8 +11,7 @@
 
         @{
             Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css");
-            Html.IncludeCss("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload.css");
-            Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.css");
+            Html.IncludeCss("~/Areas/Admin/Content/Styles/featherlight.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery.tagit.css");
             Html.IncludeCss("~/Areas/Admin/Content/Styles/jquery-ui-bootstrap/jquery-ui-1.9.2.custom.css");
             Html.IncludeCss("~/Areas/Admin/Content/plugins/font-awesome-4.2.0/css/font-awesome.css");
@@ -32,12 +31,12 @@
             <img src="/Areas/Admin/Content/Images/ajax-loader2.gif" />
         </div>
         @RenderBody()
+        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"> </script>
         
         @Scripts.Render("~/admin/scripts/lib")
         <script type="text/javascript" src="@Url.Content("~/signalr/hubs")"></script>
         <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
         <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CurrentRequestData.CultureInfo.Name).js"></script>
-        <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"> </script>
         @Scripts.Render("~/admin/scripts/mrcms")
         
         
