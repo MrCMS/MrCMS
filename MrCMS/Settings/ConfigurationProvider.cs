@@ -101,12 +101,14 @@ namespace MrCMS.Settings
         private TSettings GetSettingObject<TSettings>() where TSettings : SiteSettingsBase, new()
         {
             string fileLocation = GetFileLocation(typeof(TSettings));
+            TSettings result = null;
             if (File.Exists(fileLocation))
             {
                 string readAllText = File.ReadAllText(fileLocation);
-                return JsonConvert.DeserializeObject<TSettings>(readAllText);
+                result = JsonConvert.DeserializeObject<TSettings>(readAllText);
             }
-            return GetNewSettingsObject<TSettings>();
+            result = result ?? GetNewSettingsObject<TSettings>();
+            return result;
         }
 
         private TSettings GetNewSettingsObject<TSettings>() where TSettings : SiteSettingsBase, new()
