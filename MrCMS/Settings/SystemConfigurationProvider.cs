@@ -52,8 +52,12 @@ namespace MrCMS.Settings
             {
                 if (!_settingCache.ContainsKey(typeof (TSettings)))
                 {
-                    var settingObject = GetSettingObject<TSettings>();
-                    SaveSettings(settingObject);
+                    GetSettingsObject<TSettings> settingObject = GetSettingObject<TSettings>();
+                    TSettings settings = settingObject.Settings;
+                    if (settingObject.IsNew)
+                        SaveSettings(settings);
+                    else
+                        _settingCache[settings.GetType()] = settings;
                 }
                 return _settingCache[typeof (TSettings)] as TSettings;
             }
@@ -79,15 +83,18 @@ namespace MrCMS.Settings
         }
 
 
-        private TSettings GetSettingObject<TSettings>() where TSettings : SystemSettingsBase, new()
+        private GetSettingsObject<TSettings> GetSettingObject<TSettings>() where TSettings : SystemSettingsBase, new()
         {
-            string fileLocation = GetFileLocation(typeof (TSettings));
+            string fileLocation = GetFileLocation(typeof(TSettings));
+            TSettings result = null;
             if (File.Exists(fileLocation))
             {
                 string readAllText = File.ReadAllText(fileLocation);
-                return JsonConvert.DeserializeObject<TSettings>(readAllText);
+                result = JsonConvert.DeserializeObject<TSettings>(readAllText);
             }
-            return new TSettings();
+            return result != null
+                ? new GetSettingsObject<TSettings>(result)
+                : new GetSettingsObject<TSettings>(new TSettings(), true);
         }
 
         public static void ClearCache()
@@ -98,6 +105,18 @@ namespace MrCMS.Settings
         void IClearCache.ClearCache()
         {
             ClearCache();
+        }
+        private struct GetSettingsObject<TSettings> where TSettings : SystemSettingsBase, new()
+        {
+            public GetSettingsObject(TSettings settings, bool isNew = false)
+                : this()
+            {
+                Settings = settings;
+                IsNew = isNew;
+            }
+
+            public TSettings Settings { get; private set; }
+            public bool IsNew { get; private set; }
         }
     }
 
