@@ -73,7 +73,7 @@ namespace MrCMS.Services
             EnsureInitialized();
             var blob = Container.GetBlockBlobReference(filePath);
             blob.Properties.ContentType = contentType;
-
+            blob.Properties.CacheControl = "public, max-age=31536000";
             if (stream.CanSeek)
             {
                 stream.Position = 0;
