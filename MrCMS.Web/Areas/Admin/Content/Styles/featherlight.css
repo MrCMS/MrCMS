@@ -93,7 +93,6 @@
 		text-align: center;
 		font: Arial, sans-serif;
 		background: #fff; /* Set the background in case it overlaps the content */
-		background: rgba(255, 255, 255, 0.3);
 		color: #000;
 	}
 
