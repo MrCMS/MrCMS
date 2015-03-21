@@ -14,7 +14,7 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
         {
             string url = webpage.AbsoluteUrl;
             yield return
-                url.Contains(analysisTerm, StringComparison.OrdinalIgnoreCase)
+                url.Replace("-", " ").Contains(analysisTerm, StringComparison.OrdinalIgnoreCase)
                     ? GetFacet("URL contains term", SEOAnalysisStatus.Success, "The URL contains '" + analysisTerm + "'")
                     : GetFacet("URL contains term", SEOAnalysisStatus.Error, "The URL does not contain '" + analysisTerm + "'");
         }
