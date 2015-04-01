@@ -28,6 +28,9 @@ namespace MrCMS.Web.Apps.Core.Services
 
         public async Task<LoginResult> AuthenticateUser(LoginModel loginModel)
         {
+            if (string.IsNullOrWhiteSpace(loginModel.ReturnUrl))
+                loginModel.ReturnUrl = null;
+            
             string message = null;
             User user = _userService.GetUserByEmail(loginModel.Email);
             if (user == null)

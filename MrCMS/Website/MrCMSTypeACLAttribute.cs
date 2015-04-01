@@ -26,6 +26,8 @@ namespace MrCMS.Website
                 if (int.TryParse(Convert.ToString(idVal), out id))
                 {
                     var o = MrCMSApplication.Get<ISession>().Get(_type, id);
+                    if (o == null)
+                        return false;
 
                     return new TypeACLRule().CanAccess(CurrentRequestData.CurrentUser, _operation, o.GetType().FullName);
                 }
