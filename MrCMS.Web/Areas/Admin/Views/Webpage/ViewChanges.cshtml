@@ -5,11 +5,6 @@
 <fieldset>
     <legend>
         @Resource("Admin Webpage Version", "Version") @Model.Id
-        <span class="btn-group  display-inline  pull-right">
-            @using (Html.BeginForm("RevertToVersion", "Webpage", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
-            {
-            }
-        </span>
     </legend>
     @Resource("Admin Webpage Version Edited By", "Edited by") @(Model.User == null ? @Html.Raw("System") : Html.ActionLink(Model.User.Email, "Edit", "User", new { id = Model.User.Id }, null)) on @Model.CreatedOn
     <table class="table table-bordered" id="changes-table">

@@ -85,13 +85,15 @@
                                         var a =
                                         this.getValue().match(v); (a = !!(a && 0 !== parseInt(a[1], 10))) || alert(c.lang.common.invalidWidth); return a
                                     }, setup: y, commit: function (a, b, d) {
-                                        var e = this.getValue(); a == f ? (e && c.activeFilter.check("img{width,height}") ? b.setStyle("width", CKEDITOR.tools.cssLength(e)) : b.removeStyle("width"), !d && b.removeAttribute("width")) : 4 == a ? e.match(k) ? b.setStyle("width", CKEDITOR.tools.cssLength(e)) : (a = this.getDialog().originalElement, "true" == a.getCustomData("isReady") && b.setStyle("width", a.$.width + "px")) : 8 == a && (b.removeAttribute("width"),
-                                        b.removeStyle("width"))
+                                        var e = this.getValue()//var e = this.getValue(); a == f ? (e && c.activeFilter.check("img{width,height}") ? b.setStyle("width", CKEDITOR.tools.cssLength(e)) : b.removeStyle("width"), !d && b.removeAttribute("width")) : 4 == a ? e.match(k) ? b.setStyle("width", CKEDITOR.tools.cssLength(e)) : (a = this.getDialog().originalElement, "true" == a.getCustomData("isReady") && b.setStyle("width", a.$.width + "px")) : 8 == a && (b.removeAttribute("width"),
+                                        //b.removeStyle("width"))
+                                        b.setAttribute("width", e);
                                     }
                                 }, {
                                     type: "text", id: "txtHeight", width: "45px", label: c.lang.common.height, onKeyUp: w, onChange: function () { i.call(this, "advanced:txtdlgGenStyle") }, validate: function () { var a = this.getValue().match(v); (a = !!(a && 0 !== parseInt(a[1], 10))) || alert(c.lang.common.invalidHeight); return a }, setup: y, commit: function (a, b, d) {
-                                        var e = this.getValue(); a == f ? (e && c.activeFilter.check("img{width,height}") ? b.setStyle("height", CKEDITOR.tools.cssLength(e)) : b.removeStyle("height"), !d && b.removeAttribute("height")) :
-                                        4 == a ? e.match(k) ? b.setStyle("height", CKEDITOR.tools.cssLength(e)) : (a = this.getDialog().originalElement, "true" == a.getCustomData("isReady") && b.setStyle("height", a.$.height + "px")) : 8 == a && (b.removeAttribute("height"), b.removeStyle("height"))
+                                        var e = this.getValue()//var e = this.getValue(); a == f ? (e && c.activeFilter.check("img{width,height}") ? b.setStyle("height", CKEDITOR.tools.cssLength(e)) : b.removeStyle("height"), !d && b.removeAttribute("height")) :
+                                        //4 == a ? e.match(k) ? b.setStyle("height", CKEDITOR.tools.cssLength(e)) : (a = this.getDialog().originalElement, "true" == a.getCustomData("isReady") && b.setStyle("height", a.$.height + "px")) : 8 == a && (b.removeAttribute("height"), b.removeStyle("height"))
+                                        b.setAttribute("height", e);
                                     }
                                 }]
                             }, {
