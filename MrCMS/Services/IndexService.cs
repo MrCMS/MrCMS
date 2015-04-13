@@ -9,16 +9,17 @@ using MrCMS.Models;
 using NHibernate;
 using NHibernate.Criterion;
 using Ninject;
+using StackExchange.Profiling;
 
 namespace MrCMS.Services
 {
     public class IndexService : IIndexService
     {
         private readonly IKernel _kernel;
-        private readonly ISession _session;
+        private readonly IStatelessSession _session;
         private readonly Site _site;
 
-        public IndexService(IKernel kernel, ISession session, Site site)
+        public IndexService(IKernel kernel, IStatelessSession session, Site site)
         {
             _kernel = kernel;
             _session = session;
@@ -69,25 +70,43 @@ namespace MrCMS.Services
             Type definitionType = TypeHelper.GetTypeByName(typeName);
             IIndexManagerBase indexManagerBase = GetIndexManagerBase(definitionType);
 
-            IList list =
-                _session.CreateCriteria(indexManagerBase.GetEntityType())
-                    .Add(Restrictions.Eq("Site.Id", _site.Id))
-                    .List();
 
-            object listInstance =
-                Activator.CreateInstance(typeof (List<>).MakeGenericType(indexManagerBase.GetEntityType()));
-            MethodInfo methodExt = listInstance.GetType().GetMethodExt("Add", indexManagerBase.GetEntityType());
-            foreach (object entity in list)
+            var entityType = indexManagerBase.GetEntityType();
+            IList list = GetEntities(entityType);
+            Type concreteManagerType = typeof(IIndexManager<,>).MakeGenericType(entityType, indexManagerBase.GetIndexDefinitionType());
+            MethodInfo methodInfo = concreteManagerType.GetMethodExt("ReIndex", typeof(IEnumerable<>).MakeGenericType(entityType));
+
+            var listInstance = CreateList(entityType, list);
+
+            methodInfo.Invoke(indexManagerBase, new[] { listInstance });
+        }
+
+        private static object CreateList(Type parameterTypes, IList list)
+        {
+            using (MiniProfiler.Current.Step("Build list"))
             {
-                methodExt.Invoke(listInstance, new[] {entity});
-            }
-            Type concreteManagerType = typeof (IIndexManager<,>).MakeGenericType(indexManagerBase.GetEntityType(),
-                indexManagerBase.GetIndexDefinitionType());
-            MethodInfo methodInfo = concreteManagerType.GetMethodExt("ReIndex",
-                typeof (IEnumerable<>).MakeGenericType(
-                    indexManagerBase.GetEntityType()));
+                object listInstance =
+                    Activator.CreateInstance(typeof(List<>).MakeGenericType(parameterTypes));
+                MethodInfo methodExt = listInstance.GetType().GetMethodExt("Add", parameterTypes);
+                foreach (object entity in list)
+                {
+                    methodExt.Invoke(listInstance, new[] { entity });
+                }
 
-            methodInfo.Invoke(indexManagerBase, new[] {listInstance});
+                return listInstance;
+            }
+        }
+
+        private IList GetEntities(Type entityType)
+        {
+            using (MiniProfiler.Current.Step("Load all entities"))
+            {
+                return _session.CreateCriteria(entityType)
+                    .Add(Restrictions.Eq("Site.Id", _site.Id))
+                    .Add(Restrictions.Eq("IsDeleted", false))
+                    .SetCacheable(true)
+                    .List();
+            }
         }
 
         public void Optimise(string typeName)

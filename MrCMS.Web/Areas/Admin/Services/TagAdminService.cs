@@ -33,5 +33,18 @@ namespace MrCMS.Web.Areas.Admin.Services
                     .TransformUsing(Transformers.AliasToBean<AutoCompleteResult>())
                     .List<AutoCompleteResult>();
         }
+
+        public IEnumerable<Tag> GetTags(Document document)
+        {
+            ISet<Tag> parentCategories = new HashSet<Tag>();
+
+            if (document != null)
+            {
+                if (document.Parent != null)
+                    parentCategories = document.Parent.Tags;
+            }
+
+            return parentCategories;
+        }
     }
 }

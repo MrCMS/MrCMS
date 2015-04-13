@@ -1,9 +1,10 @@
-﻿using MrCMS.Batching.Entities;
+﻿using System.Threading.Tasks;
+using MrCMS.Batching.Entities;
 
 namespace MrCMS.Batching.Services
 {
     public interface IExecuteNextBatchJob
     {
-        bool Execute(BatchRun batchRun);
+        Task<bool> Execute(BatchRun batchRun);
     }
 }

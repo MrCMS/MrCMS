@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 
 namespace MrCMS.Batching
@@ -12,14 +13,17 @@ namespace MrCMS.Batching
             _setBatchJobExecutionStatus = setBatchJobExecutionStatus;
         }
 
-        public BatchJobExecutionResult Execute(BatchJob batchJob)
+        public Task<BatchJobExecutionResult> Execute(BatchJob batchJob)
         {
             var message = string.Format("There is no executor for this job. To create one, implement {0}<{1}>",
                 typeof(IBatchJobExecutor).FullName,
                 batchJob.GetType().FullName);
             var batchJobExecutionResult = BatchJobExecutionResult.Failure(message);
             _setBatchJobExecutionStatus.Complete(batchJob, batchJobExecutionResult);
-            return batchJobExecutionResult;
+            return Task.FromResult(batchJobExecutionResult);
         }
+
+
+        public bool UseAsync { get; private set; }
     }
 }

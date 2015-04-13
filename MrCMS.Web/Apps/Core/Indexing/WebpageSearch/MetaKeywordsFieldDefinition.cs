@@ -13,7 +13,7 @@ namespace MrCMS.Web.Apps.Core.Indexing.WebpageSearch
 
         protected override IEnumerable<string> GetValues(Webpage obj)
         {
-            yield return obj.MetaKeywords;
+            if (obj.MetaKeywords != null) yield return obj.MetaKeywords;
         }
     }
 }

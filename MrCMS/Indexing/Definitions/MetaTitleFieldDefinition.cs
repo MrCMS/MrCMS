@@ -14,7 +14,7 @@ namespace MrCMS.Indexing.Definitions
 
         protected override IEnumerable<string> GetValues(Webpage obj)
         {
-            yield return obj.MetaTitle;
+            if (obj.MetaTitle != null) yield return obj.MetaTitle;
         }
     }
 }

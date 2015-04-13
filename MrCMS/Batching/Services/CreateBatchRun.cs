@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using MrCMS.Batching.Entities;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
 
@@ -8,11 +10,11 @@ namespace MrCMS.Batching.Services
 {
     public class CreateBatchRun : ICreateBatchRun
     {
-        private readonly ISession _session;
+        private readonly IStatelessSession _statelessSession;
 
-        public CreateBatchRun(ISession session)
+        public CreateBatchRun(IStatelessSession statelessSession)
         {
-            _session = session;
+            _statelessSession = statelessSession;
         }
 
         public BatchRun Create(Batch batch)
@@ -25,15 +27,25 @@ namespace MrCMS.Batching.Services
                 .Where(result => result.Status != JobExecutionStatus.Failed && result.BatchJob.Id == jobAlias.Id)
                 .Select(result => result.Id);
 
-            var jobs = _session.QueryOver(() => jobAlias)
+            var jobs = _statelessSession.QueryOver(() => jobAlias)
                 .Where(job => job.Batch.Id == batch.Id)
                 .WithSubquery.WhereNotExists(subQuery)
                 .List();
 
-            return _session.Transact(session =>
+            // we need to make sure that the site is loaded from the correct session
+            var site = _statelessSession.Get<Site>(batch.Site.Id);
+            return _statelessSession.Transact(session =>
             {
-                var batchRun = new BatchRun {Batch = batch, BatchRunResults = new List<BatchRunResult>()};
-                session.Save(batchRun);
+                var now = CurrentRequestData.Now;
+                var batchRun = new BatchRun
+                {
+                    Batch = batch,
+                    BatchRunResults = new List<BatchRunResult>(),
+                    Site = site,
+                    CreatedOn = now,
+                    UpdatedOn = now
+                };
+                session.Insert(batchRun);
                 for (int index = 0; index < jobs.Count; index++)
                 {
                     BatchJob batchJob = jobs[index];
@@ -42,10 +54,13 @@ namespace MrCMS.Batching.Services
                         BatchJob = batchJob,
                         Status = JobExecutionStatus.Pending,
                         ExecutionOrder = index,
-                        BatchRun = batchRun
+                        BatchRun = batchRun,
+                        Site = site,
+                        CreatedOn = now,
+                        UpdatedOn = now
                     };
                     batchRun.BatchRunResults.Add(batchRunResult);
-                    session.Save(batchRunResult);
+                    session.Insert(batchRunResult);
                 }
                 return batchRun;
             });

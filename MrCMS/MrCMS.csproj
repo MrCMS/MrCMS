@@ -404,6 +404,7 @@
     <Compile Include="DbConfiguration\Conventions\ForeignKeyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\NotNullableAttributeConvention.cs" />
+    <Compile Include="DbConfiguration\Conventions\PublishedFilterConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\RootGuidConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
@@ -415,9 +416,12 @@
     <Compile Include="DbConfiguration\CreateSqlServerDatabase.cs" />
     <Compile Include="DbConfiguration\EventInfo.cs" />
     <Compile Include="DbConfiguration\Filters\NotDeletedFilter.cs" />
+    <Compile Include="DbConfiguration\Filters\PublishedFilter.cs" />
     <Compile Include="DbConfiguration\Filters\SiteFilter.cs" />
+    <Compile Include="DbConfiguration\Helpers\ContextSoftDeleteExtensions.cs" />
     <Compile Include="DbConfiguration\Helpers\CreateDatabaseExtensions.cs" />
     <Compile Include="DbConfiguration\Helpers\EventInfoExtensions.cs" />
+    <Compile Include="DbConfiguration\Helpers\SoftDeleteDisabler.cs" />
     <Compile Include="DbConfiguration\ICreateDatabase.cs" />
     <Compile Include="DbConfiguration\IDatabaseProvider.cs" />
     <Compile Include="DbConfiguration\ListenerDisabler.cs" />
@@ -457,6 +461,7 @@
     <Compile Include="DbConfiguration\Overrides\UserRoleOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WebpageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\WidgetOverride.cs" />
+    <Compile Include="DbConfiguration\PublishedFilterDisabler.cs" />
     <Compile Include="DbConfiguration\ShouldMapAttribute.cs" />
     <Compile Include="DbConfiguration\SiteFilterDisabler.cs" />
     <Compile Include="DbConfiguration\SqliteProvider.cs" />
@@ -471,6 +476,7 @@
     <Compile Include="DbConfiguration\Types\LocalNullableDateTimeData.cs" />
     <Compile Include="DbConfiguration\Types\NullableDateTimeData.cs" />
     <Compile Include="DbConfiguration\Types\VarCharMax.cs" />
+    <Compile Include="DbConfiguration\UpdatedEventInfo.cs" />
     <Compile Include="Entities\ACL\ACLRole.cs" />
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />
@@ -503,6 +509,8 @@
     <Compile Include="Events\Documents\DocumentAddedNotification.cs" />
     <Compile Include="Events\Documents\DocumentDeletedNotification.cs" />
     <Compile Include="Events\Documents\DocumentModifiedUser.cs" />
+    <Compile Include="Events\Documents\MarkWebpageAsPublished.cs" />
+    <Compile Include="Events\Documents\MarkWebpageAsUnpublished.cs" />
     <Compile Include="Events\Documents\WebpageUpdatedNotification.cs" />
     <Compile Include="Events\Documents\IDocumentModifiedUser.cs" />
     <Compile Include="Events\Documents\LayoutUpdatedNotification.cs" />
@@ -540,6 +548,7 @@
     <Compile Include="HealthChecks\TaskRunnerCheck.cs" />
     <Compile Include="Helpers\ACLHelper.cs" />
     <Compile Include="Helpers\AppDataSerializationExtensions.cs" />
+    <Compile Include="Helpers\AssemblyExtensions.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
     <Compile Include="Helpers\CustomBindingExtensions.cs" />
     <Compile Include="Helpers\DocumentVersionRenderingExtensions.cs" />
@@ -548,6 +557,7 @@
     <Compile Include="Helpers\HashsetExtensions.cs" />
     <Compile Include="Helpers\HoneypotHtmlHelper.cs" />
     <Compile Include="Helpers\HtmlFormExtensions.cs" />
+    <Compile Include="Helpers\HttpContextExtensions.cs" />
     <Compile Include="Helpers\HttpRequestHelper.cs" />
     <Compile Include="Helpers\ImageRenderingExtensions.cs" />
     <Compile Include="Helpers\LayoutExtensions.cs" />
@@ -563,6 +573,7 @@
     <Compile Include="Helpers\ReturnUrlExtensions.cs" />
     <Compile Include="Helpers\ShortcodeParsingExtensions.cs" />
     <Compile Include="Helpers\SitemapDateHelper.cs" />
+    <Compile Include="Helpers\StringResourceHelper.cs" />
     <Compile Include="Helpers\TweetParsingExtensions.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Helpers\UserExtensions.cs" />
@@ -576,6 +587,7 @@
     <Compile Include="Indexing\Definitions\MetaTitleFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\NameFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\ParentIdFieldDefinition.cs" />
+    <Compile Include="Indexing\Definitions\PublishedFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\PublishedOnFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\TypeFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\UrlSegmentFieldDefinition.cs" />
@@ -695,6 +707,8 @@
     <Compile Include="Services\FileMigration\FileMigrationService.cs" />
     <Compile Include="Services\Events\Args\OnUserAddedEventArgs.cs" />
     <Compile Include="Services\Events\IOnUserAdded.cs" />
+    <Compile Include="Services\FileMigration\MigrateFileBatchRunner.cs" />
+    <Compile Include="Services\FileMigration\MigrateFilesBatchJob.cs" />
     <Compile Include="Services\FormPostingHandler.cs" />
     <Compile Include="Services\GetBreadcrumbs.cs" />
     <Compile Include="Services\GetCurrentLayout.cs" />
@@ -1019,6 +1033,7 @@
     <Compile Include="Tasks\LuceneOperation.cs" />
     <Compile Include="Tasks\MoveFile.cs" />
     <Compile Include="Tasks\MoveFileData.cs" />
+    <Compile Include="Tasks\PublishScheduledWebpagesTask.cs" />
     <Compile Include="Tasks\QueuedTaskSearchQuery.cs" />
     <Compile Include="Tasks\SchedulableTask.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
@@ -1059,6 +1074,7 @@
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\Controllers\SEOController.cs" />
     <Compile Include="Website\Controllers\SitemapPlaceholderController.cs" />
+    <Compile Include="Website\EnabledPublishedFilterAttribute.cs" />
     <Compile Include="Website\EndRequestTask.cs" />
     <Compile Include="Website\EnsureDatabaseIsInstalled.cs" />
     <Compile Include="Website\ExecuteEndRequestBase.cs" />
@@ -1079,6 +1095,7 @@
     <Compile Include="Website\MrCMSAssemblyAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
     <Compile Include="Website\MrCMSMetadataProvider.cs" />
+    <Compile Include="Website\MrCMSRazorViewEngine.cs" />
     <Compile Include="Website\MrCMSTypeACLAttribute.cs" />
     <Compile Include="Website\OnEndRequestExecutor.cs" />
     <Compile Include="Website\Optimization\AsIsBundleOrderer.cs" />
@@ -1108,6 +1125,10 @@
     <Compile Include="Website\OutOfContextSession.cs" />
     <Compile Include="Website\OutputCacheableAttribute.cs" />
     <Compile Include="Website\ProcessWebpageViews.cs" />
+    <Compile Include="Website\Profiling\DisableMiniProfilerForAjaxRequests.cs" />
+    <Compile Include="Website\Profiling\DisableMiniProfilerForSignalRRequests.cs" />
+    <Compile Include="Website\Profiling\DisableMiniProfilerForTaskExecution.cs" />
+    <Compile Include="Website\Profiling\IReasonToDisableMiniProfiler.cs" />
     <Compile Include="Website\PropertyFinder.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />

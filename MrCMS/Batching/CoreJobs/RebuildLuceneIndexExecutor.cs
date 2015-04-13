@@ -1,4 +1,5 @@
-﻿using MrCMS.Services;
+﻿using System.Threading.Tasks;
+using MrCMS.Services;
 
 namespace MrCMS.Batching.CoreJobs
 {
@@ -17,6 +18,11 @@ namespace MrCMS.Batching.CoreJobs
         {
             _indexService.Reindex(batchJob.IndexName);
             return BatchJobExecutionResult.Success();
+        }
+
+        protected override Task<BatchJobExecutionResult> OnExecuteAsync(RebuildLuceneIndex batchJob)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

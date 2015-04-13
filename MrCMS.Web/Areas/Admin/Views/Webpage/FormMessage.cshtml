@@ -2,7 +2,7 @@
 @model MrCMS.Entities.Documents.Web.Webpage
 
 @Html.InfoBlock(Resource("Heads up") + "!",
-    string.Format(Resource("To include this form in your page simply use the short code [form] where you would like it rendered. Should you want to render this form in another page you can use[form-{0}"), Url.RequestContext.RouteData.Values["id"]))
+    string.Format(Resource("Webpage - Form Tag Usage", "To include this form in your page simply use the short code [form] where you would like it rendered. Should you want to render this form in another page you can use[form-{0}]"), Url.RequestContext.RouteData.Values["id"]))
 
 <h4>@Resource("Admin Webpage Form Message After Submitted", "Message to show after form is submitted")</h4>
 

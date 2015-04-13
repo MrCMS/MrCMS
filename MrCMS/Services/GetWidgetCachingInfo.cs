@@ -3,6 +3,7 @@ using System.Reflection;
 using MrCMS.Entities.Widget;
 using MrCMS.Models;
 using MrCMS.Website;
+using StackExchange.Profiling;
 
 namespace MrCMS.Services
 {
@@ -10,27 +11,33 @@ namespace MrCMS.Services
     {
         public CachingInfo Get(Widget widget)
         {
-            if (widget == null)
+            using (MiniProfiler.Current.Step("Get caching info"))
             {
-                return CachingInfo.DoNotCache;
+                if (widget == null)
+                {
+                    return CachingInfo.DoNotCache;
+                }
+                var attribute = widget.GetType().GetCustomAttribute<OutputCacheableAttribute>();
+                if (attribute == null)
+                {
+                    return CachingInfo.DoNotCache;
+                }
+                var shouldCache = widget.Cache && widget.CacheLength > 0;
+                return new CachingInfo(shouldCache, GetCacheKey(widget, attribute),
+                    TimeSpan.FromSeconds(widget.CacheLength),
+                    widget.CacheExpiryType);
             }
-            var attribute = widget.GetType().GetCustomAttribute<OutputCacheableAttribute>();
-            if (attribute == null)
-            {
-                return CachingInfo.DoNotCache;
-            }
-            var shouldCache = widget.Cache && widget.CacheLength > 0;
-            return new CachingInfo(shouldCache, GetCacheKey(widget, attribute), TimeSpan.FromSeconds(widget.CacheLength),
-                widget.CacheExpiryType);
         }
+
         private static string GetCacheKey(Widget widget, OutputCacheableAttribute attribute)
         {
             var cacheKey = "Widget." + widget.Id;
             if (attribute.PerPage)
             {
-                if (CurrentRequestData.CurrentPage != null)
+                var page = CurrentRequestData.CurrentPage;
+                if (page != null)
                 {
-                    cacheKey += ".Page:" + CurrentRequestData.CurrentPage.Id;
+                    cacheKey += ".Page:" + page.Id;
                 }
             }
             if (attribute.PerUser)

@@ -1,36 +1,25 @@
 ﻿using System.Web.Mvc;
 using MrCMS.Web.Areas.Admin.Models.Search;
-using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Web.Areas.Admin.Services.Search;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class SearchController : MrCMSAdminController
     {
-        private readonly IAdminWebpageSearchService _adminWebpageSearchService;
+        private readonly IAdminSearchService _adminSearchService;
 
-        public SearchController(IAdminWebpageSearchService adminWebpageSearchService)
+        public SearchController(IAdminSearchService adminSearchService)
         {
-            _adminWebpageSearchService = adminWebpageSearchService;
+            _adminSearchService = adminSearchService;
         }
 
         [HttpGet]
-        public ActionResult Index(AdminWebpageSearchQuery model)
+        public ActionResult Index(AdminSearchQuery model)
         {
-            ViewData["parents"] = _adminWebpageSearchService.GetParentsList();
-            ViewData["doc-types"] = _adminWebpageSearchService.GetDocumentTypes(model.Type);
-            ViewData["results"] = _adminWebpageSearchService.Search(model);
+            ViewData["results"] = _adminSearchService.Search(model);
 
             return View(model);
-        }
-
-
-        
-        public PartialViewResult GetBreadCrumb(int? parentId)
-        {
-            if (parentId.HasValue)
-                return PartialView(_adminWebpageSearchService.GetBreadCrumb(parentId));
-            return PartialView(null);
         }
     }
 }

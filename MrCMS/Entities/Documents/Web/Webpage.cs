@@ -61,9 +61,26 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Requires SSL")]
         public virtual bool RequiresSSL { get; set; }
 
-        public virtual bool Published
+        public virtual bool Published { get; set; }
+
+        public virtual WebpagePublishStatus PublishStatus
         {
-            get { return PublishOn != null && PublishOn <= CurrentRequestData.Now; }
+            get
+            {
+                var status = Published
+                    ? WebpagePublishStatus.Published
+                    : PublishOn.HasValue
+                        ? WebpagePublishStatus.Scheduled
+                        : WebpagePublishStatus.Unpublished;
+                return status;
+            }
+        }
+
+        public enum WebpagePublishStatus
+        {
+            Published,
+            Scheduled,
+            Unpublished
         }
 
         public virtual string LiveUrlSegment

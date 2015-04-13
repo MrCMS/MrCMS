@@ -36,8 +36,8 @@ namespace MrCMS.Helpers
         {
             query = query ??
                     QueryOver.Of<T>()
-                        .Where(a => a.Parent == webpage && a.PublishOn != null && a.PublishOn <= CurrentRequestData.Now)
-                        .ThenBy(arg => arg.PublishOn)
+                        .Where(a => a.Parent == webpage && a.Published)
+                        .OrderBy(arg => arg.PublishOn)
                         .Desc;
 
             return MrCMSApplication.Get<ISession>().Paged(query, pageNum, pageSize);

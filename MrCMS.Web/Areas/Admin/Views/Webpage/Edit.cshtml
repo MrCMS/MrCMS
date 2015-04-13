@@ -27,12 +27,13 @@
                 }
 
                 @(Model.PublishOn == null
-                      ? Html.ActionLink(Resource("Publish"), "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" })
+                      ? Html.ActionLink(Resource("Publish Now"), "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" })
               : Html.ActionLink(Resource("Unpublish"), "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
 
                 @Html.EditorFor(x => x.PublishOn)
                 @Html.ValidationMessageFor(x => x.PublishOn)
                 
+                <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "green" : "orange")">@Resource(Model.PublishStatus.ToString())</span>
             </div>
         </div>
     </div>

@@ -13,6 +13,7 @@ namespace MrCMS.Services
         /// </summary>
         /// <returns></returns>
         IDisposable Disable<T>();
+
         /// <summary>
         /// Disables the publishing of events of the specified type in the event context until the result is disposed
         /// </summary>

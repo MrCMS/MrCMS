@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
+using MrCMS.Helpers;
 using MrCMS.Services.Resources;
 using Ninject;
 
@@ -21,8 +22,8 @@ namespace MrCMS.Website
             {
                 var key = string.Format("{0}.{1}", containerType.FullName, propertyName);
                 var displayName = _kernel.Get<IStringResourceProvider>()
-                                         .GetValue(key,
-                                                   metadataForProperty.DisplayName ?? metadataForProperty.PropertyName);
+                    .GetValue(key,
+                        (metadataForProperty.DisplayName ?? metadataForProperty.PropertyName ?? string.Empty).BreakUpString());
                 if (!string.IsNullOrWhiteSpace(displayName))
                     metadataForProperty.DisplayName = displayName;
             }

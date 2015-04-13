@@ -1,10 +1,11 @@
 using System.Diagnostics;
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 
 namespace MrCMS.Batching.Services
 {
     public interface IRunBatchRunResult
     {
-        BatchJobExecutionResult Run(BatchRunResult runResult, Stopwatch stopWatch = null);
+        Task<BatchJobExecutionResult> Run(BatchRunResult runResult, Stopwatch stopWatch = null);
     }
 }

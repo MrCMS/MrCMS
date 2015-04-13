@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
 using MrCMS.Helpers;
 using Ninject;
@@ -33,7 +34,7 @@ namespace MrCMS.Batching.Services
             }
         }
 
-        public BatchJobExecutionResult Execute(BatchJob batchJob)
+        public async Task<BatchJobExecutionResult> Execute(BatchJob batchJob)
         {
             var type = batchJob.GetType();
             var hasExecutorType = _executorTypeList.ContainsKey(type);
@@ -41,10 +42,10 @@ namespace MrCMS.Batching.Services
             {
                 var batchJobExecutor = _kernel.Get(_executorTypeList[type]) as IBatchJobExecutor;
                 if (batchJobExecutor != null)
-                    return batchJobExecutor.Execute(batchJob);
+                    return await batchJobExecutor.Execute(batchJob);
             }
 
-            return _kernel.Get<DefaultBatchJobExecutor>().Execute(batchJob);
+            return await _kernel.Get<DefaultBatchJobExecutor>().Execute(batchJob);
         }
     }
 }

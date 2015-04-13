@@ -3,7 +3,6 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 using NHibernate;
 
 namespace MrCMS.Services
@@ -11,23 +10,17 @@ namespace MrCMS.Services
     public class UniquePageService : IUniquePageService
     {
         private readonly ISession _session;
-        private readonly Site _site;
 
-        public UniquePageService(ISession session, Site site)
+        public UniquePageService(ISession session)
         {
             _session = session;
-            _site = site;
         }
 
         public T GetUniquePage<T>()
             where T : Document, IUniquePage
         {
-            return
-                _session.QueryOver<T>()
-                    .Where(arg => arg.Site.Id == _site.Id)
-                    .Take(1)
-                    .Cacheable()
-                    .SingleOrDefault();
+            return _session.QueryOver<T>().Cacheable()
+                    .List().FirstOrDefault();
         }
 
         public RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage

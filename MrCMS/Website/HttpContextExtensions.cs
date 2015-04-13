@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using Ninject;
 
@@ -16,6 +18,12 @@ namespace MrCMS.Website
         {
             var kernel = context.Items[CurrentKernelKey] as IKernel;
             return kernel != null ? kernel.Get<T>() : default(T);
+        }
+
+        public static IEnumerable<T> GetAll<T>(this HttpContextBase context)
+        {
+            var kernel = context.Items[CurrentKernelKey] as IKernel;
+            return kernel != null ? kernel.GetAll<T>() : Enumerable.Empty<T>();
         }
     }
 }

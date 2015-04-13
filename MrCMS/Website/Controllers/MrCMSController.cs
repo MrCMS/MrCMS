@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Entities;
+using MrCMS.Website.ActionResults;
 using MrCMS.Website.Filters;
 using StackExchange.Profiling;
 
@@ -111,6 +113,18 @@ namespace MrCMS.Website.Controllers
         protected virtual RedirectResult AuthenticationFailureRedirect()
         {
             return Redirect("~");
+        }
+
+        protected override JsonResult Json(object data, string contentType, Encoding contentEncoding,
+            JsonRequestBehavior behavior)
+        {
+            return new JsonNetResult
+            {
+                ContentEncoding = contentEncoding,
+                ContentType = contentType,
+                Data = data,
+                JsonRequestBehavior = behavior
+            };
         }
     }
 }

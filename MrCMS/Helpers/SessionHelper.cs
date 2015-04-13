@@ -48,6 +48,33 @@ namespace MrCMS.Helpers
             });
         }
 
+        public static TResult Transact<TResult>(this IStatelessSession session, Func<IStatelessSession, TResult> func)
+        {
+            if (!session.Transaction.IsActive)
+            {
+                // Wrap in transaction
+                TResult result;
+                using (ITransaction tx = session.BeginTransaction())
+                {
+                    result = func.Invoke(session);
+                    tx.Commit();
+                }
+                return result;
+            }
+
+            // Don't wrap;
+            return func.Invoke(session);
+        }
+
+        public static void Transact(this IStatelessSession session, Action<IStatelessSession> action)
+        {
+            Transact(session, ses =>
+            {
+                action.Invoke(ses);
+                return false;
+            });
+        }
+
         public static IPagedList<T> Paged<T>(this ISession session, QueryOver<T> query, int pageNumber,
             int? pageSize = null)
             where T : SystemEntity

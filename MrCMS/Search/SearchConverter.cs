@@ -5,6 +5,7 @@ using Lucene.Net.Documents;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Utils;
+using MrCMS.Paging;
 using MrCMS.Search.Models;
 
 namespace MrCMS.Search
@@ -36,7 +37,7 @@ namespace MrCMS.Search
             document.Add(new Field(UniversalSearchFieldNames.Id, item.Id.ToString(), Field.Store.YES,
                 Field.Index.NOT_ANALYZED));
             string searchGuid = (item.SearchGuid ?? Guid.NewGuid()).ToString();
-            document.Add(new Field(UniversalSearchFieldNames.SearchGuid, searchGuid, Field.Store.YES,
+            document.Add(new Field(UniversalSearchFieldNames.SearchGuid, searchGuid, Field.Store.NO,
                 Field.Index.NOT_ANALYZED));
 
             string systemType = item.SystemType ?? string.Empty;
@@ -49,15 +50,24 @@ namespace MrCMS.Search
             }
 
             document.Add(new Field(UniversalSearchFieldNames.DisplayName, item.DisplayName, Field.Store.YES,
-                Field.Index.NOT_ANALYZED));
+                Field.Index.NOT_ANALYZED) { Boost = 5 });
 
             document.Add(new Field(UniversalSearchFieldNames.ActionUrl, item.ActionUrl ?? string.Empty, Field.Store.YES,
                 Field.Index.NOT_ANALYZED));
 
-            foreach (string searchTerm in item.SearchTerms.Where(s => !string.IsNullOrWhiteSpace(s)))
+            document.Add(new Field(UniversalSearchFieldNames.CreatedOn,
+                DateTools.DateToString(item.CreatedOn, DateTools.Resolution.SECOND), Field.Store.YES,
+                Field.Index.NOT_ANALYZED));
+
+            foreach (string searchTerm in (item.PrimarySearchTerms ?? Enumerable.Empty<string>()).Where(s => !string.IsNullOrWhiteSpace(s)))
             {
-                document.Add(new Field(UniversalSearchFieldNames.SearchTerms, searchTerm, Field.Store.NO,
-                    Field.Index.ANALYZED));
+                document.Add(new Field(UniversalSearchFieldNames.PrimarySearchTerms, searchTerm, Field.Store.NO,
+                    Field.Index.ANALYZED) { Boost = 2 });
+            }
+            foreach (string searchTerm in (item.SecondarySearchTerms ?? Enumerable.Empty<string>()).Where(s => !string.IsNullOrWhiteSpace(s)))
+            {
+                document.Add(new Field(UniversalSearchFieldNames.SecondarySearchTerms, searchTerm, Field.Store.NO,
+                    Field.Index.ANALYZED) { Boost = 0.8f });
             }
             return document;
         }

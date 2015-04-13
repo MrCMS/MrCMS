@@ -7,12 +7,16 @@ using MrCMS.Entities.Resources;
 using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
+using StackExchange.Profiling;
 
 namespace MrCMS.Services.Resources
 {
     public class StringResourceProvider : IStringResourceProvider
     {
         private static Dictionary<string, HashSet<StringResource>> _allResources;
+
+        private static readonly Dictionary<int, Dictionary<string, HashSet<StringResource>>> _resourcesBySite =
+            new Dictionary<int, Dictionary<string, HashSet<StringResource>>>();
 
 
         private static readonly object LockObject = new object();
@@ -65,29 +69,44 @@ namespace MrCMS.Services.Resources
 
         public string GetValue(string key, string defaultValue = null)
         {
-            lock (LockObject)
+            using (MiniProfiler.Current.Step(string.Format("Getting resource - {0}", key)))
             {
-                string currentUserCulture = _getCurrentUserCultureInfo.GetInfoString();
-
-                if (ResourcesForSite.ContainsKey(key))
+                lock (LockObject)
                 {
-                    List<StringResource> resources = ResourcesForSite[key];
-                    StringResource languageValue =
-                        resources.FirstOrDefault(
-                            resource => resource.UICulture == currentUserCulture);
-                    if (languageValue != null)
-                        return languageValue.Value;
+                    string currentUserCulture;
+                    using (MiniProfiler.Current.Step("culture check"))
+                    {
+                        currentUserCulture = _getCurrentUserCultureInfo.GetInfoString();
+                    }
 
-                    StringResource existingDefault =
-                        resources.FirstOrDefault(resource => resource.UICulture == null);
-                    if (existingDefault != null)
-                        return existingDefault.Value;
+                    if (ResourcesForSite.ContainsKey(key))
+                    {
+                        HashSet<StringResource> resources = ResourcesForSite[key];
+                        using (MiniProfiler.Current.Step("Check for language"))
+                        {
+                            StringResource languageValue =
+                                resources.FirstOrDefault(
+                                    resource => resource.UICulture == currentUserCulture);
+                            if (languageValue != null)
+                                return languageValue.Value;
+                        }
+                        using (MiniProfiler.Current.Step("Check for default"))
+                        {
+                            StringResource existingDefault =
+                                resources.FirstOrDefault(resource => resource.UICulture == null);
+                            if (existingDefault != null)
+                                return existingDefault.Value;
+                        }
+                    }
+                    using (MiniProfiler.Current.Step("default resource"))
+                    {
+                        var defaultResource = new StringResource { Key = key, Value = defaultValue ?? key };
+                        _session.Transact(session => session.Save(defaultResource));
+                        //AllResources[key] = new HashSet<StringResource> {defaultResource};
+                        ResetResourceCache();
+                        return defaultResource.Value;
+                    }
                 }
-
-                var defaultResource = new StringResource {Key = key, Value = defaultValue ?? key};
-                _session.Transact(session => session.Save(defaultResource));
-                AllResources[key] = new HashSet<StringResource> {defaultResource};
-                return defaultResource.Value;
             }
         }
 
@@ -104,7 +123,7 @@ namespace MrCMS.Services.Resources
         {
             if (ResourcesForSite.ContainsKey(key))
             {
-                List<StringResource> stringResources = ResourcesForSite[key];
+                HashSet<StringResource> stringResources = ResourcesForSite[key];
                 stringResources = site == null
                     ? stringResources.FindAll(resource => resource.Site == null)
                     : stringResources.FindAll(resource => resource.Site != null && resource.Site.Id == site.Id);
@@ -120,12 +139,7 @@ namespace MrCMS.Services.Resources
             lock (LockObject)
             {
                 _session.Transact(session => session.Save(resource));
-                if (AllResources.ContainsKey(resource.Key))
-                    AllResources[resource.Key].Add(resource);
-                else
-                {
-                    AllResources[resource.Key] = new HashSet<StringResource> {resource};
-                }
+                ResetResourceCache();
             }
         }
 
@@ -136,7 +150,7 @@ namespace MrCMS.Services.Resources
                 if (resource.UICulture == null && resource.Site == null)
                     return;
                 _session.Transact(session => session.Save(resource));
-                AllResources[resource.Key].Add(resource);
+                ResetResourceCache();
             }
         }
 
@@ -144,10 +158,8 @@ namespace MrCMS.Services.Resources
         {
             lock (LockObject)
             {
-                StringResource firstOrDefault =
-                    AllStringResources.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
-                if (firstOrDefault != null) firstOrDefault.Value = resource.Value;
                 _session.Transact(session => session.Update(resource));
+                ResetResourceCache();
             }
         }
 
@@ -155,22 +167,26 @@ namespace MrCMS.Services.Resources
         {
             lock (LockObject)
             {
-                StringResource firstOrDefault =
-                    AllStringResources.FirstOrDefault(stringResource => stringResource.Id == resource.Id);
-                if (firstOrDefault != null) AllResources[firstOrDefault.Key].Remove(firstOrDefault);
                 _session.Transact(session => session.Delete(resource));
+                ResetResourceCache();
             }
         }
 
-        public Dictionary<string, List<StringResource>> ResourcesForSite
+
+
+        public Dictionary<string, HashSet<StringResource>> ResourcesForSite
         {
             get
             {
-                return AllResources.Keys.ToDictionary(s => s,
-                    s =>
-                        new List<StringResource>(AllResources[s].Where(
-                            resource => resource.Site == null || resource.Site.Id == _site.Id)
-                            .OrderByDescending(resource => resource.Site != null ? 1 : 0)));
+                return
+                    _resourcesBySite.ContainsKey(_site.Id)
+                        ? _resourcesBySite[_site.Id]
+                        : _resourcesBySite[_site.Id] =
+                            AllResources.Keys.ToDictionary(s => s,
+                                s =>
+                                    new HashSet<StringResource>(AllResources[s].Where(
+                                        resource => resource.Site == null || resource.Site.Id == _site.Id)
+                                        .OrderByDescending(resource => resource.Site != null ? 1 : 0)));
             }
         }
 
@@ -187,6 +203,8 @@ namespace MrCMS.Services.Resources
         private void ResetResourceCache()
         {
             _allResources = null;
+            _resourcesBySite.Clear();
+
         }
 
         private Dictionary<string, HashSet<StringResource>> GetAllResourcesFromDb()

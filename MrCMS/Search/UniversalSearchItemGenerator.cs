@@ -2,10 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
 using Lucene.Net.Documents;
-using Lucene.Net.Search;
 using MrCMS.Entities;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Search.Models;
 using NHibernate;
@@ -21,6 +20,7 @@ namespace MrCMS.Search
         private readonly IKernel _kernel;
         private readonly ISearchConverter _searchConverter;
         private readonly IStatelessSession _session;
+        private readonly Site _site;
 
         static UniversalSearchItemGenerator()
         {
@@ -47,11 +47,12 @@ namespace MrCMS.Search
             }
         }
 
-        public UniversalSearchItemGenerator(IKernel kernel, ISearchConverter searchConverter, IStatelessSession session)
+        public UniversalSearchItemGenerator(IKernel kernel, ISearchConverter searchConverter, IStatelessSession session,Site site)
         {
             _kernel = kernel;
             _searchConverter = searchConverter;
             _session = session;
+            _site = site;
         }
 
         public bool CanGenerate(SystemEntity entity)
@@ -118,8 +119,14 @@ namespace MrCMS.Search
                     using (MiniProfiler.Current.Step("Loading objects " + universalSearchItemType.Name))
                     {
                         Type type = universalSearchItemType;
+                        var criteria = _session.CreateCriteria(universalSearchItemType);
+                        if (typeof (SiteEntity).IsAssignableFrom(type))
+                        {
+                            criteria = criteria.Add(Restrictions.Eq("Site.Id", _site.Id));
+                        }
                         objects.AddRange(
-                            _session.CreateCriteria(universalSearchItemType)
+                            criteria
+                    .Add(Restrictions.Eq("IsDeleted", false))
                                 .SetCacheable(true)
                                 .List()
                                 .Cast<object>()

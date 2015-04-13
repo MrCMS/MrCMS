@@ -1,4 +1,8 @@
-﻿@using MrCMS.Website
+﻿@using MrCMS.Web.Areas.Admin.Helpers
+@using MrCMS.Website
+@{
+    var typeOptions = UniversalSearchHelper.GetOptions();
+}
 <nav class="navbar navbar-default no-border-radius margin-bottom-0 navbar-fixed-top nav" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -15,12 +19,17 @@
             </button>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form class="navbar-form navbar-left site-search" role="search" action="@Url.Action("Index", "Search")" method="GET">
-                <div class="input-group">
-                    @Html.TextBox("term", "", new { @class = "search-query form-control", placeholder = "Search", autocomplete = "off", tabindex="1" })
-                    <span class="input-group-btn">
-                        <button type="submit" class="btn btn-default" tabindex="2">@Resource("Go")</button>
-                    </span>
+            <form class="navbar-form navbar-left site-search form-inline" role="search" action="@Url.Action("Index", "Search")" method="GET">
+                <div class="form-group">
+                    @Html.TextBox("term", "", new { @class = "search-query form-control", data_search_item_term = true, placeholder = "Search", autocomplete = "off", tabindex = "1" })
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        @Html.DropDownList("type", typeOptions, new { @class = "form-control", data_search_item_type = true })
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default" tabindex="2">@Resource("Go")</button>
+                        </span>
+                    </div>
                 </div>
             </form>
             <ul class="nav navbar-nav  navbar-right">

@@ -18,5 +18,7 @@ namespace MrCMS.Indexing.Management
         {
             return new IndexSearcher(_getLuceneDirectory.Get(_site, folderName, true));
         }
+
+        public int SiteId { get { return _site.Id; }}
     }
 }

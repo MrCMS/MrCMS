@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MrCMS.Search;
+using MrCMS.Website;
 
 namespace MrCMS.Batching.CoreJobs
 {
@@ -22,8 +24,14 @@ namespace MrCMS.Batching.CoreJobs
             }
             catch (Exception exception)
             {
-                return BatchJobExecutionResult.Success(exception.Message);
+                CurrentRequestData.ErrorSignal.Raise(exception);
+                return BatchJobExecutionResult.Failure(exception.Message);
             }
+        }
+
+        protected override Task<BatchJobExecutionResult> OnExecuteAsync(RebuildUniversalSearchIndex batchJob)
+        {
+            throw new NotImplementedException();
         }
     }
 }

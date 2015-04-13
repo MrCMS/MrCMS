@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
@@ -9,9 +8,7 @@ using Lucene.Net.Store;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Indexing.Management;
-using MrCMS.Indexing.Utils;
 using MrCMS.Models;
-using MrCMS.Search.Models;
 using MrCMS.Website;
 using StackExchange.Profiling;
 using Version = Lucene.Net.Util.Version;
@@ -47,26 +44,6 @@ namespace MrCMS.Search
                 return;
             }
             CurrentRequestData.OnEndRequest.Add(new UpdateUniversalIndex(entity));
-            //{
-            //    UniversalSearchIndexStatus status = GetStatus(entity);
-
-            //    Document document = _universalSearchItemGenerator.GenerateDocument(entity);
-            //    if (document == null)
-            //        return;
-
-            //    Write(writer =>
-            //    {
-            //        if (!status.Exists)
-            //        {
-            //            writer.AddDocument(document);
-            //        }
-            //        else
-            //        {
-            //            writer.UpdateDocument(new Term(UniversalSearchFieldNames.SearchGuid, status.Guid.ToString()),
-            //                document);
-            //        }
-            //    }, !IndexExists);
-            //});
         }
 
         public void Delete(SystemEntity entity)
@@ -76,14 +53,6 @@ namespace MrCMS.Search
                 return;
             }
             CurrentRequestData.OnEndRequest.Add(new DeleteFromUniversalIndex(entity));
-            //CurrentRequestData.OnEndRequest.Add(kernel =>
-            //{
-            //    UniversalSearchIndexStatus status = GetStatus(entity);
-            //    Write(
-            //        writer =>
-            //            writer.DeleteDocuments(new Term(UniversalSearchFieldNames.SearchGuid, status.Guid.ToString())),
-            //        !IndexExists);
-            //});
         }
 
         public void ReindexAll()
@@ -101,6 +70,10 @@ namespace MrCMS.Search
             });
         }
 
+        public void Optimise()
+        {
+            Write(writer => writer.Optimize());
+        }
 
         public IndexSearcher GetSearcher()
         {
@@ -153,31 +126,6 @@ namespace MrCMS.Search
         private void InitializeIndex()
         {
             Write(writer => { }, true);
-        }
-
-        private UniversalSearchIndexStatus GetStatus(SystemEntity entity)
-        {
-            if (!IndexExists)
-            {
-                InitializeIndex();
-            }
-            bool exists = false;
-            Guid searchGuid = Guid.Empty;
-            IndexSearcher indexSearcher = GetSearcher();
-            TopDocs topDocs =
-                indexSearcher.Search(new TermQuery(new Term(UniversalSearchFieldNames.Id, entity.Id.ToString())),
-                    int.MaxValue);
-            if (topDocs.ScoreDocs.Any())
-            {
-                Document doc = indexSearcher.Doc(topDocs.ScoreDocs[0].Doc);
-                searchGuid = doc.GetValue<Guid>("search-guid");
-                exists = true;
-            }
-            return new UniversalSearchIndexStatus
-            {
-                Exists = exists,
-                Guid = searchGuid
-            };
         }
 
         public virtual Analyzer GetAnalyser()

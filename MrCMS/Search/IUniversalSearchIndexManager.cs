@@ -11,9 +11,10 @@ namespace MrCMS.Search
         void Index(SystemEntity entity);
         void Delete(SystemEntity entity);
         void ReindexAll();
-        void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false);
+        void Optimise();
         IndexSearcher GetSearcher();
-
+        void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false);
+        
         void EnsureIndexExists();
         MrCMSIndex GetUniversalIndexInfo();
     }

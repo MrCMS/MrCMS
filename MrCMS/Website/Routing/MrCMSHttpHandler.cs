@@ -44,6 +44,19 @@ namespace MrCMS.Website.Routing
             catch (ThreadAbortException)
             {
             }
+            catch (HttpException exception)
+            {
+                if (exception.GetHttpCode() == 404)
+                {
+                    _errorHandler.HandleError(context, 404,
+                        new HttpException(404, exception.Message));
+                }
+                else
+                {
+                    _errorHandler.HandleError(context, 500, new HttpException(500, exception.Message, exception));
+                }
+
+            }
             catch (Exception exception)
             {
                 _errorHandler.HandleError(context, 500, new HttpException(500, exception.Message, exception));

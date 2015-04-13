@@ -1,7 +1,6 @@
 using System.Reflection;
 using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.Instances;
-using MrCMS.Entities;
 
 namespace MrCMS.DbConfiguration.Conventions
 {

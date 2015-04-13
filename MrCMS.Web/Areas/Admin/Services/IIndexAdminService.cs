@@ -15,5 +15,6 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         MrCMSIndex GetUniversalSearchIndexInfo();
         void ReindexUniversalSearch();
+        void OptimiseUniversalSearch();
     }
 }

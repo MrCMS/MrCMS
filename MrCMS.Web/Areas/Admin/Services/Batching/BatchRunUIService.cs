@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentNHibernate.Testing.Values;
 using MrCMS.Batching.Entities;
 using MrCMS.Batching.Services;
@@ -98,9 +99,9 @@ namespace MrCMS.Web.Areas.Admin.Services.Batching
             _executeRequestForNextTask.Execute(run);
         }
 
-        public int? ExecuteNextTask(BatchRun run)
+        public async Task<int?> ExecuteNextTask(BatchRun run)
         {
-            return _executeNextBatchJob.Execute(run) ? run.Id : (int?)null;
+            return await _executeNextBatchJob.Execute(run) ? run.Id : (int?)null;
         }
 
         private IQueryOver<BatchRunResult, BatchRunResult> GetResultsQuery(BatchRun batchRun)

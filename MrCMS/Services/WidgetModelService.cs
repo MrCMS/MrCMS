@@ -5,6 +5,7 @@ using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Services.Widgets;
 using Ninject;
+using StackExchange.Profiling;
 
 namespace MrCMS.Services
 {
@@ -23,7 +24,7 @@ namespace MrCMS.Services
                         .Where(type => !type.ContainsGenericParameters))
             {
                 HashSet<Type> types =
-                    TypeHelper.GetAllConcreteTypesAssignableFrom(typeof (GetWidgetModelBase<>).MakeGenericType(type));
+                    TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(GetWidgetModelBase<>).MakeGenericType(type));
                 if (types.Any())
                 {
                     WidgetModelRetrievers.Add(type.FullName, types.First());
@@ -38,15 +39,23 @@ namespace MrCMS.Services
 
         public object GetModel(Widget widget)
         {
-            if (widget == null) return null;
-            GetWidgetModelBase retriever = null;
-            string typeName = widget.GetType().FullName;
-            if (WidgetModelRetrievers.ContainsKey(typeName))
-            {
-                retriever = _kernel.Get(WidgetModelRetrievers[typeName]) as GetWidgetModelBase;
-            }
-            retriever = retriever ?? DefaultGetWidgetModel.Instance;
+            GetWidgetModelBase retriever = GetRetriever(widget);
             return retriever.GetModel(widget);
+        }
+        
+        private GetWidgetModelBase GetRetriever(Widget widget)
+        {
+            using (MiniProfiler.Current.Step("Get Retriever"))
+            {
+                if (widget == null) return DefaultGetWidgetModel.Instance;
+                GetWidgetModelBase retriever = null;
+                string typeName = widget.GetType().FullName;
+                if (WidgetModelRetrievers.ContainsKey(typeName))
+                {
+                    retriever = _kernel.Get(WidgetModelRetrievers[typeName]) as GetWidgetModelBase;
+                }
+                return retriever ?? DefaultGetWidgetModel.Instance;
+            }
         }
     }
 }

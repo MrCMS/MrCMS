@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using MrCMS.Entities.Messaging;
@@ -58,12 +59,19 @@ namespace MrCMS.Services
 
         private static MailMessage BuildMailMessage(QueuedMessage queuedMessage)
         {
-            var mailMessage = new MailMessage(new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),
-                new MailAddress(queuedMessage.ToAddress, queuedMessage.ToName))
+            var mailMessage = new MailMessage()
             {
+                From = new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),
                 Subject = queuedMessage.Subject,
                 Body = queuedMessage.Body
             };
+            var multipleToAddress = queuedMessage.ToAddress.Split(new char[] { ',',';' }, StringSplitOptions.RemoveEmptyEntries);
+            if (multipleToAddress.Any()){
+                foreach (var email in multipleToAddress)
+                {
+                    mailMessage.To.Add(new MailAddress(email.Trim(), queuedMessage.ToName));                    
+                }
+            }
 
             if (!string.IsNullOrWhiteSpace(queuedMessage.Cc))
                 mailMessage.CC.Add(queuedMessage.Cc);

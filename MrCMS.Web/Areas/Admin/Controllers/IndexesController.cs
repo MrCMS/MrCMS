@@ -2,6 +2,8 @@
 using System.Web.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Indexing.Management;
+using MrCMS.Search;
+using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
@@ -64,13 +66,20 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _indexAdminService.SaveBoosts(boosts);
             return RedirectToAction("Index");
         }
-
+        
         [HttpPost]
         [MrCMSACLRule(typeof(IndexACL), IndexACL.Reindex)]
         public RedirectToRouteResult ReindexUniversalSearch()
         {
             _indexAdminService.ReindexUniversalSearch();
             TempData.SuccessMessages().Add("Univeral Search reindexed");
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult OptimiseUniversalSearch()
+        {
+            _indexAdminService.OptimiseUniversalSearch();
+            TempData.SuccessMessages().Add("Univeral Search optimised");
             return RedirectToAction("Index");
         }
     }

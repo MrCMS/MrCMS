@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Threading.Tasks;
+using System.Web.Mvc;
 using MrCMS.Batching.Entities;
 using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Web.Areas.Admin.Services.Batching;
@@ -16,9 +17,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _batchRunUIService = batchRunUIService;
         }
 
-        public JsonResult ExecuteNext([IoCModelBinder(typeof(BatchRunGuidModelBinder))]BatchRun run)
+        public async Task<JsonResult> ExecuteNext([IoCModelBinder(typeof(BatchRunGuidModelBinder))]BatchRun run)
         {
-            var result = run == null ? null : _batchRunUIService.ExecuteNextTask(run);
+            var result = run == null ? null : await _batchRunUIService.ExecuteNextTask(run);
             if (result != null)
             {
                 _batchRunUIService.ExecuteRequestForNextTask(run);

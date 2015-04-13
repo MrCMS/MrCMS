@@ -16,7 +16,7 @@ namespace MrCMS.Helpers
             try
             {
                 defaultCultureInfo = defaultCultureInfo ?? MrCMSApplication.Get<SiteSettings>().CultureInfo;
-                if (string.IsNullOrWhiteSpace(user.UICulture))
+                if (user == null || string.IsNullOrWhiteSpace(user.UICulture))
                     return defaultCultureInfo;
                 return CultureInfo.GetCultureInfo(user.UICulture);
             }

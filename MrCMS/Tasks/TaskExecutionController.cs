@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using MrCMS.Settings;
 using MrCMS.Website.Controllers;
 
@@ -21,7 +22,7 @@ namespace MrCMS.Tasks
             if (filterContext.HttpContext.Request.IsLocal)
                 return;
             var item = filterContext.HttpContext.Request[_siteSettings.TaskExecutorKey];
-            if (string.IsNullOrWhiteSpace(item) || item != _siteSettings.TaskExecutorPassword)
+            if (String.IsNullOrWhiteSpace(item) || item != _siteSettings.TaskExecutorPassword)
                 filterContext.Result = new EmptyResult();
             filterContext.HttpContext.Server.ScriptTimeout = 6000;
         }
@@ -31,5 +32,7 @@ namespace MrCMS.Tasks
             var result = _taskRunner.ExecutePendingTasks();
             return new ContentResult { Content = "Executed", ContentType = "text/plain" };
         }
+
+        public const string ExecutePendingTasksURL = "execute-pending-tasks";
     }
 }

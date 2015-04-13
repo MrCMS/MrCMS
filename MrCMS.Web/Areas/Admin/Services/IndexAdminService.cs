@@ -61,6 +61,11 @@ namespace MrCMS.Web.Areas.Admin.Services
             _universalSearchIndexManager.ReindexAll();
         }
 
+        public void OptimiseUniversalSearch()
+        {
+            _universalSearchIndexManager.Optimise();
+        }
+
         public List<MrCMSIndex> GetIndexes()
         {
             return _indexService.GetIndexes();

@@ -3,7 +3,6 @@ using System.Linq;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Search.Models;
-using StackExchange.Profiling;
 
 namespace MrCMS.Search.ItemCreation
 {
@@ -18,46 +17,61 @@ namespace MrCMS.Search.ItemCreation
 
         public override UniversalSearchItem GetSearchItem(Webpage entity)
         {
-            var searchTerms = _getWebpageSearchTerms.SelectMany(terms => terms.Get(entity)).ToHashSet();
-            return GetUniversalSearchItem(entity, searchTerms);
+            HashSet<string> primarySearchTerms =
+                _getWebpageSearchTerms.SelectMany(terms => terms.GetPrimary(entity)).ToHashSet();
+            HashSet<string> secondarySearchTerms =
+                _getWebpageSearchTerms.SelectMany(terms => terms.GetSecondary(entity)).ToHashSet();
+            return GetUniversalSearchItem(entity, primarySearchTerms, secondarySearchTerms);
         }
 
         public override HashSet<UniversalSearchItem> GetSearchItems(HashSet<Webpage> entities)
         {
-            Dictionary<Webpage, HashSet<string>> dictionary = new Dictionary<Webpage, HashSet<string>>();
-            foreach (var webpageSearchTerms in _getWebpageSearchTerms)
+            var primaryDictionary = new Dictionary<Webpage, HashSet<string>>();
+            foreach (IGetWebpageSearchTerms webpageSearchTerms in _getWebpageSearchTerms)
             {
-                using (MiniProfiler.Current.Step("Getting terms: " + webpageSearchTerms.GetType().Name))
+                Dictionary<Webpage, HashSet<string>> terms = webpageSearchTerms.GetPrimary(entities);
+                foreach (Webpage key in terms.Keys)
                 {
-                    var terms = webpageSearchTerms.Get(entities);
-                    foreach (var key in terms.Keys)
+                    if (primaryDictionary.ContainsKey(key))
                     {
-                        if (dictionary.ContainsKey(key))
-                        {
-                            dictionary[key].AddRange(terms[key]);
-                        }
-                        dictionary[key] = terms[key];
+                        primaryDictionary[key].AddRange(terms[key]);
                     }
+                    primaryDictionary[key] = terms[key];
                 }
             }
-            using (MiniProfiler.Current.Step("Get core webpage items"))
+            var secondaryDictionary = new Dictionary<Webpage, HashSet<string>>();
+            foreach (IGetWebpageSearchTerms webpageSearchTerms in _getWebpageSearchTerms)
             {
-                return
-                    entities.Select(webpage =>
-                        GetUniversalSearchItem(webpage,
-                            dictionary.ContainsKey(webpage) ? dictionary[webpage] : new HashSet<string>())).ToHashSet();
+                Dictionary<Webpage, HashSet<string>> terms = webpageSearchTerms.GetSecondary(entities);
+                foreach (Webpage key in terms.Keys)
+                {
+                    if (secondaryDictionary.ContainsKey(key))
+                    {
+                        secondaryDictionary[key].AddRange(terms[key]);
+                    }
+                    secondaryDictionary[key] = terms[key];
+                }
             }
+            return
+                entities.Select(webpage =>
+                    GetUniversalSearchItem(webpage,
+                        primaryDictionary.ContainsKey(webpage) ? primaryDictionary[webpage] : new HashSet<string>(),
+                        secondaryDictionary.ContainsKey(webpage) ? secondaryDictionary[webpage] : new HashSet<string>()
+                        )).ToHashSet();
         }
 
-        private UniversalSearchItem GetUniversalSearchItem(Webpage entity, HashSet<string> searchTerms)
+        private UniversalSearchItem GetUniversalSearchItem(Webpage entity, HashSet<string> primarySearchTerms,
+            IEnumerable<string> secondarySearchTerms)
         {
             return new UniversalSearchItem
             {
                 DisplayName = entity.Name,
-                ActionUrl = "/admin/webpage/edit/" + entity.Id, // removed UrlHelper for performance reasons
+                ActionUrl = "/admin/webpage/edit/" + entity.Id,
                 Id = entity.Id,
-                SearchTerms = searchTerms,
+                PrimarySearchTerms = primarySearchTerms,
+                SecondarySearchTerms = secondarySearchTerms,
                 SystemType = entity.GetType().FullName,
+                CreatedOn = entity.CreatedOn
             };
         }
     }

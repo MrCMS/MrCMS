@@ -30,6 +30,7 @@ using MrCMS.Website.Binders;
 using MrCMS.Website.Caching;
 using MrCMS.Website.Controllers;
 using MrCMS.Website.Filters;
+using MrCMS.Website.Profiling;
 using MrCMS.Website.Routing;
 using NHibernate;
 using Ninject;
@@ -75,8 +76,7 @@ namespace MrCMS.Website
 
             SetModelBinders();
 
-            ViewEngines.Engines.Clear();
-            ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
+            SetViewEngines();
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
 
@@ -93,6 +93,12 @@ namespace MrCMS.Website
             StartTaskRunning();
 
             OnApplicationStart();
+        }
+
+        protected virtual void SetViewEngines()
+        {
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
         }
 
         private void StartTaskRunning()
@@ -146,7 +152,7 @@ namespace MrCMS.Website
             new PrettyGifs().Install(ImageResizer.Configuration.Config.Current);
         }
 
-        private static void SetModelBinders()
+        protected virtual void SetModelBinders()
         {
             ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Kernel);
             ModelBinders.Binders.Add(typeof(DateTime), new CultureAwareDateBinder());
@@ -172,6 +178,7 @@ namespace MrCMS.Website
                     if (IsCachedMissingFileRequest())
                         return;
                     CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
+                    CurrentRequestData.CurrentContext.SetKernel(Kernel);
                     if (!IsFileRequest(Request.Url))
                     {
                         CurrentRequestData.CurrentContext.SetKernel(Kernel);
@@ -183,19 +190,19 @@ namespace MrCMS.Website
                     }
 
                     if (CurrentRequestData.SiteSettings != null && CurrentRequestData.SiteSettings.MiniProfilerEnabled &&
-                                                           !Request.RequestContext.HttpContext.Request.IsAjaxRequest() &&
-                                                           !Request.RawUrl.Contains("signalr", StringComparison.InvariantCultureIgnoreCase))
+                        !CurrentRequestData.CurrentContext.GetAll<IReasonToDisableMiniProfiler>()
+                            .Any(reason => reason.ShouldDisableFor(Request)))
                         MiniProfiler.Start();
+
                     OnBeginRequest(sender, args);
                 };
                 AuthenticateRequest += (sender, args) =>
                 {
-                    User currentUser = null;
                     if (!Context.Items.Contains(CachedMissingItemKey) && !IsFileRequest(Request.Url))
                     {
                         if (CurrentRequestData.CurrentContext.User != null)
                         {
-                            currentUser = Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
+                            User currentUser = Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
                             if (!Request.Url.AbsolutePath.StartsWith("/signalr/") && (currentUser == null ||
                                 !currentUser.IsActive))
                                 Get<IAuthorisationService>().Logout();
@@ -206,10 +213,6 @@ namespace MrCMS.Website
                                 Thread.CurrentThread.CurrentUICulture = currentUser.GetUICulture();
                             }
                         }
-                    }
-                    if (currentUser == null || !currentUser.IsAdmin)
-                    {
-                        MiniProfiler.Stop();
                     }
                     OnAuthenticateRequest(sender, args);
                 };
@@ -260,7 +263,7 @@ namespace MrCMS.Website
             routes.IgnoreRoute("favicon.ico");
 
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
-            routes.MapRoute("Task Execution", "execute-pending-tasks",
+            routes.MapRoute("Task Execution", TaskExecutionController.ExecutePendingTasksURL,
                 new { controller = "TaskExecution", action = "Execute" });
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });

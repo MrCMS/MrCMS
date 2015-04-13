@@ -11,9 +11,9 @@ namespace MrCMS.Helpers
 {
     public static class MediaFileExtensions
     {
-        public static IFileSystem GetFileSystem(this MediaFile file, IEnumerable<IFileSystem> possibleFileSystems)
+        public static IFileSystem GetFileSystem(string fileUrl, IEnumerable<IFileSystem> possibleFileSystems)
         {
-            return possibleFileSystems.FirstOrDefault(system => system.Exists(file.FileUrl));
+            return possibleFileSystems.FirstOrDefault(system => system.Exists(fileUrl));
         }
 
         public static bool IsImage(this MediaFile file)
@@ -38,6 +38,7 @@ namespace MrCMS.Helpers
                 yield return imageSize;
             }
         }
+
 
         public static readonly HashSet<string> JpegExtensions = new HashSet<string> { ".jpg", ".jpeg" };
         public static readonly List<string> ImageExtensions = new List<string> { ".jpg", ".jpeg", ".gif", ".png" };

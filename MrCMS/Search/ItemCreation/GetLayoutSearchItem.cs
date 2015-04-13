@@ -17,42 +17,58 @@ namespace MrCMS.Search.ItemCreation
 
         public override UniversalSearchItem GetSearchItem(Layout entity)
         {
-            HashSet<string> searchTerms = _getLayoutSearchTerms.SelectMany(terms => terms.Get(entity)).ToHashSet();
-            return GetUniversalSearchItem(entity, searchTerms);
+            HashSet<string> primarySearchTerms = _getLayoutSearchTerms.SelectMany(terms => terms.GetPrimary(entity)).ToHashSet();
+            HashSet<string> secondarySearchTerms = _getLayoutSearchTerms.SelectMany(terms => terms.GetSecondary(entity)).ToHashSet();
+            return GetUniversalSearchItem(entity, primarySearchTerms, secondarySearchTerms);
         }
 
-        private UniversalSearchItem GetUniversalSearchItem(Layout entity, HashSet<string> searchTerms)
+        private UniversalSearchItem GetUniversalSearchItem(Layout entity, HashSet<string> primarySearchTerms, HashSet<string> secondarySearchTerms)
         {
             return new UniversalSearchItem
             {
                 DisplayName = entity.Name,
                 ActionUrl = "/admin/layout/edit/" + entity.Id,
                 Id = entity.Id,
-                SearchTerms = searchTerms,
-                SystemType = typeof (Layout).FullName
+                PrimarySearchTerms = primarySearchTerms,
+                SecondarySearchTerms = secondarySearchTerms,
+                SystemType = typeof (Layout).FullName,
+                CreatedOn = entity.CreatedOn
             };
         }
 
         public override HashSet<UniversalSearchItem> GetSearchItems(HashSet<Layout> entities)
         {
-            var dictionary = new Dictionary<Layout, HashSet<string>>();
+            var primaryDictionary = new Dictionary<Layout, HashSet<string>>();
+            var secondaryDictionary = new Dictionary<Layout, HashSet<string>>();
             foreach (IGetLayoutSearchTerms getLayoutSearchTerms in _getLayoutSearchTerms)
             {
-                Dictionary<Layout, HashSet<string>> terms = getLayoutSearchTerms.Get(entities);
-                foreach (Layout key in terms.Keys)
+                Dictionary<Layout, HashSet<string>> primaryTerms = getLayoutSearchTerms.GetPrimary(entities);
+                foreach (Layout key in primaryTerms.Keys)
                 {
-                    if (dictionary.ContainsKey(key))
+                    if (primaryDictionary.ContainsKey(key))
                     {
-                        dictionary[key].AddRange(terms[key]);
+                        primaryDictionary[key].AddRange(primaryTerms[key]);
                     }
-                    dictionary[key] = terms[key];
+                    primaryDictionary[key] = primaryTerms[key];
+                }
+
+                Dictionary<Layout, HashSet<string>> secondaryTerms = getLayoutSearchTerms.GetSecondary(entities);
+                foreach (Layout key in secondaryTerms.Keys)
+                {
+                    if (secondaryDictionary.ContainsKey(key))
+                    {
+                        secondaryDictionary[key].AddRange(secondaryTerms[key]);
+                    }
+                    secondaryDictionary[key] = secondaryTerms[key];
                 }
             }
 
             return
                 entities.Select(layout =>
                     GetUniversalSearchItem(layout,
-                        dictionary.ContainsKey(layout) ? dictionary[layout] : new HashSet<string>())).ToHashSet();
+                        primaryDictionary.ContainsKey(layout) ? primaryDictionary[layout] : new HashSet<string>(),
+                        secondaryDictionary.ContainsKey(layout) ? secondaryDictionary[layout] : new HashSet<string>()
+                        )).ToHashSet();
         }
     }
 }

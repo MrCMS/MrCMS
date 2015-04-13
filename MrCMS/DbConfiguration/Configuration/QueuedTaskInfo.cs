@@ -6,5 +6,6 @@ namespace MrCMS.DbConfiguration.Configuration
     {
         public Type Type { get; set; }
         public string Data { get; set; }
+        public int SiteId { get; set; }
     }
 }

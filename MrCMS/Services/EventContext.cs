@@ -5,6 +5,7 @@ using System.Reflection;
 using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.Website;
+using StackExchange.Profiling;
 
 namespace MrCMS.Services
 {
@@ -35,11 +36,17 @@ namespace MrCMS.Services
 
         public void Publish(Type eventType, object args)
         {
-            _events.Where(@event => @eventType.IsInstanceOfType(@event) && !IsDisabled(@event)).ForEach(@event =>
+            using (MiniProfiler.Current.Step("Publishing " + eventType.FullName))
             {
-                MethodInfo methodInfo = @event.GetType().GetMethod("Execute", new[] { args.GetType() });
-                methodInfo.Invoke(@event, new[] { args });
-            });
+                _events.Where(@event => @eventType.IsInstanceOfType(@event) && !IsDisabled(@event)).ForEach(@event =>
+                {
+                    using (MiniProfiler.Current.Step("Invoking " + @event.GetType().FullName))
+                    {
+                        MethodInfo methodInfo = @event.GetType().GetMethod("Execute", new[] {args.GetType()});
+                        methodInfo.Invoke(@event, new[] {args});
+                    }
+                });
+            }
         }
 
         private bool IsDisabled(IEvent @event)

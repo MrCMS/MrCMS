@@ -21,6 +21,8 @@
                 $(this).mrcmsinline(!getEditingEnabled() ? 'enable' : 'disable');
             });
             $(this).mrcmsinline(getEditingEnabled() ? 'enable' : 'disable', true);
+            $('body').addClass('mrcms-admin-bar-on');
+
             return this;
         },
 

@@ -5,5 +5,11 @@
     @Html.TextBoxFor(redirect => redirect.RedirectUrl, new { @class = "form-control" })
     @Html.ValidationMessageFor(redirect => redirect.RedirectUrl)
 </div>
-@Html.InlineCheckboxFor(redirect => redirect.Permanent, text: Resource("301 Pemanent"))
-@Html.ValidationMessageFor(redirect => redirect.Permanent)
+<div class="form-group">
+    @Html.InlineCheckboxFor(redirect => redirect.Permanent, text: Resource("301 Pemanent"))
+    @Html.ValidationMessageFor(redirect => redirect.Permanent)
+</div>
+<div class="form-group">
+    @Html.InlineCheckboxFor(redirect => redirect.RevealInNavigation, text: Resource("Show in Navigation"))
+    @Html.ValidationMessageFor(redirect => redirect.RevealInNavigation)
+</div>

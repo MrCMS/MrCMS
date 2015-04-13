@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using MrCMS.Batching;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.Entities.Documents.Web;
@@ -76,6 +77,11 @@ namespace MrCMS.Services.ImportExport.BatchJobs
 
                 return BatchJobExecutionResult.Success();
             }
+        }
+
+        protected override Task<BatchJobExecutionResult> OnExecuteAsync(ImportDocumentBatchJob batchJob)
+        {
+            throw new NotImplementedException();
         }
 
         private Webpage GetWebpageByUrl(string urlSegment)

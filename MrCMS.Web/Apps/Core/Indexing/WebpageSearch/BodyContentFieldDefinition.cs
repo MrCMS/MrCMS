@@ -7,11 +7,6 @@ namespace MrCMS.Web.Apps.Core.Indexing.WebpageSearch
 {
     public class BodyContentFieldDefinition : StringFieldDefinition<WebpageSearchIndexDefinition, Webpage>
     {
-        private static readonly Regex WhiteSpaceRegex = new Regex(@"\s{2,}",
-    RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        private static readonly Regex TagStripRegex = new Regex(@"<[^>]+>|&nbsp;",
-            RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public BodyContentFieldDefinition(ILuceneSettingsService luceneSettingsService)
             : base(luceneSettingsService, "bodycontent")
         {
@@ -24,8 +19,8 @@ namespace MrCMS.Web.Apps.Core.Indexing.WebpageSearch
 
         private string RemoveTags(string data)
         {
-            string trim = TagStripRegex.Replace(data ?? string.Empty, " ").Trim();
-            return WhiteSpaceRegex.Replace(trim, " ");
+            string trim = Regex.Replace(data ?? string.Empty, @"<[^>]+>|&nbsp;", " ").Trim();
+            return Regex.Replace(trim, @"\s{2,}", " ");
         }
     }
 }

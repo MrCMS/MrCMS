@@ -18,6 +18,7 @@ namespace MrCMS.DbConfiguration.Configuration
                 {
                     Data = siteEntity.Id.ToString(),
                     Type = type.MakeGenericType(siteEntity.GetType()),
+                    SiteId = siteEntity.Site.Id
                 };
 
                 if (!CurrentRequestData.OnEndRequest.OfType<AddLuceneTaskInfo>().Any(task => info.Equals(task.Data)))

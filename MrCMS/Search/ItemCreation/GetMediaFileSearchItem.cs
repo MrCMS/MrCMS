@@ -14,10 +14,11 @@ namespace MrCMS.Search.ItemCreation
             {
                 DisplayName = entity.FileName,
                 Id = entity.Id,
-                SearchTerms =
-                    new[] {entity.FileName, entity.FileExtension, entity.FileUrl, entity.Title, entity.Description},
+                PrimarySearchTerms = new[] {entity.FileName, entity.Title, entity.Description},
+                SecondarySearchTerms = new[] {entity.FileExtension, entity.FileUrl},
                 SystemType = typeof (MediaFile).FullName,
-                ActionUrl = "/admin/file/edit/" + entity.Id
+                ActionUrl = "/admin/file/edit/" + entity.Id,
+                CreatedOn = entity.CreatedOn
             };
         }
 

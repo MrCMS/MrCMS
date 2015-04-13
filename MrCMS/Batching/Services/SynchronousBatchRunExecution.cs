@@ -1,7 +1,5 @@
-using System;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using MrCMS.Batching.Entities;
-using NHibernate;
 
 namespace MrCMS.Batching.Services
 {
@@ -14,11 +12,10 @@ namespace MrCMS.Batching.Services
             _executeNextBatchJob = executeNextBatchJob;
         }
 
-        public void Execute(BatchRun run)
+        public async Task Execute(BatchRun run)
         {
-            while (_executeNextBatchJob.Execute(run))
+            while (await _executeNextBatchJob.Execute(run))
             {
-                
             }
         }
     }

@@ -18,41 +18,59 @@ namespace MrCMS.Search.ItemCreation
 
         public override UniversalSearchItem GetSearchItem(User entity)
         {
-            HashSet<string> searchTerms = _userSearchTerms.SelectMany(terms => terms.Get(entity)).ToHashSet();
-            return GetUniversalSearchItem(entity, searchTerms);
+            HashSet<string> primarySearchTerms = _userSearchTerms.SelectMany(terms => terms.GetPrimary(entity)).ToHashSet();
+            HashSet<string> secondarySearchTerms = _userSearchTerms.SelectMany(terms => terms.GetSecondary(entity)).ToHashSet();
+            return GetUniversalSearchItem(entity, primarySearchTerms, secondarySearchTerms);
         }
 
         public override HashSet<UniversalSearchItem> GetSearchItems(HashSet<User> entities)
         {
-            var dictionary = new Dictionary<User, HashSet<string>>();
+            var primaryDictionary = new Dictionary<User, HashSet<string>>();
             foreach (IGetUserSearchTerms userSearchTerms in _userSearchTerms)
             {
-                Dictionary<User, HashSet<string>> terms = userSearchTerms.Get(entities);
+                Dictionary<User, HashSet<string>> terms = userSearchTerms.GetPrimary(entities);
                 foreach (User key in terms.Keys)
                 {
-                    if (dictionary.ContainsKey(key))
+                    if (primaryDictionary.ContainsKey(key))
                     {
-                        dictionary[key].AddRange(terms[key]);
+                        primaryDictionary[key].AddRange(terms[key]);
                     }
-                    dictionary[key] = terms[key];
+                    primaryDictionary[key] = terms[key];
+                }
+            }
+            var secondaryDictionary = new Dictionary<User, HashSet<string>>();
+            foreach (IGetUserSearchTerms userSearchTerms in _userSearchTerms)
+            {
+                Dictionary<User, HashSet<string>> terms = userSearchTerms.GetSecondary(entities);
+                foreach (User key in terms.Keys)
+                {
+                    if (secondaryDictionary.ContainsKey(key))
+                    {
+                        secondaryDictionary[key].AddRange(terms[key]);
+                    }
+                    secondaryDictionary[key] = terms[key];
                 }
             }
 
             return
                 entities.Select(user =>
                     GetUniversalSearchItem(user,
-                        dictionary.ContainsKey(user) ? dictionary[user] : new HashSet<string>())).ToHashSet();
+                        primaryDictionary.ContainsKey(user) ? primaryDictionary[user] : new HashSet<string>(),
+                        secondaryDictionary.ContainsKey(user) ? secondaryDictionary[user] : new HashSet<string>()
+                        )).ToHashSet();
         }
 
-        private UniversalSearchItem GetUniversalSearchItem(User entity, HashSet<string> searchTerms)
+        private UniversalSearchItem GetUniversalSearchItem(User entity, HashSet<string> primarySearchTerms, HashSet<string>  secondarySearchTerms)
         {
             return new UniversalSearchItem
             {
                 DisplayName = entity.Name,
-                ActionUrl = "/admin/user/edit/" + entity.Id, //_urlHelper.Action("Edit", "User", new {id = entity.Id, area = "admin"}),
+                ActionUrl = "/admin/user/edit/" + entity.Id,
                 Id = entity.Id,
-                SearchTerms = searchTerms,
-                SystemType = entity.GetType().FullName
+                PrimarySearchTerms = primarySearchTerms,
+                SecondarySearchTerms = secondarySearchTerms,
+                SystemType = entity.GetType().FullName,
+                CreatedOn = entity.CreatedOn
             };
         }
     }

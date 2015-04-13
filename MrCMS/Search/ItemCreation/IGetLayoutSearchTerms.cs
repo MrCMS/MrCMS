@@ -5,7 +5,9 @@ namespace MrCMS.Search.ItemCreation
 {
     public interface IGetLayoutSearchTerms
     {
-        IEnumerable<string> Get(Layout layout);
-        Dictionary<Layout, HashSet<string>> Get(HashSet<Layout> layouts);
+        IEnumerable<string> GetPrimary(Layout layout);
+        Dictionary<Layout, HashSet<string>> GetPrimary(HashSet<Layout> layouts);
+        IEnumerable<string> GetSecondary(Layout entity);
+        Dictionary<Layout, HashSet<string>> GetSecondary(HashSet<Layout> layouts);
     }
 }

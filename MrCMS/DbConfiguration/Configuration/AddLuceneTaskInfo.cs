@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
 using MrCMS.Website;
@@ -33,7 +34,8 @@ namespace MrCMS.DbConfiguration.Configuration
                     {
                         Data = queuedTaskInfo.Data,
                         Type = queuedTaskInfo.Type.FullName,
-                        Status = TaskExecutionStatus.Pending
+                        Status = TaskExecutionStatus.Pending,
+                        Site = _session.Get<Site>(queuedTaskInfo.SiteId)
                     });
                 }
             });

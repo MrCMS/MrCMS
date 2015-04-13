@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MrCMS.Website;
 
 namespace MrCMS.Batching
@@ -40,6 +41,18 @@ namespace MrCMS.Batching
             {
                 CurrentRequestData.ErrorSignal.Raise(ex);
                 return Failure(ex.Message);
+            }
+        }
+        internal static Task<BatchJobExecutionResult> TryAsync(Func<Task<BatchJobExecutionResult>> func)
+        {
+            try
+            {
+                return func();
+            }
+            catch (Exception ex)
+            {
+                CurrentRequestData.ErrorSignal.Raise(ex);
+                return Task.FromResult(Failure(ex.Message));
             }
         }
     }

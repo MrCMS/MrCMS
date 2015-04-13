@@ -15,7 +15,7 @@ namespace MrCMS.Services.Resources
         void AddOverride(StringResource resource);
         void Update(StringResource resource);
         void Delete(StringResource resource);
-        Dictionary<string, List<StringResource>> ResourcesForSite { get; }
+        //Dictionary<string, HashSet<StringResource>> ResourcesForSite { get; }
         IEnumerable<StringResource> AllResources { get; }
     }
 }

@@ -35,13 +35,13 @@ namespace MrCMS.Helpers
                     TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(DocumentMetadataMap<>).MakeGenericType(type));
                 if (types.Any())
                 {
-                    var definition = Activator.CreateInstance(types.First()) as IGetDocumentMetadata;
+                    var definition = MrCMSApplication.Get(types.First()) as IGetDocumentMetadata;
                     list.Add(definition.Metadata);
                 }
                 else
                 {
                     var definition =
-                        Activator.CreateInstance(typeof(DefaultDocumentMetadata<>).MakeGenericType(type)) as
+                        MrCMSApplication.Get(typeof(DefaultDocumentMetadata<>).MakeGenericType(type)) as
                             IGetDocumentMetadata;
                     list.Add(definition.Metadata);
                 }
