@@ -552,6 +552,7 @@
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
     <Compile Include="Helpers\CustomBindingExtensions.cs" />
     <Compile Include="Helpers\DocumentVersionRenderingExtensions.cs" />
+    <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\EventContextExtensions.cs" />
     <Compile Include="Helpers\FormContextEnsurer.cs" />
     <Compile Include="Helpers\HashsetExtensions.cs" />
