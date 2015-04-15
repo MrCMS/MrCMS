@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using MrCMS.Batching.Entities;
+using MrCMS.Batching;
 using MrCMS.Batching.Services;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Settings;
-using MrCMS.Website;
 using Newtonsoft.Json;
 using NHibernate;
 using Ninject;
@@ -19,10 +17,10 @@ namespace MrCMS.Services.FileMigration
     {
         private readonly Dictionary<string, IFileSystem> _allFileSystems;
         private readonly ICreateBatch _createBatch;
-        private readonly UrlHelper _urlHelper;
-        private readonly IKernel _kernel;
         private readonly FileSystemSettings _fileSystemSettings;
+        private readonly IKernel _kernel;
         private readonly ISession _session;
+        private readonly UrlHelper _urlHelper;
 
         public FileMigrationService(IKernel kernel, FileSystemSettings fileSystemSettings, ISession session,
             ICreateBatch createBatch, UrlHelper urlHelper)
@@ -54,7 +52,8 @@ namespace MrCMS.Services.FileMigration
             List<Guid> guids =
                 mediaFiles.Where(
                     mediaFile =>
-                        MediaFileExtensions.GetFileSystem(mediaFile.FileUrl, _allFileSystems.Values) != CurrentFileSystem)
+                        MediaFileExtensions.GetFileSystem(mediaFile.FileUrl, _allFileSystems.Values) !=
+                        CurrentFileSystem)
                     .Select(file => file.Guid).ToList();
 
             if (!guids.Any())
@@ -66,7 +65,7 @@ namespace MrCMS.Services.FileMigration
                 };
             }
 
-            var result = _createBatch.Create(guids.Chunk(10)
+            BatchCreationResult result = _createBatch.Create(guids.Chunk(10)
                 .Select(set => new MigrateFilesBatchJob
                 {
                     Data = JsonConvert.SerializeObject(set.ToHashSet()),
