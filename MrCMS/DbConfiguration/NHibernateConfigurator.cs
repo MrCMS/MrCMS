@@ -120,7 +120,7 @@ namespace MrCMS.DbConfiguration
 
         private void SetupCache(CacheSettingsBuilder builder)
         {
-            if (!CacheEnabled)
+            if (!CacheEnabled) 
                 return;
 
             builder.UseSecondLevelCache()
@@ -158,8 +158,7 @@ namespace MrCMS.DbConfiguration
                 .IncludeBase<BatchJob>()
                 .IncludeAppBases()
                 .UseOverridesFromAssemblies(finalAssemblies)
-                .UseConventionsFromAssemblies(finalAssemblies)
-                .IncludeAppConventions();
+                .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>();
         }
 
 

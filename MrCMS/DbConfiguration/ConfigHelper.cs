@@ -57,17 +57,6 @@ namespace MrCMS.DbConfiguration
             return model;
         }
 
-        public static AutoPersistenceModel IncludeAppConventions(this AutoPersistenceModel model)
-        {
-            foreach (Type baseType in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>()
-                .Select(type => Activator.CreateInstance(type) as MrCMSApp)
-                .SelectMany(app => app.Conventions))
-            {
-                model.Conventions.Add(baseType);
-            }
-            return model;
-        }
-
         /// <summary>
         ///     Shortcut to make a property varchar(max) as you have to explicitly set the length otherwise
         /// </summary>
