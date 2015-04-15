@@ -9,6 +9,11 @@ namespace MrCMS.Website
     {
         private const string CurrentKernelKey = "current.kernel";
 
+        public static IKernel GetKernel(this HttpContextBase context)
+        {
+            return context.Items[CurrentKernelKey] as IKernel;
+        }
+
         public static void SetKernel(this HttpContextBase context, IKernel kernel)
         {
             context.Items[CurrentKernelKey] = kernel;

@@ -1,13 +1,15 @@
-﻿using MrCMS.Services.Resources;
+﻿using System.Web;
+using MrCMS.Services.Resources;
 using MrCMS.Website;
+using Ninject;
 
 namespace MrCMS.Helpers
 {
     public static class StringResourceHelper
     {
-        public static string AsResource(this string value)
+        public static string AsResource(this string value, IKernel kernel)
         {
-            var provider = MrCMSApplication.Get<IStringResourceProvider>();
+            var provider = kernel.Get<IStringResourceProvider>();
 
             return provider.GetValue(value);
         }
