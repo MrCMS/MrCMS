@@ -344,6 +344,7 @@
     <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
     <Compile Include="Areas\Admin\ACL\MediaToolsACL.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
+    <Compile Include="Areas\Admin\Controllers\AboutController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchExecutionController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchJobController.cs" />
@@ -2113,6 +2114,7 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\readme.md" />
     <Content Include="Areas\Admin\Views\RegisteredHandlers\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\About\Index.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
