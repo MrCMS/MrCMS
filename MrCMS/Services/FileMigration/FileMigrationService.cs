@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using MrCMS.Batching.Entities;
 using MrCMS.Batching.Services;
 using MrCMS.Entities.Documents.Media;
@@ -16,25 +17,25 @@ namespace MrCMS.Services.FileMigration
 {
     public class FileMigrationService : IFileMigrationService
     {
-        private readonly IEnumerable<IFileSystem> _allFileSystems;
-        private readonly ICreateBatchRun _createBatchRun;
+        private readonly Dictionary<string, IFileSystem> _allFileSystems;
+        private readonly ICreateBatch _createBatch;
+        private readonly UrlHelper _urlHelper;
+        private readonly IKernel _kernel;
         private readonly FileSystemSettings _fileSystemSettings;
         private readonly ISession _session;
-        private readonly Site _site;
-        private readonly IStatelessSession _statelessSession;
 
-        public FileMigrationService(IKernel kernel, FileSystemSettings fileSystemSettings, ISession session, Site site,
-            IStatelessSession statelessSession, ICreateBatchRun createBatchRun)
+        public FileMigrationService(IKernel kernel, FileSystemSettings fileSystemSettings, ISession session,
+            ICreateBatch createBatch, UrlHelper urlHelper)
         {
             _allFileSystems =
                 TypeHelper.GetAllTypesAssignableFrom<IFileSystem>()
                     .Select(type => kernel.Get(type) as IFileSystem)
-                    .ToList();
+                    .ToDictionary(system => system.GetType().FullName);
             _fileSystemSettings = fileSystemSettings;
             _session = session;
-            _site = site;
-            _statelessSession = statelessSession;
-            _createBatchRun = createBatchRun;
+            _createBatch = createBatch;
+            _kernel = kernel;
+            _urlHelper = urlHelper;
         }
 
         public IFileSystem CurrentFileSystem
@@ -42,51 +43,49 @@ namespace MrCMS.Services.FileMigration
             get
             {
                 string storageType = _fileSystemSettings.StorageType;
-                return _allFileSystems.FirstOrDefault(system => system.GetType().FullName == storageType);
+                return _allFileSystems[storageType];
             }
         }
 
-        public void MigrateFiles()
+        public FileMigrationResult MigrateFiles()
         {
-            IList<MediaFile> mediaFiles = _session.QueryOver<MediaFile>().Where(file => file.Site == _site).List();
+            IList<MediaFile> mediaFiles = _session.QueryOver<MediaFile>().List();
+
             List<Guid> guids =
                 mediaFiles.Where(
                     mediaFile =>
-                        MediaFileExtensions.GetFileSystem(mediaFile.FileUrl, _allFileSystems) != CurrentFileSystem)
+                        MediaFileExtensions.GetFileSystem(mediaFile.FileUrl, _allFileSystems.Values) != CurrentFileSystem)
                     .Select(file => file.Guid).ToList();
 
-            DateTime now = CurrentRequestData.Now;
-            // we need to make sure that the site is loaded from the correct session
-            var site = _statelessSession.Get<Site>(_site.Id);
-            var batch = new Batch
+            if (!guids.Any())
             {
-                BatchJobs = new List<BatchJob>(),
-                BatchRuns = new List<BatchRun>(),
-                Site = site,
-                CreatedOn = now,
-                UpdatedOn = now
-            };
-            _statelessSession.Transact(session => session.Insert(batch));
-            _statelessSession.Transact(session =>
-            {
-                foreach (MigrateFilesBatchJob importNewsBatchJob
-                    in guids.Chunk(10)
-                        .Select(set => new MigrateFilesBatchJob
-                        {
-                            Batch = batch,
-                            Data = JsonConvert.SerializeObject(set.ToHashSet()),
-                            Site = site,
-                            CreatedOn = now,
-                            UpdatedOn = now
-                        }))
+                return new FileMigrationResult
                 {
-                    batch.BatchJobs.Add(importNewsBatchJob);
-                    session.Insert(importNewsBatchJob);
-                }
-            });
-            BatchRun batchRun = _createBatchRun.Create(batch);
-            batch.BatchRuns.Add(batchRun);
-            _statelessSession.Transact(session => session.Update(batch));
+                    MigrationRequired = false,
+                    Message = "Migration not required"
+                };
+            }
+
+            var result = _createBatch.Create(guids.Chunk(10)
+                .Select(set => new MigrateFilesBatchJob
+                {
+                    Data = JsonConvert.SerializeObject(set.ToHashSet()),
+                }));
+
+            return new FileMigrationResult
+            {
+                MigrationRequired = true,
+                Message = string.Format(
+                    "Batch created. Click <a target=\"_blank\" href=\"{0}\">here</a> to view and start.".AsResource(
+                        _kernel),
+                    _urlHelper.Action("Show", "BatchRun", new {id = result.InitialBatchRun.Id}))
+            };
         }
+    }
+
+    public class FileMigrationResult
+    {
+        public bool MigrationRequired { get; set; }
+        public string Message { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using MrCMS.Services.FileMigration;
+using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -21,7 +22,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Migrate()
         {
-            _fileMigrationService.MigrateFiles();
+            FileMigrationResult result = _fileMigrationService.MigrateFiles();
+
+            if (result.MigrationRequired)
+                TempData.SuccessMessages().Add(result.Message);
+            else
+                TempData.InfoMessages().Add(result.Message);
+
             return RedirectToAction("FileSystem", "Settings");
         }
     }

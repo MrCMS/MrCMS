@@ -283,6 +283,7 @@
     <Compile Include="Batching\BaseBatchJobExecutor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\BatchCreationResult.cs" />
     <Compile Include="Batching\BatchJobExecutionResult.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -341,6 +342,7 @@
     <Compile Include="Batching\Services\ControlBatchRun.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\Services\CreateBatch.cs" />
     <Compile Include="Batching\Services\CreateBatchRun.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -356,6 +358,7 @@
     <Compile Include="Batching\Services\IControlBatchRun.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\Services\ICreateBatch.cs" />
     <Compile Include="Batching\Services\ICreateBatchRun.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -558,7 +561,6 @@
     <Compile Include="Helpers\HashsetExtensions.cs" />
     <Compile Include="Helpers\HoneypotHtmlHelper.cs" />
     <Compile Include="Helpers\HtmlFormExtensions.cs" />
-    <Compile Include="Helpers\HttpContextExtensions.cs" />
     <Compile Include="Helpers\HttpRequestHelper.cs" />
     <Compile Include="Helpers\ImageRenderingExtensions.cs" />
     <Compile Include="Helpers\LayoutExtensions.cs" />

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using MrCMS.ACL.Rules;
+using MrCMS.Helpers;
 using MrCMS.Settings;
+using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
@@ -50,6 +52,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public RedirectToRouteResult FileSystem([IoCModelBinder(typeof(FileSystemSettingsModelBinder))]FileSystemSettings settings)
         {
             _configurationProvider.SaveSettings(settings);
+            TempData.SuccessMessages().Add("Settings saved.".AsResource(HttpContext.GetKernel()));
             return RedirectToAction("FileSystem");
         }
     }
