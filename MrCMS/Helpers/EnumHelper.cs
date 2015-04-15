@@ -8,15 +8,9 @@ namespace MrCMS.Helpers
 {
     public static class EnumHelper<T>
     {
-        public static IList<T> GetValues(Enum value)
+        public static IList<T> GetValues()
         {
-            var enumValues = new List<T>();
-
-            foreach (FieldInfo fi in value.GetType().GetFields(BindingFlags.Static | BindingFlags.Public))
-            {
-                enumValues.Add((T)Enum.Parse(value.GetType(), fi.Name, false));
-            }
-            return enumValues;
+            return Enum.GetValues(typeof (T)).Cast<T>().ToList();
         }
 
         public static T Parse(string value)
@@ -24,19 +18,19 @@ namespace MrCMS.Helpers
             return (T)Enum.Parse(typeof(T), value, true);
         }
 
-        public static IList<string> GetNames(Enum value)
+        public static IList<string> GetNames()
         {
-            return value.GetType().GetFields(BindingFlags.Static | BindingFlags.Public).Select(fi => fi.Name).ToList();
+            return Enum.GetNames(typeof (T)).ToList();
         }
 
-        public static IList<string> GetDisplayValues(Enum value)
+        public static IList<string> GetDisplayValues()
         {
-            return GetNames(value).Select(obj => GetDisplayValue(Parse(obj))).ToList();
+            return GetValues().Select(GetDisplayValue).ToList();
         }
 
         public static string GetDisplayValue(T value)
         {
-            var fieldInfo = value.GetType().GetField(value.ToString());
+            var fieldInfo = typeof(T).GetField(value.ToString());
 
             var descriptionAttributes = fieldInfo.GetCustomAttributes(
                 typeof(DisplayAttribute), false) as DisplayAttribute[];
