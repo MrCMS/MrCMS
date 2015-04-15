@@ -64,8 +64,8 @@ namespace MrCMS.Models
                         ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.MessageQueue)),
                     new ChildMenuItem("Notifications", "/Admin/Notification",
                         ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Notifications)),
-                    new ChildMenuItem("Clear Caches", "/Admin/ClearCaches")
-               
+                    new ChildMenuItem("Clear Caches", "/Admin/ClearCaches"),
+                    new ChildMenuItem("About", "/Admin/About")
             };
         }
 
