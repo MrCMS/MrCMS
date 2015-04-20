@@ -22,7 +22,7 @@ namespace MrCMS.Tests
             _kernel = new MockingKernel();
             Kernel.Load(new TestContextModule());
             Kernel.Bind<IEventContext>().ToMethod(context => _eventContext);
-            MrCMSApplication.OverrideKernel(Kernel);
+            MrCMSKernel.OverrideKernel(Kernel);
             CurrentRequestData.SiteSettings = new SiteSettings();
         }
 

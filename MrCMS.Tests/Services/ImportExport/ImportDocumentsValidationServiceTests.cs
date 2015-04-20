@@ -37,7 +37,7 @@ namespace MrCMS.Tests.Services.ImportExport
                 Enumerable.Range(1, 10).Select(i => A.Fake<IDocumentImportValidationRule>()).ToList();
             documentImportValidationRules.ForEach(rule => mockingKernel.Bind<IDocumentImportValidationRule>()
                 .ToMethod(context => rule));
-            MrCMSApplication.OverrideKernel(mockingKernel);
+            MrCMSKernel.OverrideKernel(mockingKernel);
 
             List<DocumentImportDTO> documents = Enumerable.Range(1, 10).Select(i => new DocumentImportDTO()).ToList();
 

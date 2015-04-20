@@ -6,6 +6,7 @@ namespace MrCMS.ACL.Rules
     {
         public const string ShowMenu = "Show Menu";
         public const string SiteSettings = "Site Settings";
+        public const string SystemSettings = "System Settings";
         public const string FileSystemSettings = "File System Settings";
         public const string Sites = "Sites";
         public const string Resources = "Resources";
@@ -33,6 +34,7 @@ namespace MrCMS.ACL.Rules
                    {
                        ShowMenu,
                        SiteSettings,
+                       SystemSettings,
                        FileSystemSettings,
                        Sites,
                        Resources,

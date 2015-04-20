@@ -2,38 +2,40 @@
 @{
     ViewBag.Title = "Edit Settings";
 }
-    @if (TempData["settings-saved"] != null)
-    {
-        <div class="alert alert-success">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            @Resource("Admin Settings Saved","Settings saved")
-        </div>
-    }
+@if (TempData["settings-saved"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @Resource("Admin Settings Saved", "Settings saved")
+    </div>
+}
 
 @using (Html.BeginForm("Index", "Settings", FormMethod.Post, new { id = "edit-settings" }))
 {
     <fieldset>
-        <legend>@Resource("Admin Global Settings", "Global Settings")
+        <legend>
+            @Resource("Admin Site Settings", "Site Settings")
 
         <span class="btn-group  display-inline  pull-right">
             <button class="btn btn-primary">
-                @Resource("Save")</button>
+                @Resource("Save")
+            </button>
         </span>
-        </legend>
+    </legend>
 
-        <div id="tabs">
-            <ul class="nav nav-tabs" data-stickytabs="site-settings">
-                @foreach (var settingType in Model)
-                {
-                    <li><a href="#@settingType.DivId" data-toggle="tab">@settingType.TypeName</a></li>
-                }
-            </ul>
-            <div class="tab-content">
-                @foreach (var settingType in Model)
-                {
-                    Html.RenderPartial("Settings", settingType);
-                }
-            </div>
+    <div id="tabs">
+        <ul class="nav nav-tabs" data-stickytabs="site-settings">
+            @foreach (var settingType in Model)
+            {
+                <li><a href="#@settingType.DivId" data-toggle="tab">@settingType.TypeName</a></li>
+            }
+        </ul>
+        <div class="tab-content">
+            @foreach (var settingType in Model)
+            {
+                Html.RenderPartial("Settings", settingType);
+            }
         </div>
-    </fieldset>
+    </div>
+</fieldset>
 }

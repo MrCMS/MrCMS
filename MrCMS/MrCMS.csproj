@@ -275,6 +275,7 @@
     <Compile Include="ACL\Rules\RoleACL.cs" />
     <Compile Include="ACL\Rules\SiteSettingsACL.cs" />
     <Compile Include="ACL\Rules\SystemAdminMenuACL.cs" />
+    <Compile Include="ACL\Rules\SystemSettingsACL.cs" />
     <Compile Include="ACL\Rules\UserACL.cs" />
     <Compile Include="ACL\Rules\UserAdminMenuACL.cs" />
     <Compile Include="ACL\TypeACLRule.cs" />
@@ -796,7 +797,12 @@
     <Compile Include="Services\Widgets\GetWidgetModelBase.cs" />
     <Compile Include="Services\WidgetUIService.cs" />
     <Compile Include="Services\WritablePropertiesOnlyResolver.cs" />
+    <Compile Include="Settings\BundlingSettings.cs" />
     <Compile Include="Settings\DatabaseSettings.cs" />
+    <Compile Include="Settings\Events\IOnSavingSiteSettings.cs" />
+    <Compile Include="Settings\Events\IOnSavingSystemSettings.cs" />
+    <Compile Include="Settings\Events\OnSavingSiteSettingsArgs.cs" />
+    <Compile Include="Settings\Events\OnSavingSystemSettingsArgs.cs" />
     <Compile Include="Settings\FormRenderingType.cs" />
     <Compile Include="Settings\ILegacySettingsProvider.cs" />
     <Compile Include="Settings\ISystemConfigurationProvider.cs" />
@@ -1041,6 +1047,7 @@
     <Compile Include="Tasks\SchedulableTask.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\ScheduledTask.cs" />
+    <Compile Include="Tasks\TaskExecutionQueuer.cs" />
     <Compile Include="Tasks\TaskExecutionStatus.cs" />
     <Compile Include="Tasks\TaskResetter.cs" />
     <Compile Include="Tasks\TaskStatusUpdater.cs" />
@@ -1059,6 +1066,7 @@
     <Compile Include="Tasks\ITaskBuilder.cs" />
     <Compile Include="Tasks\ITaskRunner.cs" />
     <Compile Include="Tasks\ITaskExecutor.cs" />
+    <Compile Include="Website\BundleRegistration.cs" />
     <Compile Include="Website\Caching\CacheExpiryType.cs" />
     <Compile Include="Website\Caching\HttpCache.cs" />
     <Compile Include="Website\Caching\ICacheWrapper.cs" />
@@ -1092,16 +1100,20 @@
     <Compile Include="Website\HttpContextExtensions.cs" />
     <Compile Include="Website\IClearCachesService.cs" />
     <Compile Include="Website\IEnsureDatabaseIsInstalled.cs" />
+    <Compile Include="Website\ImagePluginInstaller.cs" />
     <Compile Include="Website\IOnEndRequestExecutor.cs" />
     <Compile Include="Website\IProcessWebpageViews.cs" />
+    <Compile Include="Website\MiniProfilerAuth.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSAssemblyAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
+    <Compile Include="Website\MrCMSKernel.cs" />
     <Compile Include="Website\MrCMSMetadataProvider.cs" />
     <Compile Include="Website\MrCMSRazorViewEngine.cs" />
     <Compile Include="Website\MrCMSTypeACLAttribute.cs" />
     <Compile Include="Website\OnEndRequestExecutor.cs" />
     <Compile Include="Website\Optimization\AsIsBundleOrderer.cs" />
+    <Compile Include="Website\Optimization\IScriptBundle.cs" />
     <Compile Include="Website\Optimization\IResourceBundler.cs" />
     <Compile Include="Website\Caching\CacheManager.cs" />
     <Compile Include="Website\Caching\ICacheManager.cs" />
@@ -1118,6 +1130,7 @@
     <Compile Include="Website\MrCMSAuthorizeAttribute.cs" />
     <Compile Include="Website\MrCMSControllerFactory.cs" />
     <Compile Include="Website\MrCMSViewEngine.cs" />
+    <Compile Include="Website\Optimization\IStylesheetBundle.cs" />
     <Compile Include="Website\Optimization\ResourceBundler.cs" />
     <Compile Include="Website\Optimization\ResourceData.cs" />
     <Compile Include="Website\Optimization\WhitespaceFilter.cs" />
@@ -1133,6 +1146,9 @@
     <Compile Include="Website\Profiling\DisableMiniProfilerForTaskExecution.cs" />
     <Compile Include="Website\Profiling\IReasonToDisableMiniProfiler.cs" />
     <Compile Include="Website\PropertyFinder.cs" />
+    <Compile Include="Website\MrCMSRouteRegistration.cs" />
+    <Compile Include="Website\RequestAuthenticator.cs" />
+    <Compile Include="Website\RequestInitializer.cs" />
     <Compile Include="Website\Routing\AppRouteConstraint.cs" />
     <Compile Include="Website\Routing\ControllerManager.cs" />
     <Compile Include="Website\Routing\FileNotFoundHandler.cs" />

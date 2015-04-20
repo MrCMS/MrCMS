@@ -7,6 +7,7 @@ namespace MrCMS.Settings
     {
         TSettings GetSystemSettings<TSettings>() where TSettings : SystemSettingsBase, new();
         void SaveSettings(SystemSettingsBase settings);
+        void SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new();
         void DeleteSettings(SystemSettingsBase settings);
         List<SystemSettingsBase> GetAllSystemSettings();
     }

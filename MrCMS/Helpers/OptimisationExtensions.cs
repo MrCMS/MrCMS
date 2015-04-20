@@ -28,9 +28,9 @@ namespace MrCMS.Helpers
             MrCMSApplication.Get<IResourceBundler>().AddCss(virtualPath, url);
         }
 
-        public static MvcHtmlString RenderCss(this HtmlHelper helper)
+        public static void RenderCss(this HtmlHelper helper)
         {
-            return MrCMSApplication.Get<IResourceBundler>().GetCss();
+            MrCMSApplication.Get<IResourceBundler>().GetCss(helper.ViewContext);
         }
 
         public static void AddAppUIScripts(this HtmlHelper html)

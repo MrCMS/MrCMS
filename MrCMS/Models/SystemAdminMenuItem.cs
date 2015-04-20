@@ -34,6 +34,8 @@ namespace MrCMS.Models
                     {
                         new ChildMenuItem("Site Settings", "/Admin/Settings",
                             ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.SiteSettings)),
+                        new ChildMenuItem("System Settings", "/Admin/SystemSettings",
+                            ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.SiteSettings)),
                         new ChildMenuItem("Filesystem Settings", "/Admin/Settings/FileSystem",
                             ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.FileSystemSettings)),
                         new ChildMenuItem("ACL", "/Admin/ACL",

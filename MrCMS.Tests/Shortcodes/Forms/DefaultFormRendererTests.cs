@@ -30,7 +30,7 @@ namespace MrCMS.Tests.Shortcodes.Forms
         {
             _formCollection = new FormCollection();
             var mockingKernel = new MockingKernel();
-            MrCMSApplication.OverrideKernel(mockingKernel);
+            MrCMSKernel.OverrideKernel(mockingKernel);
             _elementRendererManager = A.Fake<IElementRendererManager>();
             _labelRenderer= A.Fake<ILabelRenderer>();
             _validationMessageRenderer= A.Fake<IValidationMessaageRenderer>();

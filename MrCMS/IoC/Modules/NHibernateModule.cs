@@ -47,10 +47,6 @@ namespace MrCMS.IoC.Modules
 
             Kernel.Bind<IStatelessSession>()
                 .ToMethod(context => context.Kernel.Get<ISessionFactory>().OpenStatelessSession()).InRequestScope();
-
-            Kernel.Bind<IStatelessSession>()
-                .ToMethod(context => context.Kernel.Get<ISessionFactory>().OpenStatelessSession());
-
         }
     }
 }

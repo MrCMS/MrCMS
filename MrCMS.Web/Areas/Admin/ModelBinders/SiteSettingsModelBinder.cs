@@ -41,7 +41,6 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
                             .Where(
                                 info =>
                                 info.CanWrite &&
-                                info.Name != "Site" &&
                                 !info.GetCustomAttributes(typeof (ReadOnlyAttribute), true)
                                     .Any(o => o.To<ReadOnlyAttribute>().IsReadOnly));
 

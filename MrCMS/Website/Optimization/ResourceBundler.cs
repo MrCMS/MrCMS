@@ -1,29 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Optimization;
-using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
-using MrCMS.Services;
-using MrCMS.Settings;
 
 namespace MrCMS.Website.Optimization
 {
     public class ResourceBundler : IResourceBundler
     {
-        private readonly SEOSettings _seoSettings;
-        private readonly Site _site;
-
-        public ResourceBundler(SEOSettings seoSettings,Site site)
-        {
-            _seoSettings = seoSettings;
-            _site = site;
-        }
-
         private Dictionary<string, List<ResourceData>> CssData
         {
             get
@@ -34,7 +17,8 @@ namespace MrCMS.Website.Optimization
                     CurrentRequestData.CurrentContext.Items[currentStylelist] =
                         new Dictionary<string, List<ResourceData>>();
                 }
-                return CurrentRequestData.CurrentContext.Items[currentStylelist] as Dictionary<string, List<ResourceData>>;
+                return
+                    CurrentRequestData.CurrentContext.Items[currentStylelist] as Dictionary<string, List<ResourceData>>;
             }
         }
 
@@ -48,13 +32,14 @@ namespace MrCMS.Website.Optimization
                     CurrentRequestData.CurrentContext.Items[currentScriptlist] =
                         new Dictionary<string, List<ResourceData>>();
                 }
-                return CurrentRequestData.CurrentContext.Items[currentScriptlist] as Dictionary<string, List<ResourceData>>;
+                return
+                    CurrentRequestData.CurrentContext.Items[currentScriptlist] as Dictionary<string, List<ResourceData>>;
             }
         }
 
         public void AddScript(string virtualPath, string url)
         {
-            Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
+            var uri = new Uri(url, UriKind.RelativeOrAbsolute);
             if (!ScriptData.ContainsKey(virtualPath))
                 ScriptData[virtualPath] = new List<ResourceData>();
             ScriptData[virtualPath].Add(ResourceData.Get(uri.IsAbsoluteUri, url));
@@ -62,138 +47,28 @@ namespace MrCMS.Website.Optimization
 
         public void AddCss(string virtualPath, string url)
         {
-            Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
+            var uri = new Uri(url, UriKind.RelativeOrAbsolute);
             if (!CssData.ContainsKey(virtualPath))
                 CssData[virtualPath] = new List<ResourceData>();
             CssData[virtualPath].Add(ResourceData.Get(uri.IsAbsoluteUri, url));
         }
 
-        private static readonly object s_lock = new object();
         public void GetScripts(ViewContext viewContext)
         {
-
-            if (_seoSettings.EnableJsBundling)
+            foreach (string path in ScriptData.Values.SelectMany(x => x).Select(data => data.Url).Distinct())
             {
-                foreach (var key in ScriptData.Keys)
-                {
-                    var partsToBundle = ScriptData[key].Where(x => !x.IsRemote).Select(x => x.Url).Distinct().ToArray();
-
-                    var partsToNotBundle =
-                        ScriptData[key].Where(x => x.IsRemote).Select(x => x.Url).Distinct().ToArray();
-
-                    if (partsToBundle.Any())
-                    {
-                        string bundleVirtualPath = GetBundleVirtualPath("~/bundles/scripts/", ".js", partsToBundle);
-
-                        lock (s_lock)
-                        {
-                            var bundleFor = BundleTable.Bundles.GetBundleFor(bundleVirtualPath);
-                            if (bundleFor == null)
-                            {
-                                var bundle = new ScriptBundle(bundleVirtualPath)
-                                {
-                                    Orderer = new AsIsBundleOrderer(),
-                                    EnableFileExtensionReplacements = false
-                                };
-                                bundle.Include(partsToBundle);
-                                BundleTable.Bundles.Add(bundle);
-                                BundleTable.Bundles.IgnoreList.Clear();
-                            }
-                        }
-
-                        viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>",
-                            bundleVirtualPath.Substring(1));
-                    }
-
-                    foreach (var path in partsToNotBundle)
-                        viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>", path);
-                }
-
-            }
-            else
-            {
-                foreach (var path in ScriptData.Values.SelectMany(x => x).Select(data => data.Url).Distinct())
-                {
-                    viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>",
-                        path.StartsWith("~") ? path.Substring(1) : path);
-                }
+                viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>",
+                    path.StartsWith("~") ? path.Substring(1) : path);
             }
         }
 
-        public MvcHtmlString GetCss()
+        public void GetCss(ViewContext viewContext)
         {
-            var result = new StringBuilder();
-            if (_seoSettings.EnableCssBundling)
+            foreach (string path in CssData.Values.SelectMany(x => x).Select(x => x.Url).Distinct())
             {
-                foreach (var key in CssData.Keys)
-                {
-                    var partsToBundle = CssData[key].Where(x => !x.IsRemote).Select(x => x.Url).Distinct().ToArray();
-                    var partsToDontBundle = CssData[key].Where(x => x.IsRemote).Select(x => x.Url).Distinct().ToArray();
-
-                    if (partsToBundle.Any())
-                    {
-                        string bundleVirtualPath = GetBundleVirtualPath("~/bundles/styles/", ".css", partsToBundle);
-                        lock (s_lock)
-                        {
-                            var bundleFor = BundleTable.Bundles.GetBundleFor(bundleVirtualPath);
-                            if (bundleFor == null)
-                            {
-                                var bundle = new StyleBundle(bundleVirtualPath)
-                                                 {
-                                                     Orderer = new AsIsBundleOrderer(),
-                                                     EnableFileExtensionReplacements = false
-                                                 };
-                                bundle.Include(partsToBundle);
-                                BundleTable.Bundles.Add(bundle);
-                                BundleTable.Bundles.IgnoreList.Clear();
-                            }
-                        }
-
-                        result.AppendLine(string.Format("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
-                                                        bundleVirtualPath.Substring(1)));
-                    }
-
-                    foreach (var path in partsToDontBundle)
-                        result.AppendLine(string.Format("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
-                                                        path));
-                }
-                return MvcHtmlString.Create(result.ToString());
+                viewContext.Writer.Write("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
+                    path.StartsWith("~") ? path.Substring(1) : path);
             }
-            
-            foreach (var path in CssData.Values.SelectMany(x => x).Select(x => x.Url).Distinct())
-                result.AppendLine(string.Format("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
-                                                path.StartsWith("~") ? path.Substring(1) : path));
-            return MvcHtmlString.Create(result.ToString());
-        }
-
-        protected virtual string GetBundleVirtualPath(string prefix, string postfix, string[] parts)
-        {
-            if (parts == null || parts.Length == 0)
-                throw new ArgumentException("parts");
-
-            //calculate hash
-            var hash = "";
-            using (SHA256 sha = new SHA256Managed())
-            {
-                // string concatenation
-                var hashInput = "";
-                foreach (var part in parts)
-                {
-                    hashInput += part;
-                    hashInput += ",";
-                }
-
-                byte[] input = sha.ComputeHash(Encoding.Unicode.GetBytes(hashInput));
-                hash = HttpServerUtility.UrlTokenEncode(input);
-            }
-            //ensure only valid chars
-            hash = hash.RemoveInvalidUrlCharacters();
-
-            var sb = new StringBuilder(prefix);
-            sb.Append(_site.Id);
-            sb.Append(hash);
-            sb.Append(postfix);
-            return sb.ToString();
         }
     }
 }

@@ -6,9 +6,10 @@ using System.Reflection;
 using System.Web.Hosting;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Services.Caching;
+using MrCMS.Settings.Events;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace MrCMS.Settings
 {
@@ -31,15 +32,25 @@ namespace MrCMS.Settings
 
         public void SaveSettings(SiteSettingsBase settings)
         {
+            MethodInfo methodInfo = GetType().GetMethods().First(x => x.Name == "SaveSettings" && x.IsGenericMethod);
+            MethodInfo genericMethod = methodInfo.MakeGenericMethod(settings.GetType());
+            genericMethod.Invoke(this, new object[] {settings});
+        }
+
+        public void SaveSettings<T>(T settings) where T : SiteSettingsBase, new()
+        {
             lock (SaveLockObject)
             {
+                GetSettingsObject<T> existing = GetSettingObject<T>();
                 string location = GetFileLocation(settings);
                 File.WriteAllText(location, settings.Serialize());
                 GetSiteCache()[settings.GetType()] = settings;
+                EventContext.Instance.Publish<IOnSavingSiteSettings<T>, OnSavingSiteSettingsArgs<T>>(new OnSavingSiteSettingsArgs<T>(settings,
+                    existing.Settings));
             }
         }
 
-        public void DeleteSettings(SiteSettingsBase settings)
+        public void DeleteSettings<T>(T settings) where T : SiteSettingsBase, new()
         {
             string fileLocation = GetFileLocation(settings);
             if (File.Exists(fileLocation))
@@ -53,7 +64,7 @@ namespace MrCMS.Settings
             MethodInfo methodInfo = GetType().GetMethodExt("GetSiteSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()
-                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
+                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] {}))
                 .OfType<SiteSettingsBase>().ToList();
         }
 
@@ -61,7 +72,7 @@ namespace MrCMS.Settings
         {
             lock (ReadLockObject)
             {
-                if (!GetSiteCache().ContainsKey(typeof(TSettings)))
+                if (!GetSiteCache().ContainsKey(typeof (TSettings)))
                 {
                     GetSettingsObject<TSettings> settingObject = GetSettingObject<TSettings>();
                     TSettings settings = settingObject.Settings;
@@ -70,8 +81,13 @@ namespace MrCMS.Settings
                     else
                         GetSiteCache()[settings.GetType()] = settings;
                 }
-                return GetSiteCache()[typeof(TSettings)] as TSettings;
+                return GetSiteCache()[typeof (TSettings)] as TSettings;
             }
+        }
+
+        void IClearCache.ClearCache()
+        {
+            ClearCache();
         }
 
         public string GetFolder()
@@ -101,9 +117,10 @@ namespace MrCMS.Settings
             }
             return _settingCache[_site.Id];
         }
+
         private GetSettingsObject<TSettings> GetSettingObject<TSettings>() where TSettings : SiteSettingsBase, new()
         {
-            string fileLocation = GetFileLocation(typeof(TSettings));
+            string fileLocation = GetFileLocation(typeof (TSettings));
             TSettings result = null;
             if (File.Exists(fileLocation))
             {
@@ -127,10 +144,6 @@ namespace MrCMS.Settings
             _settingCache.Clear();
         }
 
-        void IClearCache.ClearCache()
-        {
-            ClearCache();
-        }
         private struct GetSettingsObject<TSettings> where TSettings : SiteSettingsBase, new()
         {
             public GetSettingsObject(TSettings settings, bool isNew = false)

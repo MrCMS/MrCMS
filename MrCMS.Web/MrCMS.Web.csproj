@@ -344,6 +344,11 @@
     <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
     <Compile Include="Areas\Admin\ACL\MediaToolsACL.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
+    <Compile Include="Areas\Admin\Bundles\AdminAppScriptBundle.cs" />
+    <Compile Include="Areas\Admin\Bundles\AdminAppStylesheetBundle.cs" />
+    <Compile Include="Areas\Admin\Bundles\AdminLibScriptBundle.cs" />
+    <Compile Include="Areas\Admin\Bundles\AdminMrCMSScriptBundle.cs" />
+    <Compile Include="Areas\Admin\Bundles\AdminMrCMSStylesheetBundle.cs" />
     <Compile Include="Areas\Admin\Controllers\AboutController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchExecutionController.cs" />
@@ -353,6 +358,7 @@
     <Compile Include="Areas\Admin\Controllers\MessageTemplatePreviewController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateTokensController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteCloneOptionsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SystemSettingsController.cs" />
     <Compile Include="Areas\Admin\Events\RefreshUIOnBatchRunComplete.cs" />
     <Compile Include="Areas\Admin\Events\StartBatchExecutionOnServer.cs" />
     <Compile Include="Areas\Admin\Events\UpdateBatchJob.cs" />
@@ -367,6 +373,7 @@
     <Compile Include="Areas\Admin\ModelBinders\DeleteMessageTemplateOverrideModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\GetSiteCopyOptionsModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\MoveFilesModelBinder.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\SystemSettingsModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\AdminMessages.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\ChooseSiteParams.cs" />
@@ -2118,6 +2125,8 @@
     <Content Include="Areas\Admin\Content\Editors\ckeditor\skins\moono\readme.md" />
     <Content Include="Areas\Admin\Views\RegisteredHandlers\Index.cshtml" />
     <Content Include="Areas\Admin\Views\About\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemSettings\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\SystemSettings.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>

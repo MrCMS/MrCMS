@@ -5,7 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Services.Caching;
+using MrCMS.Settings.Events;
 using Newtonsoft.Json;
 
 namespace MrCMS.Settings
@@ -20,11 +22,21 @@ namespace MrCMS.Settings
 
         public void SaveSettings(SystemSettingsBase settings)
         {
+            MethodInfo methodInfo = GetType().GetMethods().First(x => x.Name == "SaveSettings" && x.IsGenericMethod);
+            MethodInfo genericMethod = methodInfo.MakeGenericMethod(settings.GetType());
+            genericMethod.Invoke(this, new object[] { settings });
+        }
+
+        public void SaveSettings<T>(T settings) where T : SystemSettingsBase, new()
+        {
             lock (SaveLockObject)
             {
+                GetSettingsObject<T> existing = GetSettingObject<T>();
                 string location = GetFileLocation(settings);
                 File.WriteAllText(location, settings.Serialize());
                 _settingCache[settings.GetType()] = settings;
+                EventContext.Instance.Publish<IOnSavingSystemSettings<T>, OnSavingSystemSettingsArgs<T>>(new OnSavingSystemSettingsArgs<T>(settings,
+                    existing.Settings));
             }
         }
 
@@ -42,7 +54,7 @@ namespace MrCMS.Settings
             MethodInfo methodInfo = GetType().GetMethodExt("GetSystemSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>()
-                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] {}))
+                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
                 .OfType<SystemSettingsBase>().ToList();
         }
 
@@ -50,7 +62,7 @@ namespace MrCMS.Settings
         {
             lock (ReadLockObject)
             {
-                if (!_settingCache.ContainsKey(typeof (TSettings)))
+                if (!_settingCache.ContainsKey(typeof(TSettings)))
                 {
                     GetSettingsObject<TSettings> settingObject = GetSettingObject<TSettings>();
                     TSettings settings = settingObject.Settings;
@@ -59,7 +71,7 @@ namespace MrCMS.Settings
                     else
                         _settingCache[settings.GetType()] = settings;
                 }
-                return _settingCache[typeof (TSettings)] as TSettings;
+                return _settingCache[typeof(TSettings)] as TSettings;
             }
         }
 
