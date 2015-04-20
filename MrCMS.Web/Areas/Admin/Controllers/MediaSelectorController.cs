@@ -21,6 +21,29 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return PartialView(searchQuery);
         }
 
+        [HttpGet]
+        public JsonResult Alt(string url)
+        {
+            return Json(new { alt = _mediaSelectorService.GetAlt(url) });
+        }
+
+        [HttpPost]
+        public JsonResult UpdateAlt(UpdateMediaParams updateMediaParams)
+        {
+            return Json(_mediaSelectorService.UpdateAlt(updateMediaParams));
+        }
+
+        [HttpGet]
+        public JsonResult Description(string url)
+        {
+            return Json(new { description = _mediaSelectorService.GetDescription(url) });
+        }
+
+        [HttpPost]
+        public JsonResult UpdateDescription(UpdateMediaParams updateMediaParams)
+        {
+            return Json(_mediaSelectorService.UpdateDescription(updateMediaParams));
+        }
 
         public JsonResult GetFileInfo(string value)
         {

@@ -23,7 +23,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Files")]
-        public JsonResult Files_Post([IoCModelBinder(typeof (NullableEntityModelBinder))] MediaCategory mediaCategory)
+        public JsonResult Files_Post([IoCModelBinder(typeof(NullableEntityModelBinder))] MediaCategory mediaCategory)
         {
             var list = new List<ViewDataUploadFilesResult>();
             foreach (string files in Request.Files)
@@ -47,7 +47,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             int categoryId = file.MediaCategory.Id;
             _fileService.DeleteFile(file);
-            return RedirectToAction("Show", "MediaCategory", new {Id = categoryId});
+            return RedirectToAction("Show", "MediaCategory", new { Id = categoryId });
         }
 
         [HttpGet]
@@ -84,7 +84,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _fileService.SaveFile(file);
 
-            return RedirectToAction("Show", "MediaCategory", new {file.MediaCategory.Id});
+            return file.MediaCategory != null
+                ? RedirectToAction("Show", "MediaCategory", new {file.MediaCategory.Id})
+                : RedirectToAction("Index", "MediaCategory");
         }
     }
 }

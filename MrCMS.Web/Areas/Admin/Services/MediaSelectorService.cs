@@ -16,12 +16,14 @@ namespace MrCMS.Web.Areas.Admin.Services
     {
         private readonly ISession _session;
         private readonly IFileService _fileService;
+        private readonly IImageProcessor _imageProcessor;
         private readonly Site _site;
 
-        public MediaSelectorService(ISession session, IFileService fileService, Site site)
+        public MediaSelectorService(ISession session, IFileService fileService, IImageProcessor imageProcessor, Site site)
         {
             _session = session;
             _fileService = fileService;
+            _imageProcessor = imageProcessor;
             _site = site;
         }
 
@@ -62,6 +64,43 @@ namespace MrCMS.Web.Areas.Admin.Services
             {
                 Url = fileUrl
             };
+        }
+
+        public string GetAlt(string url)
+        {
+            var mediaFile = GetImage(url);
+            return mediaFile != null ? mediaFile.Title : string.Empty;
+        }
+
+        public string GetDescription(string url)
+        {
+            var mediaFile = GetImage(url);
+            return mediaFile != null ? mediaFile.Description : string.Empty;
+        }
+
+        private MediaFile GetImage(string url)
+        {
+            return _imageProcessor.GetImage(url);
+        }
+
+        public bool UpdateAlt(UpdateMediaParams updateMediaParams)
+        {
+            var mediaFile = GetImage(updateMediaParams.Url);
+            if (mediaFile == null)
+                return false;
+            mediaFile.Title = updateMediaParams.Value;
+            _session.Transact(session => session.Update(mediaFile));
+            return true;
+        }
+
+        public bool UpdateDescription(UpdateMediaParams updateMediaParams)
+        {
+            var mediaFile = GetImage(updateMediaParams.Url);
+            if (mediaFile == null)
+                return false;
+            mediaFile.Description = updateMediaParams.Value;
+            _session.Transact(session => session.Update(mediaFile));
+            return true;
         }
     }
 }
