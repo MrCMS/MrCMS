@@ -9,6 +9,8 @@
  * Author:  chris.dance@papercut.com
  * Version: 1.9.0
  * Date:    13th August 2014
+ *
+ * Customised for MrCMS by Gary Strong on 20th April 2015
  */
 (function ($) {
 
@@ -68,25 +70,18 @@
             $field.data('ays-orig', getValue($field));
         };
 
-        var checkForm = function (evt) {
 
+        var checkFormInternal = function ($form) {
             var isFieldDirty = function ($field) {
+                var fieldId = $field.attr('id');
+                if (CKEDITOR.instances[fieldId])
+                    return CKEDITOR.instances[fieldId].checkDirty();
                 var origValue = $field.data('ays-orig');
                 if (undefined === origValue) {
                     return false;
                 }
                 return (getValue($field) != origValue);
             };
-
-            var $form = ($(this).is('form'))
-                          ? $(this)
-                          : $(this).parents('form');
-
-            // Test on the target first as it's the most likely to be dirty
-            if (isFieldDirty($(evt.target))) {
-                setDirtyStatus($form, true);
-                return;
-            }
 
             $fields = $form.find(settings.fieldSelector);
 
@@ -110,6 +105,16 @@
             });
 
             setDirtyStatus($form, isDirty);
+        }
+
+        var checkForm = function (evt) {
+
+            var field = $(evt.target);
+            var $form = (field.is('form'))
+                ? field
+                : field.parents('form');
+
+            checkFormInternal($form);
         };
 
         var initForm = function ($form) {
@@ -156,6 +161,9 @@
         if (!settings.silent && !window.aysUnloadSet) {
             window.aysUnloadSet = true;
             $(window).bind('beforeunload', function () {
+                $('form').each(function (index, element) {
+                    checkFormInternal($(element));
+                });
                 $dirtyForms = $("form").filter('.' + settings.dirtyClass);
                 if ($dirtyForms.length == 0) {
                     return;
