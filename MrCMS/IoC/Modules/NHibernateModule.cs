@@ -12,13 +12,11 @@ namespace MrCMS.IoC.Modules
     public class NHibernateModule : NinjectModule
     {
         private readonly bool _cacheEnabled = true;
-        private readonly bool _forWebsite;
         private NHibernateConfigurator _configurator;
 
-        public NHibernateModule(bool forWebsite = true, bool cacheEnabled = true)
+        public NHibernateModule(bool cacheEnabled = true)
         {
             _cacheEnabled = cacheEnabled;
-            _forWebsite = forWebsite;
         }
 
         public override void Load()
@@ -43,19 +41,13 @@ namespace MrCMS.IoC.Modules
                     context => _configurator.CreateSessionFactory())
                 .InSingletonScope();
 
-            if (_forWebsite)
-            {
-                Kernel.Bind<ISession>().ToMethod(
-                    context =>
-                         context.Kernel.Get<ISessionFactory>().OpenFilteredSession()).InRequestScope();
-            }
-            else
-            {
-                Kernel.Bind<ISession>()
-                    .ToMethod(
-                        context => context.Kernel.Get<ISessionFactory>().OpenFilteredSession())
-                    .InThreadScope();
-            }
+            Kernel.Bind<ISession>().ToMethod(
+                context =>
+                     context.Kernel.Get<ISessionFactory>().OpenFilteredSession()).InRequestScope();
+
+            Kernel.Bind<IStatelessSession>()
+                .ToMethod(context => context.Kernel.Get<ISessionFactory>().OpenStatelessSession()).InRequestScope();
+
             Kernel.Bind<IStatelessSession>()
                 .ToMethod(context => context.Kernel.Get<ISessionFactory>().OpenStatelessSession());
 
