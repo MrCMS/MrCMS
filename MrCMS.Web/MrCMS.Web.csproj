@@ -1153,6 +1153,7 @@
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.js" />
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.min.js" />
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\sweetalert.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery.are-you-sure.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\dropzone.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\featherlight.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.noty.packaged.js" />

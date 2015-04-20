@@ -7,15 +7,15 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-@using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document" }))
+@using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document", data_are_you_sure = Resource("You have unsaved changes, are you sure you want to navigate away before saving?") }))
 {
- 
+
     <div class="row">
         <div class="col-lg-12">
             <div class="btn-group display-inline" id="edit-webpage-options">
                 <button class="btn btn-primary">@Resource("Save")</button>
                 <a href="/@Model.LiveUrlSegment" class="btn btn-default">View</a>
-                
+
                 @Html.ActionLink(Resource("Move"), "Set", "WebpageParent", new { Model.Id }, new { data_toggle = "fb-modal", @class = "btn btn-default" })
                 @if (Model.CanAddChildren())
                 {
@@ -32,7 +32,7 @@
 
                 @Html.EditorFor(x => x.PublishOn)
                 @Html.ValidationMessageFor(x => x.PublishOn)
-                
+
                 <span class="@(Model.PublishStatus == Webpage.WebpagePublishStatus.Published ? "green" : "orange")">@Resource(Model.PublishStatus.ToString())</span>
             </div>
         </div>
@@ -40,6 +40,5 @@
     @Html.ValidationSummary()
 
     Html.RenderPartial(Convert.ToString(ViewData["EditView"]));
-
 }
 

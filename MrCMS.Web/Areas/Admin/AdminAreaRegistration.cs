@@ -66,6 +66,7 @@ namespace MrCMS.Web.Areas.Admin
             adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/jstree/jstree.js");
             adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/dropzone.js");
             adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/featherlight.js");
+            adminBundle.Include("~/Areas/Admin/Content/Scripts/lib/jquery.are-you-sure.js");
 
             return adminBundle;
         }
