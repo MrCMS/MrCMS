@@ -14,7 +14,7 @@
                 editor.on('configLoaded', function () {
                     editor.config.toolbar = 'Basic';
                 });
-                
+
             });
 
             $("#enable-editing").click(function () {
@@ -236,10 +236,21 @@ $(function () {
         filter: '[data-toggle="fb-modal"]',
         type: 'iframe',
         iframeWidth: 800,
-        afterOpen: function () { },
+        afterOpen: function () { setCloseButtonPosition(); },
+        onResize: function () {
+            setCloseButtonPosition();
+        },
         beforeOpen: function () {
-            $(".mrcms-edit-menu", document).hide(); }
+            $(".mrcms-edit-menu", document).hide();
+        }
     });
+
+    function setCloseButtonPosition() {
+        var offset = $(".featherlight-content").offset();
+        $(".featherlight-close-icon").css('top', offset.top);
+        $(".featherlight-close-icon").css('right', offset.left + -20);
+    }
+
     $("#unpublish-now").click(function () {
         if (window.top.location.pathname == '/') {
             if (!confirm('Are you sure you want to unpublish your home page?')) {

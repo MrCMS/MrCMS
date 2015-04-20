@@ -45,10 +45,21 @@ $(function () {
         filter: '[data-toggle="fb-modal"]',
         type: 'iframe',
         iframeWidth: 800,
-        afterOpen: function () {  },
+        afterOpen: function() {
+            setCloseButtonPosition();
+        },
         beforeOpen: function () {
+        },
+        onResize: function() {
+            setCloseButtonPosition();
         }
     });
+
+    function setCloseButtonPosition() {
+        var offset = $(".featherlight-content").offset();
+        $(".featherlight-close-icon").css('top', offset.top);
+        $(".featherlight-close-icon").css('right', offset.left + -20);
+    }
 
 
     $('[data-action=save]').click(function (e) {

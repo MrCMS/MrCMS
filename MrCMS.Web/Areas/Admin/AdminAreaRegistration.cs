@@ -40,7 +40,7 @@ namespace MrCMS.Web.Areas.Admin
             adminMrCmsBundle.Include("~/Areas/Admin/Content/Scripts/mrcms/batch.js");
             adminMrCmsBundle.Include("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
             adminMrCmsBundle.Include("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js");
-            
+
             return adminMrCmsBundle;
         }
 
