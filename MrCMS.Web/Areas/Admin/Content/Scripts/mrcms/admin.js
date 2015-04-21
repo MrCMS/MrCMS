@@ -26,7 +26,7 @@ $(function () {
         Dropzone.autoDiscover = false;
     }
 
-    $('form[data-are-you-sure]').each(function(index, element) {
+    $('form[data-are-you-sure]').each(function (index, element) {
         var form = $(element);
         form.areYouSure({ message: form.data('are-you-sure') });
     });
@@ -40,26 +40,12 @@ $(function () {
         }
     });
 
-    
-    $(document).featherlight({
-        filter: '[data-toggle="fb-modal"]',
-        type: 'iframe',
-        iframeWidth: 800,
-        afterOpen: function() {
-            setCloseButtonPosition();
-        },
-        beforeOpen: function () {
-        },
-        onResize: function() {
-            setCloseButtonPosition();
-        }
+    var featherlightSettings = $.extend({}, MrCMSFeatherlightSettings, {
+        filter: '[data-toggle="fb-modal"]'
     });
+    $(document).featherlight(featherlightSettings);
 
-    function setCloseButtonPosition() {
-        var offset = $(".featherlight-content").offset();
-        $(".featherlight-close-icon").css('top', offset.top);
-        $(".featherlight-close-icon").css('right', offset.left + -20);
-    }
+
 
 
     $('[data-action=save]').click(function (e) {
@@ -107,7 +93,7 @@ $(function () {
     $(document).on('change', '#admin-site-selector', function () {
         location.href = $(this).val();
     });
-    
+
     //fix ckeditor on scroll
     $(".main-content").scroll(function (e) {
         if ($('.body-content #cke_1_contents').height() > 500) {
@@ -132,14 +118,37 @@ function resizeModal(jqElement) {
 
     modal.css('top', top).css('left', left);
 }
+var MrCMSFeatherlightSettings = {
+    type: 'iframe',
+    iframeWidth: 800,
+    afterOpen: function () {
+        setCloseButtonPosition(this.$instance);
+    },
+    beforeOpen: function () {
+    },
+    onResize: function () {
+        if (this.autoHeight) {
+            // Shrink:
+            this.$content.css('height', '10px');
+            // Then set to the full height:
+            this.$content.css('height', this.$content.contents().find('body')[0].scrollHeight);
+        }
+        setCloseButtonPosition(this.$instance);
+    }
+}
+function setCloseButtonPosition(contents) {
+    var offset = contents.find(".featherlight-content").offset();
+    contents.find(".featherlight-close-icon").css('top', offset.top);
+    contents.find(".featherlight-close-icon").css('right', offset.left + -20);
+}
 
 function getRemoteModel(href) {
     var link = $("<a>");
     link.attr('href', href);
-    link.featherlight({
-        type: 'iframe',
-        iframeWidth: 820,
-    }).click();
+    link.attr('data-toggle', 'fb-modal');
+    var settings = {
+    };
+    link.featherlight(MrCMSFeatherlightSettings).click();
 }
 
 $(function () {

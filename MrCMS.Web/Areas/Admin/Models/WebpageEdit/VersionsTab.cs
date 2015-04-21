@@ -24,7 +24,7 @@ namespace MrCMS.Web.Areas.Admin.Models.WebpageEdit
 
         public override void RenderTabPane(HtmlHelper<Webpage> html, Webpage webpage)
         {
-            html.RenderPartial("PageVersions", webpage);
+            html.RenderAction("Show", "Versions", new {document = webpage});
         }
 
         public override string Name(Webpage webpage)
