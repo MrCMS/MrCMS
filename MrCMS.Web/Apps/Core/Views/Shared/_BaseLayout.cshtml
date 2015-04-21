@@ -1,7 +1,9 @@
-﻿@using MrCMS.ACL.Rules
+﻿@using System.Web.Optimization
+@using MrCMS.ACL.Rules
 @using MrCMS.Helpers
 @using MrCMS.Settings
 @using MrCMS.Website
+@using MrCMS.Website.Optimization
 @using StackExchange.Profiling
 @model MrCMS.Entities.Documents.Web.Webpage
 <!DOCTYPE html>
@@ -16,6 +18,7 @@
         Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap-theme.css");
         Html.IncludeCss("~/Apps/Core/Content/Styles/style.css");
     }
+    @Styles.Render(AppStylesheetBundle.VirtualUrl)
     @{ Html.RenderCss(); }
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><script src="/Apps/Core/Content/Scripts/respond.min.js"></script><![endif]-->
@@ -93,7 +96,7 @@
         @RenderSection("JavascriptBlockInclude")
     }
     @Html.Raw(Model.CustomFooterScripts)
-
+    @Scripts.Render(AppScriptBundle.VirtualUrl)
     @{ Html.RenderScripts(); }
     @MiniProfiler.RenderIncludes()
 </body>

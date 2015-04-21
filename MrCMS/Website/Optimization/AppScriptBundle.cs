@@ -6,6 +6,7 @@ namespace MrCMS.Website.Optimization
 {
     public class AppScriptBundle : IScriptBundle
     {
+        public const string VirtualUrl = "~/scripts/apps";
         private readonly IEnumerable<IAppScriptList> _scriptLists;
 
         public AppScriptBundle(IEnumerable<IAppScriptList> scriptLists)
@@ -15,7 +16,7 @@ namespace MrCMS.Website.Optimization
 
         public string Url
         {
-            get { return "~/scripts/apps"; }
+            get { return VirtualUrl; }
         }
 
         public IEnumerable<string> Files
