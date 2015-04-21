@@ -96,16 +96,24 @@ $(function () {
 
     //fix ckeditor on scroll
     $(".main-content").scroll(function (e) {
-        if ($('.body-content #cke_1_contents').height() > 500) {
-            if ($(this).scrollTop() > 110 && $(".body-content #cke_1_top").css('position') != 'fixed') {
-                $(".body-content #cke_1_top").css({ 'position': 'fixed', 'top': '51px' });
-            }
-            if ($(this).scrollTop() < 110 && $(".body-content #cke_1_top").css('position') != 'inherit') {
-                $(".body-content #cke_1_top").css({ 'position': 'inherit', 'top': 'auto;' });
-            }
-        }
+        setStickyCkedtior(this);
     });
 });
+
+function setStickyCkedtior(el) {
+    setTimeout(function () {
+        if ($('.body-content #cke_1_contents').height() > 500) {
+            if ($(el).scrollTop() > 110 && $(".body-content #cke_1_top").css('position') != 'fixed') {
+                $(".body-content #cke_1_top").css({ 'position': 'fixed', 'top': '51px' });
+            }
+            if ($(el).scrollTop() < 110 && $(".body-content #cke_1_top").css('position') != 'inherit') {
+                $(".body-content #cke_1_top").css({ 'position': 'inherit', 'top': 'auto;' });
+            }
+        } else {
+            $(".body-content #cke_1_top").css({ 'position': 'inherit', 'top': 'auto;' });
+        }
+    }, 250);
+}
 
 function resizeModal(jqElement) {
     var modal = jqElement.hasClass('modal') ? jqElement : jqElement.parents('.modal');
