@@ -5,7 +5,7 @@
             $('.form-update-form').serialize(), function (response) {
                 if (response.success) {
                     parent.$('#form-properties-tab').load('/Admin/Webpage/FormProperties/' + parent.$('#Id').val() + ' #form-data');
-                    parent.$.fancybox.close();
+                    parent.$.featherlight.close();
                 } else {
                     alert(response.message);
                 }
