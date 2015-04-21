@@ -27,10 +27,14 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink(Resource("View"), "ViewChanges", "Webpage", new { id = version.Id }, new { data_toggle = "fb-modal",@class="btn btn-primary btn-xs" })
                                 @if (version.AnyDifferencesFromCurrent())
                                 {
-                                    @Html.ActionLink(Resource("Admin Webpage Version Revert To This", "Revert to this version"), "Revert", "Versions", new { id = version.Id }, new { data_toggle = "fb-modal", @class = "btn btn-warning btn-xs" })
+                                    @Html.ActionLink(Resource("View"), "ViewChanges", "Webpage", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-primary btn-xs"})
+                                    @Html.ActionLink(Resource("Admin Webpage Version Revert To This", "Revert to this version"), "Revert", "Versions", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-warning btn-xs"})
+                                }
+                                else
+                                {
+                                    <span>Same as current</span>
                                 }
                             </div>
                         </td>
@@ -38,7 +42,7 @@
                 }
             </tbody>
         </table>
-        @Html.Pager(Model.Items, "Versions", i => new { Model.Id, page = i })
+        @Html.Pager(Model.Items, "Show", i => new { Model.Id, page = i })
     </div>
 }
 else
