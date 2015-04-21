@@ -368,6 +368,7 @@
     <Compile Include="Areas\Admin\Helpers\BatchEntityHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\UniversalSearchHelper.cs" />
+    <Compile Include="Areas\Admin\Helpers\WebpageExtensions.cs" />
     <Compile Include="Areas\Admin\Hubs\BatchProcessingHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\BatchRunGuidModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\DeleteMessageTemplateOverrideModelBinder.cs" />

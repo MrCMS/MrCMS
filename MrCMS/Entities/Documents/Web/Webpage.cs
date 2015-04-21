@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
-using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -15,9 +14,17 @@ namespace MrCMS.Entities.Documents.Web
 {
     public abstract class Webpage : Document
     {
+        public enum WebpagePublishStatus
+        {
+            Published,
+            Scheduled,
+            Unpublished
+        }
+
         protected Webpage()
         {
             InheritFrontEndRolesFromParent = true;
+            IncludeInSitemap = true;
             Urls = new List<UrlHistory>();
             Widgets = new List<Widget.Widget>();
             FrontEndAllowedRoles = new HashSet<UserRole>();
@@ -49,6 +56,8 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Include in navigation")]
         public virtual bool RevealInNavigation { get; set; }
 
+        public virtual bool IncludeInSitemap { get; set; }
+
         [DisplayName("Custom header scripts")]
         [StringLength(8000)]
         public virtual string CustomHeaderScripts { get; set; }
@@ -67,20 +76,13 @@ namespace MrCMS.Entities.Documents.Web
         {
             get
             {
-                var status = Published
+                WebpagePublishStatus status = Published
                     ? WebpagePublishStatus.Published
                     : PublishOn.HasValue
                         ? WebpagePublishStatus.Scheduled
                         : WebpagePublishStatus.Unpublished;
                 return status;
             }
-        }
-
-        public enum WebpagePublishStatus
-        {
-            Published,
-            Scheduled,
-            Unpublished
         }
 
         public virtual string LiveUrlSegment
@@ -168,7 +170,9 @@ namespace MrCMS.Entities.Documents.Web
         {
             get
             {
-                string scheme = (RequiresSSL || MrCMSApplication.Get<SiteSettings>().SSLEverywhere) ? "https://" : "http://";
+                string scheme = (RequiresSSL || MrCMSApplication.Get<SiteSettings>().SSLEverywhere)
+                    ? "https://"
+                    : "http://";
                 string authority = Site.BaseUrl;
                 if (authority.EndsWith("/"))
                     authority = authority.TrimEnd('/');

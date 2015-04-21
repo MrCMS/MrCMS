@@ -161,9 +161,6 @@
         if (!settings.silent && !window.aysUnloadSet) {
             window.aysUnloadSet = true;
             $(window).bind('beforeunload', function () {
-                $('form').each(function (index, element) {
-                    checkFormInternal($(element));
-                });
                 var $dirtyForms = $("form").filter('.' + settings.dirtyClass);
                 if ($dirtyForms.length == 0) {
                     return;
@@ -187,6 +184,9 @@
             var $form = $(this);
 
             $form.submit(function () {
+                $('form').each(function (index, element) {
+                    checkFormInternal($(element));
+                });
                 $form.removeClass(settings.dirtyClass);
             });
             $form.bind('reset', function () { setDirtyStatus($form, false); });
