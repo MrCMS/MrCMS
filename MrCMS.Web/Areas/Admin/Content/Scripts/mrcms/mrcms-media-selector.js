@@ -219,6 +219,7 @@ function MediaSelectorWrapper(el, options) {
                 var holder = $('<div>').addClass('row').css('max-width', '500px');
                 var imageCol = $('<div>').addClass('col-sm-4');
                 imageCol.append($('<img src="' + value + '" style="' + settings.previewStyle + '" />'));
+                imageCol.append(buttonHolder);
                 holder.append(imageCol);
                 var dataCol = $('<div>').addClass('col-sm-8');
 
@@ -234,6 +235,7 @@ function MediaSelectorWrapper(el, options) {
                 return $('<span>' + value + '</span>');
             }
         } else {
+            buttonHolder.appendTo($('[data-media-selector-holder-' + el.attr('id') + ']'));
             return $('<img src="' + settings.noImageSelectedImage + '" style="' + settings.previewStyle + '" />');
         }
     };
@@ -253,7 +255,7 @@ function MediaSelectorWrapper(el, options) {
         init: function () {
             self = this;
             if (element.is("input")) {
-                var para = $('<p>');
+                var para = $('<p>').attr('data-media-selector-holder-'+ el.attr('id') ,'true');
                 buttonHolder = $('<div>').appendTo(para);
                 preview = $('<div>');
                 element.before(preview);
