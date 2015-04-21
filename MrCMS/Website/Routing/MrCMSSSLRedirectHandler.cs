@@ -16,7 +16,7 @@ namespace MrCMS.Website.Routing
             _siteSettings = siteSettings;
         }
 
-        public int Priority { get { return 9850; } }
+        public int Priority { get { return 9750; } }
         public bool Handle(RequestContext context)
         {
             var url = context.HttpContext.Request.Url;
