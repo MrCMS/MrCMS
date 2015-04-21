@@ -66,26 +66,41 @@ namespace MrCMS.Installation
             var deleteLogsTask = new ScheduledTask
             {
                 Type = typeof(DeleteExpiredLogsTask).FullName,
-                EveryXSeconds = 60
+                EveryXSeconds = 600
             };
 
             var deleteQueuedTask = new ScheduledTask
             {
                 Type = typeof(DeleteOldQueuedTasks).FullName,
-                EveryXSeconds = 60
+                EveryXSeconds = 600
             };
 
             var sendQueueEmailsTask = new ScheduledTask
             {
                 Type = typeof(SendQueuedMessagesTask).FullName,
-                EveryXSeconds = 60
+                EveryXSeconds = 30
             };
+
+            var publishPagesTask = new ScheduledTask
+            {
+                Type = typeof(PublishScheduledWebpagesTask).FullName,
+                EveryXSeconds = 10
+            };
+
+            var deleteOldLogsTask = new ScheduledTask
+            {
+                Type = typeof(DeleteExpiredLogsTask).FullName,
+                EveryXSeconds = 600
+            };
+ 
 
             _session.Transact(s =>
             {
                 s.Save(deleteLogsTask);
                 s.Save(deleteQueuedTask);
                 s.Save(sendQueueEmailsTask);
+                s.Save(publishPagesTask);
+                s.Save(deleteOldLogsTask);
             });
 
         }
