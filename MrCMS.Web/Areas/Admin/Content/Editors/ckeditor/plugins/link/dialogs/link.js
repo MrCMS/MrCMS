@@ -285,7 +285,7 @@ CKEDITOR.dialog.add("link", function (n) {
                             var mediaSelector = new MediaSelector({
                                 onSelected: function (info) {
                                     e.data.button.getDialog().setValueOf('info', 'url', info.Url);
-                                    $.fancybox.close();
+                                    $.featherlight.close();
                                 }
                             });
                             mediaSelector.show($);

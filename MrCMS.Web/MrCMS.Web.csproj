@@ -1425,7 +1425,6 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\32px.png" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\40px.png" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.css" />
-    <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\style.min.css" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-page-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\batch.js" />

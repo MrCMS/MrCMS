@@ -25,9 +25,10 @@ namespace MrCMS.Services.FileMigration
         public FileMigrationService(IKernel kernel, FileSystemSettings fileSystemSettings, ISession session,
             ICreateBatch createBatch, UrlHelper urlHelper)
         {
+            IEnumerable<IFileSystem> fileSystems = TypeHelper.GetAllConcreteTypesAssignableFrom<IFileSystem>()
+                .Select(type => kernel.Get(type) as IFileSystem);
             _allFileSystems =
-                TypeHelper.GetAllTypesAssignableFrom<IFileSystem>()
-                    .Select(type => kernel.Get(type) as IFileSystem)
+                fileSystems
                     .ToDictionary(system => system.GetType().FullName);
             _fileSystemSettings = fileSystemSettings;
             _session = session;
