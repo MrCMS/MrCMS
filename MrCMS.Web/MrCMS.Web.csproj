@@ -523,6 +523,7 @@
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisStatus.cs" />
     <Compile Include="Areas\Admin\Models\SiteCloneOption.cs" />
     <Compile Include="Areas\Admin\Models\StringResourceSearchQuery.cs" />
+    <Compile Include="Areas\Admin\Models\UniversalSearchItemQuickSearch.cs" />
     <Compile Include="Areas\Admin\Models\UpdateMediaParams.cs" />
     <Compile Include="Areas\Admin\Models\UpdatePropertyData.cs" />
     <Compile Include="Areas\Admin\Models\PageDefaultsInfo.cs" />
@@ -677,6 +678,7 @@
     <Compile Include="Areas\Admin\Services\ThirdPartyAuthSettingsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\TreeNavService.cs" />
     <Compile Include="Areas\Admin\Services\PageDefaultsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\UniversalSearchIndexSearcher.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageParentAdminService.cs" />

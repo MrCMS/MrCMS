@@ -1112,6 +1112,8 @@
     <Compile Include="Website\MrCMSRazorViewEngine.cs" />
     <Compile Include="Website\MrCMSTypeACLAttribute.cs" />
     <Compile Include="Website\OnEndRequestExecutor.cs" />
+    <Compile Include="Website\Optimization\AppScriptBundle.cs" />
+    <Compile Include="Website\Optimization\AppStylesheetBundle.cs" />
     <Compile Include="Website\Optimization\AsIsBundleOrderer.cs" />
     <Compile Include="Website\Optimization\IScriptBundle.cs" />
     <Compile Include="Website\Optimization\IResourceBundler.cs" />
