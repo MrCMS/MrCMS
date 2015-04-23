@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using MrCMS.Entities;
 using MrCMS.Tasks;
 using Newtonsoft.Json;
-using NHibernate;
 
 namespace MrCMS.Search
 {
@@ -11,14 +10,12 @@ namespace MrCMS.Search
     {
         private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
         private readonly ISearchConverter _searchConverter;
-        private readonly ISession _session;
         public UniversalSearchIndexData UniversalSearchIndexData { get; set; }
 
-        public UniversalSearchIndexTask(IUniversalSearchIndexManager universalSearchIndexManager, ISearchConverter searchConverter, ISession session)
+        public UniversalSearchIndexTask(IUniversalSearchIndexManager universalSearchIndexManager, ISearchConverter searchConverter)
         {
             _universalSearchIndexManager = universalSearchIndexManager;
             _searchConverter = searchConverter;
-            _session = session;
         }
 
         public override int Priority
