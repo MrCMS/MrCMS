@@ -634,6 +634,7 @@
     <Compile Include="Messages\MessageTemplate.cs" />
     <Compile Include="Messages\MessageTemplateProvider.cs" />
     <Compile Include="Models\CachingInfo.cs" />
+    <Compile Include="Models\ImageSortItem.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
     <Compile Include="Models\MrCMSIndex.cs" />
     <Compile Include="Models\RequiredFieldException.cs" />

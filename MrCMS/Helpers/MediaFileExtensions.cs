@@ -11,6 +11,9 @@ namespace MrCMS.Helpers
 {
     public static class MediaFileExtensions
     {
+        public static readonly HashSet<string> JpegExtensions = new HashSet<string> {".jpg", ".jpeg"};
+        public static readonly List<string> ImageExtensions = new List<string> {".jpg", ".jpeg", ".gif", ".png"};
+
         public static IFileSystem GetFileSystem(string fileUrl, IEnumerable<IFileSystem> possibleFileSystems)
         {
             return possibleFileSystems.FirstOrDefault(system => system.Exists(fileUrl));
@@ -18,19 +21,27 @@ namespace MrCMS.Helpers
 
         public static bool IsImage(this MediaFile file)
         {
-            return file != null && ImageExtensions.Any(s => s.Equals(file.FileExtension, StringComparison.InvariantCultureIgnoreCase));
+            return file != null && IsImageExtension(file.FileExtension);
         }
+
+        public static bool IsImageExtension(string fileExtension)
+        {
+            return ImageExtensions.Any(s => s.Equals(fileExtension, StringComparison.InvariantCultureIgnoreCase));
+        }
+
         public static bool IsJpeg(this MediaFile file)
         {
-            return file != null && JpegExtensions.Any(s => s.Equals(file.FileExtension, StringComparison.InvariantCultureIgnoreCase));
+            return file != null &&
+                   JpegExtensions.Any(s => s.Equals(file.FileExtension, StringComparison.InvariantCultureIgnoreCase));
         }
+
         public static IEnumerable<ImageSize> GetSizes(this MediaFile file)
         {
             if (!IsImage(file))
                 yield break;
             yield return new ImageSize("Original", file.Size);
             foreach (
-                var imageSize in
+                ImageSize imageSize in
                     MrCMSApplication.Get<MediaSettings>()
                         .ImageSizes.Where(size => ImageProcessor.RequiresResize(file.Size, size.Size)))
             {
@@ -38,9 +49,5 @@ namespace MrCMS.Helpers
                 yield return imageSize;
             }
         }
-
-
-        public static readonly HashSet<string> JpegExtensions = new HashSet<string> { ".jpg", ".jpeg" };
-        public static readonly List<string> ImageExtensions = new List<string> { ".jpg", ".jpeg", ".gif", ".png" };
     }
 }

@@ -1,5 +1,4 @@
-﻿@using MrCMS.Entities.Documents.Media
-@using MrCMS.Helpers
+﻿@model MrCMS.Web.Areas.Admin.Models.MediaCategorySearchModel
 @{
     ViewBag.Title = "Manage Media";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -12,5 +11,4 @@
     </div>
 </div>
 
-@{ Html.RenderPartial("Manage", null);}
-
+@{ Html.RenderAction("Manage", new { searchModel = Model });} 

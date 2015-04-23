@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Web.Mvc;
 
 namespace MrCMS.Helpers
 {
@@ -10,7 +11,7 @@ namespace MrCMS.Helpers
     {
         public static IList<T> GetValues()
         {
-            return Enum.GetValues(typeof (T)).Cast<T>().ToList();
+            return Enum.GetValues(typeof(T)).Cast<T>().ToList();
         }
 
         public static T Parse(string value)
@@ -20,7 +21,7 @@ namespace MrCMS.Helpers
 
         public static IList<string> GetNames()
         {
-            return Enum.GetNames(typeof (T)).ToList();
+            return Enum.GetNames(typeof(T)).ToList();
         }
 
         public static IList<string> GetDisplayValues()
@@ -37,6 +38,12 @@ namespace MrCMS.Helpers
 
             if (descriptionAttributes == null) return string.Empty;
             return (descriptionAttributes.Length > 0) ? descriptionAttributes[0].Name : value.ToString();
+        }
+
+        public static List<SelectListItem> GetOptions(SelectListItem emptyItem = null)
+        {
+            return GetValues()
+                .BuildSelectItemList(GetDisplayValue, arg => arg.ToString(), emptyItem: emptyItem);
         }
     }
 }

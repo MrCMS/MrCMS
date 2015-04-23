@@ -1,18 +1,16 @@
-﻿@using System.Linq
-@using MrCMS.Entities.Documents.Media
-@using MrCMS.Helpers
-@using MrCMS.Paging
-@model MediaCategory
+﻿@using MrCMS.Entities.Documents.Media
+@model MrCMS.Web.Areas.Admin.Models.MediaCategorySearchModel
 @{
-    ViewBag.Title = Model.Name;
+    var category = ViewData["category"] as MediaCategory;
+    ViewBag.Title = category.Name;
 }
 <div class="inline-buttons-container">
-    <h1 class="page-header">@Model.Name</h1>
+    <h1 class="page-header">@category.Name</h1>
     <span class="btn-group  display-inline  pull-right">
-        <a href="@Url.Action("SortFiles", "MediaCategory", new { id = Model.Id })" class="btn btn-default">@Resource("Admin Media Sort Button", "Sort Files")</a>
-        <a href="@Url.Action("Edit", "MediaCategory", new { id = Model.Id })" class="btn  btn-default">@Resource("Admin Media Edit Folder Button", "Edit Folder")</a>
-        <a href="@Url.Action("Add", "MediaCategory", new { id = Model.Id })" class="btn  btn-primary">@Resource("Admin Media New Folder Button", "New folder")</a>
+        <a href="@Url.Action("SortFiles", "MediaCategory", new {id = Model.Id})" class="btn btn-default">@Resource("Admin Media Sort Button", "Sort Files")</a>
+        <a href="@Url.Action("Edit", "MediaCategory", new {id = Model.Id})" class="btn  btn-default">@Resource("Admin Media Edit Folder Button", "Edit Folder")</a>
+        <a href="@Url.Action("Add", "MediaCategory", new {id = Model.Id})" class="btn  btn-primary">@Resource("Admin Media New Folder Button", "New folder")</a>
     </span>
 </div>
 @Html.Hidden("FolderId", Model.Id)
-@{ Html.RenderPartial("Manage");}
+@{ Html.RenderAction("Manage", new { searchModel = Model });} 

@@ -6,10 +6,4 @@ namespace MrCMS.Models
         public int Id { get; set; }
         public int Order { get; set; }
     }
-
-    public class ImageSortItem : SortItem
-    {
-        public bool IsImage { get; set; }
-        public string ImageUrl { get; set; }
-    }
 }

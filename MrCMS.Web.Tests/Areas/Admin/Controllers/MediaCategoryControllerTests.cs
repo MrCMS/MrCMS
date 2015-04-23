@@ -130,7 +130,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MediaCategoryController_Index_ReturnsViewResult()
         {
-            ViewResult actionResult = _mediaCategoryController.Index();
+            ViewResult actionResult = _mediaCategoryController.Index(null);
 
             actionResult.Should().NotBeNull();
         }

@@ -99,22 +99,29 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
         }
 
-        public ActionResult Show(MediaCategory mediaCategory, int page = 1)
+        public ActionResult Show(MediaCategorySearchModel searchModel)
         {
-            if (mediaCategory == null)
+            if (searchModel.Id == null)
                 return RedirectToAction("Index");
-            ViewData["files"] = _fileAdminService.GetFilesForFolder(mediaCategory, page);
-            ViewData["folders"] = _fileAdminService.GetSubFolders(mediaCategory);
+            ViewData["category"] = _fileAdminService.GetCategory(searchModel);
 
-            return View(mediaCategory);
+            return View(searchModel);
         }
 
-        public ViewResult Index(int page = 1)
+        public ViewResult Index(MediaCategorySearchModel searchModel)
         {
-            ViewData["files"] = _fileAdminService.GetFilesForFolder(null, page);
-            ViewData["folders"] = _fileAdminService.GetSubFolders(null);
+            return View(searchModel);
+        }
 
-            return View();
+        [ChildActionOnly]
+        public PartialViewResult Manage(MediaCategorySearchModel searchModel)
+        {
+            ViewData["category"] = _fileAdminService.GetCategory(searchModel);
+            ViewData["files"] = _fileAdminService.GetFilesForFolder(searchModel);
+            ViewData["folders"] = _fileAdminService.GetSubFolders(searchModel);
+            ViewData["sort-by-options"] = _fileAdminService.GetSortByOptions(searchModel);
+
+            return PartialView(searchModel);
         }
 
 
@@ -139,19 +146,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult SortFiles(MediaCategory parent)
         {
             ViewData["categoryId"] = parent.Id;
-            List<ImageSortItem> sortItems =
-                _fileAdminService.GetFilesForFolder(parent, 250).OrderBy(arg => arg.DisplayOrder)
-                    .Select(
-                        arg =>
-                            new ImageSortItem
-                            {
-                                Order = arg.DisplayOrder,
-                                Id = arg.Id,
-                                Name = arg.FileName,
-                                ImageUrl = arg.FileUrl,
-                                IsImage = arg.IsImage()
-                            })
-                    .ToList();
+            List<ImageSortItem> sortItems = _fileAdminService.GetFilesToSort(parent);
 
             return View(sortItems);
         }
