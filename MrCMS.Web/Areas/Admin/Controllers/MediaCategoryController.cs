@@ -101,7 +101,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public ActionResult Show(MediaCategorySearchModel searchModel)
         {
-            if (searchModel.Id == null)
+            if (searchModel == null || searchModel.Id == null)
                 return RedirectToAction("Index");
             ViewData["category"] = _fileAdminService.GetCategory(searchModel);
 
