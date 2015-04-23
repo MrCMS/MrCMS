@@ -23,6 +23,7 @@ namespace MrCMS.Settings
             TaskExecutorKey = "executor";
             TaskExecutorPassword = Guid.NewGuid().ToString();
             PageExtensionsToRoute = ".asp,.php,.aspx";
+            TaskExecutionDelay = 10;
         }
 
         protected SiteSettingsOptionGenerator SiteSettingsOptionGenerator
@@ -107,7 +108,7 @@ namespace MrCMS.Settings
         public string TaskExecutorPassword { get; set; }
 
         public bool SelfExecuteTasks { get; set; }
-
+        public int TaskExecutionDelay { get; set; }
 
         public bool HasHoneyPot
         {
@@ -147,6 +148,7 @@ namespace MrCMS.Settings
 
         [DisplayName("Default Form Renderer Type"), DropDownSelection("DefaultFormRenderer")]
         public FormRenderingType FormRendererType { get; set; }
+
 
         public void SetSiteSettingsOptionGeneratorOverride(SiteSettingsOptionGenerator siteSettingsOptionGenerator)
         {

@@ -71,7 +71,8 @@ namespace MrCMS.Search.ItemCreation
                 PrimarySearchTerms = primarySearchTerms,
                 SecondarySearchTerms = secondarySearchTerms,
                 SystemType = entity.GetType().FullName,
-                CreatedOn = entity.CreatedOn
+                CreatedOn = entity.CreatedOn,
+                SearchGuid = entity.Guid
             };
         }
     }

@@ -8,6 +8,10 @@ namespace MrCMS.Web.Areas.Admin.Models
         CreatedOnDesc,
         [Display(Name = "Created On")]
         CreatedOn,
+        [Display(Name = "Name")]
+        Name,
+        [Display(Name = "Name Descending")]
+        NameDesc,
         [Display(Name = "Display Order")]
         DisplayOrder,
         [Display(Name = "Reverse Display Order")]

@@ -43,7 +43,7 @@ namespace MrCMS.Search
                         return new UniversalSearchIndexStatus
                         {
                             Exists = true,
-                            Guid = doc.SearchGuid.GetValueOrDefault()
+                            Guid = doc.SearchGuid
                         };
                     return new UniversalSearchIndexStatus
                     {

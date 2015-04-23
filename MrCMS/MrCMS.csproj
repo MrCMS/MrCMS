@@ -644,6 +644,8 @@
     <Compile Include="Models\VersionChange.cs" />
     <Compile Include="Models\WebpageCount.cs" />
     <Compile Include="Models\WebsiteTreeListModel.cs" />
+    <Compile Include="Search\AddUniversalSearchTaskInfo.cs" />
+    <Compile Include="Search\AddUniversalSearchTaskInfoExecutor.cs" />
     <Compile Include="Search\DeleteFromUniversalIndex.cs" />
     <Compile Include="Search\DeleteFromUniversalIndexExecutor.cs" />
     <Compile Include="Search\GetUniversalIndexStatuses.cs" />
@@ -663,6 +665,7 @@
     <Compile Include="Search\ItemCreation\IGetUserSearchTerms.cs" />
     <Compile Include="Search\ItemCreation\IGetWebpageSearchTerms.cs" />
     <Compile Include="Search\ISearchConverter.cs" />
+    <Compile Include="Search\IUniversalSearchIndexTask.cs" />
     <Compile Include="Search\IUniversalSearchItemGenerator.cs" />
     <Compile Include="Search\IUniversalSearchIndexManager.cs" />
     <Compile Include="Search\Models\UniversalSearchIndexResult.cs" />
@@ -670,7 +673,10 @@
     <Compile Include="Search\Models\UniversalSearchItem.cs" />
     <Compile Include="Search\SearchConverter.cs" />
     <Compile Include="Search\UniversalSearchFieldNames.cs" />
+    <Compile Include="Search\UniversalSearchIndexAction.cs" />
+    <Compile Include="Search\UniversalSearchIndexData.cs" />
     <Compile Include="Search\UniversalSearchIndexManager.cs" />
+    <Compile Include="Search\UniversalSearchIndexTask.cs" />
     <Compile Include="Search\UniversalSearchItemGenerator.cs" />
     <Compile Include="Search\UpdateUniversalIndex.cs" />
     <Compile Include="Search\UpdateUniversalIndexExecutor.cs" />
@@ -1053,6 +1059,8 @@
     <Compile Include="Tasks\TaskExecutionStatus.cs" />
     <Compile Include="Tasks\TaskResetter.cs" />
     <Compile Include="Tasks\TaskStatusUpdater.cs" />
+    <Compile Include="Tasks\UniversalIndexTaskExecutionHandler.cs" />
+    <Compile Include="Tasks\UniversalSearchActionExecutor.cs" />
     <Compile Include="Website\ActionMethodInfo.cs" />
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />

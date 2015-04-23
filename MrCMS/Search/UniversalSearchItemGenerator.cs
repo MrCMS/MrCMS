@@ -60,7 +60,7 @@ namespace MrCMS.Search
             return entity != null && GetUniversalSearchItemTypes.ContainsKey(entity.GetType());
         }
 
-        public Document GenerateDocument(SystemEntity entity)
+        public UniversalSearchItem GenerateItem(SystemEntity entity)
         {
             if (entity == null)
                 return null;
@@ -73,7 +73,12 @@ namespace MrCMS.Search
             if (getUniversalSearchItem == null)
                 return null;
 
-            UniversalSearchItem item = getUniversalSearchItem.GetSearchItem(entity);
+            return getUniversalSearchItem.GetSearchItem(entity);
+        }
+
+        public Document GenerateDocument(SystemEntity entity)
+        {
+            var item = GenerateItem(entity);
             if (item == null)
                 return null;
             return _searchConverter.Convert(item);

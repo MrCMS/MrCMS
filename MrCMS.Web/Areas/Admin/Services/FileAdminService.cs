@@ -44,17 +44,6 @@ namespace MrCMS.Web.Areas.Admin.Services
             return mediaFile.GetUploadFilesResult();
         }
 
-        public ViewDataUploadFilesResult[] GetFiles(MediaCategory mediaCategory = null)
-        {
-            return
-                _session.QueryOver<MediaFile>()
-                    .Where(file => file.MediaCategory == mediaCategory)
-                    .OrderBy(file => file.DisplayOrder)
-                    .Asc.Cacheable()
-                    .List()
-                    .Select(file => file.GetUploadFilesResult()).ToArray();
-        }
-
         public void DeleteFile(MediaFile mediaFile)
         {
             _fileService.DeleteFile(mediaFile);
@@ -136,7 +125,9 @@ namespace MrCMS.Web.Areas.Admin.Services
                 : queryOver.Where(x => x.Parent == null);
             if (!string.IsNullOrWhiteSpace(searchModel.SearchText))
             {
-                queryOver = queryOver.Where(category => category.Name.IsInsensitiveLike(searchModel.SearchText, MatchMode.Anywhere));
+                queryOver =
+                    queryOver.Where(
+                        category => category.Name.IsInsensitiveLike(searchModel.SearchText, MatchMode.Anywhere));
             }
 
             queryOver = queryOver.OrderBy(searchModel.SortBy);
@@ -255,6 +246,10 @@ namespace MrCMS.Web.Areas.Admin.Services
                     return query.OrderBy(file => file.CreatedOn).Desc;
                 case MediaCategorySortMethod.CreatedOn:
                     return query.OrderBy(file => file.CreatedOn).Asc;
+                case MediaCategorySortMethod.Name:
+                    return query.OrderBy(file => file.FileName).Asc;
+                case MediaCategorySortMethod.NameDesc:
+                    return query.OrderBy(file => file.FileName).Desc;
                 case MediaCategorySortMethod.DisplayOrderDesc:
                     return query.OrderBy(file => file.DisplayOrder).Desc;
                 case MediaCategorySortMethod.DisplayOrder:
@@ -263,7 +258,9 @@ namespace MrCMS.Web.Areas.Admin.Services
                     throw new ArgumentOutOfRangeException("sortBy");
             }
         }
-        public static IQueryOver<MediaCategory, MediaCategory> OrderBy(this IQueryOver<MediaCategory, MediaCategory> query,
+
+        public static IQueryOver<MediaCategory, MediaCategory> OrderBy(
+            this IQueryOver<MediaCategory, MediaCategory> query,
             MediaCategorySortMethod sortBy)
         {
             switch (sortBy)
@@ -272,6 +269,10 @@ namespace MrCMS.Web.Areas.Admin.Services
                     return query.OrderBy(category => category.CreatedOn).Desc;
                 case MediaCategorySortMethod.CreatedOn:
                     return query.OrderBy(category => category.CreatedOn).Asc;
+                case MediaCategorySortMethod.Name:
+                    return query.OrderBy(category => category.Name).Asc;
+                case MediaCategorySortMethod.NameDesc:
+                    return query.OrderBy(category => category.Name).Desc;
                 case MediaCategorySortMethod.DisplayOrderDesc:
                     return query.OrderBy(category => category.DisplayOrder).Desc;
                 case MediaCategorySortMethod.DisplayOrder:

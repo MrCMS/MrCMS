@@ -36,7 +36,7 @@ namespace MrCMS.Search
 
             document.Add(new Field(UniversalSearchFieldNames.Id, item.Id.ToString(), Field.Store.YES,
                 Field.Index.NOT_ANALYZED));
-            string searchGuid = (item.SearchGuid ?? Guid.NewGuid()).ToString();
+            string searchGuid = (item.SearchGuid).ToString();
             document.Add(new Field(UniversalSearchFieldNames.SearchGuid, searchGuid, Field.Store.YES,
                 Field.Index.NOT_ANALYZED));
 

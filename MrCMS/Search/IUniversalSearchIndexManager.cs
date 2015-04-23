@@ -8,7 +8,8 @@ namespace MrCMS.Search
 {
     public interface IUniversalSearchIndexManager
     {
-        void Index(SystemEntity entity);
+        void Insert(SystemEntity entity);
+        void Update(SystemEntity entity);
         void Delete(SystemEntity entity);
         void ReindexAll();
         void Optimise();

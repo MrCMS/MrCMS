@@ -34,7 +34,7 @@ namespace MrCMS.Tasks
                     await new HttpClient().GetAsync(url, x);
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(10), x);
+                await Task.Delay(TimeSpan.FromSeconds(siteSettings.TaskExecutionDelay), x);
                 Queue(site);
             });
         }

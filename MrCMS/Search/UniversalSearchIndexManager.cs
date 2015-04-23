@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
@@ -17,12 +18,12 @@ namespace MrCMS.Search
 {
     public class UniversalSearchIndexManager : IUniversalSearchIndexManager
     {
+        private static IndexSearcher _searcher;
         private readonly IGetLuceneDirectory _getLuceneDirectory;
         private readonly Site _site;
         private readonly IUniversalSearchItemGenerator _universalSearchItemGenerator;
         protected Analyzer Analyser;
         private Directory _directory;
-        private static IndexSearcher _searcher;
 
         public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, Site site,
             IGetLuceneDirectory getLuceneDirectory)
@@ -37,13 +38,37 @@ namespace MrCMS.Search
             get { return IndexReader.IndexExists(GetDirectory(_site)); }
         }
 
-        public void Index(SystemEntity entity)
+        public void Insert(SystemEntity entity)
         {
             if (!_universalSearchItemGenerator.CanGenerate(entity))
             {
                 return;
             }
-            CurrentRequestData.OnEndRequest.Add(new UpdateUniversalIndex(entity));
+
+            var data = new UniversalSearchIndexData
+            {
+                Action = UniversalSearchIndexAction.Insert,
+                UniversalSearchItem = _universalSearchItemGenerator.GenerateItem(entity)
+            };
+
+            if (!AnyExistInEndRequest(data))
+                CurrentRequestData.OnEndRequest.Add(new AddUniversalSearchTaskInfo(data));
+        }
+
+        public void Update(SystemEntity entity)
+        {
+            if (!_universalSearchItemGenerator.CanGenerate(entity))
+            {
+                return;
+            }
+            var data = new UniversalSearchIndexData
+            {
+                Action = UniversalSearchIndexAction.Update,
+                UniversalSearchItem = _universalSearchItemGenerator.GenerateItem(entity)
+            };
+
+            if (!AnyExistInEndRequest(data))
+                CurrentRequestData.OnEndRequest.Add(new AddUniversalSearchTaskInfo(data));
         }
 
         public void Delete(SystemEntity entity)
@@ -52,7 +77,15 @@ namespace MrCMS.Search
             {
                 return;
             }
-            CurrentRequestData.OnEndRequest.Add(new DeleteFromUniversalIndex(entity));
+
+            var data = new UniversalSearchIndexData
+            {
+                Action = UniversalSearchIndexAction.Delete,
+                UniversalSearchItem = _universalSearchItemGenerator.GenerateItem(entity)
+            };
+
+            if (!AnyExistInEndRequest(data))
+                CurrentRequestData.OnEndRequest.Add(new AddUniversalSearchTaskInfo(data));
         }
 
         public void ReindexAll()
@@ -83,7 +116,7 @@ namespace MrCMS.Search
 
         public void EnsureIndexExists()
         {
-            if(!IndexExists)
+            if (!IndexExists)
                 InitializeIndex();
         }
 
@@ -97,6 +130,33 @@ namespace MrCMS.Search
                 NumberOfDocs = GetNumberOfDocs(),
                 TypeName = GetType().FullName
             };
+        }
+
+        public void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
+        {
+            using (var indexWriter = new IndexWriter(GetDirectory(_site), GetAnalyser(), recreateIndex,
+                IndexWriter.MaxFieldLength.UNLIMITED))
+            {
+                writeFunc(indexWriter);
+            }
+            _searcher = null;
+        }
+
+        public void Index(SystemEntity entity)
+        {
+            if (!_universalSearchItemGenerator.CanGenerate(entity))
+            {
+                return;
+            }
+
+            CurrentRequestData.OnEndRequest.Add(new UpdateUniversalIndex(entity));
+        }
+
+        private static bool AnyExistInEndRequest(UniversalSearchIndexData data)
+        {
+            return
+                CurrentRequestData.OnEndRequest.OfType<AddUniversalSearchTaskInfo>()
+                    .Any(task => UniversalSearchIndexData.Comparer.Equals(data, task.Data));
         }
 
         private int? GetNumberOfDocs()
@@ -136,17 +196,6 @@ namespace MrCMS.Search
         private Directory GetDirectory(Site site)
         {
             return _getLuceneDirectory.Get(site, "UniversalSearch");
-        }
-
-
-        public void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
-        {
-            using (var indexWriter = new IndexWriter(GetDirectory(_site), GetAnalyser(), recreateIndex,
-                IndexWriter.MaxFieldLength.UNLIMITED))
-            {
-                writeFunc(indexWriter);
-            }
-            _searcher = null;
         }
     }
 }

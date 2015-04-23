@@ -9,7 +9,7 @@ namespace MrCMS.Search.Models
         public int Id { get; set; }
         public string DisplayName { get; set; }
         public string ActionUrl { get; set; }
-        public Guid? SearchGuid { get; set; }
+        public Guid SearchGuid { get; set; }
         public DateTime CreatedOn { get; set; }
         public IEnumerable<string> PrimarySearchTerms { get; set; }
         public IEnumerable<string> SecondarySearchTerms { get; set; }

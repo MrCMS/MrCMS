@@ -18,7 +18,8 @@ namespace MrCMS.Search.ItemCreation
                 SecondarySearchTerms = new[] {entity.FileExtension, entity.FileUrl},
                 SystemType = typeof (MediaFile).FullName,
                 ActionUrl = "/admin/file/edit/" + entity.Id,
-                CreatedOn = entity.CreatedOn
+                CreatedOn = entity.CreatedOn,
+                SearchGuid = entity.Guid
             };
         }
 

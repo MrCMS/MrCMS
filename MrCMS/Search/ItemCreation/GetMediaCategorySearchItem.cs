@@ -33,7 +33,8 @@ namespace MrCMS.Search.ItemCreation
                 SecondarySearchTerms = secondarySearchTerms,
                 SystemType = typeof (MediaCategory).FullName,
                 ActionUrl = "/admin/mediacategory/show/"+entity.Id, // _urlHelper.Action("Show", "MediaCategory", new {id = entity.Id, area = "admin"}),
-                CreatedOn = entity.CreatedOn
+                CreatedOn = entity.CreatedOn,
+                SearchGuid = entity.Guid
             };
         }
 
