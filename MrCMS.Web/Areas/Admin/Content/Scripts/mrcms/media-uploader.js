@@ -36,7 +36,7 @@
 
         },
         showMessage: function (file, response) {
-            alert(response);
+            //alert(response); //todo: Show error message
         },
     };
 };

@@ -3,6 +3,7 @@
 @{
     var typeOptions = UniversalSearchHelper.GetOptions();
 }
+
 <nav class="navbar navbar-default no-border-radius margin-bottom-0 navbar-fixed-top nav" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -11,33 +12,37 @@
                     <img src="/Areas/Admin/Content/Images/logo.png" class="logo" />
                 </a>
             </span>
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <button type="button" class="navbar-toggle btn" data-toggle="collapse" data-target="#right-hand-navbar">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <a class="btn navbar-toggle" data-toggle="collapse" data-target="#search-collapse" style="padding-top:6px; padding-bottom: 6px;"><i class="glyphicon glyphicon-search"></i></a>
+
         </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <div class="collapse navbar-collapse pull-left" id="search-collapse">
             <form class="navbar-form navbar-left site-search form-inline" role="search" action="@Url.Action("Index", "Search")" method="GET">
                 <div class="form-group">
                     @Html.TextBox("term", "", new { @class = "search-query form-control", data_search_item_term = true, placeholder = "Search", autocomplete = "off", tabindex = "1" })
                 </div>
                 <div class="form-group">
                     <div class="input-group">
-                        @Html.DropDownList("type", typeOptions, new { @class = "form-control", data_search_item_type = true })
+                        @Html.DropDownList("type", typeOptions, new { @class = "form-control search-type-dropdown", data_search_item_type = true })
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-default" tabindex="2">@Resource("Go")</button>
                         </span>
                     </div>
                 </div>
             </form>
-            <ul class="nav navbar-nav  navbar-right">
+        </div>
+        <div class="collapse navbar-collapse" id="right-hand-navbar">
+            <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="/" target="new"><i class="glyphicon glyphicon-home"></i>&nbsp;@Resource("Home")</a>
+                    <a href="/" target="new"><i class="glyphicon glyphicon-home"></i>&nbsp;<span class="hidden-sm hidden-md hidden-lg">Home</span></a>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user">&nbsp;</i><span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user">&nbsp;</i><span class="hidden-sm hidden-md hidden-lg">Your Account</span><span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="/logout">Logout</a></li>
                         <li><a href="@Url.Action("Edit", "User", new { Id = CurrentRequestData.CurrentUser.Id })">@Resource("Your Account")</a></li>
@@ -48,7 +53,7 @@
                     Html.RenderAction("Navbar", "PersistentNotification");
                 }
                 <li class="dropdown right-dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sitemap">&nbsp;</i><span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sitemap">&nbsp;</i><span class="hidden-sm hidden-md hidden-lg">Sites</span><span class="caret"></span></a>
                     @{ Html.RenderAction("Get", "SiteList"); }
                 </li>
             </ul>
