@@ -58,12 +58,6 @@ namespace MrCMS.Settings
                 .OfType<SystemSettingsBase>().ToList();
         }
 
-        public bool Exists<TSettings>() where TSettings : SystemSettingsBase, new()
-        {
-            string fileLocation = GetFileLocation(typeof(TSettings));
-            return File.Exists(fileLocation);
-        }
-
         public TSettings GetSystemSettings<TSettings>() where TSettings : SystemSettingsBase, new()
         {
             lock (ReadLockObject)

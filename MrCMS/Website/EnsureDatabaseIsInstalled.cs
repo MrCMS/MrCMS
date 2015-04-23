@@ -17,36 +17,27 @@ namespace MrCMS.Website
 
         public bool IsInstalled()
         {
-            DatabaseSettings databaseSettings = new DatabaseSettings();
-            if (_systemConfigurationProvider.Exists<DatabaseSettings>())
             // if connection strings are stored in new location, all is well
+            var databaseSettings = _systemConfigurationProvider.GetSystemSettings<DatabaseSettings>();
+            if (!string.IsNullOrWhiteSpace(databaseSettings.ConnectionString))
+                return true;
+            ConnectionStringSettings connectionString;
+            try
             {
-                databaseSettings = _systemConfigurationProvider.GetSystemSettings<DatabaseSettings>();
-                if (!string.IsNullOrWhiteSpace(databaseSettings.ConnectionString))
-                    return true;
+                // otherwise check the connection string
+                connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
+                if (connectionString == null)
+                    return false;
             }
-            ConnectionStringSettings connectionString = GetConnectionStringSetting();
-            if (connectionString == null)
+            catch
+            {
                 return false;
+            }
 
             databaseSettings.ConnectionString = connectionString.ConnectionString;
             databaseSettings.DatabaseProviderType = GetProviderType(connectionString.ProviderName);
             _systemConfigurationProvider.SaveSettings(databaseSettings);
             return true;
-        }
-
-        private static ConnectionStringSettings GetConnectionStringSetting()
-        {
-            ConnectionStringSettings connectionString = null;
-            try
-            {
-                // otherwise check the connection string
-                connectionString = ConfigurationManager.ConnectionStrings["mrcms"];
-            }
-            catch
-            {
-            }
-            return connectionString;
         }
 
         private string GetProviderType(string providerName)

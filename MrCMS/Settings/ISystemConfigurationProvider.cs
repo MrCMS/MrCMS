@@ -10,6 +10,5 @@ namespace MrCMS.Settings
         void SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new();
         void DeleteSettings(SystemSettingsBase settings);
         List<SystemSettingsBase> GetAllSystemSettings();
-        bool Exists<TSettings>() where TSettings : SystemSettingsBase, new();
     }
 }
