@@ -1,76 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Batching;
 using MrCMS.Batching.CoreJobs;
 using MrCMS.Batching.Entities;
 using MrCMS.Batching.Services;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 using MrCMS.Indexing;
 using MrCMS.Services.ImportExport.BatchJobs;
 using MrCMS.Services.ImportExport.DTOs;
-using MrCMS.Services.Notifications;
 using Newtonsoft.Json;
-using NHibernate;
 
 namespace MrCMS.Services.ImportExport
 {
     public class ImportDocumentsService : IImportDocumentsService
     {
-        private readonly ISession _session;
-        private readonly ICreateBatchRun _createBatchRun;
         private readonly IControlBatchRun _controlBatchRun;
+        private readonly ICreateBatch _createBatch;
 
-        public ImportDocumentsService(ISession session, ICreateBatchRun createBatchRun,IControlBatchRun controlBatchRun)
+        public ImportDocumentsService(ICreateBatch createBatch, IControlBatchRun controlBatchRun)
         {
-            _session = session;
-            _createBatchRun = createBatchRun;
+            _createBatch = createBatch;
             _controlBatchRun = controlBatchRun;
         }
 
         public Batch CreateBatch(List<DocumentImportDTO> items, bool autoStart = true)
         {
-            var batch = new Batch { BatchJobs = new List<BatchJob>() ,BatchRuns = new List<BatchRun>()};
-            _session.Transact(session => session.Save(batch));
-            _session.Transact(session =>
+            List<BatchJob> jobs = items.Select(item => new ImportDocumentBatchJob
             {
-                foreach (var item in items)
-                {
-                    var importDocumentBatchJob = new ImportDocumentBatchJob
-                    {
-                        Batch = batch,
-                        Data = JsonConvert.SerializeObject(item),
-                        UrlSegment = item.UrlSegment
-                    };
-                    batch.BatchJobs.Add(importDocumentBatchJob);
-                    session.Save(importDocumentBatchJob);
-                }
-                // Reindex Universal search when done
-                var universalIndexRebuilder = new RebuildUniversalSearchIndex
-                {
-                    Batch = batch
-                };
-                batch.BatchJobs.Add(universalIndexRebuilder);
-                session.Save(universalIndexRebuilder);
+                Data = JsonConvert.SerializeObject(item),
+                UrlSegment = item.UrlSegment
+            } as BatchJob).ToList();
+            jobs.Add(new RebuildUniversalSearchIndex());
+            jobs.AddRange(IndexingHelper.IndexDefinitionTypes.Select(definition => new RebuildLuceneIndex
+            {
+                IndexName = definition.SystemName
+            }));
 
-                // Reindex standard indexes
-                foreach (var type in IndexingHelper.IndexDefinitionTypes)
-                {
-                    var luceneIndex = new RebuildLuceneIndex
-                    {
-                        Batch = batch,
-                        IndexName = type.SystemName
-                    };
-                    batch.BatchJobs.Add(luceneIndex);
-                    session.Save(luceneIndex);
-                }
-            });
-            var batchRun = _createBatchRun.Create(batch);
-            batch.BatchRuns.Add(batchRun);
+            BatchCreationResult batchCreationResult = _createBatch.Create(jobs);
             if (autoStart)
-                _controlBatchRun.Start(batchRun);
-            return batch;
+                _controlBatchRun.Start(batchCreationResult.InitialBatchRun);
+            return batchCreationResult.Batch;
         }
     }
 }
