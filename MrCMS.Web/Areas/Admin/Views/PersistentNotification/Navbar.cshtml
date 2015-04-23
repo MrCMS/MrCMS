@@ -1,6 +1,6 @@
 ﻿@model dynamic
 <li class="dropdown">
-    <a href="#" data-toggle="dropdown"><i class="glyphicon glyphicon-bullhorn glyphicon"></i>&nbsp;<span class="badge badge-important" style="background: #d90000;" data-notification-count="true">-</span></a>
+    <a href="#" data-toggle="dropdown"><i class="glyphicon glyphicon-bullhorn glyphicon"></i>&nbsp;<span class="hidden-sm hidden-md hidden-lg">Notifications&nbsp;</span><span class="badge badge-important" style="background: #d90000;" data-notification-count="true">-</span></a>
     <div class="dropdown-menu notifications-dropdown reset-corners">
         @using (Html.BeginForm("MarkAllAsRead", "PersistentNotification", FormMethod.Post, new { @style = "margin:0", data_mark_all_as_read = true }))
         {
