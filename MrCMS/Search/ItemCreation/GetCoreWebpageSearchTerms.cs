@@ -11,11 +11,11 @@ namespace MrCMS.Search.ItemCreation
 {
     public class GetCoreWebpageSearchTerms : IGetWebpageSearchTerms
     {
-        private readonly IStatelessSession _statelessSession;
+        private readonly ISession _session;
 
-        public GetCoreWebpageSearchTerms(IStatelessSession statelessSession)
+        public GetCoreWebpageSearchTerms(ISession session)
         {
-            _statelessSession = statelessSession;
+            _session = session;
         }
 
         public IEnumerable<string> GetPrimary(Webpage webpage)
@@ -31,11 +31,11 @@ namespace MrCMS.Search.ItemCreation
 
         public IEnumerable<string> GetSecondary(Webpage webpage)
         {
-            HashSet<string> documentTags =
-                _statelessSession.Query<Tag>()
-                    .Where(x => x.Documents.Contains(webpage))
-                    .Select(tag => tag.Name)
-                    .ToHashSet();
+            Tag tagAlias = null;
+            var documentTags = _session.QueryOver<Webpage>()
+                .Where(page => page.Id == webpage.Id)
+                .JoinAlias(page => page.Tags, () => tagAlias)
+                .Select(page => tagAlias.Name).List<string>();
             return GetSecondaryTerms(webpage, documentTags);
         }
 
@@ -46,7 +46,7 @@ namespace MrCMS.Search.ItemCreation
             Tag tagAlias = null;
             TagInfo tagInfo = null;
             string typeName = webpages.First().DocumentType;
-            Dictionary<int, IEnumerable<string>> tagInfoDictionary = _statelessSession.QueryOver<Webpage>()
+            Dictionary<int, IEnumerable<string>> tagInfoDictionary = _session.QueryOver<Webpage>()
                 .Where(webpage => webpage.DocumentType == typeName)
                 .JoinAlias(webpage => webpage.Tags, () => tagAlias)
                 .SelectList(builder =>
