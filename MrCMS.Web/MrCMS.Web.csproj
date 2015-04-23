@@ -378,6 +378,7 @@
     <Compile Include="Areas\Admin\Models\AdminMessages.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\ChooseSiteParams.cs" />
+    <Compile Include="Areas\Admin\Models\MediaCategorySortMethod.cs" />
     <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageTemplateController.cs" />

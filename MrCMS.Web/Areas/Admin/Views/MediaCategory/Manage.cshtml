@@ -21,7 +21,7 @@
 }
 
 <div class="margin-bottom-20">
-    @{ Html.RenderAction("Upload", "MediaCategory", new { category = Model }); }
+    @{ Html.RenderAction("Upload", "MediaCategory", new { category }); }
     <div class="clearfix"></div>
 </div>
 
@@ -48,7 +48,7 @@
         <div class="col-sm-4">
             <div class="form-group">
                 @Html.LabelFor(model => model.SortBy)
-                @Html.DropDownListFor(model => model.SortBy,sortByOptions, new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.SortBy, sortByOptions, new { @class = "form-control" })
             </div>
         </div>
         <div class="col-sm-2">
