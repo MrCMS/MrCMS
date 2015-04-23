@@ -9,6 +9,9 @@ namespace MrCMS.Website
     {
         public static void Register(IKernel kernel)
         {
+            if (!CurrentRequestData.DatabaseIsInstalled)
+                return;
+
             foreach (IStylesheetBundle bundle in kernel.GetAll<IStylesheetBundle>())
             {
                 var styleBundle = new StyleBundle(bundle.Url);
