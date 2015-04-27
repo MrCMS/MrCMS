@@ -15,6 +15,15 @@ namespace MrCMS.Helpers
             return hashSet;
         }
 
+        public static ISet<T> AddRange<T>(this ISet<T> set, IEnumerable<T> range)
+        {
+            foreach (T item in range)
+            {
+                set.Add(item);
+            }
+            return set;
+        }
+
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection)
         {
             return new HashSet<T>(collection);

@@ -1,5 +1,4 @@
 ﻿using System.Web.Mvc;
-using MrCMS.Web.Apps.Articles.ModelBinders;
 using MrCMS.Web.Apps.Core.ModelBinders;
 using MrCMS.Web.Apps.Core.Models.Search;
 using MrCMS.Web.Apps.Core.Pages;
