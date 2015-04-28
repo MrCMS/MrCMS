@@ -158,7 +158,8 @@ namespace MrCMS.DbConfiguration
                 .IncludeBase<BatchJob>()
                 .IncludeAppBases()
                 .UseOverridesFromAssemblies(finalAssemblies)
-                .UseConventionsFromAssemblies(finalAssemblies);
+                .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
+                .IncludeAppConventions();
         }
 
         private void AppSpecificConfiguration(NHibernate.Cfg.Configuration configuration)

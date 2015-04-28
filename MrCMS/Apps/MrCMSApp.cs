@@ -84,6 +84,7 @@ namespace MrCMS.Apps
         }
         private static List<MrCMSApp> _allApps;
         public virtual IEnumerable<Type> BaseTypes { get { yield break; } }
+        public virtual IEnumerable<Type> Conventions { get { yield break; } }
 
         internal void CreateContext(RouteCollection routes, object state)
         {

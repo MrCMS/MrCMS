@@ -66,5 +66,16 @@ namespace MrCMS.DbConfiguration
         {
             return propertyPart.CustomType<VarcharMax>().Length(4001);
         }
+
+        public static AutoPersistenceModel IncludeAppConventions(this AutoPersistenceModel model)
+        {
+            foreach (var baseType in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>()
+                                        .Select(type => Activator.CreateInstance(type) as MrCMSApp)
+                                        .SelectMany(app => app.Conventions))
+            {
+                model.Conventions.Add(baseType);
+            }
+            return model;
+        }
     }
 }
