@@ -542,8 +542,8 @@
     <Compile Include="Events\OnUpdatedArgs.cs" />
     <Compile Include="Events\OnUpdatingArgs.cs" />
     <Compile Include="Events\Widgets\ClearWidgetsFromCache.cs" />
-    <Compile Include="HealthChecks\PublishWebpageTaskHealthCheck.cs" />
     <Compile Include="HealthChecks\EmailSenderTaskCheck.cs" />
+    <Compile Include="HealthChecks\PublishWebpageTaskHealthCheck.cs" />
     <Compile Include="HealthChecks\HealthCheck.cs" />
     <Compile Include="HealthChecks\HealthCheckResult.cs" />
     <Compile Include="HealthChecks\IHealthCheck.cs" />

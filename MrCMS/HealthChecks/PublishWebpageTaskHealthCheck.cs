@@ -6,12 +6,12 @@ using NHibernate;
 
 namespace MrCMS.HealthChecks
 {
-    public class EmailSenderTaskCheck : HealthCheck
+    public class PublishWebpageTaskHealthCheck : HealthCheck
     {
         private readonly ISession _session;
         private readonly Site _site;
 
-        public EmailSenderTaskCheck(ISession session, Site site)
+        public PublishWebpageTaskHealthCheck(ISession session, Site site)
         {
             _session = session;
             _site = site;
@@ -19,18 +19,18 @@ namespace MrCMS.HealthChecks
 
         public override string DisplayName
         {
-            get { return "Send email task setup"; }
+            get { return "Page Publisher task setup"; }
         }
 
         public override HealthCheckResult PerformCheck()
         {
-            var any = _session.QueryOver<ScheduledTask>().Where(x => x.Type == typeof(SendQueuedMessagesTask).FullName && x.Site.Id == _site.Id).Any();
+            var any = _session.QueryOver<ScheduledTask>().Where(x => x.Type == typeof(PublishScheduledWebpagesTask).FullName && x.Site.Id == _site.Id).Any();
             return !any
                 ? new HealthCheckResult
                 {
                     Messages = new List<string>
                     {
-                        "Email sending task is not set up."
+                        "Publisher task is not set up."
                     }
                 }
                 : HealthCheckResult.Success;
