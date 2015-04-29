@@ -15,7 +15,7 @@
 (function ($) {
 
     $.fn.areYouSure = function (options) {
-
+        var submitting = false;
         var settings = $.extend(
           {
               'message': 'You have unsaved changes!',
@@ -157,10 +157,17 @@
         var reinitialize = function () {
             initForm($(this));
         }
-
+function checkAllForms() {
+    $('form').each(function(index, element) {
+        checkFormInternal($(element));
+    });
+}
         if (!settings.silent && !window.aysUnloadSet) {
             window.aysUnloadSet = true;
-            $(window).bind('beforeunload', function () {
+            $(window).bind('beforeunload', function (event) {
+                if (!submitting) {
+                    checkAllForms();
+                }
                 var $dirtyForms = $("form").filter('.' + settings.dirtyClass);
                 if ($dirtyForms.length == 0) {
                     return;
@@ -184,10 +191,9 @@
             var $form = $(this);
 
             $form.submit(function () {
-                $('form').each(function (index, element) {
-                    checkFormInternal($(element));
-                });
+                checkAllForms();
                 $form.removeClass(settings.dirtyClass);
+                submitting = true;
             });
             $form.bind('reset', function () { setDirtyStatus($form, false); });
             // Add a custom events
