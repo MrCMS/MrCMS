@@ -1,15 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Models;
 using NHibernate;
-using NHibernate.Criterion;
 using Ninject;
-using StackExchange.Profiling;
 
 namespace MrCMS.Services
 {
@@ -70,43 +66,7 @@ namespace MrCMS.Services
             Type definitionType = TypeHelper.GetTypeByName(typeName);
             IIndexManagerBase indexManagerBase = GetIndexManagerBase(definitionType);
 
-
-            var entityType = indexManagerBase.GetEntityType();
-            IList list = GetEntities(entityType);
-            Type concreteManagerType = typeof(IIndexManager<,>).MakeGenericType(entityType, indexManagerBase.GetIndexDefinitionType());
-            MethodInfo methodInfo = concreteManagerType.GetMethodExt("ReIndex", typeof(IEnumerable<>).MakeGenericType(entityType));
-
-            var listInstance = CreateList(entityType, list);
-
-            methodInfo.Invoke(indexManagerBase, new[] { listInstance });
-        }
-
-        private static object CreateList(Type parameterTypes, IList list)
-        {
-            using (MiniProfiler.Current.Step("Build list"))
-            {
-                object listInstance =
-                    Activator.CreateInstance(typeof(List<>).MakeGenericType(parameterTypes));
-                MethodInfo methodExt = listInstance.GetType().GetMethodExt("Add", parameterTypes);
-                foreach (object entity in list)
-                {
-                    methodExt.Invoke(listInstance, new[] { entity });
-                }
-
-                return listInstance;
-            }
-        }
-
-        private IList GetEntities(Type entityType)
-        {
-            using (MiniProfiler.Current.Step("Load all entities"))
-            {
-                return _session.CreateCriteria(entityType)
-                    .Add(Restrictions.Eq("Site.Id", _site.Id))
-                    .Add(Restrictions.Eq("IsDeleted", false))
-                    .SetCacheable(true)
-                    .List();
-            }
+            indexManagerBase.ReIndex();
         }
 
         public void Optimise(string typeName)

@@ -43,6 +43,7 @@ namespace MrCMS.Installation
                 //save settings
                 SetUpInitialData(model, provider);
 
+                CurrentRequestData.OnEndRequest.Add(new InitializeIndexes());
                 CurrentRequestData.OnEndRequest.Add(new ApplicationRestart());
             }
             catch (Exception exception)

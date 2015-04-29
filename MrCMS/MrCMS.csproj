@@ -611,6 +611,8 @@
     <Compile Include="Installation\IFileSystemAccessService.cs" />
     <Compile Include="Installation\InitializeDatabase.cs" />
     <Compile Include="Installation\IInitializeDatabase.cs" />
+    <Compile Include="Installation\InitializeIndexes.cs" />
+    <Compile Include="Installation\InitializeIndexesExecutor.cs" />
     <Compile Include="Installation\IOnInstallation.cs" />
     <Compile Include="Installation\IRestartApplication.cs" />
     <Compile Include="Installation\PermissionsChecker.cs" />

@@ -5,10 +5,13 @@ using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
+using Microsoft.Ajax.Utilities;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Services;
 using MrCMS.Website;
+using NHibernate;
+using NHibernate.Criterion;
 
 namespace MrCMS.Indexing.Management
 {
@@ -31,16 +34,18 @@ namespace MrCMS.Indexing.Management
         where TEntity : SystemEntity
         where TDefinition : IndexDefinition<TEntity>
     {
-        private readonly Site _currentSite;
+        private readonly Site _site;
         private readonly TDefinition _definition;
+        private readonly IStatelessSession _statelessSession;
         private readonly IGetLuceneDirectory _getLuceneDirectory;
         private Directory _directory;
 
-        public IndexManager(IGetLuceneDirectory getLuceneDirectory, Site currentSite, TDefinition definition)
+        public IndexManager(IGetLuceneDirectory getLuceneDirectory, Site site, TDefinition definition, IStatelessSession statelessSession)
         {
             _getLuceneDirectory = getLuceneDirectory;
-            _currentSite = currentSite;
+            _site = site;
             _definition = definition;
+            _statelessSession = statelessSession;
         }
 
         public string IndexFolderName
@@ -55,7 +60,7 @@ namespace MrCMS.Indexing.Management
 
         public bool IndexExists
         {
-            get { return IndexReader.IndexExists(GetDirectory(_currentSite)); }
+            get { return IndexReader.IndexExists(GetDirectory(_site)); }
         }
 
         public DateTime? LastModified
@@ -65,7 +70,7 @@ namespace MrCMS.Indexing.Management
                 if (!IndexExists)
                     return null;
 
-                long lastModified = IndexReader.LastModified(GetDirectory(_currentSite));
+                long lastModified = IndexReader.LastModified(GetDirectory(_site));
                 try
                 {
                     return new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
@@ -84,7 +89,7 @@ namespace MrCMS.Indexing.Management
                 if (!IndexExists)
                     return null;
 
-                using (var indexReader = IndexReader.Open(GetDirectory(_currentSite), true))
+                using (var indexReader = IndexReader.Open(GetDirectory(_site), true))
                 {
                     return indexReader.NumDocs();
                 }
@@ -98,7 +103,7 @@ namespace MrCMS.Indexing.Management
 
         public IndexCreationResult CreateIndex()
         {
-            Directory fsDirectory = GetDirectory(_currentSite);
+            Directory fsDirectory = GetDirectory(_site);
             bool indexExists = IndexReader.IndexExists(fsDirectory);
             if (indexExists)
                 return IndexCreationResult.AlreadyExists;
@@ -191,7 +196,7 @@ namespace MrCMS.Indexing.Management
         {
             return IndexResult.GetResult(() => Write(writer =>
             {
-                using (var indexSearcher = new IndexSearcher(GetDirectory(_currentSite), true))
+                using (var indexSearcher = new IndexSearcher(GetDirectory(_site), true))
                 {
                     TopDocs topDocs = indexSearcher.Search(new TermQuery(Definition.GetIndex(entity)), int.MaxValue);
                     if (!topDocs.ScoreDocs.Any())
@@ -229,18 +234,14 @@ namespace MrCMS.Indexing.Management
             return IndexResult.GetResult(() => Write(writer => writer.DeleteDocuments(Definition.GetIndex(entity))));
         }
 
-        public Document GetDocument(object entity)
+        public IndexResult ReIndex()
         {
-            return Definition.Convert(entity as TEntity);
-        }
-
-        public IndexResult Optimise()
-        {
-            return IndexResult.GetResult(() => Write(writer => writer.Optimize()));
-        }
-
-        public IndexResult ReIndex(List<TEntity> entities)
-        {
+            var criteria = _statelessSession.CreateCriteria(typeof(TEntity))
+                .Add(Restrictions.Eq("IsDeleted", false));
+            if (typeof(SiteEntity).IsAssignableFrom(typeof(TEntity)))
+                criteria.Add(Restrictions.Eq("Site.Id", _site.Id));
+            var entities = criteria.SetCacheable(true)
+                .List<TEntity>().ToList();
             return IndexResult.GetResult(() =>
             {
                 Write(writer => { }, true);
@@ -253,6 +254,16 @@ namespace MrCMS.Indexing.Management
             });
         }
 
+        public Document GetDocument(object entity)
+        {
+            return Definition.Convert(entity as TEntity);
+        }
+
+        public IndexResult Optimise()
+        {
+            return IndexResult.GetResult(() => Write(writer => writer.Optimize()));
+        }
+
         private Directory GetDirectory(Site site)
         {
             return _directory = _directory ?? _getLuceneDirectory.Get(site, IndexFolderName);
@@ -261,7 +272,7 @@ namespace MrCMS.Indexing.Management
         private void Write(Action<IndexWriter> writeFunc, bool recreateIndex)
         {
             using (
-                var indexWriter = new IndexWriter(GetDirectory(_currentSite), Definition.GetAnalyser(), recreateIndex,
+                var indexWriter = new IndexWriter(GetDirectory(_site), Definition.GetAnalyser(), recreateIndex,
                     IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 writeFunc(indexWriter);

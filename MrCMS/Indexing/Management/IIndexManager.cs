@@ -16,8 +16,6 @@ namespace MrCMS.Indexing.Management
         IndexResult Update(TEntity entity);
         IndexResult Delete(IEnumerable<TEntity> entities);
         IndexResult Delete(TEntity entity);
-
-        IndexResult ReIndex(List<TEntity> entities);
     }
 
     public interface IIndexManagerBase
@@ -36,5 +34,6 @@ namespace MrCMS.Indexing.Management
         IndexResult Insert(object entity);
         IndexResult Delete(object entity);
         void ResetSearcher();
+        IndexResult ReIndex();
     }
 }
