@@ -118,7 +118,7 @@ namespace MrCMS.Search
         public void EnsureIndexExists()
         {
             if (!IndexExists)
-                InitializeIndex();
+                ReindexAll();
         }
 
         public MrCMSIndex GetUniversalIndexInfo()
