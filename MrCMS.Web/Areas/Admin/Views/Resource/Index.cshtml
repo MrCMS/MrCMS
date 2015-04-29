@@ -19,7 +19,7 @@
                 @Html.ActionLink(Resource("Admin Resource Export", "Export All"), "Export", "ResourceUpdate", new { }, new { @class = "btn btn-default" })
                 @Html.ActionLink(Resource("Admin Resource Export Filtered", "Export As Filtered"), "Export", "ResourceUpdate", new { Model.Key, Model.Value }, new { @class = "btn btn-default" })
 
-                <input type="submit" class="btn btn-primary" value="@Resource("Search")" />
+                <input type="submit" class="btn btn-primary" value="@Resource("Filter")" />
             </span>
         </legend>
 
