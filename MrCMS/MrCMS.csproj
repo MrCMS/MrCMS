@@ -647,9 +647,6 @@
     <Compile Include="Search\AddUniversalSearchTaskInfo.cs" />
     <Compile Include="Search\AddUniversalSearchTaskInfoExecutor.cs" />
     <Compile Include="Search\DeleteFromUniversalIndex.cs" />
-    <Compile Include="Search\DeleteFromUniversalIndexExecutor.cs" />
-    <Compile Include="Search\GetUniversalIndexStatuses.cs" />
-    <Compile Include="Search\IGetUniversalIndexStatuses.cs" />
     <Compile Include="Search\ItemCreation\GetCoreUserSearchTerms.cs" />
     <Compile Include="Search\ItemCreation\GetLayoutSearchItem.cs" />
     <Compile Include="Search\ItemCreation\GetCoreLayoutSearchTerms.cs" />
@@ -679,7 +676,6 @@
     <Compile Include="Search\UniversalSearchIndexTask.cs" />
     <Compile Include="Search\UniversalSearchItemGenerator.cs" />
     <Compile Include="Search\UpdateUniversalIndex.cs" />
-    <Compile Include="Search\UpdateUniversalIndexExecutor.cs" />
     <Compile Include="Search\UpdateUniversalSearch.cs" />
     <Compile Include="Services\ApplicationRestart.cs" />
     <Compile Include="Services\ApplicationRestartExecutor.cs" />
