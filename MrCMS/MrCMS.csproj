@@ -1153,6 +1153,7 @@
     <Compile Include="Website\Profiling\DisableMiniProfilerForSignalRRequests.cs" />
     <Compile Include="Website\Profiling\DisableMiniProfilerForTaskExecution.cs" />
     <Compile Include="Website\Profiling\IReasonToDisableMiniProfiler.cs" />
+    <Compile Include="Website\Profiling\IReasonToEnableMiniProfiler.cs" />
     <Compile Include="Website\PropertyFinder.cs" />
     <Compile Include="Website\MrCMSRouteRegistration.cs" />
     <Compile Include="Website\RequestAuthenticator.cs" />
