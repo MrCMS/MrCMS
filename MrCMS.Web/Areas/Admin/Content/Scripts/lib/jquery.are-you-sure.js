@@ -10,7 +10,7 @@
  * Version: 1.9.0
  * Date:    13th August 2014
  *
- * Customised for MrCMS by Gary Strong on 20th April 2015
+ * Customised for MrCMS by Gary Strong on 29th April 2015
  */
 (function ($) {
 
