@@ -408,7 +408,6 @@
     <Compile Include="DbConfiguration\Conventions\ForeignKeyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\NotNullableAttributeConvention.cs" />
-    <Compile Include="DbConfiguration\Conventions\PublishedFilterConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\RootGuidConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
@@ -420,7 +419,6 @@
     <Compile Include="DbConfiguration\CreateSqlServerDatabase.cs" />
     <Compile Include="DbConfiguration\EventInfo.cs" />
     <Compile Include="DbConfiguration\Filters\NotDeletedFilter.cs" />
-    <Compile Include="DbConfiguration\Filters\PublishedFilter.cs" />
     <Compile Include="DbConfiguration\Filters\SiteFilter.cs" />
     <Compile Include="DbConfiguration\Helpers\ContextSoftDeleteExtensions.cs" />
     <Compile Include="DbConfiguration\Helpers\CreateDatabaseExtensions.cs" />
@@ -1091,7 +1089,6 @@
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\Controllers\SEOController.cs" />
     <Compile Include="Website\Controllers\SitemapPlaceholderController.cs" />
-    <Compile Include="Website\EnabledPublishedFilterAttribute.cs" />
     <Compile Include="Website\EndRequestTask.cs" />
     <Compile Include="Website\EnsureDatabaseIsInstalled.cs" />
     <Compile Include="Website\ExecuteEndRequestBase.cs" />

@@ -3,7 +3,6 @@
 namespace MrCMS.Website.Controllers
 {
     [HandleWebpageViews]
-    [EnablePublishedFilter]
     public abstract class MrCMSUIController : MrCMSController
     {
         public void SetPageTitle(string pageTitle)

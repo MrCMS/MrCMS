@@ -141,7 +141,6 @@ namespace MrCMS.DbConfiguration
         {
             autoPersistenceModel.Add(typeof(NotDeletedFilter));
             autoPersistenceModel.Add(typeof(SiteFilter));
-            autoPersistenceModel.Add(typeof(PublishedFilter));
         }
 
         private static AutoPersistenceModel GetAutoPersistenceModel(List<Assembly> finalAssemblies)
