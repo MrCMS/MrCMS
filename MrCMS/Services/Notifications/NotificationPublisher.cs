@@ -9,18 +9,23 @@ namespace MrCMS.Services.Notifications
     public class NotificationPublisher : INotificationPublisher
     {
         private readonly ISession _session;
+        private readonly IGetCurrentUser _getCurrentUser;
 
-        public NotificationPublisher(ISession session)
+        public NotificationPublisher(ISession session,IGetCurrentUser getCurrentUser)
         {
             _session = session;
+            _getCurrentUser = getCurrentUser;
         }
 
         public void PublishNotification(string message, PublishType publishType = PublishType.Both, NotificationType notificationType = NotificationType.All)
         {
+            if (CurrentRequestData.CurrentContext.AreNotificationsDisabled())
+                return;
+
             var notification = new Notification
                                    {
                                        Message = message,
-                                       User = CurrentRequestData.CurrentUser,
+                                       User = _getCurrentUser.Get(),
                                        NotificationType = notificationType
                                    };
             switch (publishType)

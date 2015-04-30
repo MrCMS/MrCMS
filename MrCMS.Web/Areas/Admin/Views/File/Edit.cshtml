@@ -1,25 +1,50 @@
-﻿@using MrCMS.Helpers
+﻿@using System.Drawing
+@using MrCMS.Helpers
+@using MrCMS.Media
+@using MrCMS.Services.FileMigration
 @model MrCMS.Entities.Documents.Media.MediaFile
 @using (Html.BeginForm("Edit", "File", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
     <fieldset>
-        <legend>@Resource("Edit")
-            <span class="btn-group  display-inline  pull-right">
-                <a href="javascript:history.go(-1)" class="btn btn-default">@Resource("Back")</a>
-                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
-            </span>
-        </legend>
-        @Html.Link(Model.FileName, Model.FileUrl)
-        <hr />
-        <div class="form-group">
-            @Html.LabelFor(x => x.Title)
-            @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Title)
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(x => x.Description)
-            @Html.TextAreaFor(x => x.Description, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Description)
-        </div>
-    </fieldset>
+        <legend>
+            @Resource("Edit")
+        <span class="btn-group  display-inline  pull-right">
+            <a href="javascript:history.go(-1)" class="btn btn-default">@Resource("Back")</a>
+            <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
+        </span>
+    </legend>
+
+    @if (Model.IsImage())
+    {
+        @Html.RenderImage(Model.FileUrl, new Size(100, 100))
+    }
+    else
+    {
+        <i class="@Model.FileExtension.GetIconClass()"> </i>
+    }
+    <br />
+    @Html.Link(Model.FileName, Model.FileUrl)
+
+
+    <br />
+
+    @if (Model.MediaCategory != null)
+    {
+        <p>
+            Folder:
+            <a href="@Url.Action("Show", "MediaCategory", new { id = Model.MediaCategory.Id })">@Model.MediaCategory.Name</a>
+        </p>
+    }
+    <hr />
+    <div class="form-group">
+        @Html.LabelFor(x => x.Title)
+        @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Title)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.Description)
+        @Html.TextAreaFor(x => x.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Description)
+    </div>
+</fieldset>
 }

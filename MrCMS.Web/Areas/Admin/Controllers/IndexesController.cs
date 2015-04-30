@@ -13,12 +13,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class IndexesController : MrCMSAdminController
     {
-        private readonly IIndexService _indexService;
         private readonly IIndexAdminService _indexAdminService;
 
-        public IndexesController(IIndexService indexService, IIndexAdminService indexAdminService)
+        public IndexesController(IIndexAdminService indexAdminService)
         {
-            _indexService = indexService;
             _indexAdminService = indexAdminService;
         }
 
@@ -26,14 +24,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [MrCMSACLRule(typeof(IndexACL), IndexACL.View)]
         public ViewResult Index()
         {
-            return View(_indexService.GetIndexes());
+            ViewData["universal-search-index-info"] = _indexAdminService.GetUniversalSearchIndexInfo();
+            return View(_indexAdminService.GetIndexes());
         }
 
         [HttpPost]
         [MrCMSACLRule(typeof(IndexACL), IndexACL.Reindex)]
         public RedirectToRouteResult Reindex(string type)
         {
-            _indexService.Reindex(type);
+            _indexAdminService.Reindex(type);
             return RedirectToAction("Index");
         }
 
@@ -41,7 +40,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [MrCMSACLRule(typeof(IndexACL), IndexACL.Create)]
         public RedirectToRouteResult Create(string type)
         {
-            _indexService.Reindex(type);
+            _indexAdminService.Reindex(type);
             return RedirectToAction("Index");
         }
 
@@ -49,7 +48,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [MrCMSACLRule(typeof(IndexACL), IndexACL.Optimize)]
         public RedirectToRouteResult Optimise(string type)
         {
-            _indexService.Optimise(type);
+            _indexAdminService.Optimise(type);
             return RedirectToAction("Index");
         }
 
@@ -74,6 +73,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _indexAdminService.ReindexUniversalSearch();
             TempData.SuccessMessages().Add("Univeral Search reindexed");
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult OptimiseUniversalSearch()
+        {
+            _indexAdminService.OptimiseUniversalSearch();
+            TempData.SuccessMessages().Add("Univeral Search optimised");
             return RedirectToAction("Index");
         }
     }

@@ -8,7 +8,6 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Paging;
-using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using NHibernate;
 
@@ -16,8 +15,8 @@ namespace MrCMS.Web.Areas.Admin.Services
 {
     public class PageTemplateAdminService : IPageTemplateAdminService
     {
-        private readonly ISession _session;
         private readonly IGetUrlGeneratorOptions _getUrlGeneratorOptions;
+        private readonly ISession _session;
 
         public PageTemplateAdminService(ISession session, IGetUrlGeneratorOptions getUrlGeneratorOptions)
         {
@@ -45,14 +44,23 @@ namespace MrCMS.Web.Areas.Admin.Services
         public List<SelectListItem> GetPageTypeOptions()
         {
             List<SelectListItem> selectListItems = GetNewList();
-            selectListItems.AddRange(from key in MrCMSApp.AppWebpages.Keys.OrderBy(type => type.FullName)
-                                     let appName = MrCMSApp.AppWebpages[key]
-                                     select
-                                         new SelectListItem
-                                         {
-                                             Text = string.Format("{0} ({1})", key.GetMetadata().Name, appName),
-                                             Value = key.FullName
-                                         });
+            Dictionary<Type, string>.KeyCollection appWebpageTypes = MrCMSApp.AppWebpages.Keys;
+            selectListItems.AddRange(from key in appWebpageTypes.OrderBy(type => type.FullName)
+                let appName = MrCMSApp.AppWebpages[key]
+                select
+                    new SelectListItem
+                    {
+                        Text = string.Format("{0} ({1})", key.GetMetadata().Name, appName),
+                        Value = key.FullName
+                    });
+            selectListItems.AddRange(
+                TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
+                    .FindAll(type => !appWebpageTypes.Contains(type))
+                    .Select(type => new SelectListItem
+                    {
+                        Text = string.Format("{0} (System)", type.Name.BreakUpString()),
+                        Value = type.FullName
+                    }));
             return selectListItems;
         }
 
@@ -68,8 +76,8 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public List<SelectListItem> GetUrlGeneratorOptions(Type type)
         {
-            var urlGeneratorOptions = _getUrlGeneratorOptions.Get(type);
-            urlGeneratorOptions.Insert(0, new SelectListItem { Text = "Please select...", Value = "" });
+            List<SelectListItem> urlGeneratorOptions = _getUrlGeneratorOptions.Get(type);
+            urlGeneratorOptions.Insert(0, new SelectListItem {Text = "Please select...", Value = ""});
             return urlGeneratorOptions;
         }
 

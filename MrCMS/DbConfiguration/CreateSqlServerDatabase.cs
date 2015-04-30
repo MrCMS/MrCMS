@@ -1,12 +1,12 @@
 using System;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading;
 using MrCMS.Installation;
 
 namespace MrCMS.DbConfiguration
 {
-    public class CreateSqlServerDatabase : ICreateDatabase<SqlServer2008Provider>,
-        ICreateDatabase<SqlServer2012Provider>
+    public abstract class CreateSqlServerDatabase 
     {
         public void CreateDatabase(InstallModel model)
         {
@@ -20,9 +20,15 @@ namespace MrCMS.DbConfiguration
                     string errorCreatingDatabase = CreateSqlDatabase(connectionString);
                     if (!String.IsNullOrEmpty(errorCreatingDatabase))
                         throw new Exception(errorCreatingDatabase);
-                    //Database cannot be created sometimes. Weird! Seems to be Entity Framework issue
-                    //that's just wait 3 seconds
-                    Thread.Sleep(3000);
+
+                    int tries = 0;
+                    while (tries < 50)
+                    {
+                        if (NewDbIsReady(connectionString))
+                            break;
+                        tries++;
+                        Thread.Sleep(100);
+                    }
                 }
             }
             else
@@ -32,6 +38,22 @@ namespace MrCMS.DbConfiguration
                     throw new Exception("Database does not exist or you don't have permissions to connect to it");
             }
         }
+
+        private bool NewDbIsReady(string connectionString)
+        {
+            try
+            {
+                var provider = GetProvider(connectionString);
+                new NHibernateConfigurator(provider).CreateSessionFactory();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        protected abstract IDatabaseProvider GetProvider(string connectionString);
 
         public string GetConnectionString(InstallModel model)
         {

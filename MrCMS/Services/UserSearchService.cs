@@ -30,13 +30,25 @@ namespace MrCMS.Services
         {
             var query = _session.QueryOver<User>();
 
-            if (!string.IsNullOrWhiteSpace(searchQuery.Query))
+            if (!string.IsNullOrWhiteSpace(searchQuery.Email))
                 query =
                     query.Where(
                         user =>
-                        user.Email.IsInsensitiveLike(searchQuery.Query, MatchMode.Anywhere) ||
-                        user.LastName.IsInsensitiveLike(searchQuery.Query, MatchMode.Anywhere) ||
-                        user.FirstName.IsInsensitiveLike(searchQuery.Query, MatchMode.Anywhere));
+                            user.Email.IsInsensitiveLike(searchQuery.Email, MatchMode.Anywhere));
+
+            if (!string.IsNullOrWhiteSpace(searchQuery.FirstName))
+                query =
+                    query.Where(
+                        user =>
+                            user.FirstName.IsInsensitiveLike(searchQuery.FirstName, MatchMode.Anywhere));
+
+            if (!string.IsNullOrWhiteSpace(searchQuery.LastName))
+                query =
+                    query.Where(
+                        user =>
+                            user.LastName.IsInsensitiveLike(searchQuery.LastName, MatchMode.Anywhere));
+
+
             if (searchQuery.UserRoleId != null)
             {
                 UserRole role = null;

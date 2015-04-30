@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FakeItEasy;
 using FluentAssertions;
 using Iesi.Collections.Generic;
@@ -25,7 +26,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         [Fact]
         public void WebpageWidgetAdminService_HideWidget_AddsAWidgetToTheHiddenWidgetsListIfItIsNotInTheShownList()
         {
-            var textPage = new StubWebpage { ShownWidgets = new HashedSet<Widget>(), HiddenWidgets = new HashedSet<Widget>() };
+            var textPage = new StubWebpage { ShownWidgets = new HashSet<Widget>(), HiddenWidgets = new HashSet<Widget>() };
             Session.Transact(session => session.Save(textPage));
 
             var textWidget = new BasicMappedWidget();
@@ -45,8 +46,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
 
             var textPage = new StubWebpage
             {
-                ShownWidgets = new HashedSet<Widget> { textWidget },
-                HiddenWidgets = new HashedSet<Widget>()
+                ShownWidgets = new HashSet<Widget> { textWidget },
+                HiddenWidgets = new HashSet<Widget>()
             };
             Session.Transact(session => session.Save(textPage));
 
@@ -63,8 +64,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
 
             var textPage = new StubWebpage
             {
-                ShownWidgets = new HashedSet<Widget> { textWidget },
-                HiddenWidgets = new HashedSet<Widget>()
+                ShownWidgets = new HashSet<Widget> { textWidget },
+                HiddenWidgets = new HashSet<Widget>()
             };
             Session.Transact(session => session.Save(textPage));
 
@@ -77,7 +78,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         [Fact]
         public void WebpageWidgetAdminService_ShowWidget_AddsAWidgetToTheShownWidgetsListIfItIsNotInTheHiddenList()
         {
-            var textPage = new StubWebpage { ShownWidgets = new HashedSet<Widget>(), HiddenWidgets = new HashedSet<Widget>() };
+            var textPage = new StubWebpage { ShownWidgets = new HashSet<Widget>(), HiddenWidgets = new HashSet<Widget>() };
             Session.Transact(session => session.Save(textPage));
 
             var textWidget = new BasicMappedWidget();
@@ -96,8 +97,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
 
             var textPage = new StubWebpage
             {
-                ShownWidgets = new HashedSet<Widget>(),
-                HiddenWidgets = new HashedSet<Widget> { textWidget }
+                ShownWidgets = new HashSet<Widget>(),
+                HiddenWidgets = new HashSet<Widget> { textWidget }
             };
             Session.Transact(session => session.Save(textPage));
 
@@ -114,8 +115,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
 
             var textPage = new StubWebpage
             {
-                ShownWidgets = new HashedSet<Widget>(),
-                HiddenWidgets = new HashedSet<Widget> { textWidget }
+                ShownWidgets = new HashSet<Widget>(),
+                HiddenWidgets = new HashSet<Widget> { textWidget }
             };
             Session.Transact(session => session.Save(textPage));
 
@@ -127,7 +128,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         [Fact]
         public void WebpageWidgetAdminService_HideWidget_CallsSaveDocumentOnWebpage()
         {
-            var textPage = new StubWebpage { ShownWidgets = new HashedSet<Widget>(), HiddenWidgets = new HashedSet<Widget>() };
+            var textPage = new StubWebpage { ShownWidgets = new HashSet<Widget>(), HiddenWidgets = new HashSet<Widget>() };
             Session.Transact(session => session.Save(textPage));
 
             var textWidget = new BasicMappedWidget();
@@ -141,7 +142,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         [Fact]
         public void WebpageWidgetAdminService_ShowWidget_CallsSaveDocumentOnWebpage()
         {
-            var textPage = new StubWebpage { ShownWidgets = new HashedSet<Widget>(), HiddenWidgets = new HashedSet<Widget>() };
+            var textPage = new StubWebpage { ShownWidgets = new HashSet<Widget>(), HiddenWidgets = new HashSet<Widget>() };
             Session.Transact(session => session.Save(textPage));
 
             var textWidget = new BasicMappedWidget();

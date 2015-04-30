@@ -9,8 +9,10 @@ namespace MrCMS.Models
         {
             Page = 1;
         }
-        [DisplayName("Email or Name")]
-        public string Query { get; set; }
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
         public int? UserRoleId { get; set; }
         public int Page { get; set; }
     }

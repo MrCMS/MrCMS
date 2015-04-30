@@ -1,0 +1,11 @@
+﻿@using MrCMS.Batching.Entities
+@model MrCMS.Batching.Entities.BatchRun
+
+@if (Model.Status == BatchRunStatus.Pending || Model.Status == BatchRunStatus.Paused)
+{
+    <button type="button" data-batch-run-start="true" data-batch-run-id="@Model.Id" class="btn btn-default @ViewData["classes"]">Start</button>
+}
+else if (Model.Status == BatchRunStatus.Executing)
+{
+    <button type="button" data-batch-run-pause="true" data-batch-run-id="@Model.Id" class="btn btn-default @ViewData["classes"]">Pause</button>
+}

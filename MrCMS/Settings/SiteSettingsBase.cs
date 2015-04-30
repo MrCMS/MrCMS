@@ -1,11 +1,11 @@
-using System.ComponentModel;
 using System.Web.Mvc;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using NHibernate;
 
 namespace MrCMS.Settings
 {
-    public abstract class SiteSettingsBase
+    public abstract class SiteSettingsBase : IStoredInAppData
     {
         public virtual string TypeName
         {
@@ -24,7 +24,6 @@ namespace MrCMS.Settings
 
         public virtual void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-
         }
     }
 }

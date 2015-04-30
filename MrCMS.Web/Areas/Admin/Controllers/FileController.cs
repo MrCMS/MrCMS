@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Models;
-using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
-using NHibernate.Linq;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -24,21 +23,21 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("Files")]
-        public JsonResult Files_Post([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory mediaCategory)
+        public JsonResult Files_Post([IoCModelBinder(typeof(NullableEntityModelBinder))] MediaCategory mediaCategory)
         {
             var list = new List<ViewDataUploadFilesResult>();
             foreach (string files in Request.Files)
             {
-                var file = Request.Files[files];
+                HttpPostedFileBase file = Request.Files[files];
                 if (_fileService.IsValidFileType(file.FileName))
                 {
-                    var dbFile = _fileService.AddFile(file.InputStream, file.FileName,
+                    ViewDataUploadFilesResult dbFile = _fileService.AddFile(file.InputStream, file.FileName,
                         file.ContentType, file.ContentLength,
                         mediaCategory);
                     list.Add(dbFile);
                 }
             }
-            return Json(list.ToArray(), "text/html", System.Text.Encoding.UTF8);
+            return Json(list.ToArray(), "text/html", Encoding.UTF8);
         }
 
 
@@ -46,7 +45,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [ActionName("Delete")]
         public ActionResult Delete_POST(MediaFile file)
         {
-            var categoryId = file.MediaCategory.Id;
+            int categoryId = file.MediaCategory.Id;
             _fileService.DeleteFile(file);
             return RedirectToAction("Show", "MediaCategory", new { Id = categoryId });
         }
@@ -85,7 +84,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _fileService.SaveFile(file);
 
-            return RedirectToAction("Show", "MediaCategory", new { file.MediaCategory.Id });
+            return file.MediaCategory != null
+                ? RedirectToAction("Show", "MediaCategory", new {file.MediaCategory.Id})
+                : RedirectToAction("Index", "MediaCategory");
         }
     }
 }

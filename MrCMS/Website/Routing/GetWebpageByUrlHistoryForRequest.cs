@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Web.Routing;
 using MrCMS.Entities.Documents.Web;
 using NHibernate;
@@ -38,8 +39,7 @@ namespace MrCMS.Website.Routing
         {
             return _session.QueryOver<UrlHistory>()
                 .Where(doc => doc.UrlSegment == url)
-                .Take(1).Cacheable()
-                .SingleOrDefault();
+                .Cacheable().List().FirstOrDefault();
         }
     }
 }

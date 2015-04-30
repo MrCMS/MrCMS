@@ -21,6 +21,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private IRoleService _roleService;
         private IPasswordManagementService _passwordManagementService;
         private IGetUserCultureOptions _getUserCultureOptions;
+        private IGetUserEditTabsService _getUserEditTabsService;
 
         public UserControllerTests()
         {
@@ -29,7 +30,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             _roleService = A.Fake<IRoleService>();
             _passwordManagementService = A.Fake<IPasswordManagementService>();
             _getUserCultureOptions = A.Fake<IGetUserCultureOptions>();
-            _userController = new UserController(_userService, _userSearchService, _roleService, _passwordManagementService, _getUserCultureOptions);
+            _getUserEditTabsService = A.Fake<IGetUserEditTabsService>();
+            _userController = new UserController(_userService, _userSearchService, _roleService,
+                _passwordManagementService, _getUserCultureOptions, _getUserEditTabsService);
         }
 
         [Fact]

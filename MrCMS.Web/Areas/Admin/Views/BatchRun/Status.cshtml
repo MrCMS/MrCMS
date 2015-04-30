@@ -1,0 +1,62 @@
+﻿@using MrCMS.Batching.Entities
+@using MrCMS.Web.Areas.Admin.Services.Batching
+@model MrCMS.Batching.Entities.BatchRun
+@{
+    var completionStatus = ViewData["completion-status"] is BatchCompletionStatus ? (BatchCompletionStatus)ViewData["completion-status"] : new BatchCompletionStatus();
+}
+
+<div class="row" data-batch-run-id="@Model.Id" data-refresh-url="@Url.Action("Status", "BatchRun", new { Model.Id })">
+    <div class="col-xs-12">
+        <dl>
+            <dt>
+                Status
+            </dt>
+            <dd data-batch-run-status="@Model.Id">
+                @Model.Status
+            </dd>
+            <dt>
+                Completion
+            </dt>
+            <dd>
+                <div class="progress" style="margin-bottom: 0">
+                    <div data-batch-run-progress-bar="@Model.Id" class="progress-bar progress-bar-striped @(Model.Status == BatchRunStatus.Executing ?"active":"")" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: @completionStatus.PercentageCompleted;">
+                        <span data-batch-run-full-status="@Model.Id">
+                            @completionStatus.PercentageCompleted (@completionStatus.Completed of @completionStatus.Total)
+                        </span>
+                    </div>
+                </div>
+            </dd>
+            <dt>
+                Execution Time
+            </dt>
+            <dd data-batch-run-time-taken="@Model.Id">
+                @completionStatus.TimeTaken
+            </dd>
+            <dt>
+                Average Execution Time
+            </dt>
+            <dd data-batch-run-average-time-taken="@Model.Id">
+                @completionStatus.AverageTimeTaken
+            </dd>
+            <dt>
+                Pending
+            </dt>
+            <dd data-batch-run-pending="@Model.Id">
+                @completionStatus.Pending
+            </dd>
+            <dt>
+                Succeeded
+            </dt>
+            <dd data-batch-run-succeeded="@Model.Id">
+                @completionStatus.Succeeded
+            </dd>
+            <dt>
+                Failed
+            </dt>
+            <dd data-batch-run-failed="@Model.Id">
+                @completionStatus.Failed
+            </dd>
+        </dl>
+        @{Html.RenderPartial("ShowButton", Model);}
+    </div>
+</div>

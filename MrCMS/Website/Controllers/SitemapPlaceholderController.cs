@@ -39,9 +39,8 @@ namespace MrCMS.Website.Controllers
             if (page == null)
                 return new RedirectResult("~");
 
-            var now = CurrentRequestData.Now;
             var child =
-                _session.QueryOver<Webpage>().Where(webpage => webpage.Parent.Id == page.Id && webpage.PublishOn != null && webpage.PublishOn <= now)
+                _session.QueryOver<Webpage>().Where(webpage => webpage.Parent.Id == page.Id && webpage.Published)
                     .OrderBy(webpage => webpage.DisplayOrder).Asc
                     .Take(1).Cacheable().List().FirstOrDefault();
             return child == null

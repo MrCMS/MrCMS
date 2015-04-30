@@ -1,11 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
+using MrCMS.Batching;
+using MrCMS.Batching.Services;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Settings;
-using MrCMS.Tasks;
-using MrCMS.Website;
 using Newtonsoft.Json;
 using NHibernate;
 using Ninject;
@@ -14,52 +15,77 @@ namespace MrCMS.Services.FileMigration
 {
     public class FileMigrationService : IFileMigrationService
     {
-        private readonly IEnumerable<IFileSystem> _allFileSystems;
+        private readonly Dictionary<string, IFileSystem> _allFileSystems;
+        private readonly ICreateBatch _createBatch;
         private readonly FileSystemSettings _fileSystemSettings;
+        private readonly IKernel _kernel;
         private readonly ISession _session;
-        private readonly Site _site;
+        private readonly UrlHelper _urlHelper;
 
-        public FileMigrationService(IKernel kernel, FileSystemSettings fileSystemSettings, ISession session, Site site)
+        public FileMigrationService(IKernel kernel, FileSystemSettings fileSystemSettings, ISession session,
+            ICreateBatch createBatch, UrlHelper urlHelper)
         {
+            IEnumerable<IFileSystem> fileSystems = TypeHelper.GetAllConcreteTypesAssignableFrom<IFileSystem>()
+                .Select(type => kernel.Get(type) as IFileSystem);
             _allFileSystems =
-                TypeHelper.GetAllTypesAssignableFrom<IFileSystem>()
-                    .Select(type => kernel.Get(type) as IFileSystem)
-                    .ToList();
+                fileSystems
+                    .ToDictionary(system => system.GetType().FullName);
             _fileSystemSettings = fileSystemSettings;
             _session = session;
-            _site = site;
+            _createBatch = createBatch;
+            _kernel = kernel;
+            _urlHelper = urlHelper;
         }
 
         public IFileSystem CurrentFileSystem
         {
             get
             {
-                var storageType = _fileSystemSettings.StorageType;
-                return _allFileSystems.FirstOrDefault(system => system.GetType().FullName == storageType);
+                string storageType = _fileSystemSettings.StorageType;
+                return _allFileSystems[storageType];
             }
         }
 
-        public void MigrateFiles()
+        public FileMigrationResult MigrateFiles()
         {
-            var mediaFiles = _session.QueryOver<MediaFile>().Where(file => file.Site == _site).List();
-            var filesToMove =
-                mediaFiles.Where(mediaFile => mediaFile.GetFileSystem(_allFileSystems) != CurrentFileSystem)
-                    .Select(file => new MoveFileData
-                                    {
-                                        FileId = file.Id,
-                                        From = file.GetFileSystem(_allFileSystems).GetType().FullName,
-                                        To = CurrentFileSystem.GetType().FullName
-                                    }).ToList();
+            IList<MediaFile> mediaFiles = _session.QueryOver<MediaFile>().List();
 
-            foreach (var queuedTask in filesToMove.Select(moveFileData => new QueuedTask
-                                                                          {
-                                                                              Data = JsonConvert.SerializeObject(moveFileData),
-                                                                              Type = typeof(MoveFile).FullName,
-                                                                              Status = TaskExecutionStatus.Pending
-                                                                          }))
+            List<Guid> guids =
+                mediaFiles.Where(
+                    mediaFile =>
+                        MediaFileExtensions.GetFileSystem(mediaFile.FileUrl, _allFileSystems.Values) !=
+                        CurrentFileSystem)
+                    .Select(file => file.Guid).ToList();
+
+            if (!guids.Any())
             {
-                CurrentRequestData.QueuedTasks.Add(queuedTask);
+                return new FileMigrationResult
+                {
+                    MigrationRequired = false,
+                    Message = "Migration not required"
+                };
             }
+
+            BatchCreationResult result = _createBatch.Create(guids.Chunk(10)
+                .Select(set => new MigrateFilesBatchJob
+                {
+                    Data = JsonConvert.SerializeObject(set.ToHashSet()),
+                }));
+
+            return new FileMigrationResult
+            {
+                MigrationRequired = true,
+                Message = string.Format(
+                    "Batch created. Click <a target=\"_blank\" href=\"{0}\">here</a> to view and start.".AsResource(
+                        _kernel),
+                    _urlHelper.Action("Show", "BatchRun", new {id = result.InitialBatchRun.Id}))
+            };
         }
+    }
+
+    public class FileMigrationResult
+    {
+        public bool MigrationRequired { get; set; }
+        public string Message { get; set; }
     }
 }

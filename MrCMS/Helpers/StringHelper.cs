@@ -41,7 +41,7 @@ namespace MrCMS.Helpers
 
         public static bool Contains(this string source, string toCheck, StringComparison comp)
         {
-            return source.IndexOf(toCheck, comp) >= 0;
+            return source != null && source.IndexOf(toCheck, comp) >= 0;
         }
 
         public static bool HasValue(this string value)
@@ -67,6 +67,19 @@ namespace MrCMS.Helpers
                 returnString = text;
             
             return returnString;
+        }
+
+        public static string SafeTrim(this string s)
+        {
+            if (s == null)
+                return s;
+            return s.Trim();
+        }
+        public static string SafeTrim(this string s, params char[] chars)
+        {
+            if (s == null)
+                return s;
+            return s.Trim(chars);
         }
     }
 }

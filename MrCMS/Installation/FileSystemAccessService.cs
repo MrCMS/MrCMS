@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Principal;
 using System.Web;
+using MrCMS.Services.Caching;
+using MrCMS.Settings;
+using MrCMS.Website;
+using MrCMS.Website.Caching;
 
 namespace MrCMS.Installation
 {
@@ -66,6 +70,8 @@ namespace MrCMS.Installation
             {
                 dir.Delete(true);
             }
+            SystemConfigurationProvider.ClearCache();
+            ConfigurationProvider.ClearCache();
         }
 
         /// <summary>

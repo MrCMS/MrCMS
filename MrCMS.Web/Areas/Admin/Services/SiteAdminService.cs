@@ -3,15 +3,16 @@ using System.Linq;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Services;
+using MrCMS.Services.CloneSite;
+using MrCMS.Tasks;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
     public class SiteAdminService : ISiteAdminService
     {
-        private readonly ISession _session;
         private readonly ICloneSiteService _cloneSiteService;
+        private readonly ISession _session;
 
         public SiteAdminService(ISession session, ICloneSiteService cloneSiteService)
         {
@@ -29,14 +30,13 @@ namespace MrCMS.Web.Areas.Admin.Services
             return _session.Get<Site>(id);
         }
 
-        public void AddSite(Site site, SiteCopyOptions options)
+        public void AddSite(Site site, List<SiteCopyOption> options)
         {
             _session.Transact(session => session.Save(site));
 
-            if (options.SiteId.HasValue)
-            {
-                _cloneSiteService.CloneData(site, options);
-            }
+            _cloneSiteService.CloneData(site, options);
+
+            TaskExecutionQueuer.Queue(site);
         }
 
         public void SaveSite(Site site)

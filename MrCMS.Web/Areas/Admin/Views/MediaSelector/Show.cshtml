@@ -12,7 +12,7 @@
     var results = ViewData["results"] as IPagedList<MediaFile> ?? PagedList<MediaFile>.Empty;
     var mediaSettings = MrCMSApplication.Get<MediaSettings>();
 }
-<div data-type="media-selector-popup">
+<div data-type="media-selector-popup" style="min-height: 450px;">
     @using (Html.BeginForm("Show", "MediaSelector", FormMethod.Get, new { id = "search-form", style = "margin:0px;" }))
     {
         <fieldset>
@@ -40,29 +40,26 @@
     }
 
     <div id="results">
-        @using (Html.BeginForm("Files", "File", new { Id = (Model.CategoryId ?? null) }, FormMethod.Post, new { id = "fileuploadform", enctype = "multipart/form-data", @class = "form-fileUpload" }))
-        {
-            <div class="row">
-                <div class="col-lg-3">
-                    <span class="btn btn-success fileinput-button">
-                        <i class="glyphicon glyphicon-plus"></i>
-                        <span>@Resource("Admin Media Upload Files", "Upload files")...</span>
-                        <input id="fileupload" type="file" name="files[]" multiple />
-                    </span>
-                </div>
-                <div class="col-lg-9">
-                    <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 5px;">
-                        <div class="bar"><span id="percent-complete" style="text-align: center;"></span></div>
-                    </div>
+        <div id="fileupload" data-message="@Resource("Click here or drag files to upload")" class="dropzone" style="margin-bottom: 5px;"></div>
+
+        <input type="hidden" value="@Url.Action("Files", "File", new { Id = (Model.CategoryId ?? null) })" id="action-url" />
+
+        <div class="row">
+            <div class="col-lg-3">
+
+            </div>
+            <div class="col-lg-9">
+                <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 5px;">
+                    <div class="bar"><span id="percent-complete" style="text-align: center;"></span></div>
                 </div>
             </div>
-            <div id="files" class=""></div>
-        }
+        </div>
+        <div id="files" class=""></div>
+
 
         <input type="hidden" id="allowedFileTypes" value="@mediaSettings.AllowedFileTypes" />
         <input type="hidden" id="maxFileSizeUpload" value="@mediaSettings.MaxFileSizeUpload" />
 
-        <div id="dropzone"><span>@Resource("Admin Media Drop Files", "Drop files here")</span></div>
         @if (results.Any())
         {
             foreach (var file in results)

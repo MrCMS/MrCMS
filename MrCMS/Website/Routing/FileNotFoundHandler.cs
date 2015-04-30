@@ -35,7 +35,7 @@ namespace MrCMS.Website.Routing
             }
             if (!string.IsNullOrWhiteSpace(extension))
             {
-                _cacheWrapper.Add(GetMissingFileCacheKey(context.HttpContext), new object(),
+                _cacheWrapper.Add(GetMissingFileCacheKey(context.HttpContext.Request), new object(),
                     DateTime.UtcNow.Add(TimeSpan.FromMinutes(5)), Cache.NoSlidingExpiration,
                     CacheItemPriority.AboveNormal);
                 context.HttpContext.Response.Clear();
@@ -47,9 +47,9 @@ namespace MrCMS.Website.Routing
             return false;
         }
 
-        public static string GetMissingFileCacheKey(HttpContextBase context)
+        public static string GetMissingFileCacheKey(HttpRequestBase request)
         {
-            return "MissingFile." + context.Request.Url.AbsolutePath;
+            return "MissingFile." + request.Url.AbsolutePath;
         }
 
         public int Priority { get { return 10; } }

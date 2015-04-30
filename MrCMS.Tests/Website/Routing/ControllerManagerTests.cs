@@ -56,7 +56,7 @@ namespace MrCMS.Tests.Website.Routing
             {
                 WebGetController = "test-controller"
             };
-            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { Published = true };
             _controllerManager.GetMetadata = document => metadata;
 
             _controllerManager.GetControllerName(stubAllowedWebpage, "GET").Should().Be("test-controller");
@@ -69,7 +69,7 @@ namespace MrCMS.Tests.Website.Routing
             {
                 WebPostController = "test-controller"
             };
-            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { Published = true };
             _controllerManager.GetMetadata = document => metadata;
 
             _controllerManager.GetControllerName(stubAllowedWebpage, "POST").Should().Be("test-controller");
@@ -122,7 +122,7 @@ namespace MrCMS.Tests.Website.Routing
             {
                 WebGetAction = "test-get-action"
             };
-            var webpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
+            var webpage = new StubAllowedWebpage { Published = true };
 
             _controllerManager.GetMetadata = document => metadata;
 
@@ -136,7 +136,7 @@ namespace MrCMS.Tests.Website.Routing
             {
                 WebPostAction = "test-post-action"
             };
-            var webpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
+            var webpage = new StubAllowedWebpage { Published = true };
 
             _controllerManager.GetMetadata = document => metadata;
 

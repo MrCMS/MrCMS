@@ -3,65 +3,65 @@ using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services.ImportExport.DTOs;
 using NHibernate;
+using NHibernate.Criterion;
+using NHibernate.Linq;
 
 namespace MrCMS.Services.ImportExport
 {
     public class UpdateTagsService : IUpdateTagsService
     {
         private readonly ISession _session;
-        private readonly Site _site;
-        private HashSet<Tag> _tags;
 
-        public UpdateTagsService(ISession session, Site site)
+        public UpdateTagsService(ISession session)
         {
             _session = session;
-            _site = site;
-        }
-
-        public HashSet<Tag> Tags
-        {
-            get { return _tags; }
-        }
-
-        public IUpdateTagsService Inititalise()
-        {
-            _tags = new HashSet<Tag>(_session.QueryOver<Tag>().Where(tag => tag.Site == _site).List());
-            return this;
         }
 
         public void SetTags(DocumentImportDTO documentDto, Webpage webpage)
         {
-            var tagsToAdd = documentDto.Tags.Where(s => !webpage.Tags.Select(tag => tag.Name).Contains(s, StringComparer.InvariantCultureIgnoreCase)).ToList();
-            var tagsToRemove = webpage.Tags.Where(tag => !documentDto.Tags.Contains(tag.Name, StringComparer.InvariantCultureIgnoreCase)).ToList();
-            foreach (var item in tagsToAdd)
+            List<string> tagsToAdd =
+                documentDto.Tags.Where(
+                    s => !webpage.Tags.Select(tag => tag.Name).Contains(s, StringComparer.InvariantCultureIgnoreCase))
+                    .ToList();
+            List<Tag> tagsToRemove =
+                webpage.Tags.Where(
+                    tag => !documentDto.Tags.Contains(tag.Name, StringComparer.InvariantCultureIgnoreCase)).ToList();
+            foreach (string item in tagsToAdd)
             {
-                var tag = Tags.FirstOrDefault(t => t.Name.Equals(item, StringComparison.InvariantCultureIgnoreCase));
-                if (tag == null)
+                Tag tag = GetExistingTag(item);
+                bool isNew = tag == null;
+                if (isNew)
                 {
-                    tag = new Tag { Name = item };
-                    Tags.Add(tag);
+                    tag = new Tag {Name = item};
+                    _session.Transact(session => session.Save(tag));
                 }
                 if (!webpage.Tags.Contains(tag))
                     webpage.Tags.Add(tag);
 
                 if (!tag.Documents.Contains(webpage))
                     tag.Documents.Add(webpage);
+                _session.Transact(session => session.Update(tag));
             }
 
-            foreach (var tag in tagsToRemove)
+            foreach (Tag tag in tagsToRemove)
             {
                 webpage.Tags.Remove(tag);
                 tag.Documents.Remove(webpage);
+                Tag closureTag = tag;
+                _session.Transact(session => session.Update(closureTag));
             }
         }
 
-        public void SaveTags()
+        private Tag GetExistingTag(string item)
         {
-            _session.Transact(session => Tags.ForEach(session.SaveOrUpdate));
+            return
+                _session.QueryOver<Tag>()
+                    .Where(tag => tag.Name.IsInsensitiveLike(item, MatchMode.Exact))
+                    .Take(1)
+                    .SingleOrDefault();
         }
     }
 }

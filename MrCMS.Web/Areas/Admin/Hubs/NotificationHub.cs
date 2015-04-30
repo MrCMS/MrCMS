@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using MrCMS.ACL.Rules;
-using MrCMS.Entities.Notifications;
 using MrCMS.Entities.People;
+using MrCMS.Helpers;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
-using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Hubs
 {
@@ -24,46 +24,20 @@ namespace MrCMS.Web.Areas.Admin.Hubs
             _notificationHubService = notificationHubService;
         }
 
-        public override System.Threading.Tasks.Task OnConnected()
+        public override Task OnConnected()
         {
-            var user = _notificationHubService.GetUser(Context.User);
+            User user = _notificationHubService.GetUser(Context.User);
             return user == null || !user.IsAdmin
-                       ? Groups.Add(Context.ConnectionId, UsersGroup)
-                       : Groups.Add(Context.ConnectionId, AdminGroup);
+                ? Groups.Add(Context.ConnectionId, UsersGroup)
+                : Groups.Add(Context.ConnectionId, AdminGroup);
         }
 
-        public override System.Threading.Tasks.Task OnDisconnected()
+        public override Task OnDisconnected(bool stopCalled)
         {
-            var user = _notificationHubService.GetUser(Context.User);
+            User user = _notificationHubService.GetUser(Context.User);
             return user == null || !user.IsAdmin
-                       ? Groups.Remove(Context.ConnectionId, UsersGroup)
-                       : Groups.Remove(Context.ConnectionId, AdminGroup);
-        }
-    }
-
-    public interface INotificationHubService
-    {
-        User GetUser(IPrincipal user);
-    }
-
-    public class NotificationHubService : INotificationHubService
-    {
-        private readonly ISession _session;
-
-        public NotificationHubService(ISession session)
-        {
-            _session = session;
-        }
-
-        public User GetUser(IPrincipal user)
-        {
-            if (user == null || string.IsNullOrWhiteSpace(user.Identity.Name))
-                return null;
-            return _session.QueryOver<User>()
-                    .Where(u => u.Email == user.Identity.Name)
-                    .Take(1)
-                    .Cacheable()
-                    .SingleOrDefault();
+                ? Groups.Remove(Context.ConnectionId, UsersGroup)
+                : Groups.Remove(Context.ConnectionId, AdminGroup);
         }
     }
 
@@ -71,7 +45,7 @@ namespace MrCMS.Web.Areas.Admin.Hubs
     {
         protected override bool UserAuthorized(IPrincipal user)
         {
-            var currentUser = CurrentRequestData.CurrentUser;
+            User currentUser = CurrentRequestData.CurrentUser;
             return base.UserAuthorized(user) && currentUser != null &&
                    currentUser.IsActive &&
                    currentUser.Email != null &&
@@ -79,5 +53,4 @@ namespace MrCMS.Web.Areas.Admin.Hubs
                    currentUser.CanAccess<AdminAccessACL>(AdminAccessACL.Allowed);
         }
     }
-
 }

@@ -3,23 +3,30 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @model MrCMS.Entities.Documents.DocumentVersion
 <fieldset>
-    <legend>@Resource("Admin Webpage Version", "Version") @Model.Id 
-        <span class="btn-group  display-inline  pull-right">
-            @using (Html.BeginForm("RevertToVersion", "Webpage", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+    <legend>
+        @Resource("Admin Webpage Version", "Version") @Model.Id
+        @if (Model.AnyDifferencesFromCurrent())
+        {
+            using (Html.BeginForm("Revert", "Versions", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
             {
-                <input type="submit" class="btn btn-primary" value="@Resource("Admin Webpage Version Revert to version", "Revert to version")" />
+                <span class="btn-group display-inline pull-right">
+                    <input type="submit" class="btn btn-primary" value="Revert to version" />
+                </span>
             }
-        </span>
+        }
     </legend>
-    @Resource("Admin Webpage Version Edited By","Editied by") @Html.ActionLink(Model.User.Email, "Edit", "User", new { id = Model.User.Id }, null) on @Model.CreatedOn
+    @Resource("Admin Webpage Version Edited By", "Edited by") @(Model.User == null ? @Html.Raw("System") : Html.ActionLink(Model.User.Email, "Edit", "User", new { id = Model.User.Id }, null)) on @Model.CreatedOn
     <table class="table table-bordered" id="changes-table">
         <thead>
             <tr>
-                <th>@Resource("Property")
+                <th>
+                    @Resource("Property")
                 </th>
-                <th>@Resource("Previous")
+                <th>
+                    @Resource("Previous")
                 </th>
-                <th>@Resource("Current")
+                <th>
+                    @Resource("Current")
                 </th>
             </tr>
         </thead>

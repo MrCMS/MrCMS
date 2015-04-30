@@ -5,6 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
 using MrCMS.Helpers;
+using MrCMS.Services;
+using MrCMS.Services.Caching;
+using MrCMS.Settings.Events;
 using Newtonsoft.Json;
 
 namespace MrCMS.Settings
@@ -19,11 +22,21 @@ namespace MrCMS.Settings
 
         public void SaveSettings(SystemSettingsBase settings)
         {
+            MethodInfo methodInfo = GetType().GetMethods().First(x => x.Name == "SaveSettings" && x.IsGenericMethod);
+            MethodInfo genericMethod = methodInfo.MakeGenericMethod(settings.GetType());
+            genericMethod.Invoke(this, new object[] { settings });
+        }
+
+        public void SaveSettings<T>(T settings) where T : SystemSettingsBase, new()
+        {
             lock (SaveLockObject)
             {
+                GetSettingsObject<T> existing = GetSettingObject<T>();
                 string location = GetFileLocation(settings);
-                File.WriteAllText(location, JsonConvert.SerializeObject(settings));
+                File.WriteAllText(location, settings.Serialize());
                 _settingCache[settings.GetType()] = settings;
+                EventContext.Instance.Publish<IOnSavingSystemSettings<T>, OnSavingSystemSettingsArgs<T>>(new OnSavingSystemSettingsArgs<T>(settings,
+                    existing.Settings));
             }
         }
 
@@ -41,7 +54,7 @@ namespace MrCMS.Settings
             MethodInfo methodInfo = GetType().GetMethodExt("GetSystemSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>()
-                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] {}))
+                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
                 .OfType<SystemSettingsBase>().ToList();
         }
 
@@ -49,12 +62,16 @@ namespace MrCMS.Settings
         {
             lock (ReadLockObject)
             {
-                if (!_settingCache.ContainsKey(typeof (TSettings)))
+                if (!_settingCache.ContainsKey(typeof(TSettings)))
                 {
-                    var settingObject = GetSettingObject<TSettings>();
-                    SaveSettings(settingObject);
+                    GetSettingsObject<TSettings> settingObject = GetSettingObject<TSettings>();
+                    TSettings settings = settingObject.Settings;
+                    if (settingObject.IsNew)
+                        SaveSettings(settings);
+                    else
+                        _settingCache[settings.GetType()] = settings;
                 }
-                return _settingCache[typeof (TSettings)] as TSettings;
+                return _settingCache[typeof(TSettings)] as TSettings;
             }
         }
 
@@ -78,15 +95,41 @@ namespace MrCMS.Settings
         }
 
 
-        private TSettings GetSettingObject<TSettings>() where TSettings : SystemSettingsBase, new()
+        private GetSettingsObject<TSettings> GetSettingObject<TSettings>() where TSettings : SystemSettingsBase, new()
         {
-            string fileLocation = GetFileLocation(typeof (TSettings));
+            string fileLocation = GetFileLocation(typeof(TSettings));
+            TSettings result = null;
             if (File.Exists(fileLocation))
             {
                 string readAllText = File.ReadAllText(fileLocation);
-                return JsonConvert.DeserializeObject<TSettings>(readAllText);
+                result = JsonConvert.DeserializeObject<TSettings>(readAllText);
             }
-            return new TSettings();
+            return result != null
+                ? new GetSettingsObject<TSettings>(result)
+                : new GetSettingsObject<TSettings>(new TSettings(), true);
+        }
+
+        public static void ClearCache()
+        {
+            _settingCache.Clear();
+        }
+
+        void IClearCache.ClearCache()
+        {
+            ClearCache();
+        }
+        private struct GetSettingsObject<TSettings> where TSettings : SystemSettingsBase, new()
+        {
+            public GetSettingsObject(TSettings settings, bool isNew = false)
+                : this()
+            {
+                Settings = settings;
+                IsNew = isNew;
+            }
+
+            public TSettings Settings { get; private set; }
+            public bool IsNew { get; private set; }
         }
     }
+
 }

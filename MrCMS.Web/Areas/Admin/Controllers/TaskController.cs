@@ -51,6 +51,21 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        public PartialViewResult Reset(ScheduledTask scheduledTask)
+        {
+            return PartialView(scheduledTask);
+        }
+
+        [HttpPost]
+        [ActionName("Reset")]
+        public RedirectToRouteResult Reset_POST(ScheduledTask scheduledTask)
+        {
+            _taskAdminService.Reset(scheduledTask);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
         public PartialViewResult Delete(ScheduledTask scheduledTask)
         {
             return PartialView(scheduledTask);

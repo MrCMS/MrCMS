@@ -1,4 +1,4 @@
-﻿var MediaSelector = function (options) {
+﻿function MediaSelector(options) {
     var element,
         settings = jQuery.extend(MediaSelector.defaults, options),
         self,
@@ -6,7 +6,7 @@
         mediaUploader,
         $;
 
-    var toggle = function (link) {
+    function toggle(link) {
         var id = link.data('media-toggle');
         var thisElement = element.find('[data-file-result=' + id + ']');
         var others = element.find('[data-file-result]').not(thisElement);
@@ -23,7 +23,7 @@
             link.html('Hide');
         }
     };
-    var hideResult = function (result) {
+    function hideResult(result) {
         var shown = result.data('content-shown');
         if (shown) {
             result.find(settings.mediaResultSelector).slideUp();
@@ -32,33 +32,33 @@
             result.data('content-shown', false);
         }
     };
-    var submitForm = function (event) {
+    function submitForm(event) {
         event.preventDefault();
         var form = element.find(settings.formSelector);
         var url = form.attr('action') + '?' + form.serialize();
         updateResults(url);
     };
-    var changePage = function (event) {
+    function changePage(event) {
         event.preventDefault();
         var url = $(this).attr('href');
         updateResults(url);
     };
-    var updateResults = function (url) {
+    function updateResults(url) {
         $.get(url, function (response) {
             var newResults = $(response).find(settings.resultsHolderSelector);
             $(element).find(settings.resultsHolderSelector).replaceWith(newResults);
             initializeMediaUploader();
         });
     };
-    var selectFile = function (event) {
+    function selectFile(event) {
         var file = $(this).data('file');
         element.find('[data-action="select"][data-file=' + file + ']').removeAttr('disabled');
     };
-    var deselectAll = function (result) {
+    function deselectAll(result) {
         result.find('input[data-file]').removeAttr('checked');
         result.find('[data-action="select"]').attr('disabled', 'disabled');
     };
-    var selected = function (event) {
+    function selected(event) {
         event.preventDefault();
         var fileValue = element.find('input[data-file]').filter(':checked').val();
         if (fileValue != '') {
@@ -70,12 +70,13 @@
         }
     };
 
-    var initializeMediaUploader = function () {
+    function initializeMediaUploader() {
         mediaUploader = new MediaUploader(element, {
-            onFileUploadStopped: function (event) {
+            onFileUploadStopped: function (event, dropzone) {
                 var form = element.find(settings.formSelector);
                 var url = form.attr('action') + '?' + form.serialize();
                 updateResults(url);
+                dropzone.removeAllFiles();
             }
         });
         mediaUploader.init();
@@ -87,15 +88,16 @@
             $ = jQ;
             var link = $('<a>').attr('href', settings.selectorUrl);
             link.hide();
-            link.fancybox({
+            link.featherlight({
                 type: 'iframe',
-                autoSize: true,
-                minHeight: 400,
-                padding: 0,
-                afterShow: function () {
-                    element = $('.fancybox-iframe').contents();
+                iframeWidth: 820,
+                afterOpen: function () {
+                    element = $('.featherlight-inner').contents();
                     element.find('form').css('margin', '0');
                     self.init();
+                },
+                beforeOpen: function () {
+                    $(".mrcms-edit-menu", document).hide();
                 }
             }).click().remove();
             return self;
@@ -128,7 +130,7 @@
     };
 };
 
-var MediaSelectorWrapper = function (el, options) {
+function MediaSelectorWrapper(el, options) {
     var element = el,
         settings = $.extend(MediaSelectorWrapper.defaults, options),
         self,
@@ -137,26 +139,107 @@ var MediaSelectorWrapper = function (el, options) {
         selectButton,
         buttonHolder,
         eventsRegistered = false;
-    var getValue = function () {
+
+    function getValue() {
         return element.val();
-    };
-    var valueIsSet = function () {
+    }
+
+    function valueIsSet() {
         var value = getValue();
         return value != null && value != '';
-    };
-    var getPreview = function () {
+    }
+
+    function getAltInput(value) {
+        var altFormGroup = $('<div>').addClass('form-group has-feedback hide').attr('id', el.attr('id') + '-alt-holder');
+        var altId = el.attr('id') + '-alt';
+        var altLabel = $('<label>').html('Alt').attr('for', altId);
+        altFormGroup.append(altLabel);
+        var altInput = $('<input>').attr('type', 'text').addClass('form-control input-sm').attr('id', altId).attr('data-url', value);
+        altFormGroup.append(altInput);
+        var altFeedback = $('<span class="glyphicon glyphicon-ok form-control-feedback hide" aria-hidden="true"></span>');
+        altFormGroup.append(altFeedback);
+        $.get(settings.altUrl, { url: value }, function (response) {
+            altInput.val(response.alt);
+            altFormGroup.removeClass('hide');
+            altInput.on('blur', updateAlt);
+        });
+        return altFormGroup;
+    }
+
+    function showSaved(inputElement) {
+        var formGroup = inputElement.closest('.form-group');
+        formGroup.addClass('has-success');
+        formGroup.find('.form-control-feedback').removeClass('hide');
+        clearTimeout(inputElement.removeSuccess);
+        inputElement.removeSuccess = setTimeout(function () {
+            formGroup.removeClass('has-success');
+            formGroup.find('.form-control-feedback').addClass('hide');
+        }, 2000);
+    }
+
+    function updateAlt(event) {
+        var input = $(event.target);
+        $.post(settings.updateAltUrl, { url: input.data('url'), value: input.val() }, function (response) {
+            if (response) {
+                showSaved(input);
+            }
+        });
+    }
+    function updateDescription(event) {
+        var input = $(event.target);
+        $.post(settings.updateDescriptionUrl, { url: input.data('url'), value: input.val() }, function (response) {
+            if (response) {
+                showSaved(input);
+            }
+        });
+    }
+
+    function getDescriptionInput(value) {
+        var descriptionFormGroup = $('<div>').addClass('form-group has-feedback hide').attr('id', el.attr('id') + '-description-holder');
+        var descriptionId = el.attr('id') + '-description';
+        var descriptionLabel = $('<label>').html('Description').attr('for', descriptionId);
+        descriptionFormGroup.append(descriptionLabel);
+        var descriptionInput = $('<textarea>').attr('rows','4').addClass('form-control input-sm').attr('id', descriptionId).attr('data-url', value);
+        descriptionFormGroup.append(descriptionInput);
+
+        var descriptionFeedback = $('<span class="glyphicon glyphicon-ok form-control-feedback hide" aria-hidden="true"></span>');
+        descriptionFormGroup.append(descriptionFeedback);
+        $.get(settings.descriptionUrl, { url: value }, function (response) {
+            descriptionInput.val(response.description);
+            descriptionFormGroup.removeClass('hide');
+            descriptionInput.on('blur', updateDescription);
+        });
+        return descriptionFormGroup;
+    }
+
+    function getPreview() {
         if (valueIsSet()) {
             var value = getValue();
             if (isImage(value)) {
-                return $('<img src="' + value + '" style="' + settings.previewStyle + '" />');
+                var holder = $('<div>').addClass('row').css('max-width', '500px');
+                var imageCol = $('<div>').addClass('col-sm-4');
+                imageCol.append($('<img src="' + value + '" style="' + settings.previewStyle + '" />'));
+                imageCol.append(buttonHolder);
+                holder.append(imageCol);
+                var dataCol = $('<div>').addClass('col-sm-8');
+
+                var altFormGroup = getAltInput(value);
+                dataCol.append(altFormGroup);
+
+                var descriptionFormGroup = getDescriptionInput(value);
+                dataCol.append(descriptionFormGroup);
+
+                holder.append(dataCol);
+                return holder;
             } else {
                 return $('<span>' + value + '</span>');
             }
         } else {
+            buttonHolder.appendTo($('[data-media-selector-holder-' + el.attr('id') + ']'));
             return $('<img src="' + settings.noImageSelectedImage + '" style="' + settings.previewStyle + '" />');
         }
     };
-    var isImage = function (image) {
+    function isImage(image) {
         var extension = image.split('.').pop().toLowerCase();
         var imageExtensions = ["jpg", "jpeg", "gif", "png"];
 
@@ -172,7 +255,7 @@ var MediaSelectorWrapper = function (el, options) {
         init: function () {
             self = this;
             if (element.is("input")) {
-                var para = $('<p>');
+                var para = $('<p>').attr('data-media-selector-holder-'+ el.attr('id') ,'true');
                 buttonHolder = $('<div>').appendTo(para);
                 preview = $('<div>');
                 element.before(preview);
@@ -228,7 +311,7 @@ var MediaSelectorWrapper = function (el, options) {
         },
         onSelected: function (data) {
             self.setValue(data.Url);
-            $.fancybox.close();
+            $.featherlight.close();
         }
     };
 };
@@ -239,7 +322,11 @@ MediaSelectorWrapper.defaults =
     selectClasses: 'btn btn-success ',
     selectMessage: 'Select media...',
     removeClasses: 'btn btn-danger ',
-    removeMessage: 'Remove media...'
+    removeMessage: 'Remove media...',
+    altUrl: '/admin/mediaselector/alt',
+    updateAltUrl: '/admin/mediaselector/updatealt',
+    descriptionUrl: '/admin/mediaselector/description',
+    updateDescriptionUrl: '/admin/mediaselector/updatedescription'
 };
 MediaSelector.defaults =
 {

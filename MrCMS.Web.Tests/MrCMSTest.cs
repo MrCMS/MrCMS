@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using FakeItEasy;
 using FakeItEasy.Core;
+using MrCMS.Entities.Multisite;
+using MrCMS.Messages;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Website;
@@ -12,19 +14,24 @@ namespace MrCMS.Web.Tests
 {
     public abstract class MrCMSTest : IDisposable
     {
-        protected TestableEventContext _eventContext = new TestableEventContext();
-        protected TestableEventContext EventContext { get { return _eventContext; } }
-
         private readonly MockingKernel _kernel;
+
+        protected TestableEventContext _eventContext = new TestableEventContext();
 
         protected MrCMSTest()
         {
             _kernel = new MockingKernel();
             Kernel.Load(new TestContextModule());
             Kernel.Bind<IEventContext>().ToMethod(context => _eventContext);
-            MrCMSApplication.OverrideKernel(Kernel);
+            MrCMSKernel.OverrideKernel(Kernel);
             CurrentRequestData.SiteSettings = new SiteSettings();
         }
+
+        protected TestableEventContext EventContext
+        {
+            get { return _eventContext; }
+        }
+
 
         public IEnumerable<ICompletedFakeObjectCall> EventsRaised
         {
@@ -39,5 +46,6 @@ namespace MrCMS.Web.Tests
         public virtual void Dispose()
         {
         }
+
     }
 }

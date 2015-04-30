@@ -82,6 +82,7 @@ namespace MrCMS.Services
         {
             if (document.PublishOn == null)
             {
+                document.Published = true;
                 document.PublishOn = CurrentRequestData.Now;
                 _session.Transact(session => session.Update(document));
             }
@@ -89,18 +90,19 @@ namespace MrCMS.Services
 
         public void Unpublish(Webpage document)
         {
+            document.Published = false;
             document.PublishOn = null;
             _session.Transact(session => session.Update(document));
         }
 
-        public IList<Tag>  GetDocumentTags(Document document)
+        public IList<Tag> GetDocumentTags(Document document)
         {
             return _session.Query<Tag>()
                             .Where(x => x.Documents.Contains(document)).ToList();
         }
 
-        public T GetDocumentByUrl<T>(string url) where T : Document                        
-        {   
+        public T GetDocumentByUrl<T>(string url) where T : Document
+        {
             return _session.QueryOver<T>()
                 .Where(doc => doc.UrlSegment == url && doc.Site.Id == _currentSite.Id)
                 .Take(1).Cacheable()

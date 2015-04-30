@@ -1,10 +1,12 @@
 ﻿@using System.Collections.Generic
 @using System.Linq
 @using MrCMS.Helpers
+@using MrCMS.Services.ImportExport
 @model dynamic
 @{
     ViewBag.Title = "Import/Export Documents";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var result = (ImportDocumentsResult)ViewBag.Messages;
 
 }
 <h1 class="page-header">@Resource("Admin Import / Export Documents Title", "Import / Export Documents")</h1>
@@ -19,7 +21,7 @@
     <span class="alert alert-info">@ViewBag.ExportStatus</span><div class="clearfix"></div>
 }
 <hr />
-@Html.InfoBlock("",Resource("Admin Import / Export Documents Info", "Import File must be in .xslx format. After clicking on 'Import Documents' any new documents inside file will be added to database and existing ones will be updated with provided values in file."))
+@Html.InfoBlock("", Resource("Admin Import / Export Documents Info", "Import File must be in .xslx format. After clicking on 'Import Documents' any new documents inside file will be added to database and existing ones will be updated with provided values in file."))
 <hr />
 @using (Html.BeginForm("ImportDocuments", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
@@ -28,15 +30,15 @@
     <input type="file" name="document" id="document" />
     <div class="clearfix"></div>
     <br />
-    if (ViewBag.Messages != null)
+    if (result != null)
     {
-        foreach (var item in (Dictionary<string, List<string>>)ViewBag.Messages)
+        foreach (var item in result.Errors)
         {
             <span>
                 @string.Format(Resource("Admin Import / Export Documents Choose Import File Errors", "{0} has the following errors"), @item.Key):
             </span>
             <ul>
-                @foreach (string error in (List<string>)item.Value)
+                @foreach (string error in item.Value)
                 {
                     <li>
                         @error
@@ -44,10 +46,10 @@
                 }
             </ul>
         }
-        if (!((Dictionary<string, List<string>>)ViewBag.Messages).Any())
+        if (result.Success)
         {
             <div class="alert alert-success">
-                @Resource("Admin Import / Export Documents Choose Import Success","All documents were successfully imported").
+                @Resource("Admin Import / Export Documents Choose Batch Created", "A batch run was successfully created for the file").
             </div>
         }
     }

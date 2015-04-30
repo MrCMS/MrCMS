@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Iesi.Collections.Generic;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
@@ -45,8 +46,8 @@ namespace MrCMS.Installation
                                         Name = UserRole.Administrator
                                     };
 
-            user.Roles = new HashedSet<UserRole> { adminUserRole };
-            adminUserRole.Users = new HashedSet<User> { user };
+            user.Roles = new HashSet<UserRole> { adminUserRole };
+            adminUserRole.Users = new HashSet<User> { user };
 
             _roleService.SaveRole(adminUserRole);
             _authorisationService.Logout();

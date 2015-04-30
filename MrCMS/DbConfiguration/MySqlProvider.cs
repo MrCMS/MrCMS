@@ -20,6 +20,10 @@ namespace MrCMS.DbConfiguration
                 MySQLConfiguration.Standard.ConnectionString(builder => builder.Is(_databaseSettings.ConnectionString));
         }
 
+        public void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config)
+        {
+        }
+
         public string Type
         {
             get { return GetType().FullName; }

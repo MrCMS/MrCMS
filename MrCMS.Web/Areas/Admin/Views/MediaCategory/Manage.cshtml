@@ -4,34 +4,62 @@
 @using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
 @using MrCMS.Media
+@using MrCMS.Paging
 @using MrCMS.Web.Areas.Admin.ACL
 @using MrCMS.Website
-@model MrCMS.Entities.Documents.Media.MediaCategory
+@model MrCMS.Web.Areas.Admin.Models.MediaCategorySearchModel
 @{
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
-    var files = ViewData["files"] as IList<MediaFile> ?? new List<MediaFile>();
+    var category = ViewData["category"] as MediaCategory;
+    var files = ViewData["files"] as IPagedList<MediaFile>;
     var folders = ViewData["folders"] as IList<MediaCategory> ?? new List<MediaCategory>();
+    var sortByOptions = ViewData["sort-by-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     bool canAccessMediaToolsCut = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Cut);
-    bool canAccessMediaToolsDelete = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Delete); 
+    bool canAccessMediaToolsDelete = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Delete);
 }
 
 <div class="margin-bottom-20">
-    @{ Html.RenderAction("Upload", "MediaCategory", new { category = Model }); }
+    @{ Html.RenderAction("Upload", "MediaCategory", new { category }); }
     <div class="clearfix"></div>
 </div>
 
-@if (Model != null)
+@if (category != null)
 {
     <ol class="breadcrumb">
         <li><a href="@Url.Action("Index", "MediaCategory")">@Resource("Admin Media", "Media")</a></li>
-        @foreach (var folder in Model.BreadCrumbs.Reverse())
+        @foreach (var folder in category.BreadCrumbs.Reverse())
         {
             <li><a href="@Url.Action("Show", "MediaCategory", new{Id = folder.Id})">@folder.Name</a></li>
         }
     </ol>
 }
+
+@using (Html.BeginForm(FormMethod.Get, new { }))
+{
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.SearchText)
+                @Html.TextBoxFor(model => model.SearchText, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.SortBy)
+                @Html.DropDownListFor(model => model.SortBy, sortByOptions, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label class="hidden-xs">&nbsp;</label>
+                <button type="submit" class="btn btn-primary form-control">@Resource("Search")</button>
+            </div>
+        </div>
+    </div>
+}
+
 @if (canAccessMediaToolsCut || canAccessMediaToolsDelete)
 {
     <span class="btn-group margin-bottom-20" id="file-tools">
@@ -64,14 +92,14 @@
         <div class="clearfix"></div>
     }
     <div id="file-list" data-file-list="true" data-category-id="@(Model==null ? (int?)null : Model.Id)">
-        @if (files.Any())
+        @if (files != null && files.Any())
         {
             foreach (var file in files)
             {
                 <div class="file" data-id="file-@file.Id" data-type="file" data-url="@Url.Action("Edit", "File", new { Id = file.Id })">
                     <div class="file-preview">
                         <a title="@file.FileName">
-                            @if (file.IsImage)
+                            @if (file.IsImage())
                             {
                                 @Html.RenderImage(file.FileUrl, new Size(100, 100))
                             }
@@ -87,6 +115,7 @@
                 </div>
             }
             <div class="clearfix"> </div>
+            @Html.PageCurrentPage(files, i => new { Page = i }, PagedListRenderOptions.PageNumbersOnly)
 
         }
         else

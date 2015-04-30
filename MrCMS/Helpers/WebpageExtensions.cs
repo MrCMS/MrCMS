@@ -36,8 +36,8 @@ namespace MrCMS.Helpers
         {
             query = query ??
                     QueryOver.Of<T>()
-                        .Where(a => a.Parent == webpage && a.PublishOn != null && a.PublishOn <= CurrentRequestData.Now)
-                        .ThenBy(arg => arg.PublishOn)
+                        .Where(a => a.Parent == webpage && a.Published)
+                        .OrderBy(arg => arg.PublishOn)
                         .Desc;
 
             return MrCMSApplication.Get<ISession>().Paged(query, pageNum, pageSize);
@@ -50,6 +50,8 @@ namespace MrCMS.Helpers
 
         public static bool RequiresSSL(this Webpage webpage, HttpRequestBase request, SiteSettings siteSettings = null)
         {
+            if (request.IsLocal)
+                return false;
             siteSettings = siteSettings ?? MrCMSApplication.Get<SiteSettings>();
             var isLiveAdmin = CurrentRequestData.CurrentUserIsAdmin && siteSettings.SSLAdmin && siteSettings.SiteIsLive &&
                               !request.IsLocal;

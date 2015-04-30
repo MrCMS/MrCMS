@@ -15,5 +15,9 @@ namespace MrCMS.Web.Tests
                 .InMemory()
                 .Raw(Environment.ReleaseConnections, "on_close");
         }
+
+        public void AddProviderSpecificConfiguration(Configuration config)
+        {
+        }
     }
 }

@@ -1,62 +1,92 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Models
 @model System.Collections.Generic.List<MrCMS.Models.MrCMSIndex>
 @{
     ViewBag.Title = "Indexes";
+    var universalSearchIndexInfo = ViewData["universal-search-index-info"] as MrCMSIndex;
+    
 }
 
 <h1 class="page-header">@Resource("Admin Indexes Title", "Indexes")</h1>
 
-    <table class="table table-striped table-condensed">
-        <tr>
-            <th>
-                @Resource("Name")
-            </th>
-            <th>
-                @Resource("Admin Indexes Index Exists", "Index Exists")?
-            </th>
-            <th>
-                @Resource("Admin Indexes Number Of Documents", "Number of docs")
-            </th>
-            <th>
-                @Resource("Admin Indexes Last Modified", "Last Modified")
-            </th>
-            <th></th>
-        </tr>
-        @foreach (var index in Model)
-        {
-            <tr>
-                <td>
-                    @index.Name
-                </td>
-                <td>
-                    @index.DoesIndexExist
-                </td>
-                <td>
-                    @(index.NumberOfDocs.HasValue ? index.NumberOfDocs.ToString() : "-")
-                </td>
-                <td>
-                    @(index.LastModified.HasValue ? index.LastModified.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-")
-                </td>
-                <td>
-                    <div class="btn-group">
-                        @if (index.DoesIndexExist)
-                        {
-                            @Html.FormLink(Resource("Admin Indexes Reindex", "Reindex"), "Reindex", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
-                            @Html.FormLink(Resource("Admin Indexes Optimise", "Optimise"), "Optimise", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
-                        }
-                        else
-                        {
-                            @Html.FormLink(Resource("Admin Indexes Create", "Create"), "Create", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
-                        }
-
-                        @Html.ActionLink(Resource("Admin Indexes Set Boosts", "Set Boosts"), "Boosts", "Indexes", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
-                    </div>
-                </td>
-            </tr>
-        }
-    </table>
-    <hr />
-    @using (Html.BeginForm("ReindexUniversalSearch", "Indexes", FormMethod.Post))
+<table class="table table-striped table-condensed">
+    <tr>
+        <th>
+            @Resource("Name")
+        </th>
+        <th>
+            @Resource("Admin Indexes Index Exists", "Index Exists")?
+        </th>
+        <th>
+            @Resource("Admin Indexes Number Of Documents", "Number of docs")
+        </th>
+        <th>
+            @Resource("Admin Indexes Last Modified", "Last Modified")
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var index in Model)
     {
-        <button class="btn btn-default" type="submit">@Resource("Admin Indexes Reindex Universal Search Button", "Reindex Universal Search")</button>
+        <tr>
+            <td>
+                @index.Name
+            </td>
+            <td>
+                @index.DoesIndexExist
+            </td>
+            <td>
+                @(index.NumberOfDocs.HasValue ? index.NumberOfDocs.ToString() : "-")
+            </td>
+            <td>
+                @GetLastModified(index)
+            </td>
+            <td>
+                <div class="btn-group">
+                    @if (index.DoesIndexExist)
+                    {
+                        @Html.FormLink(Resource("Admin Indexes Reindex", "Reindex"), "Reindex", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
+                        @Html.FormLink(Resource("Admin Indexes Optimise", "Optimise"), "Optimise", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
+                    }
+                    else
+                    {
+                        @Html.FormLink(Resource("Admin Indexes Create", "Create"), "Create", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
+                    }
+
+                    @Html.ActionLink(Resource("Admin Indexes Set Boosts", "Set Boosts"), "Boosts", "Indexes", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
+                </div>
+            </td>
+        </tr>
     }
+</table>
+<hr />
+<h4>Universal Search Index</h4>
+@if (universalSearchIndexInfo != null)
+{
+    <strong>Exists:</strong> @universalSearchIndexInfo.DoesIndexExist
+    <br />
+    if (universalSearchIndexInfo.DoesIndexExist)
+    {
+        <strong>Number of records:</strong>
+        @universalSearchIndexInfo.NumberOfDocs
+        <br />
+        <strong>Last modified:</strong>
+        @GetLastModified(universalSearchIndexInfo)
+        <br />
+    }
+}
+@using (Html.BeginForm("ReindexUniversalSearch", "Indexes", FormMethod.Post))
+{
+    <button class="btn btn-default" type="submit">@Resource("Admin Indexes Reindex Universal Search Button", "Reindex Universal Search")</button>
+}
+@using (Html.BeginForm("OptimiseUniversalSearch", "Indexes", FormMethod.Post))
+{
+    <button class="btn btn-default" type="submit">@Resource("Admin Indexes Optimise Universal Search Button", "Optimise Universal Search")</button>
+}
+@functions{
+
+    public string GetLastModified(MrCMSIndex index)
+    {
+        return index.LastModified.HasValue ? index.LastModified.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-";
+    }
+
+}

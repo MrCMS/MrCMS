@@ -91,7 +91,7 @@ namespace MrCMS.Tests.Services
         public void RoleService_IsOnlyAdmin_ShouldBeTrueWhenThereIsOnly1AdminUser()
         {
             var admin = new User { IsActive = true };
-            var userRole = new UserRole { Name = "Administrator", Users = new HashedSet<User> { admin } };
+            var userRole = new UserRole { Name = "Administrator", Users = new HashSet<User> { admin } };
             Session.Transact(session => session.Save(userRole));
 
             var isOnlyAdmin = _roleService.IsOnlyAdmin(admin);
@@ -104,7 +104,7 @@ namespace MrCMS.Tests.Services
         {
             var admin1 = new User { IsActive = true };
             var admin2 = new User { IsActive = true };
-            var userRole = new UserRole { Name = "Administrator", Users = new HashedSet<User> { admin1, admin2 } };
+            var userRole = new UserRole { Name = "Administrator", Users = new HashSet<User> { admin1, admin2 } };
             Session.Transact(session => session.Save(userRole));
 
             var isOnlyAdmin = _roleService.IsOnlyAdmin(admin1);

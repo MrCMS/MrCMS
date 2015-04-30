@@ -22,6 +22,15 @@ $(function () {
 
     $(".datepicker").datepicker();
 
+    if (Dropzone) {
+        Dropzone.autoDiscover = false;
+    }
+
+    $('form[data-are-you-sure]').each(function (index, element) {
+        var form = $(element);
+        form.areYouSure({ message: form.data('are-you-sure') });
+    });
+
     $(document).on('click', '.date-time-picker', function () {
         var that = $(this);
         if (!that.hasClass('hasDatepicker')) {
@@ -31,21 +40,12 @@ $(function () {
         }
     });
 
-    $(document).on('click', '[data-toggle="fb-modal"]', function () {
-        var clone = $(this).clone();
-        clone.attr('data-toggle', '');
-        clone.hide();
-        clone.fancybox({
-            type: 'iframe',
-            autoSize: true,
-            minHeight: 200,
-            padding: 0,
-            afterShow: function () {
-                $('.fancybox-iframe').contents().find('form').attr('target', '_parent').css('margin', '0');
-            }
-        }).click().remove();
-        return false;
+    var featherlightSettings = $.extend({}, MrCMSFeatherlightSettings, {
+        filter: '[data-toggle="fb-modal"]'
     });
+    $(document).featherlight(featherlightSettings);
+
+
 
 
     $('[data-action=save]').click(function (e) {
@@ -93,19 +93,27 @@ $(function () {
     $(document).on('change', '#admin-site-selector', function () {
         location.href = $(this).val();
     });
-    
+
     //fix ckeditor on scroll
     $(".main-content").scroll(function (e) {
-        if ($('.body-content #cke_1_contents').height() > 500) {
-            if ($(this).scrollTop() > 110 && $(".body-content #cke_1_top").css('position') != 'fixed') {
-                $(".body-content #cke_1_top").css({ 'position': 'fixed', 'top': '51px' });
-            }
-            if ($(this).scrollTop() < 110 && $(".body-content #cke_1_top").css('position') != 'inherit') {
-                $(".body-content #cke_1_top").css({ 'position': 'inherit', 'top': 'auto;' });
-            }
-        }
+        setStickyCkedtior(this);
     });
 });
+
+function setStickyCkedtior(el) {
+    setTimeout(function () {
+        if ($('.body-content #cke_1_contents').height() > 500) {
+            if ($(el).scrollTop() > 110 && $(".body-content #cke_1_top").css('position') != 'fixed') {
+                $(".body-content #cke_1_top").css({ 'position': 'fixed', 'top': '51px' });
+            }
+            if ($(el).scrollTop() < 110 && $(".body-content #cke_1_top").css('position') != 'inherit') {
+                $(".body-content #cke_1_top").css({ 'position': 'inherit', 'top': 'auto;' });
+            }
+        } else {
+            $(".body-content #cke_1_top").css({ 'position': 'inherit', 'top': 'auto;' });
+        }
+    }, 250);
+}
 
 function resizeModal(jqElement) {
     var modal = jqElement.hasClass('modal') ? jqElement : jqElement.parents('.modal');
@@ -118,38 +126,48 @@ function resizeModal(jqElement) {
 
     modal.css('top', top).css('left', left);
 }
+var MrCMSFeatherlightSettings = {
+    type: 'iframe',
+    iframeWidth: 800,
+    afterOpen: function () {
+        setCloseButtonPosition(this.$instance);
+    },
+    beforeOpen: function () {
+    },
+    onResize: function () {
+        if (this.autoHeight) {
+            // Shrink:
+            this.$content.css('height', '10px');
+            // Then set to the full height:
+            this.$content.css('height', this.$content.contents().find('body')[0].scrollHeight);
+        }
+        setCloseButtonPosition(this.$instance);
+    }
+}
+function setCloseButtonPosition(contents) {
+    var offset = contents.find(".featherlight-content").offset();
+    contents.find(".featherlight-close-icon").css('top', offset.top);
+    contents.find(".featherlight-close-icon").css('right', offset.left + -20);
+}
 
 function getRemoteModel(href) {
     var link = $("<a>");
     link.attr('href', href);
-    link.fancybox({
-        type: 'iframe',
-        autoSize: true,
-        minHeight: 200,
-        padding: 0,
-        afterShow: function () {
-            $('.fancybox-iframe').contents().find('form').attr('target', '_parent').css('margin', '0');
-        }
-    }).click();
+    link.attr('data-toggle', 'fb-modal');
+    var settings = {
+    };
+    link.featherlight(MrCMSFeatherlightSettings).click();
 }
 
 $(function () {
     admin.initializePlugins();
-
-    var $message = $('.admin-message');
-    $message.show().addClass('fadeIn fast');
-    setTimeout(function () {
-        $message.removeClass('fadeIn').addClass('fadeOut');
-        setTimeout(function () {
-            $message.hide();
-        }, 1000);
-    }, 1500);
 });
 window.admin = {
     initializePlugins: function () {
         CKEDITOR.replaceAll('ckedit-enabled');
         CKEDITOR.on('instanceReady', function (ev) {
-            $(window).resize();
+            if (window.location != window.parent.location) // if in iframe, trigger resize.
+                top.$(top).trigger('resize');
         });
         $('[data-type=media-selector], [class=media-selector]').mediaSelector();
         var form = $('form');

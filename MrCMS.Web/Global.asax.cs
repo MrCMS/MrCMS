@@ -1,7 +1,14 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web.Hosting;
+using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Entities.Multisite;
+using MrCMS.Settings;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
+using NHibernate;
 using Ninject;
 
 namespace MrCMS.Web
@@ -11,13 +18,10 @@ namespace MrCMS.Web
 
     public class MvcApplication : MrCMSApplication
     {
-        public override string RootNamespace
+        protected override void OnApplicationStart()
         {
-            get { return typeof(WidgetController).Namespace; }
+          
         }
 
-        protected override void RegisterServices(IKernel kernel)
-        {
-        }
     }
 }

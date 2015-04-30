@@ -1,5 +1,6 @@
 ﻿using System;
 using MrCMS.ACL.Rules;
+using MrCMS.Helpers;
 
 namespace MrCMS.Website
 {

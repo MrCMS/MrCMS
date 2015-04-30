@@ -8,7 +8,5 @@ namespace MrCMS.Web.Areas.Admin.Services
     {
         IEnumerable<AutoCompleteResult> Search(string term);
         IEnumerable<Tag> GetTags(Document document);
-        Tag GetByName(string name);
-        void Add(Tag tag);
     }
 }

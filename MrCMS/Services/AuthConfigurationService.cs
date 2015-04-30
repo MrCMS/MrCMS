@@ -1,4 +1,5 @@
 ﻿using Microsoft.Owin.Security.Facebook;
+using Microsoft.Owin.Security.Google;
 using MrCMS.Settings;
 using Owin;
 using Owin.Security.Providers.LinkedIn;
@@ -36,9 +37,15 @@ namespace MrCMS.Services
                 facebookAuthenticationOptions.Scope.Add("email");
                 app.UseFacebookAuthentication(facebookAuthenticationOptions);
             }
-            if (_thirdPartyAuthSettings.GoogleEnabled)
+            if (_thirdPartyAuthSettings.GoogleEnabled 
+                    && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.GoogleClientSecret)
+                    && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.GoogleClientId))
             {
-                app.UseGoogleAuthentication();
+                app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+                  {
+                      ClientId = _thirdPartyAuthSettings.GoogleClientId,
+                      ClientSecret = _thirdPartyAuthSettings.GoogleClientSecret,
+                  });
             }
         }
     }

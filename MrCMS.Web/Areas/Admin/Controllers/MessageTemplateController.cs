@@ -1,7 +1,6 @@
 ﻿using System.Web.Mvc;
-using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
-using MrCMS.Services;
+using MrCMS.Messages;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
 using MrCMS.Web.Areas.Admin.Services;
@@ -26,87 +25,79 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Add(string type)
+        public ActionResult AddSiteOverride(string type)
         {
-            var template = _messageTemplateAdminService.GetNew(type);
-            if (template != null)
-            {
-                return View(template);
-            }
-
-            return RedirectToAction("Index");
+            return View(_messageTemplateAdminService.GetNewOverride(type));
         }
 
         [HttpPost]
-        [ActionName("Add")]
-        public ActionResult Add_POST([IoCModelBinder(typeof(AddMessageTemplateModelBinder))] MessageTemplate messageTemplate)
+        [ActionName("AddSiteOverride")]
+        public ActionResult AddSiteOverride_POST(
+            [IoCModelBinder(typeof(MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
-                _messageTemplateAdminService.Save(messageTemplate);
+                _messageTemplateAdminService.AddOverride(messageTemplate);
             }
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public ActionResult Edit(MessageTemplate messageTemplate)
+        public ActionResult DeleteSiteOverride(string type)
         {
-            ModelState.Clear();
+            return View(_messageTemplateAdminService.GetOverride(type));
+        }
+
+        [HttpPost]
+        [ActionName("DeleteSiteOverride")]
+        public ActionResult DeleteSiteOverride_POST(
+            [IoCModelBinder(typeof(DeleteMessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
+        {
             if (messageTemplate != null)
             {
-                return View(messageTemplate);
+                _messageTemplateAdminService.DeleteOverride(messageTemplate);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult Edit(string type)
+        {
+            ModelState.Clear();
+            MessageTemplate template = _messageTemplateAdminService.GetTemplate(type);
+            if (template != null)
+            {
+                return View(template);
             }
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         [ActionName("Edit")]
-        public ActionResult Edit_POST(MessageTemplate messageTemplate)
+        public ActionResult Edit_POST(
+            [IoCModelBinder(typeof(MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {
                 _messageTemplateAdminService.Save(messageTemplate);
-                TempData.SuccessMessages().Add(string.Format("{0} successfully edited", messageTemplate.MessageTemplateType.BreakUpString()));
-                return RedirectToAction("Edit", new { id = messageTemplate.Id });
+                TempData.SuccessMessages()
+                    .Add(string.Format("{0} successfully edited", messageTemplate.GetType().Name.BreakUpString()));
+                return RedirectToAction("Edit", new { type = messageTemplate.GetType().FullName });
             }
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public ActionResult Reset(MessageTemplate messageTemplate)
+        public ActionResult ImportLegacyTemplate(string type)
         {
-            if (messageTemplate != null)
-            {
-                return PartialView(messageTemplate);
-            }
+            return View((object)type);
+        }
+
+        [HttpPost, ActionName("ImportLegacyTemplate")]
+        public ActionResult ImportLegacyTemplate_POST(string type)
+        {
+            _messageTemplateAdminService.ImportLegacyTemplate(type);
             return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        [ActionName("Reset")]
-        public RedirectToRouteResult Reset_POST(MessageTemplate messageTemplate)
-        {
-            if (messageTemplate != null)
-            {
-                _messageTemplateAdminService.Reset(messageTemplate);
-                return RedirectToAction("Edit", new { id = messageTemplate.Id });
-            }
-            return RedirectToAction("Index");
-        }
-
-        public PartialViewResult Tokens(MessageTemplate messageTemplate)
-        {
-            return PartialView(_messageTemplateAdminService.GetTokens(messageTemplate));
-        }
-
-        public ActionResult Preview(MessageTemplate messageTemplate)
-        {
-            return PartialView(messageTemplate);
-        }
-
-        public string GetPreview(MessageTemplate messageTemplate, int itemId)
-        {
-            return _messageTemplateAdminService.GetPreview(messageTemplate, itemId);
         }
     }
 }

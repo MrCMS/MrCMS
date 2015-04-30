@@ -1,7 +1,10 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
 using MrCMS.ACL;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
@@ -9,22 +12,33 @@ using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Controllers;
 using MrCMS.Website.Filters;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class WebpageController : BaseDocumentController<Webpage>
+    public class WebpageController : MrCMSAdminController
     {
         private readonly IWebpageBaseViewDataService _webpageBaseViewDataService;
+        private readonly IDocumentService _documentService;
+        private readonly IUrlValidationService _urlValidationService;
 
         public WebpageController(IWebpageBaseViewDataService webpageBaseViewDataService,
             IDocumentService documentService, IUrlValidationService urlValidationService)
-            : base(documentService, urlValidationService)
         {
             _webpageBaseViewDataService = webpageBaseViewDataService;
+            _documentService = documentService;
+            _urlValidationService = urlValidationService;
         }
 
-        public override ActionResult Add_Get(int? id)
+        public ViewResult Index()
+        {
+            return View();
+        }
+
+
+        [HttpGet, ActionName("Add")]
+        public ActionResult Add_Get(int? id)
         {
             //Build list 
             var model = new AddPageModel
@@ -35,44 +49,68 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return View(model);
         }
 
-        [ForceImmediateLuceneUpdate]
-        public override ActionResult Add([IoCModelBinder(typeof (AddWebpageModelBinder))] Webpage doc)
+        [HttpPost, ForceImmediateLuceneUpdate]
+        public virtual ActionResult Add([IoCModelBinder(typeof(AddWebpageModelBinder))] Webpage doc)
         {
-            if (_urlValidationService.UrlIsValidForWebpage(doc.UrlSegment, null))
-                return base.Add(doc);
-
-            _webpageBaseViewDataService.SetAddPageViewData(ViewData, doc.Parent as Webpage);
-            return View(doc);
+            if (!_urlValidationService.UrlIsValidForWebpage(doc.UrlSegment, null))
+            {
+                _webpageBaseViewDataService.SetAddPageViewData(ViewData, doc.Parent as Webpage);
+                return View(doc);
+            }
+            _documentService.AddDocument(doc);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
+            return RedirectToAction("Edit", new { id = doc.Id });
         }
 
-        [MrCMSTypeACL(typeof (Webpage), TypeACLRule.Edit)]
-        public override ActionResult Edit_Get(Webpage doc)
+        [HttpGet, ActionName("Edit"), MrCMSTypeACL(typeof(Webpage), TypeACLRule.Edit)]
+        public virtual ActionResult Edit_Get(Webpage doc)
         {
             _webpageBaseViewDataService.SetEditPageViewData(ViewData, doc);
             doc.SetAdminViewData(ViewData);
-            return base.Edit_Get(doc);
+            return View(doc);
         }
 
-        [MrCMSTypeACL(typeof (Webpage), TypeACLRule.Edit)]
-        [ForceImmediateLuceneUpdate]
-        public override ActionResult Edit([IoCModelBinder(typeof (EditWebpageModelBinder))] Webpage doc)
+        [HttpPost, MrCMSTypeACL(typeof(Webpage), TypeACLRule.Edit), ForceImmediateLuceneUpdate]
+        public virtual ActionResult Edit([IoCModelBinder(typeof(EditWebpageModelBinder))] Webpage doc)
         {
-            return base.Edit(doc);
+            _documentService.SaveDocument(doc);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
+            return RedirectToAction("Edit", new { id = doc.Id });
         }
 
-        [MrCMSTypeACL(typeof (Webpage), TypeACLRule.Delete)]
-        public override ActionResult Delete_Get(Webpage document)
+        [HttpGet, MrCMSTypeACL(typeof(Webpage), TypeACLRule.Delete), ActionName("Delete")]
+        public virtual ActionResult Delete_Get(Webpage document)
         {
-            return base.Delete_Get(document);
+            return PartialView(document);
         }
 
-        [MrCMSTypeACL(typeof (Webpage), TypeACLRule.Delete)]
-        [ForceImmediateLuceneUpdate]
-        public override ActionResult Delete(Webpage document)
+        [HttpPost, MrCMSTypeACL(typeof(Webpage), TypeACLRule.Delete), ForceImmediateLuceneUpdate]
+        public virtual ActionResult Delete(Webpage document)
         {
-            return base.Delete(document);
+            _documentService.DeleteDocument(document);
+            TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
+            return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] Webpage parent)
+        {
+            List<SortItem> sortItems =
+                _documentService.GetDocumentsByParent(parent)
+                    .Select(
+                        arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
+                    .OrderBy(x => x.Order)
+                    .ToList();
+
+            return View(sortItems);
+        }
+
+        [HttpPost]
+        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] Webpage parent, List<SortItem> items)
+        {
+            _documentService.SetOrders(items);
+            return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
+        }
         public ActionResult Show(Webpage document)
         {
             if (document == null)
@@ -86,7 +124,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _documentService.PublishNow(webpage);
 
-            return RedirectToAction("Edit", new {id = webpage.Id});
+            return RedirectToAction("Edit", new { id = webpage.Id });
         }
 
         [HttpPost]
@@ -94,7 +132,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _documentService.Unpublish(webpage);
 
-            return RedirectToAction("Edit", new {id = webpage.Id});
+            return RedirectToAction("Edit", new { id = webpage.Id });
         }
 
         public ActionResult ViewChanges(DocumentVersion documentVersion)
@@ -134,7 +172,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult AddProperties([IoCModelBinder(typeof (AddPropertiesModelBinder))] Webpage webpage)
+        public ActionResult AddProperties([IoCModelBinder(typeof(AddPropertiesModelBinder))] Webpage webpage)
         {
             if (webpage != null)
             {

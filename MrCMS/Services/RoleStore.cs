@@ -4,7 +4,7 @@ using MrCMS.Entities.People;
 
 namespace MrCMS.Services
 {
-    public class RoleStore : IRoleStore<UserRole>
+    public class RoleStore : IRoleStore<UserRole, int>
     {
         private readonly IRoleService _roleService;
 
@@ -15,7 +15,7 @@ namespace MrCMS.Services
 
         public void Dispose()
         {
-            
+
         }
 
         public Task CreateAsync(UserRole role)
@@ -33,14 +33,9 @@ namespace MrCMS.Services
             return Task.Run(() => _roleService.DeleteRole(role));
         }
 
-        public Task<UserRole> FindByIdAsync(string roleId)
+        public Task<UserRole> FindByIdAsync(int roleId)
         {
-            return Task.Run(() =>
-                {
-                    int id;
-                    int.TryParse(roleId, out id);
-                    return _roleService.GetRole(id);
-                });
+            return Task.Run(() => _roleService.GetRole(roleId));
         }
 
         public Task<UserRole> FindByNameAsync(string roleName)

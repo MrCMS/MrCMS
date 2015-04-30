@@ -9,6 +9,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Paging;
+using MrCMS.Services.FileMigration;
 using MrCMS.Settings;
 using NHibernate;
 using MrCMS.Helpers;
@@ -44,22 +45,25 @@ namespace MrCMS.Services
             fileName = fileName.GetTidyFileName();
 
             var mediaFile = new MediaFile
-                                {
-                                    FileName = fileName,
-                                    ContentType = contentType,
-                                    ContentLength = contentLength,
-                                    FileExtension = Path.GetExtension(fileName),
-                                };
+            {
+                FileName = fileName,
+                ContentType = contentType,
+                ContentLength = contentLength,
+                FileExtension = Path.GetExtension(fileName),
+            };
             if (mediaCategory != null)
             {
                 mediaFile.MediaCategory = mediaCategory;
-                int? max = _session.Query<MediaFile>().Where(x=>x.MediaCategory.Id == mediaFile.MediaCategory.Id).Max(x => (int?)x.DisplayOrder);
+                int? max = _session.Query<MediaFile>().Where(x => x.MediaCategory.Id == mediaFile.MediaCategory.Id).Max(x => (int?)x.DisplayOrder);
                 mediaFile.DisplayOrder = (max.HasValue ? (int)max + 1 : 1);
             }
 
-            if (mediaFile.IsImage)
+            if (mediaFile.IsImage())
             {
-                _imageProcessor.EnforceMaxSize(ref stream, mediaFile, _mediaSettings);
+                if (mediaFile.IsJpeg())
+                {
+                    _imageProcessor.EnforceMaxSize(ref stream, mediaFile, _mediaSettings);
+                }
                 _imageProcessor.SetFileDimensions(mediaFile, stream);
             }
 
@@ -67,16 +71,18 @@ namespace MrCMS.Services
 
             mediaFile.FileUrl = _fileSystem.SaveFile(stream, fileLocation, contentType);
 
-            
+
             _session.Transact(session =>
-                                  {
-                                      session.SaveOrUpdate(mediaFile);
-                                      if (mediaCategory != null)
-                                      {
-                                          mediaCategory.Files.Add(mediaFile);
-                                          session.SaveOrUpdate(mediaCategory);
-                                      }
-                                  });
+            {
+                session.Save(mediaFile);
+                if (mediaCategory != null)
+                {
+                    mediaCategory.Files.Add(mediaFile);
+                    session.SaveOrUpdate(mediaCategory);
+                }
+            });
+
+            stream.Dispose();
             return mediaFile;
         }
 
@@ -111,7 +117,7 @@ namespace MrCMS.Services
 
         public virtual string GetUrl(MediaFile file, Size size)
         {
-            if (!file.IsImage)
+            if (!file.IsImage())
                 return file.FileUrl;
 
             //check to see if the image already exists, if it does simply return it
@@ -189,7 +195,7 @@ namespace MrCMS.Services
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == categoryId);
 
             if (imagesOnly)
-                queryOver.Where(file => file.FileExtension.IsIn(MediaFile.ImageExtensions));
+                queryOver.Where(file => file.FileExtension.IsIn(MediaFileExtensions.ImageExtensions));
 
             var mediaFiles = queryOver.OrderBy(file => file.CreatedOn).Desc.Paged(page, _siteSettings.DefaultPageSize);
             return new FilesPagedResult(mediaFiles, mediaFiles.GetMetaData(), categoryId, imagesOnly);
@@ -210,7 +216,7 @@ namespace MrCMS.Services
             var id = Convert.ToInt32(split[0]);
             var file = _session.Get<MediaFile>(id);
             var imageSize =
-                file.Sizes.FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
+                file.GetSizes().FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
             return GetFileLocation(file, imageSize.Size);
         }
 
@@ -236,7 +242,7 @@ namespace MrCMS.Services
             var extension = Path.GetExtension(fileName);
             if (string.IsNullOrWhiteSpace(extension) || extension.Length < 1)
                 return false;
-            return _mediaSettings.AllowedFileTypeList.Contains(extension.Substring(1), StringComparer.OrdinalIgnoreCase);
+            return _mediaSettings.AllowedFileTypeList.Contains(extension, StringComparer.OrdinalIgnoreCase);
         }
 
         public void DeleteFileSoft(MediaFile mediaFile)

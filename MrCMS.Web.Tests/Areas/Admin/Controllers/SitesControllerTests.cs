@@ -45,7 +45,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void SitesController_AddGet_ReturnsPartialViewResultWithModelOfTypeSite()
         {
-            PartialViewResult result = _sitesController.Add_Get();
+            var result = _sitesController.Add_Get();
 
             result.Should().NotBeNull();
             result.Model.Should().BeOfType<Site>();
@@ -55,7 +55,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void SitesController_AddPost_CallsSiteServiceSaveSiteWithPassedSite()
         {
             var site = new Site();
-            var options = new SiteCopyOptions();
+            var options = new List<SiteCopyOption>();
 
             _sitesController.Add(site, options);
 
@@ -66,7 +66,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void SitesController_AddPost_RedirectsToIndex()
         {
             var site = new Site();
-            var options = new SiteCopyOptions();
+            var options = new List<SiteCopyOption>(); 
 
             RedirectToRouteResult result = _sitesController.Add(site, options);
 

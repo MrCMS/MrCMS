@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 
@@ -14,9 +15,9 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public JsonResult QuickSearch(string term)
+        public JsonResult QuickSearch(QuickSearchParams searchParams)
         {
-            return Json(_searchIndexSearcher.QuickSearch(term), JsonRequestBehavior.AllowGet);
+            return Json(_searchIndexSearcher.QuickSearch(searchParams), JsonRequestBehavior.AllowGet);
         }
     }
 }

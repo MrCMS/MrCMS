@@ -1,16 +1,13 @@
-﻿@using MrCMS.ACL
+﻿@using System.Web.Optimization
+@using MrCMS.ACL
 @using MrCMS.ACL.Rules
 @using MrCMS.Helpers
 @using MrCMS.Settings
 @using MrCMS.Website
 @model MrCMS.Entities.Documents.Web.Webpage  
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/mrcms-frontendediting.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Areas/Admin/Content/Styles/featherlight.css")" rel="stylesheet" type="text/css" />
 <link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css" />
-<link href="@Url.Content("~/Areas/Admin/Content/Styles/jquery.mrcms-mediaselector.css")" rel="stylesheet" type="text/css" />
-<link href="@Url.Content("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload.css")" rel="stylesheet" type="text/css" />
-<link href="@Url.Content("~/Areas/Admin/Content/scripts/lib/jQuery-File-Upload-9.5.2/css/jquery.fileupload-ui.css")" rel="stylesheet" type="text/css" />
-<link href="@Url.Content("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.css")" rel="stylesheet" type="text/css" />
-
 @{
     var canEditPage = CurrentRequestData.CurrentUser.CanAccess<TypeACLRule>(TypeACLRule.Edit, Model.GetType().FullName);
     
@@ -62,14 +59,10 @@
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/store.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/dropzone.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/featherlight.js")"></script>
+
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/mrcms/front-end-editing.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/fancybox/jquery.fancybox.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/load-image.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-process.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.iframe-transport.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-validate.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Scripts/lib/jQuery-File-Upload-9.5.2/js/jquery.fileupload-ui.js")"></script>
 

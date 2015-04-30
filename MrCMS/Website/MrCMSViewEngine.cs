@@ -7,25 +7,24 @@ using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Apps;
+using StackExchange.Profiling;
 
 namespace MrCMS.Website
 {
-    public class MrCMSRazorViewEngine : MrCMSVirtualPathProviderViewEngine
+    public abstract class MrCMSViewEngine : IViewEngine
     {
-        internal static readonly string ViewStartFileName = "_ViewStart";
+        private const string _cacheKeyPrefix_Master = "Master";
+        private const string _cacheKeyPrefix_Partial = "Partial";
+        private const string _cacheKeyPrefix_View = "View";
+        // format is ":ViewCacheEntry:{cacheType}:{prefix}:{name}:{controllerName}:{areaName}:"
+        private const string _cacheKeyFormat = ":ViewCacheEntry:{0}:{1}:{2}:{3}:{4}:{5}:{6}:";
+        private static readonly List<string> _emptyLocations = new List<string>();
+        public IViewLocationCache ViewLocationCache { get; set; }
+        internal Func<string, string> GetExtensionThunk = VirtualPathUtility.GetExtension;
+
         private IViewPageActivator _viewPageActivator;
 
-        public MrCMSRazorViewEngine()
-            : this(null)
-        {
-        }
-
-        public MrCMSRazorViewEngine(IViewPageActivator viewPageActivator)
-        {
-            _viewPageActivator = viewPageActivator;
-        }
-
-        private IViewPageActivator ViewPageActivator
+        protected IViewPageActivator ViewPageActivator
         {
             get
             {
@@ -36,75 +35,10 @@ namespace MrCMS.Website
                 _viewPageActivator = new DefaultViewPageActivator();
                 return _viewPageActivator;
             }
+            set { _viewPageActivator = value; }
         }
 
-        protected override IView CreatePartialView(ControllerContext controllerContext, string partialPath)
-        {
-            return new RazorView(controllerContext, partialPath, null, false, ViewEngineFileLocations.FileExtensions,
-                ViewPageActivator);
-        }
-
-        protected override IView CreateView(ControllerContext controllerContext, string viewPath, string masterPath)
-        {
-            var view = new RazorView(controllerContext, viewPath, masterPath, true,
-                ViewEngineFileLocations.FileExtensions, ViewPageActivator);
-            return view;
-        }
-
-        internal class DefaultViewPageActivator : IViewPageActivator
-        {
-            private readonly Func<IDependencyResolver> _resolverThunk;
-
-            public DefaultViewPageActivator()
-                : this(null)
-            {
-            }
-
-            public DefaultViewPageActivator(IDependencyResolver resolver)
-            {
-                if (resolver == null)
-                {
-                    _resolverThunk = () => DependencyResolver.Current;
-                }
-                else
-                {
-                    _resolverThunk = () => resolver;
-                }
-            }
-
-            public object Create(ControllerContext controllerContext, Type type)
-            {
-                return _resolverThunk().GetService(type) ?? Activator.CreateInstance(type);
-            }
-        }
-    }
-
-    public abstract class MrCMSVirtualPathProviderViewEngine : IViewEngine
-    {
-        // format is ":ViewCacheEntry:{cacheType}:{prefix}:{name}:{controllerName}:{areaName}:"
-        private const string _cacheKeyFormat = ":ViewCacheEntry:{0}:{1}:{2}:{3}:{4}:{5}:{6}:";
-        private const string _cacheKeyPrefix_Master = "Master";
-        private const string _cacheKeyPrefix_Partial = "Partial";
-        private const string _cacheKeyPrefix_View = "View";
-        private static readonly List<string> _emptyLocations = new List<string>();
-
-        internal Func<string, string> GetExtensionThunk = VirtualPathUtility.GetExtension;
         private VirtualPathProvider _vpp;
-
-        protected MrCMSVirtualPathProviderViewEngine()
-        {
-            if (HttpContext.Current == null || HttpContext.Current.IsDebuggingEnabled)
-            {
-                ViewLocationCache = DefaultViewLocationCache.Null;
-            }
-            else
-            {
-                ViewLocationCache = new DefaultViewLocationCache();
-            }
-        }
-
-        public IViewLocationCache ViewLocationCache { get; set; }
-
 
         protected VirtualPathProvider VirtualPathProvider
         {
@@ -115,63 +49,70 @@ namespace MrCMS.Website
         public virtual ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName,
             bool useCache)
         {
-            if (controllerContext == null)
+            using (MiniProfiler.Current.Step("Find Partial View " + partialViewName))
             {
-                throw new ArgumentNullException("controllerContext");
-            }
-            if (string.IsNullOrEmpty(partialViewName))
-            {
-                throw new ArgumentException("Argument null or empty", "partialViewName");
-            }
+                if (controllerContext == null)
+                {
+                    throw new ArgumentNullException("controllerContext");
+                }
+                if (string.IsNullOrEmpty(partialViewName))
+                {
+                    throw new ArgumentException("Argument null or empty", "partialViewName");
+                }
 
-            List<string> searched;
-            string controllerName = controllerContext.RouteData.GetRequiredString("controller");
-            string partialPath = GetPath(controllerContext, ViewEngineFileLocations.PartialViewLocationFormats,
-                ViewEngineFileLocations.AreaPartialViewLocationFormats,
-                ViewEngineFileLocations.AppPartialViewLocationFormats, "PartialViewLocationFormats", partialViewName,
-                controllerName,
-                _cacheKeyPrefix_Partial, useCache, out searched);
+                List<string> searched;
+                string controllerName = controllerContext.RouteData.GetRequiredString("controller");
 
-            if (string.IsNullOrEmpty(partialPath))
-            {
-                return new ViewEngineResult(searched);
+                string partialPath = GetPath(controllerContext, ViewEngineFileLocations.PartialViewLocationFormats,
+                    ViewEngineFileLocations.AreaPartialViewLocationFormats,
+                    ViewEngineFileLocations.AppPartialViewLocationFormats, "PartialViewLocationFormats", partialViewName,
+                    controllerName,
+                    _cacheKeyPrefix_Partial, useCache, out searched);
+
+                if (string.IsNullOrEmpty(partialPath))
+                {
+                    return new ViewEngineResult(searched);
+                }
+
+                return new ViewEngineResult(CreatePartialView(controllerContext, partialPath), this);
             }
-
-            return new ViewEngineResult(CreatePartialView(controllerContext, partialPath), this);
         }
 
         public virtual ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName,
             bool useCache)
         {
-            if (controllerContext == null)
+            using (MiniProfiler.Current.Step("Find View " + viewName + ", Master " + masterName))
             {
-                throw new ArgumentNullException("controllerContext");
+                if (controllerContext == null)
+                {
+                    throw new ArgumentNullException("controllerContext");
+                }
+                if (string.IsNullOrEmpty(viewName))
+                {
+                    throw new ArgumentException("Argument null or empty", "viewName");
+                }
+
+                List<string> viewLocationsSearched;
+                List<string> masterLocationsSearched;
+
+                string controllerName = controllerContext.RouteData.GetRequiredString("controller");
+                string viewPath = GetPath(controllerContext, ViewEngineFileLocations.ViewLocationFormats,
+                    ViewEngineFileLocations.AreaViewLocationFormats, ViewEngineFileLocations.AppViewLocationFormats,
+                    "ViewLocationFormats", viewName, controllerName, _cacheKeyPrefix_View, useCache,
+                    out viewLocationsSearched);
+                string masterPath = GetPath(controllerContext, ViewEngineFileLocations.MasterLocationFormats,
+                    ViewEngineFileLocations.AreaMasterLocationFormats, ViewEngineFileLocations.AppMasterLocationFormats,
+                    "MasterLocationFormats", masterName, controllerName, _cacheKeyPrefix_Master,
+                    useCache, out masterLocationsSearched);
+
+                if (string.IsNullOrEmpty(viewPath) ||
+                    (string.IsNullOrEmpty(masterPath) && !string.IsNullOrEmpty(masterName)))
+                {
+                    return new ViewEngineResult(viewLocationsSearched.Union(masterLocationsSearched));
+                }
+
+                return new ViewEngineResult(CreateView(controllerContext, viewPath, masterPath), this);
             }
-            if (string.IsNullOrEmpty(viewName))
-            {
-                throw new ArgumentException("Argument null or empty", "viewName");
-            }
-
-            List<string> viewLocationsSearched;
-            List<string> masterLocationsSearched;
-
-            string controllerName = controllerContext.RouteData.GetRequiredString("controller");
-            string viewPath = GetPath(controllerContext, ViewEngineFileLocations.ViewLocationFormats,
-                ViewEngineFileLocations.AreaViewLocationFormats, ViewEngineFileLocations.AppViewLocationFormats,
-                "ViewLocationFormats", viewName, controllerName, _cacheKeyPrefix_View, useCache,
-                out viewLocationsSearched);
-            string masterPath = GetPath(controllerContext, ViewEngineFileLocations.MasterLocationFormats,
-                ViewEngineFileLocations.AreaMasterLocationFormats, ViewEngineFileLocations.AppMasterLocationFormats,
-                "MasterLocationFormats", masterName, controllerName, _cacheKeyPrefix_Master,
-                useCache, out masterLocationsSearched);
-
-            if (string.IsNullOrEmpty(viewPath) ||
-                (string.IsNullOrEmpty(masterPath) && !string.IsNullOrEmpty(masterName)))
-            {
-                return new ViewEngineResult(viewLocationsSearched.Union(masterLocationsSearched));
-            }
-
-            return new ViewEngineResult(CreateView(controllerContext, viewPath, masterPath), this);
         }
 
         public virtual void ReleaseView(ControllerContext controllerContext, IView view)
@@ -183,59 +124,60 @@ namespace MrCMS.Website
             }
         }
 
-        private string CreateCacheKey(string prefix, string name, string controllerName, string areaName, string appName,
-            string themeName)
-        {
-            return string.Format(CultureInfo.InvariantCulture, _cacheKeyFormat,
-                GetType().AssemblyQualifiedName, prefix, name, controllerName, areaName, appName,
-                themeName);
-        }
-
-        protected abstract IView CreatePartialView(ControllerContext controllerContext, string partialPath);
-
         protected abstract IView CreateView(ControllerContext controllerContext, string viewPath, string masterPath);
 
-        protected bool FileExists(string virtualPath)
-        {
-            return VirtualPathProvider.FileExists(virtualPath);
-        }
+        protected abstract IView CreatePartialView(ControllerContext controllerContext, string partialPath);
 
         private string GetPath(ControllerContext controllerContext, string[] locations, string[] areaLocations,
             string[] appLocations, string locationsPropertyName, string name, string controllerName,
             string cacheKeyPrefix, bool useCache, out List<string> searchedLocations)
         {
-            searchedLocations = _emptyLocations;
-
-            if (string.IsNullOrEmpty(name))
+            using (MiniProfiler.Current.Step("Get Path"))
             {
-                return string.Empty;
+                searchedLocations = _emptyLocations;
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    return string.Empty;
+                }
+
+                string areaName = GetAreaName(controllerContext.RouteData);
+                string appName = GetAppName(controllerContext.RouteData);
+                string themeName = GetThemeName(controllerContext.RouteData.DataTokens);
+                bool usingAreas = !string.IsNullOrEmpty(areaName);
+                bool usingApps = !string.IsNullOrEmpty(appName);
+                IEnumerable<string> locationsByPriority =
+                    ((usingApps) ? appLocations : new string[] { }).Union((usingAreas)
+                        ? areaLocations
+                        : new string[] { })
+                        .Union(locations);
+                List<ViewLocation> viewLocations = GetViewLocations(locationsByPriority.ToList(), themeName);
+
+                if (viewLocations.Count == 0)
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
+                        "Property {0} cannot be null or empty",
+                        locationsPropertyName));
+
+                bool nameRepresentsPath = IsSpecificPath(name);
+                string cacheKey = CreateCacheKey(cacheKeyPrefix, name,
+                    (nameRepresentsPath) ? string.Empty : controllerName,
+                    areaName, appName, themeName);
+
+                return useCache
+                    ? GetFromCache(controllerContext, cacheKey)
+                    : ((nameRepresentsPath)
+                        ? GetPathFromSpecificName(controllerContext, name, cacheKey, ref searchedLocations)
+                        : GetPathFromGeneralName(controllerContext, viewLocations, name, controllerName, areaName,
+                            appName, themeName, cacheKey, ref searchedLocations));
             }
+        }
 
-            string areaName = GetAreaName(controllerContext.RouteData);
-            string appName = GetAppName(controllerContext.RouteData);
-            string themeName = GetThemeName();
-            bool usingAreas = !string.IsNullOrEmpty(areaName);
-            bool usingApps = !string.IsNullOrEmpty(appName);
-            IEnumerable<string> locationsByPriority =
-                ((usingApps) ? appLocations : new string[] {}).Union((usingAreas) ? areaLocations : new string[] {})
-                    .Union(locations);
-            List<ViewLocation> viewLocations = GetViewLocations(locationsByPriority.ToList(), themeName);
-
-            if (viewLocations.Count == 0)
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
-                    "Property {0} cannot be null or empty",
-                    locationsPropertyName));
-
-            bool nameRepresentsPath = IsSpecificPath(name);
-            string cacheKey = CreateCacheKey(cacheKeyPrefix, name, (nameRepresentsPath) ? string.Empty : controllerName,
-                areaName, appName, themeName);
-
-            return useCache
-                ? ViewLocationCache.GetViewLocation(controllerContext.HttpContext, cacheKey)
-                : ((nameRepresentsPath)
-                    ? GetPathFromSpecificName(controllerContext, name, cacheKey, ref searchedLocations)
-                    : GetPathFromGeneralName(controllerContext, viewLocations, name, controllerName, areaName,
-                        appName, themeName, cacheKey, ref searchedLocations));
+        private string GetFromCache(ControllerContext controllerContext, string cacheKey)
+        {
+            using (MiniProfiler.Current.Step("Get from cache: " + cacheKey))
+            {
+                return ViewLocationCache.GetViewLocation(controllerContext.HttpContext, cacheKey);
+            }
         }
 
         private string GetPathFromGeneralName(ControllerContext controllerContext, List<ViewLocation> locations,
@@ -268,6 +210,8 @@ namespace MrCMS.Website
             return result;
         }
 
+        protected abstract bool FileExists(string virtualPath);
+
         private string GetPathFromSpecificName(ControllerContext controllerContext, string name, string cacheKey,
             ref List<string> searchedLocations)
         {
@@ -276,14 +220,14 @@ namespace MrCMS.Website
             if (!(FilePathIsSupported(name) && FileExists(name)))
             {
                 result = string.Empty;
-                searchedLocations = new List<string> {name};
+                searchedLocations = new List<string> { name };
             }
 
             ViewLocationCache.InsertViewLocation(controllerContext.HttpContext, cacheKey, result);
             return result;
         }
 
-        private bool FilePathIsSupported(string virtualPath)
+        protected bool FilePathIsSupported(string virtualPath)
         {
             if (ViewEngineFileLocations.FileExtensions == null)
             {
@@ -294,6 +238,14 @@ namespace MrCMS.Website
             // get rid of the '.' because the FileExtensions property expects extensions withouth a dot.
             string extension = GetExtensionThunk(virtualPath).TrimStart('.');
             return ViewEngineFileLocations.FileExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
+        }
+
+        private string CreateCacheKey(string prefix, string name, string controllerName, string areaName, string appName,
+            string themeName)
+        {
+            return string.Format(CultureInfo.InvariantCulture, _cacheKeyFormat,
+                GetType().AssemblyQualifiedName, prefix, name, controllerName, areaName, appName,
+                themeName);
         }
 
         private static List<ViewLocation> GetViewLocations(List<string> locationsByPriority, string themeName)
@@ -345,12 +297,16 @@ namespace MrCMS.Website
                 : null;
         }
 
-        private static string GetThemeName()
+        private static string GetThemeName(RouteValueDictionary dataTokens)
         {
-            return (CurrentRequestData.DatabaseIsInstalled &&
-                    !string.IsNullOrWhiteSpace(CurrentRequestData.SiteSettings.ThemeName))
-                ? CurrentRequestData.SiteSettings.ThemeName
-                : null;
+            return
+                dataTokens.ContainsKey("theme-name")
+                    ? dataTokens["theme-name"].ToString()
+                    : (dataTokens["theme-name"] = (
+                        (CurrentRequestData.DatabaseIsInstalled &&
+                         !string.IsNullOrWhiteSpace(CurrentRequestData.SiteSettings.ThemeName))
+                            ? CurrentRequestData.SiteSettings.ThemeName
+                            : string.Empty)).ToString();
         }
 
         private class ViewLocation
@@ -367,6 +323,33 @@ namespace MrCMS.Website
             {
                 return string.Format(CultureInfo.InvariantCulture, _virtualPathFormatstring, viewName, controllerName,
                     areaName, appName, themeName);
+            }
+        }
+
+        internal class DefaultViewPageActivator : IViewPageActivator
+        {
+            private readonly Func<IDependencyResolver> _resolverThunk;
+
+            public DefaultViewPageActivator()
+                : this(null)
+            {
+            }
+
+            public DefaultViewPageActivator(IDependencyResolver resolver)
+            {
+                if (resolver == null)
+                {
+                    _resolverThunk = () => DependencyResolver.Current;
+                }
+                else
+                {
+                    _resolverThunk = () => resolver;
+                }
+            }
+
+            public object Create(ControllerContext controllerContext, Type type)
+            {
+                return _resolverThunk().GetService(type) ?? Activator.CreateInstance(type);
             }
         }
     }

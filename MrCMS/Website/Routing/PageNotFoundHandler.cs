@@ -16,7 +16,7 @@ namespace MrCMS.Website.Routing
             _errorHandler = errorHandler;
         }
 
-        public int Priority { get { return 1050; } }
+        public int Priority { get { return 500; } }
         public bool Handle(RequestContext context)
         {
             var path = context.HttpContext.Request.Url.AbsolutePath;

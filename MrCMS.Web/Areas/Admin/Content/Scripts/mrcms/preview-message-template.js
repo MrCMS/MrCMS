@@ -1,15 +1,18 @@
-﻿var PreviewMessageTemplate = new function() {
-    this.init = function() {
-        $('#preview-message').click(function(event) {
-            event.preventDefault();
-            var form = $(this).parents('form');
-            $.get(form.attr('action'), { itemId:$('#itemId').val() }, function(response) {
-                $('#preview').html(response);
-            });
+﻿var PreviewMessageTemplate = function () {
+    function getPreview(event) {
+        event.preventDefault();
+        var form = $(event.target);
+        $.get(form.attr('action'), { id: $('#id').val() }, function (response) {
+            $('#preview').html(response);
         });
+    }
+    return {
+        init: function () {
+            $(document).on('submit', '#preview-message-form', getPreview);
+        }
     };
 };
 
-$(function() {
-    PreviewMessageTemplate.init();
+$(function () {
+    new PreviewMessageTemplate().init();
 })

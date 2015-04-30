@@ -1,0 +1,29 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Messages.MessageTemplate
+@{
+    var typeInfo = new { type = Model.GetType().FullName };
+}
+@using (Html.BeginForm("Preview", "MessageTemplatePreview", typeInfo, FormMethod.Post, new { id = "preview-message-form", style = "display:inline;" }))
+{
+    <div style="min-height: 400px">
+        <h1 class="page-header">
+            @Resource("Admin Message Template Preview Title", "Preview message template")
+            <span class="btn-group  display-inline  pull-right">
+                @Html.ActionLink("Back to list", "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
+                @Html.ActionLink("Edit", "Edit", "MessageTemplate", typeInfo, new { @class = "btn btn-default" })
+                <input type="submit" class="btn btn-primary" value="@Resource("Preview")" />
+            </span>
+        </h1>
+
+        <div class="form-group">
+            @Html.Label("id", @Model.ModelType.Name.BreakUpString() + " Id")
+            @Html.TextBox("id", "1", new { @class = "form-control" })
+        </div>
+        <hr />
+
+        <div id="preview">
+        </div>
+    </div>
+}
+
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/preview-message-template.js");}

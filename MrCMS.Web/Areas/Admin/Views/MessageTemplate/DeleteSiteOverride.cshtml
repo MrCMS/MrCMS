@@ -1,0 +1,16 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Messages.MessageTemplate
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("DeleteSiteOverride", "MessageTemplate", new { TemplateType = Model.GetType().FullName }, FormMethod.Post))
+{
+
+    <h1 class="page-header">
+        @Resource("Delete Site Override")
+        <span class="btn-group  display-inline  pull-right">
+            <input type="submit" class="btn btn-danger" value="@Resource("Delete")" />
+        </span>
+    </h1>
+
+    @Html.InfoBlock(Resource("Warning"), Resource("Admin Message Template Site Override Delete Warning", "Are you sure you want to delete this message template override? This action cannot be undone"), AlertType.danger)
+}
+

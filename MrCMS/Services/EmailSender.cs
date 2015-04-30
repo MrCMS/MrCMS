@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using MrCMS.Entities.Messaging;
@@ -51,22 +52,35 @@ namespace MrCMS.Services
             _session.Transact(session => session.SaveOrUpdate(queuedMessage));
         }
 
+        public void AddToQueue(QueuedMessage queuedMessage)
+        {
+            _session.Transact(session => session.SaveOrUpdate(queuedMessage));
+        }
+
         private static MailMessage BuildMailMessage(QueuedMessage queuedMessage)
         {
-            var mailMessage = new MailMessage(new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),
-                new MailAddress(queuedMessage.ToAddress, queuedMessage.ToName))
+            var mailMessage = new MailMessage()
             {
+                From = new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),
                 Subject = queuedMessage.Subject,
                 Body = queuedMessage.Body
             };
+            var multipleToAddress = queuedMessage.ToAddress.Split(new char[] { ',',';' }, StringSplitOptions.RemoveEmptyEntries);
+            if (multipleToAddress.Any()){
+                foreach (var email in multipleToAddress)
+                {
+                    mailMessage.To.Add(new MailAddress(email.Trim(), queuedMessage.ToName));                    
+                }
+            }
 
             if (!string.IsNullOrWhiteSpace(queuedMessage.Cc))
                 mailMessage.CC.Add(queuedMessage.Cc);
             if (!string.IsNullOrWhiteSpace(queuedMessage.Bcc))
                 mailMessage.Bcc.Add(queuedMessage.Bcc);
 
-            foreach (QueuedMessageAttachment attachment in queuedMessage.QueuedMessageAttachments)
-                mailMessage.Attachments.Add(new Attachment(attachment.FileName));
+            if (queuedMessage.QueuedMessageAttachments != null)
+                foreach (QueuedMessageAttachment attachment in queuedMessage.QueuedMessageAttachments)
+                    mailMessage.Attachments.Add(new Attachment(attachment.FileName));
 
             mailMessage.IsBodyHtml = queuedMessage.IsHtml;
             return mailMessage;

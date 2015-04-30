@@ -12,11 +12,11 @@
                 <th class="col-lg-2"><a href="@Url.Action("Show", "MediaCategory", new {Id = Model.Id})" class="btn btn-xs btn-default" target="_new">Manage folder</a></th>
             </tr>
 
-            @foreach (var file in Model.Files.OrderByDescending(x=>x.CreatedOn))
+            @foreach (var file in Model.Files.OrderBy(x => x.DisplayOrder).ThenByDescending(x => x.CreatedOn))
             {
                 <tr>
                     <td>
-                        @if (file.IsImage)
+                        @if (file.IsImage())
                         {
                             <a href="@file.FileUrl">
                                 @Html.RenderImage(file.FileUrl, new Size(100, 100))

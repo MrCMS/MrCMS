@@ -5,6 +5,7 @@ using System.Threading;
 using System.Web;
 using System.Web.Routing;
 using System.Web.SessionState;
+using StackExchange.Profiling;
 
 namespace MrCMS.Website.Routing
 {
@@ -32,15 +33,29 @@ namespace MrCMS.Website.Routing
             {
                 foreach (var handler in _routeHandlers.OrderByDescending(handler => handler.Priority))
                 {
-                    if (handler.Handle(context))
-                    {
-                        return;
-                    }
+                    using (MiniProfiler.Current.Step(string.Format("Trying {0} ({1})", handler.GetType().Name, handler.Priority)))
+                        if (handler.Handle(context))
+                        {
+                            return;
+                        }
                 }
             }
             // for the minimal missing file handler
             catch (ThreadAbortException)
             {
+            }
+            catch (HttpException exception)
+            {
+                if (exception.GetHttpCode() == 404)
+                {
+                    _errorHandler.HandleError(context, 404,
+                        new HttpException(404, exception.Message));
+                }
+                else
+                {
+                    _errorHandler.HandleError(context, 500, new HttpException(500, exception.Message, exception));
+                }
+
             }
             catch (Exception exception)
             {

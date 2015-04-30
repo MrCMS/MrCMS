@@ -1,17 +1,15 @@
 ﻿@using System.Diagnostics
 @using MrCMS.Settings
 @model MrCMS.Entities.Documents.Media.MediaCategory
-<span class="btn btn-success fileinput-button">
-    <i class="glyphicon glyphicon-plus"></i>
-    <span>@Resource("Admin Media Upload Files", "Upload files")...</span>
-    <input id="fileupload" type="file" name="files[]" multiple />
-    <input type="hidden" value="@Url.Action("Files", "File", new { id = Model == null ? (int?)null : Model.Id })" id="action-url" />
-    @if (Model != null)
-    {
-        <input type="hidden" value="@Model.Id" id="action-category-id" />
-    }
-</span>
-<div id="dropzone"><span>@Resource("Admin Media Drop Files", "Drop files here")</span></div>
+
+<div id="fileupload" class="dropzone" data-message="@Resource("Click here or drag files to upload")">
+    
+</div>
+<input type="hidden" value="@Url.Action("Files", "File", new { id = Model == null ? (int?)null : Model.Id })" id="action-url" />
+@if (Model != null)
+{
+    <input type="hidden" value="@Model.Id" id="action-category-id" />
+}
 <div class="progress" id="progress" style="display: none; height: 20px; margin-bottom: 0;">
     <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
     </div>

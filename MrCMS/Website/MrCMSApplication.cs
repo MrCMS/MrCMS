@@ -1,110 +1,90 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Elmah;
-using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using MrCMS.Apps;
-using MrCMS.Entities.People;
-using MrCMS.Helpers;
-using MrCMS.IoC;
-using MrCMS.IoC.Modules;
-using MrCMS.Services;
-using MrCMS.Settings;
+using MrCMS.Entities.Multisite;
 using MrCMS.Tasks;
-using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Caching;
-using MrCMS.Website.Controllers;
 using MrCMS.Website.Filters;
 using MrCMS.Website.Routing;
 using NHibernate;
 using Ninject;
-using Ninject.Web.Common;
-using WebActivatorEx;
-
-[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(MrCMSApplication), "Start", Order = 1)]
-[assembly: ApplicationShutdownMethod(typeof(MrCMSApplication), "Stop")]
+using StackExchange.Profiling;
 
 namespace MrCMS.Website
 {
     public abstract class MrCMSApplication : HttpApplication
     {
-        public const string AssemblyVersion = "0.4.3.0";
-        public const string AssemblyFileVersion = "0.4.3.0";
-        private static readonly Bootstrapper bootstrapper = new Bootstrapper();
-        private static IKernel _kernel;
+        public const string AssemblyVersion = "0.5.0.0";
+        public const string AssemblyFileVersion = "0.5.0.0";
         private const string CachedMissingItemKey = "cached-missing-item";
 
-        protected static IEnumerable<string> WebExtensions
-        {
-            get
-            {
-                return Get<SiteSettings>().WebExtensionsToRoute;
-            }
-        }
 
-        public abstract string RootNamespace { get; }
-
-        public static bool InDevelopment
+        private static IOnEndRequestExecutor OnEndRequestExecutor
         {
-            get
-            {
-                return "true".Equals(ConfigurationManager.AppSettings["Development"],
-                    StringComparison.OrdinalIgnoreCase);
-            }
-        }
-
-        private static IKernel Kernel
-        {
-            get { return _kernel ?? bootstrapper.Kernel; }
+            get { return MrCMSKernel.Kernel.Get<IOnEndRequestExecutor>(); }
         }
 
         protected void Application_Start()
         {
             MrCMSApp.RegisterAllApps();
-            AreaRegistration.RegisterAllAreas();
+            AreaRegistration.RegisterAllAreas(MrCMSKernel.Kernel);
+            MrCMSRouteRegistration.Register(RouteTable.Routes);
 
-            RegisterRoutes(RouteTable.Routes);
-
-            RegisterServices(bootstrapper.Kernel);
-            MrCMSApp.RegisterAllServices(bootstrapper.Kernel);
-
+            RegisterServices(MrCMSKernel.Kernel);
+            MrCMSApp.RegisterAllServices(MrCMSKernel.Kernel);
 
             SetModelBinders();
 
-            ViewEngines.Engines.Clear();
-            ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
+            SetViewEngines();
+
+            BundleRegistration.Register(MrCMSKernel.Kernel);
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
 
             GlobalFilters.Filters.Add(new HoneypotFilterAttribute());
 
-            ModelMetadataProviders.Current = new MrCMSMetadataProvider(Kernel);
+            ModelMetadataProviders.Current = new MrCMSMetadataProvider(MrCMSKernel.Kernel);
+
+            ImagePluginInstaller.Install();
+
+            MiniProfiler.Settings.Results_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
+            MiniProfiler.Settings.Results_List_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
+
+            StartTasksRunning();
+
+            OnApplicationStart();
         }
 
-        private static void SetModelBinders()
+
+        protected virtual void SetViewEngines()
         {
-            ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(Kernel);
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
+        }
+
+        private void StartTasksRunning()
+        {
+            if (CurrentRequestData.DatabaseIsInstalled)
+            {
+                TaskExecutionQueuer.Initialize(Get<ISession>().QueryOver<Site>().Cacheable().List());
+            }
+        }
+
+        protected virtual void OnApplicationStart()
+        {
+        }
+
+        protected virtual void SetModelBinders()
+        {
+            ModelBinders.Binders.DefaultBinder = new MrCMSDefaultModelBinder(MrCMSKernel.Kernel);
             ModelBinders.Binders.Add(typeof(DateTime), new CultureAwareDateBinder());
             ModelBinders.Binders.Add(typeof(DateTime?), new NullableCultureAwareDateBinder());
         }
 
-        private static bool IsFileRequest(Uri uri)
-        {
-            string absolutePath = uri.AbsolutePath;
-            if (string.IsNullOrWhiteSpace(absolutePath))
-                return false;
-            string extension = Path.GetExtension(absolutePath);
-
-            return !string.IsNullOrWhiteSpace(extension) && !WebExtensions.Contains(extension);
-        }
 
         public override void Init()
         {
@@ -112,66 +92,53 @@ namespace MrCMS.Website
             {
                 BeginRequest += (sender, args) =>
                 {
-                    if (IsCachedMissingFileRequest()) return;
-                    CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
-                    if (!IsFileRequest(Request.Url))
-                    {
-                        CurrentRequestData.CurrentSite = Get<ICurrentSiteLocator>().GetCurrentSite();
-                        CurrentRequestData.SiteSettings = Get<SiteSettings>();
-                        CurrentRequestData.HomePage = Get<IGetHomePage>().Get();
-                        Thread.CurrentThread.CurrentCulture = CurrentRequestData.SiteSettings.CultureInfo;
-                        Thread.CurrentThread.CurrentUICulture = CurrentRequestData.SiteSettings.CultureInfo;
-                    }
+                    if (IsCachedMissingFileRequest())
+                        return;
+                    RequestInitializer.Initialize(Request);
+
+                    OnBeginRequest(sender, args);
                 };
                 AuthenticateRequest += (sender, args) =>
                 {
-                    if (!Context.Items.Contains(CachedMissingItemKey) && !IsFileRequest(Request.Url))
+                    if (!Context.Items.Contains(CachedMissingItemKey) && !RequestInitializer.IsFileRequest(Request.Url))
                     {
-                        if (CurrentRequestData.CurrentContext.User != null)
-                        {
-                            User currentUser = Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
-                            if (!Request.Url.AbsolutePath.StartsWith("/signalr/") && (currentUser == null ||
-                                !currentUser.IsActive))
-                                Get<IAuthorisationService>().Logout();
-                            else
-                            {
-                                CurrentRequestData.CurrentUser = currentUser;
-                                Thread.CurrentThread.CurrentCulture = currentUser.GetUICulture();
-                                Thread.CurrentThread.CurrentUICulture = currentUser.GetUICulture();
-                            }
-                        }
+                        RequestAuthenticator.Authenticate(Request);
                     }
+                    OnAuthenticateRequest(sender, args);
                 };
                 EndRequest += (sender, args) =>
                 {
                     if (Context.Items.Contains(CachedMissingItemKey))
                         return;
-                    if (CurrentRequestData.QueuedTasks.Any())
-                    {
-                        Kernel.Get<ISession>()
-                            .Transact(session =>
-                            {
-                                foreach (QueuedTask queuedTask in CurrentRequestData.QueuedTasks)
-                                    session.Save(queuedTask);
-                            });
-                    }
-                    foreach (var action in CurrentRequestData.OnEndRequest)
-                        action(Kernel);
+
+                    OnEndRequestExecutor.ExecuteTasks(CurrentRequestData.OnEndRequest);
+
+                    OnEndRequest(sender, args);
+
+                    MiniProfiler.Stop();
                 };
             }
             else
             {
-                EndRequest += (sender, args) =>
-                {
-                    foreach (var action in CurrentRequestData.OnEndRequest)
-                        action(Kernel);
-                };
+                EndRequest += (sender, args) => OnEndRequestExecutor.ExecuteTasks(CurrentRequestData.OnEndRequest);
             }
+        }
+
+        protected virtual void OnEndRequest(object sender, EventArgs args)
+        {
+        }
+
+        protected virtual void OnAuthenticateRequest(object sender, EventArgs args)
+        {
+        }
+
+        protected virtual void OnBeginRequest(object sender, EventArgs args)
+        {
         }
 
         private bool IsCachedMissingFileRequest()
         {
-            var o = Get<ICacheWrapper>()[FileNotFoundHandler.GetMissingFileCacheKey(new HttpContextWrapper(Context))];
+            object o = Get<ICacheWrapper>()[FileNotFoundHandler.GetMissingFileCacheKey(new HttpRequestWrapper(Request))];
             if (o != null)
             {
                 Context.Items[CachedMissingItemKey] = true;
@@ -181,98 +148,27 @@ namespace MrCMS.Website
             return false;
         }
 
-        public void RegisterRoutes(RouteCollection routes)
-        {
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            routes.IgnoreRoute("favicon.ico");
-
-            routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
-            routes.MapRoute("Task Execution", "execute-pending-tasks",
-                new { controller = "TaskExecution", action = "Execute" });
-            routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
-            routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
-            routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",
-                new { controller = "CKEditor", action = "Config" });
-
-            routes.MapRoute("Logout", "logout", new { controller = "Login", action = "Logout" },
-                new[] { RootNamespace });
-
-            routes.MapRoute("zones", "render-widget", new { controller = "Widget", action = "Show" },
-                new[] { RootNamespace });
-
-            routes.MapRoute("ajax content save", "admintools/savebodycontent",
-                new { controller = "AdminTools", action = "SaveBodyContent" });
-
-            routes.MapRoute("form save", "save-form/{id}", new { controller = "Form", action = "Save" },
-                new[] { typeof(FormController).Namespace });
-
-            routes.Add(new Route("{*data}", new RouteValueDictionary(), new RouteValueDictionary(),
-                new MrCMSRouteHandler()));
-        }
-
         /// <summary>
-        ///     Starts the application
-        /// </summary>
-        public static void Start()
-        {
-            DynamicModuleUtility.RegisterModule(typeof(OnePerRequestHttpModule));
-            DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
-            bootstrapper.Initialize(CreateKernel);
-        }
-
-        /// <summary>
-        ///     Stops the application.
-        /// </summary>
-        public static void Stop()
-        {
-            bootstrapper.ShutDown();
-        }
-
-        /// <summary>
-        ///     Creates the kernel that will manage your application.
-        /// </summary>
-        /// <returns>The created kernel.</returns>
-        private static IKernel CreateKernel()
-        {
-            var kernel = new StandardKernel(new NinjectSettings { AllowNullInjection = true },
-                new ServiceModule(),
-                new SettingsModule(),
-                new FileSystemModule(),
-                new GenericBindingsModule(),
-                new SystemWebModule(),
-                new SiteModule(),
-                new AuthModule());
-            kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
-            kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
-
-            kernel.Load(new NHibernateModule());
-            return kernel;
-        }
-
-        /// <summary>
-        ///     Load your modules or register your services here!
+        ///     Load your modules or register your non-app specific services here
         /// </summary>
         /// <param name="kernel">The kernel.</param>
-        protected abstract void RegisterServices(IKernel kernel);
+        protected virtual void RegisterServices(IKernel kernel)
+        {
+        }
 
         public static IEnumerable<T> GetAll<T>()
         {
-            return Kernel.GetAll<T>();
-        }
-
-        public static void OverrideKernel(IKernel kernel)
-        {
-            _kernel = kernel;
+            return MrCMSKernel.Kernel.GetAll<T>();
         }
 
         public static T Get<T>()
         {
-            return Kernel.Get<T>();
+            return MrCMSKernel.Kernel.Get<T>();
         }
 
         public static object Get(Type type)
         {
-            return Kernel.Get(type);
+            return MrCMSKernel.Kernel.Get(type);
         }
     }
 }

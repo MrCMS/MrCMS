@@ -136,21 +136,6 @@ namespace MrCMS.Web.Tests.Controllers
             loginModel.Message.Should().Be("failure message");
         }
 
-        [Fact]
-        public void LoginController_Logout_CallsAuthorisationServiceLogout()
-        {
-            _loginController.Logout();
-
-            A.CallTo(() => _authorisationService.Logout()).MustHaveHappened();
-        }
-
-        [Fact]
-        public void LoginController_Logout_RedirectsToRoute()
-        {
-            var result = _loginController.Logout();
-
-            result.Url.Should().Be("~");
-        }
 
         [Fact]
         public void LoginController_ForgottenPasswordGET_ShouldReturnAView()

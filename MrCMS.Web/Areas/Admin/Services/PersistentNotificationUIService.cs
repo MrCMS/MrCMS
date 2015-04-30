@@ -38,7 +38,6 @@ namespace MrCMS.Web.Areas.Admin.Services
                 .OrderBy(notification => notification.CreatedOn).Desc
                 .TransformUsing(Transformers.AliasToBean<NotificationModel>())
                 .Take(15)
-                .Cacheable()
                 .List<NotificationModel>();
         }
 

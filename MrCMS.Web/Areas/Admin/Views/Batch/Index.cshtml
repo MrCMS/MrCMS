@@ -1,0 +1,68 @@
+﻿@using MrCMS.Batching.Entities
+@using MrCMS.Paging
+@using MrCMS.Web.Areas.Admin.Helpers
+@model MrCMS.Web.Areas.Admin.Models.BatchSearchModel
+@{
+    ViewBag.Title = "Batches: Page " + Model.Page;
+    var batches = ViewData["results"] as IPagedList<Batch> ?? PagedList<Batch>.Empty;
+}
+    <fieldset>
+        <legend>
+            Batches
+        </legend>
+
+        @if (!batches.Any())
+        {
+            <p>
+            No batches.
+            </p>
+            }
+        else
+        {
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Id
+                        </th>
+                        <th>
+                            # of Items
+                        </th>
+                        <th>
+                            Created On
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in batches)
+                    {
+                        <tr>
+                            <td>
+                                @item.Id
+                            </td>
+                            <td>
+                                @item.GetItemCount()
+                            </td>
+                            <td>
+                                @item.CreatedOn
+                            </td>
+                            <td>
+                                @item.GetStatus()
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    @Html.ActionLink("View Batch", "Show", "Batch", new { id = item.Id }, new { @class = "btn btn-xs btn-default" })
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </fieldset>

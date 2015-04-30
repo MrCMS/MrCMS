@@ -1,28 +1,31 @@
-using System.Web.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Helpers;
 using MrCMS.Search.Models;
 
 namespace MrCMS.Search.ItemCreation
 {
     public class GetMediaFileSearchItem : GetUniversalSearchItemBase<MediaFile>
     {
-        private readonly UrlHelper _urlHelper;
-
-        public GetMediaFileSearchItem(UrlHelper urlHelper)
-        {
-            _urlHelper = urlHelper;
-        }
-
-        public override UniversalSearchItem GetSearchItem(MediaFile mediaFile)
+        public override UniversalSearchItem GetSearchItem(MediaFile entity)
         {
             return new UniversalSearchItem
-                       {
-                           DisplayName = mediaFile.FileName,
-                           Id = mediaFile.Id,
-                           SearchTerms = new string[] { mediaFile.FileName, mediaFile.FileExtension, mediaFile.FileUrl, mediaFile.Title, mediaFile.Description },
-                           SystemType = mediaFile.GetType().FullName,
-                           ActionUrl = _urlHelper.Action("Edit", "File", new { id = mediaFile.Id, area = "admin" }),
-                       };
+            {
+                DisplayName = entity.FileName,
+                Id = entity.Id,
+                PrimarySearchTerms = new[] {entity.FileName, entity.Title, entity.Description},
+                SecondarySearchTerms = new[] {entity.FileExtension, entity.FileUrl},
+                SystemType = typeof (MediaFile).FullName,
+                ActionUrl = "/admin/file/edit/" + entity.Id,
+                CreatedOn = entity.CreatedOn,
+                SearchGuid = entity.Guid
+            };
+        }
+
+        public override HashSet<UniversalSearchItem> GetSearchItems(HashSet<MediaFile> entities)
+        {
+            return entities.Select(GetSearchItem).ToHashSet();
         }
     }
 }

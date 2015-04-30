@@ -1,13 +1,7 @@
-﻿@using System
-@using System.Activities.Statements
-@using System.Collections.Generic
-@using System.Linq
-@using MrCMS.Helpers
-@using MrCMS.Models
-@using NHibernate.Mapping
-@model System.Collections.Generic.IEnumerable<IAdminMenuItem>
+﻿@using MrCMS.Models
+@model IEnumerable<MrCMS.Models.IAdminMenuItem>
 @{
-    var currentUrl = Request.Url.AbsolutePath;
+    string currentUrl = Request.Url.AbsolutePath;
 }
 <ul class="nav nav-pills nav-stacked">
     <li class="@(currentUrl == Url.Action("Index", "Webpage") ? "active" : "")"><a href="@Url.Action("Index", "Webpage")"><i class="fa fa-file-code-o"></i> @Resource("Admin Nav Pages", "Pages")</a></li>
@@ -15,9 +9,9 @@
     <li class="@(currentUrl == Url.Action("Index", "Layout") ? "active" : "")"><a href="@Url.Action("Index", "Layout")"><i class="glyphicon glyphicon-th"></i> @Resource("Admin Nav Layout", "Layouts")</a></li>
 
     @{
-        var adminMenuItems = Model.Where(item => item.CanShow).ToList();
+        List<IAdminMenuItem> adminMenuItems = Model.Where(item => item.CanShow).ToList();
     }
-    @foreach (var item in adminMenuItems)
+    @foreach (IAdminMenuItem item in adminMenuItems)
     {
         if (item.Children.Any())
         {
@@ -25,7 +19,7 @@
             <li class="dropdown-submenu @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@indexOf">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown-mrcms">
                     <i class="@item.IconClass"> </i>
-                    @item.Text
+                    @Resource("Nav Links - " + item.Text, item.Text)
                     <b class="caret"></b>
 
                 </a>
@@ -42,8 +36,8 @@
 @helper RenderMenu(SubMenu subMenu, IEnumerable<int> indexOf, string currentUrl)
 {
     <ul class="nav nav-pills nav-stacked dropdown-menu" data-menu="true">
-        @{ var items = subMenu.Where(menuItem => menuItem.CanShow).ToList(); }
-        @foreach (var item in items)
+        @{ List<ChildMenuItem> items = subMenu.Where(menuItem => menuItem.CanShow).ToList(); }
+        @foreach (ChildMenuItem item in items)
         {
             if (item.Children != null && item.Children.Any())
             {
@@ -51,7 +45,7 @@
                 indexOf = indexOf.Concat(new List<int> { index });
                 <li class="dropdown-submenu @(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")" data-menu="@string.Join("-", indexOf)">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown-mrcms">
-                        @item.Text
+                        @Resource("Nav Links - " + item.Text, item.Text)
                         <b class="caret"></b>
                     </a>
                     @RenderMenu(item.Children, indexOf, currentUrl)
@@ -62,6 +56,6 @@
                 <li class="@(currentUrl.Equals(item.Url, StringComparison.OrdinalIgnoreCase) ? "active" : "")"> <a href="@item.Url">@item.Text</a></li>
             }
         }
-</ul>
+    </ul>
     <div class="clearfix"></div>
 }

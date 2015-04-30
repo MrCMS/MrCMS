@@ -1,6 +1,7 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
+@using MrCMS.Web.Areas.Admin.Helpers
 @using MrCMS.Website
 @model Webpage
 <div class="display-inline">
@@ -78,16 +79,27 @@
     <hr />
 
     <div class="form-group">
-        <label class="checkbox-inline">
-            @Html.CheckBoxFor(x => x.RevealInNavigation)
-            @Resource("Admin Webpage Seo Include in navigation", "Include in navigation")
-        </label>
+        @Html.InlineCheckboxFor(webpage => webpage.RevealInNavigation)
     </div>
 
+    if (!Html.IsExcludedFromSitemap())
+    {
+        <div class="form-group">
+            @Html.InlineCheckboxFor(webpage => webpage.IncludeInSitemap)
+        </div>
+    }
+    else
+    {
+        @*
+            We're adding this so that over time it will set pages
+            defaulted to true to false when they're excluded in code
+        *@
+        Model.IncludeInSitemap = false;
+        @Html.HiddenFor(webpage => webpage.IncludeInSitemap)
+    }
+
     <div class="form-group">
-        <label class="checkbox-inline">
-            @Html.CheckBoxFor(webpage => webpage.RequiresSSL) @Resource("Admin Webpage Seo Requires SSL", "Requires SSL")
-        </label>
+        @Html.InlineCheckboxFor(webpage => webpage.RequiresSSL)
     </div>
 }
 <hr />

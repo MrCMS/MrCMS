@@ -15,11 +15,11 @@ namespace MrCMS.Search
 
         public void Execute(OnUpdatedArgs<SystemEntity> args)
         {
-            _universalSearchIndexManager.Index(args.Item);
+            _universalSearchIndexManager.Update(args.Item);
         }
         public void Execute(OnAddedArgs<SystemEntity> args)
         {
-            _universalSearchIndexManager.Index(args.Item);
+            _universalSearchIndexManager.Insert(args.Item);
         }
         public void Execute(OnDeletedArgs<SystemEntity> args)
         {

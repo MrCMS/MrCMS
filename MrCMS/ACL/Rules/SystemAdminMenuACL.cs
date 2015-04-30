@@ -6,10 +6,12 @@ namespace MrCMS.ACL.Rules
     {
         public const string ShowMenu = "Show Menu";
         public const string SiteSettings = "Site Settings";
+        public const string SystemSettings = "System Settings";
         public const string FileSystemSettings = "File System Settings";
         public const string Sites = "Sites";
         public const string Resources = "Resources";
         public const string Logs = "Logs";
+        public const string Batch = "Batch";
         public const string Tasks = "Tasks";
         public const string ImportExport = "Import/Export";
         public const string MessageTemplates = "Message Templates";
@@ -32,10 +34,12 @@ namespace MrCMS.ACL.Rules
                    {
                        ShowMenu,
                        SiteSettings,
+                       SystemSettings,
                        FileSystemSettings,
                        Sites,
                        Resources,
                        Logs,
+                       Batch,
                        Tasks,
                        ImportExport,
                        MessageTemplates,

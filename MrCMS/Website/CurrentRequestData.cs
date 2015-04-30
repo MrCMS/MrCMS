@@ -140,25 +140,15 @@ namespace MrCMS.Website
             set { UserGuidOverride = value; }
         }
 
-        public static HashSet<Action<IKernel>> OnEndRequest
+        public static HashSet<EndRequestTask> OnEndRequest
         {
             get
             {
-                return (HashSet<Action<IKernel>>) (CurrentContext.Items["current.on-end-request"] ??
+                return (HashSet<EndRequestTask>)(CurrentContext.Items["current.on-end-request"] ??
                                                    (CurrentContext.Items["current.on-end-request"] =
-                                                       new HashSet<Action<IKernel>>()));
+                                                       new HashSet<EndRequestTask>()));
             }
             set { CurrentContext.Items["current.on-end-request"] = value; }
-        }
-
-        public static HashSet<QueuedTask> QueuedTasks
-        {
-            get
-            {
-                return (HashSet<QueuedTask>) (CurrentContext.Items["current.queued-tasks"] ??
-                                              (CurrentContext.Items["current.queued-tasks"] = new HashSet<QueuedTask>()));
-            }
-            set { CurrentContext.Items["current.queued-tasks"] = value; }
         }
 
         private static void SetSiteFilter(Site value)

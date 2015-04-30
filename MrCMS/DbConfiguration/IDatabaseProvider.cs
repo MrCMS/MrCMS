@@ -6,5 +6,6 @@ namespace MrCMS.DbConfiguration
     {
         string Type { get; }
         IPersistenceConfigurer GetPersistenceConfigurer();
+        void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config);
     }
 }

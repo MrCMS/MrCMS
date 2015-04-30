@@ -3,10 +3,11 @@
 @using (Html.BeginForm("Revert", "Versions", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
 {
     <fieldset>
-        <legend>@Resource("Admin Webpage Revert to version", "Revert to version")
-                 <span class="btn-group  display-inline  pull-right">
-                     <input type="submit" class="btn btn-primary" value="@Resource("Save")" />
-                 </span>
+        <legend>
+            @Resource("Admin Webpage Revert to version", "Revert to version")
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn btn-primary" value="@Resource("Revert")" />
+            </span>
         </legend>
         <p>@Resource("Admin Webpage Revert Message", "Please confirm that you want to this version of") @Model.Document.Name</p>
     </fieldset>

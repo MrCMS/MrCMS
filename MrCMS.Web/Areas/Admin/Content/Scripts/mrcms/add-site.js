@@ -1,10 +1,10 @@
-﻿$(function () {
-    $(document).on('change', '#SiteId', function () {
-        if ($(this).val()) {
-            $('#other-site-copy-options').show();
-        } else {
-            $('#other-site-copy-options').hide();
-        }
+﻿(function($) {
+    function updateAllOptions(event) {
+        event.preventDefault();
+        var value = $(event.target).val();
+        $('[name^="sco-"]').val(value);
+    }
+    $(function() {
+        $(document).on('change', '#copy-all', updateAllOptions);
     });
-    $('#SiteId').change();
-});
+})(jQuery);

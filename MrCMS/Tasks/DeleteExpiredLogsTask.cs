@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
 using MrCMS.Logging;
 using MrCMS.Settings;
 using MrCMS.Website;
@@ -9,30 +12,42 @@ namespace MrCMS.Tasks
     public class DeleteExpiredLogsTask : SchedulableTask
     {
         private readonly SiteSettings _siteSettings;
-        private readonly ISessionFactory _sessionFactory;
+        private readonly IStatelessSession _statelessSession;
 
-        public DeleteExpiredLogsTask(SiteSettings siteSettings, ISessionFactory sessionFactory)
+        public DeleteExpiredLogsTask(SiteSettings siteSettings, IStatelessSession statelessSession)
         {
             _siteSettings = siteSettings;
-            _sessionFactory = sessionFactory;
+            _statelessSession = statelessSession;
         }
 
         public override int Priority { get { return 0; } }
 
         protected override void OnExecute()
         {
-            var statelessSession = _sessionFactory.OpenStatelessSession();
-            var logs =
-                statelessSession.QueryOver<Log>().Where(data => data.CreatedOn <= CurrentRequestData.Now.AddDays(-_siteSettings.DaysToKeepLogs)).List();
+            var logs = GetLogs();
 
-            using (var transaction = statelessSession.BeginTransaction())
+            while (logs.Any())
             {
-                foreach (var log in logs)
+                IList<Log> currentLogs = logs;
+                _statelessSession.Transact(session =>
                 {
-                    statelessSession.Delete(log);
-                }
-                transaction.Commit();
+                    foreach (var log in currentLogs)
+                    {
+                        _statelessSession.Delete(log);
+                    }
+
+                });
+                logs = GetLogs();
             }
+        }
+
+        private IList<Log> GetLogs()
+        {
+            return
+                _statelessSession.QueryOver<Log>()
+                    .Where(data => data.CreatedOn <= CurrentRequestData.Now.AddDays(-_siteSettings.DaysToKeepLogs))
+                    .Take(1000)
+                    .List();
         }
     }
 }

@@ -9,8 +9,8 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<FormValue> mapping)
         {
-            mapping.Map(posting => posting.Value).CustomType<VarcharMax>().Length(4001);
-            mapping.Map(posting => posting.Key).CustomType<VarcharMax>().Length(4001);
+            mapping.Map(posting => posting.Value).MakeVarCharMax();
+            mapping.Map(posting => posting.Key).MakeVarCharMax();
         }
     }
 }

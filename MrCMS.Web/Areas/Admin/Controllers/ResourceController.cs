@@ -1,7 +1,9 @@
 ﻿using System.Web.Mvc;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -19,14 +21,24 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             ViewData["results"] = _stringResourceAdminService.Search(searchQuery);
             ViewData["language-options"] = _stringResourceAdminService.SearchLanguageOptions();
+            ViewData["site-options"] = _stringResourceAdminService.SearchSiteOptions();
             return View(searchQuery);
         }
 
         [HttpGet]
-        public ViewResult Add(string key)
+        public ViewResult ChooseSite(ChooseSiteParams chooseSiteParams)
         {
-            ViewData["language-options"] = _stringResourceAdminService.GetLanguageOptions(key);
-            return View(new StringResource {Key = key});
+            ViewData["site-options"] = _stringResourceAdminService.ChooseSiteOptions(chooseSiteParams);
+            return View(chooseSiteParams);
+        }
+
+        [HttpGet]
+        public ViewResult Add(string key, [IoCModelBinder(typeof(NullableEntityModelBinder))] Site site, bool language = false)
+        {
+            if (language)
+                ViewData["language-options"] = _stringResourceAdminService.GetLanguageOptions(key, site);
+
+            return View(_stringResourceAdminService.GetNewResource(key, site));
         }
 
         [HttpPost]

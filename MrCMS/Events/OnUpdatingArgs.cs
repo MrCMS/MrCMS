@@ -1,3 +1,4 @@
+using System;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities;
 using NHibernate;
@@ -18,6 +19,11 @@ namespace MrCMS.Events
             Session = session;
             Item = info.Object;
             Original = info.OriginalVersion;
+        }
+
+        public bool HasChanged(Func<T, object> comparisionFunction)
+        {
+            return comparisionFunction(Original) != comparisionFunction(Item);
         }
 
         public T Item { get; set; }

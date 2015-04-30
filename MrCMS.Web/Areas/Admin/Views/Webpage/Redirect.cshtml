@@ -1,8 +1,15 @@
-﻿@model MrCMS.Entities.Documents.Web.Redirect
-@Html.LabelFor(redirect => redirect.RedirectUrl)
-@Html.TextBoxFor(redirect => redirect.RedirectUrl, new { @class = "col-lg-12" })
-@Html.ValidationMessageFor(redirect => redirect.RedirectUrl)
-<label class="checkbox" for="Permanent">
-    @Html.CheckBoxFor(redirect => redirect.Permanent) 301 Pemanent
-</label>
-@Html.ValidationMessageFor(redirect => redirect.Permanent)
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.Redirect
+<div class="form-group">
+    @Html.LabelFor(redirect => redirect.RedirectUrl)
+    @Html.TextBoxFor(redirect => redirect.RedirectUrl, new { @class = "form-control" })
+    @Html.ValidationMessageFor(redirect => redirect.RedirectUrl)
+</div>
+<div class="form-group">
+    @Html.InlineCheckboxFor(redirect => redirect.Permanent, text: Resource("301 Pemanent"))
+    @Html.ValidationMessageFor(redirect => redirect.Permanent)
+</div>
+<div class="form-group">
+    @Html.InlineCheckboxFor(redirect => redirect.RevealInNavigation, text: Resource("Show in Navigation"))
+    @Html.ValidationMessageFor(redirect => redirect.RevealInNavigation)
+</div>

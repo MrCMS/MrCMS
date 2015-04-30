@@ -1,0 +1,66 @@
+﻿@model MrCMS.Entities.Messaging.QueuedMessage
+
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                @Html.LabelFor(x => x.FromAddress)
+                @Html.DisplayFor(x => x.FromAddress)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.FromName)
+                @Html.DisplayFor(x => x.FromName)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Cc)
+                @Html.DisplayFor(x => x.Cc)
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                @Html.LabelFor(x => x.ToAddress)
+                @Html.DisplayFor(x => x.ToAddress)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ToName)
+                @Html.DisplayFor(x => x.ToName)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Bcc)
+                @Html.DisplayFor(x => x.Bcc)
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                @Html.LabelFor(x => x.Subject)
+                @Html.DisplayFor(x => x.Subject)
+                @Html.ValidationMessageFor(x => x.Subject)
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                @Html.LabelFor(x => x.Body)
+                @if (Model.IsHtml)
+                {
+                    @Html.Raw(Model.Body)
+                }
+                else
+                {
+                    @Model.Body
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>
+        Sorry, but we were unable to preview this template for this id
+    </p>
+}

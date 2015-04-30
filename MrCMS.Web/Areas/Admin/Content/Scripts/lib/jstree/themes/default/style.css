@@ -551,7 +551,7 @@
   background-position: -71px -7px;
 }
 .jstree-default-small .jstree-loading > .jstree-ocl {
-  background: url("throbber.gif") center center no-repeat;
+  background: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/throbber.gif") center center no-repeat;
 }
 .jstree-default-small .jstree-anchor > .jstree-themeicon {
   background-position: -263px -7px;
@@ -677,7 +677,7 @@
   background-position: -64px 0px;
 }
 .jstree-default-large .jstree-loading > .jstree-ocl {
-  background: url("throbber.gif") center center no-repeat;
+  background: url("/Areas/Admin/Content/Scripts/lib/jstree/themes/default/throbber.gif") center center no-repeat;
 }
 .jstree-default-large .jstree-anchor > .jstree-themeicon {
   background-position: -256px 0px;

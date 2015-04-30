@@ -7,16 +7,21 @@
     <li><a href="#edit-seo" data-toggle="tab">@Resource("Admin Webpage SEO Tab", "SEO & Properties")</a></li>
     <li><a href="#versions" data-toggle="tab">@Resource("Admin Webpage Tab Versions", "Versions")</a></li>
 </ul>
-<div class="row">
-
-    @using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document" }))
-    {
-        <div class="tab-content">
+@using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document" }))
+{
+    <div class="tab-content">
+        <div class="tab-pane active" id="edit-content">
             @{Html.RenderPartial("Properties", Model);}
+        </div>
+        <div class="tab-pane " id="layout-content">
             @{Html.RenderPartial("Layout", Model); }
+        </div>
+        <div class="tab-pane " id="edit-seo">
             @{Html.RenderPartial("SEO", Model);}
+        </div>
+        <div class="tab-pane " id="versions">
             @{Html.RenderPartial("PageVersions", Model);}
         </div>
-    }
-</div>
+    </div>
+}
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-webpage.js"); }

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MrCMS.Indexing.Management;
-using MrCMS.Web.Apps.Core.Models.Search;
+using MrCMS.Models;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
@@ -10,6 +9,12 @@ namespace MrCMS.Web.Areas.Admin.Services
         List<LuceneFieldBoost> GetBoosts(string type);
         void SaveBoosts(List<LuceneFieldBoost> boosts);
 
+        List<MrCMSIndex> GetIndexes();
+        void Reindex(string typeName);
+        void Optimise(string typeName);
+
+        MrCMSIndex GetUniversalSearchIndexInfo();
         void ReindexUniversalSearch();
+        void OptimiseUniversalSearch();
     }
 }

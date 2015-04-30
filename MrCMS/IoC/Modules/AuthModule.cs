@@ -18,13 +18,13 @@ namespace MrCMS.IoC.Modules
             Kernel.Bind<IEnumerable<IHashAlgorithm>>()
                 .ToMethod(context => context.Kernel.GetAll<IHashAlgorithm>())
                 .InRequestScope();
-            Kernel.Bind<IUserStore<User>>().To<UserStore>().InRequestScope();
-            Kernel.Bind<UserManager<User>>().ToMethod(context =>
+            Kernel.Bind<IUserStore<User, int>>().To<UserStore>().InRequestScope();
+            Kernel.Bind<UserManager<User, int>>().ToMethod(context =>
             {
-                var userManager = new UserManager<User>(context.Kernel.Get<IUserStore<User>>());
-                userManager.UserValidator = new UserValidator<User>(userManager)
+                var userManager = new UserManager<User, int>(context.Kernel.Get<IUserStore<User, int>>());
+                userManager.UserValidator = new UserValidator<User, int>(userManager)
                 {
-                    AllowOnlyAlphanumericUserNames = false
+                    AllowOnlyAlphanumericUserNames = false,
                 };
                 return userManager;
             }).InRequestScope();

@@ -7,23 +7,58 @@
 
 <h1 class="page-header">@Resource("Admin Message Templates Title", "Message Templates")</h1>
 <table class="table table-condensed table-striped">
-    @foreach (var item in Model)
-    {
+    <thead>
         <tr>
-            <td>
-                @item.Type.Name.BreakUpString()
-            </td>
-            <td>
-                <div class="btn-group">
-                    @(item.Id.HasValue
-                        ? Html.ActionLink(Resource("Edit"), "Edit", new { Id = item.Id }, new { @class = "btn btn-default btn-xs" })
-                        : Html.ActionLink(Resource("Add"), "Add", new { type = item.Type.FullName }, new { @class = "btn btn-xs btn-primary" }))
-                    @if (item.CanPreview)
-                    {
-                        @Html.ActionLink(Resource("Preview"), "Preview", "MessageTemplate", new { id = item.Id }, new { @class = "btn btn-xs btn-default ", data_toggle = "fb-modal" })
-                    }
-                </div>
-            </td>
+            <th>
+                @Resource("Message template index - Template Type", "Template Type")
+            </th>
+            <th>
+                @Resource("Message template index - System/Site", "System/Site")
+            </th>
+            <th>
+                @Resource("Message template index - Enabled?", "Enabled?")
+            </th>
+            <th>
+                @Resource("Message template index - Actions", "Actions")
+            </th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Type.Name.BreakUpString()
+                </td>
+                <td>
+                    @(item.IsOverride ? Resource("Site Override") : Resource("System Default"))
+                </td>
+                <td>
+                    @(item.IsEnabled ? Resource("Message Template Enabled", "Enabled") : Resource("Message Template Disabled", "Disabled"))
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @*@Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })*@
+                        @if (item.LegacyTemplateExists)
+                        {
+                            @Html.ActionLink(Resource("Import legacy template"), "ImportLegacyTemplate", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+                        }
+                        @if (!item.IsOverride)
+                        {
+                            @Html.ActionLink(Resource("Add site override"), "AddSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink(Resource("Delete site override"), "DeleteSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+                        }
+                        @Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })
+                        @if (item.CanPreview)
+                        {
+                            @Html.ActionLink(Resource("Preview"), "Get", "MessageTemplatePreview", new { type = item.TypeName }, new { @class = "btn btn-xs btn-default" })
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>

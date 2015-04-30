@@ -1,0 +1,46 @@
+﻿@using System.Collections.Generic
+@using MrCMS.Helpers
+@using MrCMS.Website
+@model MrCMS.Web.Areas.Admin.Models.ChooseSiteParams
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+@if (!siteOptions.Any())
+{ <fieldset>
+        <legend>
+            @Resource("Admin Resources Cannot Override", "Cannot Override")
+
+        </legend>
+        <p>
+            You already have site overrides for @Model.Key for all sites.
+        </p>
+    </fieldset>
+}
+else
+{
+    using (Html.BeginForm("Add", "Resource", FormMethod.Get, new { id = "resource-choose-site" }))
+    {
+        <fieldset>
+            <legend>
+                @Resource("Admin Resources Choose Site", "Choose site")
+                <span class="btn-group display-inline pull-right">
+                    <button type="submit" class="btn-primary btn">@Resource("Proceed")</button>
+                </span>
+            </legend>
+            @if (Request.UrlReferrer != null)
+            {
+                @Html.Hidden("referrer", Request.UrlReferrer.ToString())
+            }
+            @Html.HiddenFor(resource => resource.Key)
+            @Html.HiddenFor(resource => resource.Language)
+            <div class="form-group">
+                @Html.LabelFor(resource => resource.Id, @Resource("Site"))
+                @Html.DropDownListFor(resource => resource.Id, siteOptions, new { @data_val = "true", data_val_required = "Please select a site.", @class = "form-control" })
+                @Html.ValidationMessageFor(resource => resource.Id)
+            </div>
+        </fieldset>
+    }
+}
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/choose-site.js");}

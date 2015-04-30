@@ -1,10 +1,9 @@
+using System;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
-using MrCMS.Apps;
 using MrCMS.Entities.Widget;
-using MrCMS.Models;
 using MrCMS.Services;
-using MrCMS.Helpers;
+using StackExchange.Profiling;
 
 namespace MrCMS.Website.Controllers
 {
@@ -19,7 +18,7 @@ namespace MrCMS.Website.Controllers
 
         public ActionResult Show(Widget widget)
         {
-            return _widgetUIService.GetContent(this, widget, helper => helper.Action("Internal", "Widget", new { widget }));
+            return _widgetUIService.GetContent(this, widget, helper => helper.Action("Internal", "Widget", new {widget}));
         }
 
         public PartialViewResult Internal(Widget widget)
@@ -30,6 +29,15 @@ namespace MrCMS.Website.Controllers
                 ? widget.CustomLayout
                 : widget.WidgetType,
                 _widgetUIService.GetModel(widget));
+        }
+
+        protected override IDisposable GetEndToEndStep(ActionExecutingContext filterContext)
+        {
+            var widget = filterContext.ActionParameters["widget"] as Widget;
+            if (widget == null)
+                return base.GetEndToEndStep(filterContext);
+            return MiniProfiler.Current.Step(string.Format("End-to-end for widget {0} ({1})",
+                widget.Id, widget.Name));
         }
     }
 }

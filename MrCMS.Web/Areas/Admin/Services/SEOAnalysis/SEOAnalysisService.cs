@@ -53,7 +53,6 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
 
         public class TemporaryPublisher : IDisposable
         {
-            private readonly DateTime? _publishOn;
             private readonly bool _published;
             private readonly ISession _session;
             private readonly Webpage _webpage;
@@ -65,8 +64,7 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
                 _published = webpage.Published;
                 if (!_published)
                 {
-                    _publishOn = _webpage.PublishOn;
-                    webpage.PublishOn = CurrentRequestData.Now.AddDays(-1);
+                    webpage.Published = true;
                     _session.Transact(s => s.Update(_webpage));
                 }
             }
@@ -75,7 +73,7 @@ namespace MrCMS.Web.Areas.Admin.Services.SEOAnalysis
             {
                 if (!_published)
                 {
-                    _webpage.PublishOn = _publishOn;
+                    _webpage.Published = false;
                     _session.Transact(s => s.Update(_webpage));
                 }
             }

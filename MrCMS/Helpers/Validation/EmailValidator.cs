@@ -10,7 +10,7 @@ namespace MrCMS.Helpers.Validation
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class EmailValidator : RegularExpressionAttribute
     {
-        private const string _pattern = @"^\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}\b$";
+        private const string _pattern = @"^\b[a-zA-Z0-9._%'+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}\b$";
 
         static EmailValidator()
         {

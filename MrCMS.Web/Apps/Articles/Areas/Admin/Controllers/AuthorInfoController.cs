@@ -43,9 +43,9 @@ namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
         }
 
         [ChildActionOnly]
-        public PartialViewResult Show(AuthorInfo info)
+        public PartialViewResult Show(User user)
         {
-            return PartialView(info);
+            return PartialView(user);
         }
     }
 }

@@ -34,6 +34,8 @@ namespace MrCMS.Models
                     {
                         new ChildMenuItem("Site Settings", "/Admin/Settings",
                             ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.SiteSettings)),
+                        new ChildMenuItem("System Settings", "/Admin/SystemSettings",
+                            ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.SiteSettings)),
                         new ChildMenuItem("Filesystem Settings", "/Admin/Settings/FileSystem",
                             ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.FileSystemSettings)),
                         new ChildMenuItem("ACL", "/Admin/ACL",
@@ -54,6 +56,8 @@ namespace MrCMS.Models
                         ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Resources)),
                     new ChildMenuItem("Logs", "/Admin/Log",
                         ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Logs)),
+                    new ChildMenuItem("Batches", "/Admin/Batch",
+                        ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Batch)),
                     new ChildMenuItem("Tasks", "/Admin/Task",
                         ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Tasks)),
                     new ChildMenuItem("Indexes", "/Admin/Indexes",
@@ -62,8 +66,8 @@ namespace MrCMS.Models
                         ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.MessageQueue)),
                     new ChildMenuItem("Notifications", "/Admin/Notification",
                         ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Notifications)),
-                    new ChildMenuItem("Clear Caches", "/Admin/ClearCaches")
-               
+                    new ChildMenuItem("Clear Caches", "/Admin/ClearCaches"),
+                    new ChildMenuItem("About", "/Admin/About")
             };
         }
 

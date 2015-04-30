@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
-using Lucene.Net.Store;
 using MrCMS.Entities;
-using MrCMS.Entities.Multisite;
 using MrCMS.Indexing.Management;
 using MrCMS.Paging;
 using MrCMS.Settings;
@@ -17,25 +15,14 @@ namespace MrCMS.Indexing.Querying
         where TDefinition : IndexDefinition<TEntity>
     {
         private readonly TDefinition _definition;
-        private readonly Site _site;
-        private readonly IGetLuceneDirectory _getLuceneDirectory;
         private readonly SiteSettings _siteSettings;
         private bool _disposed;
-        private IndexSearcher _indexSearcher;
-        private Directory _directory;
 
-        public Searcher(Site site, IGetLuceneDirectory getLuceneDirectory, TDefinition definition, SiteSettings siteSettings)
+        public Searcher(TDefinition definition, SiteSettings siteSettings)
         {
-            _site = site;
-            _getLuceneDirectory = getLuceneDirectory;
             _definition = definition;
             _siteSettings = siteSettings;
             IndexManager.EnsureIndexExists<TEntity, TDefinition>();
-        }
-
-        public string IndexFolderName
-        {
-            get { return Definition.IndexFolderName; }
         }
 
         public TDefinition Definition
@@ -62,19 +49,7 @@ namespace MrCMS.Indexing.Querying
             Filter filter = null, Sort sort = null) where TSubclass : TEntity
         {
             int size = pageSize ?? _siteSettings.DefaultPageSize;
-            BooleanQuery booleanQuery = null;
-            if (query is MatchAllDocsQuery)
-            {
-                booleanQuery = new BooleanQuery();
-            }
-            else if (query is BooleanQuery)
-            {
-                booleanQuery = query as BooleanQuery;
-            }
-            if (booleanQuery != null)
-                booleanQuery.Add(
-                    new TermQuery(new Term(IndexDefinition<TEntity>.EntityType.FieldName, typeof(TSubclass).FullName)),
-                    Occur.MUST);
+            BooleanQuery booleanQuery = UpdateQuery<TSubclass>(query);
 
             TopFieldDocs topDocs = IndexSearcher.Search(booleanQuery ?? query, filter, pageNumber * size,
                 sort ?? Sort.RELEVANCE);
@@ -94,6 +69,15 @@ namespace MrCMS.Indexing.Querying
             return topDocs.TotalHits;
         }
 
+        public int Total<TSubclass>(Query query, Filter filter = null) where TSubclass : TEntity
+        {
+            BooleanQuery booleanQuery = UpdateQuery<TSubclass>(query);
+
+            TopDocs topDocs = IndexSearcher.Search(booleanQuery, filter, int.MaxValue);
+
+            return topDocs.TotalHits;
+        }
+
         public IList<TEntity> GetAll(Query query = null, Filter filter = null, Sort sort = null)
         {
             TopFieldDocs topDocs = IndexSearcher.Search(query, filter, int.MaxValue, sort ?? Sort.RELEVANCE);
@@ -104,9 +88,22 @@ namespace MrCMS.Indexing.Querying
             return entities.ToList();
         }
 
+        public IList<TSubclass> GetAll<TSubclass>(Query query = null, Filter filter = null, Sort sort = null)
+            where TSubclass : TEntity
+        {
+            BooleanQuery booleanQuery = UpdateQuery<TSubclass>(query);
+
+            TopFieldDocs topDocs = IndexSearcher.Search(booleanQuery, filter, int.MaxValue, sort ?? Sort.RELEVANCE);
+
+            IEnumerable<TSubclass> entities =
+                Definition.Convert<TSubclass>(topDocs.ScoreDocs.Select(doc => IndexSearcher.Doc(doc.Doc)));
+
+            return entities.ToList();
+        }
+
         public IndexSearcher IndexSearcher
         {
-            get { return _indexSearcher = _indexSearcher ?? new IndexSearcher(GetDirectory(_site)); }
+            get { return Definition.GetSearcher(); }
         }
 
         public string IndexName
@@ -123,9 +120,22 @@ namespace MrCMS.Indexing.Querying
             GC.SuppressFinalize(this);
         }
 
-        private Directory GetDirectory(Site site)
+        private static BooleanQuery UpdateQuery<TSubclass>(Query query) where TSubclass : TEntity
         {
-            return _directory = _directory ?? _getLuceneDirectory.Get(site, IndexFolderName);
+            BooleanQuery booleanQuery = null;
+            if (query is MatchAllDocsQuery)
+            {
+                booleanQuery = new BooleanQuery();
+            }
+            else if (query is BooleanQuery)
+            {
+                booleanQuery = query as BooleanQuery;
+            }
+            if (booleanQuery != null)
+                booleanQuery.Add(
+                    new TermQuery(new Term(IndexDefinition<TEntity>.EntityType.FieldName, typeof(TSubclass).FullName)),
+                    Occur.MUST);
+            return booleanQuery;
         }
 
         protected void Dispose(bool disposing)
@@ -136,12 +146,9 @@ namespace MrCMS.Indexing.Querying
             {
                 if (disposing)
                 {
-                    if (IndexSearcher != null)
-                        IndexSearcher.Dispose();
                 }
 
                 // Indicate that the instance has been disposed.
-                _indexSearcher = null;
                 _disposed = true;
             }
         }

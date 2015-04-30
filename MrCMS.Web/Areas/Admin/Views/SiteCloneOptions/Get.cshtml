@@ -1,0 +1,38 @@
+﻿@model List<MrCMS.Web.Areas.Admin.Models.SiteCloneOption>
+@{
+    var otherSites = ViewData["other-sites"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+<table class="table table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>
+                Option
+            </th>
+            <th>
+                Copy From
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <strong>Copy all from:</strong>
+            </td>
+            <td>
+                @Html.DropDownList("copy-all", otherSites, new { @class = "form-control" })
+            </td>
+        </tr>
+        @foreach (var option in Model)
+        {
+            <tr>
+                <td>
+                    @option.DisplayName
+                </td>
+                <td>
+                    @Html.DropDownList("sco-" + option.TypeName, otherSites, new { @class = "form-control input-sm" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

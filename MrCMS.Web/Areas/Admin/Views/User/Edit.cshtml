@@ -4,6 +4,7 @@
 @using MrCMS.ACL.Rules
 @using MrCMS.Entities.People
 @using MrCMS.Helpers
+@using MrCMS.Web.Areas.Admin.Models.UserEdit
 @using MrCMS.Website
 @model User
 @{
@@ -12,7 +13,7 @@
     var onlyAdmin = Convert.ToBoolean(ViewData["OnlyAdmin"]);
     var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
     var cultureOptions = ViewData["culture-options"] as List<SelectListItem> ?? new List<SelectListItem>();
-
+    List<UserTabBase> tabs = ViewData["edit-tabs"] as List<UserTabBase> ?? new List<UserTabBase>();
 }
 
 @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { id = "edit-user" }))
@@ -96,12 +97,66 @@
     @Html.ValidationSummary()
 }
 <hr />
-@foreach (var type in MrCMS.Entities.People.User.OwnedObjectTypes)
+@if (tabs.Any())
 {
-    @Html.RenderUserOwnedObjectProperties(type);
+    <ul class="nav nav-tabs margin-top-10" data-stickytabs="user-@Model.Id">
+        @foreach (UserTabBase @base in tabs)
+        {
+            @RenderTab(@base, @base == tabs.First())
+        }
+    </ul>
+    <div class="tab-content">
+        @foreach (UserTabBase @base in tabs)
+        {
+            @RenderContent(@base, @base == tabs.First())
+        }
+    </div>
 }
-@foreach (var type in UserProfileData.Types)
+@helper RenderTab(UserTabBase @base, bool isFirst = false)
 {
-    @Html.RenderUserProfileProperties(type);
+    if (@base is UserTab)
+    {
+        var tab = @base as UserTab;
+        <li class="@(isFirst ? "active" : "")">
+            <a href="#@tab.TabHtmlId" data-toggle="tab">@tab.Name(Model)</a>
+        </li>
+    }
+    else
+    {
+        var @group = @base as UserTabGroup;
+        <li class="@(isFirst ? "active dropdown" : "dropdown")">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@(@group.Name(Model))&nbsp;<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                @foreach (UserTabBase tab in @group.Children)
+                {
+                    @RenderTab(tab)
+                }
+            </ul>
+        </li>
+    }
+}
+
+@helper RenderContent(UserTabBase @base, bool isFirst = false)
+{
+    if (@base is UserTab)
+    {
+        var tab = @base as UserTab;
+        <div class="tab-pane@(isFirst ? " active" : "")" id="@tab.TabHtmlId">
+            @{
+        tab.RenderTabPane(Html, Model);
+        //Html.RenderPartial(tab.PartialViewName, Model);
+            }
+        </div>
+    }
+    else
+    {
+        var @group = @base as UserTabGroup;
+        <text>
+            @foreach (UserTabBase tab in @group.Children)
+            {
+                @RenderContent(tab)
+            }
+        </text>
+    }
 }
 

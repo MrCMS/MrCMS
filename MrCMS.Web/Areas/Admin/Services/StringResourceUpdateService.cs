@@ -45,7 +45,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                 AddToRow(row, source.Key);
                 AddToRow(row, source.Value);
                 AddToRow(row, source.UICulture);
-                AddToRow(row, source.Site.Id.ToString());
+                AddToRow(row, source.Site == null ? string.Empty : source.Site.Id.ToString());
                 data.Add(row);
             }
             string result = string.Join(Environment.NewLine, data.Select(list => string.Join(",", list)));
@@ -58,7 +58,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             };
         }
 
-        public void Import(HttpPostedFileBase file)
+        public ResourceImportSummary Import(HttpPostedFileBase file)
         {
             Stream inputStream = file.InputStream;
             inputStream.Position = 0;
@@ -75,23 +75,21 @@ namespace MrCMS.Web.Areas.Admin.Services
                 {
                     string resourceKey = ReadData(columns[0]);
 
-                    if (resourceData.All(x => x.Key != resourceKey))
+                    int id;
+                    resourceData.Add(new StringResourceData
                     {
-                        resourceData.Add(new StringResourceData
-                        {
-                            Key = resourceKey,
-                            Value = ReadData(columns[1]),
-                            UICulture = ReadData(columns[2]),
-                            SiteId = Convert.ToInt32(ReadData(columns[3]))
-                        });
-                    }
-
+                        Key = resourceKey,
+                        Value = ReadData(columns[1]),
+                        UICulture = ReadData(columns[2]),
+                        SiteId = int.TryParse(ReadData(columns[3]), out id) ? id : (int?)null
+                    });
                 }
                 catch (Exception ex)
                 {
 
                 }
             }
+            int added = 0, updated = 0;
             foreach (StringResourceData stringResourceData in resourceData)
             {
                 string uiCulture = string.IsNullOrWhiteSpace(stringResourceData.UICulture)
@@ -100,7 +98,10 @@ namespace MrCMS.Web.Areas.Admin.Services
                 StringResource stringResource =
                     _provider.AllResources.FirstOrDefault(
                         resource =>
-                        resource.Key == stringResourceData.Key && resource.Site.Id == stringResourceData.SiteId &&
+                        resource.Key == stringResourceData.Key &&
+                        (stringResourceData.SiteId.HasValue
+                        ? resource.Site != null && resource.Site.Id == stringResourceData.SiteId
+                        : resource.Site == null) &&
                         resource.UICulture == uiCulture);
                 if (stringResource != null)
                 {
@@ -108,6 +109,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                     stringResource = _session.Get<StringResource>(stringResource.Id);
                     stringResource.Value = stringResourceData.Value;
                     _provider.Update(stringResource);
+                    updated++;
                 }
                 else
                 {
@@ -116,10 +118,16 @@ namespace MrCMS.Web.Areas.Admin.Services
                         Key = stringResourceData.Key,
                         Value = stringResourceData.Value,
                         UICulture = uiCulture,
-                        Site = _session.Get<Site>(stringResourceData.SiteId)
+                        Site = stringResourceData.SiteId.HasValue ? _session.Get<Site>(stringResourceData.SiteId) : null
                     });
+                    added++;
                 }
             }
+            return new ResourceImportSummary
+            {
+                Added = added,
+                Updated = updated
+            };
         }
 
         private void AddToRow(List<string> row, string data)
@@ -141,7 +149,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             public string Key { get; set; }
             public string Value { get; set; }
             public string UICulture { get; set; }
-            public int SiteId { get; set; }
+            public int? SiteId { get; set; }
         }
     }
 }

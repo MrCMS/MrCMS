@@ -2,13 +2,10 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Controllers;
-using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using Xunit;
 
@@ -26,7 +23,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             _documentService = A.Fake<IDocumentService>();
             _fileService = A.Fake<IFileAdminService>();
             _urlValidationService = A.Fake<IUrlValidationService>();
-            _mediaCategoryController = new MediaCategoryController(_fileService, _documentService, _urlValidationService);
+            _mediaCategoryController = new MediaCategoryController(_fileService, _urlValidationService, _documentService);
         }
 
         [Fact]
@@ -40,7 +37,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MediaCategoryController_AddGet_ShouldSetParentOfModelToModelInMethod()
         {
-            var mediaCategory = new MediaCategory { Id = 1 };
+            var mediaCategory = new MediaCategory {Id = 1};
             A.CallTo(() => _documentService.GetDocument<MediaCategory>(1)).Returns(mediaCategory);
 
             var actionResult = _mediaCategoryController.Add_Get(1) as ViewResult;
@@ -61,7 +58,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MediaCategoryController_AddPost_ShouldRedirectToShow()
         {
-            var mediaCategory = new MediaCategory { Id = 1 };
+            var mediaCategory = new MediaCategory {Id = 1};
 
             var result = _mediaCategoryController.Add(mediaCategory) as RedirectToRouteResult;
 
@@ -80,7 +77,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MediaCategoryController_EditGet_ShouldReturnLayoutAsViewModel()
         {
-            var mediaCategory = new MediaCategory { Id = 1 };
+            var mediaCategory = new MediaCategory {Id = 1};
 
             var result = _mediaCategoryController.Edit_Get(mediaCategory) as ViewResult;
 
@@ -90,7 +87,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MediaCategoryController_EditPost_ShouldCallSaveDocument()
         {
-            var mediaCategory = new MediaCategory { Id = 1 };
+            var mediaCategory = new MediaCategory {Id = 1};
 
             _mediaCategoryController.Edit(mediaCategory);
 
@@ -100,7 +97,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MediaCategoryController_EditPost_ShouldRedirectToEdit()
         {
-            var mediaCategory = new MediaCategory { Id = 1 };
+            var mediaCategory = new MediaCategory {Id = 1};
 
             ActionResult actionResult = _mediaCategoryController.Edit(mediaCategory);
 
@@ -122,7 +119,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void MediaCategoryController_Sort_ShouldBeAListOfSortItems()
         {
             var mediaCategory = new MediaCategory();
-            var mediaCategories = new List<MediaCategory> { new MediaCategory() };
+            var mediaCategories = new List<MediaCategory> {new MediaCategory()};
             A.CallTo(() => _documentService.GetDocumentsByParent(mediaCategory)).Returns(mediaCategories);
 
             var viewResult = _mediaCategoryController.Sort(mediaCategory).As<ViewResult>();
@@ -133,7 +130,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MediaCategoryController_Index_ReturnsViewResult()
         {
-            ViewResult actionResult = _mediaCategoryController.Index();
+            ViewResult actionResult = _mediaCategoryController.Index(null);
 
             actionResult.Should().NotBeNull();
         }
@@ -158,7 +155,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MediaCategoryController_Upload_ShouldReturnTheResultOfTheMediaCategoryPassedToIt()
         {
-            var mediaCategory = new MediaCategory { Name = "test" };
+            var mediaCategory = new MediaCategory {Name = "test"};
 
             ActionResult result = _mediaCategoryController.Upload(mediaCategory);
 
@@ -170,6 +167,5 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         {
             _mediaCategoryController.RemoveMedia().Should().BeOfType<PartialViewResult>();
         }
-
     }
 }

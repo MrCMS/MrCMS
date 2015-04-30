@@ -5,6 +5,7 @@ using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
+using Lucene.Net.Search;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -102,9 +103,12 @@ namespace MrCMS.Indexing.Management
         }
 
         protected readonly ISession _session;
-        protected IndexDefinition(ISession session)
+        private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
+
+        protected IndexDefinition(ISession session, IGetLuceneIndexSearcher getLuceneIndexSearcher)
         {
             _session = session;
+            _getLuceneIndexSearcher = getLuceneIndexSearcher;
         }
 
         public static FieldDefinition<T> Id
@@ -118,19 +122,36 @@ namespace MrCMS.Indexing.Management
 
         public Document Convert(T entity)
         {
-            return new Document().SetFields(GetCoreDefinitions().Concat(Definitions), entity);
+            var document = new Document();
+            document = document.SetFields(GetNewDefinitionList().Concat(Definitions), entity);
+
+            foreach (var additionalField in GetAdditionalFields(entity))
+                document.Add(additionalField);
+
+            return document;
         }
 
-        private static List<FieldDefinition<T>> GetCoreDefinitions()
+        protected virtual IEnumerable<IFieldable> GetAdditionalFields(T entity)
         {
-            return new List<FieldDefinition<T>> {Id, EntityType};
+            yield break;
+        }
+
+        protected virtual Dictionary<T, IEnumerable<IFieldable>> GetAdditionalFields(List<T> entities)
+        {
+            return entities.ToDictionary(arg => arg, arg => Enumerable.Empty<IFieldable>());
+        }
+
+        private static List<FieldDefinition<T>> GetNewDefinitionList()
+        {
+            return new List<FieldDefinition<T>> { Id, EntityType };
         }
 
         public List<Document> ConvertAll(List<T> entities)
         {
-            var fieldDefinitions = GetCoreDefinitions();
+            var fieldDefinitions = GetNewDefinitionList();
             fieldDefinitions.AddRange(Definitions);
             var list = fieldDefinitions.Select(fieldDefinition => fieldDefinition.GetFields(entities)).ToList();
+            var additionalFields = GetAdditionalFields(entities);
             var documents = new List<Document>();
             foreach (var entity in entities)
             {
@@ -139,6 +160,13 @@ namespace MrCMS.Indexing.Management
                 {
                     List<AbstractField> abstractFields = fieldInfo[entity];
                     abstractFields.ForEach(document.Add);
+                }
+                if (additionalFields.ContainsKey(entity))
+                {
+                    foreach (var additionalField in additionalFields[entity])
+                    {
+                        document.Add(additionalField);
+                    }
                 }
                 documents.Add(document);
             }
@@ -252,6 +280,37 @@ namespace MrCMS.Indexing.Management
                     IndexDefinition = this,
                     Operation = operation,
                 };
+        }
+
+        private static Lazy<Dictionary<int, Dictionary<Type, IndexSearcher>>> IndexSearcherCache =
+            new Lazy<Dictionary<int, Dictionary<Type, IndexSearcher>>>();
+        public IndexSearcher GetSearcher()
+        {
+            var indexDefinitionType = GetType();
+            var siteDictionary = IndexSearcherCache.Value;
+            var siteId = _getLuceneIndexSearcher.SiteId;
+            if (!siteDictionary.ContainsKey(siteId))
+            {
+                siteDictionary[siteId] = new Dictionary<Type, IndexSearcher>();
+            }
+            var dictionary = siteDictionary[siteId];
+            if (!dictionary.ContainsKey(indexDefinitionType))
+            {
+                dictionary[indexDefinitionType] =
+                    _getLuceneIndexSearcher.Get(IndexFolderName);
+            }
+            return dictionary[indexDefinitionType];
+        }
+
+        public void ResetSearcher()
+        {
+            var indexDefinitionType = GetType();
+            var siteDictionary = IndexSearcherCache.Value;
+            var siteId = _getLuceneIndexSearcher.SiteId;
+            if (siteDictionary.ContainsKey(siteId))
+            {
+                siteDictionary[siteId].Remove(indexDefinitionType);
+            }
         }
     }
 }

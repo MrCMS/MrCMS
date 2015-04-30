@@ -8,7 +8,7 @@ namespace MrCMS.Web.Areas.Admin.Services
     {
         List<Site> GetAllSites();
         Site GetSite(int id);
-        void AddSite(Site site, SiteCopyOptions options);
+        void AddSite(Site site, List<SiteCopyOption> options);
         void SaveSite(Site site);
         void DeleteSite(Site site);
     }

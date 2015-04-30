@@ -7,6 +7,6 @@ namespace MrCMS.Website.Optimization
         void AddScript(string virtualPath, string url);
         void AddCss(string virtualPath, string url);
         void GetScripts(ViewContext viewContext);
-        MvcHtmlString GetCss();
+        void GetCss(ViewContext viewContext);
     }
 }

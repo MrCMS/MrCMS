@@ -33,7 +33,7 @@ namespace MrCMS.Indexing.Management
             }
         }
 
-        public Directory Get(Site site, string folderName)
+        public Directory Get(Site site, string folderName, bool useRAMCache = false)
         {
             if (UseAzureForLucene)
             {
@@ -42,7 +42,8 @@ namespace MrCMS.Indexing.Management
             }
             string location = string.Format("~/App_Data/Indexes/{0}/{1}/", site.Id, folderName);
             string mapPath = _context.Server.MapPath(location);
-            return FSDirectory.Open(new DirectoryInfo(mapPath));
+            var directory = FSDirectory.Open(new DirectoryInfo(mapPath));
+            return useRAMCache ? (Directory)new RAMDirectory(directory) : directory;
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿namespace MrCMS.Services.FileMigration
+﻿using MrCMS.Batching.Entities;
+
+namespace MrCMS.Services.FileMigration
 {
     public interface IFileMigrationService
     {
-        void MigrateFiles();
+        FileMigrationResult MigrateFiles();
     }
 }

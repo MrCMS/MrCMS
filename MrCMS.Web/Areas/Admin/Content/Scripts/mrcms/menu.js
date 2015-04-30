@@ -95,7 +95,7 @@
         var items = store.get(mrcmsOpenMenuItems) || '';
         var keys = items.split(",");
         for (var i = 0; i < keys.length; i++) {
-            $("li[data-menu=" + keys[i] + "]").addClass("open");
+            $("li[data-menu='" + keys[i] + "']").addClass("open");
         }
     }
     $(document).ready(function () {

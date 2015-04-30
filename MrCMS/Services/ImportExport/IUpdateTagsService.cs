@@ -5,8 +5,6 @@ namespace MrCMS.Services.ImportExport
 {
     public interface IUpdateTagsService
     {
-        IUpdateTagsService Inititalise();
         void SetTags(DocumentImportDTO documentDto, Webpage webpage);
-        void SaveTags();
     }
 }

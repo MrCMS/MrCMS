@@ -22,7 +22,7 @@ namespace MrCMS.Services
         public void Execute(OnAddingArgs<Document> args)
         {
             Document document = args.Item;
-            if (document != null)
+            if (document != null && document.DisplayOrder == 0)
             {
                 document.DisplayOrder = GetMaxParentDisplayOrder(document, args.Session);
             }

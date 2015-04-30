@@ -12,5 +12,6 @@ namespace MrCMS.Services
         void Reindex(string typeName);
         void Optimise(string typeName);
         IIndexManagerBase GetIndexManagerBase(Type indexType);
+        IEnumerable<IIndexManagerBase> GetAllIndexManagers();
     }
 }

@@ -14,7 +14,7 @@ namespace MrCMS.Tests.IoC
         public NinjectScopingTests()
         {
             _kernel = new StandardKernel();
-            MrCMSApplication.OverrideKernel(_kernel);
+            MrCMSKernel.OverrideKernel(_kernel);
             _kernel.Bind<IDocumentService>().ToMethod(context => A.Fake<IDocumentService>()).InThreadScope();
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FluentNHibernate.Conventions;
+﻿using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.Instances;
 
 namespace MrCMS.DbConfiguration.Conventions
@@ -11,7 +7,6 @@ namespace MrCMS.DbConfiguration.Conventions
     {
         public void Apply(IPropertyInstance instance)
         {
-
             if (instance.Name == "DocumentType")
             {
                 instance.Index(string.Format("IX_{0}_{1}", instance.EntityType.Name, instance.Property.Name));

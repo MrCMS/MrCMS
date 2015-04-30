@@ -16,6 +16,12 @@ namespace MrCMS.Web.Areas.Admin.Services
             _session = session;
         }
 
+        public void SetTags(string taglist, int id)
+        {
+            var document = _session.Get<Document>(id);
+            SetTags(taglist, document);
+        }
+
         public void SetTags(string taglist, Document document)
         {
             if (document == null) throw new ArgumentNullException("document");
@@ -34,7 +40,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                 var tag = GetTag(name);
                 if (tag == null)
                 {
-                    tag = new Tag {Name = name};
+                    tag = new Tag { Name = name };
                     _session.Transact(session => session.Save(tag));
                 }
                 if (!document.Tags.Contains(tag))

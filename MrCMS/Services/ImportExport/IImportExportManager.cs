@@ -6,6 +6,6 @@ namespace MrCMS.Services.ImportExport
     public interface IImportExportManager
     {
         byte[] ExportDocumentsToExcel();
-        Dictionary<string, List<string>> ImportDocumentsFromExcel(Stream file);
+        ImportDocumentsResult ImportDocumentsFromExcel(Stream file, bool autoStart = true);
     }
 }

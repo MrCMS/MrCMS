@@ -11,5 +11,6 @@ namespace MrCMS.Web.Areas.Admin.Services
         void Add(ScheduledTask scheduledTask);
         void Update(ScheduledTask scheduledTask);
         void Delete(ScheduledTask scheduledTask);
+        void Reset(ScheduledTask scheduledTask);
     }
 }

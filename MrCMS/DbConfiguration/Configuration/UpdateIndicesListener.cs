@@ -14,16 +14,15 @@ namespace MrCMS.DbConfiguration.Configuration
         {
             if (IndexingHelper.AnyIndexes(siteEntity, operation))
             {
-                var queuedTask = new QueuedTask
+                var info = new QueuedTaskInfo
                 {
                     Data = siteEntity.Id.ToString(),
-                    Type = type.MakeGenericType(siteEntity.GetType()).FullName,
-                    Status = TaskExecutionStatus.Pending,
+                    Type = type.MakeGenericType(siteEntity.GetType()),
+                    SiteId = siteEntity.Site.Id
                 };
-                if (
-                    !CurrentRequestData.QueuedTasks.Any(
-                        task => task.Data == queuedTask.Data && task.Type == queuedTask.Type))
-                    CurrentRequestData.QueuedTasks.Add(queuedTask);
+
+                if (!CurrentRequestData.OnEndRequest.OfType<AddLuceneTaskInfo>().Any(task => info.Equals(task.Data)))
+                    CurrentRequestData.OnEndRequest.Add(new AddLuceneTaskInfo(info));
             }
         }
 
@@ -37,7 +36,7 @@ namespace MrCMS.DbConfiguration.Configuration
             var siteEntity = args.Item;
             if (siteEntity == null) return;
             if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof (InsertIndicesTask<>), siteEntity, LuceneOperation.Insert);
+                QueueTask(typeof(InsertIndicesTask<>), siteEntity, LuceneOperation.Insert);
         }
 
         public void Execute(OnUpdatedArgs<SiteEntity> args)
@@ -53,7 +52,7 @@ namespace MrCMS.DbConfiguration.Configuration
             var siteEntity = args.Item;
             if (siteEntity == null) return;
             if (ShouldBeUpdated(siteEntity))
-                QueueTask(typeof (DeleteIndicesTask<>), siteEntity, LuceneOperation.Delete);
+                QueueTask(typeof(DeleteIndicesTask<>), siteEntity, LuceneOperation.Delete);
         }
     }
 }

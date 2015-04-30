@@ -14,12 +14,16 @@
                 editor.on('configLoaded', function () {
                     editor.config.toolbar = 'Basic';
                 });
+
             });
 
             $("#enable-editing").click(function () {
                 $(this).mrcmsinline(!getEditingEnabled() ? 'enable' : 'disable');
             });
             $(this).mrcmsinline(getEditingEnabled() ? 'enable' : 'disable', true);
+
+            $('body').addClass('mrcms-admin-bar-on');
+
             return this;
         },
 
@@ -224,26 +228,38 @@
 
 
 })(jQuery);
+var MrCMSFeatherlightSettings = {
+    type: 'iframe',
+    iframeWidth: 800,
+    afterOpen: function () {
+        setCloseButtonPosition(this.$instance);
+    },
+    beforeOpen: function () {
+        $(".mrcms-edit-menu", document).hide();
+    },
+    onResize: function () {
+        if (this.autoHeight) {
+            // Shrink:
+            this.$content.css('height', '10px');
+            // Then set to the full height:
+            this.$content.css('height', this.$content.contents().find('body')[0].scrollHeight);
+        }
+        setCloseButtonPosition(this.$instance);
+    }
+}
+function setCloseButtonPosition(contents) {
+    var offset = contents.find(".featherlight-content").offset();
+    contents.find(".featherlight-close-icon").css('top', offset.top);
+    contents.find(".featherlight-close-icon").css('right', offset.left + -20);
+}
 
 $(function () {
     $('.editable', document).mrcmsinline();
-
-    $(document).on('click', '[data-toggle="fb-modal"]', function () {
-        var clone = $(this).clone();
-        clone.attr('data-toggle', '');
-        clone.hide();
-        clone.fancybox({
-            type: 'iframe',
-            autoSize: true,
-            minHeight: 400,
-            minWidth: 500,
-            padding: 0,
-            afterShow: function () {
-                $(".fancybox-iframe").contents().find('form').attr('target', '_parent').css('margin', '0');
-            }
-        }).click().remove();
-        return false;
+    
+    var featherlightSettings = $.extend({}, MrCMSFeatherlightSettings, {
+        filter: '[data-toggle="fb-modal"]'
     });
+    $(document).featherlight(featherlightSettings);
 
     $("#unpublish-now").click(function () {
         if (window.top.location.pathname == '/') {
@@ -262,6 +278,7 @@ $(function () {
         });
         return false;
     });
+
 });
 
 

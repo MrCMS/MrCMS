@@ -172,6 +172,11 @@ namespace MrCMS.DbConfiguration
             return _session.Save(entityName, obj);
         }
 
+        public void Save(string entityName, object obj, object id)
+        {
+            _session.Save(entityName, obj, id);
+        }
+
         public void SaveOrUpdate(object obj)
         {
             var entity = obj as SystemEntity;
@@ -185,6 +190,11 @@ namespace MrCMS.DbConfiguration
         public void SaveOrUpdate(string entityName, object obj)
         {
             _session.SaveOrUpdate(entityName, obj);
+        }
+
+        public void SaveOrUpdate(string entityName, object obj, object id)
+        {
+            _session.SaveOrUpdate(entityName, obj, id);
         }
 
         public void Update(object obj)
@@ -205,6 +215,11 @@ namespace MrCMS.DbConfiguration
         public void Update(string entityName, object obj)
         {
             _session.Update(entityName, obj);
+        }
+
+        public void Update(string entityName, object obj, object id)
+        {
+            _session.Update(entityName, obj, id);
         }
 
         public object Merge(object obj)
@@ -235,16 +250,6 @@ namespace MrCMS.DbConfiguration
         public void Persist(string entityName, object obj)
         {
             _session.Persist(entityName, obj);
-        }
-
-        public object SaveOrUpdateCopy(object obj)
-        {
-            return _session.SaveOrUpdateCopy(obj);
-        }
-
-        public object SaveOrUpdateCopy(object obj, object id)
-        {
-            return _session.SaveOrUpdateCopy(obj, id);
         }
 
         public void Delete(object obj)
@@ -582,42 +587,6 @@ namespace MrCMS.DbConfiguration
                 eventInfo.Publish(this, typeof(IOnDeleting<>),
                     (info, ses, t) => info.GetTypedInfo(t).ToDeletingArgs(ses, t));
             }
-        }
-    }
-
-    public abstract class UpdatedEventInfo
-    {
-        public bool PreTransactionHandled { get; set; }
-        public bool PostTransactionHandled { get; set; }
-        public abstract object ObjectBase { get; }
-        public abstract object OriginalVersionBase { get; }
-    }
-
-    public class UpdatedEventInfo<T> : UpdatedEventInfo where T : class
-    {
-        public UpdatedEventInfo(T obj, T originalObj)
-        {
-            Object = obj;
-            OriginalVersion = originalObj;
-        }
-
-        public UpdatedEventInfo(UpdatedEventInfo info)
-        {
-            Object = info.ObjectBase as T;
-            OriginalVersion = info.OriginalVersionBase as T;
-        }
-
-        public T OriginalVersion { get; private set; }
-        public T Object { get; private set; }
-
-        public override object ObjectBase
-        {
-            get { return Object; }
-        }
-
-        public override object OriginalVersionBase
-        {
-            get { return OriginalVersion; }
         }
     }
 }

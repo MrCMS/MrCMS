@@ -6,7 +6,14 @@ namespace MrCMS.Helpers
     {
         public static string GetCurrentIP(this HttpContextBase contextBase)
         {
-            string ipAddress = contextBase.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            return contextBase.Request.GetCurrentIP();
+        }
+
+        public static string GetCurrentIP(this HttpRequestBase request)
+        {
+            if (request == null)
+                return string.Empty;
+            string ipAddress = request.ServerVariables["HTTP_X_FORWARDED_FOR"];
 
             if (!string.IsNullOrEmpty(ipAddress))
             {
@@ -19,7 +26,7 @@ namespace MrCMS.Helpers
                 }
             }
 
-            return contextBase.Request.ServerVariables["REMOTE_ADDR"];
+            return request.ServerVariables["REMOTE_ADDR"];
         }
     }
 }

@@ -20,15 +20,17 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         private readonly IRoleService _roleService;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IGetUserCultureOptions _getUserCultureOptions;
+        private readonly IGetUserEditTabsService _getUserEditTabsService;
 
 
-        public UserController(IUserService userService, IUserSearchService userSearchService, IRoleService roleService, IPasswordManagementService passwordManagementService, IGetUserCultureOptions getUserCultureOptions)
+        public UserController(IUserService userService, IUserSearchService userSearchService, IRoleService roleService, IPasswordManagementService passwordManagementService, IGetUserCultureOptions getUserCultureOptions, IGetUserEditTabsService getUserEditTabsService)
         {
             _userService = userService;
             _userSearchService = userSearchService;
             _roleService = roleService;
             _passwordManagementService = passwordManagementService;
             _getUserCultureOptions = getUserCultureOptions;
+            _getUserEditTabsService = getUserEditTabsService;
         }
 
         [MrCMSACLRule(typeof(UserACL), UserACL.View)]
@@ -65,6 +67,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             ViewData["AvailableRoles"] = _roleService.GetAllRoles();
             ViewData["OnlyAdmin"] = _roleService.IsOnlyAdmin(user);
             ViewData["culture-options"] = _getUserCultureOptions.Get();
+
+            ViewData["edit-tabs"] = _getUserEditTabsService.GetEditTabs(user);
             return user == null
                        ? (ActionResult)RedirectToAction("Index")
                        : View(user);

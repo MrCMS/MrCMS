@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web.Helpers;
 using System.Web.Mvc;
+using System.Web.UI;
 using MrCMS.Entities.Documents.Media;
+using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.ACL;
@@ -12,35 +13,25 @@ using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Binders;
+using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    public class MediaCategoryController : BaseDocumentController<MediaCategory>
+    public class MediaCategoryController : MrCMSAdminController
     {
         private readonly IFileAdminService _fileAdminService;
+        private readonly IUrlValidationService _urlValidationService;
+        private readonly IDocumentService _documentService;
 
-        public MediaCategoryController(IFileAdminService fileAdminService, IDocumentService documentService,
-            IUrlValidationService urlValidationService)
-            : base(documentService, urlValidationService)
+        public MediaCategoryController(IFileAdminService fileAdminService, IUrlValidationService urlValidationService, IDocumentService documentService)
         {
             _fileAdminService = fileAdminService;
+            _urlValidationService = urlValidationService;
+            _documentService = documentService;
         }
 
-        /**
-         * Need to do media category specific stuff before generic stuff. In this case
-         * create a directory for media files.
-         */
-
-        public override ActionResult Add(MediaCategory doc)
-        {
-            base.Add(doc);
-            _fileAdminService.CreateFolder(doc);
-            return RedirectToAction("Show", new { id = doc.Id });
-        }
-
-        [HttpGet]
-        [ActionName("Add")]
-        public override ActionResult Add_Get(int? id)
+        [HttpGet, ActionName("Add")]
+        public ActionResult Add_Get(int? id)
         {
             //Build list 
             var model = new MediaCategory
@@ -52,33 +43,89 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public override ActionResult Edit(MediaCategory doc)
+        public virtual ActionResult Add(MediaCategory doc)
+        {
+            _documentService.AddDocument(doc);
+            _fileAdminService.CreateFolder(doc);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
+            return RedirectToAction("Show", new { id = doc.Id });
+        }
+
+        [HttpGet, ActionName("Edit")]
+        public virtual ActionResult Edit_Get(MediaCategory doc)
+        {
+            return View(doc);
+        }
+
+        [HttpPost]
+        public virtual ActionResult Edit(MediaCategory doc)
         {
             _documentService.SaveDocument(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
             return RedirectToAction("Show", new { id = doc.Id });
         }
 
-        public ActionResult Show(MediaCategory mediaCategory)
+        [HttpGet, ActionName("Delete")]
+        public virtual ActionResult Delete_Get(MediaCategory document)
         {
-            if (mediaCategory == null)
+            return PartialView(document);
+        }
+
+        [HttpPost]
+        public virtual ActionResult Delete(MediaCategory document)
+        {
+            _documentService.DeleteDocument(document);
+            TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] MediaCategory parent)
+        {
+            List<SortItem> sortItems =
+                _documentService.GetDocumentsByParent(parent)
+                    .Select(
+                        arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
+                    .OrderBy(x => x.Order)
+                    .ToList();
+
+            return View(sortItems);
+        }
+
+        [HttpPost]
+        public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] MediaCategory parent, List<SortItem> items)
+        {
+            _documentService.SetOrders(items);
+            return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
+        }
+
+        public ActionResult Show(MediaCategorySearchModel searchModel)
+        {
+            if (searchModel == null || searchModel.Id == null)
                 return RedirectToAction("Index");
-            ViewData["files"] = _fileAdminService.GetFilesForFolder(mediaCategory);
-            ViewData["folders"] = _fileAdminService.GetSubFolders(mediaCategory);
+            ViewData["category"] = _fileAdminService.GetCategory(searchModel);
 
-            return View(mediaCategory);
+            return View(searchModel);
         }
 
-        public override ViewResult Index()
+        public ViewResult Index(MediaCategorySearchModel searchModel)
         {
-            ViewData["files"] = _fileAdminService.GetFilesForFolder(null);
-            ViewData["folders"] = _fileAdminService.GetSubFolders(null);
+            return View(searchModel);
+        }
 
-            return View();
+        [ChildActionOnly]
+        public PartialViewResult Manage(MediaCategorySearchModel searchModel)
+        {
+            ViewData["category"] = _fileAdminService.GetCategory(searchModel);
+            ViewData["files"] = _fileAdminService.GetFilesForFolder(searchModel);
+            ViewData["folders"] = _fileAdminService.GetSubFolders(searchModel);
+            ViewData["sort-by-options"] = _fileAdminService.GetSortByOptions(searchModel);
+
+            return PartialView(searchModel);
         }
 
 
-        public ActionResult Upload([IoCModelBinder(typeof(NullableEntityModelBinder))]MediaCategory category)
+        public ActionResult Upload([IoCModelBinder(typeof(NullableEntityModelBinder))] MediaCategory category)
         {
             return PartialView(category);
         }
@@ -99,19 +146,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult SortFiles(MediaCategory parent)
         {
             ViewData["categoryId"] = parent.Id;
-            List<ImageSortItem> sortItems =
-                _fileAdminService.GetFilesForFolder(parent).OrderBy(arg => arg.DisplayOrder)
-                    .Select(
-                        arg =>
-                            new ImageSortItem
-                            {
-                                Order = arg.DisplayOrder,
-                                Id = arg.Id,
-                                Name = arg.FileName,
-                                ImageUrl = arg.FileUrl,
-                                IsImage = arg.IsImage
-                            })
-                    .ToList();
+            List<ImageSortItem> sortItems = _fileAdminService.GetFilesToSort(parent);
 
             return View(sortItems);
         }
@@ -142,7 +177,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             _fileAdminService.MoveFiles(model.Files, model.Folder);
             string message = _fileAdminService.MoveFolders(model.Folders, model.Folder);
-            return Json(new FormActionResult { success = true, message = message});
+            return Json(new FormActionResult { success = true, message = message });
         }
 
         [MrCMSACLRule(typeof(MediaToolsACL), MediaToolsACL.Delete)]
@@ -154,7 +189,5 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
             return Json(new FormActionResult { success = true, message = "" });
         }
-
-
     }
 }

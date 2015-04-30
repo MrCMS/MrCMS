@@ -1,0 +1,83 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Messages.MessageTemplate
+@{
+    ViewBag.Title = "Add Message Template Site Override";
+}
+
+@using (Html.BeginForm("AddSiteOverride", "MessageTemplate", new { TemplateType = Model.GetType().FullName }, FormMethod.Post, new { id = "edit-message-template" }))
+{
+    <fieldset>
+        <legend>
+            @string.Format(Resource("Add {0} Override"), Model.GetType().Name.BreakUpString())
+            <span class="pull-right btn-group">
+                @Html.ActionLink(Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
+                <input class="btn btn-primary" type="submit" value="@Resource("Save")" />
+            </span>
+        </legend>
+        @Html.HiddenFor(@base => @base.SiteId)
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.FromAddress)
+                    @Html.TextBoxFor(x => x.FromAddress, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.FromAddress)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.FromName)
+                    @Html.TextBoxFor(x => x.FromName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.FromName)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Cc)
+                    @Html.TextBoxFor(x => x.Cc, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Cc)
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.ToAddress)
+                    @Html.TextBoxFor(x => x.ToAddress, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.ToAddress)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.ToName)
+                    @Html.TextBoxFor(x => x.ToName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.ToName)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Bcc)
+                    @Html.TextBoxFor(x => x.Bcc, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Bcc)
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Subject)
+                    @Html.TextBoxFor(x => x.Subject, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Subject)
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Body)
+                    @Html.TextAreaFor(x => x.Body, new { @class = (Model.IsHtml ? "ckedit-enabled form-control" : "form-control"), style = "min-height:200px;" })
+                    @Html.ValidationMessageFor(x => x.Body)
+                </div>
+            </div>
+        </div>
+
+        <br />
+
+        @Html.InlineCheckboxFor(x => x.IsHtml)
+        @Html.InlineCheckboxFor(x => x.IsDisabled)
+
+        @{ Html.RenderAction("Tokens", "MessageTemplateTokens", new { messageTemplate = Model });}
+    </fieldset>
+}
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-message-template.js");}

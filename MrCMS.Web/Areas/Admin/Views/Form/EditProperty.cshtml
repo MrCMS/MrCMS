@@ -1,4 +1,5 @@
-﻿@using MrCMS.Helpers
+﻿@using MrCMS.Entities.Documents.Web.FormProperties
+@using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Web.FormProperties.FormProperty
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
@@ -7,7 +8,7 @@
     <fieldset>
     <legend>@Resource("Admin Form Edit Field Title", "Edit field")
         <span class="btn-group  display-inline  pull-right">
-            <input type="submit" class="btn btn-primary" value="@Resource("Admin Form Edit Field Button", "Edit field")" />
+            <input type="submit" class="btn btn-primary submit-form-btn" value="@Resource("Admin Form Edit Field Button", "Edit field")" />
         </span>
     </legend>
     <div class="row">
@@ -31,6 +32,14 @@
                 @Html.LabelFor(property => property.HtmlId)
                 @Html.TextBoxFor(property => property.HtmlId, new { @class = "form-control" })
                 @Html.ValidationMessageFor(property => property.HtmlId)
+            </div>
+            <div class="form-group">
+              @if (Model is TextBox)
+              {
+                  @Html.LabelFor(property =>(property as TextBox).PlaceHolder)
+                  @Html.TextBoxFor(property => (property as TextBox).PlaceHolder, new { @class = "form-control" })
+                  @Html.ValidationMessageFor(property => (property as TextBox).PlaceHolder)
+              }
             </div>
             <div class="form-group">
                 @Html.InlineCheckboxFor(x => x.Required)

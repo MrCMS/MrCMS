@@ -1,16 +1,21 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Entities.Documents.Web
+﻿@using System.Drawing
+@using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
+@using MrCMS.Media
 @using MrCMS.Paging
-@model MrCMS.Web.Areas.Admin.Models.Search.AdminWebpageSearchQuery
+@using MrCMS.Services.FileMigration
+@using MrCMS.Web.Areas.Admin.Helpers
+@using MrCMS.Web.Areas.Admin.Models.Search
+@model MrCMS.Web.Areas.Admin.Models.Search.AdminSearchQuery
 @{
-    var results = ViewData["results"] as IPagedList<Webpage>;
+    var results = ViewData["results"] as IPagedList<AdminSearchResult>;
+    List<SelectListItem> typeOptions = UniversalSearchHelper.GetOptions();
 }
 @using (Html.BeginForm("Index", "Search", FormMethod.Get))
 {
     <fieldset>
         <legend>
-            Webpage Search @(!string.IsNullOrWhiteSpace(Model.Term) ? " - " + Model.Term : "")
+            Search @(!string.IsNullOrWhiteSpace(Model.Term) ? " - " + Model.Term : "")
             <span class="btn-group  display-inline  pull-right">
                 <input type="submit" value="Search" class="btn btn-primary" />
             </span>
@@ -19,42 +24,31 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     @Html.LabelFor(x => x.Term)
-                    @Html.TextBoxFor(x => x.Term, new { @class = "form-control" })
+                    @Html.TextBoxFor(x => x.Term, new {@class = "form-control"})
                     @Html.ValidationMessageFor(x => x.Term)
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="form-group">
                     @Html.LabelFor(x => x.CreatedOnFrom)
-                    @Html.TextBoxFor(x => x.CreatedOnFrom, new { @class = "date-time-picker form-control" })
+                    @Html.TextBoxFor(x => x.CreatedOnFrom, new {@class = "date-time-picker form-control"})
                     @Html.ValidationMessageFor(x => x.CreatedOnFrom)
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-6">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            @Html.LabelFor(x => x.Parent.Id, "Parent")
-                            @Html.DropDownListFor(x => x.Parent.Id, ViewData["parents"] as IEnumerable<SelectListItem>, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(x => x.Parent.Id)
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            @Html.LabelFor(x => x.Type)
-                            @Html.DropDownListFor(x => x.Type, ViewData["doc-types"] as IEnumerable<SelectListItem>, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(x => x.Type)
-                        </div>
-                    </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Type)
+                    @Html.DropDownListFor(x => x.Type, typeOptions, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(x => x.Type)
                 </div>
 
             </div>
             <div class="col-lg-6">
                 <div class="form-group">
                     @Html.LabelFor(x => x.CreatedOnTo)
-                    @Html.TextBoxFor(x => x.CreatedOnTo, new { @class = "date-time-picker form-control" })
+                    @Html.TextBoxFor(x => x.CreatedOnTo, new {@class = "date-time-picker form-control"})
                     @Html.ValidationMessageFor(x => x.CreatedOnTo)
                 </div>
             </div>
@@ -62,13 +56,8 @@
         @Html.ValidationSummary()
 
     </fieldset>
-
-
 }
-@if (Model.Parent != null)
-{
-    Html.RenderAction("GetBreadCrumb", "Search", new { parentId = Convert.ToInt32(ViewData["parent-val"]) });
-}
+
 <div id="search-results">
     @if (results == null || !results.Any())
     {
@@ -78,37 +67,37 @@
     {
         <table class="table table-striped">
             <tr>
-                <th class="col-lg-6">Page</th>
-                <th class="col-lg-3">Type</th>
-                <th class="col-lg-3">Actions</th>
+                <th class="col-lg-8">Page</th>
+                <th class="col-lg-4">Type</th>
             </tr>
-            @foreach (var result in results)
+            @foreach (AdminSearchResult result in results)
             {
                 <tr>
                     <td>
-                        <a href="@Url.Action("Edit", "Webpage", new { id = result.Id })" class="">
-                            <strong>@result.Name</strong>
+                        <a href="@result.ActionUrl" class="">
+                            @if (result.Entity is MediaFile)
+                            {
+                                var file = result.Entity as MediaFile;
+                                if (file.IsImage())
+                                {
+                                    @Html.RenderImage(file.FileUrl, new Size(100, 100))
+                                }
+                                else
+                                {
+                                    <i class="@file.FileExtension.GetIconClass()"> </i>
+                                }
+                                <br />
+                            }
+                            <strong>@result.DisplayName</strong>
                         </a>
+                        
                         <br />
-                        @if (result.Parent != null)
-                        {
-                            @:Parent: @result.Parent.Name
-                    }
-                        <p>Last updated on @result.UpdatedOn</p>
+                        <p>Last updated on @result.Entity.UpdatedOn</p>
                     </td>
-                    <td>@result.DocumentType</td>
-                    <td>
-
-                        @Html.ActionLink("Edit", "Edit", "Webpage", new { id = result.Id }, new { @class = "btn btn-xs btn-default" })
-
-                        @if (result.AnyChildren())
-                        {
-                            <a href="/Admin/Search?parent.id=@result.Id" class="btn btn-xs btn-default">View Children</a>
-                        }
-                    </td>
+                    <td>@result.Type</td>
                 </tr>
             }
         </table>
-        @Html.Pager(results, "Index", page => new { page })
+        @Html.Pager(results, "Index", page => new {page})
     }
 </div>

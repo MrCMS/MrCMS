@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
-using Iesi.Collections.Generic;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -15,12 +14,20 @@ namespace MrCMS.Entities.Documents.Web
 {
     public abstract class Webpage : Document
     {
+        public enum WebpagePublishStatus
+        {
+            Published,
+            Scheduled,
+            Unpublished
+        }
+
         protected Webpage()
         {
             InheritFrontEndRolesFromParent = true;
+            IncludeInSitemap = true;
             Urls = new List<UrlHistory>();
             Widgets = new List<Widget.Widget>();
-            FrontEndAllowedRoles = new HashedSet<UserRole>();
+            FrontEndAllowedRoles = new HashSet<UserRole>();
         }
 
         [Required]
@@ -49,6 +56,8 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Include in navigation")]
         public virtual bool RevealInNavigation { get; set; }
 
+        public virtual bool IncludeInSitemap { get; set; }
+
         [DisplayName("Custom header scripts")]
         [StringLength(8000)]
         public virtual string CustomHeaderScripts { get; set; }
@@ -61,9 +70,19 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Requires SSL")]
         public virtual bool RequiresSSL { get; set; }
 
-        public virtual bool Published
+        public virtual bool Published { get; set; }
+
+        public virtual WebpagePublishStatus PublishStatus
         {
-            get { return PublishOn != null && PublishOn <= CurrentRequestData.Now; }
+            get
+            {
+                WebpagePublishStatus status = Published
+                    ? WebpagePublishStatus.Published
+                    : PublishOn.HasValue
+                        ? WebpagePublishStatus.Scheduled
+                        : WebpagePublishStatus.Unpublished;
+                return status;
+            }
         }
 
         public virtual string LiveUrlSegment
@@ -75,8 +94,8 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Publish On")]
         public virtual DateTime? PublishOn { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<Widget.Widget> ShownWidgets { get; set; }
-        public virtual Iesi.Collections.Generic.ISet<Widget.Widget> HiddenWidgets { get; set; }
+        public virtual ISet<Widget.Widget> ShownWidgets { get; set; }
+        public virtual ISet<Widget.Widget> HiddenWidgets { get; set; }
 
         public virtual IList<Widget.Widget> Widgets { get; set; }
 
@@ -109,6 +128,9 @@ namespace MrCMS.Entities.Documents.Web
         [StringLength(500, ErrorMessage = "Form submitted messsage cannot be longer than 500 characters.")]
         public virtual string FormSubmittedMessage { get; set; }
 
+        [DisplayName("Form Success Redirect")]
+        public virtual string FormRedirectUrl { get; set; }
+
         [DisplayName("Subject")]
         [StringLength(250, ErrorMessage = "Subject cannot be longer than 250 characters.")]
         public virtual string FormEmailTitle { get; set; }
@@ -136,7 +158,7 @@ namespace MrCMS.Entities.Documents.Web
         [DisplayName("Same as parent")]
         public virtual bool InheritFrontEndRolesFromParent { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<UserRole> FrontEndAllowedRoles { get; set; }
+        public virtual ISet<UserRole> FrontEndAllowedRoles { get; set; }
 
         [DisplayName("Roles")]
         public virtual string FrontEndRoles
@@ -148,7 +170,9 @@ namespace MrCMS.Entities.Documents.Web
         {
             get
             {
-                string scheme = (RequiresSSL || MrCMSApplication.Get<SiteSettings>().SSLEverywhere) ? "https://" : "http://";
+                string scheme = (RequiresSSL || MrCMSApplication.Get<SiteSettings>().SSLEverywhere)
+                    ? "https://"
+                    : "http://";
                 string authority = Site.BaseUrl;
                 if (authority.EndsWith("/"))
                     authority = authority.TrimEnd('/');

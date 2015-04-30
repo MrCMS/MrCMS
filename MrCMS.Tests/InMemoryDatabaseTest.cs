@@ -45,6 +45,7 @@ namespace MrCMS.Tests
             }
             Session = SessionFactory.OpenFilteredSession();
             Kernel.Bind<ISession>().ToMethod(context => Session);
+            Kernel.Bind<IStatelessSession>().ToMethod(context => SessionFactory.OpenStatelessSession());
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 
@@ -88,8 +89,8 @@ namespace MrCMS.Tests
                 Name = UserRole.Administrator
             };
 
-            user.Roles = new HashedSet<UserRole> { adminUserRole };
-            adminUserRole.Users = new HashedSet<User> { user };
+            user.Roles = new HashSet<UserRole> { adminUserRole };
+            adminUserRole.Users = new HashSet<User> { user };
 
             CurrentRequestData.CurrentUser = user;
         }
