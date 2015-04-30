@@ -50,5 +50,16 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             _session.Transact(session => session.Delete(scheduledTask));
         }
+
+        public void Reset(ScheduledTask scheduledTask)
+        {
+            _session.Transact(session =>
+            {
+                scheduledTask.Status = TaskExecutionStatus.Pending;
+                scheduledTask.LastComplete = null;
+                scheduledTask.LastQueuedAt = null;
+                session.Update(scheduledTask);
+            });
+        }
     }
 }

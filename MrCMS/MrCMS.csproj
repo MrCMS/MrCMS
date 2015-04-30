@@ -603,6 +603,7 @@
     <Compile Include="Indexing\Management\IGetLuceneIndexSearcher.cs" />
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
+    <Compile Include="Indexing\OptimiseIndexes.cs" />
     <Compile Include="Indexing\Utils\LuceneQueryStringHelper.cs" />
     <Compile Include="Installation\DatabaseCreationService.cs" />
     <Compile Include="Installation\FileSystemAccessService.cs" />

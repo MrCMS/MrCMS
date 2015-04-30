@@ -60,6 +60,7 @@
                             <td>
                                 <div class="btn-group">
                                     @Html.ActionLink("Edit", "Edit", new {id = task.Id}, new {@class = "btn btn-xs btn-default", data_toggle = "fb-modal"})
+                                    @Html.ActionLink("Reset", "Reset", new {id = task.Id}, new {@class = "btn btn-xs btn-warning", data_toggle = "fb-modal"})
                                     @Html.ActionLink("Delete", "Delete", new {id = task.Id}, new {@class = "btn btn-danger btn-xs", data_toggle = "fb-modal"})
                                 </div>
                             </td>

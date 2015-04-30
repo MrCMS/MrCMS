@@ -2130,6 +2130,7 @@
     <Content Include="Areas\Admin\Views\About\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SystemSettings\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\SystemSettings.cshtml" />
+    <Content Include="Areas\Admin\Views\Task\Reset.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
