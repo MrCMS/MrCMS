@@ -163,6 +163,7 @@
     <Compile Include="DbConfiguration\ListenerDisablerTests.cs" />
     <Compile Include="Entities\DocumentTests.cs" />
     <Compile Include="Entities\MediaFileTests.cs" />
+    <Compile Include="Events\Media\ClearCacheOnImageSaveTests.cs" />
     <Compile Include="Helpers\DocumentExtensionsTests.cs" />
     <Compile Include="Helpers\LayoutExtensionsTests.cs" />
     <Compile Include="Helpers\StringHelperTests.cs" />

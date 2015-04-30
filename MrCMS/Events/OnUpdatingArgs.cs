@@ -21,7 +21,6 @@ namespace MrCMS.Events
             Original = info.OriginalVersion;
         }
 
-
         public bool HasChanged(Func<T, object> comparisionFunction)
         {
             return comparisionFunction(Original) != comparisionFunction(Item);
