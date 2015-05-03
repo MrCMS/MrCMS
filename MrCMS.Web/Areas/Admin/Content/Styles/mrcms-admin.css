@@ -42,7 +42,6 @@ ul.persistent-notification { margin: 0; padding: 0 10px; }
 .notifications-dropdown form { width: 100%;padding-top: 10px;text-align: center;}
 
 
-
 /*Media*/
 #file-list, #folder-container {height: auto;min-height: 400px;width: 100%;display: block;}
 .file, .folder {cursor:default;}
@@ -69,6 +68,10 @@ ul.persistent-notification { margin: 0; padding: 0 10px; }
     #dropzone.in span { display: block; text-align: center; padding-top: 38px; }
     #dropzone.hover { background: #e7e7e7; }
 
+    #search-form .form-container { width: 100%;display: inline-block;}
+    #search-form .folder-dropdown, #search-form .search-text { width: 40%;}
+    #search-form .folder-dropdown #CategoryId, #search-form .search-text #Query { width: 100%;}
+    #search-form .search-btn { width: 19%;}
 /*Page header*/
 .page-header { padding-top: 0; margin-top: 0; font-size: 26px; }
 .inline-buttons-container { width: 100%; position: relative; }
