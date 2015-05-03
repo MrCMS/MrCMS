@@ -2,7 +2,7 @@
 @model MrCMS.Entities.Documents.Web.Webpage
 
 @Html.InfoBlock(Resource("Heads up") + "!",
-    string.Format(Resource("Webpage - Form Tag Usage", "To include this form in your page simply use the short code [form] where you would like it rendered. Should you want to render this form in another page you can use[form-{0}]"), Url.RequestContext.RouteData.Values["id"]))
+    string.Format(Resource("Webpage - Form Tag Usage", "To include this form in your page simply use the short code [form] where you would like it rendered. Should you want to render this form in another page you can use [form-{0}]"), Url.RequestContext.RouteData.Values["id"]))
 
 <h4>@Resource("Admin Webpage Form Message After Submitted", "Message to show after form is submitted")</h4>
 
@@ -10,7 +10,7 @@
     @Html.TextBoxFor(webpage => webpage.FormSubmittedMessage, new { @class = "form-control", placeholder = "e.g Thank you!" })
     @Html.ValidationMessageFor(x => x.FormSubmittedMessage, "", new { @class = "error" })
 </div>
-<h4>@Resource("Admin Webpage Form RedirectUrl", "Page to redirect to (Leave blank for current page and show success message above")</h4>
+<h4>@Resource("Admin Webpage Form RedirectUrl", "Page to redirect to (Leave blank for current page and show success message above)")</h4>
 <div class="form-group">
     @Html.TextBoxFor(webpage => webpage.FormRedirectUrl, new { @class = "form-control", placeholder = "e.g http://www.example.com/thankyou" })
     @Html.ValidationMessageFor(x => x.FormRedirectUrl, "", new { @class = "error" })
