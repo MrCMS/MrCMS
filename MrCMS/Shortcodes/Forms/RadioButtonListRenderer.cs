@@ -23,7 +23,6 @@ namespace MrCMS.Shortcodes.Forms
             {
                 var cbLabelBuilder = new TagBuilder("label");
                 cbLabelBuilder.Attributes["for"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
-                cbLabelBuilder.InnerHtml = checkbox.Value;
                 cbLabelBuilder.AddCssClass("radio");
 
                 var radioButtonBuilder = new TagBuilder("input");
@@ -51,7 +50,7 @@ namespace MrCMS.Shortcodes.Forms
 
                 radioButtonBuilder.Attributes["name"] = formProperty.Name;
                 radioButtonBuilder.Attributes["id"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
-                cbLabelBuilder.InnerHtml += radioButtonBuilder.ToString();
+                cbLabelBuilder.InnerHtml += radioButtonBuilder.ToString() + checkbox.Value;
                 if (formRenderingType == FormRenderingType.Bootstrap3)
                 {
                     var radioContainer = new TagBuilder("div");
