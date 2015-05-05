@@ -19,7 +19,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         private readonly UrlHelper _urlHelper;
         private readonly ITreeNavService _treeNavService;
 
-        public DefaultWebpageTreeNavListing(IValidWebpageChildrenService validWebpageChildrenService, ISession session, UrlHelper urlHelper,ITreeNavService treeNavService)
+        public DefaultWebpageTreeNavListing(IValidWebpageChildrenService validWebpageChildrenService, ISession session, UrlHelper urlHelper, ITreeNavService treeNavService)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _session = session;
@@ -77,7 +77,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                     IsMoreLink = true,
                     ParentId = id,
                     Name = (rowCount - maxChildNodes) + " More",
-                    Url = _urlHelper.Action("Index", "Search", new RouteValueDictionary { { "Parent.Id", id } }),
+                    Url = _urlHelper.Action("Search", "WebpageSearch", new { parentId= id }),
                 });
             }
             return adminTree;
