@@ -12,7 +12,13 @@
         init: function (tree, url) {
             self = this;
             $(document.body).on('click', '.jstree-anchor', function (event) {
-                location.href = this.href;
+                var clicked = $(event.target);
+                var href = this.href;
+                if (clicked.data('toggle') == 'fb-modal') {
+                    getRemoteModel(href);
+                } else {
+                    location.href = href;
+                }
             });
             self.initTree(tree, url);
             return self;
@@ -86,7 +92,7 @@
 (function ($) {
     var mrcmsOpenMenuItems = "mrcms-open-menu-items";
     function storeOpenTabs() {
-        var data =  $("li[data-menu].open").map(function () {
+        var data = $("li[data-menu].open").map(function () {
             return $(this).data('menu');
         }).get().join(",");
         store.set(mrcmsOpenMenuItems, data);

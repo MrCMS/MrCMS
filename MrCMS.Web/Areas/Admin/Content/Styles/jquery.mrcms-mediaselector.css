@@ -1,4 +1,4 @@
-﻿.file-result { float: left; width: 99%; border: 1px solid #e7e7e7; border-top: none; }
+﻿.file-result { float: left; width: 100%; border: 1px solid #e7e7e7; border-top: none; }
     .file-result .header { cursor: pointer; padding: 5px; }
     .file-result .content { padding: 5px; border-top: 1px solid #e7e7e7; }
     .file-result:first-child { border-top: 1px solid #e7e7e7; }

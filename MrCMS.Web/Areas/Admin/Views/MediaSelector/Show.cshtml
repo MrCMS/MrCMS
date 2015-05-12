@@ -13,46 +13,34 @@
     var mediaSettings = MrCMSApplication.Get<MediaSettings>();
 }
 <div data-type="media-selector-popup" style="min-height: 450px;">
-    @using (Html.BeginForm("Show", "MediaSelector", FormMethod.Get, new { id = "search-form", style = "margin:0px;" }))
+    @using (Html.BeginForm("Show", "MediaSelector", FormMethod.Get, new { id = "search-form", @class = "form-inline" }))
     {
         <fieldset>
             <legend>
                 @Resource("Admin Media Selector Media Selector Title", "Media Selector")
             </legend>
-            <div class="row">
-                <div class="col-xs-5">
-                    <div class="form-group">
-                        @Html.DropDownListFor(query => query.CategoryId, categories, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(query => query.CategoryId)
-                    </div>
+            <div class="form-container">
+                <div class="form-group folder-dropdown">
+                    @Html.DropDownListFor(query => query.CategoryId, categories, new { @class = "form-control col-sm-6" })
+                    @Html.ValidationMessageFor(query => query.CategoryId)
                 </div>
-                <div class="col-xs-5">
-                    <div class="form-group">
-                        @Html.TextBoxFor(query => query.Query, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(query => query.Query)
-                    </div>
+                <div class="form-group search-text">
+                    @Html.TextBoxFor(query => query.Query, new { @class = "form-control col-xs-4", @placeholder = Resource("Admin - Media Selector Search Placeholder", "Search") })
+                    @Html.ValidationMessageFor(query => query.Query)
                 </div>
-                <div class="col-xs-2">
-                    <input type="submit" class="btn btn-primary col-lg-12" value="@Resource("Search")" />
-                </div>
+                <input type="submit" class="btn btn-primary col-lg-12 search-btn" value="@Resource("Search")" />
             </div>
         </fieldset>
     }
 
     <div id="results">
-        <div id="fileupload" data-message="@Resource("Click here or drag files to upload")" class="dropzone" style="margin-bottom: 5px;"></div>
+        <div id="fileupload" data-message="@Resource("Click here or drag files to upload")" class="dropzone margin-bottom-10 margin-top-10"></div>
 
         <input type="hidden" value="@Url.Action("Files", "File", new { Id = (Model.CategoryId ?? null) })" id="action-url" />
 
-        <div class="row">
-            <div class="col-lg-3">
 
-            </div>
-            <div class="col-lg-9">
-                <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 5px;">
-                    <div class="bar"><span id="percent-complete" style="text-align: center;"></span></div>
-                </div>
-            </div>
+        <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 5px;">
+            <div class="bar"><span id="percent-complete" style="text-align: center;"></span></div>
         </div>
         <div id="files" class=""></div>
 

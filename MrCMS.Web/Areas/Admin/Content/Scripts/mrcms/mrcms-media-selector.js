@@ -94,10 +94,20 @@
                 afterOpen: function () {
                     element = $('.featherlight-inner').contents();
                     element.find('form').css('margin', '0');
+                    setCloseButtonPosition(this.$instance);
                     self.init();
                 },
                 beforeOpen: function () {
                     $(".mrcms-edit-menu", document).hide();
+                },
+                onResize: function () {
+                    if (this.autoHeight) {
+                        // Shrink:
+                        this.$content.css('height', '10px');
+                        // Then set to the full height:
+                        this.$content.css('height', this.$content.contents().find('body')[0].scrollHeight);
+                    }
+                    setCloseButtonPosition(this.$instance);
                 }
             }).click().remove();
             return self;

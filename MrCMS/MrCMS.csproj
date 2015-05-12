@@ -527,6 +527,7 @@
     <Compile Include="Events\IOnDeleting.cs" />
     <Compile Include="Events\IOnUpdated.cs" />
     <Compile Include="Events\IOnUpdating.cs" />
+    <Compile Include="Events\Media\ClearCacheOnImageSave.cs" />
     <Compile Include="Events\OnAddedArgs.cs" />
     <Compile Include="Events\OnAddingArgs.cs" />
     <Compile Include="Events\OnDeletedArgs.cs" />
