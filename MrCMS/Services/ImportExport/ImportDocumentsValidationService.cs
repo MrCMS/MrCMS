@@ -65,7 +65,7 @@ namespace MrCMS.Services.ImportExport
                     var name = worksheet.GetValue<string>(rowId, 4);
                     var handle = urlSegment.HasValue() ? urlSegment : name;
 
-                    if (string.IsNullOrWhiteSpace(handle) || items.Any(x => x.Name == name || x.UrlSegment == urlSegment))
+                    if (string.IsNullOrWhiteSpace(handle) || items.Any(x => x.UrlSegment == urlSegment))
                         continue;
 
                     List<string> errors = parseErrors.ContainsKey(handle)

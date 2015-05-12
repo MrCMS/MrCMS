@@ -1,11 +1,7 @@
 ﻿using System.IO;
 using MrCMS.Batching.Entities;
-using MrCMS.Helpers;
 using MrCMS.Services.ImportExport.DTOs;
-using MrCMS.Website;
 using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities.Documents.Web;
