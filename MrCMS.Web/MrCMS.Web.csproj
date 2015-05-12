@@ -2142,10 +2142,12 @@
     <Content Include="Areas\Admin\Views\Task\Reset.cshtml" />
     <Content Include="Areas\Admin\Views\WebpageSearch\Results.cshtml" />
     <Content Include="Areas\Admin\Views\WebpageSearch\Search.cshtml" />
+    <Content Include="LICENSE" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
