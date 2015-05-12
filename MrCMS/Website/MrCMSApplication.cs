@@ -18,8 +18,8 @@ namespace MrCMS.Website
 {
     public abstract class MrCMSApplication : HttpApplication
     {
-        public const string AssemblyVersion = "0.5.0.0";
-        public const string AssemblyFileVersion = "0.5.0.0";
+        public const string AssemblyVersion = "0.5.0.1";
+        public const string AssemblyFileVersion = "0.5.0.1";
         private const string CachedMissingItemKey = "cached-missing-item";
 
 

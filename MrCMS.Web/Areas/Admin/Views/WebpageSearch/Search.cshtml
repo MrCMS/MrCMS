@@ -1,0 +1,29 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Areas.Admin.Models.WebpageSearchQuery
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+}
+
+<fieldset>
+    <legend>
+        Search
+        <span class="btn-group  display-inline  pull-right">
+        </span>
+    </legend>
+
+    @using (Html.BeginForm("Results", "WebpageSearch", new { Model.ParentId }, FormMethod.Post, new { data_webpage_search_form = true }))
+    {
+        <div class="input-group">
+            @Html.TextBoxFor(query => query.Query, new { @class = "form-control", autocomplete = "off", placeholder = "Search" })
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary">@Resource("Search")</button>
+            </span>
+        </div>
+
+    }
+    <br />
+    @{Html.RenderAction("Results", Model);}
+</fieldset>
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/async-paging.js"); }
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/webpage-search.js"); }

@@ -1,0 +1,33 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@using MrCMS.Paging
+@model MrCMS.Web.Areas.Admin.Models.WebpageSearchQuery
+@{
+    var results = ViewData["results"] as IPagedList<Webpage> ?? BasePagedList<Webpage>.Empty;
+}
+
+<div data-webpage-search-results="true" data-paging-type="async">
+    @if (results.Any())
+    {
+        <table class="table table-striped table-condensed margin-top-0" style="margin-bottom: 0;">
+            <tbody>
+                @foreach (var item in results)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>
+                            <div class="pull-right">
+                                @Html.ActionLink("Edit", "Edit", "Webpage", new { item.Id }, new { @class = "btn btn-default btn-xs", target = "_top" })
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <span>No children found.</span>
+    }
+    @Html.Pager(results, "Results", i => new { page = i, Model.Query, Model.ParentId })
+</div>

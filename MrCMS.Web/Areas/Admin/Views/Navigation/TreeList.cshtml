@@ -1,7 +1,4 @@
-﻿
-@using System.Collections.Generic
-@using MrCMS.Models
-@using MrCMS.Web.Areas.Admin.Models
+﻿@using MrCMS.Web.Areas.Admin.Models
 @model MrCMS.Web.Areas.Admin.Models.AdminTree
 @if (Model.IsRootRequest)
 {
@@ -22,8 +19,10 @@ else
     <ul>
         @foreach (AdminTreeNode node in Model)
         {
-            var cssClass = "";
-            if (!node.IsPublished)
+            string cssClass = "";
+
+            if (node.IsMoreLink) { }
+            else if (!node.IsPublished)
             {
                 cssClass = "orange";
             }
@@ -31,16 +30,15 @@ else
             {
                 cssClass = "grey";
             }
-            <li id="@node.Id" data-id="@node.Id" data-parent-id="@node.ParentId" 
+            <li id="@node.Id" data-id="@node.Id" data-parent-id="@node.ParentId"
                 data-sortable="@node.Sortable" data-can-add-child="@node.CanAddChild"
-                data-candelete="@(!node.HasChildren)" data-type="@node.Type" 
+                data-candelete="@(!node.HasChildren && !node.IsMoreLink)" data-type="@node.Type"
                 data-controller="@node.NodeType" class="@(node.HasChildren ? "jstree-closed" : "")"
                 data-jstree='{"icon":"@node.IconClass"}'>
-                <a href="@node.Url" class="@cssClass">@node.Name</a>
+                <a href="@node.Url" class="@cssClass" @(node.IsMoreLink ? MvcHtmlString.Create(" data-toggle=\"fb-modal\"") : MvcHtmlString.Empty)>@node.Name</a>
             </li>
 
             //}
         }
     </ul>
 }
-
