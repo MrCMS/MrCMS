@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Web;
 using MrCMS.DbConfiguration.Helpers;
 using MrCMS.Entities;
 using MrCMS.Events;
@@ -23,6 +24,11 @@ namespace MrCMS.DbConfiguration
             _session = session;
         }
 
+        public HttpContextBase HttpContext
+        {
+            get { return _session.HttpContext; }
+        }
+
         public void Dispose()
         {
             _transaction.Dispose();
@@ -42,7 +48,13 @@ namespace MrCMS.DbConfiguration
         {
             HandlePreTransaction(_session);
             _transaction.Commit();
-            HandlePostTransaction(_session);
+            if (!MrCMSTransactionWrapper.IsInPostTransaction(HttpContext))
+            {
+                using (new MrCMSTransactionWrapper(HttpContext))
+                {
+                    HandlePostTransaction(_session);
+                }
+            }
         }
 
         public void Rollback()
@@ -77,30 +89,43 @@ namespace MrCMS.DbConfiguration
 
         private static void HandlePostTransaction(MrCMSSession session)
         {
-            HashSet<EventInfo> eventInfos = session.Added.ToHashSet();
-            eventInfos.ForEach(obj =>
+            while (GetNextAddedEventInfoForPostTransaction(session) != null)
             {
-                if (obj.PostTransactionHandled)
-                    return;
+                EventInfo obj = GetNextAddedEventInfoForPostTransaction(session);
                 obj.PostTransactionHandled = true;
-                Publish(obj, session, typeof(IOnAdded<>), (info, ses, t) => info.GetTypedInfo(t).ToAddedArgs(ses, t));
-            });
-            HashSet<UpdatedEventInfo> updatedEventInfos = session.Updated.ToHashSet();
-            updatedEventInfos.ForEach(obj =>
+                Publish(obj, session, typeof (IOnAdded<>), (info, ses, t) => info.GetTypedInfo(t).ToAddedArgs(ses, t));
+            }
+
+            while (GetNextUpdatedEventInfoForPostTransaction(session) != null)
             {
-                if (obj.PostTransactionHandled)
-                    return;
+                UpdatedEventInfo obj = GetNextUpdatedEventInfoForPostTransaction(session);
                 obj.PostTransactionHandled = true;
-                Publish(obj, session, typeof(IOnUpdated<>), (info, ses, t) => info.GetTypedInfo(t).ToUpdatedArgs(ses, t));
-            });
-            HashSet<EventInfo> hashSet = session.Deleted.ToHashSet();
-            hashSet.ForEach(obj =>
+                Publish(obj, session, typeof (IOnUpdated<>),
+                    (info, ses, t) => info.GetTypedInfo(t).ToUpdatedArgs(ses, t));
+            }
+
+            while (GetNextDeletedEventInfoForPostTransaction(session) != null)
             {
-                if (obj.PostTransactionHandled)
-                    return;
+                EventInfo obj = GetNextDeletedEventInfoForPostTransaction(session);
                 obj.PostTransactionHandled = true;
-                Publish(obj, session, typeof(IOnDeleted<>), (info, ses, t) => info.GetTypedInfo(t).ToDeletedArgs(ses, t));
-            });
+                Publish(obj, session, typeof (IOnDeleted<>),
+                    (info, ses, t) => info.GetTypedInfo(t).ToDeletedArgs(ses, t));
+            }
+        }
+
+        private static EventInfo GetNextAddedEventInfoForPostTransaction(MrCMSSession session)
+        {
+            return session.Added.FirstOrDefault(x => !x.PostTransactionHandled);
+        }
+
+        private static UpdatedEventInfo GetNextUpdatedEventInfoForPostTransaction(MrCMSSession session)
+        {
+            return session.Updated.FirstOrDefault(x => !x.PostTransactionHandled);
+        }
+
+        private static EventInfo GetNextDeletedEventInfoForPostTransaction(MrCMSSession session)
+        {
+            return session.Deleted.FirstOrDefault(x => !x.PostTransactionHandled);
         }
 
         private static void Publish<T>(T onUpdatedArgs, ISession session, Type eventType,
@@ -133,7 +158,7 @@ namespace MrCMS.DbConfiguration
                 if (obj.PreTransactionHandled)
                     return;
                 obj.PreTransactionHandled = true;
-                Publish(obj, session, typeof(IOnAdding<>), (info, ses, t) => info.GetTypedInfo(t).ToAddingArgs(ses, t));
+                Publish(obj, session, typeof (IOnAdding<>), (info, ses, t) => info.GetTypedInfo(t).ToAddingArgs(ses, t));
             });
             HashSet<UpdatedEventInfo> updatedEventInfos = session.Updated.ToHashSet();
             updatedEventInfos.ForEach(obj =>
@@ -141,7 +166,8 @@ namespace MrCMS.DbConfiguration
                 if (obj.PreTransactionHandled)
                     return;
                 obj.PreTransactionHandled = true;
-                Publish(obj, session, typeof(IOnUpdating<>), (info, ses, t) => info.GetTypedInfo(t).ToUpdatingArgs(ses, t));
+                Publish(obj, session, typeof (IOnUpdating<>),
+                    (info, ses, t) => info.GetTypedInfo(t).ToUpdatingArgs(ses, t));
             });
             HashSet<EventInfo> hashSet = session.Deleted.ToHashSet();
             hashSet.ForEach(obj =>
@@ -149,44 +175,47 @@ namespace MrCMS.DbConfiguration
                 if (obj.PreTransactionHandled)
                     return;
                 obj.PreTransactionHandled = true;
-                Publish(obj, session, typeof(IOnDeleting<>), (info, ses, t) => info.GetTypedInfo(t).ToDeletingArgs(ses, t));
+                Publish(obj, session, typeof (IOnDeleting<>),
+                    (info, ses, t) => info.GetTypedInfo(t).ToDeletingArgs(ses, t));
             });
         }
-    }
 
-    public static class CoreEventPublisher
-    {
-        public static void Publish(this EventInfo eventInfo, ISession session, Type eventType,
-            Func<EventInfo, ISession, Type, object> getArgs)
+        private class MrCMSTransactionWrapper : IDisposable
         {
-            Type type = eventInfo.GetType().GenericTypeArguments[0];
+            private const string InPostTransactionKey = "in-post-transaction";
+            private readonly bool _completeOnDispose;
+            private readonly HttpContextBase _httpContext;
 
-            List<Type> types = GetEntityTypes(type).Reverse().ToList();
-
-            types.ForEach(
-                t => EventContext.Instance.Publish(eventType.MakeGenericType(t), getArgs(eventInfo, session, t)));
-        }
-        public static void Publish(this UpdatedEventInfo updatedEventInfo, ISession session, Type eventType,
-            Func<UpdatedEventInfo, ISession, Type, object> getArgs)
-        {
-            Type type = updatedEventInfo.GetType().GenericTypeArguments[0];
-
-            List<Type> types = GetEntityTypes(type).Reverse().ToList();
-
-            types.ForEach(
-                t => EventContext.Instance.Publish(eventType.MakeGenericType(t), getArgs(updatedEventInfo, session, t)));
-        }
-
-
-        private static IEnumerable<Type> GetEntityTypes(Type type)
-        {
-            Type thisType = type;
-            while (thisType != null && thisType != typeof(SystemEntity))
+            public MrCMSTransactionWrapper(HttpContextBase httpContext)
             {
-                yield return thisType;
-                thisType = thisType.BaseType;
+                _httpContext = httpContext;
+                if (!IsInPostTransaction(_httpContext))
+                {
+                    _completeOnDispose = true;
+                    BeginPostTransaction(_httpContext);
+                }
             }
-            yield return typeof(SystemEntity);
+
+            public void Dispose()
+            {
+                if (_completeOnDispose)
+                    CompletedPostTransaction(_httpContext);
+            }
+
+            private static void BeginPostTransaction(HttpContextBase context)
+            {
+                if (context != null) context.Items[InPostTransactionKey] = true;
+            }
+
+            private static void CompletedPostTransaction(HttpContextBase context)
+            {
+                if (context != null) context.Items.Remove(InPostTransactionKey);
+            }
+
+            public static bool IsInPostTransaction(HttpContextBase context)
+            {
+                return context != null && context.Items.Contains(InPostTransactionKey);
+            }
         }
     }
 }

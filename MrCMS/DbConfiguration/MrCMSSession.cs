@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Web;
 using MrCMS.DbConfiguration.Helpers;
 using MrCMS.Entities;
 using MrCMS.Events;
@@ -20,11 +21,13 @@ namespace MrCMS.DbConfiguration
         private readonly HashSet<EventInfo> _added = new HashSet<EventInfo>();
         private readonly HashSet<EventInfo> _deleted = new HashSet<EventInfo>();
         private readonly ISession _session;
+        private readonly HttpContextBase _httpContext;
         private readonly HashSet<UpdatedEventInfo> _updated = new HashSet<UpdatedEventInfo>();
 
-        public MrCMSSession(ISession session)
+        public MrCMSSession(ISession session, HttpContextBase httpContext)
         {
             _session = session;
+            _httpContext = httpContext;
         }
 
         public HashSet<EventInfo> Added
@@ -513,6 +516,11 @@ namespace MrCMS.DbConfiguration
         public ISessionStatistics Statistics
         {
             get { return _session.Statistics; }
+        }
+
+        public HttpContextBase HttpContext
+        {
+            get { return _httpContext; }
         }
 
         private void AddAddEvent(SystemEntity obj)
