@@ -66,7 +66,7 @@ namespace MrCMS.Installation
             var configurator = new NHibernateConfigurator(provider);
 
             ISessionFactory sessionFactory = configurator.CreateSessionFactory();
-            ISession session = sessionFactory.OpenFilteredSession();
+            ISession session = sessionFactory.OpenFilteredSession(CurrentRequestData.CurrentContext);
             IStatelessSession statelessSession = sessionFactory.OpenStatelessSession();
             var kernel = MrCMSApplication.Get<IKernel>();
             kernel.Rebind<ISession>().ToMethod(context => session);

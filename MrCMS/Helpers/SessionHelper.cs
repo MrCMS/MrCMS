@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities;
 using MrCMS.Paging;
@@ -14,9 +15,9 @@ namespace MrCMS.Helpers
 {
     public static class SessionHelper
     {
-        public static ISession OpenFilteredSession(this ISessionFactory sessionFactory)
+        public static ISession OpenFilteredSession(this ISessionFactory sessionFactory, HttpContextBase context)
         {
-            var session = new MrCMSSession(sessionFactory.OpenSession());
+            var session = new MrCMSSession(sessionFactory.OpenSession(), context);
             session.EnableFilter("NotDeletedFilter");
             return session;
         }
@@ -81,7 +82,7 @@ namespace MrCMS.Helpers
         {
             int size = pageSize ?? MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
             IEnumerable<T> values =
-                query.GetExecutableQueryOver(session).Skip((pageNumber - 1)*size).Take(size).Cacheable().List<T>();
+                query.GetExecutableQueryOver(session).Skip((pageNumber - 1) * size).Take(size).Cacheable().List<T>();
 
             var rowCount = query.GetExecutableQueryOver(session).ToRowCountQuery().SingleOrDefault<int>();
 
@@ -93,7 +94,7 @@ namespace MrCMS.Helpers
             where TResult : SystemEntity
         {
             int size = pageSize ?? MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
-            IEnumerable<TResult> results = queryBase.Skip((pageNumber - 1)*size).Take(size).Cacheable().List();
+            IEnumerable<TResult> results = queryBase.Skip((pageNumber - 1) * size).Take(size).Cacheable().List();
 
             int rowCount = queryBase.Cacheable().RowCount();
 
