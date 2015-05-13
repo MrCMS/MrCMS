@@ -3,7 +3,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Services.Notifications
 {
-    public class NotificationDisabler :IDisposable
+    public class NotificationDisabler : IDisposable
     {
         private readonly bool _enableOnDispose;
 
@@ -15,9 +15,10 @@ namespace MrCMS.Services.Notifications
                 CurrentRequestData.CurrentContext.DisableNotifications();
             }
         }
+
         public void Dispose()
         {
-            if(_enableOnDispose)
+            if (_enableOnDispose)
                 CurrentRequestData.CurrentContext.EnableNotifications();
         }
     }

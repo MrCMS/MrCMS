@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Web;
 using Elmah;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
@@ -43,7 +44,7 @@ namespace MrCMS.Web.Tests
                     SessionFactory = Configuration.BuildSessionFactory();
                 }
             }
-            Session = SessionFactory.OpenFilteredSession();
+            Session = SessionFactory.OpenFilteredSession(Kernel.Get<HttpContextBase>());
             Kernel.Bind<ISession>().ToMethod(context => Session);
             Kernel.Bind<IStatelessSession>().ToMethod(context => SessionFactory.OpenStatelessSession());
 

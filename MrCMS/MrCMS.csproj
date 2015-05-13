@@ -398,7 +398,7 @@
     <Compile Include="DbConfiguration\Configuration\SetCoreProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SetOnUpdatingProperties.cs" />
     <Compile Include="DbConfiguration\Configuration\SoftDeleteListener.cs" />
-    <Compile Include="DbConfiguration\Configuration\PostCommitEventListener.cs" />
+    <Compile Include="DbConfiguration\Configuration\SaveDocumentVersions.cs" />
     <Compile Include="DbConfiguration\Configuration\UpdateIndicesListener.cs" />
     <Compile Include="DbConfiguration\Configuration\UrlHistoryListener.cs" />
     <Compile Include="DbConfiguration\Conventions\AddIndexConvention.cs" />
@@ -412,6 +412,7 @@
     <Compile Include="DbConfiguration\Conventions\RootGuidConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\StringLengthConvention.cs" />
+    <Compile Include="DbConfiguration\CoreEventPublisher.cs" />
     <Compile Include="DbConfiguration\CreateSQLiteDatabase.cs" />
     <Compile Include="DbConfiguration\CreateSqlServer2008Database.cs" />
     <Compile Include="DbConfiguration\CreateSqlServer2012Database.cs" />
