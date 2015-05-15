@@ -51,16 +51,14 @@ namespace MrCMS.Helpers
             return documentVersion != null ? DeserializeVersion(documentVersion, doc) : null;
         }
 
+
         private static T DeserializeVersion<T>(DocumentVersion version, T doc) where T : Document
         {
-            return JsonConvert.DeserializeObject(version.Data, doc.GetType()) as T;
-        }
-
-        public static List<VersionChange> GetComparison(this Document currentVersion, int verisonId)
-        {
-            var previousVersion = currentVersion.GetVersion(verisonId);
-
-            return GetVersionChanges(currentVersion, previousVersion);
+            // use null handling ignore so that properties that didn't exist in previous versions are defaulted
+            return JsonConvert.DeserializeObject(version.Data, doc.GetType(), new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            }) as T;
         }
 
         private static List<VersionChange> GetVersionChanges(Document currentVersion, Document previousVersion)
