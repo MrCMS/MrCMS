@@ -71,14 +71,17 @@ namespace MrCMS.Indexing.Management
                     return null;
 
                 long lastModified = IndexReader.LastModified(GetDirectory(_site));
+                DateTime time;
                 try
                 {
-                    return new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
+                    time = new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
                 }
                 catch
                 {
-                    return DateTime.FromFileTime(lastModified);
+                    time = DateTime.FromFileTime(lastModified);
                 }
+
+                return TimeZoneInfo.ConvertTime(time, TimeZoneInfo.Utc, CurrentRequestData.TimeZoneInfo);
             }
         }
 
@@ -244,13 +247,12 @@ namespace MrCMS.Indexing.Management
                 .List<TEntity>().ToList();
             return IndexResult.GetResult(() =>
             {
-                Write(writer => { }, true);
                 Write(writer =>
                 {
                     foreach (Document document in Definition.ConvertAll(entities))
                         writer.AddDocument(document);
                     writer.Optimize();
-                });
+                }, true);
             });
         }
 
@@ -271,13 +273,51 @@ namespace MrCMS.Indexing.Management
 
         private void Write(Action<IndexWriter> writeFunc, bool recreateIndex)
         {
-            using (
-                var indexWriter = new IndexWriter(GetDirectory(_site), Definition.GetAnalyser(), recreateIndex,
-                    IndexWriter.MaxFieldLength.UNLIMITED))
-            {
-                writeFunc(indexWriter);
-            }
+            if (recreateIndex)
+                RecreateIndex();
+            var indexWriter = GetIndexWriter();
+            writeFunc(indexWriter);
+            indexWriter.Commit();
             Definition.ResetSearcher();
+        }
+
+        private void RecreateIndex()
+        {
+            if (Writers.ContainsKey(_site.Id) && Writers[_site.Id].ContainsKey(Definition.GetType()))
+            {
+                var existing = Writers[_site.Id][Definition.GetType()];
+                if (existing != null) existing.Dispose();
+                Writers[_site.Id].Remove(Definition.GetType());
+            }
+            using (GetNewIndexWriter(true)) { }
+        }
+
+        private static readonly Dictionary<int, Dictionary<Type, IndexWriter>> Writers =
+            new Dictionary<int, Dictionary<Type, IndexWriter>>();
+        private static readonly object LockObject = new object();
+
+        private IndexWriter GetIndexWriter()
+        {
+            lock (LockObject)
+            {
+                if (!Writers.ContainsKey(_site.Id))
+                {
+                    Writers[_site.Id] = new Dictionary<Type, IndexWriter>();
+                }
+                if (!Writers[_site.Id].ContainsKey(Definition.GetType()))
+                {
+                    Writers[_site.Id][Definition.GetType()] = GetNewIndexWriter(false);
+                }
+                return Writers[_site.Id][Definition.GetType()];
+            }
+        }
+
+        private IndexWriter GetNewIndexWriter(bool recreateIndex)
+        {
+            return new IndexWriter(GetDirectory(_site),
+                Definition.GetAnalyser(),
+                recreateIndex,
+                IndexWriter.MaxFieldLength.UNLIMITED);
         }
     }
 }
