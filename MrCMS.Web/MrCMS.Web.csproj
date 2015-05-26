@@ -344,6 +344,7 @@
     <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
     <Compile Include="Areas\Admin\ACL\MediaToolsACL.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
+    <Compile Include="Areas\Admin\ACL\UserSubscriptionReports\UserSubscriptionReportsACL.cs" />
     <Compile Include="Areas\Admin\Bundles\AdminAppScriptBundle.cs" />
     <Compile Include="Areas\Admin\Bundles\AdminAppStylesheetBundle.cs" />
     <Compile Include="Areas\Admin\Bundles\AdminLibScriptBundle.cs" />
@@ -360,6 +361,7 @@
     <Compile Include="Areas\Admin\Controllers\RegisteredHandlersController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteCloneOptionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemSettingsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UserSubscriptionReportsController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageSearchController.cs" />
     <Compile Include="Areas\Admin\Events\RefreshUIOnBatchRunComplete.cs" />
     <Compile Include="Areas\Admin\Events\StartBatchExecutionOnServer.cs" />
@@ -370,6 +372,7 @@
     <Compile Include="Areas\Admin\Helpers\BatchEntityHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\UniversalSearchHelper.cs" />
+    <Compile Include="Areas\Admin\Helpers\D3Reports\D3HtmlHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\WebpageExtensions.cs" />
     <Compile Include="Areas\Admin\Hubs\BatchProcessingHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\BatchRunGuidModelBinder.cs" />
@@ -534,6 +537,9 @@
     <Compile Include="Areas\Admin\Models\UserEdit\UserTabBase.cs" />
     <Compile Include="Areas\Admin\Models\UserEdit\UserTabGroup.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
+    <Compile Include="Areas\Admin\Models\UserSubscriptionReports\ID3AxisComponent.cs" />
+    <Compile Include="Areas\Admin\Models\UserSubscriptionReports\UserSubscriptionReportsSearchQuery.cs" />
+    <Compile Include="Areas\Admin\Models\UserSubscriptionReports\D3UserSubscriptionReportsModel.cs" />
     <Compile Include="Areas\Admin\Models\VersionsModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewDataUploadFilesResult.cs" />
     <Compile Include="Areas\Admin\Models\WebpageEdit\FormDesignTab.cs" />
@@ -687,6 +693,8 @@
     <Compile Include="Areas\Admin\Services\PageDefaultsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\UniversalSearchIndexSearcher.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\UserSubscriptionReports\IUserSubscriptionReportsService.cs" />
+    <Compile Include="Areas\Admin\Services\UserSubscriptionReports\UserSubscriptionReportsService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageAdminSearchService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageParentAdminService.cs" />
@@ -1172,6 +1180,9 @@
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.js" />
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.min.js" />
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\sweetalert.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\d3\bootstrap-datepicker.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.tip.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.are-you-sure.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\dropzone.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\featherlight.js" />
@@ -1759,6 +1770,8 @@
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.min.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Areas\Admin\Content\Styles\d3\bootstrap-datepicker.css" />
+    <Content Include="Areas\Admin\Content\Styles\d3\d3-admin-graph.css" />
     <Content Include="Areas\Admin\Content\Styles\dropzone.css" />
     <Content Include="Areas\Admin\Content\Styles\featherlight.css" />
     <Content Include="Areas\Admin\Content\Styles\mrcms-admin.css" />
@@ -2143,6 +2156,7 @@
     <Content Include="Areas\Admin\Views\WebpageSearch\Results.cshtml" />
     <Content Include="Areas\Admin\Views\WebpageSearch\Search.cshtml" />
     <Content Include="LICENSE" />
+    <Content Include="Areas\Admin\Views\UserSubscriptionReports\Index.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
