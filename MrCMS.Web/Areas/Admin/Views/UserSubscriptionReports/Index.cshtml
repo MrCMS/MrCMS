@@ -7,42 +7,52 @@
 @using MrCMS.Web.Areas.Admin.Helpers.D3Reports;
 @using MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports;
 
+
 @model UserSubscriptionReportsSearchQuery
 
 @{
     ViewBag.Title = @Resource("Admin User Subscription Reports Title", "User Subscription Reports");
+    string json = ViewData["JsonData"] as string;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-@using (Html.BeginForm("Index", "UserSubscriptionReports", FormMethod.Post))
+@using (Html.BeginForm("Index", "UserSubscriptionReports", FormMethod.Get))
 {
     <fieldset>
         <legend>
             @Resource("Admin User Subscription Reports (Monthly) Title", "User Subscription Reports (Monthly)")
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn btn-primary" value="Range Filter" />
+               <input type="submit" class="btn btn-primary" value="@Resource("Range Filter")" />
             </span>
         </legend>
 
         <div class="row">
             <div class="col-lg-8"></div>
-            <div class="col-lg-2">
-                @Html.BootstrapDatePickerFor(m => m.StartDate, labelforTooltip: "Start Date", className: "date-picker")
+               
+               <div class="col-lg-2">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.StartDate)
+                    @Html.TextBoxFor(query => query.StartDate, new { @class = "date-time-picker form-control" })
+                    @Html.ValidationMessageFor(query => query.StartDate);
+                </div>
             </div>
             <div class="col-lg-2">
-                @Html.BootstrapDatePickerFor(m => m.EndDate, labelforTooltip: "End Date", className: "date-picker")
+                <div class="form-group">
+                    @Html.LabelFor(query => query.EndDate)
+                    @Html.TextBoxFor(query => query.EndDate, new { @class = "date-time-picker form-control" })
+                    @Html.ValidationMessageFor(query => query.EndDate);
+                </div>
             </div>
         </div>
     </fieldset>
 
 
-    if (Model.Subscriptions.JsonObject.Count() > 0)
+    if(!string.IsNullOrEmpty(json.Trim('[',']')))
     {
         <div class="row">
             <div class="col-lg-1"></div>
             <div class="col-lg-11">
                 <div id="graph">
-                    @Html.D3GraphAxisComponentFor(Model.Subscriptions);
                 </div>
             </div>
         </div>
@@ -58,15 +68,16 @@
 
 <script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/jquery/jquery-1.11.2.min.js")'></script>
 <script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/d3/bootstrap-datepicker.js")'></script>
+<script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/d3/d3.min.js")'></script>
+<script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/d3/d3.tip.js")'></script>
+<script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/d3/SubscriptionGraph.js")'></script>
+
 
 <script type="text/javascript">
-    $(document).ready(function ($) {
-        $(".date-picker").datepicker({
-            format: "mm/dd/yyyy",
-            autoclose: true
-        });
-    });
+    SubscriptionGraph('div#graph', '@Html.Raw(json)');
 </script>
+
+
 
 
 @{

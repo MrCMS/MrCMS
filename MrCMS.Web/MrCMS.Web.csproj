@@ -537,9 +537,7 @@
     <Compile Include="Areas\Admin\Models\UserEdit\UserTabBase.cs" />
     <Compile Include="Areas\Admin\Models\UserEdit\UserTabGroup.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
-    <Compile Include="Areas\Admin\Models\UserSubscriptionReports\ID3AxisComponent.cs" />
     <Compile Include="Areas\Admin\Models\UserSubscriptionReports\UserSubscriptionReportsSearchQuery.cs" />
-    <Compile Include="Areas\Admin\Models\UserSubscriptionReports\D3UserSubscriptionReportsModel.cs" />
     <Compile Include="Areas\Admin\Models\VersionsModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewDataUploadFilesResult.cs" />
     <Compile Include="Areas\Admin\Models\WebpageEdit\FormDesignTab.cs" />
@@ -1183,6 +1181,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\bootstrap-datepicker.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.tip.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\d3\SubscriptionGraph.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.are-you-sure.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\dropzone.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\featherlight.js" />

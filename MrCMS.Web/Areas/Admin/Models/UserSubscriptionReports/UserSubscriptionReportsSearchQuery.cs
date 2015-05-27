@@ -16,49 +16,45 @@ namespace MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports
         {
             _startDate = DateTime.MinValue;
             _endDate = DateTime.MinValue;
-            Subscriptions = new D3UserSubscriptionReportsModel();
         }
+
         [Required(ErrorMessage = "*start date")]
-        [DataType(DataType.Date)]
         [Display(Name = "Start Date")]
-        public String StartDate
+        public DateTime StartDate
         {
             get
             {
                 if (_startDate == DateTime.MinValue)
                 {
-                    _startDate = new DateTime(DateTime.Now.Year, 1, 1);
-                    return String.Format("{0:MM/dd/yyyy}", _startDate);         
+                    _startDate = new DateTime(DateTime.Now.Year, 1, 1).Date;
+                    return _startDate.Date;
                 }
                 else
-                    return String.Format("{0:MM/dd/yyyy}", _startDate); 
+                    return _startDate.Date;
             }
             set
             {
-                _startDate = Convert.ToDateTime(value);
+                _startDate = value;
             }
         }
         [Required(ErrorMessage = "*end date")]
         [Display(Name = "End Date")]
-        [DataType(DataType.Date)]
-        public String EndDate
+        public DateTime EndDate
         {
             get
             {
                 if (_endDate == DateTime.MinValue)
                 {
-                    _endDate = DateTime.Now;
-                    return String.Format("{0:MM/dd/yyyy}", _endDate);    
+                    _endDate = DateTime.Now.Date;
+                    return _endDate.Date;
                 }
                 else
-                    return String.Format("{0:MM/dd/yyyy}", _endDate);
+                    return _endDate.Date;
             }
             set
             {
-                _endDate = Convert.ToDateTime(value);
+                _endDate = value;
             }
         }
-
-        public D3UserSubscriptionReportsModel Subscriptions { get; set; }
     }
 }

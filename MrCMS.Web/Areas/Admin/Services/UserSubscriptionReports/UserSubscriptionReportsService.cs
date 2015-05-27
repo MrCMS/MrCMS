@@ -28,11 +28,11 @@ namespace MrCMS.Web.Areas.Admin.Services.UserSubscriptionReports
             _session = session;
         }
 
-        public IEnumerable<JsonObject> GetAllSubscriptions(UserSubscriptionReportsSearchQuery searchQuery)
+        public IEnumerable<object> GetAllSubscriptions(UserSubscriptionReportsSearchQuery searchQuery)
         {
-            return _session.Query<User>().Where(c => c.CreatedOn >= Convert.ToDateTime(searchQuery.StartDate) && c.CreatedOn <= Convert.ToDateTime(searchQuery.EndDate)).AsEnumerable()
+            return _session.Query<User>().Where(c => c.CreatedOn >= searchQuery.StartDate && c.CreatedOn <= searchQuery.EndDate).AsEnumerable()
                            .GroupBy(c => c.CreatedOn.ToString("MMM") + " " + c.CreatedOn.Year)
-                           .Select(c => new JsonObject { JoiningMonthYear = c.Key, Count = c.Count() });
+                           .Select(c => new { JoiningMonthYear = c.Key, Count = c.Count() });
         }
     }
 }

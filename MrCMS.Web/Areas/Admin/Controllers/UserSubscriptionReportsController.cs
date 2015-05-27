@@ -16,7 +16,7 @@ using MrCMS.Web.Areas.Admin.ACL.UserSubscriptionReports;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
-    class UserSubscriptionReportsController : MrCMSAdminController
+    public class UserSubscriptionReportsController : MrCMSAdminController
     {
         private readonly IUserSubscriptionReportsService _userSubscriptionReportsService;
 
@@ -25,23 +25,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _userSubscriptionReportsService = userSubscriptionReportsService;
         }
 
-
-        [HttpGet]
         [MrCMSACLRule(typeof(UserSubscriptionReportsACL), UserSubscriptionReportsACL.View)]
-        public ActionResult Index()
-        {
-            UserSubscriptionReportsSearchQuery searchQuery = new UserSubscriptionReportsSearchQuery();
-            searchQuery.Subscriptions = new D3UserSubscriptionReportsModel() { JsonObject = _userSubscriptionReportsService.GetAllSubscriptions(searchQuery) };
-            return View(searchQuery);
-        }
-
-        [HttpPost]
-        [MrCMSACLRule(typeof(UserSubscriptionReportsACL), UserSubscriptionReportsACL.Filter)]
         public ActionResult Index(UserSubscriptionReportsSearchQuery searchQuery)
         {
-            D3UserSubscriptionReportsModel model = new D3UserSubscriptionReportsModel();
-            model.JsonObject = _userSubscriptionReportsService.GetAllSubscriptions(searchQuery);
-            searchQuery.Subscriptions = model;
+            var result=_userSubscriptionReportsService.GetAllSubscriptions(searchQuery);
+            ViewData["JsonData"] =new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(result);
             return View(searchQuery);
         }
     }

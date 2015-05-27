@@ -9,7 +9,6 @@ namespace MrCMS.Web.Areas.Admin.ACL.UserSubscriptionReports
     public class UserSubscriptionReportsACL : ACLRule
     {
         public const string View = "View";
-        public const string Filter = "Filter";
 
         public override string DisplayName
         {
@@ -20,7 +19,7 @@ namespace MrCMS.Web.Areas.Admin.ACL.UserSubscriptionReports
         {
             return new List<string>
                    {
-                       View,Filter
+                       View
                    };
         }
     }
