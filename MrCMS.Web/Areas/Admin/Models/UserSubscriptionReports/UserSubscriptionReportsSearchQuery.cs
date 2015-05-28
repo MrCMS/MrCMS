@@ -20,17 +20,18 @@ namespace MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports
 
         [Required(ErrorMessage = "*start date")]
         [Display(Name = "Start Date")]
+        [DataType(DataType.Date)]
         public DateTime StartDate
         {
             get
             {
                 if (_startDate == DateTime.MinValue)
                 {
-                    _startDate = new DateTime(DateTime.Now.Year, 1, 1).Date;
+                    _startDate = new DateTime(DateTime.Now.Year, 1, 1);
                     return _startDate.Date;
                 }
                 else
-                    return _startDate.Date;
+                    return _startDate;
             }
             set
             {
@@ -39,17 +40,18 @@ namespace MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports
         }
         [Required(ErrorMessage = "*end date")]
         [Display(Name = "End Date")]
+        [DataType(DataType.Date)]
         public DateTime EndDate
         {
             get
             {
                 if (_endDate == DateTime.MinValue)
                 {
-                    _endDate = DateTime.Now.Date;
+                    _endDate = DateTime.Now;
                     return _endDate.Date;
                 }
                 else
-                    return _endDate.Date;
+                    return _endDate;
             }
             set
             {

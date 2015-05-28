@@ -1,5 +1,5 @@
 ﻿
-var SubscriptionGraph = function (icontainer, idata) {
+var SubscriptionGraph = function (icontainer, idata,graphLabel,tooltipX,tooltipY) {
     var container = icontainer,
         data = JSON.parse(idata),
      margin = { top: 50, right: 50, bottom: 50, left: 50 },
@@ -31,7 +31,7 @@ var SubscriptionGraph = function (icontainer, idata) {
        .attr('class', 'd3-tip')
        .offset([-10, 0])
        .html(function (d) {
-           return '<strong>Subscribed On </strong> <span style=color:red>' + formatTime(new Date(d.JoiningMonthYear)) + '</span><br><strong>No of Users </strong> <span style=color:red>' + d.Count + '</span>';
+           return '<strong>'+tooltipX+' </strong> <span style=color:red>' + formatTime(new Date(d.JoiningMonthYear)) + '</span><br><strong>'+tooltipY+' </strong> <span style=color:red>' + d.Count + '</span>';
        });
 
     this.DataInit = function () {
@@ -98,7 +98,7 @@ var SubscriptionGraph = function (icontainer, idata) {
             .attr('x', width - 6)
             .attr('y', height - 6)
             .style('text-anchor', 'end')
-            .text('User Subscription Month Wise');
+            .text(graphLabel);
 
 
         ToolTipInit(data);

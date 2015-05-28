@@ -26,10 +26,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [MrCMSACLRule(typeof(UserSubscriptionReportsACL), UserSubscriptionReportsACL.View)]
-        public ActionResult Index(UserSubscriptionReportsSearchQuery searchQuery)
+        public ViewResult Index(UserSubscriptionReportsSearchQuery searchQuery)
         {
-            var result=_userSubscriptionReportsService.GetAllSubscriptions(searchQuery);
-            ViewData["JsonData"] =new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(result);
+            var data=_userSubscriptionReportsService.GetAllSubscriptions(searchQuery);
+            ViewData["JsonData"] =new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(data);
             return View(searchQuery);
         }
     }

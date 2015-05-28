@@ -24,7 +24,7 @@ namespace MrCMS.Web.Areas.Admin.Helpers.D3Reports
         /// /// <param name="format">Date format for DatePicker</param>
         /// <param name="labelforTooltip">label for tooltip</param>
         /// <returns></returns>
-        public static MvcHtmlString BootstrapDatePickerFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, string className = "",string format="dd/mm/yyyy", string labelforTooltip = "")
+        public static MvcHtmlString BootstrapDatePickerFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, string className = "", string labelforTooltip = "")
         {
             
             StringBuilder sb = new StringBuilder();
@@ -37,17 +37,16 @@ namespace MrCMS.Web.Areas.Admin.Helpers.D3Reports
             {
                 sb.AppendLine(htmlHelper.LabelFor(expression).ToString());
             }
-            sb.AppendLine("<div class=\"input-group date date-picker\" data-date-format=\"" + format + "\">");
+            sb.AppendLine("<div class=\"input-group date date-picker\" data-date-format=\"" +MrCMS.Website.CurrentRequestData.CultureInfo.DateTimeFormat.ShortDatePattern + "\">");
             string placeholder = HttpUtility.HtmlDecode(htmlHelper.DisplayNameFor(expression).ToHtmlString());
             if (!string.IsNullOrWhiteSpace(className))
             {
                 className = " " + className;
             }
-            sb.AppendLine(htmlHelper.TextBoxFor(expression, new { @class = "form-control" + className, @placeholder = placeholder}).ToString());
+            sb.AppendLine(htmlHelper.TextBoxFor(expression,"{0:"+MrCMS.Website.CurrentRequestData.CultureInfo.DateTimeFormat.ShortDatePattern+"}",  new { @class = "form-control" + className, @placeholder = placeholder}).ToString());
             sb.AppendLine(htmlHelper.ValidationMessageFor(expression).ToString());
             sb.AppendLine("<span class=\"input-group-addon btn\"><i class=\"fa fa-calendar\"></i></span></div></div>");
             return new MvcHtmlString(sb.ToString());
         }
-
     }
 }
