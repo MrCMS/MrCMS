@@ -39,7 +39,8 @@ namespace MrCMS.Models
                                                          ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.Roles)),
                                        new ChildMenuItem("Third Party Auth", "/Admin/ThirdPartyAuth",
                                                          ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.ThirdPartyAuth)),
-                                   
+                                       new ChildMenuItem("User Subscription Reports ", "/Admin/UserSubscriptionReports",
+                                                         ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.UserSubscriptionReports))                     
                        };
         }
 
