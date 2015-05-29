@@ -1,21 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web;
-using MrCMS.Entities;
+using System.Linq;
 using MrCMS.Entities.People;
-using MrCMS.Helpers;
-using MrCMS.Models;
-using MrCMS.Paging;
-using MrCMS.Services.Events;
-using MrCMS.Services.Events.Args;
-using MrCMS.Settings;
 using MrCMS.Web.Areas.Admin.Models;
-using MrCMS.Website;
+using MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports;
 using NHibernate;
 using NHibernate.Linq;
-using NHibernate.Criterion;
-using System.Linq;
-using MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports;
 
 namespace MrCMS.Web.Areas.Admin.Services.UserSubscriptionReports
 {
@@ -30,11 +20,23 @@ namespace MrCMS.Web.Areas.Admin.Services.UserSubscriptionReports
 
         public IEnumerable<LineGraphData> GetAllSubscriptions(UserSubscriptionReportsSearchQuery searchQuery)
         {
-            return _session.Query<User>()
-                .Where(c => c.CreatedOn >= searchQuery.StartDate && c.CreatedOn <= searchQuery.EndDate)
-                .AsEnumerable()
-                .GroupBy(c => c.CreatedOn.ToString("MMM") + " " + c.CreatedOn.Year)
-                .Select(c => new LineGraphData {x = c.Key, y = c.Count()}).ToList();
+            var query = from user in _session.Query<User>()
+                where user.CreatedOn >= searchQuery.StartDate && user.CreatedOn <= searchQuery.EndDate
+                group user by new {user.CreatedOn.Year, user.CreatedOn.Month}
+                into userGroup
+                orderby userGroup.Key.Year, userGroup.Key.Month
+                select new
+                {
+                    userGroup.Key.Month,
+                    userGroup.Key.Year,
+                    Count = userGroup.Count()
+                };
+
+            return query.Select(arg => new LineGraphData
+            {
+                x = new DateTime(arg.Year, arg.Month, 1).ToString("MMM yyyy"),
+                y = arg.Count
+            }).ToList();
         }
     }
 }
