@@ -33,8 +33,6 @@
     </fieldset>
 
 
-    //if (jsonData != null)
-    //{
     <div class="row">
         <div class="col-lg-10 col-lg-push-1">
             <div data-d3-graph="@Url.Action("GraphData", "UserSubscriptionReports", new { StartDate = Model.StartDate.ToString(), EndDate = Model.EndDate.ToString() })" data-d3-graph-label="@graphLabel" data-d3-x-axis-label="@xAxisLabel" data-d3-y-axis-label="@yAxisLabel">
@@ -44,20 +42,8 @@
             </div>
         </div>
     </div>
-    @*}
-        else
-        {
-            <div class="alert alert-info">
-                <strong>@Resource("Admin User Subscription No Data Title", "There is no data,Please filter again with different start/end date values")</strong>
-            </div>
-        }*@
+  
 }
-@*@section JavascriptBlock{
-        <script type="text/javascript">
-            SubscriptionGraph('div#graph', '@Html.Raw(JsonConvert.SerializeObject(jsonData))', '@GraphLabel', '@tooltipTitleX', '@tooltipTitleY');
-        </script>
-    }*@
-
 @{
     Html.IncludeCss("/Areas/Admin/Content/Styles/d3/d3-admin-graph.css");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/d3/d3.min.js");
