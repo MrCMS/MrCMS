@@ -13,6 +13,7 @@ using MrCMS.Website.Controllers;
 using System.Collections.Generic;
 using MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports;
 using MrCMS.Web.Areas.Admin.ACL.UserSubscriptionReports;
+using Newtonsoft.Json;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
 {
@@ -28,9 +29,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [MrCMSACLRule(typeof(UserSubscriptionReportsACL), UserSubscriptionReportsACL.View)]
         public ViewResult Index(UserSubscriptionReportsSearchQuery searchQuery)
         {
-            var data=_userSubscriptionReportsService.GetAllSubscriptions(searchQuery);
-            ViewData["JsonData"] =new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(data);
             return View(searchQuery);
+        }
+
+        [MrCMSACLRule(typeof (UserSubscriptionReportsACL), UserSubscriptionReportsACL.View)]
+        public JsonResult GraphData(UserSubscriptionReportsSearchQuery searchQuery)
+        {
+            var data = _userSubscriptionReportsService.GetAllSubscriptions(searchQuery);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
 }

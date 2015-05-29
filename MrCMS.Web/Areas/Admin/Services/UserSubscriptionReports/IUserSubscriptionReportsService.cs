@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports;
 
 namespace MrCMS.Web.Areas.Admin.Services.UserSubscriptionReports
 {
     public interface IUserSubscriptionReportsService
     {
-        IEnumerable<object> GetAllSubscriptions(UserSubscriptionReportsSearchQuery searchQuery);
+        IEnumerable<LineGraphData> GetAllSubscriptions(UserSubscriptionReportsSearchQuery searchQuery);
     }
 }

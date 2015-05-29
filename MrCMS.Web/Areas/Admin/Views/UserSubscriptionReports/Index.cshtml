@@ -1,24 +1,12 @@
-﻿@using System.Collections.Generic
-@using System.Linq
-@using MrCMS.Entities.People
-@using MrCMS.Helpers
-@using MrCMS.Models
-@using MrCMS.Paging
-@using MrCMS.Web.Areas.Admin.Helpers.D3Reports;
-@using MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports;
-@using System.Globalization;
-@using MrCMS.Website;
-
-
-@model UserSubscriptionReportsSearchQuery
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports.UserSubscriptionReportsSearchQuery
 
 @{
     ViewBag.Title = @Resource("Admin User Subscription Reports Title", "User Subscription Reports");
-    string jsonData = ViewData["JsonData"] as string;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    string tooltipTitleX = @Resource("User Subscription Tooltip Title X", "Subscribed On");
-    string tooltipTitleY = @Resource("User Subscription Tooltip Title Y", "Number of Users");
-    string GraphLabel = @Resource("User Subscription Graph Label", "User Subscription Month Wise");
+    string xAxisLabel = @Resource("User Subscription Tooltip Title X", "Subscribed On");
+    string yAxisLabel = @Resource("User Subscription Tooltip Title Y", "Number of Users");
+    string graphLabel = @Resource("User Subscription Graph Label", "User Subscriptions Per Month");
 }
 
 @using (Html.BeginForm("Index", "UserSubscriptionReports", FormMethod.Get))
@@ -27,57 +15,50 @@
         <legend>
             @Resource("Admin User Subscription Reports (Monthly) Title", "User Subscription Reports (Monthly)")
             <span class="btn-group display-inline pull-right">
-               <input type="submit" class="btn btn-primary" value="@Resource("Range Filter")" />
+                <input type="submit" class="btn btn-primary" value="@Resource("Range Filter")" />
             </span>
         </legend>
 
         <div class="row">
             <div class="col-lg-8"></div>
             <div class="col-lg-2">
-                @Html.BootstrapDatePickerFor(m => m.StartDate, labelforTooltip: "Start Date", className: "date-picker")
+                @Html.LabelFor(query => query.StartDate)
+                @Html.TextBoxFor(query => query.StartDate, new { @class = "date-time-picker form-control" })
             </div>
             <div class="col-lg-2">
-                @Html.BootstrapDatePickerFor(m => m.EndDate, labelforTooltip: "End Date", className: "date-picker")
+                @Html.LabelFor(query => query.EndDate)
+                @Html.TextBoxFor(query => query.EndDate, new { @class = "date-time-picker form-control" })
             </div>
         </div>
     </fieldset>
 
 
-    if(!string.IsNullOrEmpty(jsonData.Trim('[',']')))
-    {
-        <div class="row">
-            <div class="col-lg-1"></div>
-            <div class="col-lg-11">
-                <div id="graph">
-                </div>
+    //if (jsonData != null)
+    //{
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-11">
+            <div data-d3-graph="@Url.Action("GraphData", "UserSubscriptionReports",Model)" data-d3-graph-label="@graphLabel" data-d3-x-axis-label="@xAxisLabel" data-d3-y-axis-label="@yAxisLabel">
             </div>
         </div>
-    }
-    else
-    {
-        <div class="alert alert-info">
-            <strong>@Resource("Admin User Subscription No Data Title", "There is no data,Please filter again with different start/end date values")</strong>
-        </div>
-    }
+    </div>
+    @*}
+        else
+        {
+            <div class="alert alert-info">
+                <strong>@Resource("Admin User Subscription No Data Title", "There is no data,Please filter again with different start/end date values")</strong>
+            </div>
+        }*@
 }
-
-<script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/jquery/jquery-1.11.2.min.js")'></script>
-<script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/d3/bootstrap-datepicker.js")'></script>
-<script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/d3/d3.min.js")'></script>
-<script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/d3/d3.tip.js")'></script>
-<script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/d3/SubscriptionGraph.js")'></script>
-
-<script type="text/javascript">
-    $(document).ready(function ($) {
-        $(".date-picker").datepicker({
-            autoclose: true
-        });
-    });
-    SubscriptionGraph('div#graph', '@Html.Raw(jsonData)','@GraphLabel','@tooltipTitleX','@tooltipTitleY');
-</script>
+@*@section JavascriptBlock{
+        <script type="text/javascript">
+            SubscriptionGraph('div#graph', '@Html.Raw(JsonConvert.SerializeObject(jsonData))', '@GraphLabel', '@tooltipTitleX', '@tooltipTitleY');
+        </script>
+    }*@
 
 @{
     Html.IncludeCss("/Areas/Admin/Content/Styles/d3/d3-admin-graph.css");
-    Html.IncludeCss("/Areas/Admin/Content/Styles/d3/bootstrap-datepicker.css");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/d3/d3.min.js");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/d3/d3.tip.js");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/line-graph.js");
 }
-

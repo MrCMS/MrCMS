@@ -372,7 +372,6 @@
     <Compile Include="Areas\Admin\Helpers\BatchEntityHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\UniversalSearchHelper.cs" />
-    <Compile Include="Areas\Admin\Helpers\D3Reports\D3HtmlHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\WebpageExtensions.cs" />
     <Compile Include="Areas\Admin\Hubs\BatchProcessingHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\BatchRunGuidModelBinder.cs" />
@@ -383,6 +382,7 @@
     <Compile Include="Areas\Admin\Models\AdminMessages.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\ChooseSiteParams.cs" />
+    <Compile Include="Areas\Admin\Models\LineGraphData.cs" />
     <Compile Include="Areas\Admin\Models\MediaCategorySortMethod.cs" />
     <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
@@ -1181,7 +1181,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\bootstrap-datepicker.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.tip.js" />
-    <Content Include="Areas\Admin\Content\Scripts\lib\d3\SubscriptionGraph.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\line-graph.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.are-you-sure.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\dropzone.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\featherlight.js" />
