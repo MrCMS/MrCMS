@@ -12,10 +12,12 @@ namespace MrCMS.Search
     public class AddUniversalSearchTaskInfoExecutor : ExecuteEndRequestBase<AddUniversalSearchTaskInfo, UniversalSearchIndexData>
     {
         private readonly IStatelessSession _session;
+        private readonly Site _site;
 
-        public AddUniversalSearchTaskInfoExecutor(IStatelessSession session)
+        public AddUniversalSearchTaskInfoExecutor(IStatelessSession session, Site site)
         {
             _session = session;
+            _site = site;
         }
 
         public override void Execute(IEnumerable<UniversalSearchIndexData> data)
@@ -41,7 +43,9 @@ namespace MrCMS.Search
         {
             var item = indexData.UniversalSearchItem;
             var entity = _session.Get(item.SystemType, item.Id) as SiteEntity;
-            return entity == null || entity.Site == null ? null : _session.Get<Site>(entity.Site.Id);
+            return entity == null || entity.Site == null
+                ? _session.Get<Site>(_site.Id)
+                : _session.Get<Site>(entity.Site.Id);
         }
     }
 }
