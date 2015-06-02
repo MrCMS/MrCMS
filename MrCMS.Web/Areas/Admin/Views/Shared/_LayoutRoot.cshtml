@@ -28,9 +28,6 @@
     <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CurrentRequestData.CultureInfo.Name).js"></script>
     @Scripts.Render("~/admin/scripts/mrcms")
     @Scripts.Render("~/admin/scripts/apps")
-    @{
-            Html.AddAppAdminScripts();
-    }
     @if (!CurrentRequestData.CurrentUser.DisableNotifications)
         {
             Html.RenderAction("Show", "TransientNotification");
