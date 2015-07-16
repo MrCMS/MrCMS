@@ -25,12 +25,11 @@ namespace MrCMS.Shortcodes.Forms
             {
                 var cbLabelBuilder = new TagBuilder("label");
                 cbLabelBuilder.Attributes["for"] = TagBuilder.CreateSanitizedId(formProperty.Name + "-" + checkbox.Value);
-                cbLabelBuilder.InnerHtml = checkbox.Value;
-                cbLabelBuilder.AddCssClass("checkbox");
-
                 var checkboxBuilder = GetCheckbox(formProperty, existingValue, checkbox, values);
 
                 cbLabelBuilder.InnerHtml += checkboxBuilder.ToString();
+                cbLabelBuilder.InnerHtml += checkbox.Value;
+
                 if (formRenderingType == FormRenderingType.Bootstrap3)
                 {
                     var checkboxContainer = new TagBuilder("div");
