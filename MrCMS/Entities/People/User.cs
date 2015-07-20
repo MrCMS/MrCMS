@@ -63,7 +63,7 @@ namespace MrCMS.Entities.People
         public virtual DateTime? ResetPasswordExpiry { get; set; }
 
         public virtual ISet<UserRole> Roles { get; set; }
-        protected internal virtual IList<UserProfileData> UserProfileData { get; set; }
+        public virtual IList<UserProfileData> UserProfileData { get; set; }
 
         public virtual bool IsAdmin
         {
