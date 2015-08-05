@@ -175,7 +175,7 @@ namespace MrCMS.Helpers
             return LastItem(html, list, url, getRouteValues, format);
         }
 
-        private static TagBuilder Last(HtmlHelper html, IPagedList list, 
+        private static TagBuilder Last(HtmlHelper html, IPagedList list,
                                        Func<int, object> getRouteValues, string format)
         {
             var url = html.UrlWithCurrentQueryString(GetCurrentPath(html), getRouteValues(list.PageCount));
@@ -455,9 +455,16 @@ namespace MrCMS.Helpers
                 if (!routeValueDictionary.ContainsKey(key))
                     routeValueDictionary.Add(key, queryString[key]);
             }
+            var keysToRemove = routeValueDictionary.Keys.Where(
+                s => string.IsNullOrWhiteSpace(Convert.ToString(routeValueDictionary[s]))).ToList();
+            foreach (var key in keysToRemove)
+                routeValueDictionary.Remove(key);
 
-            return "/" + relativePath + "?" +
-                   string.Join("&", routeValueDictionary.Select(pair => string.Format("{0}={1}", pair.Key, pair.Value)));
+            var basicUrl = "/" + relativePath;
+            return !routeValueDictionary.Any()
+                ? basicUrl
+                : basicUrl + "?" +
+                  string.Join("&", routeValueDictionary.Select(pair => string.Format("{0}={1}", pair.Key, pair.Value)));
         }
     }
 }

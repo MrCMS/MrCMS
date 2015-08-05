@@ -16,7 +16,6 @@ using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
-using MrCMS.Entities.Messaging;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
@@ -120,7 +119,7 @@ namespace MrCMS.DbConfiguration
 
         private void SetupCache(CacheSettingsBuilder builder)
         {
-            if (!CacheEnabled) 
+            if (!CacheEnabled)
                 return;
 
             builder.UseSecondLevelCache()
@@ -168,8 +167,7 @@ namespace MrCMS.DbConfiguration
 
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)
         {
-            configuration.AppendListeners(ListenerType.PreInsert,
-                new[]
+            configuration.AppendListeners(ListenerType.PreInsert, new[]
                 {
                     new SetCoreProperties()
                 });

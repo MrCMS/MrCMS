@@ -142,6 +142,9 @@ namespace MrCMS.Website
             if (o != null)
             {
                 Context.Items[CachedMissingItemKey] = true;
+                Context.Response.Clear();
+                Context.Response.StatusCode = 404;
+                Context.Response.TrySkipIisCustomErrors = true;
                 Context.ApplicationInstance.CompleteRequest();
                 return true;
             }

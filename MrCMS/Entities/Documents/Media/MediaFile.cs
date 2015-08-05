@@ -35,5 +35,6 @@ namespace MrCMS.Entities.Documents.Media
         }
 
         public virtual IList<ResizedImage> ResizedImages { get; set; }
+        public virtual IList<Crop> Crops { get; set; }
     }
 }

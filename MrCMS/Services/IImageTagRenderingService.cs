@@ -7,5 +7,7 @@ namespace MrCMS.Services
     {
         MvcHtmlString RenderImage(HtmlHelper helper, string imageUrl, Size targetSize = default(Size),
             string alt = null, string title = null, object attributes = null);
+
+        string GetImageUrl(HtmlHelper helper, string imageUrl, Size targetSize);
     }
 }
