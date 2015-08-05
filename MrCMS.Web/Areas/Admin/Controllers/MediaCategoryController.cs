@@ -161,12 +161,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// <summary>
         ///     Finds out if the URL entered is valid.
         /// </summary>
-        /// <param name="UrlSegment">The URL Segment entered</param>
-        /// <param name="DocumentType">The type of mediaCategorySearchModel</param>
+        /// <param name="urlSegment">The URL Segment entered</param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult ValidateUrlIsAllowed(string UrlSegment, int? Id)
+        public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_urlValidationService.UrlIsValidForMediaCategory(UrlSegment, Id)
+            return !_urlValidationService.UrlIsValidForMediaCategory(urlSegment, id)
                 ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet)
                 : Json(true, JsonRequestBehavior.AllowGet);
         }

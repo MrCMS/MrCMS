@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Reflection;
 using System.Web.Mvc;
 
 namespace MrCMS.Helpers
@@ -36,8 +35,14 @@ namespace MrCMS.Helpers
             var descriptionAttributes = fieldInfo.GetCustomAttributes(
                 typeof(DisplayAttribute), false) as DisplayAttribute[];
 
-            if (descriptionAttributes == null) return string.Empty;
-            return (descriptionAttributes.Length > 0) ? descriptionAttributes[0].Name : value.ToString();
+            var defaultValue = value.ToString().BreakUpString();
+
+            if (descriptionAttributes == null)
+                return defaultValue;
+
+            return (descriptionAttributes.Length > 0)
+                ? descriptionAttributes[0].Name
+                : defaultValue;
         }
 
         public static List<SelectListItem> GetOptions(SelectListItem emptyItem = null)

@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Batching;
 using MrCMS.Tasks;
 using MrCMS.Website.Controllers;
 using MrCMS.Website.Routing;
@@ -16,6 +17,10 @@ namespace MrCMS.Website
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
             routes.MapRoute("Task Execution", TaskExecutionController.ExecutePendingTasksURL,
                 new { controller = "TaskExecution", action = "Execute" });
+
+            routes.MapRoute("batch execute", BatchExecutionController.BaseURL+"{id}",
+                new {controller = "BatchExecution", action = "ExecuteNext"});
+
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
             routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",

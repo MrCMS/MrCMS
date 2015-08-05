@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MrCMS.Entities.People;
+using MrCMS.Website;
 
 namespace MrCMS.Services
 {
@@ -29,6 +30,7 @@ namespace MrCMS.Services
         public async Task LoginAsync(ExternalLoginInfo externalLoginInfo, AuthenticateResult authenticateResult)
         {
             User user = await _userManager.FindAsync(externalLoginInfo.Login);
+            CurrentRequestData.CurrentUser = user;
             await _authorisationService.SetAuthCookie(user, false);
             await _authorisationService.UpdateClaimsAsync(user, authenticateResult.Identity.Claims);
         }

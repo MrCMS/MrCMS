@@ -1,6 +1,6 @@
 using MrCMS.Batching.Entities;
 
-namespace MrCMS.Web.Areas.Admin.Services.Batching
+namespace MrCMS.Batching
 {
     public interface IExecuteRequestForNextTask
     {

@@ -285,9 +285,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Batching\BatchCreationResult.cs" />
+    <Compile Include="Batching\BatchExecutionController.cs" />
     <Compile Include="Batching\BatchJobExecutionResult.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\BatchRunGuidModelBinder.cs" />
     <Compile Include="Batching\CoreJobs\RebuildLuceneIndex.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -331,9 +333,11 @@
     <Compile Include="Batching\Events\IOnBatchRunStart.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\ExecuteRequestForNextTask.cs" />
     <Compile Include="Batching\IBatchJobExecutor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\IExecuteRequestForNextTask.cs" />
     <Compile Include="Batching\ISetBatchJobExecutionStatus.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1108,7 +1112,9 @@
     <Compile Include="Website\Filters\ForceImmediateLuceneUpdateAttribute.cs" />
     <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
     <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
+    <Compile Include="Website\Filters\TaskExecutionKeyPasswordAuth.cs" />
     <Compile Include="Website\HandleWebpageViewsAttribute.cs" />
+    <Compile Include="Website\HtmlHelperExtensions.cs" />
     <Compile Include="Website\HttpContextExtensions.cs" />
     <Compile Include="Website\IClearCachesService.cs" />
     <Compile Include="Website\IEnsureDatabaseIsInstalled.cs" />
@@ -1156,6 +1162,7 @@
     <Compile Include="Website\OutputCacheableAttribute.cs" />
     <Compile Include="Website\ProcessWebpageViews.cs" />
     <Compile Include="Website\Profiling\DisableMiniProfilerForAjaxRequests.cs" />
+    <Compile Include="Website\Profiling\DisableMiniProfilerForBatchExecution.cs" />
     <Compile Include="Website\Profiling\DisableMiniProfilerForSignalRRequests.cs" />
     <Compile Include="Website\Profiling\DisableMiniProfilerForTaskExecution.cs" />
     <Compile Include="Website\Profiling\IReasonToDisableMiniProfiler.cs" />
