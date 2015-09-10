@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using MrCMS.Website;
 
 namespace MrCMS.Indexing.Management
 {
@@ -35,6 +36,7 @@ namespace MrCMS.Indexing.Management
             }
             catch (Exception ex)
             {
+                CurrentRequestData.ErrorSignal.Raise(ex);
                 indexResult.AddError(ex.Message);
             }
             stopwatch.Stop();

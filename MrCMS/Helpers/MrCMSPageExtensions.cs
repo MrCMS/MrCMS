@@ -5,9 +5,9 @@ namespace MrCMS.Helpers
 {
     public static class MrCMSPageExtensions
     {
-        internal const string PageTitleKey = "page-title";
-        internal const string PageDescriptionKey = "page-description";
-        internal const string PageKeywordsKey = "page-keywords";
+        public const string PageTitleKey = "page-title";
+        public const string PageDescriptionKey = "page-description";
+        public const string PageKeywordsKey = "page-keywords";
         public static string PageTitle<T>(this MrCMSPage<T> page) where T : Webpage
         {
             return page.ViewData[PageTitleKey] as string ?? page.Model.GetPageTitle();

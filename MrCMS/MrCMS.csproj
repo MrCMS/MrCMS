@@ -164,8 +164,8 @@
     <Reference Include="MiniProfiler">
       <HintPath>..\packages\MiniProfiler.3.1.1.140\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\packages\MySql.Data.6.9.5\lib\net45\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.6\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -285,9 +285,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Batching\BatchCreationResult.cs" />
+    <Compile Include="Batching\BatchExecutionController.cs" />
     <Compile Include="Batching\BatchJobExecutionResult.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\BatchRunGuidModelBinder.cs" />
     <Compile Include="Batching\CoreJobs\RebuildLuceneIndex.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -331,9 +333,11 @@
     <Compile Include="Batching\Events\IOnBatchRunStart.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\ExecuteRequestForNextTask.cs" />
     <Compile Include="Batching\IBatchJobExecutor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batching\IExecuteRequestForNextTask.cs" />
     <Compile Include="Batching\ISetBatchJobExecutionStatus.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -483,6 +487,8 @@
     <Compile Include="Entities\ACL\ACLRole.cs" />
     <Compile Include="Entities\Assets\Activity.cs" />
     <Compile Include="Entities\Assets\ActivityType.cs" />
+    <Compile Include="Entities\Documents\Media\Crop.cs" />
+    <Compile Include="Entities\Documents\Media\CropType.cs" />
     <Compile Include="Entities\Documents\Media\ResizedImage.cs" />
     <Compile Include="Entities\Documents\Metadata\DefaultDocumentMetadata.cs" />
     <Compile Include="Entities\Documents\Metadata\DocumentMetadataMap.cs" />
@@ -708,6 +714,7 @@
     <Compile Include="Services\CloneSite\UpdateSiteDefaultLayouts.cs" />
     <Compile Include="Services\CloneSite\UpdateSiteSettings.cs" />
     <Compile Include="Services\CloneSite\UpdateWebpages.cs" />
+    <Compile Include="Services\CropService.cs" />
     <Compile Include="Services\CurrentSiteLocator.cs" />
     <Compile Include="Services\CustomBinderBase.cs" />
     <Compile Include="Services\CustomBindingService.cs" />
@@ -731,6 +738,7 @@
     <Compile Include="Services\IAppStylesheetList.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
     <Compile Include="Services\IAzureFileSystem.cs" />
+    <Compile Include="Services\ICropService.cs" />
     <Compile Include="Services\ICustomBindingService.cs" />
     <Compile Include="Services\IEmailSender.cs" />
     <Compile Include="Services\IExistAnyWebpageService.cs" />
@@ -1104,7 +1112,9 @@
     <Compile Include="Website\Filters\ForceImmediateLuceneUpdateAttribute.cs" />
     <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
     <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
+    <Compile Include="Website\Filters\TaskExecutionKeyPasswordAuth.cs" />
     <Compile Include="Website\HandleWebpageViewsAttribute.cs" />
+    <Compile Include="Website\HtmlHelperExtensions.cs" />
     <Compile Include="Website\HttpContextExtensions.cs" />
     <Compile Include="Website\IClearCachesService.cs" />
     <Compile Include="Website\IEnsureDatabaseIsInstalled.cs" />
@@ -1152,6 +1162,7 @@
     <Compile Include="Website\OutputCacheableAttribute.cs" />
     <Compile Include="Website\ProcessWebpageViews.cs" />
     <Compile Include="Website\Profiling\DisableMiniProfilerForAjaxRequests.cs" />
+    <Compile Include="Website\Profiling\DisableMiniProfilerForBatchExecution.cs" />
     <Compile Include="Website\Profiling\DisableMiniProfilerForSignalRRequests.cs" />
     <Compile Include="Website\Profiling\DisableMiniProfilerForTaskExecution.cs" />
     <Compile Include="Website\Profiling\IReasonToDisableMiniProfiler.cs" />
@@ -1184,6 +1195,7 @@
     <Compile Include="Website\MrCMSPage.cs" />
     <Compile Include="Website\Routing\MrCMSRoutingErrorHandler.cs" />
     <Compile Include="Website\Routing\MrCMSSSLRedirectHandler.cs" />
+    <Compile Include="Website\Routing\MrCMSStandardExecutionExtensions.cs" />
     <Compile Include="Website\Routing\MrCMSStandardRouteHandler.cs" />
     <Compile Include="Website\Routing\NotInstalledHandler.cs" />
     <Compile Include="Website\Routing\PageNotFoundHandler.cs" />

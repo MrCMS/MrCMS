@@ -49,6 +49,7 @@
             $('[data-batch-run-time-taken=' + id + ']').html(completionStatus.TimeTaken);
             $('[data-batch-run-pending=' + id + ']').html(completionStatus.Pending);
             $('[data-batch-run-succeeded=' + id + ']').html(completionStatus.Succeeded);
+            $('[data-batch-run-time-remaining=' + id + ']').html(completionStatus.EstimatedTimeRemaining);
             $('[data-batch-run-failed=' + id + ']').html(completionStatus.Failed);
         }
         function updateJob(id) {

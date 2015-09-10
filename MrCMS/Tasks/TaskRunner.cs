@@ -36,7 +36,6 @@ namespace MrCMS.Tasks
             var tasksToExecute = _taskBuilder.GetTasksToExecute(pendingQueuedTasks, new List<ScheduledTask>());
 
             return _taskExecutor.Execute(tasksToExecute);
-
         }
     }
 }

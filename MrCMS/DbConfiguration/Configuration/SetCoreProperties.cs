@@ -16,8 +16,13 @@ namespace MrCMS.DbConfiguration.Configuration
             if (systemEntity != null)
             {
                 DateTime now = CurrentRequestData.Now;
-                SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
-                SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
+
+                if (systemEntity.CreatedOn == DateTime.MinValue)
+                    SetCreatedOn(@event.Persister, @event.State, systemEntity, now);
+
+                if (systemEntity.UpdatedOn == DateTime.MinValue)
+                    SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
+
                 if (systemEntity is SiteEntity && (systemEntity as SiteEntity).Site == null)
                     SetSite(@event.Persister, @event.State, systemEntity as SiteEntity, CurrentRequestData.CurrentSite);
             }

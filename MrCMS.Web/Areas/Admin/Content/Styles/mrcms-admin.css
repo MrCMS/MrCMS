@@ -152,6 +152,7 @@ input.input-validation-error, select.input-validation-error { border: 1px solid 
 /*CKEditor hide bottom bar*/
 #cke_bottom_detail, .cke_bottom { display: none !important; }
 #cke_BodyContent { margin-bottom: 10px; }
+.color-red { color: red;}
 
 @media (max-width: 979px) {
     .search-type-dropdown, .search-query { width: 111px !important;}

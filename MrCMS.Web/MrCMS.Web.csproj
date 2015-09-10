@@ -157,8 +157,8 @@
     <Reference Include="MVC Foolproof Validation">
       <HintPath>..\packages\foolproof.0.9.4517\lib\MVC Foolproof Validation.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\packages\MySql.Data.6.9.5\lib\net45\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.6\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
@@ -352,7 +352,6 @@
     <Compile Include="Areas\Admin\Bundles\AdminMrCMSStylesheetBundle.cs" />
     <Compile Include="Areas\Admin\Controllers\AboutController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
-    <Compile Include="Areas\Admin\Controllers\BatchExecutionController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchJobController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunResultController.cs" />
@@ -566,11 +565,9 @@
     <Compile Include="Areas\Admin\Services\Batching\BatchCompletionStatus.cs" />
     <Compile Include="Areas\Admin\Services\Batching\BatchRunUIService.cs" />
     <Compile Include="Areas\Admin\Services\Batching\BatchStatus.cs" />
-    <Compile Include="Areas\Admin\Services\Batching\ExecuteRequestForNextTask.cs" />
     <Compile Include="Areas\Admin\Services\Batching\GetBatchItemCount.cs" />
     <Compile Include="Areas\Admin\Services\Batching\GetBatchStatus.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IBatchRunUIService.cs" />
-    <Compile Include="Areas\Admin\Services\Batching\IExecuteRequestForNextTask.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchItemCount.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchStatus.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />

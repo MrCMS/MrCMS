@@ -13,5 +13,10 @@ namespace MrCMS.Helpers
             return MrCMSApplication.Get<IImageTagRenderingService>()
                 .RenderImage(helper, imageUrl, targetSize, alt, title, attributes);
         }
+        public static string GetImageUrl(this HtmlHelper helper, string imageUrl, Size targetSize = default(Size))
+        {
+            return MrCMSApplication.Get<IImageTagRenderingService>()
+                .GetImageUrl(helper, imageUrl, targetSize);
+        }
     }
 }

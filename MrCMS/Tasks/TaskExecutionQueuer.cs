@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Hosting;
 using MrCMS.Entities.Multisite;
 using MrCMS.Settings;
+using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
@@ -24,18 +25,25 @@ namespace MrCMS.Tasks
                 return;
             HostingEnvironment.QueueBackgroundWorkItem(async x =>
             {
-                var siteSettings = new ConfigurationProvider(site, null).GetSiteSettings<SiteSettings>();
-
-                if (siteSettings.SelfExecuteTasks)
+                try
                 {
-                    string url = String.Format("{0}/execute-pending-tasks?{1}={2}", site.GetFullDomain.TrimEnd('/'),
-                        siteSettings.TaskExecutorKey,
-                        siteSettings.TaskExecutorPassword);
-                    await new HttpClient().GetAsync(url, x);
-                }
+                    var siteSettings = new ConfigurationProvider(site, null).GetSiteSettings<SiteSettings>();
 
-                await Task.Delay(TimeSpan.FromSeconds(siteSettings.TaskExecutionDelay), x);
-                Queue(site);
+                    if (siteSettings.SelfExecuteTasks)
+                    {
+                        string url = String.Format("{0}/{1}?{2}={3}",
+                            site.GetFullDomain.TrimEnd('/'),
+                            TaskExecutionController.ExecutePendingTasksURL,
+                            siteSettings.TaskExecutorKey,
+                            siteSettings.TaskExecutorPassword);
+                        await new HttpClient().GetAsync(url, x);
+                    }
+                    await Task.Delay(TimeSpan.FromSeconds(siteSettings.TaskExecutionDelay), x);
+                }
+                finally
+                {
+                    Queue(site);
+                }
             });
         }
     }
