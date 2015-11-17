@@ -42,5 +42,10 @@ namespace MrCMS.Web.Areas.Admin.Services
             
             return queryOver.OrderBy(message => message.CreatedOn).Desc.Paged(searchQuery.Page, _siteSettings.DefaultPageSize);
         }
+
+        public QueuedMessage GetMessage(int id)
+        {
+            return _session.QueryOver<QueuedMessage>().Where(message => message.Id == id).SingleOrDefault();
+        }
     }
 }
