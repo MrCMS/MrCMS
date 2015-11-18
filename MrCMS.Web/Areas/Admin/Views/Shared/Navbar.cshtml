@@ -4,12 +4,13 @@
     var typeOptions = UniversalSearchHelper.GetOptions();
 }
 
+
 <nav class="navbar navbar-default no-border-radius margin-bottom-0 navbar-fixed-top nav" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <span class="display-inline">
-                <a href="/Admin" tabindex="3">
-                    <img src="/Areas/Admin/Content/Images/logo.png" class="logo" />
+                <a href="/Admin" tabindex="3">         
+                      <img src="@Html.Action("GetLogo","AdminLogo")" class="logo" />
                 </a>
             </span>
             <button type="button" class="navbar-toggle btn" data-toggle="collapse" data-target="#right-hand-navbar">

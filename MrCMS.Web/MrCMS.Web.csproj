@@ -351,6 +351,7 @@
     <Compile Include="Areas\Admin\Bundles\AdminMrCMSScriptBundle.cs" />
     <Compile Include="Areas\Admin\Bundles\AdminMrCMSStylesheetBundle.cs" />
     <Compile Include="Areas\Admin\Controllers\AboutController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminLogoController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchJobController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
@@ -2153,6 +2154,7 @@
     <Content Include="Areas\Admin\Views\WebpageSearch\Search.cshtml" />
     <Content Include="LICENSE" />
     <Content Include="Areas\Admin\Views\UserSubscriptionReports\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminLogo\AdminLogoSettings.cshtml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
@@ -2175,6 +2177,7 @@
     <Folder Include="Apps\Galleries\Views\Shared\" />
     <Folder Include="Apps\Galleries\Views\Widgets\" />
     <Folder Include="Apps\Galleries\Widgets\" />
+    <Folder Include="Areas\Admin\Content\Images\logo\" />
     <Folder Include="Themes\Default\Apps\Core\Views\Pages\" />
     <Folder Include="Themes\Default\Content\" />
     <Folder Include="Themes\Default\Views\Pages\" />

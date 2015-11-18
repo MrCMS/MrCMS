@@ -48,14 +48,14 @@
                     @Model.Subject
                 </td>
             </tr>
-            <tr>
+            @*<tr>
                 <td>
                     @Resource("Body")
                 </td>
                 <td>
                     @Html.Raw(Model.Body)
                 </td>
-            </tr>
+            </tr>*@
             <tr>
                 <td>
                     @Resource("Created On")
@@ -74,4 +74,7 @@
             </tr>
         </tbody>
     </table>
+   
+     <iframe src="@Url.Content("/Admin/MessageQueue/GetBody/"+Model.Id)" style="width:100%; height:400px" frameborder="0"></iframe>
+    
 </fieldset>
