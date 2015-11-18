@@ -24,8 +24,10 @@
         </legend>
 
         <div class="form-group">
-            @Html.LabelFor(x => x.MrCMSAdminLogo)<br />
-            @Html.TextBoxFor(x => x.MrCMSAdminLogo, new { @class = "media-selector" })
+            @Html.LabelFor(x => x.MrCMSAdminLogo)<br/>
+            @Html.TextBoxFor(x => x.MrCMSAdminLogo, new {@class = "media-selector"})
         </div>
+
+        <div class="alert alert-info">@Resource("Admin - Admin Logo Settings","The size of the logo should be 155px x 35px.")</div>
     </fieldset>
 }

@@ -29,7 +29,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 
         public ContentResult GetBody(int id)
         {
-            QueuedMessage queuedMessage = _messageQueueAdminService.GetMessage(id);
+            QueuedMessage queuedMessage = _messageQueueAdminService.GetMessageBody(id);
             return Content(queuedMessage.Body);
         }
     }
