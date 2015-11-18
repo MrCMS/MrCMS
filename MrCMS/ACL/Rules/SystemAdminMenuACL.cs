@@ -22,6 +22,7 @@ namespace MrCMS.ACL.Rules
         public const string MessageQueue = "Message Queue";
         public const string Notifications = "Notifications";
         public const string ClearCaches = "Clear Caches";
+        public const string AdminLogo = "Admin Logo";
 
         public override string DisplayName
         {
@@ -49,7 +50,8 @@ namespace MrCMS.ACL.Rules
                        Indices,
                        MessageQueue,
                        Notifications,
-                       ClearCaches
+                       ClearCaches,
+                       AdminLogo
                    };
         }
     }

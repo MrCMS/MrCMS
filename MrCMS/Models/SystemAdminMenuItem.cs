@@ -39,7 +39,9 @@ namespace MrCMS.Models
                         new ChildMenuItem("Filesystem Settings", "/Admin/Settings/FileSystem",
                             ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.FileSystemSettings)),
                         new ChildMenuItem("ACL", "/Admin/ACL",
-                            ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.ACL))
+                            ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.ACL)),
+                        new ChildMenuItem("Admin Logo", "/Admin/AdminLogo/AdminLogoSettings",
+                            ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.AdminLogo)),
 
                     }),
                     new ChildMenuItem("Import/Export Documents", "/Admin/ImportExport/Documents",

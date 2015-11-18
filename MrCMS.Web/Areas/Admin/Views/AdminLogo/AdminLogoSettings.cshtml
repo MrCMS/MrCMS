@@ -1,0 +1,31 @@
+﻿@model MrCMS.Settings.AdminLogoSettings
+@{
+    ViewBag.Title = "Edit Settings";
+}
+@if (TempData["settings-saved"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @Resource("Admin Logo Settings Saved", "Admin Logo Settings Saved")
+    </div>
+}
+
+@using (Html.BeginForm("AdminLogoSettings", "AdminLogo", FormMethod.Post, new { id = "edit-settings" }))
+{
+    <fieldset>
+        <legend>
+            @Resource("Admin Logo Settings", "Admin Logo Settings")
+
+            <span class="btn-group  display-inline  pull-right">
+                <button class="btn btn-primary">
+                    @Resource("Save")
+                </button>
+            </span>
+        </legend>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.MrCMSAdminLogo)<br />
+            @Html.TextBoxFor(x => x.MrCMSAdminLogo, new { @class = "media-selector" })
+        </div>
+    </fieldset>
+}
