@@ -4,8 +4,10 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Areas.Admin.ACL;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Website;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 
@@ -24,13 +26,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _layoutAreaAdminService = layoutAreaAdminService;
         }
 
+        [MrCMSACLRule(typeof(LayoutsACL), LayoutsACL.Show)]
         public ViewResult Index()
         {
             return View();
         }
 
-
-        [HttpGet, ActionName("Add")]
+        [HttpGet, ActionName("Add"), MrCMSACLRule(typeof(LayoutsACL), LayoutsACL.Add)]
         public ActionResult Add_Get(int? id)
         {
             //Build list 
@@ -50,7 +52,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Edit", new { id = doc.Id });
         }
 
-        [HttpGet, ActionName("Edit")]
+        [HttpGet, ActionName("Edit"), MrCMSACLRule(typeof(LayoutsACL), LayoutsACL.Edit)]
         public virtual ActionResult Edit_Get(Layout doc)
         {
             return View(doc);
@@ -64,7 +66,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Edit", new { id = doc.Id });
         }
 
-        [HttpGet, ActionName("Delete")]
+        [HttpGet, ActionName("Delete"), MrCMSACLRule(typeof(LayoutsACL), LayoutsACL.Delete)]
         public virtual ActionResult Delete_Get(Layout document)
         {
             return PartialView(document);
@@ -78,7 +80,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
+        [HttpGet, MrCMSACLRule(typeof(LayoutsACL), LayoutsACL.Sort)]
         public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] Layout parent)
         {
             List<SortItem> sortItems =
