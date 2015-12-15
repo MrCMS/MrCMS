@@ -76,7 +76,7 @@ namespace MrCMS.Website.Optimization
         {
             byte[] data = new byte[count];
             Buffer.BlockCopy(buffer, offset, data, 0, count);
-            string html = System.Text.Encoding.Default.GetString(buffer);
+            string html = System.Text.Encoding.Default.GetString(data);
 
             html = reg.Replace(html, string.Empty);
 
