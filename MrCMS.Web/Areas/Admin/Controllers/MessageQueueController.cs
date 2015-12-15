@@ -26,5 +26,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             return View(queuedMessage);
         }
+
+        public ContentResult GetBody(int id)
+        {
+            QueuedMessage queuedMessage = _messageQueueAdminService.GetMessageBody(id);
+            return Content(queuedMessage.Body);
+        }
     }
 }

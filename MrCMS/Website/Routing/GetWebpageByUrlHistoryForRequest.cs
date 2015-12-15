@@ -1,8 +1,8 @@
 using System;
-using System.Linq;
 using System.Web.Routing;
 using MrCMS.Entities.Documents.Web;
 using NHibernate;
+using NHibernate.Proxy;
 
 namespace MrCMS.Website.Routing
 {
@@ -19,7 +19,7 @@ namespace MrCMS.Website.Routing
         {
             string data = Convert.ToString(context.RouteData.Values["data"]);
             UrlHistory historyItemByUrl = GetHistoryItemByUrl(data);
-            if (historyItemByUrl != null)
+            if (historyItemByUrl != null && historyItemByUrl.Webpage.Published)
             {
                 return historyItemByUrl.Webpage;
             }
@@ -27,7 +27,7 @@ namespace MrCMS.Website.Routing
             {
                 UrlHistory historyItemByUrlContent =
                     GetHistoryItemByUrl(context.HttpContext.Request.Url.PathAndQuery.TrimStart('/'));
-                if (historyItemByUrlContent != null)
+                if (historyItemByUrlContent != null && historyItemByUrlContent.Webpage.Published)
                 {
                     return historyItemByUrlContent.Webpage;
                 }
@@ -39,7 +39,8 @@ namespace MrCMS.Website.Routing
         {
             return _session.QueryOver<UrlHistory>()
                 .Where(doc => doc.UrlSegment == url)
-                .Cacheable().List().FirstOrDefault();
+                .Take(1).Cacheable()
+                .SingleOrDefault();
         }
     }
 }

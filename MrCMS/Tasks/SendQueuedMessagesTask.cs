@@ -38,7 +38,7 @@ namespace MrCMS.Tasks
                         session.QueryOver<QueuedMessage>().Where(
                             message => message.SentOn == null && message.Tries < MAX_TRIES)
                             .Where(message => message.Site.Id == _site.Id)
-                               .List())
+                               .Take(50).List())
                 {
                     if (_emailSender.CanSend(queuedMessage))
                         _emailSender.SendMailMessage(queuedMessage);
