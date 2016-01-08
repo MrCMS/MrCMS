@@ -22,5 +22,20 @@ namespace MrCMS.Tasks
             }
             return new BatchExecutionResult { Results = results };
         }
+
+        public BatchExecutionResult Execute(IExecutableTask task)
+        {
+            if (task != null)
+            {
+                IList<IExecutableTask> tasksToExecute = new List<IExecutableTask> {task};
+                foreach (var handler in _executionHandlers.OrderByDescending(handler => handler.Priority))
+                {
+                    var tasks = handler.ExtractTasksToHandle(ref tasksToExecute);
+                    if (tasks.Any())
+                        return new BatchExecutionResult {Results = handler.ExecuteTasks(tasks)};
+                }
+            }
+            return new BatchExecutionResult();
+        }
     }
 }

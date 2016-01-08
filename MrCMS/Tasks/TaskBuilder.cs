@@ -19,7 +19,7 @@ namespace MrCMS.Tasks
             _session = session;
         }
 
-        public IList<IExecutableTask> GetTasksToExecute(IList<QueuedTask> pendingQueuedTasks, IList<ScheduledTask> pendingScheduledTasks)
+        public IList<IExecutableTask> GetTasksToExecute(IList<QueuedTask> pendingQueuedTasks)
         {
             var executableTasks = new List<IExecutableTask>();
             var failedTasks = new List<QueuedTask>();
@@ -27,10 +27,7 @@ namespace MrCMS.Tasks
             {
                 try
                 {
-                    var task = _kernel.Get(queuedTask.GetTaskType()) as IExecutableTask;
-                    task.Site = queuedTask.Site;
-                    task.Entity = queuedTask;
-                    task.SetData(queuedTask.Data);
+                    var task = GetTask(queuedTask);
                     executableTasks.Add(task);
                 }
                 catch (Exception exception)
@@ -48,15 +45,36 @@ namespace MrCMS.Tasks
                     session.Update(task);
                 }));
             }
-            foreach (var scheduledTask in pendingScheduledTasks)
-            {
-                var taskType = TypeHelper.GetAllTypes().FirstOrDefault(type => type.FullName == scheduledTask.Type);
-                var task = _kernel.Get(taskType) as IExecutableTask;
-                task.Site = scheduledTask.Site;
-                task.Entity = scheduledTask;
-                executableTasks.Add(task);
-            }
             return executableTasks;
+        }
+
+        private IExecutableTask GetTask(ScheduledTask scheduledTask)
+        {
+            var taskType = TypeHelper.GetAllTypes().FirstOrDefault(type => type.FullName == scheduledTask.Type);
+            var task = _kernel.Get(taskType) as IExecutableTask;
+            task.Site = scheduledTask.Site;
+            task.Entity = scheduledTask;
+            return task;
+        }
+
+        private IExecutableTask GetTask(QueuedTask queuedTask)
+        {
+            var task = _kernel.Get(queuedTask.GetTaskType()) as IExecutableTask;
+            task.Site = queuedTask.Site;
+            task.Entity = queuedTask;
+            task.SetData(queuedTask.Data);
+            return task;
+        }
+
+        public IExecutableTask GetTask(Guid id)
+        {
+            var scheduledTask = _session.GetByGuid<ScheduledTask>(id);
+            if (scheduledTask != null)
+                return GetTask(scheduledTask);
+            var queuedTask = _session.GetByGuid<QueuedTask>(id);
+            return queuedTask != null
+                ? GetTask(queuedTask)
+                : null;
         }
     }
 }

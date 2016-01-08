@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Net.Http;
 
 namespace MrCMS.Tasks
 {
-    public class TaskRunner : ITaskRunner
+    public class QueuedTaskRunner : IQueuedTaskRunner
     {
-        private readonly ITaskResetter _taskResetter;
         private readonly ITaskQueuer _taskQueuer;
         private readonly ITaskBuilder _taskBuilder;
         private readonly ITaskExecutor _taskExecutor;
 
-        public TaskRunner(ITaskResetter taskResetter, ITaskQueuer taskQueuer, ITaskBuilder taskBuilder, ITaskExecutor taskExecutor)
+        public QueuedTaskRunner(ITaskQueuer taskQueuer, ITaskBuilder taskBuilder, ITaskExecutor taskExecutor)
         {
-            _taskResetter = taskResetter;
             _taskQueuer = taskQueuer;
             _taskBuilder = taskBuilder;
             _taskExecutor = taskExecutor;
@@ -19,12 +18,9 @@ namespace MrCMS.Tasks
 
         public BatchExecutionResult ExecutePendingTasks()
         {
-            _taskResetter.ResetHungTasks();
-
             var pendingQueuedTasks = _taskQueuer.GetPendingQueuedTasks();
-            var pendingScheduledTasks = _taskQueuer.GetPendingScheduledTasks();
 
-            var tasksToExecute = _taskBuilder.GetTasksToExecute(pendingQueuedTasks, pendingScheduledTasks);
+            var tasksToExecute = _taskBuilder.GetTasksToExecute(pendingQueuedTasks);
 
             return _taskExecutor.Execute(tasksToExecute);
         }
@@ -33,7 +29,7 @@ namespace MrCMS.Tasks
         {
             var pendingQueuedTasks = _taskQueuer.GetPendingLuceneTasks();
 
-            var tasksToExecute = _taskBuilder.GetTasksToExecute(pendingQueuedTasks, new List<ScheduledTask>());
+            var tasksToExecute = _taskBuilder.GetTasksToExecute(pendingQueuedTasks);
 
             return _taskExecutor.Execute(tasksToExecute);
         }

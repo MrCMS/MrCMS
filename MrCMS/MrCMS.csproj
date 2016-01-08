@@ -1047,6 +1047,7 @@
     <Compile Include="Tasks\ILuceneIndexTask.cs" />
     <Compile Include="Tasks\IndexManagementTask.cs" />
     <Compile Include="Tasks\InsertIndicesTask.cs" />
+    <Compile Include="Tasks\IScheduledTaskRunner.cs" />
     <Compile Include="Tasks\ITaskExecutionHandler.cs" />
     <Compile Include="Tasks\ITaskResetter.cs" />
     <Compile Include="Tasks\ITaskStatusUpdater.cs" />
@@ -1060,6 +1061,7 @@
     <Compile Include="Tasks\PublishScheduledWebpagesTask.cs" />
     <Compile Include="Tasks\QueuedTaskSearchQuery.cs" />
     <Compile Include="Tasks\SchedulableTask.cs" />
+    <Compile Include="Tasks\ScheduledTaskRunner.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\ScheduledTask.cs" />
     <Compile Include="Tasks\TaskExecutionQueuer.cs" />
@@ -1081,7 +1083,7 @@
     <Compile Include="Tasks\IHaveExecutionStatus.cs" />
     <Compile Include="Tasks\ITaskQueuer.cs" />
     <Compile Include="Tasks\ITaskBuilder.cs" />
-    <Compile Include="Tasks\ITaskRunner.cs" />
+    <Compile Include="Tasks\IQueuedTaskRunner.cs" />
     <Compile Include="Tasks\ITaskExecutor.cs" />
     <Compile Include="Website\BundleRegistration.cs" />
     <Compile Include="Website\Caching\CacheExpiryType.cs" />
@@ -1098,7 +1100,7 @@
     <Compile Include="Tasks\TaskBuilder.cs" />
     <Compile Include="Tasks\TaskExecutionController.cs" />
     <Compile Include="Tasks\TaskExecutionResult.cs" />
-    <Compile Include="Tasks\TaskRunner.cs" />
+    <Compile Include="Tasks\QueuedTaskRunner.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Website\Controllers\SEOController.cs" />
     <Compile Include="Website\Controllers\SitemapPlaceholderController.cs" />

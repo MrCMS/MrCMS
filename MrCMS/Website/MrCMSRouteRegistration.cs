@@ -17,6 +17,8 @@ namespace MrCMS.Website
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
             routes.MapRoute("Task Execution", TaskExecutionController.ExecutePendingTasksURL,
                 new { controller = "TaskExecution", action = "Execute" });
+            routes.MapRoute("Individual Task Execution", TaskExecutionController.ExecuteTaskURL,
+                new { controller = "TaskExecution", action = "ExecuteTask" });
 
             routes.MapRoute("batch execute", BatchExecutionController.BaseURL+"{id}",
                 new {controller = "BatchExecution", action = "ExecuteNext"});
