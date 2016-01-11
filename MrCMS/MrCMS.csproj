@@ -825,6 +825,7 @@
     <Compile Include="Settings\SettingDefaults.cs" />
     <Compile Include="Settings\SystemConfigurationProvider.cs" />
     <Compile Include="Settings\SystemSettingsBase.cs" />
+    <Compile Include="Settings\TaskSettings.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />
     <Compile Include="Entities\SystemEntity.cs" />
     <Compile Include="Helpers\KeyEqualityComparer.cs" />
@@ -1039,11 +1040,12 @@
     <Compile Include="Shortcodes\Forms\ValidationMessaageRenderer.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
     <Compile Include="Tasks\AdHocTask.cs" />
-    <Compile Include="Tasks\BaseExecutableTask.cs" />
     <Compile Include="Tasks\DefaultTaskExecutionHandler.cs" />
     <Compile Include="Tasks\DeleteExpiredLogsTask.cs" />
     <Compile Include="Tasks\DeleteIndicesTask.cs" />
     <Compile Include="Tasks\DeleteOldQueuedTasks.cs" />
+    <Compile Include="Tasks\Entities\TaskSettings.cs" />
+    <Compile Include="Tasks\ITaskSettingManager.cs" />
     <Compile Include="Tasks\ILuceneIndexTask.cs" />
     <Compile Include="Tasks\IndexManagementTask.cs" />
     <Compile Include="Tasks\InsertIndicesTask.cs" />
@@ -1066,7 +1068,9 @@
     <Compile Include="Tasks\ScheduledTask.cs" />
     <Compile Include="Tasks\TaskExecutionQueuer.cs" />
     <Compile Include="Tasks\TaskExecutionStatus.cs" />
+    <Compile Include="Tasks\TaskInfo.cs" />
     <Compile Include="Tasks\TaskResetter.cs" />
+    <Compile Include="Tasks\TaskSettingManager.cs" />
     <Compile Include="Tasks\TaskStatusUpdater.cs" />
     <Compile Include="Tasks\UniversalIndexTaskExecutionHandler.cs" />
     <Compile Include="Tasks\UniversalSearchActionExecutor.cs" />
@@ -1079,7 +1083,6 @@
     <Compile Include="Website\Binders\NullableCultureAwareDateBinder.cs" />
     <Compile Include="Website\Binders\NullableEntityModelBinder.cs" />
     <Compile Include="Tasks\BatchExecutionResult.cs" />
-    <Compile Include="Tasks\IExecutableTask.cs" />
     <Compile Include="Tasks\IHaveExecutionStatus.cs" />
     <Compile Include="Tasks\ITaskQueuer.cs" />
     <Compile Include="Tasks\ITaskBuilder.cs" />

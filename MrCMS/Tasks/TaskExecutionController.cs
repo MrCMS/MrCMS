@@ -1,6 +1,4 @@
-﻿using System;
-using System.Web.Mvc;
-using MrCMS.Website.Binders;
+﻿using System.Web.Mvc;
 using MrCMS.Website.Controllers;
 using MrCMS.Website.Filters;
 
@@ -10,11 +8,13 @@ namespace MrCMS.Tasks
     {
         public const string ExecutePendingTasksURL = "execute-pending-tasks";
         public const string ExecuteTaskURL = "execute-task";
+        public const string ExecuteQueuedTasksURL = "execute-queued-tasks";
         private readonly IQueuedTaskRunner _queuedTaskRunner;
-        private readonly ITaskResetter _taskResetter;
         private readonly IScheduledTaskRunner _scheduledTaskRunner;
+        private readonly ITaskResetter _taskResetter;
 
-        public TaskExecutionController(IQueuedTaskRunner queuedTaskRunner, ITaskResetter taskResetter, IScheduledTaskRunner scheduledTaskRunner)
+        public TaskExecutionController(IQueuedTaskRunner queuedTaskRunner, ITaskResetter taskResetter,
+            IScheduledTaskRunner scheduledTaskRunner)
         {
             _queuedTaskRunner = queuedTaskRunner;
             _taskResetter = taskResetter;
@@ -26,16 +26,22 @@ namespace MrCMS.Tasks
         {
             _taskResetter.ResetHungTasks();
             _scheduledTaskRunner.TriggerScheduledTasks();
-            BatchExecutionResult result = _queuedTaskRunner.ExecutePendingTasks();
+            _queuedTaskRunner.TriggerPendingTasks();
             return new ContentResult {Content = "Executed", ContentType = "text/plain"};
         }
 
         [TaskExecutionKeyPasswordAuth]
-        public ContentResult ExecuteTask(Guid id)
+        public ContentResult ExecuteTask(string type)
         {
-            _scheduledTaskRunner.ExecuteTask(id);
+            _scheduledTaskRunner.ExecuteTask(type);
+            return new ContentResult {Content = "Executed", ContentType = "text/plain"};
+        }
+
+        [TaskExecutionKeyPasswordAuth]
+        public ContentResult ExecuteQueuedTasks()
+        {
+            _queuedTaskRunner.ExecutePendingTasks();
             return new ContentResult {Content = "Executed", ContentType = "text/plain"};
         }
     }
-
 }

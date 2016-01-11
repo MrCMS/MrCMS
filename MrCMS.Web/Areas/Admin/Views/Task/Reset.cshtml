@@ -1,16 +1,18 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Tasks.ScheduledTask
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}	   
+@model MrCMS.Web.Areas.Admin.Models.TaskUpdateData
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
 @using (Html.BeginForm("Reset", "Task", FormMethod.Post))
 {
+    @Html.HiddenFor(x => x.TypeName)
     <fieldset>
-        <legend>@Resource("Admin Tasks Reset", "Reset Task")
+        <legend>
+            @Resource("Admin Tasks Reset", "Reset Task")
             <span class="btn-group  display-inline  pull-right">
                 <input type="submit" class="btn-primary btn" value="@Resource("Reset")" />
             </span>
         </legend>
-        
+
         @Resource("Admin Tasks - Confirm Reset", "Click the reset button to confirm you want to reset this task.")
 
     </fieldset>

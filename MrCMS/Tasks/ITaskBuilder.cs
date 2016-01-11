@@ -5,7 +5,6 @@ namespace MrCMS.Tasks
 {
     public interface ITaskBuilder
     {
-        IList<IExecutableTask> GetTasksToExecute(IList<QueuedTask> pendingQueuedTasks);
-        IExecutableTask GetTask(Guid id);
+        IList<AdHocTask> GetTasksToExecute(IList<QueuedTask> pendingQueuedTasks);
     }
 }
