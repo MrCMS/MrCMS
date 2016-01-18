@@ -4,7 +4,7 @@ namespace MrCMS.Tasks
 {
     public interface ITaskStatusUpdater
     {
-        void BeginExecution(IEnumerable<IExecutableTask> executableTasks);
+        void BeginExecution(IEnumerable<AdHocTask> executableTasks);
         void CompleteExecution(IEnumerable<TaskExecutionResult> results);
     }
 }

@@ -6,11 +6,10 @@ using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Website;
-using Ninject;
 
 namespace MrCMS.Tasks
 {
-    public partial class ScheduledTask : SiteEntity, IHaveExecutionStatus
+    public class ScheduledTask : SiteEntity, IHaveExecutionStatus
     {
         public ScheduledTask()
         {
@@ -36,31 +35,31 @@ namespace MrCMS.Tasks
             get { return Type.Split('.').Last().BreakUpString(); }
         }
 
-        public virtual IEnumerable<SelectListItem> GetTypeOptions()
-        {
-            return TypeHelper.GetAllConcreteTypesAssignableFrom<SchedulableTask>()
-                             .Where(type => type.IsPublic)
-                             .BuildSelectItemList(type => type.Name.BreakUpString(), type => type.FullName,
-                                                  emptyItemText: "Select a type");
-        }
-
-        public virtual void OnStarting(IExecutableTask executableTask)
+        public virtual void OnStarting(AdHocTask executableTask)
         {
             Status = TaskExecutionStatus.Executing;
             executableTask.OnStarting();
         }
 
-        public virtual void OnSuccess(IExecutableTask executableTask)
+        public virtual void OnSuccess(AdHocTask executableTask)
         {
             Status = TaskExecutionStatus.Pending;
             LastComplete = CurrentRequestData.Now;
             executableTask.OnSuccess();
         }
 
-        public virtual void OnFailure(IExecutableTask executableTask, Exception exception)
+        public virtual void OnFailure(AdHocTask executableTask, Exception exception)
         {
             Status = TaskExecutionStatus.Pending;
             executableTask.OnFailure(exception);
+        }
+
+        public virtual IEnumerable<SelectListItem> GetTypeOptions()
+        {
+            return TypeHelper.GetAllConcreteTypesAssignableFrom<SchedulableTask>()
+                .Where(type => type.IsPublic)
+                .BuildSelectItemList(type => type.Name.BreakUpString(), type => type.FullName,
+                    emptyItemText: "Select a type");
         }
     }
 }

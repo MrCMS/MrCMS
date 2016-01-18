@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using MrCMS.Paging;
 using MrCMS.Tasks;
+using MrCMS.Web.Areas.Admin.Models;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
     public interface ITaskAdminService
     {
-        List<ScheduledTask> GetAllScheduledTasks();
+        List<TaskInfo> GetAllScheduledTasks();
+        TaskUpdateData GetTaskUpdateData(string type);
         IPagedList<QueuedTask> GetQueuedTasks(QueuedTaskSearchQuery searchQuery);
-        void Add(ScheduledTask scheduledTask);
-        void Update(ScheduledTask scheduledTask);
-        void Delete(ScheduledTask scheduledTask);
-        void Reset(ScheduledTask scheduledTask);
+        void Update(TaskUpdateData info);
+        void Reset(TaskUpdateData info);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Tasks
 {
@@ -6,6 +7,6 @@ namespace MrCMS.Tasks
     {
         IList<QueuedTask> GetPendingQueuedTasks();
         IList<QueuedTask> GetPendingLuceneTasks();
-        IList<ScheduledTask> GetPendingScheduledTasks();
+        IList<Site> GetPendingQueuedTaskSites();
     }
 }

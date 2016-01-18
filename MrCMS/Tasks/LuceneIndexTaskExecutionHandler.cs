@@ -20,15 +20,15 @@ namespace MrCMS.Tasks
             get { return 100; }
         }
 
-        public IList<IExecutableTask> ExtractTasksToHandle(ref IList<IExecutableTask> list)
+        public IList<AdHocTask> ExtractTasksToHandle(ref IList<AdHocTask> list)
         {
-            List<IExecutableTask> executableTasks = list.Where(task => task is ILuceneIndexTask).ToList();
-            foreach (IExecutableTask executableTask in executableTasks)
+            List<AdHocTask> executableTasks = list.Where(task => task is ILuceneIndexTask).ToList();
+            foreach (AdHocTask executableTask in executableTasks)
                 list.Remove(executableTask);
             return executableTasks;
         }
 
-        public List<TaskExecutionResult> ExecuteTasks(IList<IExecutableTask> list)
+        public List<TaskExecutionResult> ExecuteTasks(IList<AdHocTask> list)
         {
             _taskStatusUpdater.BeginExecution(list);
             List<LuceneAction> luceneActions =

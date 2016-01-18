@@ -15,8 +15,13 @@ namespace MrCMS.Website
             routes.IgnoreRoute("favicon.ico");
 
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
+
             routes.MapRoute("Task Execution", TaskExecutionController.ExecutePendingTasksURL,
                 new { controller = "TaskExecution", action = "Execute" });
+            routes.MapRoute("Individual Task Execution", TaskExecutionController.ExecuteTaskURL,
+                new { controller = "TaskExecution", action = "ExecuteTask" });
+            routes.MapRoute("Queued Task Execution", TaskExecutionController.ExecuteQueuedTasksURL,
+                new { controller = "TaskExecution", action = "ExecuteQueuedTasks" });
 
             routes.MapRoute("batch execute", BatchExecutionController.BaseURL+"{id}",
                 new {controller = "BatchExecution", action = "ExecuteNext"});

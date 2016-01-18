@@ -1,7 +1,9 @@
 ﻿namespace MrCMS.Tasks
 {
-    public interface ITaskRunner
+    public interface IQueuedTaskRunner
     {
+        void TriggerPendingTasks();
+
         BatchExecutionResult ExecutePendingTasks();
         BatchExecutionResult ExecuteLuceneTasks();
     }
