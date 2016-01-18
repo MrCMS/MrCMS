@@ -4,6 +4,9 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Apps;
+using MrCMS.DbConfiguration;
+using MrCMS.DbConfiguration.Caches;
+using MrCMS.DbConfiguration.Caches.Redis;
 using MrCMS.Entities.Multisite;
 using MrCMS.Tasks;
 using MrCMS.Website.Binders;
@@ -11,6 +14,7 @@ using MrCMS.Website.Caching;
 using MrCMS.Website.Filters;
 using MrCMS.Website.Routing;
 using NHibernate;
+using NHibernate.Caches.Redis;
 using Ninject;
 using StackExchange.Profiling;
 
@@ -58,6 +62,13 @@ namespace MrCMS.Website
 
             OnApplicationStart();
         }
+
+        protected void Application_End()
+        {
+            if (RedisCacheInitializer.Initialized)
+                RedisCacheInitializer.Dispose();
+        }
+
 
 
         protected virtual void SetViewEngines()

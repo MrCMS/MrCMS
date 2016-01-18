@@ -175,6 +175,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NHibernate.4.0.3.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="NHibernate.Caches.Redis, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NHibernate.Caches.Redis.2.0.0\lib\net45\NHibernate.Caches.Redis.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NHibernate.Caches.SysCache2">
       <HintPath>..\packages\NHibernate.Caches.SysCache2.4.0.0.4000\lib\net40\NHibernate.Caches.SysCache2.dll</HintPath>
       <Private>True</Private>
@@ -199,6 +203,10 @@
     </Reference>
     <Reference Include="Owin.Security.Providers">
       <HintPath>..\packages\Owin.Security.Providers.1.14.0\lib\net45\Owin.Security.Providers.dll</HintPath>
+    </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.0.316.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Redis.1.0.481\lib\net45\StackExchange.Redis.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -395,6 +403,10 @@
     <Compile Include="DbConfiguration\Caches\Azure\IAzureCacheFactory.cs" />
     <Compile Include="DbConfiguration\Caches\Azure\ISerializationProvider.cs" />
     <Compile Include="DbConfiguration\Caches\Azure\SerializationProvider.cs" />
+    <Compile Include="DbConfiguration\Caches\CacheProviderInitializer.cs" />
+    <Compile Include="DbConfiguration\Caches\Redis\RedisCacheInitializer.cs" />
+    <Compile Include="DbConfiguration\Caches\Redis\RequestRecoveryRedisCache.cs" />
+    <Compile Include="DbConfiguration\Caches\Redis\RequestRecoveryRedisCacheProvider.cs" />
     <Compile Include="DbConfiguration\ConfigHelper.cs" />
     <Compile Include="DbConfiguration\Configuration\AddLuceneTaskInfo.cs" />
     <Compile Include="DbConfiguration\Configuration\IsDBLengthAttribute.cs" />
@@ -440,6 +452,7 @@
     <Compile Include="DbConfiguration\MrCMSTransaction.cs" />
     <Compile Include="DbConfiguration\MySqlDatabaseCreator.cs" />
     <Compile Include="DbConfiguration\MySqlProvider.cs" />
+    <Compile Include="DbConfiguration\NHibernateCacheInitializers.cs" />
     <Compile Include="DbConfiguration\NHibernateConfigurator.cs" />
     <Compile Include="DbConfiguration\NoConnectionStringBuilderAttribute.cs" />
     <Compile Include="DbConfiguration\NotDeletedFilterDisabler.cs" />

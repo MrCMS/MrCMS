@@ -91,3 +91,4 @@ MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
 *.psess
 *.vsp
 .vs/config/applicationhost.config
+*.pubxml
