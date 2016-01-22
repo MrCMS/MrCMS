@@ -5,6 +5,10 @@ namespace MrCMS.Entities.Messaging
 {
     public class QueuedMessage : SiteEntity
     {
+        public QueuedMessage()
+        {
+            QueuedMessageAttachments = new List<QueuedMessageAttachment>();
+        }
         public virtual string FromAddress { get; set; }
         public virtual string FromName { get; set; }
 
