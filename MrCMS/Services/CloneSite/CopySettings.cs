@@ -19,6 +19,7 @@ namespace MrCMS.Services.CloneSite
             var toProvider = new ConfigurationProvider(@to, _legacySettingsProvider);
             var siteSettingsBases = fromProvider.GetAllSiteSettings();
             siteSettingsBases.ForEach(toProvider.SaveSettings);
+            ConfigurationProvider.ClearCache();
         }
     }
 }
