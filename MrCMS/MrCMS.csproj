@@ -737,8 +737,8 @@
     <Compile Include="Services\IGetHomePage.cs" />
     <Compile Include="Services\IGetWidgetCachingInfo.cs" />
     <Compile Include="Services\IHashAlgorithmProvider.cs" />
-    <Compile Include="Services\IImageTagRenderingService.cs" />
-    <Compile Include="Services\ImageTagRenderingService.cs" />
+    <Compile Include="Services\IImageRenderingService.cs" />
+    <Compile Include="Services\ImageRenderingService.cs" />
     <Compile Include="Services\ImportExport\BatchJobs\ImportDocumentBatchJob.cs" />
     <Compile Include="Services\ImportExport\BatchJobs\ImportDocumentBatchJobExecutor.cs" />
     <Compile Include="Services\ImportExport\ExportDocumentsService.cs" />

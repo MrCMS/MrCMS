@@ -13,6 +13,8 @@
     <meta name="description" content="@(this.Description())" />
     <meta name="keywords" content="@(this.Keywords())" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Html.RenderFavicon()
+    @*<link rel="icon" type="image/png" href="" />*@
     @{
         Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap.css");
         Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap-theme.css");

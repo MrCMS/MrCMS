@@ -10,14 +10,14 @@ using NHibernate;
 
 namespace MrCMS.Services
 {
-    public class ImageTagRenderingService : IImageTagRenderingService
+    public class ImageRenderingService : IImageRenderingService
     {
         private readonly ISession _session;
         private readonly IImageProcessor _imageProcessor;
         private readonly IFileService _fileService;
         private readonly MediaSettings _mediaSettings;
 
-        public ImageTagRenderingService(ISession session, IImageProcessor imageProcessor, IFileService fileService, MediaSettings mediaSettings)
+        public ImageRenderingService(ISession session, IImageProcessor imageProcessor, IFileService fileService, MediaSettings mediaSettings)
         {
             _session = session;
             _imageProcessor = imageProcessor;
@@ -91,7 +91,7 @@ namespace MrCMS.Services
             return null;
         }
 
-        public string GetImageUrl(HtmlHelper helper, string imageUrl, Size targetSize)
+        public string GetImageUrl(string imageUrl, Size targetSize)
         {
             if (string.IsNullOrWhiteSpace(imageUrl))
                 return null;

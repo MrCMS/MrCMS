@@ -19,5 +19,8 @@ namespace MrCMS.Settings
         {
             get { return true; }
         }
+
+        [MediaSelector]
+        public string Favicon { get; set; }
     }
 }
