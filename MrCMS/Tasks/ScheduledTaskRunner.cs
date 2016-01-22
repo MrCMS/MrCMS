@@ -67,8 +67,6 @@ namespace MrCMS.Tasks
             var schedulableTask = _kernel.Get(typeObj) as SchedulableTask;
             if (schedulableTask == null)
                 return;
-
-
             try
             {
                 SetStatus(typeObj, TaskExecutionStatus.Executing);

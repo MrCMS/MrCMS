@@ -32,12 +32,12 @@ namespace MrCMS.Services
         public Task AddClaimAsync(User user, Claim claim)
         {
             var userClaim = new UserClaim
-                            {
-                                Claim = claim.Type,
-                                Value = claim.Value,
-                                Issuer = claim.Issuer,
-                                User = user
-                            };
+            {
+                Claim = claim.Type,
+                Value = claim.Value,
+                Issuer = claim.Issuer,
+                User = user
+            };
             user.UserClaims.Add(userClaim);
             _session.Transact(session =>
                               {
@@ -49,16 +49,19 @@ namespace MrCMS.Services
 
         public Task RemoveClaimAsync(User user, Claim claim)
         {
-            UserClaim singleOrDefault =
-                user.UserClaims.SingleOrDefault(
+            // we will just remove all existing claims of a type if requested. This is how the framework expects this method to work
+            var existingClaims =
+                user.UserClaims.Where(
                     userClaim =>
-                        userClaim.Claim == claim.Type && userClaim.Value == claim.Value &&
-                        userClaim.Issuer == claim.Issuer);
-            if (singleOrDefault != null)
+                        userClaim.Claim == claim.Type).ToList();
+            if (existingClaims.Any())
                 _session.Transact(session =>
                                   {
-                                      user.UserClaims.Remove(singleOrDefault);
-                                      session.Delete(singleOrDefault);
+                                      foreach (var userClaim in existingClaims)
+                                      {
+                                          user.UserClaims.Remove(userClaim);
+                                          session.Delete(userClaim);
+                                      }
                                       session.Update(user);
                                   });
             return Task.FromResult<object>(null);
@@ -101,11 +104,11 @@ namespace MrCMS.Services
         public Task AddLoginAsync(User user, UserLoginInfo login)
         {
             var userLogin = new UserLogin
-                            {
-                                LoginProvider = login.LoginProvider,
-                                ProviderKey = login.ProviderKey,
-                                User = user
-                            };
+            {
+                LoginProvider = login.LoginProvider,
+                ProviderKey = login.ProviderKey,
+                User = user
+            };
             user.UserLogins.Add(userLogin);
             _session.Transact(session =>
                               {
