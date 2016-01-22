@@ -439,6 +439,7 @@
     <Compile Include="DbConfiguration\Overrides\LegacyMessageTemplateOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\NotificationOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\PageWidgetSortOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\QueuedMessageAttachmentOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedTaskOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
@@ -617,6 +618,8 @@
     <Compile Include="IoC\Modules\SiteModule.cs" />
     <Compile Include="IoC\Modules\SystemWebModule.cs" />
     <Compile Include="Media\MediaExtensions.cs" />
+    <Compile Include="Messages\AttachmentData.cs" />
+    <Compile Include="Messages\ExportDocumentsEmailTemplate.cs" />
     <Compile Include="Messages\GetDefaultTemplate.cs" />
     <Compile Include="Messages\Helpers\MessageTemplateExtensions.cs" />
     <Compile Include="Messages\IGetDefaultMessageTemplate.cs" />
@@ -624,7 +627,10 @@
     <Compile Include="Messages\MessageTemplate.cs" />
     <Compile Include="Messages\MessageTemplateProvider.cs" />
     <Compile Include="Models\CachingInfo.cs" />
+    <Compile Include="Models\ExportDocumentsModel.cs" />
+    <Compile Include="Models\ExportDocumentsResult.cs" />
     <Compile Include="Models\ImageSortItem.cs" />
+    <Compile Include="Models\ImportDocumentsResult.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />
     <Compile Include="Models\MrCMSIndex.cs" />
     <Compile Include="Models\RequiredFieldException.cs" />
@@ -731,14 +737,16 @@
     <Compile Include="Services\IGetHomePage.cs" />
     <Compile Include="Services\IGetWidgetCachingInfo.cs" />
     <Compile Include="Services\IHashAlgorithmProvider.cs" />
-    <Compile Include="Services\IImageTagRenderingService.cs" />
-    <Compile Include="Services\ImageTagRenderingService.cs" />
+    <Compile Include="Services\IImageRenderingService.cs" />
+    <Compile Include="Services\ImageRenderingService.cs" />
     <Compile Include="Services\ImportExport\BatchJobs\ImportDocumentBatchJob.cs" />
     <Compile Include="Services\ImportExport\BatchJobs\ImportDocumentBatchJobExecutor.cs" />
     <Compile Include="Services\ImportExport\ExportDocumentsService.cs" />
+    <Compile Include="Services\ImportExport\GetDefaultExportDocumentsEmailTemplate.cs" />
     <Compile Include="Services\ImportExport\IExportDocumentsService.cs" />
     <Compile Include="Services\IndexService.cs" />
     <Compile Include="Services\IPasswordManagementService.cs" />
+    <Compile Include="Services\IQueueMessage.cs" />
     <Compile Include="Services\IStoredInAppData.cs" />
     <Compile Include="Services\IUniquePageService.cs" />
     <Compile Include="Services\IUrlValidationService.cs" />
@@ -763,6 +771,7 @@
     <Compile Include="Services\Notifications\OnPersistentNotificationPublishedEventArgs.cs" />
     <Compile Include="Services\Notifications\OnTransientNotificationPublishedEventArgs.cs" />
     <Compile Include="Services\Notifications\PublishType.cs" />
+    <Compile Include="Services\QueueMessage.cs" />
     <Compile Include="Services\Resources\GetCurrentUserCultureInfo.cs" />
     <Compile Include="Services\Resources\GetUserCultureInfo.cs" />
     <Compile Include="Services\Resources\IGetCurrentUserCultureInfo.cs" />
