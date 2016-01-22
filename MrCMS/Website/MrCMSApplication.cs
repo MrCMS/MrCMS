@@ -149,13 +149,16 @@ namespace MrCMS.Website
 
         private bool IsCachedMissingFileRequest()
         {
-            object o = Get<ICacheWrapper>()[FileNotFoundHandler.GetMissingFileCacheKey(new HttpRequestWrapper(Request))];
-            if (o != null)
+            string missingFile =
+                Convert.ToString(
+                    Get<ICacheWrapper>()[FileNotFoundHandler.GetMissingFileCacheKey(new HttpRequestWrapper(Request))]);
+            if (!string.IsNullOrWhiteSpace(missingFile))
             {
                 Context.Items[CachedMissingItemKey] = true;
                 Context.Response.Clear();
                 Context.Response.StatusCode = 404;
                 Context.Response.TrySkipIisCustomErrors = true;
+                Context.Response.Write(missingFile);
                 Context.ApplicationInstance.CompleteRequest();
                 return true;
             }

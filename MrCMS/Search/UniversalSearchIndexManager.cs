@@ -197,15 +197,18 @@ namespace MrCMS.Search
         {
             long lastModified = IndexReader.LastModified(GetDirectory(_site));
             DateTime time;
+            var sourceTimeZone = TimeZoneInfo.Utc;
             try
             {
-                time = new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
+                time = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(lastModified);
             }
-            catch
+            catch 
             {
                 time = DateTime.FromFileTime(lastModified);
+                sourceTimeZone = TimeZoneInfo.Local;
             }
-            return TimeZoneInfo.ConvertTime(time, TimeZoneInfo.Utc, CurrentRequestData.TimeZoneInfo);
+
+            return TimeZoneInfo.ConvertTime(time, sourceTimeZone, CurrentRequestData.TimeZoneInfo);
         }
 
         private void InitializeIndex()

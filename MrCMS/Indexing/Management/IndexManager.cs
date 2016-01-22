@@ -72,6 +72,7 @@ namespace MrCMS.Indexing.Management
 
                 long lastModified = IndexReader.LastModified(GetDirectory(_site));
                 DateTime time;
+                var sourceTimeZone = TimeZoneInfo.Utc;
                 try
                 {
                     time = new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
@@ -79,9 +80,10 @@ namespace MrCMS.Indexing.Management
                 catch
                 {
                     time = DateTime.FromFileTime(lastModified);
+                    sourceTimeZone = TimeZoneInfo.Local;
                 }
 
-                return TimeZoneInfo.ConvertTime(time, TimeZoneInfo.Utc, CurrentRequestData.TimeZoneInfo);
+                return TimeZoneInfo.ConvertTime(time, sourceTimeZone, CurrentRequestData.TimeZoneInfo);
             }
         }
 
