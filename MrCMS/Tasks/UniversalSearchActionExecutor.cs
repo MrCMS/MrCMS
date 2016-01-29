@@ -11,6 +11,9 @@ namespace MrCMS.Tasks
         public static void PerformActions(IUniversalSearchIndexManager universalSearchIndexManager,
             ISearchConverter searchConverter, List<UniversalSearchIndexData> searchIndexDatas)
         {
+            if (!searchIndexDatas.Any())
+                return;
+
             universalSearchIndexManager.EnsureIndexExists();
             using (EventContext.Instance.Disable<UpdateUniversalSearch>())
             {
