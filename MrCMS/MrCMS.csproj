@@ -1056,7 +1056,6 @@
     <Compile Include="Tasks\ScheduledTaskRunner.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
     <Compile Include="Tasks\ScheduledTask.cs" />
-    <Compile Include="Tasks\TaskExecutionQueuer.cs" />
     <Compile Include="Tasks\TaskExecutionStatus.cs" />
     <Compile Include="Tasks\TaskInfo.cs" />
     <Compile Include="Tasks\TaskResetter.cs" />

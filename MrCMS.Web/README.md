@@ -1,22 +1,97 @@
 # Mr CMS
 
-**Mr CMS is an ASP.NET MVC 5 C# open source content management system and framework.**
+** Mr CMS is an ASP.NET MVC 5 C# open source content management framework .**
 
-**For more information please visit [www.mrcms.com](https://www.mrcms.com)**
+**For more information please visit [www.mrcms.com](https://www.mrcms.com)**
 
-Designed from the ground up, Mr CMS is extremely easy for both developers and content editors.
+Mr CMS wraps up a lot of the time consuming aspects of web building. It creates a nice framework for developers to add bespoke page types whilst at the same time giving clients and content editors a nice and easy to use CMS. Mr CMS allows you to build any type of C# MVC website you like, whilst at the same time giving you a whole load of helpers and head starts in terms of data management, page managment, media management, task managment and many other things.
 
-For content editors, the CMS is designed in a way that they do not need to know any HTML knowledge.
+## Apps
+Apps in Mr CMS contain all the functionality your website requires. For example, you might want a Blog App which contains page definitions for a list of blogs and a blog page itself. 
 
-For developers, the framework allows you to create unlimited amounts of different page types, widgets and layouts. All which content editors can then administer through a simple admin interface, or through in line editing.
+Mr CMS comes with 3 basic apps, 'Core', 'Articles' and 'Galleries'. The CoreApp contains basic concepts such as login and registration. It also has some basic page types such as 'TextPage' which can be used as a base page type for other pages.
 
-Developers are not limited by what they can build within Mr CMS. Mr CMS has the concept of 'Apps' which contain functionality. I.E you could write a Blog app, an eCommerce app and so forth. In other words, whilst you can have a eCommerce plugin to Wordpress, its not very scalable and not its intended purpose. Mr CMS is whatever you build it to be.
+Ultimately though, you can throw these three apps out and start building your own if you want.
 
-Within apps you have page types, widget types and of course logic which makes your bespoke features work.
+### Creating your first Mr CMS App
+The first step in creating an app is to create a folder in the Apps folder. For example, 'Blog'. In here create a file called BlogApp.cs.
 
-A getting started guide will be published soon on how to start building your own apps.
+	public class BlogApp : MrCMSApp
+    {
+        public override string AppName
+        {
+            get { return "Blog"; }
+        }
 
-**Feature list**
+        public override string Version
+        {
+            get { return "0.1"; }
+        }
+
+		protected override void RegisterServices(IKernel kernel)
+        {
+            
+       }
+
+        protected override void RegisterApp(MrCMSAppRegistrationContext context)
+        {
+        }
+    }
+
+This registers your App with Mr CMS. Note that your App definition must inherit from MrCMSApp.
+
+Next create a folder called 'App\Pages' and create a file called Blog.cs
+
+	public class Blog : Webpage
+    {
+		[DisplayName("Featured Image")]
+        public virtual string FeatureImage { get; set; }
+
+        [AllowHtml]
+        [StringLength(160, ErrorMessage = "Abstract cannot be longer than 500 characters.")]
+        public virtual string Abstract { get; set; }
+    }
+
+Note in this instance we are inheriting from Webpage. This tells Mr CMS that this page can be added to the CMS. Webpage has a lot of properties which are shared across all webpages, such as Page Tile and Meta Description. It also has BodyContent for the main body of text of any webpage.
+
+Finally create a folder called Views\Pages and within that folder add a page to display the Blog.
+
+	<article>
+		<div class="row">
+			<div class="col-md-12">
+				<h1 class="margin-top-0">@Editable(Model, p => p.Name, false)</h1>
+				<a href="/@Model.Parent.UrlSegment" class="btn btn-default">Back</a>
+				@Model.CreatedOn.Day @Model.CreatedOn.ToString("MMMMM") @Model.CreatedOn.Year
+				<br />
+				@if (!String.IsNullOrEmpty(Model.FeatureImage))
+				{
+					<a href="/@Model.LiveUrlSegment" class="margin-top-0">@RenderImage(Model.FeatureImage)</a>
+				}
+				@Editable(Model, page => page.BodyContent, true)
+			</div>
+		</div>
+	</article>
+
+Note here we use @Editable - this allows inline editing of content. Passing in True/False argument will enable or disable HTML editing.
+
+Finally you need to add a page in Areas\Admin\Views\Webpage\ to add the additional editable fields we defined earlier.
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.FeatureImage, "Article Image") <br />
+		@Html.TextBoxFor(model => model.FeatureImage, new { data_type = "media-selector" })
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(model => model.Abstract)
+		@Html.TextAreaFor(model => model.Abstract, new { @rows = "2", @class = "form-control" })
+	</div>
+
+This is the page Mr CMS uses to edit your custom page fields.
+
+At this point you now have a new page type which can be added to Mr CMS. You can have a lot more control over your pages and how they act by using DocumentMetadataMap<> - this class allows you to specify page behaviour, for example if you have custom Controller you'd like to use rather than the standard Mr CMS one you can specify that here.
+
+The Mr CMS ECommerce App listed [on GitHub](https://github.com/MrCMS/Ecommerce) has a lot more functionality to it that just a simple page, so if you'd like to see how more complicated apps are built check this project out.
+
+## Feature list
 
 *   Unlimited document types
 *   Lucene based search architecture - easily create search indexes for super fast content filtering and searching of '000's of items.
@@ -42,3 +117,21 @@ A getting started guide will be published soon on how to start building your own
 *   Webpage import and export 
 *   Site duplication button to duplicate a website quickly 
 *   Azure support for SQL, Caching and Lucene
+
+## Release History
+
+### 0.5.1 - February 2016
+
+* Better Azure Support - swapped out old Azure caching for Redis cache
+* Brought in the concept of a staging URL and staging Robots.txt - this allows us to use Azure Deployment Slots
+* Rewrite of the task execution system so that tasks are system wide rather than site specific. Tasks can now be enabled or disabled. This is a breaking change and tasks should be updated to disable site filters for any multisite websites.
+* Message queue now allows attachments
+* The Mr CMS admin logo can now be swapped out through System Settings - Site Settings
+* Removed Self Execute Tasks which uses HostingEnvironment.QueueBackgroundWorkItem due to unreliability of execution. Instead use external task system to poll the task executor URL.
+* Fixed: Empty writes to the universal search index
+* Fixed: Issue with the close icon on the inline widget editing
+* Fixed: 404s were returning 404 status but with a blank response. Fixed to return 404 HTML.
+
+
+
+

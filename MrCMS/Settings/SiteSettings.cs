@@ -110,8 +110,6 @@ namespace MrCMS.Settings
 
         public string TaskExecutorKey { get; set; }
         public string TaskExecutorPassword { get; set; }
-
-        public bool SelfExecuteTasks { get; set; }
         public int TaskExecutionDelay { get; set; }
 
         public bool HasHoneyPot

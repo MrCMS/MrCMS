@@ -58,8 +58,6 @@ namespace MrCMS.Website
             MiniProfiler.Settings.Results_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
             MiniProfiler.Settings.Results_List_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
 
-            StartTasksRunning();
-
             OnApplicationStart();
         }
 
@@ -75,14 +73,6 @@ namespace MrCMS.Website
         {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
-        }
-
-        private void StartTasksRunning()
-        {
-            if (CurrentRequestData.DatabaseIsInstalled)
-            {
-                TaskExecutionQueuer.Initialize(Get<ISession>().QueryOver<Site>().Cacheable().List());
-            }
         }
 
         protected virtual void OnApplicationStart()
