@@ -809,10 +809,9 @@
     <Compile Include="Settings\Events\OnSavingSiteSettingsArgs.cs" />
     <Compile Include="Settings\Events\OnSavingSystemSettingsArgs.cs" />
     <Compile Include="Settings\FormRenderingType.cs" />
-    <Compile Include="Settings\ILegacySettingsProvider.cs" />
     <Compile Include="Settings\ISystemConfigurationProvider.cs" />
-    <Compile Include="Settings\LegacySettingsProvider.cs" />
     <Compile Include="Settings\SettingDefaults.cs" />
+    <Compile Include="Settings\SqlConfigurationProvider.cs" />
     <Compile Include="Settings\SystemConfigurationProvider.cs" />
     <Compile Include="Settings\SystemSettingsBase.cs" />
     <Compile Include="Settings\TaskSettings.cs" />
@@ -987,7 +986,7 @@
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\UserStore.cs" />
     <Compile Include="Services\WidgetService.cs" />
-    <Compile Include="Settings\ConfigurationProvider.cs" />
+    <Compile Include="Settings\AppDataConfigurationProvider.cs" />
     <Compile Include="Settings\DropDownSelectionAttribute.cs" />
     <Compile Include="Settings\FileSystemSettings.cs" />
     <Compile Include="Settings\GenericListTypeConverter.cs" />

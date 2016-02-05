@@ -71,7 +71,7 @@ namespace MrCMS.Installation
                 dir.Delete(true);
             }
             SystemConfigurationProvider.ClearCache();
-            ConfigurationProvider.ClearCache();
+            //AppDataConfigurationProvider.ClearCache();
         }
 
         /// <summary>

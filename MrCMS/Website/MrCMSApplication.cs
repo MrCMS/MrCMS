@@ -8,6 +8,7 @@ using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Caches;
 using MrCMS.DbConfiguration.Caches.Redis;
 using MrCMS.Entities.Multisite;
+using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Caching;
@@ -58,7 +59,26 @@ namespace MrCMS.Website
             MiniProfiler.Settings.Results_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
             MiniProfiler.Settings.Results_List_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
 
+            CopyOldSettings(MrCMSKernel.Kernel);
+
             OnApplicationStart();
+        }
+
+        private void CopyOldSettings(IKernel kernel)
+        {
+            var session = kernel.Get<IStatelessSession>();
+            var sites = session.QueryOver<Site>().List();
+            foreach (var site in sites)
+            {
+                var appDataConfigurationProvider = new AppDataConfigurationProvider(site);
+                var sqlConfigurationProvider = new SqlConfigurationProvider(session, site);
+                foreach (var setting in appDataConfigurationProvider.GetAllSiteSettings())
+                {
+                    sqlConfigurationProvider.SaveSettings(setting);
+                    appDataConfigurationProvider.DeleteSettings(setting);
+                }
+            }
+
         }
 
         protected void Application_End()

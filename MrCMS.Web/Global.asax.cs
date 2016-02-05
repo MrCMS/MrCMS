@@ -1,4 +1,5 @@
-﻿using MrCMS.Website;
+﻿using HibernatingRhinos.Profiler.Appender.NHibernate;
+using MrCMS.Website;
 
 namespace MrCMS.Web
 {
@@ -9,6 +10,7 @@ namespace MrCMS.Web
     {
         protected override void OnApplicationStart()
         {
+            NHibernateProfiler.Initialize();
         }
     }
 }

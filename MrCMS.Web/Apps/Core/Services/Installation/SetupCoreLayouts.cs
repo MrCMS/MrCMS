@@ -15,7 +15,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
         private readonly ISession _session;
         private readonly IConfigurationProvider _configurationProvider;
 
-        public SetupCoreLayouts(ISession session,IConfigurationProvider configurationProvider)
+        public SetupCoreLayouts(ISession session, IConfigurationProvider configurationProvider)
         {
             _session = session;
             _configurationProvider = configurationProvider;
@@ -23,10 +23,10 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
 
         public void Setup()
         {
-
+            Layout baseLayout = null;
             _session.Transact(session =>
             {
-                var baseLayout = new Layout
+                baseLayout = new Layout
                 {
                     Name = "Base Layout",
                     UrlSegment = "_BaseLayout",
@@ -34,10 +34,14 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 };
 
                 session.Save(baseLayout);
+            });
 
-                var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
-                siteSettings.DefaultLayoutId = baseLayout.Id;
-                _configurationProvider.SaveSettings(siteSettings);
+            var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
+            siteSettings.DefaultLayoutId = baseLayout.Id;
+            _configurationProvider.SaveSettings(siteSettings);
+
+            _session.Transact(session =>
+            {
 
                 List<LayoutArea> layoutAreas = GetDefaultAreas(baseLayout);
                 layoutAreas.ForEach(area => session.Save(area));
