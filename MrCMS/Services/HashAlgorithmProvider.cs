@@ -27,6 +27,8 @@ namespace MrCMS.Services
 
         private IHashAlgorithm GetAlgorithm(string type)
         {
+            if (string.IsNullOrWhiteSpace(type))
+                return null;
             return _hashAlgorithms.ContainsKey(type)
                 ? _hashAlgorithms[type]
                 : null;
