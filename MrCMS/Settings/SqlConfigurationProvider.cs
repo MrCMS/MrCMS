@@ -145,7 +145,7 @@ namespace MrCMS.Settings
                 return _settings;
             }
             SettingForCaching alias = null;
-            var settings = _session.QueryOver<Setting>().Where(x => x.Site.Id == _site.Id)
+            var settings = _session.QueryOver<Setting>().Where(x => x.Site.Id == _site.Id && !x.IsDeleted)
                 .SelectList(builder =>
                 {
                     builder.Select(setting => setting.Name).WithAlias(() => alias.Name);

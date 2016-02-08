@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Web.Hosting;
 using MrCMS.Entities.Multisite;
+using MrCMS.Entities.Settings;
+using MrCMS.Helpers;
 using MrCMS.Installation;
 using MrCMS.IoC.Modules;
 using MrCMS.Website;
@@ -16,6 +18,7 @@ namespace MrCMS.Settings
         private static void CopyOldSiteSettings(IKernel kernel)
         {
             var session = kernel.Get<IStatelessSession>();
+            MarkExistingSettingsAsSoftDeleted(session);
             var sites = session.QueryOver<Site>().List();
             foreach (var site in sites)
             {
@@ -27,6 +30,15 @@ namespace MrCMS.Settings
                     appDataConfigurationProvider.DeleteSettings(setting);
                 }
             }
+        }
+
+        private static void MarkExistingSettingsAsSoftDeleted(IStatelessSession session)
+        {
+            //load all existing settings and soft delete them, in order to make sure we don't pick up any legacy records
+            var settings = session.QueryOver<Setting>().List();
+            foreach (var setting in settings)
+                setting.IsDeleted = true;
+            session.Transact(statelessSession => settings.ForEach(statelessSession.Update));
         }
 
         private static void CopyOldSystemSettings()
