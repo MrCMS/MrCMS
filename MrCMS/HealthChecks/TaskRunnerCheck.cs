@@ -23,13 +23,10 @@ namespace MrCMS.HealthChecks
 
         public override HealthCheckResult PerformCheck()
         {
-            var tasks = _taskSettingManager.GetInfo().ToList().Where(x =>
-            {
-                return x.LastCompleted != null &&
-                       (x.Enabled &&
-                        x.LastCompleted.Value <= CurrentRequestData.Now.AddSeconds(-(x.FrequencyInSeconds + 120)) ||
-                        x.LastCompleted == null);
-            });
+            var tasks = _taskSettingManager.GetInfo()
+                        .ToList()
+                        .Where(x => x.Enabled && 
+                            (!x.LastCompleted.HasValue || x.LastCompleted.Value <= CurrentRequestData.Now.AddSeconds(-(x.FrequencyInSeconds + 120))));
 
             if (tasks.Any())
             {
@@ -37,8 +34,8 @@ namespace MrCMS.HealthChecks
                 {
                     var lastComplete = task.LastCompleted;
                     return lastComplete.HasValue
-                        ? string.Format("{0} has not been ran since {1}", task.Name, lastComplete)
-                        : string.Format("{0} has never been run", task.TypeName);
+                        ? $"{task.Name} has not been ran since {lastComplete}"
+                        : $"{task.Name} has never been run";
                 }).ToList();
                 return new HealthCheckResult
                 {
