@@ -9,7 +9,8 @@ using Newtonsoft.Json;
 
 namespace MrCMS.Settings
 {
-    public class AppDataConfigurationProvider //: IConfigurationProvider
+    [Obsolete("Site settings have been moved back into the database")]
+    public class AppDataConfigurationProvider
     {
         private readonly Site _site;
 

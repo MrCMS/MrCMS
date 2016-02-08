@@ -10,6 +10,7 @@ using MrCMS.Website;
 using Newtonsoft.Json;
 using NHibernate;
 using NHibernate.Transform;
+using Ninject;
 
 namespace MrCMS.Settings
 {
@@ -24,6 +25,7 @@ namespace MrCMS.Settings
         /// </summary>
         /// <param name="session">NHibernate session</param>
         /// <param name="site">Current site</param>
+        /// <param name="kernel">Kernel, used for instantiating settings </param>
         public SqlConfigurationProvider(IStatelessSession session, Site site)
         {
             _session = session;
@@ -40,18 +42,18 @@ namespace MrCMS.Settings
         {
             var settings = Activator.CreateInstance<TSettings>();
 
-            foreach (var prop in typeof (TSettings).GetProperties())
+            foreach (var prop in typeof(TSettings).GetProperties())
             {
                 // get properties we can read and write to
                 if (!prop.CanRead || !prop.CanWrite)
                     continue;
 
-                var key = typeof (TSettings).FullName + "." + prop.Name;
-                var value = GetSettingObjectByKey(key,prop.PropertyType);
+                var key = typeof(TSettings).FullName + "." + prop.Name;
+                var value = GetSettingByKey(key, prop.PropertyType);
                 if (value == null)
                     continue;
 
-                
+
 
                 //set property
                 prop.SetValue(settings, value, null);
@@ -64,20 +66,15 @@ namespace MrCMS.Settings
         {
             var methodInfo = GetType().GetMethods().First(x => x.Name == "SaveSettings" && x.IsGenericMethod);
             var genericMethod = methodInfo.MakeGenericMethod(settings.GetType());
-            genericMethod.Invoke(this, new object[] {settings});
+            genericMethod.Invoke(this, new object[] { settings });
         }
-
-        //public void DeleteSettings<T>(T settings) where T : SiteSettingsBase, new()
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public List<SiteSettingsBase> GetAllSiteSettings()
         {
             var methodInfo = GetType().GetMethodExt("GetSiteSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()
-                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] {}))
+                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
                 .OfType<SiteSettingsBase>().ToList();
         }
 
@@ -94,13 +91,13 @@ namespace MrCMS.Settings
                 /* We do not clear cache after each setting update.
              * This behavior can increase performance because cached settings will not be cleared 
              * and loaded from database after each update */
-                foreach (var prop in typeof (TSettings).GetProperties())
+                foreach (var prop in typeof(TSettings).GetProperties())
                 {
                     // get properties we can read and write to
                     if (!prop.CanRead || !prop.CanWrite)
                         continue;
 
-                    var key = typeof (TSettings).FullName + "." + prop.Name;
+                    var key = typeof(TSettings).FullName + "." + prop.Name;
                     dynamic value = prop.GetValue(settings, null);
                     SetSetting(key, value ?? "");
                 }
@@ -117,9 +114,9 @@ namespace MrCMS.Settings
         {
             var settingsToDelete = new List<Setting>();
             var allSettings = _session.QueryOver<Setting>().Where(x => x.Site.Id == _site.Id).List();
-            foreach (var prop in typeof (T).GetProperties())
+            foreach (var prop in typeof(T).GetProperties())
             {
-                var key = typeof (T).FullName + "." + prop.Name;
+                var key = typeof(T).FullName + "." + prop.Name;
                 settingsToDelete.AddRange(
                     allSettings.Where(x => x.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase)));
             }
@@ -230,35 +227,11 @@ namespace MrCMS.Settings
         /// <summary>
         ///     Get setting value by key
         /// </summary>
-        /// <typeparam name="T">Type</typeparam>
-        /// <param name="key">Key</param>
-        /// <param name="defaultValue">Default value</param>
-        /// <returns>Setting value</returns>
-        public virtual T GetSettingByKey<T>(string key, T defaultValue = default(T))
-        {
-            if (string.IsNullOrEmpty(key))
-                return defaultValue;
-
-            var settings = GetAllSettingsCached();
-            key = key.Trim().ToLowerInvariant();
-            if (settings.ContainsKey(key))
-            {
-                var setting = settings[key];
-                if (setting != null)
-                    return JsonConvert.DeserializeObject<T>(setting.Value);
-            }
-
-            return defaultValue;
-        }
-
-        /// <summary>
-        ///     Get setting value by key
-        /// </summary>
         /// <param name="key">Key</param>
         /// <param name="type">value type</param>
         /// <param name="defaultValue">Default value</param>
         /// <returns>Setting value</returns>
-        protected virtual object GetSettingObjectByKey(string key, Type type, object defaultValue = null)
+        protected virtual object GetSettingByKey(string key, Type type, object defaultValue = null)
         {
             if (string.IsNullOrEmpty(key))
                 return defaultValue;
@@ -281,7 +254,7 @@ namespace MrCMS.Settings
         /// <typeparam name="T">Type</typeparam>
         /// <param name="key">Key</param>
         /// <param name="value">Value</param>
-        public virtual void SetSetting<T>(string key, T value)
+        protected virtual void SetSetting<T>(string key, T value)
         {
             if (key == null)
                 throw new ArgumentNullException("key");

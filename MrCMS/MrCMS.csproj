@@ -802,7 +802,10 @@
     <Compile Include="Services\Widgets\GetWidgetModelBase.cs" />
     <Compile Include="Services\WidgetUIService.cs" />
     <Compile Include="Services\WritablePropertiesOnlyResolver.cs" />
+    <Compile Include="Settings\AppConfigSystemConfigurationProvider.cs" />
+    <Compile Include="Settings\AppSettingNameAttribute.cs" />
     <Compile Include="Settings\BundlingSettings.cs" />
+    <Compile Include="Settings\ConnectionStringAttribute.cs" />
     <Compile Include="Settings\DatabaseSettings.cs" />
     <Compile Include="Settings\Events\IOnSavingSiteSettings.cs" />
     <Compile Include="Settings\Events\IOnSavingSystemSettings.cs" />
@@ -810,9 +813,10 @@
     <Compile Include="Settings\Events\OnSavingSystemSettingsArgs.cs" />
     <Compile Include="Settings\FormRenderingType.cs" />
     <Compile Include="Settings\ISystemConfigurationProvider.cs" />
+    <Compile Include="Settings\LegacySettingMigrator.cs" />
     <Compile Include="Settings\SettingDefaults.cs" />
     <Compile Include="Settings\SqlConfigurationProvider.cs" />
-    <Compile Include="Settings\SystemConfigurationProvider.cs" />
+    <Compile Include="Settings\AppDataSystemConfigurationProvider.cs" />
     <Compile Include="Settings\SystemSettingsBase.cs" />
     <Compile Include="Settings\TaskSettings.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />

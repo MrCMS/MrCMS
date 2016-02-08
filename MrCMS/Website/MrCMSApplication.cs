@@ -42,6 +42,8 @@ namespace MrCMS.Website
             RegisterServices(MrCMSKernel.Kernel);
             MrCMSApp.RegisterAllServices(MrCMSKernel.Kernel);
 
+            LegacySettingMigrator.MigrateSettings(MrCMSKernel.Kernel);
+
             SetModelBinders();
 
             SetViewEngines();
@@ -59,28 +61,8 @@ namespace MrCMS.Website
             MiniProfiler.Settings.Results_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
             MiniProfiler.Settings.Results_List_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
 
-            CopyOldSettings(MrCMSKernel.Kernel);
 
             OnApplicationStart();
-        }
-
-        private void CopyOldSettings(IKernel kernel)
-        {
-            if (!CurrentRequestData.DatabaseIsInstalled)
-                return;
-            var session = kernel.Get<IStatelessSession>();
-            var sites = session.QueryOver<Site>().List();
-            foreach (var site in sites)
-            {
-                var appDataConfigurationProvider = new AppDataConfigurationProvider(site);
-                var sqlConfigurationProvider = new SqlConfigurationProvider(session, site);
-                foreach (var setting in appDataConfigurationProvider.GetAllSiteSettings())
-                {
-                    sqlConfigurationProvider.SaveSettings(setting);
-                    appDataConfigurationProvider.DeleteSettings(setting);
-                }
-            }
-
         }
 
         protected void Application_End()
