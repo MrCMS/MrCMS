@@ -9,11 +9,11 @@ namespace MrCMS.HealthChecks
 {
     public class TaskRunnerCheck : HealthCheck
     {
-        private readonly ISession _session;
+        private readonly ITaskSettingManager _taskSettingManager;
 
-        public TaskRunnerCheck(ISession session)
+        public TaskRunnerCheck(ITaskSettingManager taskSettingManager)
         {
-            _session = session;
+            _taskSettingManager = taskSettingManager;
         }
 
         public override string DisplayName
@@ -23,16 +23,21 @@ namespace MrCMS.HealthChecks
 
         public override HealthCheckResult PerformCheck()
         {
-            var tasks = _session.QueryOver<ScheduledTask>().List();
-            var stalledTasks = tasks.Where(x => x.LastComplete <= CurrentRequestData.Now.AddSeconds(-(x.EveryXSeconds + 120)) || x.LastComplete == null).ToList();
-
-            if (stalledTasks.Any())
+            var tasks = _taskSettingManager.GetInfo().ToList().Where(x =>
             {
-                var messages = stalledTasks.Select(task =>
+                return x.LastCompleted != null &&
+                       (x.Enabled &&
+                        x.LastCompleted.Value <= CurrentRequestData.Now.AddSeconds(-(x.FrequencyInSeconds + 120)) ||
+                        x.LastCompleted == null);
+            });
+
+            if (tasks.Any())
+            {
+                var messages = tasks.Select(task =>
                 {
-                    var lastComplete = task.LastComplete;
+                    var lastComplete = task.LastCompleted;
                     return lastComplete.HasValue
-                        ? string.Format("{0} has not been ran since {1}", task.TypeName, lastComplete)
+                        ? string.Format("{0} has not been ran since {1}", task.Name, lastComplete)
                         : string.Format("{0} has never been run", task.TypeName);
                 }).ToList();
                 return new HealthCheckResult
