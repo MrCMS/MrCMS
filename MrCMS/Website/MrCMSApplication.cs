@@ -66,6 +66,8 @@ namespace MrCMS.Website
 
         private void CopyOldSettings(IKernel kernel)
         {
+            if (!CurrentRequestData.DatabaseIsInstalled)
+                return;
             var session = kernel.Get<IStatelessSession>();
             var sites = session.QueryOver<Site>().List();
             foreach (var site in sites)

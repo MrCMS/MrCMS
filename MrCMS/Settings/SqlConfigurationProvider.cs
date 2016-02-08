@@ -7,6 +7,7 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings.Events;
 using MrCMS.Website;
+using Newtonsoft.Json;
 using NHibernate;
 using NHibernate.Transform;
 
@@ -46,12 +47,11 @@ namespace MrCMS.Settings
                     continue;
 
                 var key = typeof (TSettings).FullName + "." + prop.Name;
-                //load by store
-                var setting = GetSettingByKey<string>(key);
-                if (setting == null)
+                var value = GetSettingObjectByKey(key,prop.PropertyType);
+                if (value == null)
                     continue;
 
-                var value = setting.To(prop.PropertyType);
+                
 
                 //set property
                 prop.SetValue(settings, value, null);
@@ -245,7 +245,31 @@ namespace MrCMS.Settings
             {
                 var setting = settings[key];
                 if (setting != null)
-                    return setting.Value.To<T>();
+                    return JsonConvert.DeserializeObject<T>(setting.Value);
+            }
+
+            return defaultValue;
+        }
+
+        /// <summary>
+        ///     Get setting value by key
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <param name="type">value type</param>
+        /// <param name="defaultValue">Default value</param>
+        /// <returns>Setting value</returns>
+        protected virtual object GetSettingObjectByKey(string key, Type type, object defaultValue = null)
+        {
+            if (string.IsNullOrEmpty(key))
+                return defaultValue;
+
+            var settings = GetAllSettingsCached();
+            key = key.Trim().ToLowerInvariant();
+            if (settings.ContainsKey(key))
+            {
+                var setting = settings[key];
+                if (setting != null)
+                    return JsonConvert.DeserializeObject(setting.Value, type);
             }
 
             return defaultValue;
@@ -262,7 +286,7 @@ namespace MrCMS.Settings
             if (key == null)
                 throw new ArgumentNullException("key");
             key = key.Trim().ToLowerInvariant();
-            var valueStr = typeof (T).GetCustomTypeConverter().ConvertToInvariantString(value);
+            var valueStr = JsonConvert.SerializeObject(value);
 
             var allSettings = GetAllSettingsCached();
             var settingForCaching = allSettings.ContainsKey(key) ? allSettings[key] : null;

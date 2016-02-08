@@ -265,13 +265,10 @@ namespace MrCMS.Helpers
 
         public static TypeConverter GetCustomTypeConverter(this Type type)
         {
-            return type == typeof(List<int>)
-                       ? new GenericListTypeConverter<int>()
-                       : (type == typeof(List<decimal>)
-                              ? new GenericListTypeConverter<decimal>()
-                              : (type == typeof(List<string>)
-                                     ? new GenericListTypeConverter<string>()
-                                     : TypeDescriptor.GetConverter(type)));
+            if (type == typeof(List<int>)) return new GenericListTypeConverter<int>();
+            if (type == typeof(List<decimal>)) return new GenericListTypeConverter<decimal>();
+            if (type == typeof(List<string>)) return new GenericListTypeConverter<string>();
+            return TypeDescriptor.GetConverter(type);
         }
 
         public static IEnumerable<Type> GetBaseTypes(this Type type, bool includeSelf = false)

@@ -10,7 +10,6 @@ namespace MrCMS.Web
     {
         protected override void OnApplicationStart()
         {
-            NHibernateProfiler.Initialize();
         }
     }
 }
