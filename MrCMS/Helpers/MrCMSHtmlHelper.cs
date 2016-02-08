@@ -325,7 +325,7 @@ namespace MrCMS.Helpers
             return MvcHtmlString.Create(tagBulder.ToString());
         }
 
-        public static MvcHtmlString RenderFavicon(this HtmlHelper html)
+        public static MvcHtmlString RenderFavicon(this HtmlHelper html, Size size)
         {
             var seoSettings = html.Get<SEOSettings>();
             var fileService = html.Get<IFileService>();
@@ -335,12 +335,13 @@ namespace MrCMS.Helpers
             if (file == null)
                 return MvcHtmlString.Empty;
 
-            var imageUrl = imageRenderingService.GetImageUrl(file.FileUrl, new Size(16, 16));
+            var imageUrl = imageRenderingService.GetImageUrl(file.FileUrl, size);
 
             var tagBuilder = new TagBuilder("link");
             tagBuilder.Attributes["rel"] = "icon";
             tagBuilder.Attributes["type"] = file.ContentType;
             tagBuilder.Attributes["href"] = imageUrl;
+            tagBuilder.Attributes["sizes"] = size.Height + "x" + size.Width;
 
             return MvcHtmlString.Create(tagBuilder.ToString(TagRenderMode.SelfClosing));
         }
