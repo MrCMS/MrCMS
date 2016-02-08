@@ -6,15 +6,6 @@ namespace MrCMS.Helpers
 {
     public static class HashSetExtensions
     {
-        public static HashSet<T> AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> range)
-        {
-            foreach (T item in range)
-            {
-                hashSet.Add(item);
-            }
-            return hashSet;
-        }
-
         public static ISet<T> AddRange<T>(this ISet<T> set, IEnumerable<T> range)
         {
             foreach (T item in range)
@@ -24,9 +15,18 @@ namespace MrCMS.Helpers
             return set;
         }
 
-        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="equalityComparer">Use this to allow non-standard comparers for the set</param>
+        /// <returns></returns>
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection, IEqualityComparer<T> equalityComparer = null)
         {
-            return new HashSet<T>(collection);
+            return equalityComparer != null
+                ? new HashSet<T>(collection, equalityComparer)
+                : new HashSet<T>(collection);
         }
 
         public static HashSet<T> FindAll<T>(this HashSet<T> collection, Func<T, bool> predicate)

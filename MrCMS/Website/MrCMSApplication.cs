@@ -8,6 +8,7 @@ using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Caches;
 using MrCMS.DbConfiguration.Caches.Redis;
 using MrCMS.Entities.Multisite;
+using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Caching;
@@ -41,6 +42,8 @@ namespace MrCMS.Website
             RegisterServices(MrCMSKernel.Kernel);
             MrCMSApp.RegisterAllServices(MrCMSKernel.Kernel);
 
+            LegacySettingMigrator.MigrateSettings(MrCMSKernel.Kernel);
+
             SetModelBinders();
 
             SetViewEngines();
@@ -57,6 +60,7 @@ namespace MrCMS.Website
 
             MiniProfiler.Settings.Results_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
             MiniProfiler.Settings.Results_List_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
+
 
             OnApplicationStart();
         }

@@ -1,0 +1,67 @@
+﻿using System.IO;
+using System.Linq;
+using System.Web.Hosting;
+using MrCMS.Entities.Multisite;
+using MrCMS.Installation;
+using MrCMS.IoC.Modules;
+using MrCMS.Website;
+using NHibernate;
+using Ninject;
+using Ninject.Web.Common;
+
+namespace MrCMS.Settings
+{
+    public static class LegacySettingMigrator
+    {
+        private static void CopyOldSiteSettings(IKernel kernel)
+        {
+            var session = kernel.Get<IStatelessSession>();
+            var sites = session.QueryOver<Site>().List();
+            foreach (var site in sites)
+            {
+                var appDataConfigurationProvider = new AppDataConfigurationProvider(site);
+                var sqlConfigurationProvider = new SqlConfigurationProvider(session, site);
+                foreach (var setting in appDataConfigurationProvider.GetAllSiteSettings())
+                {
+                    sqlConfigurationProvider.SaveSettings(setting);
+                    appDataConfigurationProvider.DeleteSettings(setting);
+                }
+            }
+        }
+
+        private static void CopyOldSystemSettings()
+        {
+            var appData = new AppDataSystemConfigurationProvider();
+            var appConfig = new AppConfigSystemConfigurationProvider();
+            foreach (var setting in appData.GetAllSystemSettings())
+            {
+                appConfig.SaveSettings(setting);
+                appData.DeleteSettings(setting);
+            }
+        }
+
+        public static void MigrateSettings(IKernel kernel)
+        {
+            var settingsFolder = GetSettingsFolder();
+
+            if (!Directory.Exists(settingsFolder))
+                return;
+            CopyOldSystemSettings();
+            UpdateDbInstalled(kernel);
+            CopyOldSiteSettings(kernel);
+
+            // remove folder and all children to prevent future checks
+            Directory.Delete(settingsFolder, true);
+        }
+
+        private static void UpdateDbInstalled(IKernel kernel)
+        {
+            CurrentRequestData.DatabaseIsInstalled = true;
+        }
+
+        private static string GetSettingsFolder()
+        {
+            return HostingEnvironment.MapPath("~/App_Data/Settings");
+        }
+    }
+}

@@ -187,16 +187,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MrCMS.Web\MrCMS.Web.csproj">
-      <Project>{e64f6811-8373-4310-9cce-3fbca0d87826}</Project>
-      <Name>MrCMS.Web</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrCMS\MrCMS.csproj">
-      <Project>{9D6ECC0F-CDA1-43E2-B88B-BC01299EB9CE}</Project>
-      <Name>MrCMS</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +196,16 @@
     <Content Include="bin\Debug\x86\SQLite.Interop.dll" Condition="'$(NCrunch)' == '1'">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MrCMS.Web\MrCMS.Web.csproj">
+      <Project>{e64f6811-8373-4310-9cce-3fbca0d87826}</Project>
+      <Name>MrCMS.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrCMS\MrCMS.csproj">
+      <Project>{9d6ecc0f-cda1-43e2-b88b-bc01299eb9ce}</Project>
+      <Name>MrCMS</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

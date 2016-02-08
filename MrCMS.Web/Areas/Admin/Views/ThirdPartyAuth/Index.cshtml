@@ -14,7 +14,7 @@
         </legend>
         <div class="row">
             <div class="col-lg-12">
-                @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Third Party Info", "These settings are system wide. After changing third party auth settings you will need to restart your application for the changes to take effect."))
+                @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Third Party Restart", "These settings are system wide. After changing third party auth settings the website will restart."))
                 <div class="form-group">
                     @Html.InlineCheckboxFor(settings => settings.GoogleEnabled)
                 </div>

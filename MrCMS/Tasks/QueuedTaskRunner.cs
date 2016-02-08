@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using MrCMS.Settings;
+using NHibernate;
 
 namespace MrCMS.Tasks
 {
@@ -9,12 +10,14 @@ namespace MrCMS.Tasks
         private readonly ITaskQueuer _taskQueuer;
         private readonly ITaskBuilder _taskBuilder;
         private readonly ITaskExecutor _taskExecutor;
+        private readonly IStatelessSession _session;
 
-        public QueuedTaskRunner(ITaskQueuer taskQueuer, ITaskBuilder taskBuilder, ITaskExecutor taskExecutor)
+        public QueuedTaskRunner(ITaskQueuer taskQueuer, ITaskBuilder taskBuilder, ITaskExecutor taskExecutor, IStatelessSession session)
         {
             _taskQueuer = taskQueuer;
             _taskBuilder = taskBuilder;
             _taskExecutor = taskExecutor;
+            _session = session;
         }
 
         public void TriggerPendingTasks()
@@ -23,7 +26,7 @@ namespace MrCMS.Tasks
 
             foreach (var site in sites)
             {
-                var siteSettings = new ConfigurationProvider(site, null).GetSiteSettings<SiteSettings>();
+                var siteSettings = new SqlConfigurationProvider(_session, site).GetSiteSettings<SiteSettings>();
 
                 string url = string.Format("{0}/{1}?{2}={3}",
                     site.GetFullDomain.TrimEnd('/'),
