@@ -1924,8 +1924,6 @@
     <Content Include="Areas\Admin\Views\Sites\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\RestrictedDomains.cshtml" />
-    <Content Include="Areas\Admin\Views\Task\Add.cshtml" />
-    <Content Include="Areas\Admin\Views\Task\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Task\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Task\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ThirdPartyAuth\Index.cshtml" />
