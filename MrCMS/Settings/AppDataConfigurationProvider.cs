@@ -24,7 +24,7 @@ namespace MrCMS.Settings
             var methodInfo = GetType().GetMethodExt("GetSiteSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()
-                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] {}))
+                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
                 .OfType<SiteSettingsBase>().Where(x => x != null).ToList();
         }
 
@@ -36,10 +36,10 @@ namespace MrCMS.Settings
             return settingObject.Settings;
         }
 
-        public void DeleteSettings(SiteSettingsBase siteSettings)
+        public void MarkAsMigrated(SiteSettingsBase siteSettings)
         {
             string fileLocation = GetFileLocation(siteSettings.GetType());
-            File.Delete(fileLocation);
+            File.Move(fileLocation, GetMigratedFileLocation(siteSettings.GetType()));
         }
 
         private string GetFolder()
@@ -53,6 +53,11 @@ namespace MrCMS.Settings
         private string GetFileLocation(Type type)
         {
             return string.Format("{0}{1}.json", GetFolder(), type.FullName.ToLower());
+        }
+
+        private string GetMigratedFileLocation(Type type)
+        {
+            return string.Format("{0}{1}.migrated", GetFolder(), type.FullName.ToLower());
         }
 
         private GetSettingsObject<TSettings> GetSettingObject<TSettings>() where TSettings : SiteSettingsBase, new()
@@ -73,7 +78,6 @@ namespace MrCMS.Settings
         {
             return new TSettings();
         }
-
 
         private struct GetSettingsObject<TSettings> where TSettings : SiteSettingsBase, new()
         {

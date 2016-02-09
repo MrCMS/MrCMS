@@ -39,6 +39,10 @@ namespace MrCMS.Settings
         {
             return string.Format("{0}{1}.json", GetFolder(), type.FullName.ToLower());
         }
+        private string GetMigratedFileLocation(Type type)
+        {
+            return string.Format("{0}{1}.migrated", GetFolder(), type.FullName.ToLower());
+        }
 
         private GetSettingsObject<TSettings> GetSettingObject<TSettings>() where TSettings : SystemSettingsBase, new()
         {
@@ -67,10 +71,10 @@ namespace MrCMS.Settings
             public bool IsNew { get; private set; }
         }
 
-        public void DeleteSettings(SystemSettingsBase settings)
+        public void MarkAsMigrated(SystemSettingsBase settings)
         {
             string fileLocation = GetFileLocation(settings.GetType());
-            File.Delete(fileLocation);
+            File.Move(fileLocation, GetMigratedFileLocation(settings.GetType()));
         }
     }
 

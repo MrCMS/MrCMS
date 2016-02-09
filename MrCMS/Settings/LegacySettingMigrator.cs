@@ -18,18 +18,46 @@ namespace MrCMS.Settings
         private static void CopyOldSiteSettings(IKernel kernel)
         {
             var session = kernel.Get<IStatelessSession>();
-            MarkExistingSettingsAsSoftDeleted(session);
             var sites = session.QueryOver<Site>().List();
             foreach (var site in sites)
             {
-                var appDataConfigurationProvider = new AppDataConfigurationProvider(site);
-                var sqlConfigurationProvider = new SqlConfigurationProvider(session, site);
-                foreach (var setting in appDataConfigurationProvider.GetAllSiteSettings())
+                var appData = new AppDataConfigurationProvider(site);
+                var sql = new SqlConfigurationProvider(session, site);
+                foreach (var setting in appData.GetAllSiteSettings())
                 {
-                    sqlConfigurationProvider.SaveSettings(setting);
-                    appDataConfigurationProvider.DeleteSettings(setting);
+                    sql.SaveSettings(setting);
+                    appData.MarkAsMigrated(setting);
                 }
             }
+        }
+        private static void CopyOldSystemSettings()
+        {
+            var appData = new AppDataSystemConfigurationProvider();
+            var appConfig = new AppConfigSystemConfigurationProvider();
+            foreach (var setting in appData.GetAllSystemSettings())
+            {
+                appConfig.SaveSettings(setting);
+                appData.MarkAsMigrated(setting);
+            }
+        }
+
+        public static void MigrateSettings(IKernel kernel)
+        {
+            var settingsFolder = GetSettingsFolder();
+
+            // we will rename migrated files, so once they've all been migrated, there will be no .json files left
+            if (!Directory.EnumerateFiles(settingsFolder,"*.json",SearchOption.AllDirectories).Any())
+                return;
+            CopyOldSystemSettings();
+            UpdateDbInstalled(kernel);
+            CopyOldSiteSettings(kernel);
+        }
+
+        private static void UpdateDbInstalled(IKernel kernel)
+        {
+            CurrentRequestData.DatabaseIsInstalled = true;
+            var session = kernel.Get<IStatelessSession>();
+            MarkExistingSettingsAsSoftDeleted(session);
         }
 
         private static void MarkExistingSettingsAsSoftDeleted(IStatelessSession session)
@@ -39,36 +67,6 @@ namespace MrCMS.Settings
             foreach (var setting in settings)
                 setting.IsDeleted = true;
             session.Transact(statelessSession => settings.ForEach(statelessSession.Update));
-        }
-
-        private static void CopyOldSystemSettings()
-        {
-            var appData = new AppDataSystemConfigurationProvider();
-            var appConfig = new AppConfigSystemConfigurationProvider();
-            foreach (var setting in appData.GetAllSystemSettings())
-            {
-                appConfig.SaveSettings(setting);
-                appData.DeleteSettings(setting);
-            }
-        }
-
-        public static void MigrateSettings(IKernel kernel)
-        {
-            var settingsFolder = GetSettingsFolder();
-
-            if (!Directory.Exists(settingsFolder))
-                return;
-            CopyOldSystemSettings();
-            UpdateDbInstalled(kernel);
-            CopyOldSiteSettings(kernel);
-
-            // remove folder and all children to prevent future checks
-            Directory.Delete(settingsFolder, true);
-        }
-
-        private static void UpdateDbInstalled(IKernel kernel)
-        {
-            CurrentRequestData.DatabaseIsInstalled = true;
         }
 
         private static string GetSettingsFolder()
