@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
 using NHibernate;
 using NHibernate.SqlTypes;
 
@@ -22,7 +23,15 @@ namespace MrCMS.DbConfiguration.Types
             if (value != null)
             {
                 var dateTime = DateTime.SpecifyKind((DateTime)value, DateTimeKind.Unspecified);
-                dateTime = TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Local, TimeZoneInfo.Utc);
+                // NOTE: This is a temporary work around to handle daylight savings correctly. 
+                var sourceTimeZone = TimeZoneInfo.Local;
+                if (sourceTimeZone.IsInvalidTime(dateTime))
+                {
+                    var adjustmentRules = sourceTimeZone.GetAdjustmentRules();
+                    var adjustmentRule = adjustmentRules.FirstOrDefault();
+                    dateTime = dateTime.Add(adjustmentRule?.DaylightDelta ?? TimeSpan.FromHours(1));
+                }
+                dateTime = TimeZoneInfo.ConvertTime(dateTime, sourceTimeZone, TimeZoneInfo.Utc);
                 NHibernateUtil.DateTime.NullSafeSet(cmd, dateTime, index);
             }
             else

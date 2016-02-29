@@ -44,9 +44,9 @@ namespace MrCMS.Settings
         public static void MigrateSettings(IKernel kernel)
         {
             var settingsFolder = GetSettingsFolder();
-
+            
             // we will rename migrated files, so once they've all been migrated, there will be no .json files left
-            if (!Directory.EnumerateFiles(settingsFolder,"*.json",SearchOption.AllDirectories).Any())
+            if (!Directory.Exists(settingsFolder) || !Directory.EnumerateFiles(settingsFolder,"*.json",SearchOption.AllDirectories).Any())
                 return;
             CopyOldSystemSettings();
             UpdateDbInstalled(kernel);
