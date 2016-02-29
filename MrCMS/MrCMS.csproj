@@ -461,9 +461,11 @@
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
     <Compile Include="DbConfiguration\Types\BinaryData.cs" />
     <Compile Include="DbConfiguration\Types\DateTimeData.cs" />
+    <Compile Include="DbConfiguration\Types\DateTimeDataBase.cs" />
     <Compile Include="DbConfiguration\Types\LocalDateTimeData.cs" />
     <Compile Include="DbConfiguration\Types\LocalNullableDateTimeData.cs" />
     <Compile Include="DbConfiguration\Types\NullableDateTimeData.cs" />
+    <Compile Include="DbConfiguration\Types\NullableDateTimeDataBase.cs" />
     <Compile Include="DbConfiguration\Types\VarCharMax.cs" />
     <Compile Include="DbConfiguration\UpdatedEventInfo.cs" />
     <Compile Include="Entities\ACL\ACLRole.cs" />
