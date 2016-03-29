@@ -917,10 +917,6 @@
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\LogEntryType.cs" />
     <Compile Include="Logging\MrCMSErrorLog.cs" />
-    <Compile Include="Membership\Internals\IRoleProvider.cs" />
-    <Compile Include="Membership\Internals\RoleProvider.cs" />
-    <Compile Include="Membership\MrCmsMembershipProvider.cs" />
-    <Compile Include="Membership\MrCmsRoleProvider.cs" />
     <Compile Include="Models\ACLGroup.cs" />
     <Compile Include="Models\ACLOperation.cs" />
     <Compile Include="Models\ACLUpdateRecord.cs" />
