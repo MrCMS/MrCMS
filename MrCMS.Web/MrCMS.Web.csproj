@@ -369,6 +369,8 @@
     <Compile Include="Areas\Admin\Models\AdminMessages.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\ChooseSiteParams.cs" />
+    <Compile Include="Areas\Admin\Models\DashboardArea.cs" />
+    <Compile Include="Areas\Admin\Models\DashboardAreaAction.cs" />
     <Compile Include="Areas\Admin\Models\LineGraphData.cs" />
     <Compile Include="Areas\Admin\Models\MediaCategorySortMethod.cs" />
     <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />

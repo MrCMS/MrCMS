@@ -442,6 +442,7 @@
     <Compile Include="DbConfiguration\Overrides\QueuedMessageAttachmentOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedMessageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\QueuedTaskOverride.cs" />
+    <Compile Include="DbConfiguration\Overrides\ResizedImageOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SettingOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\SiteOverride.cs" />
     <Compile Include="DbConfiguration\Overrides\UrlHistoryOverride.cs" />
@@ -820,7 +821,6 @@
     <Compile Include="Settings\SqlConfigurationProvider.cs" />
     <Compile Include="Settings\AppDataSystemConfigurationProvider.cs" />
     <Compile Include="Settings\SystemSettingsBase.cs" />
-    <Compile Include="Settings\TaskSettings.cs" />
     <Compile Include="Settings\ThirdPartyAuthSettings.cs" />
     <Compile Include="Entities\SystemEntity.cs" />
     <Compile Include="Helpers\KeyEqualityComparer.cs" />
@@ -971,7 +971,6 @@
     <Compile Include="Services\ImageProcessor.cs" />
     <Compile Include="Entities\Indexes\AdminWebpageIndexDefinition.cs" />
     <Compile Include="Services\IRoleService.cs" />
-    <Compile Include="Services\ISiteSettingsService.cs" />
     <Compile Include="Services\IUserProfileDataService.cs" />
     <Compile Include="Services\IUserService.cs" />
     <Compile Include="Services\IWidgetService.cs" />
@@ -993,12 +992,10 @@
     <Compile Include="Settings\FileSystemSettings.cs" />
     <Compile Include="Settings\GenericListTypeConverter.cs" />
     <Compile Include="Settings\IConfigurationProvider.cs" />
-    <Compile Include="Settings\ISettingService.cs" />
     <Compile Include="Settings\MailSettings.cs" />
     <Compile Include="Settings\MediaSelectorAttribute.cs" />
     <Compile Include="Settings\MediaSettings.cs" />
     <Compile Include="Settings\SeoSettings.cs" />
-    <Compile Include="Settings\SettingService.cs" />
     <Compile Include="Settings\SiteSettings.cs" />
     <Compile Include="Settings\SiteSettingsBase.cs" />
     <Compile Include="Settings\SiteSettingsOptionGenerator.cs" />
@@ -1056,7 +1053,6 @@
     <Compile Include="Tasks\SchedulableTask.cs" />
     <Compile Include="Tasks\ScheduledTaskRunner.cs" />
     <Compile Include="Tasks\SendQueuedMessagesTask.cs" />
-    <Compile Include="Tasks\ScheduledTask.cs" />
     <Compile Include="Tasks\TaskExecutionStatus.cs" />
     <Compile Include="Tasks\TaskInfo.cs" />
     <Compile Include="Tasks\TaskResetter.cs" />
@@ -1204,9 +1200,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Config\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.94.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net451\System.Data.SQLite.Core.targets')" />

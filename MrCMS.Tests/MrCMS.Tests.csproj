@@ -200,7 +200,6 @@
     <Compile Include="Settings\MailSettingsTests.cs" />
     <Compile Include="Settings\MediaSettingsTests.cs" />
     <Compile Include="Settings\SEOSettingsTests.cs" />
-    <Compile Include="Settings\SettingServiceTests.cs" />
     <Compile Include="Settings\SiteSettingsOptionGeneratorTests.cs" />
     <Compile Include="Settings\SiteSettingsTests.cs" />
     <Compile Include="Shortcodes\Forms\DefaultFormRendererTests.cs" />

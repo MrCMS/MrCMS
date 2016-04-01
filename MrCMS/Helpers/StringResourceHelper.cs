@@ -11,48 +11,48 @@ namespace MrCMS.Helpers
         /// <summary>
         /// Helper method to allow easier use of string resources
         /// </summary>
-        /// <param name="value">The default value. This is also the name of the resouce if the name is not specified</param>
+        /// <param name="key">The key. This is also the default value of the resource if the name is not specified</param>
         /// <param name="kernel">Kernel used to resolve the provider</param>
-        /// <param name="name">Optionally specify the name of the resource, if it is to differ from the value</param>
+        /// <param name="defaultValue">Optionally specify the default value of the resource, if it differs from the key</param>
         /// <returns></returns>
-        public static string AsResource(this string value, IKernel kernel, string name = null)
+        public static string AsResource(this string key, IKernel kernel, string defaultValue = null)
         {
             var provider = kernel.Get<IStringResourceProvider>();
 
-            return GetValue(value, name, provider);
+            return GetValue(key, defaultValue, provider);
         }
 
-        private static string GetValue(string value, string name, IStringResourceProvider provider)
+        private static string GetValue(string key, string defaultValue, IStringResourceProvider provider)
         {
-            return provider.GetValue(name ?? value, value);
+            return provider.GetValue(key, defaultValue);
         }
 
         /// <summary>
         /// Helper method to allow easier use of string resources
         /// </summary>
-        /// <param name="value">The default value. This is also the name of the resouce if the name is not specified</param>
+        /// <param name="key">The key. This is also the default value of the resource if the name is not specified</param>
         /// <param name="context">HttpContextBase used to resolve the provider</param>
-        /// <param name="name">Optionally specify the name of the resource, if it is to differ from the value</param>
+        /// <param name="defaultValue">Optionally specify the default value of the resource, if it differs from the key</param>
         /// <returns></returns>
-        public static string AsResource(this string value, HttpContextBase context, string name = null)
+        public static string AsResource(this string key, HttpContextBase context, string defaultValue = null)
         {
             var provider = context.Get<IStringResourceProvider>();
 
-            return GetValue(value, name, provider);
+            return GetValue(key, defaultValue, provider);
         }
 
         /// <summary>
         /// Helper method to allow easier use of string resources
         /// </summary>
-        /// <param name="value">The default value. This is also the name of the resouce if the name is not specified</param>
+        /// <param name="key">The key. This is also the default value of the resource if the name is not specified</param>
         /// <param name="helper">HtmlHelper used to resolve the provider</param>
-        /// <param name="name">Optionally specify the name of the resource, if it is to differ from the value</param>
+        /// <param name="defaultValue">Optionally specify the default value of the resource, if it differs from the key</param>
         /// <returns></returns>
-        public static string AsResource(this string value, HtmlHelper helper, string name = null)
+        public static string AsResource(this string key, HtmlHelper helper, string defaultValue = null)
         {
             var provider = helper.Get<IStringResourceProvider>();
 
-            return GetValue(value, name, provider);
+            return GetValue(key, defaultValue, provider);
         }
     }
 }
