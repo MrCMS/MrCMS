@@ -16,6 +16,7 @@ namespace MrCMS.Settings
     public class AppConfigSystemConfigurationProvider : ISystemConfigurationProvider
     {
         private const string XmlHeader = "<?xml version=\"1.0\"?>\r\n";
+        private const string MrCMSSettingsSectionName = "mrcmsSettings";
         private static readonly HashSet<string> CheckedSections = new HashSet<string>();
 
         public void ClearCache()
@@ -27,7 +28,7 @@ namespace MrCMS.Settings
             var settings = Activator.CreateInstance<TSettings>();
             var config = GetConfig();
 
-            foreach (var prop in typeof(TSettings).GetProperties())
+            foreach (var prop in typeof (TSettings).GetProperties())
             {
                 // get properties we can read and write to
                 if (!prop.CanRead || !prop.CanWrite)
@@ -49,14 +50,14 @@ namespace MrCMS.Settings
         {
             var methodInfo = GetType().GetMethods().First(x => x.Name == "SaveSettings" && x.IsGenericMethod);
             var genericMethod = methodInfo.MakeGenericMethod(settings.GetType());
-            genericMethod.Invoke(this, new object[] { settings });
+            genericMethod.Invoke(this, new object[] {settings});
         }
 
         public void SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new()
         {
             var existing = GetSystemSettings<TSettings>();
             var config = GetConfig();
-            foreach (var prop in typeof(TSettings).GetProperties())
+            foreach (var prop in typeof (TSettings).GetProperties())
             {
                 // get properties we can read and write to
                 if (!prop.CanRead || !prop.CanWrite)
@@ -76,7 +77,7 @@ namespace MrCMS.Settings
             var methodInfo = GetType().GetMethodExt("GetSystemSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>()
-                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
+                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] {}))
                 .OfType<SystemSettingsBase>().ToList();
         }
 
@@ -85,13 +86,13 @@ namespace MrCMS.Settings
         {
             var config = WebConfigurationManager.OpenWebConfiguration("~");
             EnsureConnectionStringsSourceExists(config);
-            EnsureAppSettingsSourceExists(config);
+            EnsureMrCMSSettingsSourceExists(config);
             return config;
         }
 
-        private void EnsureAppSettingsSourceExists(Configuration config)
+        private void EnsureMrCMSSettingsSourceExists(Configuration config)
         {
-            EnsureSourceExists(config, "appSettings");
+            EnsureSourceExists(config, MrCMSSettingsSectionName);
         }
 
         private void EnsureConnectionStringsSourceExists(Configuration config)
@@ -115,7 +116,7 @@ namespace MrCMS.Settings
                 return;
             var path = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, configSource.Value);
             if (!File.Exists(path))
-                File.WriteAllText(path, XmlHeader + string.Format("<{0}></{1}>", sectionName, sectionName));
+                File.WriteAllText(path, XmlHeader + string.Format("<{0}></{0}>", sectionName));
         }
 
         /// <summary>
@@ -135,14 +136,14 @@ namespace MrCMS.Settings
                 configuration.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings(result.Name, valueStr));
                 return;
             }
-            var appSettings = configuration.AppSettings;
+            var mrCMSSettings = GetMrCMSSettings(configuration);
             var key = GetPropertyKey(property);
             if (key == null)
                 throw new ArgumentNullException("key");
             key = key.Trim().ToLowerInvariant();
 
-            appSettings.Settings.Remove(key);
-            appSettings.Settings.Add(key, valueStr);
+            mrCMSSettings.Remove(key);
+            mrCMSSettings.Add(key, valueStr);
         }
 
         /// <summary>
@@ -164,7 +165,7 @@ namespace MrCMS.Settings
                 return null;
 
             key = key.Trim().ToLowerInvariant();
-            var settings = configuration.AppSettings.Settings;
+            var settings = GetMrCMSSettings(configuration);
             if (settings.AllKeys.Contains(key))
             {
                 var setting = settings[key];
@@ -173,6 +174,11 @@ namespace MrCMS.Settings
             }
 
             return null;
+        }
+
+        private static KeyValueConfigurationCollection GetMrCMSSettings(Configuration configuration)
+        {
+            return (configuration.GetSection(MrCMSSettingsSectionName) as MrCMSSettingsSection).Settings;
         }
 
         private string GetPropertyKey(PropertyInfo property)

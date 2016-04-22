@@ -492,6 +492,7 @@
     <Compile Include="Entities\Documents\Web\PageTemplate.cs" />
     <Compile Include="Entities\Documents\Web\SitemapPlaceholder.cs" />
     <Compile Include="Entities\Documents\Web\UrlHistory.cs" />
+    <Compile Include="Entities\Messaging\MessageTemplateData.cs" />
     <Compile Include="Entities\Multisite\RedirectedDomain.cs" />
     <Compile Include="Entities\Notifications\Notification.cs" />
     <Compile Include="Entities\People\IBelongToUser.cs" />
@@ -627,6 +628,7 @@
     <Compile Include="Messages\Helpers\MessageTemplateExtensions.cs" />
     <Compile Include="Messages\IGetDefaultMessageTemplate.cs" />
     <Compile Include="Messages\IMessageTemplateProvider.cs" />
+    <Compile Include="Messages\LegacyTemplateMigrator.cs" />
     <Compile Include="Messages\MessageTemplate.cs" />
     <Compile Include="Messages\MessageTemplateProvider.cs" />
     <Compile Include="Models\CachingInfo.cs" />
@@ -817,6 +819,7 @@
     <Compile Include="Settings\FormRenderingType.cs" />
     <Compile Include="Settings\ISystemConfigurationProvider.cs" />
     <Compile Include="Settings\LegacySettingMigrator.cs" />
+    <Compile Include="Settings\MrCMSSettingsSection.cs" />
     <Compile Include="Settings\SettingDefaults.cs" />
     <Compile Include="Settings\SqlConfigurationProvider.cs" />
     <Compile Include="Settings\AppDataSystemConfigurationProvider.cs" />

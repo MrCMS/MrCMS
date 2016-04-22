@@ -8,6 +8,7 @@ using MrCMS.DbConfiguration;
 using MrCMS.DbConfiguration.Caches;
 using MrCMS.DbConfiguration.Caches.Redis;
 using MrCMS.Entities.Multisite;
+using MrCMS.Messages;
 using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website.Binders;
@@ -23,8 +24,8 @@ namespace MrCMS.Website
 {
     public abstract class MrCMSApplication : HttpApplication
     {
-        public const string AssemblyVersion = "0.5.0.5";
-        public const string AssemblyFileVersion = "0.5.0.5";
+        public const string AssemblyVersion = "0.5.1.0";
+        public const string AssemblyFileVersion = "0.5.1.0";
         private const string CachedMissingItemKey = "cached-missing-item";
 
 
@@ -43,6 +44,7 @@ namespace MrCMS.Website
             MrCMSApp.RegisterAllServices(MrCMSKernel.Kernel);
 
             LegacySettingMigrator.MigrateSettings(MrCMSKernel.Kernel);
+            LegacyTemplateMigrator.MigrateTemplates(MrCMSKernel.Kernel);
 
             SetModelBinders();
 
