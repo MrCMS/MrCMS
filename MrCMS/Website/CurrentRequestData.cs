@@ -8,9 +8,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Settings;
-using MrCMS.Tasks;
 using NHibernate;
-using Ninject;
 
 namespace MrCMS.Website
 {
@@ -63,42 +61,26 @@ namespace MrCMS.Website
             set { CurrentContext.Items["current.homepage"] = value; }
         }
 
-        public static CultureInfo CultureInfo
-        {
-            get
-            {
-                return SiteSettings != null
-                    ? CurrentContext.Items["current.cultureinfo"] as CultureInfo ??
-                      (CurrentContext.Items["current.cultureinfo"] = SiteSettings.CultureInfo) as CultureInfo
-                    : CultureInfo.CurrentCulture;
-            }
-        }
+        public static CultureInfo CultureInfo 
+            => SiteSettings != null
+                ? CurrentContext.Items["current.cultureinfo"] as CultureInfo 
+                    ?? (CurrentContext.Items["current.cultureinfo"] = SiteSettings.CultureInfo) as CultureInfo
+                : CultureInfo.CurrentCulture;
 
-        public static TimeZoneInfo TimeZoneInfo
-        {
-            get
-            {
-                //return TimeZoneInfo.Local;
-                return SiteSettings != null
-                    ? (SiteSettings.TimeZoneInfo ?? TimeZoneInfo.Local)
-                    : TimeZoneInfo.Local;
-            }
-        }
+        public static TimeZoneInfo TimeZoneInfo 
+            => SiteSettings != null
+                ? (SiteSettings.TimeZoneInfo 
+                    ?? TimeZoneInfo.Local)
+                : TimeZoneInfo.Local;
 
-        public static DateTime Now
-        {
-            get { return TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo); }
-        }
+        public static DateTime Now 
+            => TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo);
 
-        public static HttpContextBase CurrentContext
-        {
-            get { return MrCMSApplication.Get<HttpContextBase>(); }
-        }
+        public static HttpContextBase CurrentContext 
+            => MrCMSApplication.Get<HttpContextBase>();
 
-        public static bool CurrentUserIsAdmin
-        {
-            get { return CurrentUser != null && CurrentUser.IsAdmin; }
-        }
+        public static bool CurrentUserIsAdmin 
+            => CurrentUser != null && CurrentUser.IsAdmin;
 
         public static bool DatabaseIsInstalled
         {
