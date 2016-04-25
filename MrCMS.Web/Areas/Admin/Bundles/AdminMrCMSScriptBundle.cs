@@ -5,10 +5,8 @@ namespace MrCMS.Web.Areas.Admin.Bundles
 {
     public class AdminMrCMSScriptBundle : IScriptBundle
     {
-        public string Url
-        {
-            get { return "~/admin/scripts/mrcms"; }
-        }
+        public string Url 
+            => "~/admin/scripts/mrcms";
 
         public IEnumerable<string> Files
         {

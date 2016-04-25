@@ -15,16 +15,9 @@ namespace MrCMS.Web.Areas.Admin.Bundles
         }
 
         public string Url
-        {
-            get { return "~/admin/scripts/apps"; }
-        }
+            => "~/admin/scripts/apps";
 
         public IEnumerable<string> Files
-        {
-            get
-            {
-                return _scriptLists.SelectMany(list => list.AdminScripts);
-            }
-        }
+            => _scriptLists.SelectMany(list => list.AdminScripts);
     }
 }

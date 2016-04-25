@@ -14,11 +14,10 @@ namespace MrCMS.Web.Areas.Admin.Bundles
             _stylesheetLists = stylesheetLists;
         }
 
-        public string Url { get { return "~/admin/stylesheets/apps"; } }
+        public string Url 
+            => "~/admin/stylesheets/apps";
 
         public IEnumerable<string> Files
-        {
-            get { return _stylesheetLists.SelectMany(list => list.AdminStylesheets); }
-        }
+            => _stylesheetLists.SelectMany(list => list.AdminStylesheets); 
     }
 }

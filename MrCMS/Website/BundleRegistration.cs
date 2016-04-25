@@ -12,23 +12,24 @@ namespace MrCMS.Website
             if (!CurrentRequestData.DatabaseIsInstalled)
                 return;
 
-            foreach (IStylesheetBundle bundle in kernel.GetAll<IStylesheetBundle>())
+            foreach (var bundle in kernel.GetAll<IStylesheetBundle>())
             {
                 var styleBundle = new StyleBundle(bundle.Url);
-                foreach (string file in bundle.Files)
+                foreach (var file in bundle.Files)
                 {
                     styleBundle.Include(file);
                 }
                 BundleTable.Bundles.Add(styleBundle);
             }
-            foreach (IScriptBundle bundle in kernel.GetAll<IScriptBundle>())
+
+            foreach (var bundle in kernel.GetAll<IScriptBundle>())
             {
-                var styleBundle = new ScriptBundle(bundle.Url);
-                foreach (string file in bundle.Files)
+                var scriptBundle = new ScriptBundle(bundle.Url);
+                foreach (var file in bundle.Files)
                 {
-                    styleBundle.Include(file);
+                    scriptBundle.Include(file);
                 }
-                BundleTable.Bundles.Add(styleBundle);
+                BundleTable.Bundles.Add(scriptBundle);
             }
             BundleTable.EnableOptimizations = kernel.Get<BundlingSettings>().EnableOptimisations;
         }

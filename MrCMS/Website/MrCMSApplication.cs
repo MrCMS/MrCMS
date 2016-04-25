@@ -29,10 +29,8 @@ namespace MrCMS.Website
         private const string CachedMissingItemKey = "cached-missing-item";
 
 
-        private static IOnEndRequestExecutor OnEndRequestExecutor
-        {
-            get { return MrCMSKernel.Kernel.Get<IOnEndRequestExecutor>(); }
-        }
+        private static IOnEndRequestExecutor OnEndRequestExecutor 
+            => MrCMSKernel.Kernel.Get<IOnEndRequestExecutor>();
 
         protected void Application_Start()
         {
