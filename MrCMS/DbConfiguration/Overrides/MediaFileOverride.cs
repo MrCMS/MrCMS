@@ -16,11 +16,4 @@ namespace MrCMS.DbConfiguration.Overrides
             mapping.Map(file => file.FileUrl).Index("IX_MediaFile_FileUrl");
         }
     }
-    public class ResizedImageOverride : IAutoMappingOverride<ResizedImage>
-    {
-        public void Override(AutoMapping<ResizedImage> mapping)
-        {
-            mapping.Map(file => file.Url).Length(1000);
-        }
-    }
 }

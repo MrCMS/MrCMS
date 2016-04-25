@@ -31,7 +31,11 @@ namespace MrCMS.Services
 
         public CloudStorageAccount StorageAccount
         {
-            get { return _storageAccount; }
+            get
+            {
+                EnsureInitialized();
+                return _storageAccount;
+            }
         }
 
         public string SaveFile(Stream stream, string filePath, string contentType)

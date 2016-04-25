@@ -20,6 +20,9 @@ namespace MrCMS.Entities.Multisite
         [RegularExpression(@"^(?i)(?!http).*$", ErrorMessage = "Url should be without HTTP")]
         public virtual string BaseUrl { get; set; }
 
+        public virtual string StagingUrl { get; set; }
+
+
         public virtual IList<RedirectedDomain> RedirectedDomains { get; set; }
 
         public virtual string DisplayName

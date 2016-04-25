@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web.Hosting;
+using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using Newtonsoft.Json;
@@ -14,27 +13,26 @@ namespace MrCMS.Messages
 {
     public class MessageTemplateProvider : IMessageTemplateProvider
     {
-        private static readonly object SaveLockObject = new object();
-
         private static readonly Dictionary<Type, Type> DefaultTemplateProviders = new Dictionary<Type, Type>();
 
-        private static readonly MethodInfo GetMessageTemplateMethod = typeof(MessageTemplateProvider)
-            .GetMethodExt("GetMessageTemplate", typeof(Site));
+        private static readonly MethodInfo GetMessageTemplateMethod = typeof (MessageTemplateProvider)
+            .GetMethodExt("GetMessageTemplate", typeof (Site));
 
-        public static readonly MethodInfo GetNewMessageTemplateMethod = typeof(MessageTemplateProvider)
+        public static readonly MethodInfo GetNewMessageTemplateMethod = typeof (MessageTemplateProvider)
             .GetMethodExt("GetNewMessageTemplate");
 
         private readonly IKernel _kernel;
+        private readonly ISession _session;
 
         static MessageTemplateProvider()
         {
-            foreach (Type type in
-                    TypeHelper.GetAllConcreteTypesAssignableFrom<MessageTemplate>()
-                        .Where(type => !type.ContainsGenericParameters))
+            foreach (var type in
+                TypeHelper.GetAllConcreteTypesAssignableFrom<MessageTemplate>()
+                    .Where(type => !type.ContainsGenericParameters))
             {
-                HashSet<Type> types =
+                var types =
                     TypeHelper.GetAllConcreteTypesAssignableFrom(
-                        typeof(GetDefaultTemplate<>).MakeGenericType(type));
+                        typeof (GetDefaultTemplate<>).MakeGenericType(type));
                 if (types.Any())
                 {
                     DefaultTemplateProviders.Add(type, types.First());
@@ -42,68 +40,82 @@ namespace MrCMS.Messages
             }
         }
 
-        public MessageTemplateProvider(IKernel kernel)
+        public MessageTemplateProvider(ISession session, IKernel kernel)
         {
+            _session = session;
             _kernel = kernel;
         }
 
         public void SaveTemplate(MessageTemplate messageTemplate)
         {
-            lock (SaveLockObject)
-            {
-                string location = GetFileLocation(messageTemplate);
-                messageTemplate.SiteId = null;
-                File.WriteAllText(location, messageTemplate.Serialize());
-            }
+            Save(messageTemplate, null);
         }
 
         public void SaveSiteOverride(MessageTemplate messageTemplate, Site site)
         {
-            string location = GetFileLocation(messageTemplate, site);
-            messageTemplate.SiteId = site.Id;
-            File.WriteAllText(location, messageTemplate.Serialize());
+            Save(messageTemplate, site.Id);
         }
 
         public void DeleteSiteOverride(MessageTemplate messageTemplate, Site site)
         {
-            string fileLocation = GetFileLocation(messageTemplate, site);
-            if (File.Exists(fileLocation))
-            {
-                File.Delete(fileLocation);
-            }
+            var templateData = GetExistingTemplateData(messageTemplate.GetType().FullName, site.Id);
+            if (templateData != null)
+                _session.Transact(session => session.Delete(templateData));
         }
 
         public List<MessageTemplate> GetAllMessageTemplates(Site site)
         {
-            HashSet<Type> types = TypeHelper.GetAllConcreteTypesAssignableFrom<MessageTemplate>();
+            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<MessageTemplate>();
 
             return types.Select(type => GetMessageTemplateMethod.MakeGenericMethod(type)
-                .Invoke(this, new[] { site }) as MessageTemplate).ToList();
+                .Invoke(this, new[] {site}) as MessageTemplate).ToList();
         }
 
         public T GetMessageTemplate<T>(Site site) where T : MessageTemplate, new()
         {
-            Type templateType = typeof(T);
-            string siteFileLocation = GetFileLocation(templateType, site);
-            if (File.Exists(siteFileLocation))
-            {
-                return JsonConvert.DeserializeObject<T>(File.ReadAllText(siteFileLocation));
-            }
-            string fileLocation = GetFileLocation(templateType);
-            if (File.Exists(fileLocation))
-            {
-                return JsonConvert.DeserializeObject<T>(File.ReadAllText(fileLocation));
-            }
+            var templateType = typeof (T);
+            var fullName = templateType.FullName;
+            var templateData = GetExistingTemplateData(fullName, site.Id);
+            if (templateData != null)
+                return JsonConvert.DeserializeObject<T>(templateData.Data);
+
+            templateData = GetExistingTemplateData(fullName, null);
+            if (templateData != null)
+                return JsonConvert.DeserializeObject<T>(templateData.Data);
 
             var template = GetNewMessageTemplate<T>();
             SaveTemplate(template);
             return template;
         }
 
+        public MessageTemplate GetNewMessageTemplate(Type type)
+        {
+            return GetNewMessageTemplateMethod.MakeGenericMethod(type).Invoke(this, new object[0]) as MessageTemplate;
+        }
+
+        private void Save(MessageTemplate messageTemplate, int? siteId)
+        {
+            var type = messageTemplate.GetType().FullName;
+            var existingData = GetExistingTemplateData(type, siteId) ??
+                               new MessageTemplateData {Type = type, SiteId = siteId};
+
+            existingData.Data = JsonConvert.SerializeObject(messageTemplate);
+
+            _session.Transact(session => session.SaveOrUpdate(existingData));
+        }
+
+        private MessageTemplateData GetExistingTemplateData(string type, int? siteId)
+        {
+            return _session.QueryOver<MessageTemplateData>()
+                .Where(x => x.Type == type && x.SiteId == siteId)
+                .List()
+                .FirstOrDefault();
+        }
+
         public T GetNewMessageTemplate<T>() where T : MessageTemplate, new()
         {
             T template = null;
-            Type templateType = typeof(T);
+            var templateType = typeof (T);
             if (DefaultTemplateProviders.ContainsKey(templateType))
             {
                 var getDefaultMessageTemplate =
@@ -112,29 +124,6 @@ namespace MrCMS.Messages
                     template = getDefaultMessageTemplate.Get() as T;
             }
             return template ?? new T();
-        }
-
-        public MessageTemplate GetNewMessageTemplate(Type type)
-        {
-            return GetNewMessageTemplateMethod.MakeGenericMethod(type).Invoke(this, new object[0]) as MessageTemplate;
-        }
-
-        private string GetFileLocation(MessageTemplate messageTemplate, Site site = null)
-        {
-            return GetFileLocation(messageTemplate.GetType(), site);
-        }
-
-        private string GetFileLocation(Type type, Site site = null)
-        {
-            return string.Format("{0}{1}.json", GetFolder(site), type.FullName.ToLower());
-        }
-
-        private string GetFolder(Site site = null)
-        {
-            string location = string.Format("~/App_Data/Templates/{0}/", site == null ? "system" : site.Id.ToString());
-            string mapPath = HostingEnvironment.MapPath(location);
-            Directory.CreateDirectory(mapPath);
-            return mapPath;
         }
     }
 }

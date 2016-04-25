@@ -31,6 +31,7 @@ namespace MrCMS.Settings
             get { return _siteSettingsOptionGeneratorOverride ?? _siteSettingsOptionGenerator; }
         }
 
+
         [DropDownSelection("Themes"), DisplayName("Theme")]
         public string ThemeName { get; set; }
 
@@ -66,6 +67,9 @@ namespace MrCMS.Settings
 
         [DisplayName("Site UI Culture"), DropDownSelection("UiCultures")]
         public string UICulture { get; set; }
+
+        [MediaSelector]
+        public string AdminLogo { get; set; }
 
         [DisplayName("Page extensions you want Mr CMS to handle")]
         public string PageExtensionsToRoute { get; set; }
@@ -106,8 +110,6 @@ namespace MrCMS.Settings
 
         public string TaskExecutorKey { get; set; }
         public string TaskExecutorPassword { get; set; }
-
-        public bool SelfExecuteTasks { get; set; }
         public int TaskExecutionDelay { get; set; }
 
         public bool HasHoneyPot
@@ -125,6 +127,7 @@ namespace MrCMS.Settings
 
         [DisplayName("MiniProfiler Enabled?")]
         public bool MiniProfilerEnabled { get; set; }
+
 
         public IEnumerable<string> AllowedIPs
         {

@@ -5,16 +5,16 @@ namespace MrCMS.Website.Filters
 {
     public class ExecuteLuceneTasksRunner : ExecuteEndRequestBase<ExecuteLuceneTasks, int>
     {
-        private readonly ITaskRunner _taskRunner;
+        private readonly IQueuedTaskRunner _queuedTaskRunner;
 
-        public ExecuteLuceneTasksRunner(ITaskRunner taskRunner)
+        public ExecuteLuceneTasksRunner(IQueuedTaskRunner queuedTaskRunner)
         {
-            _taskRunner = taskRunner;
+            _queuedTaskRunner = queuedTaskRunner;
         }
 
         public override void Execute(IEnumerable<int> data)
         {
-            _taskRunner.ExecuteLuceneTasks();
+            _queuedTaskRunner.ExecuteLuceneTasks();
         }
     }
 }

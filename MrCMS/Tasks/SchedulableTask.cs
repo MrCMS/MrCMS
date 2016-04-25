@@ -1,19 +1,25 @@
+using System;
+using MrCMS.Website;
+
 namespace MrCMS.Tasks
 {
-    public abstract class SchedulableTask : BaseExecutableTask
+    public abstract class SchedulableTask 
     {
-        public override sealed bool Schedulable
-        {
-            get { return true; }
-        }
+        public abstract int Priority { get; }
 
-        public override sealed string GetData()
+        public Exception Execute()
         {
-            return string.Empty;
+            try
+            {
+                OnExecute();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                CurrentRequestData.ErrorSignal.Raise(ex);
+                return ex;
+            }
         }
-
-        public override sealed void SetData(string data)
-        {
-        }
+        protected abstract void OnExecute();
     }
 }

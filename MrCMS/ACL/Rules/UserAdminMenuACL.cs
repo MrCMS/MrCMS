@@ -8,6 +8,7 @@ namespace MrCMS.ACL.Rules
         public const string Users = "Users";
         public const string Roles = "Roles";
         public const string ThirdPartyAuth = "Third Party Auth";
+        public const string UserSubscriptionReports = "UserSubscriptionReports";
         public const string YourAccount = "Your Account";
         public override string DisplayName
         {
@@ -16,7 +17,7 @@ namespace MrCMS.ACL.Rules
 
         protected override List<string> GetOperations()
         {
-            return new List<string> { ShowMenu, Users, Roles, YourAccount, ThirdPartyAuth };
+            return new List<string> { ShowMenu, Users, Roles, YourAccount, ThirdPartyAuth, UserSubscriptionReports };
         }
     }
 }

@@ -19,18 +19,15 @@ namespace MrCMS.Tasks
             _session = session;
         }
 
-        public IList<IExecutableTask> GetTasksToExecute(IList<QueuedTask> pendingQueuedTasks, IList<ScheduledTask> pendingScheduledTasks)
+        public IList<AdHocTask> GetTasksToExecute(IList<QueuedTask> pendingQueuedTasks)
         {
-            var executableTasks = new List<IExecutableTask>();
+            var executableTasks = new List<AdHocTask>();
             var failedTasks = new List<QueuedTask>();
             foreach (var queuedTask in pendingQueuedTasks)
             {
                 try
                 {
-                    var task = _kernel.Get(queuedTask.GetTaskType()) as IExecutableTask;
-                    task.Site = queuedTask.Site;
-                    task.Entity = queuedTask;
-                    task.SetData(queuedTask.Data);
+                    var task = GetTask(queuedTask);
                     executableTasks.Add(task);
                 }
                 catch (Exception exception)
@@ -48,15 +45,17 @@ namespace MrCMS.Tasks
                     session.Update(task);
                 }));
             }
-            foreach (var scheduledTask in pendingScheduledTasks)
-            {
-                var taskType = TypeHelper.GetAllTypes().FirstOrDefault(type => type.FullName == scheduledTask.Type);
-                var task = _kernel.Get(taskType) as IExecutableTask;
-                task.Site = scheduledTask.Site;
-                task.Entity = scheduledTask;
-                executableTasks.Add(task);
-            }
             return executableTasks;
         }
+
+        private AdHocTask GetTask(QueuedTask queuedTask)
+        {
+            var task = _kernel.Get(queuedTask.GetTaskType()) as AdHocTask;
+            task.Site = queuedTask.Site;
+            task.Entity = queuedTask;
+            task.SetData(queuedTask.Data);
+            return task;
+        }
+
     }
 }

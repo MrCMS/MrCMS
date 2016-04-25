@@ -12,6 +12,7 @@ namespace MrCMS.IoC.Modules
         {
             Kernel.Bind(typeof(ITokenProvider<>)).To(typeof(PropertyTokenProvider<>)).InRequestScope();
             Kernel.Bind(typeof(IMessageParser<,>)).To(typeof(MessageParser<,>)).InRequestScope();
+            Kernel.Bind(typeof(IMessageParser<>)).To(typeof(MessageParser<>)).InRequestScope();
             Kernel.Bind(typeof(IIndexManager<,>)).To(typeof(IndexManager<,>)).InRequestScope();
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(Searcher<,>)).InRequestScope();
         }

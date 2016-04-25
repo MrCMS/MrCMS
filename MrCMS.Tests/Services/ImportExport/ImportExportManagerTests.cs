@@ -5,6 +5,7 @@ using MrCMS.Services;
 using MrCMS.Services.ImportExport;
 using Xunit;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Messages;
 
 namespace MrCMS.Tests.Services.ImportExport
 {
@@ -16,6 +17,9 @@ namespace MrCMS.Tests.Services.ImportExport
         private readonly ImportExportManager _importExportManager;
         private readonly IExportDocumentsService _exportDocumentsService;
 
+        private IMessageParser<ExportDocumentsEmailTemplate> _messageParser =
+            A.Fake<IMessageParser<ExportDocumentsEmailTemplate>>();
+
         public ImportExportManagerTests()
         {
             _documentService = A.Fake<IDocumentService>();
@@ -23,7 +27,7 @@ namespace MrCMS.Tests.Services.ImportExport
             _importDocumentsService = A.Fake<IImportDocumentsService>();
 
             _exportDocumentsService = A.Fake<IExportDocumentsService>();
-            _importExportManager = new ImportExportManager(_importDocumentsValidationService, _importDocumentsService, _exportDocumentsService, _documentService);
+            _importExportManager = new ImportExportManager(_importDocumentsValidationService, _importDocumentsService, _exportDocumentsService, _documentService, _messageParser);
         }
 
         [Fact]

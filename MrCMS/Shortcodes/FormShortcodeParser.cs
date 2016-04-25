@@ -49,40 +49,5 @@ namespace MrCMS.Shortcodes
 
             return current;
         }
-
-        //private string GetForm(HtmlHelper htmlHelper, string formData, Webpage page)
-        //{
-        //    dynamic deserializedObject =
-        //        JsonConvert.DeserializeObject(formData);
-
-        //    var formStructure = deserializedObject.form_structure;
-        //    if (formStructure != null)
-        //    {
-        //        var formBuilder = new TagBuilder("form");
-        //        formBuilder.Attributes["action"] =
-        //            string.Format("/save-form/{0}", page.Id);
-        //        formBuilder.Attributes["method"] = "POST";
-
-        //        foreach (dynamic element in formStructure)
-        //        {
-        //            if (element.cssClass == "input_text")
-        //                _formElementRenderer.AppendTextBox(element, formBuilder);
-        //            else if (element.cssClass == "textarea")
-        //                _formElementRenderer.AppendTextArea(element, formBuilder);
-        //            else if (element.cssClass == "checkbox")
-        //                _formElementRenderer.AppendCheckboxList(element, formBuilder);
-        //            else if (element.cssClass == "radio")
-        //                _formElementRenderer.AppendRadioButtons(element, formBuilder);
-        //            else if (element.cssClass == "select")
-        //                _formElementRenderer.AppendSelectList(element, formBuilder);
-        //        }
-
-        //        _formElementRenderer.AppendSubmitButton(formBuilder);
-
-        //        _formElementRenderer.AppendSubmittedMessage(htmlHelper, formBuilder, page);
-        //        return formBuilder.ToString();
-        //    }
-        //    return string.Empty;
-        //}
     }
 }

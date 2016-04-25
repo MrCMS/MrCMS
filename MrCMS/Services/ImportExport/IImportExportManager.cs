@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using MrCMS.Models;
 
 namespace MrCMS.Services.ImportExport
 {
@@ -7,5 +8,6 @@ namespace MrCMS.Services.ImportExport
     {
         byte[] ExportDocumentsToExcel();
         ImportDocumentsResult ImportDocumentsFromExcel(Stream file, bool autoStart = true);
+        ExportDocumentsResult ExportDocumentsToEmail(ExportDocumentsModel model);
     }
 }

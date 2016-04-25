@@ -1,6 +1,10 @@
 ﻿using System.Web.Mvc;
+using MrCMS.Settings;
 using MrCMS.Tasks;
+using MrCMS.Web.Areas.Admin.ModelBinders;
+using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Areas.Admin.Controllers
@@ -22,60 +26,32 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Add()
+        public PartialViewResult Edit(string type)
         {
-            return PartialView(new ScheduledTask());
+            var taskInfo = _taskAdminService.GetTaskUpdateData(type);
+            return PartialView(taskInfo);
         }
 
         [HttpPost]
-        public RedirectToRouteResult Add(ScheduledTask scheduledTask)
+        public RedirectToRouteResult Edit(TaskUpdateData taskInfo)
         {
-            _taskAdminService.Add(scheduledTask);
+            _taskAdminService.Update(taskInfo);
 
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public PartialViewResult Edit(ScheduledTask scheduledTask)
+        public PartialViewResult Reset(string type)
         {
-            return PartialView(scheduledTask);
+            var taskInfo = _taskAdminService.GetTaskUpdateData(type);
+            return PartialView(taskInfo);
         }
 
         [HttpPost]
-        [ActionName("Edit")]
-        public RedirectToRouteResult Edit_Post(ScheduledTask scheduledTask)
+        public RedirectToRouteResult Reset(TaskUpdateData taskInfo)
         {
-            _taskAdminService.Update(scheduledTask);
+            _taskAdminService.Reset(taskInfo);
 
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public PartialViewResult Reset(ScheduledTask scheduledTask)
-        {
-            return PartialView(scheduledTask);
-        }
-
-        [HttpPost]
-        [ActionName("Reset")]
-        public RedirectToRouteResult Reset_POST(ScheduledTask scheduledTask)
-        {
-            _taskAdminService.Reset(scheduledTask);
-
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public PartialViewResult Delete(ScheduledTask scheduledTask)
-        {
-            return PartialView(scheduledTask);
-        }
-
-        [HttpPost]
-        [ActionName("Delete")]
-        public RedirectToRouteResult Delete_Post(ScheduledTask scheduledTask)
-        {
-            _taskAdminService.Delete(scheduledTask);
             return RedirectToAction("Index");
         }
     }

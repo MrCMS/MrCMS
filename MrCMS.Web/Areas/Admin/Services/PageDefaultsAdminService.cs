@@ -28,20 +28,17 @@ namespace MrCMS.Web.Areas.Admin.Services
             _session = session;
         }
 
-        private PageDefaultsSettings Settings
-        {
-            get { return _configurationProvider.GetSiteSettings<PageDefaultsSettings>(); }
-        }
 
         public List<PageDefaultsInfo> GetAll()
         {
             var layoutOptions = _getLayoutOptions.Get();
+            var settings = _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
             return (from key in MrCMSApp.AppWebpages.Keys.OrderBy(type => type.FullName)
                     select new PageDefaultsInfo
                     {
                         DisplayName = GetDisplayName(key),
                         TypeName = key.FullName,
-                        GeneratorDisplayName = Settings.GetGeneratorType(key).Name.BreakUpString(),
+                        GeneratorDisplayName = settings.GetGeneratorType(key).Name.BreakUpString(),
                         LayoutName = GetLayoutName(layoutOptions, key)
                     }).ToList();
         }
@@ -54,7 +51,8 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         private string GetLayoutName(List<SelectListItem> layoutOptions, Type key)
         {
-            var layoutId = Settings.GetLayoutId(key);
+            var settings = _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
+            var layoutId = settings.GetLayoutId(key);
             if (!layoutId.HasValue || layoutOptions.All(item => item.Value != layoutId.ToString()))
             {
                 var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
@@ -66,7 +64,9 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public List<SelectListItem> GetUrlGeneratorOptions(Type type)
         {
-            return _getUrlGeneratorOptions.Get(type, Settings.GetGeneratorType(type));
+            var settings = _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
+            var currentGeneratorType = settings.GetGeneratorType(type);
+            return _getUrlGeneratorOptions.Get(type, currentGeneratorType);
         }
 
         public List<SelectListItem> GetLayoutOptions()
@@ -76,20 +76,22 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public DefaultsInfo GetInfo(Type type)
         {
+            var settings = _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
             return new DefaultsInfo
             {
                 PageTypeName = type.FullName,
                 PageTypeDisplayName = GetDisplayName(type),
-                GeneratorTypeName = Settings.GetGeneratorType(type).FullName,
-                LayoutId = Settings.GetLayoutId(type)
+                GeneratorTypeName = settings.GetGeneratorType(type).FullName,
+                LayoutId = settings.GetLayoutId(type)
             };
         }
 
         public void SetDefaults(DefaultsInfo info)
         {
-            Settings.UrlGenerators[info.PageTypeName] = info.GeneratorTypeName;
-            Settings.Layouts[info.PageTypeName] = info.LayoutId;
-            _configurationProvider.SaveSettings(Settings);
+            var settings = _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
+            settings.UrlGenerators[info.PageTypeName] = info.GeneratorTypeName;
+            settings.Layouts[info.PageTypeName] = info.LayoutId;
+            _configurationProvider.SaveSettings(settings);
         }
     }
 }

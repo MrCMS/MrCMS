@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using System.Web.Mvc;
-using System.Web.Routing;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -14,12 +12,13 @@ namespace MrCMS.Web.Areas.Admin.Services
 {
     public class DefaultWebpageTreeNavListing : IWebpageTreeNavListing
     {
-        private readonly IValidWebpageChildrenService _validWebpageChildrenService;
         private readonly ISession _session;
-        private readonly UrlHelper _urlHelper;
         private readonly ITreeNavService _treeNavService;
+        private readonly UrlHelper _urlHelper;
+        private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
-        public DefaultWebpageTreeNavListing(IValidWebpageChildrenService validWebpageChildrenService, ISession session, UrlHelper urlHelper, ITreeNavService treeNavService)
+        public DefaultWebpageTreeNavListing(IValidWebpageChildrenService validWebpageChildrenService, ISession session,
+            UrlHelper urlHelper, ITreeNavService treeNavService)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _session = session;
@@ -29,29 +28,19 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public AdminTree GetTree(int? id)
         {
-            var adminTree = new AdminTree { RootContoller = "Webpage" };
-            var query = _session.QueryOver<Webpage>().Where(x => x.Parent.Id == id);
-            int maxChildNodes = 1000;
-            if (id.HasValue)
+            Webpage parent = id.HasValue ? _session.Get<Webpage>(id) : null;
+            var adminTree = new AdminTree
             {
-                var parent = _session.Get<Webpage>(id);
-                if (parent != null)
-                {
-                    var metaData = parent.GetMetadata();
-                    maxChildNodes = metaData.MaxChildNodes;
-                    query = ApplySort(metaData, query);
-                }
-            }
-            else
-            {
-                adminTree.IsRootRequest = true;
-                query = query.OrderBy(x => x.DisplayOrder).Asc;
-            }
+                RootContoller = "Webpage",
+                IsRootRequest = parent == null
+            };
+            int maxChildNodes = parent == null ? 1000 : parent.GetMetadata().MaxChildNodes;
+            IQueryOver<Webpage, Webpage> query = GetQuery(parent);
 
-            var rowCount = query.Cacheable().RowCount();
+            int rowCount = GetRowCount(query);
             query.Take(maxChildNodes).Cacheable().List().ForEach(doc =>
             {
-                var documentMetadata = doc.GetMetadata();
+                DocumentMetadata documentMetadata = doc.GetMetadata();
                 var node = new AdminTreeNode
                 {
                     Id = doc.Id,
@@ -60,12 +49,12 @@ namespace MrCMS.Web.Areas.Admin.Services
                     IconClass = documentMetadata.IconClass,
                     NodeType = "Webpage",
                     Type = documentMetadata.Type.FullName,
-                    HasChildren = _treeNavService.GetWebpageNodes(doc.Id).Nodes.Any(),
+                    HasChildren = _treeNavService.WebpageHasChildren(doc.Id),
                     Sortable = documentMetadata.Sortable,
                     CanAddChild = _validWebpageChildrenService.AnyValidWebpageDocumentTypes(doc),
                     IsPublished = doc.Published,
                     RevealInNavigation = doc.RevealInNavigation,
-                    Url = _urlHelper.Action("Edit", "Webpage", new { id = doc.Id })
+                    Url = _urlHelper.Action("Edit", "Webpage", new {id = doc.Id})
                 };
                 adminTree.Nodes.Add(node);
             });
@@ -77,12 +66,43 @@ namespace MrCMS.Web.Areas.Admin.Services
                     IsMoreLink = true,
                     ParentId = id,
                     Name = (rowCount - maxChildNodes) + " More",
-                    Url = _urlHelper.Action("Search", "WebpageSearch", new { parentId= id }),
+                    Url = _urlHelper.Action("Search", "WebpageSearch", new {parentId = id}),
                 });
             }
             return adminTree;
         }
-        private static IQueryOver<Webpage, Webpage> ApplySort(DocumentMetadata metaData, IQueryOver<Webpage, Webpage> query)
+
+        public bool HasChildren(int id)
+        {
+            var parent = _session.Get<Webpage>(id);
+            IQueryOver<Webpage, Webpage> query = GetQuery(parent);
+            return GetRowCount(query) > 0;
+        }
+
+        private static int GetRowCount(IQueryOver<Webpage, Webpage> query)
+        {
+            return query.Cacheable().RowCount();
+        }
+
+        private IQueryOver<Webpage, Webpage> GetQuery(Webpage parent)
+        {
+            IQueryOver<Webpage, Webpage> query = _session.QueryOver<Webpage>();
+            if (parent != null)
+            {
+                query = query.Where(x => x.Parent.Id == parent.Id);
+                DocumentMetadata metaData = parent.GetMetadata();
+                query = ApplySort(metaData, query);
+            }
+            else
+            {
+                query = query.Where(x => x.Parent == null);
+                query = query.OrderBy(x => x.DisplayOrder).Asc;
+            }
+            return query;
+        }
+
+        private static IQueryOver<Webpage, Webpage> ApplySort(DocumentMetadata metaData,
+            IQueryOver<Webpage, Webpage> query)
         {
             switch (metaData.SortBy)
             {
@@ -94,12 +114,20 @@ namespace MrCMS.Web.Areas.Admin.Services
                     break;
                 case SortBy.PublishedOn:
                     query =
-                        query.OrderBy(Projections.Conditional(Restrictions.IsNull(Projections.Property<Webpage>(x => x.PublishOn)), Projections.Constant(1), Projections.Constant(0))).Desc.ThenBy(webpage => webpage.PublishOn)
+                        query.OrderBy(
+                            Projections.Conditional(
+                                Restrictions.IsNull(Projections.Property<Webpage>(x => x.PublishOn)),
+                                Projections.Constant(1), Projections.Constant(0)))
+                            .Desc.ThenBy(webpage => webpage.PublishOn)
                             .Asc;
                     break;
                 case SortBy.PublishedOnDesc:
                     query =
-                        query.OrderBy(Projections.Conditional(Restrictions.IsNull(Projections.Property<Webpage>(x => x.PublishOn)), Projections.Constant(1), Projections.Constant(0))).Desc.ThenBy(webpage => webpage.PublishOn)
+                        query.OrderBy(
+                            Projections.Conditional(
+                                Restrictions.IsNull(Projections.Property<Webpage>(x => x.PublishOn)),
+                                Projections.Constant(1), Projections.Constant(0)))
+                            .Desc.ThenBy(webpage => webpage.PublishOn)
                             .Desc;
                     break;
                 case SortBy.CreatedOn:

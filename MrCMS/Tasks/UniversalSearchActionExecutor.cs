@@ -6,7 +6,7 @@ using MrCMS.Services;
 
 namespace MrCMS.Tasks
 {
-    public class UniversalSearchActionExecutor
+    public static class UniversalSearchActionExecutor
     {
         public static void PerformActions(IUniversalSearchIndexManager universalSearchIndexManager,
             ISearchConverter searchConverter, List<UniversalSearchIndexData> searchIndexDatas)
@@ -31,8 +31,6 @@ namespace MrCMS.Tasks
                         writer.UpdateDocument(GetTerm(indexData), searchConverter.Convert(indexData.UniversalSearchItem));
                     foreach (UniversalSearchIndexData indexData in toDelete)
                         writer.DeleteDocuments(GetTerm(indexData));
-
-                    //writer.Optimize();
                 });
             }
         }

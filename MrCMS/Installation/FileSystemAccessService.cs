@@ -70,8 +70,8 @@ namespace MrCMS.Installation
             {
                 dir.Delete(true);
             }
-            SystemConfigurationProvider.ClearCache();
-            ConfigurationProvider.ClearCache();
+            //AppDataSystemConfigurationProvider.ClearCache();
+            //AppDataConfigurationProvider.ClearCache();
         }
 
         /// <summary>

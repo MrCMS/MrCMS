@@ -30,6 +30,7 @@
     <TargetFrameworkProfile />
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
     <NuGetPackageImportStamp>eff8cd49</NuGetPackageImportStamp>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,12 +60,12 @@
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus">
-      <HintPath>..\packages\EPPlus.4.0.3\lib\net20\EPPlus.dll</HintPath>
+    <Reference Include="EPPlus, Version=4.0.5.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.0.5\lib\net20\EPPlus.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FluentNHibernate">
-      <HintPath>..\packages\FluentNHibernate.2.0.1.0\lib\net40\FluentNHibernate.dll</HintPath>
+    <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack">
@@ -82,22 +83,6 @@
     <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ApplicationServer.Caching.AzureClientHelper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.5.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.AzureClientHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ApplicationServer.Caching.AzureCommon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.5.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.AzureCommon.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ApplicationServer.Caching.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.5.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ApplicationServer.Caching.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.5.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -151,14 +136,15 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="MiniProfiler">
-      <HintPath>..\packages\MiniProfiler.3.1.1.140\lib\net40\MiniProfiler.dll</HintPath>
+    <Reference Include="MiniProfiler, Version=3.2.0.157, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
+      <HintPath>..\packages\MiniProfiler.3.2.0.157\lib\net40\MiniProfiler.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MVC Foolproof Validation">
       <HintPath>..\packages\foolproof.0.9.4517\lib\MVC Foolproof Validation.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\packages\MySql.Data.6.9.5\lib\net45\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
@@ -166,8 +152,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NHibernate, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NHibernate.4.0.3.4000\lib\net40\NHibernate.dll</HintPath>
+      <HintPath>..\packages\NHibernate.4.0.4.4000\lib\net40\NHibernate.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NHibernate.Caches.SysCache2">
       <HintPath>..\packages\NHibernate.Caches.SysCache2.4.0.0.4000\lib\net40\NHibernate.Caches.SysCache2.dll</HintPath>
@@ -192,8 +178,8 @@
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Owin.Security.Providers">
-      <HintPath>..\packages\Owin.Security.Providers.1.14.0\lib\net45\Owin.Security.Providers.dll</HintPath>
+    <Reference Include="Owin.Security.Providers, Version=1.25.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.Security.Providers.1.26\lib\net45\Owin.Security.Providers.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
@@ -342,8 +328,10 @@
     <Compile Include="Apps\Core\SitemapGeneration\HideResetPasswordPageFromSitemap.cs" />
     <Compile Include="Apps\Core\Widgets\Slider.cs" />
     <Compile Include="Apps\Galleries\Areas\Admin\Services\GetGalleryAdminViewData.cs" />
+    <Compile Include="Areas\Admin\ACL\LayoutsACL.cs" />
     <Compile Include="Areas\Admin\ACL\MediaToolsACL.cs" />
     <Compile Include="Areas\Admin\ACL\NotificationACL.cs" />
+    <Compile Include="Areas\Admin\ACL\UserSubscriptionReports\UserSubscriptionReportsACL.cs" />
     <Compile Include="Areas\Admin\Bundles\AdminAppScriptBundle.cs" />
     <Compile Include="Areas\Admin\Bundles\AdminAppStylesheetBundle.cs" />
     <Compile Include="Areas\Admin\Bundles\AdminLibScriptBundle.cs" />
@@ -351,7 +339,6 @@
     <Compile Include="Areas\Admin\Bundles\AdminMrCMSStylesheetBundle.cs" />
     <Compile Include="Areas\Admin\Controllers\AboutController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
-    <Compile Include="Areas\Admin\Controllers\BatchExecutionController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchJobController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunResultController.cs" />
@@ -360,6 +347,7 @@
     <Compile Include="Areas\Admin\Controllers\RegisteredHandlersController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteCloneOptionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemSettingsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UserSubscriptionReportsController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageSearchController.cs" />
     <Compile Include="Areas\Admin\Events\RefreshUIOnBatchRunComplete.cs" />
     <Compile Include="Areas\Admin\Events\StartBatchExecutionOnServer.cs" />
@@ -376,11 +364,15 @@
     <Compile Include="Areas\Admin\ModelBinders\BatchRunGuidModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\DeleteMessageTemplateOverrideModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\GetSiteCopyOptionsModelBinder.cs" />
+    <Compile Include="Areas\Admin\ModelBinders\GetTaskInfoFromTypeModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\MoveFilesModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\SystemSettingsModelBinder.cs" />
     <Compile Include="Areas\Admin\Models\AdminMessages.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\ChooseSiteParams.cs" />
+    <Compile Include="Areas\Admin\Models\DashboardArea.cs" />
+    <Compile Include="Areas\Admin\Models\DashboardAreaAction.cs" />
+    <Compile Include="Areas\Admin\Models\LineGraphData.cs" />
     <Compile Include="Areas\Admin\Models\MediaCategorySortMethod.cs" />
     <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
@@ -527,6 +519,7 @@
     <Compile Include="Areas\Admin\Models\SEOAnalysis\SEOAnalysisStatus.cs" />
     <Compile Include="Areas\Admin\Models\SiteCloneOption.cs" />
     <Compile Include="Areas\Admin\Models\StringResourceSearchQuery.cs" />
+    <Compile Include="Areas\Admin\Models\TaskUpdateData.cs" />
     <Compile Include="Areas\Admin\Models\UniversalSearchItemQuickSearch.cs" />
     <Compile Include="Areas\Admin\Models\UpdateMediaParams.cs" />
     <Compile Include="Areas\Admin\Models\UpdatePropertyData.cs" />
@@ -535,6 +528,7 @@
     <Compile Include="Areas\Admin\Models\UserEdit\UserTabBase.cs" />
     <Compile Include="Areas\Admin\Models\UserEdit\UserTabGroup.cs" />
     <Compile Include="Areas\Admin\Models\UserStats.cs" />
+    <Compile Include="Areas\Admin\Models\UserSubscriptionReports\UserSubscriptionReportsSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\VersionsModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewDataUploadFilesResult.cs" />
     <Compile Include="Areas\Admin\Models\WebpageEdit\FormDesignTab.cs" />
@@ -563,11 +557,9 @@
     <Compile Include="Areas\Admin\Services\Batching\BatchCompletionStatus.cs" />
     <Compile Include="Areas\Admin\Services\Batching\BatchRunUIService.cs" />
     <Compile Include="Areas\Admin\Services\Batching\BatchStatus.cs" />
-    <Compile Include="Areas\Admin\Services\Batching\ExecuteRequestForNextTask.cs" />
     <Compile Include="Areas\Admin\Services\Batching\GetBatchItemCount.cs" />
     <Compile Include="Areas\Admin\Services\Batching\GetBatchStatus.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IBatchRunUIService.cs" />
-    <Compile Include="Areas\Admin\Services\Batching\IExecuteRequestForNextTask.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchItemCount.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchStatus.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
@@ -688,6 +680,8 @@
     <Compile Include="Areas\Admin\Services\PageDefaultsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\UniversalSearchIndexSearcher.cs" />
     <Compile Include="Areas\Admin\Services\UrlHistoryAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\UserSubscriptionReports\IUserSubscriptionReportsService.cs" />
+    <Compile Include="Areas\Admin\Services\UserSubscriptionReports\UserSubscriptionReportsService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageAdminSearchService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageBaseViewDataService.cs" />
     <Compile Include="Areas\Admin\Services\WebpageParentAdminService.cs" />
@@ -1173,6 +1167,10 @@
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.js" />
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\lib\sweet-alert.min.js" />
     <Content Include="Areas\Admin\Content\plugins\sweetalert-master\sweetalert.gif" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\d3\bootstrap-datepicker.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.tip.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\line-graph.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.are-you-sure.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\dropzone.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\featherlight.js" />
@@ -1760,6 +1758,8 @@
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap.min.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Areas\Admin\Content\Styles\d3\bootstrap-datepicker.css" />
+    <Content Include="Areas\Admin\Content\Styles\d3\d3-admin-graph.css" />
     <Content Include="Areas\Admin\Content\Styles\dropzone.css" />
     <Content Include="Areas\Admin\Content\Styles\featherlight.css" />
     <Content Include="Areas\Admin\Content\Styles\mrcms-admin.css" />
@@ -1927,8 +1927,6 @@
     <Content Include="Areas\Admin\Views\Sites\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sites\RestrictedDomains.cshtml" />
-    <Content Include="Areas\Admin\Views\Task\Add.cshtml" />
-    <Content Include="Areas\Admin\Views\Task\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Task\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Task\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ThirdPartyAuth\Index.cshtml" />
@@ -2144,11 +2142,15 @@
     <Content Include="Areas\Admin\Views\WebpageSearch\Results.cshtml" />
     <Content Include="Areas\Admin\Views\WebpageSearch\Search.cshtml" />
     <Content Include="LICENSE" />
+    <Content Include="Areas\Admin\Views\UserSubscriptionReports\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\mrcms-redis-test - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\mrcms-redis-test - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="README.md" />
+    <Content Include="Views\Error\FileNotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apps\Core\Areas\Admin\Controllers\" />
@@ -2166,6 +2168,7 @@
     <Folder Include="Apps\Galleries\Views\Shared\" />
     <Folder Include="Apps\Galleries\Views\Widgets\" />
     <Folder Include="Apps\Galleries\Widgets\" />
+    <Folder Include="Areas\Admin\Content\Images\logo\" />
     <Folder Include="Themes\Default\Apps\Core\Views\Pages\" />
     <Folder Include="Themes\Default\Content\" />
     <Folder Include="Themes\Default\Views\Pages\" />

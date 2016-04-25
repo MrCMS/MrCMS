@@ -24,7 +24,7 @@
             continue;
         }
 
-        
+
         if (textAreaAttribute != null)
         {
             @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
@@ -51,6 +51,7 @@
         {
             <div class="form-group">
                 @Html.Label(name, displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name.BreakUpString())
+                <br />
                 @Html.TextBox(name, Convert.ToString(property.GetValue(Model, null)), new { @class = "media-selector" })
             </div>
         }

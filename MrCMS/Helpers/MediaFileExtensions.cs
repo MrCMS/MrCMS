@@ -11,8 +11,8 @@ namespace MrCMS.Helpers
 {
     public static class MediaFileExtensions
     {
-        public static readonly HashSet<string> JpegExtensions = new HashSet<string> {".jpg", ".jpeg"};
-        public static readonly List<string> ImageExtensions = new List<string> {".jpg", ".jpeg", ".gif", ".png"};
+        public static readonly HashSet<string> JpegExtensions = new HashSet<string> { ".jpg", ".jpeg" };
+        public static readonly List<string> ImageExtensions = new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".bmp" };
 
         public static IFileSystem GetFileSystem(string fileUrl, IEnumerable<IFileSystem> possibleFileSystems)
         {

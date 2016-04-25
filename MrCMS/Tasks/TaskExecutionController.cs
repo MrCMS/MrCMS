@@ -1,38 +1,47 @@
-﻿using System;
-using System.Web.Mvc;
-using MrCMS.Settings;
+﻿using System.Web.Mvc;
 using MrCMS.Website.Controllers;
+using MrCMS.Website.Filters;
 
 namespace MrCMS.Tasks
 {
     public class TaskExecutionController : MrCMSUIController
     {
-        private readonly SiteSettings _siteSettings;
-        private readonly ITaskRunner _taskRunner;
+        public const string ExecutePendingTasksURL = "execute-pending-tasks";
+        public const string ExecuteTaskURL = "execute-task";
+        public const string ExecuteQueuedTasksURL = "execute-queued-tasks";
+        private readonly IQueuedTaskRunner _queuedTaskRunner;
+        private readonly IScheduledTaskRunner _scheduledTaskRunner;
+        private readonly ITaskResetter _taskResetter;
 
-        public TaskExecutionController(SiteSettings siteSettings, ITaskRunner taskRunner)
+        public TaskExecutionController(IQueuedTaskRunner queuedTaskRunner, ITaskResetter taskResetter,
+            IScheduledTaskRunner scheduledTaskRunner)
         {
-            _siteSettings = siteSettings;
-            _taskRunner = taskRunner;
+            _queuedTaskRunner = queuedTaskRunner;
+            _taskResetter = taskResetter;
+            _scheduledTaskRunner = scheduledTaskRunner;
         }
 
-        // Basic admin-configurable security
-        protected override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            if (filterContext.HttpContext.Request.IsLocal)
-                return;
-            var item = filterContext.HttpContext.Request[_siteSettings.TaskExecutorKey];
-            if (String.IsNullOrWhiteSpace(item) || item != _siteSettings.TaskExecutorPassword)
-                filterContext.Result = new EmptyResult();
-            filterContext.HttpContext.Server.ScriptTimeout = 6000;
-        }
-
+        [TaskExecutionKeyPasswordAuth]
         public ContentResult Execute()
         {
-            var result = _taskRunner.ExecutePendingTasks();
-            return new ContentResult { Content = "Executed", ContentType = "text/plain" };
+            _taskResetter.ResetHungTasks();
+            _scheduledTaskRunner.TriggerScheduledTasks();
+            _queuedTaskRunner.TriggerPendingTasks();
+            return new ContentResult {Content = "Executed", ContentType = "text/plain"};
         }
 
-        public const string ExecutePendingTasksURL = "execute-pending-tasks";
+        [TaskExecutionKeyPasswordAuth]
+        public ContentResult ExecuteTask(string type)
+        {
+            _scheduledTaskRunner.ExecuteTask(type);
+            return new ContentResult {Content = "Executed", ContentType = "text/plain"};
+        }
+
+        [TaskExecutionKeyPasswordAuth]
+        public ContentResult ExecuteQueuedTasks()
+        {
+            _queuedTaskRunner.ExecutePendingTasks();
+            return new ContentResult {Content = "Executed", ContentType = "text/plain"};
+        }
     }
 }

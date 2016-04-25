@@ -13,9 +13,15 @@ namespace MrCMS.IoC.Modules
 {
     public class NHibernateModule : NinjectModule
     {
-        private readonly bool _cacheEnabled = true;
+        internal const string ModuleName = "MrCMS-NHibernate-Module";
+
+        public override string Name
+        {
+            get { return ModuleName; }
+        }
+
+        private readonly bool _cacheEnabled;
         private readonly bool _forWebsite;
-        private NHibernateConfigurator _configurator;
 
         public NHibernateModule(bool forWebsite = true, bool cacheEnabled = true)
         {
@@ -37,12 +43,17 @@ namespace MrCMS.IoC.Modules
                 }
                 return null;
             });
-            _configurator = _configurator ?? new NHibernateConfigurator(Kernel.Get<IDatabaseProvider>());
-            _configurator.CacheEnabled = _cacheEnabled;
 
             Kernel.Bind<ISessionFactory>()
                 .ToMethod(
-                    context => _configurator.CreateSessionFactory())
+                    context =>
+                    {
+                        var configurator = new NHibernateConfigurator(context.Kernel.Get<IDatabaseProvider>())
+                        {
+                            CacheEnabled = _cacheEnabled
+                        };
+                        return configurator.CreateSessionFactory();
+                    })
                 .InSingletonScope();
 
             if (_forWebsite)
@@ -55,7 +66,14 @@ namespace MrCMS.IoC.Modules
             }
             Kernel.Bind<IStatelessSession>()
                 .ToMethod(context => context.Kernel.Get<ISessionFactory>().OpenStatelessSession()).InRequestScope();
+        }
 
+        public override void Unload()
+        {
+            Kernel.Unbind<IDatabaseProvider>();
+            Kernel.Unbind<ISessionFactory>();
+            Kernel.Unbind<ISession>();
+            Kernel.Unbind<IStatelessSession>();
         }
 
         private static ISession GetSession(IContext context)

@@ -1,4 +1,4 @@
 ﻿@using MrCMS.Website
 @model System.DateTime?
 
-@Html.TextBox("", (Model.HasValue ? Model.Value.ToString() : string.Empty), new {@class = "date-time-picker form-control"})
+@Html.TextBox("", Model, "{0:dd/MM/yyyy HH:mm}", new { @class = "date-time-picker form-control" })

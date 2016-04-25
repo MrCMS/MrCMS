@@ -34,7 +34,7 @@ namespace MrCMS.DbConfiguration
         private readonly ISession _session;
         private readonly bool _filterEnabled;
 
-        public TemporarySiteFilter(ISession session,Site site)
+        public TemporarySiteFilter(ISession session, Site site)
         {
             _session = session;
 

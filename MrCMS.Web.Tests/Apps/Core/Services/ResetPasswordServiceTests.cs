@@ -64,7 +64,7 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
 
             _resetPasswordService.SetResetPassword(user);
 
-            A.CallTo(() => _messageParser.QueueMessage(queuedMessage, true)).MustHaveHappened();
+            A.CallTo(() => _messageParser.QueueMessage(queuedMessage, null, true)).MustHaveHappened();
         }
 
         [Fact]
@@ -156,11 +156,11 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
                                                                            .ResetPassword(
                                                                                new ResetPasswordViewModel
                                                                                    (guid, user)
-                                                                                   {
-                                                                                       Password = password,
-                                                                                       ConfirmPassword = password,
-                                                                                       Email = "test@example.com"
-                                                                                   }));
+                                                                               {
+                                                                                   Password = password,
+                                                                                   ConfirmPassword = password,
+                                                                                   Email = "test@example.com"
+                                                                               }));
         }
     }
 }

@@ -36,7 +36,6 @@ namespace MrCMS.Website.Controllers
                 filterContext.Result = new RedirectResult(Referrer.ToString());
             }
 
-            ViewData["controller-name"] = ControllerContext.RouteData.Values["controller"];
             string url = Request.Url.ToString();
             if (MrCMSApplication.Get<SiteSettings>().SSLAdmin && url.ToLower().Contains("/admin"))
             {

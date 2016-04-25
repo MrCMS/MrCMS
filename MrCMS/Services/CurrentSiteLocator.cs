@@ -37,7 +37,7 @@ namespace MrCMS.Services
 
             var allSites = _session.QueryOver<Site>().Fetch(s => s.RedirectedDomains).Eager.Cacheable().List();
             var redirectedDomains = allSites.SelectMany(s => s.RedirectedDomains).ToList();
-            var site = allSites.FirstOrDefault(s => s.BaseUrl != null && s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase));
+            var site = allSites.FirstOrDefault(s => s.BaseUrl != null && (s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase) || (s.StagingUrl != null && s.StagingUrl.Equals(authority, StringComparison.OrdinalIgnoreCase))));
             if (site == null)
             {
                 var redirectedDomain =

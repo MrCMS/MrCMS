@@ -35,8 +35,6 @@ namespace MrCMS.Web.Areas.Admin.Services
             _session.Transact(session => session.Save(site));
 
             _cloneSiteService.CloneData(site, options);
-
-            TaskExecutionQueuer.Queue(site);
         }
 
         public void SaveSite(Site site)

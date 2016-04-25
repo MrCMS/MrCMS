@@ -3,34 +3,41 @@ using System.Collections;
 using Elmah;
 using MrCMS.DbConfiguration.Types;
 using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
-using MrCMS.Helpers;
-using System.Linq;
 
 namespace MrCMS.Logging
 {
     public class MrCMSErrorLog : ErrorLog, IDisposable
     {
+        private bool _disposed;
         private ISession _session;
-
-        public override string Name
-        {
-            get
-            {
-                return "MrCMS Database Error Log";
-            }
-        }
 
         public MrCMSErrorLog(IDictionary config)
         {
             if (CurrentRequestData.DatabaseIsInstalled)
-                _session = MrCMSApplication.Get<ISessionFactory>().OpenFilteredSession(CurrentRequestData.CurrentContext);
+                _session = MrCMSApplication.Get<ISessionFactory>()
+                    .OpenFilteredSession(CurrentRequestData.CurrentContext);
+        }
+
+        public override string Name
+        {
+            get { return "MrCMS Database Error Log"; }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            // Use SupressFinalize in case a subclass 
+            // of this type implements a finalizer.
+            GC.SuppressFinalize(this);
         }
 
         public override string Log(Error error)
         {
-            if (_session == null) 
+            if (_session == null)
                 return Guid.NewGuid().ToString();
             var log = new Log
             {
@@ -52,11 +59,11 @@ namespace MrCMS.Logging
 
             var errorLogEntries =
                 _session.QueryOver<Log>()
-                        .Where(entry => entry.Type == LogEntryType.Error)
-                        .OrderBy(entry => entry.CreatedOn).Desc
-                        .Paged(pageIndex + 1, pageSize);
+                    .Where(entry => entry.Type == LogEntryType.Error)
+                    .OrderBy(entry => entry.CreatedOn).Desc
+                    .Paged(pageIndex + 1, pageSize);
             errorLogEntries.ForEach(entry =>
-                                    errorEntryList.Add(new ErrorLogEntry(this, entry.Guid.ToString(), entry.Error)));
+                errorEntryList.Add(new ErrorLogEntry(this, entry.Guid.ToString(), entry.Error)));
             return errorLogEntries.TotalItemCount;
         }
 
@@ -75,22 +82,13 @@ namespace MrCMS.Logging
 
             try
             {
-                var logEntry = _session.QueryOver<Log>().Where(entry => entry.Guid == guid).Cacheable().SingleOrDefault();
+                var logEntry =
+                    _session.QueryOver<Log>().Where(entry => entry.Guid == guid).Cacheable().SingleOrDefault();
                 return new ErrorLogEntry(this, id, logEntry.Error);
             }
             finally
             {
             }
-        }
-
-        private bool _disposed;
-        public void Dispose()
-        {
-            Dispose(true);
-
-            // Use SupressFinalize in case a subclass 
-            // of this type implements a finalizer.
-            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)

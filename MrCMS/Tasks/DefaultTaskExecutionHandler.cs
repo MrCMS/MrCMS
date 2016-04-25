@@ -14,14 +14,14 @@ namespace MrCMS.Tasks
 
         private readonly ITaskStatusUpdater _taskStatusUpdater;
         public int Priority { get { return -1; } }
-        public IList<IExecutableTask> ExtractTasksToHandle(ref IList<IExecutableTask> list)
+        public IList<AdHocTask> ExtractTasksToHandle(ref IList<AdHocTask> list)
         {
             var newList = list.ToList();
             list.Clear();
             return newList;
         }
 
-        public List<TaskExecutionResult> ExecuteTasks(IList<IExecutableTask> list)
+        public List<TaskExecutionResult> ExecuteTasks(IList<AdHocTask> list)
         {
             _taskStatusUpdater.BeginExecution(list);
             var results = list.Select(Execute).ToList();
@@ -31,7 +31,7 @@ namespace MrCMS.Tasks
             return results;
         }
 
-        private TaskExecutionResult Execute(IExecutableTask executableTask)
+        private TaskExecutionResult Execute(AdHocTask executableTask)
         {
             try
             {

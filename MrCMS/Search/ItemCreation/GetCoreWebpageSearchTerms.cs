@@ -70,7 +70,8 @@ namespace MrCMS.Search.ItemCreation
 
         private IEnumerable<string> GetSecondaryTerms(Webpage webpage, IEnumerable<string> tags)
         {
-            yield return webpage.BodyContent;
+            if (!string.IsNullOrWhiteSpace(webpage.BodyContent))
+                yield return webpage.BodyContent;
             yield return webpage.UrlSegment;
             foreach (string tag in tags)
             {
