@@ -3,7 +3,6 @@ using System.Web;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Settings;
 using NHibernate;
 
 namespace MrCMS.Web.Apps.Core.Services.Installation
@@ -11,13 +10,11 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
     public class SetupCoreMedia : ISetupCoreMedia
     {
         private readonly ISession _session;
-        private readonly IConfigurationProvider _configurationProvider;
         private readonly IFileService _fileService;
 
-        public SetupCoreMedia(ISession session, IConfigurationProvider configurationProvider, IFileService fileService)
+        public SetupCoreMedia(ISession session, IFileService fileService)
         {
             _session = session;
-            _configurationProvider = configurationProvider;
             _fileService = fileService;
         }
 
@@ -31,8 +28,6 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                     UrlSegment = "default",
                 };
                 session.Save(defaultMediaCategory);
-                var mediaSettings = _configurationProvider.GetSiteSettings<MediaSettings>();
-                _configurationProvider.SaveSettings(mediaSettings);
 
                 string logoPath = HttpContext.Current.Server.MapPath("/Apps/Core/Content/images/mrcms-logo.png");
                 var fileStream = new FileStream(logoPath, FileMode.Open);

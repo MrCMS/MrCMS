@@ -77,6 +77,9 @@ packages/
 #Connection strings config
 *ConnectionStrings.config
 
+#MrCMS config
+*mrcms.config
+
 #Media files
 MrCMS.Web/media*
 MrCMS.Web/content/upload*
@@ -91,3 +94,4 @@ MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
 *.psess
 *.vsp
 .vs/config/applicationhost.config
+*.pubxml

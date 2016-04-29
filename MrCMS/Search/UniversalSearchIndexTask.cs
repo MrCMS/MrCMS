@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using MrCMS.Entities;
 using MrCMS.Tasks;
 using Newtonsoft.Json;
 
@@ -8,11 +6,11 @@ namespace MrCMS.Search
 {
     public class UniversalSearchIndexTask : AdHocTask, IUniversalSearchIndexTask
     {
-        private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
         private readonly ISearchConverter _searchConverter;
-        public UniversalSearchIndexData UniversalSearchIndexData { get; set; }
+        private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
 
-        public UniversalSearchIndexTask(IUniversalSearchIndexManager universalSearchIndexManager, ISearchConverter searchConverter)
+        public UniversalSearchIndexTask(IUniversalSearchIndexManager universalSearchIndexManager,
+            ISearchConverter searchConverter)
         {
             _universalSearchIndexManager = universalSearchIndexManager;
             _searchConverter = searchConverter;
@@ -22,6 +20,8 @@ namespace MrCMS.Search
         {
             get { return 100; }
         }
+
+        public UniversalSearchIndexData UniversalSearchIndexData { get; set; }
 
         public override string GetData()
         {
@@ -35,7 +35,7 @@ namespace MrCMS.Search
 
         protected override void OnExecute()
         {
-            var datas = new List<UniversalSearchIndexData> { UniversalSearchIndexData };
+            var datas = new List<UniversalSearchIndexData> {UniversalSearchIndexData};
             UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, datas);
         }
     }

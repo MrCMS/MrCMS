@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using MrCMS.Helpers;
-using MrCMS.Settings;
-using Ninject;
-using Ninject.Activation;
 using Ninject.Extensions.Conventions.BindingGenerators;
 using Ninject.Syntax;
 
@@ -22,12 +18,13 @@ namespace MrCMS.IoC
             }
 
             IList<Type> interfaceTypes = type.GetInterfaces()
-                                             .Where(t => TypeHelper.GetAllMrCMSAssemblies().Contains(t.Assembly))
-                                             .ToList();
+                .Where(t => TypeHelper.GetAllMrCMSAssemblies().Contains(t.Assembly))
+                .ToList();
 
             if (interfaceTypes.Any())
             {
-                var bindingWhenInNamedWithOrOnSyntaxs = interfaceTypes.Select(interfaceType => bindingRoot.Bind(interfaceType).To(type));
+                var bindingWhenInNamedWithOrOnSyntaxs =
+                    interfaceTypes.Select(interfaceType => bindingRoot.Bind(interfaceType).To(type));
                 list.AddRange(bindingWhenInNamedWithOrOnSyntaxs);
             }
             else

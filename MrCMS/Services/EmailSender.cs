@@ -1,25 +1,28 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using Elmah;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
+using MrCMS.Messages;
 using MrCMS.Settings;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Services
 {
     public class EmailSender : IEmailSender, IDisposable
     {
+        private readonly ErrorSignal _errorSignal;
         private readonly ISession _session;
-        private readonly SiteSettings _siteSettings;
         private readonly SmtpClient _smtpClient;
 
-        public EmailSender(ISession session, MailSettings mailSettings, SiteSettings siteSettings)
+        public EmailSender(ISession session, MailSettings mailSettings, ErrorSignal errorSignal)
         {
             _session = session;
-            _siteSettings = siteSettings;
+            _errorSignal = errorSignal;
             _smtpClient = new SmtpClient(mailSettings.Host, mailSettings.Port)
             {
                 EnableSsl = mailSettings.UseSSL,
@@ -28,10 +31,15 @@ namespace MrCMS.Services
             };
         }
 
+        public void Dispose()
+        {
+            _smtpClient.Dispose();
+        }
+
         public bool CanSend(QueuedMessage queuedMessage)
         {
             return !string.IsNullOrEmpty(queuedMessage.ToAddress) && _smtpClient.Credentials != null &&
-                   !string.IsNullOrWhiteSpace(_smtpClient.Host) && _siteSettings.SiteIsLive;
+                   !string.IsNullOrWhiteSpace(_smtpClient.Host);
         }
 
         public void SendMailMessage(QueuedMessage queuedMessage)
@@ -41,35 +49,54 @@ namespace MrCMS.Services
                 var mailMessage = BuildMailMessage(queuedMessage);
 
                 _smtpClient.Send(mailMessage);
-                queuedMessage.SentOn = CurrentRequestData.Now;
+                queuedMessage.SentOn = DateTime.Now;
             }
             catch (Exception exception)
             {
-                // TODO: Make this work without HTTP context
-                CurrentRequestData.ErrorSignal.Raise(exception);
+                _errorSignal.Raise(exception);
                 queuedMessage.Tries++;
             }
             _session.Transact(session => session.SaveOrUpdate(queuedMessage));
         }
 
-        public void AddToQueue(QueuedMessage queuedMessage)
+        public void AddToQueue(QueuedMessage queuedMessage, List<AttachmentData> attachments = null)
         {
-            _session.Transact(session => session.SaveOrUpdate(queuedMessage));
+            _session.Transact(session =>
+            {
+                session.Save(queuedMessage);
+                if (attachments == null || !attachments.Any())
+                    return;
+                foreach (var data in attachments)
+                {
+                    var attachment = new QueuedMessageAttachment
+                    {
+                        QueuedMessage = queuedMessage,
+                        ContentType = data.ContentType,
+                        FileName = data.FileName,
+                        Data = data.Data,
+                        FileSize = data.Data.LongLength
+                    };
+                    queuedMessage.QueuedMessageAttachments.Add(attachment);
+                    session.Save(attachment);
+                }
+            });
         }
 
-        private static MailMessage BuildMailMessage(QueuedMessage queuedMessage)
+        private MailMessage BuildMailMessage(QueuedMessage queuedMessage)
         {
-            var mailMessage = new MailMessage()
+            var mailMessage = new MailMessage
             {
                 From = new MailAddress(queuedMessage.FromAddress, queuedMessage.FromName),
                 Subject = queuedMessage.Subject,
                 Body = queuedMessage.Body
             };
-            var multipleToAddress = queuedMessage.ToAddress.Split(new char[] { ',',';' }, StringSplitOptions.RemoveEmptyEntries);
-            if (multipleToAddress.Any()){
+            var multipleToAddress = queuedMessage.ToAddress.Split(new[] {',', ';'},
+                StringSplitOptions.RemoveEmptyEntries);
+            if (multipleToAddress.Any())
+            {
                 foreach (var email in multipleToAddress)
                 {
-                    mailMessage.To.Add(new MailAddress(email.Trim(), queuedMessage.ToName));                    
+                    mailMessage.To.Add(new MailAddress(email.Trim(), queuedMessage.ToName));
                 }
             }
 
@@ -79,16 +106,12 @@ namespace MrCMS.Services
                 mailMessage.Bcc.Add(queuedMessage.Bcc);
 
             if (queuedMessage.QueuedMessageAttachments != null)
-                foreach (QueuedMessageAttachment attachment in queuedMessage.QueuedMessageAttachments)
-                    mailMessage.Attachments.Add(new Attachment(attachment.FileName));
+                foreach (var attachment in queuedMessage.QueuedMessageAttachments)
+                    mailMessage.Attachments.Add(new Attachment(new MemoryStream(attachment.Data), attachment.FileName,
+                        attachment.ContentType));
 
             mailMessage.IsBodyHtml = queuedMessage.IsHtml;
             return mailMessage;
-        }
-
-        public void Dispose()
-        {
-            _smtpClient.Dispose();
         }
     }
 }

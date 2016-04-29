@@ -36,12 +36,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             return Json(_batchRunUIService.Pause(run));
         }
 
-        [HttpPost]
-        public JsonResult ExecuteNext(BatchRun run)
-        {
-            return Json(_batchRunUIService.ExecuteNextTask(run));
-        }
-
         public ActionResult Status(BatchRun batchRun)
         {
             ViewData["completion-status"] = _batchRunUIService.GetCompletionStatus(batchRun);

@@ -27,6 +27,7 @@ namespace MrCMS.Website.Routing
             {
                 return false;
             }
+            context.RouteData.MarkAsStandardExecution();
             _standardMrCMSPageExecution.Handle(context, webpage);
             return true;
         }

@@ -1,4 +1,5 @@
-﻿using MrCMS.Entities.Messaging;
+﻿using System.Collections.Generic;
+using MrCMS.Entities.Messaging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Messages;
 
@@ -41,9 +42,9 @@ namespace MrCMS.Services
             };
         }
 
-        public void QueueMessage(QueuedMessage queuedMessage, bool trySendImmediately = true)
+        public void QueueMessage(QueuedMessage queuedMessage, List<AttachmentData> attachments = null, bool trySendImmediately = true)
         {
-            _queueMessage.Queue(queuedMessage, trySendImmediately);
+            _queueMessage.Queue(queuedMessage, attachments, trySendImmediately);
         }
     }
 
@@ -84,36 +85,9 @@ namespace MrCMS.Services
             };
         }
 
-        public void QueueMessage(QueuedMessage queuedMessage, bool trySendImmediately = true)
+        public void QueueMessage(QueuedMessage queuedMessage, List<AttachmentData> attachments = null, bool trySendImmediately = true)
         {
-            _queueMessage.Queue(queuedMessage, trySendImmediately);
-        }
-    }
-
-    public interface IQueueMessage
-    {
-        void Queue(QueuedMessage queuedMessage, bool trySendImmediately = true);
-    }
-
-    public class QueueMessage : IQueueMessage
-    {
-        private readonly IEmailSender _emailSender;
-
-        public QueueMessage(IEmailSender emailSender)
-        {
-            _emailSender = emailSender;
-        }
-
-        public void Queue(QueuedMessage queuedMessage, bool trySendImmediately = true)
-        {
-            if (queuedMessage != null)
-            {
-                if (trySendImmediately)
-                {
-                    _emailSender.SendMailMessage(queuedMessage);
-                }
-                _emailSender.AddToQueue(queuedMessage);
-            }
+            _queueMessage.Queue(queuedMessage, attachments, trySendImmediately);
         }
     }
 }

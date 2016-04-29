@@ -116,5 +116,11 @@ namespace MrCMS.Helpers
         {
             return query.RowCount() > 0;
         }
+
+        public static T GetByGuid<T>(this ISession session,Guid guid) where T : SystemEntity
+        {
+            // we use list here, as it seems to cache more performantly than .SingleOrDefault()
+            return session.QueryOver<T>().Where(x => x.Guid == guid).Cacheable().List().FirstOrDefault();
+        }
     }
 }

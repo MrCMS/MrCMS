@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Batching;
 using MrCMS.Tasks;
 using MrCMS.Website.Controllers;
 using MrCMS.Website.Routing;
@@ -14,8 +15,17 @@ namespace MrCMS.Website
             routes.IgnoreRoute("favicon.ico");
 
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
+
             routes.MapRoute("Task Execution", TaskExecutionController.ExecutePendingTasksURL,
                 new { controller = "TaskExecution", action = "Execute" });
+            routes.MapRoute("Individual Task Execution", TaskExecutionController.ExecuteTaskURL,
+                new { controller = "TaskExecution", action = "ExecuteTask" });
+            routes.MapRoute("Queued Task Execution", TaskExecutionController.ExecuteQueuedTasksURL,
+                new { controller = "TaskExecution", action = "ExecuteQueuedTasks" });
+
+            routes.MapRoute("batch execute", BatchExecutionController.BaseURL+"{id}",
+                new {controller = "BatchExecution", action = "ExecuteNext"});
+
             routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
             routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",

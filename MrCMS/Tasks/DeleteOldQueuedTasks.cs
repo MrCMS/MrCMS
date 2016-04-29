@@ -1,3 +1,4 @@
+using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate;
 
@@ -5,29 +6,27 @@ namespace MrCMS.Tasks
 {
     public class DeleteOldQueuedTasks : SchedulableTask
     {
-        private readonly ISessionFactory _sessionFactory;
+        private readonly IStatelessSession _statelessSession;
 
-        public DeleteOldQueuedTasks(ISessionFactory sessionFactory)
+        public DeleteOldQueuedTasks(IStatelessSession statelessSession)
         {
-            _sessionFactory = sessionFactory;
+            _statelessSession = statelessSession;
         }
 
         public override int Priority { get { return 10; } }
 
         protected override void OnExecute()
         {
-            var statelessSession = _sessionFactory.OpenStatelessSession();
             var logs =
-                statelessSession.QueryOver<QueuedTask>().Where(data => data.CompletedAt <= CurrentRequestData.Now.AddDays(-1)).List();
+                _statelessSession.QueryOver<QueuedTask>().Where(data => data.CompletedAt <= CurrentRequestData.Now.AddDays(-1)).List();
 
-            using (var transaction = statelessSession.BeginTransaction())
+            _statelessSession.Transact(session =>
             {
                 foreach (var log in logs)
                 {
-                    statelessSession.Delete(log);
+                    session.Delete(log);
                 }
-                transaction.Commit();
-            }
+            });
         }
     }
 }

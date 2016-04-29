@@ -1,3 +1,4 @@
+using System.Drawing;
 using ImageResizer.Plugins.AnimatedGifs;
 using ImageResizer.Plugins.Basic;
 using ImageResizer.Plugins.PrettyGifs;
@@ -12,6 +13,9 @@ namespace MrCMS.Website
             new AutoRotate().Install(ImageResizer.Configuration.Config.Current);
             new AnimatedGifs().Install(ImageResizer.Configuration.Config.Current);
             new PrettyGifs().Install(ImageResizer.Configuration.Config.Current);
+            var sizeLimiting = ImageResizer.Configuration.Config.Current.Plugins.Get<SizeLimiting>();
+            sizeLimiting.Limits.ImageSize = new Size(20000, 20000);
+            sizeLimiting.Limits.TotalSize = new Size(20000, 20000);
         }
     }
 }

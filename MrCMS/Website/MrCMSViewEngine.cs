@@ -302,11 +302,11 @@ namespace MrCMS.Website
             return
                 dataTokens.ContainsKey("theme-name")
                     ? dataTokens["theme-name"].ToString()
-                    : (dataTokens["theme-name"] = (
-                        (CurrentRequestData.DatabaseIsInstalled &&
-                         !string.IsNullOrWhiteSpace(CurrentRequestData.SiteSettings.ThemeName))
-                            ? CurrentRequestData.SiteSettings.ThemeName
-                            : string.Empty)).ToString();
+                    : (dataTokens["theme-name"] = CurrentRequestData.DatabaseIsInstalled &&
+                                                  CurrentRequestData.SiteSettings != null &&
+                                                  !string.IsNullOrWhiteSpace(CurrentRequestData.SiteSettings.ThemeName)
+                        ? CurrentRequestData.SiteSettings.ThemeName
+                        : string.Empty).ToString();
         }
 
         private class ViewLocation

@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
-using MrCMS.Paging;
 
 namespace MrCMS.Services
 {
@@ -13,6 +11,7 @@ namespace MrCMS.Services
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);
         string GetFileLocation(MediaFile mediaFile, Size imageSize);
+        string GetFileLocation(Crop crop, Size imageSize);
         FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1);
         MediaFile GetFileByUrl(string value);
         string GetFileUrl(string value);

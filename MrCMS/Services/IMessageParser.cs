@@ -1,4 +1,5 @@
-﻿using MrCMS.Entities.Messaging;
+﻿using System.Collections.Generic;
+using MrCMS.Entities.Messaging;
 using MrCMS.Messages;
 
 namespace MrCMS.Services
@@ -9,7 +10,8 @@ namespace MrCMS.Services
             string toName = null,
             string cc = null, string bcc = null);
 
-        void QueueMessage(QueuedMessage queuedMessage, bool trySendImmediately = true);
+        void QueueMessage(QueuedMessage queuedMessage, List<AttachmentData> attachments = null, bool trySendImmediately = true);
+
     }
 
     public interface IMessageParser<T> where T : MessageTemplate, new()
@@ -18,6 +20,6 @@ namespace MrCMS.Services
             string toName = null,
             string cc = null, string bcc = null);
 
-        void QueueMessage(QueuedMessage queuedMessage, bool trySendImmediately = true);
+        void QueueMessage(QueuedMessage queuedMessage, List<AttachmentData> attachments = null, bool trySendImmediately = true);
     }
 }

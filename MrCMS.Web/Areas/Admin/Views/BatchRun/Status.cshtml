@@ -39,6 +39,12 @@
                 @completionStatus.AverageTimeTaken
             </dd>
             <dt>
+                Time Remaining
+            </dt>
+            <dd data-batch-run-time-remaining="@Model.Id">
+                @completionStatus.EstimatedTimeRemaining
+            </dd>
+            <dt>
                 Pending
             </dt>
             <dd data-batch-run-pending="@Model.Id">

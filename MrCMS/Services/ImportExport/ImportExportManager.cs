@@ -1,10 +1,11 @@
 ﻿using System.IO;
-using MrCMS.Batching.Entities;
 using MrCMS.Services.ImportExport.DTOs;
 using OfficeOpenXml;
 using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Messages;
+using MrCMS.Models;
 
 namespace MrCMS.Services.ImportExport
 {
@@ -14,17 +15,19 @@ namespace MrCMS.Services.ImportExport
         private readonly IImportDocumentsService _importDocumentService;
         private readonly IExportDocumentsService _exportDocumentsService;
         private readonly IDocumentService _documentService;
+        private readonly IMessageParser<ExportDocumentsEmailTemplate> _messageParser;
 
         public ImportExportManager(IImportDocumentsValidationService importDocumentsValidationService,
-            IImportDocumentsService importDocumentsService, IExportDocumentsService exportDocumentsService, IDocumentService documentService)
+            IImportDocumentsService importDocumentsService, IExportDocumentsService exportDocumentsService,
+            IDocumentService documentService, IMessageParser<ExportDocumentsEmailTemplate> messageParser)
         {
             _importDocumentsValidationService = importDocumentsValidationService;
             _importDocumentService = importDocumentsService;
             _exportDocumentsService = exportDocumentsService;
             _documentService = documentService;
+            _messageParser = messageParser;
         }
 
-        #region Import Documents
         public ImportDocumentsResult ImportDocumentsFromExcel(Stream file, bool autoStart = true)
         {
             var spreadsheet = new ExcelPackage(file);
@@ -41,6 +44,7 @@ namespace MrCMS.Services.ImportExport
             return ImportDocumentsResult.Successful(batch);
         }
 
+
         /// <summary>
         /// Try and get data out of the spreadsheet into the DTOs with parse and type checks
         /// </summary>
@@ -55,35 +59,29 @@ namespace MrCMS.Services.ImportExport
                        : _importDocumentsValidationService.ValidateAndImportDocuments(spreadsheet, ref parseErrors);
         }
 
-        #endregion
-
-        #region Export Documents
         public byte[] ExportDocumentsToExcel()
         {
             var webpages = _documentService.GetAllDocuments<Webpage>().ToList();
             var package = _exportDocumentsService.GetExportExcelPackage(webpages);
             return _exportDocumentsService.ConvertPackageToByteArray(package);
         }
-        #endregion
-    }
 
-    public class ImportDocumentsResult
-    {
-        private ImportDocumentsResult()
+        public ExportDocumentsResult ExportDocumentsToEmail(ExportDocumentsModel model)
         {
-            Errors = new Dictionary<string, List<string>>();
-        }
-        public Batch Batch { get; private set; }
-        public Dictionary<string, List<string>> Errors { get; private set; }
-        public bool Success { get { return Batch != null; } }
+            var queuedMessage = _messageParser.GetMessage(toAddress: model.Email);
+            _messageParser.QueueMessage(queuedMessage, new List<AttachmentData>
+            {
+                new AttachmentData
+                {
+                    Data = ExportDocumentsToExcel(),
+                    ContentType = XlsxContentType,
+                    FileName = "Documents.xlsx"
+                }
+            });
 
-        public static ImportDocumentsResult Successful(Batch batch)
-        {
-            return new ImportDocumentsResult { Batch = batch };
+            return new ExportDocumentsResult {Success = true};
         }
-        public static ImportDocumentsResult Failure(Dictionary<string, List<string>> errors)
-        {
-            return new ImportDocumentsResult { Errors = errors };
-        }
+
+        public const string XlsxContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     }
 }

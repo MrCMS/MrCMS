@@ -1,7 +1,9 @@
-﻿@model MrCMS.Tasks.ScheduledTask
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Areas.Admin.Models.TaskUpdateData
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Edit", "Task", FormMethod.Post))
 {
+    @Html.HiddenFor(x => x.TypeName)
     <fieldset>
         <legend>
             @Resource("Admin Tasks Edit", "Edit task")
@@ -10,13 +12,18 @@
             </span>
         </legend>
         <div class="form-group">
-            @Html.LabelFor(task => task.Type)
-            @Html.DisplayFor(task => task.Type)
+            <label>Type</label>
+            <div>
+                @Model.Name
+            </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(task => task.EveryXSeconds)
-            @Html.TextBoxFor(task => task.EveryXSeconds, new { @class = "form-control" })
-            @Html.ValidationMessageFor(task => task.EveryXSeconds)
+            @Html.LabelFor(task => task.FrequencyInSeconds)
+            @Html.TextBoxFor(task => task.FrequencyInSeconds, new { @class = "form-control" })
+            @Html.ValidationMessageFor(task => task.FrequencyInSeconds)
         </div>
-</fieldset>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(x => x.Enabled)
+        </div>
+    </fieldset>
 }

@@ -12,6 +12,7 @@ namespace MrCMS.Web.Areas.Admin.Services.Batching
 
         public string AverageTimeTaken { get; set; }
         public TimeSpan TimeTaken { get; set; }
+        public TimeSpan EstimatedTimeRemaining { get; set; }
 
         public string PercentageCompleted
         {

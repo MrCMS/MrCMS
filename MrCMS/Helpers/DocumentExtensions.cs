@@ -51,7 +51,6 @@ namespace MrCMS.Helpers
             return documentVersion != null ? DeserializeVersion(documentVersion, doc) : null;
         }
 
-
         private static T DeserializeVersion<T>(DocumentVersion version, T doc) where T : Document
         {
             // use null handling ignore so that properties that didn't exist in previous versions are defaulted

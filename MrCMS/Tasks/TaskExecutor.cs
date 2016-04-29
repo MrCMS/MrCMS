@@ -12,7 +12,7 @@ namespace MrCMS.Tasks
             _executionHandlers = executionHandlers;
         }
 
-        public BatchExecutionResult Execute(IList<IExecutableTask> tasksToExecute)
+        public BatchExecutionResult Execute(IList<AdHocTask> tasksToExecute)
         {
             var results = new List<TaskExecutionResult>();
             foreach (var handler in _executionHandlers.OrderByDescending(handler => handler.Priority))
@@ -21,6 +21,21 @@ namespace MrCMS.Tasks
                 results.AddRange(handler.ExecuteTasks(tasks));
             }
             return new BatchExecutionResult { Results = results };
+        }
+
+        public BatchExecutionResult Execute(AdHocTask task)
+        {
+            if (task != null)
+            {
+                IList<AdHocTask> tasksToExecute = new List<AdHocTask> {task};
+                foreach (var handler in _executionHandlers.OrderByDescending(handler => handler.Priority))
+                {
+                    var tasks = handler.ExtractTasksToHandle(ref tasksToExecute);
+                    if (tasks.Any())
+                        return new BatchExecutionResult {Results = handler.ExecuteTasks(tasks)};
+                }
+            }
+            return new BatchExecutionResult();
         }
     }
 }

@@ -113,7 +113,10 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public void Save(MessageTemplate messageTemplate)
         {
-            _messageTemplateProvider.SaveTemplate(messageTemplate);
+            if (messageTemplate.SiteId.HasValue)
+                _messageTemplateProvider.SaveSiteOverride(messageTemplate, _session.Get<Site>(messageTemplate.SiteId));
+            else
+                _messageTemplateProvider.SaveTemplate(messageTemplate);
         }
 
         private bool CanPreview(MessageTemplate template)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
@@ -135,12 +136,43 @@ namespace MrCMS.Search
 
         public void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
         {
-            using (var indexWriter = new IndexWriter(GetDirectory(_site), GetAnalyser(), recreateIndex,
-                IndexWriter.MaxFieldLength.UNLIMITED))
-            {
-                writeFunc(indexWriter);
-            }
+            if (recreateIndex)
+                RecreateIndex();
+            var indexWriter = GetIndexWriter();
+            writeFunc(indexWriter);
+            indexWriter.Commit();
             _searcher = null;
+        }
+
+        private void RecreateIndex()
+        {
+            if (Writers.ContainsKey(_site.Id))
+            {
+                var existing = Writers[_site.Id];
+                if (existing != null) existing.Dispose();
+                Writers.Remove(_site.Id);
+            }
+            using (GetNewIndexWriter(true)) { }
+        }
+
+        private static readonly Dictionary<int, IndexWriter> Writers = new Dictionary<int, IndexWriter>();
+        private static readonly object LockObject = new object();
+        private IndexWriter GetIndexWriter()
+        {
+            lock (LockObject)
+            {
+                if (!Writers.ContainsKey(_site.Id))
+                {
+                    Writers[_site.Id] = GetNewIndexWriter(false);
+                }
+                return Writers[_site.Id];
+            }
+        }
+
+        private IndexWriter GetNewIndexWriter(bool recreateIndex)
+        {
+            return new IndexWriter(GetDirectory(_site), GetAnalyser(), recreateIndex,
+                IndexWriter.MaxFieldLength.UNLIMITED);
         }
 
         private static bool AnyExistInEndRequest(UniversalSearchIndexData data)
@@ -164,14 +196,19 @@ namespace MrCMS.Search
         private DateTime? GetLastModified()
         {
             long lastModified = IndexReader.LastModified(GetDirectory(_site));
+            DateTime time;
+            var sourceTimeZone = TimeZoneInfo.Utc;
             try
             {
-                return new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
+                time = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(lastModified);
             }
-            catch
+            catch 
             {
-                return DateTime.FromFileTime(lastModified);
+                time = DateTime.FromFileTime(lastModified);
+                sourceTimeZone = TimeZoneInfo.Local;
             }
+
+            return TimeZoneInfo.ConvertTime(time, sourceTimeZone, CurrentRequestData.TimeZoneInfo);
         }
 
         private void InitializeIndex()
