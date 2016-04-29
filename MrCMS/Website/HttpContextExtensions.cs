@@ -32,16 +32,4 @@ namespace MrCMS.Website
             return kernel != null ? kernel.GetAll<T>() : Enumerable.Empty<T>();
         }
     }
-
-    public static class HtmlHelperIoCExtensions
-    {
-        public static T Get<T>(this HtmlHelper helper)
-        {
-            return helper.ViewContext.HttpContext.Get<T>();
-        }
-        public static IEnumerable<T> GetAll<T>(this HtmlHelper helper)
-        {
-            return helper.ViewContext.HttpContext.GetAll<T>();
-        }
-    }
 }
