@@ -2145,11 +2145,6 @@
     <Content Include="Areas\Admin\Views\WebpageSearch\Search.cshtml" />
     <Content Include="LICENSE" />
     <Content Include="Areas\Admin\Views\UserSubscriptionReports\Index.cshtml" />
-    <None Include="Properties\PublishProfiles\mrcms-dev - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\mrcms-dev - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\mrcms-redis-test - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\mrcms-redis-test - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\new.pubxml" />
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
     </Content>
