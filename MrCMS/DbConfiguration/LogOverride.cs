@@ -10,7 +10,7 @@ namespace MrCMS.DbConfiguration
     {
         public void Override(AutoMapping<Log> mapping)
         {
-            mapping.Map(entry => entry.Error).CustomType<BinaryData<Error>>().Length(16000000);
+            mapping.Map(entry => entry.Error).CustomType<BinaryData<Error>>().Length(9999);
             mapping.Map(entry => entry.Message).MakeVarCharMax();
             mapping.Map(entry => entry.Detail).MakeVarCharMax();
         }
