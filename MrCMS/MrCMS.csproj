@@ -809,6 +809,7 @@
     <Compile Include="Services\WritablePropertiesOnlyResolver.cs" />
     <Compile Include="Settings\AppConfigSystemConfigurationProvider.cs" />
     <Compile Include="Settings\AppSettingNameAttribute.cs" />
+    <Compile Include="Settings\AzureProbeSettings.cs" />
     <Compile Include="Settings\BundlingSettings.cs" />
     <Compile Include="Settings\ConnectionStringAttribute.cs" />
     <Compile Include="Settings\DatabaseSettings.cs" />
@@ -1082,6 +1083,7 @@
     <Compile Include="Website\Caching\HttpCache.cs" />
     <Compile Include="Website\Caching\ICacheWrapper.cs" />
     <Compile Include="Website\ClearCachesService.cs" />
+    <Compile Include="Website\Controllers\AzureProbeController.cs" />
     <Compile Include="Website\Controllers\CKEditorController.cs" />
     <Compile Include="Website\Controllers\ErrorController.cs" />
     <Compile Include="Website\Controllers\FormController.cs" />

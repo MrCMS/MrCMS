@@ -28,7 +28,8 @@ namespace MrCMS.Settings
             var settings = Activator.CreateInstance<TSettings>();
             var config = GetConfig();
 
-            foreach (var prop in typeof (TSettings).GetProperties())
+            var settingsSaved = false;
+            foreach (var prop in typeof(TSettings).GetProperties())
             {
                 // get properties we can read and write to
                 if (!prop.CanRead || !prop.CanWrite)
@@ -37,27 +38,42 @@ namespace MrCMS.Settings
                 //var key = typeof (TSettings).FullName + "." + prop.Name;
                 var value = GetSettingObjectByKey(config, prop, prop.PropertyType);
                 if (value == null)
-                    continue;
-
-                //set property
-                prop.SetValue(settings, value, null);
+                {
+                    // persist the default value to the config
+                    SetSetting(config, prop, prop.GetValue(settings));
+                    settingsSaved = true;
+                }
+                else
+                {
+                    //set property
+                    prop.SetValue(settings, value, null);
+                }
+            }
+            if (settingsSaved)
+            {
+                SaveConfig(config);
             }
 
             return settings;
+        }
+
+        private static void SaveConfig(Configuration config)
+        {
+            config.Save(ConfigurationSaveMode.Minimal);
         }
 
         public void SaveSettings(SystemSettingsBase settings)
         {
             var methodInfo = GetType().GetMethods().First(x => x.Name == "SaveSettings" && x.IsGenericMethod);
             var genericMethod = methodInfo.MakeGenericMethod(settings.GetType());
-            genericMethod.Invoke(this, new object[] {settings});
+            genericMethod.Invoke(this, new object[] { settings });
         }
 
         public void SaveSettings<TSettings>(TSettings settings) where TSettings : SystemSettingsBase, new()
         {
             var existing = GetSystemSettings<TSettings>();
             var config = GetConfig();
-            foreach (var prop in typeof (TSettings).GetProperties())
+            foreach (var prop in typeof(TSettings).GetProperties())
             {
                 // get properties we can read and write to
                 if (!prop.CanRead || !prop.CanWrite)
@@ -66,7 +82,7 @@ namespace MrCMS.Settings
                 dynamic value = prop.GetValue(settings, null);
                 SetSetting(config, prop, value ?? "");
             }
-            config.Save(ConfigurationSaveMode.Minimal);
+            SaveConfig(config);
 
             EventContext.Instance.Publish<IOnSavingSystemSettings<TSettings>, OnSavingSystemSettingsArgs<TSettings>>(
                 new OnSavingSystemSettingsArgs<TSettings>(settings, existing));
@@ -77,7 +93,7 @@ namespace MrCMS.Settings
             var methodInfo = GetType().GetMethodExt("GetSystemSettings");
 
             return TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>()
-                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] {}))
+                .Select(type => methodInfo.MakeGenericMethod(type).Invoke(this, new object[] { }))
                 .OfType<SystemSettingsBase>().ToList();
         }
 
@@ -161,7 +177,7 @@ namespace MrCMS.Settings
                 return GetConnectionString(configuration, result.Name);
             }
             var key = GetPropertyKey(property);
-            if (string.IsNullOrEmpty(key))
+            if (string.IsNullOrWhiteSpace(key))
                 return null;
 
             key = key.Trim().ToLowerInvariant();

@@ -16,6 +16,9 @@ namespace MrCMS.Website
 
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
 
+            routes.MapRoute("Azure Probe Route", "azure-probe",
+                new {controller = "AzureProbe", action = "KeepAlive"});
+
             routes.MapRoute("Task Execution", TaskExecutionController.ExecutePendingTasksURL,
                 new { controller = "TaskExecution", action = "Execute" });
             routes.MapRoute("Individual Task Execution", TaskExecutionController.ExecuteTaskURL,
