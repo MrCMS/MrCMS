@@ -30,6 +30,7 @@
     <TargetFrameworkProfile />
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
     <NuGetPackageImportStamp>eff8cd49</NuGetPackageImportStamp>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -369,6 +370,7 @@
     <Compile Include="Areas\Admin\Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchEntityHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
+    <Compile Include="Areas\Admin\Helpers\LocalisedScriptHtmlHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\UniversalSearchHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\WebpageExtensions.cs" />
     <Compile Include="Areas\Admin\Hubs\BatchProcessingHub.cs" />

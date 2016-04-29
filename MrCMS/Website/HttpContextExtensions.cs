@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using Ninject;
 
 namespace MrCMS.Website
@@ -29,6 +30,18 @@ namespace MrCMS.Website
         {
             var kernel = context.Items[CurrentKernelKey] as IKernel;
             return kernel != null ? kernel.GetAll<T>() : Enumerable.Empty<T>();
+        }
+    }
+
+    public static class HtmlHelperIoCExtensions
+    {
+        public static T Get<T>(this HtmlHelper helper)
+        {
+            return helper.ViewContext.HttpContext.Get<T>();
+        }
+        public static IEnumerable<T> GetAll<T>(this HtmlHelper helper)
+        {
+            return helper.ViewContext.HttpContext.GetAll<T>();
         }
     }
 }
