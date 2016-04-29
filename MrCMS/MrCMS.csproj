@@ -1130,7 +1130,6 @@
     <Compile Include="Website\Optimization\AppScriptBundle.cs" />
     <Compile Include="Website\Optimization\AppStylesheetBundle.cs" />
     <Compile Include="Website\Optimization\AsIsBundleOrderer.cs" />
-    <Compile Include="Website\Optimization\ILocalisedScripts.cs" />
     <Compile Include="Website\Optimization\IScriptBundle.cs" />
     <Compile Include="Website\Optimization\IResourceBundler.cs" />
     <Compile Include="Website\Caching\CacheManager.cs" />
@@ -1149,7 +1148,6 @@
     <Compile Include="Website\MrCMSControllerFactory.cs" />
     <Compile Include="Website\MrCMSViewEngine.cs" />
     <Compile Include="Website\Optimization\IStylesheetBundle.cs" />
-    <Compile Include="Website\Optimization\LocalisedScripts.cs" />
     <Compile Include="Website\Optimization\ResourceBundler.cs" />
     <Compile Include="Website\Optimization\ResourceData.cs" />
     <Compile Include="Website\Optimization\WhitespaceFilter.cs" />

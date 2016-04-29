@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website;
-using MrCMS.Website.Optimization;
 
 namespace MrCMS.Web.Areas.Admin.Helpers
 {
@@ -11,7 +11,13 @@ namespace MrCMS.Web.Areas.Admin.Helpers
         public static IHtmlString RenderLocalisedScripts(this HtmlHelper helper)
         {
             var localisedScripts = helper.GetAll<ILocalisedScripts>();
-            return new HtmlString(string.Concat(localisedScripts.SelectMany(scripts => scripts.Files.Select(file => $"<script type=\"text/javascript\" src=\"{file}\"></script>"))));
+            var scriptList = localisedScripts.SelectMany(scripts => scripts.Files.Select(GetScriptTag));
+            return MvcHtmlString.Create(string.Join(string.Empty, scriptList));
+        }
+
+        private static string GetScriptTag(string file)
+        {
+            return string.Format("<script type=\"text/javascript\" src=\"{0}\"></script>", file);
         }
     }
 }

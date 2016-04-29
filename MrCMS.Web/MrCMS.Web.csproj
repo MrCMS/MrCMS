@@ -599,6 +599,7 @@
     <Compile Include="Areas\Admin\Services\IIndexAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IInPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\ILayoutAreaAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\ILocalisedScripts.cs" />
     <Compile Include="Areas\Admin\Services\ILogAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMediaSelectorService.cs" />
     <Compile Include="Areas\Admin\Services\IMessageQueueAdminService.cs" />
@@ -633,6 +634,7 @@
     <Compile Include="Areas\Admin\Services\IWebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\IWebpageWidgetAdminService.cs" />
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\LocalisedScripts.cs" />
     <Compile Include="Areas\Admin\Services\LogAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MediaSelectorService.cs" />
     <Compile Include="Areas\Admin\Services\MessageQueueAdminService.cs" />

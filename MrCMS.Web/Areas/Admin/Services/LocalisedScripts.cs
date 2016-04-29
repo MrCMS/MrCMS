@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using MrCMS.Website;
+using MrCMS.Website.Optimization;
 
-namespace MrCMS.Website.Optimization
+namespace MrCMS.Web.Areas.Admin.Services
 {
     public class LocalisedScripts : ILocalisedScripts
     {
