@@ -1,16 +1,22 @@
-﻿@using MrCMS.Helpers
+﻿@using MrCMS.ACL.Rules
+@using MrCMS.Helpers
 @using MrCMS.Models
-@using MrCMS.Web.Areas.Admin.ACL
-@using MrCMS.Website
 @model IEnumerable<IAdminMenuItem>
 @{
-    string currentUrl = Request.Url.AbsolutePath;
-    var currentUser = CurrentRequestData.CurrentUser;
+    var currentUrl = Request.Url.AbsolutePath;
 }
 <ul class="nav nav-pills nav-stacked">
-    <li class="@(currentUrl == Url.Action("Index", "Webpage") ? "active" : "")"><a href="@Url.Action("Index", "Webpage")"><i class="fa fa-file-code-o"></i> @Resource("Admin Nav Pages", "Pages")</a></li>
-    <li class="@(currentUrl == Url.Action("Index", "MediaCategory") ? "active" : "")"><a href="@Url.Action("Index", "MediaCategory")"><i class="fa fa-file-image-o"></i> @Resource("Admin Nav Media", "Media")</a></li>
-    @if (currentUser.CanAccess<LayoutsACL>(LayoutsACL.Show))
+    @if (Html.CanAccess<CoreACL>(CoreACL.ManagePages))
+    {
+        <li class="@(currentUrl == Url.Action("Index", "Webpage") ? "active" : "")"><a href="@Url.Action("Index", "Webpage")"><i class="fa fa-file-code-o"></i> @Resource("Admin Nav Pages", "Pages")</a></li>
+    }
+
+    @if (Html.CanAccess<CoreACL>(CoreACL.ManageMedia))
+    {
+        <li class="@(currentUrl == Url.Action("Index", "MediaCategory") ? "active" : "")"><a href="@Url.Action("Index", "MediaCategory")"><i class="fa fa-file-image-o"></i> @Resource("Admin Nav Media", "Media")</a></li>
+    }
+
+    @if (Html.CanAccess<CoreACL>(CoreACL.ManageLayouts))
     {
         <li class="@(currentUrl == Url.Action("Index", "Layout") ? "active" : "")"><a href="@Url.Action("Index", "Layout")"><i class="glyphicon glyphicon-th"></i> @Resource("Admin Nav Layout", "Layouts")</a></li>
     }
