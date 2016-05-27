@@ -256,6 +256,7 @@
     <Compile Include="Apps\Articles\Areas\Admin\Services\GetLatestArticlesAdminViewData.cs" />
     <Compile Include="Apps\Articles\ArticlesApp.cs" />
     <Compile Include="Apps\Articles\Controllers\ArticleController.cs" />
+    <Compile Include="Apps\Articles\Controllers\ArticleRSSController.cs" />
     <Compile Include="Apps\Articles\DbConfiguration\ArticleOverride.cs" />
     <Compile Include="Apps\Articles\DbConfiguration\AuthorInfoOverride.cs" />
     <Compile Include="Apps\Articles\Entities\AuthorInfo.cs" />
@@ -270,8 +271,10 @@
     <Compile Include="Apps\Articles\Pages\ArticleList.cs" />
     <Compile Include="Apps\Articles\RouteHandlers\ArticleListRSSRouteHandler.cs" />
     <Compile Include="Apps\Articles\Services\ArticleService.cs" />
+    <Compile Include="Apps\Articles\Services\ArticlesRssService.cs" />
     <Compile Include="Apps\Articles\Services\ArticlesScriptList.cs" />
     <Compile Include="Apps\Articles\Services\IArticleService.cs" />
+    <Compile Include="Apps\Articles\Services\IArticlesRssService.cs" />
     <Compile Include="Apps\Articles\Services\Widgets\GetArticleArchiveModel.cs" />
     <Compile Include="Apps\Articles\Services\Widgets\GetLatestXArticlesModel.cs" />
     <Compile Include="Apps\Articles\UrlGenerators\ArticleUrlGenerator.cs" />
