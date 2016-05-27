@@ -87,14 +87,10 @@ namespace MrCMS.Website.Binders
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                               Type modelType)
         {
-            object modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
-            if (modelFromSession != null)
-                return modelFromSession;
-            if (modelType == typeof(Webpage))
-                return null;
-            object model = base.CreateModel(controllerContext, bindingContext, modelType);
-
-            return model;
+            var modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
+            return modelFromSession ?? (modelType.IsAbstract
+                ? null
+                : base.CreateModel(controllerContext, bindingContext, modelType));
         }
 
         public object GetModelFromSession(ControllerContext controllerContext, string modelName, Type modelType)
