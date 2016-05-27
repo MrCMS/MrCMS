@@ -592,10 +592,12 @@
     <Compile Include="Indexing\Management\AzureDirectoryHelper.cs" />
     <Compile Include="Indexing\Management\GetLuceneDirectory.cs" />
     <Compile Include="Indexing\Management\GetLuceneIndexSearcher.cs" />
+    <Compile Include="Indexing\Management\GetLuceneIndexWriter.cs" />
     <Compile Include="Indexing\Management\IFieldDefinition.cs" />
     <Compile Include="Indexing\Management\IFieldDefinitionInfo.cs" />
     <Compile Include="Indexing\Management\IGetLuceneDirectory.cs" />
     <Compile Include="Indexing\Management\IGetLuceneIndexSearcher.cs" />
+    <Compile Include="Indexing\Management\IGetLuceneIndexWriter.cs" />
     <Compile Include="Indexing\Management\ILuceneSettingsService.cs" />
     <Compile Include="Indexing\Management\LuceneSettingsService.cs" />
     <Compile Include="Indexing\OptimiseIndexes.cs" />

@@ -19,24 +19,27 @@ namespace MrCMS.Search
 {
     public class UniversalSearchIndexManager : IUniversalSearchIndexManager
     {
+        private const string FolderName = "UniversalSearch";
         private static IndexSearcher _searcher;
-        private readonly IGetLuceneDirectory _getLuceneDirectory;
         private readonly Site _site;
+        private readonly IGetLuceneIndexWriter _getLuceneIndexWriter;
+        private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
         private readonly IUniversalSearchItemGenerator _universalSearchItemGenerator;
         protected Analyzer Analyser;
         private Directory _directory;
 
         public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, Site site,
-            IGetLuceneDirectory getLuceneDirectory)
+            IGetLuceneIndexWriter getLuceneIndexWriter, IGetLuceneIndexSearcher getLuceneIndexSearcher)
         {
             _universalSearchItemGenerator = universalSearchItemGenerator;
             _site = site;
-            _getLuceneDirectory = getLuceneDirectory;
+            _getLuceneIndexWriter = getLuceneIndexWriter;
+            _getLuceneIndexSearcher = getLuceneIndexSearcher;
         }
 
         private bool IndexExists
         {
-            get { return IndexReader.IndexExists(GetDirectory(_site)); }
+            get { return IndexReader.IndexExists(GetDirectory()); }
         }
 
         public void Insert(SystemEntity entity)
@@ -112,7 +115,7 @@ namespace MrCMS.Search
         public IndexSearcher GetSearcher()
         {
             EnsureIndexExists();
-            return _searcher ?? (_searcher = new IndexSearcher(GetDirectory(_site), true));
+            return _getLuceneIndexSearcher.Get(FolderName);
         }
 
 
@@ -138,7 +141,7 @@ namespace MrCMS.Search
         {
             if (recreateIndex)
                 RecreateIndex();
-            var indexWriter = GetIndexWriter();
+            var indexWriter = _getLuceneIndexWriter.Get(FolderName, GetAnalyser());
             writeFunc(indexWriter);
             indexWriter.Commit();
             _searcher = null;
@@ -146,33 +149,7 @@ namespace MrCMS.Search
 
         private void RecreateIndex()
         {
-            if (Writers.ContainsKey(_site.Id))
-            {
-                var existing = Writers[_site.Id];
-                if (existing != null) existing.Dispose();
-                Writers.Remove(_site.Id);
-            }
-            using (GetNewIndexWriter(true)) { }
-        }
-
-        private static readonly Dictionary<int, IndexWriter> Writers = new Dictionary<int, IndexWriter>();
-        private static readonly object LockObject = new object();
-        private IndexWriter GetIndexWriter()
-        {
-            lock (LockObject)
-            {
-                if (!Writers.ContainsKey(_site.Id))
-                {
-                    Writers[_site.Id] = GetNewIndexWriter(false);
-                }
-                return Writers[_site.Id];
-            }
-        }
-
-        private IndexWriter GetNewIndexWriter(bool recreateIndex)
-        {
-            return new IndexWriter(GetDirectory(_site), GetAnalyser(), recreateIndex,
-                IndexWriter.MaxFieldLength.UNLIMITED);
+            _getLuceneIndexWriter.RecreateIndex(FolderName, GetAnalyser());
         }
 
         private static bool AnyExistInEndRequest(UniversalSearchIndexData data)
@@ -187,7 +164,7 @@ namespace MrCMS.Search
             if (!IndexExists)
                 return null;
 
-            using (IndexReader indexReader = IndexReader.Open(GetDirectory(_site), true))
+            using (IndexReader indexReader = IndexReader.Open(GetDirectory(), true))
             {
                 return indexReader.NumDocs();
             }
@@ -195,7 +172,7 @@ namespace MrCMS.Search
 
         private DateTime? GetLastModified()
         {
-            long lastModified = IndexReader.LastModified(GetDirectory(_site));
+            long lastModified = IndexReader.LastModified(GetDirectory());
             DateTime time;
             var sourceTimeZone = TimeZoneInfo.Utc;
             try
@@ -221,9 +198,9 @@ namespace MrCMS.Search
             return Analyser ?? (Analyser = new StandardAnalyzer(Version.LUCENE_30));
         }
 
-        private Directory GetDirectory(Site site)
+        private Directory GetDirectory()
         {
-            return _directory = _directory ?? _getLuceneDirectory.Get(site, "UniversalSearch");
+            return _getLuceneIndexWriter.Get(FolderName, GetAnalyser()).Directory;
         }
     }
 }

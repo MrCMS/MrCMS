@@ -281,36 +281,5 @@ namespace MrCMS.Indexing.Management
                     Operation = operation,
                 };
         }
-
-        private static Lazy<Dictionary<int, Dictionary<Type, IndexSearcher>>> IndexSearcherCache =
-            new Lazy<Dictionary<int, Dictionary<Type, IndexSearcher>>>();
-        public IndexSearcher GetSearcher()
-        {
-            var indexDefinitionType = GetType();
-            var siteDictionary = IndexSearcherCache.Value;
-            var siteId = _getLuceneIndexSearcher.SiteId;
-            if (!siteDictionary.ContainsKey(siteId))
-            {
-                siteDictionary[siteId] = new Dictionary<Type, IndexSearcher>();
-            }
-            var dictionary = siteDictionary[siteId];
-            if (!dictionary.ContainsKey(indexDefinitionType))
-            {
-                dictionary[indexDefinitionType] =
-                    _getLuceneIndexSearcher.Get(IndexFolderName);
-            }
-            return dictionary[indexDefinitionType];
-        }
-
-        public void ResetSearcher()
-        {
-            var indexDefinitionType = GetType();
-            var siteDictionary = IndexSearcherCache.Value;
-            var siteId = _getLuceneIndexSearcher.SiteId;
-            if (siteDictionary.ContainsKey(siteId))
-            {
-                siteDictionary[siteId].Remove(indexDefinitionType);
-            }
-        }
     }
 }
