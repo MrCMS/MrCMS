@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using MrCMS.Website;
-using MrCMS.Website.Optimization;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
@@ -15,7 +14,8 @@ namespace MrCMS.Web.Areas.Admin.Services
                     $"~/Areas/Admin/Content/Scripts/lib/jquery/ui/i18n/jquery.ui.datepicker-{CurrentRequestData.CultureInfo.Name}.js"
                 };
                 if (!CurrentRequestData.CultureInfo.Name.StartsWith("en"))
-                    files.Add($"~/Areas/Admin/Content/Scripts/lib/jquery/validate/localization/messages_{CurrentRequestData.CultureInfo.Name.Replace("-", "_")}.js");
+                    files.Add(
+                        $"~/Areas/Admin/Content/Scripts/lib/jquery/validate/localization/messages_{CurrentRequestData.CultureInfo.Name.Replace("-", "_")}.js");
 
                 return files;
             }
