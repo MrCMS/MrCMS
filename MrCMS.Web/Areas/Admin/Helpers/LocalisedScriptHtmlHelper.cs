@@ -13,7 +13,7 @@ namespace MrCMS.Web.Areas.Admin.Helpers
         {
             var localisedScripts = helper.GetAll<ILocalisedScripts>();
             var scriptList = localisedScripts.SelectMany(scripts => scripts.Files).ToArray();
-            return Scripts.Render(scriptList); //MvcHtmlString.Create(string.Join(string.Empty, scriptList));
+            return Scripts.Render(scriptList);
         }
     }
 }
