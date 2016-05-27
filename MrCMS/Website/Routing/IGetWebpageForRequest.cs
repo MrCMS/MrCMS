@@ -5,6 +5,6 @@ namespace MrCMS.Website.Routing
 {
     public interface IGetWebpageForRequest
     {
-        Webpage Get(RequestContext context);
+        Webpage Get(RequestContext context, string url = null);
     }
 }

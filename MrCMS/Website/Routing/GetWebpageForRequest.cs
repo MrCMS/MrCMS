@@ -18,9 +18,9 @@ namespace MrCMS.Website.Routing
 
         private Dictionary<string, Webpage> _cache = new Dictionary<string, Webpage>();
 
-        public Webpage Get(RequestContext context)
+        public Webpage Get(RequestContext context, string url = null)
         {
-            string data = Convert.ToString(context.RouteData.Values["data"]);
+            string data = url ?? Convert.ToString(context.RouteData.Values["data"]);
 
             if (_cache.ContainsKey(data))
                 return _cache[data];

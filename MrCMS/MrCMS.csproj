@@ -1197,6 +1197,7 @@
     <Compile Include="Website\Routing\MrCMSStandardRouteHandler.cs" />
     <Compile Include="Website\Routing\NotInstalledHandler.cs" />
     <Compile Include="Website\Routing\PageNotFoundHandler.cs" />
+    <Compile Include="Website\Routing\TryTrimTrailingSlashHandler.cs" />
     <Compile Include="Website\Routing\UrlHistoryHandler.cs" />
     <Compile Include="Website\ViewEngineFileLocations.cs" />
   </ItemGroup>
