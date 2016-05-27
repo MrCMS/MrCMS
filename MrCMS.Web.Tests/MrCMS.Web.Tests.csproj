@@ -143,7 +143,7 @@
     <Compile Include="Areas\Admin\Controllers\FileControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\FormControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeControllerTests.cs" />
-    <Compile Include="Areas\Admin\Controllers\LayoutContollerTests.cs" />
+    <Compile Include="Areas\Admin\Controllers\LayoutControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaCategoryControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\NavigationControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleControllerTests.cs" />

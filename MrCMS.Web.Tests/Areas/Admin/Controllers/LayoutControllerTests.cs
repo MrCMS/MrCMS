@@ -11,14 +11,14 @@ using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
-    public class LayoutContollerTests
+    public class LayoutControllerTests
     {
         private readonly IDocumentService _documentService;
         private readonly LayoutController _layoutController;
         private readonly IUrlValidationService _urlValidationService;
         private readonly ILayoutAreaAdminService _layoutAreaAdminService;
 
-        public LayoutContollerTests()
+        public LayoutControllerTests()
         {
             _documentService = A.Fake<IDocumentService>();
             _urlValidationService = A.Fake<IUrlValidationService>();
