@@ -30,20 +30,20 @@
     @Scripts.Render("~/admin/scripts/mrcms")
     @Scripts.Render("~/admin/scripts/apps")
     @if (!CurrentRequestData.CurrentUser.DisableNotifications)
-        {
-            Html.RenderAction("Show", "TransientNotification");
-            Html.RenderAction("Show", "PersistentNotification");
-        }
-    
-    @{ @Html.RenderLocalisedScripts();}
+    {
+        Html.RenderAction("Show", "TransientNotification");
+        Html.RenderAction("Show", "PersistentNotification");
+    }
+
+    @{ Html.RenderLocalisedScripts();}
     @{ Html.RenderScripts();}
 
     @Html.Hidden("CurrentUICulture", CurrentRequestData.CultureInfo.Name)
 
     @if (IsSectionDefined("JavaScriptBlock"))
-        {
+    {
         @RenderSection("JavaScriptBlock")
-        }
+    }
     @MiniProfiler.RenderIncludes()
 </body>
 </html>

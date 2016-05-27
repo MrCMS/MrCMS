@@ -9,11 +9,11 @@ namespace MrCMS.Web.Areas.Admin.Helpers
 {
     public static class LocalisedScriptHtmlHelper
     {
-        public static IHtmlString RenderLocalisedScripts(this HtmlHelper helper)
+        public static void RenderLocalisedScripts(this HtmlHelper helper)
         {
             var localisedScripts = helper.GetAll<ILocalisedScripts>();
             var scriptList = localisedScripts.SelectMany(scripts => scripts.Files).ToArray();
-            return Scripts.Render(scriptList);
+            helper.ViewContext.Writer.Write(Scripts.Render(scriptList));
         }
     }
 }
