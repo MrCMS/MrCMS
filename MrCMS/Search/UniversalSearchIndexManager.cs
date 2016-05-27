@@ -202,7 +202,7 @@ namespace MrCMS.Search
             {
                 time = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(lastModified);
             }
-            catch 
+            catch
             {
                 time = DateTime.FromFileTime(lastModified);
                 sourceTimeZone = TimeZoneInfo.Local;
@@ -223,7 +223,7 @@ namespace MrCMS.Search
 
         private Directory GetDirectory(Site site)
         {
-            return _getLuceneDirectory.Get(site, "UniversalSearch");
+            return _directory = _directory ?? _getLuceneDirectory.Get(site, "UniversalSearch");
         }
     }
 }
