@@ -49,7 +49,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             return _session.QueryOver<MediaCategory>()
                 .Where(category => category.Site.Id == _site.Id)
-                .Where(category => !category.HideInAdminNav || category.HideInAdminNav == null)
+                .Where(category => category.HideInAdminNav != true)
                 .Cacheable()
                 .List()
                 .BuildSelectItemList(category => category.Name, category => category.Id.ToString(),

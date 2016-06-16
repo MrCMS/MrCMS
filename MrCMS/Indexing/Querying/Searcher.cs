@@ -140,7 +140,7 @@ namespace MrCMS.Indexing.Querying
             return booleanQuery;
         }
 
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             // If you need thread safety, use a lock around these  
             // operations, as well as in your methods that use the resource. 

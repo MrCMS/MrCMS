@@ -95,7 +95,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             }
             IList<T> query =
                 _session.QueryOver<T>()
-                    .Where(x => x.Parent.Id == id && (x.HideInAdminNav == false || x.HideInAdminNav == null))
+                    .Where(x => x.Parent.Id == id && (x.HideInAdminNav != true))
                     .OrderBy(x => x.Name)
                     .Asc.Cacheable()
                     .List();
