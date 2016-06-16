@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
+using MrCMS.DbConfiguration.Configuration;
 
 namespace MrCMS.Entities.Documents.Media
 {
@@ -17,6 +19,7 @@ namespace MrCMS.Entities.Documents.Media
         public virtual int Top { get; set; }
         public virtual int Right { get; set; }
         public virtual int Bottom { get; set; }
+        [StringLength(450), IsDBLength]
         public virtual string Url { get; set; }
 
         public virtual Size Size
