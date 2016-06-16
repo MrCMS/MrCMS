@@ -179,6 +179,7 @@ window.admin = {
         });
         $.validator.unobtrusive.parse("form");
         initTagging();
+        $(document).trigger('initialize-plugins', {});
     }
 };
 

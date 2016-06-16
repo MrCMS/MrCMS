@@ -1758,6 +1758,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\tag-it.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\tmpl.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\transient-notifications.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\update-area.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\webpage-search.js" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.min.css" />
@@ -2195,6 +2196,9 @@
       <Project>{9d6ecc0f-cda1-43e2-b88b-bc01299eb9ce}</Project>
       <Name>MrCMS</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\MediaCategory\Directory.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

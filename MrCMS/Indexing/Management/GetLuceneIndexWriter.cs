@@ -8,10 +8,10 @@ namespace MrCMS.Indexing.Management
 {
     public class GetLuceneIndexWriter : IGetLuceneIndexWriter
     {
-        private static readonly Dictionary<int, Dictionary<string, IndexWriter>> Writers =
-            new Dictionary<int, Dictionary<string, IndexWriter>>();
+        //private static readonly Dictionary<int, Dictionary<string, IndexWriter>> Writers =
+        //    new Dictionary<int, Dictionary<string, IndexWriter>>();
 
-        private static readonly object LockObject = new object();
+        //private static readonly object LockObject = new object();
         private readonly IGetLuceneDirectory _getLuceneDirectory;
         private readonly Site _site;
 
@@ -28,18 +28,19 @@ namespace MrCMS.Indexing.Management
 
         public IndexWriter Get(string definitionName, Analyzer analyzer)
         {
-            lock (LockObject)
-            {
-                if (!Writers.ContainsKey(_site.Id))
-                {
-                    Writers[_site.Id] = new Dictionary<string, IndexWriter>();
-                }
-                if (!Writers[_site.Id].ContainsKey(definitionName))
-                {
-                    Writers[_site.Id][definitionName] = GetNewIndexWriter(definitionName, analyzer, false);
-                }
-                return Writers[_site.Id][definitionName];
-            }
+            return GetNewIndexWriter(definitionName, analyzer, false);
+            //lock (LockObject)
+            //{
+            //    if (!Writers.ContainsKey(_site.Id))
+            //    {
+            //        Writers[_site.Id] = new Dictionary<string, IndexWriter>();
+            //    }
+            //    if (!Writers[_site.Id].ContainsKey(definitionName))
+            //    {
+            //        Writers[_site.Id][definitionName] = GetNewIndexWriter(definitionName, analyzer, false);
+            //    }
+            //    return Writers[_site.Id][definitionName];
+            //}
         }
 
         public void RecreateIndex(IndexDefinition definition)
@@ -49,12 +50,12 @@ namespace MrCMS.Indexing.Management
 
         public void RecreateIndex(string definitionName, Analyzer analyzer)
         {
-            if (Writers.ContainsKey(_site.Id) && Writers[_site.Id].ContainsKey(definitionName))
-            {
-                var existing = Writers[_site.Id][definitionName];
-                if (existing != null) existing.Dispose();
-                Writers[_site.Id].Remove(definitionName);
-            }
+            //if (Writers.ContainsKey(_site.Id) && Writers[_site.Id].ContainsKey(definitionName))
+            //{
+            //    var existing = Writers[_site.Id][definitionName];
+            //    if (existing != null) existing.Dispose();
+            //    Writers[_site.Id].Remove(definitionName);
+            //}
             using (GetNewIndexWriter(definitionName, analyzer, true)) { }
         }
 
@@ -65,10 +66,10 @@ namespace MrCMS.Indexing.Management
 
         public void ClearCache()
         {
-            foreach (var indexSearcher in Writers.SelectMany(x => x.Value.Values))
-                indexSearcher.Dispose();
+            //foreach (var indexSearcher in Writers.SelectMany(x => x.Value.Values))
+            //    indexSearcher.Dispose();
 
-            Writers.Clear();
+            //Writers.Clear();
         }
     }
 }

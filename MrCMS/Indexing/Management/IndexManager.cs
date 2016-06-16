@@ -39,15 +39,17 @@ namespace MrCMS.Indexing.Management
         private readonly Site _site;
         private readonly TDefinition _definition;
         private readonly IStatelessSession _statelessSession;
+        private readonly IGetLuceneDirectory _getLuceneDirectory;
 
         public IndexManager(IGetLuceneIndexWriter getLuceneIndexWriter, IGetLuceneIndexSearcher getLuceneIndexSearcher,
-            Site site, TDefinition definition, IStatelessSession statelessSession)
+            Site site, TDefinition definition, IStatelessSession statelessSession, IGetLuceneDirectory getLuceneDirectory)
         {
             _getLuceneIndexWriter = getLuceneIndexWriter;
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
             _site = site;
             _definition = definition;
             _statelessSession = statelessSession;
+            _getLuceneDirectory = getLuceneDirectory;
         }
 
         public string IndexFolderName
@@ -272,16 +274,18 @@ namespace MrCMS.Indexing.Management
 
         private Directory GetDirectory(Site site)
         {
-            return _getLuceneIndexWriter.Get(Definition).Directory;
+            return _getLuceneDirectory.Get(site, IndexFolderName);
         }
 
         private void Write(Action<IndexWriter> writeFunc, bool recreateIndex)
         {
             if (recreateIndex)
                 _getLuceneIndexWriter.RecreateIndex(Definition);
-            var indexWriter = _getLuceneIndexWriter.Get(Definition);
-            writeFunc(indexWriter);
-            indexWriter.Commit();
+            using (var indexWriter = _getLuceneIndexWriter.Get(Definition))
+            {
+                writeFunc(indexWriter);
+                indexWriter.Commit();
+            }
             _getLuceneIndexSearcher.Reset(Definition);
         }
     }

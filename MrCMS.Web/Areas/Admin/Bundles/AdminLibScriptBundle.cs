@@ -30,6 +30,7 @@ namespace MrCMS.Web.Areas.Admin.Bundles
                 yield return "~/Areas/Admin/Content/Scripts/lib/dropzone.js";
                 yield return "~/Areas/Admin/Content/Scripts/lib/featherlight.js";
                 yield return "~/Areas/Admin/Content/Scripts/lib/jquery.are-you-sure.js";
+                yield return "~/Areas/Admin/Content/Scripts/lib/update-area.js";
             }
         }
     }

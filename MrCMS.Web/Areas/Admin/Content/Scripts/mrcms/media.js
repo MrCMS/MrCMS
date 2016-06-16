@@ -8,30 +8,32 @@
         cutFilesBtn: "#cut-files",
         deleteFilesBtn: "#delete-files",
         pasteFilesBtn: "#paste-files",
-        filesSotrageKey: "files",
+        filesStorageKey: "files",
         cutFilesStorageKey: "cut-files",
         clearFilesBtn: "#clear-files",
-        fileCutCLass: ".files-cut",
+        fileCutClass: ".files-cut",
 
-}, options);
+    }, options);
     var self;
     return {
         init: function () {
             self = this;
-            $(settings.fileList).selectable({
-                filter: ".file, .folder",
-                stop: self.selectedStop,
-                cancel: ".ui-selected, ul.pagination a"
+            $(document).on('initialize-plugins', function () {
+                $(settings.fileList).selectable({
+                    filter: ".file, .folder",
+                    stop: self.selectedStop,
+                    cancel: ".ui-selected, ul.pagination a"
+                });
             });
 
             //enbales double click
-            $(settings.uiSelectedClass).click(function () { $(this).removeClass('ui-selected').parents('.ui-selectable').trigger('selectablestop'); });
+            $(document).on('click', settings.uiSelectedClass, function () { $(this).removeClass('ui-selected').parents('.ui-selectable').trigger('selectablestop'); });
 
-            $(settings.fileClass + "," + settings.folderClass).dblclick(function () {
+            $(document).on('dblclick', settings.fileClass + "," + settings.folderClass, function () {
                 location.href = $(this).data('url');
             });
 
-            $(settings.clearFilesBtn).on('click', function () {
+            $(document).on('click', settings.clearFilesBtn, function () {
                 self.clearSelectedFiles();
                 self.clearCutStyles();
                 self.setSelectedFileData('');
@@ -41,24 +43,24 @@
                 self.disablePaste();
             });
 
-            $(settings.cutFilesBtn).on('click', function (e) {
+            $(document).on('click', settings.cutFilesBtn, function (e) {
                 e.preventDefault();
                 self.clearCutStyles();
                 self.copyCutFilesToStorage();
             });
 
-            $(settings.pasteFilesBtn).on('click', function (e) {
+            $(document).on('click', settings.pasteFilesBtn, function (e) {
                 e.preventDefault();
                 self.paste();
             });
 
-            $(settings.deleteFilesBtn).on('click', function (e) {
+            $(document).on('click', settings.deleteFilesBtn, function (e) {
                 e.preventDefault();
-                swal({ title: "Are you sure?", text: "Your will not be able to recover this!", type: "warning", showCancelButton: true, confirmButtonColor: "#DD6B55", confirmButtonText: "Yes, delete it!", closeOnConfirm: false }, function () { self.deleteFiles(); });       
+                swal({ title: "Are you sure?", text: "Your will not be able to recover this!", type: "warning", showCancelButton: true, confirmButtonColor: "#DD6B55", confirmButtonText: "Yes, delete it!", closeOnConfirm: true }, function () { self.deleteFiles(); });
             });
 
+            self.setSelectedFileData('');
             self.setSelectedFiles();
-            self.setButtonState();
             return self;
         },
         deleteFiles: function () {
@@ -67,24 +69,25 @@
             files = replaceAll("file-", "", files);
             var folders = filesAndFolders.filter(isFolderId).join(',');
             folders = replaceAll("folder-", "", folders);
-               
-                $.ajax({
-                    type: "POST",
-                    url: "/Admin/MediaCategory/DeleteFilesAndFolders",
-                    data: {
-                        files: files,
-                        folders: folders
-                    },
-                    success: function (data) {
-                        self.clearCutStyles();
-                        self.clearSelectedFiles();
-                        self.setSelectedFileData('');
-                        self.setCutFileData('');
-                        if (data.message != '')
-                            alert(data.message);
-                        location.href = location.href;
-                    }
-                });
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/MediaCategory/DeleteFilesAndFolders",
+                data: {
+                    files: files,
+                    folders: folders
+                },
+                success: function (data) {
+                    self.clearCutStyles();
+                    self.clearSelectedFiles();
+                    self.setSelectedFileData('');
+                    self.setCutFileData('');
+                    if (data.message != '')
+                        alert(data.message);
+                    self.setButtonState();
+                    $(document).trigger('update-area', 'media-folder');
+                }
+            });
         },
         paste: function () {
             var filesAndFolders = self.getCutFileData().split(',');
@@ -107,7 +110,8 @@
                     self.setCutFileData('');
                     if (data.message != '')
                         alert(data.message);
-                    location.href = location.href;
+                    self.setButtonState();
+                    $(document).trigger('update-area', 'media-folder');
                 }
             });
         },
@@ -129,32 +133,33 @@
                 return $(this).data('id');
             }).get().join(",");
             self.setSelectedFileData(data);
-            if (data != '') {
-                self.enableCut();
-                self.enableDelete();
-            } else {
-                self.disableDelete();
-            }
+            self.setButtonState();
         },
-        setSelectedFiles: function() {
+        setSelectedFiles: function () {
             //set ui selected on elements
             var files = self.getSelectedFileData();
-            var cutFiles = self.getCutFileData();
-            if (files != '' && files != 'undefined') {
-                var fileIds = files.split(',');
+            var fileIds;
+            if (typeof files != 'undefined' && files != '' && files != null) {
+                fileIds = files.split(',');
                 $.each(fileIds, function (number) {
                     var selector = "[data-id='" + fileIds[number] + "']";
                     $(selector).addClass(settings.uiSelectedClass.replace('.', ''));
                 });
+            }
+            var cutFiles = self.getCutFileData();
+            if (typeof cutFiles != 'undefined' && cutFiles != '' && cutFiles != null) {
                 fileIds = cutFiles.split(',');
                 $.each(fileIds, function (number) {
                     var selector = "[data-id='" + fileIds[number] + "']";
-                    $(selector).addClass(settings.fileCutCLass.replace('.', ''));
+                    $(selector).addClass(settings.fileCutClass.replace('.', ''));
                 });
-                self.enableCut();
             }
+            self.setButtonState();
         },
         setButtonState: function () {
+            self.disableCut();
+            self.disablePaste();
+            self.disableDelete();
             if (self.getSelectedFileData() != '') {
                 self.enableCut();
             } else if (self.getSelectedFileData() != '' && self.getCutFileData() == '') {
@@ -165,27 +170,29 @@
             }
             self.enableDelete();
         },
-        clearSelectedFiles: function() {
+        clearSelectedFiles: function () {
             $.each($(".file" + settings.uiSelectedClass + "," + " .folder" + settings.uiSelectedClass), function () {
                 $(this).removeClass(settings.uiSelectedClass.replace('.', ''));
             });
         },
-        clearCutStyles: function() {
-            $.each($(settings.fileCutCLass), function () {
-                $(this).removeClass(settings.fileCutCLass.replace('.', ''));
+        clearCutStyles: function () {
+            $.each($(settings.fileCutClass), function () {
+                $(this).removeClass(settings.fileCutClass.replace('.', ''));
             });
         },
-        setSelectedFileData: function (data) {
-            store.set(settings.filesSotrageKey, data);
-        },
         getSelectedFileData: function () {
-            return store.get(settings.filesSotrageKey);
-        },
-        setCutFileData: function (data) {
-            store.set(settings.cutFilesStorageKey, data);
+            return store.get(settings.filesStorageKey);
         },
         getCutFileData: function () {
             return store.get(settings.cutFilesStorageKey);
+        },
+        setSelectedFileData: function (data) {
+            store.set(settings.filesStorageKey, data);
+            self.setButtonState();
+        },
+        setCutFileData: function (data) {
+            store.set(settings.cutFilesStorageKey, data);
+            self.setButtonState();
         },
         enableCut: function () {
             $(settings.cutFilesBtn).removeAttr("disabled");
@@ -210,9 +217,9 @@
     };
 };
 
-(function ($) {
+(function () {
     var fileTools = new FileTools().init();
-})(jQuery);
+})();
 
 function isFileId(element) {
     return element.indexOf("file") > -1;

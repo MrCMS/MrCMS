@@ -117,8 +117,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult Manage(MediaCategorySearchModel searchModel)
         {
             ViewData["category"] = _fileAdminService.GetCategory(searchModel);
-            ViewData["files"] = _fileAdminService.GetFilesForFolder(searchModel);
-            ViewData["folders"] = _fileAdminService.GetSubFolders(searchModel);
             ViewData["sort-by-options"] = _fileAdminService.GetSortByOptions(searchModel);
 
             return PartialView(searchModel);
@@ -188,6 +186,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _fileAdminService.DeleteFoldersSoft(model.Folders);
 
             return Json(new FormActionResult { success = true, message = "" });
+        }
+
+        public ActionResult Directory(MediaCategorySearchModel searchModel)
+        {
+            ViewData["files"] = _fileAdminService.GetFilesForFolder(searchModel);
+            ViewData["folders"] = _fileAdminService.GetSubFolders(searchModel);
+
+            return PartialView(searchModel);
         }
     }
 }

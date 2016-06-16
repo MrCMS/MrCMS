@@ -45,9 +45,14 @@ namespace MrCMS.Indexing.Management
 
         public void Reset(IndexDefinition definition)
         {
+            Reset(definition.IndexFolderName);
+        }
+
+        public void Reset(string folderName)
+        {
             if (IndexSearcherCache.ContainsKey(SiteId))
             {
-                IndexSearcherCache[SiteId].Remove(definition.IndexFolderName);
+                IndexSearcherCache[SiteId].Remove(folderName);
             }
         }
 
