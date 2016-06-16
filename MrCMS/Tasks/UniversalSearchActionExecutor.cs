@@ -37,7 +37,7 @@ namespace MrCMS.Tasks
 
         private static Term GetTerm(UniversalSearchIndexData indexData)
         {
-            return new Term(UniversalSearchFieldNames.SearchGuid, indexData.UniversalSearchItem.SearchGuid.ToString());
+            return new Term(UniversalSearchFieldNames.UniqueKey, indexData.UniversalSearchItem.UniqueKey);
         }
     }
 }

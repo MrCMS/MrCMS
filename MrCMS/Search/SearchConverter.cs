@@ -36,12 +36,12 @@ namespace MrCMS.Search
 
             document.Add(new Field(UniversalSearchFieldNames.Id, item.Id.ToString(), Field.Store.YES,
                 Field.Index.NOT_ANALYZED));
-            string searchGuid = (item.SearchGuid).ToString();
-            document.Add(new Field(UniversalSearchFieldNames.SearchGuid, searchGuid, Field.Store.YES,
-                Field.Index.NOT_ANALYZED));
 
             string systemType = item.SystemType ?? string.Empty;
             document.Add(new Field(UniversalSearchFieldNames.SystemType, systemType, Field.Store.YES,
+                Field.Index.NOT_ANALYZED));
+
+            document.Add(new Field(UniversalSearchFieldNames.UniqueKey, item.UniqueKey, Field.Store.YES,
                 Field.Index.NOT_ANALYZED));
 
             if (_entityTypes.ContainsKey(systemType))
@@ -83,7 +83,6 @@ namespace MrCMS.Search
             {
                 Id = document.GetValue<int>(UniversalSearchFieldNames.Id),
                 DisplayName = document.GetValue<string>(UniversalSearchFieldNames.DisplayName),
-                SearchGuid = document.GetValue<Guid>(UniversalSearchFieldNames.SearchGuid),
                 SystemType = document.GetValue<string>(UniversalSearchFieldNames.SystemType),
                 ActionUrl = document.GetValue<string>(UniversalSearchFieldNames.ActionUrl),
             };

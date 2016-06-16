@@ -19,6 +19,7 @@ namespace MrCMS.Entities.Documents.Media
         public virtual int Top { get; set; }
         public virtual int Right { get; set; }
         public virtual int Bottom { get; set; }
+
         [StringLength(450), IsDBLength]
         public virtual string Url { get; set; }
 

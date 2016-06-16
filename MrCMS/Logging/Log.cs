@@ -8,6 +8,11 @@ namespace MrCMS.Logging
     [AdminUISiteAgnostic]
     public class Log : SiteEntity
     {
+        public Log()
+        {
+            Guid = Guid.NewGuid();
+        }
+        public virtual Guid Guid { get; set; }
         public virtual LogEntryType Type { get; set; }
         public virtual Error Error { get; set; }
         public virtual string Message { get; set; }

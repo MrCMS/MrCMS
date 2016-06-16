@@ -33,7 +33,6 @@ namespace MrCMS.Search.ItemCreation
                 SecondarySearchTerms = secondarySearchTerms,
                 SystemType = typeof (Layout).FullName,
                 CreatedOn = entity.CreatedOn,
-                SearchGuid = entity.Guid
             };
         }
 

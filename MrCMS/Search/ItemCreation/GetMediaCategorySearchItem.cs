@@ -34,7 +34,6 @@ namespace MrCMS.Search.ItemCreation
                 SystemType = typeof (MediaCategory).FullName,
                 ActionUrl = "/admin/mediacategory/show/"+entity.Id, // _urlHelper.Action("Show", "MediaCategory", new {id = entity.Id, area = "admin"}),
                 CreatedOn = entity.CreatedOn,
-                SearchGuid = entity.Guid
             };
         }
 

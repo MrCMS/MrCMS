@@ -25,7 +25,6 @@ namespace MrCMS.DbConfiguration
 
         public void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config)
         {
-            SqlServerGuidHelper.SetGuidToUniqueWithDefaultValue(config);
         }
 
         public string Type

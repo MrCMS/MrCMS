@@ -23,17 +23,17 @@ namespace MrCMS.Search
         public struct UniversalSearchIndexDataComparison : IEquatable<UniversalSearchIndexDataComparison>
         {
             private readonly UniversalSearchIndexAction _action;
-            private readonly Guid _guid;
+            private readonly string _uniqueKey;
 
             public UniversalSearchIndexDataComparison(UniversalSearchIndexData data)
             {
-                _guid = data.UniversalSearchItem.SearchGuid;
+                _uniqueKey = data.UniversalSearchItem.UniqueKey;
                 _action = data.Action;
             }
 
             public bool Equals(UniversalSearchIndexDataComparison other)
             {
-                return _guid == other._guid && _action == other._action;
+                return _uniqueKey == other._uniqueKey && _action == other._action;
             }
         }
     }

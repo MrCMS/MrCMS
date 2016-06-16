@@ -15,7 +15,7 @@ namespace MrCMS.Web.Areas.Admin.Models
 
         public string id
         {
-            get { return _item.SearchGuid.ToString(); }
+            get { return _item.UniqueKey; }
         }
 
         public string value

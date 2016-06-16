@@ -394,7 +394,6 @@
     <Compile Include="DbConfiguration\Conventions\HasManyConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\NotNullableAttributeConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\ReferencesConvention.cs" />
-    <Compile Include="DbConfiguration\Conventions\RootGuidConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\SiteFilterConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\StringLengthConvention.cs" />
     <Compile Include="DbConfiguration\CoreEventPublisher.cs" />
@@ -459,7 +458,6 @@
     <Compile Include="DbConfiguration\SqlServer2008Provider.cs" />
     <Compile Include="DbConfiguration\SqlServer2012Provider.cs" />
     <Compile Include="DbConfiguration\SqlServerAzureProvider.cs" />
-    <Compile Include="DbConfiguration\SqlServerGuidHelper.cs" />
     <Compile Include="DbConfiguration\Types\BaseImmutableUserType.cs" />
     <Compile Include="DbConfiguration\Types\BinaryData.cs" />
     <Compile Include="DbConfiguration\Types\DateTimeData.cs" />

@@ -19,7 +19,6 @@ namespace MrCMS.Search.ItemCreation
                 SystemType = typeof (MediaFile).FullName,
                 ActionUrl = "/admin/file/edit/" + entity.Id,
                 CreatedOn = entity.CreatedOn,
-                SearchGuid = entity.Guid
             };
         }
 

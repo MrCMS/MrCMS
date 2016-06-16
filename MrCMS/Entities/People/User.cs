@@ -18,8 +18,10 @@ namespace MrCMS.Entities.People
             UserProfileData = new List<UserProfileData>();
             UserLogins = new List<UserLogin>();
             UserClaims = new List<UserClaim>();
+            Guid = Guid.NewGuid();
         }
 
+        public virtual Guid Guid { get; set; }
         public virtual IList<UserClaim> UserClaims { get; set; }
 
         public virtual IList<UserLogin> UserLogins { get; set; }

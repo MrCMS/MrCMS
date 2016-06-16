@@ -40,9 +40,9 @@ namespace MrCMS.Services.FileMigration
 
         protected override BatchJobExecutionResult OnExecute(MigrateFilesBatchJob batchJob)
         {
-            var guids = JsonConvert.DeserializeObject<HashSet<Guid>>(batchJob.Data).ToList();
+            var guids = JsonConvert.DeserializeObject<HashSet<int>>(batchJob.Data).ToList();
 
-            var mediaFiles = _session.QueryOver<MediaFile>().Where(x => x.Guid.IsIn(guids)).List();
+            var mediaFiles = _session.QueryOver<MediaFile>().Where(x => x.Id.IsIn(guids)).List();
 
 
             foreach (var mediaFile in mediaFiles)

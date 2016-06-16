@@ -50,12 +50,12 @@ namespace MrCMS.Services.FileMigration
         {
             IList<MediaFile> mediaFiles = _session.QueryOver<MediaFile>().List();
 
-            List<Guid> guids =
+            List<int> guids =
                 mediaFiles.Where(
                     mediaFile =>
                         MediaFileExtensions.GetFileSystem(mediaFile.FileUrl, _allFileSystems.Values) !=
                         CurrentFileSystem)
-                    .Select(file => file.Guid).ToList();
+                    .Select(file => file.Id).ToList();
 
             if (!guids.Any())
             {
