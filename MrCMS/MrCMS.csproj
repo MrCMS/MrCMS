@@ -790,10 +790,12 @@
     <Compile Include="Services\Sitemaps\DefaultSiteMapGenerationInfo.cs" />
     <Compile Include="Services\Sitemaps\ExcludeFromSitemapBecauseIsErrorPage.cs" />
     <Compile Include="Services\Sitemaps\IReasonToExcludePageFromSitemap.cs" />
+    <Compile Include="Services\Sitemaps\ISitemapDataSource.cs" />
     <Compile Include="Services\Sitemaps\ISiteMapElementAppender.cs" />
     <Compile Include="Services\Sitemaps\ISiteMapGenerationInfo.cs" />
     <Compile Include="Services\Sitemaps\ISiteMapService.cs" />
     <Compile Include="Services\Sitemaps\RemoveSitemapPlaceholdersFromExportedSitemap.cs" />
+    <Compile Include="Services\Sitemaps\SitemapData.cs" />
     <Compile Include="Services\Sitemaps\SiteMapElementAppender.cs" />
     <Compile Include="Services\Sitemaps\SiteMapGenerationInfo.cs" />
     <Compile Include="Services\Sitemaps\SiteMapService.cs" />
@@ -1067,6 +1069,7 @@
     <Compile Include="Tasks\TaskStatusUpdater.cs" />
     <Compile Include="Tasks\UniversalIndexTaskExecutionHandler.cs" />
     <Compile Include="Tasks\UniversalSearchActionExecutor.cs" />
+    <Compile Include="Tasks\UpdateSitemap.cs" />
     <Compile Include="Website\ActionMethodInfo.cs" />
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />
