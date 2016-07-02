@@ -5,7 +5,7 @@ using NHibernate;
 
 namespace MrCMS.Settings
 {
-    public abstract class SiteSettingsBase : IStoredInAppData
+    public abstract class SiteSettingsBase
     {
         public virtual string TypeName
         {

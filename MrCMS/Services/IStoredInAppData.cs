@@ -1,6 +1,6 @@
 namespace MrCMS.Services
 {
-    public interface IStoredInAppData
-    {
-    }
+    //public interface IStoredInAppData
+    //{
+    //}
 }

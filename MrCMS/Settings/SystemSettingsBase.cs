@@ -2,8 +2,8 @@ using MrCMS.Services;
 
 namespace MrCMS.Settings
 {
-    public abstract class SystemSettingsBase : IStoredInAppData
+    public abstract class SystemSettingsBase
     {
-        public virtual bool RenderInSettings { get { return false; } }
+        public virtual bool RenderInSettings => false;
     }
 }

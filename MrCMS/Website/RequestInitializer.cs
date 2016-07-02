@@ -44,9 +44,6 @@ namespace MrCMS.Website
             return !string.IsNullOrWhiteSpace(extension) && !WebExtensions.Contains(extension);
         }
 
-        private static IEnumerable<string> WebExtensions
-        {
-            get { return MrCMSKernel.Kernel.Get<SiteSettings>().WebExtensionsToRoute; }
-        }
+        private static IEnumerable<string> WebExtensions => MrCMSKernel.Kernel.Get<WebExtensionsToRoute>().Get;
     }
 }

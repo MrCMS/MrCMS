@@ -545,7 +545,6 @@
     <Compile Include="HealthChecks\SiteIsLiveCheck.cs" />
     <Compile Include="HealthChecks\TaskRunnerCheck.cs" />
     <Compile Include="Helpers\ACLHelper.cs" />
-    <Compile Include="Helpers\AppDataSerializationExtensions.cs" />
     <Compile Include="Helpers\AssemblyExtensions.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
     <Compile Include="Helpers\CustomBindingExtensions.cs" />
@@ -1010,6 +1009,7 @@
     <Compile Include="Settings\SiteSettingsOptionGenerator.cs" />
     <Compile Include="Settings\TextAreaAttribute.cs" />
     <Compile Include="Settings\PageDefaultsSettings.cs" />
+    <Compile Include="Settings\WebExtensionsToRoute.cs" />
     <Compile Include="Shortcodes\Forms\CheckBoxListRenderer.cs" />
     <Compile Include="Shortcodes\Forms\CustomFormRenderer.cs" />
     <Compile Include="Shortcodes\Forms\DefaultFormRenderer.cs" />
