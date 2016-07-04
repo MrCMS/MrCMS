@@ -106,7 +106,8 @@ namespace MrCMS.Website.Controllers
             if (entities.Any(entity => !CurrentRequestData.CurrentSite.IsValidForSite(entity) && entity.Id != 0) ||
                 entities.Any(entity => entity.IsDeleted))
             {
-                filterContext.Result = AuthenticationFailureRedirect();
+                if (!filterContext.IsChildAction)
+                    filterContext.Result = AuthenticationFailureRedirect();
             }
         }
 

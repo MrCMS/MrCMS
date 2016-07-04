@@ -8,11 +8,12 @@ namespace MrCMS.Settings
     {
         public WebExtensionsToRoute()
         {
-            PageExtensionsToRoute = ".asp,.php,.aspx";
+            Extensions = ".asp,.php,.aspx";
         }
         [DisplayName("Page extensions you want Mr CMS to handle")]
-        public string PageExtensionsToRoute { get; set; }
-
-        public IEnumerable<string> Get => (PageExtensionsToRoute ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        [AppSettingName("file-extentions-to-handle")]
+        public string Extensions { get; set; }
+        
+        public IEnumerable<string> Get => (Extensions ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
     }
 }
