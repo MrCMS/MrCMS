@@ -22,7 +22,6 @@ namespace MrCMS.Settings
             DaysToKeepLogs = 30;
             TaskExecutorKey = "executor";
             TaskExecutorPassword = Guid.NewGuid().ToString();
-            PageExtensionsToRoute = ".asp,.php,.aspx";
             TaskExecutionDelay = 10;
         }
 
@@ -70,17 +69,6 @@ namespace MrCMS.Settings
 
         [MediaSelector]
         public string AdminLogo { get; set; }
-
-        [DisplayName("Page extensions you want Mr CMS to handle")]
-        public string PageExtensionsToRoute { get; set; }
-
-        public IEnumerable<string> WebExtensionsToRoute
-        {
-            get
-            {
-                return (PageExtensionsToRoute ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            }
-        }
 
         public CultureInfo CultureInfo
         {

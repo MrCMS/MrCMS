@@ -18,14 +18,14 @@ namespace MrCMS.Website.Routing
     {
         private const string ControllerName = "Error";
         private const string ActionName = "FileNotFound";
-        private readonly SiteSettings _siteSettings;
+        private readonly WebExtensionsToRoute _webExtensions;
         private readonly IMrCMSRoutingErrorHandler _errorHandler;
         private readonly ICacheWrapper _cacheWrapper;
         private readonly IControllerManager _controllerManager;
 
-        public FileNotFoundHandler(SiteSettings siteSettings, IMrCMSRoutingErrorHandler errorHandler, ICacheWrapper cacheWrapper, IControllerManager controllerManager)
+        public FileNotFoundHandler(WebExtensionsToRoute webExtensions, IMrCMSRoutingErrorHandler errorHandler, ICacheWrapper cacheWrapper, IControllerManager controllerManager)
         {
-            _siteSettings = siteSettings;
+            _webExtensions = webExtensions;
             _errorHandler = errorHandler;
             _cacheWrapper = cacheWrapper;
             _controllerManager = controllerManager;
@@ -36,7 +36,7 @@ namespace MrCMS.Website.Routing
             var path = context.HttpContext.Request.Url.AbsolutePath;
             var extension = Path.GetExtension(path);
 
-            if (_siteSettings.WebExtensionsToRoute.Any(x => x == extension))
+            if (_webExtensions.Get.Any(x => x == extension))
             {
                 _errorHandler.HandleError(context, 404,
                     new HttpException(404, string.Format("Cannot find {0}", context.RouteData.Values["data"])));

@@ -17,7 +17,7 @@ namespace MrCMS.Website.Filters
             {
                 AntiForgery.Validate();
             }
-            catch (Exception ex)
+            catch 
             {
                 filterContext.Result = new RedirectResult("~");
             }

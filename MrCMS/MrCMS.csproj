@@ -534,6 +534,7 @@
     <Compile Include="Events\OnUpdatingArgs.cs" />
     <Compile Include="Events\Widgets\ClearWidgetsFromCache.cs" />
     <Compile Include="HealthChecks\EmailSenderTaskCheck.cs" />
+    <Compile Include="HealthChecks\OptimizationsEnabled.cs" />
     <Compile Include="HealthChecks\PublishWebpageTaskHealthCheck.cs" />
     <Compile Include="HealthChecks\HealthCheck.cs" />
     <Compile Include="HealthChecks\HealthCheckResult.cs" />
@@ -543,7 +544,6 @@
     <Compile Include="HealthChecks\SiteIsLiveCheck.cs" />
     <Compile Include="HealthChecks\TaskRunnerCheck.cs" />
     <Compile Include="Helpers\ACLHelper.cs" />
-    <Compile Include="Helpers\AppDataSerializationExtensions.cs" />
     <Compile Include="Helpers\AssemblyExtensions.cs" />
     <Compile Include="Helpers\AuthConfigurationServiceExtensions.cs" />
     <Compile Include="Helpers\CustomBindingExtensions.cs" />
@@ -788,10 +788,12 @@
     <Compile Include="Services\Sitemaps\DefaultSiteMapGenerationInfo.cs" />
     <Compile Include="Services\Sitemaps\ExcludeFromSitemapBecauseIsErrorPage.cs" />
     <Compile Include="Services\Sitemaps\IReasonToExcludePageFromSitemap.cs" />
+    <Compile Include="Services\Sitemaps\ISitemapDataSource.cs" />
     <Compile Include="Services\Sitemaps\ISiteMapElementAppender.cs" />
     <Compile Include="Services\Sitemaps\ISiteMapGenerationInfo.cs" />
     <Compile Include="Services\Sitemaps\ISiteMapService.cs" />
     <Compile Include="Services\Sitemaps\RemoveSitemapPlaceholdersFromExportedSitemap.cs" />
+    <Compile Include="Services\Sitemaps\SitemapData.cs" />
     <Compile Include="Services\Sitemaps\SiteMapElementAppender.cs" />
     <Compile Include="Services\Sitemaps\SiteMapGenerationInfo.cs" />
     <Compile Include="Services\Sitemaps\SiteMapService.cs" />
@@ -1006,6 +1008,7 @@
     <Compile Include="Settings\SiteSettingsOptionGenerator.cs" />
     <Compile Include="Settings\TextAreaAttribute.cs" />
     <Compile Include="Settings\PageDefaultsSettings.cs" />
+    <Compile Include="Settings\WebExtensionsToRoute.cs" />
     <Compile Include="Shortcodes\Forms\CheckBoxListRenderer.cs" />
     <Compile Include="Shortcodes\Forms\CustomFormRenderer.cs" />
     <Compile Include="Shortcodes\Forms\DefaultFormRenderer.cs" />
@@ -1065,6 +1068,7 @@
     <Compile Include="Tasks\TaskStatusUpdater.cs" />
     <Compile Include="Tasks\UniversalIndexTaskExecutionHandler.cs" />
     <Compile Include="Tasks\UniversalSearchActionExecutor.cs" />
+    <Compile Include="Tasks\UpdateSitemap.cs" />
     <Compile Include="Website\ActionMethodInfo.cs" />
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />

@@ -8,10 +8,6 @@ namespace MrCMS.Indexing.Management
 {
     public class GetLuceneIndexWriter : IGetLuceneIndexWriter
     {
-        //private static readonly Dictionary<int, Dictionary<string, IndexWriter>> Writers =
-        //    new Dictionary<int, Dictionary<string, IndexWriter>>();
-
-        //private static readonly object LockObject = new object();
         private readonly IGetLuceneDirectory _getLuceneDirectory;
         private readonly Site _site;
 
@@ -29,18 +25,6 @@ namespace MrCMS.Indexing.Management
         public IndexWriter Get(string definitionName, Analyzer analyzer)
         {
             return GetNewIndexWriter(definitionName, analyzer, false);
-            //lock (LockObject)
-            //{
-            //    if (!Writers.ContainsKey(_site.Id))
-            //    {
-            //        Writers[_site.Id] = new Dictionary<string, IndexWriter>();
-            //    }
-            //    if (!Writers[_site.Id].ContainsKey(definitionName))
-            //    {
-            //        Writers[_site.Id][definitionName] = GetNewIndexWriter(definitionName, analyzer, false);
-            //    }
-            //    return Writers[_site.Id][definitionName];
-            //}
         }
 
         public void RecreateIndex(IndexDefinition definition)

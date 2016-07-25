@@ -6,6 +6,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Website.Controllers;
 using NHibernate;
+using NHibernate.Proxy;
 using Ninject;
 
 namespace MrCMS.Website.Binders
@@ -87,10 +88,14 @@ namespace MrCMS.Website.Binders
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                               Type modelType)
         {
-            var modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
-            return modelFromSession ?? (modelType.IsAbstract
-                ? null
-                : base.CreateModel(controllerContext, bindingContext, modelType));
+            object modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
+            if (modelFromSession != null)
+                return modelFromSession;
+            if (modelType == typeof(Webpage))
+                return null;
+            object model = base.CreateModel(controllerContext, bindingContext, modelType);
+
+            return model;
         }
 
         public object GetModelFromSession(ControllerContext controllerContext, string modelName, Type modelType)
@@ -106,7 +111,7 @@ namespace MrCMS.Website.Binders
                 int intId;
                 if (int.TryParse(id, out intId))
                 {
-                    object obj = Session.Get(modelType, intId);
+                    object obj = Unproxy(Session.Get(modelType, intId));
                     return obj ?? Activator.CreateInstance(modelType);
                 }
 
@@ -116,11 +121,22 @@ namespace MrCMS.Website.Binders
 
                 if (int.TryParse(id, out intId))
                 {
-                    object obj = Session.Get(modelType, intId);
+                    object obj = Unproxy(Session.Get(modelType, intId));
                     return obj ?? Activator.CreateInstance(modelType);
                 }
             }
             return null;
+        }
+
+        private object Unproxy(object obj)
+        {
+            var proxy = obj as INHibernateProxy;
+            if (proxy != null)
+            {
+                return proxy.HibernateLazyInitializer.GetImplementation();
+            }
+
+            return obj;
         }
     }
 }

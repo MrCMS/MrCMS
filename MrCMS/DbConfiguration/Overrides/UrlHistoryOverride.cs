@@ -12,7 +12,7 @@ namespace MrCMS.DbConfiguration.Overrides
     {
         public void Override(AutoMapping<UrlHistory> mapping)
         {
-            mapping.Map(x => x.UrlSegment).Index("idx_UrlSegment_UrlHistory");
+            mapping.Map(x => x.UrlSegment).Length(500).Index("idx_UrlSegment_UrlHistory");
         }
     }
 }

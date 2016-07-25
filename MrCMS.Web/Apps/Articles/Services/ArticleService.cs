@@ -36,13 +36,13 @@ namespace MrCMS.Web.Apps.Articles.Services
             {
                 query =
                     query.Where(
-                        article => article.PublishOn != null && article.PublishOn.Value.MonthPart() == model.Month);
+                        article => article.PublishOn != null && article.PublishOn.Value.Month == model.Month);
             }
             if (model.Year.HasValue)
             {
                 query =
                     query.Where(
-                        article => article.PublishOn != null && article.PublishOn.Value.YearPart() == model.Year);
+                        article => article.PublishOn != null && article.PublishOn.Value.Year == model.Year);
             }
 
             return query.OrderBy(x => x.PublishOn).Desc.Paged(model.Page, page.PageSize);

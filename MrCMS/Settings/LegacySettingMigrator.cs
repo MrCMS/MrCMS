@@ -22,7 +22,9 @@ namespace MrCMS.Settings
             var sites = session.QueryOver<Site>().List();
             foreach (var site in sites)
             {
+#pragma warning disable 618 // For migration purposes
                 var appData = new AppDataConfigurationProvider(site);
+#pragma warning restore 618
                 var sql = new SqlConfigurationProvider(session, site);
                 foreach (var setting in appData.GetAllSiteSettings())
                 {
@@ -33,7 +35,9 @@ namespace MrCMS.Settings
         }
         private static void CopyOldSystemSettings()
         {
+#pragma warning disable 618 // For migration purposes
             var appData = new AppDataSystemConfigurationProvider();
+#pragma warning restore 618
             var appConfig = new AppConfigSystemConfigurationProvider();
             foreach (var setting in appData.GetAllSystemSettings())
             {

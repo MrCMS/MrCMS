@@ -5,7 +5,7 @@ using MrCMS.Services;
 
 namespace MrCMS.Messages
 {
-    public abstract class MessageTemplate : IStoredInAppData
+    public abstract class MessageTemplate
     {
         [Required, DisplayName("From Address")]
         public string FromAddress { get; set; }

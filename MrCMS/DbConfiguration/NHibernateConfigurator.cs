@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,10 +24,10 @@ using MrCMS.Website;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Caches.SysCache2;
-using NHibernate.Cfg;
 using NHibernate.Event;
 using NHibernate.Tool.hbm2ddl;
 using Ninject;
+using Environment = NHibernate.Cfg.Environment;
 
 namespace MrCMS.DbConfiguration
 {
@@ -70,6 +71,9 @@ namespace MrCMS.DbConfiguration
         public NHibernate.Cfg.Configuration GetConfiguration()
         {
             var assemblies = GetAssemblies();
+
+            if (_databaseProvider == null)
+                throw new Exception("Please set the database provider in mrcms.config");
 
             var iPersistenceConfigurer = _databaseProvider.GetPersistenceConfigurer();
             var autoPersistenceModel = GetAutoPersistenceModel(assemblies);

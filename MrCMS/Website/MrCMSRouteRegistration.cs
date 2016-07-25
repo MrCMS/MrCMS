@@ -29,7 +29,6 @@ namespace MrCMS.Website
             routes.MapRoute("batch execute", BatchExecutionController.BaseURL+"{id}",
                 new {controller = "BatchExecution", action = "ExecuteNext"});
 
-            routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
             routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",
                 new { controller = "CKEditor", action = "Config" });
