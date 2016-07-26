@@ -7,6 +7,7 @@ namespace MrCMS.Services
     public interface IUniquePageService
     {
         RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage;
+        RedirectResult PermanentRedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage;
         T GetUniquePage<T>() where T : Document, IUniquePage;
     }
 }
