@@ -1,89 +1,25 @@
-﻿using System;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Security.Principal;
 using System.Web;
 using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Settings;
 using MrCMS.Website;
-using NHibernate;
 using Xunit;
 
 namespace MrCMS.Tests.Services
 {
-    public class UserServiceTests : InMemoryDatabaseTest
+    public class UserLookupTests : InMemoryDatabaseTest
     {
-        private UserService _userService;
-        private ISession _session;
-        private readonly SiteSettings _siteSettings;
+        private readonly UserLookup _userService;
 
-        public UserServiceTests()
+        public UserLookupTests()
         {
-            _session = Session;
-            _siteSettings = new SiteSettings();
-            _userService = new UserService(_session,_siteSettings);
+            _userService = new UserLookup(Session, new List<IExternalUserSource>());
         }
-
-        [Fact]
-        public void UserService_AddUser_SavesAUserToSession()
-        {
-            _session = A.Fake<ISession>();
-            _userService = new UserService(_session, _siteSettings);
-            var user = new User();
-
-            _userService.AddUser(user);
-
-            A.CallTo(() => _session.Save(user)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void UserService_SaveUser_UpdatesAUser()
-        {
-            _session = A.Fake<ISession>();
-            _userService = new UserService(_session, _siteSettings);
-            var user = new User();
-
-            _userService.SaveUser(user);
-
-            A.CallTo(() => _session.Update(user)).MustHaveHappened();
-        }
-
-        [Fact]
-        public void UserService_GetUser_ShouldReturnCorrectUser()
-        {
-            var user = new User { FirstName = "Test", LastName = "User" };
-            Session.Transact(session => session.SaveOrUpdate(user));
-
-            var loadedUser = _userService.GetUser(user.Id);
-
-            loadedUser.Should().BeSameAs(user);
-        }
-
-        [Fact]
-        public void UserService_GetUserDoesNotExist_ShouldReturnNull()
-        {
-            var loadedUser = _userService.GetUser(-1);
-
-            loadedUser.Should().BeNull();
-        }
-
-        [Fact]
-        public void UserService_GetAllUsersPaged_ShouldReturnTheCollectionOfUsersPaged()
-        {
-            Enumerable.Range(1, 15).ForEach(
-                i =>
-                Session.Transact(session => session.SaveOrUpdate(new User { FirstName = "Test " + i, LastName = "User" })));
-
-            var users = _userService.GetAllUsersPaged(1);
-
-            users.Count.Should().Be(10);
-            users.PageCount.Should().Be(2);
-        }
-
         [Fact]
         public void UserService_GetUserByEmail_ReturnsNullWhenNoUserAvailable()
         {
@@ -170,36 +106,5 @@ namespace MrCMS.Tests.Services
             _userService.GetCurrentUser(httpContextBase).Should().Be(user);
         }
 
-        [Fact]
-        public void UserService_DeleteUser_ShouldRemoveAUser()
-        {
-            var user = new User();
-            Session.Transact(session => session.Save(user));
-
-            _userService.DeleteUser(user);
-
-            Session.QueryOver<User>().RowCount().Should().Be(0);
-        }
-
-        [Fact]
-        public void UserService_IsUniqueEmail_ShouldReturnTrueIfThereAreNoOtherUsers()
-        {
-            _userService.IsUniqueEmail("test@example.com").Should().BeTrue();
-        }
-
-        [Fact]
-        public void UserService_IsUniqueEmail_ShouldReturnFalseIfThereIsAnotherUserWithTheSameEmail()
-        {
-            Session.Transact(session => session.Save(new User {Email = "test@example.com"}));
-            _userService.IsUniqueEmail("test@example.com").Should().BeFalse();
-        }
-
-        [Fact]
-        public void UserService_IsUniqueEmail_ShouldReturnTrueIfTheIdPassedAlongWithTheSavedEmailIsThatOfTheSameUser()
-        {
-            var user = new User {Email = "test@example.com"};
-            Session.Transact(session => session.Save(user));
-            _userService.IsUniqueEmail("test@example.com",user.Id).Should().BeTrue();
-        }
     }
 }

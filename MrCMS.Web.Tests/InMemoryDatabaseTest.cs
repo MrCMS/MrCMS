@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Web;
 using Elmah;
+using FakeItEasy;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
@@ -73,6 +74,7 @@ namespace MrCMS.Web.Tests
             Kernel.Load(new GenericBindingsModule());
             Kernel.Unbind<IMessageTemplateProvider>();
             Kernel.Bind<IMessageTemplateProvider>().ToConstant(_messageTemplateProvider);
+            Kernel.Rebind<IExternalUserSource>().ToConstant(A.Fake<IExternalUserSource>());
             _eventContext = new TestableEventContext(Kernel.Get<EventContext>());
             Kernel.Rebind<IEventContext>().ToMethod(context => EventContext);
         }

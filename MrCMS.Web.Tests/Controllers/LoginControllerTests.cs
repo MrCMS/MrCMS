@@ -1,45 +1,38 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using FakeItEasy;
 using FluentAssertions;
-using MrCMS.Entities.Documents.Layout;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.People;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Core.Controllers;
-using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
-using MrCMS.Website;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Controllers
 {
     public class LoginControllerTests : MrCMSTest
     {
-        private readonly IUserService _userService;
-        private readonly IResetPasswordService _resetPasswordService;
-        private readonly IAuthorisationService _authorisationService;
-        private readonly ILoginService _loginService;
         private readonly LoginController _loginController;
+        private readonly ILoginService _loginService;
+        private readonly IResetPasswordService _resetPasswordService;
         private readonly IUniquePageService _uniquePageService;
+        private readonly IUserLookup _userService;
 
         public LoginControllerTests()
         {
-            _userService = A.Fake<IUserService>();
+            _userService = A.Fake<IUserLookup>();
             _resetPasswordService = A.Fake<IResetPasswordService>();
-            _authorisationService = A.Fake<IAuthorisationService>();
             _loginService = A.Fake<ILoginService>();
             _uniquePageService = A.Fake<IUniquePageService>();
-            _loginController = new LoginController(_userService, _resetPasswordService, _authorisationService, _uniquePageService, _loginService, A.Fake<IStringResourceProvider>());
+            _loginController = new LoginController(_resetPasswordService, _uniquePageService,
+                _loginService, A.Fake<IStringResourceProvider>(), _userService);
 
             // initial setup as this is reused
             A.CallTo(() => _uniquePageService.RedirectTo<LoginPage>(null)).Returns(new RedirectResult("~/login-page"));
             A.CallTo(() => _uniquePageService.RedirectTo<ForgottenPasswordPage>(null))
-             .Returns(new RedirectResult("~/forgotten-password"));
+                .Returns(new RedirectResult("~/forgotten-password"));
         }
 
         [Fact]
@@ -106,7 +99,7 @@ namespace MrCMS.Web.Tests.Controllers
         {
             var loginModel = new LoginModel();
             A.CallTo(() => _loginService.AuthenticateUser(loginModel))
-             .Returns(Task.Run(() => new LoginResult { Success = true, RedirectUrl = "redirect-url" }));
+                .Returns(Task.Run(() => new LoginResult {Success = true, RedirectUrl = "redirect-url"}));
             var redirectResult = _loginController.Post(loginModel).Result;
 
             redirectResult.Url.Should().Be("redirect-url");
@@ -117,7 +110,7 @@ namespace MrCMS.Web.Tests.Controllers
         {
             var loginModel = new LoginModel();
             A.CallTo(() => _loginService.AuthenticateUser(loginModel))
-             .Returns(Task.Run(() => new LoginResult {Success = false}));
+                .Returns(Task.Run(() => new LoginResult {Success = false}));
 
             var redirectResult = _loginController.Post(loginModel).Result;
 
@@ -129,9 +122,9 @@ namespace MrCMS.Web.Tests.Controllers
         {
             var loginModel = new LoginModel();
             A.CallTo(() => _loginService.AuthenticateUser(loginModel))
-             .Returns(Task.Run(() => new LoginResult {Success = false, Message = "failure message"}));
+                .Returns(Task.Run(() => new LoginResult {Success = false, Message = "failure message"}));
 
-            RedirectResult redirectResult = _loginController.Post(loginModel).Result;
+            var redirectResult = _loginController.Post(loginModel).Result;
 
             loginModel.Message.Should().Be("failure message");
         }

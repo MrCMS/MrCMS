@@ -11,22 +11,24 @@ namespace MrCMS.Web.Apps.Core.Services
     public class ResetPasswordService : IResetPasswordService
     {
         private readonly IMessageParser<ResetPasswordMessageTemplate, User> _messageParser;
+        private readonly IUserLookup _userLookup;
         private readonly IPasswordManagementService _passwordManagementService;
-        private readonly IUserService _userService;
+        private readonly IUserManagementService _userManagementService;
 
-        public ResetPasswordService(IUserService userService, IPasswordManagementService passwordManagementService,
-            IMessageParser<ResetPasswordMessageTemplate, User> messageParser)
+        public ResetPasswordService(IUserManagementService userManagementService, IPasswordManagementService passwordManagementService,
+            IMessageParser<ResetPasswordMessageTemplate, User> messageParser, IUserLookup userLookup)
         {
-            _userService = userService;
+            _userManagementService = userManagementService;
             _passwordManagementService = passwordManagementService;
             _messageParser = messageParser;
+            _userLookup = userLookup;
         }
 
         public void SetResetPassword(User user)
         {
             user.ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1);
             user.ResetPasswordGuid = Guid.NewGuid();
-            _userService.SaveUser(user);
+            _userManagementService.SaveUser(user);
 
             QueuedMessage queuedMessage = _messageParser.GetMessage(user);
             _messageParser.QueueMessage(queuedMessage);
@@ -34,7 +36,7 @@ namespace MrCMS.Web.Apps.Core.Services
 
         public void ResetPassword(ResetPasswordViewModel model)
         {
-            User user = _userService.GetUserByEmail(model.Email);
+            User user = _userLookup.GetUserByEmail(model.Email);
 
             if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > CurrentRequestData.Now &&
                 _passwordManagementService.ValidatePassword(model.Password, model.ConfirmPassword))
@@ -44,7 +46,7 @@ namespace MrCMS.Web.Apps.Core.Services
                 user.ResetPasswordExpiry = null;
                 user.ResetPasswordGuid = null;
 
-                _userService.SaveUser(user);
+                _userManagementService.SaveUser(user);
             }
             else
                 throw new InvalidOperationException("Unable to reset password, resend forgotten password email");

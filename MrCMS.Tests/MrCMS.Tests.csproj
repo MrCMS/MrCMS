@@ -176,6 +176,7 @@
     <Compile Include="Optimization\ResourceDataTests.cs" />
     <Compile Include="Services\CurrentSiteLocatorTests.cs" />
     <Compile Include="Services\Events\PublishingDisablerTests.cs" />
+    <Compile Include="Services\UserLookupTests.cs" />
     <Compile Include="Services\WebpageUrlGeneratorTests.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsService_AddingDocuments.cs" />
     <Compile Include="Services\ImportExport\ImportDocumentsService_GetHierarchyDepthTests.cs" />
@@ -195,7 +196,7 @@
     <Compile Include="Services\PasswordManagementServiceTests.cs" />
     <Compile Include="Services\RoleServiceTests.cs" />
     <Compile Include="Services\TestablePasswordEncryptionManager.cs" />
-    <Compile Include="Services\UserServiceTests.cs" />
+    <Compile Include="Services\UserManagementServiceTests.cs" />
     <Compile Include="Services\WidgetServiceTests.cs" />
     <Compile Include="Settings\MailSettingsTests.cs" />
     <Compile Include="Settings\MediaSettingsTests.cs" />

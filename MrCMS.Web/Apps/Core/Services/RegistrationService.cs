@@ -9,16 +9,18 @@ namespace MrCMS.Web.Apps.Core.Services
 {
     public class RegistrationService : IRegistrationService
     {
-        private readonly IUserService _userService;
-        private readonly IPasswordManagementService _passwordManagementService;
         private readonly IAuthorisationService _authorisationService;
+        private readonly IUserManagementService _userManagementService;
+        private readonly IPasswordManagementService _passwordManagementService;
+        private readonly IUserLookup _userLookup;
 
-        public RegistrationService(IUserService userService, IPasswordManagementService passwordManagementService,
-                                   IAuthorisationService authorisationService)
+        public RegistrationService(IUserLookup userLookup, IPasswordManagementService passwordManagementService,
+            IAuthorisationService authorisationService, IUserManagementService userManagementService)
         {
-            _userService = userService;
+            _userLookup = userLookup;
             _passwordManagementService = passwordManagementService;
             _authorisationService = authorisationService;
+            _userManagementService = userManagementService;
         }
 
         public async Task<User> RegisterUser(RegisterModel model)
@@ -32,16 +34,17 @@ namespace MrCMS.Web.Apps.Core.Services
                 IsActive = true
             };
             _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
-            _userService.AddUser(user);
+            _userManagementService.AddUser(user);
             await _authorisationService.SetAuthCookie(user, false);
             CurrentRequestData.CurrentUser = user;
-            EventContext.Instance.Publish<IOnUserRegistered, OnUserRegisteredEventArgs>(new OnUserRegisteredEventArgs(user, guid));
+            EventContext.Instance.Publish<IOnUserRegistered, OnUserRegisteredEventArgs>(
+                new OnUserRegisteredEventArgs(user, guid));
             return user;
         }
 
         public bool CheckEmailIsNotRegistered(string email)
         {
-            return _userService.GetUserByEmail(email) == null;
+            return _userLookup.GetUserByEmail(email) == null;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace MrCMS.Website
     {
         public static bool IsUserAllowedToSeeMiniProfilerUI(HttpRequest arg)
         {
-            var userService = arg.RequestContext.HttpContext.Get<IUserService>();
+            var userService = arg.RequestContext.HttpContext.Get<IUserLookup>();
             if (userService == null)
                 return false;
             User currentUser = userService.GetCurrentUser(arg.RequestContext.HttpContext);

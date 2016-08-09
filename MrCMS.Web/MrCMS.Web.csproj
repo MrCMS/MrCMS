@@ -321,6 +321,7 @@
     <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginResult.cs" />
     <Compile Include="Apps\Core\Models\RegisterAndLogin\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Services\Installation\SetupCoreMedia.cs" />
+    <Compile Include="Apps\Core\Services\LoginService.cs" />
     <Compile Include="Apps\Core\Services\OnUserRegisteredEventArgs.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetModelForCurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetNavigationRecords.cs" />
