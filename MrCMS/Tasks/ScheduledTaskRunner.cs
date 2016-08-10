@@ -20,30 +20,27 @@ namespace MrCMS.Tasks
         private readonly Site _site;
         private readonly IKernel _kernel;
         private readonly ITaskSettingManager _taskSettingManager;
+        private readonly ITriggerUrls _triggerUrls;
 
         public ScheduledTaskRunner(SiteSettings siteSettings,
-            Site site, IKernel kernel, ITaskSettingManager taskSettingManager)
+            Site site, IKernel kernel, ITaskSettingManager taskSettingManager, ITriggerUrls triggerUrls)
         {
             _siteSettings = siteSettings;
             _site = site;
             _kernel = kernel;
             _taskSettingManager = taskSettingManager;
+            _triggerUrls = triggerUrls;
         }
 
         public void TriggerScheduledTasks()
         {
-            var pendingScheduledTasks = GetPendingScheduledTasks();
-
-            foreach (var task in pendingScheduledTasks)
-            {
-                string url = string.Format("{0}/{1}?type={2}&{3}={4}",
+            _triggerUrls.Trigger(GetPendingScheduledTasks()
+                .Select(task => string.Format("{0}/{1}?type={2}&{3}={4}",
                     _site.GetFullDomain.TrimEnd('/'),
                     TaskExecutionController.ExecuteTaskURL,
                     task.TypeName,
                     _siteSettings.TaskExecutorKey,
-                    _siteSettings.TaskExecutorPassword);
-                new HttpClient().GetAsync(url);
-            }
+                    _siteSettings.TaskExecutorPassword)));
         }
 
         private List<TaskInfo> GetPendingScheduledTasks()
