@@ -7,9 +7,10 @@ namespace MrCMS.HealthChecks
         public HealthCheckResult()
         {
             Messages = new List<string>();
+            Status = HealthCheckStatus.Failure;
         }
-        public bool OK { get; set; }
+        public HealthCheckStatus Status { get; set; }
         public List<string> Messages { get; set; }
-        public static HealthCheckResult Success { get { return new HealthCheckResult { OK = true }; } }
+        public static HealthCheckResult Success { get { return new HealthCheckResult { Status = HealthCheckStatus.Success }; } }
     }
 }

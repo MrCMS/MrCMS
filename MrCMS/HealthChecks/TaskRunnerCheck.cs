@@ -40,7 +40,7 @@ namespace MrCMS.HealthChecks
                 return new HealthCheckResult
                 {
                     Messages = messages,
-                    OK = false
+                    Status = HealthCheckStatus.Failure
                 };
             }
             return HealthCheckResult.Success;

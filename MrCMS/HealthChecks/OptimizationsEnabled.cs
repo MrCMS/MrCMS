@@ -18,14 +18,11 @@ namespace MrCMS.HealthChecks
         public override HealthCheckResult PerformCheck()
         {
             if (_bundlingSettings.EnableOptimisations)
-                return new HealthCheckResult
-                {
-                    OK = true
-                };
+                return HealthCheckResult.Success;
 
             return new HealthCheckResult
             {
-                OK = false,
+                Status = HealthCheckStatus.Warning,
                 Messages = new List<string>
                 {
                     _stringResourceProvider.GetValue("Please enable optimizations in system settings.")
