@@ -7,6 +7,7 @@ namespace MrCMS.Tasks
 {
     public class OptimiseIndexesController : MrCMSUIController
     {
+        public const string OptimiseIndexUrl = "optimise-index";
         private readonly IIndexService _indexService;
 
         public OptimiseIndexesController(IIndexService indexService)
@@ -14,7 +15,6 @@ namespace MrCMS.Tasks
             _indexService = indexService;
         }
 
-        public const string OptimiseIndexUrl = "optimise-index";
         [TaskExecutionKeyPasswordAuth]
         public ContentResult Execute(string type)
         {

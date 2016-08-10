@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using MrCMS.Entities.Multisite;
-using MrCMS.Indexing.Management;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Tasks;
@@ -28,7 +27,7 @@ namespace MrCMS.Indexing
 
         protected override void OnExecute()
         {
-            var sites = _session.QueryOver<Site>().Where(x => !x.IsDeleted).Cacheable().List();
+            var sites = _session.QueryOver<Site>().Where(x => !x.IsDeleted).List();
             var indexes = _indexService.GetIndexes();
             foreach (var site in sites)
             {

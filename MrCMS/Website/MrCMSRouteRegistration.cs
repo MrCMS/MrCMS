@@ -27,6 +27,8 @@ namespace MrCMS.Website
                 new { controller = "TaskExecution", action = "ExecuteQueuedTasks" });
             routes.MapRoute("Optimise Index Execution", OptimiseIndexesController.OptimiseIndexUrl,
                 new { controller = "OptimiseIndexes", action = "Execute" });
+            routes.MapRoute("Write Sitemap Execution", WriteSitemapController.WriteSitemapUrl,
+                new { controller = "WriteSitemap", action = "Execute" });
 
             routes.MapRoute("batch execute", BatchExecutionController.BaseURL+"{id}",
                 new {controller = "BatchExecution", action = "ExecuteNext"});

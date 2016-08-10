@@ -802,7 +802,7 @@
     <Compile Include="Services\Sitemaps\SitemapData.cs" />
     <Compile Include="Services\Sitemaps\SiteMapElementAppender.cs" />
     <Compile Include="Services\Sitemaps\SiteMapGenerationInfo.cs" />
-    <Compile Include="Services\Sitemaps\SiteMapService.cs" />
+    <Compile Include="Services\Sitemaps\SitemapService.cs" />
     <Compile Include="Services\StandardAuthConfigurationService.cs" />
     <Compile Include="Services\UniquePageService.cs" />
     <Compile Include="Services\UrlValidationService.cs" />
@@ -1078,6 +1078,7 @@
     <Compile Include="Tasks\UniversalIndexTaskExecutionHandler.cs" />
     <Compile Include="Tasks\UniversalSearchActionExecutor.cs" />
     <Compile Include="Tasks\UpdateSitemap.cs" />
+    <Compile Include="Tasks\WriteSitemapController.cs" />
     <Compile Include="Website\ActionMethodInfo.cs" />
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />
