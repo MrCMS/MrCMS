@@ -1,3 +1,4 @@
+using MrCMS.DbConfiguration;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -25,21 +26,24 @@ namespace MrCMS.Tasks
 
         protected override void OnExecute()
         {
-            _session.Transact(session =>
+            using (new SiteFilterDisabler(_session))
             {
-                foreach (
-                    QueuedMessage queuedMessage in
-                        session.QueryOver<QueuedMessage>().Where(
-                            message => message.SentOn == null && message.Tries < MAX_TRIES)
-                               .List())
+                _session.Transact(session =>
                 {
-                    if (_emailSender.CanSend(queuedMessage))
-                        _emailSender.SendMailMessage(queuedMessage);
-                    else
-                        queuedMessage.SentOn = CurrentRequestData.Now;
-                    session.SaveOrUpdate(queuedMessage);
-                }
-            });
+                    foreach (
+                        QueuedMessage queuedMessage in
+                            session.QueryOver<QueuedMessage>().Where(
+                                message => message.SentOn == null && message.Tries < MAX_TRIES)
+                                .List())
+                    {
+                        if (_emailSender.CanSend(queuedMessage))
+                            _emailSender.SendMailMessage(queuedMessage);
+                        else
+                            queuedMessage.SentOn = CurrentRequestData.Now;
+                        session.SaveOrUpdate(queuedMessage);
+                    }
+                });
+            }
         }
     }
 }

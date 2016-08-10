@@ -50,10 +50,7 @@ namespace MrCMS.Installation
                 SmallImageWidth = 200,
                 ResizeQuality = 90,
             };
-            var mailSettings = new MailSettings
-            {
-                Port = 25,
-            };
+      
             var fileSystemSettings = new FileSystemSettings
             {
                 StorageType = typeof(FileSystem).FullName
@@ -61,7 +58,6 @@ namespace MrCMS.Installation
 
             _configurationProvider.SaveSettings(siteSettings);
             _configurationProvider.SaveSettings(mediaSettings);
-            _configurationProvider.SaveSettings(mailSettings);
             _configurationProvider.SaveSettings(fileSystemSettings);
 
         }
@@ -69,10 +65,10 @@ namespace MrCMS.Installation
         {
             _taskSettingManager.Update(typeof (DeleteExpiredLogsTask), true, 600);
             _taskSettingManager.Update(typeof (DeleteOldQueuedTasks), true, 600);
-            _taskSettingManager.Update(typeof (SendQueuedMessagesTask), true, 30);
+            _taskSettingManager.Update(typeof(SendQueuedMessagesTask), false, 30);
             _taskSettingManager.Update(typeof (PublishScheduledWebpagesTask), true, 10);
-            _taskSettingManager.Update(typeof (DeleteExpiredLogsTask), true, 600);
             _taskSettingManager.Update(typeof (OptimiseIndexes), true, 600);
+            _taskSettingManager.Update(typeof (UpdateSitemap), true, 600);
         }
     }
 }

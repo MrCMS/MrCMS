@@ -198,7 +198,6 @@
     <Compile Include="Services\TestablePasswordEncryptionManager.cs" />
     <Compile Include="Services\UserManagementServiceTests.cs" />
     <Compile Include="Services\WidgetServiceTests.cs" />
-    <Compile Include="Settings\MailSettingsTests.cs" />
     <Compile Include="Settings\MediaSettingsTests.cs" />
     <Compile Include="Settings\SEOSettingsTests.cs" />
     <Compile Include="Settings\SiteSettingsOptionGeneratorTests.cs" />
