@@ -2,19 +2,22 @@ using System;
 using System.Configuration;
 using System.Linq;
 using System.Web;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
 using NHibernate;
+using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
     public class CurrentSiteLocator : ICurrentSiteLocator
     {
-        private readonly ISession _session;
+        private readonly IRepository<Site> _siteRepository;
         private readonly HttpRequestBase _requestBase;
         private Site _currentSite;
-        public CurrentSiteLocator(ISession session, HttpRequestBase requestBase)
+        public CurrentSiteLocator(IRepository<Site> siteRepository, HttpRequestBase requestBase)
         {
-            _session = session;
+            _siteRepository = siteRepository;
             _requestBase = requestBase;
         }
 
@@ -28,18 +31,18 @@ namespace MrCMS.Services
             var appSetting = ConfigurationManager.AppSettings["debugSiteId"];
 
             int id;
-            return int.TryParse(appSetting, out id) ? _session.Get<Site>(id) : null;
+            return int.TryParse(appSetting, out id) ? _siteRepository.Get(id) : null;
         }
 
         private Site GetSiteFromRequest()
         {
             var authority = _requestBase.Url.Authority;
 
-            var allSites = _session.QueryOver<Site>().Fetch(s => s.RedirectedDomains).Eager.Cacheable().List();
-            var redirectedDomains = allSites.SelectMany(s => s.RedirectedDomains).ToList();
+            var allSites = _siteRepository.Query().ToList();
             var site = allSites.FirstOrDefault(s => s.BaseUrl != null && (s.BaseUrl.Equals(authority, StringComparison.OrdinalIgnoreCase) || (s.StagingUrl != null && s.StagingUrl.Equals(authority, StringComparison.OrdinalIgnoreCase))));
             if (site == null)
             {
+                var redirectedDomains = allSites.SelectMany(s => s.RedirectedDomains).Select(x => x.Unproxy()).ToList();
                 var redirectedDomain =
                     redirectedDomains.FirstOrDefault(
                         s => s.Url != null && s.Url.Equals(authority, StringComparison.OrdinalIgnoreCase));

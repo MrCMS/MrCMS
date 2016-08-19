@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services.ImportExport.DTOs;
@@ -11,11 +12,11 @@ namespace MrCMS.Services.ImportExport
 {
     public class UpdateUrlHistoryService : IUpdateUrlHistoryService
     {
-        private readonly ISession _session;
+        private readonly IRepository<UrlHistory> _urlHistoryRepository;
 
-        public UpdateUrlHistoryService(ISession session)
+        public UpdateUrlHistoryService(IRepository<UrlHistory> urlHistoryRepository)
         {
-            _session = session;
+            _urlHistoryRepository = urlHistoryRepository;
         }
 
         public void SetUrlHistory(DocumentImportDTO documentDto, Webpage webpage)
@@ -37,42 +38,41 @@ namespace MrCMS.Services.ImportExport
 
         private void UpdateUrlHistories(Webpage webpage, List<string> urlsToAdd, List<UrlHistory> urlsToRemove)
         {
-            _session.Transact(session =>
+            _urlHistoryRepository.Transact(session =>
             {
-                AddUrls(webpage, urlsToAdd, session);
+                AddUrls(webpage, urlsToAdd);
 
-                RemoveUrls(webpage, urlsToRemove, session);
+                RemoveUrls(webpage, urlsToRemove);
             });
         }
 
-        private static void RemoveUrls(Webpage webpage, List<UrlHistory> urlsToRemove, ISession session)
+        private void RemoveUrls(Webpage webpage, List<UrlHistory> urlsToRemove)
         {
             foreach (UrlHistory history in urlsToRemove)
             {
                 webpage.Urls.Remove(history);
                 history.Webpage = null;
-                UrlHistory closureHistory = history;
-                session.Update(closureHistory);
+                _urlHistoryRepository.Update(history);
             }
         }
 
-        private void AddUrls(Webpage webpage, List<string> urlsToAdd, ISession session)
+        private void AddUrls(Webpage webpage, List<string> urlsToAdd)
         {
             foreach (string item in urlsToAdd)
             {
                 UrlHistory history =
-                    _session.Query<UrlHistory>().FirstOrDefault(urlHistory => urlHistory.UrlSegment == item);
+                    _urlHistoryRepository.Query().FirstOrDefault(urlHistory => urlHistory.UrlSegment == item);
                 bool isNew = history == null;
                 if (isNew)
                 {
-                    history = new UrlHistory {UrlSegment = item, Webpage = webpage};
-                    session.Save(history);
+                    history = new UrlHistory { UrlSegment = item, Webpage = webpage };
+                    _urlHistoryRepository.Add(history);
                 }
                 else
                     history.Webpage = webpage;
                 if (!webpage.Urls.Contains(history))
                     webpage.Urls.Add(history);
-                session.Update(history);
+                _urlHistoryRepository.Update(history);
             }
         }
     }

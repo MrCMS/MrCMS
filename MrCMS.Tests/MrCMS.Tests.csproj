@@ -221,6 +221,7 @@
     <Compile Include="Stubs\StubWebpage.cs" />
     <Compile Include="TestableEventContext.cs" />
     <Compile Include="TestContextModule.cs" />
+    <Compile Include="TestSupport\InMemoryRepository.cs" />
     <Compile Include="Website\Controllers\Builders\CKEditorControllerBuilder.cs" />
     <Compile Include="Website\Controllers\Builders\LogoutControllerBuilder.cs" />
     <Compile Include="Website\Controllers\Builders\WebpageControllerBuilder.cs" />

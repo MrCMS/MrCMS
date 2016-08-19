@@ -1,3 +1,4 @@
+using MrCMS.Data;
 using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Querying;
 using MrCMS.Services;
@@ -15,6 +16,7 @@ namespace MrCMS.IoC.Modules
             Kernel.Bind(typeof(IMessageParser<>)).To(typeof(MessageParser<>)).InRequestScope();
             Kernel.Bind(typeof(IIndexManager<,>)).To(typeof(IndexManager<,>)).InRequestScope();
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(Searcher<,>)).InRequestScope();
+            Kernel.Bind(typeof(IRepository<>)).To(typeof(SimpleRepository<>)).InRequestScope();
         }
     }
 }

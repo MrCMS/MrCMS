@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services.ImportExport.DTOs;
-using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
 
@@ -13,53 +12,52 @@ namespace MrCMS.Services.ImportExport
 {
     public class UpdateTagsService : IUpdateTagsService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Tag> _tagRepository;
 
-        public UpdateTagsService(ISession session)
+        public UpdateTagsService(IRepository<Tag> tagRepository)
         {
-            _session = session;
+            _tagRepository = tagRepository;
         }
 
         public void SetTags(DocumentImportDTO documentDto, Webpage webpage)
         {
-            List<string> tagsToAdd =
+            var tagsToAdd =
                 documentDto.Tags.Where(
                     s => !webpage.Tags.Select(tag => tag.Name).Contains(s, StringComparer.InvariantCultureIgnoreCase))
                     .ToList();
-            List<Tag> tagsToRemove =
+            var tagsToRemove =
                 webpage.Tags.Where(
                     tag => !documentDto.Tags.Contains(tag.Name, StringComparer.InvariantCultureIgnoreCase)).ToList();
-            foreach (string item in tagsToAdd)
+            foreach (var item in tagsToAdd)
             {
-                Tag tag = GetExistingTag(item);
-                bool isNew = tag == null;
+                var tag = GetExistingTag(item);
+                var isNew = tag == null;
                 if (isNew)
                 {
-                    tag = new Tag {Name = item};
-                    _session.Transact(session => session.Save(tag));
+                    tag = new Tag { Name = item };
+                    _tagRepository.Add(tag);
                 }
                 if (!webpage.Tags.Contains(tag))
                     webpage.Tags.Add(tag);
 
                 if (!tag.Documents.Contains(webpage))
                     tag.Documents.Add(webpage);
-                _session.Transact(session => session.Update(tag));
+                _tagRepository.Update(tag);
             }
 
-            foreach (Tag tag in tagsToRemove)
+            foreach (var tag in tagsToRemove)
             {
                 webpage.Tags.Remove(tag);
                 tag.Documents.Remove(webpage);
-                Tag closureTag = tag;
-                _session.Transact(session => session.Update(closureTag));
+                _tagRepository.Update(tag);
             }
         }
 
         private Tag GetExistingTag(string item)
         {
             return
-                _session.QueryOver<Tag>()
-                    .Where(tag => tag.Name.IsInsensitiveLike(item, MatchMode.Exact))
+                _tagRepository.Query().ToList()
+                    .Where(tag => tag.Name != null && tag.Name.Equals(item, StringComparison.OrdinalIgnoreCase))
                     .Take(1)
                     .SingleOrDefault();
         }

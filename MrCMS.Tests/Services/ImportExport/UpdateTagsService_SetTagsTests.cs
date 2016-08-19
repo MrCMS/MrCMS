@@ -7,18 +7,21 @@ using MrCMS.Helpers;
 using MrCMS.Services.ImportExport;
 using MrCMS.Services.ImportExport.DTOs;
 using MrCMS.Tests.Stubs;
+using MrCMS.Tests.TestSupport;
 using NHibernate.Linq;
 using Xunit;
 
 namespace MrCMS.Tests.Services.ImportExport
 {
-    public class UpdateTagsService_SetTagsTests : InMemoryDatabaseTest
+    public class UpdateTagsService_SetTagsTests
     {
         private readonly UpdateTagsService _updateTagsService;
+        private InMemoryRepository<Tag> _tagRepository;
 
         public UpdateTagsService_SetTagsTests()
         {
-            _updateTagsService = new UpdateTagsService(Session);
+            _tagRepository = new InMemoryRepository<Tag>();
+            _updateTagsService = new UpdateTagsService(_tagRepository);
         }
 
         [Fact]
@@ -36,7 +39,7 @@ namespace MrCMS.Tests.Services.ImportExport
         [Fact]
         public void ShouldNotAddDuplicateTags()
         {
-            Session.Transact(session => session.Save(new Tag { Name = "test" }));
+            _tagRepository.Add(new Tag {Name = "test"});
             GetAllTags().Should().HaveCount(1);
 
             _updateTagsService.SetTags(new DocumentImportDTO { Tags = new List<string> { "test" } },
@@ -49,7 +52,7 @@ namespace MrCMS.Tests.Services.ImportExport
         [Fact]
         public void ShouldNotAddDuplicateTagsBasedOnCase()
         {
-            Session.Transact(session => session.Save(new Tag { Name = "Test" }));
+            _tagRepository.Add(new Tag {Name = "Test"});
             GetAllTags().Should().HaveCount(1);
 
             _updateTagsService.SetTags(new DocumentImportDTO { Tags = new List<string> { "test" } },
@@ -90,7 +93,7 @@ namespace MrCMS.Tests.Services.ImportExport
         [Fact]
         public void ShouldAssignExistingTagIfItIsADuplicate()
         {
-            Session.Transact(session => session.Save(new Tag { Name = "Test" }));
+            _tagRepository.Add(new Tag {Name = "Test"});
             GetAllTags().Should().HaveCount(1);
             var webpage = new BasicMappedWebpage();
             webpage.Tags.Should().HaveCount(0);
@@ -104,14 +107,14 @@ namespace MrCMS.Tests.Services.ImportExport
 
         private IEnumerable<Tag> GetAllTags()
         {
-            return Session.Query<Tag>();
+            return _tagRepository.Query();
         }
 
         [Fact]
         public void ShouldRemoveTagIfItIsNoLongerAssignedWebpage()
         {
             var tag = new Tag { Name = "Test" };
-            Session.Transact(session => session.Save(tag));
+            _tagRepository.Add(tag);
             GetAllTags().Should().HaveCount(1);
             var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
 
@@ -125,7 +128,7 @@ namespace MrCMS.Tests.Services.ImportExport
         public void IfTagIsRemovedFromWebpageShouldNotRemoveTagFromList()
         {
             var tag = new Tag { Name = "Test" };
-            Session.Transact(session => session.Save(tag));
+            _tagRepository.Add(tag);
             GetAllTags().Should().HaveCount(1);
             var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
 
@@ -139,7 +142,7 @@ namespace MrCMS.Tests.Services.ImportExport
         public void ShouldRemoveTheWebpageFromTheTagsWebpages()
         {
             var tag = new Tag { Name = "Test" };
-            Session.Transact(session => session.Save(tag));
+            _tagRepository.Add(tag);
             GetAllTags().Should().HaveCount(1);
             var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
             tag.Documents.Add(webpage);

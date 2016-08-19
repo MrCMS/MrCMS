@@ -372,6 +372,7 @@
     <Compile Include="Batching\SetBatchJobExecutionStatus.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Data\IRepository.cs" />
     <Compile Include="DbConfiguration\Caches\CacheProviderInitializer.cs" />
     <Compile Include="DbConfiguration\Caches\Redis\RedisCacheInitializer.cs" />
     <Compile Include="DbConfiguration\Caches\Redis\RequestRecoveryRedisCache.cs" />

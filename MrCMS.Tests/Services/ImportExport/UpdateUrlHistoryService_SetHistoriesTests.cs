@@ -6,18 +6,21 @@ using MrCMS.Helpers;
 using MrCMS.Services.ImportExport;
 using MrCMS.Services.ImportExport.DTOs;
 using MrCMS.Tests.Stubs;
+using MrCMS.Tests.TestSupport;
 using NHibernate.Linq;
 using Xunit;
 
 namespace MrCMS.Tests.Services.ImportExport
 {
-    public class UpdateUrlHistoryService_SetHistoriesTests : InMemoryDatabaseTest
+    public class UpdateUrlHistoryService_SetHistoriesTests
     {
         private readonly UpdateUrlHistoryService _updateUrlHistoryService;
+        private readonly InMemoryRepository<UrlHistory> _urlHistoryRepository;
 
         public UpdateUrlHistoryService_SetHistoriesTests()
         {
-            _updateUrlHistoryService = new UpdateUrlHistoryService(Session);
+            _urlHistoryRepository = new InMemoryRepository<UrlHistory>();
+            _updateUrlHistoryService = new UpdateUrlHistoryService(_urlHistoryRepository);
         }
 
         [Fact]
@@ -50,7 +53,7 @@ namespace MrCMS.Tests.Services.ImportExport
             var urlHistory = new UrlHistory {UrlSegment = "test"};
             var basicMappedWebpage = new BasicMappedWebpage {Urls = new List<UrlHistory> {urlHistory}};
             urlHistory.Webpage = basicMappedWebpage;
-            Session.Transact(session => session.Save(urlHistory));
+            _urlHistoryRepository.Add(urlHistory);
 
             GetAllHistories().Should().HaveCount(1);
 
@@ -66,7 +69,7 @@ namespace MrCMS.Tests.Services.ImportExport
             var urlHistory = new UrlHistory {UrlSegment = "test"};
             var basicMappedWebpage = new BasicMappedWebpage {Urls = new List<UrlHistory> {urlHistory}};
             urlHistory.Webpage = basicMappedWebpage;
-            Session.Transact(session => session.Save(urlHistory));
+            _urlHistoryRepository.Add(urlHistory);
 
             basicMappedWebpage.Urls.Should().HaveCount(1);
 
@@ -83,9 +86,7 @@ namespace MrCMS.Tests.Services.ImportExport
             var basicMappedWebpage1 = new BasicMappedWebpage {Urls = new List<UrlHistory> {urlHistory}};
             urlHistory.Webpage = basicMappedWebpage1;
             var basicMappedWebpage2 = new BasicMappedWebpage {Urls = new List<UrlHistory>()};
-            Session.Transact(session => session.Save(urlHistory));
-            Session.Transact(session => session.Save(basicMappedWebpage1));
-            Session.Transact(session => session.Save(basicMappedWebpage2));
+            _urlHistoryRepository.Add(urlHistory);
 
             basicMappedWebpage1.Urls.Should().HaveCount(1);
             basicMappedWebpage2.Urls.Should().HaveCount(0);
@@ -106,9 +107,7 @@ namespace MrCMS.Tests.Services.ImportExport
             var basicMappedWebpage1 = new BasicMappedWebpage {Urls = new List<UrlHistory> {urlHistory}};
             urlHistory.Webpage = basicMappedWebpage1;
             var basicMappedWebpage2 = new BasicMappedWebpage {Urls = new List<UrlHistory>()};
-            Session.Transact(session => session.Save(urlHistory));
-            Session.Transact(session => session.Save(basicMappedWebpage1));
-            Session.Transact(session => session.Save(basicMappedWebpage2));
+            _urlHistoryRepository.Add(urlHistory);
 
             GetAllHistories().Should().HaveCount(1);
 
@@ -122,7 +121,7 @@ namespace MrCMS.Tests.Services.ImportExport
 
         private IEnumerable<UrlHistory> GetAllHistories()
         {
-            return Session.Query<UrlHistory>();
+            return _urlHistoryRepository.Query();
         }
     }
 }

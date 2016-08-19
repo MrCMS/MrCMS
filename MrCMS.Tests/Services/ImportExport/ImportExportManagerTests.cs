@@ -9,7 +9,7 @@ using MrCMS.Messages;
 
 namespace MrCMS.Tests.Services.ImportExport
 {
-    public class ImportExportManagerTests : InMemoryDatabaseTest
+    public class ImportExportManagerTests 
     {
         private readonly IImportDocumentsValidationService _importDocumentsValidationService;
         private readonly IImportDocumentsService _importDocumentsService;
