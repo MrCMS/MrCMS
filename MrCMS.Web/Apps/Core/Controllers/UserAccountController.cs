@@ -14,14 +14,14 @@ namespace MrCMS.Web.Apps.Core.Controllers
 {
     public class UserAccountController : MrCMSAppUIController<CoreApp>
     {
-        private readonly IUserService _userService;
+        private readonly IUserManagementService _userManagementService;
         private readonly IAuthorisationService _authorisationService;
         private readonly IStringResourceProvider _stringResourceProvider;
-        private IPasswordManagementService _passwordManagementService;
+        private readonly IPasswordManagementService _passwordManagementService;
 
-        public UserAccountController(IUserService userService, IPasswordManagementService passwordManagementService,IAuthorisationService authorisationService, IStringResourceProvider stringResourceProvider)
+        public UserAccountController(IUserManagementService userManagementService, IPasswordManagementService passwordManagementService, IAuthorisationService authorisationService, IStringResourceProvider stringResourceProvider)
         {
-            _userService = userService;
+            _userManagementService = userManagementService;
             _passwordManagementService = passwordManagementService;
             _authorisationService = authorisationService;
             _stringResourceProvider = stringResourceProvider;
@@ -66,7 +66,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
                     user.Email = model.Email;
-                    _userService.SaveUser(user);
+                    _userManagementService.SaveUser(user);
                     await _authorisationService.SetAuthCookie(user, false);
 
                     return Redirect(UniquePageHelper.GetUrl<UserAccountPage>());
@@ -77,10 +77,9 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
         public JsonResult IsUniqueEmail(string email)
         {
-            if (_userService.IsUniqueEmail(email, CurrentRequestData.CurrentUser.Id))
-                return Json(true, JsonRequestBehavior.AllowGet);
-
-            return Json(_stringResourceProvider.GetValue("Register Email Already Registered", "Email already registered."), JsonRequestBehavior.AllowGet);
+            return _userManagementService.IsUniqueEmail(email, CurrentRequestData.CurrentUser.Id)
+                ? Json(true, JsonRequestBehavior.AllowGet)
+                : Json(_stringResourceProvider.GetValue("Register Email Already Registered", "Email already registered."), JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -98,12 +97,11 @@ namespace MrCMS.Web.Apps.Core.Controllers
             {
                 var user = CurrentRequestData.CurrentUser;
                 _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);
-                model.Message = _stringResourceProvider.GetValue("Login Password Updated","Password updated.");
-
+                model.Message = _stringResourceProvider.GetValue("Login Password Updated", "Password updated.");
             }
             else
             {
-                model.Message = _stringResourceProvider.GetValue("Login Invalid","Please ensure both fields are filled out and valid");
+                model.Message = _stringResourceProvider.GetValue("Login Invalid", "Please ensure both fields are filled out and valid");
             }
 
             TempData["message"] = model.Message;

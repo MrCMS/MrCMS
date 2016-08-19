@@ -10,8 +10,8 @@ namespace MrCMS.Tasks
     public class SendQueuedMessagesTask : SchedulableTask
     {
         public const int MAX_TRIES = 5;
+        protected readonly ISession _session;
         private readonly IEmailSender _emailSender;
-        private readonly ISession _session;
 
         public SendQueuedMessagesTask(ISession session, IEmailSender emailSender)
         {
@@ -31,10 +31,10 @@ namespace MrCMS.Tasks
                 _session.Transact(session =>
                 {
                     foreach (
-                        var queuedMessage in
+                        QueuedMessage queuedMessage in
                             session.QueryOver<QueuedMessage>().Where(
                                 message => message.SentOn == null && message.Tries < MAX_TRIES)
-                                .Take(50).List())
+                                .List())
                     {
                         if (_emailSender.CanSend(queuedMessage))
                             _emailSender.SendMailMessage(queuedMessage);

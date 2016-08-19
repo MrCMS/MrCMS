@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using MrCMS.Entities.Documents.Web;
+using MrCMS.Services;
+using MrCMS.Website;
 
 namespace MrCMS.Helpers
 {
@@ -11,6 +14,15 @@ namespace MrCMS.Helpers
         {
             // generates <form action="{current url}" method="post">...</form> 
             string formAction = htmlHelper.ViewContext.HttpContext.Request.RawUrl;
+            return FormHelper(htmlHelper, formAction, formMethod, MrCMSHtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes));
+        }
+
+        public static MvcForm BeginForm<T>(this HtmlHelper htmlHelper, FormMethod formMethod, object htmlAttributes) where T : Webpage, IUniquePage
+        {
+            string formAction = "/" +
+                                htmlHelper.ViewContext.HttpContext.Get<IUniquePageService>()
+                                    .GetUniquePage<T>()
+                                    .LiveUrlSegment;
             return FormHelper(htmlHelper, formAction, formMethod, MrCMSHtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes));
         }
 

@@ -15,17 +15,16 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class UserController : MrCMSAdminController
     {
-        private readonly IUserService _userService;
+        private readonly IUserManagementService _userManagementService;
         private readonly IUserSearchService _userSearchService;
         private readonly IRoleService _roleService;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IGetUserCultureOptions _getUserCultureOptions;
         private readonly IGetUserEditTabsService _getUserEditTabsService;
 
-
-        public UserController(IUserService userService, IUserSearchService userSearchService, IRoleService roleService, IPasswordManagementService passwordManagementService, IGetUserCultureOptions getUserCultureOptions, IGetUserEditTabsService getUserEditTabsService)
+        public UserController(IUserManagementService userManagementService, IUserSearchService userSearchService, IRoleService roleService, IPasswordManagementService passwordManagementService, IGetUserCultureOptions getUserCultureOptions, IGetUserEditTabsService getUserEditTabsService)
         {
-            _userService = userService;
+            _userManagementService = userManagementService;
             _userSearchService = userSearchService;
             _roleService = roleService;
             _passwordManagementService = passwordManagementService;
@@ -45,7 +44,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [MrCMSACLRule(typeof(UserACL), UserACL.Add)]
         public PartialViewResult Add()
         {
-            var model = new AddUserModel(); 
+            var model = new AddUserModel();
             ViewData["culture-options"] = _getUserCultureOptions.Get();
             return PartialView(model);
         }
@@ -54,7 +53,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [MrCMSACLRule(typeof(UserACL), UserACL.Add)]
         public ActionResult Add([IoCModelBinder(typeof(AddUserModelBinder))] User user)
         {
-            _userService.AddUser(user);
+            _userManagementService.AddUser(user);
 
             return RedirectToAction("Edit", new { id = user.Id });
         }
@@ -78,7 +77,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [MrCMSACLRule(typeof(UserACL), UserACL.Edit)]
         public ActionResult Edit([IoCModelBinder(typeof(EditUserModelBinder))] User user)
         {
-            _userService.SaveUser(user);
+            _userManagementService.SaveUser(user);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", user.Name));
             return RedirectToAction("Edit", "User", new { Id = user.Id });
         }
@@ -95,7 +94,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [MrCMSACLRule(typeof(UserACL), UserACL.Delete)]
         public RedirectToRouteResult Delete(User user)
         {
-            _userService.DeleteUser(user);
+            _userManagementService.DeleteUser(user);
 
             return RedirectToAction("Index");
         }
@@ -112,13 +111,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult SetPassword(User user, string password)
         {
             _passwordManagementService.SetPassword(user, password, password);
-            _userService.SaveUser(user);
+            _userManagementService.SaveUser(user);
             return RedirectToAction("Edit", new { user.Id });
         }
 
         public JsonResult IsUniqueEmail(string email, int? id)
         {
-            if (_userService.IsUniqueEmail(email, id))
+            if (_userManagementService.IsUniqueEmail(email, id))
                 return Json(true, JsonRequestBehavior.AllowGet);
 
             return Json("Email already registered.", JsonRequestBehavior.AllowGet);

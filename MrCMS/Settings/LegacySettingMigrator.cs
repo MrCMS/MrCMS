@@ -49,13 +49,32 @@ namespace MrCMS.Settings
         public static void MigrateSettings(IKernel kernel)
         {
             var settingsFolder = GetSettingsFolder();
-            
+
             // we will rename migrated files, so once they've all been migrated, there will be no .json files left
-            if (!Directory.Exists(settingsFolder) || !Directory.EnumerateFiles(settingsFolder,"*.json",SearchOption.AllDirectories).Any())
+            if (!Directory.Exists(settingsFolder))
+                return;
+            var jsonFiles = Directory.EnumerateFiles(settingsFolder, "*.json", SearchOption.AllDirectories);
+            if (!jsonFiles.Any(HasExistingTypeInCurrentSystem))
                 return;
             CopyOldSystemSettings();
             UpdateDbInstalled(kernel);
             CopyOldSiteSettings(kernel);
+        }
+
+        private static bool HasExistingTypeInCurrentSystem(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+                return false;
+
+            var withoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            if (string.IsNullOrWhiteSpace(withoutExtension))
+                return false;
+
+            var allSettingsTypes =
+                   TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>()
+                       .Concat(TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()).ToHashSet();
+
+            return allSettingsTypes.Select(x => x.FullName).Contains(withoutExtension, StringComparer.OrdinalIgnoreCase);
         }
 
         private static void UpdateDbInstalled(IKernel kernel)

@@ -536,6 +536,7 @@
     <Compile Include="Events\OnUpdatingArgs.cs" />
     <Compile Include="Events\Widgets\ClearWidgetsFromCache.cs" />
     <Compile Include="HealthChecks\EmailSenderTaskCheck.cs" />
+    <Compile Include="HealthChecks\HealthCheckStatus.cs" />
     <Compile Include="HealthChecks\OptimizationsEnabled.cs" />
     <Compile Include="HealthChecks\PublishWebpageTaskHealthCheck.cs" />
     <Compile Include="HealthChecks\HealthCheck.cs" />
@@ -684,6 +685,7 @@
     <Compile Include="Services\ApplicationRestart.cs" />
     <Compile Include="Services\ApplicationRestartExecutor.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
+    <Compile Include="Services\BelongToUserLookupService.cs" />
     <Compile Include="Services\Caching\HtmlCacheService.cs" />
     <Compile Include="Services\Caching\IClearCache.cs" />
     <Compile Include="Services\Caching\IHtmlCacheService.cs" />
@@ -733,10 +735,12 @@
     <Compile Include="Services\IAppStylesheetList.cs" />
     <Compile Include="Services\IAuthConfigurationService.cs" />
     <Compile Include="Services\IAzureFileSystem.cs" />
+    <Compile Include="Services\IBelongToUserLookupService.cs" />
     <Compile Include="Services\ICropService.cs" />
     <Compile Include="Services\ICustomBindingService.cs" />
     <Compile Include="Services\IEmailSender.cs" />
     <Compile Include="Services\IExistAnyWebpageService.cs" />
+    <Compile Include="Services\IExternalUserSource.cs" />
     <Compile Include="Services\IFormPostingHandler.cs" />
     <Compile Include="Services\IGetBreadcrumbs.cs" />
     <Compile Include="Services\IGetCurrentLayout.cs" />
@@ -758,6 +762,7 @@
     <Compile Include="Services\IStoredInAppData.cs" />
     <Compile Include="Services\IUniquePageService.cs" />
     <Compile Include="Services\IUrlValidationService.cs" />
+    <Compile Include="Services\IUserLookup.cs" />
     <Compile Include="Services\IUserUIPermissionsService.cs" />
     <Compile Include="Services\IValidWebpageChildrenService.cs" />
     <Compile Include="Services\IWebpageUrlGenerator.cs" />
@@ -798,10 +803,12 @@
     <Compile Include="Services\Sitemaps\SitemapData.cs" />
     <Compile Include="Services\Sitemaps\SiteMapElementAppender.cs" />
     <Compile Include="Services\Sitemaps\SiteMapGenerationInfo.cs" />
-    <Compile Include="Services\Sitemaps\SiteMapService.cs" />
+    <Compile Include="Services\Sitemaps\SitemapService.cs" />
     <Compile Include="Services\StandardAuthConfigurationService.cs" />
     <Compile Include="Services\UniquePageService.cs" />
     <Compile Include="Services\UrlValidationService.cs" />
+    <Compile Include="Services\UserLookup.cs" />
+    <Compile Include="Services\UserManagementService.cs" />
     <Compile Include="Services\UserProfileDataService.cs" />
     <Compile Include="Services\UserUIPermissionsService.cs" />
     <Compile Include="Services\ValidWebpageChildrenService.cs" />
@@ -981,7 +988,7 @@
     <Compile Include="Entities\Indexes\AdminWebpageIndexDefinition.cs" />
     <Compile Include="Services\IRoleService.cs" />
     <Compile Include="Services\IUserProfileDataService.cs" />
-    <Compile Include="Services\IUserService.cs" />
+    <Compile Include="Services\IUserManagementService.cs" />
     <Compile Include="Services\IWidgetService.cs" />
     <Compile Include="Models\SiteTree.cs" />
     <Compile Include="Models\SiteTreeNode.cs" />
@@ -993,7 +1000,6 @@
     <Compile Include="Services\NopSHA1HashAlgorithm.cs" />
     <Compile Include="Services\SHA512HashAlgorithm.cs" />
     <Compile Include="Services\UserSearchService.cs" />
-    <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\UserStore.cs" />
     <Compile Include="Services\WidgetService.cs" />
     <Compile Include="Settings\AppDataConfigurationProvider.cs" />
@@ -1051,6 +1057,7 @@
     <Compile Include="Tasks\ITaskExecutionHandler.cs" />
     <Compile Include="Tasks\ITaskResetter.cs" />
     <Compile Include="Tasks\ITaskStatusUpdater.cs" />
+    <Compile Include="Tasks\ITriggerUrls.cs" />
     <Compile Include="Tasks\LuceneAction.cs" />
     <Compile Include="Tasks\LuceneActionComparison.cs" />
     <Compile Include="Tasks\LuceneActionExecutor.cs" />
@@ -1058,6 +1065,7 @@
     <Compile Include="Tasks\LuceneOperation.cs" />
     <Compile Include="Tasks\MoveFile.cs" />
     <Compile Include="Tasks\MoveFileData.cs" />
+    <Compile Include="Tasks\OptimiseIndexesController.cs" />
     <Compile Include="Tasks\PublishScheduledWebpagesTask.cs" />
     <Compile Include="Tasks\QueuedTaskSearchQuery.cs" />
     <Compile Include="Tasks\SchedulableTask.cs" />
@@ -1071,6 +1079,7 @@
     <Compile Include="Tasks\UniversalIndexTaskExecutionHandler.cs" />
     <Compile Include="Tasks\UniversalSearchActionExecutor.cs" />
     <Compile Include="Tasks\UpdateSitemap.cs" />
+    <Compile Include="Tasks\WriteSitemapController.cs" />
     <Compile Include="Website\ActionMethodInfo.cs" />
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />

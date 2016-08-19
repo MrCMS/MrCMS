@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Services;
@@ -14,7 +15,7 @@ namespace MrCMS.Tests.Services
         public PasswordManagementServiceTests()
         {
             _passwordEncryptionManager = A.Fake<IPasswordEncryptionManager>();
-            _passwordManagementService = new PasswordManagementService(_passwordEncryptionManager);
+            _passwordManagementService = new PasswordManagementService(new List<IExternalUserSource>(), _passwordEncryptionManager);
         }
 
         [Fact]

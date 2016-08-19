@@ -25,6 +25,16 @@ namespace MrCMS.Services
 
         public RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
         {
+            return GetRedirectResult<T>(routeValues, false);
+        }
+
+        public RedirectResult PermanentRedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage
+        {
+            return GetRedirectResult<T>(routeValues, false);
+        }
+
+        private RedirectResult GetRedirectResult<T>(object routeValues, bool isPermanent) where T : Webpage, IUniquePage
+        {
             var page = GetUniquePage<T>();
             string url = page != null ? string.Format("/{0}", page.LiveUrlSegment) : "/";
             if (routeValues != null)
@@ -35,7 +45,7 @@ namespace MrCMS.Services
                         dictionary.Select(
                             pair => string.Format("{0}={1}", pair.Key, pair.Value))));
             }
-            return new RedirectResult(url);
+            return new RedirectResult(url, isPermanent);
         }
     }
 }

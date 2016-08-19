@@ -14,12 +14,14 @@ namespace MrCMS.Services
     {
         private readonly IRoleService _roleService;
         private readonly ISession _session;
-        private readonly IUserService _userService;
+        private readonly IUserLookup _userLookup;
+        private readonly IUserManagementService _userManagementService;
 
-        public UserStore(IUserService userService, IRoleService roleService, ISession session)
+        public UserStore(IUserManagementService userManagementService, IRoleService roleService, ISession session, IUserLookup userLookup)
         {
-            _userService = userService;
+            _userManagementService = userManagementService;
             _session = session;
+            _userLookup = userLookup;
             _roleService = roleService;
         }
 
@@ -40,30 +42,27 @@ namespace MrCMS.Services
             };
             user.UserClaims.Add(userClaim);
             _session.Transact(session =>
-                              {
-                                  session.Save(userClaim);
-                                  session.Update(user);
-                              });
+            {
+                session.Save(userClaim);
+                session.Update(user);
+            });
             return Task.FromResult<object>(null);
         }
 
         public Task RemoveClaimAsync(User user, Claim claim)
         {
-            // we will just remove all existing claims of a type if requested. This is how the framework expects this method to work
-            var existingClaims =
-                user.UserClaims.Where(
+            UserClaim singleOrDefault =
+                user.UserClaims.SingleOrDefault(
                     userClaim =>
-                        userClaim.Claim == claim.Type).ToList();
-            if (existingClaims.Any())
+                        userClaim.Claim == claim.Type && userClaim.Value == claim.Value &&
+                        userClaim.Issuer == claim.Issuer);
+            if (singleOrDefault != null)
                 _session.Transact(session =>
-                                  {
-                                      foreach (var userClaim in existingClaims)
-                                      {
-                                          user.UserClaims.Remove(userClaim);
-                                          session.Delete(userClaim);
-                                      }
-                                      session.Update(user);
-                                  });
+                {
+                    user.UserClaims.Remove(singleOrDefault);
+                    session.Delete(singleOrDefault);
+                    session.Update(user);
+                });
             return Task.FromResult<object>(null);
         }
 
@@ -73,31 +72,31 @@ namespace MrCMS.Services
 
         public Task CreateAsync(User user)
         {
-            _userService.AddUser(user);
+            _userManagementService.AddUser(user);
             return Task.FromResult<object>(null);
         }
 
         public Task UpdateAsync(User user)
         {
-            _userService.SaveUser(user);
+            _userManagementService.SaveUser(user);
             return Task.FromResult<object>(null);
         }
 
         public Task DeleteAsync(User user)
         {
-            _userService.DeleteUser(user);
+            _userManagementService.DeleteUser(user);
             return Task.FromResult<object>(null);
         }
 
         public Task<User> FindByIdAsync(int userId)
         {
-            var user = _userService.GetUser(userId);
+            var user = _userManagementService.GetUser(userId);
             return Task.FromResult(user);
         }
 
         public Task<User> FindByNameAsync(string userName)
         {
-            var user = _userService.GetUserByEmail(userName);
+            var user = _userLookup.GetUserByEmail(userName);
             return Task.FromResult(user);
         }
 
@@ -111,10 +110,10 @@ namespace MrCMS.Services
             };
             user.UserLogins.Add(userLogin);
             _session.Transact(session =>
-                              {
-                                  session.Save(userLogin);
-                                  session.Update(user);
-                              });
+            {
+                session.Save(userLogin);
+                session.Update(user);
+            });
             return Task.FromResult<object>(null);
         }
 
@@ -124,11 +123,11 @@ namespace MrCMS.Services
                 user.UserLogins.FirstOrDefault(l => l.ProviderKey == login.ProviderKey);
             if (userLogin != null)
                 _session.Transact(session =>
-                                  {
-                                      user.UserLogins.Remove(userLogin);
-                                      session.Delete(userLogin);
-                                      session.Update(user);
-                                  });
+                {
+                    user.UserLogins.Remove(userLogin);
+                    session.Delete(userLogin);
+                    session.Update(user);
+                });
             return Task.FromResult<object>(null);
         }
 
@@ -162,7 +161,7 @@ namespace MrCMS.Services
                 if (!userRole.Users.Contains(user))
                     userRole.Users.Add(user);
 
-                _userService.SaveUser(user);
+                _userManagementService.SaveUser(user);
                 _roleService.SaveRole(userRole);
             }
             return Task.FromResult<object>(null);
@@ -178,7 +177,7 @@ namespace MrCMS.Services
                 if (userRole.Users.Contains(user))
                     userRole.Users.Remove(user);
 
-                _userService.SaveUser(user);
+                _userManagementService.SaveUser(user);
                 _roleService.SaveRole(userRole);
             }
             return Task.FromResult<object>(null);

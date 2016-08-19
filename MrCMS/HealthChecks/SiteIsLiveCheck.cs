@@ -25,7 +25,7 @@ namespace MrCMS.HealthChecks
                 return new HealthCheckResult
                 {
                     Messages = new List<string> { "The current site is not set to live, please change this in site settings." },
-                    OK = false
+                    Status = HealthCheckStatus.Failure
                 };
             }
             return HealthCheckResult.Success;
