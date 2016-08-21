@@ -91,7 +91,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _sitesController.Edit(site);
 
-            A.CallTo(() => _siteAdminService.SaveSite(site)).MustHaveHappened();
+            A.CallTo(() => _siteAdminService.UpdateSite(site)).MustHaveHappened();
         }
 
         [Fact]

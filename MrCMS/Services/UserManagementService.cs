@@ -1,3 +1,5 @@
+using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Paging;
@@ -9,32 +11,32 @@ namespace MrCMS.Services
 {
     public class UserManagementService : IUserManagementService
     {
-        private readonly ISession _session;
+        private readonly IRepository<User> _userRepository;
 
-        public UserManagementService(ISession session)
+        public UserManagementService(IRepository<User> userRepository)
         {
-            _session = session;
+            _userRepository = userRepository;
         }
 
         public void AddUser(User user)
         {
-            _session.Transact(session => { session.Save(user); });
+            _userRepository.Add(user);
             EventContext.Instance.Publish<IOnUserAdded, OnUserAddedEventArgs>(new OnUserAddedEventArgs(user));
         }
 
         public void SaveUser(User user)
         {
-            _session.Transact(session => session.Update(user));
+            _userRepository.Update(user);
         }
 
         public User GetUser(int id)
         {
-            return _session.Get<User>(id);
+            return _userRepository.Get(id);
         }
 
         public void DeleteUser(User user)
         {
-            _session.Transact(session => session.Delete(user));
+            _userRepository.Delete(user);
         }
 
         /// <summary>
@@ -47,14 +49,14 @@ namespace MrCMS.Services
         {
             if (id.HasValue)
             {
-                return _session.QueryOver<User>().Where(u => u.Email == email && u.Id != id.Value).RowCount() == 0;
+                return !_userRepository.Query().Any(u => u.Email == email && u.Id != id.Value);
             }
-            return _session.QueryOver<User>().Where(u => u.Email == email).RowCount() == 0;
+            return !_userRepository.Query().Any(u => u.Email == email);
         }
 
         public IPagedList<User> GetAllUsersPaged(int page)
         {
-            return _session.QueryOver<User>().Paged(page);
+            return _userRepository.Query().Paged(page);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using MrCMS.ACL;
+using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
@@ -19,15 +20,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class WebpageController : MrCMSAdminController
     {
-        private readonly IWebpageBaseViewDataService _webpageBaseViewDataService;
-        private readonly IDocumentService _documentService;
+        private readonly IWebpageAdminService _webpageAdminService;
+        private readonly IWebpageViewDataService _webpageViewDataService;
         private readonly IUrlValidationService _urlValidationService;
 
-        public WebpageController(IWebpageBaseViewDataService webpageBaseViewDataService,
-            IDocumentService documentService, IUrlValidationService urlValidationService)
+        public WebpageController(IWebpageAdminService webpageAdminService, IWebpageViewDataService webpageViewDataService, IUrlValidationService urlValidationService)
         {
-            _webpageBaseViewDataService = webpageBaseViewDataService;
-            _documentService = documentService;
+            _webpageAdminService = webpageAdminService;
+            _webpageViewDataService = webpageViewDataService;
             _urlValidationService = urlValidationService;
         }
 
@@ -41,11 +41,8 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Add_Get(int? id)
         {
             //Build list 
-            var model = new AddPageModel
-            {
-                Parent = id.HasValue ? _documentService.GetDocument<Webpage>(id.Value) : null
-            };
-            _webpageBaseViewDataService.SetAddPageViewData(ViewData, model.Parent as Webpage);
+            var model = _webpageAdminService.GetAddModel(id);
+            _webpageViewDataService.SetAddPageViewData(ViewData, model.Parent as Webpage);
             return View(model);
         }
 
@@ -54,10 +51,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (!_urlValidationService.UrlIsValidForWebpage(doc.UrlSegment, null))
             {
-                _webpageBaseViewDataService.SetAddPageViewData(ViewData, doc.Parent as Webpage);
+                _webpageViewDataService.SetAddPageViewData(ViewData, doc.Parent as Webpage);
                 return View(doc);
             }
-            _documentService.AddDocument(doc);
+            _webpageAdminService.Add(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
             return RedirectToAction("Edit", new { id = doc.Id });
         }
@@ -65,15 +62,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet, ActionName("Edit"), MrCMSTypeACL(typeof(Webpage), TypeACLRule.Edit)]
         public virtual ActionResult Edit_Get(Webpage doc)
         {
-            _webpageBaseViewDataService.SetEditPageViewData(ViewData, doc);
-            doc.SetAdminViewData(ViewData);
+            _webpageViewDataService.SetEditPageViewData(ViewData, doc);
+            _webpageViewDataService.SetWebpageAdminViewData(ViewData,doc);
             return View(doc);
         }
 
         [HttpPost, MrCMSTypeACL(typeof(Webpage), TypeACLRule.Edit), ForceImmediateLuceneUpdate]
         public virtual ActionResult Edit([IoCModelBinder(typeof(EditWebpageModelBinder))] Webpage doc)
         {
-            _documentService.SaveDocument(doc);
+            _webpageAdminService.Update(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
             return RedirectToAction("Edit", new { id = doc.Id });
         }
@@ -87,7 +84,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost, MrCMSTypeACL(typeof(Webpage), TypeACLRule.Delete), ForceImmediateLuceneUpdate]
         public virtual ActionResult Delete(Webpage document)
         {
-            _documentService.DeleteDocument(document);
+            _webpageAdminService.Delete(document);
             TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
             return RedirectToAction("Index");
         }
@@ -95,12 +92,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] Webpage parent)
         {
-            List<SortItem> sortItems =
-                _documentService.GetDocumentsByParent(parent)
-                    .Select(
-                        arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
-                    .OrderBy(x => x.Order)
-                    .ToList();
+            List<SortItem> sortItems = _webpageAdminService.GetSortItems(parent);
 
             return View(sortItems);
         }
@@ -108,7 +100,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] Webpage parent, List<SortItem> items)
         {
-            _documentService.SetOrders(items);
+            _webpageAdminService.SetOrders(items);
             return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
         }
         public ActionResult Show(Webpage document)
@@ -122,7 +114,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult PublishNow(Webpage webpage)
         {
-            _documentService.PublishNow(webpage);
+            _webpageAdminService.PublishNow(webpage);
 
             return RedirectToAction("Edit", new { id = webpage.Id });
         }
@@ -130,7 +122,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Unpublish(Webpage webpage)
         {
-            _documentService.Unpublish(webpage);
+            _webpageAdminService.Unpublish(webpage);
 
             return RedirectToAction("Edit", new { id = webpage.Id });
         }
@@ -176,10 +168,11 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             if (webpage != null)
             {
-                webpage.SetAdminViewData(ViewData);
+                _webpageViewDataService.SetWebpageAdminViewData(ViewData, webpage);
                 return PartialView(webpage);
             }
             return new EmptyResult();
         }
     }
+
 }

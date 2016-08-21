@@ -1,4 +1,6 @@
-﻿using MrCMS.Entities.Documents;
+﻿using System.Linq;
+using MrCMS.Data;
+using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
 using MrCMS.Paging;
 using MrCMS.Web.Areas.Admin.Models;
@@ -8,18 +10,20 @@ namespace MrCMS.Web.Areas.Admin.Services
 {
     public class DocumentVersionsAdminService : IDocumentVersionsAdminService
     {
-        private readonly ISession _session;
+        private readonly IRepository<DocumentVersion> _documentVersionRepository;
+        private readonly IRepository<Document> _documentRepository;
 
-        public DocumentVersionsAdminService(ISession session)
+        public DocumentVersionsAdminService(IRepository<DocumentVersion> documentVersionRepository,IRepository<Document> documentRepository)
         {
-            _session = session;
+            _documentVersionRepository = documentVersionRepository;
+            _documentRepository = documentRepository;
         }
 
         public VersionsModel GetVersions(Document document, int page)
         {
-            IPagedList<DocumentVersion> versions = _session.QueryOver<DocumentVersion>()
+            IPagedList<DocumentVersion> versions = _documentVersionRepository.Query()
                 .Where(version => version.Document.Id == document.Id)
-                .OrderBy(version => version.CreatedOn).Desc
+                .OrderByDescending(version => version.CreatedOn)
                 .Paged(page);
 
             return new VersionsModel(versions, document.Id);
@@ -27,7 +31,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public DocumentVersion GetDocumentVersion(int id)
         {
-            return _session.Get<DocumentVersion>(id);
+            return _documentVersionRepository.Get(id);
         }
 
         public void RevertToVersion(DocumentVersion documentVersion)
@@ -40,7 +44,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             {
                 versionProperty.SetValue(currentVersion, versionProperty.GetValue(previousVersion, null), null);
             }
-            _session.Transact(session => session.Update(currentVersion));
+            _documentRepository.Update(currentVersion);
         }
     }
 }

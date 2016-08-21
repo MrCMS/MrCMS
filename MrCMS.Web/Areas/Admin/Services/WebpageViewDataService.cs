@@ -11,18 +11,20 @@ using MrCMS.Website;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
-    public class WebpageBaseViewDataService : IWebpageBaseViewDataService
+    public class WebpageViewDataService : IWebpageViewDataService
     {
         private readonly IGetValidPageTemplatesToAdd _getValidPageTemplatesToAdd;
         private readonly IGetWebpageEditTabsService _getWebpageEditTabsService;
+        private readonly ISetWebpageAdminViewData _setWebpageAdminViewData;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
-        public WebpageBaseViewDataService(IValidWebpageChildrenService validWebpageChildrenService, IGetValidPageTemplatesToAdd getValidPageTemplatesToAdd,
-            IGetWebpageEditTabsService getWebpageEditTabsService)
+        public WebpageViewDataService(IValidWebpageChildrenService validWebpageChildrenService, IGetValidPageTemplatesToAdd getValidPageTemplatesToAdd,
+            IGetWebpageEditTabsService getWebpageEditTabsService,ISetWebpageAdminViewData setWebpageAdminViewData)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _getValidPageTemplatesToAdd = getValidPageTemplatesToAdd;
             _getWebpageEditTabsService = getWebpageEditTabsService;
+            _setWebpageAdminViewData = setWebpageAdminViewData;
         }
 
         public void SetAddPageViewData(ViewDataDictionary viewData, Webpage parent)
@@ -74,6 +76,11 @@ namespace MrCMS.Web.Areas.Admin.Services
             }
 
             viewData["edit-tabs"] = _getWebpageEditTabsService.GetEditTabs(page);
+        }
+
+        public void SetWebpageAdminViewData(ViewDataDictionary viewData, Webpage webpage)
+        {
+            _setWebpageAdminViewData.SetViewData(webpage, viewData);
         }
     }
 }

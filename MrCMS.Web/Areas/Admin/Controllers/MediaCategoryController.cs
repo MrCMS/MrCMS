@@ -19,25 +19,20 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class MediaCategoryController : MrCMSAdminController
     {
+        private readonly IMediaCategoryAdminService _mediaCategoryAdminService;
         private readonly IFileAdminService _fileAdminService;
-        private readonly IUrlValidationService _urlValidationService;
-        private readonly IDocumentService _documentService;
 
-        public MediaCategoryController(IFileAdminService fileAdminService, IUrlValidationService urlValidationService, IDocumentService documentService)
+        public MediaCategoryController(IMediaCategoryAdminService mediaCategoryAdminService, IFileAdminService fileAdminService)
         {
+            _mediaCategoryAdminService = mediaCategoryAdminService;
             _fileAdminService = fileAdminService;
-            _urlValidationService = urlValidationService;
-            _documentService = documentService;
         }
 
         [HttpGet, ActionName("Add")]
         public ActionResult Add_Get(int? id)
         {
             //Build list 
-            var model = new MediaCategory
-            {
-                Parent = id.HasValue ? _documentService.GetDocument<MediaCategory>(id.Value) : null
-            };
+            var model = _mediaCategoryAdminService.GetNewCategoryModel(id); 
 
             return View(model);
         }
@@ -45,8 +40,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public virtual ActionResult Add(MediaCategory doc)
         {
-            _documentService.AddDocument(doc);
-            _fileAdminService.CreateFolder(doc);
+            _mediaCategoryAdminService.Add(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
             return RedirectToAction("Show", new { id = doc.Id });
         }
@@ -60,7 +54,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public virtual ActionResult Edit(MediaCategory doc)
         {
-            _documentService.SaveDocument(doc);
+            _mediaCategoryAdminService.Update(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
             return RedirectToAction("Show", new { id = doc.Id });
         }
@@ -74,7 +68,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public virtual ActionResult Delete(MediaCategory document)
         {
-            _documentService.DeleteDocument(document);
+            _mediaCategoryAdminService.Delete(document);
             TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
             return RedirectToAction("Index");
         }
@@ -82,12 +76,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] MediaCategory parent)
         {
-            List<SortItem> sortItems =
-                _documentService.GetDocumentsByParent(parent)
-                    .Select(
-                        arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
-                    .OrderBy(x => x.Order)
-                    .ToList();
+            List<SortItem> sortItems = _mediaCategoryAdminService.GetSortItems(parent);
 
             return View(sortItems);
         }
@@ -95,7 +84,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] MediaCategory parent, List<SortItem> items)
         {
-            _documentService.SetOrders(items);
+            _mediaCategoryAdminService.SetOrders(items);
             return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
         }
 
@@ -164,7 +153,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_urlValidationService.UrlIsValidForMediaCategory(urlSegment, id)
+            return !_mediaCategoryAdminService.UrlIsValidForMediaCategory(urlSegment, id)
                 ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet)
                 : Json(true, JsonRequestBehavior.AllowGet);
         }

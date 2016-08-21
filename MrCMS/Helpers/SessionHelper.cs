@@ -5,8 +5,6 @@ using System.Web;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities;
 using MrCMS.Paging;
-using MrCMS.Settings;
-using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
@@ -15,6 +13,8 @@ namespace MrCMS.Helpers
 {
     public static class SessionHelper
     {
+        public static int DefaultPageSize = 10;
+
         public static ISession OpenFilteredSession(this ISessionFactory sessionFactory, HttpContextBase context)
         {
             var session = new MrCMSSession(sessionFactory.OpenSession(), context);
@@ -28,7 +28,7 @@ namespace MrCMS.Helpers
             {
                 // Wrap in transaction
                 TResult result;
-                using (ITransaction tx = session.BeginTransaction())
+                using (var tx = session.BeginTransaction())
                 {
                     result = func.Invoke(session);
                     tx.Commit();
@@ -55,7 +55,7 @@ namespace MrCMS.Helpers
             {
                 // Wrap in transaction
                 TResult result;
-                using (ITransaction tx = session.BeginTransaction())
+                using (var tx = session.BeginTransaction())
                 {
                     result = func.Invoke(session);
                     tx.Commit();
@@ -80,9 +80,9 @@ namespace MrCMS.Helpers
             int? pageSize = null)
             where T : SystemEntity
         {
-            int size = pageSize ?? MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
+            var size = pageSize ?? DefaultPageSize;
             IEnumerable<T> values =
-                query.GetExecutableQueryOver(session).Skip((pageNumber - 1) * size).Take(size).Cacheable().List<T>();
+                query.GetExecutableQueryOver(session).Skip((pageNumber - 1)*size).Take(size).Cacheable().List<T>();
 
             var rowCount = query.GetExecutableQueryOver(session).ToRowCountQuery().SingleOrDefault<int>();
 
@@ -93,10 +93,10 @@ namespace MrCMS.Helpers
             int? pageSize = null)
             where TResult : SystemEntity
         {
-            int size = pageSize ?? MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
-            IEnumerable<TResult> results = queryBase.Skip((pageNumber - 1) * size).Take(size).Cacheable().List();
+            var size = pageSize ?? DefaultPageSize;
+            IEnumerable<TResult> results = queryBase.Skip((pageNumber - 1)*size).Take(size).Cacheable().List();
 
-            int rowCount = queryBase.Cacheable().RowCount();
+            var rowCount = queryBase.Cacheable().RowCount();
 
             return new StaticPagedList<TResult>(results, pageNumber, size, rowCount);
         }
@@ -105,11 +105,9 @@ namespace MrCMS.Helpers
             int? pageSize = null)
             where TResult : SystemEntity
         {
-            int size = pageSize ?? MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
+            var size = pageSize ?? DefaultPageSize;
 
-            IQueryable<TResult> cacheable = queryable.Cacheable();
-
-            return new PagedList<TResult>(cacheable, pageNumber, size);
+            return new PagedList<TResult>(queryable, pageNumber, size);
         }
 
         public static bool Any<T>(this IQueryOver<T> query)
@@ -117,7 +115,7 @@ namespace MrCMS.Helpers
             return query.RowCount() > 0;
         }
 
-        public static T GetByGuid<T>(this ISession session,Guid guid) where T : SystemEntity
+        public static T GetByGuid<T>(this ISession session, Guid guid) where T : SystemEntity
         {
             // we use list here, as it seems to cache more performantly than .SingleOrDefault()
             return session.QueryOver<T>().Where(x => x.Guid == guid).Cacheable().List().FirstOrDefault();

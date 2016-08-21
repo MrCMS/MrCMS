@@ -37,13 +37,13 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             if (_roleService.GetRoleByName(model.Name) != null)
                 return new AddRoleResult(false, string.Format("{0} already exists.", model.Name));
-            _roleService.SaveRole(model);
+            _roleService.Add(model);
             return new AddRoleResult(true, null);
         }
 
         public void SaveRole(UserRole role)
         {
-            _roleService.SaveRole(role);
+            _roleService.Update(role);
         }
 
         public void DeleteRole(UserRole role)

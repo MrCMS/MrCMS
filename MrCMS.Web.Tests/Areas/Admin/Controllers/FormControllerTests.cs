@@ -4,9 +4,7 @@ using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Paging;
-using MrCMS.Services;
 using MrCMS.Web.Apps.Core.Pages;
-using MrCMS.Web.Areas.Admin;
 using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
@@ -17,21 +15,19 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
     public class FormControllerTests
     {
-        private IFormAdminService _formAdminService;
-        private FormController _formController;
-        private IDocumentService _documentService;
-
         public FormControllerTests()
         {
-            _documentService = A.Fake<IDocumentService>();
             _formAdminService = A.Fake<IFormAdminService>();
             _formController = new FormController(_formAdminService)
-                                  {
-                                      RequestMock =
-                                          A.Fake<HttpRequestBase>(),
-                                      ReferrerOverride = "http://www.example.com/test-redirect"
-                                  };
+            {
+                RequestMock =
+                    A.Fake<HttpRequestBase>(),
+                ReferrerOverride = "http://www.example.com/test-redirect"
+            };
         }
+
+        private readonly IFormAdminService _formAdminService;
+        private readonly FormController _formController;
 
         [Fact]
         public void FormController_ClearFormData_ShouldReturnPartialViewResult()
@@ -41,26 +37,6 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var result = _formController.ClearFormData(stubWebpage);
 
             result.Should().BeOfType<PartialViewResult>();
-        }
-
-        [Fact]
-        public void FormController_ClearFormDataPOST_ShouldReturnRedirectToRouteResult()
-        {
-            var stubWebpage = new StubWebpage();
-
-            var result = _formController.ClearFormData_POST(stubWebpage);
-
-            result.Should().BeOfType<RedirectToRouteResult>();
-        }
-
-        [Fact]
-        public void FormController_ClearFormDataPOST_ShouldRedirectToEditWebpage()
-        {
-            var stubWebpage = new StubWebpage();
-
-            var result = _formController.ClearFormData_POST(stubWebpage);
-
-            result.RouteValues["action"].Should().Be("Edit");
         }
 
         [Fact]
@@ -74,13 +50,23 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void FormController_ExportFormData_ShouldReturnFileResult()
+        public void FormController_ClearFormDataPOST_ShouldRedirectToEditWebpage()
         {
             var stubWebpage = new StubWebpage();
 
-            var result = _formController.ExportFormData(stubWebpage);
+            var result = _formController.ClearFormData_POST(stubWebpage);
 
-            result.Should().BeOfType<FileContentResult>();
+            result.RouteValues["action"].Should().Be("Edit");
+        }
+
+        [Fact]
+        public void FormController_ClearFormDataPOST_ShouldReturnRedirectToRouteResult()
+        {
+            var stubWebpage = new StubWebpage();
+
+            var result = _formController.ClearFormData_POST(stubWebpage);
+
+            result.Should().BeOfType<RedirectToRouteResult>();
         }
 
         [Fact]
@@ -94,22 +80,22 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void FormController_ViewPosting_ShouldReturnAPartialViewResult()
+        public void FormController_ExportFormData_ShouldReturnFileResult()
         {
-            _formController.ViewPosting(new FormPosting()).Should().BeOfType<PartialViewResult>();
+            var stubWebpage = new StubWebpage();
+
+            var result = _formController.ExportFormData(stubWebpage);
+
+            result.Should().BeOfType<FileContentResult>();
         }
 
         [Fact]
-        public void FormController_ViewPosting_ReturnsTheResultOfTheCallToGetFormPostingAsTheModel()
+        public void FormController_Posting_ReturnsTheResultOfTheCallToGetFormPostings()
         {
-            var formPosting = new FormPosting();
-            _formController.ViewPosting(formPosting).As<PartialViewResult>().Model.Should().Be(formPosting);
-        }
-
-        [Fact]
-        public void FormController_Postings_ReturnsAPartialViewResult()
-        {
-            _formController.Postings(new TextPage(), 1, null).Should().BeOfType<PartialViewResult>();
+            var textPage = new TextPage();
+            var postingsModel = new PostingsModel(PagedList<FormPosting>.Empty, 1);
+            A.CallTo(() => _formAdminService.GetFormPostings(textPage, 1, null)).Returns(postingsModel);
+            _formController.Postings(textPage, 1, null).As<PartialViewResult>().Model.Should().Be(postingsModel);
         }
 
         [Fact]
@@ -122,12 +108,22 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void FormController_Posting_ReturnsTheResultOfTheCallToGetFormPostings()
+        public void FormController_Postings_ReturnsAPartialViewResult()
         {
-            var textPage = new TextPage();
-            var postingsModel = new PostingsModel(PagedList<FormPosting>.Empty, 1);
-            A.CallTo(() => _formAdminService.GetFormPostings(textPage, 1, null)).Returns(postingsModel);
-            _formController.Postings(textPage, 1, null).As<PartialViewResult>().Model.Should().Be(postingsModel);
+            _formController.Postings(new TextPage(), 1, null).Should().BeOfType<PartialViewResult>();
+        }
+
+        [Fact]
+        public void FormController_ViewPosting_ReturnsTheResultOfTheCallToGetFormPostingAsTheModel()
+        {
+            var formPosting = new FormPosting();
+            _formController.ViewPosting(formPosting).As<PartialViewResult>().Model.Should().Be(formPosting);
+        }
+
+        [Fact]
+        public void FormController_ViewPosting_ShouldReturnAPartialViewResult()
+        {
+            _formController.ViewPosting(new FormPosting()).Should().BeOfType<PartialViewResult>();
         }
     }
 }

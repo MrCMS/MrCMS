@@ -15,7 +15,6 @@ namespace MrCMS.Settings
 
         public SiteSettings()
         {
-            DefaultPageSize = 10;
             Log404s = true;
             CKEditorConfig = SettingDefaults.CkEditorConfig;
             HoneypotFieldName = "YourStatus";
@@ -36,9 +35,6 @@ namespace MrCMS.Settings
 
         [DisplayName("Default Layout"), DropDownSelection("DefaultLayoutOptions")]
         public int DefaultLayoutId { get; set; }
-
-        [DisplayName("Default Page Size")]
-        public int DefaultPageSize { get; set; }
 
         [DisplayName("Unauthorised Page"), DropDownSelection("403Options")]
         public virtual int Error403PageId { get; set; }

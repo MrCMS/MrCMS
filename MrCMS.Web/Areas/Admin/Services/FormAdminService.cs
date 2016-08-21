@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
@@ -11,24 +12,33 @@ using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
     public class FormAdminService : IFormAdminService
     {
-        private readonly ISession _session;
+        private readonly IRepository<FormPosting> _formPostingRepository;
+        private readonly IRepository<FormProperty> _formPropertyRepository;
+        private readonly IRepository<FormListOption> _formListOptionRepository;
+        private readonly IRepository<FormValue> _formValueRepository;
 
-        public FormAdminService(ISession session)
+        public FormAdminService(IRepository<FormPosting>  formPostingRepository, IRepository<FormProperty> formPropertyRepository,
+            IRepository<FormListOption> formListOptionRepository, IRepository<FormValue> formValueRepository)
         {
-            _session = session;
+            _formPostingRepository = formPostingRepository;
+            _formPropertyRepository = formPropertyRepository;
+            _formListOptionRepository = formListOptionRepository;
+            _formValueRepository = formValueRepository;
         }
 
         public void ClearFormData(Webpage webpage)
         {
-            _session.Transact(session =>
+            _formPostingRepository.Transact(repository =>
             {
-                webpage.FormPostings.ForEach(session.Delete);
+                var webpageFormPostings = webpage.FormPostings.ToList();
                 webpage.FormPostings.Clear();
+                webpageFormPostings.ForEach(repository.Delete);
             });
         }
 
@@ -51,29 +61,29 @@ namespace MrCMS.Web.Areas.Admin.Services
         public void DeletePosting(FormPosting posting)
         {
             posting.Webpage.FormPostings.Remove(posting);
-            _session.Transact(session => session.Delete(posting));
+            _formPostingRepository.Delete(posting);
         }
 
         public void AddFormProperty(FormProperty property)
         {
-            _session.Transact(session =>
+            _formPropertyRepository.Transact(repository =>
             {
                 if (property.Webpage.FormProperties != null)
                     property.DisplayOrder = property.Webpage.FormProperties.Count;
 
-                session.Save(property);
+                repository.Add(property);
             });
         }
 
         public void SaveFormProperty(FormProperty property)
         {
-            _session.Transact(session => session.Update(property));
+            _formPropertyRepository.Update(property);
         }
 
         public void DeleteFormProperty(FormProperty property)
         {
             property.Webpage.FormProperties.Remove(property);
-            _session.Transact(session => session.Delete(property));
+            _formPropertyRepository.Delete(property);
         }
 
         public void SaveFormListOption(FormListOption formListOption)
@@ -81,32 +91,32 @@ namespace MrCMS.Web.Areas.Admin.Services
             FormPropertyWithOptions formProperty = formListOption.FormProperty;
             if (formProperty != null)
                 formProperty.Options.Add(formListOption);
-            _session.Transact(session =>
+            _formListOptionRepository.Transact(repository =>
             {
-                formListOption.OnSaving(session);
-                session.Save(formListOption);
+                formListOption.OnSaving(repository);
+                repository.Add(formListOption);
             });
         }
 
         public void UpdateFormListOption(FormListOption formListOption)
         {
-            _session.Transact(session =>
+            _formListOptionRepository.Transact(repository =>
             {
-                formListOption.OnSaving(session);
-                session.Update(formListOption);
+                formListOption.OnSaving(repository);
+                repository.Update(formListOption);
             });
         }
 
         public void DeleteFormListOption(FormListOption formListOption)
         {
-            _session.Transact(session => session.Delete(formListOption));
+            _formListOptionRepository.Delete(formListOption);
         }
 
         public void SetOrders(List<SortItem> items)
         {
-            _session.Transact(session => items.ForEach(item =>
+            _formPropertyRepository.Transact(session => items.ForEach(item =>
             {
-                var formItem = session.Get<FormProperty>(item.Id);
+                var formItem = session.Get(item.Id);
                 formItem.DisplayOrder = item.Order;
                 session.Update(formItem);
             }));
@@ -114,21 +124,19 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public PostingsModel GetFormPostings(Webpage webpage, int page, string search)
         {
-            FormPosting posting = null;
             var query =
-                _session.QueryOver(() => posting).Where(() => posting.Webpage.Id == webpage.Id);
+                _formPostingRepository.Query().Where(posting => posting.Webpage.Id == webpage.Id);
             if (!string.IsNullOrWhiteSpace(search))
             {
                 query =
-                    query.WithSubquery.WhereExists(
-                        QueryOver.Of<FormValue>()
+                    query.Where(posting=>
+                        _formValueRepository.Query()
                             .Where(
                                 value =>
-                                    value.FormPosting.Id == posting.Id &&
-                                    value.Value.IsInsensitiveLike(search, MatchMode.Anywhere)).Select(value => value.Id));
+                                    value.Value.Like($"%{search}%")).Select(value => value.FormPosting.Id).Contains(posting.Id));
             }
 
-            IPagedList<FormPosting> formPostings = query.OrderBy(() => posting.CreatedOn).Desc.Paged(page);
+            IPagedList<FormPosting> formPostings = query.OrderByDescending(posting => posting.CreatedOn).Paged(page);
 
             return new PostingsModel(formPostings, webpage.Id);
         }
@@ -164,11 +172,6 @@ namespace MrCMS.Web.Areas.Admin.Services
             return items.OrderByDescending(x => x.Value.Count).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
-
-        public FormPosting GetFormPosting(int id)
-        {
-            return _session.Get<FormPosting>(id);
-        }
 
         private string FormatField(string data)
         {

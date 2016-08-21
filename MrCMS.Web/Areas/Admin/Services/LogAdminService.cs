@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Elmah;
+using MrCMS.Data;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -9,39 +11,42 @@ using MrCMS.Logging;
 using MrCMS.Paging;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
     public class LogAdminService : ILogAdminService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Log> _logRepository;
+        private readonly IRepository<Site> _siteRepository;
 
-        public LogAdminService(ISession session)
+        public LogAdminService(IRepository<Log> logRepository,IRepository<Site> siteRepository)
         {
-            _session = session;
+            _logRepository = logRepository;
+            _siteRepository = siteRepository;
         }
 
         public void Insert(Log log)
         {
             if (log.Error == null)
                 log.Error = new Error();
-            _session.Transact(session => session.Save(log));
+            _logRepository.Add(log);
         }
 
 
         public void DeleteAllLogs()
         {
-            _session.CreateQuery("delete Log l").ExecuteUpdate();
+            _logRepository.DeleteAll();
         }
 
         public void DeleteLog(Log log)
         {
-            _session.Transact(session => session.Delete(log));
+            _logRepository.Delete(log);
         }
 
         public List<SelectListItem> GetSiteOptions()
         {
-            IList<Site> sites = _session.QueryOver<Site>().OrderBy(site => site.Name).Asc.List();
+            IList<Site> sites = _siteRepository.Query().OrderBy(site => site.Name).ToList();
             return sites.Count == 1
                 ? new List<SelectListItem>()
                 : sites
@@ -51,20 +56,11 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public IPagedList<Log> GetEntriesPaged(LogSearchQuery searchQuery)
         {
-            using (new SiteFilterDisabler(_session))
+            using (_logRepository.DisableSiteFilter())
             {
-                IQueryOver<Log, Log> query = BaseQuery();
+                var query = BaseQuery();
                 if (searchQuery.Type.HasValue)
                     query = query.Where(log => log.Type == searchQuery.Type);
-
-                if (!string.IsNullOrWhiteSpace(searchQuery.Message))
-                    query =
-                        query.Where(
-                            log =>
-                                log.Message.IsInsensitiveLike(searchQuery.Message, MatchMode.Anywhere));
-
-                if (!string.IsNullOrWhiteSpace(searchQuery.Detail))
-                    query = query.Where(log => log.Detail.IsInsensitiveLike(searchQuery.Detail, MatchMode.Anywhere));
 
                 if (searchQuery.SiteId.HasValue)
                     query = query.Where(log => log.Site.Id == searchQuery.SiteId);
@@ -74,21 +70,29 @@ namespace MrCMS.Web.Areas.Admin.Services
                 if (searchQuery.To.HasValue)
                     query = query.Where(log => log.CreatedOn <= searchQuery.To);
 
+                if (!string.IsNullOrWhiteSpace(searchQuery.Message))
+                    query =
+                        query.Where(
+                            log =>
+                                log.Message.Like($"%{searchQuery.Message}%"));
+
+                if (!string.IsNullOrWhiteSpace(searchQuery.Detail))
+                    query = query.Where(log => log.Detail.Like($"%{searchQuery.Detail}%"));
+
                 return query.Paged(searchQuery.Page);
             }
         }
 
         public IList<Log> GetAllLogEntries()
         {
-            return BaseQuery().Cacheable().List();
+            return BaseQuery().ToList();
         }
 
-        private IQueryOver<Log, Log> BaseQuery()
+        private IQueryable<Log> BaseQuery()
         {
             return
-                _session.QueryOver<Log>()
-                    .OrderBy(entry => entry.Id)
-                    .Desc;
+                _logRepository.Query()
+                    .OrderByDescending(log => log.Id);
         }
     }
 }

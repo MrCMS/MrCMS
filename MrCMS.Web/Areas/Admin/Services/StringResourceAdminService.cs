@@ -56,8 +56,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                 }
             }
 
-            return new PagedList<StringResource>(resources.OrderBy(resource => resource.DisplayKey), searchQuery.Page,
-                _siteSettings.DefaultPageSize);
+            return resources.OrderBy(resource => resource.DisplayKey).ToPagedList(searchQuery.Page);
         }
 
         public void Add(StringResource resource)

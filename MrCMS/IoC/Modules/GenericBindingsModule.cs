@@ -17,6 +17,8 @@ namespace MrCMS.IoC.Modules
             Kernel.Bind(typeof(IIndexManager<,>)).To(typeof(IndexManager<,>)).InRequestScope();
             Kernel.Bind(typeof(ISearcher<,>)).To(typeof(Searcher<,>)).InRequestScope();
             Kernel.Bind(typeof(IRepository<>)).To(typeof(SimpleRepository<>)).InRequestScope();
+            Kernel.Bind(typeof(IGetDocumentByUrl<>)).To(typeof(GetDocumentByUrl<>)).InRequestScope();
+            Kernel.Bind(typeof(IGetDocumentsByParent<>)).To(typeof(GetDocumentsByParent<>)).InRequestScope();
         }
     }
 }

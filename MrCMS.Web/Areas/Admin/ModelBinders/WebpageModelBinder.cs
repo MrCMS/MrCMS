@@ -1,6 +1,7 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Binders;
 using Ninject;
@@ -9,24 +10,24 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 {
     public abstract class WebpageModelBinder : MrCMSDefaultModelBinder
     {
-        private readonly IDocumentTagsAdminService _documentTagsAdminService;
+        private readonly IDocumentTagsUpdateService _documentTagsUpdateService;
 
-        protected WebpageModelBinder(IKernel kernel, IDocumentTagsAdminService documentTagsAdminService)
+        protected WebpageModelBinder(IKernel kernel, IDocumentTagsUpdateService documentTagsUpdateService)
             : base(kernel)
         {
-            _documentTagsAdminService = documentTagsAdminService;
+            _documentTagsUpdateService = documentTagsUpdateService;
         }
 
-        protected IDocumentTagsAdminService DocumentTagsAdminService
+        protected IDocumentTagsUpdateService DocumentTagsUpdateService
         {
-            get { return _documentTagsAdminService; }
+            get { return _documentTagsUpdateService; }
         }
 
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var document = base.BindModel(controllerContext, bindingContext) as Document;
             string taglist = controllerContext.GetValueFromRequest("TagList") ?? string.Empty;
-            DocumentTagsAdminService.SetTags(taglist, document);
+            DocumentTagsUpdateService.SetTags(taglist, document);
             return document;
         }
     }

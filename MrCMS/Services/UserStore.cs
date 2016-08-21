@@ -162,7 +162,7 @@ namespace MrCMS.Services
                     userRole.Users.Add(user);
 
                 _userManagementService.SaveUser(user);
-                _roleService.SaveRole(userRole);
+                _roleService.Update(userRole);
             }
             return Task.FromResult<object>(null);
         }
@@ -178,7 +178,7 @@ namespace MrCMS.Services
                     userRole.Users.Remove(user);
 
                 _userManagementService.SaveUser(user);
-                _roleService.SaveRole(userRole);
+                _roleService.Update(userRole);
             }
             return Task.FromResult<object>(null);
         }

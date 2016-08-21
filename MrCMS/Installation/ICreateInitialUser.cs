@@ -49,7 +49,7 @@ namespace MrCMS.Installation
             user.Roles = new HashSet<UserRole> { adminUserRole };
             adminUserRole.Users = new HashSet<User> { user };
 
-            _roleService.SaveRole(adminUserRole);
+            _roleService.Add(adminUserRole);
             _authorisationService.Logout();
             _authorisationService.SetAuthCookie(user, true);
         }

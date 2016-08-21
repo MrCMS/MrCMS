@@ -138,7 +138,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Apps\Core\Services\ResetPasswordServiceTests.cs" />
-    <Compile Include="Apps\Core\Services\SearchServiceTests.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\FileControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\FormControllerTests.cs" />
@@ -158,7 +157,6 @@
     <Compile Include="Areas\Admin\Controllers\WidgetControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateControllerTests.cs" />
-    <Compile Include="Areas\Admin\Services\DocumentTagsAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\DocumentVersionsAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\FormServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminServiceTests.cs" />
@@ -169,8 +167,6 @@
     <Compile Include="Areas\Admin\Services\UrlHistoryServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\WebpageWidgetAdminServiceTests.cs" />
     <Compile Include="Controllers\LoginControllerTests.cs" />
-    <Compile Include="InMemoryDatabaseTest.cs" />
-    <Compile Include="MrCMSTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqliteInMemoryProvider.cs" />
     <Compile Include="Stubs\BasicMappedWidget.cs" />
@@ -181,6 +177,8 @@
     <Compile Include="Stubs\StubWebpage.cs" />
     <Compile Include="TestableEventContext.cs" />
     <Compile Include="TestContextModule.cs" />
+    <Compile Include="TestSupport\InMemoryRepository.cs" />
+    <Compile Include="TestSupport\TestGetNow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

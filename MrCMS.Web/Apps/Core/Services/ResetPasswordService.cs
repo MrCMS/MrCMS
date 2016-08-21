@@ -12,21 +12,23 @@ namespace MrCMS.Web.Apps.Core.Services
     {
         private readonly IMessageParser<ResetPasswordMessageTemplate, User> _messageParser;
         private readonly IUserLookup _userLookup;
+        private readonly IGetNow _getNow;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IUserManagementService _userManagementService;
 
         public ResetPasswordService(IUserManagementService userManagementService, IPasswordManagementService passwordManagementService,
-            IMessageParser<ResetPasswordMessageTemplate, User> messageParser, IUserLookup userLookup)
+            IMessageParser<ResetPasswordMessageTemplate, User> messageParser, IUserLookup userLookup,IGetNow getNow)
         {
             _userManagementService = userManagementService;
             _passwordManagementService = passwordManagementService;
             _messageParser = messageParser;
             _userLookup = userLookup;
+            _getNow = getNow;
         }
 
         public void SetResetPassword(User user)
         {
-            user.ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1);
+            user.ResetPasswordExpiry = _getNow.Get().AddDays(1);
             user.ResetPasswordGuid = Guid.NewGuid();
             _userManagementService.SaveUser(user);
 
@@ -38,7 +40,7 @@ namespace MrCMS.Web.Apps.Core.Services
         {
             User user = _userLookup.GetUserByEmail(model.Email);
 
-            if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > CurrentRequestData.Now &&
+            if (user.ResetPasswordGuid == model.Id && user.ResetPasswordExpiry > _getNow.Get() &&
                 _passwordManagementService.ValidatePassword(model.Password, model.ConfirmPassword))
             {
                 _passwordManagementService.SetPassword(user, model.Password, model.ConfirmPassword);

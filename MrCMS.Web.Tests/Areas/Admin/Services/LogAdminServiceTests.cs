@@ -2,20 +2,25 @@ using System.Collections.Generic;
 using System.Linq;
 using Elmah;
 using FluentAssertions;
+using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Logging;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Web.Tests.TestSupport;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Services
 {
-    public class LogAdminServiceTests : InMemoryDatabaseTest
+    public class LogAdminServiceTests 
     {
         private readonly LogAdminService _logService;
+        private InMemoryRepository<Log> _logRepository = new InMemoryRepository<Log>();
+        private InMemoryRepository<Site> _siteRepository;
 
         public LogAdminServiceTests()
         {
-            _logService = new LogAdminService(Session);
+            _siteRepository = new InMemoryRepository<Site>();
+            _logService = new LogAdminService(_logRepository, _siteRepository);
         }
 
         [Fact]
@@ -35,7 +40,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
 
             _logService.DeleteAllLogs();
 
-            Session.QueryOver<Log>().RowCount().Should().Be(0);
+            _logRepository.Query().Count().Should().Be(0);
         }
 
         [Fact]
@@ -45,15 +50,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
 
             _logService.DeleteLog(list[0]);
 
-            Session.QueryOver<Log>().List().Should().NotContain(list[0]);
+            _logRepository.Query().Should().NotContain(list[0]);
         }
 
 
-        private static List<Log> CreateLogList()
+        private List<Log> CreateLogList()
         {
             List<Log> logList =
                 Enumerable.Range(1, 20).Select(i => new Log {Message = i.ToString(), Error = new Error()}).ToList();
-            logList.ForEach(log => Session.Transact(session => session.Save(log)));
+            logList.ForEach(log => _logRepository.Add(log));
             return logList;
         }
     }

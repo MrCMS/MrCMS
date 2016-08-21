@@ -14,12 +14,12 @@ namespace MrCMS.Web.Apps.Articles.RouteHandlers
 {
     public class ArticleListRSSRouteHandler : IMrCMSRouteHandler
     {
+        private readonly IGetDocumentByUrl<ArticleList> _getArticleListByUrl;
         private readonly IControllerManager _controllerManager;
-        private readonly IDocumentService _documentService;
 
-        public ArticleListRSSRouteHandler(IDocumentService documentService, IControllerManager controllerManager)
+        public ArticleListRSSRouteHandler(IGetDocumentByUrl<ArticleList> getArticleListByUrl, IControllerManager controllerManager)
         {
-            _documentService = documentService;
+            _getArticleListByUrl = getArticleListByUrl;
             _controllerManager = controllerManager;
         }
 
@@ -61,7 +61,7 @@ namespace MrCMS.Web.Apps.Articles.RouteHandlers
             if (fileName == null || !fileName.Equals("rss.xml", StringComparison.InvariantCultureIgnoreCase))
                 return null;
             string containerName = url.Substring(1, url.Length - 9);
-            return _documentService.GetDocumentByUrl<ArticleList>(containerName);
+            return _getArticleListByUrl.GetByUrl(containerName);
         }
     }
 }

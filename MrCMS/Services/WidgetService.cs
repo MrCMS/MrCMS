@@ -1,3 +1,4 @@
+using MrCMS.Data;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using NHibernate;
@@ -6,31 +7,31 @@ namespace MrCMS.Services
 {
     public class WidgetService : IWidgetService
     {
-        private readonly ISession _session;
+        private readonly IRepository<Widget> _widgetRepository;
 
-        public WidgetService(ISession session)
+        public WidgetService(IRepository<Widget> widgetRepository)
         {
-            _session = session;
+            _widgetRepository = widgetRepository;
         }
 
         public T GetWidget<T>(int id) where T : Widget
         {
-            return _session.Get<T>(id);
+            return _widgetRepository.Get<T>(id);
         }
 
-        public void SaveWidget(Widget widget)
+        public void UpdateWidget(Widget widget)
         {
-            _session.Transact(session => session.SaveOrUpdate(widget));
+            _widgetRepository.Update(widget);
         }
 
         public void DeleteWidget(Widget widget)
         {
-            _session.Transact(session => session.Delete(widget));
+            _widgetRepository.Delete(widget);
         }
 
         public Widget AddWidget(Widget widget)
         {
-            _session.Transact(session => session.SaveOrUpdate(widget));
+            _widgetRepository.Add(widget);
             return widget;
         }
     }

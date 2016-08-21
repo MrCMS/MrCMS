@@ -18,7 +18,6 @@ namespace MrCMS.Web.Areas.Admin.Services
         bool IsValidFileType(string fileName);
         IPagedList<MediaFile> GetFilesForFolder(MediaCategorySearchModel searchModel);
         List<ImageSortItem> GetFilesToSort(MediaCategory category = null);
-        void CreateFolder(MediaCategory category);
         void SetOrders(List<SortItem> items);
         IList<MediaCategory> GetSubFolders(MediaCategorySearchModel searchModel);
 

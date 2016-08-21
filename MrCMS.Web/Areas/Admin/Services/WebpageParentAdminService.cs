@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using MrCMS.Data;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -12,13 +13,11 @@ namespace MrCMS.Web.Areas.Admin.Services
 {
     public class WebpageParentAdminService : IWebpageParentAdminService
     {
-        private readonly IDocumentService _documentService;
-        private readonly ISession _session;
+        private readonly IRepository<Webpage> _webpageRepository;
 
-        public WebpageParentAdminService(IDocumentService documentService, ISession session)
+        public WebpageParentAdminService(IRepository<Webpage> webpageRepository)
         {
-            _documentService = documentService;
-            _session = session;
+            _webpageRepository = webpageRepository;
         }
 
         public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
@@ -28,9 +27,9 @@ namespace MrCMS.Web.Areas.Admin.Services
             List<string> validParentTypeNames =
                 validParentTypes.Select(documentMetadata => documentMetadata.Type.FullName).ToList();
             IList<Webpage> potentialParents =
-                _session.QueryOver<Webpage>()
-                    .Where(page => page.DocumentType.IsIn(validParentTypeNames) )
-                    .Cacheable().List<Webpage>();
+                _webpageRepository.Query()
+                    .Where(page => validParentTypeNames.Contains(page.DocumentType))
+                    .ToList();
 
             List<SelectListItem> result = potentialParents.Distinct()
                 .Where(page => !page.ActivePages.Contains(webpage))
@@ -47,13 +46,14 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public void Set(Webpage webpage, int? parentVal)
         {
-            if (webpage == null) return;
+            if (webpage == null)
+                return;
 
-            Webpage parent = parentVal.HasValue ? _session.Get<Webpage>(parentVal.Value) : null;
+            Webpage parent = parentVal.HasValue ? _webpageRepository.Get(parentVal.Value) : null;
 
             webpage.Parent = parent;
 
-            _documentService.SaveDocument(webpage);
+            _webpageRepository.Update(webpage);
         }
     }
 }

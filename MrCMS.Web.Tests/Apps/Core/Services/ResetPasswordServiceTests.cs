@@ -8,18 +8,21 @@ using MrCMS.Settings;
 using MrCMS.Web.Apps.Core.MessageTemplates;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Services;
+using MrCMS.Web.Tests.TestSupport;
 using MrCMS.Website;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Apps.Core.Services
 {
-    public class ResetPasswordServiceTests : InMemoryDatabaseTest
+    public class ResetPasswordServiceTests 
     {
         private readonly IUserManagementService _userManagementService;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IMessageParser<ResetPasswordMessageTemplate, User> _messageParser;
         private readonly ResetPasswordService _resetPasswordService;
         private readonly IUserLookup _userLookup;
+        private static DateTime _now = new DateTime(2016,9,1);
+        private readonly IGetNow _getNow = new TestGetNow(_now);
 
         public ResetPasswordServiceTests()
         {
@@ -30,7 +33,7 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
             _resetPasswordService = new ResetPasswordService(_userManagementService,
                                                              _passwordManagementService,
                                                              _messageParser,
-                                                             _userLookup);
+                                                             _userLookup,_getNow);
         }
 
         [Fact]
@@ -76,7 +79,7 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
             var guid = Guid.NewGuid();
             var user = new User
             {
-                ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1),
+                ResetPasswordExpiry = _now.AddDays(1),
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };
@@ -101,7 +104,7 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
             var guid = Guid.NewGuid();
             var user = new User
             {
-                ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1),
+                ResetPasswordExpiry = _now.AddDays(1),
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };
@@ -125,7 +128,7 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
             var guid = Guid.NewGuid();
             var user = new User
             {
-                ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1),
+                ResetPasswordExpiry = _now.AddDays(1),
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };

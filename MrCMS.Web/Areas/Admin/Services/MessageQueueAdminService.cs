@@ -40,7 +40,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             if (!string.IsNullOrWhiteSpace(searchQuery.Subject))
                 queryOver = queryOver.Where(message => message.Subject.IsInsensitiveLike(searchQuery.Subject, MatchMode.Anywhere));
             
-            return queryOver.OrderBy(message => message.CreatedOn).Desc.Paged(searchQuery.Page, _siteSettings.DefaultPageSize);
+            return queryOver.OrderBy(message => message.CreatedOn).Desc.Paged(searchQuery.Page);
         }
 
         public QueuedMessage GetMessageBody(int id)

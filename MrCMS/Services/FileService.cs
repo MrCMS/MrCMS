@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -21,18 +22,21 @@ namespace MrCMS.Services
         private readonly IFileSystem _fileSystem;
         private readonly IImageProcessor _imageProcessor;
         private readonly MediaSettings _mediaSettings;
-        private readonly ISession _session;
-        private readonly SiteSettings _siteSettings;
+        private readonly IRepository<MediaFile> _mediaFileRepository;
+        private readonly IRepository<MediaCategory> _mediaCategoryRepository;
+        private readonly IRepository<ResizedImage> _resizedImageRepository;
 
-        public FileService(ISession session, IFileSystem fileSystem, IImageProcessor imageProcessor,
-            MediaSettings mediaSettings, Site currentSite, SiteSettings siteSettings)
+        public FileService(IFileSystem fileSystem, IImageProcessor imageProcessor,
+            MediaSettings mediaSettings, Site currentSite, IRepository<MediaFile> mediaFileRepository,
+            IRepository<MediaCategory> mediaCategoryRepository,IRepository<ResizedImage> resizedImageRepository)
         {
-            _session = session;
             _fileSystem = fileSystem;
             _imageProcessor = imageProcessor;
             _mediaSettings = mediaSettings;
             _currentSite = currentSite;
-            _siteSettings = siteSettings;
+            _mediaFileRepository = mediaFileRepository;
+            _mediaCategoryRepository = mediaCategoryRepository;
+            _resizedImageRepository = resizedImageRepository;
         }
 
         public MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength,
@@ -53,7 +57,7 @@ namespace MrCMS.Services
             {
                 mediaFile.MediaCategory = mediaCategory;
                 int? max =
-                    _session.Query<MediaFile>()
+                    _mediaFileRepository.Query()
                         .Where(x => x.MediaCategory.Id == mediaFile.MediaCategory.Id)
                         .Max(x => (int?) x.DisplayOrder);
                 mediaFile.DisplayOrder = (max.HasValue ? (int) max + 1 : 1);
@@ -70,13 +74,13 @@ namespace MrCMS.Services
             mediaFile.FileUrl = _fileSystem.SaveFile(stream, fileLocation, contentType);
 
 
-            _session.Transact(session =>
+            _mediaFileRepository.Transact(repository =>
             {
-                session.Save(mediaFile);
+                repository.Add(mediaFile);
                 if (mediaCategory != null)
                 {
                     mediaCategory.Files.Add(mediaFile);
-                    session.SaveOrUpdate(mediaCategory);
+                    _mediaCategoryRepository.Update(mediaCategory);
                 }
             });
 
@@ -98,12 +102,12 @@ namespace MrCMS.Services
             }
             _fileSystem.Delete(mediaFile.FileUrl);
 
-            _session.Transact(session => session.Delete(mediaFile));
+            _mediaFileRepository.Delete(mediaFile);
         }
 
         public void SaveFile(MediaFile mediaFile)
         {
-            _session.Transact(session => session.SaveOrUpdate(mediaFile));
+            _mediaFileRepository.Add(mediaFile);
         }
 
         public string GetFileLocation(MediaFile mediaFile, Size imageSize)
@@ -118,28 +122,25 @@ namespace MrCMS.Services
 
         public FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1)
         {
-            IQueryOver<MediaFile, MediaFile> queryOver =
-                _session.QueryOver<MediaFile>().Where(file => file.Site == _currentSite);
+            var queryOver =
+                _mediaFileRepository.Query().Where(file => file.Site.Id == _currentSite.Id);
 
             if (categoryId.HasValue)
                 queryOver = queryOver.Where(file => file.MediaCategory.Id == categoryId);
 
             if (imagesOnly)
-                queryOver.Where(file => file.FileExtension.IsIn(MediaFileExtensions.ImageExtensions));
+                queryOver.Where(file => MediaFileExtensions.ImageExtensions.Contains(file.FileExtension));
 
-            IPagedList<MediaFile> mediaFiles = queryOver.OrderBy(file => file.CreatedOn)
-                .Desc.Paged(page, _siteSettings.DefaultPageSize);
+            IPagedList<MediaFile> mediaFiles = queryOver.OrderByDescending(file => file.CreatedOn)
+                .Paged(page, SessionHelper.DefaultPageSize);
             return new FilesPagedResult(mediaFiles, mediaFiles.GetMetaData(), categoryId, imagesOnly);
         }
 
         public MediaFile GetFileByUrl(string value)
         {
             return
-                _session.QueryOver<MediaFile>()
-                    .Where(file => file.FileUrl == value)
-                    .Take(1)
-                    .Cacheable()
-                    .SingleOrDefault();
+                _mediaFileRepository.Query()
+                    .FirstOrDefault(file => file.FileUrl == value);
         }
 
         public string GetFileUrl(string value)
@@ -150,7 +151,7 @@ namespace MrCMS.Services
 
             string[] split = value.Split('-');
             int id = Convert.ToInt32(split[0]);
-            var file = _session.Get<MediaFile>(id);
+            var file = _mediaFileRepository.Get(id);
             ImageSize imageSize =
                 file.GetSizes()
                     .FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
@@ -185,7 +186,7 @@ namespace MrCMS.Services
         {
             if (mediaFile.MediaCategory != null)
                 mediaFile.MediaCategory.Files.Remove(mediaFile);
-            _session.Transact(session => session.Delete(mediaFile));
+            _mediaFileRepository.Delete(mediaFile);
         }
 
         private string GetFileLocation(string fileName, MediaCategory mediaCategory = null)
@@ -227,7 +228,7 @@ namespace MrCMS.Services
 
             // if we've cached the file existing then we're fine
             IList<ResizedImage> resizedImages =
-                _session.QueryOver<ResizedImage>().Where(image => image.MediaFile.Id == file.Id).Cacheable().List();
+                _resizedImageRepository.Query().Where(image => image.MediaFile.Id == file.Id).ToList();
             if (resizedImages.Any(image => image.Url == requestedImageFileUrl))
                 return requestedImageFileUrl;
 
@@ -258,7 +259,7 @@ namespace MrCMS.Services
 
             // if we've cached the file existing then we're fine
             IList<ResizedImage> resizedImages =
-                _session.QueryOver<ResizedImage>().Where(image => image.Crop.Id == crop.Id).Cacheable().List();
+                _resizedImageRepository.Query().Where(image => image.Crop.Id == crop.Id).ToList();
             if (resizedImages.Any(image => image.Url == requestedImageFileUrl))
                 return requestedImageFileUrl;
 
@@ -286,14 +287,14 @@ namespace MrCMS.Services
         {
             var resizedImage = new ResizedImage {Url = requestedImageFileUrl, MediaFile = file};
             file.ResizedImages.Add(resizedImage);
-            _session.Transact(session => session.Save(resizedImage));
+            _resizedImageRepository.Add(resizedImage);
         }
 
         private void CacheResizedImage(Crop crop, string requestedImageFileUrl)
         {
             var resizedImage = new ResizedImage {Url = requestedImageFileUrl, Crop = crop};
             crop.ResizedImages.Add(resizedImage);
-            _session.Transact(session => session.Save(resizedImage));
+            _resizedImageRepository.Add(resizedImage);
         }
 
         public List<ImageSize> GetImageSizes()

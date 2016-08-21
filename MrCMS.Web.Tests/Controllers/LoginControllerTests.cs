@@ -12,7 +12,7 @@ using Xunit;
 
 namespace MrCMS.Web.Tests.Controllers
 {
-    public class LoginControllerTests : MrCMSTest
+    public class LoginControllerTests 
     {
         private readonly LoginController _loginController;
         private readonly ILoginService _loginService;

@@ -6,28 +6,29 @@ using MrCMS.Entities.Documents;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Web.Areas.Admin.Services;
+using MrCMS.Web.Tests.TestSupport;
 using NHibernate;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Services
 {
-    public class TagAdminServiceTests : InMemoryDatabaseTest
+    public class TagAdminServiceTests 
     {
+        private InMemoryRepository<Tag> _inMemoryRepository;
+
         [Fact]
         public void TagAdminService_Search_ShouldReturnTagsStartingWithTerm()
         {
-            var tagService = new TagAdminService(Session);
+            _inMemoryRepository = new InMemoryRepository<Tag>();
+            var tagService = new TagAdminService(_inMemoryRepository);
 
-            var tag1 = new Tag {Name = "tag-1", Site = CurrentSite};
-            var tag2 = new Tag {Name = "tag-2", Site = CurrentSite};
-            var tag3 = new Tag {Name = "not-the-same", Site = CurrentSite};
+            var tag1 = new Tag {Name = "tag-1", };
+            var tag2 = new Tag {Name = "tag-2", };
+            var tag3 = new Tag {Name = "not-the-same", };
 
-            Session.Transact(session =>
-            {
-                Session.SaveOrUpdate(tag1);
-                Session.SaveOrUpdate(tag2);
-                Session.SaveOrUpdate(tag3);
-            });
+            _inMemoryRepository.Add(tag1);
+            _inMemoryRepository.Add(tag2);
+            _inMemoryRepository.Add(tag3);
 
             IEnumerable<AutoCompleteResult> tags = tagService.Search("tag");
 

@@ -7,7 +7,8 @@ namespace MrCMS.Services
 {
     public interface IRoleService
     {
-        void SaveRole(UserRole role);
+        void Add(UserRole role);
+        void Update(UserRole role);
         IEnumerable<UserRole> GetAllRoles();
         UserRole GetRoleByName(string name);
         void DeleteRole(UserRole role);

@@ -12,15 +12,13 @@ namespace MrCMS.Tests.Website.Controllers
 {
     public class FormControllerTests
     {
-        private readonly IDocumentService _documentService;
         private readonly FormController _formController;
         private readonly IFormPostingHandler _formPostingHandler;
 
         public FormControllerTests()
         {
-            _documentService = A.Fake<IDocumentService>();
             _formPostingHandler = A.Fake<IFormPostingHandler>();
-            _formController = new FormController(_documentService, _formPostingHandler)
+            _formController = new FormController(_formPostingHandler)
             {
                 RequestMock =
                     A.Fake<HttpRequestBase>(),
@@ -32,8 +30,7 @@ namespace MrCMS.Tests.Website.Controllers
         public void FormController_Save_CallsFormServiceSaveFormDataWithPassedObjects()
         {
             var stubWebpage = new StubWebpage();
-            A.CallTo(() => _documentService.GetDocument<Webpage>(1)).Returns(stubWebpage);
-            ActionResult result = _formController.Save(1);
+            ActionResult result = _formController.Save(stubWebpage);
 
             A.CallTo(() => _formPostingHandler.SaveFormData(stubWebpage, _formController.Request)).MustHaveHappened();
         }
@@ -43,8 +40,7 @@ namespace MrCMS.Tests.Website.Controllers
         {
             var stubWebpage = new StubWebpage();
 
-            A.CallTo(() => _documentService.GetDocument<Webpage>(1)).Returns(stubWebpage);
-            ActionResult result = _formController.Save(1);
+            ActionResult result = _formController.Save(stubWebpage);
 
             _formController.TempData["form-submitted"].Should().Be(true);
         }
@@ -54,8 +50,7 @@ namespace MrCMS.Tests.Website.Controllers
         {
             var stubWebpage = new StubWebpage();
 
-            A.CallTo(() => _documentService.GetDocument<Webpage>(1)).Returns(stubWebpage);
-            ActionResult result = _formController.Save(1);
+            ActionResult result = _formController.Save(stubWebpage);
 
             result.Should().BeOfType<RedirectResult>();
             result.As<RedirectResult>().Url.Should().Be("http://www.example.com/test-redirect");

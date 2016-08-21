@@ -3,21 +3,24 @@ using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
 using Iesi.Collections.Generic;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Services;
 using NHibernate;
 using Xunit;
 using MrCMS.Helpers;
+using MrCMS.Tests.TestSupport;
 
 namespace MrCMS.Tests.Services
 {
-    public class RoleServiceTests : InMemoryDatabaseTest
+    public class RoleServiceTests 
     {
         private RoleService _roleService;
+        private IRepository<UserRole> _roleRepository = new InMemoryRepository<UserRole>();
 
         public RoleServiceTests()
         {
-            _roleService = new RoleService(Session);
+            _roleService = new RoleService(_roleRepository);
         }
 
         [Fact]
@@ -26,7 +29,7 @@ namespace MrCMS.Tests.Services
             Enumerable.Range(1,10).ForEach(i =>
                                                {
                                                    var userRole = new UserRole {Name = "Role " + i};
-                                                   Session.Transact(session => session.Save(userRole));
+                                                   _roleRepository.Add(userRole);
                                                });
 
             _roleService.GetAllRoles().Should().HaveCount(10);
@@ -40,7 +43,7 @@ namespace MrCMS.Tests.Services
                                                {
                                                    var userRole = new UserRole {Name = "Role " + i};
                                                    userRoles.Add(userRole);
-                                                   Session.Transact(session => session.Save(userRole));
+                                                   _roleRepository.Add(userRole);
                                                });
 
             _roleService.GetAllRoles().Should().OnlyContain(role => userRoles.Contains(role));
@@ -49,16 +52,16 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void RoleService_SaveRole_PersistsRoleToTheSession()
         {
-            _roleService.SaveRole(new UserRole());
+            _roleService.Add(new UserRole());
 
-            Session.QueryOver<UserRole>().List().Should().HaveCount(1);
+            _roleRepository.Query().ToList().Should().HaveCount(1);
         }
 
         [Fact]
         public void RoleService_GetRoleByName_ShouldReturnTheRoleWithTHeMatchingName()
         {
             var userRoles = Enumerable.Range(1, 10).Select(i => new UserRole {Name = "Role " + i}).ToList();
-            Session.Transact(session => userRoles.ForEach(role => session.Save(role)));
+            userRoles.ForEach(role => _roleRepository.Add(role));
 
             var roleByName = _roleService.GetRoleByName("Role 3");
 
@@ -69,22 +72,22 @@ namespace MrCMS.Tests.Services
         public void RoleService_DeleteRole_ShouldDeleteAStandardRole()
         {
             var userRole = new UserRole {Name = "Standard Role"};
-            Session.Transact(session => session.Save(userRole));
+            _roleRepository.Add(userRole);
 
             _roleService.DeleteRole(userRole);
 
-            Session.QueryOver<UserRole>().List().Should().HaveCount(0);
+            _roleRepository.Query().ToList().Should().HaveCount(0);
         }
 
         [Fact]
         public void RoleService_DeleteRole_ShouldNotDeleteAdminRole()
         {
             var userRole = new UserRole {Name = "Administrator"};
-            Session.Transact(session => session.Save(userRole));
+            _roleRepository.Add(userRole);
 
             _roleService.DeleteRole(userRole);
 
-            Session.QueryOver<UserRole>().List().Should().HaveCount(1);
+            _roleRepository.Query().ToList().Should().HaveCount(1);
         }
 
         [Fact]
@@ -92,7 +95,7 @@ namespace MrCMS.Tests.Services
         {
             var admin = new User { IsActive = true };
             var userRole = new UserRole { Name = "Administrator", Users = new HashSet<User> { admin } };
-            Session.Transact(session => session.Save(userRole));
+            _roleRepository.Add(userRole);
 
             var isOnlyAdmin = _roleService.IsOnlyAdmin(admin);
 
@@ -105,7 +108,7 @@ namespace MrCMS.Tests.Services
             var admin1 = new User { IsActive = true };
             var admin2 = new User { IsActive = true };
             var userRole = new UserRole { Name = "Administrator", Users = new HashSet<User> { admin1, admin2 } };
-            Session.Transact(session => session.Save(userRole));
+            _roleRepository.Add(userRole);
 
             var isOnlyAdmin = _roleService.IsOnlyAdmin(admin1);
 
@@ -117,7 +120,7 @@ namespace MrCMS.Tests.Services
         {
             Enumerable.Range(1, 9)
                       .Select(i => new UserRole {Name = "Role " + i})
-                      .ForEach(role => Session.Transact(session => session.Save(role)));
+                      .ForEach(role => _roleRepository.Add(role));
 
             _roleService.Search(null).Should().HaveCount(9);
         }
@@ -127,7 +130,7 @@ namespace MrCMS.Tests.Services
         {
             Enumerable.Range(1, 9)
                       .Select(i => new UserRole {Name = "Role " + i})
-                      .ForEach(role => Session.Transact(session => session.Save(role)));
+                      .ForEach(role => _roleRepository.Add(role));
 
             _roleService.Search("Role 3").Should().HaveCount(1);
         }
@@ -137,7 +140,7 @@ namespace MrCMS.Tests.Services
         {
             Enumerable.Range(1, 9)
                       .Select(i => new UserRole {Name = "Role " + i})
-                      .ForEach(role => Session.Transact(session => session.Save(role)));
+                      .ForEach(role => _roleRepository.Add(role));
 
             _roleService.Search("roLE 3").Should().HaveCount(1);
         }

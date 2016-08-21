@@ -1,20 +1,28 @@
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Web.Tests.Stubs;
+using MrCMS.Web.Tests.TestSupport;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Services
 {
-    public class FormAdminServiceTests : InMemoryDatabaseTest
+    public class FormAdminServiceTests 
     {
         private readonly FormAdminService _formAdminService;
+        private InMemoryRepository<FormPosting> _formPostingRepository = new InMemoryRepository<FormPosting>();
+        private InMemoryRepository<FormProperty> _formPropertyRepository = new InMemoryRepository<FormProperty>();
+        private InMemoryRepository<FormListOption> _formListOptionRepository = new InMemoryRepository<FormListOption>();
+        private InMemoryRepository<FormValue> _formValueRepository;
 
         public FormAdminServiceTests()
         {
-            _formAdminService = new FormAdminService(Session);
+            _formValueRepository = new InMemoryRepository<FormValue>();
+            _formAdminService = new FormAdminService(_formPostingRepository, _formPropertyRepository, _formListOptionRepository, _formValueRepository);
         }
 
         [Fact]
@@ -39,11 +47,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
 
             webpage.FormPostings = new List<FormPosting> {posting};
 
-            Session.Transact(session => session.Save(posting));
+            _formPostingRepository.Add(posting);
 
             _formAdminService.ClearFormData(webpage);
 
-            Session.QueryOver<FormPosting>().RowCount().Should().Be(0);
+            _formPostingRepository.Query().Count().Should().Be(0);
         }
 
         [Fact]

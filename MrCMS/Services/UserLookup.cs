@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
+using MrCMS.Data;
 using MrCMS.Entities.People;
 using MrCMS.Website;
 using NHibernate;
@@ -9,20 +11,22 @@ namespace MrCMS.Services
 {
     public class UserLookup : IUserLookup
     {
+        private readonly IRepository<User> _userRepository;
         private readonly IEnumerable<IExternalUserSource> _externalUserSources;
-        private readonly ISession _session;
+        private readonly IGetNow _getNow;
 
-        public UserLookup(ISession session, IEnumerable<IExternalUserSource> externalUserSources)
+        public UserLookup(IRepository<User> userRepository, IEnumerable<IExternalUserSource> externalUserSources, IGetNow getNow)
         {
-            _session = session;
+            _userRepository = userRepository;
             _externalUserSources = externalUserSources;
+            _getNow = getNow;
         }
 
         public User GetUserByEmail(string email)
         {
             var trimmedEmail = (email ?? string.Empty).Trim();
             var user =
-                _session.QueryOver<User>().Where(u => u.Email == trimmedEmail).Take(1).Cacheable().SingleOrDefault();
+                _userRepository.Query().FirstOrDefault(u => u.Email == trimmedEmail);
             if (user != null)
                 return user;
 
@@ -38,11 +42,11 @@ namespace MrCMS.Services
         public User GetUserByResetGuid(Guid resetGuid)
         {
             return
-                _session.QueryOver<User>()
-                    .Where(
+                _userRepository.Query()
+                    .FirstOrDefault(
                         user =>
-                            user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= CurrentRequestData.Now)
-                    .Cacheable().SingleOrDefault();
+                            user.ResetPasswordGuid == resetGuid &&
+                            user.ResetPasswordExpiry >= _getNow.Get());
         }
 
         public User GetCurrentUser(HttpContextBase context)

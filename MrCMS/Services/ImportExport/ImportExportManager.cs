@@ -3,6 +3,7 @@ using MrCMS.Services.ImportExport.DTOs;
 using OfficeOpenXml;
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Messages;
 using MrCMS.Models;
@@ -14,18 +15,18 @@ namespace MrCMS.Services.ImportExport
         private readonly IImportDocumentsValidationService _importDocumentsValidationService;
         private readonly IImportDocumentsService _importDocumentService;
         private readonly IExportDocumentsService _exportDocumentsService;
-        private readonly IDocumentService _documentService;
+        private readonly IRepository<Webpage> _webpageRepository;
         private readonly IMessageParser<ExportDocumentsEmailTemplate> _messageParser;
 
         public ImportExportManager(IImportDocumentsValidationService importDocumentsValidationService,
             IImportDocumentsService importDocumentsService, IExportDocumentsService exportDocumentsService,
-            IDocumentService documentService, IMessageParser<ExportDocumentsEmailTemplate> messageParser)
+            IMessageParser<ExportDocumentsEmailTemplate> messageParser, IRepository<Webpage> webpageRepository)
         {
             _importDocumentsValidationService = importDocumentsValidationService;
             _importDocumentService = importDocumentsService;
             _exportDocumentsService = exportDocumentsService;
-            _documentService = documentService;
             _messageParser = messageParser;
+            _webpageRepository = webpageRepository;
         }
 
         public ImportDocumentsResult ImportDocumentsFromExcel(Stream file, bool autoStart = true)
@@ -61,7 +62,7 @@ namespace MrCMS.Services.ImportExport
 
         public byte[] ExportDocumentsToExcel()
         {
-            var webpages = _documentService.GetAllDocuments<Webpage>().ToList();
+            var webpages = _webpageRepository.Query().ToList();
             var package = _exportDocumentsService.GetExportExcelPackage(webpages);
             return _exportDocumentsService.ConvertPackageToByteArray(package);
         }

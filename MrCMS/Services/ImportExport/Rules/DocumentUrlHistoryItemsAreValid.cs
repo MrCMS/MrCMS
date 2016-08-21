@@ -8,12 +8,12 @@ namespace MrCMS.Services.ImportExport.Rules
 {
     public class DocumentUrlHistoryItemsAreValid : IDocumentImportValidationRule
     {
-        private readonly IDocumentService _documentService;
+        private readonly IGetDocumentByUrl<Webpage> _getWebpageByUrl;
         private readonly IUrlHistoryImportService _urlHistoryService;
 
-        public DocumentUrlHistoryItemsAreValid(IDocumentService documentService, IUrlHistoryImportService urlHistoryService)
+        public DocumentUrlHistoryItemsAreValid(IGetDocumentByUrl<Webpage> getWebpageByUrl, IUrlHistoryImportService urlHistoryService)
         {
-            _documentService = documentService;
+            _getWebpageByUrl = getWebpageByUrl;
             _urlHistoryService = urlHistoryService;
         }
 
@@ -21,7 +21,7 @@ namespace MrCMS.Services.ImportExport.Rules
         {
             if (item.UrlHistory.Count <= 0) yield break;
 
-            var document = _documentService.GetDocumentByUrl<Webpage>(item.UrlSegment);
+            var document = _getWebpageByUrl.GetByUrl(item.UrlSegment);
 
             if (document == null) yield break;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using MrCMS.DbConfiguration;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using NHibernate;
@@ -11,11 +12,14 @@ namespace MrCMS.Data
     {
         IQueryable<T> Query();
         T Get(int id);
+        TSubclass Get<TSubclass>(int id) where TSubclass : T;
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
+        void DeleteAll();
 
         void Transact(Action<IRepository<T>> action);
+        IDisposable DisableSiteFilter();
     }
 
     public class SimpleRepository<T> : IRepository<T> where T : SystemEntity
@@ -32,6 +36,11 @@ namespace MrCMS.Data
             return _session.Get<T>(id);
         }
 
+        public TSubclass Get<TSubclass>(int id) where TSubclass : T
+        {
+            return _session.Get<TSubclass>(id);
+        }
+
         public void Add(T entity)
         {
             _session.Transact(session => session.Save(entity));
@@ -40,6 +49,11 @@ namespace MrCMS.Data
         public void Delete(T entity)
         {
             _session.Transact(session => session.Delete(entity));
+        }
+
+        public void DeleteAll()
+        {
+            _session.CreateQuery($"delete {typeof(T).Name} entity").ExecuteUpdate();
         }
 
         public IQueryable<T> Query()
@@ -53,6 +67,11 @@ namespace MrCMS.Data
             {
                 action(this);
             });
+        }
+
+        public IDisposable DisableSiteFilter()
+        {
+            return new SiteFilterDisabler(_session);
         }
 
         public void Update(T entity)

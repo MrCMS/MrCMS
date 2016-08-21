@@ -1,22 +1,30 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
+using MrCMS.Events;
+using MrCMS.Services;
 using MrCMS.Tests.ACL;
 using Xunit;
 
 namespace MrCMS.Tests.Services.Events
 {
-    public class PublishingDisablerTests : InMemoryDatabaseTest
+    public class PublishingDisablerTests 
     {
         public PublishingDisablerTests()
         {
+            _eventContext =
+                new TestableEventContext(
+                    new EventContext(new List<IEvent> {new TestEventImplementation(), new TestEventImplementation2()}));
             TestEventImplementation.Reset();
             TestEventImplementation2.Reset();
-            EventContext.FakeNonCoreEvents = false;
+            _eventContext.FakeNonCoreEvents = false;
         }
+
+        private TestableEventContext _eventContext;
 
         [Fact]
         public void EnsureTheTestEventIsBehavingProperly()
         {
-            EventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+            _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
 
             TestEventImplementation.ExecutionCount.Should().Be(1);
         }
@@ -24,8 +32,8 @@ namespace MrCMS.Tests.Services.Events
         [Fact]
         public void EnsureTheTestEventIsBehavingProperlyForMany()
         {
-            EventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
-            EventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+            _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+            _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
 
             TestEventImplementation.ExecutionCount.Should().Be(2);
         }
@@ -33,9 +41,9 @@ namespace MrCMS.Tests.Services.Events
         [Fact]
         public void DisablingTheEventShouldPreventItBeingExecuted()
         {
-            using (EventContext.Disable<ITestEvent>())
+            using (_eventContext.Disable<ITestEvent>())
             {
-                EventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+                _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
             }
             TestEventImplementation.ExecutionCount.Should().Be(0);
         }
@@ -43,9 +51,9 @@ namespace MrCMS.Tests.Services.Events
         [Fact]
         public void NonGenericDisablingTheEventShouldPreventItBeingExecuted()
         {
-            using (EventContext.Disable(typeof (ITestEvent)))
+            using (_eventContext.Disable(typeof (ITestEvent)))
             {
-                EventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+                _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
             }
             TestEventImplementation.ExecutionCount.Should().Be(0);
         }
@@ -53,9 +61,9 @@ namespace MrCMS.Tests.Services.Events
         [Fact]
         public void DisablingAnImplementationShouldOnlyDisableThatImplementation()
         {
-            using (EventContext.Disable<TestEventImplementation>())
+            using (_eventContext.Disable<TestEventImplementation>())
             {
-                EventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
+                _eventContext.Publish<ITestEvent, TestEventArgs>(new TestEventArgs());
             }
             TestEventImplementation.ExecutionCount.Should().Be(0);
             TestEventImplementation2.ExecutionCount.Should().Be(1);

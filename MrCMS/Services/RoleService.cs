@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.People;
@@ -6,38 +7,44 @@ using MrCMS.Models;
 using NHibernate;
 using NHibernate.Criterion;
 using System.Linq;
+using MrCMS.Data;
+using NHibernate.Linq;
 
 namespace MrCMS.Services
 {
     public class RoleService : IRoleService
     {
-        private readonly ISession _session;
+        private readonly IRepository<UserRole> _roleRepository;
 
-        public RoleService(ISession session)
+        public RoleService(IRepository<UserRole> roleRepository)
         {
-            _session = session;
+            _roleRepository = roleRepository;
         }
 
-        public void SaveRole(UserRole role)
+        public void Add(UserRole role)
         {
-            _session.Transact(session => session.SaveOrUpdate(role));
+            _roleRepository.Add(role);
+        }
+        public void Update(UserRole role)
+        {
+            _roleRepository.Update(role);
         }
 
         public IEnumerable<UserRole> GetAllRoles()
         {
-            return _session.QueryOver<UserRole>().Cacheable().List();
+            return _roleRepository.Query().ToList();
         }
 
         public UserRole GetRoleByName(string name)
         {
-            return _session.QueryOver<UserRole>().Where(role => role.Name.IsLike(name, MatchMode.Exact)).Cacheable().
-                                SingleOrDefault();
+            return _roleRepository.Query()
+                .SingleOrDefault(role => role.Name == name);
         }
 
         public void DeleteRole(UserRole role)
         {
             if (!role.IsAdmin)
-                _session.Transact(session => session.Delete(role));
+                _roleRepository.Delete(role);
         }
 
         public bool IsOnlyAdmin(User user)
@@ -50,7 +57,10 @@ namespace MrCMS.Services
 
         public IEnumerable<AutoCompleteResult> Search(string term)
         {
-            var userRoles = _session.QueryOver<UserRole>().Where(x => x.Name.IsInsensitiveLike(term, MatchMode.Start)).List();
+            var userRoles =
+                _roleRepository.Query().ToList();
+            if (!string.IsNullOrWhiteSpace(term))
+                userRoles = userRoles.FindAll(x => x.Name.StartsWith(term, StringComparison.OrdinalIgnoreCase));
             return
                 userRoles.Select(
                     tag =>
@@ -64,7 +74,7 @@ namespace MrCMS.Services
 
         public UserRole GetRole(int id)
         {
-            return _session.Get<UserRole>(id);
+            return _roleRepository.Get(id);
         }
     }
 }

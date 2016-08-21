@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
-using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.Messaging;
@@ -18,16 +17,14 @@ namespace MrCMS.Services
 {
     public class FormPostingHandler : IFormPostingHandler
     {
-        private readonly IDocumentService _documentService;
-        private readonly IFileService _fileService;
         private readonly MailSettings _mailSettings;
         private readonly ISession _session;
+        private readonly ISaveFormFileUpload _saveFormFileUpload;
 
-        public FormPostingHandler(IDocumentService documentService, IFileService fileService, MailSettings mailSettings, ISession session)
+        public FormPostingHandler(MailSettings mailSettings, ISession session, ISaveFormFileUpload saveFormFileUpload)
         {
-            _documentService = documentService;
             _session = session;
-            _fileService = fileService;
+            _saveFormFileUpload = saveFormFileUpload;
             _mailSettings = mailSettings;
         }
 
@@ -58,7 +55,7 @@ namespace MrCMS.Services
 
                             if (file != null && !string.IsNullOrWhiteSpace(file.FileName))
                             {
-                                var value = SaveFile(webpage, formPosting, file);
+                                var value = _saveFormFileUpload.SaveFile(webpage, formPosting, file);
 
                                 formPosting.FormValues.Add(new FormValue
                                 {
@@ -104,12 +101,7 @@ namespace MrCMS.Services
             });
             return errors;
         }
-        private MediaCategory CreateFileUploadMediaCategory()
-        {
-            var mediaCategory = new MediaCategory { UrlSegment = "file-uploads", Name = "File Uploads" };
-            _documentService.AddDocument(mediaCategory);
-            return mediaCategory;
-        }
+
         private string SanitizeValue(FormProperty formProperty, string value)
         {
             if (formProperty is CheckboxList)
@@ -123,16 +115,6 @@ namespace MrCMS.Services
                 return value;
             }
             return value;
-        }
-
-        private string SaveFile(Webpage webpage, FormPosting formPosting, HttpPostedFileBase file)
-        {
-            var mediaCategory = _documentService.GetDocumentByUrl<MediaCategory>("file-uploads") ??
-                                CreateFileUploadMediaCategory();
-
-            var result = _fileService.AddFile(file.InputStream, webpage.Id + "-" + formPosting.Id + "-" + file.FileName, file.ContentType, file.ContentLength, mediaCategory);
-
-            return result.FileUrl;
         }
         private void SendFormMessages(Webpage webpage, FormPosting formPosting)
         {

@@ -1,4 +1,5 @@
 using System;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -10,18 +11,18 @@ namespace MrCMS.Services
 {
     public class WebpageUrlService : IWebpageUrlService
     {
-        private readonly IKernel _kernel;
-        private readonly ISession _session;
         private readonly PageDefaultsSettings _settings;
+        private readonly IRepository<PageTemplate> _pageTemplateRepository;
         private readonly IUrlValidationService _urlValidationService;
+        private IKernel _kernel;
 
-        public WebpageUrlService(IUrlValidationService urlValidationService, ISession session, IKernel kernel,
-            PageDefaultsSettings settings)
+        public WebpageUrlService(IRepository<PageTemplate> pageTemplateRepository, IUrlValidationService urlValidationService, 
+            PageDefaultsSettings settings, IKernel kernel)
         {
+            _pageTemplateRepository = pageTemplateRepository;
             _urlValidationService = urlValidationService;
-            _session = session;
-            _kernel = kernel;
             _settings = settings;
+            _kernel = kernel;
         }
 
         public string Suggest(Webpage parent,SuggestParams suggestParams)
@@ -50,7 +51,7 @@ namespace MrCMS.Services
             int id = template.GetValueOrDefault(0);
             if (id > 0)
             {
-                var pageTemplate = _session.Get<PageTemplate>(id);
+                var pageTemplate = _pageTemplateRepository.Get(id);
                 Type urlGeneratorType = pageTemplate.GetUrlGeneratorType();
                 if (pageTemplate != null && urlGeneratorType != null)
                 {

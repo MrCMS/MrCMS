@@ -56,7 +56,6 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public IPagedList<AdminSearchResult> Search(AdminSearchQuery searchQuery)
         {
-            int pageSize = _siteSettings.DefaultPageSize;
             using (MiniProfiler.Current.Step("Search for results"))
             {
                 IndexSearcher searcher = _universalSearchIndexManager.GetSearcher();
@@ -74,6 +73,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                 {
                     query.Add(GetDateQuery(searchQuery));
                 }
+                var pageSize = SessionHelper.DefaultPageSize;
                 TopDocs topDocs = GetTopDocs(searchQuery, searcher, query, pageSize);
 
                 List<UniversalSearchItem> universalSearchItems =

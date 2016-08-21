@@ -21,21 +21,19 @@ using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 {
-    public class WebpageControllerTests : MrCMSTest
+    public class WebpageControllerTests 
     {
-        private readonly IDocumentService _documentService;
         private readonly IUrlValidationService _urlValidationService;
-        private readonly IWebpageBaseViewDataService _baseViewDataService;
+        private readonly IWebpageViewDataService _viewDataService;
         private readonly WebpageController _webpageController;
+        private IWebpageAdminService _webpageAdminService;
 
         public WebpageControllerTests()
         {
-            Kernel.Bind<ISetWebpageAdminViewData>().ToConstant(A.Fake<ISetWebpageAdminViewData>());
-            CurrentRequestData.CurrentUser = new User();
-            _documentService = A.Fake<IDocumentService>();
             _urlValidationService = A.Fake<IUrlValidationService>();
-            _baseViewDataService = A.Fake<IWebpageBaseViewDataService>();
-            _webpageController = new WebpageController(_baseViewDataService, _documentService,
+            _viewDataService = A.Fake<IWebpageViewDataService>();
+            _webpageAdminService = A.Fake<IWebpageAdminService>();
+            _webpageController = new WebpageController(_webpageAdminService, _viewDataService,
                 _urlValidationService)
             {
                 RouteDataMock = new RouteData()
@@ -45,31 +43,23 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldReturnAddPageModel()
         {
+            AddPageModel model =new AddPageModel();
+            A.CallTo(() => _webpageAdminService.GetAddModel(1)).Returns(model);
             var actionResult = _webpageController.Add_Get(1) as ViewResult;
 
-            actionResult.Model.Should().BeOfType<AddPageModel>();
-        }
-
-        [Fact]
-        public void WebpageController_AddGet_ShouldSetParentIdOfModelToIdInMethod()
-        {
-            var textPage = new TextPage { Id = 1};
-            A.CallTo(() => _documentService.GetDocument<Webpage>(1)).Returns(textPage);
-
-            var actionResult = _webpageController.Add_Get(1) as ViewResult;
-
-            (actionResult.Model as AddPageModel).ParentId.Should().Be(1);
+            actionResult.Model.Should().Be(model);
         }
 
         [Fact]
         public void WebpageController_AddGet_ShouldCallViewData()
         {
-            var textPage = new TextPage {};
-            A.CallTo(() => _documentService.GetDocument<Webpage>(1)).Returns(textPage);
+            var parent = new StubWebpage();
+            var textPage = new AddPageModel {Parent = parent};
+            A.CallTo(() => _webpageAdminService.GetAddModel(1)).Returns(textPage);
 
             _webpageController.Add_Get(1);
 
-            A.CallTo(() => _baseViewDataService.SetAddPageViewData(_webpageController.ViewData, textPage))
+            A.CallTo(() => _viewDataService.SetAddPageViewData(_webpageController.ViewData, parent))
                 .MustHaveHappened();
         }
 
@@ -81,7 +71,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _webpageController.Add(webpage);
 
-            A.CallTo(() => _documentService.AddDocument<Webpage>(webpage)).MustHaveHappened();
+            A.CallTo(() => _webpageAdminService.Add(webpage)).MustHaveHappened();
         }
 
         [Fact]
@@ -143,7 +133,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _webpageController.Edit_Get(textPage);
 
-            A.CallTo(() => _baseViewDataService.SetEditPageViewData(_webpageController.ViewData, textPage))
+            A.CallTo(() => _viewDataService.SetEditPageViewData(_webpageController.ViewData, textPage))
                 .MustHaveHappened();
         }
 
@@ -155,7 +145,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _webpageController.Edit(textPage);
 
-            A.CallTo(() => _documentService.SaveDocument(textPage)).MustHaveHappened();
+            A.CallTo(() => _webpageAdminService.Update(textPage)).MustHaveHappened();
         }
 
         [Fact]
@@ -172,32 +162,20 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         }
 
         [Fact]
-        public void WebpageController_Sort_ShouldCallGetDocumentsByParentId()
-        {
-            var textPage = new TextPage();
-
-            _webpageController.Sort(textPage);
-
-            A.CallTo(() => _documentService.GetDocumentsByParent<Webpage>(textPage)).MustHaveHappened();
-        }
-
-        [Fact]
         public void WebpageController_Sort_ShouldBeAListOfSortItems()
         {
-            var textPage = new TextPage();
-            var webpages = new List<Webpage> {new TextPage()};
-            A.CallTo(() => _documentService.GetDocumentsByParent<Webpage>(textPage)).Returns(webpages);
+            var parent = new TextPage();
+            var sortItems = new List<SortItem> {};
+            A.CallTo(() => _webpageAdminService.GetSortItems(parent)).Returns(sortItems);
 
-            var viewResult = _webpageController.Sort(textPage).As<ViewResult>();
+            var viewResult = _webpageController.Sort(parent).As<ViewResult>();
 
-            viewResult.Model.Should().BeOfType<List<SortItem>>();
+            viewResult.Model.Should().Be(sortItems);
         }
 
         [Fact]
         public void WebpageController_View_InvalidIdReturnsRedirectToIndex()
         {
-            A.CallTo(() => _documentService.GetDocument<Webpage>(1)).Returns(null);
-
             ActionResult actionResult = _webpageController.Show(null);
 
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
@@ -241,7 +219,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var textPage = new TextPage();
             _webpageController.Delete(textPage);
 
-            A.CallTo(() => _documentService.DeleteDocument<Webpage>(textPage)).MustHaveHappened();
+            A.CallTo(() => _webpageAdminService.Delete(textPage)).MustHaveHappened();
         }
 
         [Fact]
@@ -268,7 +246,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _webpageController.PublishNow(textPage);
 
-            A.CallTo(() => _documentService.PublishNow(textPage)).MustHaveHappened();
+            A.CallTo(() => _webpageAdminService.PublishNow(textPage)).MustHaveHappened();
         }
 
         [Fact]
@@ -294,7 +272,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var textPage = new TextPage();
             _webpageController.Unpublish(textPage);
 
-            A.CallTo(() => _documentService.Unpublish(textPage)).MustHaveHappened();
+            A.CallTo(() => _webpageAdminService.Unpublish(textPage)).MustHaveHappened();
         }
 
         [Fact]

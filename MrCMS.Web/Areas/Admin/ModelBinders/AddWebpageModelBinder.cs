@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Services;
 using Ninject;
 
@@ -10,8 +11,8 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 {
     public class AddWebpageModelBinder : WebpageModelBinder
     {
-        public AddWebpageModelBinder(IKernel kernel, IDocumentTagsAdminService documentTagsAdminService)
-            : base(kernel, documentTagsAdminService)
+        public AddWebpageModelBinder(IKernel kernel, IDocumentTagsUpdateService documentTagsUpdateService)
+            : base(kernel, documentTagsUpdateService)
         {
         }
 

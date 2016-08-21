@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MrCMS.Data;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Models;
@@ -12,39 +13,39 @@ namespace MrCMS.Web.Areas.Admin.Services
     public class SiteAdminService : ISiteAdminService
     {
         private readonly ICloneSiteService _cloneSiteService;
-        private readonly ISession _session;
+        private readonly IRepository<Site> _siteRepository;
 
-        public SiteAdminService(ISession session, ICloneSiteService cloneSiteService)
+        public SiteAdminService(IRepository<Site> siteRepository, ICloneSiteService cloneSiteService)
         {
-            _session = session;
+            _siteRepository = siteRepository;
             _cloneSiteService = cloneSiteService;
         }
 
         public List<Site> GetAllSites()
         {
-            return _session.QueryOver<Site>().OrderBy(site => site.Name).Asc.Cacheable().List().ToList();
+            return _siteRepository.Query().OrderBy(site => site.Name).ToList();
         }
 
         public Site GetSite(int id)
         {
-            return _session.Get<Site>(id);
+            return _siteRepository.Get(id);
         }
 
         public void AddSite(Site site, List<SiteCopyOption> options)
         {
-            _session.Transact(session => session.Save(site));
+            _siteRepository.Add(site);
 
             _cloneSiteService.CloneData(site, options);
         }
 
-        public void SaveSite(Site site)
+        public void UpdateSite(Site site)
         {
-            _session.Transact(session => session.Update(site));
+            _siteRepository.Update(site);
         }
 
         public void DeleteSite(Site site)
         {
-            _session.Transact(session => session.Delete(site));
+            _siteRepository.Delete(site);
         }
     }
 }

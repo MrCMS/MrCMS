@@ -53,7 +53,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public RedirectToRouteResult Edit(Site site)
         {
-            _siteAdminService.SaveSite(site);
+            _siteAdminService.UpdateSite(site);
             return RedirectToAction("Index");
         }
 

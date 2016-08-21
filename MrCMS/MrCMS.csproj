@@ -712,11 +712,13 @@
     <Compile Include="Services\CloneSite\UpdateSiteDefaultLayouts.cs" />
     <Compile Include="Services\CloneSite\UpdateSiteSettings.cs" />
     <Compile Include="Services\CloneSite\UpdateWebpages.cs" />
+    <Compile Include="Services\CreateFolderOnAddMediaCategory.cs" />
     <Compile Include="Services\CropService.cs" />
     <Compile Include="Services\CurrentSiteLocator.cs" />
     <Compile Include="Services\CustomBinderBase.cs" />
     <Compile Include="Services\CustomBindingService.cs" />
     <Compile Include="Services\DefaultWebpageUrlGenerator.cs" />
+    <Compile Include="Services\DocumentTagsUpdateService.cs" />
     <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\EventContext.cs" />
     <Compile Include="Services\ExistAnyWebpageService.cs" />
@@ -729,6 +731,7 @@
     <Compile Include="Services\GetBreadcrumbs.cs" />
     <Compile Include="Services\GetCurrentLayout.cs" />
     <Compile Include="Services\GetCurrentUser.cs" />
+    <Compile Include="Services\GetDocumentsByParent.cs" />
     <Compile Include="Services\GetHomePage.cs" />
     <Compile Include="Services\GetWidgetCachingInfo.cs" />
     <Compile Include="Services\HashAlgorithmProvider.cs" />
@@ -739,6 +742,7 @@
     <Compile Include="Services\IBelongToUserLookupService.cs" />
     <Compile Include="Services\ICropService.cs" />
     <Compile Include="Services\ICustomBindingService.cs" />
+    <Compile Include="Services\IDocumentTagsUpdateService.cs" />
     <Compile Include="Services\IEmailSender.cs" />
     <Compile Include="Services\IExistAnyWebpageService.cs" />
     <Compile Include="Services\IExternalUserSource.cs" />
@@ -746,8 +750,10 @@
     <Compile Include="Services\IGetBreadcrumbs.cs" />
     <Compile Include="Services\IGetCurrentLayout.cs" />
     <Compile Include="Services\IGetCurrentUser.cs" />
-    <Compile Include="Services\IGetDocumentParents.cs" />
+    <Compile Include="Services\IGetDocumentByUrl.cs" />
+    <Compile Include="Services\IGetDocumentsByParent.cs" />
     <Compile Include="Services\IGetHomePage.cs" />
+    <Compile Include="Services\IGetNow.cs" />
     <Compile Include="Services\IGetWidgetCachingInfo.cs" />
     <Compile Include="Services\IHashAlgorithmProvider.cs" />
     <Compile Include="Services\IImageRenderingService.cs" />
@@ -760,6 +766,7 @@
     <Compile Include="Services\IndexService.cs" />
     <Compile Include="Services\IPasswordManagementService.cs" />
     <Compile Include="Services\IQueueMessage.cs" />
+    <Compile Include="Services\ISaveFormFileUpload.cs" />
     <Compile Include="Services\IStoredInAppData.cs" />
     <Compile Include="Services\IUniquePageService.cs" />
     <Compile Include="Services\IUrlValidationService.cs" />
@@ -792,7 +799,12 @@
     <Compile Include="Services\Resources\IGetUserCultureInfo.cs" />
     <Compile Include="Services\Resources\IStringResourceProvider.cs" />
     <Compile Include="Services\Resources\StringResourceProvider.cs" />
-    <Compile Include="Services\SetDocumentDisplayOrder.cs" />
+    <Compile Include="Services\SaveFormFileUpload.cs" />
+    <Compile Include="Services\SetChildDocumentDisplayOrder.cs" />
+    <Compile Include="Services\SetTopLevelDisplayOrder.cs" />
+    <Compile Include="Services\SetTopLevelLayoutDisplayOrder.cs" />
+    <Compile Include="Services\SetTopLevelMediaCategoryDisplayOrder.cs" />
+    <Compile Include="Services\SetTopLevelWebpageDisplayOrder.cs" />
     <Compile Include="Services\Sitemaps\DefaultSiteMapGenerationInfo.cs" />
     <Compile Include="Services\Sitemaps\ExcludeFromSitemapBecauseIsErrorPage.cs" />
     <Compile Include="Services\Sitemaps\IReasonToExcludePageFromSitemap.cs" />
@@ -977,10 +989,8 @@
     <Compile Include="Services\ImportExport\Rules\DocumentMaxMetaKeywordsLengthIs250.cs" />
     <Compile Include="Services\ImportExport\Rules\DocumentMaxMetaTitleLengthIs250.cs" />
     <Compile Include="Services\ImportExport\Rules\DocumentParentIsValid.cs" />
-    <Compile Include="Services\DocumentService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\FileSystem.cs" />
-    <Compile Include="Services\IDocumentService.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IFileSystem.cs" />
     <Compile Include="Services\IImageProcessor.cs" />

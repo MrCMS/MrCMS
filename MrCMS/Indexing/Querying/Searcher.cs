@@ -4,6 +4,7 @@ using System.Linq;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using MrCMS.Entities;
+using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Paging;
 using MrCMS.Settings;
@@ -16,14 +17,12 @@ namespace MrCMS.Indexing.Querying
     {
         private readonly TDefinition _definition;
         private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
-        private readonly SiteSettings _siteSettings;
         private bool _disposed;
 
-        public Searcher(TDefinition definition, IGetLuceneIndexSearcher getLuceneIndexSearcher, SiteSettings siteSettings)
+        public Searcher(TDefinition definition, IGetLuceneIndexSearcher getLuceneIndexSearcher)
         {
             _definition = definition;
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
-            _siteSettings = siteSettings;
             IndexManager.EnsureIndexExists<TEntity, TDefinition>();
         }
 
@@ -35,7 +34,7 @@ namespace MrCMS.Indexing.Querying
         public IPagedList<TEntity> Search(Query query, int pageNumber, int? pageSize = null, Filter filter = null,
             Sort sort = null)
         {
-            int size = pageSize ?? _siteSettings.DefaultPageSize;
+            int size = pageSize ?? SessionHelper.DefaultPageSize;
 
             TopFieldDocs topDocs = IndexSearcher.Search(query, filter, pageNumber * size, sort ?? Sort.RELEVANCE);
 
@@ -50,7 +49,7 @@ namespace MrCMS.Indexing.Querying
         public IPagedList<TSubclass> Search<TSubclass>(Query query, int pageNumber, int? pageSize = null,
             Filter filter = null, Sort sort = null) where TSubclass : TEntity
         {
-            int size = pageSize ?? _siteSettings.DefaultPageSize;
+            int size = pageSize ?? SessionHelper.DefaultPageSize;
             BooleanQuery booleanQuery = UpdateQuery<TSubclass>(query);
 
             TopFieldDocs topDocs = IndexSearcher.Search(booleanQuery ?? query, filter, pageNumber * size,

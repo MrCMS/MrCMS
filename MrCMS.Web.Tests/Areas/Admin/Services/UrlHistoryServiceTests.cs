@@ -1,19 +1,22 @@
+using System.Linq;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Web.Tests.Stubs;
+using MrCMS.Web.Tests.TestSupport;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Services
 {
-    public class UrlHistoryAdminServiceTests : InMemoryDatabaseTest
+    public class UrlHistoryAdminServiceTests 
     {
         private readonly UrlHistoryAdminService _urlHistoryAdminService;
+        private InMemoryRepository<UrlHistory> _urlHistoryRepository = new InMemoryRepository<UrlHistory>();
 
         public UrlHistoryAdminServiceTests()
         {
-            _urlHistoryAdminService = new UrlHistoryAdminService(Session);
+            _urlHistoryAdminService = new UrlHistoryAdminService(_urlHistoryRepository);
         }
 
         [Fact]
@@ -21,18 +24,18 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         {
             _urlHistoryAdminService.Add(new UrlHistory {Webpage = new StubWebpage()});
 
-            Session.QueryOver<UrlHistory>().RowCount().Should().Be(1);
+            _urlHistoryRepository.Query().Count().Should().Be(1);
         }
 
         [Fact]
         public void UrlHistoryAdminService_Delete_ShouldRemoveAPassedHistoryFromTheDb()
         {
             var urlHistory = new UrlHistory();
-            Session.Transact(session => session.Save(urlHistory));
+            _urlHistoryRepository.Add(urlHistory);
 
             _urlHistoryAdminService.Delete(urlHistory);
 
-            Session.QueryOver<UrlHistory>().List().Should().NotContain(urlHistory);
+            _urlHistoryRepository.Query().ToList().Should().NotContain(urlHistory);
         }
     }
 }

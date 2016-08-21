@@ -7,18 +7,23 @@ using FluentAssertions;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Tests.TestSupport;
 using MrCMS.Website;
 using Xunit;
 
 namespace MrCMS.Tests.Services
 {
-    public class UserLookupTests : InMemoryDatabaseTest
+    public class UserLookupTests 
     {
         private readonly UserLookup _userService;
+        private readonly InMemoryRepository<User> _inMemoryRepository;
+        private readonly IGetNow _getNow = new TestGetNow(Now);
+        private static readonly DateTime Now = new DateTime(2016,9,1);
 
         public UserLookupTests()
         {
-            _userService = new UserLookup(Session, new List<IExternalUserSource>());
+            _inMemoryRepository = new InMemoryRepository<User>();
+            _userService = new UserLookup(_inMemoryRepository, new List<IExternalUserSource>(),_getNow);
         }
         [Fact]
         public void UserService_GetUserByEmail_ReturnsNullWhenNoUserAvailable()
@@ -30,9 +35,9 @@ namespace MrCMS.Tests.Services
         public void UserService_GetUserByEmail_WithValidEmailReturnsTheCorrectUser()
         {
             var user = new User { FirstName = "Test", LastName = "User", Email = "test@example.com" };
-            Session.Transact(session => Session.Save(user));
+            _inMemoryRepository.Add(user);
             var user2 = new User { FirstName = "Test", LastName = "User2", Email = "test2@example.com" };
-            Session.Transact(session => Session.Save(user2));
+            _inMemoryRepository.Add(user2);
 
             _userService.GetUserByEmail("test2@example.com").Should().Be(user2);
         }
@@ -53,9 +58,9 @@ namespace MrCMS.Tests.Services
                 LastName = "User",
                 Email = "test@example.com",
                 ResetPasswordGuid = resetPasswordGuid,
-                ResetPasswordExpiry = CurrentRequestData.Now.AddDays(-2)
+                ResetPasswordExpiry = DateTime.Now.AddDays(-2)
             };
-            Session.Transact(session => Session.Save(user));
+            _inMemoryRepository.Add(user);
 
             _userService.GetUserByResetGuid(resetPasswordGuid).Should().BeNull();
         }
@@ -70,9 +75,9 @@ namespace MrCMS.Tests.Services
                 LastName = "User",
                 Email = "test@example.com",
                 ResetPasswordGuid = resetPasswordGuid,
-                ResetPasswordExpiry = CurrentRequestData.Now.AddDays(1)
+                ResetPasswordExpiry = Now.AddDays(1)
             };
-            Session.Transact(session => Session.Save(user));
+            _inMemoryRepository.Add(user);
 
             _userService.GetUserByResetGuid(resetPasswordGuid).Should().Be(user);
         }
@@ -101,7 +106,7 @@ namespace MrCMS.Tests.Services
                 LastName = "User",
                 Email = "test@example.com",
             };
-            Session.Transact(session => Session.Save(user));
+            _inMemoryRepository.Add(user);
 
             _userService.GetCurrentUser(httpContextBase).Should().Be(user);
         }

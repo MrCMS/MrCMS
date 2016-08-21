@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Web.Mvc;
 using System.Web.Routing;
 using FakeItEasy;
@@ -13,7 +14,7 @@ using Xunit;
 
 namespace MrCMS.Tests.Website.Routing
 {
-    public class ControllerManagerTests : MrCMSTest
+    public class ControllerManagerTests 
     {
         private readonly ControllerManager _controllerManager;
         private readonly IUserUIPermissionsService _userUIPermissionsService;
@@ -43,7 +44,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void ControllerManager_GetControllerName_NullDocumentMetadataReturnsNull()
         {
-            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { Published = true };
             _controllerManager.GetMetadata = document => null;
 
             _controllerManager.GetControllerName(stubAllowedWebpage, "GET").Should().BeNull();
@@ -82,7 +83,7 @@ namespace MrCMS.Tests.Website.Routing
             {
                 WebPostController = "test-controller"
             };
-            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { Published = true };
             _controllerManager.GetMetadata = document => metadata;
 
 
@@ -109,7 +110,7 @@ namespace MrCMS.Tests.Website.Routing
         [Fact]
         public void ControllerManager_GetActionName_NullDocumentMetadataReturnsNull()
         {
-            var stubAllowedWebpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
+            var stubAllowedWebpage = new StubAllowedWebpage { Published = true };
             _controllerManager.GetMetadata = document => null;
 
             _controllerManager.GetActionName(stubAllowedWebpage, "GET").Should().BeNull();
@@ -150,7 +151,7 @@ namespace MrCMS.Tests.Website.Routing
             {
                 WebPostAction = "test-post-action"
             };
-            var webpage = new StubAllowedWebpage { PublishOn = CurrentRequestData.Now.AddDays(-1) };
+            var webpage = new StubAllowedWebpage { Published = true };
 
             _controllerManager.GetMetadata = document => metadata;
 

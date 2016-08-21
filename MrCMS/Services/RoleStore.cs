@@ -20,12 +20,12 @@ namespace MrCMS.Services
 
         public Task CreateAsync(UserRole role)
         {
-            return Task.Run(() => _roleService.SaveRole(role));
+            return Task.Run(() => _roleService.Add(role));
         }
 
         public Task UpdateAsync(UserRole role)
         {
-            return Task.Run(() => _roleService.SaveRole(role));
+            return Task.Run(() => _roleService.Update(role));
         }
 
         public Task DeleteAsync(UserRole role)

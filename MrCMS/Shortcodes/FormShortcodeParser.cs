@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Shortcodes.Forms;
@@ -15,12 +16,12 @@ namespace MrCMS.Shortcodes
         private static readonly Regex OtherPageFormMatch = new Regex(@"\[form-(\d+)\]", RegexOptions.Compiled);
         private static readonly Regex ThisPageFormMatch = new Regex(@"\[form\]", RegexOptions.Compiled);
 
-        private readonly IDocumentService _documentService;
+        private readonly IRepository<Webpage> _webpageRepository;
         private readonly IFormRenderer _formRenderer;
 
-        public FormShortcodeParser(IDocumentService documentService, IFormRenderer formRenderer)
+        public FormShortcodeParser(IRepository<Webpage> webpageRepository, IFormRenderer formRenderer)
         {
-            _documentService = documentService;
+            _webpageRepository = webpageRepository;
             _formRenderer = formRenderer;
         }
 
@@ -38,7 +39,7 @@ namespace MrCMS.Shortcodes
                 {
                     int pageId = Convert.ToInt32(
                         match.Value.Replace("[", "").Replace("]", "").Split('-')[1]);
-                    var document = _documentService.GetDocument<Webpage>(pageId);
+                    var document = _webpageRepository.Get(pageId);
                     return document == null
                         ? string.Empty
                         : _formRenderer.RenderForm(document, status);
