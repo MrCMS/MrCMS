@@ -11,7 +11,7 @@
     var executionUrl = Url.Action("Execute", "TaskExecution", new RouteValueDictionary { { "area", "" }, { siteSettings.TaskExecutorKey, siteSettings.TaskExecutorPassword } }, "http");
 }
 
-@Html.InfoBlock(Resource("Heads up") + "!", string.Format(Resource("Admin - Tasks info", "In order to execute tasks, you must poll the following url: <a href='{0}'>{1}</a> <br /> If you are not running this in a web farm then you can set tasks to execute tasks automatically in <a href='/Admin/Settings'>Site Settings</a> (check 'Self Execute Tasks'). Otherwise this will need to be polled by some sort of external task scheduler or cron system in order to run regularly."), executionUrl, executionUrl))
+@Html.InfoBlock(Resource("Heads up") + "!", string.Format(Resource("Admin - Tasks info", "In order to execute tasks, you must poll the following url: <a href='{0}'>{1}</a> <br />"), executionUrl, executionUrl))
 <fieldset>
     <legend>
         Scheduled Tasks
