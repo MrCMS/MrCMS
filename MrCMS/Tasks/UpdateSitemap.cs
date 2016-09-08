@@ -31,7 +31,7 @@ namespace MrCMS.Tasks
                 var siteSettings = new SqlConfigurationProvider(_session, site).GetSiteSettings<SiteSettings>();
                 return string.Format("{0}/{1}?{2}={3}",
                     site.GetFullDomain.TrimEnd('/'),
-                    WriteSitemapController.WriteSitemapUrl,
+                    SitemapController.WriteSitemapUrl,
                     siteSettings.TaskExecutorKey,
                     siteSettings.TaskExecutorPassword);
             }));
