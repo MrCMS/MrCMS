@@ -12,54 +12,18 @@ namespace MrCMS.Services.ImportExport
 {
     public class UpdateTagsService : IUpdateTagsService
     {
+        private readonly IDocumentTagsUpdateService _documentTagsUpdateService;
         private readonly IRepository<Tag> _tagRepository;
 
-        public UpdateTagsService(IRepository<Tag> tagRepository)
+        public UpdateTagsService(IDocumentTagsUpdateService documentTagsUpdateService)
         {
-            _tagRepository = tagRepository;
+            _documentTagsUpdateService = documentTagsUpdateService;
         }
 
         public void SetTags(DocumentImportDTO documentDto, Webpage webpage)
         {
-            var tagsToAdd =
-                documentDto.Tags.Where(
-                    s => !webpage.Tags.Select(tag => tag.Name).Contains(s, StringComparer.InvariantCultureIgnoreCase))
-                    .ToList();
-            var tagsToRemove =
-                webpage.Tags.Where(
-                    tag => !documentDto.Tags.Contains(tag.Name, StringComparer.InvariantCultureIgnoreCase)).ToList();
-            foreach (var item in tagsToAdd)
-            {
-                var tag = GetExistingTag(item);
-                var isNew = tag == null;
-                if (isNew)
-                {
-                    tag = new Tag { Name = item };
-                    _tagRepository.Add(tag);
-                }
-                if (!webpage.Tags.Contains(tag))
-                    webpage.Tags.Add(tag);
-
-                if (!tag.Documents.Contains(webpage))
-                    tag.Documents.Add(webpage);
-                _tagRepository.Update(tag);
-            }
-
-            foreach (var tag in tagsToRemove)
-            {
-                webpage.Tags.Remove(tag);
-                tag.Documents.Remove(webpage);
-                _tagRepository.Update(tag);
-            }
-        }
-
-        private Tag GetExistingTag(string item)
-        {
-            return
-                _tagRepository.Query().ToList()
-                    .Where(tag => tag.Name != null && tag.Name.Equals(item, StringComparison.OrdinalIgnoreCase))
-                    .Take(1)
-                    .SingleOrDefault();
+            var tags = documentDto.Tags;
+            _documentTagsUpdateService.SetTags(tags, webpage);
         }
     }
 }

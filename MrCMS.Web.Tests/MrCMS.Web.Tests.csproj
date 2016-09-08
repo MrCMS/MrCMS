@@ -158,7 +158,6 @@
     <Compile Include="Areas\Admin\Controllers\WidgetControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\LayoutAreaControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateControllerTests.cs" />
-    <Compile Include="Areas\Admin\Services\DocumentTagsAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\DocumentVersionsAdminServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\FormServiceTests.cs" />
     <Compile Include="Areas\Admin\Services\LayoutAreaAdminServiceTests.cs" />
@@ -181,6 +180,7 @@
     <Compile Include="Stubs\StubWebpage.cs" />
     <Compile Include="TestableEventContext.cs" />
     <Compile Include="TestContextModule.cs" />
+    <Compile Include="TestSupport\InMemoryRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

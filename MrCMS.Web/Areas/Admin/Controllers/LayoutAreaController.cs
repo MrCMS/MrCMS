@@ -24,7 +24,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Add(LayoutArea layoutArea)
         {
-            _layoutAreaAdminService.SaveArea(layoutArea);
+            _layoutAreaAdminService.Add(layoutArea);
 
             return RedirectToAction("Edit", "Layout", new {id = layoutArea.Layout.Id});
         }
@@ -42,7 +42,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Edit(LayoutArea area)
         {
-            _layoutAreaAdminService.SaveArea(area);
+            _layoutAreaAdminService.Update(area);
 
             return RedirectToAction("Edit", "Layout", new {id = area.Layout.Id});
         }

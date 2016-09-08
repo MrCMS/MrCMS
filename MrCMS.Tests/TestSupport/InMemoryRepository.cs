@@ -8,7 +8,7 @@ namespace MrCMS.Tests.TestSupport
 {
     public class InMemoryRepository<T> : IRepository<T> where T : SystemEntity
     {
-        private Dictionary<int, T> _store = new Dictionary<int, T>();
+        private readonly Dictionary<int, T> _store = new Dictionary<int, T>();
         private int _currentId = 1;
         public T Get(int id)
         {

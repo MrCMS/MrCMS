@@ -15,15 +15,15 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class LayoutController : MrCMSAdminController
     {
-        private readonly IDocumentService _documentService;
-        private readonly IUrlValidationService _urlValidationService;
-        private readonly ILayoutAreaAdminService _layoutAreaAdminService;
+        private readonly ILayoutAdminService _layoutAdminService;
+        //private readonly IUrlValidationService _urlValidationService;
+        //private readonly ILayoutAreaAdminService _layoutAreaAdminService;
 
-        public LayoutController(IDocumentService documentService, IUrlValidationService urlValidationService, ILayoutAreaAdminService layoutAreaAdminService)
+
+        public LayoutController(ILayoutAdminService layoutAdminService)
         {
-            _documentService = documentService;
-            _urlValidationService = urlValidationService;
-            _layoutAreaAdminService = layoutAreaAdminService;
+            _layoutAdminService = layoutAdminService;
+            //_urlValidationService = urlValidationService;
         }
 
         [MrCMSACLRule(typeof(LayoutsACL), LayoutsACL.Show)]
@@ -36,10 +36,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Add_Get(int? id)
         {
             //Build list 
-            var model = new Layout
-            {
-                Parent = id.HasValue ? _documentService.GetDocument<Layout>(id.Value) : null
-            };
+            var model = _layoutAdminService.GetAddLayoutModel(id);
 
             return View(model);
         }
@@ -47,7 +44,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public virtual ActionResult Add(Layout doc)
         {
-            _documentService.AddDocument(doc);
+            _layoutAdminService.Add(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
             return RedirectToAction("Edit", new { id = doc.Id });
         }
@@ -61,7 +58,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public virtual ActionResult Edit(Layout doc)
         {
-            _documentService.SaveDocument(doc);
+            _layoutAdminService.Update(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
             return RedirectToAction("Edit", new { id = doc.Id });
         }
@@ -75,7 +72,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public virtual ActionResult Delete(Layout document)
         {
-            _documentService.DeleteDocument(document);
+            _layoutAdminService.Delete(document);
             TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
             return RedirectToAction("Index");
         }
@@ -84,11 +81,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] Layout parent)
         {
             List<SortItem> sortItems =
-                _documentService.GetDocumentsByParent(parent)
-                    .Select(
-                        arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
-                    .OrderBy(x => x.Order)
-                    .ToList();
+                _layoutAdminService.GetSortItems(parent);
 
             return View(sortItems);
         }
@@ -96,7 +89,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Sort([IoCModelBinder(typeof(NullableEntityModelBinder))] Layout parent, List<SortItem> items)
         {
-            _documentService.SetOrders(items);
+            _layoutAdminService.SetOrders(items);
             return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
         }
 
@@ -117,7 +110,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_urlValidationService.UrlIsValidForLayout(urlSegment, id)
+            return !_layoutAdminService.UrlIsValidForLayout(urlSegment, id)
                 ? Json("Path already in use.", JsonRequestBehavior.AllowGet)
                 : Json(true, JsonRequestBehavior.AllowGet);
         }
@@ -125,14 +118,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         [HttpGet]
         public PartialViewResult Set(Layout doc)
         {
-            ViewData["valid-parents"] = _layoutAreaAdminService.GetValidParents(doc);
+            ViewData["valid-parents"] = _layoutAdminService.GetValidParents(doc);
             return PartialView();
         }
 
         [HttpPost]
         public RedirectToRouteResult Set(Layout doc, int? parentVal)
         {
-            _layoutAreaAdminService.Set(doc, parentVal);
+            _layoutAdminService.SetParent(doc, parentVal);
 
             return RedirectToAction("Edit", "Layout", new { id = doc.Id });
         }

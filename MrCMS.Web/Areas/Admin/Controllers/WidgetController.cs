@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
 using MrCMS.ACL;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
@@ -17,12 +18,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class WidgetController : MrCMSAdminController
     {
-        private readonly IDocumentService _documentService;
+        private readonly IRepository<Webpage> _webpageRepository;
         private readonly IWidgetService _widgetService;
 
-        public WidgetController(IDocumentService documentService, IWidgetService widgetService)
+        public WidgetController(IRepository<Webpage> webpageRepository, IWidgetService widgetService)
         {
-            _documentService = documentService;
+            _webpageRepository = webpageRepository;
             _widgetService = widgetService;
         }
 
@@ -34,7 +35,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             var model = new AddWidgetModel
             {
                 LayoutArea = layoutArea,
-                Webpage = _documentService.GetDocument<Webpage>(pageId)
+                Webpage = _webpageRepository.Get(pageId)
             };
             return PartialView(model);
         }
