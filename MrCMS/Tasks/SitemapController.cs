@@ -29,9 +29,12 @@ namespace MrCMS.Tasks
             return new ContentResult { Content = "Executed", ContentType = "text/plain" };
         }
 
-        public FileResult Show()
+        public ActionResult Show()
         {
-            return File(_getSitemapPath.GetPath(_site), "text/plain");
+            var fileName = _getSitemapPath.GetPath(_site);
+            if (_getSitemapPath.FileExists(fileName))
+                return File(fileName, "text/plain");
+            return new EmptyResult();
         }
     }
 }
