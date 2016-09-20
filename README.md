@@ -112,28 +112,18 @@ The Mr CMS ECommerce App listed [on GitHub](https://github.com/MrCMS/Ecommerce) 
 *   Themes - override standard views
 *   Multi-site capability - run multiple domains through one set of files & admin system
 *   ACL
-*   Webpage import and export�
+*   Webpage import and export
 *   Site duplication button to duplicate a website quickly
-*   Azure support for SQL, Caching and Lucene
+*   Azure support
 
 ## Release History
 
-### 0.5.1 - February 2016
-
-*   Better Azure Support - swapped out old Azure caching for Redis cache
+## 0.5.1 - September 2016
+*   Swapped out old Azure caching for Redis cache
 *   Brought in the concept of a staging URL and staging Robots.txt - this allows us to use Azure Deployment Slots
-*   Rewrite of the task execution system so that tasks are system wide rather than site specific. Tasks can now be enabled or disabled. This is a breaking change and tasks should be updated to disable site filters for any multisite websites.
 *   Message queue now allows attachments
 *   The Mr CMS admin logo can now be swapped out through System Settings - Site Settings
 *   Removed Self Execute Tasks which uses HostingEnvironment.QueueBackgroundWorkItem due to unreliability of execution. Instead use external task system to poll the task executor URL.
-*   Fixed: Empty writes to the universal search index
-*   Fixed: Issue with the close icon on the inline widget editing
-*   Fixed: 404s were returning 404 status but with a blank response. Fixed to return 404 HTML.
-
-
-## 0.5.1 - September 2016
-#### Required changes in upgrade from 0.5.0.*
-
 *   Files are moved off disk for use with Azure websites scaling and deployment slots
 *   Settings are migrated back to the database. Note: Remove unused .json files from App_Data/Settings. Settings will auto migrate but issues may occur if unused .json files are in the directory
 *   Message templates moved back to database
@@ -147,8 +137,11 @@ The Mr CMS ECommerce App listed [on GitHub](https://github.com/MrCMS/Ecommerce) 
 *   Performance: Limited URL lengths to 450 to allow for indexes to be applied in SQL Server
 *   Performance: Whitespace filter now compiled 
 *   Fixed: Daylight savings date/time issue
+*   Fixed: Empty writes to the universal search index
+*   Fixed: Issue with the close icon on the inline widget editing
+*   Fixed: 404s were returning 404 status but with a blank response. Fixed to return 404 HTML see Views/Error/FileNotFound.cshtml
 *   Breaking Change: Localised scripts now rendered separately to other scripts using @{ @Html.RenderLocalisedScripts();}
-*   Breaking Change: Tasks now run at the System level and do not need to be set up on each website. 
+*   Breaking Change: Rewrite of the task execution system so that tasks are system wide rather than site specific. Tasks can now be enabled or disabled. This is a breaking change and tasks should be updated to disable site filters for any multisite websites.
 *   Breaking Change: Mail settings are set at the system level rather than site level. Mail settings will need to be reconfigured
 *   Breaking Change: System settings now stored in mrcms.config - the new location for hosting specific settings
 *   Breaking Change: Remove Azure Directory for Lucene (We are slowly moving away from Lucene and looking at other solutions which work better with cloud based hosting and scaling)
