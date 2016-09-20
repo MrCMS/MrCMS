@@ -4,12 +4,14 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Web.Configuration;
 using System.Web.Hosting;
 using System.Xml.Linq;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings.Events;
+using StackExchange.Profiling;
 
 namespace MrCMS.Settings
 {
@@ -25,36 +27,42 @@ namespace MrCMS.Settings
 
         public TSettings GetSystemSettings<TSettings>() where TSettings : SystemSettingsBase, new()
         {
-            var settings = Activator.CreateInstance<TSettings>();
-            var config = GetConfig();
-
-            var settingsSaved = false;
-            foreach (var prop in typeof(TSettings).GetProperties())
+            using (MiniProfiler.Current.Step($"Get {typeof(TSettings).FullName}"))
             {
-                // get properties we can read and write to
-                if (!prop.CanRead || !prop.CanWrite)
-                    continue;
+                var settings = Activator.CreateInstance<TSettings>();
 
-                //var key = typeof (TSettings).FullName + "." + prop.Name;
-                var value = GetSettingObjectByKey(config, prop, prop.PropertyType);
-                if (value == null)
+                Dictionary<PropertyInfo, object> propertiesToUpdate = new Dictionary<PropertyInfo, object>();
+                foreach (var prop in typeof(TSettings).GetProperties())
                 {
-                    // persist the default value to the config
-                    SetSetting(config, prop, prop.GetValue(settings));
-                    settingsSaved = true;
-                }
-                else
-                {
-                    //set property
-                    prop.SetValue(settings, value, null);
-                }
-            }
-            if (settingsSaved)
-            {
-                SaveConfig(config);
-            }
+                    // get properties we can read and write to
+                    if (!prop.CanRead || !prop.CanWrite)
+                        continue;
 
-            return settings;
+                    //var key = typeof (TSettings).FullName + "." + prop.Name;
+                    var value = GetSettingObjectByKey(prop, prop.PropertyType);
+                    if (value == null)
+                    {
+                        // persist the default value to the config
+                        propertiesToUpdate[prop] = prop.GetValue(settings);
+                    }
+                    else
+                    {
+                        //set property
+                        prop.SetValue(settings, value, null);
+                    }
+                }
+                if (propertiesToUpdate.Keys.Any())
+                {
+                    var config = GetConfig();
+                    foreach (var key in propertiesToUpdate.Keys)
+                    {
+                        SetSetting(config, key, propertiesToUpdate[key]);
+                    }
+                    SaveConfig(config);
+                }
+
+                return settings;
+            }
         }
 
         private static void SaveConfig(Configuration config)
@@ -97,7 +105,6 @@ namespace MrCMS.Settings
                 .OfType<SystemSettingsBase>().ToList();
         }
 
-
         protected virtual Configuration GetConfig()
         {
             var config = WebConfigurationManager.OpenWebConfiguration("~");
@@ -118,21 +125,24 @@ namespace MrCMS.Settings
 
         private static void EnsureSourceExists(Configuration config, string sectionName)
         {
-            // Adding this checking in to prevent repeated parsing/reading of the config file
-            if (CheckedSections.Contains(sectionName))
-                return;
-            // add now to ensure it's not looked at excessively
-            CheckedSections.Add(sectionName);
-            var xDocument = XDocument.Parse(File.ReadAllText(config.FilePath));
-            var section = xDocument.Descendants(sectionName).FirstOrDefault();
-            if (section == null)
-                return;
-            var configSource = section.Attribute("configSource");
-            if (configSource == null || string.IsNullOrWhiteSpace(configSource.Value))
-                return;
-            var path = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, configSource.Value);
-            if (!File.Exists(path))
-                File.WriteAllText(path, XmlHeader + string.Format("<{0}></{0}>", sectionName));
+            using (MiniProfiler.Current.Step($"Ensuring {sectionName} exists"))
+            {
+                // Adding this checking in to prevent repeated parsing/reading of the config file
+                if (CheckedSections.Contains(sectionName))
+                    return;
+                // add now to ensure it's not looked at excessively
+                CheckedSections.Add(sectionName);
+                var xDocument = XDocument.Parse(File.ReadAllText(config.FilePath));
+                var section = xDocument.Descendants(sectionName).FirstOrDefault();
+                if (section == null)
+                    return;
+                var configSource = section.Attribute("configSource");
+                if (configSource == null || string.IsNullOrWhiteSpace(configSource.Value))
+                    return;
+                var path = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, configSource.Value);
+                if (!File.Exists(path))
+                    File.WriteAllText(path, XmlHeader + string.Format("<{0}></{0}>", sectionName));
+            }
         }
 
         /// <summary>
@@ -152,7 +162,7 @@ namespace MrCMS.Settings
                 configuration.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings(result.Name, valueStr));
                 return;
             }
-            var mrCMSSettings = GetMrCMSSettings(configuration);
+            var mrCMSSettings = GetMrCMSSettingsFromConfig(configuration);
             var key = GetPropertyKey(property);
             if (key == null)
                 throw new ArgumentNullException("key");
@@ -169,19 +179,19 @@ namespace MrCMS.Settings
         /// <param name="property">property being retrieved</param>
         /// <param name="type">value type</param>
         /// <returns>Setting value</returns>
-        protected virtual object GetSettingObjectByKey(Configuration configuration, PropertyInfo property, Type type)
+        protected virtual object GetSettingObjectByKey(PropertyInfo property, Type type)
         {
             var result = IsConnectionString(property);
             if (result.IsConnectionString)
             {
-                return GetConnectionString(configuration, result.Name);
+                return GetConnectionString(result.Name);
             }
             var key = GetPropertyKey(property);
             if (string.IsNullOrWhiteSpace(key))
                 return null;
 
             key = key.Trim().ToLowerInvariant();
-            var settings = GetMrCMSSettings(configuration);
+            var settings = GetMrCMSSettings();
             if (settings.AllKeys.Contains(key))
             {
                 var setting = settings[key];
@@ -192,9 +202,13 @@ namespace MrCMS.Settings
             return null;
         }
 
-        private static KeyValueConfigurationCollection GetMrCMSSettings(Configuration configuration)
+        private static KeyValueConfigurationCollection GetMrCMSSettings()
         {
-            return (configuration.GetSection(MrCMSSettingsSectionName) as MrCMSSettingsSection).Settings;
+            return (WebConfigurationManager.GetSection(MrCMSSettingsSectionName) as MrCMSSettingsSection).Settings;
+        }
+        private static KeyValueConfigurationCollection GetMrCMSSettingsFromConfig(Configuration config)
+        {
+            return (config.GetSection(MrCMSSettingsSectionName) as MrCMSSettingsSection).Settings;
         }
 
         private string GetPropertyKey(PropertyInfo property)
@@ -205,9 +219,9 @@ namespace MrCMS.Settings
             return attribute.Name;
         }
 
-        private object GetConnectionString(Configuration config, string name)
+        private object GetConnectionString(string name)
         {
-            var connectionString = config.ConnectionStrings.ConnectionStrings[name];
+            var connectionString = WebConfigurationManager.ConnectionStrings[name];
             return connectionString != null ? connectionString.ConnectionString : null;
         }
 

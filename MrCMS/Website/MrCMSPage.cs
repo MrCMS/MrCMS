@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,16 +8,20 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities;
+using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Helpers;
+using StackExchange.Profiling;
 
 namespace MrCMS.Website
 {
     public abstract class MrCMSPage<TModel> : WebViewPage<TModel>
     {
+        public const string PageLayoutAreas = "page.current.layout.areas";
+        public const string PageCurrentLayout = "page.current.layout";
         private IConfigurationProvider _configurationProvider;
         private IStringResourceProvider _stringResourceProvider;
         private IGetCurrentLayout _getCurrentLayout;
@@ -89,12 +94,23 @@ namespace MrCMS.Website
         {
             page = page ?? CurrentRequestData.CurrentPage;
 
-            var currentLayout = GetCurrentLayout.Get(page);
+            var currentLayout = Context.Items[PageCurrentLayout] as Layout;
+            if (currentLayout == null)
+            {
+                currentLayout = GetCurrentLayout.Get(page);
+                Context.Items[PageCurrentLayout] = currentLayout;
+            }
+            var layoutAreas = Context.Items[PageLayoutAreas] as IEnumerable<LayoutArea>;
+            if (layoutAreas == null)
+            {
+                layoutAreas = currentLayout.GetLayoutAreas();
+                Context.Items[PageLayoutAreas] = layoutAreas;
+            }
             if (page != null && currentLayout != null)
             {
                 var allowEdit = EditingEnabled && allowFrontEndEditing;
 
-                var layoutArea = currentLayout.GetLayoutAreas().FirstOrDefault(area => area.AreaName == areaName);
+                var layoutArea = layoutAreas.FirstOrDefault(area => area.AreaName == areaName);
 
                 if (layoutArea == null) return;
 
@@ -134,7 +150,8 @@ namespace MrCMS.Website
 
         public MvcHtmlString RenderImage(string imageUrl, Size size = default(Size), string alt = null, string title = null, object attributes = null)
         {
-            return Html.RenderImage(imageUrl, size, alt, title, attributes);
+            using (MiniProfiler.Current.Step(string.Format("Render image - {0}, size {1}", imageUrl, size)))
+                return Html.RenderImage(imageUrl, size, alt, title, attributes);
         }
     }
 

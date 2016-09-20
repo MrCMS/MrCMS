@@ -8,6 +8,7 @@ using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Web.Tests.Stubs;
+using MrCMS.Website;
 using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Services
@@ -21,6 +22,8 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         {
             _documentService = A.Fake<IDocumentService>();
             _webpageWidgetAdminService = new WebpageWidgetAdminService(_documentService, Session);
+            // persist current user for events
+            Session.Transact(session => session.Save(CurrentRequestData.CurrentUser));
         }
 
         [Fact]
