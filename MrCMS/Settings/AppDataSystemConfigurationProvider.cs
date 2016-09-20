@@ -55,7 +55,7 @@ namespace MrCMS.Settings
             }
             return result != null
                 ? new GetSettingsObject<TSettings>(result)
-                : new GetSettingsObject<TSettings>(new TSettings(), true);
+                : new GetSettingsObject<TSettings>(null, true);
         }
 
         private struct GetSettingsObject<TSettings> where TSettings : SystemSettingsBase, new()

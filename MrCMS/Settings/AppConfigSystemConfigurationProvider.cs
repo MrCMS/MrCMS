@@ -108,8 +108,6 @@ namespace MrCMS.Settings
         protected virtual Configuration GetConfig()
         {
             var config = WebConfigurationManager.OpenWebConfiguration("~");
-            EnsureConnectionStringsSourceExists(config);
-            EnsureMrCMSSettingsSourceExists(config);
             return config;
         }
 
@@ -202,9 +200,18 @@ namespace MrCMS.Settings
             return null;
         }
 
-        private static KeyValueConfigurationCollection GetMrCMSSettings()
+        private KeyValueConfigurationCollection GetMrCMSSettings()
         {
-            return (WebConfigurationManager.GetSection(MrCMSSettingsSectionName) as MrCMSSettingsSection).Settings;
+            try
+            {
+                return (WebConfigurationManager.GetSection(MrCMSSettingsSectionName) as MrCMSSettingsSection).Settings;
+            }
+            catch
+            {
+                // we do this to create the config if it doesn't exist
+                var config = GetConfig();
+                return GetMrCMSSettingsFromConfig(config);
+            }
         }
         private static KeyValueConfigurationCollection GetMrCMSSettingsFromConfig(Configuration config)
         {
@@ -241,6 +248,30 @@ namespace MrCMS.Settings
         {
             public bool IsConnectionString { get; set; }
             public string Name { get; set; }
+        }
+
+        public void RefreshCache()
+        {
+            //ConfigurationManager.RefreshSection(MrCMSSettingsSectionName);
+        }
+
+        public void Initialize(DatabaseSettings settings)
+        {
+            var config = GetConfig();
+            EnsureConnectionStringsSourceExists(config);
+            EnsureMrCMSSettingsSourceExists(config);
+            config = GetConfig();
+            
+            foreach (var prop in typeof(DatabaseSettings).GetProperties())
+            {
+                // get properties we can read and write to
+                if (!prop.CanRead || !prop.CanWrite)
+                    continue;
+
+                dynamic value = prop.GetValue(settings, null);
+                SetSetting(config, prop, value ?? "");
+            }
+            SaveConfig(config);
         }
     }
 }
