@@ -250,11 +250,6 @@ namespace MrCMS.Settings
             public string Name { get; set; }
         }
 
-        public void RefreshCache()
-        {
-            //ConfigurationManager.RefreshSection(MrCMSSettingsSectionName);
-        }
-
         public void Initialize(DatabaseSettings settings)
         {
             var config = GetConfig();

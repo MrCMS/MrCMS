@@ -56,7 +56,6 @@ namespace MrCMS.Settings
                 appConfig.SaveSettings(setting);
                 appData.MarkAsMigrated(setting);
             }
-            appConfig.RefreshCache();
         }
 
         public static void MigrateSettings(IKernel kernel)
