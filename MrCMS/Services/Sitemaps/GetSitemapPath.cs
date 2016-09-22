@@ -1,3 +1,4 @@
+using System.IO;
 using System.Web;
 using MrCMS.Entities.Multisite;
 
@@ -14,6 +15,11 @@ namespace MrCMS.Services.Sitemaps
         public string GetPath(Site site)
         {
             return _server.MapPath($"~/App_Data/sitemap-{site.Id}.xml");
+        }
+
+        public bool FileExists(string path)
+        {
+            return File.Exists(path);
         }
     }
 }
