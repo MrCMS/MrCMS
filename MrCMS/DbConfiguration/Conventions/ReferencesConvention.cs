@@ -12,7 +12,6 @@ namespace MrCMS.DbConfiguration.Conventions
 
             instance.ForeignKey(
                 $"FK_{instance.EntityType?.Name ?? instance.Name}_{instance.Property.Name}");
-        
         }
     }
 }

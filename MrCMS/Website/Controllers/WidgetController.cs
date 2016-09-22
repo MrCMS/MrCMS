@@ -2,7 +2,9 @@ using System;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using MrCMS.Entities.Widget;
+using MrCMS.Helpers;
 using MrCMS.Services;
+using NHibernate.Proxy;
 using StackExchange.Profiling;
 
 namespace MrCMS.Website.Controllers
@@ -18,7 +20,9 @@ namespace MrCMS.Website.Controllers
 
         public ActionResult Show(Widget widget)
         {
-            return _widgetUIService.GetContent(this, widget, helper => helper.Action("Internal", "Widget", new {widget}));
+            if (widget.IsProxy())
+                widget = widget.Unproxy();
+            return _widgetUIService.GetContent(this, widget, helper => helper.Action("Internal", "Widget", new { widget }));
         }
 
         public PartialViewResult Internal(Widget widget)

@@ -33,13 +33,25 @@ namespace MrCMS.Settings
                 }
             }
         }
+        private static void CopyDatabaseSettings()
+        {
+#pragma warning disable 618 // For migration purposes
+            var appData = new AppDataSystemConfigurationProvider();
+#pragma warning restore 618
+            var appConfig = new AppConfigSystemConfigurationProvider();
+
+            var setting = appData.GetSystemSettings<DatabaseSettings>();
+            appConfig.Initialize(setting);
+            appData.MarkAsMigrated(setting);
+        }
+
         private static void CopyOldSystemSettings()
         {
 #pragma warning disable 618 // For migration purposes
             var appData = new AppDataSystemConfigurationProvider();
 #pragma warning restore 618
             var appConfig = new AppConfigSystemConfigurationProvider();
-            foreach (var setting in appData.GetAllSystemSettings())
+            foreach (var setting in appData.GetAllSystemSettings().Where(x => x != null))
             {
                 appConfig.SaveSettings(setting);
                 appData.MarkAsMigrated(setting);
@@ -56,8 +68,11 @@ namespace MrCMS.Settings
             var jsonFiles = Directory.EnumerateFiles(settingsFolder, "*.json", SearchOption.AllDirectories);
             if (!jsonFiles.Any(HasExistingTypeInCurrentSystem))
                 return;
-            CopyOldSystemSettings();
+            CopyDatabaseSettings();
+
             UpdateDbInstalled(kernel);
+
+            CopyOldSystemSettings();
             CopyOldSiteSettings(kernel);
         }
 
@@ -70,9 +85,29 @@ namespace MrCMS.Settings
             if (string.IsNullOrWhiteSpace(withoutExtension))
                 return false;
 
+            var systemSettingsTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>();
+            // stop site settings migrated to system causing a re-do
+            if (!withoutExtension.Contains("system", StringComparison.OrdinalIgnoreCase) &&
+                systemSettingsTypes.Select(x => x.FullName)
+                    .Contains(withoutExtension, StringComparer.OrdinalIgnoreCase))
+            {
+                File.Move(fileName, Path.ChangeExtension(fileName, ".migrated"));
+                return false;
+            }
+
+            var siteSettingsTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>();
+            // stop system settings migrated to site causing a re-do
+            if (withoutExtension.Contains("system", StringComparison.OrdinalIgnoreCase) &&
+                siteSettingsTypes.Select(x => x.FullName)
+                    .Contains(withoutExtension, StringComparer.OrdinalIgnoreCase))
+            {
+                File.Move(fileName, Path.ChangeExtension(fileName, ".migrated"));
+                return false;
+            }
+
             var allSettingsTypes =
-                   TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>()
-                       .Concat(TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>()).ToHashSet();
+                   systemSettingsTypes
+                       .Concat(siteSettingsTypes).ToHashSet();
 
             return allSettingsTypes.Select(x => x.FullName).Contains(withoutExtension, StringComparer.OrdinalIgnoreCase);
         }
