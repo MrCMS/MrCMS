@@ -2152,7 +2152,6 @@
     <Content Include="Themes\Default\Apps\Core\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="README.md" />
     <Content Include="Views\Error\FileNotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
