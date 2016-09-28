@@ -49,9 +49,6 @@ namespace MrCMS.Messages
 
             var folder = Path.Combine(templatesFolder, siteId.HasValue ? siteId.ToString(): "system");
 
-            if (!Directory.Exists(folder))
-                return;
-
             var files = Directory.EnumerateFiles(folder, "*.json", SearchOption.AllDirectories);
 
             session.Transact(statelessSession =>
@@ -75,7 +72,7 @@ namespace MrCMS.Messages
                         Type = type.FullName,
                         SiteId = siteId
                     });
-                    File.Move(file, Path.ChangeExtension(file, ".migrated"));
+                    File.Move(file, file + ".migrated");
                 }
             });
         }

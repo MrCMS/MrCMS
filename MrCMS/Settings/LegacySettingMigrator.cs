@@ -5,12 +5,9 @@ using System.Web.Hosting;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Settings;
 using MrCMS.Helpers;
-using MrCMS.Installation;
-using MrCMS.IoC.Modules;
 using MrCMS.Website;
 using NHibernate;
 using Ninject;
-using Ninject.Web.Common;
 
 namespace MrCMS.Settings
 {
@@ -18,7 +15,7 @@ namespace MrCMS.Settings
     {
         private static void CopyOldSiteSettings(IKernel kernel)
         {
-            var session = kernel.Get<IStatelessSession>();
+            var session = kernel.Get<ISession>();
             var sites = session.QueryOver<Site>().List();
             foreach (var site in sites)
             {
@@ -33,6 +30,7 @@ namespace MrCMS.Settings
                 }
             }
         }
+
         private static void CopyDatabaseSettings()
         {
 #pragma warning disable 618 // For migration purposes
@@ -106,8 +104,8 @@ namespace MrCMS.Settings
             }
 
             var allSettingsTypes =
-                   systemSettingsTypes
-                       .Concat(siteSettingsTypes).ToHashSet();
+                systemSettingsTypes
+                    .Concat(siteSettingsTypes).ToHashSet();
 
             return allSettingsTypes.Select(x => x.FullName).Contains(withoutExtension, StringComparer.OrdinalIgnoreCase);
         }

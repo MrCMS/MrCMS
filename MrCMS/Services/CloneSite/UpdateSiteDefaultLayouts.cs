@@ -9,9 +9,9 @@ namespace MrCMS.Services.CloneSite
     [CloneSitePart(-65)]
     public class UpdateSiteDefaultLayouts : ICloneSiteParts
     {
-        private readonly IStatelessSession _session;
+        private readonly ISession _session;
 
-        public UpdateSiteDefaultLayouts( IStatelessSession session)
+        public UpdateSiteDefaultLayouts(ISession session)
         {
             _session = session;
         }

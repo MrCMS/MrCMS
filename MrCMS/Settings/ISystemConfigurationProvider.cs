@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using MrCMS.Services.Caching;
 
 namespace MrCMS.Settings
 {
-    public interface ISystemConfigurationProvider
+    public interface ISystemConfigurationProvider:IClearCache
     {
         TSettings GetSystemSettings<TSettings>() where TSettings : SystemSettingsBase, new();
         void SaveSettings(SystemSettingsBase settings);

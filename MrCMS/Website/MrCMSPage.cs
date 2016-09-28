@@ -15,6 +15,7 @@ using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Helpers;
 using StackExchange.Profiling;
+using Ninject;
 
 namespace MrCMS.Website
 {
@@ -22,13 +23,12 @@ namespace MrCMS.Website
     {
         public const string PageLayoutAreas = "page.current.layout.areas";
         public const string PageCurrentLayout = "page.current.layout";
-        private IConfigurationProvider _configurationProvider;
         private IStringResourceProvider _stringResourceProvider;
-        private IGetCurrentLayout _getCurrentLayout;
+        private IKernel _kernel;
 
         public T SiteSettings<T>() where T : SiteSettingsBase, new()
         {
-            return _configurationProvider.GetSiteSettings<T>();
+            return _kernel.Get<T>();
         }
 
         public string Resource(string key, string defaultValue = null)
@@ -42,7 +42,7 @@ namespace MrCMS.Website
 
             if (CurrentRequestData.DatabaseIsInstalled)
             {
-                _configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
+                _kernel = MrCMSApplication.Get<IKernel>();
                 _stringResourceProvider = MrCMSApplication.Get<IStringResourceProvider>();
                 GetCurrentLayout = MrCMSApplication.Get<IGetCurrentLayout>();
             }
@@ -80,15 +80,11 @@ namespace MrCMS.Website
             {
                 return CurrentRequestData.CurrentUser != null &&
                        CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") &&
-                       _configurationProvider.GetSiteSettings<SiteSettings>().EnableInlineEditing;
+                       _kernel.Get<SiteSettings>().EnableInlineEditing;
             }
         }
 
-        public IGetCurrentLayout GetCurrentLayout
-        {
-            get { return _getCurrentLayout; }
-            set { _getCurrentLayout = value; }
-        }
+        public IGetCurrentLayout GetCurrentLayout { get; set; }
 
         public void RenderZone(string areaName, Webpage page = null, bool allowFrontEndEditing = true)
         {

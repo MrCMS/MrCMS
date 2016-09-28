@@ -7,11 +7,10 @@ namespace MrCMS.Tasks
 {
     public class UpdateSitemap : SchedulableTask
     {
-        private readonly IStatelessSession _session;
+        private readonly ISession _session;
         private readonly ITriggerUrls _triggerUrls;
 
-
-        public UpdateSitemap(IStatelessSession session, ITriggerUrls triggerUrls)
+        public UpdateSitemap(ISession session, ITriggerUrls triggerUrls)
         {
             _session = session;
             _triggerUrls = triggerUrls;
