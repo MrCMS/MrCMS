@@ -36,6 +36,7 @@ namespace MrCMS.Batching.Services
 
         public async Task<BatchJobExecutionResult> Execute(BatchJob batchJob)
         {
+            batchJob = batchJob.Unproxy();
             var type = batchJob.GetType();
             var hasExecutorType = _executorTypeList.ContainsKey(type);
             if (hasExecutorType)
