@@ -34,6 +34,11 @@ namespace MrCMS.Services
 
         public bool ValidateUser(User user, string password)
         {
+            // i.e. if the password's not been set it's never going to match
+            if (user.PasswordSalt == null || user.PasswordSalt.Length == 0 || user.PasswordHash == null ||
+                user.PasswordHash.Length == 0)
+                return false;
+
             var hashAlgorithm = _hashAlgorithmProvider.GetHashAlgorithm(user.CurrentEncryption);
             return CompareByteArrays(user.PasswordHash, hashAlgorithm.GenerateSaltedHash(GetBytes(password), user.PasswordSalt));
         }
