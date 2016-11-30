@@ -1,0 +1,76 @@
+﻿@using System.Collections.Generic
+@using System.Linq
+@using MrCMS.Entities.People
+@using MrCMS.Helpers
+@using MrCMS.Models
+@using MrCMS.Paging
+@using MrCMS.Web.Areas.Admin.Helpers.D3Reports;
+@using MrCMS.Web.Areas.Admin.Models.UserSubscriptionReports;
+
+@model UserSubscriptionReportsSearchQuery
+
+@{
+    ViewBag.Title = @Resource("Admin User Subscription Reports Title", "User Subscription Reports");
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Index", "UserSubscriptionReports", FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            @Resource("Admin User Subscription Reports (Monthly) Title", "User Subscription Reports (Monthly)")
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn btn-primary" value="Range Filter" />
+            </span>
+        </legend>
+
+        <div class="row">
+            <div class="col-lg-8"></div>
+            <div class="col-lg-2">
+                @Html.BootstrapDatePickerFor(m => m.StartDate, labelforTooltip: "Start Date", className: "date-picker")
+            </div>
+            <div class="col-lg-2">
+                @Html.BootstrapDatePickerFor(m => m.EndDate, labelforTooltip: "End Date", className: "date-picker")
+            </div>
+        </div>
+    </fieldset>
+
+
+    if (Model.Subscriptions.JsonObject.Count() > 0)
+    {
+        <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-11">
+                <div id="graph">
+                    @Html.D3GraphAxisComponentFor(Model.Subscriptions);
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <strong>@Resource("Admin User Subscription No Data Title", "There is no data,Please filter again with different start/end date values")</strong>
+        </div>
+    }
+}
+
+
+<script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/jquery/jquery-1.11.2.min.js")'></script>
+<script src='@Url.Content("/Areas/Admin/Content/Scripts/lib/d3/bootstrap-datepicker.js")'></script>
+
+<script type="text/javascript">
+    $(document).ready(function ($) {
+        $(".date-picker").datepicker({
+            format: "mm/dd/yyyy",
+            autoclose: true
+        });
+    });
+</script>
+
+
+@{
+    Html.IncludeCss("/Areas/Admin/Content/Styles/d3/d3-admin-graph.css");
+    Html.IncludeCss("/Areas/Admin/Content/Styles/d3/bootstrap-datepicker.css");
+}
+
