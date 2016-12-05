@@ -50,7 +50,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             }
             string result = string.Join(Environment.NewLine, data.Select(list => string.Join(",", list)));
 
-            return new FileContentResult(Encoding.Default.GetBytes(result), "text/csv")
+            return new FileContentResult(Encoding.UTF8.GetBytes(result), "text/csv")
             {
                 FileDownloadName =
                     "MrCMS-ResourceData-" + CurrentRequestData.Now +
@@ -62,7 +62,7 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             Stream inputStream = file.InputStream;
             inputStream.Position = 0;
-            var reader = new StreamReader(inputStream, Encoding.Default);
+            var reader = new StreamReader(inputStream, Encoding.UTF8);
             string data = reader.ReadToEnd();
             string[] rows = data.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             var resourceData = new List<StringResourceData>();
