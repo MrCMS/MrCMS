@@ -21,7 +21,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             _configurationProvider = configurationProvider;
         }
 
-        private class ErrorPages 
+        private class ErrorPages
         {
             public Webpage Error403 { get; set; }
             public Webpage Error404 { get; set; }
@@ -30,20 +30,24 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
 
         public void Setup()
         {
+            ErrorPages errorPages = GetErrorPages();
             _session.Transact(session =>
             {
                 GetBasicPages().ForEach(webpage => session.Save(webpage));
 
-                ErrorPages errorPages = GetErrorPages();
                 session.Save(errorPages.Error403);
                 session.Save(errorPages.Error404);
                 session.Save(errorPages.Error500);
+            });
 
-                var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
-                siteSettings.Error403PageId = errorPages.Error403.Id;
-                siteSettings.Error404PageId = errorPages.Error404.Id;
-                siteSettings.Error500PageId = errorPages.Error500.Id;
-                _configurationProvider.SaveSettings(siteSettings);
+            var siteSettings = _configurationProvider.GetSiteSettings<SiteSettings>();
+            siteSettings.Error403PageId = errorPages.Error403.Id;
+            siteSettings.Error404PageId = errorPages.Error404.Id;
+            siteSettings.Error500PageId = errorPages.Error500.Id;
+            _configurationProvider.SaveSettings(siteSettings);
+
+            _session.Transact(session =>
+            {
 
                 GetAccountPages().ForEach(webpage => session.Save(webpage));
 

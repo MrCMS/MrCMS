@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.ServiceModel.Syndication;
+using MrCMS.Helpers;
 using MrCMS.Web.Apps.Articles.Pages;
 using NHibernate;
 

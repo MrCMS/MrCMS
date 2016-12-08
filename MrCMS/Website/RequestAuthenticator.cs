@@ -1,6 +1,5 @@
 using System.Threading;
 using System.Web;
-using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using Ninject;
@@ -13,7 +12,8 @@ namespace MrCMS.Website
         {
             if (CurrentRequestData.CurrentContext.User != null)
             {
-                User currentUser = MrCMSKernel.Kernel.Get<IUserService>().GetCurrentUser(CurrentRequestData.CurrentContext);
+                var currentUser = MrCMSKernel.Kernel.Get<IUserLookup>()
+                    .GetCurrentUser(CurrentRequestData.CurrentContext);
                 if (!request.Url.AbsolutePath.StartsWith("/signalr/") && (currentUser == null ||
                                                                           !currentUser.IsActive))
                     MrCMSKernel.Kernel.Get<IAuthorisationService>().Logout();

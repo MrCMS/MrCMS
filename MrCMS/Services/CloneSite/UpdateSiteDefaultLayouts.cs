@@ -2,22 +2,23 @@ using System.Linq;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Multisite;
 using MrCMS.Settings;
+using NHibernate;
 
 namespace MrCMS.Services.CloneSite
 {
     [CloneSitePart(-65)]
     public class UpdateSiteDefaultLayouts : ICloneSiteParts
     {
-        private readonly ILegacySettingsProvider _legacySettingsProvider;
+        private readonly ISession _session;
 
-        public UpdateSiteDefaultLayouts(ILegacySettingsProvider legacySettingsProvider)
+        public UpdateSiteDefaultLayouts(ISession session)
         {
-            _legacySettingsProvider = legacySettingsProvider;
+            _session = session;
         }
 
         public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            var toProvider = new ConfigurationProvider(@to, _legacySettingsProvider);
+            var toProvider = new SqlConfigurationProvider(_session, @to);
             var pageDefaultsSettings = toProvider.GetSiteSettings<PageDefaultsSettings>();
 
             var keys = pageDefaultsSettings.Layouts.Keys.ToList();

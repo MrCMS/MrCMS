@@ -117,8 +117,6 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public PartialViewResult Manage(MediaCategorySearchModel searchModel)
         {
             ViewData["category"] = _fileAdminService.GetCategory(searchModel);
-            ViewData["files"] = _fileAdminService.GetFilesForFolder(searchModel);
-            ViewData["folders"] = _fileAdminService.GetSubFolders(searchModel);
             ViewData["sort-by-options"] = _fileAdminService.GetSortByOptions(searchModel);
 
             return PartialView(searchModel);
@@ -161,12 +159,12 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         /// <summary>
         ///     Finds out if the URL entered is valid.
         /// </summary>
-        /// <param name="UrlSegment">The URL Segment entered</param>
-        /// <param name="DocumentType">The type of mediaCategorySearchModel</param>
+        /// <param name="urlSegment">The URL Segment entered</param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult ValidateUrlIsAllowed(string UrlSegment, int? Id)
+        public ActionResult ValidateUrlIsAllowed(string urlSegment, int? id)
         {
-            return !_urlValidationService.UrlIsValidForMediaCategory(UrlSegment, Id)
+            return !_urlValidationService.UrlIsValidForMediaCategory(urlSegment, id)
                 ? Json("Please choose a different Path as this one is already used.", JsonRequestBehavior.AllowGet)
                 : Json(true, JsonRequestBehavior.AllowGet);
         }
@@ -188,6 +186,14 @@ namespace MrCMS.Web.Areas.Admin.Controllers
             _fileAdminService.DeleteFoldersSoft(model.Folders);
 
             return Json(new FormActionResult { success = true, message = "" });
+        }
+
+        public ActionResult Directory(MediaCategorySearchModel searchModel)
+        {
+            ViewData["files"] = _fileAdminService.GetFilesForFolder(searchModel);
+            ViewData["folders"] = _fileAdminService.GetSubFolders(searchModel);
+
+            return PartialView(searchModel);
         }
     }
 }

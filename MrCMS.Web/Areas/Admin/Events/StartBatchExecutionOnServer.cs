@@ -1,5 +1,5 @@
+using MrCMS.Batching;
 using MrCMS.Batching.Events;
-using MrCMS.Web.Areas.Admin.Services.Batching;
 
 namespace MrCMS.Web.Areas.Admin.Events
 {

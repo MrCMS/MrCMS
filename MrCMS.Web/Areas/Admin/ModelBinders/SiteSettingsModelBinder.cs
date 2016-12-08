@@ -67,7 +67,7 @@ namespace MrCMS.Web.Areas.Admin.ModelBinders
 
         protected virtual MethodInfo GetGetSettingsMethod()
         {
-            return typeof (ConfigurationProvider).GetMethodExt("GetSiteSettings");
+            return typeof (SqlConfigurationProvider).GetMethodExt("GetSiteSettings");
         }
     }
 }

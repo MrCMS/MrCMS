@@ -15,12 +15,14 @@ namespace MrCMS.Indexing.Querying
         where TDefinition : IndexDefinition<TEntity>
     {
         private readonly TDefinition _definition;
+        private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
         private readonly SiteSettings _siteSettings;
         private bool _disposed;
 
-        public Searcher(TDefinition definition, SiteSettings siteSettings)
+        public Searcher(TDefinition definition, IGetLuceneIndexSearcher getLuceneIndexSearcher, SiteSettings siteSettings)
         {
             _definition = definition;
+            _getLuceneIndexSearcher = getLuceneIndexSearcher;
             _siteSettings = siteSettings;
             IndexManager.EnsureIndexExists<TEntity, TDefinition>();
         }
@@ -103,7 +105,7 @@ namespace MrCMS.Indexing.Querying
 
         public IndexSearcher IndexSearcher
         {
-            get { return Definition.GetSearcher(); }
+            get { return _getLuceneIndexSearcher.Get(Definition); }
         }
 
         public string IndexName
@@ -115,7 +117,7 @@ namespace MrCMS.Indexing.Querying
         {
             Dispose(true);
 
-            // Use SupressFinalize in case a subclass 
+            // Use SuppressFinalize in case a subclass 
             // of this type implements a finalizer.
             GC.SuppressFinalize(this);
         }
@@ -138,7 +140,7 @@ namespace MrCMS.Indexing.Querying
             return booleanQuery;
         }
 
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             // If you need thread safety, use a lock around these  
             // operations, as well as in your methods that use the resource. 

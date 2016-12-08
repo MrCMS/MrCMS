@@ -16,10 +16,11 @@ namespace MrCMS.Website
 
         protected override bool AuthorizeCore(System.Web.HttpContextBase httpContext)
         {
-            if (!CurrentRequestData.CurrentUser.IsActive)
+            var currentUser = CurrentRequestData.CurrentUser;
+            if (currentUser == null || !currentUser.IsActive)
                 return false;
             var aclRule = (Activator.CreateInstance(_type) as ACLRule);
-            return aclRule != null && aclRule.CanAccess(CurrentRequestData.CurrentUser, _operation, null);
+            return aclRule != null && aclRule.CanAccess(currentUser, _operation, null);
         }
     }
 }

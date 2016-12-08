@@ -52,8 +52,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         public RedirectToRouteResult FileSystem([IoCModelBinder(typeof(FileSystemSettingsModelBinder))]FileSystemSettings settings)
         {
             _configurationProvider.SaveSettings(settings);
-            TempData.SuccessMessages().Add("Settings saved.".AsResource(HttpContext.GetKernel()));
+            TempData.SuccessMessages().Add("Settings saved.".AsResource(HttpContext));
             return RedirectToAction("FileSystem");
         }
+
+     
     }
 }

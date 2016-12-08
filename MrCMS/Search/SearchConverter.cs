@@ -49,7 +49,7 @@ namespace MrCMS.Search
                     Field.Index.NOT_ANALYZED));
             }
 
-            document.Add(new Field(UniversalSearchFieldNames.DisplayName, item.DisplayName, Field.Store.YES,
+            document.Add(new Field(UniversalSearchFieldNames.DisplayName, item.DisplayName ?? string.Empty, Field.Store.YES,
                 Field.Index.NOT_ANALYZED) { Boost = 5 });
 
             document.Add(new Field(UniversalSearchFieldNames.ActionUrl, item.ActionUrl ?? string.Empty, Field.Store.YES,

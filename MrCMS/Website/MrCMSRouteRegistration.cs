@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using System.Web.Routing;
+using MrCMS.Batching;
 using MrCMS.Tasks;
 using MrCMS.Website.Controllers;
 using MrCMS.Website.Routing;
@@ -14,9 +15,26 @@ namespace MrCMS.Website
             routes.IgnoreRoute("favicon.ico");
 
             routes.MapRoute("InstallerRoute", "install", new { controller = "Install", action = "Setup" });
+
+            routes.MapRoute("Azure Probe Route", "azure-probe",
+                new {controller = "AzureProbe", action = "KeepAlive"});
+
             routes.MapRoute("Task Execution", TaskExecutionController.ExecutePendingTasksURL,
                 new { controller = "TaskExecution", action = "Execute" });
-            routes.MapRoute("Sitemap", "sitemap.xml", new { controller = "SEO", action = "Sitemap" });
+            routes.MapRoute("Individual Task Execution", TaskExecutionController.ExecuteTaskURL,
+                new { controller = "TaskExecution", action = "ExecuteTask" });
+            routes.MapRoute("Queued Task Execution", TaskExecutionController.ExecuteQueuedTasksURL,
+                new { controller = "TaskExecution", action = "ExecuteQueuedTasks" });
+            routes.MapRoute("Optimise Index Execution", OptimiseIndexesController.OptimiseIndexUrl,
+                new { controller = "OptimiseIndexes", action = "Execute" });
+            routes.MapRoute("Write Sitemap Execution", SitemapController.WriteSitemapUrl,
+                new { controller = "Sitemap", action = "Update" });
+            routes.MapRoute("Show Sitemap", SitemapController.SitemapUrl,
+                new { controller = "Sitemap", action = "Show" });
+
+            routes.MapRoute("batch execute", BatchExecutionController.BaseURL+"{id}",
+                new {controller = "BatchExecution", action = "ExecuteNext"});
+
             routes.MapRoute("robots.txt", "robots.txt", new { controller = "SEO", action = "Robots" });
             routes.MapRoute("ckeditor Config", "Areas/Admin/Content/Editors/ckeditor/config.js",
                 new { controller = "CKEditor", action = "Config" });

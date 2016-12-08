@@ -8,18 +8,18 @@ namespace MrCMS.Services
     public class PasswordEncryptionManager : IPasswordEncryptionManager
     {
         private readonly IHashAlgorithmProvider _hashAlgorithmProvider;
-        private readonly IUserService _userService;
+        private readonly IUserManagementService _userManagementService;
 
-        public PasswordEncryptionManager(IHashAlgorithmProvider hashAlgorithmProvider, IUserService userService)
+        public PasswordEncryptionManager(IHashAlgorithmProvider hashAlgorithmProvider, IUserManagementService userManagementService)
         {
             _hashAlgorithmProvider = hashAlgorithmProvider;
-            _userService = userService;
+            _userManagementService = userManagementService;
         }
 
         public void UpdateEncryption(User user, string password)
         {
             SetPassword(user, password);
-            _userService.SaveUser(user);
+            _userManagementService.SaveUser(user);
         }
 
         public virtual void SetPassword(User user, string password)
@@ -34,6 +34,11 @@ namespace MrCMS.Services
 
         public bool ValidateUser(User user, string password)
         {
+            // i.e. if the password's not been set it's never going to match
+            if (user.PasswordSalt == null || user.PasswordSalt.Length == 0 || user.PasswordHash == null ||
+                user.PasswordHash.Length == 0)
+                return false;
+
             var hashAlgorithm = _hashAlgorithmProvider.GetHashAlgorithm(user.CurrentEncryption);
             return CompareByteArrays(user.PasswordHash, hashAlgorithm.GenerateSaltedHash(GetBytes(password), user.PasswordSalt));
         }

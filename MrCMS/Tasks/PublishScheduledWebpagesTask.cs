@@ -2,7 +2,6 @@ using System.Linq;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using MrCMS.Services;
 using MrCMS.Services.Notifications;
 using MrCMS.Website;
 using NHibernate;
@@ -25,20 +24,23 @@ namespace MrCMS.Tasks
 
         protected override void OnExecute()
         {
-            var now = CurrentRequestData.Now;
-            var due = _session.QueryOver<Webpage>().Where(x => !x.Published && x.PublishOn <= now).List();
-            if (!due.Any())
-                return;
-            using (new NotificationDisabler())
+            using (new SiteFilterDisabler(_session))
             {
-                _session.Transact(session =>
+                var now = CurrentRequestData.Now;
+                var due = _session.QueryOver<Webpage>().Where(x => !x.Published && x.PublishOn <= now).List();
+                if (!due.Any())
+                    return;
+                using (new NotificationDisabler())
                 {
-                    foreach (var webpage in due)
+                    _session.Transact(session =>
                     {
-                        webpage.Published = true;
-                        session.Update(webpage);
-                    }
-                });
+                        foreach (var webpage in due)
+                        {
+                            webpage.Published = true;
+                            session.Update(webpage);
+                        }
+                    });
+                }
             }
         }
     }

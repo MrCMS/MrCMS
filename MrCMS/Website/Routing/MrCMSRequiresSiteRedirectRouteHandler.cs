@@ -25,7 +25,8 @@ namespace MrCMS.Website.Routing
                 var scheme = url.Scheme;
                 var authority = url.Authority;
                 var baseUrl = webpage.Site.BaseUrl;
-                if (!context.HttpContext.Request.IsLocal && !authority.Equals(baseUrl, StringComparison.InvariantCultureIgnoreCase))
+                var stagingUrl = webpage.Site.StagingUrl;
+                if (!context.HttpContext.Request.IsLocal && (!authority.Equals(baseUrl, StringComparison.InvariantCultureIgnoreCase) && !authority.Equals(stagingUrl, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     var redirectUrl = url.ToString().Replace(scheme + "://" + authority, scheme + "://" + baseUrl);
                     context.HttpContext.Response.Redirect(redirectUrl);

@@ -1,15 +1,28 @@
-﻿@using MrCMS.Web.Areas.Admin.Helpers
+﻿@using System.Drawing
+@using MrCMS.Helpers
+@using MrCMS.Web.Areas.Admin.Helpers
 @using MrCMS.Website
 @{
     var typeOptions = UniversalSearchHelper.GetOptions();
 }
 
+
 <nav class="navbar navbar-default no-border-radius margin-bottom-0 navbar-fixed-top nav" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <span class="display-inline">
-                <a href="/Admin" tabindex="3">
-                    <img src="/Areas/Admin/Content/Images/logo.png" class="logo" />
+                <a href="/Admin" tabindex="3">         
+                    @{
+                        var adminLogo = SiteSettings<MrCMS.Settings.SiteSettings>().AdminLogo;
+                    }
+                    @if (!string.IsNullOrWhiteSpace(adminLogo))
+                    {
+                        @Html.RenderImage(adminLogo, new Size(0, 45), attributes: new { @class = "logo" })
+                    }
+                    else
+                    {
+                        <img src="/Areas/Admin/Content/Images/logo.png" class="logo" />
+                    }
                 </a>
             </span>
             <button type="button" class="navbar-toggle btn" data-toggle="collapse" data-target="#right-hand-navbar">

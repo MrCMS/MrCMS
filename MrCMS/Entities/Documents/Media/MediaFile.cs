@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
+using MrCMS.DbConfiguration.Configuration;
 
 namespace MrCMS.Entities.Documents.Media
 {
@@ -14,6 +16,8 @@ namespace MrCMS.Entities.Documents.Media
         public virtual string FileExtension { get; set; }
         public virtual string ContentType { get; set; }
         public virtual MediaCategory MediaCategory { get; set; }
+
+        [StringLength(450), IsDBLength]
         public virtual string FileUrl { get; set; }
         public virtual long ContentLength { get; set; }
         public virtual string FileName { get; set; }
@@ -35,5 +39,6 @@ namespace MrCMS.Entities.Documents.Media
         }
 
         public virtual IList<ResizedImage> ResizedImages { get; set; }
+        public virtual IList<Crop> Crops { get; set; }
     }
 }

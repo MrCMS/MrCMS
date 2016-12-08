@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using MrCMS.HealthChecks;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
+using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services.Dashboard;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Controllers;

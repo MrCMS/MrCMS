@@ -1,8 +1,7 @@
+using MrCMS.DbConfiguration;
 using MrCMS.Entities.Messaging;
-using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
-using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate;
 
@@ -11,17 +10,13 @@ namespace MrCMS.Tasks
     public class SendQueuedMessagesTask : SchedulableTask
     {
         public const int MAX_TRIES = 5;
-        private readonly ISession _session;
+        protected readonly ISession _session;
         private readonly IEmailSender _emailSender;
-        private readonly SiteSettings _siteSettings;
-        private readonly Site _site;
 
-        public SendQueuedMessagesTask(ISession session, IEmailSender emailSender, SiteSettings siteSettings,Site site)
+        public SendQueuedMessagesTask(ISession session, IEmailSender emailSender)
         {
             _session = session;
             _emailSender = emailSender;
-            _siteSettings = siteSettings;
-            _site = site;
         }
 
         public override int Priority
@@ -31,22 +26,24 @@ namespace MrCMS.Tasks
 
         protected override void OnExecute()
         {
-            _session.Transact(session =>
+            using (new SiteFilterDisabler(_session))
             {
-                foreach (
-                    QueuedMessage queuedMessage in
-                        session.QueryOver<QueuedMessage>().Where(
-                            message => message.SentOn == null && message.Tries < MAX_TRIES)
-                            .Where(message => message.Site.Id == _site.Id)
-                               .List())
+                _session.Transact(session =>
                 {
-                    if (_emailSender.CanSend(queuedMessage))
-                        _emailSender.SendMailMessage(queuedMessage);
-                    else
-                        queuedMessage.SentOn = CurrentRequestData.Now;
-                    session.SaveOrUpdate(queuedMessage);
-                }
-            });
+                    foreach (
+                        QueuedMessage queuedMessage in
+                            session.QueryOver<QueuedMessage>().Where(
+                                message => message.SentOn == null && message.Tries < MAX_TRIES)
+                                .List())
+                    {
+                        if (_emailSender.CanSend(queuedMessage))
+                            _emailSender.SendMailMessage(queuedMessage);
+                        else
+                            queuedMessage.SentOn = CurrentRequestData.Now;
+                        session.SaveOrUpdate(queuedMessage);
+                    }
+                });
+            }
         }
     }
 }

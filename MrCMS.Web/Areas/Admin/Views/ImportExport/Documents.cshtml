@@ -1,8 +1,9 @@
 ﻿@using System.Collections.Generic
 @using System.Linq
 @using MrCMS.Helpers
+@using MrCMS.Models
 @using MrCMS.Services.ImportExport
-@model dynamic
+@model MrCMS.Models.ExportDocumentsModel
 @{
     ViewBag.Title = "Import/Export Documents";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -10,10 +11,25 @@
 
 }
 <h1 class="page-header">@Resource("Admin Import / Export Documents Title", "Import / Export Documents")</h1>
-<span class="btn-group display-inline">
-    <a href="@Url.Action("ExportDocuments", "ImportExport")" class="btn btn-primary">@Resource("Admin Import / Export Documents Export Button", "Export Documents")</a>
-</span>
-<div class="clearfix"></div>
+<div class="row">
+    <div class="col-xs-6">
+        <div class="btn-group">
+            <a href="@Url.Action("ExportDocuments", "ImportExport")" class="btn btn-primary">@Resource("Admin Import / Export Documents Export Button", "Export Documents")</a>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        @using (Html.BeginForm("ExportDocumentsToEmail", "ImportExport", FormMethod.Post))
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email)
+                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+            <button class="btn btn-primary">Export and send via email</button>
+        }
+    </div>
+</div>
+
 
 @if (ViewBag.ExportStatus != null)
 {

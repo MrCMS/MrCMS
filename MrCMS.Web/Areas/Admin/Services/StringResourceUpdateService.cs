@@ -84,7 +84,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                         SiteId = int.TryParse(ReadData(columns[3]), out id) ? id : (int?)null
                     });
                 }
-                catch (Exception ex)
+                catch
                 {
 
                 }

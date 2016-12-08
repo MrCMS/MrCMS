@@ -150,7 +150,7 @@
 
                         <div class="form-group" id="pnlSqlServerPassword">
                             @Html.LabelFor(x => x.SqlServerPassword)
-                            @Html.TextBoxFor(x => x.SqlServerPassword, new { @class = "form-control" })
+                            @Html.PasswordFor(x => x.SqlServerPassword, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.SqlServerPassword)
                         </div>
 

@@ -20,10 +20,11 @@
                 myDropzone.on("queuecomplete", function (file) {
                     settings.onFileUploadStopped(file, myDropzone);
                     element.find(settings.progressBarSelector).hide();
+                    $(document).trigger('update-area', 'media-folder');
                 });
 
                 myDropzone.on("totaluploadprogress", this.progressBar);
-                
+
                 myDropzone.on("error", self.showMessage);
             }
 
@@ -36,6 +37,7 @@
 
         },
         showMessage: function (file, response) {
+            console.log(response, file);
             //alert(response); //todo: Show error message
         },
     };

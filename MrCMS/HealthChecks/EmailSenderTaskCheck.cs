@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
@@ -8,13 +9,11 @@ namespace MrCMS.HealthChecks
 {
     public class EmailSenderTaskCheck : HealthCheck
     {
-        private readonly ISession _session;
-        private readonly Site _site;
+        private readonly ITaskSettingManager _taskSettingManager;
 
-        public EmailSenderTaskCheck(ISession session, Site site)
+        public EmailSenderTaskCheck(ITaskSettingManager taskSettingManager)
         {
-            _session = session;
-            _site = site;
+            _taskSettingManager = taskSettingManager;
         }
 
         public override string DisplayName
@@ -24,7 +23,8 @@ namespace MrCMS.HealthChecks
 
         public override HealthCheckResult PerformCheck()
         {
-            var any = _session.QueryOver<ScheduledTask>().Where(x => x.Type == typeof(SendQueuedMessagesTask).FullName && x.Site.Id == _site.Id).Any();
+            var any = _taskSettingManager.GetInfo().Any(x => x.Type == typeof (SendQueuedMessagesTask) && x.Enabled);
+
             return !any
                 ? new HealthCheckResult
                 {

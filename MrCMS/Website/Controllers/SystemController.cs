@@ -20,12 +20,6 @@ namespace MrCMS.Website.Controllers
 
         public HttpRequestBase RequestMock { get; set; }
 
-        protected override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            ViewData["controller-name"] = ControllerContext.RouteData.Values["controller"];
-            base.OnActionExecuting(filterContext);
-        }
-
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding,
                                            JsonRequestBehavior behavior)
         {

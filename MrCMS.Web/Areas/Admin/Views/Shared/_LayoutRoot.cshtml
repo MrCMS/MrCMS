@@ -1,5 +1,6 @@
 ﻿@using System.Web.Optimization
 @using MrCMS.Helpers
+@using MrCMS.Web.Areas.Admin.Helpers
 @using MrCMS.Website
 @using StackExchange.Profiling
 <!DOCTYPE html>
@@ -29,19 +30,20 @@
     @Scripts.Render("~/admin/scripts/mrcms")
     @Scripts.Render("~/admin/scripts/apps")
     @if (!CurrentRequestData.CurrentUser.DisableNotifications)
-        {
-            Html.RenderAction("Show", "TransientNotification");
-            Html.RenderAction("Show", "PersistentNotification");
-        }
+    {
+        Html.RenderAction("Show", "TransientNotification");
+        Html.RenderAction("Show", "PersistentNotification");
+    }
 
+    @{ Html.RenderLocalisedScripts();}
     @{ Html.RenderScripts();}
 
     @Html.Hidden("CurrentUICulture", CurrentRequestData.CultureInfo.Name)
 
     @if (IsSectionDefined("JavaScriptBlock"))
-        {
+    {
         @RenderSection("JavaScriptBlock")
-        }
+    }
     @MiniProfiler.RenderIncludes()
 </body>
 </html>

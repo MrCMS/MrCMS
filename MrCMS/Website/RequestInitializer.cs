@@ -18,12 +18,14 @@ namespace MrCMS.Website
         public static void Initialize(HttpRequest request)
         {
             CurrentRequestData.ErrorSignal = ErrorSignal.FromCurrentContext();
-            CurrentRequestData.CurrentContext.SetKernel(MrCMSKernel.Kernel);
+
+            var kernel = MrCMSKernel.Kernel;
+            CurrentRequestData.CurrentContext.SetKernel(kernel);
             if (!IsFileRequest(request.Url))
             {
-                CurrentRequestData.CurrentSite = MrCMSKernel.Kernel.Get<Site>();
-                CurrentRequestData.SiteSettings = MrCMSKernel.Kernel.Get<SiteSettings>();
-                CurrentRequestData.HomePage = MrCMSKernel.Kernel.Get<IGetHomePage>().Get();
+                CurrentRequestData.CurrentSite = kernel.Get<Site>();
+                CurrentRequestData.SiteSettings = kernel.Get<SiteSettings>();
+                CurrentRequestData.HomePage = kernel.Get<IGetHomePage>().Get();
                 Thread.CurrentThread.CurrentCulture = CurrentRequestData.SiteSettings.CultureInfo;
                 Thread.CurrentThread.CurrentUICulture = CurrentRequestData.SiteSettings.CultureInfo;
 
@@ -42,9 +44,6 @@ namespace MrCMS.Website
             return !string.IsNullOrWhiteSpace(extension) && !WebExtensions.Contains(extension);
         }
 
-        private static IEnumerable<string> WebExtensions
-        {
-            get { return MrCMSKernel.Kernel.Get<SiteSettings>().WebExtensionsToRoute; }
-        }
+        private static IEnumerable<string> WebExtensions => MrCMSKernel.Kernel.Get<WebExtensionsToRoute>().Get;
     }
 }

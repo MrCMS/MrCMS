@@ -17,7 +17,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private UserController _userController;
         private IUserSearchService _userSearchService;
-        private IUserService _userService;
+        private IUserManagementService _userService;
         private IRoleService _roleService;
         private IPasswordManagementService _passwordManagementService;
         private IGetUserCultureOptions _getUserCultureOptions;
@@ -26,7 +26,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public UserControllerTests()
         {
             _userSearchService = A.Fake<IUserSearchService>();
-            _userService = A.Fake<IUserService>();
+            _userService = A.Fake<IUserManagementService>();
             _roleService = A.Fake<IRoleService>();
             _passwordManagementService = A.Fake<IPasswordManagementService>();
             _getUserCultureOptions = A.Fake<IGetUserCultureOptions>();

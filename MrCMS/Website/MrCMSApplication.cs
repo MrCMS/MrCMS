@@ -4,13 +4,19 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MrCMS.Apps;
+using MrCMS.DbConfiguration;
+using MrCMS.DbConfiguration.Caches;
+using MrCMS.DbConfiguration.Caches.Redis;
 using MrCMS.Entities.Multisite;
+using MrCMS.Messages;
+using MrCMS.Settings;
 using MrCMS.Tasks;
 using MrCMS.Website.Binders;
 using MrCMS.Website.Caching;
 using MrCMS.Website.Filters;
 using MrCMS.Website.Routing;
 using NHibernate;
+using NHibernate.Caches.Redis;
 using Ninject;
 using StackExchange.Profiling;
 
@@ -18,8 +24,8 @@ namespace MrCMS.Website
 {
     public abstract class MrCMSApplication : HttpApplication
     {
-        public const string AssemblyVersion = "0.5.0.5";
-        public const string AssemblyFileVersion = "0.5.0.5";
+        public const string AssemblyVersion = "0.5.1.0";
+        public const string AssemblyFileVersion = "0.5.1.0";
         private const string CachedMissingItemKey = "cached-missing-item";
 
 
@@ -36,6 +42,9 @@ namespace MrCMS.Website
 
             RegisterServices(MrCMSKernel.Kernel);
             MrCMSApp.RegisterAllServices(MrCMSKernel.Kernel);
+
+            LegacySettingMigrator.MigrateSettings(MrCMSKernel.Kernel);
+            LegacyTemplateMigrator.MigrateTemplates(MrCMSKernel.Kernel);
 
             SetModelBinders();
 
@@ -54,24 +63,22 @@ namespace MrCMS.Website
             MiniProfiler.Settings.Results_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
             MiniProfiler.Settings.Results_List_Authorize = MiniProfilerAuth.IsUserAllowedToSeeMiniProfilerUI;
 
-            StartTasksRunning();
 
             OnApplicationStart();
         }
+
+        protected void Application_End()
+        {
+            if (RedisCacheInitializer.Initialized)
+                RedisCacheInitializer.Dispose();
+        }
+
 
 
         protected virtual void SetViewEngines()
         {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Insert(0, new MrCMSRazorViewEngine());
-        }
-
-        private void StartTasksRunning()
-        {
-            if (CurrentRequestData.DatabaseIsInstalled)
-            {
-                TaskExecutionQueuer.Initialize(Get<ISession>().QueryOver<Site>().Cacheable().List());
-            }
         }
 
         protected virtual void OnApplicationStart()
@@ -138,10 +145,16 @@ namespace MrCMS.Website
 
         private bool IsCachedMissingFileRequest()
         {
-            object o = Get<ICacheWrapper>()[FileNotFoundHandler.GetMissingFileCacheKey(new HttpRequestWrapper(Request))];
-            if (o != null)
+            string missingFile =
+                Convert.ToString(
+                    Get<ICacheWrapper>()[FileNotFoundHandler.GetMissingFileCacheKey(new HttpRequestWrapper(Request))]);
+            if (!string.IsNullOrWhiteSpace(missingFile))
             {
                 Context.Items[CachedMissingItemKey] = true;
+                Context.Response.Clear();
+                Context.Response.StatusCode = 404;
+                Context.Response.TrySkipIisCustomErrors = true;
+                Context.Response.Write(missingFile);
                 Context.ApplicationInstance.CompleteRequest();
                 return true;
             }

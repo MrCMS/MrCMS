@@ -6,7 +6,6 @@ namespace MrCMS.Services.Sitemaps
 {
     public interface ISitemapElementAppender
     {
-        void AddCustomSiteMapData(Webpage webpage, XElement urlset, XDocument xmlDocument);
-        bool ShouldAppend(Webpage webpage);
+        void AddSiteMapData(SitemapData webpage, XElement urlset, XDocument xmlDocument);
     }
 }

@@ -9,13 +9,13 @@ namespace MrCMS.Tests.Services
     public class PasswordEncryptionManagerTests
     {
         private readonly IHashAlgorithmProvider _hashAlgorithmProvider;
-        private readonly IUserService _userService;
+        private readonly IUserManagementService _userService;
         private readonly PasswordEncryptionManager _passwordEncryptionManager;
 
         public PasswordEncryptionManagerTests()
         {
             _hashAlgorithmProvider = A.Fake<IHashAlgorithmProvider>();
-            _userService = A.Fake<IUserService>();
+            _userService = A.Fake<IUserManagementService>();
             _passwordEncryptionManager = new PasswordEncryptionManager(_hashAlgorithmProvider, _userService);
         }
 

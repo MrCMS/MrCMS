@@ -249,8 +249,9 @@ var MrCMSFeatherlightSettings = {
 }
 function setCloseButtonPosition(contents) {
     var offset = contents.find(".featherlight-content").offset();
-    contents.find(".featherlight-close-icon").css('top', offset.top);
-    contents.find(".featherlight-close-icon").css('right', offset.left + -20);
+    var scrollTop = $(document).scrollTop();
+    contents.find(".featherlight-close-icon").css('top', offset.top - scrollTop);
+    contents.find(".featherlight-close-icon").css('right', offset.left - 20);
 }
 
 $(function () {

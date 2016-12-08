@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Website;
 
 namespace MrCMS.Web.Areas.Admin.Helpers
@@ -24,17 +25,5 @@ namespace MrCMS.Web.Areas.Admin.Helpers
         {
             return MvcHtmlString.Create(first + string.Concat(strings.Select(s => s.ToString())));
         }
-    }
-
-    public class DashboardAreaAction : ActionFilterAttribute
-    {
-        public DashboardArea DashboardArea { get; set; }
-    }
-
-    public enum DashboardArea
-    {
-        Top,
-        LeftColumn,
-        RightColumn
     }
 }

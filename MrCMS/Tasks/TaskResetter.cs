@@ -1,47 +1,50 @@
 ﻿using System;
-using MrCMS.Entities.Multisite;
+using System.Linq;
+using MrCMS.DbConfiguration;
 using MrCMS.Helpers;
+using MrCMS.Settings;
+using MrCMS.Tasks.Entities;
 using MrCMS.Website;
 using NHibernate;
-using NHibernate.Criterion;
 
 namespace MrCMS.Tasks
 {
     public class TaskResetter : ITaskResetter
     {
         private readonly ISession _session;
-        private readonly Site _site;
+        private readonly ITaskSettingManager _taskSettingManager;
 
-        public TaskResetter(ISession session, Site site)
+        public TaskResetter(ISession session, ITaskSettingManager taskSettingManager)
         {
             _session = session;
-            _site = site;
+            _taskSettingManager = taskSettingManager;
         }
 
         public void ResetHungTasks()
         {
             _session.Transact(session =>
-                {
-                    DateTime now = CurrentRequestData.Now;
+            {
+                var now = CurrentRequestData.Now;
+                using (new SiteFilterDisabler(session))
                     ResetQueuedTasks(session, now);
-                    ResetScheduledTasks(session, now);
-                });
+            });
+            ResetScheduledTasks();
         }
 
-        private void ResetScheduledTasks(ISession session, DateTime now)
+        private void ResetScheduledTasks()
         {
-            var hungScheduledTasks = session.QueryOver<ScheduledTask>()
+            var now = CurrentRequestData.Now;
+            var hungScheduledTasks = _taskSettingManager.GetInfo()
                 .Where(
-                    task => task.Site.Id == _site.Id &&
-                            (task.Status == TaskExecutionStatus.AwaitingExecution ||
-                             task.Status == TaskExecutionStatus.Executing) &&
-                            (task.LastQueuedAt < now.AddMinutes(-15) || task.LastQueuedAt == null)
+                    task => task.Enabled &&
+                        (task.Status == TaskExecutionStatus.AwaitingExecution ||
+                         task.Status == TaskExecutionStatus.Executing || task.Status == TaskExecutionStatus.Failed) &&
+                        (task.LastStarted < now.AddMinutes(-15) || task.LastStarted == null)
                 )
-                .List();
+                .ToList();
             foreach (var task in hungScheduledTasks)
             {
-                task.Status = TaskExecutionStatus.Pending;
-                session.Update(task);
+                _taskSettingManager.Reset(task.Type, false);
             }
         }
 
@@ -49,10 +52,10 @@ namespace MrCMS.Tasks
         {
             var hungTasks = session.QueryOver<QueuedTask>()
                 .Where(
-                    task => task.Site.Id == _site.Id &&
-                            (task.Status == TaskExecutionStatus.AwaitingExecution ||
-                             task.Status == TaskExecutionStatus.Executing) &&
-                            task.QueuedAt < now.AddMinutes(-15))
+                    task =>
+                        (task.Status == TaskExecutionStatus.AwaitingExecution ||
+                         task.Status == TaskExecutionStatus.Executing) &&
+                        task.QueuedAt < now.AddMinutes(-15))
                 .List();
             foreach (var task in hungTasks)
             {

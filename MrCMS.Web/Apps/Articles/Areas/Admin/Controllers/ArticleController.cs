@@ -6,19 +6,19 @@ using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Articles.Areas.Admin.Controllers
 {
-    public class ArticleController :MrCMSAppAdminController<ArticlesApp>
+    public class ArticleController : MrCMSAppAdminController<ArticlesApp>
     {
-        private readonly IUserService _userService;
+        private readonly IBelongToUserLookupService _belongToUserLookupService;
 
-        public ArticleController(IUserService userService)
+        public ArticleController(IBelongToUserLookupService belongToUserLookupService)
         {
-            _userService = userService;
+            _belongToUserLookupService = belongToUserLookupService;
         }
 
         [ChildActionOnly]
         public PartialViewResult ForUser(User user)
         {
-            var articles = _userService.GetAll<Article>(user);
+            var articles = _belongToUserLookupService.GetAll<Article>(user);
             return PartialView(articles);
         }
     }

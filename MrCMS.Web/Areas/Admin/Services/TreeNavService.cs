@@ -10,6 +10,7 @@ using MrCMS.Helpers;
 using MrCMS.Web.Areas.Admin.Models;
 using NHibernate;
 using Ninject;
+using StackExchange.Profiling;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
@@ -47,9 +48,15 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public AdminTree GetWebpageNodes(int? id)
         {
-            return GetListing(id).GetTree(id);
+            var webpageTreeNavListing = GetListing(id);
+            using (MiniProfiler.Current.Step(string.Format("Get Tree - {0} ({1})", webpageTreeNavListing.GetType().Name, id)))
+                return webpageTreeNavListing.GetTree(id);
         }
 
+        public bool WebpageHasChildren(int id)
+        {
+            return GetListing(id).HasChildren(id);
+        }
 
         public AdminTree GetMediaCategoryNodes(int? id)
         {
@@ -67,13 +74,16 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         private IWebpageTreeNavListing GetListing(int? id)
         {
-            var parent = id.HasValue ? _session.Get<Webpage>(id) : null;
-            IWebpageTreeNavListing listing = null;
-            if (parent != null && TreeNavListings.ContainsKey(parent.GetType().FullName))
+            using (MiniProfiler.Current.Step("Get Listing"))
             {
-                listing = _kernel.Get(TreeNavListings[parent.GetType().FullName]) as IWebpageTreeNavListing;
+                var parent = id.HasValue ? _session.Get<Webpage>(id) : null;
+                IWebpageTreeNavListing listing = null;
+                if (parent != null && TreeNavListings.ContainsKey(parent.GetType().FullName))
+                {
+                    listing = _kernel.Get(TreeNavListings[parent.GetType().FullName]) as IWebpageTreeNavListing;
+                }
+                return listing ?? _kernel.Get<DefaultWebpageTreeNavListing>();
             }
-            return listing ?? _kernel.Get<DefaultWebpageTreeNavListing>();
         }
 
         private AdminTree GetSimpleAdminTree<T>(int? id, string iconClass) where T : Document
@@ -85,7 +95,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             }
             IList<T> query =
                 _session.QueryOver<T>()
-                    .Where(x => x.Parent.Id == id && (x.HideInAdminNav == false || x.HideInAdminNav == null))
+                    .Where(x => x.Parent.Id == id && (x.HideInAdminNav != true))
                     .OrderBy(x => x.Name)
                     .Asc.Cacheable()
                     .List();

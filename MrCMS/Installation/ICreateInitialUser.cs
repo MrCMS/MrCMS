@@ -15,15 +15,15 @@ namespace MrCMS.Installation
 
     public class CreateInitialUser : ICreateInitialUser
     {
-        private readonly IUserService _userService;
+        private readonly IUserManagementService _userManagementService;
         private readonly IRoleService _roleService;
         private readonly IAuthorisationService _authorisationService;
         private readonly IPasswordManagementService _passwordManagementService;
 
-        public CreateInitialUser(IUserService userService, IRoleService roleService,
+        public CreateInitialUser(IUserManagementService userManagementService, IRoleService roleService,
             IAuthorisationService authorisationService, IPasswordManagementService passwordManagementService)
         {
-            _userService = userService;
+            _userManagementService = userManagementService;
             _roleService = roleService;
             _authorisationService = authorisationService;
             _passwordManagementService = passwordManagementService;
@@ -32,19 +32,19 @@ namespace MrCMS.Installation
         public void Create(InstallModel model)
         {
             var user = new User
-                           {
-                               Email = model.AdminEmail,
-                               IsActive = true
-                           };
+            {
+                Email = model.AdminEmail,
+                IsActive = true
+            };
             _passwordManagementService.SetPassword(user, model.AdminPassword, model.ConfirmPassword);
 
-            _userService.AddUser(user);
+            _userManagementService.AddUser(user);
             CurrentRequestData.CurrentUser = user;
 
             var adminUserRole = new UserRole
-                                    {
-                                        Name = UserRole.Administrator
-                                    };
+            {
+                Name = UserRole.Administrator
+            };
 
             user.Roles = new HashSet<UserRole> { adminUserRole };
             adminUserRole.Users = new HashSet<User> { user };

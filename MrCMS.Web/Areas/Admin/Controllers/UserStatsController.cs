@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using MrCMS.Web.Areas.Admin.Helpers;
+using MrCMS.Web.Areas.Admin.Models;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Website.Controllers;
 

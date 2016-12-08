@@ -21,6 +21,8 @@ namespace MrCMS.Tests.Services
         public DocumentServiceTests()
         {
             _documentService = new DocumentService(Session, CurrentSite);
+            // persist current user for events
+            Session.Transact(session => session.Save(CurrentRequestData.CurrentUser));
         }
 
         [Fact]

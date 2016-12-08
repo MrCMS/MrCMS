@@ -41,7 +41,6 @@
 
     var options = {
         source: function (request, response) {
-            console.log(request);
             var type = itemType.val();
             $.get('/Admin/UniversalSearch/QuickSearch', {
                 term: request.term,

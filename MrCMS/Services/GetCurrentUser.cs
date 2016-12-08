@@ -5,18 +5,18 @@ namespace MrCMS.Services
 {
     public class GetCurrentUser : IGetCurrentUser
     {
-        private readonly IUserService _userService;
+        private readonly IUserLookup _userLookup;
         private readonly HttpContextBase _context;
 
-        public GetCurrentUser(IUserService userService, HttpContextBase context)
+        public GetCurrentUser(HttpContextBase context, IUserLookup userLookup)
         {
-            _userService = userService;
             _context = context;
+            _userLookup = userLookup;
         }
 
         public User Get()
         {
-            return _userService.GetCurrentUser(_context);
+            return _userLookup.GetCurrentUser(_context);
         }
     }
 }

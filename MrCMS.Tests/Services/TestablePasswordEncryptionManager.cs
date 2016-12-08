@@ -7,7 +7,7 @@ namespace MrCMS.Tests.Services
     {
         private bool _setPasswordCalled;
 
-        public TestablePasswordEncryptionManager(IHashAlgorithmProvider hashAlgorithmProvider, IUserService userService)
+        public TestablePasswordEncryptionManager(IHashAlgorithmProvider hashAlgorithmProvider, IUserManagementService userService)
             : base(hashAlgorithmProvider, userService)
         {
         }

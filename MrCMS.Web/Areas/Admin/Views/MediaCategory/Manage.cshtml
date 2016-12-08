@@ -13,8 +13,6 @@
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
     var category = ViewData["category"] as MediaCategory;
-    var files = ViewData["files"] as IPagedList<MediaFile>;
-    var folders = ViewData["folders"] as IList<MediaCategory> ?? new List<MediaCategory>();
     var sortByOptions = ViewData["sort-by-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     bool canAccessMediaToolsCut = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Cut);
     bool canAccessMediaToolsDelete = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Delete);
@@ -77,52 +75,5 @@
         }
     </span>
 }
-
 <div class="clearfix"></div>
-<div id="folder-container">
-
-    @if (folders.Any())
-    {
-        foreach (var folder in folders.OrderBy(x => x.DisplayOrder))
-        {
-            <div class="folder" data-id="folder-@folder.Id" data-url="@Url.Action("Show", "MediaCategory", new{id = folder.Id})" title="@folder.Name">
-                <i class="glyphicon glyphicon-folder-open">&nbsp;</i> @folder.Name.TruncateString(28)
-            </div>
-        }
-        <div class="clearfix"></div>
-    }
-    <div id="file-list" data-file-list="true" data-category-id="@(Model==null ? (int?)null : Model.Id)">
-        @if (files != null && files.Any())
-        {
-            foreach (var file in files)
-            {
-                <div class="file" data-id="file-@file.Id" data-type="file" data-url="@Url.Action("Edit", "File", new { Id = file.Id })">
-                    <div class="file-preview">
-                        <a title="@file.FileName">
-                            @if (file.IsImage())
-                            {
-                                @Html.RenderImage(file.FileUrl, new Size(100, 100))
-                            }
-                            else
-                            {
-                                <i class="@file.FileExtension.GetIconClass()"> </i>
-                            }
-                        </a>
-                    </div>
-                    <div class="file-link">
-                        @Html.Link(file.FileName, file.FileUrl)
-                    </div>
-                </div>
-            }
-            <div class="clearfix"> </div>
-            @Html.PageCurrentPage(files, i => new { Page = i }, PagedListRenderOptions.PageNumbersOnly)
-
-        }
-        else
-        {
-            @Html.InfoBlock("", Resource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
-        }
-    </div>
-    <div class="clearfix"> </div>
-
-</div>
+@{Html.RenderAction("Directory","MediaCategory",Model);}

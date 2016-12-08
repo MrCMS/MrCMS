@@ -15,7 +15,7 @@ namespace MrCMS.Tasks
             _session = session;
         }
 
-        public void BeginExecution(IEnumerable<IExecutableTask> executableTasks)
+        public void BeginExecution(IEnumerable<AdHocTask> executableTasks)
         {
             SetStatus(executableTasks, (status, task) => status.OnStarting(task));
         }
@@ -40,14 +40,14 @@ namespace MrCMS.Tasks
             _session.Transact(session => taskFailureInfos.ForEach(
                 taskFailureInfo =>
                 {
-                    IExecutableTask executableTask = taskFailureInfo.Task;
+                    AdHocTask executableTask = taskFailureInfo.Task;
                     executableTask.Entity.OnFailure(executableTask, taskFailureInfo.Exception);
                     session.Update(executableTask.Entity);
                 }));
         }
 
-        private void SetStatus(IEnumerable<IExecutableTask> executableTasks,
-            Action<IHaveExecutionStatus, IExecutableTask> action)
+        private void SetStatus(IEnumerable<AdHocTask> executableTasks,
+            Action<IHaveExecutionStatus, AdHocTask> action)
         {
             _session.Transact(session => executableTasks.ForEach(task =>
                                                                  {

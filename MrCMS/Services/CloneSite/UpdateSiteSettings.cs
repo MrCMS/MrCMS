@@ -2,24 +2,25 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Settings;
+using NHibernate;
 
 namespace MrCMS.Services.CloneSite
 {
     [CloneSitePart(-65)]
     public class UpdateSiteSettings : ICloneSiteParts
     {
-        private readonly ILegacySettingsProvider _legacySettingsProvider;
+        private readonly ISession _session;
 
-        public UpdateSiteSettings(ILegacySettingsProvider legacySettingsProvider)
+        public UpdateSiteSettings(ISession session)
         {
-            _legacySettingsProvider = legacySettingsProvider;
+            _session = session;
         }
 
         public void Clone(Site @from, Site to, SiteCloneContext siteCloneContext)
         {
-            var fromProvider = new ConfigurationProvider(@from, _legacySettingsProvider);
+            var fromProvider = new SqlConfigurationProvider(_session,@from);
             var fromSiteSettings = fromProvider.GetSiteSettings<SiteSettings>();
-            var toProvider = new ConfigurationProvider(@to, _legacySettingsProvider);
+            var toProvider = new SqlConfigurationProvider(_session, @to);
             var toSiteSettings = toProvider.GetSiteSettings<SiteSettings>();
 
             var error403 = siteCloneContext.FindNew<Webpage>(fromSiteSettings.Error403PageId);

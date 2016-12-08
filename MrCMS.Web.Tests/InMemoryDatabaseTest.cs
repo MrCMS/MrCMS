@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Web;
 using Elmah;
+using FakeItEasy;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
@@ -23,7 +24,7 @@ namespace MrCMS.Web.Tests
     {
         private static Configuration Configuration;
         private static ISessionFactory SessionFactory;
-        protected static ISession Session;
+        protected ISession Session;
         private readonly IMessageTemplateProvider _messageTemplateProvider = new StubMessageTemplateProvider();
         private readonly object lockObject = new object();
 
@@ -46,7 +47,8 @@ namespace MrCMS.Web.Tests
             }
             Session = SessionFactory.OpenFilteredSession(Kernel.Get<HttpContextBase>());
             Kernel.Bind<ISession>().ToMethod(context => Session);
-            Kernel.Bind<IStatelessSession>().ToMethod(context => SessionFactory.OpenStatelessSession());
+            Kernel.Bind<IStatelessSession>()
+                .ToMethod(context => SessionFactory.OpenStatelessSession(Session.Connection));
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 
@@ -73,6 +75,7 @@ namespace MrCMS.Web.Tests
             Kernel.Load(new GenericBindingsModule());
             Kernel.Unbind<IMessageTemplateProvider>();
             Kernel.Bind<IMessageTemplateProvider>().ToConstant(_messageTemplateProvider);
+            Kernel.Rebind<IExternalUserSource>().ToConstant(A.Fake<IExternalUserSource>());
             _eventContext = new TestableEventContext(Kernel.Get<EventContext>());
             Kernel.Rebind<IEventContext>().ToMethod(context => EventContext);
         }

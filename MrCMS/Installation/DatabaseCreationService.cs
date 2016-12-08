@@ -5,6 +5,7 @@ using MrCMS.DbConfiguration.Helpers;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using Ninject;
+using Ninject.Parameters;
 
 namespace MrCMS.Installation
 {
@@ -42,9 +43,8 @@ namespace MrCMS.Installation
             if (createDatabase == null)
                 return null;
             createDatabase.CreateDatabase(model);
-            SaveConnectionSettings(createDatabase, model);
-            return
-                _kernel.GetAll<IDatabaseProvider>().FirstOrDefault(provider => provider.Type == model.DatabaseProvider);
+            var databaseSettings = SaveConnectionSettings(createDatabase, model);
+            return _kernel.Get(TypeHelper.GetTypeByName(model.DatabaseProvider),new ConstructorArgument("databaseSettings", databaseSettings)) as IDatabaseProvider;
         }
 
         private ICreateDatabase GetDatabaseCreator(InstallModel model)
@@ -58,7 +58,7 @@ namespace MrCMS.Installation
             return _kernel.Get(creatorType) as ICreateDatabase;
         }
 
-        public void SaveConnectionSettings(ICreateDatabase provider, InstallModel installModel)
+        private DatabaseSettings SaveConnectionSettings(ICreateDatabase provider, InstallModel installModel)
         {
             var databaseSettings = _systemConfigurationProvider.GetSystemSettings<DatabaseSettings>();
 
@@ -66,6 +66,7 @@ namespace MrCMS.Installation
             databaseSettings.DatabaseProviderType = installModel.DatabaseProvider;
 
             _systemConfigurationProvider.SaveSettings(databaseSettings);
+            return databaseSettings;
         }
     }
 }

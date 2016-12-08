@@ -15,19 +15,22 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
 {
     public class ResetPasswordServiceTests : InMemoryDatabaseTest
     {
-        private readonly IUserService _userService;
+        private readonly IUserManagementService _userManagementService;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IMessageParser<ResetPasswordMessageTemplate, User> _messageParser;
         private readonly ResetPasswordService _resetPasswordService;
+        private readonly IUserLookup _userLookup;
 
         public ResetPasswordServiceTests()
         {
-            _userService = A.Fake<IUserService>();
+            _userManagementService = A.Fake<IUserManagementService>();
             _passwordManagementService = A.Fake<IPasswordManagementService>();
             _messageParser = A.Fake<IMessageParser<ResetPasswordMessageTemplate, User>>();
-            _resetPasswordService = new ResetPasswordService(_userService,
+            _userLookup = A.Fake<IUserLookup>();
+            _resetPasswordService = new ResetPasswordService(_userManagementService,
                                                              _passwordManagementService,
-                                                             _messageParser);
+                                                             _messageParser,
+                                                             _userLookup);
         }
 
         [Fact]
@@ -64,7 +67,7 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
 
             _resetPasswordService.SetResetPassword(user);
 
-            A.CallTo(() => _messageParser.QueueMessage(queuedMessage, true)).MustHaveHappened();
+            A.CallTo(() => _messageParser.QueueMessage(queuedMessage, null, true)).MustHaveHappened();
         }
 
         [Fact]
@@ -77,7 +80,7 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };
-            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
+            A.CallTo(() => _userLookup.GetUserByEmail("test@example.com")).Returns(user);
 
             const string password = "password";
 
@@ -102,7 +105,7 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };
-            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
+            A.CallTo(() => _userLookup.GetUserByEmail("test@example.com")).Returns(user);
             const string password = "password";
 
             A.CallTo(() => _passwordManagementService.ValidatePassword(password, password)).Returns(true);
@@ -126,7 +129,7 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
                 ResetPasswordGuid = guid,
                 Email = "test@example.com"
             };
-            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
+            A.CallTo(() => _userLookup.GetUserByEmail("test@example.com")).Returns(user);
             const string password = "password";
 
             A.CallTo(() => _passwordManagementService.ValidatePassword(password, password)).Returns(true);
@@ -149,18 +152,18 @@ namespace MrCMS.Web.Tests.Apps.Core.Services
                 Email = "test@example.com"
             };
 
-            A.CallTo(() => _userService.GetUserByEmail("test@example.com")).Returns(user);
+            A.CallTo(() => _userLookup.GetUserByEmail("test@example.com")).Returns(user);
             const string password = "password";
             AssertionExtensions.ShouldThrow<InvalidOperationException>(() =>
                                                                        _resetPasswordService
                                                                            .ResetPassword(
                                                                                new ResetPasswordViewModel
                                                                                    (guid, user)
-                                                                                   {
-                                                                                       Password = password,
-                                                                                       ConfirmPassword = password,
-                                                                                       Email = "test@example.com"
-                                                                                   }));
+                                                                               {
+                                                                                   Password = password,
+                                                                                   ConfirmPassword = password,
+                                                                                   Email = "test@example.com"
+                                                                               }));
         }
     }
 }

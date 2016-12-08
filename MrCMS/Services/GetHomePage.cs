@@ -16,10 +16,12 @@ namespace MrCMS.Services
         public Webpage Get()
         {
             return _session.QueryOver<Webpage>()
-                .Where(document => document.Parent == null)
+                .Where(document => document.Parent == null && document.Published)
                 .OrderBy(webpage => webpage.DisplayOrder).Asc
-                .Cacheable().List()
-                .FirstOrDefault(webpage => webpage.Published);
+                .Take(1)
+                .Cacheable()
+                .List()
+                .FirstOrDefault();
         }
     }
 }

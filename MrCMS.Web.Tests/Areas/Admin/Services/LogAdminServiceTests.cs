@@ -49,7 +49,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         }
 
 
-        private static List<Log> CreateLogList()
+        private List<Log> CreateLogList()
         {
             List<Log> logList =
                 Enumerable.Range(1, 20).Select(i => new Log {Message = i.ToString(), Error = new Error()}).ToList();

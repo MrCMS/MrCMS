@@ -83,7 +83,7 @@ namespace MrCMS.Installation
                 statelessSession.Insert(site);
                 transaction.Commit();
             }
-            CurrentRequestData.CurrentSite = site;
+            CurrentRequestData.CurrentSite = session.Get<Site>(site.Id);
 
             kernel.Get<IInitializeDatabase>().Initialize(model);
             kernel.Get<ICreateInitialUser>().Create(model);

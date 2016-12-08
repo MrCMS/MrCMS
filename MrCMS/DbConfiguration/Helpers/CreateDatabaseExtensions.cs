@@ -1,4 +1,3 @@
-using System;
 using MrCMS.Installation;
 
 namespace MrCMS.DbConfiguration.Helpers
@@ -12,7 +11,7 @@ namespace MrCMS.DbConfiguration.Helpers
                 createDatabase.GetConnectionString(installModel);
                 return true;
             }
-            catch (Exception exception)
+            catch
             {
                 return false;
             }

@@ -18,6 +18,9 @@ namespace MrCMS.IoC.Modules
             Kernel.Bind<IEnumerable<IHashAlgorithm>>()
                 .ToMethod(context => context.Kernel.GetAll<IHashAlgorithm>())
                 .InRequestScope();
+            Kernel.Bind<IEnumerable<IExternalUserSource>>()
+                .ToMethod(context => context.Kernel.GetAll<IExternalUserSource>())
+                .InRequestScope();
             Kernel.Bind<IUserStore<User, int>>().To<UserStore>().InRequestScope();
             Kernel.Bind<UserManager<User, int>>().ToMethod(context =>
             {

@@ -32,6 +32,11 @@ namespace MrCMS.Website
             get { return _isLocal; }
         }
 
+        public void SetIsLocal(bool isLocal)
+        {
+            _isLocal = isLocal;
+        }
+
         public override void ValidateInput()
         {
 

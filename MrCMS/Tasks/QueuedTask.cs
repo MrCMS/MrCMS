@@ -33,21 +33,21 @@ namespace MrCMS.Tasks
             }
         }
 
-        public virtual void OnStarting(IExecutableTask executableTask)
+        public virtual void OnStarting(AdHocTask executableTask)
         {
             Status = TaskExecutionStatus.Executing;
             StartedAt = CurrentRequestData.Now;
             executableTask.OnStarting();
         }
 
-        public virtual void OnSuccess(IExecutableTask executableTask)
+        public virtual void OnSuccess(AdHocTask executableTask)
         {
             Status = TaskExecutionStatus.Completed;
             CompletedAt = CurrentRequestData.Now;
             executableTask.OnSuccess();
         }
 
-        public virtual void OnFailure(IExecutableTask executableTask, Exception exception)
+        public virtual void OnFailure(AdHocTask executableTask, Exception exception)
         {
             executableTask.OnFailure(exception);
             if (Tries < 5)
