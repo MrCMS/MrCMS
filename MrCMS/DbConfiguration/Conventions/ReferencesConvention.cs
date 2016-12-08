@@ -9,11 +9,9 @@ namespace MrCMS.DbConfiguration.Conventions
         public void Apply(IManyToOneInstance instance)
         {
             instance.Cascade.SaveUpdate();
-            instance.NotFound.Ignore();
 
             instance.ForeignKey(
                 $"FK_{instance.EntityType?.Name ?? instance.Name}_{instance.Property.Name}");
-        
         }
     }
 }

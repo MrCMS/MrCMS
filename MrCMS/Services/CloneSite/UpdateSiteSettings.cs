@@ -9,9 +9,9 @@ namespace MrCMS.Services.CloneSite
     [CloneSitePart(-65)]
     public class UpdateSiteSettings : ICloneSiteParts
     {
-        private readonly IStatelessSession _session;
+        private readonly ISession _session;
 
-        public UpdateSiteSettings(IStatelessSession session)
+        public UpdateSiteSettings(ISession session)
         {
             _session = session;
         }

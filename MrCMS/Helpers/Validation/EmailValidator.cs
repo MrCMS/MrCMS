@@ -7,10 +7,10 @@ namespace MrCMS.Helpers.Validation
     /// <summary>
     /// validate email in something@somthing.something with a maximum TLD of 6 characters.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class EmailValidator : RegularExpressionAttribute
     {
-        private const string _pattern = @"^\b[a-zA-Z0-9._%'+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}\b$";
+        private const string _pattern = @"[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?";
 
         static EmailValidator()
         {

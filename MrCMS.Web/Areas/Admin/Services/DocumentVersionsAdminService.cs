@@ -36,7 +36,7 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public void RevertToVersion(DocumentVersion documentVersion)
         {
-            var currentVersion = documentVersion.Document;
+            var currentVersion = documentVersion.Document.Unproxy();
             var previousVersion = currentVersion.GetVersion(documentVersion.Id);
 
             var versionProperties = currentVersion.GetType().GetVersionProperties();

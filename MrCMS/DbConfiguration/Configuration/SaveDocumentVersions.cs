@@ -32,7 +32,7 @@ namespace MrCMS.DbConfiguration.Configuration
         public void Execute(OnUpdatedArgs<Document> args)
         {
             var document = args.Item;
-            if (document != null && !document.IsDeleted)
+            if (document != null && !document.IsDeleted && args.Original != null)
             {
                 var propertyInfos = document.GetType().GetVersionProperties();
 

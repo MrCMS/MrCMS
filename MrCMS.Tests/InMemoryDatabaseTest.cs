@@ -25,7 +25,7 @@ namespace MrCMS.Tests
     {
         private static Configuration Configuration;
         private static ISessionFactory SessionFactory;
-        protected static ISession Session;
+        protected ISession Session;
         private readonly object lockObject = new object();
 
         protected InMemoryDatabaseTest()
@@ -47,7 +47,8 @@ namespace MrCMS.Tests
             }
             Session = SessionFactory.OpenFilteredSession(Kernel.Get<HttpContextBase>());
             Kernel.Bind<ISession>().ToMethod(context => Session);
-            Kernel.Bind<IStatelessSession>().ToMethod(context => SessionFactory.OpenStatelessSession());
+            Kernel.Bind<IStatelessSession>()
+                .ToMethod(context => SessionFactory.OpenStatelessSession(Session.Connection));
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,23 +8,27 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using MrCMS.ACL.Rules;
 using MrCMS.Entities;
+using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Helpers;
+using StackExchange.Profiling;
+using Ninject;
 
 namespace MrCMS.Website
 {
     public abstract class MrCMSPage<TModel> : WebViewPage<TModel>
     {
-        private IConfigurationProvider _configurationProvider;
+        public const string PageLayoutAreas = "page.current.layout.areas";
+        public const string PageCurrentLayout = "page.current.layout";
         private IStringResourceProvider _stringResourceProvider;
-        private IGetCurrentLayout _getCurrentLayout;
+        private IKernel _kernel;
 
         public T SiteSettings<T>() where T : SiteSettingsBase, new()
         {
-            return _configurationProvider.GetSiteSettings<T>();
+            return _kernel.Get<T>();
         }
 
         public string Resource(string key, string defaultValue = null)
@@ -37,7 +42,7 @@ namespace MrCMS.Website
 
             if (CurrentRequestData.DatabaseIsInstalled)
             {
-                _configurationProvider = MrCMSApplication.Get<IConfigurationProvider>();
+                _kernel = MrCMSApplication.Get<IKernel>();
                 _stringResourceProvider = MrCMSApplication.Get<IStringResourceProvider>();
                 GetCurrentLayout = MrCMSApplication.Get<IGetCurrentLayout>();
             }
@@ -75,26 +80,33 @@ namespace MrCMS.Website
             {
                 return CurrentRequestData.CurrentUser != null &&
                        CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") &&
-                       _configurationProvider.GetSiteSettings<SiteSettings>().EnableInlineEditing;
+                       _kernel.Get<SiteSettings>().EnableInlineEditing;
             }
         }
 
-        public IGetCurrentLayout GetCurrentLayout
-        {
-            get { return _getCurrentLayout; }
-            set { _getCurrentLayout = value; }
-        }
+        public IGetCurrentLayout GetCurrentLayout { get; set; }
 
         public void RenderZone(string areaName, Webpage page = null, bool allowFrontEndEditing = true)
         {
             page = page ?? CurrentRequestData.CurrentPage;
 
-            var currentLayout = GetCurrentLayout.Get(page);
+            var currentLayout = Context.Items[PageCurrentLayout] as Layout;
+            if (currentLayout == null)
+            {
+                currentLayout = GetCurrentLayout.Get(page);
+                Context.Items[PageCurrentLayout] = currentLayout;
+            }
+            var layoutAreas = Context.Items[PageLayoutAreas] as IEnumerable<LayoutArea>;
+            if (layoutAreas == null)
+            {
+                layoutAreas = currentLayout.GetLayoutAreas();
+                Context.Items[PageLayoutAreas] = layoutAreas;
+            }
             if (page != null && currentLayout != null)
             {
                 var allowEdit = EditingEnabled && allowFrontEndEditing;
 
-                var layoutArea = currentLayout.GetLayoutAreas().FirstOrDefault(area => area.AreaName == areaName);
+                var layoutArea = layoutAreas.FirstOrDefault(area => area.AreaName == areaName);
 
                 if (layoutArea == null) return;
 
@@ -134,7 +146,8 @@ namespace MrCMS.Website
 
         public MvcHtmlString RenderImage(string imageUrl, Size size = default(Size), string alt = null, string title = null, object attributes = null)
         {
-            return Html.RenderImage(imageUrl, size, alt, title, attributes);
+            using (MiniProfiler.Current.Step(string.Format("Render image - {0}, size {1}", imageUrl, size)))
+                return Html.RenderImage(imageUrl, size, alt, title, attributes);
         }
     }
 

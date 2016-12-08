@@ -10,10 +10,10 @@ namespace MrCMS.Indexing
     public class OptimiseIndexes : SchedulableTask
     {
         private readonly IIndexService _indexService;
-        private readonly IStatelessSession _session;
+        private readonly ISession _session;
         private readonly ITriggerUrls _triggerUrls;
 
-        public OptimiseIndexes(IIndexService indexService, IStatelessSession session, ITriggerUrls triggerUrls)
+        public OptimiseIndexes(IIndexService indexService, ISession session, ITriggerUrls triggerUrls)
         {
             _indexService = indexService;
             _session = session;

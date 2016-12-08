@@ -7,9 +7,9 @@ namespace MrCMS.Services.CloneSite
     [CloneSitePart(-100)]
     public class CopySettings : ICloneSiteParts
     {
-        private readonly IStatelessSession _session;
+        private readonly ISession _session;
 
-        public CopySettings(IStatelessSession session)
+        public CopySettings(ISession session)
         {
             _session = session;
         }

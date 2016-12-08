@@ -24,7 +24,7 @@ namespace MrCMS.Web.Tests
     {
         private static Configuration Configuration;
         private static ISessionFactory SessionFactory;
-        protected static ISession Session;
+        protected ISession Session;
         private readonly IMessageTemplateProvider _messageTemplateProvider = new StubMessageTemplateProvider();
         private readonly object lockObject = new object();
 
@@ -47,7 +47,8 @@ namespace MrCMS.Web.Tests
             }
             Session = SessionFactory.OpenFilteredSession(Kernel.Get<HttpContextBase>());
             Kernel.Bind<ISession>().ToMethod(context => Session);
-            Kernel.Bind<IStatelessSession>().ToMethod(context => SessionFactory.OpenStatelessSession());
+            Kernel.Bind<IStatelessSession>()
+                .ToMethod(context => SessionFactory.OpenStatelessSession(Session.Connection));
 
             new SchemaExport(Configuration).Execute(false, true, false, Session.Connection, null);
 

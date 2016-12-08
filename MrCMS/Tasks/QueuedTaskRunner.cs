@@ -6,14 +6,14 @@ namespace MrCMS.Tasks
 {
     public class QueuedTaskRunner : IQueuedTaskRunner
     {
-        private readonly IStatelessSession _session;
+        private readonly ISession _session;
         private readonly ITaskBuilder _taskBuilder;
         private readonly ITaskExecutor _taskExecutor;
         private readonly ITaskQueuer _taskQueuer;
         private readonly ITriggerUrls _triggerUrls;
 
         public QueuedTaskRunner(ITaskQueuer taskQueuer, ITaskBuilder taskBuilder, ITaskExecutor taskExecutor,
-            IStatelessSession session, ITriggerUrls triggerUrls)
+            ISession session, ITriggerUrls triggerUrls)
         {
             _taskQueuer = taskQueuer;
             _taskBuilder = taskBuilder;

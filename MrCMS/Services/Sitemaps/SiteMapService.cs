@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Xml.Linq;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Settings;
 using MrCMS.Website;
-using MrCMS.Website.Caching;
 using NHibernate;
 using NHibernate.Transform;
 
@@ -19,7 +17,7 @@ namespace MrCMS.Services.Sitemaps
         public static readonly XNamespace RootNamespace = "http://www.sitemaps.org/schemas/sitemap/0.9";
         public static readonly XNamespace ImageNameSpace = "http://www.google.com/schemas/sitemap-image/1.1";
         private readonly IEnumerable<ISitemapDataSource> _additionalSources;
-        private readonly HttpServerUtilityBase _server;
+        private readonly IGetSitemapPath _getSitemapPath;
         private readonly IStatelessSession _session;
         private readonly Site _site;
         private readonly ISitemapElementAppender _sitemapElementAppender;
@@ -27,19 +25,19 @@ namespace MrCMS.Services.Sitemaps
 
 
         public SitemapService(IStatelessSession session, Site site, ISitemapElementAppender sitemapElementAppender,
-            SiteSettings siteSettings, HttpServerUtilityBase server, IEnumerable<ISitemapDataSource> additionalSources)
+            SiteSettings siteSettings, IEnumerable<ISitemapDataSource> additionalSources, IGetSitemapPath getSitemapPath)
         {
             _session = session;
             _site = site;
             _sitemapElementAppender = sitemapElementAppender;
             _siteSettings = siteSettings;
-            _server = server;
             _additionalSources = additionalSources;
+            _getSitemapPath = getSitemapPath;
         }
 
         public void WriteSitemap()
         {
-            var sitemapPath = _server.MapPath("~/sitemap.xml");
+            var sitemapPath = _getSitemapPath.GetPath(_site); ;
 
             SitemapData data = null;
             var queryOver = _session.QueryOver<Webpage>()
@@ -80,8 +78,8 @@ namespace MrCMS.Services.Sitemaps
 
         private IEnumerable<Type> GetTypesToRemove()
         {
-            yield return typeof (Redirect);
-            yield return typeof (SitemapPlaceholder);
+            yield return typeof(Redirect);
+            yield return typeof(SitemapPlaceholder);
             foreach (var type in _additionalSources.SelectMany(dataSource => dataSource.TypesToRemove))
             {
                 yield return type;
