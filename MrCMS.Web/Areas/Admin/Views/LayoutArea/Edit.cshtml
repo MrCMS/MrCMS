@@ -47,7 +47,7 @@
                                 <td>
                                     <div class="btn-group">
                                         @Html.ActionLink(Resource("Edit"), "Edit", "Widget", new { id = widget.Id }, new { @class = "btn btn-default btn-xs", @data_toggle = "fb-modal" })
-                                        <a href="@Url.Action(Resource("Delete"), "Widget", new {id = widget.Id})" class="btn btn-xs btn-danger" data-toggle="fb-modal">@Resource("Delete")</a>
+                                        <a href="@Url.Action("Delete", "Widget", new {id = widget.Id})" class="btn btn-xs btn-danger" data-toggle="fb-modal">@Resource("Delete")</a>
                                     </div>
                                 </td>
                             </tr>
@@ -62,7 +62,7 @@
         }
         
         <div class="btn-group">
-            <a href="@Url.Action(Resource("Add"), "Widget", new {id = Model.Id, returnUrl = Request.Url})" class="btn btn-xs btn-default" data-toggle="fb-modal">@Resource("Admin Layout Area Add Widget", "Add widget")</a>
+            <a href="@Url.Action("Add", "Widget", new {id = Model.Id, returnUrl = Request.Url})" class="btn btn-xs btn-default" data-toggle="fb-modal">@Resource("Admin Layout Area Add Widget", "Add widget")</a>
             @{
                 if (Model.GetWidgets().Any())
                 {
