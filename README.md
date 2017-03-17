@@ -2,7 +2,7 @@
 
 **Mr CMS is an ASP.NET MVC 5 C# open source content management framework**
 
-Mr CMS wraps up a lot of the time consuming aspects of webside creation. Mr CMS is a framework for developers create bespoke website whilst at the same time giving content editors an easy to use CMS.
+Mr CMS wraps up a lot of the time consuming aspects of website creation. Mr CMS is a framework for developers create bespoke website whilst at the same time giving content editors an easy to use CMS.
 
 ## Apps
 Apps in Mr CMS contain all the functionality your website requires. For example, you might want a Blog App which contains page definitions for a list of blogs and a blog page itself. 

@@ -210,6 +210,7 @@ namespace MrCMS.Settings
             {
                 // we do this to create the config if it doesn't exist
                 var config = GetConfig();
+                EnsureMrCMSSettingsSourceExists(config);
                 return GetMrCMSSettingsFromConfig(config);
             }
         }
@@ -227,6 +228,20 @@ namespace MrCMS.Settings
         }
 
         private object GetConnectionString(string name)
+        {
+            try
+            {
+                return GetConnectionStringFromManager(name);
+            }
+            catch 
+            {
+                var config = GetConfig();
+                EnsureConnectionStringsSourceExists(config);
+                return GetConnectionStringFromManager(name);
+            }
+        }
+
+        private static object GetConnectionStringFromManager(string name)
         {
             var connectionString = WebConfigurationManager.ConnectionStrings[name];
             return connectionString != null ? connectionString.ConnectionString : null;
@@ -256,7 +271,7 @@ namespace MrCMS.Settings
             EnsureConnectionStringsSourceExists(config);
             EnsureMrCMSSettingsSourceExists(config);
             config = GetConfig();
-            
+
             foreach (var prop in typeof(DatabaseSettings).GetProperties())
             {
                 // get properties we can read and write to

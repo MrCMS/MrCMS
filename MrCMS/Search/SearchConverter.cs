@@ -43,16 +43,11 @@ namespace MrCMS.Search
             string systemType = item.SystemType ?? string.Empty;
             document.Add(new Field(UniversalSearchFieldNames.SystemType, systemType, Field.Store.YES,
                 Field.Index.NOT_ANALYZED));
-
-            if (_entityTypes.ContainsKey(systemType))
+            foreach (string entityType in _entityTypes[systemType])
             {
-                foreach (string entityType in _entityTypes[systemType])
-                {
-                    document.Add(new Field(UniversalSearchFieldNames.EntityType, entityType, Field.Store.NO,
-                        Field.Index.NOT_ANALYZED));
-                }
+                document.Add(new Field(UniversalSearchFieldNames.EntityType, entityType, Field.Store.NO,
+                    Field.Index.NOT_ANALYZED));
             }
-
 
             document.Add(new Field(UniversalSearchFieldNames.DisplayName, item.DisplayName ?? string.Empty, Field.Store.YES,
                 Field.Index.NOT_ANALYZED) { Boost = 5 });
