@@ -1189,6 +1189,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\bootstrap-datepicker.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.tip.js" />
+    <Content Include="Areas\Admin\Content\Scripts\lib\jquery\ui\i18n\jquery.ui.datepicker-en-US.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\line-graph.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.are-you-sure.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\dropzone.js" />
