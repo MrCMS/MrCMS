@@ -34,8 +34,12 @@ $(function () {
     $(document).on('click', '.date-time-picker', function () {
         var that = $(this);
         if (!that.hasClass('hasDatepicker')) {
+            var timeFormat = $.datepicker._defaults.timeFormat;
+            if (!timeFormat) {
+                timeFormat = 'HH:mm';
+            }
             that.datetimepicker({
-                timeFormat: 'hh:mm'
+                timeFormat: timeFormat
             }).blur().focus();
         }
     });
@@ -118,11 +122,11 @@ function setStickyCkedtior(el) {
 function resizeModal(jqElement) {
     var modal = jqElement.hasClass('modal') ? jqElement : jqElement.parents('.modal');
     var height = modal.outerHeight(),
-	    windowHeight = $(window).outerHeight(),
-	    width = modal.outerWidth(),
-	    windowWidth = $(window).outerWidth();
+        windowHeight = $(window).outerHeight(),
+        width = modal.outerWidth(),
+        windowWidth = $(window).outerWidth();
     var top = (windowHeight - height) / 2,
-	    left = (windowWidth - width) / 2;
+        left = (windowWidth - width) / 2;
 
     modal.css('top', top).css('left', left);
 }
