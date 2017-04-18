@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Services.Resources;
 using MrCMS.Web.Areas.Admin.Services;
 using MrCMS.Web.Tests.Stubs;
 using Xunit;
@@ -14,7 +16,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
 
         public FormAdminServiceTests()
         {
-            _formAdminService = new FormAdminService(Session);
+            _formAdminService = new FormAdminService(Session, A.Fake<IStringResourceProvider>());
         }
 
         [Fact]
