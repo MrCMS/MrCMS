@@ -22,7 +22,11 @@ namespace MrCMS.Website.Routing
             if (webpage == null)
                 return false;
 
-            context.HttpContext.Response.RedirectPermanent("~/" + webpage.LiveUrlSegment);
+            var queryStringExist = false || context.HttpContext.Request.QueryString.Count > 0;
+            var redirectUrl = "~/" + webpage.LiveUrlSegment;
+            if (queryStringExist)
+                redirectUrl += "?" + context.HttpContext.Request.QueryString;
+            context.HttpContext.Response.RedirectPermanent(redirectUrl);
             return false;
         }
 
