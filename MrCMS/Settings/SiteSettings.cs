@@ -34,6 +34,9 @@ namespace MrCMS.Settings
         [DropDownSelection("Themes"), DisplayName("Theme")]
         public string ThemeName { get; set; }
 
+        [DropDownSelection("SubThemes"), DisplayName("Sub Theme")]
+        public string SubThemeName { get; set; }
+
         [DisplayName("Default Layout"), DropDownSelection("DefaultLayoutOptions")]
         public int DefaultLayoutId { get; set; }
 
@@ -154,6 +157,7 @@ namespace MrCMS.Settings
             viewDataDictionary["404Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error404PageId);
             viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error500PageId);
             viewDataDictionary["Themes"] = SiteSettingsOptionGenerator.GetThemeNames(ThemeName);
+            viewDataDictionary["SubThemes"] = SiteSettingsOptionGenerator.GetThemeNamesWithNullOption(SubThemeName);
 
             viewDataDictionary["UiCultures"] = SiteSettingsOptionGenerator.GetUiCultures(UICulture);
 

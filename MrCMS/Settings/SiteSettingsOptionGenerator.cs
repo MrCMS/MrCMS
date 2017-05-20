@@ -65,6 +65,16 @@ namespace MrCMS.Settings
                             .BuildSelectItemList(s => s, s => s, s => s == themeName, emptyItem: null);
         }
 
+        public virtual List<SelectListItem> GetThemeNamesWithNullOption (string themeName)
+        {
+            List<SelectListItem> themes = new List<SelectListItem> {
+                new SelectListItem()
+            };
+            themes.AddRange(GetThemeNames(themeName));
+            
+            return themes;
+        }
+
         public virtual List<SelectListItem> GetUiCultures(string uiCulture)
         {
             return CultureInfo.GetCultures(CultureTypes.AllCultures).OrderBy(info => info.DisplayName)

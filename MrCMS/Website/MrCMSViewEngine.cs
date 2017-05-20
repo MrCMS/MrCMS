@@ -144,6 +144,7 @@ namespace MrCMS.Website
                 string areaName = GetAreaName(controllerContext.RouteData);
                 string appName = GetAppName(controllerContext.RouteData);
                 string themeName = GetThemeName(controllerContext.RouteData.DataTokens);
+                string subThemeName = GetSubThemeName(controllerContext.RouteData.DataTokens);
                 bool usingAreas = !string.IsNullOrEmpty(areaName);
                 bool usingApps = !string.IsNullOrEmpty(appName);
                 IEnumerable<string> locationsByPriority =
@@ -151,7 +152,7 @@ namespace MrCMS.Website
                         ? areaLocations
                         : new string[] { })
                         .Union(locations);
-                List<ViewLocation> viewLocations = GetViewLocations(locationsByPriority.ToList(), themeName);
+                List<ViewLocation> viewLocations = GetViewLocations(locationsByPriority.ToList(), themeName, subThemeName);
 
                 if (viewLocations.Count == 0)
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
@@ -248,12 +249,17 @@ namespace MrCMS.Website
                 themeName);
         }
 
-        private static List<ViewLocation> GetViewLocations(List<string> locationsByPriority, string themeName)
+        private static List<ViewLocation> GetViewLocations(List<string> locationsByPriority, string themeName, string subThemeName)
         {
             var allLocations = new List<ViewLocation>();
 
             foreach (string location in locationsByPriority)
             {
+                if (!string.IsNullOrWhiteSpace(subThemeName))
+                    allLocations.Add(
+                        new ViewLocation(string.Format("{0}Themes/{1}/{2}", location.Substring(0, 2), subThemeName,
+                            location.Substring(2))));
+
                 if (!string.IsNullOrWhiteSpace(themeName))
                     allLocations.Add(
                         new ViewLocation(string.Format("{0}Themes/{1}/{2}", location.Substring(0, 2), themeName,
@@ -307,6 +313,18 @@ namespace MrCMS.Website
                                                   !string.IsNullOrWhiteSpace(CurrentRequestData.SiteSettings.ThemeName)
                         ? CurrentRequestData.SiteSettings.ThemeName
                         : string.Empty).ToString();
+        }
+
+        private static string GetSubThemeName(RouteValueDictionary dataTokens)
+        {
+            return
+                dataTokens.ContainsKey("sub-theme-name")
+                    ? dataTokens["sub-theme-name"].ToString()
+                    : (dataTokens["sub-theme-name"] = (
+                        (CurrentRequestData.DatabaseIsInstalled &&
+                         !string.IsNullOrWhiteSpace(CurrentRequestData.SiteSettings.SubThemeName))
+                            ? CurrentRequestData.SiteSettings.SubThemeName
+                            : string.Empty)).ToString();
         }
 
         private class ViewLocation
