@@ -27,7 +27,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MediaCategoryController_AddGet_ShouldReturnAMediaCategory()
         {
-            var mediaCategory = A<MediaCategory>._;
+            var mediaCategory = A.Dummy<MediaCategory>();
             A.CallTo(() => _mediaCategoryAdminService.GetNewCategoryModel(123)).Returns(mediaCategory);
             var actionResult = _mediaCategoryController.Add_Get(123);
 

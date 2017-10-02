@@ -24,7 +24,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutController_AddGet_ShouldReturnANewLayoutObject()
         {
-            var layout = A<Layout>._;
+            var layout = A.Dummy<Layout>();
             A.CallTo(() => _layoutAdminService.GetAddLayoutModel(123)).Returns(layout);
             var actionResult = _layoutController.Add_Get(123);
 

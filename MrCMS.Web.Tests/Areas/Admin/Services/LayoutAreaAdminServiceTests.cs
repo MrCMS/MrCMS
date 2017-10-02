@@ -52,7 +52,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         [Fact]
         public void LayoutAreaAdminService_GetArea_ShouldReturnLayoutAreaForValidId()
         {
-            var layoutArea = A<LayoutArea>._;
+            var layoutArea = A.Dummy<LayoutArea>();
             A.CallTo(() => _layoutAreaRepository.Get(123)).Returns(layoutArea);
 
             var loadedLayoutArea = _sut.GetArea(123);

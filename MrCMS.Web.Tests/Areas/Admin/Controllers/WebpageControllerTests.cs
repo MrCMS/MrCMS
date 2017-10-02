@@ -42,7 +42,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldReturnAddPageModel()
         {
-            var addPageModel = A<AddPageModel>._;
+            var addPageModel = A.Dummy<AddPageModel>();
             A.CallTo(() => _webpageAdminService.GetAddModel(123)).Returns(addPageModel);
 
             var actionResult = _webpageController.Add_Get(123);
@@ -53,7 +53,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldCallViewData()
         {
-            var parent = A<Webpage>._;
+            var parent = A.Dummy<Webpage>();
             var addPageModel = new AddPageModel {Parent = parent};
             A.CallTo(() => _webpageAdminService.GetAddModel(1)).Returns(addPageModel);
 
