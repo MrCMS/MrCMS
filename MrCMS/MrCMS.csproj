@@ -1146,6 +1146,7 @@
     <Compile Include="Website\ImagePluginInstaller.cs" />
     <Compile Include="Website\IOnEndRequestExecutor.cs" />
     <Compile Include="Website\IProcessWebpageViews.cs" />
+    <Compile Include="Website\ISitemapPlaceholderUIService.cs" />
     <Compile Include="Website\MiniProfilerAuth.cs" />
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSAssemblyAttribute.cs" />
@@ -1226,6 +1227,7 @@
     <Compile Include="Website\Routing\PageNotFoundHandler.cs" />
     <Compile Include="Website\Routing\TryTrimTrailingSlashHandler.cs" />
     <Compile Include="Website\Routing\UrlHistoryHandler.cs" />
+    <Compile Include="Website\SitemapPlaceholderUIService.cs" />
     <Compile Include="Website\ViewEngineFileLocations.cs" />
   </ItemGroup>
   <ItemGroup>
