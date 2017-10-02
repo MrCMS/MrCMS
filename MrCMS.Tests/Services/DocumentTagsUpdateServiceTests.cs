@@ -30,44 +30,26 @@ namespace MrCMS.Tests.Services
         private readonly List<string> _tags = new List<string> { "test" };
         private readonly IGetExistingTag _getExistingTag;
 
-        private IEnumerable<Tag> GetAllTags()
-        {
-            return _tagRepository.Query();
-        }
-
-        [Fact]
-        public void ShouldAddATagToTagListIfItIsNew()
-        {
-            GetAllTags().Should().HaveCount(0);
-
-            _sut.SetTags(_tags,
-                new BasicMappedWebpage());
-
-            GetAllTags().Should().HaveCount(1);
-            GetAllTags().ElementAt(0).Name.Should().Be("test");
-        }
-
         [Fact]
         public void ShouldAssignExistingTagIfItIsADuplicate()
         {
-            _tagRepository.Add(new Tag { Name = "Test" });
-            GetAllTags().Should().HaveCount(1);
             var webpage = new BasicMappedWebpage();
             webpage.Tags.Should().HaveCount(0);
+            A.CallTo(() => _getExistingTag.GetTag("test")).Returns(null);
 
             _sut.SetTags(_tags,
                 webpage);
 
             webpage.Tags.Should().HaveCount(1);
-            webpage.Tags.ElementAt(0).Name.Should().Be("Test");
+            webpage.Tags.ElementAt(0).Name.Should().Be("test");
         }
 
         [Fact]
         public void ShouldAssignTagToWebpage()
         {
-            GetAllTags().Should().HaveCount(0);
             var webpage = new BasicMappedWebpage();
             webpage.Tags.Should().HaveCount(0);
+            A.CallTo(() => _getExistingTag.GetTag("test")).Returns(null);
 
             _sut.SetTags(_tags,
                 webpage);
@@ -79,7 +61,6 @@ namespace MrCMS.Tests.Services
         [Fact]
         public void ShouldAssignWebpageToTag()
         {
-            GetAllTags().Should().HaveCount(0);
             var webpage = new BasicMappedWebpage();
             webpage.Tags.Should().HaveCount(0);
 
@@ -94,8 +75,6 @@ namespace MrCMS.Tests.Services
         public void ShouldRemoveTagIfItIsNoLongerAssignedWebpage()
         {
             var tag = new Tag { Name = "Test" };
-            _tagRepository.Add(tag);
-            GetAllTags().Should().HaveCount(1);
             var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
 
             _sut.SetTags(new List<string>(),
@@ -109,7 +88,6 @@ namespace MrCMS.Tests.Services
         {
             var tag = new Tag { Name = "Test" };
             _tagRepository.Add(tag);
-            GetAllTags().Should().HaveCount(1);
             var webpage = new BasicMappedWebpage { Tags = new HashSet<Tag> { tag } };
             tag.Documents.Add(webpage);
             tag.Documents.Should().HaveCount(1);
