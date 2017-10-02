@@ -58,6 +58,7 @@ namespace MrCMS.Services.Sitemaps
                     builder.Select(x => x.RequiresSSL).WithAlias(() => data.RequiresSSL);
                     return builder;
                 }).TransformUsing(Transformers.AliasToBean<SitemapData>())
+                .Cacheable()
                 .List<SitemapData>().ToList();
 
             list.AddRange(_additionalSources.SelectMany(x => x.GetAdditionalData()));

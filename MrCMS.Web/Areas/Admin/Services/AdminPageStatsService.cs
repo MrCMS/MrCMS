@@ -42,6 +42,7 @@ namespace MrCMS.Web.Areas.Admin.Services
                                     .ToRowCountQuery())
                             .WithAlias(() => countAlias.NumberOfUnPublishedPages))
                 .TransformUsing(Transformers.AliasToBean<WebpageStats>())
+                .Cacheable()
                 .List<WebpageStats>();
         }
     }

@@ -38,6 +38,7 @@ namespace MrCMS.Services
                             .WithAlias(() => countAlias.Count)
                 )
                 .TransformUsing(Transformers.AliasToBean<WebpageCount>())
+                .Cacheable()
                 .List<WebpageCount>();
 
             foreach (
