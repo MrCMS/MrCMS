@@ -11,8 +11,8 @@ namespace MrCMS.Helpers
             var siteSettings = MrCMSApplication.Get<SiteSettings>();
 
             return siteSettings.HasHoneyPot
-                       ? MvcHtmlString.Create(siteSettings.GetHoneypot().ToString())
-                       : MvcHtmlString.Empty;
+                ? MvcHtmlString.Create(siteSettings.GetHoneypot().ToString(TagRenderMode.SelfClosing))
+                : MvcHtmlString.Empty;
         }
     }
 }
