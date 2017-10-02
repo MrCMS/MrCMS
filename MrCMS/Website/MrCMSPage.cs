@@ -28,6 +28,11 @@ namespace MrCMS.Website
 
         public T SiteSettings<T>() where T : SiteSettingsBase, new()
         {
+            return Resolve<T>();
+        }
+
+        public T Resolve<T>()
+        {
             return _kernel.Get<T>();
         }
 
