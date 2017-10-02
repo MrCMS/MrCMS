@@ -1,13 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Entities.Documents;
-using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
-using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
@@ -26,7 +23,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         private readonly IUrlValidationService _urlValidationService;
         private readonly IWebpageBaseViewDataService _baseViewDataService;
         private readonly WebpageController _webpageController;
-        private IWebpageAdminService _webpageAdminService;
+        private readonly IWebpageAdminService _webpageAdminService;
 
         public WebpageControllerTests()
         {
@@ -45,28 +42,31 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_AddGet_ShouldReturnAddPageModel()
         {
-            var actionResult = _webpageController.Add_Get(1) as ViewResult;
+            var addPageModel = A<AddPageModel>._;
+            A.CallTo(() => _webpageAdminService.GetAddModel(123)).Returns(addPageModel);
 
-            actionResult.Model.Should().BeOfType<AddPageModel>();
+            var actionResult = _webpageController.Add_Get(123);
+
+            actionResult.Model.Should().Be(addPageModel);
         }
 
         [Fact]
         public void WebpageController_AddGet_ShouldCallViewData()
         {
-            var parent = new StubWebpage();
-            var textPage = new AddPageModel {Parent = parent};
-            A.CallTo(() => _webpageAdminService.GetAddModel(1)).Returns(textPage);
+            var parent = A<Webpage>._;
+            var addPageModel = new AddPageModel {Parent = parent};
+            A.CallTo(() => _webpageAdminService.GetAddModel(1)).Returns(addPageModel);
 
             _webpageController.Add_Get(1);
 
-            A.CallTo(() => _baseViewDataService.SetAddPageViewData(_webpageController.ViewData, textPage))
+            A.CallTo(() => _baseViewDataService.SetAddPageViewData(_webpageController.ViewData, parent))
                 .MustHaveHappened();
         }
 
         [Fact]
         public void WebpageController_AddPost_ShouldCallSaveDocument()
         {
-            var webpage = new TextPage {};
+            var webpage = new TextPage();
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, null)).Returns(true);
 
             _webpageController.Add(webpage);
@@ -92,7 +92,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var webpage = new TextPage {Id = 1};
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, null)).Returns(false);
 
-            ActionResult result = _webpageController.Add(webpage);
+            var result = _webpageController.Add(webpage);
 
             result.Should().BeOfType<ViewResult>();
         }
@@ -103,7 +103,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             var webpage = new TextPage {Id = 1};
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, null)).Returns(false);
 
-            ActionResult result = _webpageController.Add(webpage);
+            var result = _webpageController.Add(webpage);
 
             result.As<ViewResult>().Model.Should().Be(webpage);
         }
@@ -111,7 +111,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_EditGet_ShouldReturnAViewResult()
         {
-            ActionResult result = _webpageController.Edit_Get(new TextPage());
+            var result = _webpageController.Edit_Get(new TextPage());
 
             result.Should().BeOfType<ViewResult>();
         }
@@ -154,7 +154,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
             A.CallTo(() => _urlValidationService.UrlIsValidForWebpage(null, 1)).Returns(true);
             var textPage = new TextPage {Id = 1};
 
-            ActionResult actionResult = _webpageController.Edit(textPage);
+            var actionResult = _webpageController.Edit(textPage);
 
             actionResult.Should().BeOfType<RedirectToRouteResult>();
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Edit");
@@ -165,7 +165,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         public void WebpageController_Sort_ShouldBeAListOfSortItems()
         {
             var parent = new TextPage();
-            var sortItems = new List<SortItem> {};
+            var sortItems = new List<SortItem>();
             A.CallTo(() => _webpageAdminService.GetSortItems(parent)).Returns(sortItems);
 
             var viewResult = _webpageController.Sort(parent).As<ViewResult>();
@@ -176,7 +176,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_View_InvalidIdReturnsRedirectToIndex()
         {
-            ActionResult actionResult = _webpageController.Show(null);
+            var actionResult = _webpageController.Show(null);
 
             actionResult.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");
         }
@@ -184,7 +184,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_Index_ReturnsViewResult()
         {
-            ViewResult actionResult = _webpageController.Index();
+            var actionResult = _webpageController.Index();
 
             actionResult.Should().NotBeNull();
         }
@@ -286,7 +286,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void WebpageController_ViewChanges_NullDocumentVersionRedirectsToIndex()
         {
-            ActionResult result = _webpageController.ViewChanges(null);
+            var result = _webpageController.ViewChanges(null);
 
             result.Should().BeOfType<RedirectToRouteResult>();
             result.As<RedirectToRouteResult>().RouteValues["action"].Should().Be("Index");

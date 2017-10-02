@@ -1,11 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
-using System.Web.UI;
 using MrCMS.Entities.Documents.Media;
-using MrCMS.Helpers;
 using MrCMS.Models;
-using MrCMS.Services;
 using MrCMS.Web.Areas.Admin.ACL;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
@@ -29,7 +25,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet, ActionName("Add")]
-        public ActionResult Add_Get(int? id)
+        public ViewResult Add_Get(int? id)
         {
             //Build list 
             var model = _mediaCategoryAdminService.GetNewCategoryModel(id); 
@@ -38,7 +34,7 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public virtual ActionResult Add(MediaCategory doc)
+        public  ActionResult Add(MediaCategory doc)
         {
             _mediaCategoryAdminService.Add(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
@@ -46,13 +42,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet, ActionName("Edit")]
-        public virtual ActionResult Edit_Get(MediaCategory doc)
+        public  ActionResult Edit_Get(MediaCategory doc)
         {
             return View(doc);
         }
 
         [HttpPost]
-        public virtual ActionResult Edit(MediaCategory doc)
+        public  ActionResult Edit(MediaCategory doc)
         {
             _mediaCategoryAdminService.Update(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
@@ -60,13 +56,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         }
 
         [HttpGet, ActionName("Delete")]
-        public virtual ActionResult Delete_Get(MediaCategory document)
+        public  ActionResult Delete_Get(MediaCategory document)
         {
             return PartialView(document);
         }
 
         [HttpPost]
-        public virtual ActionResult Delete(MediaCategory document)
+        public  ActionResult Delete(MediaCategory document)
         {
             _mediaCategoryAdminService.Delete(document);
             TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));

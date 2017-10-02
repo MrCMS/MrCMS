@@ -24,9 +24,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void LayoutController_AddGet_ShouldReturnANewLayoutObject()
         {
-            var actionResult = _layoutController.Add_Get(null) as ViewResult;
+            var layout = A<Layout>._;
+            A.CallTo(() => _layoutAdminService.GetAddLayoutModel(123)).Returns(layout);
+            var actionResult = _layoutController.Add_Get(123);
 
-            actionResult.Model.Should().BeOfType<Layout>();
+            actionResult.Model.Should().Be(layout);
         }
 
 
@@ -37,7 +39,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _layoutController.Add(layout);
 
-            A.CallTo(() => _layoutAdminService.Update(layout)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _layoutAdminService.Add(layout)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [Fact]

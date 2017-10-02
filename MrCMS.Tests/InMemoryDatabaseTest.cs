@@ -8,6 +8,7 @@ using Iesi.Collections.Generic;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
+using MrCMS.Events;
 using MrCMS.Helpers;
 using MrCMS.IoC;
 using MrCMS.IoC.Modules;
@@ -73,7 +74,7 @@ namespace MrCMS.Tests
             Kernel.Load(new FileSystemModule());
             Kernel.Load(new SiteModule());
             Kernel.Rebind<IExternalUserSource>().ToConstant(A.Fake<IExternalUserSource>());
-            _eventContext = new TestableEventContext(Kernel.Get<EventContext>());
+            _eventContext = new TestableEventContext(/*Kernel.Get<EventContext>()*/);
             Kernel.Rebind<IEventContext>().ToMethod(context => EventContext);
         }
 
@@ -118,5 +119,9 @@ namespace MrCMS.Tests
                 base.Dispose();
             }
         }
+    }
+
+    public class DummyEvent : IEvent
+    {
     }
 }

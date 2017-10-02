@@ -1,3 +1,4 @@
+using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
@@ -10,18 +11,18 @@ using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Services
 {
-    public class LayoutAreaAdminServiceTests : InMemoryDatabaseTest
+    public class LayoutAreaAdminServiceTests
     {
         public LayoutAreaAdminServiceTests()
         {
-            _layoutAreaAdminService = new LayoutAreaAdminService(_layoutAreaRepository, _webpageRepository,
+            _sut = new LayoutAreaAdminService(_layoutAreaRepository, _webpageRepository,
                 _widgetRepository, _pageWidgetSortRepository);
         }
 
-        private readonly LayoutAreaAdminService _layoutAreaAdminService;
-        private readonly IRepository<LayoutArea> _layoutAreaRepository = new InMemoryRepository<LayoutArea>();
-        private readonly IRepository<Webpage> _webpageRepository = new InMemoryRepository<Webpage>();
-        private readonly IRepository<Widget> _widgetRepository = new InMemoryRepository<Widget>();
+        private readonly LayoutAreaAdminService _sut;
+        private readonly IRepository<LayoutArea> _layoutAreaRepository = A.Fake<IRepository<LayoutArea>>();
+        private readonly IRepository<Webpage> _webpageRepository = A.Fake<IRepository<Webpage>>();
+        private readonly IRepository<Widget> _widgetRepository = A.Fake<IRepository<Widget>>();
 
         private readonly IRepository<PageWidgetSort> _pageWidgetSortRepository =
             new InMemoryRepository<PageWidgetSort>();
@@ -33,7 +34,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
             var layoutArea = new LayoutArea {Layout = layout};
             layout.LayoutAreas.Add(layoutArea);
 
-            _layoutAreaAdminService.DeleteArea(layoutArea);
+            _sut.DeleteArea(layoutArea);
 
             layout.LayoutAreas.Should().NotContain(layoutArea);
         }
@@ -42,21 +43,19 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         public void LayoutAreaAdminService_DeleteArea_DeletesThePassedArea()
         {
             var layoutArea = new LayoutArea();
-            Session.Transact(session => session.Save(layoutArea));
 
-            _layoutAreaAdminService.DeleteArea(layoutArea);
+            _sut.DeleteArea(layoutArea);
 
-            Session.QueryOver<LayoutArea>().RowCount().Should().Be(0);
+            A.CallTo(()=>_layoutAreaRepository.Delete(layoutArea)).MustHaveHappened();
         }
 
         [Fact]
         public void LayoutAreaAdminService_GetArea_ShouldReturnLayoutAreaForValidId()
         {
-            var layoutArea = new LayoutArea();
-            Session.Transact(session => session.SaveOrUpdate(layoutArea));
-            var layoutAreaService = _layoutAreaAdminService;
+            var layoutArea = A<LayoutArea>._;
+            A.CallTo(() => _layoutAreaRepository.Get(123)).Returns(layoutArea);
 
-            var loadedLayoutArea = layoutAreaService.GetArea(layoutArea.Id);
+            var loadedLayoutArea = _sut.GetArea(123);
 
             loadedLayoutArea.Should().BeSameAs(layoutArea);
         }
@@ -64,9 +63,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         [Fact]
         public void LayoutAreaAdminService_GetArea_ShouldReturnNullForInvalidId()
         {
-            var layoutAreaService = _layoutAreaAdminService;
+            A.CallTo(() => _layoutAreaRepository.Get(-1)).Returns(null);
 
-            var layoutArea = layoutAreaService.GetArea(-1);
+            var layoutArea = _sut.GetArea(-1);
 
             layoutArea.Should().BeNull();
         }
@@ -77,7 +76,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
             var layout = new Layout();
             var layoutArea = new LayoutArea {Layout = layout};
 
-            _layoutAreaAdminService.Update(layoutArea);
+            _sut.Update(layoutArea);
 
             layout.LayoutAreas.Should().Contain(layoutArea);
         }
@@ -87,9 +86,9 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         {
             var layoutArea = new LayoutArea();
 
-            _layoutAreaAdminService.Update(layoutArea);
+            _sut.Update(layoutArea);
 
-            Session.QueryOver<LayoutArea>().RowCount().Should().Be(1);
+            A.CallTo(() => _layoutAreaRepository.Update(layoutArea)).MustHaveHappened();
         }
 
         //}
