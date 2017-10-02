@@ -6,6 +6,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Services.Caching;
 using MrCMS.Settings;
+using MrCMS.Website.Caching;
 using NHibernate;
 
 namespace MrCMS.Services
@@ -16,33 +17,35 @@ namespace MrCMS.Services
         private readonly IImageProcessor _imageProcessor;
         private readonly IFileService _fileService;
         private readonly MediaSettings _mediaSettings;
+        private readonly ICacheManager _cacheManager;
 
-        public ImageRenderingService(ISession session, IImageProcessor imageProcessor, IFileService fileService, MediaSettings mediaSettings)
+        public ImageRenderingService(ISession session, IImageProcessor imageProcessor, IFileService fileService, MediaSettings mediaSettings, ICacheManager cacheManager)
         {
             _session = session;
             _imageProcessor = imageProcessor;
             _fileService = fileService;
             _mediaSettings = mediaSettings;
+            _cacheManager = cacheManager;
         }
 
         public MvcHtmlString RenderImage(HtmlHelper helper, string imageUrl, Size targetSize = new Size(), string alt = null,
             string title = null, object attributes = null)
         {
-            var cachingInfo = _mediaSettings.GetCachingInfo(imageUrl, targetSize, alt, title, attributes);
+            var cachingInfo = _mediaSettings.GetImageTagCachingInfo(imageUrl, targetSize, alt, title, attributes);
             return helper.GetCached(cachingInfo, htmlHelper =>
-               {
-                   using (new SiteFilterDisabler(_session))
-                   {
-                       if (string.IsNullOrWhiteSpace(imageUrl))
-                           return MvcHtmlString.Empty;
+            {
+                using (new SiteFilterDisabler(_session))
+                {
+                    if (string.IsNullOrWhiteSpace(imageUrl))
+                        return MvcHtmlString.Empty;
 
-                       var imageInfo = GetImageInfo(imageUrl, targetSize);
-                       if (imageInfo == null)
-                           return MvcHtmlString.Empty;
+                    var imageInfo = GetImageInfo(imageUrl, targetSize);
+                    if (imageInfo == null)
+                        return MvcHtmlString.Empty;
 
-                       return ReturnTag(imageInfo, alt, title, attributes);
-                   }
-               });
+                    return ReturnTag(imageInfo, alt, title, attributes);
+                }
+            });
         }
 
         private ImageInfo GetImageInfo(string imageUrl, Size targetSize)
@@ -93,13 +96,10 @@ namespace MrCMS.Services
 
         public string GetImageUrl(string imageUrl, Size targetSize)
         {
-            if (string.IsNullOrWhiteSpace(imageUrl))
-                return null;
-
-            var imageInfo = GetImageInfo(imageUrl, targetSize);
-            if (imageInfo == null)
-                return null;
-            return imageInfo.ImageUrl;
+            var info = _mediaSettings.GetImageUrlCachingInfo(imageUrl, targetSize);
+            return _cacheManager.Get(info.CacheKey, () => string.IsNullOrWhiteSpace(imageUrl)
+                ? null
+                : GetImageInfo(imageUrl, targetSize)?.ImageUrl, info.TimeToCache, info.ExpiryType);
         }
 
         private class ImageInfo

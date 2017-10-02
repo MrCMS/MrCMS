@@ -36,6 +36,9 @@ namespace MrCMS.Website
 
         protected void Application_Start()
         {
+            SetModelBinders();
+            SetViewEngines();
+
             MrCMSApp.RegisterAllApps();
             AreaRegistration.RegisterAllAreas(MrCMSKernel.Kernel);
             MrCMSRouteRegistration.Register(RouteTable.Routes);
@@ -45,10 +48,6 @@ namespace MrCMS.Website
 
             LegacySettingMigrator.MigrateSettings(MrCMSKernel.Kernel);
             LegacyTemplateMigrator.MigrateTemplates(MrCMSKernel.Kernel);
-
-            SetModelBinders();
-
-            SetViewEngines();
 
             BundleRegistration.Register(MrCMSKernel.Kernel);
 

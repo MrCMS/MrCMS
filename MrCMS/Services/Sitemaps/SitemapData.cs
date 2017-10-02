@@ -20,8 +20,9 @@ namespace MrCMS.Services.Sitemaps
             var authority = site.BaseUrl;
             if (authority.EndsWith("/"))
                 authority = authority.TrimEnd('/');
+            var url = Url.TrimStart('/');
 
-            AbsoluteUrl = string.Format("{0}{1}/{2}", scheme, authority, Url == homepageUrl ? string.Empty : Url);
+            AbsoluteUrl = string.Format("{0}{1}/{2}", scheme, authority, url == homepageUrl ? string.Empty : url);
         }
 
     }

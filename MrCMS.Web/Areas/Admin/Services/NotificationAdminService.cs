@@ -5,7 +5,6 @@ using MrCMS.Entities.Notifications;
 using MrCMS.Helpers;
 using MrCMS.Paging;
 using MrCMS.Services.Notifications;
-using MrCMS.Web.Areas.Admin.Controllers;
 using MrCMS.Web.Areas.Admin.Models;
 using NHibernate;
 using NHibernate.Criterion;
@@ -16,12 +15,10 @@ namespace MrCMS.Web.Areas.Admin.Services
     public class NotificationAdminService : INotificationAdminService
     {
         private readonly ISession _session;
-        private readonly INotificationPublisher _notificationPublisher;
 
-        public NotificationAdminService(ISession session, INotificationPublisher notificationPublisher)
+        public NotificationAdminService(ISession session)
         {
             _session = session;
-            _notificationPublisher = notificationPublisher;
         }
 
         public IPagedList<Notification> Search(NotificationSearchQuery searchQuery)
@@ -53,11 +50,6 @@ namespace MrCMS.Web.Areas.Admin.Services
             }
 
             return queryOver.OrderBy(notification => notification.CreatedOn).Desc.Paged(searchQuery.Page);
-        }
-
-        public void PushNotification(PushNotificationModel model)
-        {
-            _notificationPublisher.PublishNotification(model.Message, model.PublishType, model.NotificationType);
         }
 
         public List<SelectListItem> GetPublishTypeOptions()

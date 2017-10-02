@@ -468,15 +468,10 @@
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Entities\Resources\StringResource.cs" />
     <Compile Include="Events\AssignLayoutAreaToLayout.cs" />
-    <Compile Include="Events\Documents\DocumentAddedNotification.cs" />
-    <Compile Include="Events\Documents\DocumentDeletedNotification.cs" />
     <Compile Include="Events\Documents\DocumentModifiedUser.cs" />
     <Compile Include="Events\Documents\MarkWebpageAsPublished.cs" />
     <Compile Include="Events\Documents\MarkWebpageAsUnpublished.cs" />
-    <Compile Include="Events\Documents\WebpageUpdatedNotification.cs" />
     <Compile Include="Events\Documents\IDocumentModifiedUser.cs" />
-    <Compile Include="Events\Documents\LayoutUpdatedNotification.cs" />
-    <Compile Include="Events\Documents\MediaCategoryUpdatedNotification.cs" />
     <Compile Include="Events\ICoreEvent.cs" />
     <Compile Include="Events\IEvent.cs" />
     <Compile Include="Events\Documents\OnWebpagePublishedEventArgs.cs" />
@@ -543,6 +538,7 @@
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Helpers\UserExtensions.cs" />
     <Compile Include="Helpers\WebpageExtensions.cs" />
+    <Compile Include="Helpers\WebpageRoutingExtensions.cs" />
     <Compile Include="Helpers\WidgetCachingExtensions.cs" />
     <Compile Include="Indexing\Definitions\BodyContentFieldDefinition.cs" />
     <Compile Include="Indexing\Definitions\CreatedOnFieldDefinition.cs" />
@@ -747,12 +743,8 @@
     <Compile Include="Services\IStandardAuthConfigurationService.cs" />
     <Compile Include="Services\IWidgetModelService.cs" />
     <Compile Include="Services\IWidgetUIService.cs" />
-    <Compile Include="Services\Notifications\INotificationPublisher.cs" />
-    <Compile Include="Services\Notifications\IOnPersistentNotificationPublished.cs" />
-    <Compile Include="Services\Notifications\IOnTransientNotificationPublished.cs" />
     <Compile Include="Services\Notifications\NotificationDisabler.cs" />
     <Compile Include="Services\Notifications\ContextNotificationExtensions.cs" />
-    <Compile Include="Services\Notifications\NotificationPublisher.cs" />
     <Compile Include="Services\Notifications\OnPersistentNotificationPublishedEventArgs.cs" />
     <Compile Include="Services\Notifications\OnTransientNotificationPublishedEventArgs.cs" />
     <Compile Include="Services\Notifications\PublishType.cs" />
@@ -1060,6 +1052,8 @@
     <Compile Include="Website\ActionMethodInfo.cs" />
     <Compile Include="Website\AdminUISiteAgnosticAttribute.cs" />
     <Compile Include="Tasks\UpdateIndicesTask.cs" />
+    <Compile Include="Website\Binders\AliasedPropertyDescriptor.cs" />
+    <Compile Include="Website\Binders\BindAliasAttribute.cs" />
     <Compile Include="Website\Binders\CultureAwareDateBinder.cs" />
     <Compile Include="Website\Binders\MrCMSDefaultModelBinder.cs" />
     <Compile Include="Website\Binders\IoCModelBinderAttribute.cs" />
@@ -1193,6 +1187,7 @@
     <Compile Include="Website\Routing\TryTrimTrailingSlashHandler.cs" />
     <Compile Include="Website\Routing\UrlHistoryHandler.cs" />
     <Compile Include="Website\SitemapPlaceholderUIService.cs" />
+    <Compile Include="Website\UrlHelperIoCExtensions.cs" />
     <Compile Include="Website\ViewEngineFileLocations.cs" />
   </ItemGroup>
   <ItemGroup>

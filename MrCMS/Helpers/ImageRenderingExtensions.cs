@@ -10,12 +10,12 @@ namespace MrCMS.Helpers
         public static MvcHtmlString RenderImage(this HtmlHelper helper, string imageUrl, Size targetSize = default(Size),
             string alt = null, string title = null, object attributes = null)
         {
-            return MrCMSApplication.Get<IImageRenderingService>()
+            return helper.Get<IImageRenderingService>()
                 .RenderImage(helper, imageUrl, targetSize, alt, title, attributes);
         }
         public static string GetImageUrl(this HtmlHelper helper, string imageUrl, Size targetSize = default(Size))
         {
-            return MrCMSApplication.Get<IImageRenderingService>()
+            return helper.Get<IImageRenderingService>()
                 .GetImageUrl(imageUrl, targetSize);
         }
     }
