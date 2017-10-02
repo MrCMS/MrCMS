@@ -2,13 +2,11 @@
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
-using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
@@ -56,30 +54,18 @@ namespace MrCMS.Web.Apps.Core.Controllers
         {
             var previousSession = CurrentRequestData.UserGuid;
             ExternalLoginInfo loginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
-            // added the following lines
-            if (loginInfo.Login.LoginProvider == "Facebook")
-            {
-                var identity = _authenticationManager.GetExternalIdentity(DefaultAuthenticationTypes.ExternalCookie);
-                var accessToken = identity.FindFirstValue("FacebookAccessToken");
-                var fb = new FacebookClient(accessToken);
-                dynamic myInfo = fb.Get("/me?fields=email"); // specify the email field
-                loginInfo.Email = myInfo.email;
-            }
 
+
+            if (loginInfo?.Login == null)
+                return ThirdPartyError();
 
             AuthenticateResult authenticateResult =
                 await _authenticationManager.AuthenticateAsync(DefaultAuthenticationTypes.ExternalCookie);
             string email = loginInfo.Email ?? _externalLoginService.GetEmail(authenticateResult);
+
             if (string.IsNullOrWhiteSpace(email))
-            {
-                TempData["login-model"] = new LoginModel
-                {
-                    Message =
-                        _stringResourceProvider.GetValue("3rd Party Auth Email Error",
-                            "There was an error retrieving your email from the 3rd party provider")
-                };
-                return _uniquePageService.RedirectTo<LoginPage>();
-            }
+                return ThirdPartyError();
+
             if (await _externalLoginService.IsLoginAsync(loginInfo))
             {
                 await _externalLoginService.LoginAsync(loginInfo, authenticateResult);
@@ -104,6 +90,17 @@ namespace MrCMS.Web.Apps.Core.Controllers
                 return await _externalLoginService.RedirectAfterLogin(email, returnUrl);
             }
 
+            return _uniquePageService.RedirectTo<LoginPage>();
+        }
+
+        private ActionResult ThirdPartyError()
+        {
+            TempData["login-model"] = new LoginModel
+            {
+                Message =
+                    _stringResourceProvider.GetValue("3rd Party Auth Email Error",
+                        "There was an error retrieving your email from the 3rd party provider")
+            };
             return _uniquePageService.RedirectTo<LoginPage>();
         }
 
