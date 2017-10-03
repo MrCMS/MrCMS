@@ -18,7 +18,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Helpers
 {
-    public static class MrCMSHtmlHelper
+    public static class MrCMSHtmlHelperExtensions
     {
         private static MvcHtmlString CheckBoxHelper<TModel>(HtmlHelper<TModel> htmlHelper, ModelMetadata metadata,
             string name, bool? isChecked,
@@ -278,11 +278,16 @@ namespace MrCMS.Helpers
             return fileVersion != null ? fileVersion.Version : null;
         }
 
-        public static HtmlHelper GetHtmlHelper(this Controller controller)
+
+        public static IHtmlHelper GetWrappedHtml(this HtmlHelper helper)
         {
-            var viewContext = new ViewContext(controller.ControllerContext, new FakeView(), controller.ViewData,
-                controller.TempData, TextWriter.Null);
-            return new HtmlHelper(viewContext, new ViewPage());
+            return new Website.MrCMSHtmlHelper(helper);
+        }
+
+        public static IHtmlHelper GetHtmlHelper(this Controller controller)
+        {
+            var viewContext = new ViewContext(controller.ControllerContext, new MrCMSHtmlHelperExtensions.FakeView(), controller.ViewData, controller.TempData, TextWriter.Null);
+            return new HtmlHelper(viewContext, new ViewPage()).GetWrappedHtml();
         }
 
         public static RouteValueDictionary Merge(this RouteValueDictionary baseDictionary,
@@ -353,13 +358,5 @@ namespace MrCMS.Helpers
                 throw new InvalidOperationException();
             }
         }
-    }
-
-    public enum AlertType
-    {
-        success,
-        info,
-        warning,
-        danger
     }
 }

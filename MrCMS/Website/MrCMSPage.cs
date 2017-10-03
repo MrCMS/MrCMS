@@ -60,7 +60,7 @@ namespace MrCMS.Website
 
             var propertyInfo = PropertyFinder.GetProperty(method);
 
-            var value = Html.ParseShortcodes(method.Compile().Invoke(model)).ToHtmlString();
+            var value = Html.GetWrappedHtml().ParseShortcodes(method.Compile().Invoke(model)).ToHtmlString();
 
             var typeName = model.GetType().Name;
 

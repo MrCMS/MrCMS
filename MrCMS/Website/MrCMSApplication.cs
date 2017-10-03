@@ -53,7 +53,10 @@ namespace MrCMS.Website
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
 
-            GlobalFilters.Filters.Add(new HoneypotFilterAttribute());
+            FilterProviders.Providers.Insert(0, new GlobalFilterProvider(MrCMSKernel.Kernel, 
+                typeof(HoneypotFilter),
+                typeof(GoogleRecaptchaFilter)));
+
 
             ModelMetadataProviders.Current = new MrCMSMetadataProvider(MrCMSKernel.Kernel);
 

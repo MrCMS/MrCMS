@@ -2,6 +2,7 @@ using System;
 using System.Web.Mvc;
 using MrCMS.Helpers;
 using MrCMS.Models;
+using MrCMS.Website;
 using MrCMS.Website.Caching;
 
 namespace MrCMS.Services.Caching
@@ -15,7 +16,7 @@ namespace MrCMS.Services.Caching
             _cacheManager = cacheManager;
         }
 
-        public ActionResult GetContent(Controller controller, CachingInfo cachingInfo, Func<HtmlHelper, MvcHtmlString> func)
+        public ActionResult GetContent(Controller controller, CachingInfo cachingInfo, Func<IHtmlHelper, MvcHtmlString> func)
         {
             return _cacheManager.Get(cachingInfo.CacheKey, () => new ContentResult
             {
@@ -23,13 +24,13 @@ namespace MrCMS.Services.Caching
             }, cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
 
-        public MvcHtmlString GetString(Controller controller, CachingInfo cachingInfo, Func<HtmlHelper, MvcHtmlString> func)
+        public MvcHtmlString GetString(Controller controller, CachingInfo cachingInfo, Func<IHtmlHelper, MvcHtmlString> func)
         {
             return _cacheManager.Get(cachingInfo.CacheKey, () => func(controller.GetHtmlHelper()),
                 cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
 
-        public ActionResult GetContent(HtmlHelper helper, CachingInfo cachingInfo, Func<HtmlHelper, MvcHtmlString> func)
+        public ActionResult GetContent(IHtmlHelper helper, CachingInfo cachingInfo, Func<IHtmlHelper, MvcHtmlString> func)
         {
             return _cacheManager.Get(cachingInfo.CacheKey, () => new ContentResult
             {
@@ -37,7 +38,7 @@ namespace MrCMS.Services.Caching
             }, cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);
         }
 
-        public MvcHtmlString GetString(HtmlHelper helper, CachingInfo cachingInfo, Func<HtmlHelper, MvcHtmlString> func)
+        public MvcHtmlString GetString(IHtmlHelper helper, CachingInfo cachingInfo, Func<IHtmlHelper, MvcHtmlString> func)
         {
             return _cacheManager.Get(cachingInfo.CacheKey, () => func(helper),
                 cachingInfo.ShouldCache ? cachingInfo.TimeToCache : TimeSpan.Zero, cachingInfo.ExpiryType);

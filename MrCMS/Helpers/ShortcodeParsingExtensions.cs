@@ -8,13 +8,9 @@ namespace MrCMS.Helpers
 {
     public static class ShortcodeParsingExtensions
     {
-        public static IHtmlString ParseShortcodes(this HtmlHelper htmlHelper, string content)
+        public static IHtmlString ParseShortcodes(this IHtmlHelper htmlHelper, string content)
         {
-            var shortcodeParsers = MrCMSApplication.GetAll<IShortcodeParser>();
-
-            content = shortcodeParsers.Aggregate(content, (current, shortcodeParser) => shortcodeParser.Parse(htmlHelper, current));
-
-            return new HtmlString(content);
+            return htmlHelper.Get<IShortcodeParser>().Parse(htmlHelper, content);
         }
     }
 }

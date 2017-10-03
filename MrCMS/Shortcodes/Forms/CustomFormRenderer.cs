@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Settings;
+using MrCMS.Website;
+using MrCMS.Website.Filters;
 
 namespace MrCMS.Shortcodes.Forms
 {
@@ -28,7 +30,7 @@ namespace MrCMS.Shortcodes.Forms
             _siteSettings = siteSettings;
         }
 
-        public string GetForm(Webpage webpage, FormSubmittedStatus submittedStatus)
+        public string GetForm(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submittedStatus)
         {
             if (webpage == null)
                 return string.Empty;
@@ -44,6 +46,7 @@ namespace MrCMS.Shortcodes.Forms
             formDesign = Regex.Replace(formDesign, "{input:([^}]+)}", AddElement(formProperties, submittedStatus));
             formDesign = Regex.Replace(formDesign, "{validation:([^}]+)}", AddValidation(formProperties));
             formDesign = Regex.Replace(formDesign, "{submitted-message}", AddSubmittedMessage(webpage, submittedStatus));
+            formDesign = Regex.Replace(formDesign, "{recaptcha}", helper.RenderRecaptcha().ToString());
             form.InnerHtml = formDesign;
 
             if (_siteSettings.HasHoneyPot)

@@ -14,7 +14,7 @@ namespace MrCMS.Helpers
         {
             // generates <form action="{current url}" method="post">...</form> 
             string formAction = htmlHelper.ViewContext.HttpContext.Request.RawUrl;
-            return FormHelper(htmlHelper, formAction, formMethod, MrCMSHtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes));
+            return FormHelper(htmlHelper, formAction, formMethod, MrCMSHtmlHelperExtensions.AnonymousObjectToHtmlAttributes(htmlAttributes));
         }
 
         public static MvcForm BeginForm<T>(this HtmlHelper htmlHelper, FormMethod formMethod, object htmlAttributes) where T : Webpage, IUniquePage
@@ -23,7 +23,7 @@ namespace MrCMS.Helpers
                                 htmlHelper.ViewContext.HttpContext.Get<IUniquePageService>()
                                     .GetUniquePage<T>()
                                     .LiveUrlSegment;
-            return FormHelper(htmlHelper, formAction, formMethod, MrCMSHtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes));
+            return FormHelper(htmlHelper, formAction, formMethod, MrCMSHtmlHelperExtensions.AnonymousObjectToHtmlAttributes(htmlAttributes));
         }
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",

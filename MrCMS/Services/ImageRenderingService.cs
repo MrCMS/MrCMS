@@ -117,7 +117,7 @@ namespace MrCMS.Services
             tagBuilder.Attributes.Add("title", title ?? imageInfo.Description);
             if (attributes != null)
             {
-                var routeValueDictionary = MrCMSHtmlHelper.AnonymousObjectToHtmlAttributes(attributes);
+                var routeValueDictionary = MrCMSHtmlHelperExtensions.AnonymousObjectToHtmlAttributes(attributes);
                 foreach (var kvp in routeValueDictionary)
                 {
                     tagBuilder.Attributes.Add(kvp.Key, kvp.Value.ToString());
