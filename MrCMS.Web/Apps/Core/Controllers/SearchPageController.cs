@@ -21,9 +21,6 @@ namespace MrCMS.Web.Apps.Core.Controllers
         {
             ViewData["webpageSearchQueryModel"] = model;
 
-            if (string.IsNullOrWhiteSpace(model.Term))
-                return View(page);
-
             ViewData["searchResults"] = _webpageSearchService.Search(model);
             return View(page);
         }
