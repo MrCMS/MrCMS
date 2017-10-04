@@ -1,4 +1,5 @@
-﻿@model System.Collections.Generic.List<MrCMS.Web.Areas.Admin.Models.PageDefaultsInfo>
+﻿@using MrCMS.Web.Areas.Admin.Models
+@model System.Collections.Generic.List<MrCMS.Web.Areas.Admin.Models.PageDefaultsInfo>
 
 <h1 class="page-header">@Resource("Admin Page Defaults Title", "Page Defaults")</h1>
 
@@ -13,6 +14,9 @@
             </th>
             <th>
                 @Resource("Admin Page Defaults Default Layout", "Default Layout")
+            </th>
+            <th>
+                @Resource("Admin Page Defaults Cache Enabled", "Cached?")
             </th>
             <th>
                 @Resource("Actions")
@@ -31,6 +35,28 @@
                 </td>
                 <td>
                     @info.LayoutName
+                </td>
+                <td>
+                    @if (info.CacheEnabled == CacheEnabledStatus.Enabled)
+                    {
+                        using (Html.BeginForm("DisableCache", "PageDefaults", new { info.TypeName }, FormMethod.Post))
+                        {
+                            @info.CacheEnabled
+                            <button class="btn btn-warning btn-xs pull-right" type="submit">Disable cache</button>
+                        }
+                    }
+                    else if (info.CacheEnabled == CacheEnabledStatus.Disabled)
+                    {
+                        using (Html.BeginForm("EnableCache", "PageDefaults", new { info.TypeName }, FormMethod.Post))
+                        {
+                            @info.CacheEnabled
+                            <button class="btn btn-success btn-xs pull-right" type="submit">Enable cache</button>
+                        }
+                    }
+                    else
+                    {
+                        @info.CacheEnabled
+                    }
                 </td>
                 <td>
                     @Html.ActionLink(Resource("Admin Page Defaults Set Default", "Set default"), "Set", "PageDefaults", new { type = info.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })

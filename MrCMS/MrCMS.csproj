@@ -468,6 +468,7 @@
     <Compile Include="Entities\People\UserProfileData.cs" />
     <Compile Include="Entities\Resources\StringResource.cs" />
     <Compile Include="Events\AssignLayoutAreaToLayout.cs" />
+    <Compile Include="Events\Documents\ClearWebpagesFromCache.cs" />
     <Compile Include="Events\Documents\DocumentModifiedUser.cs" />
     <Compile Include="Events\Documents\MarkWebpageAsPublished.cs" />
     <Compile Include="Events\Documents\MarkWebpageAsUnpublished.cs" />
@@ -538,6 +539,7 @@
     <Compile Include="Helpers\TweetParsingExtensions.cs" />
     <Compile Include="Helpers\TypeExtensions.cs" />
     <Compile Include="Helpers\UserExtensions.cs" />
+    <Compile Include="Helpers\WebpageCachingExtensions.cs" />
     <Compile Include="Helpers\WebpageExtensions.cs" />
     <Compile Include="Helpers\WebpageRoutingExtensions.cs" />
     <Compile Include="Helpers\WidgetCachingExtensions.cs" />
@@ -697,6 +699,7 @@
     <Compile Include="Services\GetDocumentByUrl.cs" />
     <Compile Include="Services\GetDocumentsByParent.cs" />
     <Compile Include="Services\GetHomePage.cs" />
+    <Compile Include="Services\GetWebpageCachingInfo.cs" />
     <Compile Include="Services\GetWidgetCachingInfo.cs" />
     <Compile Include="Services\HashAlgorithmProvider.cs" />
     <Compile Include="Services\IAppScriptList.cs" />
@@ -717,6 +720,7 @@
     <Compile Include="Services\IGetDocumentByUrl.cs" />
     <Compile Include="Services\IGetDocumentsByParent.cs" />
     <Compile Include="Services\IGetHomePage.cs" />
+    <Compile Include="Services\IGetWebpageCachingInfo.cs" />
     <Compile Include="Services\IGetWidgetCachingInfo.cs" />
     <Compile Include="Services\IHashAlgorithmProvider.cs" />
     <Compile Include="Services\IImageRenderingService.cs" />
@@ -728,6 +732,7 @@
     <Compile Include="Services\ImportExport\IExportDocumentsService.cs" />
     <Compile Include="Services\IndexService.cs" />
     <Compile Include="Services\IPasswordManagementService.cs" />
+    <Compile Include="Services\IQuerySerializer.cs" />
     <Compile Include="Services\IQueueMessage.cs" />
     <Compile Include="Services\ISaveFormFileUpload.cs" />
     <Compile Include="Services\IStoredInAppData.cs" />
@@ -736,6 +741,7 @@
     <Compile Include="Services\IUserLookup.cs" />
     <Compile Include="Services\IUserUIPermissionsService.cs" />
     <Compile Include="Services\IValidWebpageChildrenService.cs" />
+    <Compile Include="Services\IWebpageUIService.cs" />
     <Compile Include="Services\IWebpageUrlGenerator.cs" />
     <Compile Include="Services\IWebpageUrlService.cs" />
     <Compile Include="Services\IEventContext.cs" />
@@ -751,6 +757,7 @@
     <Compile Include="Services\Notifications\OnPersistentNotificationPublishedEventArgs.cs" />
     <Compile Include="Services\Notifications\OnTransientNotificationPublishedEventArgs.cs" />
     <Compile Include="Services\Notifications\PublishType.cs" />
+    <Compile Include="Services\QuerySerializer.cs" />
     <Compile Include="Services\QueueMessage.cs" />
     <Compile Include="Services\Resources\GetCurrentUserCultureInfo.cs" />
     <Compile Include="Services\Resources\GetUserCultureInfo.cs" />
@@ -786,6 +793,7 @@
     <Compile Include="Services\UserProfileDataService.cs" />
     <Compile Include="Services\UserUIPermissionsService.cs" />
     <Compile Include="Services\ValidWebpageChildrenService.cs" />
+    <Compile Include="Services\WebpageUIService.cs" />
     <Compile Include="Services\WebpageUrlGenerator.cs" />
     <Compile Include="Services\WebpageUrlService.cs" />
     <Compile Include="Services\WidgetModelService.cs" />
@@ -1158,7 +1166,8 @@
     <Compile Include="Website\OutOfContextResponse.cs" />
     <Compile Include="Website\OutOfContextServerUtility.cs" />
     <Compile Include="Website\OutOfContextSession.cs" />
-    <Compile Include="Website\OutputCacheableAttribute.cs" />
+    <Compile Include="Website\WebpageOutputCacheableAttribute.cs" />
+    <Compile Include="Website\WidgetOutputCacheableAttribute.cs" />
     <Compile Include="Website\ProcessWebpageViews.cs" />
     <Compile Include="Website\Profiling\DisableMiniProfilerForAjaxRequests.cs" />
     <Compile Include="Website\Profiling\DisableMiniProfilerForBatchExecution.cs" />

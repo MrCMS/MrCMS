@@ -184,5 +184,9 @@ namespace MrCMS.Entities.Documents.Web
         public virtual IList<UrlHistory> Urls { get; set; }
 
         public virtual PageTemplate PageTemplate { get; set; }
+
+        [DisplayName("Do not cache?")]
+        public virtual bool DoNotCache { get; set; }
+
     }
 }
