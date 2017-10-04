@@ -85,6 +85,15 @@
     <Reference Include="Ninject.MockingKernel, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.MockingKernel.3.2.2.0\lib\net45-full\Ninject.MockingKernel.dll</HintPath>
     </Reference>
+    <Reference Include="Ploeh.AutoFixture, Version=3.50.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.3.50.7\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture.AutoFakeItEasy, Version=3.50.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.AutoFakeItEasy.3.50.7\lib\net40\Ploeh.AutoFixture.AutoFakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture.Xunit, Version=3.50.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.Xunit.3.50.7\lib\net40\Ploeh.AutoFixture.Xunit.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -139,6 +148,7 @@
     <Compile Include="ACL\TestEventArgs.cs" />
     <Compile Include="ACL\TestEventImplementation.cs" />
     <Compile Include="ACL\TestEventImplementation2.cs" />
+    <Compile Include="AutoFakeItEasyDataAttribute.cs" />
     <Compile Include="DbConfiguration\ListenerDisablerTests.cs" />
     <Compile Include="Entities\DocumentTests.cs" />
     <Compile Include="Entities\MediaFileTests.cs" />
@@ -190,6 +200,8 @@
     <Compile Include="Shortcodes\Forms\SubmittedMessageRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\TextAreaRendererTests.cs" />
     <Compile Include="Shortcodes\Forms\TextBoxRendererTests.cs" />
+    <Compile Include="Shortcodes\RenderShortcodeTests.cs" />
+    <Compile Include="Shortcodes\ShortcodeParserTests.cs" />
     <Compile Include="SqliteInMemoryProvider.cs" />
     <Compile Include="Stubs\BasicMappedWebpage.cs" />
     <Compile Include="Stubs\BasicMappedWidget.cs" />

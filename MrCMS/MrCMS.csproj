@@ -524,6 +524,7 @@
     <Compile Include="Helpers\MediaFileExtensions.cs" />
     <Compile Include="Helpers\MediaSettingExtensions.cs" />
     <Compile Include="Helpers\ModelBinderExtensions.cs" />
+    <Compile Include="Helpers\MrCMSHtmlHelperExtensions.cs" />
     <Compile Include="Helpers\MrCMSPageExtensions.cs" />
     <Compile Include="Helpers\MrCMSResources.cs" />
     <Compile Include="Helpers\OptimisationExtensions.cs" />
@@ -648,6 +649,7 @@
     <Compile Include="Services\ApplicationRestartExecutor.cs" />
     <Compile Include="Services\AuthConfigurationService.cs" />
     <Compile Include="Services\BelongToUserLookupService.cs" />
+    <Compile Include="Services\Caching\HtmlCacheExtensions.cs" />
     <Compile Include="Services\Caching\HtmlCacheService.cs" />
     <Compile Include="Services\Caching\IClearCache.cs" />
     <Compile Include="Services\Caching\IHtmlCacheService.cs" />
@@ -692,6 +694,7 @@
     <Compile Include="Services\GetBreadcrumbs.cs" />
     <Compile Include="Services\GetCurrentLayout.cs" />
     <Compile Include="Services\GetCurrentUser.cs" />
+    <Compile Include="Services\GetDocumentByUrl.cs" />
     <Compile Include="Services\GetDocumentsByParent.cs" />
     <Compile Include="Services\GetHomePage.cs" />
     <Compile Include="Services\GetWidgetCachingInfo.cs" />
@@ -801,6 +804,7 @@
     <Compile Include="Settings\Events\OnSavingSiteSettingsArgs.cs" />
     <Compile Include="Settings\Events\OnSavingSystemSettingsArgs.cs" />
     <Compile Include="Settings\FormRenderingType.cs" />
+    <Compile Include="Settings\GoogleRecaptchaSettings.cs" />
     <Compile Include="Settings\ISystemConfigurationProvider.cs" />
     <Compile Include="Settings\LegacySettingMigrator.cs" />
     <Compile Include="Settings\MrCMSSettingsSection.cs" />
@@ -870,7 +874,7 @@
     <Compile Include="Helpers\EntityHelper.cs" />
     <Compile Include="Helpers\EnumerableHelper.cs" />
     <Compile Include="Helpers\ImportHelper.cs" />
-    <Compile Include="Helpers\MrCMSHtmlHelper.cs" />
+    <Compile Include="Helpers\AlertType.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\PagingHelper.cs" />
     <Compile Include="Helpers\SelectListItemHelper.cs" />
@@ -994,7 +998,7 @@
     <Compile Include="Shortcodes\Forms\ElementRendererManager.cs" />
     <Compile Include="Shortcodes\Forms\FileUploadRenderer.cs" />
     <Compile Include="Shortcodes\Forms\FormRenderingManager.cs" />
-    <Compile Include="Shortcodes\FormShortcodeParser.cs" />
+    <Compile Include="Shortcodes\FormShortcodeRenderer.cs" />
     <Compile Include="Shortcodes\Forms\FormSubmittedStatus.cs" />
     <Compile Include="Shortcodes\Forms\IDropDownListOptionRenderer.cs" />
     <Compile Include="Shortcodes\Forms\IElementRendererManager.cs" />
@@ -1011,7 +1015,10 @@
     <Compile Include="Shortcodes\Forms\IFormElementRenderer.cs" />
     <Compile Include="Shortcodes\Forms\IFormRenderer.cs" />
     <Compile Include="Shortcodes\Forms\ValidationMessaageRenderer.cs" />
+    <Compile Include="Shortcodes\IRenderShortcode.cs" />
     <Compile Include="Shortcodes\IShortcodeParser.cs" />
+    <Compile Include="Shortcodes\IShortcodeRenderer.cs" />
+    <Compile Include="Shortcodes\ShortcodeParser.cs" />
     <Compile Include="Tasks\AdHocTask.cs" />
     <Compile Include="Tasks\DefaultTaskExecutionHandler.cs" />
     <Compile Include="Tasks\DeleteExpiredLogsTask.cs" />
@@ -1094,14 +1101,20 @@
     <Compile Include="Website\Filters\ExecuteLuceneTasks.cs" />
     <Compile Include="Website\Filters\ExecuteLuceneTasksRunner.cs" />
     <Compile Include="Website\Filters\ForceImmediateLuceneUpdateAttribute.cs" />
-    <Compile Include="Website\Filters\HoneypotFilterAttribute.cs" />
+    <Compile Include="Website\Filters\GoogleRecaptchaAttribute.cs" />
+    <Compile Include="Website\Filters\GoogleRecaptchaExtensions.cs" />
+    <Compile Include="Website\Filters\GoogleRecaptchaFilter.cs" />
+    <Compile Include="Website\Filters\GoogleRecaptchaResponse.cs" />
+    <Compile Include="Website\Filters\HoneypotFilter.cs" />
     <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
     <Compile Include="Website\Filters\TaskExecutionKeyPasswordAuth.cs" />
+    <Compile Include="Website\GlobalFilterProvider.cs" />
     <Compile Include="Website\HandleWebpageViewsAttribute.cs" />
     <Compile Include="Website\HtmlHelperExtensions.cs" />
     <Compile Include="Website\HttpContextExtensions.cs" />
     <Compile Include="Website\IClearCachesService.cs" />
     <Compile Include="Website\IEnsureDatabaseIsInstalled.cs" />
+    <Compile Include="Website\IHtmlHelper.cs" />
     <Compile Include="Website\ImagePluginInstaller.cs" />
     <Compile Include="Website\IOnEndRequestExecutor.cs" />
     <Compile Include="Website\IProcessWebpageViews.cs" />
@@ -1110,6 +1123,7 @@
     <Compile Include="Website\MrCMSACLRuleAttribute.cs" />
     <Compile Include="Website\MrCMSAssemblyAttribute.cs" />
     <Compile Include="Website\MrCMSBaseAuthorizationAttribute.cs" />
+    <Compile Include="Website\MrCMSHtmlHelper.cs" />
     <Compile Include="Website\MrCMSKernel.cs" />
     <Compile Include="Website\MrCMSMetadataProvider.cs" />
     <Compile Include="Website\MrCMSRazorViewEngine.cs" />

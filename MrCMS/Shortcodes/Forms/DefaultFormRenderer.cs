@@ -2,6 +2,8 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
+using MrCMS.Website;
+using MrCMS.Website.Filters;
 
 namespace MrCMS.Shortcodes.Forms
 {
@@ -24,7 +26,7 @@ namespace MrCMS.Shortcodes.Forms
             _siteSettings = siteSettings;
         }
 
-        public string GetDefault(Webpage webpage, FormSubmittedStatus submittedStatus)
+        public string GetDefault(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submittedStatus)
         {
             if (webpage == null)
                 return string.Empty;
@@ -54,6 +56,8 @@ namespace MrCMS.Shortcodes.Forms
                 else
                     form.InnerHtml += elementHtml;
             }
+
+            form.InnerHtml += helper.RenderRecaptcha().ToString();
 
             var div = new TagBuilder("div");
             div.InnerHtml += GetSubmitButton(webpage).ToString(TagRenderMode.SelfClosing);

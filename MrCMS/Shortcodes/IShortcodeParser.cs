@@ -1,9 +1,10 @@
 using System.Web.Mvc;
+using MrCMS.Website;
 
 namespace MrCMS.Shortcodes
 {
     public interface IShortcodeParser
     {
-        string Parse(HtmlHelper htmlHelper, string current);
+        MvcHtmlString Parse(IHtmlHelper htmlHelper, string current);
     }
 }

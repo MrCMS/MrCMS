@@ -36,7 +36,7 @@ namespace MrCMS.Helpers
                 stringBuilder.AppendFormat(";title:{0}", title);
             if (attributes != null)
             {
-                var routeValueDictionary = MrCMSHtmlHelper.AnonymousObjectToHtmlAttributes(attributes);
+                var routeValueDictionary = MrCMSHtmlHelperExtensions.AnonymousObjectToHtmlAttributes(attributes);
                 foreach (var kvp in routeValueDictionary)
                 {
                     stringBuilder.AppendFormat(";{0}:{1}", kvp.Key, kvp.Value);
