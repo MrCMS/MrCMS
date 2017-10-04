@@ -754,8 +754,6 @@
     <Compile Include="Services\IWidgetUIService.cs" />
     <Compile Include="Services\Notifications\NotificationDisabler.cs" />
     <Compile Include="Services\Notifications\ContextNotificationExtensions.cs" />
-    <Compile Include="Services\Notifications\OnPersistentNotificationPublishedEventArgs.cs" />
-    <Compile Include="Services\Notifications\OnTransientNotificationPublishedEventArgs.cs" />
     <Compile Include="Services\Notifications\PublishType.cs" />
     <Compile Include="Services\QuerySerializer.cs" />
     <Compile Include="Services\QueueMessage.cs" />
