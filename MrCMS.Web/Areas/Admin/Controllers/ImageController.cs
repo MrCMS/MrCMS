@@ -6,20 +6,21 @@ namespace MrCMS.Web.Areas.Admin.Controllers
 {
     public class ImageController : MrCMSAdminController
     {
-        private readonly IImageProcessor _imageProcessor;
+        private readonly IImageRenderingService _imageRenderingService;
 
-        public ImageController(IImageProcessor imageProcessor)
+        public ImageController(IImageRenderingService imageRenderingService)
         {
-            _imageProcessor = imageProcessor;
+            _imageRenderingService = imageRenderingService;
         }
 
         public JsonResult GetImageData(string url)
         {
-            var mediaFile = _imageProcessor.GetImage(url);
+            var imageInfo =
+                _imageRenderingService.GetImageInfo(url, ImageProcessor.GetRequestedSize(url).GetValueOrDefault());
 
-            return mediaFile != null
-                       ? Json(new {alt = mediaFile.Title, title = mediaFile.Description})
-                       : Json(new {alt = "", title = ""});
+            return imageInfo != null
+                ? Json(new { alt = imageInfo.Title, title = imageInfo.Description, url = imageInfo.ImageUrl })
+                : Json(new { alt = "", title = "" });
         }
     }
 }

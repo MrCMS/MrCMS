@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using MrCMS.Models;
 
 namespace MrCMS.Services
 {
@@ -13,5 +14,6 @@ namespace MrCMS.Services
         Stream GetReadStream(string filePath);
         void WriteToStream(string filePath, Stream stream);
         IEnumerable<string> GetFiles(string filePath);
+        CdnInfo CdnInfo { get; }
     }
 }

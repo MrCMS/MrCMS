@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Web.Hosting;
+using MrCMS.Models;
 
 namespace MrCMS.Services
 {
@@ -105,5 +106,7 @@ namespace MrCMS.Services
                     yield return "/" + file.Remove(0, ApplicationPath.Length).Replace('\\', '/');
             }
         }
+
+        public CdnInfo CdnInfo => null;
     }
 }

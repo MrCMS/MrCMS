@@ -64,6 +64,7 @@
                                             $.get('/Admin/Image/GetImageData', { url: info.Url, v: new Date().getTime() }, function (response) {
                                                 e.data.button.getDialog().setValueOf('info', 'txtAlt', response.alt);
                                                 e.data.button.getDialog().setValueOf('advanced', 'txtGenTitle', response.title);
+                                                e.data.button.getDialog().setValueOf('info', 'txtUrl', response.url);
                                             });
                                             $.featherlight.close();
                                         }

@@ -606,8 +606,10 @@
     <Compile Include="Messages\MessageTemplate.cs" />
     <Compile Include="Messages\MessageTemplateProvider.cs" />
     <Compile Include="Models\CachingInfo.cs" />
+    <Compile Include="Models\CdnInfo.cs" />
     <Compile Include="Models\ExportDocumentsModel.cs" />
     <Compile Include="Models\ExportDocumentsResult.cs" />
+    <Compile Include="Models\ImageInfo.cs" />
     <Compile Include="Models\ImageSortItem.cs" />
     <Compile Include="Models\ImportDocumentsResult.cs" />
     <Compile Include="Models\LayoutTreeListModel.cs" />

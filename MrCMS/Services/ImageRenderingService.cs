@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
+using MrCMS.Models;
 using MrCMS.Services.Caching;
 using MrCMS.Settings;
 using MrCMS.Website.Caching;
@@ -48,7 +49,7 @@ namespace MrCMS.Services
             });
         }
 
-        private ImageInfo GetImageInfo(string imageUrl, Size targetSize)
+        public ImageInfo GetImageInfo(string imageUrl, Size targetSize)
         {
             var crop = _imageProcessor.GetCrop(imageUrl);
             if (crop != null)
@@ -75,24 +76,14 @@ namespace MrCMS.Services
 
         private string GetFileImageUrl(MediaFile image, Size targetSize)
         {
-            return GetUrl(image.Size, targetSize, () => _fileService.GetFileLocation(image, targetSize)) ?? image.FileUrl;
+            return _fileService.GetFileLocation(image, targetSize, true);
         }
 
         private string GetCropImageUrl(Crop crop, Size targetSize)
         {
-            return GetUrl(crop.Size, targetSize, () => _fileService.GetFileLocation(crop, targetSize)) ?? crop.Url;
+            return _fileService.GetFileLocation(crop, targetSize, true);
         }
 
-        private string GetUrl(Size originalSize, Size targetSize, Func<string> getLocation)
-        {
-            if (targetSize != default(Size) && ImageProcessor.RequiresResize(originalSize, targetSize))
-            {
-                var location = getLocation();
-                if (!string.IsNullOrWhiteSpace(location))
-                    return location;
-            }
-            return null;
-        }
 
         public string GetImageUrl(string imageUrl, Size targetSize)
         {
@@ -102,12 +93,6 @@ namespace MrCMS.Services
                 : GetImageInfo(imageUrl, targetSize)?.ImageUrl, info.TimeToCache, info.ExpiryType);
         }
 
-        private class ImageInfo
-        {
-            public string ImageUrl { get; set; }
-            public string Title { get; set; }
-            public string Description { get; set; }
-        }
 
         private MvcHtmlString ReturnTag(ImageInfo imageInfo, string alt, string title, object attributes)
         {
@@ -125,5 +110,7 @@ namespace MrCMS.Services
             }
             return MvcHtmlString.Create(tagBuilder.ToString(TagRenderMode.SelfClosing));
         }
+
+       
     }
 }

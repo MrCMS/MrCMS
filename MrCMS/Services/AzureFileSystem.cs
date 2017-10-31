@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using MrCMS.Helpers;
+using MrCMS.Models;
 using MrCMS.Settings;
 
 namespace MrCMS.Services
@@ -111,6 +112,20 @@ namespace MrCMS.Services
             CloudBlobDirectory cloudBlobDirectory = Container.GetDirectoryReference(filePath);
 
             return cloudBlobDirectory.ListBlobs().Select(item => item.Uri.ToString());
+        }
+
+        public CdnInfo CdnInfo
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(_fileSystemSettings.AzureCdnDomain))
+                    return new CdnInfo
+                    {
+                        Scheme = "https",
+                        Host = _fileSystemSettings.AzureCdnDomain
+                    };
+                return null;
+            }
         }
 
         private void EnsureInitialized()

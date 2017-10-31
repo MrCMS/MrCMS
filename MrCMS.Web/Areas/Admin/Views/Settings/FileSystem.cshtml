@@ -31,11 +31,15 @@
             @Html.TextBoxFor(settings => settings.AzureContainerName, new { @class = "form-control" })
         </div>
         <div class="form-group">
+            @Html.LabelFor(settings => settings.AzureCdnDomain)
+            @Html.TextBoxFor(settings => settings.AzureCdnDomain, new { @class = "form-control" })
+        </div>
+        <div class="form-group">
             @Html.InlineCheckboxFor(settings => settings.UseAzureForLucene)
         </div>
         <div class="form-group">
             @Html.InlineCheckboxFor(settings => settings.AzureUsingEmulator)
         </div>
-</fieldset>
+    </fieldset>
 }
 @{ Html.RenderAction("Show", "FileMigration");}
