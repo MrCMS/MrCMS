@@ -18,6 +18,8 @@ namespace MrCMS.Website.Controllers
 
         [ValidateInput(false)]
         [GoogleRecaptcha]
+        [DoNotCache]
+
         public ActionResult Save(Webpage webpage)
         {
             if (webpage.IsDeleted)

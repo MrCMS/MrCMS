@@ -1108,6 +1108,8 @@
     <Compile Include="Website\EnsureDatabaseIsInstalled.cs" />
     <Compile Include="Website\ExecuteEndRequestBase.cs" />
     <Compile Include="Website\Filters\AntiForgeryValidationAttribute.cs" />
+    <Compile Include="Website\Filters\DoNotCacheAttribute.cs" />
+    <Compile Include="Website\Filters\DoNotCacheFilter.cs" />
     <Compile Include="Website\Filters\EnsureHomePageIsSet.cs" />
     <Compile Include="Website\Filters\ExecuteLuceneTasks.cs" />
     <Compile Include="Website\Filters\ExecuteLuceneTasksRunner.cs" />
