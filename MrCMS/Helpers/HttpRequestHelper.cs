@@ -13,9 +13,14 @@ namespace MrCMS.Helpers
         {
             if (request == null)
                 return string.Empty;
+
+            var connectingIp = request.Headers["CF-CONNECTING-IP"];
+            if (!string.IsNullOrWhiteSpace(connectingIp))
+                return connectingIp;
+
             string ipAddress = request.ServerVariables["HTTP_X_FORWARDED_FOR"];
 
-            if (!string.IsNullOrEmpty(ipAddress))
+            if (!string.IsNullOrWhiteSpace(ipAddress))
             {
                 string[] addresses = ipAddress.Split(',');
                 if (addresses.Length != 0)
