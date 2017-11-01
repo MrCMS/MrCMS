@@ -261,10 +261,14 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\PublishedOnFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\TypeFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\FailedLoginAttemptMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\GetDefaultFailedLoginAttemptMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\GetDefaultResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\GetDefaultSend2FACodeMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\GetDefaultSuccessfulLoginAttemptMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\Send2FACodeMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\SuccessfulLoginAttemptMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\SiteTokenProvider.cs" />
     <Compile Include="Apps\Core\Metadata\TwoFactorCodePageMetadata.cs" />
     <Compile Include="Apps\Core\Pages\TwoFactorCodePage.cs" />
@@ -282,6 +286,7 @@
     <Compile Include="Apps\Core\ModelBinders\WebpageSearchQueryModelBinder.cs" />
     <Compile Include="Apps\Core\Models\CurrentPageSubNavigationModel.cs" />
     <Compile Include="Apps\Core\Services\Installation\SetupCoreMedia.cs" />
+    <Compile Include="Apps\Core\Services\SendLoginAttemptNotificationEmails.cs" />
     <Compile Include="Apps\Core\Services\SendResetPasswordEmail.cs" />
     <Compile Include="Apps\Core\Services\Send2FACodeEmail.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetModelForCurrentPageSubNavigation.cs" />
