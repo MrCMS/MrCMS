@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using MrCMS.Models.Auth;
 using MrCMS.Services;
+using MrCMS.Services.Auth;
 using MrCMS.Services.Resources;
-using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website;
@@ -22,14 +24,22 @@ namespace MrCMS.Web.Apps.Core.Controllers
         private readonly IExternalLoginService _externalLoginService;
         private readonly IUniquePageService _uniquePageService;
         private readonly IStringResourceProvider _stringResourceProvider;
+        private readonly IGetVerifiedUserResult _getVerifiedUserResult;
+        private readonly ILogUserIn _logUserIn;
+        private readonly ISetVerifiedUserData _setVerifiedUserData;
 
         public ExternalLoginController(IAuthenticationManager authenticationManager,
-                                       IExternalLoginService externalLoginService, IUniquePageService uniquePageService, IStringResourceProvider stringResourceProvider)
+                                       IExternalLoginService externalLoginService, IUniquePageService uniquePageService, IStringResourceProvider stringResourceProvider,
+                                       IGetVerifiedUserResult getVerifiedUserResult,
+                                       ILogUserIn logUserIn, ISetVerifiedUserData setVerifiedUserData)
         {
             _authenticationManager = authenticationManager;
             _externalLoginService = externalLoginService;
             _uniquePageService = uniquePageService;
             _stringResourceProvider = stringResourceProvider;
+            _getVerifiedUserResult = getVerifiedUserResult;
+            _logUserIn = logUserIn;
+            _setVerifiedUserData = setVerifiedUserData;
         }
 
         public PartialViewResult Providers(string returnUrl)
@@ -52,7 +62,6 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
         public async Task<ActionResult> Callback(string returnUrl)
         {
-            var previousSession = CurrentRequestData.UserGuid;
             ExternalLoginInfo loginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
 
 
@@ -61,35 +70,30 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
             AuthenticateResult authenticateResult =
                 await _authenticationManager.AuthenticateAsync(DefaultAuthenticationTypes.ExternalCookie);
-            string email = loginInfo.Email ?? _externalLoginService.GetEmail(authenticateResult);
 
-            if (string.IsNullOrWhiteSpace(email))
+            loginInfo.Email = loginInfo.Email ?? _externalLoginService.GetEmail(authenticateResult);
+
+            if (string.IsNullOrWhiteSpace(loginInfo.Email))
                 return ThirdPartyError();
 
-            if (await _externalLoginService.IsLoginAsync(loginInfo))
-            {
-                await _externalLoginService.LoginAsync(loginInfo, authenticateResult);
-                EventContext.Instance.Publish<IOnUserLoggedIn, UserLoggedInEventArgs>(
-                    new UserLoggedInEventArgs(CurrentRequestData.CurrentUser, previousSession));
-                return await _externalLoginService.RedirectAfterLogin(email, returnUrl);
-            }
-            if (await _externalLoginService.UserExistsAsync(email))
-            {
-                await _externalLoginService.AssociateLoginToUserAsync(email, loginInfo);
-                await _externalLoginService.LoginAsync(loginInfo, authenticateResult);
-                EventContext.Instance.Publish<IOnUserLoggedIn, UserLoggedInEventArgs>(
-                    new UserLoggedInEventArgs(CurrentRequestData.CurrentUser, previousSession));
-                return await _externalLoginService.RedirectAfterLogin(email, returnUrl);
-            }
-            if (!_externalLoginService.RequiresAdditionalFieldsForRegistration())
-            {
-                await _externalLoginService.CreateUserAsync(email, loginInfo);
-                await _externalLoginService.LoginAsync(loginInfo, authenticateResult);
-                EventContext.Instance.Publish<IOnUserRegistered, OnUserRegisteredEventArgs>(
-                    new OnUserRegisteredEventArgs(CurrentRequestData.CurrentUser, previousSession));
-                return await _externalLoginService.RedirectAfterLogin(email, returnUrl);
-            }
+            var user = await _externalLoginService.GetUserToLogin(loginInfo);
 
+            var result = _getVerifiedUserResult.GetResult(user, returnUrl);
+            switch (result.Status)
+            {
+                case LoginStatus.Success:
+                    await _logUserIn.Login(user, false);
+                    await _externalLoginService.UpdateClaimsAsync(user, authenticateResult.Identity.Claims);
+                    return Redirect(result.ReturnUrl);
+                case LoginStatus.TwoFactorRequired:
+                    _setVerifiedUserData.SetUserData(result.User);
+                    return _uniquePageService.RedirectTo<TwoFactorCodePage>(new { result.ReturnUrl });
+                case LoginStatus.LockedOut:
+                    EventContext.Instance.Publish<IOnLockedOutUserAuthed, UserLockedOutEventArgs>(
+                        new UserLockedOutEventArgs(result.User));
+                    break;
+            }
+            TempData["login-model"] = new LoginModel { Message = result.Message };
             return _uniquePageService.RedirectTo<LoginPage>();
         }
 

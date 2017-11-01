@@ -243,6 +243,7 @@
     <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleCategories.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
+    <Compile Include="Apps\Core\Controllers\TwoFactorCodePageController.cs" />
     <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
     <Compile Include="Apps\Core\Controllers\RegistrationController.cs" />
     <Compile Include="Apps\Core\Controllers\SearchPageController.cs" />
@@ -261,11 +262,15 @@
     <Compile Include="Apps\Core\Indexing\WebpageSearch\TypeFieldDefinition.cs" />
     <Compile Include="Apps\Core\Indexing\WebpageSearch\UrlSegmentFieldDefinition.cs" />
     <Compile Include="Apps\Core\MessageTemplates\GetDefaultResetPasswordMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\GetDefaultSend2FACodeMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
+    <Compile Include="Apps\Core\MessageTemplates\Send2FACodeMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\SiteTokenProvider.cs" />
+    <Compile Include="Apps\Core\Metadata\TwoFactorCodePageMetadata.cs" />
+    <Compile Include="Apps\Core\Pages\TwoFactorCodePage.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreLayouts.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreMedia.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreWebpages.cs" />
-    <Compile Include="Apps\Core\MessageTemplates\ResetPasswordMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\UserTokenProvider.cs" />
     <Compile Include="Apps\Core\Metadata\RegisterPageMetadata.cs" />
     <Compile Include="Apps\Core\Metadata\ResetPasswordPageMetadata.cs" />
@@ -276,15 +281,9 @@
     <Compile Include="Apps\Core\ModelBinders\LoginModelModelBinder.cs" />
     <Compile Include="Apps\Core\ModelBinders\WebpageSearchQueryModelBinder.cs" />
     <Compile Include="Apps\Core\Models\CurrentPageSubNavigationModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\ChangePasswordModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\ForgotPasswordModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\RegisterModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginModel.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\LoginResult.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\ResetPasswordViewModel.cs" />
     <Compile Include="Apps\Core\Services\Installation\SetupCoreMedia.cs" />
-    <Compile Include="Apps\Core\Services\LoginService.cs" />
-    <Compile Include="Apps\Core\Services\OnUserRegisteredEventArgs.cs" />
+    <Compile Include="Apps\Core\Services\SendResetPasswordEmail.cs" />
+    <Compile Include="Apps\Core\Services\Send2FACodeEmail.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetModelForCurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetNavigationRecords.cs" />
     <Compile Include="Apps\Core\Services\Widgets\GetUserLinks.cs" />
@@ -407,22 +406,13 @@
     <Compile Include="Areas\Admin\Models\Search\AdminWebpageSearchQuery.cs" />
     <Compile Include="Areas\Admin\Models\Search\QuickSearchResult.cs" />
     <Compile Include="Apps\Core\Models\Search\WebpageSearchQuery.cs" />
-    <Compile Include="Apps\Core\Models\RegisterAndLogin\UserAccountModel.cs" />
     <Compile Include="Apps\Core\Pages\UserAccountPage.cs" />
     <Compile Include="Apps\Core\Pages\RegisterPage.cs" />
     <Compile Include="Apps\Core\Pages\ResetPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\ForgottenPasswordPage.cs" />
     <Compile Include="Apps\Core\Pages\LoginPage.cs" />
-    <Compile Include="Apps\Core\Services\ILoginService.cs" />
-    <Compile Include="Apps\Core\Services\IOnUserRegistered.cs" />
-    <Compile Include="Apps\Core\Services\IRegistrationService.cs" />
-    <Compile Include="Apps\Core\Services\IResetPasswordService.cs" />
-    <Compile Include="Apps\Core\Services\IUserEventService.cs" />
-    <Compile Include="Apps\Core\Services\RegistrationService.cs" />
-    <Compile Include="Apps\Core\Services\ResetPasswordService.cs" />
     <Compile Include="Apps\Core\Services\Search\WebpageSearchService.cs" />
     <Compile Include="Apps\Core\Services\Search\IWebpageSearchService.cs" />
-    <Compile Include="Apps\Core\Services\UserEventService.cs" />
     <Compile Include="Apps\Core\Widgets\LinkedImage.cs" />
     <Compile Include="Apps\Core\Widgets\CurrentPageSubNavigation.cs" />
     <Compile Include="Apps\Core\Widgets\UserLinks.cs" />
@@ -2154,6 +2144,7 @@
     <Content Include="Areas\Admin\Views\MediaCategory\Directory.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Apps\Core\Views\Pages\TwoFactorCodePage.cshtml" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>

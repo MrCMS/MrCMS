@@ -21,10 +21,10 @@ namespace MrCMS.IoC.Modules
             Kernel.Bind<IEnumerable<IExternalUserSource>>()
                 .ToMethod(context => context.Kernel.GetAll<IExternalUserSource>())
                 .InRequestScope();
-            Kernel.Bind<IUserStore<User, int>>().To<UserStore>().InRequestScope();
-            Kernel.Bind<UserManager<User, int>>().ToMethod(context =>
+            //Kernel.Bind<IUserStore<User, int>>().To<UserStore>().InRequestScope();
+            Kernel.Rebind<IUserManager>().ToMethod(context =>
             {
-                var userManager = new UserManager<User, int>(context.Kernel.Get<IUserStore<User, int>>());
+                var userManager = new UserManager(context.Kernel.Get<IUserStore>());
                 userManager.UserValidator = new UserValidator<User, int>(userManager)
                 {
                     AllowOnlyAlphanumericUserNames = false,

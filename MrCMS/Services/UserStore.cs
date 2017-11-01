@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace MrCMS.Services
 {
-    public class UserStore : IUserLoginStore<User, int>, IUserClaimStore<User, int>, IUserRoleStore<User, int>
+    public class UserStore : IUserStore
     {
         private readonly IRoleService _roleService;
         private readonly ISession _session;

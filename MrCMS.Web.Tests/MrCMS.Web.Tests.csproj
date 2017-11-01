@@ -124,7 +124,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Apps\Core\Services\ResetPasswordServiceTests.cs" />
     <Compile Include="Apps\Core\Services\SearchServiceTests.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminControllerTests.cs" />
     <Compile Include="Areas\Admin\Controllers\FileControllerTests.cs" />

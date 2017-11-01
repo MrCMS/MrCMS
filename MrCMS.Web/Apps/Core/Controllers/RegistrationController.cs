@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using MrCMS.Helpers;
+using MrCMS.Models.Auth;
+using MrCMS.Services.Auth;
 using MrCMS.Services.Resources;
-using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website;

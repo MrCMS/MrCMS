@@ -168,6 +168,7 @@
     <Compile Include="Helpers\SessionHelperTests.cs" />
     <Compile Include="MrCMSTest.cs" />
     <Compile Include="Optimization\ResourceDataTests.cs" />
+    <Compile Include="Services\Auth\ResetPasswordServiceTests.cs" />
     <Compile Include="Services\CurrentSiteLocatorTests.cs" />
     <Compile Include="Services\DocumentTagsUpdateServiceTests.cs" />
     <Compile Include="Services\Events\PublishingDisablerTests.cs" />
