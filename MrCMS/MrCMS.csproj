@@ -468,6 +468,7 @@
     <Compile Include="Entities\Multisite\RedirectedDomain.cs" />
     <Compile Include="Entities\Notifications\Notification.cs" />
     <Compile Include="Entities\People\IBelongToUser.cs" />
+    <Compile Include="Models\TestEmailInfo.cs" />
     <Compile Include="Services\Auth\Log2FAPending.cs" />
     <Compile Include="Services\Auth\LogFailedLogin.cs" />
     <Compile Include="Entities\People\LoginAttempt.cs" />
@@ -753,6 +754,7 @@
     <Compile Include="Services\GetDocumentByUrl.cs" />
     <Compile Include="Services\GetDocumentsByParent.cs" />
     <Compile Include="Services\GetHomePage.cs" />
+    <Compile Include="Services\GetSmtpClient.cs" />
     <Compile Include="Services\GetWebpageCachingInfo.cs" />
     <Compile Include="Services\GetWidgetCachingInfo.cs" />
     <Compile Include="Services\HashAlgorithmProvider.cs" />
@@ -774,6 +776,7 @@
     <Compile Include="Services\IGetDocumentByUrl.cs" />
     <Compile Include="Services\IGetDocumentsByParent.cs" />
     <Compile Include="Services\IGetHomePage.cs" />
+    <Compile Include="Services\IGetSmtpClient.cs" />
     <Compile Include="Services\IGetWebpageCachingInfo.cs" />
     <Compile Include="Services\IGetWidgetCachingInfo.cs" />
     <Compile Include="Services\IHashAlgorithmProvider.cs" />
@@ -790,6 +793,7 @@
     <Compile Include="Services\IQueueMessage.cs" />
     <Compile Include="Services\ISaveFormFileUpload.cs" />
     <Compile Include="Services\IStoredInAppData.cs" />
+    <Compile Include="Services\ITestSmtpSettings.cs" />
     <Compile Include="Services\IUniquePageService.cs" />
     <Compile Include="Services\IUrlValidationService.cs" />
     <Compile Include="Services\IUserLookup.cs" />
@@ -1170,6 +1174,7 @@
     <Compile Include="Website\Filters\GoogleRecaptchaFilter.cs" />
     <Compile Include="Website\Filters\GoogleRecaptchaResponse.cs" />
     <Compile Include="Website\Filters\HoneypotFilter.cs" />
+    <Compile Include="Website\Filters\RequestActionAttribute.cs" />
     <Compile Include="Website\Filters\ReturnUrlHandlerAttribute.cs" />
     <Compile Include="Website\Filters\TaskExecutionKeyPasswordAuth.cs" />
     <Compile Include="Website\GlobalFilterProvider.cs" />

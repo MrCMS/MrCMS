@@ -2150,6 +2150,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps\Core\Views\Pages\TwoFactorCodePage.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemSettings\Mail.cshtml" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>

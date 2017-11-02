@@ -21,9 +21,9 @@ namespace MrCMS.Settings
 
         public int Port { get; set; }
 
-        public override bool RenderInSettings
-        {
-            get { return true; }
-        }
+        //public override bool RenderInSettings
+        //{
+        //    get { return true; }
+        //}
     }
 }
