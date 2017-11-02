@@ -468,6 +468,9 @@
     <Compile Include="Entities\Multisite\RedirectedDomain.cs" />
     <Compile Include="Entities\Notifications\Notification.cs" />
     <Compile Include="Entities\People\IBelongToUser.cs" />
+    <Compile Include="HealthChecks\ACLEnabled.cs" />
+    <Compile Include="HealthChecks\LoginNotificationEmailsEnabled.cs" />
+    <Compile Include="HealthChecks\TwoFactorAuthEnabled.cs" />
     <Compile Include="Models\TestEmailInfo.cs" />
     <Compile Include="Services\Auth\Log2FAPending.cs" />
     <Compile Include="Services\Auth\LogFailedLogin.cs" />
