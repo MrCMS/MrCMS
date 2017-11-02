@@ -312,6 +312,7 @@
     <Compile Include="Areas\Admin\Controllers\BatchJobController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunResultController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CustomScriptPagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplatePreviewController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateTokensController.cs" />
     <Compile Include="Areas\Admin\Controllers\RegisteredHandlersController.cs" />
@@ -336,6 +337,7 @@
     <Compile Include="Areas\Admin\Models\AdminMessages.cs" />
     <Compile Include="Areas\Admin\Models\BatchSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\ChooseSiteParams.cs" />
+    <Compile Include="Areas\Admin\Models\CustomScriptPagesSearchModel.cs" />
     <Compile Include="Areas\Admin\Models\DashboardArea.cs" />
     <Compile Include="Areas\Admin\Models\DashboardAreaAction.cs" />
     <Compile Include="Areas\Admin\Models\LineGraphData.cs" />
@@ -518,6 +520,7 @@
     <Compile Include="Areas\Admin\Services\Batching\IBatchRunUIService.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchItemCount.cs" />
     <Compile Include="Areas\Admin\Services\Batching\IGetBatchStatus.cs" />
+    <Compile Include="Areas\Admin\Services\CustomScriptPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\Dashboard\IHealthCheckService.cs" />
     <Compile Include="Areas\Admin\Services\DefaultWebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\DocumentRolesAdminService.cs" />
@@ -538,6 +541,7 @@
     <Compile Include="Areas\Admin\Services\IAdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\IBatchAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\ICustomScriptPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentRolesAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentVersionsAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IFileAdminService.cs" />
@@ -2151,6 +2155,7 @@
   <ItemGroup>
     <Content Include="Apps\Core\Views\Pages\TwoFactorCodePage.cshtml" />
     <Content Include="Areas\Admin\Views\SystemSettings\Mail.cshtml" />
+    <Content Include="Areas\Admin\Views\CustomScriptPages\Index.cshtml" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>

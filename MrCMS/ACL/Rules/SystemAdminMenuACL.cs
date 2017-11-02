@@ -22,11 +22,13 @@ namespace MrCMS.ACL.Rules
         public const string MessageQueue = "Message Queue";
         public const string Notifications = "Notifications";
         public const string ClearCaches = "Clear Caches";
+        public const string Security = "Security";
 
         public override string DisplayName
         {
             get { return "System Admin Menu"; }
         }
+
 
         protected override List<string> GetOperations()
         {
