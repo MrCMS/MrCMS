@@ -178,7 +178,7 @@ namespace MrCMS.Services
             string extension = Path.GetExtension(fileName);
             if (string.IsNullOrWhiteSpace(extension) || extension.Length < 1)
                 return false;
-            return _mediaSettings.AllowedFileTypeList.Contains(extension, StringComparer.OrdinalIgnoreCase);
+            return FileTypeUploadSettings.AllowedFileTypeList.Contains(extension, StringComparer.OrdinalIgnoreCase);
         }
 
         public void DeleteFileSoft(MediaFile mediaFile)

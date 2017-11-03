@@ -907,6 +907,7 @@
     <Compile Include="Settings\Events\IOnSavingSystemSettings.cs" />
     <Compile Include="Settings\Events\OnSavingSiteSettingsArgs.cs" />
     <Compile Include="Settings\Events\OnSavingSystemSettingsArgs.cs" />
+    <Compile Include="Settings\FileTypeUploadSettings.cs" />
     <Compile Include="Settings\FormRenderingType.cs" />
     <Compile Include="Settings\GoogleRecaptchaSettings.cs" />
     <Compile Include="Settings\ISystemConfigurationProvider.cs" />

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -21,7 +20,6 @@ namespace MrCMS.Settings
         public MediaSettings()
         {
             MaxFileSizeUpload = 5;
-            AllowedFileTypes = ".gif,.jpeg,.jpg,.png,.rar,.zip,.pdf,.mp3,.mp4,.wmv,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.avi,.mpg,.wav,.mov,.wma,.webm,.ogv,.mpeg,.flv,.7z,.txt,.csv,.html,.htm";
             EnforceMaxImageSize = true;
             MaxImageSizeHeight = 1200;
             MaxImageSizeWidth = 1200;
@@ -135,14 +133,6 @@ namespace MrCMS.Settings
 
         [DisplayName("Max Image Size Width")]
         public int MaxImageSizeWidth { get; set; }
-
-        [DisplayName("Admin allowed file type uploads")]
-        public string AllowedFileTypes { get; set; }
-
-        public IEnumerable<string> AllowedFileTypeList
-        {
-            get { return Array.ConvertAll(AllowedFileTypes.Split(','), p => p.Trim());  }
-        }
 
         [DisplayName("Admin max file upload size MB")]
         public int MaxFileSizeUpload { get; set; }
