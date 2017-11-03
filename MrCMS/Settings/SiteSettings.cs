@@ -64,6 +64,9 @@ namespace MrCMS.Settings
         [DisplayName("Log 404 in admin logs")]
         public bool Log404s { get; set; }
 
+        [DisplayName("Raygun API Key")]
+        public string RaygunAPIKey { get; set; }
+
         [DisplayName("Site UI Culture"), DropDownSelection("UiCultures")]
         public string UICulture { get; set; }
 

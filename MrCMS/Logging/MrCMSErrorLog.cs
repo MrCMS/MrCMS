@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Elmah;
+using Mindscape.Raygun4Net;
 using MrCMS.DbConfiguration.Types;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
@@ -17,8 +18,11 @@ namespace MrCMS.Logging
         public MrCMSErrorLog(IDictionary config)
         {
             if (CurrentRequestData.DatabaseIsInstalled)
+            {
                 _session = MrCMSApplication.Get<ISessionFactory>()
                     .OpenFilteredSession(CurrentRequestData.CurrentContext);
+
+            }
         }
 
         public override string Name
@@ -47,6 +51,13 @@ namespace MrCMS.Logging
                 Site = _session.Get<Site>(CurrentRequestData.CurrentSite.Id)
             };
             _session.Transact(session => session.Save(log));
+
+            if (!string.IsNullOrWhiteSpace(CurrentRequestData.SiteSettings?.RaygunAPIKey))
+            {
+                var raygunClient = new RaygunClient(CurrentRequestData.SiteSettings.RaygunAPIKey);
+                raygunClient.SendInBackground(error.Exception);
+            }
+
             return log.Guid.ToString();
         }
 
