@@ -10,7 +10,7 @@ namespace MrCMS.Settings
         [DisplayName("Send Login Notification Emails"), AppSettingName("send-login-notification-emails")]
         public bool SendLoginNotificationEmails { get; set; }
 
-        [DisplayName("Two Factor Auth Enabled"), AppSettingName("2fa-enabled")]
+        [DisplayName("Two Factor Auth Enabled (requires TwoFactorCodePage adding to work)"), AppSettingName("2fa-enabled")]
         public bool TwoFactorAuthEnabled { get; set; }
 
 

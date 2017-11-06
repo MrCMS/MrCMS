@@ -86,6 +86,13 @@ namespace MrCMS.Web.Apps.Core.Controllers
                     await _externalLoginService.UpdateClaimsAsync(user, authenticateResult.Identity.Claims);
                     return Redirect(result.ReturnUrl);
                 case LoginStatus.TwoFactorRequired:
+                    // if the page doesn't exist, do the standard login
+                    if (_uniquePageService.GetUniquePage<TwoFactorCodePage>() == null)
+                    {
+                        await _logUserIn.Login(user, false);
+                        await _externalLoginService.UpdateClaimsAsync(user, authenticateResult.Identity.Claims);
+                        return Redirect(result.ReturnUrl);
+                    }
                     _setVerifiedUserData.SetUserData(result.User);
                     return _uniquePageService.RedirectTo<TwoFactorCodePage>(new { result.ReturnUrl });
                 case LoginStatus.LockedOut:
