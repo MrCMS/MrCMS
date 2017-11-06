@@ -44,8 +44,6 @@ namespace MrCMS.Web.Apps.Core.Services
                     message = _successParser.GetMessage(loginAttempt);
                     _successParser.QueueMessage(message);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
     }
