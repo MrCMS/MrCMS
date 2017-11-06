@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
+using System.Web;
 using Elmah;
 using Mindscape.Raygun4Net;
 using MrCMS.DbConfiguration.Types;
@@ -52,10 +54,14 @@ namespace MrCMS.Logging
             };
             _session.Transact(session => session.Save(log));
 
-            if (!string.IsNullOrWhiteSpace(CurrentRequestData.SiteSettings?.RaygunAPIKey))
+            var siteSettings = CurrentRequestData.SiteSettings;
+            if (!string.IsNullOrWhiteSpace(siteSettings?.RaygunAPIKey))
             {
-                var raygunClient = new RaygunClient(CurrentRequestData.SiteSettings.RaygunAPIKey);
-                raygunClient.SendInBackground(error.Exception);
+                var raygunClient = new RaygunClient(siteSettings.RaygunAPIKey);
+
+                var exception = error.Exception;
+                if (!(exception is HttpException httpException) || !siteSettings.RaygunExcludedStatusCodeCollection.Contains(httpException.GetHttpCode()))
+                    raygunClient.SendInBackground(exception);
             }
 
             return log.Guid.ToString();
