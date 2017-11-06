@@ -64,7 +64,6 @@ namespace MrCMS.Web.Apps.Core.Controllers
         {
             ExternalLoginInfo loginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
 
-
             if (loginInfo?.Login == null)
                 return ThirdPartyError();
 

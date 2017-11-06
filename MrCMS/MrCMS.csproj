@@ -899,6 +899,7 @@
     <Compile Include="Services\WritablePropertiesOnlyResolver.cs" />
     <Compile Include="Settings\AppConfigSystemConfigurationProvider.cs" />
     <Compile Include="Settings\AppSettingNameAttribute.cs" />
+    <Compile Include="Settings\AuthRoleSettings.cs" />
     <Compile Include="Settings\AzureProbeSettings.cs" />
     <Compile Include="Settings\BundlingSettings.cs" />
     <Compile Include="Settings\ConnectionStringAttribute.cs" />

@@ -40,6 +40,8 @@ namespace MrCMS.Models
                     new SubMenu
                     {
                         new ChildMenuItem("Custom Scripts", "/Admin/CustomScriptPages",
+                            ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Security)),
+                        new ChildMenuItem("Security Options", "/Admin/SecurityOptions",
                             ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Security))
                     }),
                 new ChildMenuItem("Import/Export Documents", "/Admin/ImportExport/Documents",

@@ -316,6 +316,7 @@
     <Compile Include="Areas\Admin\Controllers\MessageTemplatePreviewController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateTokensController.cs" />
     <Compile Include="Areas\Admin\Controllers\RegisteredHandlersController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SecurityOptionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteCloneOptionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemSettingsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserSubscriptionReportsController.cs" />
@@ -2156,6 +2157,7 @@
     <Content Include="Apps\Core\Views\Pages\TwoFactorCodePage.cshtml" />
     <Content Include="Areas\Admin\Views\SystemSettings\Mail.cshtml" />
     <Content Include="Areas\Admin\Views\CustomScriptPages\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SecurityOptions\Index.cshtml" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
