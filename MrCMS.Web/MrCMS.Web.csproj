@@ -1136,6 +1136,7 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.tip.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery\ui\i18n\jquery.ui.datepicker-en-US.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\batch.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\line-graph.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.are-you-sure.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\dropzone.js" />
@@ -1775,7 +1776,6 @@
     <Content Include="Areas\Admin\Views\ACL\Group.cshtml" />
     <Content Include="Areas\Admin\Views\ACL\Index.cshtml" />
     <Content Include="Areas\Admin\Views\BatchJob\Row.cshtml" />
-    <Content Include="Areas\Admin\Views\BatchRunResult\Show.cshtml" />
     <Content Include="Areas\Admin\Views\BatchRun\Row.cshtml" />
     <Content Include="Areas\Admin\Views\BatchRun\Show.cshtml" />
     <Content Include="Areas\Admin\Views\BatchRun\ShowButton.cshtml" />

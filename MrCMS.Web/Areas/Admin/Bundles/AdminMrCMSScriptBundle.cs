@@ -19,6 +19,7 @@ namespace MrCMS.Web.Areas.Admin.Bundles
                 yield return "~/Areas/Admin/Content/Scripts/mrcms/admin.js";
                 yield return "~/Areas/Admin/Content/Scripts/mrcms/tagging.js";
                 yield return "~/Areas/Admin/Content/Scripts/mrcms/search.js";
+                yield return "~/Areas/Admin/Content/Scripts/mrcms/batch.js";
                 yield return "~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js";
                 yield return "~/Areas/Admin/Content/Scripts/mrcms/mrcms-media-selector.js";
             }
