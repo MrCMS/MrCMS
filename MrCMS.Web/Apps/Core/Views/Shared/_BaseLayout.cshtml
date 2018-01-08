@@ -1,7 +1,9 @@
 ﻿@using System.Drawing
 @using System.Web.Optimization
 @using MrCMS.ACL.Rules
+@using MrCMS.Attributes
 @using MrCMS.Helpers
+@using MrCMS.Services.Canonical
 @using MrCMS.Settings
 @using MrCMS.Website
 @using MrCMS.Website.Optimization
@@ -33,6 +35,7 @@
 
     @Html.Raw(seoSettings.TrackingScripts)
     @Html.Raw(Model.CustomHeaderScripts)
+    @ViewData.LinkTags().Render()
 </head>
 <body>
     @Html.Raw(seoSettings.TrackingScriptsBody)

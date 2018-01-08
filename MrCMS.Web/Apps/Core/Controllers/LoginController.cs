@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Elmah;
+using MrCMS.Attributes;
 using MrCMS.Models.Auth;
 using MrCMS.Services;
 using MrCMS.Services.Auth;
@@ -38,6 +39,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpGet]
+        [CanonicalLinks]
         public ViewResult Show(LoginPage page, LoginModel model)
         {
             ModelState.Clear();

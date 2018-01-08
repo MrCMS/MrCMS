@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using MrCMS.Attributes;
 using MrCMS.Web.Apps.Articles.ModelBinders;
 using MrCMS.Web.Apps.Articles.Models;
 using MrCMS.Web.Apps.Articles.Pages;
@@ -19,6 +18,7 @@ namespace MrCMS.Web.Apps.Articles.Controllers
             _articleService = articleService;
         }
 
+        [CanonicalLinks("paged-articles")]
         public ActionResult Show(ArticleList page, [IoCModelBinder(typeof(ArticleListModelBinder))]ArticleSearchModel model)
         {
             ViewData["paged-articles"] = _articleService.GetArticles(page, model);

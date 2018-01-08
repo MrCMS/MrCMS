@@ -246,6 +246,7 @@
     <Compile Include="ACL\TypeACLRule.cs" />
     <Compile Include="Apps\MrCMSApp.cs" />
     <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
+    <Compile Include="Attributes\CanonicalLinksAttribute.cs" />
     <Compile Include="Batching\BaseBatchJobExecutor.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -505,6 +506,8 @@
     <Compile Include="Messages\Security\TrackingScriptsBodyChangeMessageTemplate.cs" />
     <Compile Include="Messages\Security\TrackingScriptsChangeMessageTemplate.cs" />
     <Compile Include="Messages\Security\WebpageScriptChangeModel.cs" />
+    <Compile Include="Models\LinkTag.cs" />
+    <Compile Include="Models\PageInfoMethod.cs" />
     <Compile Include="Models\TestEmailInfo.cs" />
     <Compile Include="Services\Auth\Log2FAPending.cs" />
     <Compile Include="Services\Auth\LogFailedLogin.cs" />
@@ -747,6 +750,11 @@
     <Compile Include="Services\Caching\HtmlCacheService.cs" />
     <Compile Include="Services\Caching\IClearCache.cs" />
     <Compile Include="Services\Caching\IHtmlCacheService.cs" />
+    <Compile Include="Services\Canonical\GetPrevAndNextRelTags.cs" />
+    <Compile Include="Services\Canonical\GetRelTags.cs" />
+    <Compile Include="Services\Canonical\IGetPrevAndNextRelTags.cs" />
+    <Compile Include="Services\Canonical\LinkTagDictionary.cs" />
+    <Compile Include="Services\Canonical\ViewDataExtensions.cs" />
     <Compile Include="Services\CloneSite\CloneSiteExtensions.cs" />
     <Compile Include="Services\CloneSite\CloneSitePartAttribute.cs" />
     <Compile Include="Services\CloneSite\CloneSiteService.cs" />

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
+using MrCMS.Attributes;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Models.Auth;
@@ -26,7 +27,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             _authorisationService = authorisationService;
             _stringResourceProvider = stringResourceProvider;
         }
-
+        [CanonicalLinks]
         public ActionResult Show(UserAccountPage page)
         {
             ViewData["message"] = TempData["message"];

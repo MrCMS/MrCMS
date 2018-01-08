@@ -53,6 +53,8 @@ namespace MrCMS.Entities.Documents.Web
         [StringLength(250, ErrorMessage = "Meta keywords cannot be longer than 250 characters.")]
         public virtual string MetaKeywords { get; set; }
 
+        public virtual string ExplicitCanonicalLink { get; set; }
+
         [DisplayName("Include in navigation")]
         public virtual bool RevealInNavigation { get; set; }
 

@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using MrCMS.Attributes;
 using MrCMS.Helpers;
 using MrCMS.Models.Auth;
 using MrCMS.Services.Auth;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Core.Pages;
-using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 
@@ -21,7 +21,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             _registrationService = registrationService;
             _stringResourceProvider = stringResourceProvider;
         }
-
+        [CanonicalLinks]
         public ActionResult Show(RegisterPage page)
         {
             if (CurrentRequestData.CurrentUser != null && !CurrentRequestData.CurrentUserIsAdmin)

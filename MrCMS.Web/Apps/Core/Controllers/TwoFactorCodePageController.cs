@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
+using MrCMS.Attributes;
 using MrCMS.Models.Auth;
 using MrCMS.Services;
 using MrCMS.Services.Auth;
@@ -20,7 +21,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             _uniquePageService = uniquePageService;
             _logUserIn = logUserIn;
         }
-
+        [CanonicalLinks]
         public ActionResult Show(TwoFactorCodePage page, TwoFactorAuthModel model)
         {
             ModelState.Clear();
