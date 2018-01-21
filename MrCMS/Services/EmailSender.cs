@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Mail;
 using Elmah;
 using MrCMS.Entities.Messaging;
@@ -19,16 +18,11 @@ namespace MrCMS.Services
         private readonly ISession _session;
         private readonly SmtpClient _smtpClient;
 
-        public EmailSender(ISession session, MailSettings mailSettings, ErrorSignal errorSignal)
+        public EmailSender(ISession session, MailSettings mailSettings, ErrorSignal errorSignal, IGetSmtpClient getSmtpClient)
         {
             _session = session;
             _errorSignal = errorSignal;
-            _smtpClient = new SmtpClient(mailSettings.Host, mailSettings.Port)
-            {
-                EnableSsl = mailSettings.UseSSL,
-                Credentials =
-                    new NetworkCredential(mailSettings.UserName, mailSettings.Password)
-            };
+            _smtpClient = getSmtpClient.GetClient(mailSettings);
         }
 
         public void Dispose()

@@ -6,6 +6,7 @@ using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services.Caching;
+using MrCMS.Website;
 
 namespace MrCMS.Services
 {
@@ -22,7 +23,7 @@ namespace MrCMS.Services
             _widgetModelService = widgetModelService;
         }
 
-        public ActionResult GetContent(Controller controller, Widget widget, Func<HtmlHelper, MvcHtmlString> func)
+        public ActionResult GetContent(Controller controller, Widget widget, Func<IHtmlHelper, MvcHtmlString> func)
         {
             return _htmlCacheService.GetContent(controller, _getWidgetCachingInfo.Get(widget), func);
         }

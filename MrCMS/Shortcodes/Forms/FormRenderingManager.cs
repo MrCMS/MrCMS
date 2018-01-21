@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Website;
 
 namespace MrCMS.Shortcodes.Forms
 {
@@ -14,13 +15,13 @@ namespace MrCMS.Shortcodes.Forms
             _customFormRenderer = customFormRenderer;
         }
 
-        public string RenderForm(Webpage webpage, FormSubmittedStatus submitted)
+        public string RenderForm(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submitted)
         {
             if (webpage == null)
                 return string.Empty;
             return string.IsNullOrWhiteSpace(webpage.FormDesign)
-                       ? _defaultFormRenderer.GetDefault(webpage, submitted)
-                       : _customFormRenderer.GetForm(webpage, submitted);
+                       ? _defaultFormRenderer.GetDefault(helper, webpage, submitted)
+                       : _customFormRenderer.GetForm(helper, webpage, submitted);
         }
     }
 }

@@ -5,7 +5,7 @@ using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Articles.Widgets
 {
-    [OutputCacheable(PerPage = true)]
+    [WidgetOutputCacheable(PerPage = true)]
     public class ArticleArchive : Widget
     {
         public virtual ArticleList ArticleList { get; set; }

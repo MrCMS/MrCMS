@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using FakeItEasy;
 using FluentAssertions;
+using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
@@ -12,29 +13,31 @@ using Xunit;
 
 namespace MrCMS.Web.Tests.Areas.Admin.Services
 {
-    public class WebpageWidgetAdminServiceTests : InMemoryDatabaseTest
+    public class WebpageWidgetAdminServiceTests 
     {
         public WebpageWidgetAdminServiceTests()
         {
             _webpageWidgetAdminService = new WebpageWidgetAdminService(_webpageRepository, _widgetRepository);
             // persist current user for events
-            Session.Transact(session => session.Save(CurrentRequestData.CurrentUser));
+            //Session.Transact(session => session.Save(CurrentRequestData.CurrentUser));
         }
 
         private readonly WebpageWidgetAdminService _webpageWidgetAdminService;
-        private readonly InMemoryRepository<Webpage> _webpageRepository = new InMemoryRepository<Webpage>();
-        private readonly InMemoryRepository<Widget> _widgetRepository = new InMemoryRepository<Widget>();
+        private readonly IRepository<Webpage> _webpageRepository = A.Fake<IRepository<Webpage>>();
+        private readonly IRepository<Widget> _widgetRepository = A.Fake<IRepository<Widget>>();
 
         [Fact]
         public void WebpageWidgetAdminService_HideWidget_AddsAWidgetToTheHiddenWidgetsListIfItIsNotInTheShownList()
         {
             var textPage = new StubWebpage {ShownWidgets = new HashSet<Widget>(), HiddenWidgets = new HashSet<Widget>()};
-            Session.Transact(session => session.Save(textPage));
+            //Session.Transact(session => session.Save(textPage));
 
             var textWidget = new BasicMappedWidget();
-            Session.Transact(session => session.Save(textWidget));
+            A.CallTo(() => _widgetRepository.Get(123)).Returns(textWidget);
 
-            _webpageWidgetAdminService.Hide(textPage, textWidget.Id);
+            //Session.Transact(session => session.Save(textWidget));
+
+            _webpageWidgetAdminService.Hide(textPage, 123);
 
             textPage.HiddenWidgets.Should().Contain(textWidget);
         }
@@ -43,14 +46,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         public void WebpageWidgetAdminService_HideWidget_DoesNothingIfTheWidgetIdIsInvalid()
         {
             var textWidget = new BasicMappedWidget();
-            Session.Transact(session => session.Save(textWidget));
 
             var textPage = new StubWebpage
             {
                 ShownWidgets = new HashSet<Widget> {textWidget},
                 HiddenWidgets = new HashSet<Widget>()
             };
-            Session.Transact(session => session.Save(textPage));
 
             _webpageWidgetAdminService.Hide(textPage, -1);
 
@@ -61,16 +62,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         public void WebpageWidgetAdminService_HideWidget_RemovesAWidgetFromTheShownListIfItIsIncluded()
         {
             var textWidget = new BasicMappedWidget();
-            Session.Transact(session => session.Save(textWidget));
+            A.CallTo(() => _widgetRepository.Get(123)).Returns(textWidget);
 
             var textPage = new StubWebpage
             {
                 ShownWidgets = new HashSet<Widget> {textWidget},
                 HiddenWidgets = new HashSet<Widget>()
             };
-            Session.Transact(session => session.Save(textPage));
 
-            _webpageWidgetAdminService.Hide(textPage, textWidget.Id);
+            _webpageWidgetAdminService.Hide(textPage, 123);
 
             textPage.ShownWidgets.Should().NotContain(textWidget);
         }
@@ -80,12 +80,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         public void WebpageWidgetAdminService_ShowWidget_AddsAWidgetToTheShownWidgetsListIfItIsNotInTheHiddenList()
         {
             var textPage = new StubWebpage {ShownWidgets = new HashSet<Widget>(), HiddenWidgets = new HashSet<Widget>()};
-            Session.Transact(session => session.Save(textPage));
 
             var textWidget = new BasicMappedWidget();
-            Session.Transact(session => session.Save(textWidget));
+            A.CallTo(() => _widgetRepository.Get(123)).Returns(textWidget);
 
-            _webpageWidgetAdminService.Show(textPage, textWidget.Id);
+            _webpageWidgetAdminService.Show(textPage, 123);
 
             textPage.ShownWidgets.Should().Contain(textWidget);
         }
@@ -94,14 +93,12 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         public void WebpageWidgetAdminService_ShowWidget_DoesNothingIfTheWidgetIdIsInvalid()
         {
             var textWidget = new BasicMappedWidget();
-            Session.Transact(session => session.Save(textWidget));
 
             var textPage = new StubWebpage
             {
                 ShownWidgets = new HashSet<Widget>(),
                 HiddenWidgets = new HashSet<Widget> {textWidget}
             };
-            Session.Transact(session => session.Save(textPage));
 
             _webpageWidgetAdminService.Show(textPage, -1);
 
@@ -112,16 +109,15 @@ namespace MrCMS.Web.Tests.Areas.Admin.Services
         public void WebpageWidgetAdminService_ShowWidget_RemovesAWidgetFromTheHiddenListIfItIsIncluded()
         {
             var textWidget = new BasicMappedWidget();
-            Session.Transact(session => session.Save(textWidget));
+            A.CallTo(() => _widgetRepository.Get(123)).Returns(textWidget);
 
             var textPage = new StubWebpage
             {
                 ShownWidgets = new HashSet<Widget>(),
                 HiddenWidgets = new HashSet<Widget> {textWidget}
             };
-            Session.Transact(session => session.Save(textPage));
 
-            _webpageWidgetAdminService.Show(textPage, textWidget.Id);
+            _webpageWidgetAdminService.Show(textPage, 123);
 
             textPage.HiddenWidgets.Should().NotContain(textWidget);
         }

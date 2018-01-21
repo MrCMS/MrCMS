@@ -2,10 +2,12 @@ using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Elmah;
+using MrCMS.Attributes;
+using MrCMS.Models.Auth;
 using MrCMS.Services;
+using MrCMS.Services.Auth;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Core.ModelBinders;
-using MrCMS.Web.Apps.Core.Models.RegisterAndLogin;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Services;
 using MrCMS.Website.Binders;
@@ -20,18 +22,24 @@ namespace MrCMS.Web.Apps.Core.Controllers
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly IUniquePageService _uniquePageService;
         private readonly IUserLookup _userLookup;
+        private readonly ILogUserIn _logUserIn;
+        private readonly ISetVerifiedUserData _setVerifiedUserData;
 
         public LoginController(IResetPasswordService resetPasswordService, IUniquePageService uniquePageService,
-            ILoginService loginService, IStringResourceProvider stringResourceProvider, IUserLookup userLookup)
+            ILoginService loginService, IStringResourceProvider stringResourceProvider, IUserLookup userLookup,
+            ILogUserIn logUserIn, ISetVerifiedUserData setVerifiedUserData)
         {
             _resetPasswordService = resetPasswordService;
             _uniquePageService = uniquePageService;
             _loginService = loginService;
             _stringResourceProvider = stringResourceProvider;
             _userLookup = userLookup;
+            _logUserIn = logUserIn;
+            _setVerifiedUserData = setVerifiedUserData;
         }
 
         [HttpGet]
+        [CanonicalLinks]
         public ViewResult Show(LoginPage page, LoginModel model)
         {
             ModelState.Clear();
@@ -40,13 +48,37 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpPost]
-        public async Task<RedirectResult> Post([IoCModelBinder(typeof (LoginModelModelBinder))] LoginModel loginModel)
+        public async Task<RedirectResult> Post([IoCModelBinder(typeof(LoginModelModelBinder))] LoginModel loginModel)
         {
             if (loginModel != null && ModelState.IsValid)
             {
-                var result = await _loginService.AuthenticateUser(loginModel);
-                if (result.Success)
-                    return Redirect(result.RedirectUrl);
+                var result = _loginService.AuthenticateUser(loginModel);
+                switch (result.Status)
+                {
+                    case LoginStatus.Success:
+                        await _logUserIn.Login(result.User, loginModel.RememberMe);
+                        return Redirect(result.ReturnUrl);
+                    case LoginStatus.TwoFactorRequired:
+                        // if the page doesn't exist, do the standard login
+                        if (_uniquePageService.GetUniquePage<TwoFactorCodePage>() == null)
+                        {
+                            await _logUserIn.Login(result.User, loginModel.RememberMe);
+                            return Redirect(result.ReturnUrl);
+                        }
+
+                        _setVerifiedUserData.SetUserData(result.User);
+                        return _uniquePageService.RedirectTo<TwoFactorCodePage>(new { result.ReturnUrl });
+                    case LoginStatus.Failure:
+                        EventContext.Instance.Publish<IOnFailedLogin, UserFailedLoginEventArgs>(
+                            new UserFailedLoginEventArgs(result.User, loginModel.Email));
+                        break;
+                    case LoginStatus.LockedOut:
+                        EventContext.Instance.Publish<IOnLockedOutUserAuthed, UserLockedOutEventArgs>(
+                            new UserLockedOutEventArgs(result.User));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
                 loginModel.Message = result.Message;
             }
             TempData["login-model"] = loginModel;

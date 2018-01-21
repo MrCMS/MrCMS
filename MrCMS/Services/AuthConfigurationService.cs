@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin.Security.Facebook;
+﻿using System.Threading.Tasks;
+using Microsoft.Owin.Security.Facebook;
 using Microsoft.Owin.Security.Google;
 using MrCMS.Settings;
 using Owin;
@@ -26,17 +27,19 @@ namespace MrCMS.Services
             }
 
             if (_thirdPartyAuthSettings.FacebookEnabled
-                 && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.FacebookAppId)
-                 && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.FacebookAppSecret))
+                && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.FacebookAppId)
+                && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.FacebookAppSecret))
             {
-                var facebookAuthenticationOptions = new FacebookAuthenticationOptions
-                                                    {
-                                                        AppId = _thirdPartyAuthSettings.FacebookAppId,
-                                                        AppSecret = _thirdPartyAuthSettings.FacebookAppSecret,
-                                                    };
-                facebookAuthenticationOptions.Scope.Add("email");
-                app.UseFacebookAuthentication(facebookAuthenticationOptions);
+                var options = new FacebookAuthenticationOptions
+                {
+                    AppId = _thirdPartyAuthSettings.FacebookAppId,
+                    AppSecret = _thirdPartyAuthSettings.FacebookAppSecret,
+                };
+                options.Fields.Add("email");
+                options.Scope.Add("email");
+                app.UseFacebookAuthentication(options);
             }
+
             if (_thirdPartyAuthSettings.GoogleEnabled 
                     && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.GoogleClientSecret)
                     && !string.IsNullOrWhiteSpace(_thirdPartyAuthSettings.GoogleClientId))

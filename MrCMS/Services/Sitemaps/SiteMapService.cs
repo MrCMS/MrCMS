@@ -37,7 +37,7 @@ namespace MrCMS.Services.Sitemaps
 
         public void WriteSitemap()
         {
-            var sitemapPath = _getSitemapPath.GetPath(_site); ;
+            var sitemapPath = _getSitemapPath.GetPath(_site);
 
             SitemapData data = null;
             var queryOver = _session.QueryOver<Webpage>()
@@ -58,6 +58,7 @@ namespace MrCMS.Services.Sitemaps
                     builder.Select(x => x.RequiresSSL).WithAlias(() => data.RequiresSSL);
                     return builder;
                 }).TransformUsing(Transformers.AliasToBean<SitemapData>())
+                .Cacheable()
                 .List<SitemapData>().ToList();
 
             list.AddRange(_additionalSources.SelectMany(x => x.GetAdditionalData()));

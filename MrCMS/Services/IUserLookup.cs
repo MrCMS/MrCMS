@@ -8,6 +8,7 @@ namespace MrCMS.Services
     {
         User GetUserByEmail(string email);
         User GetUserByResetGuid(Guid resetGuid);
+        User GetUserByGuid(Guid guid);
         User GetCurrentUser(HttpContextBase context);
     }
 }

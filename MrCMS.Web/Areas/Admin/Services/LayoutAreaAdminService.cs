@@ -32,11 +32,19 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public void Add(LayoutArea layoutArea)
         {
+            EnsureLayoutAreaIsSet(layoutArea);
             _layoutAreaRepository.Add(layoutArea);
+        }
+
+        private static void EnsureLayoutAreaIsSet(LayoutArea layoutArea)
+        {
+            if (layoutArea.Layout != null && layoutArea.Layout.LayoutAreas.Contains(layoutArea) == false)
+                layoutArea.Layout.LayoutAreas.Add(layoutArea);
         }
 
         public void Update(LayoutArea layoutArea)
         {
+            EnsureLayoutAreaIsSet(layoutArea);
             _layoutAreaRepository.Update(layoutArea);
         }
 
@@ -47,6 +55,8 @@ namespace MrCMS.Web.Areas.Admin.Services
 
         public void DeleteArea(LayoutArea area)
         {
+            if (area.Layout?.LayoutAreas.Contains(area) == true)
+                area.Layout.LayoutAreas.Remove(area);
             _layoutAreaRepository.Delete(area);
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
@@ -8,6 +9,7 @@ using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Web.Areas.Admin.Models;
+using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Web.Areas.Admin.Services
@@ -39,7 +41,12 @@ namespace MrCMS.Web.Areas.Admin.Services
                         DisplayName = GetDisplayName(key),
                         TypeName = key.FullName,
                         GeneratorDisplayName = settings.GetGeneratorType(key).Name.BreakUpString(),
-                        LayoutName = GetLayoutName(layoutOptions, key)
+                        LayoutName = GetLayoutName(layoutOptions, key),
+                        CacheEnabled = key.GetCustomAttribute<WebpageOutputCacheableAttribute>(false) == null
+                            ? CacheEnabledStatus.Unavailable
+                            : settings.CacheDisabled(key)
+                                ? CacheEnabledStatus.Disabled
+                                : CacheEnabledStatus.Enabled
                     }).ToList();
         }
 
@@ -91,6 +98,20 @@ namespace MrCMS.Web.Areas.Admin.Services
             var settings = _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
             settings.UrlGenerators[info.PageTypeName] = info.GeneratorTypeName;
             settings.Layouts[info.PageTypeName] = info.LayoutId;
+            _configurationProvider.SaveSettings(settings);
+        }
+
+        public void EnableCache(string typeName)
+        {
+            var settings = _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
+            settings.DisableCaches.Remove(typeName);
+            _configurationProvider.SaveSettings(settings);
+        }
+
+        public void DisableCache(string typeName)
+        {
+            var settings = _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
+            settings.DisableCaches.Add(typeName);
             _configurationProvider.SaveSettings(settings);
         }
     }

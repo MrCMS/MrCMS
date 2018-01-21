@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
+using MrCMS.Website.Filters;
 
 namespace MrCMS.Website.Controllers
 {
@@ -16,6 +17,9 @@ namespace MrCMS.Website.Controllers
         }
 
         [ValidateInput(false)]
+        [GoogleRecaptcha]
+        [DoNotCache]
+
         public ActionResult Save(Webpage webpage)
         {
             if (webpage.IsDeleted)

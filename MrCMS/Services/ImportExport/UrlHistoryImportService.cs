@@ -27,6 +27,7 @@ namespace MrCMS.Services.ImportExport
                                 .Select(history => history.Webpage.Id)
                                 .WithAlias(() => urlHistoryInfo.WebpageId))
                     .TransformUsing(Transformers.AliasToBean<UrlHistoryInfo>())
+                    .Cacheable()
                     .List<UrlHistoryInfo>();
             var webpageHistoryInfoList =
                 _session.QueryOver<Webpage>()
@@ -37,6 +38,7 @@ namespace MrCMS.Services.ImportExport
                                 .Select(page => page.Id)
                                 .WithAlias(() => urlHistoryInfo.WebpageId))
                     .TransformUsing(Transformers.AliasToBean<UrlHistoryInfo>())
+                    .Cacheable()
                     .List<UrlHistoryInfo>();
 
             return urlHistoryInfoList.Union(webpageHistoryInfoList).Where(info => info.WebpageId != webpage.Id).ToList();

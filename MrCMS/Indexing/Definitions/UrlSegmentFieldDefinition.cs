@@ -55,9 +55,12 @@ namespace MrCMS.Indexing.Definitions
         protected override Dictionary<Webpage, IEnumerable<string>> GetValues(List<Webpage> objs)
         {
             UrlHistoryMap map = null;
-            var urlHistoryDatas = _statelessSession.QueryOver<UrlHistory>().SelectList(builder => 
-                builder.Select(history => history.Webpage.Id).WithAlias(() => map.WebpageId).Select(history => history.UrlSegment).WithAlias(() => map.Url))
-                .TransformUsing(Transformers.AliasToBean<UrlHistoryMap>()).List<UrlHistoryMap>().Select(history => history.ToData()).ToHashSet();
+            var urlHistoryDatas = _statelessSession.QueryOver<UrlHistory>().SelectList(builder =>
+                    builder.Select(history => history.Webpage.Id).WithAlias(() => map.WebpageId)
+                        .Select(history => history.UrlSegment).WithAlias(() => map.Url))
+                .TransformUsing(Transformers.AliasToBean<UrlHistoryMap>())
+                .Cacheable()
+                .List<UrlHistoryMap>().Select(history => history.ToData()).ToHashSet();
 
             var dictionary = urlHistoryDatas.GroupBy(data => data.WebpageId)
                 .ToDictionary(datas => datas.Key, datas => datas.Select(data => data.Url).ToHashSet());

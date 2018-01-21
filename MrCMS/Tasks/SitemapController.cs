@@ -33,7 +33,7 @@ namespace MrCMS.Tasks
         {
             var fileName = _getSitemapPath.GetPath(_site);
             if (_getSitemapPath.FileExists(fileName))
-                return File(fileName, "text/plain");
+                return File(fileName, "application/xml");
             return new EmptyResult();
         }
     }

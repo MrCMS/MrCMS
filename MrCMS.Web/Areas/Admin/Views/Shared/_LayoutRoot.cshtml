@@ -24,16 +24,10 @@
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"> </script>
 
     @Scripts.Render("~/admin/scripts/lib")
-    <script type="text/javascript" src="@Url.Content("~/signalr/hubs")"></script>
     <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
     <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CurrentRequestData.CultureInfo.Name).js"></script>
     @Scripts.Render("~/admin/scripts/mrcms")
     @Scripts.Render("~/admin/scripts/apps")
-    @if (!CurrentRequestData.CurrentUser.DisableNotifications)
-    {
-        Html.RenderAction("Show", "TransientNotification");
-        Html.RenderAction("Show", "PersistentNotification");
-    }
 
     @{ Html.RenderLocalisedScripts();}
     @{ Html.RenderScripts();}

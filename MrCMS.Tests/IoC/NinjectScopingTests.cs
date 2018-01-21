@@ -25,7 +25,8 @@ namespace MrCMS.Tests.IoC
 
             documentService1.Should().BeSameAs(documentService2);
         }
-        private interface ITestInterface
+
+        public interface ITestInterface
         {
             
         }

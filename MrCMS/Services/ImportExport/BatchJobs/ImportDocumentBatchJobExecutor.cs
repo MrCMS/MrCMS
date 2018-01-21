@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MrCMS.Batching;
 using MrCMS.DbConfiguration.Configuration;
@@ -30,13 +31,8 @@ namespace MrCMS.Services.ImportExport.BatchJobs
 
         protected override BatchJobExecutionResult OnExecute(ImportDocumentBatchJob batchJob)
         {
-            using (EventContext.Instance.Disable<IOnTransientNotificationPublished>())
-            using (EventContext.Instance.Disable<IOnPersistentNotificationPublished>())
             using (EventContext.Instance.Disable<UpdateIndicesListener>())
             using (EventContext.Instance.Disable<UpdateUniversalSearch>())
-            using (EventContext.Instance.Disable<WebpageUpdatedNotification>())
-            using (EventContext.Instance.Disable<DocumentAddedNotification>())
-            using (EventContext.Instance.Disable<MediaCategoryUpdatedNotification>())
             {
                 var documentImportDto = batchJob.DocumentImportDto;
                 var webpage =
@@ -74,6 +70,8 @@ namespace MrCMS.Services.ImportExport.BatchJobs
                     else
                         session.Update(webpage);
                 });
+
+                Thread.Sleep(2000);
 
                 return BatchJobExecutionResult.Success();
             }

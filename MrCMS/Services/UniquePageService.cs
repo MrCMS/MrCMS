@@ -17,7 +17,7 @@ namespace MrCMS.Services
         }
 
         public T GetUniquePage<T>()
-            where T : Document, IUniquePage
+            where T : Webpage, IUniquePage
         {
             return _session.QueryOver<T>().Cacheable()
                     .List().FirstOrDefault();

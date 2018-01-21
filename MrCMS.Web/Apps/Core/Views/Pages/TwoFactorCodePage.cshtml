@@ -1,0 +1,34 @@
+﻿@using Microsoft.Owin.Security
+@using MrCMS.Helpers
+@using MrCMS.Models.Auth
+@using MrCMS.Web.Apps.Core.Models
+@using MrCMS.Web.Apps.Core.Pages
+@model MrCMS.Web.Apps.Core.Pages.TwoFactorCodePage
+@{
+    var twoFactorHelper = Html.For(ViewData["2fa-model"] as TwoFactorAuthModel);
+}
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>
+            @Model.GetPageTitle()
+        </h1>
+        @Editable(Model, page => page.BodyContent, true)
+
+        @using (Html.BeginForm())
+        {
+            @twoFactorHelper.HiddenFor(x => x.ReturnUrl)
+            <div class="form-group">
+                @twoFactorHelper.LabelFor(x => x.Code)
+                @twoFactorHelper.TextBoxFor(x => x.Code, new { @class = "form-control" })
+                @twoFactorHelper.ValidationMessageFor(x => x.Code)
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    @Resource("Enter code")
+                </button>
+            </div>
+        }
+    </div>
+</div>

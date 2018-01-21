@@ -10,8 +10,8 @@ namespace MrCMS.Services
         MediaFile AddFile(Stream stream, string fileName, string contentType, long contentLength, MediaCategory mediaCategory);
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);
-        string GetFileLocation(MediaFile mediaFile, Size imageSize);
-        string GetFileLocation(Crop crop, Size imageSize);
+        string GetFileLocation(MediaFile mediaFile, Size imageSize, bool getCdn = false);
+        string GetFileLocation(Crop crop, Size imageSize, bool getCdn = false);
         FilesPagedResult GetFilesPaged(int? categoryId, bool imagesOnly, int page = 1);
         MediaFile GetFileByUrl(string value);
         string GetFileUrl(string value);

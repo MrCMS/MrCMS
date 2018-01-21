@@ -92,14 +92,15 @@ namespace MrCMS.Web.Areas.Admin.Services
 
             ImageSortItem item = null;
             return query.SelectList(builder =>
-            {
-                builder.Select(file => file.FileName).WithAlias(() => item.Name);
-                builder.Select(file => file.Id).WithAlias(() => item.Id);
-                builder.Select(file => file.DisplayOrder).WithAlias(() => item.Order);
-                builder.Select(file => file.FileExtension).WithAlias(() => item.FileExtension);
-                builder.Select(file => file.FileUrl).WithAlias(() => item.ImageUrl);
-                return builder;
-            }).TransformUsing(Transformers.AliasToBean<ImageSortItem>())
+                {
+                    builder.Select(file => file.FileName).WithAlias(() => item.Name);
+                    builder.Select(file => file.Id).WithAlias(() => item.Id);
+                    builder.Select(file => file.DisplayOrder).WithAlias(() => item.Order);
+                    builder.Select(file => file.FileExtension).WithAlias(() => item.FileExtension);
+                    builder.Select(file => file.FileUrl).WithAlias(() => item.ImageUrl);
+                    return builder;
+                }).TransformUsing(Transformers.AliasToBean<ImageSortItem>())
+                .Cacheable()
                 .List<ImageSortItem>().ToList();
         }
 

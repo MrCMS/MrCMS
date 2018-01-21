@@ -8,6 +8,6 @@ namespace MrCMS.Services
     {
         RedirectResult RedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage;
         RedirectResult PermanentRedirectTo<T>(object routeValues = null) where T : Webpage, IUniquePage;
-        T GetUniquePage<T>() where T : Document, IUniquePage;
+        T GetUniquePage<T>() where T : Webpage, IUniquePage;
     }
 }

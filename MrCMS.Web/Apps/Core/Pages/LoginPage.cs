@@ -4,6 +4,5 @@ namespace MrCMS.Web.Apps.Core.Pages
 {
     public class LoginPage : TextPage, IUniquePage
     {
-        
     }
 }

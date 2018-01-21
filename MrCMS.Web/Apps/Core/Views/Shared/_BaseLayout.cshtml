@@ -1,12 +1,17 @@
 ﻿@using System.Drawing
 @using System.Web.Optimization
 @using MrCMS.ACL.Rules
+@using MrCMS.Attributes
 @using MrCMS.Helpers
+@using MrCMS.Services.Canonical
 @using MrCMS.Settings
 @using MrCMS.Website
 @using MrCMS.Website.Optimization
 @using StackExchange.Profiling
 @model MrCMS.Entities.Documents.Web.Webpage
+@{
+    var seoSettings = SiteSettings<SEOSettings>();
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +21,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @Html.RenderFavicon(size: new Size(16, 16))
     @Html.RenderFavicon(size: new Size(32, 32))
-    @Html.RenderFavicon(size:new Size(152, 152))
+    @Html.RenderFavicon(size: new Size(152, 152))
     @*<link rel="icon" type="image/png" href="" />*@
     @{
         Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap.css");
@@ -27,11 +32,13 @@
     @{ Html.RenderCss(); }
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><script src="/Apps/Core/Content/Scripts/respond.min.js"></script><![endif]-->
-    @Html.Raw(SiteSettings<SEOSettings>().TrackingScripts)
+
+    @Html.Raw(seoSettings.TrackingScripts)
     @Html.Raw(Model.CustomHeaderScripts)
+    @ViewData.LinkTags().Render()
 </head>
 <body>
-
+    @Html.Raw(seoSettings.TrackingScriptsBody)
     <nav class="navbar navbar-mrcms" role="navigation">
         <div class="container">
             <div class="navbar-header">

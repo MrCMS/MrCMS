@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Web.Mvc;
+using MrCMS.Models;
 
 namespace MrCMS.Services
 {
@@ -9,5 +10,6 @@ namespace MrCMS.Services
             string alt = null, string title = null, object attributes = null);
 
         string GetImageUrl(string imageUrl, Size targetSize);
+        ImageInfo GetImageInfo(string imageUrl, Size targetSize);
     }
 }

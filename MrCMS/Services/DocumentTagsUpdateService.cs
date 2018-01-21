@@ -12,11 +12,13 @@ namespace MrCMS.Services
     {
         private readonly IRepository<Document> _documentRepository;
         private readonly IRepository<Tag> _tagRepository;
+        private readonly IGetExistingTag _getExistingTag;
 
-        public DocumentTagsUpdateService(IRepository<Document> documentRepository, IRepository<Tag> tagRepository)
+        public DocumentTagsUpdateService(IRepository<Document> documentRepository, IRepository<Tag> tagRepository, IGetExistingTag getExistingTag)
         {
             _documentRepository = documentRepository;
             _tagRepository = tagRepository;
+            _getExistingTag = getExistingTag;
         }
 
         public void SetTags(string taglist, int id)
@@ -27,16 +29,16 @@ namespace MrCMS.Services
 
         public void SetTags(string taglist, Document document)
         {
-            if (document == null) throw new ArgumentNullException("document");
+            if (document == null) throw new ArgumentNullException(nameof(document));
 
             if (taglist == null)
                 taglist = string.Empty;
 
             var tagNames =
-                taglist.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
-                    x => !string.IsNullOrWhiteSpace(x));
+                taglist.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
+                    x => !string.IsNullOrWhiteSpace(x)).ToList();
 
-            SetTags(taglist, document);
+            SetTags(tagNames, document);
         }
 
         public void SetTags(List<string> taglist, Document document)
@@ -50,7 +52,7 @@ namespace MrCMS.Services
                     tag => !taglist.Contains(tag.Name, StringComparer.InvariantCultureIgnoreCase)).ToList();
             foreach (var item in tagsToAdd)
             {
-                var tag = GetExistingTag(item);
+                var tag = _getExistingTag.GetTag(item);
                 var isNew = tag == null;
                 if (isNew)
                 {
@@ -72,8 +74,23 @@ namespace MrCMS.Services
                 _tagRepository.Update(tag);
             }
         }
+    }
 
-        private Tag GetExistingTag(string name)
+    public interface IGetExistingTag
+    {
+        Tag GetTag(string name);
+    }
+
+    public class GetExistingTag : IGetExistingTag
+    {
+        private readonly IRepository<Tag> _tagRepository;
+
+        public GetExistingTag(IRepository<Tag> tagRepository)
+        {
+            _tagRepository = tagRepository;
+        }
+
+        public Tag GetTag(string name)
         {
             return
                _tagRepository.Query().ToList()

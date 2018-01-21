@@ -15,7 +15,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
     {
         private readonly IFileAdminService _fileAdminService;
         private readonly MediaCategoryController _mediaCategoryController;
-        private IMediaCategoryAdminService _mediaCategoryAdminService;
+        private readonly IMediaCategoryAdminService _mediaCategoryAdminService;
 
         public MediaCategoryControllerTests()
         {
@@ -27,9 +27,11 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
         [Fact]
         public void MediaCategoryController_AddGet_ShouldReturnAMediaCategory()
         {
-            var actionResult = _mediaCategoryController.Add_Get(null) as ViewResult;
+            var mediaCategory = A.Dummy<MediaCategory>();
+            A.CallTo(() => _mediaCategoryAdminService.GetNewCategoryModel(123)).Returns(mediaCategory);
+            var actionResult = _mediaCategoryController.Add_Get(123);
 
-            actionResult.Model.Should().BeOfType<MediaCategory>();
+            actionResult.Model.Should().Be(mediaCategory);
         }
 
         [Fact]

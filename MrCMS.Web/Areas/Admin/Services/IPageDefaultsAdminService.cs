@@ -12,5 +12,8 @@ namespace MrCMS.Web.Areas.Admin.Services
         List<SelectListItem> GetLayoutOptions();
         DefaultsInfo GetInfo(Type type);
         void SetDefaults(DefaultsInfo info);
+
+        void EnableCache(string typeName);
+        void DisableCache(string typeName);
     }
 }

@@ -36,6 +36,9 @@ namespace MrCMS.Website
 
         protected void Application_Start()
         {
+            SetModelBinders();
+            SetViewEngines();
+
             MrCMSApp.RegisterAllApps();
             AreaRegistration.RegisterAllAreas(MrCMSKernel.Kernel);
             MrCMSRouteRegistration.Register(RouteTable.Routes);
@@ -46,15 +49,16 @@ namespace MrCMS.Website
             LegacySettingMigrator.MigrateSettings(MrCMSKernel.Kernel);
             LegacyTemplateMigrator.MigrateTemplates(MrCMSKernel.Kernel);
 
-            SetModelBinders();
-
-            SetViewEngines();
-
             BundleRegistration.Register(MrCMSKernel.Kernel);
 
             ControllerBuilder.Current.SetControllerFactory(new MrCMSControllerFactory());
 
-            GlobalFilters.Filters.Add(new HoneypotFilterAttribute());
+            FilterProviders.Providers.Insert(0, new GlobalFilterProvider(MrCMSKernel.Kernel,
+                typeof(HoneypotFilter),
+                typeof(GoogleRecaptchaFilter),
+                typeof(DoNotCacheFilter)
+            ));
+
 
             ModelMetadataProviders.Current = new MrCMSMetadataProvider(MrCMSKernel.Kernel);
 

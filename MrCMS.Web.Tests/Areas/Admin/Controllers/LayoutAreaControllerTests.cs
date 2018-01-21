@@ -52,7 +52,7 @@ namespace MrCMS.Web.Tests.Areas.Admin.Controllers
 
             _layoutAreaController.Add(layoutArea);
 
-            A.CallTo(() => _layoutAreaAdminService.Update(layoutArea)).MustHaveHappened();
+            A.CallTo(() => _layoutAreaAdminService.Add(layoutArea)).MustHaveHappened();
         }
 
         [Fact]

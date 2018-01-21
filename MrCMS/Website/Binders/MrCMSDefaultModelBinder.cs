@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.Mvc;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
@@ -20,10 +22,7 @@ namespace MrCMS.Website.Binders
             Kernel = kernel;
         }
 
-        protected ISession Session
-        {
-            get { return Get<ISession>(); }
-        }
+        protected ISession Session => Get<ISession>();
 
         protected T Get<T>()
         {
@@ -38,10 +37,10 @@ namespace MrCMS.Website.Binders
                  ShouldReturnNull(controllerContext, bindingContext)))
                 return null;
 
-            object bindModel = base.BindModel(controllerContext, bindingContext);
+            var bindModel = base.BindModel(controllerContext, bindingContext);
             if (bindModel is SiteEntity)
             {
-                object model = bindModel;
+                var model = bindModel;
                 bindingContext.ModelState.Clear();
                 bindingContext.ModelMetadata =
                     ModelMetadataProviders.Current.GetMetadataForType(
@@ -50,9 +49,7 @@ namespace MrCMS.Website.Binders
                 bindModel = base.BindModel(controllerContext, bindingContext);
                 var baseEntity = bindModel as SiteEntity;
                 if (baseEntity != null)
-                {
                     baseEntity.ApplyCustomBinding(controllerContext);
-                }
             }
             return bindModel;
         }
@@ -63,20 +60,20 @@ namespace MrCMS.Website.Binders
         }
 
         protected override object GetPropertyValue(ControllerContext controllerContext,
-                                                   ModelBindingContext bindingContext,
-                                                   PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
+            ModelBindingContext bindingContext,
+            PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
             if (propertyDescriptor.PropertyType.IsSubclassOf(typeof(SystemEntity)))
             {
-                string id = controllerContext.HttpContext.Request[bindingContext.ModelName + ".Id"];
+                var id = controllerContext.HttpContext.Request[bindingContext.ModelName + ".Id"];
                 int idVal;
                 return int.TryParse(id, out idVal)
-                           ? Session.Get(propertyDescriptor.PropertyType,
-                                         idVal)
-                           : null;
+                    ? Session.Get(propertyDescriptor.PropertyType,
+                        idVal)
+                    : null;
             }
 
-            object value = base.GetPropertyValue(controllerContext, bindingContext, propertyDescriptor, propertyBinder);
+            var value = base.GetPropertyValue(controllerContext, bindingContext, propertyDescriptor, propertyBinder);
             return value;
         }
 
@@ -86,14 +83,14 @@ namespace MrCMS.Website.Binders
         }
 
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
-                                              Type modelType)
+            Type modelType)
         {
-            object modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
+            var modelFromSession = GetModelFromSession(controllerContext, bindingContext.ModelName, modelType);
             if (modelFromSession != null)
                 return modelFromSession;
             if (modelType == typeof(Webpage))
                 return null;
-            object model = base.CreateModel(controllerContext, bindingContext, modelType);
+            var model = base.CreateModel(controllerContext, bindingContext, modelType);
 
             return model;
         }
@@ -102,16 +99,16 @@ namespace MrCMS.Website.Binders
         {
             if (typeof(SystemEntity).IsAssignableFrom(modelType))
             {
-                string subItem = string.Format("{0}.Id", modelName);
+                var subItem = string.Format("{0}.Id", modelName);
 
-                string id =
+                var id =
                     Convert.ToString(controllerContext.RouteData.Values[subItem] ??
                                      controllerContext.HttpContext.Request[subItem]);
 
                 int intId;
                 if (int.TryParse(id, out intId))
                 {
-                    object obj = Unproxy(Session.Get(modelType, intId));
+                    var obj = Unproxy(Session.Get(modelType, intId));
                     return obj ?? Activator.CreateInstance(modelType);
                 }
 
@@ -121,20 +118,43 @@ namespace MrCMS.Website.Binders
 
                 if (int.TryParse(id, out intId))
                 {
-                    object obj = Unproxy(Session.Get(modelType, intId));
+                    var obj = Unproxy(Session.Get(modelType, intId));
                     return obj ?? Activator.CreateInstance(modelType);
                 }
             }
             return null;
         }
 
+        protected override PropertyDescriptorCollection
+            GetModelProperties(ControllerContext controllerContext,
+                ModelBindingContext bindingContext)
+        {
+            var toReturn = base.GetModelProperties(controllerContext, bindingContext);
+
+            var additional = new List<PropertyDescriptor>();
+
+            //now look for any aliasable properties in here
+            foreach (var p in
+                GetTypeDescriptor(controllerContext, bindingContext)
+                    .GetProperties().Cast<PropertyDescriptor>())
+                foreach (var attr in p.Attributes.OfType<BindAliasAttribute>())
+                {
+                    additional.Add(new AliasedPropertyDescriptor(attr.Alias, p));
+
+                    if (bindingContext.PropertyMetadata.ContainsKey(p.Name))
+                        bindingContext.PropertyMetadata.Add(attr.Alias,
+                            bindingContext.PropertyMetadata[p.Name]);
+                }
+
+            return new PropertyDescriptorCollection
+                (toReturn.Cast<PropertyDescriptor>().Concat(additional).ToArray());
+        }
+
         private object Unproxy(object obj)
         {
             var proxy = obj as INHibernateProxy;
             if (proxy != null)
-            {
                 return proxy.HibernateLazyInitializer.GetImplementation();
-            }
 
             return obj;
         }

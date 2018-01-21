@@ -16,6 +16,10 @@ namespace MrCMS.Settings
         [TextArea]
         public string TrackingScripts { get; set; }
 
+        [DisplayName("Tracking Scripts (top of body)")]
+        [TextArea]
+        public string TrackingScriptsBody { get; set; }
+
         [DisplayName("Enable HTML Minification")]
         public bool EnableHtmlMinification { get; set; }
 

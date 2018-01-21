@@ -21,9 +21,11 @@ namespace MrCMS.Events.Media
             if (!args.HasChanged(file => file.Title) && !args.HasChanged(file => file.Description))
                 return;
 
-            var prefix = string.Format("{0}{1}", MediaSettingExtensions.RenderImagePrefix, GetUrlWithoutExtension(args.Item.FileUrl));
+            var tagPrefix = $"{MediaSettingExtensions.RenderTagPrefix}{GetUrlWithoutExtension(args.Item.FileUrl)}";
+            var urlPrefix = $"{MediaSettingExtensions.RenderUrlPrefix}{GetUrlWithoutExtension(args.Item.FileUrl)}";
 
-            _cacheManager.Clear(prefix);
+            _cacheManager.Clear(tagPrefix);
+            _cacheManager.Clear(urlPrefix);
         }
 
         public string GetUrlWithoutExtension(string url)

@@ -86,7 +86,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             object entity = content.Entity;
             if (entity is Webpage)
                 CurrentRequestData.CurrentPage = entity as Webpage;
-            HtmlHelper htmlHelper = MrCMSHtmlHelper.GetHtmlHelper(controller);
+            var htmlHelper = MrCMSHtmlHelperExtensions.GetHtmlHelper(controller);
             return htmlHelper.ParseShortcodes(content.Content).ToHtmlString();
         }
 
