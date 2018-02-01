@@ -27,6 +27,8 @@ namespace MrCMS.DbConfiguration
 
         public string GetConnectionString(InstallModel model)
         {
+            if (model.SqlConnectionInfo == SqlConnectionInfo.Raw) return model.DatabaseConnectionString; 
+
             var builder = new MySqlConnectionStringBuilder
             {
                 IntegratedSecurity = model.SqlAuthenticationType == SqlAuthenticationType.Windows,
