@@ -159,7 +159,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 Name = "Home",
                 UrlSegment = "home",
                 BodyContent =
-                    "<h1>Mr CMS</h1> <p>Welcome to Mr CMS, the only CMS you will need.</p><p> Turn on inline editing above, then click here. Pretty cool huh? </p>",
+                    "<h1>Mr CMS</h1> <p>Welcome to Mr CMS.</p><p> Turn on inline editing above, then click here to start editing. </p>",
                 RevealInNavigation = true,
             };
             CurrentRequestData.HomePage = homePage;

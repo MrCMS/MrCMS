@@ -146,3 +146,13 @@ The Mr CMS ECommerce App listed [on GitHub](https://github.com/MrCMS/Ecommerce) 
 *   Breaking Change: System settings now stored in mrcms.config - the new location for hosting specific settings
 *   Breaking Change: Remove Azure Directory for Lucene (We are slowly moving away from Lucene and looking at other solutions which work better with cloud based hosting and scaling)
 
+## 0.6 - February 2018 
+*	Feature: Restore Cloudflare IP
+*	Feature: Tracking Scripts (top of body). Ability to add scripts below <body> (e.g AdTag manager iFrame) 
+*	Performance: Full page caching. Ability to output cache a full webpage. 
+*	Security: Record logins 
+*	Security: Email Alerts for login 
+*	Security: Monitor the scripts per page (header/footer). Alert on change. 
+*	Security: Basic two factor authentication via email 
+*	Security: File types now configured in web.config 
+*	Feature: Raygun implementation for centralised logging 

@@ -243,6 +243,7 @@
     <Compile Include="Apps\Articles\Widgets\ArticleArchive.cs" />
     <Compile Include="Apps\Articles\Widgets\ArticleCategories.cs" />
     <Compile Include="Apps\Articles\Widgets\LatestXArticles.cs" />
+    <Compile Include="Apps\Core\Controllers\TextPageController.cs" />
     <Compile Include="Apps\Core\Controllers\TwoFactorCodePageController.cs" />
     <Compile Include="Apps\Core\Controllers\UserAccountController.cs" />
     <Compile Include="Apps\Core\Controllers\RegistrationController.cs" />
@@ -270,6 +271,7 @@
     <Compile Include="Apps\Core\MessageTemplates\Send2FACodeMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\SuccessfulLoginAttemptMessageTemplate.cs" />
     <Compile Include="Apps\Core\MessageTemplates\TokenProviders\SiteTokenProvider.cs" />
+    <Compile Include="Apps\Core\Metadata\TextPageMetaData.cs" />
     <Compile Include="Apps\Core\Metadata\TwoFactorCodePageMetadata.cs" />
     <Compile Include="Apps\Core\Pages\TwoFactorCodePage.cs" />
     <Compile Include="Apps\Core\Services\Installation\ISetupCoreLayouts.cs" />
