@@ -9,17 +9,17 @@ namespace MrCMS.Services.Auth
 {
     public class LogSuccessfulLogin : IOnUserLoggedIn
     {
-        private readonly AuthSettings _authSettings;
+        private readonly SecuritySettings _securitySettings;
         private readonly ISession _session;
 
-        public LogSuccessfulLogin(AuthSettings authSettings, ISession session)
+        public LogSuccessfulLogin(SecuritySettings securitySettings, ISession session)
         {
-            _authSettings = authSettings;
+            _securitySettings = securitySettings;
             _session = session;
         }
         public void Execute(UserLoggedInEventArgs args)
         {
-            if (!_authSettings.LogLoginAttempts)
+            if (!_securitySettings.LogLoginAttempts)
                 return;
             var request = CurrentRequestData.CurrentContext.Request;
             var loginAttempt = new LoginAttempt

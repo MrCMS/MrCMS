@@ -21,11 +21,24 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             ViewData["roles"] = _roleAdminService.GetAllRoles().ToList();
             ViewData["settings"] = _configurationProvider.GetSystemSettings<AuthRoleSettings>();
+
             return View();
         }
 
         [HttpPost]
         public RedirectToRouteResult Index(AuthRoleSettings settings)
+        {
+            _configurationProvider.SaveSettings(settings);
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Settings()
+        {
+            return PartialView(_configurationProvider.GetSystemSettings<SecuritySettings>());
+        }
+
+        [HttpPost]
+        public ActionResult Settings(SecuritySettings settings)
         {
             _configurationProvider.SaveSettings(settings);
             return RedirectToAction("Index");

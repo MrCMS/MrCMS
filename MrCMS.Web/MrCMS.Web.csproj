@@ -2160,6 +2160,7 @@
     <Content Include="Areas\Admin\Views\SystemSettings\Mail.cshtml" />
     <Content Include="Areas\Admin\Views\CustomScriptPages\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SecurityOptions\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SecurityOptions\Settings.cshtml" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>

@@ -5,9 +5,9 @@ namespace MrCMS.HealthChecks
 {
     public class LoginNotificationEmailsEnabled : HealthCheck
     {
-        private readonly AuthSettings _settings;
+        private readonly SecuritySettings _settings;
 
-        public LoginNotificationEmailsEnabled(AuthSettings settings)
+        public LoginNotificationEmailsEnabled(SecuritySettings settings)
         {
             _settings = settings;
         }

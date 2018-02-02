@@ -9,12 +9,12 @@ namespace MrCMS.Services.Auth
 {
     public class GetVerifiedUserResult : IGetVerifiedUserResult
     {
-        private readonly AuthSettings _authSettings;
+        private readonly SecuritySettings _securitySettings;
         private readonly AuthRoleSettings _roleSettings;
 
-        public GetVerifiedUserResult(AuthSettings authSettings, AuthRoleSettings roleSettings)
+        public GetVerifiedUserResult(SecuritySettings securitySettings, AuthRoleSettings roleSettings)
         {
-            _authSettings = authSettings;
+            _securitySettings = securitySettings;
             _roleSettings = roleSettings;
         }
 
@@ -25,7 +25,7 @@ namespace MrCMS.Services.Auth
 
             var redirectUrl = returnUrl ?? (user.IsAdmin ? "~/admin" : "~");
 
-            if (_authSettings.TwoFactorAuthEnabled && user.Roles.Any(role => _roleSettings.TwoFactorAuthRoles.Contains(role.Id)))
+            if (_securitySettings.TwoFactorAuthEnabled && user.Roles.Any(role => _roleSettings.TwoFactorAuthRoles.Contains(role.Id)))
                 return new LoginResult
                 {
                     User = user,
