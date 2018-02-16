@@ -90,6 +90,12 @@
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
@@ -323,13 +329,18 @@
     <Compile Include="Areas\Admin\Controllers\SystemSettingsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserSubscriptionReportsController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebpageSearchController.cs" />
+    <Compile Include="Areas\Admin\Events\RefreshUIOnBatchRunComplete.cs" />
     <Compile Include="Areas\Admin\Events\StartBatchExecutionOnServer.cs" />
+    <Compile Include="Areas\Admin\Events\UpdateBatchJob.cs" />
+    <Compile Include="Areas\Admin\Events\UpdateBatchRun.cs" />
+    <Compile Include="Areas\Admin\Events\UpdateBatchRunResult.cs" />
     <Compile Include="Areas\Admin\Helpers\AdminMessagingExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchEntityHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\BatchExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\FileAdminServiceExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\LocalisedScriptHtmlHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\UniversalSearchHelper.cs" />
+    <Compile Include="Areas\Admin\Hubs\BatchProcessingHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\BatchRunGuidModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\DeleteFilesModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\DeleteMessageTemplateOverrideModelBinder.cs" />
@@ -371,6 +382,7 @@
     <Compile Include="Areas\Admin\Helpers\FileHelper.cs" />
     <Compile Include="Areas\Admin\Helpers\SEOAnalysisExtensions.cs" />
     <Compile Include="Areas\Admin\Helpers\SetAdminViewDataExtensions.cs" />
+    <Compile Include="Areas\Admin\Hubs\NotificationHub.cs" />
     <Compile Include="Areas\Admin\ModelBinders\ACLUpdateModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\AddFormPropertyModelBinder.cs" />
     <Compile Include="Areas\Admin\ModelBinders\AddMessageTemplateModelBinder.cs" />
@@ -528,6 +540,8 @@
     <Compile Include="Areas\Admin\Services\DefaultWebpageTreeNavListing.cs" />
     <Compile Include="Areas\Admin\Services\DocumentRolesAdminService.cs" />
     <Compile Include="Areas\Admin\Services\DocumentVersionsAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\Events\SendPersistentNotificationToHub.cs" />
+    <Compile Include="Areas\Admin\Services\Events\SendTransientNotificationToHub.cs" />
     <Compile Include="Areas\Admin\Services\FileAdminService.cs" />
     <Compile Include="Areas\Admin\Services\FormAdminService.cs" />
     <Compile Include="Areas\Admin\Services\GetLayoutOptions.cs" />
@@ -1138,7 +1152,6 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\d3\d3.tip.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery\ui\i18n\jquery.ui.datepicker-en-US.js" />
-    <Content Include="Areas\Admin\Content\Scripts\mrcms\batch.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\line-graph.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\jquery.are-you-sure.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\dropzone.js" />
@@ -1404,11 +1417,13 @@
     <Content Include="Areas\Admin\Content\Scripts\lib\jstree\themes\default\throbber.gif" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\add-page-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\async-paging.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\batch.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\choose-site.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\layout.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\message-template.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\pages.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\persistent-notifications.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-show-files-simple.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\health-checks.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\media-uploader.js" />
@@ -1719,6 +1734,7 @@
     <Content Include="Areas\Admin\Content\Scripts\mrcms\menu.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\tag-it.min.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\tmpl.min.js" />
+    <Content Include="Areas\Admin\Content\Scripts\mrcms\transient-notifications.js" />
     <Content Include="Areas\Admin\Content\Scripts\lib\update-area.js" />
     <Content Include="Areas\Admin\Content\Scripts\mrcms\webpage-search.js" />
     <Content Include="Areas\Admin\Content\Styles\bootstrap\css\bootstrap-theme.css" />
@@ -1778,6 +1794,7 @@
     <Content Include="Areas\Admin\Views\ACL\Group.cshtml" />
     <Content Include="Areas\Admin\Views\ACL\Index.cshtml" />
     <Content Include="Areas\Admin\Views\BatchJob\Row.cshtml" />
+    <Content Include="Areas\Admin\Views\BatchRunResult\Show.cshtml" />
     <Content Include="Areas\Admin\Views\BatchRun\Row.cshtml" />
     <Content Include="Areas\Admin\Views\BatchRun\Show.cshtml" />
     <Content Include="Areas\Admin\Views\BatchRun\ShowButton.cshtml" />
@@ -1849,6 +1866,7 @@
     <Content Include="Areas\Admin\Views\NavLinks\Get.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\Push.cshtml" />
     <Content Include="Areas\Admin\Views\PageDefaults\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PageDefaults\Set.cshtml" />
     <Content Include="Areas\Admin\Views\PageStats\Summary.cshtml" />
@@ -2130,8 +2148,6 @@
     <Folder Include="Apps\Galleries\Views\Widgets\" />
     <Folder Include="Apps\Galleries\Widgets\" />
     <Folder Include="Areas\Admin\Content\Images\logo\" />
-    <Folder Include="Areas\Admin\Hubs\" />
-    <Folder Include="Areas\Admin\Services\Events\" />
     <Folder Include="Themes\Default\Apps\Core\Views\Pages\" />
     <Folder Include="Themes\Default\Content\" />
     <Folder Include="Themes\Default\Views\Pages\" />

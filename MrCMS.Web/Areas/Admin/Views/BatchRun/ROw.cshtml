@@ -4,11 +4,11 @@
 @{
     var completionStatus = ViewData["completion-status"] is BatchCompletionStatus ? (BatchCompletionStatus)ViewData["completion-status"] : new BatchCompletionStatus();
 }
-<tr data-update-batch data-refresh-url="@Url.Action("Row", "BatchRun", new { Model.Id })">
+<tr data-batch-run-id="@Model.Id" data-refresh-url="@Url.Action("Row", "BatchRun", new { Model.Id })">
     <td>
         @Model.CreatedOn
     </td>
-    <td data-status="@Model.Id">
+    <td data-batch-run-status="@Model.Id">
         @Model.Status
     </td>
     <td>
