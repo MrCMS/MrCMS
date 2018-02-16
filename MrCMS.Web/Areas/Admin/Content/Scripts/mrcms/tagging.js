@@ -1,4 +1,4 @@
-﻿/// <reference path="../admin.js" />
+﻿/// <reference path="./admin.js" />
 function initTagging() {
     $(".system-tagging").tagit({
         autocomplete: {
