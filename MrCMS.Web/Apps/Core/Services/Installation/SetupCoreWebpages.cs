@@ -113,7 +113,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             };
 
             yield return loginPage;
-            var forgottenPassword = new ForgottenPasswordPage
+            yield return new ForgottenPasswordPage
             {
                 Name = "Forgot Password",
                 UrlSegment = "forgot-password",
@@ -121,9 +121,8 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 DisplayOrder = 0,
                 RevealInNavigation = false
             };
-            yield return forgottenPassword;
 
-            var resetPassword = new ResetPasswordPage
+            yield return new ResetPasswordPage
             {
                 Name = "Reset Password",
                 UrlSegment = "reset-password",
@@ -131,9 +130,8 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 DisplayOrder = 1,
                 RevealInNavigation = false
             };
-            yield return resetPassword;
 
-            var userAccountPage = new UserAccountPage
+            yield return new UserAccountPage
             {
                 Name = "My Account",
                 UrlSegment = "my-account",
@@ -141,14 +139,20 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 DisplayOrder = 1,
                 RevealInNavigation = false
             };
-            yield return userAccountPage;
+            yield return new TwoFactorCodePage
+            {
+                Name = "Verify Code",
+                UrlSegment = "verify-code",
+                Parent = loginPage,
+                DisplayOrder = 4,
+                RevealInNavigation = false
+            };
 
-            var registerPage = new RegisterPage
+            yield return new RegisterPage
             {
                 Name = "Register",
                 UrlSegment = "register",
             };
-            yield return registerPage;
         }
 
 
