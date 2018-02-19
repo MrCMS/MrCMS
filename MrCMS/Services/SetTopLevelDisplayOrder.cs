@@ -16,8 +16,8 @@ namespace MrCMS.Services
         public void Execute(OnAddingArgs<T> args)
         {
             T tDoc = args.Item;
-            // if the document isn't set or it's top level (i.e. no parent) we don't want to deal with it here
-            if (tDoc == null || tDoc.Parent == null)
+            // if the document isn't set or it's not top level (i.e. has a parent) we don't want to deal with it here
+            if (tDoc == null || tDoc.Parent != null)
                 return;
 
             // if it's not 0 it means it's been set, so we'll not update it
