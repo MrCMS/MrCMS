@@ -20,9 +20,10 @@ namespace MrCMS.Website.Controllers
         [GoogleRecaptcha]
         [DoNotCache]
 
-        public ActionResult Save(Webpage webpage)
+        public ActionResult Save(int id)
         {
-            if (webpage.IsDeleted)
+            var webpage = _formPostingHandler.GetWebpage(id);
+            if (webpage?.IsDeleted != false)
                 return new EmptyResult();
             var saveFormData = _formPostingHandler.SaveFormData(webpage, Request);
 
