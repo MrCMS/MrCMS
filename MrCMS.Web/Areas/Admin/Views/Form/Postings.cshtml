@@ -36,7 +36,7 @@
                             <td>
                                 @if (posting.Get(heading) != null && posting.Get(heading).IsFile)
                                 {
-                                    <a href="/@posting.Get(heading).Value">@Resource("Admin Form Postings Download", "Download")</a>
+                                    <a href="@posting.Get(heading).Value">@Resource("Admin Form Postings Download", "Download")</a>
                                 }
                                 else
                                 {

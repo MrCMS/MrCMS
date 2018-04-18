@@ -167,3 +167,6 @@ input.input-validation-error, select.input-validation-error { border: 1px solid 
 
 
 
+.featherlight > .featherlight-content .featherlight-content {
+    border: 1px solid red !important;
+}
