@@ -143,6 +143,7 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
             {
                 Name = "Verify Code",
                 UrlSegment = "verify-code",
+                BodyContent = "An email has been sent to your email address with your authentication code. Please enter this code below to authorise your login.",
                 Parent = loginPage,
                 DisplayOrder = 4,
                 RevealInNavigation = false
