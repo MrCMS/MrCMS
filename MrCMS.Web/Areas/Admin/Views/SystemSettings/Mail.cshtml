@@ -51,28 +51,25 @@
 @{
     var mailInfo = Html.For<TestEmailInfo>();
 }
-@using (Html.BeginForm("TestMailSettings", "SystemSettings", FormMethod.Post, new { id = "edit-settings" }))
+@using (Html.BeginForm("TestMailSettings", "SystemSettings", FormMethod.Post, new {id = "edit-settings"}))
 {
-    <h4>
-        @Resource("Test mail settings")
-    </h4>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                @mailInfo.LabelFor(x => x.Email)
-                @mailInfo.TextBoxFor(x => x.Email, new { @class = "form-control" })
-                @mailInfo.ValidationMessageFor(x => x.Email)
-            </div>
-            <div class="form-group">
-                @mailInfo.LabelFor(x => x.Content)
-                @mailInfo.TextAreaFor(x => x.Content, new { @class = "form-control" })
-                @mailInfo.ValidationMessageFor(x => x.Content)
-            </div>
-            <div class="form-group">
+    <fieldset>
+        <legend>
+            @Resource("Send Test Email")
+            <span class="btn-group  display-inline  pull-right">
                 <button class="btn btn-primary" type="submit">
-                    @Resource("Test saved settings")
+                    @Resource("Send email")
                 </button>
+            </span>
+        </legend>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    @mailInfo.LabelFor(x => x.Email)
+                    @mailInfo.TextBoxFor(x => x.Email, new {@class = "form-control"})
+                    @mailInfo.ValidationMessageFor(x => x.Email)
+                </div>
             </div>
         </div>
-    </div>
+    </fieldset>
 }

@@ -1,7 +1,9 @@
 using System;
 using System.Net.Mail;
 using Elmah;
+using MrCMS.Entities.Multisite;
 using MrCMS.Models;
+using MrCMS.Services.Resources;
 using MrCMS.Settings;
 
 namespace MrCMS.Services
@@ -15,11 +17,15 @@ namespace MrCMS.Services
     {
         private readonly IGetSmtpClient _getSmtpClient;
         private readonly ErrorSignal _errorSignal;
+        private readonly IStringResourceProvider _resourceProvider;
+        private readonly Site _site;
 
-        public TestSmtpSettings(IGetSmtpClient getSmtpClient, ErrorSignal errorSignal)
+        public TestSmtpSettings(IGetSmtpClient getSmtpClient, ErrorSignal errorSignal, IStringResourceProvider resourceProvider, Site site)
         {
             _getSmtpClient = getSmtpClient;
             _errorSignal = errorSignal;
+            _resourceProvider = resourceProvider;
+            _site = site;
         }
         public bool TestSettings(MailSettings settings, TestEmailInfo info)
         {
@@ -31,7 +37,7 @@ namespace MrCMS.Services
                     {
                         From = new MailAddress(settings.SystemEmailAddress),
                         Subject = "SMTP Test",
-                        Body = info.Content,
+                        Body = _resourceProvider.GetValue("Admin - Test Email - Content", "Testing email functionality from " + _site.DisplayName),
                     };
                     mailMessage.To.Add(new MailAddress(info.Email));
 
