@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Areas.Admin.Helpers;
 using MrCMS.Web.Areas.Admin.ModelBinders;
@@ -17,11 +18,13 @@ namespace MrCMS.Web.Areas.Admin.Controllers
     {
         private readonly ISystemConfigurationProvider _configurationProvider;
         private readonly ITestSmtpSettings _testSmtpSettings;
+        private readonly IStringResourceProvider _resourceProvider;
 
-        public SystemSettingsController(ISystemConfigurationProvider configurationProvider, ITestSmtpSettings testSmtpSettings)
+        public SystemSettingsController(ISystemConfigurationProvider configurationProvider, ITestSmtpSettings testSmtpSettings, IStringResourceProvider resourceProvider)
         {
             _configurationProvider = configurationProvider;
             _testSmtpSettings = testSmtpSettings;
+            _resourceProvider = resourceProvider;
         }
 
         [HttpGet]
@@ -65,11 +68,10 @@ namespace MrCMS.Web.Areas.Admin.Controllers
         {
             var result = _testSmtpSettings.TestSettings(_configurationProvider.GetSystemSettings<MailSettings>(), info);
             if (result)
-                TempData.SuccessMessages().Add("Mail settings saved and email sent.");
+                TempData.SuccessMessages().Add(_resourceProvider.GetValue("Admin - Test email - Success", "Email sent."));
             else
-                TempData.ErrorMessages().Add("An error occurred, check the log for details.");
+                TempData.ErrorMessages().Add(_resourceProvider.GetValue("Admin - Test email - Failure", "An error occurred, check the log for details."));
             return RedirectToAction("Mail");
         }
     }
-
 }

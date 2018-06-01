@@ -1,12 +1,14 @@
 ﻿@model MrCMS.Web.Apps.Core.Widgets.Slider
 <div class="row">
-    <div class="col-lg-3">
+    <div class="col-sm-7">
         <div class="form-group">
             @Html.LabelFor(widget => widget.Image)
-            <br/>
+            <br />
             @Html.TextBoxFor(widget => widget.Image, new { @class = "media-selector" })
             @Html.ValidationMessageFor(x => x.Image)
         </div>
+    </div>
+    <div class="col-sm-5">
         <div class="form-group">
             @Html.LabelFor(widget => widget.Link)
             @Html.TextBoxFor(widget => widget.Link, new { @class = "form-control" })
@@ -16,12 +18,17 @@
             @Html.TextAreaFor(widget => widget.Description, new { @class = "form-control" })
         </div>
     </div>
-    <div class="col-lg-3">
+</div>
+<hr />
+<div class="row">
+    <div class="col-sm-7">
         <div class="form-group">
             @Html.LabelFor(widget => widget.Image1)
-            <br/>
+            <br />
             @Html.TextBoxFor(widget => widget.Image1, new { @class = "media-selector" })
         </div>
+    </div>
+    <div class="col-sm-5">
         <div class="form-group">
             @Html.LabelFor(widget => widget.Link1)
             @Html.TextBoxFor(widget => widget.Link1, new { @class = "form-control" })
@@ -31,12 +38,17 @@
             @Html.TextAreaFor(widget => widget.Description1, new { @class = "form-control" })
         </div>
     </div>
-    <div class="col-lg-3">
+</div>
+<hr />
+<div class="row">
+    <div class="col-sm-7">
         <div class="form-group">
             @Html.LabelFor(widget => widget.Image2)
-            <br/>
+            <br />
             @Html.TextBoxFor(widget => widget.Image2, new { @class = "media-selector" })
         </div>
+    </div>
+    <div class="col-sm-5">
         <div class="form-group">
             @Html.LabelFor(widget => widget.Link2)
             @Html.TextBoxFor(widget => widget.Link2, new { @class = "form-control" })
@@ -46,12 +58,17 @@
             @Html.TextAreaFor(widget => widget.Description2, new { @class = "form-control" })
         </div>
     </div>
-    <div class="col-lg-3">
+</div>
+<hr/>
+<div class="row">
+    <div class="col-sm-7">
         <div class="form-group">
             @Html.LabelFor(widget => widget.Image3)
-            <br/>
+            <br />
             @Html.TextBoxFor(widget => widget.Image3, new { @class = "media-selector" })
         </div>
+    </div>
+    <div class="col-sm-5">
         <div class="form-group">
             @Html.LabelFor(widget => widget.Link3)
             @Html.TextBoxFor(widget => widget.Link3, new { @class = "form-control" })

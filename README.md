@@ -118,6 +118,19 @@ The Mr CMS ECommerce App listed [on GitHub](https://github.com/MrCMS/Ecommerce) 
 
 ## Release History
 
+## 0.6 - February 2018 
+*	Feature: Restore Cloudflare IP
+*	Feature: Tracking Scripts (top of body). Ability to add scripts below <body> (e.g Google AdTag manager iFrame) 
+*	Feature: Add test email functionality
+*	Feature: Raygun implementation for centralised logging 
+*	Feature/SEO: Self referencing canonical or over-ride on SEO and properties tab
+*	Performance: Full page caching. Ability to output cache a full webpage. 
+*	Security: Record logins 
+*	Security: Email Alerts for login 
+*	Security: Monitor the scripts per page (header/footer). Alert on change. 
+*	Security: Basic two factor authentication via email 
+*	Security: File types now configured in web.config 
+
 ## 0.5.1 - September 2016
 *   Swapped out old Azure caching for Redis cache
 *   Brought in the concept of a staging URL and staging Robots.txt - this allows us to use Azure Deployment Slots
@@ -145,14 +158,3 @@ The Mr CMS ECommerce App listed [on GitHub](https://github.com/MrCMS/Ecommerce) 
 *   Breaking Change: Mail settings are set at the system level rather than site level. Mail settings will need to be reconfigured
 *   Breaking Change: System settings now stored in mrcms.config - the new location for hosting specific settings
 *   Breaking Change: Remove Azure Directory for Lucene (We are slowly moving away from Lucene and looking at other solutions which work better with cloud based hosting and scaling)
-
-## 0.6 - February 2018 
-*	Feature: Restore Cloudflare IP
-*	Feature: Tracking Scripts (top of body). Ability to add scripts below <body> (e.g AdTag manager iFrame) 
-*	Performance: Full page caching. Ability to output cache a full webpage. 
-*	Security: Record logins 
-*	Security: Email Alerts for login 
-*	Security: Monitor the scripts per page (header/footer). Alert on change. 
-*	Security: Basic two factor authentication via email 
-*	Security: File types now configured in web.config 
-*	Feature: Raygun implementation for centralised logging 
