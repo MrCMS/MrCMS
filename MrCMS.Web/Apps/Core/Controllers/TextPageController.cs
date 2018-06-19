@@ -29,7 +29,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
         [CanonicalLinks]
         public ActionResult Internal(TextPage page)
         {
-            return View("TextPage", page);
+            return View(page);
         }
     }
 }

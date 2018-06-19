@@ -174,20 +174,27 @@ namespace MrCMS.Search
 
         private DateTime? GetLastModified()
         {
-            long lastModified = IndexReader.LastModified(GetDirectory(_site));
-            DateTime time;
-            var sourceTimeZone = TimeZoneInfo.Utc;
             try
             {
-                time = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(lastModified);
+                long lastModified = IndexReader.LastModified(GetDirectory(_site));
+                DateTime time;
+                var sourceTimeZone = TimeZoneInfo.Utc;
+                try
+                {
+                    time = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(lastModified);
+                }
+                catch
+                {
+                    time = DateTime.FromFileTime(lastModified);
+                    sourceTimeZone = TimeZoneInfo.Local;
+                }
+
+                return TimeZoneInfo.ConvertTime(time, sourceTimeZone, CurrentRequestData.TimeZoneInfo);
             }
             catch
             {
-                time = DateTime.FromFileTime(lastModified);
-                sourceTimeZone = TimeZoneInfo.Local;
+                return null;
             }
-
-            return TimeZoneInfo.ConvertTime(time, sourceTimeZone, CurrentRequestData.TimeZoneInfo);
         }
 
         private void InitializeIndex()
