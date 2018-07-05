@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
@@ -74,7 +75,7 @@ namespace MrCMS.Services.Sitemaps
 
             AppendChildren(list, urlset, xmlDocument);
 
-            File.WriteAllText(sitemapPath, xmlDocument.ToString(SaveOptions.DisableFormatting));
+            File.WriteAllText(sitemapPath, xmlDocument.ToString(SaveOptions.DisableFormatting), Encoding.UTF8);
         }
 
         private IEnumerable<Type> GetTypesToRemove()
