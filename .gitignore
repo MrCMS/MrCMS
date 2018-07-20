@@ -1,0 +1,100 @@
+#OS junk files
+[Tt]humbs.db
+*.DS_Store
+
+#Visual Studio files
+*.[Oo]bj
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.[Cc]ache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+*.opensdf
+*.unsuccessfulbuild
+ipch/
+obj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+Ankh.NoLoad
+.vs/*
+.idea/*
+
+#MonoDevelop
+*.pidb
+*.userprefs
+
+#Tooling
+_ReSharper*/
+*.resharper
+[Tt]est[Rr]esult*
+*.sass-cache
+*.DotSettings
+
+#Project files
+[Bb]uild/
+
+#Subversion files
+.svn
+
+# Office Temp Files
+~$*
+
+#NuGet
+packages/
+
+#ncrunch
+*ncrunch*
+*crunch*.local.xml
+
+#Continuous Tests
+*_rltm_build_fl_*.csproj
+
+
+# visual studio database projects
+*.dbmdl
+
+#Test files
+*.testsettings
+
+#ELMAH error files
+*error-*.xml
+
+#SQLite databases
+*.db
+
+#Connection strings config
+*ConnectionStrings.config
+
+#MrCMS config
+*mrcms.config
+
+#Media files
+MrCMS.Web/media*
+MrCMS.Web/content/upload*
+*.orig
+MrCMS.Web/App_Data/*
+*.jtconfig
+*.vspx
+NDependOut/*
+*.ndproj
+MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
+*.stackdump
+*.psess
+*.vsp
+*.pubxml
+*sitemap.xml
+
