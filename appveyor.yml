@@ -4,6 +4,8 @@
     - develop
   version: 1.0.{build}-dev
   configuration: Debug
+  install:
+    - nuget restore
   image: Visual Studio 2017
   build:
     publish_wap: true
