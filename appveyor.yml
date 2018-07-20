@@ -1,0 +1,26 @@
+-
+  branches:
+    only:
+    - develop
+  version: 1.0.{build}-dev
+  configuration: Debug
+  image: Visual Studio 2017
+  build:
+    publish_wap: true
+    verbosity: minimal
+  after_build:
+  - ps: dotnet publish -c Debug
+-
+  branches:
+    only:
+    - master
+  version: 1.0.{build}-master
+  configuration: Release
+  image: Visual Studio 2017
+  install:
+    - nuget restore
+  build:
+    publish_wap: true
+    verbosity: minimal
+  after_build:
+  - ps: dotnet publish -c Release
