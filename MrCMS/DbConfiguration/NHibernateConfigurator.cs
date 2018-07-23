@@ -16,6 +16,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Entities.People;
 using MrCMS.Entities.Widget;
+using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Caches.CoreMemoryCache;
@@ -103,9 +104,7 @@ namespace MrCMS.DbConfiguration
 
         private List<Assembly> GetAssemblies()
         {
-            //var assemblies = TypeHelper.GetAllMrCMSAssemblies();
-            var assemblies = new List<Assembly>() { typeof(NHibernateConfigurator).Assembly };
-            // TODO: make this load relevant assemblies
+            var assemblies = TypeHelper.GetAllMrCMSAssemblies();
             if (ManuallyAddedAssemblies != null)
                 assemblies.AddRange(ManuallyAddedAssemblies);
 

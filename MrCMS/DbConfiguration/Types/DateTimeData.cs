@@ -8,7 +8,7 @@ namespace MrCMS.DbConfiguration.Types
     {
         protected override TimeZoneInfo GetTimeZone(ISessionImplementor session)
         {
-            return null;
+            return TimeZoneInfo.Local;
         }
     }
 }

@@ -5,11 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Apps\Core\Entites\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 
 </Project>

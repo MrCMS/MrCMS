@@ -17,5 +17,11 @@
     <PackageReference Include="X.PagedList" Version="7.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="System">
+      <HintPath>System</HintPath>
+    </Reference>
+  </ItemGroup>
+
 
 </Project>

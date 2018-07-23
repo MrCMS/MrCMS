@@ -304,5 +304,20 @@ namespace MrCMS.Helpers
                 _mrCMSAssemblies.Select(mrCMSAssembly => mrCMSAssembly.GetType(type))
                                 .FirstOrDefault(type1 => type1 != null);
         }
+        public static Dictionary<Type, Type> GetSimpleInterfaceImplementationPairings()
+        {
+            var interfaces = GetAllTypes().Where(x => x.GetTypeInfo().IsInterface).Where(x => !x.IsGenericTypeDefinition);
+
+            var singleImplementationInterfaces = interfaces.Where(x => GetAllConcreteTypesAssignableFrom(x).Count(y => !y.IsGenericTypeDefinition) == 1);
+
+            return singleImplementationInterfaces.ToDictionary(x => x, x => GetAllConcreteTypesAssignableFrom(x).First());
+        }
+
+        public static HashSet<Type> GetAllOpenGenericInterfaces()
+        {
+            var interfaces = GetAllTypes().FindAll(x => x.GetTypeInfo().IsInterface);
+
+            return interfaces.FindAll(x => x.IsGenericTypeDefinition);
+        }
     }
 }
