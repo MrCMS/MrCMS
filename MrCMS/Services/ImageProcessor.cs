@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using ImageResizer;
+using ImageMagick;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Settings;
 using NHibernate;
@@ -68,24 +68,39 @@ namespace MrCMS.Services
             {
                 return;
             }
-            var outputStream = new MemoryStream();
-            var instructions = new Instructions { JpegQuality = mediaSettings.ResizeQuality };
-            instructions["maxwidth"] = mediaSettings.MaxImageSizeWidth.ToString();
-            instructions["maxheight"] = mediaSettings.MaxImageSizeHeight.ToString();
-            instructions["autorotate"] = "true";
+            var imageInfo = new MagickImageInfo(stream);
+            file.Width = imageInfo.Width;
+            file.Height = imageInfo.Height;
+            file.ContentLength = stream.Length;
+            if (!RequiresResize(file.Size, mediaSettings.MaxSize))
+                return;
 
-            var imageJob = new ImageJob(stream, outputStream, instructions);
-            ImageBuilder.Current.Build(imageJob);
+
+            stream.Position = 0;
+            var outputStream = new MemoryStream();
+            using (var collection = new MagickImageCollection(stream))
+            {
+                collection.Coalesce();
+                foreach (var image in collection)
+                {
+                    MagickGeometry geometry = new MagickGeometry
+                    {
+                        Width = mediaSettings.MaxImageSizeWidth,
+                        Height = mediaSettings.MaxImageSizeHeight
+                    };
+                    image.Resize(geometry);
+                    image.Strip();
+                }
+                collection.OptimizePlus();
+                collection.Write(outputStream);
+                outputStream.Position = 0;
+            }
 
             Stream originalStream = stream;
             stream = outputStream;
-
-            file.Width = imageJob.FinalWidth.GetValueOrDefault();
-            file.Height = imageJob.FinalHeight.GetValueOrDefault();
-            file.ContentLength = Convert.ToInt32(stream.Length);
-
             originalStream.Dispose();
         }
+
 
         private void SaveFile(byte[] fileBytes, string fileUrl, Size newSize, string contentType,
             Rectangle? cropRectangle = null)
@@ -95,20 +110,55 @@ namespace MrCMS.Services
             {
                 inputStream.Write(fileBytes, 0, fileBytes.Length);
                 inputStream.Position = 0;
-                var instructions = new Instructions
+                using (var collection = new MagickImageCollection(inputStream))
                 {
-                    Height = newSize.Height,
-                    Width = newSize.Width,
-                };
-                if (cropRectangle.HasValue)
-                {
-                    Rectangle rectangle = cropRectangle.Value;
-                    instructions.CropRectangle = new double[] { rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom };
+                    collection.Coalesce();
+                    foreach (var image in collection)
+                    {
+                        MagickGeometry geometry = new MagickGeometry
+                        {
+                            Width = newSize.Width,
+                            Height = newSize.Height
+                        };
+                        image.Resize(geometry);
+                        // TODO: check that crop is in the right order
+                        if (cropRectangle.HasValue)
+                        {
+                            Rectangle rectangle = cropRectangle.Value;
+                            image.Crop(
+                                new MagickGeometry
+                                {
+                                    X = rectangle.X,
+                                    Y = rectangle.Y,
+                                    Width = rectangle.Width,
+                                    Height = rectangle.Height
+                                });
+                        }
+                        image.Strip();
+                    }
+                    collection.OptimizePlus();
+                    collection.Write(outputStream);
+                    outputStream.Position = 0;
+                    _fileSystem.SaveFile(outputStream, fileUrl, contentType);
                 }
-
-                ImageBuilder.Current.Build(new ImageJob(inputStream, outputStream, instructions));
-                _fileSystem.SaveFile(outputStream, fileUrl, contentType);
             }
+            //{
+            //    inputStream.Write(fileBytes, 0, fileBytes.Length);
+            //    inputStream.Position = 0;
+            //    var instructions = new MagickGeometry()
+            //    {
+            //        Height = newSize.Height,
+            //        Width = newSize.Width,
+            //    };
+            //    if (cropRectangle.HasValue)
+            //    {
+            //        Rectangle rectangle = cropRectangle.Value;
+            //        instructions.CropRectangle = new double[] { rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom };
+            //    }
+
+            //    ImageBuilder.Current.Build(new ImageJob(inputStream, outputStream, instructions));
+            //    _fileSystem.SaveFile(outputStream, fileUrl, contentType);
+            //}
         }
 
         public void SaveResizedCrop(Crop crop, Size size, byte[] fileBytes, string fileUrl)
