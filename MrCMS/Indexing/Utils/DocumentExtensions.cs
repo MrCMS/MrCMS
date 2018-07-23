@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 
@@ -23,7 +24,7 @@ namespace MrCMS.Indexing.Utils
         /// <param name="document">Document to add field to</param>
         /// <param name="field">Field to add</param>
         /// <returns>Document</returns>
-        public static Document AddField(this Document document, IFieldable field)
+        public static Document AddField(this Document document, IIndexableField field)
         {
             if (document != null)
                 document.Add(field);

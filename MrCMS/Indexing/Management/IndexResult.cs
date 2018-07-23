@@ -25,6 +25,7 @@ namespace MrCMS.Indexing.Management
         }
 
         public IEnumerable<string> Errors { get { return _errors.AsReadOnly(); } }
+        public static readonly IndexResult Empty = new IndexResult();
 
         public static IndexResult GetResult(Action action)
         {

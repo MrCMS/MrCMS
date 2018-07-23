@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Analysis;
 using Lucene.Net.Index;
+using Lucene.Net.Util;
 using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Indexing.Management
@@ -45,7 +46,10 @@ namespace MrCMS.Indexing.Management
 
         private IndexWriter GetNewIndexWriter(string definitionName, Analyzer analyzer, bool recreateIndex)
         {
-            return new IndexWriter(_getLuceneDirectory.Get(_site, definitionName), analyzer, recreateIndex, IndexWriter.MaxFieldLength.UNLIMITED);
+            var writer = new IndexWriter(_getLuceneDirectory.Get(_site, definitionName), new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer));
+            // TODO: recreate index
+            return writer;
+            //analyzer, recreateIndex, IndexWriter.MAX_TERM_LENGTH);
         }
 
         public void ClearCache()

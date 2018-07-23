@@ -4,29 +4,30 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Tokenattributes;
-using Lucene.Net.QueryParsers;
+using Lucene.Net.Analysis.TokenAttributes;
 using Lucene.Net.Search;
-using MrCMS.Helpers;
 
 namespace MrCMS.Indexing.Utils
 {
     public static class LuceneQueryStringHelper
     {
-        public static Query SafeGetSearchQuery(this string term, MultiFieldQueryParser q, Analyzer analyser)
-        {
-            Query query;
-            try
-            {
-                query = q.Parse(term.MakeFuzzy());
-            }
-            catch
-            {
-                var searchTerm = term.Sanitize(analyser);
-                query = q.Parse(searchTerm);
-            }
-            return query;
-        }
+        //public static Query SafeGetSearchQuery(this string term, MultiFieldQueryParser q, Analyzer analyser)
+        //{
+        //    Query query;
+        //    try
+        //    {
+        //        query = q.Parse(term.MakeFuzzy());
+        //    }
+        //    catch
+        //    {
+        //        var searchTerm = term.Sanitize(analyser);
+        //        query = q.Parse(searchTerm);
+        //    }
+
+        //    return query;
+        //}
+        // TODO: look at API that marries with safe get search query lucene
+
         public static string MakeFuzzy(this string keywords)
         {
             var makeFuzzy = Regex.Replace(keywords, "[A-Za-z0-9_\\^\\?\\@\\-\\*\\:\\.\\\"\\(\\)\\{\\}\\[\\]\\~]+",
@@ -60,15 +61,16 @@ namespace MrCMS.Indexing.Utils
 
         private static List<string> GetTokens(string keywords, Analyzer analyser)
         {
-            var tokenStream = analyser.TokenStream(null, new StringReader(keywords));
-            var termAttribute = tokenStream.GetAttribute<ITermAttribute>();
+            var tokenStream = analyser.GetTokenStream(null, new StringReader(keywords));
+            var termAttribute = tokenStream.GetAttribute<CharTermAttribute>();
             tokenStream.Reset();
             var list = new List<string>();
             while (tokenStream.IncrementToken())
             {
-                var term = termAttribute.Term;
+                var term = termAttribute.ToString();
                 list.Add(term);
             }
+
             return list;
         }
     }

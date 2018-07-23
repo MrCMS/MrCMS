@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using Lucene.Net.Store;
-using Lucene.Net.Store.Azure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.Multisite;
@@ -58,15 +57,15 @@ namespace MrCMS.Indexing.Management
 
         private Directory GetDirectory(Site site, string folderName, bool useRAMCache)
         {
-            if (UseAzureForLucene)
-            {
-                string catalog = AzureDirectoryHelper.GetAzureCatalogName(site, folderName);
-                return new AzureDirectory(_azureFileSystem.StorageAccount, catalog, new RAMDirectory());
-            }
-            string location = string.Format("BApp_Data/Indexes/{0}/{1}/", site.Id, folderName);
+            //if (UseAzureForLucene)
+            //{
+            //    string catalog = AzureDirectoryHelper.GetAzureCatalogName(site, folderName);
+            //    return new AzureDirectory(_azureFileSystem.StorageAccount, catalog, new RAMDirectory());
+            //}
+            string location = string.Format("App_Data/Indexes/{0}/{1}/", site.Id, folderName);
             string mapPath = Path.Combine(_hostingEnvironment.ContentRootPath, location);
             var directory = FSDirectory.Open(new DirectoryInfo(mapPath));
-            return useRAMCache ? (Directory)new RAMDirectory(directory) : directory;
+            return useRAMCache ? (Directory)new NRTCachingDirectory(directory, 5.0, 60.0) : directory;
         }
 
         public void ClearCache()

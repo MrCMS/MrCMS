@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using MrCMS.Entities;
 
 namespace MrCMS.Indexing.Management
@@ -12,13 +13,13 @@ namespace MrCMS.Indexing.Management
     {
         protected IntegerFieldDefinition(ILuceneSettingsService luceneSettingsService, string name,
             Field.Store store = Field.Store.YES, Field.Index index = Field.Index.ANALYZED)
-            : base(luceneSettingsService, name, store, index)
+            : base(luceneSettingsService, name, store)
         {
         }
 
         public override FieldDefinition<T2> GetDefinition
         {
-            get { return new IntegerFieldDefinition<T2>(Name, GetValues, GetValues, Store, Index, Boost); }
+            get { return new IntegerFieldDefinition<T2>(Name, GetValues, GetValues, Store, Boost); }
         }
 
         protected abstract IEnumerable<int> GetValues(T2 obj);
@@ -32,23 +33,22 @@ namespace MrCMS.Indexing.Management
     {
         public Func<T, IEnumerable<int>> GetValues { get; set; }
         public Func<List<T>, Dictionary<T, IEnumerable<int>>> GetAllValues { get; set; }
-        public IntegerFieldDefinition(string fieldName, Func<T, IEnumerable<int>> getValues, Func<List<T>, Dictionary<T, IEnumerable<int>>> getAllValues, Field.Store store, Field.Index index, float boost = 1)
+        public IntegerFieldDefinition(string fieldName, Func<T, IEnumerable<int>> getValues, Func<List<T>, Dictionary<T, IEnumerable<int>>> getAllValues, Field.Store store, float boost = 1)
         {
             FieldName = fieldName;
             GetValues = getValues;
             GetAllValues = getAllValues;
             Store = store;
-            Index = index;
             Boost = boost;
         }
 
 
-        public override List<AbstractField> GetFields(T obj)
+        public override List<IIndexableField> GetFields(T obj)
         {
             return GetFields(GetValues(obj));
         }
 
-        public override Dictionary<T, List<AbstractField>> GetFields(List<T> obj)
+        public override Dictionary<T, List<IIndexableField>> GetFields(List<T> obj)
         {
             var values = GetAllValues(obj);
             return values.ToDictionary(pair => pair.Key,
@@ -56,10 +56,10 @@ namespace MrCMS.Indexing.Management
         }
 
 
-        private List<AbstractField> GetFields(IEnumerable<int> values)
+        private List<IIndexableField> GetFields(IEnumerable<int> values)
         {
-            return values.Select(value => new NumericField(FieldName, Store, Index != Field.Index.NO) { Boost = Boost }.SetIntValue(value))
-                .Cast<AbstractField>()
+            return values.Select(value => new Int32Field(FieldName,value, Store) { Boost = Boost })
+                .Cast<IIndexableField>()
                 .ToList();
         }
     }

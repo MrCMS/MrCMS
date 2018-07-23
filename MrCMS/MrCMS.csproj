@@ -7,8 +7,8 @@
   <ItemGroup>
     <PackageReference Include="FluentNHibernate" Version="2.1.2" />
     <PackageReference Include="ImageResizer" Version="4.2.5" />
-    <PackageReference Include="Lucene.Net" Version="3.0.3" />
-    <PackageReference Include="Lucene.Net.Store.Azure" Version="3.0.5553.21100" />
+    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00005" />
+    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00005" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NHibernate" Version="5.1.3" />

@@ -16,7 +16,7 @@ using MrCMS.Tasks;
 using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
-using Version = Lucene.Net.Util.Version;
+using Version = Lucene.Net.Util.LuceneVersion;
 
 namespace MrCMS.Indexing.Management
 {
@@ -38,7 +38,7 @@ namespace MrCMS.Indexing.Management
         protected Analyzer Analyser;
         public virtual Analyzer GetAnalyser()
         {
-            return Analyser ?? (Analyser = new StandardAnalyzer(Version.LUCENE_30));
+            return Analyser ?? (Analyser = new StandardAnalyzer(Version.LUCENE_48));
         }
 
         public abstract string IndexName { get; }
@@ -75,8 +75,7 @@ namespace MrCMS.Indexing.Management
         {
             get
             {
-                return DefinitionInfos.Where(
-                    info => info.Index == Field.Index.ANALYZED || info.Index == Field.Index.ANALYZED_NO_NORMS)
+                return DefinitionInfos
                                .Select(info => info.Name)
                                .Distinct()
                                .ToArray();
@@ -89,13 +88,11 @@ namespace MrCMS.Indexing.Management
         private static readonly FieldDefinition<T> _id =
             new StringFieldDefinition<T>("id", entity => new List<string> { entity.Id.ToString() },
                 entity => entity.ToDictionary(arg => arg, arg => new List<string> { arg.Id.ToString() }.AsEnumerable()),
-                Field.Store.YES,
-                Field.Index.NOT_ANALYZED);
+                Field.Store.YES);
         private static readonly FieldDefinition<T> _entityType =
             new StringFieldDefinition<T>("entityType", GetEntityTypes,
                 entity => entity.ToDictionary(arg => arg, GetEntityTypes),
-                Field.Store.YES,
-                Field.Index.NOT_ANALYZED);
+                Field.Store.YES);
 
         private static IEnumerable<string> GetEntityTypes(T entity)
         {
@@ -139,14 +136,14 @@ namespace MrCMS.Indexing.Management
             return document;
         }
 
-        protected virtual IEnumerable<IFieldable> GetAdditionalFields(T entity)
+        protected virtual IEnumerable<IIndexableField> GetAdditionalFields(T entity)
         {
             yield break;
         }
 
-        protected virtual Dictionary<T, IEnumerable<IFieldable>> GetAdditionalFields(List<T> entities)
+        protected virtual Dictionary<T, IEnumerable<IIndexableField>> GetAdditionalFields(List<T> entities)
         {
-            return entities.ToDictionary(arg => arg, arg => Enumerable.Empty<IFieldable>());
+            return entities.ToDictionary(arg => arg, arg => Enumerable.Empty<IIndexableField>());
         }
 
         private static List<FieldDefinition<T>> GetNewDefinitionList()
@@ -166,7 +163,7 @@ namespace MrCMS.Indexing.Management
                 var document = new Document();
                 foreach (var fieldInfo in list)
                 {
-                    List<AbstractField> abstractFields = fieldInfo[entity];
+                    List<IIndexableField> abstractFields = fieldInfo[entity];
                     abstractFields.ForEach(document.Add);
                 }
                 if (additionalFields.ContainsKey(entity))

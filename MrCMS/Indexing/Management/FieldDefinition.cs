@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
@@ -48,26 +49,24 @@ namespace MrCMS.Indexing.Management
 
     public abstract class FieldDefinition<T> : FieldDefinition
     {
-        public abstract List<AbstractField> GetFields(T obj);
-        public abstract Dictionary<T, List<AbstractField>> GetFields(List<T> obj);
+        public abstract List<IIndexableField> GetFields(T obj);
+        public abstract Dictionary<T, List<IIndexableField>> GetFields(List<T> obj);
     }
 
     public abstract class FieldDefinition<T1, T2> : IFieldDefinition<T1, T2>
         where T1 : IndexDefinition<T2>
         where T2 : SystemEntity
     {
-        private readonly Field.Index _index;
         private readonly ILuceneSettingsService _luceneSettingsService;
         private readonly string _name;
         private readonly Field.Store _store;
 
-        public FieldDefinition(ILuceneSettingsService luceneSettingsService, string name,
-            Field.Store store = Field.Store.YES, Field.Index index = Field.Index.ANALYZED)
+        protected FieldDefinition(ILuceneSettingsService luceneSettingsService, string name,
+            Field.Store store = Field.Store.YES)
         {
             _luceneSettingsService = luceneSettingsService;
             _name = name;
             _store = store;
-            _index = index;
         }
 
         public abstract FieldDefinition<T2> GetDefinition { get; }
@@ -87,10 +86,6 @@ namespace MrCMS.Indexing.Management
             get { return _store; }
         }
 
-        public Field.Index Index
-        {
-            get { return _index; }
-        }
 
         public float Boost
         {

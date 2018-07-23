@@ -64,7 +64,7 @@ namespace MrCMS.Indexing.Management
 
         public bool IndexExists
         {
-            get { return IndexReader.IndexExists(GetDirectory(_site)); }
+            get { return DirectoryReader.IndexExists(GetDirectory(_site)); }
         }
 
         public DateTime? LastModified
@@ -74,21 +74,24 @@ namespace MrCMS.Indexing.Management
                 if (!IndexExists)
                     return null;
 
-                long lastModified = IndexReader.LastModified(GetDirectory(_site));
-                DateTime time;
-                var sourceTimeZone = TimeZoneInfo.Utc;
-                try
-                {
-                    time = new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
-                }
-                catch
-                {
-                    time = DateTime.FromFileTime(lastModified);
-                    sourceTimeZone = TimeZoneInfo.Local;
-                }
+                // TODO: calculate last modified
+                return null;
 
-                // TODO: fix this to use set time zone
-                return TimeZoneInfo.ConvertTime(time, sourceTimeZone, TimeZoneInfo.Utc);
+                //long lastModified = IndexReader.LastModified(GetDirectory(_site));
+                //DateTime time;
+                //var sourceTimeZone = TimeZoneInfo.Utc;
+                //try
+                //{
+                //    time = new DateTime(1970, 1, 1).AddMilliseconds(lastModified);
+                //}
+                //catch
+                //{
+                //    time = DateTime.FromFileTime(lastModified);
+                //    sourceTimeZone = TimeZoneInfo.Local;
+                //}
+
+                //// TODO: fix this to use set time zone
+                //return TimeZoneInfo.ConvertTime(time, sourceTimeZone, TimeZoneInfo.Utc);
             }
         }
 
@@ -99,9 +102,9 @@ namespace MrCMS.Indexing.Management
                 if (!IndexExists)
                     return null;
 
-                using (var indexReader = IndexReader.Open(GetDirectory(_site), true))
+                using (var indexReader = DirectoryReader.Open(GetDirectory(_site)))
                 {
-                    return indexReader.NumDocs();
+                    return indexReader.NumDocs;
                 }
             }
         }
@@ -116,7 +119,7 @@ namespace MrCMS.Indexing.Management
         public IndexCreationResult CreateIndex()
         {
             Directory fsDirectory = GetDirectory(_site);
-            bool indexExists = IndexReader.IndexExists(fsDirectory);
+            bool indexExists = DirectoryReader.IndexExists(fsDirectory);
             if (indexExists)
                 return IndexCreationResult.AlreadyExists;
             try
@@ -260,7 +263,7 @@ namespace MrCMS.Indexing.Management
                 {
                     foreach (Document document in Definition.ConvertAll(entities))
                         writer.AddDocument(document);
-                    writer.Optimize();
+                    //writer.Optimize();
                 }, true);
             });
         }
@@ -272,7 +275,9 @@ namespace MrCMS.Indexing.Management
 
         public IndexResult Optimise()
         {
-            return IndexResult.GetResult(() => Write(writer => writer.Optimize()));
+            return IndexResult.Empty;
+            // TODO: todo
+            //return IndexResult.GetResult(() => Write(writer => writer.Optimize()));
         }
 
         private Directory GetDirectory(Site site)

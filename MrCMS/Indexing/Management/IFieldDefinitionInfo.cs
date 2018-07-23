@@ -12,7 +12,6 @@ namespace MrCMS.Indexing.Management
         string DisplayName { get; }
         string TypeName { get; }
         Field.Store Store { get; }
-        Field.Index Index { get; }
         float Boost { get; }
         Dictionary<Type, Func<SystemEntity, IEnumerable<LuceneAction>>> GetRelatedEntities();
     }

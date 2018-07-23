@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using MrCMS.Entities;
 
 namespace MrCMS.Indexing.Management
@@ -12,13 +13,13 @@ namespace MrCMS.Indexing.Management
     {
         protected DecimalFieldDefinition(ILuceneSettingsService luceneSettingsService, string name,
             Field.Store store = Field.Store.YES, Field.Index index = Field.Index.ANALYZED)
-            : base(luceneSettingsService, name, store, index)
+            : base(luceneSettingsService, name, store)
         {
         }
 
         public override FieldDefinition<T2> GetDefinition
         {
-            get { return new DecimalFieldDefinition<T2>(Name, GetValues, GetValues, Store, Index, Boost); }
+            get { return new DecimalFieldDefinition<T2>(Name, GetValues, GetValues, Store, Boost); }
         }
 
         protected abstract IEnumerable<decimal> GetValues(T2 obj);
@@ -32,38 +33,36 @@ namespace MrCMS.Indexing.Management
     public class DecimalFieldDefinition<T> : FieldDefinition<T>
     {
         public DecimalFieldDefinition(string fieldName, Func<T, IEnumerable<decimal>> getValues,
-            Func<List<T>, Dictionary<T, IEnumerable<decimal>>> getAllValues, Field.Store store, Field.Index index,
+            Func<List<T>, Dictionary<T, IEnumerable<decimal>>> getAllValues, Field.Store store, 
             float boost = 1)
         {
             GetAllValues = getAllValues;
             FieldName = fieldName;
             GetValues = getValues;
             Store = store;
-            Index = index;
             Boost = boost;
         }
 
         public Func<List<T>, Dictionary<T, IEnumerable<decimal>>> GetAllValues { get; set; }
         public Func<T, IEnumerable<decimal>> GetValues { get; set; }
 
-        public override List<AbstractField> GetFields(T obj)
+        public override List<IIndexableField> GetFields(T obj)
         {
             return GetFields(GetValues(obj));
         }
 
-        public override Dictionary<T, List<AbstractField>> GetFields(List<T> obj)
+        public override Dictionary<T, List<IIndexableField>> GetFields(List<T> obj)
         {
             Dictionary<T, IEnumerable<decimal>> values = GetAllValues(obj);
             return values.ToDictionary(pair => pair.Key,
                 pair => GetFields(pair.Value));
         }
 
-        private List<AbstractField> GetFields(IEnumerable<decimal> values)
+        private List<IIndexableField> GetFields(IEnumerable<decimal> values)
         {
             return values.Select(
                 value =>
-                    new NumericField(FieldName, Store, Index != Field.Index.NO) {Boost = Boost}.SetDoubleValue(
-                        Convert.ToDouble(value))).Cast<AbstractField>().ToList();
+                    new DoubleField(FieldName, Convert.ToDouble(value), Store) { Boost = Boost }).Cast<IIndexableField>().ToList();
         }
     }
 }
