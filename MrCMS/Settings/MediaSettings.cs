@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Models;
+using MrCMS.Website.Caching;
 using NHibernate;
 
 namespace MrCMS.Settings
@@ -138,10 +139,9 @@ namespace MrCMS.Settings
 
         [DisplayName("Cache for how many seconds?")]
         public virtual int CacheLength { get; set; }
-        //[DisplayName("Cache expiry type")]
-        //[DropDownSelection("CacheExpiryTypeOptions")]
-        //public CacheExpiryType CacheExpiryType { get; set; }
-        // TODO: add cache expiry
+        [DisplayName("Cache expiry type")]
+        [DropDownSelection("CacheExpiryTypeOptions")]
+        public CacheExpiryType CacheExpiryType { get; set; }
 
         public int? ResizeQuality { get; set; }
 

@@ -9,7 +9,7 @@ namespace MrCMS.Website.Filters
             // only do this with local file system due to unpredictability of remote file storage
             //if (filterContext.HttpContext.Get<IFileSystem>() is FileSystem)
             //    CurrentRequestData.OnEndRequest.Add(new ExecuteLuceneTasks());
-            // TODO: immediate lucene update
+            // TODO: end request
         }
     }
 }

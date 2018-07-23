@@ -8,7 +8,6 @@ using MrCMS.Tasks;
 
 namespace MrCMS.DbConfiguration.Configuration
 {
-    // TODO: implement lucene updates
     public class UpdateIndicesListener : IOnAdded<SiteEntity>, IOnUpdated<SiteEntity>, IOnDeleted<SiteEntity>
     {
         private readonly IIndexService _indexService;

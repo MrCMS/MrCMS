@@ -4,14 +4,18 @@ using System.Linq;
 using System.Web;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities;
+using MrCMS.Settings;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
+using X.PagedList;
 
 namespace MrCMS.Helpers
 {
     public static class SessionHelper
     {
+        // TODO: get this from DI
+        private static int DefaultPageSize = 10;
         //public static ISession OpenFilteredSession(this ISessionFactory sessionFactory, HttpContextBase context)
         //{
         //    var session = new MrCMSSession(sessionFactory.OpenSession(), context);
@@ -73,41 +77,41 @@ namespace MrCMS.Helpers
             });
         }
 
-        //public static IPagedList<T> Paged<T>(this ISession session, QueryOver<T> query, int pageNumber,
-        //    int? pageSize = null)
-        //    where T : SystemEntity
-        //{
-        //    int size = pageSize ?? MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
-        //    IEnumerable<T> values =
-        //        query.GetExecutableQueryOver(session).Skip((pageNumber - 1) * size).Take(size).Cacheable().List<T>();
+        public static IPagedList<T> Paged<T>(this ISession session, QueryOver<T> query, int pageNumber,
+            int? pageSize = null)
+            where T : SystemEntity
+        {
+            int size = pageSize ?? DefaultPageSize; // MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
+            IEnumerable<T> values =
+                query.GetExecutableQueryOver(session).Skip((pageNumber - 1) * size).Take(size).Cacheable().List<T>();
 
-        //    var rowCount = query.GetExecutableQueryOver(session).ToRowCountQuery().SingleOrDefault<int>();
+            var rowCount = query.GetExecutableQueryOver(session).ToRowCountQuery().SingleOrDefault<int>();
 
-        //    return new StaticPagedList<T>(values, pageNumber, size, rowCount);
-        //}
+            return new StaticPagedList<T>(values, pageNumber, size, rowCount);
+        }
 
-        //public static IPagedList<TResult> Paged<TResult>(this IQueryOver<TResult, TResult> queryBase, int pageNumber,
-        //    int? pageSize = null)
-        //    where TResult : SystemEntity
-        //{
-        //    int size = pageSize ?? MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
-        //    IEnumerable<TResult> results = queryBase.Skip((pageNumber - 1) * size).Take(size).Cacheable().List();
+        public static IPagedList<TResult> Paged<TResult>(this IQueryOver<TResult, TResult> queryBase, int pageNumber,
+            int? pageSize = null)
+            where TResult : SystemEntity
+        {
+            int size = pageSize ?? DefaultPageSize; //MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
+            IEnumerable<TResult> results = queryBase.Skip((pageNumber - 1) * size).Take(size).Cacheable().List();
 
-        //    int rowCount = queryBase.Cacheable().RowCount();
+            int rowCount = queryBase.Cacheable().RowCount();
 
-        //    return new StaticPagedList<TResult>(results, pageNumber, size, rowCount);
-        //}
+            return new StaticPagedList<TResult>(results, pageNumber, size, rowCount);
+        }
 
-        //public static IPagedList<TResult> Paged<TResult>(this IQueryable<TResult> queryable, int pageNumber,
-        //    int? pageSize = null)
-        //    where TResult : SystemEntity
-        //{
-        //    int size = pageSize ?? MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
+        public static IPagedList<TResult> Paged<TResult>(this IQueryable<TResult> queryable, int pageNumber,
+            int? pageSize = null)
+            where TResult : SystemEntity
+        {
+            int size = pageSize ?? DefaultPageSize; //MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
 
-        //    IQueryable<TResult> cacheable = queryable.Cacheable();
+            IQueryable<TResult> cacheable = queryable.Cacheable();
 
-        //    return new PagedList<TResult>(cacheable, pageNumber, size);
-        //}
+            return new PagedList<TResult>(cacheable, pageNumber, size);
+        }
 
         public static bool Any<T>(this IQueryOver<T> query)
         {

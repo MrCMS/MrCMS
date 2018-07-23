@@ -1,12 +1,19 @@
-﻿
-using MrCMS.Events.Documents;
+﻿using MrCMS.Entities.Documents.Web;
 
-namespace MrCMS.Messages.Security
+namespace MrCMS.Events.Documents
 {
-    public class SettingScriptChangeModel
+    public class ScriptChangedEventArgs<T>
     {
-        public string PreviousValue { get; set; }
-        public string CurrentValue { get; set; }
+        public ScriptChangedEventArgs(T holder, string currentValue, string previousValue)
+        {
+            Holder = holder;
+            CurrentValue = currentValue;
+            PreviousValue = previousValue;
+        }
+
+        public T Holder { get; }
+        public string PreviousValue { get; }
+        public string CurrentValue { get; }
 
         public ScriptChangeStatus Status
         {
@@ -19,6 +26,5 @@ namespace MrCMS.Messages.Security
                 return ScriptChangeStatus.Modified;
             }
         }
-
     }
 }
