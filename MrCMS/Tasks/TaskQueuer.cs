@@ -54,27 +54,25 @@ namespace MrCMS.Tasks
 
         public IList<QueuedTask> GetPendingLuceneTasks()
         {
-            //return _session.Transact(session =>
-            //{
-            //    var queuedAt = DateTime.UtcNow;
-            //    var queuedTasks =
-            //        session.QueryOver<QueuedTask>()
-            //            .Where(task => (task.Type.IsLike(typeof(InsertIndicesTask<>).FullName, MatchMode.Start) ||
-            //                            task.Type.IsLike(typeof(UpdateIndicesTask<>).FullName, MatchMode.Start) ||
-            //                            task.Type.IsLike(typeof(DeleteIndicesTask<>).FullName, MatchMode.Start)
-            //                ) && task.Status == TaskExecutionStatus.Pending)
-            //            .List();
+            return _session.Transact(session =>
+            {
+                var queuedAt = DateTime.UtcNow;
+                var queuedTasks =
+                    session.QueryOver<QueuedTask>()
+                        .Where(task => (task.Type.IsLike(typeof(InsertIndicesTask<>).FullName, MatchMode.Start) ||
+                                        task.Type.IsLike(typeof(UpdateIndicesTask<>).FullName, MatchMode.Start) ||
+                                        task.Type.IsLike(typeof(DeleteIndicesTask<>).FullName, MatchMode.Start)
+                            ) && task.Status == TaskExecutionStatus.Pending)
+                        .List();
 
-            //    foreach (var task in queuedTasks)
-            //    {
-            //        task.Status = TaskExecutionStatus.AwaitingExecution;
-            //        task.QueuedAt = queuedAt;
-            //        _session.Update(task);
-            //    }
-            //    return queuedTasks;
-            //});
-            // TODO: lucene tasks
-            throw new NotImplementedException("Not yet implemented");
+                foreach (var task in queuedTasks)
+                {
+                    task.Status = TaskExecutionStatus.AwaitingExecution;
+                    task.QueuedAt = queuedAt;
+                    _session.Update(task);
+                }
+                return queuedTasks;
+            });
         }
     }
 }

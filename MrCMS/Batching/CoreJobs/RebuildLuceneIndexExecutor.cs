@@ -3,22 +3,20 @@ using MrCMS.Services;
 
 namespace MrCMS.Batching.CoreJobs
 {
-    // TODO: lucene
     public class RebuildLuceneIndexExecutor : BaseBatchJobExecutor<RebuildLuceneIndex>
     {
-        //private readonly IIndexService _indexService;
+        private readonly IIndexService _indexService;
 
-        public RebuildLuceneIndexExecutor(ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus
-            //, IIndexService indexService
-            )
+        public RebuildLuceneIndexExecutor(ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus,
+            IIndexService indexService)
             : base(setBatchJobJobExecutionStatus)
         {
-            //_indexService = indexService;
+            _indexService = indexService;
         }
 
         protected override BatchJobExecutionResult OnExecute(RebuildLuceneIndex batchJob)
         {
-            //_indexService.Reindex(batchJob.IndexName);
+            _indexService.Reindex(batchJob.IndexName);
             return BatchJobExecutionResult.Success();
         }
 
