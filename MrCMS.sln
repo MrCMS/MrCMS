@@ -7,9 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{908BA7BA-158
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sites", "Sites", "{DAEA83F7-15D9-4946-8594-87F3BE1F83C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrCMS.Web", "MrCMS.Web\MrCMS.Web.csproj", "{390BA161-3B1D-4EF2-B640-F35125280F07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web", "MrCMS.Web\MrCMS.Web.csproj", "{390BA161-3B1D-4EF2-B640-F35125280F07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrCMS", "MrCMS\MrCMS.csproj", "{EA7CA9B6-EA88-4F3E-8F94-A2D4D06E9D28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS", "MrCMS\MrCMS.csproj", "{EA7CA9B6-EA88-4F3E-8F94-A2D4D06E9D28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrCMS.Web.Apps.Core", "MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj", "{EE5E6C1D-FEF9-4E5D-AEE6-6296084D13B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,10 @@ Global
 		{EA7CA9B6-EA88-4F3E-8F94-A2D4D06E9D28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA7CA9B6-EA88-4F3E-8F94-A2D4D06E9D28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA7CA9B6-EA88-4F3E-8F94-A2D4D06E9D28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE5E6C1D-FEF9-4E5D-AEE6-6296084D13B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE5E6C1D-FEF9-4E5D-AEE6-6296084D13B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE5E6C1D-FEF9-4E5D-AEE6-6296084D13B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE5E6C1D-FEF9-4E5D-AEE6-6296084D13B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

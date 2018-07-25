@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using MrCMS.Apps;
 using MrCMS.DbConfiguration.Mapping;
 using MrCMS.Entities;
 using MrCMS.Settings;
@@ -12,26 +13,46 @@ using NHibernate.Proxy;
 
 namespace MrCMS.Helpers
 {
+    // TODO: refactor this to non-static
     public static class TypeHelper
     {
         private static HashSet<Type> _alltypes;
         static HashSet<Assembly> _mrCMSAssemblies;
+        private static bool _initialized = false;
 
-        public static HashSet<Type> MappedClasses { get { return GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type => !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any()); } }
 
-        public static HashSet<Type> GetAllTypes()
+        public static void Initialize(Assembly assembly)
         {
-            return _alltypes ??
-                   (_alltypes = GetAllMrCMSAssemblies().SelectMany(GetLoadableTypes).Distinct().ToHashSet());
+            var referencedAssemblies = assembly.GetReferencedAssemblies();
+            var thisAssembly = typeof(TypeHelper).Assembly;
+            _mrCMSAssemblies = referencedAssemblies.Select(Assembly.Load)
+                .Where(x => x == thisAssembly || x.GetReferencedAssemblies().Select(Assembly.Load).Any(y => y == thisAssembly))
+                .Append(assembly)
+                .ToHashSet();
+            _initialized = true;
         }
 
         public static HashSet<Assembly> GetAllMrCMSAssemblies()
         {
-            return
-                _mrCMSAssemblies =
-                _mrCMSAssemblies ??
-                AppDomain.CurrentDomain.GetAssemblies()
-                         .Where(assembly => assembly.GetCustomAttributes<MrCMSAssemblyAttribute>().Any()).ToHashSet();
+            if (!_initialized)
+                throw new InvalidOperationException("Must be initialized before use");
+            return _mrCMSAssemblies;
+        }
+
+        public static HashSet<Type> GetAllTypes()
+        {
+            if (!_initialized)
+                throw new InvalidOperationException("Must be initialized before use");
+            return _alltypes ?? (_alltypes = GetAllMrCMSAssemblies().SelectMany(GetLoadableTypes).Distinct().ToHashSet());
+        }
+
+        public static HashSet<Type> MappedClasses
+        {
+            get
+            {
+                return GetAllConcreteTypesAssignableFrom<SystemEntity>().FindAll(type =>
+                    !type.GetCustomAttributes(typeof(DoNotMapAttribute), true).Any());
+            }
         }
 
         public static HashSet<Type> GetMappedClassesAssignableFrom<T>()
