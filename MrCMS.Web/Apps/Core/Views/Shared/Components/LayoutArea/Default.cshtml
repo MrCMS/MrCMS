@@ -1,0 +1,7 @@
+﻿@model MrCMS.Website.WidgetDisplayInfo
+
+@foreach (var widget in Model.Widgets)
+{
+    @*<vc:widget id="@widget.Id"></vc:widget>*@
+    @await Component.InvokeAsync("Widget", new {widget.Id})
+}

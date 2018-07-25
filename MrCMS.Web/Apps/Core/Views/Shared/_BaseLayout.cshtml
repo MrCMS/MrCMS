@@ -1,0 +1,104 @@
+﻿@using System.Drawing
+@using MrCMS.Helpers
+@using MrCMS.Settings
+@using MrCMS.Website.Optimization
+@model MrCMS.Entities.Documents.Web.Webpage
+@inject SEOSettings seoSettings
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @*<title>@(this.PageTitle())</title>
+        <meta name="description" content="@(this.Description())" />
+        <meta name="keywords" content="@(this.Keywords())" />*@
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Html.RenderFavicon(size: new Size(16, 16))
+    @Html.RenderFavicon(size: new Size(32, 32))
+    @Html.RenderFavicon(size: new Size(152, 152))
+    @*<link rel="icon" type="image/png" href="" />*@
+    @{
+        Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap.css");
+        Html.IncludeCss("~/Apps/Core/Content/bootstrap/css/bootstrap-theme.css");
+        Html.IncludeCss("~/Apps/Core/Content/Styles/style.css");
+    }
+    @*@Styles.Render(AppStylesheetBundle.VirtualUrl)*@
+    @{ Html.RenderCss(); }
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><script src="/Apps/Core/Content/Scripts/respond.min.js"></script><![endif]-->
+
+    @Html.Raw(seoSettings.TrackingScripts)
+    @Html.Raw(Model.CustomHeaderScripts)
+    @*@ViewData.LinkTags().Render()*@
+</head>
+<body>
+    @Html.Raw(seoSettings.TrackingScriptsBody)
+    <nav class="navbar navbar-mrcms" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @(await Component.RenderZone("Header Left"))
+            </div>
+            <div class="collapse navbar-collapse navbar-left" id="bs-example-navbar-collapse-1">
+                @(await Component.RenderZone("Main Navigation"))
+            </div>
+            <div class="navbar-right">
+                <ul class="nav navbar-nav" id="nav-links-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </a>
+                        <div class="dropdown-menu">
+                            @{await Html.RenderPartialAsync("SearchForm");}
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-user"></span>
+                        </a>
+                        @(await Component.RenderZone("Header Right"))
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mrcms-content">
+        @(await Component.RenderZone("Before Content"))
+
+        @RenderBody()
+        @(await Component.RenderZone("Comments"))
+        @(await Component.RenderZone("After Content"))
+    </div>
+
+    <hr />
+    <div class="container">
+        <footer>
+            @(await Component.RenderZone("Footer"))
+        </footer>
+    </div>
+
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    @{
+        Html.IncludeScript("~/Apps/Core/Content/bootstrap/js/bootstrap.js");
+        Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.min.js");
+        Html.IncludeScript("~/Apps/Core/Content/Scripts/jquery.validate.unobtrusive.min.js");
+    }
+
+
+    @*@if (CurrentRequestData.CurrentUser != null && CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") && SiteSettings<SiteSettings>().EnableInlineEditing)
+        {
+            Html.RenderAction("InPageEditor", "InPageAdmin", new { id = Model.Id, area = "Admin" });
+        }*@
+    @if (IsSectionDefined("JavascriptBlockInclude"))
+    {
+        @RenderSection("JavascriptBlockInclude")
+    }
+    @Html.Raw(Model.CustomFooterScripts)
+    @*@Scripts.Render(AppScriptBundle.VirtualUrl)*@
+    @{ Html.RenderScripts(); }
+    @*@MiniProfiler.RenderIncludes()*@
+</body>
+</html>

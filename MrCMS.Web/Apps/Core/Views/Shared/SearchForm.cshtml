@@ -1,0 +1,14 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Core.Pages
+@{
+    var url = ""; //UniquePageHelper.GetUrl<SearchPage>();
+    // TODO: get unique page url
+}
+<form class="navbar-form navbar-left form-inline" role="search" method="GET" action="@url">
+    <div class="input-group">
+        <input type="text" class="form-control" name="term">
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+        </span>
+    </div>
+</form>

@@ -2,8 +2,7 @@
 
 namespace MrCMS.Website.Controllers
 {
-    //[HandleWebpageViews]
-    // TODO: handle webpage views
+    [HandleWebpageViews]
     public abstract class MrCMSUIController : MrCMSController
     {
         public void SetPageTitle(string pageTitle)

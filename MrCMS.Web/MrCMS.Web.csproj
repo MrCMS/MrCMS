@@ -17,4 +17,34 @@
     <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Apps\Core\Views\Shared\Components\Widget\CurrentPageSubNavigation.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Apps\Core\Views\Shared\Components\Widget\LinkedImage.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Apps\Core\Views\Shared\Components\Widget\Navigation.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Apps\Core\Views\Shared\Components\Widget\PlainTextWidget.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Apps\Core\Views\Shared\Components\Widget\Slider.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Apps\Core\Views\Shared\Components\Widget\TextWidget.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Apps\Core\Views\Shared\Components\Widget\UserLinks.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Apps\Core\Views\_ViewStart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Apps\Core\Views\_ViewImports.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
 </Project>

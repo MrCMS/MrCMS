@@ -1,0 +1,6 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Web.Apps.Core.Pages.TextPage
+@Html.RenderImage(Model.FeatureImage)
+@*@Editable(Model, page => page.BodyContent, true)*@
+@Html.Raw(Model.BodyContent)
+
