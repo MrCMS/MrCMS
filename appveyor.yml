@@ -7,8 +7,6 @@
   install:
     - nuget restore
   image: Visual Studio 2017
-  cache:
-    - '%USERPROFILE%\.nuget\packages'
   build_script:
   - ps: dotnet publish -c Debug
   artifacts:
@@ -22,8 +20,6 @@
   version: 1.0.{build}-master
   configuration: Release
   image: Visual Studio 2017
-  cache:
-    - packages
   install:
     - nuget restore
   build_script:
