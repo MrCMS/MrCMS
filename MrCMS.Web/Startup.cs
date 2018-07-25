@@ -97,7 +97,11 @@ namespace MrCMS.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new CompositeFileProvider(
+                    new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
+            });
 
             app.UseMvc(builder =>
             {

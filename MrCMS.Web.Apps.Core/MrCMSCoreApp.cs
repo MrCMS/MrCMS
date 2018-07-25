@@ -8,6 +8,8 @@ namespace MrCMS.Web.Apps.Core
 {
     public class MrCMSCoreApp : IMrCMSApp
     {
+        public string ContentPrefix { get; set; } = "/Apps/Core";
+
         public Assembly Assembly => GetType().Assembly;
 
         public IServiceCollection RegisterServices(IServiceCollection serviceCollection)

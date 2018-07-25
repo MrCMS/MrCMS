@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.FileProviders;
 using MrCMS.FileProviders;
@@ -18,8 +19,16 @@ namespace MrCMS.Apps
             Apps.Select(app => new EmbeddedViewFileProvider(app.Assembly));
 
         public IEnumerable<IFileProvider> ContentFileProviders =>
-            Apps.Select(app => new EmbeddedContentFileProvider(app.Assembly));
+            Apps.Select(app => new EmbeddedContentFileProvider(app.Assembly, app.ContentPrefix));
 
-        public void RegisterApp<TApp>() where TApp : IMrCMSApp, new() => Apps.Add(new TApp());
+        public void RegisterApp<TApp>(Action<MrCMSAppOptions> options = null) where TApp : IMrCMSApp, new()
+        {
+            var appOptions = new MrCMSAppOptions();
+            options?.Invoke(appOptions);
+            var app = new TApp();
+            if (!string.IsNullOrWhiteSpace(appOptions.ContentPrefix))
+                app.ContentPrefix = appOptions.ContentPrefix;
+            Apps.Add(app);
+        }
     }
 }

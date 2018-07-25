@@ -6,6 +6,8 @@ namespace MrCMS.Apps
 {
     public interface IMrCMSApp
     {
+        string ContentPrefix { get; set; }
+
         Assembly Assembly { get; }
 
         IServiceCollection RegisterServices(IServiceCollection serviceCollection);
