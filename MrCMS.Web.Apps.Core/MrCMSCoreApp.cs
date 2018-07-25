@@ -17,7 +17,6 @@ namespace MrCMS.Web.Apps.Core
 
         public IRouteBuilder MapRoutes(IRouteBuilder routeBuilder)
         {
-            routeBuilder.MapGet("test", context => context.Response.WriteAsync("Test"));
             return routeBuilder;
         }
     }
