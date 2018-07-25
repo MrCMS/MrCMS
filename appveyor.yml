@@ -8,11 +8,7 @@
     - nuget restore
   image: Visual Studio 2017
   cache:
-    - packages
-  # build:
-  #   publish_aspnet_core: true
-  #   parallel: true  
-  #   verbosity: normal
+    - '%USERPROFILE%\.nuget\packages'
   build_script:
   - ps: dotnet publish -c Debug
   artifacts:
