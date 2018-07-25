@@ -26,9 +26,9 @@
     - packages
   install:
     - nuget restore
-  build:
-    publish_aspnet_core: true
-    parallel: true
-    verbosity: normal
-  after_build:
+  build_script:
   - ps: dotnet publish -c Release
+  artifacts:
+   - path: '\MrCMS.Web\bin\Debug\netcoreapp2.1\publish'
+     name: WebSite
+     type: WebDeployPackage
