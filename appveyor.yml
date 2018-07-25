@@ -7,10 +7,12 @@
   install:
     - nuget restore
   image: Visual Studio 2017
+  cache:
+    - packages
   build:
     publish_aspnet_core: true
-    parallel: true
-    verbosity: minimal
+    parallel: true  
+    verbosity: normal
   # after_build:
   # - ps: dotnet publish -c Debug
 -
@@ -20,11 +22,13 @@
   version: 1.0.{build}-master
   configuration: Release
   image: Visual Studio 2017
+  cache:
+    - packages
   install:
     - nuget restore
   build:
     publish_aspnet_core: true
     parallel: true
-    verbosity: minimal
+    verbosity: normal
   # after_build:
   # - ps: dotnet publish -c Release
