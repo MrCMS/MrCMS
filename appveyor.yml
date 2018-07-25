@@ -9,12 +9,16 @@
   image: Visual Studio 2017
   cache:
     - packages
-  build:
-    publish_aspnet_core: true
-    parallel: true  
-    verbosity: normal
-  # after_build:
-  # - ps: dotnet publish -c Debug
+  # build:
+  #   publish_aspnet_core: true
+  #   parallel: true  
+  #   verbosity: normal
+  build_script:
+  - ps: dotnet publish -c Debug
+  artifacts:
+   - path: '\MrCMS.Web\bin\Debug\netcoreapp2.1\publish'
+     name: WebSite
+     type: WebDeployPackage
 -
   branches:
     only:
@@ -30,5 +34,5 @@
     publish_aspnet_core: true
     parallel: true
     verbosity: normal
-  # after_build:
-  # - ps: dotnet publish -c Release
+  after_build:
+  - ps: dotnet publish -c Release
