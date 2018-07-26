@@ -17,6 +17,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Web.Apps.Admin;
 using MrCMS.Web.Apps.Core;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
@@ -51,6 +52,7 @@ namespace MrCMS.Web
             var appContext = services.AddMrCMSApps(context =>
             {
                 context.RegisterApp<MrCMSCoreApp>();
+                context.RegisterApp<MrCMSAdminApp>();
             });
             services.AddSingleton(appContext);
 
