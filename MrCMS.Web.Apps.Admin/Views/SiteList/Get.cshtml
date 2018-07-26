@@ -1,0 +1,10 @@
+﻿@using MrCMS.Website
+@model System.Collections.Generic.IList<MrCMS.Entities.Multisite.Site>
+
+<ul class="dropdown-menu site-list" role="menu">
+    @foreach (var site in Model)
+    {
+        <li><a href="@site.GetFullDomain">@site.Name</a></li>
+    }
+</ul>
+

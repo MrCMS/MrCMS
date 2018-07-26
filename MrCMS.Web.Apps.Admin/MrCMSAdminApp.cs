@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Apps;
@@ -8,7 +9,9 @@ namespace MrCMS.Web.Apps.Admin
 {
     public class MrCMSAdminApp : IMrCMSApp
     {
+        public string Name => "Admin";
         public string ContentPrefix { get; set; } = "/Areas/Admin";
+        public string ViewPrefix { get; set; } = "/Areas/Admin";
         public Assembly Assembly => GetType().Assembly;
         public IServiceCollection RegisterServices(IServiceCollection serviceCollection)
         {
@@ -17,6 +20,11 @@ namespace MrCMS.Web.Apps.Admin
 
         public IRouteBuilder MapRoutes(IRouteBuilder routeBuilder)
         {
+            routeBuilder.MapAreaRoute("Admin route", 
+                "Admin",
+                "Admin/{controller}/{action}/{id?}",
+                new {controller = "Home", action = "Index"}
+            );
             return routeBuilder;
         }
     }

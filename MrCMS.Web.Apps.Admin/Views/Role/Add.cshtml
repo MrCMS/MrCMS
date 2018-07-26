@@ -1,0 +1,18 @@
+﻿@model MrCMS.Entities.People.UserRole
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Add", "Role", FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            @Resource("Admin User Roles Add", "Add Role")
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
+            </span>
+        </legend>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Name)
+            @Html.TextBoxFor(x => x.Name, new{@class="form-control"})
+            @Html.ValidationMessageFor(x => x.Name)
+        </div>
+    </fieldset>
+}

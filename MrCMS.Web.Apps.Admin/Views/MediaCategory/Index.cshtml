@@ -1,0 +1,15 @@
+﻿@using MrCMS.Web.Apps.Admin.Models
+@model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
+@{
+    ViewBag.Title = "Manage Media";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="inline-buttons-container">
+    <h1 class="page-header">@Resource("Admin Nav Media", "Media")</h1>
+    <div class="btn-group">
+        <a href="@Url.Action("Add", "MediaCategory")" class="btn btn-primary">@Resource("Admin Media New Folder Button", "New Folder")</a>
+    </div>
+</div>
+
+@{ Html.RenderAction("Manage", new { searchModel = Model });} 

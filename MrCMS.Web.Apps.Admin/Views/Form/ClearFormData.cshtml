@@ -1,0 +1,14 @@
+﻿@model MrCMS.Entities.Documents.Web.Webpage
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("ClearFormData", "Form",FormMethod.Post))
+{
+    @Html.HiddenFor(x=>x.Id)
+    <fieldset>
+        <legend>@Resource("Admin Form Delete Entries Title", "Delete All Entries")
+            <span class="btn-group  display-inline  pull-right">
+                <input type="submit" class="btn btn-danger" value="@Resource("Admin Form Delete Entries Button", "Delete All Entries")" />
+            </span>
+        </legend>
+        @Resource("Admin Form Delete Entries Warning", "Deleting entries cannot be undone, do you want to proceed?")
+    </fieldset>
+}

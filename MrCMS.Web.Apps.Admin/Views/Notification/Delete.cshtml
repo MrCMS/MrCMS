@@ -1,0 +1,13 @@
+﻿@using MrCMS.Helpers
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Delete", "Notification", FormMethod.Post, new { style = "display:inline;" }))
+{
+    <h1 class="page-header">
+        @Resource("Admin Notification Delete Title", "Delete Notification")
+        <span class="btn-group  display-inline  pull-right">
+            <input type="submit" class="btn btn-danger" value="Delete notification" />
+        </span>
+    </h1>
+    @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+
+}

@@ -1,0 +1,16 @@
+﻿@model dynamic
+<li class="dropdown">
+    <a href="#" data-toggle="dropdown"><i class="glyphicon glyphicon-bullhorn glyphicon"></i>&nbsp;<span class="hidden-sm hidden-md hidden-lg">Notifications&nbsp;</span><span class="badge badge-important" style="background: #d90000;" data-notification-count="true">-</span></a>
+    <div class="dropdown-menu notifications-dropdown reset-corners">
+        @using (Html.BeginForm("MarkAllAsRead", "PersistentNotification", FormMethod.Post, new { @style = "margin:0", data_mark_all_as_read = true }))
+        {
+            <div class="btn-group">
+                <button type="submit" class="btn btn-default">@Resource("Admin Dismiss All", "Dismiss all")</button>
+                <a href="@Url.Action("Index", "Notification")" class="btn btn-default ">@Resource("Admin View All", "View All")</a>
+            </div>
+        }
+        <ul data-notification-list="true" class="persistent-notification">
+            <li>@Resource("Admin No Notifications", "No Notifications")</li>
+        </ul>
+    </div>
+</li>

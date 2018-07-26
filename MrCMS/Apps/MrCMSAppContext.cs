@@ -16,7 +16,7 @@ namespace MrCMS.Apps
         public ISet<IMrCMSApp> Apps { get; }
 
         public IEnumerable<IFileProvider> ViewFileProviders =>
-            Apps.Select(app => new EmbeddedViewFileProvider(app.Assembly));
+            Apps.Select(app => new EmbeddedViewFileProvider(app.Assembly, app.ViewPrefix));
 
         public IEnumerable<IFileProvider> ContentFileProviders =>
             Apps.Select(app => new EmbeddedContentFileProvider(app.Assembly, app.ContentPrefix));

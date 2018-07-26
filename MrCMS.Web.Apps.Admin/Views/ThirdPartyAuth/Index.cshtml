@@ -1,0 +1,56 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Settings.ThirdPartyAuthSettings
+@{ ViewBag.Title = "Third Party Auth Settings"; }
+@using (Html.BeginForm("Index", "ThirdPartyAuth", FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            @Resource("Admin Third Party Auth Settings", "Third Party Auth Settings")
+            <span class="btn-group  display-inline  pull-right">
+                <button class="btn btn-primary">
+                    @Resource("Save")
+                </button>
+            </span>
+        </legend>
+        <div class="row">
+            <div class="col-lg-12">
+                @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Third Party Restart", "These settings are system wide. After changing third party auth settings the website will restart."))
+                <div class="form-group">
+                    @Html.InlineCheckboxFor(settings => settings.GoogleEnabled)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(settings => settings.GoogleClientId)
+                    @Html.TextBoxFor(settings => settings.GoogleClientId, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(settings => settings.GoogleClientSecret)
+                    @Html.TextBoxFor(settings => settings.GoogleClientSecret, new { @class = "form-control" })
+                </div>
+                <hr />
+                <div class="form-group">
+                    @Html.InlineCheckboxFor(settings => settings.FacebookEnabled)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(settings => settings.FacebookAppId)
+                    @Html.TextBoxFor(settings => settings.FacebookAppId, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(settings => settings.FacebookAppSecret)
+                    @Html.TextBoxFor(settings => settings.FacebookAppSecret, new { @class = "form-control" })
+                </div>
+                <hr />
+                <div class="form-group">
+                    @Html.InlineCheckboxFor(settings => settings.LinkedInEnabled)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(settings => settings.LinkedInClientId)
+                    @Html.TextBoxFor(settings => settings.LinkedInClientId, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(settings => settings.LinkedInClientSecret)
+                    @Html.TextBoxFor(settings => settings.LinkedInClientSecret, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </fieldset>
+}

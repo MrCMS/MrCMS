@@ -1,0 +1,31 @@
+﻿@using MrCMS.Apps
+@using MrCMS.Helpers
+@using MrCMS.Website
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutRoot.cshtml";
+}
+
+@{ await Html.RenderPartialAsync("Navbar"); }
+
+<div class="container-mrcms">
+
+    @{await Html.RenderPartialAsync("AdminNavigation"); }
+    <div class="main-content">
+        <div class="admin-message">
+            @{ await Html.RenderPartialAsync("Messages"); }
+        </div>
+        @RenderBody()
+        <div class="clearfix"> </div>
+    </div>
+    <div class="clearfix"> </div>
+</div>
+
+<!--[if lt IE 10]><br /><br />@{@Html.InfoBlock("Warning!", "You are using an outdated browser. For maximum functionality and experience please upgrade to Chrome, Firefox or IE 11.", AlertType.warning)}<![endif]-->
+@if (IsSectionDefined("JavaScriptBlock"))
+{
+    DefineSection("JavaScriptBlock", () =>
+    {
+        Write(RenderSection("JavaScriptBlock"));
+        return Task.CompletedTask;
+    });
+}

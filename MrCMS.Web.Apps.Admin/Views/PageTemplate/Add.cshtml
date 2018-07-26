@@ -1,0 +1,50 @@
+﻿@using System.Collections.Generic
+@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.PageTemplate
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var pageTypeOptions = ViewData["page-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var urlGeneratorOptions = ViewData["url-generator-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/add-page-template.js");
+}
+
+@using (Html.BeginForm("Add", "PageTemplate", FormMethod.Post))
+{
+    <fieldset>
+        <legend>
+            @Resource("Admin Page Template Add Title", "Add Page Template")
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
+            </span>
+        </legend>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Name)
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Name)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.PageTemplateName)
+            @Html.TextBoxFor(x => x.PageTemplateName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.PageTemplateName)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.PageType)
+            @Html.DropDownListFor(x => x.PageType, pageTypeOptions, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.PageType)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Layout.Id, Resource("Layout"))
+            @Html.DropDownListFor(x => x.Layout.Id, layoutOptions, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Layout.Id)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.UrlGeneratorType)
+            @Html.DropDownListFor(x => x.UrlGeneratorType, urlGeneratorOptions, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.UrlGeneratorType)
+        </div>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(template => template.SingleUse)
+        </div>
+    </fieldset>
+}

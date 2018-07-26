@@ -1,0 +1,107 @@
+﻿@using System.Collections.Generic
+@using MrCMS.Entities.Notifications
+@using MrCMS.Helpers
+@using MrCMS.Paging
+@using MrCMS.Web.Apps.Admin.ACL
+@using MrCMS.Web.Apps.Admin.Models
+@model MrCMS.Web.Apps.Admin.Models.NotificationSearchQuery
+@{
+    var results = ViewData["results"] as IPagedList<Notification> ?? PagedList<Notification>.Empty;
+    var notificationTypeOptions = ViewData["notification-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+@using (Html.BeginForm("Index", "Notification", FormMethod.Get))
+{
+    <fieldset>
+        <legend>
+            @Resource("Admin Notifications Title", "Notifications")
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn btn-primary" value="Search" />
+                @Html.ActionLink(Resource("Admin Notifications Push", "Push"), "Push", "Notification", new { }, new { @class = "btn btn-default", data_toggle = "fb-modal" })
+            </span>
+        </legend>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.Message)
+                    @Html.TextBoxFor(query => query.Message, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.NotificationType)
+                    @Html.DropDownListFor(query => query.NotificationType, notificationTypeOptions, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.From)
+                    @Html.TextBoxFor(query => query.From, new { @class = "date-time-picker form-control" })
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    @Html.LabelFor(query => query.To)
+                    @Html.TextBoxFor(query => query.To, new { @class = "date-time-picker form-control" })
+                </div>
+            </div>
+        </div>
+    </fieldset>
+}
+
+@if (results.Count == 0)
+{
+    @Resource("Admin Notifications None", "No notifications");
+}
+else
+{
+    <table class="table table-striped table-condensed" style="overflow: scroll">
+        <thead>
+            <tr>
+                <th>
+                    @Resource("Date")
+                </th>
+                <th>
+                    @Resource("Admin Notifications Notification Type", "Notification Type")
+                </th>
+                <th>
+                    @Resource("Message")
+                </th>
+                <th>
+                    @Resource("User")
+                </th>
+                <th>
+                    @Resource("Actions")
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var notification in results)
+            {
+                <tr>
+                    <td>
+                        @notification.CreatedOn.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+                    <td>
+                        @notification.NotificationType.ToString().BreakUpString()
+                    </td>
+                    <td>
+                        @Html.Raw(notification.Message)
+                    </td>
+                    <td>
+                        @notification.UserName
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            @if (Html.CanAccess<NotificationACL>(NotificationACL.Delete))
+                            {
+                                @Html.ActionLink("Delete", "Delete", "Notification", new {id = notification.Id}, new {@class = "btn btn-xs btn-danger", data_toggle = "fb-modal"})
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@Html.Pager(results, "Index", page => new { page })

@@ -15,7 +15,7 @@ namespace MrCMS.Helpers
     public static class SessionHelper
     {
         // TODO: get this from DI
-        private static int DefaultPageSize = 10;
+        public static int DefaultPageSize = 10;
         //public static ISession OpenFilteredSession(this ISessionFactory sessionFactory, HttpContextBase context)
         //{
         //    var session = new MrCMSSession(sessionFactory.OpenSession(), context);

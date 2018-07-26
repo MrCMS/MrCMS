@@ -1,0 +1,25 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Settings.SecuritySettings
+
+@using (Html.BeginForm("Settings", "SecurityOptions", FormMethod.Post))
+{
+    <fieldset>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(x => x.TwoFactorAuthEnabled)
+        </div>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(x => x.LogLoginAttempts)
+        </div>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(x => x.SendLoginNotificationEmails)
+        </div>
+        <div class="form-group">
+            @Html.InlineCheckboxFor(x => x.SendScriptChangeNotificationEmails)
+        </div>
+
+        <button class="btn btn-primary">
+            @Resource("Save")
+        </button>
+
+    </fieldset>
+}

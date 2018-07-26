@@ -1,0 +1,24 @@
+﻿@using System.Collections.Generic
+@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.Webpage
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Set", "WebpageParent", new { id = "" }, FormMethod.Post, new { @class = "update-parent-form" }))
+{
+    <fieldset>
+        <legend>@Resource("Admin Webpage Move", "Move")
+            <span class="btn-group  display-inline  pull-right">
+                 <input type="submit" class="btn-danger btn submit-form-btn" value="@Resource("Save")" />
+            </span>
+        </legend>
+        @Html.HiddenFor(x => x.Id)
+        <div class="form-group">
+            @Html.Label("parentVal", "Page")
+            @Html.DropDownList("parentVal", ViewData["valid-parents"] as IEnumerable<SelectListItem>, new { @class = "select2", @style="width:100%;" })
+        </div>
+    </fieldset>
+}
+@{
+    Html.IncludeCss("~/Areas/Admin/Content/Scripts/lib/select2-3.4.5/select2.css");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/lib/select2-3.4.5/select2.min.js");
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/move-webpage.js");
+}

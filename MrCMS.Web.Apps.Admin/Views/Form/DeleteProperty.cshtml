@@ -1,0 +1,16 @@
+﻿@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.FormProperties.FormProperty
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("DeleteProperty", "Form", FormMethod.Post))
+{
+    <fieldset>
+        <legend>@Resource("Admin Form Delete Field Title", "Delete Field")
+            <span class="btn-group  display-inline  pull-right">
+                <input type="button" class="btn btn-danger submit-form-btn" value="@Resource("Admin Form Delete Field Button", "Delete field")" />
+            </span>
+        </legend>
+        @Resource("Admin Form Delete Field Warning", "Deleting cannot be undone, do you want to proceed?")
+
+    </fieldset>
+}
+@{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/form-builder.js"); }

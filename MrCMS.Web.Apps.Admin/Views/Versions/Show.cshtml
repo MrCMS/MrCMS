@@ -1,0 +1,53 @@
+﻿@using System.Linq
+@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Models
+@model MrCMS.Web.Apps.Admin.Models.VersionsModel
+@if (Model.Items.Any())
+{
+    <div data-paging-type="async">
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>@Resource("Created On")
+                    </th>
+                    <th>@Resource("User")
+                    </th>
+                    <th>@Resource("Actions")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var version in Model.Items)
+                {
+                    <tr>
+                        <td>
+                            @version.CreatedOn
+                        </td>
+                        <td>
+                            @(version.User != null ? version.User.Email : "")
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                @if (version.AnyDifferencesFromCurrent())
+                                {
+                                    @Html.ActionLink(Resource("View"), "ViewChanges", "Webpage", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-primary btn-xs"})
+                                    @Html.ActionLink(Resource("Admin Webpage Version Revert To This", "Revert to this version"), "Revert", "Versions", new {id = version.Id}, new {data_toggle = "fb-modal", @class = "btn btn-warning btn-xs"})
+                                }
+                                else
+                                {
+                                    <span>Same as current</span>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @Html.Pager(Model.Items, "Show", i => new { Model.Id, page = i })
+    </div>
+}
+else
+{
+    <p>@Resource("Admin Webpage Versions None", "No document versions available").</p>
+}
+

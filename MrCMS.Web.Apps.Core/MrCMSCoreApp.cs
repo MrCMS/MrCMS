@@ -8,7 +8,9 @@ namespace MrCMS.Web.Apps.Core
 {
     public class MrCMSCoreApp : IMrCMSApp
     {
+        public string Name => "Core";
         public string ContentPrefix { get; set; } = "/Apps/Core";
+        public string ViewPrefix { get; set; }
 
         public Assembly Assembly => GetType().Assembly;
 

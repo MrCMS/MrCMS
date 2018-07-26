@@ -1,0 +1,50 @@
+﻿@using System.Globalization
+@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Helpers
+@using MrCMS.Website
+@using MrCMS.Website.Optimization
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/gif" href="/Areas/Admin/Content/Images/mrcms-icon.gif">
+
+    
+    @Html.RenderStyleBundle("~/admin/stylesheets/mrcms")
+    @Html.RenderStyleBundle("~/admin/stylesheets/apps")
+
+    @{ Html.RenderCss();}
+
+</head>
+<body>
+    <div id="loading" style="display: none;">
+        <img src="/Areas/Admin/Content/Images/ajax-loader2.gif" />
+    </div>
+    @RenderBody()
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"> </script>
+
+    @Html.RenderScriptBundle("~/admin/scripts/lib")
+    <script type="text/javascript" src="@Url.Content("~/signalr/hubs")"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.js"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CultureInfo.CurrentCulture.Name).js"></script>
+    @Html.RenderScriptBundle("~/admin/scripts/mrcms")
+    @Html.RenderScriptBundle("~/admin/scripts/apps")
+    @*@if (!CurrentRequestData.CurrentUser.DisableNotifications)
+    {
+        Html.RenderAction("Show", "TransientNotification");
+        Html.RenderAction("Show", "PersistentNotification");
+    }*@
+
+    @{ Html.RenderLocalisedScripts();}
+    @{ Html.RenderScripts();}
+
+    @Html.Hidden("CurrentUICulture", CultureInfo.CurrentCulture.Name)
+
+    @if (IsSectionDefined("JavaScriptBlock"))
+    {
+        @RenderSection("JavaScriptBlock")
+    }
+@*    @MiniProfiler.RenderIncludes()*@
+</body>
+</html>

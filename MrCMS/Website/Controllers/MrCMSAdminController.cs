@@ -9,6 +9,7 @@ namespace MrCMS.Website.Controllers
 {
     //[MrCMSAuthorize]
     //[ValidateInput(false)]
+    [Area("Admin")]
     public abstract class MrCMSAdminController : MrCMSController
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)

@@ -7,16 +7,13 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Internal;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
@@ -25,9 +22,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MrCMS.Services;
 using MrCMS.Settings;
-using MrCMS.Website;
-using TagBuilder = Microsoft.AspNetCore.Mvc.Rendering.TagBuilder;
-using TagRenderMode = Microsoft.AspNetCore.Mvc.Rendering.TagRenderMode;
 
 namespace MrCMS.Helpers
 {
@@ -41,7 +35,8 @@ namespace MrCMS.Helpers
             if (explicitValue)
                 htmlAttributes.Remove("checked"); // Explicit value must override dictionary
 
-            return MakeCheckbox(htmlHelper, InputType.CheckBox, metadata, typeof(TModel), htmlHelper.ViewData.Model, name, !explicitValue /* useViewData */,
+            return MakeCheckbox(htmlHelper, InputType.CheckBox, metadata, typeof(TModel), htmlHelper.ViewData.Model,
+                name, !explicitValue /* useViewData */,
                 isChecked ?? false, htmlAttributes);
         }
 
@@ -66,6 +61,7 @@ namespace MrCMS.Helpers
                 isChecked = modelStateWasChecked.Value;
                 usedModelState = true;
             }
+
             if (!usedModelState)
             {
                 var modelStateValue = htmlHelper.GetModelStateValue(fullName, typeof(string)) as string;
@@ -75,6 +71,7 @@ namespace MrCMS.Helpers
                     usedModelState = true;
                 }
             }
+
             if (!usedModelState && useViewData)
                 isChecked = htmlHelper.EvalBoolean(fullName);
 
@@ -88,12 +85,8 @@ namespace MrCMS.Helpers
             // If there are any errors for a named field, we add the css attribute.
             ModelStateEntry modelState;
             if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out modelState))
-            {
                 if (modelState.Errors.Count > 0)
-                {
                     tagBuilder.AddCssClass(HtmlHelper.ValidationInputCssClassName);
-                }
-            }
 
             AddValidationAttributes(htmlHelper.ViewContext, tagBuilder,
                 htmlHelper.MetadataProvider.GetModelExplorerForType(type, viewDataModel), name);
@@ -123,21 +116,30 @@ namespace MrCMS.Helpers
 
 
         /// <summary>
-        /// Adds validation attributes to the <paramref name="tagBuilder" /> if client validation
-        /// is enabled.
+        ///     Adds validation attributes to the <paramref name="tagBuilder" /> if client validation
+        ///     is enabled.
         /// </summary>
-        /// <param name="viewContext">A <see cref="T:Microsoft.AspNetCore.Mvc.Rendering.ViewContext" /> instance for the current scope.</param>
+        /// <param name="viewContext">
+        ///     A <see cref="T:Microsoft.AspNetCore.Mvc.Rendering.ViewContext" /> instance for the current
+        ///     scope.
+        /// </param>
         /// <param name="tagBuilder">A <see cref="T:Microsoft.AspNetCore.Mvc.Rendering.TagBuilder" /> instance.</param>
-        /// <param name="modelExplorer">The <see cref="T:Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorer" /> for the <paramref name="expression" />.</param>
+        /// <param name="modelExplorer">
+        ///     The <see cref="T:Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExplorer" /> for the
+        ///     <paramref name="expression" />.
+        /// </param>
         /// <param name="expression">Expression name, relative to the current model.</param>
-        private static void AddValidationAttributes(ViewContext viewContext, TagBuilder tagBuilder, ModelExplorer modelExplorer, string expression)
+        private static void AddValidationAttributes(ViewContext viewContext, TagBuilder tagBuilder,
+            ModelExplorer modelExplorer, string expression)
         {
             // TODO: check this works
-            modelExplorer = modelExplorer ?? ExpressionMetadataProvider.FromStringExpression(expression, viewContext.ViewData, modelExplorer.Metadata);
+            modelExplorer = modelExplorer ??
+                            ExpressionMetadataProvider.FromStringExpression(expression, viewContext.ViewData,
+                                modelExplorer.Metadata);
             var provider = new DefaultValidationHtmlAttributeProvider(
                 new OptionsWrapper<MvcViewOptions>(new MvcViewOptions()), modelExplorer.Metadata,
                 new ClientValidatorCache());
-            provider.AddAndTrackValidationAttributes(viewContext, modelExplorer, expression, (IDictionary<string, string>)tagBuilder.Attributes);
+            provider.AddAndTrackValidationAttributes(viewContext, modelExplorer, expression, tagBuilder.Attributes);
         }
 
         private static string GetInputTypeString(InputType inputType)
@@ -243,7 +245,9 @@ namespace MrCMS.Helpers
             Expression<Func<TModel, object>> expression, object htmlAttributes,
             string text = null)
         {
-            return LabelHelper(htmlHelper, ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata,
+            return LabelHelper(htmlHelper,
+                ExpressionMetadataProvider
+                    .FromLambdaExpression(expression, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata,
                 ExpressionHelper.GetExpressionText(expression), AnonymousObjectToHtmlAttributes(htmlAttributes),
                 text);
         }
@@ -252,7 +256,8 @@ namespace MrCMS.Helpers
             Expression<Func<TModel, bool>> expression, object labelAttributes = null, object checkboxAttributes = null,
             string text = null)
         {
-            var metadata = ExpressionMetadataProvider.FromLambdaExpression(expression, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata;
+            var metadata = ExpressionMetadataProvider
+                .FromLambdaExpression(expression, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata;
             var htmlFieldName = ExpressionHelper.GetExpressionText(expression);
             var checkbox =
                 CheckBoxHelper(htmlHelper, metadata, htmlFieldName,
@@ -275,7 +280,9 @@ namespace MrCMS.Helpers
         public static IHtmlContent Label(this IHtmlHelper htmlHelper, string labelFor, object htmlAttributes,
             string text = null)
         {
-            return LabelHelper(htmlHelper, ExpressionMetadataProvider.FromStringExpression(labelFor, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata,
+            return LabelHelper(htmlHelper,
+                ExpressionMetadataProvider
+                    .FromStringExpression(labelFor, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata,
                 // ModelMetadata.FromStringExpression(labelFor, htmlHelper.ViewData),
                 labelFor, new RouteValueDictionary(htmlAttributes), text);
         }
@@ -320,14 +327,8 @@ namespace MrCMS.Helpers
         private static string ParseUrl(string url)
         {
             Uri result;
-            if (Uri.TryCreate(url, UriKind.Absolute, out result))
-            {
-                return result.ToString();
-            }
-            if (Uri.TryCreate("http://" + url, UriKind.Absolute, out result))
-            {
-                return result.ToString();
-            }
+            if (Uri.TryCreate(url, UriKind.Absolute, out result)) return result.ToString();
+            if (Uri.TryCreate("http://" + url, UriKind.Absolute, out result)) return result.ToString();
             return url;
         }
 
@@ -347,11 +348,10 @@ namespace MrCMS.Helpers
         //    return new Website.MrCMSHtmlHelper(helper);
         //}
 
-        //public static IHtmlHelper GetHtmlHelper(this Controller controller)
-        //{
-        //    var viewContext = new ViewContext(controller.ControllerContext, new MrCMSHtmlHelperExtensions.FakeView(), controller.ViewData, controller.TempData, TextWriter.Null);
-        //    return new HtmlHelper(viewContext, new ViewPage()).GetWrappedHtml();
-        //}
+        public static IHtmlHelper GetHtmlHelper(this Controller controller)
+        {
+            return controller.HttpContext.RequestServices.GetRequiredService<IHtmlHelper>();
+        }
 
         public static RouteValueDictionary Merge(this RouteValueDictionary baseDictionary,
             RouteValueDictionary additions)
@@ -366,15 +366,13 @@ namespace MrCMS.Helpers
         {
             var routeValueDictionary = new RouteValueDictionary();
             if (htmlAttributes != null)
-            {
                 foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(htmlAttributes))
                     routeValueDictionary.Add(propertyDescriptor.Name.Replace('_', '-'),
                         propertyDescriptor.GetValue(htmlAttributes));
-            }
             return routeValueDictionary;
         }
 
-        public static IHtmlContent InfoBlock(this HtmlHelper helper, string boldText, string text,
+        public static IHtmlContent InfoBlock(this IHtmlHelper helper, string boldText, string text,
             AlertType alertType = AlertType.info)
         {
             var tagBulder = new TagBuilder("div");
@@ -389,7 +387,10 @@ namespace MrCMS.Helpers
                 tagBulder.InnerHtml.Append(" " + text);
             }
             else
+            {
                 tagBulder.InnerHtml.Append(text);
+            }
+
             return tagBulder;
         }
 
@@ -397,7 +398,8 @@ namespace MrCMS.Helpers
         {
             var seoSettings = html.ViewContext.HttpContext.RequestServices.GetRequiredService<SEOSettings>();
             var fileService = html.ViewContext.HttpContext.RequestServices.GetRequiredService<IFileService>();
-            var imageRenderingService = html.ViewContext.HttpContext.RequestServices.GetRequiredService<IImageRenderingService>();
+            var imageRenderingService =
+                html.ViewContext.HttpContext.RequestServices.GetRequiredService<IImageRenderingService>();
 
             var file = fileService.GetFileByUrl(seoSettings.Favicon);
             if (file == null)

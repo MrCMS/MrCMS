@@ -86,6 +86,7 @@ namespace MrCMS.Web
             services.AddSingleton<ICmsMethodTester, CmsMethodTester>();
             services.AddSingleton<IAssignPageDataToRouteData, AssignPageDataToRouteData>();
             services.AddSingleton<IQuerySerializer, QuerySerializer>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // TODO: update the resolution of this
             services.AddSingleton<IFileSystem, FileSystem>();

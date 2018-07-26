@@ -1,0 +1,81 @@
+﻿@using MrCMS.Entities.People
+@using MrCMS.Helpers
+@using MrCMS.Settings
+@model dynamic
+@{
+    ViewBag.Title = Resource("Security Options");
+    var settings = ViewData["settings"] as AuthRoleSettings;
+    var roles = ViewData["roles"] as List<UserRole>;
+}
+
+<h1>@Resource("Security Options")</h1>
+
+@{ Html.RenderAction("Settings"); }
+
+<hr />
+
+@using (Html.BeginForm("Index", "SecurityOptions", FormMethod.Post))
+{
+    <fieldset>
+        <h3>
+            @Resource("Send Login Notification Emails?")
+        </h3>
+        <p>@Resource("When enabled for a user role, an email will be sent to the user to alert them of a login using their account. This is useful so users can protect their account should they have not authorised the login.")</p>
+        <table class="table table-striped table-condensed">
+            <tbody>
+            @foreach (var role in roles)
+            {
+                <tr>
+                    <td>
+                        @role.Name
+                    </td>
+                    <td>
+                        @if (settings.SendNotificationEmailRoles.Contains(role.Id))
+                        {
+                            <input type="checkbox" name="@nameof(AuthRoleSettings.SendNotificationEmailRoles)" value="@role.Id" checked="checked" />
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="@nameof(AuthRoleSettings.SendNotificationEmailRoles)" value="@role.Id" />
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <hr />
+        <h3>
+            @Resource("Which user roles is 2 factor auth enabled for?")
+        </h3>
+        <div class="alert alert-warning">
+            <strong>@Resource("Note"): </strong> @Resource("2FA is currently enforced if selected for a role. It is not opt in by the user.")
+        </div>
+        <table class="table table-striped table-condensed">
+            <tbody>
+            @foreach (var role in roles)
+            {
+                <tr>
+                    <td>
+                        @role.Name
+                    </td>
+                    <td>
+                        @if (settings.TwoFactorAuthRoles.Contains(role.Id))
+                        {
+                            <input type="checkbox" name="@nameof(AuthRoleSettings.TwoFactorAuthRoles)" value="@role.Id" checked="checked" />
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="@nameof(AuthRoleSettings.TwoFactorAuthRoles)" value="@role.Id" />
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+    
+        </table>
+        <button class="btn btn-primary" type="submit">
+            @Resource("Save")
+        </button>
+    </fieldset>
+
+}

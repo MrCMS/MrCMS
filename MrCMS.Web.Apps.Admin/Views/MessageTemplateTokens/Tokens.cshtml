@@ -1,0 +1,5 @@
+﻿@using System.Linq
+@model System.Collections.Generic.List<string>
+<hr />
+<strong>@Resource("Admin Message Template Tokens", "Available Tokens"):</strong>
+@string.Join(", ", Model.Select(s => string.Format("{{{0}}}", s)))

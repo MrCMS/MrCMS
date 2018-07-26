@@ -1,0 +1,80 @@
+﻿@model MrCMS.Entities.Messaging.QueuedMessage
+<fieldset>
+    <legend>
+        @Resource("Message") #@Model.Id
+        <span class="btn-group  display-inline  pull-right">
+            @Html.ActionLink(Resource("Back"), "Index", null, new { @class = "btn " })
+        </span>
+    </legend>
+    <table class="table table-striped table-condensed">
+        <tbody>
+            <tr>
+                <td class="col-lg-2">
+                    @Resource("From")
+                </td>
+                <td class="col-lg-10">
+                    @Model.FromDescription
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Resource("Message")To
+                </td>
+                <td>
+                    @Model.ToDescription
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Resource("Cc")
+                </td>
+                <td>
+                    @Model.Cc
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Resource("Bcc")
+                </td>
+                <td>
+                    @Model.Bcc
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Resource("Subject")
+                </td>
+                <td>
+                    @Model.Subject
+                </td>
+            </tr>
+            @*<tr>
+                <td>
+                    @Resource("Body")
+                </td>
+                <td>
+                    @Html.Raw(Model.Body)
+                </td>
+            </tr>*@
+            <tr>
+                <td>
+                    @Resource("Created On")
+                </td>
+                <td>
+                    @Model.CreatedOn.ToString()
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Resource("Sent On")
+                </td>
+                <td>
+                    @Model.SentOnDescription
+                </td>
+            </tr>
+        </tbody>
+    </table>
+   
+     <iframe src="@Url.Content("/Admin/MessageQueue/GetBody/"+Model.Id)" style="width:100%; height:400px" frameborder="0"></iframe>
+    
+</fieldset>

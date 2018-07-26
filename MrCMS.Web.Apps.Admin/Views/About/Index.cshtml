@@ -1,0 +1,14 @@
+﻿@using MrCMS.Apps
+@using MrCMS.Helpers
+@using MrCMS.Website
+@model dynamic
+@{
+    ViewBag.Title = "About MrCMS";
+}
+<fieldset>
+    <legend>About</legend>
+    <p>&copy; Mr CMS 2012-@CurrentRequestData.Now.Year - v@(Html.AssemblyVersion())</p>
+    <p>@Resource("Admin Logged in from", "Logged in from") @CurrentRequestData.CurrentContext.GetCurrentIP()</p>
+    <h4>@Resource("Admin Layout Installed apps", "Installed apps")</h4>
+    <p>@MrCMSApp.CurrentAppSummary</p>
+</fieldset>

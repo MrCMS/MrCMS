@@ -4,6 +4,7 @@ using System.Linq;
 //using MrCMS.Paging;
 using MrCMS.Settings;
 using MrCMS.Website;
+using X.PagedList;
 
 namespace MrCMS.Helpers
 {
@@ -34,10 +35,10 @@ namespace MrCMS.Helpers
             }
         }
 
-        // TODO: paged list
-        //public static IPagedList<T> ToPagedList<T>(this IEnumerable<T> source, int page, int? pageSize = null)
-        //{
-        //    return new PagedList<T>(source, page, pageSize ?? MrCMSApplication.Get<SiteSettings>().DefaultPageSize);
-        //}
+        public static IPagedList<T> ToPagedList<T>(this IEnumerable<T> source, int page, int? pageSize = null)
+        {
+            // TODO: configure page size
+            return new PagedList<T>(source, page, pageSize ?? SessionHelper.DefaultPageSize);
+        }
     }
 }

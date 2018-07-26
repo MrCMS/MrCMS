@@ -1,0 +1,22 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Website
+@model MrCMS.Entities.Resources.StringResource
+
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
+@using (Html.BeginForm("Edit", "Resource", FormMethod.Post))
+{
+    <fieldset>
+        <legend>@Resource("Admin Resources Edit resource", "Edit resource") 
+            <span class="btn-group display-inline pull-right">
+                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
+            </span>
+        </legend>
+        "@Model.DisplayKey" @Resource("for") @Model.DisplayUICulture
+        @Html.ReturnToReferrer()
+        <div class="form-group">
+            @Html.LabelFor(task => task.Value)
+            @Html.TextBoxFor(task => task.Value, new { @class = "form-control" })
+            @Html.ValidationMessageFor(resource => resource.Value)
+        </div>
+    </fieldset>
+}

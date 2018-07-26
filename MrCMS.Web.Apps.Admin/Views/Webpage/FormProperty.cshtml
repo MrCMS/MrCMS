@@ -1,0 +1,53 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Entities.Documents.Web.FormProperties
+@using MrCMS.Helpers
+@model MrCMS.Entities.Documents.Web.FormProperties.FormProperty
+<div class="row">
+    <div class="col-lg-7">
+        <h4>@Model.GetType().Name.BreakUpString()</h4>
+    </div>
+    <div class="col-lg-5">
+        <div class="pull-right btn-group">
+            @Html.ActionLink(Resource("Edit"), "EditProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+            @Html.ActionLink(Resource("Delete"), "DeleteProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <table class="table table-bordered table-striped table-condensed">
+            <tbody>
+                <tr>
+                    <td class="col-lg-2">@Resource("Name")</td>
+                    <td>@Model.Name</td>
+                </tr>
+                <tr>
+                    <td>@Resource("Admin Webpage Form Property Label", "Label Text")</td>
+                    <td>@Model.LabelText</td>
+                </tr>
+                <tr>
+                    <td>@Resource("Required")</td>
+                    <td>@Model.Required</td>
+                </tr>
+                @if (Model is TextBox)
+                {
+                    var placeholder = (Model as TextBox).PlaceHolder;
+                    <tr>
+                        <td>@Resource("Placeholder")</td>
+                        <td>@placeholder</td>
+                    </tr>   
+                }
+                @if (Model is FormPropertyWithOptions)
+                {
+                    <tr>
+                        <td>@Resource("Admin Webpage Form Option", "Options")</td>
+                        <td>@{ Html.RenderPartial("FormPropertyOptions", Model); }</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+

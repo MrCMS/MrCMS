@@ -1,0 +1,43 @@
+﻿@using MrCMS.Helpers
+@using MrCMS.Settings
+@model List<SystemSettingsBase>
+@{
+    ViewBag.Title = "Edit Settings";
+}
+@if (TempData["settings-saved"] != null)
+{
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @Resource("Admin Settings Saved", "Settings saved")
+    </div>
+}
+
+@using (Html.BeginForm("Index", "SystemSettings", FormMethod.Post, new {id = "edit-settings"}))
+{
+    <fieldset>
+        <legend>
+            @Resource("Admin System Settings", "System Settings")
+            <span class="btn-group  display-inline  pull-right">
+                <button class="btn btn-primary">
+                    @Resource("Save")
+                </button>
+            </span>
+        </legend>
+
+        <div id="tabs">
+            <ul class="nav nav-tabs" data-stickytabs="system-settings">
+                @foreach (SystemSettingsBase settingType in Model)
+                {
+                    string typeName = settingType.GetType().Name;
+                    <li><a href="#@typeName" data-toggle="tab"> @typeName.BreakUpString()</a></li>
+                }
+            </ul>
+            <div class="tab-content">
+                @foreach (SystemSettingsBase settingType in Model)
+                {
+                    Html.RenderPartial("SystemSettings", settingType);
+                }
+            </div>
+        </div>
+    </fieldset>
+}
