@@ -10,7 +10,6 @@ namespace MrCMS.Services
         void InitializeAllIndices();
         List<MrCMSIndex> GetIndexes();
         void Reindex(string typeName);
-        void Optimise(string typeName);
         IIndexManagerBase GetIndexManagerBase(Type indexType);
         IEnumerable<IIndexManagerBase> GetAllIndexManagers();
     }

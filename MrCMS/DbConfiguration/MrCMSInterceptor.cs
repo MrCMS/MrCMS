@@ -1,17 +1,17 @@
 using System;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using NHibernate;
 
 namespace MrCMS.DbConfiguration
 {
     public class MrCMSInterceptor : EmptyInterceptor
     {
-        public HttpContext Context { get; }
+        public HttpContext Context => ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
         public IServiceProvider ServiceProvider { get; }
 
-        public MrCMSInterceptor(HttpContext context, IServiceProvider serviceProvider)
+        public MrCMSInterceptor(IServiceProvider serviceProvider)
         {
-            Context = context;
             ServiceProvider = serviceProvider;
         }
     }

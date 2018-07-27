@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.AspNetCore.Http;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities;
 using MrCMS.Settings;
@@ -9,6 +10,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
 using X.PagedList;
+using ISession = NHibernate.ISession;
 
 namespace MrCMS.Helpers
 {
@@ -16,12 +18,19 @@ namespace MrCMS.Helpers
     {
         // TODO: get this from DI
         public static int DefaultPageSize = 10;
-        //public static ISession OpenFilteredSession(this ISessionFactory sessionFactory, HttpContextBase context)
-        //{
-        //    var session = new MrCMSSession(sessionFactory.OpenSession(), context);
-        //    session.EnableFilter("NotDeletedFilter");
-        //    return session;
-        //}
+        public static ISession OpenFilteredSession(this ISessionFactory sessionFactory, IServiceProvider serviceProvider)
+        {
+            var sessionBuilder = sessionFactory.WithOptions()
+                .Interceptor(new MrCMSInterceptor(serviceProvider));
+            var session = new MrCMSSession(sessionBuilder.OpenSession());
+            session.EnableFilter("NotDeletedFilter");
+            return session;
+        }
+
+        public static HttpContext GetContext(this ISession session)
+        {
+            return (session.GetSessionImplementation().Interceptor as MrCMSInterceptor)?.Context;
+        }
 
         public static TResult Transact<TResult>(this ISession session, Func<ISession, TResult> func)
         {
@@ -118,7 +127,7 @@ namespace MrCMS.Helpers
             return query.RowCount() > 0;
         }
 
-        public static T GetByGuid<T>(this ISession session,Guid guid) where T : SystemEntity
+        public static T GetByGuid<T>(this ISession session, Guid guid) where T : SystemEntity
         {
             // we use list here, as it seems to cache more performantly than .SingleOrDefault()
             return session.QueryOver<T>().Where(x => x.Guid == guid).Cacheable().List().FirstOrDefault();

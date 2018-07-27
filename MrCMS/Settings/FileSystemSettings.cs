@@ -1,4 +1,8 @@
+using System.Collections.Generic;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Helpers;
+using MrCMS.Services;
 
 namespace MrCMS.Settings
 {
@@ -27,17 +31,16 @@ namespace MrCMS.Settings
         [DisplayName("Use Azure for Lucene")]
         public bool UseAzureForLucene { get; set; }
 
-        //public List<SelectListItem> StorageTypeOptions
-        //{
-        //    get
-        //    {
-        //        var types = TypeHelper.GetAllConcreteTypesAssignableFrom<IFileSystem>();
+        public List<SelectListItem> StorageTypeOptions
+        {
+            get
+            {
+                var types = TypeHelper.GetAllConcreteTypesAssignableFrom<IFileSystem>();
 
-        //        return types.BuildSelectItemList(type => type.Name, type => type.FullName, type => type.FullName == StorageType,
-        //            emptyItem: null);
-        //    }
-        //}
-        // TODO: options for file system
+                return types.BuildSelectItemList(type => type.Name, type => type.FullName, type => type.FullName == StorageType,
+                    emptyItem: null);
+            }
+        }
 
         public override bool RenderInSettings { get { return false; } }
     }

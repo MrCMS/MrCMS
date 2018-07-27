@@ -21,7 +21,7 @@ namespace MrCMS.Website.CMS
             if (user == null)
                 return false;
 
-            return true;
+            return user.IsAdmin;
             // TODO: role check
             //return await _userRoleManager.IsInRoleAsync(user, UserRole.Administrator);
         }

@@ -78,7 +78,6 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public void Optimise(string typeName)
         {
-            _indexService.Optimise(typeName);
         }
     }
 }

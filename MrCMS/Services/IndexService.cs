@@ -20,7 +20,6 @@ namespace MrCMS.Services
         {
             List<MrCMSIndex> mrCMSIndices = GetIndexes();
             mrCMSIndices.ForEach(index => Reindex(index.TypeName));
-            mrCMSIndices.ForEach(index => Optimise(index.TypeName));
         }
 
         public IEnumerable<IIndexManagerBase> GetAllIndexManagers()
@@ -55,14 +54,6 @@ namespace MrCMS.Services
             IIndexManagerBase indexManagerBase = GetIndexManagerBase(definitionType);
 
             indexManagerBase.ReIndex();
-        }
-
-        public void Optimise(string typeName)
-        {
-            Type definitionType = TypeHelper.GetTypeByName(typeName);
-            IIndexManagerBase indexManagerBase = GetIndexManagerBase(definitionType);
-
-            indexManagerBase.Optimise();
         }
 
         private Func<Type, IIndexManagerBase> DefaultGetIndexManager()

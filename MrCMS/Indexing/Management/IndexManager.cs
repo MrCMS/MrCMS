@@ -273,13 +273,6 @@ namespace MrCMS.Indexing.Management
             return Definition.Convert(entity as TEntity);
         }
 
-        public IndexResult Optimise()
-        {
-            return IndexResult.Empty;
-            // TODO: todo
-            //return IndexResult.GetResult(() => Write(writer => writer.Optimize()));
-        }
-
         private Directory GetDirectory(Site site)
         {
             return _getLuceneDirectory.Get(site, IndexFolderName);

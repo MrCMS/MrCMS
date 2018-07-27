@@ -6,23 +6,23 @@ namespace MrCMS.Services.Notifications
 {
     public class NotificationDisabler : IDisposable
     {
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly HttpContext _context;
         private readonly bool _enableOnDispose;
 
-        public NotificationDisabler(IHttpContextAccessor contextAccessor)
+        public NotificationDisabler(HttpContext context)
         {
-            _contextAccessor = contextAccessor;
-            if (!_contextAccessor.HttpContext.AreNotificationsDisabled())
+            _context = context;
+            if (!_context.AreNotificationsDisabled())
             {
                 _enableOnDispose = true;
-                _contextAccessor.HttpContext.DisableNotifications();
+                _context.DisableNotifications();
             }
         }
 
         public void Dispose()
         {
             if (_enableOnDispose)
-                _contextAccessor.HttpContext.EnableNotifications();
+                _context.EnableNotifications();
         }
     }
 }

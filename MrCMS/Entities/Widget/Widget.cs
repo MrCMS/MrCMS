@@ -3,6 +3,7 @@ using System.ComponentModel;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Website.Caching;
 
 namespace MrCMS.Entities.Widget
 {
@@ -41,9 +42,8 @@ namespace MrCMS.Entities.Widget
         [DisplayName("Cache for how many seconds?")]
         public virtual int CacheLength { get; set; }
 
-        //[DisplayName("Cache expiry type")]
-        //public virtual CacheExpiryType CacheExpiryType { get; set; }
-        // TODO: cache expiry
+        [DisplayName("Cache expiry type")]
+        public virtual CacheExpiryType CacheExpiryType { get; set; }
 
         [DefaultValue(true)]
         [DisplayName("Show on child pages")]

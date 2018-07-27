@@ -1,14 +1,14 @@
 ﻿
 using Microsoft.AspNetCore.Mvc.Filters;
+using MrCMS.Apps;
 
 namespace MrCMS.Website.Controllers
 {
-    public abstract class MrCMSAppUIController<T> : MrCMSUIController //where T : MrCMSApp, new()
+    public abstract class MrCMSAppUIController<T> : MrCMSUIController where T : IMrCMSApp, new()
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            // TODO: apps
-            //RouteData.DataTokens["app"] = new T().AppName;
+            RouteData.DataTokens["app"] = new T().Name;
             base.OnActionExecuting(filterContext);
         }
     }

@@ -47,7 +47,11 @@ namespace MrCMS.Indexing.Management
         private IndexWriter GetNewIndexWriter(string definitionName, Analyzer analyzer, bool recreateIndex)
         {
             var writer = new IndexWriter(_getLuceneDirectory.Get(_site, definitionName), new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer));
-            // TODO: recreate index
+            if (recreateIndex)
+            {
+                writer.DeleteAll();
+                writer.Commit();
+            }
             return writer;
             //analyzer, recreateIndex, IndexWriter.MAX_TERM_LENGTH);
         }

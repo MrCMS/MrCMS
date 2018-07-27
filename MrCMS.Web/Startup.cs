@@ -81,7 +81,8 @@ namespace MrCMS.Web
                     ConnectionString =
                         "Data Source=localhost;Initial Catalog=mrcms-migration;Integrated Security=True;Persist Security Info=False;MultipleActiveResultSets=True"
                 })).CreateSessionFactory());
-            services.AddScoped<ISession>(provider => provider.GetRequiredService<ISessionFactory>().OpenSession());
+            services.AddScoped<ISession>(provider =>
+                provider.GetRequiredService<ISessionFactory>().OpenFilteredSession(provider));
 
             services.AddSingleton<ICmsMethodTester, CmsMethodTester>();
             services.AddSingleton<IAssignPageDataToRouteData, AssignPageDataToRouteData>();
@@ -143,8 +144,10 @@ namespace MrCMS.Web
         public void PopulateValues(ViewLocationExpanderContext context)
         {
             if (!context.IsMainPage) return;
-            if (!(context.ActionContext.HttpContext.Items[ProcessWebpageViews.CurrentPage] is Webpage webpage)) return;
-            context.Values["webpage"] = webpage.DocumentType;
+            var webpage = context.ActionContext.HttpContext.RequestServices.GetRequiredService<IGetCurrentPage>().GetPage();
+
+            if (webpage != null)
+                context.Values["webpage"] = webpage.DocumentType;
         }
 
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)

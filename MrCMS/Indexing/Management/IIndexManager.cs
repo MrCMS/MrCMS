@@ -29,7 +29,6 @@ namespace MrCMS.Indexing.Management
         Type GetEntityType();
         void Write(Action<IndexWriter> action);
         Document GetDocument(object entity);
-        IndexResult Optimise();
         IndexResult Update(object entity);
         IndexResult Insert(object entity);
         IndexResult Delete(object entity);

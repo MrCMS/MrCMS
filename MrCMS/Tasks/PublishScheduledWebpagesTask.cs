@@ -3,6 +3,7 @@ using System.Linq;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Services.Notifications;
 using NHibernate;
 
 namespace MrCMS.Tasks
@@ -29,7 +30,7 @@ namespace MrCMS.Tasks
                 var due = _session.QueryOver<Webpage>().Where(x => !x.Published && x.PublishOn <= now).List();
                 if (!due.Any())
                     return;
-                //using (new NotificationDisabler())
+                using (new NotificationDisabler(_session.GetContext()))
                 // TODO: notifications  
                 {
                     _session.Transact(session =>

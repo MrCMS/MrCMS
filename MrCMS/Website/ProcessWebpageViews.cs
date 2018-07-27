@@ -10,7 +10,6 @@ namespace MrCMS.Website
     {
         public const string WidgetData = "widget-data";
         public const string LayoutFile = "layout-file";
-        public const string CurrentPage = "current-page";
 
         private readonly IGetCurrentLayout _getCurrentLayout;
         private readonly IGetWidgetDisplayInfo _getWidgetDisplayInfo;
@@ -23,7 +22,6 @@ namespace MrCMS.Website
 
         public void Process(ViewResult result, Webpage webpage)
         {
-            result.ViewData[CurrentPage] = webpage;
 
             if (string.IsNullOrWhiteSpace(result.ViewName))
             {

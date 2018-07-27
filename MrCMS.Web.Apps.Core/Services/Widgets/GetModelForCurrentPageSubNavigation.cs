@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Services;
 using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.Navigation;
@@ -15,17 +16,17 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
     public class GetModelForCurrentPageSubNavigation : GetWidgetModelBase<CurrentPageSubNavigation>
     {
         private readonly ISession _session;
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IGetCurrentPage _getCurrentPage;
 
-        public GetModelForCurrentPageSubNavigation(ISession session, IHttpContextAccessor contextAccessor)
+        public GetModelForCurrentPageSubNavigation(ISession session, IGetCurrentPage getCurrentPage)
         {
             _session = session;
-            _contextAccessor = contextAccessor;
+            _getCurrentPage = getCurrentPage;
         }
 
         public override object GetModel(CurrentPageSubNavigation widget)
         {
-            var currentPage = _contextAccessor.HttpContext.Items[ProcessWebpageViews.CurrentPage] as Webpage;
+            var currentPage = _getCurrentPage.GetPage();
             var webpages =
                 GetPublishedChildWebpages(currentPage.Id);
             var navigationRecords =

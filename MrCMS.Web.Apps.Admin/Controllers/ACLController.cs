@@ -33,7 +33,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(AclAdminACL), AclAdminACL.Edit)]
-        public RedirectToActionResult Index(/*[IoCModelBinder(typeof(ACLUpdateModelBinder))]*/
+        public RedirectToActionResult Index(
+            /*[IoCModelBinder(typeof(ACLUpdateModelBinder))]*/
+            //[ModelBinder(typeof())]
             // TODO: model binder
             List<ACLUpdateRecord> model)
         {

@@ -1,9 +1,11 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Documents.Web
+@using MrCMS.Services
 @using MrCMS.Website
 @model MrCMS.Web.Apps.Core.Models.CurrentPageSubNavigationModel
+@inject IGetCurrentPage GetCurrentPage
 @{
-    var currentPage = ViewData[ProcessWebpageViews.CurrentPage] as Webpage;
+    var currentPage = GetCurrentPage.GetPage();
     var activePages = currentPage?.ActivePages.Select(webpage => "/" + webpage.LiveUrlSegment).ToList()?? new List<string>();
 }
 @if (Model.Model.ShowNameAsTitle)
