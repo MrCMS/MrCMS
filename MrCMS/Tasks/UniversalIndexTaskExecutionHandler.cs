@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Search;
+using MrCMS.Services;
 
 namespace MrCMS.Tasks
 {
@@ -9,12 +10,15 @@ namespace MrCMS.Tasks
         private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
         private readonly ISearchConverter _searchConverter;
         private readonly ITaskStatusUpdater _taskStatusUpdater;
+        private readonly IEventContext _eventContext;
 
-        public UniversalIndexTaskExecutionHandler(IUniversalSearchIndexManager universalSearchIndexManager,ISearchConverter searchConverter, ITaskStatusUpdater taskStatusUpdater)
+        public UniversalIndexTaskExecutionHandler(IUniversalSearchIndexManager universalSearchIndexManager, ISearchConverter searchConverter, ITaskStatusUpdater taskStatusUpdater,
+            IEventContext eventContext)
         {
             _universalSearchIndexManager = universalSearchIndexManager;
             _searchConverter = searchConverter;
             _taskStatusUpdater = taskStatusUpdater;
+            _eventContext = eventContext;
         }
 
         public int Priority
@@ -39,7 +43,7 @@ namespace MrCMS.Tasks
                     .Distinct(UniversalSearchIndexData.Comparer)
                     .ToList();
 
-            UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, data);
+            UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, data, _eventContext);
             List<TaskExecutionResult> results = list.Select(TaskExecutionResult.Successful).ToList();
             _taskStatusUpdater.CompleteExecution(results);
             return results;

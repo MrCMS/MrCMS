@@ -4,6 +4,7 @@ using MrCMS.ACL.Rules;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 using NHibernate;
@@ -34,8 +35,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [ActionName("Index")]
         [Acl(typeof(SiteSettingsACL), SiteSettingsACL.Save)]
         public RedirectToActionResult Index_Post(
-            //[IoCModelBinder(typeof(SiteSettingsModelBinder))]
-            List<SiteSettingsBase> settings) // TODO: model-binding
+            [ModelBinder(typeof(SiteSettingsModelBinder))]
+            List<SiteSettingsBase> settings) 
         {
             settings.ForEach(s => _configurationProvider.SaveSettings(s));
             TempData["settings-saved"] = true;
@@ -50,8 +51,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         public RedirectToActionResult FileSystem(
-            //[IoCModelBinder(typeof(FileSystemSettingsModelBinder))]
-            FileSystemSettings settings) // TODO: model-binding
+            [ModelBinder(typeof(FileSystemSettingsModelBinder))]
+            FileSystemSettings settings) 
         {
             _configurationProvider.SaveSettings(settings);
             TempData.SuccessMessages().Add("Settings saved.".AsResource(HttpContext));

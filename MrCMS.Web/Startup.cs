@@ -83,6 +83,8 @@ namespace MrCMS.Web
                 })).CreateSessionFactory());
             services.AddScoped<ISession>(provider =>
                 provider.GetRequiredService<ISessionFactory>().OpenFilteredSession(provider));
+            services.AddScoped<IStatelessSession>(provider =>
+                provider.GetRequiredService<ISessionFactory>().OpenStatelessSession());
 
             services.AddSingleton<ICmsMethodTester, CmsMethodTester>();
             services.AddSingleton<IAssignPageDataToRouteData, AssignPageDataToRouteData>();

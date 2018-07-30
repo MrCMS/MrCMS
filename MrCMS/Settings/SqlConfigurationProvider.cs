@@ -102,7 +102,7 @@ namespace MrCMS.Settings
                     SetSetting(existingInDb, typeName, prop.Name, value ?? "");
                 }
             });
-            EventContext.Instance.Publish<IOnSavingSiteSettings<TSettings>, OnSavingSiteSettingsArgs<TSettings>>(
+            _session.GetService<IEventContext>().Publish<IOnSavingSiteSettings<TSettings>, OnSavingSiteSettingsArgs<TSettings>>(
                 new OnSavingSiteSettingsArgs<TSettings>(settings, existing));
         }
 

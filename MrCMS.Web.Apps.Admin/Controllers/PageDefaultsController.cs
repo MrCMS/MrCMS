@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
@@ -22,8 +23,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         public PartialViewResult Set(
-            //[IoCModelBinder(typeof(GetUrlGeneratorOptionsTypeModelBinder))]
-            Type type) // TODO: model-binding
+            [ModelBinder(typeof(GetUrlGeneratorOptionsTypeModelBinder))]
+            Type type) 
         {
             ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(type);
             ViewData["layout-options"] = _service.GetLayoutOptions();

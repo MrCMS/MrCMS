@@ -6,6 +6,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 using MrCMS.Models;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
 
@@ -51,7 +52,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddProperty(/*[IoCModelBinder(typeof(AddFormPropertyModelBinder))]*/ FormProperty formProperty) // TODO: model binding
+        public JsonResult AddProperty([ModelBinder(typeof(AddFormPropertyModelBinder))] FormProperty formProperty) 
         {
             _formAdminService.AddFormProperty(formProperty);
             return Json(new FormActionResult { success = true });

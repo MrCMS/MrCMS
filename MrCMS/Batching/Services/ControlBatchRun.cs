@@ -9,10 +9,12 @@ namespace MrCMS.Batching.Services
     public class ControlBatchRun : IControlBatchRun
     {
         private readonly ISession _session;
+        private readonly IEventContext _eventContext;
 
-        public ControlBatchRun(ISession session)
+        public ControlBatchRun(ISession session, IEventContext eventContext)
         {
             _session = session;
+            _eventContext = eventContext;
         }
 
         public bool Start(BatchRun batchRun)
@@ -26,7 +28,7 @@ namespace MrCMS.Batching.Services
                 batchRun.Status = BatchRunStatus.Executing;
                 session.Update(batchRun);
             });
-            EventContext.Instance.Publish<IOnBatchRunStart, BatchRunStartArgs>(new BatchRunStartArgs
+            _session.GetService<IEventContext>().Publish<IOnBatchRunStart, BatchRunStartArgs>(new BatchRunStartArgs
             {
                 BatchRun = batchRun
             });
@@ -44,7 +46,7 @@ namespace MrCMS.Batching.Services
                 batchRun.Status = BatchRunStatus.Paused;
                 session.Update(batchRun);
             });
-            EventContext.Instance.Publish<IOnBatchRunPause, BatchRunPauseArgs>(new BatchRunPauseArgs
+            _eventContext.Publish<IOnBatchRunPause, BatchRunPauseArgs>(new BatchRunPauseArgs
             {
                 BatchRun = batchRun
             });

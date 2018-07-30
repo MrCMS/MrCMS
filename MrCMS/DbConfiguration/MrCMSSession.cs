@@ -706,7 +706,9 @@ namespace MrCMS.DbConfiguration
 
         public ISession GetSession(EntityMode entityMode)
         {
+#pragma warning disable 618
             return _session.GetSession(entityMode);
+#pragma warning restore 618
         }
 
         public IQueryable<T> Query<T>()

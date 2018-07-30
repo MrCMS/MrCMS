@@ -8,6 +8,7 @@ using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
@@ -40,8 +41,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [ActionName("Add")]
         public JsonResult Add_POST(
-            //[IoCModelBinder(typeof (AddWidgetModelBinder))]
-            Widget widget) // TODO: model-binding
+            [ModelBinder(typeof (AddWidgetModelBinder))]
+            Widget widget)
         {
             _widgetService.AddWidget(widget);
 
@@ -108,8 +109,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         public ActionResult AddProperties(
-            //[IoCModelBinder(typeof(AddWidgetPropertiesModelBinder))]
-            Widget widget) // TODO: model-binding
+            [ModelBinder(typeof(AddWidgetPropertiesModelBinder))]
+            Widget widget) 
         {
             if (widget != null)
             {

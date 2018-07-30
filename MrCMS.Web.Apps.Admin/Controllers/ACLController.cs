@@ -4,6 +4,7 @@ using MrCMS.ACL;
 using MrCMS.ACL.Rules;
 using MrCMS.Models;
 using MrCMS.Settings;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
@@ -34,9 +35,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [Acl(typeof(AclAdminACL), AclAdminACL.Edit)]
         public RedirectToActionResult Index(
-            /*[IoCModelBinder(typeof(ACLUpdateModelBinder))]*/
-            //[ModelBinder(typeof())]
-            // TODO: model binder
+            [ModelBinder(typeof(ACLUpdateModelBinder))]
             List<ACLUpdateRecord> model)
         {
             _aclService.UpdateACL(model);

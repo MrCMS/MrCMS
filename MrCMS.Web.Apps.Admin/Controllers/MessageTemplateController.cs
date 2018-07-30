@@ -2,6 +2,7 @@
 using MrCMS.Helpers;
 using MrCMS.Messages;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
 
@@ -31,8 +32,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [ActionName("AddSiteOverride")]
         public ActionResult AddSiteOverride_POST(
-            //[IoCModelBinder(typeof(MessageTemplateOverrideModelBinder))]
-            MessageTemplate messageTemplate) // TODO: model-binding
+            [ModelBinder(typeof(MessageTemplateOverrideModelBinder))]
+            MessageTemplate messageTemplate) 
 
         {
             if (messageTemplate != null)
@@ -51,8 +52,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [ActionName("DeleteSiteOverride")]
         public ActionResult DeleteSiteOverride_POST(
-            //[IoCModelBinder(typeof(DeleteMessageTemplateOverrideModelBinder))]
-            MessageTemplate messageTemplate) // TODO: model binding
+            [ModelBinder(typeof(DeleteMessageTemplateOverrideModelBinder))]
+            MessageTemplate messageTemplate) 
         {
             if (messageTemplate != null)
             {

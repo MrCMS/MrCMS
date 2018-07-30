@@ -87,8 +87,9 @@ namespace MrCMS.Settings
             }
             SaveConfig(config);
 
-            EventContext.Instance.Publish<IOnSavingSystemSettings<TSettings>, OnSavingSystemSettingsArgs<TSettings>>(
-                new OnSavingSystemSettingsArgs<TSettings>(settings, existing));
+            // TODO: Add config
+            //EventContext.Instance.Publish<IOnSavingSystemSettings<TSettings>, OnSavingSystemSettingsArgs<TSettings>>(
+            //    new OnSavingSystemSettingsArgs<TSettings>(settings, existing));
         }
 
         public List<SystemSettingsBase> GetAllSystemSettings()

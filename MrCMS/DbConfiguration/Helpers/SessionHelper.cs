@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities;
 using MrCMS.Settings;
@@ -30,6 +31,13 @@ namespace MrCMS.Helpers
         public static HttpContext GetContext(this ISession session)
         {
             return (session.GetSessionImplementation().Interceptor as MrCMSInterceptor)?.Context;
+        }
+
+        public static T GetService<T>(this ISession session)
+        {
+            return !(session.GetSessionImplementation().Interceptor is MrCMSInterceptor mrCMSInterceptor)
+                ? default(T)
+                : mrCMSInterceptor.ServiceProvider.GetRequiredService<T>();
         }
 
         public static TResult Transact<TResult>(this ISession session, Func<ISession, TResult> func)
@@ -117,7 +125,7 @@ namespace MrCMS.Helpers
         {
             int size = pageSize ?? DefaultPageSize; //MrCMSApplication.Get<SiteSettings>().DefaultPageSize;
 
-            IQueryable<TResult> cacheable = queryable.Cacheable();
+            IQueryable<TResult> cacheable = queryable.WithOptions(options => options.SetCacheable(true));
 
             return new PagedList<TResult>(cacheable, pageNumber, size);
         }

@@ -5,12 +5,18 @@ namespace MrCMS.Events.Documents
 {
     public class RaiseHeaderScriptChangedEvent : IOnUpdated<Webpage>
     {
+        private readonly IEventContext _eventContext;
+
+        public RaiseHeaderScriptChangedEvent(IEventContext eventContext)
+        {
+            _eventContext = eventContext;
+        }
         public void Execute(OnUpdatedArgs<Webpage> args)
         {
             if (!args.HasChanged(x => x.CustomHeaderScripts))
                 return;
 
-            EventContext.Instance.Publish<IOnHeaderScriptChanged, ScriptChangedEventArgs<Webpage>>(
+            _eventContext.Publish<IOnHeaderScriptChanged, ScriptChangedEventArgs<Webpage>>(
                 new ScriptChangedEventArgs<Webpage>(args.Item, args.Item.CustomHeaderScripts,
                     args.Original?.CustomHeaderScripts));
         }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
@@ -56,8 +57,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         public JsonResult GetUrlGeneratorOptions(
-            //[IoCModelBinder(typeof (GetUrlGeneratorOptionsTypeModelBinder))]
-            Type type) // TODO: model-binding
+            [ModelBinder(typeof (GetUrlGeneratorOptionsTypeModelBinder))]
+            Type type)
         {
             return Json(_service.GetUrlGeneratorOptions(type));
         }

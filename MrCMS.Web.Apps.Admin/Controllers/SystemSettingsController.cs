@@ -6,6 +6,7 @@ using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 
@@ -36,8 +37,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [ActionName("Index")]
         [Acl(typeof(SystemSettingsACL), SystemSettingsACL.Save)]
         public RedirectToActionResult Index_Post(
-            //[IoCModelBinder(typeof(SystemSettingsModelBinder))]
-            List<SystemSettingsBase> settings) // TODO: model-binding
+            [ModelBinder(typeof(SystemSettingsModelBinder))]
+            List<SystemSettingsBase> settings)
         {
             settings.ForEach(s => _configurationProvider.SaveSettings(s));
             TempData["settings-saved"] = true;

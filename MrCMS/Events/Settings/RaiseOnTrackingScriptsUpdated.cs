@@ -7,12 +7,18 @@ namespace MrCMS.Events.Settings
 {
     public class RaiseOnTrackingScriptsUpdated : IOnSavingSiteSettings<SEOSettings>
     {
+        private readonly IEventContext _eventContext;
+
+        public RaiseOnTrackingScriptsUpdated(IEventContext eventContext)
+        {
+            _eventContext = eventContext;
+        }
         public void Execute(OnSavingSiteSettingsArgs<SEOSettings> args)
         {
             if (args.Original?.TrackingScripts == args.Settings?.TrackingScripts)
                 return;
 
-            EventContext.Instance.Publish<IOnTrackingScriptsChanged, ScriptChangedEventArgs<SEOSettings>>(
+            _eventContext.Publish<IOnTrackingScriptsChanged, ScriptChangedEventArgs<SEOSettings>>(
                 new ScriptChangedEventArgs<SEOSettings>(args.Settings, args.Settings?.TrackingScripts,
                     args.Original?.TrackingScripts));
         }

@@ -9,7 +9,7 @@ namespace MrCMS.Indexing.Definitions
     public class TypeFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public TypeFieldDefinition(ILuceneSettingsService luceneSettingsService)
-            : base(luceneSettingsService, "type", index: Field.Index.NOT_ANALYZED)
+            : base(luceneSettingsService, "type")
         {
         }
 

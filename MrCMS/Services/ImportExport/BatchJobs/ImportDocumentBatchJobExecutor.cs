@@ -18,25 +18,28 @@ namespace MrCMS.Services.ImportExport.BatchJobs
         private readonly ISession _session;
         private readonly IUpdateTagsService _updateTagsService;
         private readonly IUpdateUrlHistoryService _updateUrlHistoryService;
+        private readonly IEventContext _eventContext;
 
         public ImportDocumentBatchJobExecutor(ISession session,
-            ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus, IUpdateTagsService updateTagsService, IUpdateUrlHistoryService updateUrlHistoryService)
+            ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus, IUpdateTagsService updateTagsService, IUpdateUrlHistoryService updateUrlHistoryService,
+           IEventContext eventContext)
             : base(setBatchJobJobExecutionStatus)
         {
             _session = session;
             _updateTagsService = updateTagsService;
             _updateUrlHistoryService = updateUrlHistoryService;
+            _eventContext = eventContext;
         }
 
         protected override BatchJobExecutionResult OnExecute(ImportDocumentBatchJob batchJob)
         {
-            using (EventContext.Instance.Disable<IOnTransientNotificationPublished>())
-            using (EventContext.Instance.Disable<IOnPersistentNotificationPublished>())
-            using (EventContext.Instance.Disable<UpdateIndicesListener>())
-            using (EventContext.Instance.Disable<UpdateUniversalSearch>())
-            using (EventContext.Instance.Disable<WebpageUpdatedNotification>())
-            using (EventContext.Instance.Disable<DocumentAddedNotification>())
-            using (EventContext.Instance.Disable<MediaCategoryUpdatedNotification>())
+            using (_eventContext.Disable<IOnTransientNotificationPublished>())
+            using (_eventContext.Disable<IOnPersistentNotificationPublished>())
+            using (_eventContext.Disable<UpdateIndicesListener>())
+            using (_eventContext.Disable<UpdateUniversalSearch>())
+            using (_eventContext.Disable<WebpageUpdatedNotification>())
+            using (_eventContext.Disable<DocumentAddedNotification>())
+            using (_eventContext.Disable<MediaCategoryUpdatedNotification>())
             {
                 var documentImportDto = batchJob.DocumentImportDto;
                 var webpage =

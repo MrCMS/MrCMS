@@ -12,7 +12,7 @@ namespace MrCMS.Indexing.Management
         where T2 : SystemEntity
     {
         protected IntegerFieldDefinition(ILuceneSettingsService luceneSettingsService, string name,
-            Field.Store store = Field.Store.YES, Field.Index index = Field.Index.ANALYZED)
+            Field.Store store = Field.Store.YES)
             : base(luceneSettingsService, name, store)
         {
         }

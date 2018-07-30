@@ -9,13 +9,14 @@ namespace MrCMS.Tasks
     public static class UniversalSearchActionExecutor
     {
         public static void PerformActions(IUniversalSearchIndexManager universalSearchIndexManager,
-            ISearchConverter searchConverter, List<UniversalSearchIndexData> searchIndexDatas)
+            ISearchConverter searchConverter, List<UniversalSearchIndexData> searchIndexDatas,
+            IEventContext eventContext)
         {
             if (!searchIndexDatas.Any())
                 return;
 
             universalSearchIndexManager.EnsureIndexExists();
-            using (EventContext.Instance.Disable<UpdateUniversalSearch>())
+            using (eventContext.Disable<UpdateUniversalSearch>())
             {
                 List<UniversalSearchIndexData> toAdd =
                     searchIndexDatas.Where(data => data.Action == UniversalSearchIndexAction.Insert).ToList();

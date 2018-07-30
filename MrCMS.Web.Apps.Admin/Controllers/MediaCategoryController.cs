@@ -4,6 +4,7 @@ using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.ACL;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
@@ -155,7 +156,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [Acl(typeof(MediaToolsACL), MediaToolsACL.Cut)]
         public JsonResult MoveFilesAndFolders(
-            /*[IoCModelBinder(typeof(MoveFilesModelBinder))] */MoveFilesAndFoldersModel model) // TODO: model-binding
+            [ModelBinder(typeof(MoveFilesModelBinder))]MoveFilesAndFoldersModel model) 
         {
             _fileAdminService.MoveFiles(model.Files, model.Folder);
             string message = _fileAdminService.MoveFolders(model.Folders, model.Folder);
@@ -164,8 +165,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [Acl(typeof(MediaToolsACL), MediaToolsACL.Delete)]
         public JsonResult DeleteFilesAndFolders(
-            //[IoCModelBinder(typeof(DeleteFilesModelBinder))]
-            DeleteFilesAndFoldersModel model) // TODO: model-binding
+            [ModelBinder(typeof(DeleteFilesModelBinder))]
+            DeleteFilesAndFoldersModel model) 
         {
             _fileAdminService.DeleteFilesSoft(model.Files);
             _fileAdminService.DeleteFoldersSoft(model.Folders);

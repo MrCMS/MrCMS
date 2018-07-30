@@ -40,10 +40,6 @@ namespace MrCMS.Indexing.Utils
             }
             return document;
         }
-        public static Document AddField(this Document document, string name, string value, Field.Store store, Field.Index index)
-        {
-            return AddField(document, new Field(name, value ?? string.Empty, store, index));
-        }
 
         public static string GetValue(this Document document, string field)
         {

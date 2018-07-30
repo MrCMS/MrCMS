@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
@@ -14,9 +16,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _webpageUrlService = webpageUrlService;
         }
 
-        public string Suggest(Webpage parent, 
-            //[IoCModelBinder(typeof(SuggestParamsModelBinder))]
-            SuggestParams suggestParams) // TODO: model-binding
+        public string Suggest(Webpage parent,
+            [ModelBinder(typeof(SuggestParamsModelBinder))]
+            SuggestParams suggestParams) 
         {
             return _webpageUrlService.Suggest(parent, suggestParams);
         }

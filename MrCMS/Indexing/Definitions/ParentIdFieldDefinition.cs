@@ -9,7 +9,7 @@ namespace MrCMS.Indexing.Definitions
     public class ParentIdFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public ParentIdFieldDefinition(ILuceneSettingsService luceneSettingsService)
-            : base(luceneSettingsService, "parentid", index:Field.Index.NOT_ANALYZED)
+            : base(luceneSettingsService, "parentid")
         {
         }
 

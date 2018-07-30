@@ -2,36 +2,38 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using NHibernate.Util;
 
 namespace MrCMS.Services
 {
     public class EventContext : IEventContext
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly HashSet<Type> _disabledEvents = new HashSet<Type>();
-        private readonly HashSet<IEvent> _events;
 
-        public EventContext(IEnumerable<IEvent> events)
+        public EventContext(IServiceProvider serviceProvider)
         {
-            _events = events.ToHashSet();
+            _serviceProvider = serviceProvider;
         }
 
-        public static IEventContext Instance
-        {
-            get
-            {
-                try
-                {
-                    //return MrCMSApplication.Get<IEventContext>();
-                    return null;
-                }
-                catch
-                {
-                    return new InstallationEventContext();
-                }
-            }
-        }
+        //public static IEventContext Instance
+        //{
+        //    get
+        //    {
+        //        try
+        //        {
+        //            //return MrCMSApplication.Get<IEventContext>();
+        //            return null;
+        //        }
+        //        catch
+        //        {
+        //            return new InstallationEventContext();
+        //        }
+        //    }
+        //}
 
         public HashSet<Type> DisabledEvents
         {
@@ -47,12 +49,13 @@ namespace MrCMS.Services
         {
             //using (MiniProfiler.Current.Step("Publishing " + eventType.FullName))
             {
-                foreach (var @event in _events.Where(@event => @eventType.IsInstanceOfType(@event) && !IsDisabled(@event)))
+                foreach (var type in TypeHelper.GetAllTypesAssignableFrom(eventType).Where(type => !IsDisabled(type)))
                 {
                     //using (MiniProfiler.Current.Step("Invoking " + @event.GetType().FullName))
                     {
-                        MethodInfo methodInfo = @event.GetType().GetMethod("Execute", new[] {args.GetType()});
-                        methodInfo.Invoke(@event, new[] {args});
+                        MethodInfo methodInfo = type.GetMethod("Execute", new[] {args.GetType()});
+                        var instance = _serviceProvider.GetRequiredService(type);
+                        methodInfo.Invoke(instance, new[] {args});
                     }
                 }
             }
@@ -68,10 +71,9 @@ namespace MrCMS.Services
             return new EventPublishingDisabler(this, types);
         }
 
-        private bool IsDisabled(IEvent @event)
+        private bool IsDisabled(Type type)
         {
-            //return DisabledEvents.Any(type => @event.GetType().IsImplementationOf(type));
-            return false;
+            return DisabledEvents.Contains(type);
         }
 
         public class EventPublishingDisabler : IDisposable
@@ -97,32 +99,32 @@ namespace MrCMS.Services
             }
         }
 
-        private class InstallationEventContext : IEventContext
-        {
-            public void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
-            {
-            }
+        //private class InstallationEventContext : IEventContext
+        //{
+        //    public void Publish<TEvent, TArgs>(TArgs args) where TEvent : IEvent<TArgs>
+        //    {
+        //    }
 
-            public void Publish(Type eventType, object args)
-            {
-            }
+        //    public void Publish(Type eventType, object args)
+        //    {
+        //    }
 
-            public IDisposable Disable<T>()
-            {
-                return new DummyDisabler();
-            }
+        //    public IDisposable Disable<T>()
+        //    {
+        //        return new DummyDisabler();
+        //    }
 
-            public IDisposable Disable(params Type[] types)
-            {
-                return new DummyDisabler();
-            }
+        //    public IDisposable Disable(params Type[] types)
+        //    {
+        //        return new DummyDisabler();
+        //    }
 
-            private class DummyDisabler : IDisposable
-            {
-                public void Dispose()
-                {
-                }
-            }
-        }
+        //    private class DummyDisabler : IDisposable
+        //    {
+        //        public void Dispose()
+        //        {
+        //        }
+        //    }
+        //}
     }
 }

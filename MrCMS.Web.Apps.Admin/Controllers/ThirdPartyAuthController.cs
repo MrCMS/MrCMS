@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Settings;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
 
@@ -22,8 +23,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         public RedirectToActionResult Index(
-            //[IoCModelBinder(typeof(ThirdPartyAuthSettingsModelBinder))]
-            ThirdPartyAuthSettings thirdPartyAuthSettings) // TODO: model-binding
+            [ModelBinder(typeof(ThirdPartyAuthSettingsModelBinder))]
+            ThirdPartyAuthSettings thirdPartyAuthSettings) 
         {
             _thirdPartyAuthSettingsAdminService.SaveSettings(thirdPartyAuthSettings);
             return RedirectToAction("Index");

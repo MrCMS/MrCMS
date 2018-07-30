@@ -10,16 +10,18 @@ namespace MrCMS.Services
     public class UserManagementService : IUserManagementService
     {
         private readonly ISession _session;
+        private readonly IEventContext _eventContext;
 
-        public UserManagementService(ISession session)
+        public UserManagementService(ISession session, IEventContext eventContext)
         {
             _session = session;
+            _eventContext = eventContext;
         }
 
         public void AddUser(User user)
         {
             _session.Transact(session => { session.Save(user); });
-            EventContext.Instance.Publish<IOnUserAdded, OnUserAddedEventArgs>(new OnUserAddedEventArgs(user));
+            _eventContext.Publish<IOnUserAdded, OnUserAddedEventArgs>(new OnUserAddedEventArgs(user));
         }
 
         public void SaveUser(User user)

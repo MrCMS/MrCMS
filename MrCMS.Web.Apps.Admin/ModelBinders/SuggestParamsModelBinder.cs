@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MrCMS.Models;
 
 namespace MrCMS.Web.Apps.Admin.ModelBinders
@@ -12,7 +14,7 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
     {
         public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            var modelBinder = new SimpleTypeModelBinder(typeof(SuggestParams));
+            var modelBinder = new SimpleTypeModelBinder(typeof(SuggestParams), bindingContext.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>());
             await modelBinder.BindModelAsync(bindingContext);
             var model = bindingContext.Result.Model as SuggestParams;
             if (model == null) return;

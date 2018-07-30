@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using MrCMS.DbConfiguration.Helpers;
 using MrCMS.Entities;
 using MrCMS.Events;
+using MrCMS.Helpers;
 using MrCMS.Services;
 using NHibernate;
 using NHibernate.Transaction;
@@ -149,7 +150,7 @@ namespace MrCMS.DbConfiguration
             List<Type> types = GetEntityTypes(type).Reverse().ToList();
 
             types.ForEach(
-                t => EventContext.Instance.Publish(eventType.MakeGenericType(t), getArgs(onUpdatedArgs, session, t)));
+                t => session.GetService<IEventContext>().Publish(eventType.MakeGenericType(t), getArgs(onUpdatedArgs, session, t)));
         }
 
         private static IEnumerable<Type> GetEntityTypes(Type type)

@@ -24,7 +24,6 @@ namespace MrCMS.Indexing.Management
         public string FieldName { get; set; }
         public float Boost { get; set; }
         public Field.Store Store { get; set; }
-        public Field.Index Index { get; set; }
 
         public static string[] GetFieldNames(params FieldDefinition[] definitions)
         {

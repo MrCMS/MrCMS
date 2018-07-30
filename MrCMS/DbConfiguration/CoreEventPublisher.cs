@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities;
 using MrCMS.Services;
+using MrCMS.Helpers;
 using NHibernate;
 
 namespace MrCMS.DbConfiguration
@@ -17,7 +18,13 @@ namespace MrCMS.DbConfiguration
             List<Type> types = GetEntityTypes(type).Reverse().ToList();
 
             types.ForEach(
-                t => EventContext.Instance.Publish(eventType.MakeGenericType(t), getArgs(eventInfo, session, t)));
+                t =>
+                {
+                    var eventContext = session.GetService<IEventContext>();
+                    var makeGenericType = eventType.MakeGenericType(t);
+                    var args = getArgs(eventInfo, session, t);
+                    eventContext.Publish(makeGenericType, args);
+                });
         }
 
         public static void Publish(this UpdatedEventInfo updatedEventInfo, ISession session, Type eventType,
@@ -28,7 +35,7 @@ namespace MrCMS.DbConfiguration
             List<Type> types = GetEntityTypes(type).Reverse().ToList();
 
             types.ForEach(
-                t => EventContext.Instance.Publish(eventType.MakeGenericType(t), getArgs(updatedEventInfo, session, t)));
+                t => session.GetService<IEventContext>().Publish(eventType.MakeGenericType(t), getArgs(updatedEventInfo, session, t)));
         }
 
 

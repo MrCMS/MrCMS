@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
@@ -47,8 +48,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [ForceImmediateLuceneUpdate]
         public ActionResult Add(
-            //[IoCModelBinder(typeof(AddWebpageModelBinder))]
-            Webpage doc) // TODO: model-binding
+            [ModelBinder(typeof(AddWebpageModelBinder))]
+            Webpage doc)
         {
             if (!_urlValidationService.UrlIsValidForWebpage(doc.UrlSegment, null))
             {
@@ -74,8 +75,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [Acl(typeof(Webpage), TypeACLRule.Edit)]
         [ForceImmediateLuceneUpdate]
         public ActionResult Edit(
-            //[IoCModelBinder(typeof(EditWebpageModelBinder))]
-            Webpage doc) // TODO: model-binding
+            [ModelBinder(typeof(EditWebpageModelBinder))]
+            Webpage doc)
         {
             _webpageAdminService.Update(doc);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
@@ -183,8 +184,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         public ActionResult AddProperties(
-            //[IoCModelBinder(typeof(AddPropertiesModelBinder))]
-            Webpage webpage) // TODO: model-binding
+            [ModelBinder(typeof(AddPropertiesModelBinder))]
+            Webpage webpage) 
         {
             if (webpage != null)
             {

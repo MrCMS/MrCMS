@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MrCMS.Services;
 using MrCMS.Tasks;
 using Newtonsoft.Json;
 
@@ -7,13 +8,15 @@ namespace MrCMS.Search
     public class UniversalSearchIndexTask : AdHocTask, IUniversalSearchIndexTask
     {
         private readonly ISearchConverter _searchConverter;
+        private readonly IEventContext _eventContext;
         private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
 
         public UniversalSearchIndexTask(IUniversalSearchIndexManager universalSearchIndexManager,
-            ISearchConverter searchConverter)
+            ISearchConverter searchConverter, IEventContext eventContext)
         {
             _universalSearchIndexManager = universalSearchIndexManager;
             _searchConverter = searchConverter;
+            _eventContext = eventContext;
         }
 
         public override int Priority
@@ -35,8 +38,8 @@ namespace MrCMS.Search
 
         protected override void OnExecute()
         {
-            var datas = new List<UniversalSearchIndexData> {UniversalSearchIndexData};
-            UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, datas);
+            var datas = new List<UniversalSearchIndexData> { UniversalSearchIndexData };
+            UniversalSearchActionExecutor.PerformActions(_universalSearchIndexManager, _searchConverter, datas, _eventContext);
         }
     }
 }

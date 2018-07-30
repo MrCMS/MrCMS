@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
 
@@ -32,9 +33,10 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
                 return;
             }
 
-            var metadataProvider = bindingContext.HttpContext.RequestServices.GetRequiredService<IModelMetadataProvider>();
+            var serviceProvider = bindingContext.HttpContext.RequestServices;
+            var metadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
             bindingContext.ModelMetadata = metadataProvider.GetMetadataForType(type);
-            var modelBinder = new SimpleTypeModelBinder(type);
+            var modelBinder = new SimpleTypeModelBinder(type, serviceProvider.GetRequiredService<ILoggerFactory>());
 
             await modelBinder.BindModelAsync(bindingContext);
 

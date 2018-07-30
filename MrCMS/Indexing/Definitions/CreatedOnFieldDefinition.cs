@@ -9,7 +9,7 @@ namespace MrCMS.Indexing.Definitions
     public class CreatedOnFieldDefinition : StringFieldDefinition<AdminWebpageIndexDefinition, Webpage>
     {
         public CreatedOnFieldDefinition(ILuceneSettingsService luceneSettingsService)
-            : base(luceneSettingsService, "createdon", index: Field.Index.NOT_ANALYZED)
+            : base(luceneSettingsService, "createdon")
         {
         }
 

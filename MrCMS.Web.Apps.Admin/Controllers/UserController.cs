@@ -4,6 +4,7 @@ using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
@@ -50,8 +51,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Add)]
         public ActionResult Add(
-            //[IoCModelBinder(typeof(AddUserModelBinder))]
-            User user) // TODO: model-binding
+            [ModelBinder(typeof(AddUserModelBinder))]
+            User user) 
         {
             _userManagementService.AddUser(user);
 
@@ -76,8 +77,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.Edit)]
         public ActionResult Edit(
-            //[IoCModelBinder(typeof(EditUserModelBinder))]
-            User user) // TODO: model-binding
+            [ModelBinder(typeof(EditUserModelBinder))]
+            User user) 
         {
             _userManagementService.SaveUser(user);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", user.Name));
