@@ -1,0 +1,24 @@
+﻿@using MrCMS.Entities.People
+@using MrCMS.Web.Apps.Admin.Models.UserEdit
+@model MrCMS.Web.Apps.Admin.Models.UserEdit.UserTabBase
+@{
+    var isFirst = ViewData["is-first"] is bool b && b;
+    var user = ViewData["user"] as User;
+}
+
+@if (Model is UserTab userTab)
+{
+    <div class="tab-pane@(isFirst ? " active" : "")" id="@userTab.TabHtmlId">
+        @{
+            await userTab.RenderTabPane(Html, user);
+        }
+    </div>
+}
+else
+{
+    var @group = Model as UserTabGroup;
+    foreach(UserTabBase tab in @group.Children)
+    {
+        <partial name="Content" model="tab" view-data="ViewData" />
+    }
+}

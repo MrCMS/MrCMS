@@ -9,10 +9,10 @@
 {
     <fieldset>
         <legend>
-            @Resource("Edit") @Model.GetType().Name.BreakUpString() (@(Model.SiteId.HasValue ? "Site Override" : "System default"))
+            @Html.Resource("Edit") @Model.GetType().Name.BreakUpString() (@(Model.SiteId.HasValue ? "Site Override" : "System default"))
             <span class="pull-right btn-group  display-inline ">
                 @Html.ActionLink(Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
-                <input class="btn btn-primary" type="submit" value="@Resource("Save")" />
+                <input class="btn btn-primary" type="submit" value="@Html.Resource("Save")" />
             </span>
         </legend>
         @Html.HiddenFor(x => x.SiteId)

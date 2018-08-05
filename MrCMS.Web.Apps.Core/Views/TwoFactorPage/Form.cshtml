@@ -1,0 +1,16 @@
+﻿@model MrCMS.Models.Auth.TwoFactorAuthModel
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(x => x.ReturnUrl)
+    <div class="form-group">
+        @Html.LabelFor(x => x.Code)
+        @Html.TextBoxFor(x => x.Code, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Code)
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">
+            @Html.Resource("Enter code")
+        </button>
+    </div>
+}

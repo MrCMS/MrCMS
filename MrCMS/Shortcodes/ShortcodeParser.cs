@@ -2,7 +2,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace MrCMS.Shortcodes
 {
@@ -39,7 +38,7 @@ namespace MrCMS.Shortcodes
                 return _renderShortcode.Render(htmlHelper, tagName, attributes);
             });
 
-            return new StringHtmlContent(current);
+            return new HtmlString(current);
         }
     }
 }

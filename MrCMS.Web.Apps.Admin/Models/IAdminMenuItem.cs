@@ -1,4 +1,6 @@
-﻿namespace MrCMS.Models
+﻿using MrCMS.Models;
+
+namespace MrCMS.Web.Apps.Admin.Models
 {
     public interface IAdminMenuItem 
     {

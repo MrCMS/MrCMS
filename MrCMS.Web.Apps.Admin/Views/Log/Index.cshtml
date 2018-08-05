@@ -14,10 +14,10 @@
 {
     <fieldset>
         <legend>
-            @Resource("Admin Logs Title", "Logs")
+            @Html.Resource("Admin Logs Title", "Logs")
             <span class="btn-group display-inline pull-right">
-                <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">@Resource("Admin Logs Delete Logs Button", "Delete logs")</a>
-                <input type="submit" class="btn btn-primary" value="@Resource("Search")" />
+                <a href="@Url.Action("Delete", "Log")" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Admin Logs Delete Logs Button", "Delete logs")</a>
+                <input type="submit" class="btn btn-primary" value="@Html.Resource("Search")" />
             </span>
         </legend>
 
@@ -69,7 +69,7 @@
 
 @if (logs.Count == 0)
 {
-    @Resource("Admin Logs No Logs", "No logs")
+    @Html.Resource("Admin Logs No Logs", "No logs")
         }
 else
 {
@@ -77,19 +77,19 @@ else
         <thead>
             <tr>
                 <th>
-                    @Resource("Date")
+                    @Html.Resource("Date")
                 </th>
                 <th>
-                    @Resource("Site")
+                    @Html.Resource("Site")
                 </th>
                 <th>
-                    @Resource("Message")
+                    @Html.Resource("Message")
                 </th>
                 <th>
-                    @Resource("Type")
+                    @Html.Resource("Type")
                 </th>
                 <th>
-                    @Resource("Actions")
+                    @Html.Resource("Actions")
                 </th>
             </tr>
         </thead>

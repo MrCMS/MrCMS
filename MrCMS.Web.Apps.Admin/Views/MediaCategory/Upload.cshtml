@@ -2,7 +2,7 @@
 @using MrCMS.Settings
 @model MrCMS.Entities.Documents.Media.MediaCategory
 
-<div id="fileupload" class="dropzone" data-message="@Resource("Click here or drag files to upload")">
+<div id="fileupload" class="dropzone" data-message="@Html.Resource("Click here or drag files to upload")">
     
 </div>
 <input type="hidden" value="@Url.Action("Files", "File", new { id = Model == null ? (int?)null : Model.Id })" id="action-url" />

@@ -19,7 +19,7 @@ namespace MrCMS.Website.CMS
         }
 
 
-        public async Task<PageData> GetData(string url)
+        public async Task<PageData> GetData(string url, string method)
         {
             Webpage webpage = string.IsNullOrWhiteSpace(url)
                 ? _getHomePage.Get()
@@ -41,8 +41,8 @@ namespace MrCMS.Website.CMS
                 IsPreview = false,
                 Id = webpage.Id,
                 Type = webpage.GetType(),
-                Controller = metadata.WebGetController,
-                Action = metadata.WebGetAction
+                Controller = metadata.GetController(method),
+                Action = metadata.GetAction(method)
             };
         }
     }

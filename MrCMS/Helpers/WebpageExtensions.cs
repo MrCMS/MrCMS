@@ -1,3 +1,4 @@
+using System.Linq;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 
@@ -37,10 +38,10 @@ namespace MrCMS.Helpers
         //    return MrCMSApplication.Get<ISession>().Paged(query, pageNum, pageSize);
         //}
 
-        //public static bool CanAddChildren(this Webpage webpage)
-        //{
-        //    return webpage.GetMetadata().ValidChildrenTypes.Any();
-        //}
+        public static bool CanAddChildren(this Webpage webpage)
+        {
+            return webpage.GetMetadata().ValidChildrenTypes.Any();
+        }
 
         //public static bool RequiresSSL(this Webpage webpage, HttpRequestBase request, SiteSettings siteSettings = null)
         //{

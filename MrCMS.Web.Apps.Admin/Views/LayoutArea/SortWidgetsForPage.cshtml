@@ -10,10 +10,10 @@
 @using (Html.BeginForm("SortWidgetsForPage", "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
 {
     <fieldset>
-        <legend>@Resource("Admin Widgets Sort For Page Title", "Sort Widgets for page")
+        <legend>@Html.Resource("Admin Widgets Sort For Page Title", "Sort Widgets for page")
 
             <span class="btn-group  display-inline  pull-right">
-                <button class="btn btn-primary">@Resource("Save")</button>
+                <button class="btn btn-primary">@Html.Resource("Save")</button>
             </span>
         </legend>
 

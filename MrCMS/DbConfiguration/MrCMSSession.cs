@@ -111,62 +111,73 @@ namespace MrCMS.DbConfiguration
 
         public Task<object> SaveAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
         {
+            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
             return _session.SaveAsync(obj, cancellationToken);
         }
 
         public Task SaveAsync(object obj, object id, CancellationToken cancellationToken = new CancellationToken())
         {
+            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
             return _session.SaveAsync(obj, id, cancellationToken);
         }
 
         public Task<object> SaveAsync(string entityName, object obj,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
             return _session.SaveAsync(entityName, obj, cancellationToken);
         }
 
         public Task SaveAsync(string entityName, object obj, object id,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
             return _session.SaveAsync(entityName, obj, id, cancellationToken);
         }
 
         public Task SaveOrUpdateAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
         {
+            HandleSaveOrUpdate(obj);
             return _session.SaveOrUpdateAsync(obj, cancellationToken);
         }
 
         public Task SaveOrUpdateAsync(string entityName, object obj,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            HandleSaveOrUpdate(obj);
             return _session.SaveOrUpdateAsync(entityName, obj, cancellationToken);
         }
 
         public Task SaveOrUpdateAsync(string entityName, object obj, object id,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            HandleSaveOrUpdate(obj);
             return _session.SaveOrUpdateAsync(entityName, obj, id, cancellationToken);
         }
 
         public Task UpdateAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
         {
+            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
             return _session.UpdateAsync(obj, cancellationToken);
         }
 
         public Task UpdateAsync(object obj, object id, CancellationToken cancellationToken = new CancellationToken())
         {
+            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
             return _session.UpdateAsync(obj, id, cancellationToken);
         }
 
         public Task UpdateAsync(string entityName, object obj,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
             return _session.UpdateAsync(entityName, obj, cancellationToken);
         }
 
         public Task UpdateAsync(string entityName, object obj, object id,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
             return _session.UpdateAsync(entityName, obj, id, cancellationToken);
         }
 
@@ -206,12 +217,14 @@ namespace MrCMS.DbConfiguration
 
         public Task DeleteAsync(object obj, CancellationToken cancellationToken = new CancellationToken())
         {
+            if (obj is SystemEntity entity) AddDeletedEvent(entity);
             return _session.DeleteAsync(obj, cancellationToken);
         }
 
         public Task DeleteAsync(string entityName, object obj,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            if (obj is SystemEntity entity) AddDeletedEvent(entity);
             return _session.DeleteAsync(entityName, obj, cancellationToken);
         }
 
@@ -414,36 +427,46 @@ namespace MrCMS.DbConfiguration
 
         public void Save(object obj, object id)
         {
+            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
             _session.Save(obj, id);
         }
 
         public object Save(string entityName, object obj)
         {
+            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
             return _session.Save(entityName, obj);
         }
 
         public void Save(string entityName, object obj, object id)
         {
+            if (obj is SystemEntity systemEntity) AddAddEvent(systemEntity);
             _session.Save(entityName, obj, id);
         }
 
         public void SaveOrUpdate(object obj)
+        {
+            HandleSaveOrUpdate(obj);
+            _session.SaveOrUpdate(obj);
+        }
+
+        private void HandleSaveOrUpdate(object obj)
         {
             var entity = obj as SystemEntity;
             if (entity != null && entity.Id == 0)
                 AddAddEvent(entity);
             else if (entity != null)
                 AddUpdateEvent(entity);
-            _session.SaveOrUpdate(obj);
         }
 
         public void SaveOrUpdate(string entityName, object obj)
         {
+            HandleSaveOrUpdate(obj);
             _session.SaveOrUpdate(entityName, obj);
         }
 
         public void SaveOrUpdate(string entityName, object obj, object id)
         {
+            HandleSaveOrUpdate(obj);
             _session.SaveOrUpdate(entityName, obj, id);
         }
 
@@ -455,16 +478,19 @@ namespace MrCMS.DbConfiguration
 
         public void Update(object obj, object id)
         {
+            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
             _session.Update(obj, id);
         }
 
         public void Update(string entityName, object obj)
         {
+            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
             _session.Update(entityName, obj);
         }
 
         public void Update(string entityName, object obj, object id)
         {
+            if (obj is SystemEntity systemEntity) AddUpdateEvent(systemEntity);
             _session.Update(entityName, obj, id);
         }
 
@@ -506,6 +532,7 @@ namespace MrCMS.DbConfiguration
 
         public void Delete(string entityName, object obj)
         {
+            if (obj is SystemEntity entity) AddDeletedEvent(entity);
             _session.Delete(entityName, obj);
         }
 

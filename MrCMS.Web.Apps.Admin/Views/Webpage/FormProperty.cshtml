@@ -8,8 +8,8 @@
     </div>
     <div class="col-lg-5">
         <div class="pull-right btn-group">
-            @Html.ActionLink(Resource("Edit"), "EditProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
-            @Html.ActionLink(Resource("Delete"), "DeleteProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
+            @Html.ActionLink(Html.Resource("Edit"), "EditProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+            @Html.ActionLink(Html.Resource("Delete"), "DeleteProperty", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
         </div>
     </div>
 </div>
@@ -19,35 +19,38 @@
         <table class="table table-bordered table-striped table-condensed">
             <tbody>
                 <tr>
-                    <td class="col-lg-2">@Resource("Name")</td>
+                    <td class="col-lg-2">@Html.Resource("Name")</td>
                     <td>@Model.Name</td>
                 </tr>
                 <tr>
-                    <td>@Resource("Admin Webpage Form Property Label", "Label Text")</td>
+                    <td>@Html.Resource("Admin Webpage Form Property Label", "Label Text")</td>
                     <td>@Model.LabelText</td>
                 </tr>
                 <tr>
-                    <td>@Resource("Required")</td>
+                    <td>@Html.Resource("Required")</td>
                     <td>@Model.Required</td>
                 </tr>
                 @if (Model is TextBox)
                 {
                     var placeholder = (Model as TextBox).PlaceHolder;
                     <tr>
-                        <td>@Resource("Placeholder")</td>
+                        <td>@Html.Resource("Placeholder")</td>
                         <td>@placeholder</td>
-                    </tr>   
+                    </tr>
                 }
-                @if (Model is FormPropertyWithOptions)
+                @if (Model is FormPropertyWithOptions options)
                 {
                     <tr>
-                        <td>@Resource("Admin Webpage Form Option", "Options")</td>
-                        <td>@{ Html.RenderPartial("FormPropertyOptions", Model); }</td>
+                        <td>@Html.Resource("Admin Webpage Form Option", "Options")</td>
+                        <td>
+                            <partial name="FormPropertyOptions" model="options" />
+                            @*@{ await Html.RenderPartialAsync("FormPropertyOptions", options); }*@
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
-        
+
     </div>
 </div>
 

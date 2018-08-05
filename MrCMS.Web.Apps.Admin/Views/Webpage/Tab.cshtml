@@ -1,0 +1,28 @@
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Apps.Admin.Models.Tabs
+@model AdminTabBase<Webpage>
+@{
+    var isFirst = ViewData["is-first"] is bool b && b;
+    var webpage = ViewData["webpage"] as Webpage;
+}
+
+@if (Model is AdminTab<Webpage>)
+{
+var tab = Model as AdminTab<Webpage>;
+<li class="@(isFirst ?"active":"")">
+    <a href="#@tab.TabHtmlId" data-toggle="tab">@tab.Name(webpage)</a>
+</li>
+}
+else
+{
+var @group = Model as AdminTabGroup<Webpage>;
+<li class="@(isFirst ?"active dropdown":"dropdown")">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">@(@group.Name(webpage))&nbsp;<b class="caret"></b></a>
+    <ul class="dropdown-menu">
+        @foreach (var tab in @group.Children)
+        {
+            <partial name="Tab" model="tab" view-data="ViewData"/>
+        }
+    </ul>
+</li>
+}

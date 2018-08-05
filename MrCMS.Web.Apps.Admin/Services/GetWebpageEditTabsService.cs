@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
-using MrCMS.Web.Apps.Admin.Models.WebpageEdit;
+using MrCMS.Web.Apps.Admin.Models.Tabs;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -16,13 +17,13 @@ namespace MrCMS.Web.Apps.Admin.Services
             _serviceProvider = serviceProvider;
         }
 
-        public List<WebpageTabBase> GetEditTabs(Webpage page)
+        public List<AdminTabBase<Webpage>> GetEditTabs(IHtmlHelper html, Webpage page)
         {
             var tabsToShow =
-                TypeHelper.GetAllConcreteTypesAssignableFrom<WebpageTabBase>()
+                TypeHelper.GetAllConcreteTypesAssignableFrom<AdminTabBase<Webpage>>()
                     .Select(type => _serviceProvider.GetService(type))
-                    .OfType<WebpageTabBase>()
-                    .Where(@base => @base.ShouldShow(page))
+                    .OfType<AdminTabBase<Webpage>>()
+                    .Where(@base => @base.ShouldShow(html, page))
                     .ToList();
 
             var rootTabs = tabsToShow.Where(@base => @base.ParentType == null).OrderBy(@base => @base.Order).ToList();
@@ -34,9 +35,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             return rootTabs;
         }
 
-        private void AssignChildren(WebpageTabBase tab, List<WebpageTabBase> allTabs)
+        private void AssignChildren(AdminTabBase<Webpage> tab, List<AdminTabBase<Webpage>> allTabs)
         {
-            var tabGroup = tab as WebpageTabGroup;
+            var tabGroup = tab as AdminTabGroup<Webpage>;
             if (tabGroup == null)
             {
                 return;

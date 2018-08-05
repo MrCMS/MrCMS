@@ -10,6 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Views\TwoFactorPage\Form.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 

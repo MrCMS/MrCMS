@@ -37,9 +37,8 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             var typeArguments = webpage.GetType();
             bindingContext.ModelMetadata = metadataProvider.GetMetadataForType(typeArguments);
             bindingContext.Model = webpage;
-            var instance = ActivatorUtilities.CreateInstance(serviceProvider,
-                    typeof(SystemEntityBinder<>).MakeGenericType(typeArguments)) as IModelBinder;
-            await instance.BindModelAsync(bindingContext);
+            //var instance = SystemEntityBinderProvider.GetModelBinder(bindingContext.ModelMetadata, serviceProvider);
+            //await instance.BindModelAsync(bindingContext);
 
             string frontEndRoles = bindingContext.ValueProvider.GetValue("FrontEndRoles").FirstValue;
             var documentRolesAdminService = serviceProvider.GetRequiredService<IDocumentRolesAdminService>();

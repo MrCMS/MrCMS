@@ -1,0 +1,15 @@
+using System;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Entities;
+
+namespace MrCMS.Web.Apps.Admin.Models.Tabs
+{
+    public abstract class AdminTab<T> : AdminTabBase<T> where T : SystemEntity
+    {
+        public abstract Type ModelType { get; }
+        public abstract string TabHtmlId { get; }
+        public abstract Task RenderTabPane(IHtmlHelper helper, IMapper mapper, T entity);
+    }
+}

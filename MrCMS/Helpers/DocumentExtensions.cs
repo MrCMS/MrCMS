@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
@@ -16,28 +17,28 @@ namespace MrCMS.Helpers
 {
     public static class DocumentExtensions
     {
-        //public static bool CanDelete(this Document document)
-        //{
-        //    return !document.AnyChildren();
-        //}
-        
-        //public static bool AnyChildren(this Document document)
-        //{
-        //    return MrCMSApplication.Get<ISession>()
-        //        .QueryOver<Document>()
-        //        .Where(doc => doc.Parent != null && doc.Parent.Id == document.Id)
-        //        .Cacheable()
-        //        .Any();
-        //}
+        public static bool CanDelete<T>(this IHtmlHelper<T> helper) where T : Document
+        {
+            return !helper.AnyChildren();
+        }
 
-        //public static int FormPostingsCount(this Webpage webpage)
-        //{
-        //    return MrCMSApplication.Get<ISession>()
-        //        .QueryOver<FormPosting>()
-        //        .Where(posting => posting.Webpage != null && posting.Webpage.Id == webpage.Id)
-        //        .Cacheable()
-        //        .RowCount();
-        //}
+        public static bool AnyChildren<T>(this IHtmlHelper<T> helper) where T : Document
+        {
+            return helper.GetRequiredService<ISession>()
+                .QueryOver<Document>()
+                .Where(doc => doc.Parent != null && doc.Parent.Id == helper.ViewData.Model.Id)
+                .Cacheable()
+                .Any();
+        }
+
+        public static int FormPostingsCount(this IHtmlHelper<Webpage> helper)
+        {
+            return helper.GetRequiredService<ISession>()
+                .QueryOver<FormPosting>()
+                .Where(posting => posting.Webpage != null && posting.Webpage.Id == helper.ViewData.Model.Id)
+                .Cacheable()
+                .RowCount();
+        }
 
         public static string GetAdminController(this Document document)
         {
@@ -73,17 +74,17 @@ namespace MrCMS.Helpers
                              let oldValue = propertyInfo.GetValue(previousVersion, null)
                              let currentValue = propertyInfo.GetValue(currentVersion, null)
                              select new VersionChange
-                                        {
-                                            Property =
+                             {
+                                 Property =
                                                 propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), true).
                                                     Any()
                                                     ? propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute),
                                                                                        true).OfType
                                                           <DisplayNameAttribute>().First().DisplayName
                                                     : propertyInfo.Name,
-                                            PreviousValue = oldValue,
-                                            CurrentValue = currentValue
-                                        });
+                                 PreviousValue = oldValue,
+                                 CurrentValue = currentValue
+                             });
             return changes;
         }
 

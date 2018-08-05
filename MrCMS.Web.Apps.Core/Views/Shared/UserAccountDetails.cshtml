@@ -1,0 +1,34 @@
+﻿@using System
+@using MrCMS.Helpers
+@model MrCMS.Models.Auth.UserAccountModel
+@using (Html.BeginForm("UserAccountDetails", "UserAccount", null, FormMethod.Post, new { @class = "" }))
+{
+    <div class="form-group">
+        @Html.LabelFor(model => model.FirstName, new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.FirstName)
+    </div>
+    
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName, new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.LastName)
+    </div>
+    
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email, new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Email)
+    </div>
+    
+    <input type="submit" value="Save Changes" class="btn btn-primary" />
+    
+    if (!String.IsNullOrEmpty(ViewBag.Message))
+    {
+    <div class="alert alert-error">
+        @ViewBag.Message
+    </div>
+    }
+
+}
+

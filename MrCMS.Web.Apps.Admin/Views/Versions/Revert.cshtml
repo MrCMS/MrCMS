@@ -4,11 +4,11 @@
 {
     <fieldset>
         <legend>
-            @Resource("Admin Webpage Revert to version", "Revert to version")
+            @Html.Resource("Admin Webpage Revert to version", "Revert to version")
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn btn-primary" value="@Resource("Revert")" />
+                <input type="submit" class="btn btn-primary" value="@Html.Resource("Revert")" />
             </span>
         </legend>
-        <p>@Resource("Admin Webpage Revert Message", "Please confirm that you want to this version of") @Model.Document.Name</p>
+        <p>@Html.Resource("Admin Webpage Revert Message", "Please confirm that you want to this version of") @Model.Document.Name</p>
     </fieldset>
 }

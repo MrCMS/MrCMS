@@ -11,12 +11,12 @@
 {
     <fieldset>
         <legend>
-            @Resource("Admin Resources Add Override", "Add override")
+            @Html.Resource("Admin Resources Add Override", "Add override")
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
+                <input type="submit" class="btn-primary btn" value="@Html.Resource("Save")" />
             </span>
         </legend>
-        <p>@Resource("Default"): @Model.DisplayKey</p>
+        <p>@Html.Resource("Default"): @Model.DisplayKey</p>
         @if (!string.IsNullOrWhiteSpace(Request.Params["referrer"]))
         {
             @Html.ReturnTo(Request.Params["referrer"])
@@ -29,7 +29,7 @@
         @if (Model.Site != null)
         {
             <div class="form-group">
-                @Html.LabelFor(resource => resource.Site.Id, @Resource("For Site:"))
+                @Html.LabelFor(resource => resource.Site.Id, @Html.Resource("For Site:"))
                 @Model.Site.DisplayName
             </div>
         }

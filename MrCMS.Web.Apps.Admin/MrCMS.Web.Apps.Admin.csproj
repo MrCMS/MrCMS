@@ -10,6 +10,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Views\Navigation\Children.cshtml" />
+    <None Remove="Views\NavLinks\SubMenu.cshtml" />
+    <None Remove="Views\Shared\Components\NavLinks\Default.cshtml" />
+    <None Remove="Views\Shared\Components\NavLinks\SubMenu.cshtml" />
+    <None Remove="Views\User\Content.cshtml" />
+    <None Remove="Views\User\Tab.cshtml" />
+    <None Remove="Views\Webpage\Tab.cshtml" />
+    <None Remove="Views\Webpage\TabContent.cshtml" />
+    <None Remove="Views\Webpage\Versions.cshtml" />
+    <None Remove="Views\_ViewImports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.8.5" />
   </ItemGroup>
 

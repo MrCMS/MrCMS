@@ -1,23 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using MrCMS.Apps;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin;
+using MrCMS.Web.Apps.Admin.Filters;
 using MrCMS.Web.Apps.Core;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
@@ -61,11 +65,20 @@ namespace MrCMS.Web
                 new CompositeFileProvider(new[] { physicalProvider }.Concat(appContext.ViewFileProviders));
 
             services.AddSingleton<IFileProvider>(compositeFileProvider);
+            services.AddSession(options =>
+            {
+                //options.CookieHttpOnly = true;
+            });
 
             services.AddMvc(options =>
                 {
                     // add custom binder to beginning of collection
                     options.ModelBinderProviders.Insert(0, new SystemEntityBinderProvider());
+                    options.ModelBinderProviders.Insert(1, new ExtendedModelBinderProvider());
+
+                    // TODO: refactor this to be added per app
+                    options.Filters.AddService(typeof(AdminAuthFilter));
+
                 }).AddRazorOptions(options =>
                 {
                     options.ViewLocationExpanders.Insert(0, new WebpageViewExpander());
@@ -86,13 +99,71 @@ namespace MrCMS.Web
             services.AddScoped<IStatelessSession>(provider =>
                 provider.GetRequiredService<ISessionFactory>().OpenStatelessSession());
 
+            services.AddIdentity<User, UserRole>(options =>
+            {
+                // lockout
+                if (int.TryParse(Configuration["Auth:Lockout:MaxFailedAccessAttempts"],
+                    out var maxFailedAccessAttempts))
+                    options.Lockout.MaxFailedAccessAttempts = maxFailedAccessAttempts;
+                if (TimeSpan.TryParse(Configuration["Auth:Lockout:DefaultLockoutTimeSpan"],
+                    out var defaultLockoutTimeSpan))
+                    options.Lockout.DefaultLockoutTimeSpan = defaultLockoutTimeSpan;
+                if (bool.TryParse(Configuration["Auth:Lockout:AllowedForNewUsers"], out var allowedForNewUsers))
+                    options.Lockout.AllowedForNewUsers = allowedForNewUsers;
+
+                // password
+                if (int.TryParse(Configuration["Auth:Password:RequiredLength"], out var requiredLength))
+                    options.Password.RequiredLength = requiredLength;
+                if (bool.TryParse(Configuration["Auth:Password:RequireDigit"], out var requireDigit))
+                    options.Password.RequireDigit = requireDigit;
+                if (bool.TryParse(Configuration["Auth:Password:RequireLowercase"], out var requireLowercase))
+                    options.Password.RequireLowercase = requireLowercase;
+                if (bool.TryParse(Configuration["Auth:Password:RequireNonAlphanumeric"],
+                    out var requireNonAlphanumeric))
+                    options.Password.RequireNonAlphanumeric = requireNonAlphanumeric;
+                if (bool.TryParse(Configuration["Auth:Password:RequireUppercase"], out var requireUppercase))
+                    options.Password.RequireUppercase = requireUppercase;
+
+                // sign in
+                if (bool.TryParse(Configuration["Auth:SignIn:RequireConfirmedEmail"],
+                    out var requireConfirmedEmail))
+                    options.SignIn.RequireConfirmedEmail = requireConfirmedEmail;
+                if (bool.TryParse(Configuration["Auth:SignIn:RequireConfirmedPhoneNumber"],
+                    out var requireConfirmedPhoneNumber))
+                    options.SignIn.RequireConfirmedPhoneNumber = requireConfirmedPhoneNumber;
+
+                options.User.RequireUniqueEmail = true;
+                options.ClaimsIdentity.UserNameClaimType = nameof(User.Email);
+                options.ClaimsIdentity.UserIdClaimType = nameof(User.Id);
+            })
+              .AddMrCMSStores()
+              .AddDefaultTokenProviders();
+
+
             services.AddSingleton<ICmsMethodTester, CmsMethodTester>();
             services.AddSingleton<IAssignPageDataToRouteData, AssignPageDataToRouteData>();
             services.AddSingleton<IQuerySerializer, QuerySerializer>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper>(x => {
+                var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
+                var factory = x.GetRequiredService<IUrlHelperFactory>();
+                return factory.GetUrlHelper(actionContext);
+            });
 
             // TODO: update the resolution of this
             services.AddSingleton<IFileSystem, FileSystem>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath
+                    = new PathString("/login");
+                options.LoginPath
+                    = new PathString("/login");
+                options.LogoutPath
+                    = new PathString("/logout");
+            });
+            services.AddAuthentication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -108,6 +179,9 @@ namespace MrCMS.Web
                 FileProvider = new CompositeFileProvider(
                     new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
             });
+            app.UseSession();
+            app.UseAuthentication();
+
 
             app.UseMvc(builder =>
             {
@@ -119,45 +193,6 @@ namespace MrCMS.Web
                     "{controller=Home}/{action=Index}/{id?}");
             });
 
-        }
-    }
-
-    public class AppViewLocationExpander : IViewLocationExpander
-    {
-        // TODO: implement properly
-        public void PopulateValues(ViewLocationExpanderContext context)
-        {
-            context.Values["app"] = "Core";
-        }
-
-        public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
-        {
-            return viewLocations.Select(s =>
-            {
-                if (s.IndexOf("~") == 0)
-                    return s.Replace("~/", $"~/Apps/{context.Values["app"]}/");
-                return $"/Apps/{context.Values["app"]}" + s;
-            }).Concat(viewLocations);
-        }
-    }
-
-    public class WebpageViewExpander : IViewLocationExpander
-    {
-        public void PopulateValues(ViewLocationExpanderContext context)
-        {
-            if (!context.IsMainPage) return;
-            var webpage = context.ActionContext.HttpContext.RequestServices.GetRequiredService<IGetCurrentPage>().GetPage();
-
-            if (webpage != null)
-                context.Values["webpage"] = webpage.DocumentType;
-        }
-
-        public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
-        {
-            if (!context.Values.ContainsKey("webpage"))
-                return viewLocations;
-
-            return viewLocations.Prepend($"~/Views/Pages/{context.Values["webpage"]}.cshtml");
         }
     }
 }

@@ -22,9 +22,9 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             var serviceProvider = bindingContext.HttpContext.RequestServices;
             var metadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
             bindingContext.ModelMetadata = metadataProvider.GetMetadataForType(type);
-            var instance = ActivatorUtilities.CreateInstance(serviceProvider, typeof(SystemEntityBinder<>).MakeGenericType(type)) as IModelBinder;
+            //var instance = SystemEntityBinderProvider.GetModelBinder(bindingContext.ModelMetadata, serviceProvider);
 
-            await instance.BindModelAsync(bindingContext);
+            //await instance.BindModelAsync(bindingContext);
 
             if (bindingContext.Result.Model is Widget widget)
             {

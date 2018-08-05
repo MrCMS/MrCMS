@@ -1,0 +1,17 @@
+﻿@using MrCMS.Models.Auth
+@model MrCMS.Web.Apps.Core.Pages.TwoFactorCodePage
+@{
+    var twoFactorModel = ViewData["2fa-model"] as TwoFactorAuthModel;
+}
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>
+            @Model.GetPageTitle()
+        </h1>
+        @Html.Editable(page => page.BodyContent, true)
+
+        <partial name="Form" model="twoFactorModel"></partial>
+    </div>
+</div>

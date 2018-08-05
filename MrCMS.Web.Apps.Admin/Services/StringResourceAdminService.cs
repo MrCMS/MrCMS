@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -22,7 +21,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly ISession _session;
         private readonly SiteSettings _siteSettings;
 
-        public StringResourceAdminService(IStringResourceProvider provider, SiteSettings siteSettings, 
+        public StringResourceAdminService(IStringResourceProvider provider, SiteSettings siteSettings,
             ISession session)
         {
             _provider = provider;
@@ -95,8 +94,8 @@ namespace MrCMS.Web.Apps.Admin.Services
             List<SelectListItem> selectListItems = cultureInfos.OrderBy(info => info.DisplayName)
                 .BuildSelectItemList(info => info.DisplayName, info => info.Name, emptyItem: null);
 
-            selectListItems.Insert(0, new SelectListItem {Text = "Any", Value = ""});
-            selectListItems.Insert(1, new SelectListItem {Text = DefaultLanguage, Value = DefaultLanguage});
+            selectListItems.Insert(0, new SelectListItem { Text = "Any", Value = "" });
+            selectListItems.Insert(1, new SelectListItem { Text = DefaultLanguage, Value = DefaultLanguage });
             return selectListItems;
         }
 
@@ -106,7 +105,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 _provider.AllResources.Where(x => x.Key == key && x.Site == null && x.UICulture == null)
                     .Select(resource => resource.Value)
                     .FirstOrDefault();
-            return new StringResource {Key = key, Site = site, Value = value};
+            return new StringResource { Key = key, Site = site, Value = value };
         }
 
         public List<SelectListItem> ChooseSiteOptions(ChooseSiteParams chooseSiteParams)
@@ -142,31 +141,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         private List<Site> GetAllSites()
         {
             return _session.Query<Site>()
-                .OrderBy(x => x.Name).Cacheable().ToList();
-        }
-    }
-
-    public static class StringResourceSearchExtensions
-    {
-        public static IEnumerable<StringResource> GetResourcesByKeyAndValue(
-            this IEnumerable<StringResource> resourcesForQuery, StringResourceSearchQuery searchQuery)
-        {
-            IEnumerable<StringResource> resources = resourcesForQuery;
-
-            if (!string.IsNullOrWhiteSpace(searchQuery.Key))
-            {
-                resources =
-                    resources.Where(
-                        resource => resource.Key.Contains(searchQuery.Key, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrWhiteSpace(searchQuery.Value))
-            {
-                resources =
-                    resources.Where(
-                        resource => resource.Value.Contains(searchQuery.Value, StringComparison.OrdinalIgnoreCase));
-            }
-            return resources;
+                .OrderBy(x => x.Name).WithOptions(x => x.SetCacheable(true)).ToList();
         }
     }
 }

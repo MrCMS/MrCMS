@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Web.Apps.Admin.Models.Tabs;
 
 namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 {
-    public class PropertiesTab : WebpageTab
+    public class PropertiesTab : AdminTab<Webpage>
     {
         public override int Order
         {
             get { return 0; }
         }
 
-        public override string Name(Webpage webpage)
+        public override string Name(IHtmlHelper helper, Webpage entity)
         {
             return "Properties";
         }
 
-        public override bool ShouldShow(Webpage webpage)
+        public override bool ShouldShow(IHtmlHelper helper, Webpage entity)
         {
             return true;
         }
@@ -27,14 +29,16 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
             get { return null; }
         }
 
+        public override Type ModelType => typeof(PropertiesTabViewModel);
+
         public override string TabHtmlId
         {
             get { return "edit-content"; }
         }
 
-        public override Task RenderTabPane(IHtmlHelper<Webpage> html, Webpage webpage)
+        public override Task RenderTabPane(IHtmlHelper html, IMapper mapper, Webpage webpage)
         {
-            return html.RenderPartialAsync("Properties", webpage);
+            return html.RenderPartialAsync("Properties", mapper.Map<PropertiesTabViewModel>(webpage));
         }
     }
 }

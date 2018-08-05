@@ -163,12 +163,13 @@ namespace MrCMS.Helpers
 
 
         internal static IHtmlContent LabelHelper(IHtmlHelper html, ModelMetadata metadata, string htmlFieldName,
-            IDictionary<string, object> htmlAttributes, string labelText = null)
+            IDictionary<string, object> htmlAttributes, IHtmlContent labelText = null)
         {
             var resolvedLabelText = labelText ??
-                                    metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
-            if (string.IsNullOrEmpty(resolvedLabelText))
-                return HtmlString.Empty;
+                                    new HtmlString(metadata.DisplayName ??
+                                                   metadata.PropertyName ?? htmlFieldName.Split('.').Last());
+            //if (string.IsNullOrEmpty(resolvedLabelText))
+            //    return HtmlString.Empty;
 
             var tag = new TagBuilder("label");
             tag.Attributes.Add("for",
@@ -207,7 +208,7 @@ namespace MrCMS.Helpers
             return Convert.ToBoolean(html.ViewData.Eval(key), CultureInfo.InvariantCulture);
         }
 
-        public static IHtmlContent FormLink(this HtmlHelper htmlHelper, string linkText, string actionName,
+        public static IHtmlContent FormLink(this IHtmlHelper htmlHelper, string linkText, string actionName,
             string controllerName, object routeValues, object htmlAttributes)
         {
             var routeValuesDictionary = new RouteValueDictionary(routeValues);
@@ -218,7 +219,7 @@ namespace MrCMS.Helpers
                 htmlAttributeDictionary);
         }
 
-        public static IHtmlContent AjaxFormLink(this HtmlHelper htmlHelper, string linkText, string actionName,
+        public static IHtmlContent AjaxFormLink(this IHtmlHelper htmlHelper, string linkText, string actionName,
             string controllerName, object routeValues, object htmlAttributes)
         {
             var routeValuesDictionary = new RouteValueDictionary(routeValues);
@@ -228,20 +229,20 @@ namespace MrCMS.Helpers
                 htmlAttributeDictionary);
         }
 
-        public static IHtmlContent AjaxFormLink(this HtmlHelper htmlHelper, string linkText, string actionName,
+        public static IHtmlContent AjaxFormLink(this IHtmlHelper htmlHelper, string linkText, string actionName,
             object routeValues, object htmlAttributes)
         {
             return AjaxFormLink(htmlHelper, linkText, actionName, null, routeValues, htmlAttributes);
         }
 
-        public static IHtmlContent FormLink(this HtmlHelper htmlHelper, string linkText, string actionName,
+        public static IHtmlContent FormLink(this IHtmlHelper htmlHelper, string linkText, string actionName,
             object routeValues, object htmlAttributes)
         {
             return FormLink(htmlHelper, linkText, actionName, null, routeValues, htmlAttributes);
         }
 
 
-        public static IHtmlContent LabelFor<TModel>(this HtmlHelper<TModel> htmlHelper,
+        public static IHtmlContent LabelFor<TModel>(this IHtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, object>> expression, object htmlAttributes,
             string text = null)
         {
@@ -249,10 +250,10 @@ namespace MrCMS.Helpers
                 ExpressionMetadataProvider
                     .FromLambdaExpression(expression, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata,
                 ExpressionHelper.GetExpressionText(expression), AnonymousObjectToHtmlAttributes(htmlAttributes),
-                text);
+                text != null ? new HtmlString(text) : null);
         }
 
-        public static IHtmlContent InlineCheckboxFor<TModel>(this HtmlHelper<TModel> htmlHelper,
+        public static IHtmlContent InlineCheckboxFor<TModel>(this IHtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, bool>> expression, object labelAttributes = null, object checkboxAttributes = null,
             string text = null)
         {
@@ -271,10 +272,11 @@ namespace MrCMS.Helpers
                 labelHtmlAttributes["class"] = "checkbox-inline";
 
             text = text ?? metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
+            var builder = new HtmlContentBuilder().AppendHtml(checkbox).Append(text);
             return LabelHelper(htmlHelper, metadata,
                 htmlFieldName,
                 labelHtmlAttributes,
-                checkbox + text);
+                builder);
         }
 
         public static IHtmlContent Label(this IHtmlHelper htmlHelper, string labelFor, object htmlAttributes,
@@ -284,7 +286,7 @@ namespace MrCMS.Helpers
                 ExpressionMetadataProvider
                     .FromStringExpression(labelFor, htmlHelper.ViewData, htmlHelper.MetadataProvider).Metadata,
                 // ModelMetadata.FromStringExpression(labelFor, htmlHelper.ViewData),
-                labelFor, new RouteValueDictionary(htmlAttributes), text);
+                labelFor, new RouteValueDictionary(htmlAttributes), text != null ? new HtmlString(text) : null);
         }
 
 

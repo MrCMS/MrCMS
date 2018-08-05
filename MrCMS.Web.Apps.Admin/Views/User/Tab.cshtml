@@ -1,0 +1,29 @@
+﻿@using MrCMS.Entities.People
+@using MrCMS.Web.Apps.Admin.Models.UserEdit
+@model MrCMS.Web.Apps.Admin.Models.UserEdit.UserTabBase
+@{
+    var isFirst = ViewData["is-first"] is bool b && b;
+    var user = ViewData["user"] as User;
+}
+
+@if (Model is UserTab)
+{
+var tab = Model as UserTab;
+<li class="@(isFirst ? "active" : "")">
+    <a href="#@tab.TabHtmlId" data-toggle="tab">@tab.Name(user)</a>
+</li>
+}
+else
+{
+var @group = Model as UserTabGroup;
+<li class="@(isFirst ? "active dropdown" : "dropdown")">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">@(@group.Name(user))&nbsp;<b class="caret"></b></a>
+    <ul class="dropdown-menu">
+        @foreach (UserTabBase tab in @group.Children)
+        {
+            ViewData["is-first"] = false;
+            <partial name="Tab" model="tab" view-data="ViewData"/>
+        }
+    </ul>
+</li>
+}

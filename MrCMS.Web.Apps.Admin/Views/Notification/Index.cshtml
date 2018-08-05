@@ -13,7 +13,7 @@
 {
     <fieldset>
         <legend>
-            @Resource("Admin Notifications Title", "Notifications")
+            @Html.Resource("Admin Notifications Title", "Notifications")
             <span class="btn-group display-inline pull-right">
                 <input type="submit" class="btn btn-primary" value="Search" />
                 @Html.ActionLink(Resource("Admin Notifications Push", "Push"), "Push", "Notification", new { }, new { @class = "btn btn-default", data_toggle = "fb-modal" })
@@ -51,7 +51,7 @@
 
 @if (results.Count == 0)
 {
-    @Resource("Admin Notifications None", "No notifications");
+    @Html.Resource("Admin Notifications None", "No notifications");
 }
 else
 {
@@ -59,19 +59,19 @@ else
         <thead>
             <tr>
                 <th>
-                    @Resource("Date")
+                    @Html.Resource("Date")
                 </th>
                 <th>
-                    @Resource("Admin Notifications Notification Type", "Notification Type")
+                    @Html.Resource("Admin Notifications Notification Type", "Notification Type")
                 </th>
                 <th>
-                    @Resource("Message")
+                    @Html.Resource("Message")
                 </th>
                 <th>
-                    @Resource("User")
+                    @Html.Resource("User")
                 </th>
                 <th>
-                    @Resource("Actions")
+                    @Html.Resource("Actions")
                 </th>
             </tr>
         </thead>

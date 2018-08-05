@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,6 +58,32 @@ namespace MrCMS.Helpers
 
             // Don't wrap;
             return func.Invoke(session);
+        }
+        public static Task TransactAsync(this ISession session, Func<ISession, CancellationToken, Task> action, CancellationToken cancellationToken)
+        {
+            return Transact(session, async ses =>
+            {
+                await action.Invoke(ses, cancellationToken);
+                return false;
+            });
+        }
+
+        public static async Task<TResult> TransactAsync<TResult>(this IStatelessSession session, Func<IStatelessSession, CancellationToken, Task<TResult>> func, CancellationToken cancellationToken)
+        {
+            if (!session.Transaction.IsActive)
+            {
+                // Wrap in transaction
+                TResult result;
+                using (ITransaction tx = session.BeginTransaction())
+                {
+                    result = await func.Invoke(session, cancellationToken);
+                    await tx.CommitAsync(cancellationToken);
+                }
+                return result;
+            }
+
+            // Don't wrap;
+            return await func.Invoke(session, cancellationToken);
         }
 
         public static void Transact(this ISession session, Action<ISession> action)

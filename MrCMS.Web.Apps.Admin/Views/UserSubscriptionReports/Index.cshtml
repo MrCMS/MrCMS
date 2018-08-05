@@ -3,20 +3,20 @@
 @model MrCMS.Web.Apps.Admin.Models.UserSubscriptionReports.UserSubscriptionReportsSearchQuery
 
 @{
-    ViewBag.Title = @Resource("Admin User Subscription Reports Title", "User Subscription Reports");
+    ViewBag.Title = @Html.Resource("Admin User Subscription Reports Title", "User Subscription Reports");
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    string xAxisLabel = @Resource("User Subscription Tooltip Title X", "Subscribed On");
-    string yAxisLabel = @Resource("User Subscription Tooltip Title Y", "Number of Users");
-    string graphLabel = @Resource("User Subscription Graph Label", "User Subscriptions Per Month");
+    string xAxisLabel = @Html.Resource("User Subscription Tooltip Title X", "Subscribed On");
+    string yAxisLabel = @Html.Resource("User Subscription Tooltip Title Y", "Number of Users");
+    string graphLabel = @Html.Resource("User Subscription Graph Label", "User Subscriptions Per Month");
 }
 
 @using (Html.BeginForm("Index", "UserSubscriptionReports", FormMethod.Get))
 {
     <fieldset>
         <legend>
-            @Resource("Admin User Subscription Reports (Monthly) Title", "User Subscription Reports (Monthly)")
+            @Html.Resource("Admin User Subscription Reports (Monthly) Title", "User Subscription Reports (Monthly)")
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn btn-primary" value="@Resource("Range Filter")" />
+                <input type="submit" class="btn btn-primary" value="@Html.Resource("Range Filter")" />
             </span>
         </legend>
 
@@ -38,7 +38,7 @@
         <div class="col-lg-10 col-lg-push-1">
             <div data-d3-graph="@Url.Action("GraphData", "UserSubscriptionReports", new { StartDate = Model.StartDate.ToString(), EndDate = Model.EndDate.ToString() })" data-d3-graph-label="@graphLabel" data-d3-x-axis-label="@xAxisLabel" data-d3-y-axis-label="@yAxisLabel">
                 <div class="alert alert-info hidden margin-top-10">
-                    <strong>@Resource("Admin User Subscription -  No Data Notification", "There is no data for the selected time period.")</strong>
+                    <strong>@Html.Resource("Admin User Subscription -  No Data Notification", "There is no data for the selected time period.")</strong>
                 </div>
             </div>
         </div>

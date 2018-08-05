@@ -31,7 +31,8 @@ namespace MrCMS.Website.CMS
             var serviceProvider = context.HttpContext.RequestServices;
 
             // we only route requests that are of routable methods
-            if (!serviceProvider.GetRequiredService<ICmsMethodTester>().IsRoutable(context.HttpContext.Request.Method))
+            var method = context.HttpContext.Request.Method;
+            if (!serviceProvider.GetRequiredService<ICmsMethodTester>().IsRoutable(method))
                 return;
 
             // we want to look at the whole path with the leading '/' stripped
@@ -40,7 +41,7 @@ namespace MrCMS.Website.CMS
             //// we will leave the homepage to be explicitly routed 
             //if (string.IsNullOrWhiteSpace(url))
             //    return;
-            var matchResult = await serviceProvider.GetRequiredService<ICmsRouteMatcher>().TryMatch(url);
+            var matchResult = await serviceProvider.GetRequiredService<ICmsRouteMatcher>().TryMatch(url, method);
             if (matchResult.MatchType == CmsRouteMatchType.NoMatch)
                 return;
             if (matchResult.MatchType == CmsRouteMatchType.Preview)

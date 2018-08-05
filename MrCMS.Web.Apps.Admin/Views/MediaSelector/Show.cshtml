@@ -18,7 +18,7 @@
     {
         <fieldset>
             <legend>
-                @Resource("Admin Media Selector Media Selector Title", "Media Selector")
+                @Html.Resource("Admin Media Selector Media Selector Title", "Media Selector")
             </legend>
             <div class="form-container">
                 <div class="form-group folder-dropdown">
@@ -29,13 +29,13 @@
                     @Html.TextBoxFor(query => query.Query, new { @class = "form-control col-xs-4", @placeholder = Resource("Admin - Media Selector Search Placeholder", "Search") })
                     @Html.ValidationMessageFor(query => query.Query)
                 </div>
-                <input type="submit" class="btn btn-primary col-lg-12 search-btn" value="@Resource("Search")" />
+                <input type="submit" class="btn btn-primary col-lg-12 search-btn" value="@Html.Resource("Search")" />
             </div>
         </fieldset>
     }
 
     <div id="results">
-        <div id="fileupload" data-message="@Resource("Click here or drag files to upload")" class="dropzone margin-bottom-10 margin-top-10"></div>
+        <div id="fileupload" data-message="@Html.Resource("Click here or drag files to upload")" class="dropzone margin-bottom-10 margin-top-10"></div>
 
         <input type="hidden" value="@Url.Action("Files", "File", new { Id = (Model.CategoryId ?? null) })" id="action-url" />
 

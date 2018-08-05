@@ -1,10 +1,15 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using NHibernate;
+using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
 namespace MrCMS.Website
 {
@@ -12,76 +17,53 @@ namespace MrCMS.Website
     {
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             if (context.Metadata.ModelType.IsImplementationOf(typeof(SystemEntity)))
             {
-                return new BinderTypeModelBinder(typeof(SystemEntityBinder<>).MakeGenericType(context.Metadata.ModelType));
+                return new BinderTypeModelBinder(typeof(SystemEntityBinder));
+                //return GetModelBinder(context.Metadata, context.Services);
             }
 
             return null;
         }
-    }
-    public class SystemEntityBinder<T> : IModelBinder where T : SystemEntity
-    {
-        private readonly ISession _session;
-        public SystemEntityBinder(ISession session)
-        {
-            _session = session;
-        }
 
-        public Task BindModelAsync(ModelBindingContext bindingContext)
-        {
-            if (bindingContext == null)
-            {
-                throw new ArgumentNullException(nameof(bindingContext));
-            }
+        //public static IModelBinder GetModelBinder(ModelMetadata initialMetadata, IServiceProvider serviceProvider)
+        //{
+        //    var modelType = GetModelType(initialMetadata, serviceProvider);
+        //    if (modelType == null)
+        //        return null;
 
-            // Specify a default argument name if none is set by ModelBinderAttribute
-            var modelName = bindingContext.BinderModelName;
-            if (string.IsNullOrEmpty(modelName))
-            {
-                modelName = "id";
-            }
+        //    var metadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
+        //    var metadata = metadataProvider.GetMetadataForType(modelType);
+        //    var dictionary = new Dictionary<ModelMetadata, IModelBinder>();
+        //    var modelBinderFactory = serviceProvider.GetRequiredService<IModelBinderFactory>();
+        //    foreach (var property in metadata.Properties.Where(x => !x.IsCollectionType))
+        //    {
+        //        var modelBinderFactoryContext = new ModelBinderFactoryContext
+        //        {
+        //            BindingInfo = BindingInfo.GetBindingInfo(Enumerable.Empty<object>(), property),
+        //            Metadata = property
+        //        };
 
-            // Try to fetch the value of the argument by name
-            var valueProviderResult =
-                bindingContext.ValueProvider.GetValue(modelName);
+        //        dictionary.Add(property, modelBinderFactory.CreateBinder(modelBinderFactoryContext));
+        //    }
 
-            if (valueProviderResult == ValueProviderResult.None)
-            {
-                return Task.CompletedTask;
-            }
+        //    var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+        //    return new SystemEntityBinder(dictionary, loggerFactory);
+        //}
 
-            bindingContext.ModelState.SetModelValue(modelName,
-                valueProviderResult);
+        //private static Type GetModelType(ModelMetadata metadata, IServiceProvider serviceProvider)
+        //{
+        //    if (!metadata.ModelType.IsAbstract) return metadata.ModelType;
 
-            var value = valueProviderResult.FirstValue;
+        //    var contextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+        //    var sessionFactory = serviceProvider.GetRequiredService<ISessionFactory>();
+        //    if (int.TryParse(contextAccessor.HttpContext.GetRouteValue("id")?.ToString() ?? string.Empty, out var id)
+        //        && sessionFactory.OpenFilteredSession(serviceProvider).Get(metadata.ModelType, id) is SystemEntity entity)
+        //        return entity.Unproxy().GetType();
 
-            // Check if the argument value is null or empty
-            if (string.IsNullOrEmpty(value))
-            {
-                return Task.CompletedTask;
-            }
-
-            int id = 0;
-            if (!int.TryParse(value, out id))
-            {
-                // Non-integer arguments result in model state errors
-                bindingContext.ModelState.TryAddModelError(
-                    bindingContext.ModelName,
-                    "Id must be an integer.");
-                return Task.CompletedTask;
-            }
-
-            // Model will be null if not found, including for 
-            // out of range id values (0, -3, etc.)
-            var model = _session.Get(typeof(T), id);
-            bindingContext.Result = ModelBindingResult.Success(model);
-            return Task.CompletedTask;
-        }
+        //    return null;
+        //}
     }
 }

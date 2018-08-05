@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Web.Apps.Admin.Models.Tabs;
 
 namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 {
-    public class VersionsTab : WebpageTab
+    public class VersionsTab : AdminTab<Webpage>
     {
         public override int Order
         {
@@ -17,24 +19,24 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
             get { return null; }
         }
 
+        public override Type ModelType => null;
+
         public override string TabHtmlId
         {
             get { return "versions"; }
         }
 
-        public override Task RenderTabPane(IHtmlHelper<Webpage> html, Webpage webpage)
+        public override async Task RenderTabPane(IHtmlHelper html, IMapper mapper, Webpage webpage)
         {
-            // TODO: render versions
-            return Task.CompletedTask;
-            //html.RenderPartialAsync("Show", "Versions", new {document = webpage});
+            await html.RenderPartialAsync("Versions", webpage);
         }
 
-        public override string Name(Webpage webpage)
+        public override string Name(IHtmlHelper helper, Webpage entity)
         {
             return "Versions";
         }
 
-        public override bool ShouldShow(Webpage webpage)
+        public override bool ShouldShow(IHtmlHelper helper, Webpage entity)
         {
             return true;
         }

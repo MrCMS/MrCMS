@@ -2,15 +2,15 @@
 @using MrCMS.Web.Apps.Admin.Models
 @model IList<MrCMS.Web.Apps.Admin.Models.WebpageStats>
 
-<h4>@Resource("Admin Dashboard Page stats", "Page stats")</h4>
+<h4>@Html.Resource("Admin Dashboard Page stats", "Page stats")</h4>
 <table class="table table-striped table-condensed" style="overflow: scroll">
     <thead>
         <tr>
-            <th>@Resource("Admin Dashboard Page Stats", "Page type")
+            <th>@Html.Resource("Admin Dashboard Page Stats", "Page type")
             </th>
-            <th>@Resource("Admin Dashboard Total", "Total")
+            <th>@Html.Resource("Admin Dashboard Total", "Total")
             </th>
-            <th>@Resource("Admin Dashboard Unpublished", "Unpublished")
+            <th>@Html.Resource("Admin Dashboard Unpublished", "Unpublished")
             </th>
         </tr>
     </thead>

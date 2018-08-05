@@ -15,9 +15,9 @@
 {
     <fieldset>
         <legend>
-            @Resource("Admin Webpage Add page to", "Add page to") @(Model.Parent != null ? Model.Parent.Name : Resource("Root"))
+            @Html.Resource("Admin Webpage Add page to", "Add page to") @(Model.Parent != null ? Model.Parent.Name : Resource("Root"))
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-primary btn hide-until-document-selected" value="@Resource("Save")" style="display: none;" />
+                <input type="submit" class="btn-primary btn hide-until-document-selected" value="@Html.Resource("Save")" style="display: none;" />
             </span>
         </legend>
         <div class="row">
@@ -65,7 +65,7 @@
                 </div>
             </div>
             <div class="col-lg-10" id="message-choose-document">
-                <p>@Resource("Admin Webpage Please select a document type", "Please select a document type")</p>
+                <p>@Html.Resource("Admin Webpage Please select a document type", "Please select a document type")</p>
             </div>
 
         </div>

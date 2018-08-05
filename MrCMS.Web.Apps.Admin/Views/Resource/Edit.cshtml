@@ -6,12 +6,12 @@
 @using (Html.BeginForm("Edit", "Resource", FormMethod.Post))
 {
     <fieldset>
-        <legend>@Resource("Admin Resources Edit resource", "Edit resource") 
+        <legend>@Html.Resource("Admin Resources Edit resource", "Edit resource") 
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
+                <input type="submit" class="btn-primary btn" value="@Html.Resource("Save")" />
             </span>
         </legend>
-        "@Model.DisplayKey" @Resource("for") @Model.DisplayUICulture
+        "@Model.DisplayKey" @Html.Resource("for") @Model.DisplayUICulture
         @Html.ReturnToReferrer()
         <div class="form-group">
             @Html.LabelFor(task => task.Value)

@@ -11,9 +11,9 @@
 @using (Html.BeginForm("Add", "MediaCategory", new { id = "" }, FormMethod.Post, new { id = "add-media-category" }))
 {
     <fieldset>
-        <legend>@Resource("Admin Folders Add Title", "Add Folder")
+        <legend>@Html.Resource("Admin Folders Add Title", "Add Folder")
             <button class="btn pull-right btn-primary">
-                @Resource("Add")</button>
+                @Html.Resource("Add")</button>
         </legend>
         <div class="row">
             <div class="col-lg-12">

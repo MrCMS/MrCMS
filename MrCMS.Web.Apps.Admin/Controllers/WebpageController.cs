@@ -194,5 +194,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             }
             return new EmptyResult();
         }
+
+        public PartialViewResult Versions(Webpage webpage, int page = 1)
+        {
+            ViewData["page"] = page;
+            return PartialView(webpage);
+        }
     }
 }

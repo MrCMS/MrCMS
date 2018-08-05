@@ -1,15 +1,15 @@
 ﻿@model MrCMS.Entities.Documents.Web.FormPosting
 
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-<h3>@Resource("Admin Form View Entry", "View Entry")</h3>
+<h3>@Html.Resource("Admin Form View Entry", "View Entry")</h3>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>
-                @Resource("Name")
+                @Html.Resource("Name")
             </th>
             <th>
-                @Resource("Name")
+                @Html.Resource("Name")
             </th>
         </tr>
     </thead>
@@ -23,7 +23,7 @@
                 <td>
                     @if (value.IsFile)
                     {
-                        <a href="@value.Value">@Resource("Download")</a>
+                        <a href="@value.Value">@Html.Resource("Download")</a>
                     }
                     else
                     {

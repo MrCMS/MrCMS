@@ -36,9 +36,9 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             var serviceProvider = bindingContext.HttpContext.RequestServices;
             var metadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
             bindingContext.ModelMetadata = metadataProvider.GetMetadataForType(typeInfo.webpageType);
-            var instance = ActivatorUtilities.CreateInstance(serviceProvider, typeof(SystemEntityBinder<>).MakeGenericType(typeInfo.webpageType)) as IModelBinder;
+            //var instance = SystemEntityBinderProvider.GetModelBinder(bindingContext.ModelMetadata, serviceProvider);
 
-            await instance.BindModelAsync(bindingContext);
+            //await instance.BindModelAsync(bindingContext);
 
             //set include as navigation as default 
             if (bindingContext.Result.Model is Webpage webpage)

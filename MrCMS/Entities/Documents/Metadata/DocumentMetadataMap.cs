@@ -104,6 +104,8 @@ namespace MrCMS.Entities.Documents.Metadata
         /// </summary>
         public virtual string EditPartialView { get { return "DefaultEdit"; } }
 
+        public virtual Type EditModel => null;
+
         /// <summary>
         /// Specifies the app that the document is a part of
         /// </summary>

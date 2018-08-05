@@ -27,7 +27,7 @@
 @if (category != null)
 {
     <ol class="breadcrumb">
-        <li><a href="@Url.Action("Index", "MediaCategory")">@Resource("Admin Media", "Media")</a></li>
+        <li><a href="@Url.Action("Index", "MediaCategory")">@Html.Resource("Admin Media", "Media")</a></li>
         @foreach (var folder in category.BreadCrumbs.Reverse())
         {
             <li><a href="@Url.Action("Show", "MediaCategory", new{Id = folder.Id})">@folder.Name</a></li>
@@ -53,7 +53,7 @@
         <div class="col-sm-2">
             <div class="form-group">
                 <label class="hidden-xs">&nbsp;</label>
-                <button type="submit" class="btn btn-primary form-control">@Resource("Search")</button>
+                <button type="submit" class="btn btn-primary form-control">@Html.Resource("Search")</button>
             </div>
         </div>
     </div>
@@ -65,14 +65,14 @@
         @{
     if (canAccessMediaToolsCut)
     {
-        <button id="cut-files" class="btn btn-default" disabled>@Resource("Cut")</button>
+        <button id="cut-files" class="btn btn-default" disabled>@Html.Resource("Cut")</button>
     }
-    <button id="paste-files" class="btn btn-default" disabled>@Resource("Paste")</button>
+    <button id="paste-files" class="btn btn-default" disabled>@Html.Resource("Paste")</button>
     if (canAccessMediaToolsDelete)
     {
-        <button id="delete-files" class="btn btn-default" disabled>@Resource("Delete")</button>
+        <button id="delete-files" class="btn btn-default" disabled>@Html.Resource("Delete")</button>
     }
-    <button id="clear-files" class="btn btn-default">@Resource("Clear")</button>
+    <button id="clear-files" class="btn btn-default">@Html.Resource("Clear")</button>
         }
     </span>
 }

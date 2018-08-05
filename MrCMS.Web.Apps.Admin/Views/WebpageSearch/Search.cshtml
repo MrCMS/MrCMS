@@ -18,7 +18,7 @@
         <div class="input-group">
             @Html.TextBoxFor(query => query.Query, new { @class = "form-control", autocomplete = "off", placeholder = "Search" })
             <span class="input-group-btn">
-                <button type="submit" class="btn btn-primary">@Resource("Search")</button>
+                <button type="submit" class="btn btn-primary">@Html.Resource("Search")</button>
             </span>
         </div>
 

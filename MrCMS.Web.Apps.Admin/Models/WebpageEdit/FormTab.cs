@@ -1,9 +1,11 @@
 ﻿using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Web.Apps.Admin.Models.Tabs;
 
 namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 {
-    public class FormTab : WebpageTabGroup
+    public class FormTab : AdminTabGroup<Webpage>
     {
         public override int Order
         {
@@ -15,12 +17,12 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
             get { return null; }
         }
 
-        public override string Name(Webpage webpage)
+        public override string Name(IHtmlHelper helper, Webpage entity)
         {
             return "Form";
         }
 
-        public override bool ShouldShow(Webpage webpage)
+        public override bool ShouldShow(IHtmlHelper helper, Webpage entity)
         {
             return true;
         }

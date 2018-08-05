@@ -6,9 +6,9 @@
     <table class="table table-condensed table-striped table-bordered">
         <thead>
             <tr>
-                <th>@Resource("Value")</th>
-                <th>@Resource("Admin Webpage Form Option Selected", "Selected")</th>
-                <th>@Resource("Actions")</th>
+                <th>@Html.Resource("Value")</th>
+                <th>@Html.Resource("Admin Webpage Form Option Selected", "Selected")</th>
+                <th>@Html.Resource("Actions")</th>
             </tr>
         </thead>
         <tbody>
@@ -20,8 +20,8 @@
                     <td>@option.Selected</td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink(Resource("Edit"), "EditOption", "Form", new { id = option.Id }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
-                            @Html.ActionLink(Resource("Delete"), "DeleteOption", "Form", new { id = option.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Html.Resource("Edit"), "EditOption", "Form", new { id = option.Id }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Html.Resource("Delete"), "DeleteOption", "Form", new { id = option.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
                         </div>
                     </td>
                 </tr>
@@ -32,7 +32,7 @@
 }
 else
 {
-    @Resource("Admin Webpage From Options None", "Please click add option to add your first option to this field.")
+    @Html.Resource("Admin Webpage From Options None", "Please click add option to add your first option to this field.")
 }
 <br />
 <div class="btn-group">

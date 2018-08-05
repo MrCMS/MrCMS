@@ -23,5 +23,41 @@ namespace MrCMS.Helpers
         {
             return req.Headers["Referer"];
         }
+
+        //public static string GetCurrentIP(this HttpContext contextBase)
+        //{
+        //    return contextBase.Request.GetCurrentIP();
+        //}
+
+        public static string UserAgent(this HttpRequest request)
+        {
+            return request.Headers["User-Agent"].ToString();
+        }
+
+        public static string GetCurrentIP(this HttpRequest request)
+        {
+            if (request == null)
+                return string.Empty;
+
+            var connectingIp = request.Headers["CF-CONNECTING-IP"];
+            if (!string.IsNullOrWhiteSpace(connectingIp))
+                return connectingIp;
+
+            string ipAddress = request.Headers["X-Forwarded-For"];
+
+            if (!string.IsNullOrWhiteSpace(ipAddress))
+            {
+                string[] addresses = ipAddress.Split(',');
+                if (addresses.Length != 0)
+                {
+                    if (addresses[0].Contains(":"))
+                        return addresses[0].Split(':')[0];
+                    return addresses[0];
+                }
+            }
+
+            return request.HttpContext.Connection.RemoteIpAddress.ToString();
+        }
     }
+
 }

@@ -192,6 +192,7 @@ namespace MrCMS.Settings
             honeyPot.Attributes["type"] = "text";
             honeyPot.Attributes["style"] = "display:none; visibility: hidden;";
             honeyPot.Attributes["name"] = HoneypotFieldName;
+            honeyPot.TagRenderMode = TagRenderMode.SelfClosing;
             return honeyPot;
         }
     }

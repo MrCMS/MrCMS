@@ -13,16 +13,14 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class WebpageBaseViewDataService : IWebpageBaseViewDataService
     {
         private readonly IGetValidPageTemplatesToAdd _getValidPageTemplatesToAdd;
-        private readonly IGetWebpageEditTabsService _getWebpageEditTabsService;
         private readonly IGetCurrentUser _getCurrentUser;
         private readonly IValidWebpageChildrenService _validWebpageChildrenService;
 
         public WebpageBaseViewDataService(IValidWebpageChildrenService validWebpageChildrenService, IGetValidPageTemplatesToAdd getValidPageTemplatesToAdd,
-            IGetWebpageEditTabsService getWebpageEditTabsService, IGetCurrentUser getCurrentUser)
+            IGetCurrentUser getCurrentUser)
         {
             _validWebpageChildrenService = validWebpageChildrenService;
             _getValidPageTemplatesToAdd = getValidPageTemplatesToAdd;
-            _getWebpageEditTabsService = getWebpageEditTabsService;
             _getCurrentUser = getCurrentUser;
         }
 
@@ -73,8 +71,6 @@ namespace MrCMS.Web.Apps.Admin.Services
             {
                 viewData["EditView"] = documentMetadata.EditPartialView;
             }
-
-            viewData["edit-tabs"] = _getWebpageEditTabsService.GetEditTabs(page);
         }
     }
 }

@@ -49,7 +49,7 @@ namespace MrCMS.Services
         {
             //using (MiniProfiler.Current.Step("Publishing " + eventType.FullName))
             {
-                foreach (var type in TypeHelper.GetAllTypesAssignableFrom(eventType).Where(type => !IsDisabled(type)))
+                foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom(eventType).Where(type => !IsDisabled(type)))
                 {
                     //using (MiniProfiler.Current.Step("Invoking " + @event.GetType().FullName))
                     {

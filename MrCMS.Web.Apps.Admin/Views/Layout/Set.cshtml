@@ -5,9 +5,9 @@
 @using (Html.BeginForm("Set", "Layout", new { id = "" }, FormMethod.Post, new { @class = "update-parent-form" }))
 {
     <fieldset>
-        <legend>@Resource("Admin Layouts Move Title", "Move Layout")
+        <legend>@Html.Resource("Admin Layouts Move Title", "Move Layout")
             <span class="btn-group  display-inline  pull-right">
-                 <input type="submit" class="btn-primary btn" value="@Resource("Move")" />
+                 <input type="submit" class="btn-primary btn" value="@Html.Resource("Move")" />
             </span>
         </legend>
         @Html.HiddenFor(x => x.Id)

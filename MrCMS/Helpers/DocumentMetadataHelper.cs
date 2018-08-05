@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Metadata;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Website;
+using NHibernate;
 
 namespace MrCMS.Helpers
 {
@@ -20,6 +22,13 @@ namespace MrCMS.Helpers
         public static List<DocumentMetadata> DocumentMetadatas
         {
             get { return _documentMetadatas ?? (_documentMetadatas = GetDocumentMetadata()); }
+        }
+
+        public static DocumentMetadata GetDocumentMetadata(this IHtmlHelper helper, int id)
+        {
+            var webpage = helper.GetRequiredService<ISession>().Get<Webpage>(id);
+
+            return webpage?.GetMetadata();
         }
 
         private static List<DocumentMetadata> GetDocumentMetadata()

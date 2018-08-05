@@ -8,7 +8,7 @@
     var results = ViewData["results"] as IPagedList<PageTemplate> ?? PagedList<PageTemplate>.Empty;
 }
 <h1 class="page-header">
-    @Resource("Admin Page Templates", "Page Templates")
+    @Html.Resource("Admin Page Templates", "Page Templates")
     <span class="btn-group display-inline pull-right">
         @Html.ActionLink("Add", "Add", "PageTemplate", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
     </span>
@@ -20,25 +20,25 @@
         <thead>
             <tr>
                 <th>
-                    @Resource("Name")
+                    @Html.Resource("Name")
                 </th>
                 <th>
-                    @Resource("Page Type")
+                    @Html.Resource("Page Type")
                 </th>
                 <th>
-                    @Resource("Template Name")
+                    @Html.Resource("Template Name")
                 </th>
                 <th>
-                    @Resource("Layout Name")
+                    @Html.Resource("Layout Name")
                 </th>
                 <th>
-                    @Resource("Url Generator")
+                    @Html.Resource("Url Generator")
                 </th>
                 <th>
-                    @Resource("Admin Page Templates Single Use", "Single Use")?
+                    @Html.Resource("Admin Page Templates Single Use", "Single Use")?
                 </th>
                 <th>
-                    @Resource("Actions")
+                    @Html.Resource("Actions")
                 </th>
             </tr>
         </thead>
@@ -78,6 +78,6 @@
 else
 {
     <p>
-        @Resource("Admin Page Templates None", "No page templates meet your criteria")
+        @Html.Resource("Admin Page Templates None", "No page templates meet your criteria")
     </p>
 }

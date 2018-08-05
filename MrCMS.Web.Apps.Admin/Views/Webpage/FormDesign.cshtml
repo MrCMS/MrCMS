@@ -1,6 +1,6 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Entities.Documents.Web.Webpage
-<h4>@Resource("Admin Webpage Form Design", "Form Design")</h4>
+@model MrCMS.Web.Apps.Admin.Models.WebpageEdit.FormDesignTabViewModel
+<h4>@Html.Resource("Admin Webpage Form Design", "Form Design")</h4>
 
 @Html.InfoBlock("Heads up!", "By default, Mr CMS creates the for HTML form you. " +
                                   "However if you want a custom form design then you can manually create the form using " +
@@ -11,7 +11,7 @@
 @Html.TextAreaFor(webpage => webpage.FormDesign, new { @style = "width: 100%; height: 200px;" })
 
 
-<h5>@Resource("Example")</h5>
+<h5>@Html.Resource("Example")</h5>
 <textarea style="width: 100%; height: 200px;">
     <table>
         <tbody>

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Web.Apps.Admin.Models.Tabs;
 
 namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 {
-    public class LayoutTab : WebpageTab
+    public class LayoutTab : AdminTab<Webpage>
     {
         public override int Order
         {
@@ -17,22 +19,21 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
             get { return null; }
         }
 
-        public override string TabHtmlId
-        {
-            get { return "layout-content"; }
-        }
+        public override Type ModelType => typeof(LayoutTabViewModel);
 
-        public override Task RenderTabPane(IHtmlHelper<Webpage> html, Webpage webpage)
+        public override string TabHtmlId => "layout-content";
+
+        public override Task RenderTabPane(IHtmlHelper html, IMapper mapper, Webpage webpage)
         {
             return html.RenderPartialAsync("Layout", webpage);
         }
 
-        public override string Name(Webpage webpage)
+        public override string Name(IHtmlHelper helper, Webpage entity)
         {
             return "Layout";
         }
 
-        public override bool ShouldShow(Webpage webpage)
+        public override bool ShouldShow(IHtmlHelper helper, Webpage entity)
         {
             return true;
         }

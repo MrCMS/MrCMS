@@ -14,7 +14,7 @@
             @(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : Model.WidgetType.BreakUpString())
 
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-success btn" value="@Resource("Save")" />
+                <input type="submit" class="btn-success btn" value="@Html.Resource("Save")" />
             </span>
         </legend>
         @Html.HiddenFor(widget => widget.Id)
@@ -36,7 +36,7 @@
         @if (Model.IsTypeCachable())
         {
             <hr />
-            <h4>@Resource("Advanced")</h4>
+            <h4>@Html.Resource("Advanced")</h4>
             <hr class="small-margin" />
             <div class="form-group">
                 @Html.InlineCheckboxFor(widget => widget.Cache)

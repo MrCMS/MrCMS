@@ -6,9 +6,9 @@
 @using (Html.BeginForm("Boosts", "Indexes", new { id = "" }, FormMethod.Post))
 {
     <fieldset>
-        <legend>@Resource("Admin Index Boosts Title", "Update field boosts")
+        <legend>@Html.Resource("Admin Index Boosts Title", "Update field boosts")
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn-success btn" value="@Resource("Update")" />
+                <input type="submit" class="btn-success btn" value="@Html.Resource("Update")" />
             </span>
         </legend>
         <div class="row">
@@ -17,10 +17,10 @@
                     <thead>
                         <tr>
                             <th class="col-lg-10">
-                                @Resource("Name")
+                                @Html.Resource("Name")
                             </th>
                             <th class="col-lg-2">
-                                @Resource("Admin Index Boosts Boost", "Boost")
+                                @Html.Resource("Admin Index Boosts Boost", "Boost")
                             </th>
                         </tr>
                     </thead>

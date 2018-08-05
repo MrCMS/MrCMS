@@ -8,12 +8,17 @@ using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.ModelBinders
 {
-    public class AddUserModelBinder : IModelBinder
+    public class AddUserModelBinder : IExtendedModelBinder
     {
+        private readonly IModelBinder _worker;
+
+        public AddUserModelBinder(IModelBinder worker)
+        {
+            _worker = worker;
+        }
         public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            var systemEntityBinder = new SystemEntityBinder<User>(bindingContext.HttpContext.RequestServices.GetRequiredService<ISession>());
-            await systemEntityBinder.BindModelAsync(bindingContext);// base.BindModel(controllerContext, bindingContext) as User;
+            await _worker.BindModelAsync(bindingContext);// base.BindModel(controllerContext, bindingContext) as User;
 
             var passwordManagementService =
                 bindingContext.HttpContext.RequestServices.GetRequiredService<IPasswordManagementService>();

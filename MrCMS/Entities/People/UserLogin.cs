@@ -5,6 +5,7 @@ namespace MrCMS.Entities.People
         public virtual string LoginProvider { get; set; }
 
         public virtual string ProviderKey { get; set; }
+        public virtual string DisplayName { get; set; }
 
         public virtual User User { get; set; }
     }

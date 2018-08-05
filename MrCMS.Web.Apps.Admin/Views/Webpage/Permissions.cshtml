@@ -1,6 +1,6 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Entities.Documents.Web.Webpage
-@Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Webpage Permission Info", "You can restrict who views this page by assigning user roles. Once a role is assigned, a visitor must be logged in with the correct user role to access this page. If you have not already, first <a href='/Admin/Role'>add a new role</a>."))
+@model MrCMS.Web.Apps.Admin.Models.WebpageEdit.PermissionsTabViewModel
+@Html.InfoBlock(Html.Resource("Heads up") + "!", Html.Resource("Admin Webpage Permission Info", "You can restrict who views this page by assigning user roles. Once a role is assigned, a visitor must be logged in with the correct user role to access this page. If you have not already, first <a href='/Admin/Role'>add a new role</a>."))
 <div class="form-inline">
     @Html.InlineCheckboxFor(webpage => webpage.InheritFrontEndRolesFromParent, null, null, "Same as parent?")
 </div>

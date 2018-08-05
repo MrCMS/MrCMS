@@ -3,17 +3,19 @@
 <div class="tab-pane" id="postings-tab">
     <div class="row">
         <div class="col-lg-7">
-            <h4>@Resource("Admin Webpage Form Entries", "Form Entries") (@Model.FormPostingsCount())</h4>
+            <h4>@Html.Resource("Admin Webpage Form Entries", "Form Entries") (@Html.FormPostingsCount())</h4>
         </div>
         <div class="col-lg-5">
             <div class="pull-right btn-group">
-                @if (Model.FormPostingsCount() > 0)
+                @if (Html.FormPostingsCount() > 0)
                 {
-                    @Html.ActionLink(Resource("Admin Webpage Form Delete All","Delete all entries"), "ClearFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
-                    @Html.ActionLink(Resource("Admin Webpage Form Export Entries", "Export Entries"), "ExportFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-primary" })
+                    @Html.ActionLink(Html.Resource("Admin Webpage Form Delete All","Delete all entries"), "ClearFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
+                    @Html.ActionLink(Html.Resource("Admin Webpage Form Export Entries", "Export Entries"), "ExportFormData", "Form", new { id = Model.Id }, new { @class = "btn btn-xs btn-primary" })
                 }
             </div>
         </div>
     </div>
-    @{ Html.RenderAction("Postings", "Form", new { id = Model.Id });}
+    @*
+        // TODO: Render postings
+        @{ Html.RenderAction("Postings", "Form", new { id = Model.Id });}*@
 </div>

@@ -1,21 +1,18 @@
-﻿@using System.Collections.Generic
-@using System.Linq
+﻿@using System.Linq
 @using MrCMS.Entities.People
-@using MrCMS.Helpers
-@using MrCMS.Models
-@using MrCMS.Paging
+@using X.PagedList
 @model UserSearchQuery
 @{
     ViewBag.Title = "Users";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    var users = ViewData["users"] as IPagedList<User> ?? PagedList<User>.Empty;
+    var users = ViewData["users"] as IPagedList<User>;
     var roleOptions = ViewData["roles"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 @using (Html.BeginForm("Index", "User", FormMethod.Get, new { @class = "form-horizontal" }))
 {
     <fieldset>
         <legend>
-            @Resource("Admin Users", "Users")
+            @Html.Resource("Admin Users", "Users")
             <span class="btn-group  display-inline  pull-right">
                 @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
             </span>
@@ -49,7 +46,7 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <input type="submit" class="btn btn-default" value="@Resource("Search")" />
+                <input type="submit" class="btn btn-default" value="@Html.Resource("Search")" />
             </div>
         </div>
     </fieldset>
@@ -59,16 +56,16 @@
     <table class="table table-condensed table-striped">
         <tr>
             <th>
-                @Resource("Email")
+                @Html.Resource("Email")
             </th>
             <th>
-                @Resource("Name")
+                @Html.Resource("Name")
             </th>
             <th>
-                @Resource("Roles")
+                @Html.Resource("Roles")
             </th>
             <th>
-                @Resource("Created On")
+                @Html.Resource("Created On")
             </th>
         </tr>
         @foreach (User user in users)
@@ -92,7 +89,7 @@
 }
 else
 {
-    <p>@Resource("Admin Users None", "No users matched your criteria").</p>
+    <p>@Html.Resource("Admin Users None", "No users matched your criteria").</p>
 }
-@Html.Pager(users, "Index", page => new { page })
+@*@Html.Pager(users, "Index", page => new { page })*@
 

@@ -11,7 +11,7 @@
             @string.Format(Resource("Add {0} Override"), Model.GetType().Name.BreakUpString())
             <span class="pull-right btn-group">
                 @Html.ActionLink(Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
-                <input class="btn btn-primary" type="submit" value="@Resource("Save")" />
+                <input class="btn btn-primary" type="submit" value="@Html.Resource("Save")" />
             </span>
         </legend>
         @Html.HiddenFor(@base => @base.SiteId)

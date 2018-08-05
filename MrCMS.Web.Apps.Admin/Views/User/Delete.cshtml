@@ -4,9 +4,9 @@
 @using (Html.BeginForm("Delete", "User", new { id = Model.Id }, FormMethod.Post))
 {
     <fieldset>
-        <legend>@Resource("Admin User Delete User", "Delete User")
+        <legend>@Html.Resource("Admin User Delete User", "Delete User")
             <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn-primary btn" value="@Resource("Delete")" />
+                <input type="submit" class="btn-primary btn" value="@Html.Resource("Delete")" />
             </span>
         </legend>
         @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)

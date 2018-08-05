@@ -14,11 +14,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _service = service;
         }
 
-        public PartialViewResult Show(Document document, int page = 1)
-        {
-            return PartialView(_service.GetVersions(document, page));
-        }
-
         [HttpGet]
         public PartialViewResult Revert(DocumentVersion documentVersion)
         {

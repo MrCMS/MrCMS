@@ -15,12 +15,12 @@
 {
     <fieldset>
         <legend>
-            @Resource("Admin Resources Title", "Resources")
+            @Html.Resource("Admin Resources Title", "Resources")
             <span class="btn-group display-inline pull-right">
                 @Html.ActionLink(Resource("Admin Resource Export", "Export All"), "Export", "ResourceUpdate", new { }, new { @class = "btn btn-default" })
                 @Html.ActionLink(Resource("Admin Resource Export Filtered", "Export As Filtered"), "Export", "ResourceUpdate", new { Model.Key, Model.Value }, new { @class = "btn btn-default" })
 
-                <input type="submit" class="btn btn-primary" value="@Resource("Filter")" />
+                <input type="submit" class="btn btn-primary" value="@Html.Resource("Filter")" />
             </span>
         </legend>
 
@@ -55,7 +55,7 @@
 
 @if (!resources.Any())
 {
-    @Resource("Admin Resources No Resources", "No resources")
+    @Html.Resource("Admin Resources No Resources", "No resources")
 }
 else
 {
@@ -63,19 +63,19 @@ else
         <thead>
             <tr>
                 <th>
-                    @Resource("Key")
+                    @Html.Resource("Key")
                 </th>
                 <th>
-                    @Resource("Value")
+                    @Html.Resource("Value")
                 </th>
                 <th>
-                    @Resource("Site")
+                    @Html.Resource("Site")
                 </th>
                 <th>
-                    @Resource("Language")
+                    @Html.Resource("Language")
                 </th>
                 <th>
-                    @Resource("Actions")
+                    @Html.Resource("Actions")
                 </th>
             </tr>
         </thead>
@@ -84,16 +84,16 @@ else
             {
                 <tr>
                     <td>
-                        @resource.DisplayKey
+                        @Html.Resource.DisplayKey
                     </td>
                     <td>
-                        @resource.Value
+                        @Html.Resource.Value
                     </td>
                     <td>
-                        @resource.DisplaySite
+                        @Html.Resource.DisplaySite
                     </td>
                     <td>
-                        @resource.DisplayUICulture
+                        @Html.Resource.DisplayUICulture
                     </td>
                     <td>
                         <div class="btn-group">
@@ -132,14 +132,14 @@ else
 
 <fieldset>
     <legend>
-        @Resource("Admin Resources Import Resources", "Import Resources")
+        @Html.Resource("Admin Resources Import Resources", "Import Resources")
     </legend>
     @using (Html.BeginForm("Import", "ResourceUpdate", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <div class="input-group">
             <input type="file" name="file" class="form-control" />
             <span class="input-group-btn">
-                <button class="btn btn-default">@Resource("Admin Resources Import Button", "Import")</button>
+                <button class="btn btn-default">@Html.Resource("Admin Resources Import Button", "Import")</button>
             </span>
         </div>
     }

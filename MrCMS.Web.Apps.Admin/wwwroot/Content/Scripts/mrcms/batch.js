@@ -60,12 +60,13 @@
         function init() {
             $(document).on('click', '[data-batch-run-start]', startBatch);
             $(document).on('click', '[data-batch-run-pause]', pauseBatch);
-            var batchHub = $.connection.batch;
-            batchHub.client.updateResult = updateResult;
-            batchHub.client.updateRun = updateRun;
-            batchHub.client.updateJob = updateJob;
-            batchHub.client.refreshBatchRunUI = refreshRun;
-            $.connection.hub.start().fail(function () { console.log('Could not Connect!'); });
+            //var batchHub = $.connection.batch;
+            //batchHub.client.updateResult = updateResult;
+            //batchHub.client.updateRun = updateRun;
+            //batchHub.client.updateJob = updateJob;
+            //batchHub.client.refreshBatchRunUI = refreshRun;
+            //$.connection.hub.start().fail(function () { console.log('Could not Connect!'); });
+            // TODO: SignalR implementation
         }
         return {
             init: init

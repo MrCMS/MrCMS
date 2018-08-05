@@ -3,13 +3,17 @@
 @using MrCMS.Entities.Documents.Layout
 @using MrCMS.Entities.Widget
 @using MrCMS.Helpers
-@model MrCMS.Entities.Documents.Web.Webpage
+@using MrCMS.Services
+@model MrCMS.Web.Apps.Admin.Models.WebpageEdit.LayoutTabViewModel
+@inject IGetCurrentLayout GetCurrentLayout
 <div class="form-group">
-    @Html.LabelFor(x => x.PageTemplate.Id, Resource("Page Template"))
-    @Html.DropDownListFor(webpage => webpage.PageTemplate.Id, ViewData["template-options"] as IEnumerable<SelectListItem>, new { @class = "form-control" })
+    @Html.LabelFor(x => x.PageTemplateId, Html.Resource("Page Template"))
+    @Html.DropDownListFor(webpage => webpage.PageTemplateId, ViewData["template-options"] as IEnumerable<SelectListItem>, new { @class = "form-control" })
 </div>
-<div id="custom-layout">
-    <label>@Resource("Admin Webpage Layout Layout Areas", "Layout Areas")</label>
+@*
+    // TODO: Show Layout areas - view component
+    <div id="custom-layout">
+    <label>@Html.Resource("Admin Webpage Layout Layout Areas", "Layout Areas")</label>
     <div class="panel-group" id="accordion-layout-areas">
         @{
             var currentLayout = GetCurrentLayout.Get(Model);
@@ -22,11 +26,11 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion-layout-areas" href="#collapse-@layoutArea.Id.ToString()">
-                                    @layoutArea.AreaName (@widgets.Count(widget => !Model.IsHidden(widget)) @Resource("Admin Webpage Layout Shown Widgets", "Shown Widgets"), @widgets.Count(widget => Model.IsHidden(widget)) @Resource("Admin Webpage Layout Hidden Widgets", "Hidden Widgets"))
+                                    @layoutArea.AreaName (@widgets.Count(widget => !Model.IsHidden(widget)) @Html.Resource("Admin Webpage Layout Shown Widgets", "Shown Widgets"), @widgets.Count(widget => Model.IsHidden(widget)) @Html.Resource("Admin Webpage Layout Hidden Widgets", "Hidden Widgets"))
                                 </a>
                             </h4>
                         </div>
-                        <div id="collapse-@layoutArea.Id.ToString()" class="panel-collapse collapse @(Request.QueryString["layoutAreaId"] == layoutArea.Id.ToString() ? "in" : "")">
+                        <div id="collapse-@layoutArea.Id.ToString()" class="panel-collapse collapse @(Context.Request.Query["layoutAreaId"] == layoutArea.Id.ToString() ? "in" : "")">
                             <div class="panel-body">
 
                                 @if (widgets.Any())
@@ -45,19 +49,19 @@
                                                             {
                                                                 if (!Model.IsHidden(widget))
                                                                 {
-                                                                    @Html.FormLink(Resource("Admin Webpage Layout Hide Widget", "Hide Widget"), "Hide", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-default btn-xs" })
+                                                                    @Html.FormLink(Html.Resource("Admin Webpage Layout Hide Widget", "Hide Widget"), "Hide", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-default btn-xs" })
                                                                 }
                                                                 else
                                                                 {
-                                                                    @Html.FormLink(Resource("Admin Webpage Layout Show Widget", "Show Widget"), "Show", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-default btn-xs" })
+                                                                    @Html.FormLink(Html.Resource("Admin Webpage Layout Show Widget", "Show Widget"), "Show", "WebpageWidget", new { id = Model.Id, widgetId = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-default btn-xs" })
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-xs btn-danger" data-toggle="fb-modal">@Resource("Delete")</a>
+                                                                <a href="@Url.Action("Delete", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id })" class="btn btn-xs btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
                                                             }
 
-                                                            @Html.ActionLink(Resource("Admin Webpage Layout Edit Widget", "Edit Widget"), "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-default btn-xs", @data_toggle = "fb-modal" })
+                                                            @Html.ActionLink(Html.Resource("Admin Webpage Layout Edit Widget", "Edit Widget"), "Edit", "Widget", new { id = widget.Id, layoutAreaId = layoutArea.Id }, new { @class = "btn btn-default btn-xs", @data_toggle = "fb-modal" })
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -67,14 +71,14 @@
                                 }
                                 <div class="btn-group">
                                     <a href="@Url.Action("Add", "Widget", new { pageId = Model.Id, id = layoutArea.Id })" class="btn btn-xs btn-primary" data-toggle="fb-modal">
-                                        @Resource("Admin Webpage Layout Add widget to area", "Add widget to area")
+                                        @Html.Resource("Admin Webpage Layout Add widget to area", "Add widget to area")
                                     </a>
                                     @if (widgets.Any())
                                     {
-                                        @Html.ActionLink(Resource("Sort"), "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-default btn-xs", @data_toggle = "fb-modal" })
+                                        @Html.ActionLink(Html.Resource("Sort"), "SortWidgetsForPage", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-default btn-xs", @data_toggle = "fb-modal" })
                                         if (layoutArea.PageWidgetSorts.Any(sort => sort.Webpage == Model))
                                         {
-                                            @Html.FormLink(Resource("Reset Sort"), "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-default btn-xs" })
+                                            @Html.FormLink(Html.Resource("Reset Sort"), "ResetSorting", "LayoutArea", new { id = layoutArea.Id, pageId = Model.Id }, new { @class = "btn btn-default btn-xs" })
                                         }
                                     }
                                 </div>
@@ -85,8 +89,8 @@
             }
             else
             {
-                @Resource("Admin Webpage Layout Areas None", "No layout areas available.")
+                @Html.Resource("Admin Webpage Layout Areas None", "No layout areas available.")
             }
         }
     </div>
-</div>
+</div>*@

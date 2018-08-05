@@ -1,7 +1,7 @@
 ﻿@model MrCMS.Entities.Messaging.QueuedMessage
 <fieldset>
     <legend>
-        @Resource("Message") #@Model.Id
+        @Html.Resource("Message") #@Model.Id
         <span class="btn-group  display-inline  pull-right">
             @Html.ActionLink(Resource("Back"), "Index", null, new { @class = "btn " })
         </span>
@@ -10,7 +10,7 @@
         <tbody>
             <tr>
                 <td class="col-lg-2">
-                    @Resource("From")
+                    @Html.Resource("From")
                 </td>
                 <td class="col-lg-10">
                     @Model.FromDescription
@@ -18,7 +18,7 @@
             </tr>
             <tr>
                 <td>
-                    @Resource("Message")To
+                    @Html.Resource("Message")To
                 </td>
                 <td>
                     @Model.ToDescription
@@ -26,7 +26,7 @@
             </tr>
             <tr>
                 <td>
-                    @Resource("Cc")
+                    @Html.Resource("Cc")
                 </td>
                 <td>
                     @Model.Cc
@@ -34,7 +34,7 @@
             </tr>
             <tr>
                 <td>
-                    @Resource("Bcc")
+                    @Html.Resource("Bcc")
                 </td>
                 <td>
                     @Model.Bcc
@@ -42,7 +42,7 @@
             </tr>
             <tr>
                 <td>
-                    @Resource("Subject")
+                    @Html.Resource("Subject")
                 </td>
                 <td>
                     @Model.Subject
@@ -50,7 +50,7 @@
             </tr>
             @*<tr>
                 <td>
-                    @Resource("Body")
+                    @Html.Resource("Body")
                 </td>
                 <td>
                     @Html.Raw(Model.Body)
@@ -58,7 +58,7 @@
             </tr>*@
             <tr>
                 <td>
-                    @Resource("Created On")
+                    @Html.Resource("Created On")
                 </td>
                 <td>
                     @Model.CreatedOn.ToString()
@@ -66,7 +66,7 @@
             </tr>
             <tr>
                 <td>
-                    @Resource("Sent On")
+                    @Html.Resource("Sent On")
                 </td>
                 <td>
                     @Model.SentOnDescription

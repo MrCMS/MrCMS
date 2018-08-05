@@ -11,9 +11,9 @@
     @Html.HiddenFor(info => info.PageTypeName)
     <fieldset>
         <legend>
-            @Resource("Admin Page Defaults Set Default For","Set Defaults for") @Model.PageTypeDisplayName
+            @Html.Resource("Admin Page Defaults Set Default For","Set Defaults for") @Model.PageTypeDisplayName
             <span class="btn-group display-inline pull-right">
-                <input type="submit" class="btn-primary btn" value="@Resource("Save")" />
+                <input type="submit" class="btn-primary btn" value="@Html.Resource("Save")" />
             </span>
         </legend>
         <div class="form-group">

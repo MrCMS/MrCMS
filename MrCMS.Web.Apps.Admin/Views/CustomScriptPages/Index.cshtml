@@ -9,10 +9,10 @@
 }
 <fieldset>
     <legend>
-        @Resource("Admin User Custom Script Pages", "Custom Script Pages")
+        @Html.Resource("Admin User Custom Script Pages", "Custom Script Pages")
     </legend>
     <div class="alert alert-info">
-        <p>@Resource("This page shows all CMS pages with header or footer scripts set.")</p>
+        <p>@Html.Resource("This page shows all CMS pages with header or footer scripts set.")</p>
     </div>
     @if (webpages.Any())
     {
@@ -21,13 +21,13 @@
 
                 <tr>
                     <th>
-                        @Resource("Name")
+                        @Html.Resource("Name")
                     </th>
                     <th>
-                        @Resource("Custom Header?")
+                        @Html.Resource("Custom Header?")
                     </th>
                     <th>
-                        @Resource("Custom Footer?")
+                        @Html.Resource("Custom Footer?")
                     </th>
                     <th></th>
                 </tr>

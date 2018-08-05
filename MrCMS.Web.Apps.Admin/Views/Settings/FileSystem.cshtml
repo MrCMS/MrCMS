@@ -6,11 +6,11 @@
 @using (Html.BeginForm("FileSystem", "Settings", FormMethod.Post, new { id = "edit-settings" }))
 {
     <fieldset>
-        <legend>@Resource("Admin Global Settings", "Global Settings")
+        <legend>@Html.Resource("Admin Global Settings", "Global Settings")
 
             <span class="btn-group  display-inline  pull-right">
                 <button class="btn btn-primary">
-                    @Resource("Save")</button>
+                    @Html.Resource("Save")</button>
             </span>
         </legend>
         <div class="form-group">

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MrCMS.Helpers;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using NHibernate;
 
 namespace MrCMS.Entities.Documents
@@ -65,6 +66,24 @@ namespace MrCMS.Entities.Documents
         }
 
         public bool RevealInNavigation { get; set; }
+
+        public string GetController(string method)
+        {
+            if (HttpMethods.IsPost(method))
+                return WebPostController;
+            if (HttpMethods.IsGet(method)|| HttpMethods.IsHead(method))
+                return WebGetController;
+            return null;
+        }
+
+        public string GetAction(string method)
+        {
+            if (HttpMethods.IsPost(method))
+                return WebPostAction;
+            if (HttpMethods.IsGet(method)|| HttpMethods.IsHead(method))
+                return WebGetAction;
+            return null;
+        }
     }
 
     public enum SortBy 

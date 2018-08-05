@@ -1,67 +1,26 @@
 ﻿@using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.Models.WebpageEdit
+@using MrCMS.Web.Apps.Admin.Models.Tabs
+@using MrCMS.Web.Apps.Admin.Services
 @model Webpage
+@inject IGetWebpageEditTabsService TabsService
 @{
-    var tabs = ViewData["edit-tabs"] as List<WebpageTabBase> ?? new List<WebpageTabBase>();
+    var tabs = TabsService.GetEditTabs(Html, Model);
+    ViewData["webpage"] = Model;
 }
 <ul class="nav nav-tabs margin-top-10" data-stickytabs="webpage-@Model.Id">
-    @foreach (var @base in tabs)
+    @foreach (var tab in tabs)
     {
-        @RenderTab(@base, @base == tabs.First())
+        ViewData["is-first"] = tab == tabs.First();
+        <partial name="Tab" model="tab" view-data="ViewData"/>
     }
 </ul>
 <div class="tab-content">
-    @foreach (var @base in tabs)
+    @foreach (var tab in tabs)
     {
-        @RenderContent(@base, @base == tabs.First())
+        ViewData["is-first"] = tab == tabs.First();
+        <partial name="TabContent" model="tab" view-data="ViewData"/>
     }
 </div>
 
-@helper RenderTab(WebpageTabBase @base, bool isFirst = false)
-{
-    if (@base is WebpageTab)
-    {
-        var tab = @base as WebpageTab;
-        <li class="@(isFirst ?"active":"")">
-            <a href="#@tab.TabHtmlId" data-toggle="tab">@tab.Name(Model)</a>
-        </li>
-    }
-    else
-    {
-        var @group = @base as WebpageTabGroup;
-        <li class="@(isFirst ?"active dropdown":"dropdown")">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@(@group.Name(Model))&nbsp;<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                @foreach (var tab in @group.Children)
-                {
-                    @RenderTab(tab)
-                }
-            </ul>
-        </li>
-    }
-}
-
-@helper RenderContent(WebpageTabBase @base, bool isFirst = false)
-{
-    if (@base is WebpageTab)
-    {
-        var tab = @base as WebpageTab;
-        <div class="tab-pane@(isFirst ? " active" : "")" id="@tab.TabHtmlId">
-            @{
-        tab.RenderTabPane(Html, Model);
-            }
-        </div>
-    }
-    else
-    {
-        var @group = @base as WebpageTabGroup;
-        <text>
-            @foreach (var tab in @group.Children)
-            {
-                @RenderContent(tab)
-            }
-        </text>
-    }
-}
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-webpage.js"); }

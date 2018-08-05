@@ -11,9 +11,9 @@ namespace MrCMS.Website.CMS
             _getPageData = getPageData;
         }
 
-        public async Task<CmsMatchData> TryMatch(string path)
+        public async Task<CmsMatchData> TryMatch(string path, string method)
         {
-            var pageData = await _getPageData.GetData(path);
+            var pageData = await _getPageData.GetData(path,method);
             if (pageData == null)
                 return new CmsMatchData { MatchType = CmsRouteMatchType.NoMatch };
             return new CmsMatchData

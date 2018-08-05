@@ -2,21 +2,23 @@
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
 @using MrCMS.Website
-@model Webpage
+@model MrCMS.Web.Apps.Admin.Models.WebpageEdit.SEOTabViewModel
 <div class="display-inline">
     <i class="glyphicon glyphicon-question-sign" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar.
             For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>
 
-    @Resource("Admin Webpage Seo Permalink", "Permalink"): /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control", style = "display:none;" })
+    @Html.Resource("Admin Webpage Seo Permalink", "Permalink"): /<span id="url-span">@Model.UrlSegment</span> @Html.TextBoxFor(x => x.UrlSegment, new { @class = "form-control", style = "display:none;" })
     @Html.ValidationMessageFor(x => x.UrlSegment, "", new { @class = "error" })
     <button id="change-url" class="btn btn-default btn-xs">Change</button>
 
 
     <hr />
+    @*
+    // TODO: show URL History as a view component    
     <div class="display-inline">
         <i class="glyphicon glyphicon-question-sign" rel="tooltip" data-placement="top" data-original-title="Mr CMS is great - it saves old Urls as you change the page Url so that search engines never miss a page. If you change your page from /my-page to /my-page2, Mr CMS will remember this and redirect the old Url to the new Url">&nbsp;</i> Url History
 
-        @Html.ActionLink(Resource("Add"), "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-xs btn-success", data_toggle = "fb-modal" })
+        @Html.ActionLink(Html.Resource("Add"), "Add", "UrlHistory", new { webpageId = Model.Id }, new { @class = "btn btn-xs btn-success", data_toggle = "fb-modal" })
     </div>
     @if (Model.Urls.Any())
     {
@@ -38,8 +40,8 @@
     }
     else
     {
-        @Resource("Admin Webpage Seo No URL History", "No URL History")
-    }
+        @Html.Resource("Admin Webpage Seo No URL History", "No URL History")
+    }*@
 
 </div>
 
@@ -67,12 +69,12 @@
         @Html.ValidationMessageFor(x => x.ExplicitCanonicalLink, "", new { @class = "error" })
     </div>
     <hr />
-    <h4>@Resource("Admin Webpage Seo SEO Analysis", "SEO Analysis") </h4>
+    <h4>@Html.Resource("Admin Webpage Seo SEO Analysis", "SEO Analysis") </h4>
     @Html.LabelFor(webpage => webpage.SEOTargetPhrase)
     <div class="input-group">
         @Html.TextBoxFor(webpage => webpage.SEOTargetPhrase, new { @class = "form-control" })
         <span class="input-group-btn">
-            <button data-seo-analyze="true" class="btn btn-default">@Resource("Admin Webpage Seo Analyze", "Analyze")</button>
+            <button data-seo-analyze="true" class="btn btn-default">@Html.Resource("Admin Webpage Seo Analyze", "Analyze")</button>
         </span>
     </div>
 
@@ -103,20 +105,20 @@
     @Html.TextAreaFor(x => x.CustomFooterScripts, new { @class = "form-control" })
     @Html.ValidationMessageFor(x => x.CustomFooterScripts, "", new { @class = "error" })
 </div>
-@if (Model.IsTypeCachable())
+@if (Html.IsWebpageCacheable(Model.Id))
 {
     <hr />
-    <h4>@Resource("Advanced")</h4>
+    <h4>@Html.Resource("Advanced")</h4>
     <hr class="small-margin" />
     <div class="form-group">
         @Html.InlineCheckboxFor(widget => widget.DoNotCache)
     </div>
 }
 <hr />
-<strong>@Resource("Page type"):</strong> @Model.GetMetadata().Name
+<strong>@Html.Resource("Page type"):</strong> @Html.GetDocumentMetadata(Model.Id).Name
 <br />
-<strong>@Resource("Created On"): </strong>@Model.CreatedOn
+<strong>@Html.Resource("Created On"): </strong>@Model.CreatedOn
 <br />
-<strong>@Resource("Last Updated"): </strong>@Model.UpdatedOn
+<strong>@Html.Resource("Last Updated"): </strong>@Model.UpdatedOn
 <br />
 <strong>Page Id: </strong>@Model.Id
