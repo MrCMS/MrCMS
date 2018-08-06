@@ -25,7 +25,7 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 
         public override Task RenderTabPane(IHtmlHelper html, IMapper mapper, Webpage webpage)
         {
-            return html.RenderPartialAsync("Layout", webpage);
+            return html.RenderPartialAsync("Layout", mapper.Map<LayoutTabViewModel>(webpage));
         }
 
         public override string Name(IHtmlHelper helper, Webpage entity)

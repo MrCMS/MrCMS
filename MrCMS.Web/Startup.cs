@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,12 +14,14 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Localization;
 using MrCMS.Apps;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin;
 using MrCMS.Web.Apps.Admin.Filters;
@@ -52,6 +55,11 @@ namespace MrCMS.Web
             services.RegisterOpenGenerics();
             services.SelfRegisterAllConcreteTypes();
 
+            services.AddAutoMapper(expression =>
+            {
+                // TODO: probably get rid of this eventually as it's relatively imperformant
+                expression.CreateMissingTypeMaps = true;
+            });
 
             var appContext = services.AddMrCMSApps(context =>
             {
@@ -85,6 +93,9 @@ namespace MrCMS.Web
                     options.ViewLocationExpanders.Insert(1, new AppViewLocationExpander());
                     options.FileProviders.Add(compositeFileProvider);
                 })
+                .AddViewLocalization()
+                .AddDataAnnotations()
+                .AddDataAnnotationsLocalization()
                 .AddAppMvcConfig(appContext);
 
 
@@ -96,7 +107,7 @@ namespace MrCMS.Web
                 })).CreateSessionFactory());
             services.AddScoped<ISession>(provider =>
                 provider.GetRequiredService<ISessionFactory>().OpenFilteredSession(provider));
-            services.AddScoped<IStatelessSession>(provider =>
+            services.AddTransient<IStatelessSession>(provider =>
                 provider.GetRequiredService<ISessionFactory>().OpenStatelessSession());
 
             services.AddIdentity<User, UserRole>(options =>
@@ -143,13 +154,21 @@ namespace MrCMS.Web
             services.AddSingleton<ICmsMethodTester, CmsMethodTester>();
             services.AddSingleton<IAssignPageDataToRouteData, AssignPageDataToRouteData>();
             services.AddSingleton<IQuerySerializer, QuerySerializer>();
+            services.AddSingleton<IStringLocalizerFactory, StringLocalizerFactory>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            //services.AddSingleton<IGetDefaultResourceValue, GetDefaultResourceValue>();
+            //services.AddSingleton<ILocalizationManager, LocalizationManager>();
+
+
             services.AddScoped<IUrlHelper>(x => {
                 var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
                 var factory = x.GetRequiredService<IUrlHelperFactory>();
                 return factory.GetUrlHelper(actionContext);
             });
+            services.AddScoped(provider => provider.GetService<IStringLocalizerFactory>()
+                .Create(null, null));
+
 
             // TODO: update the resolution of this
             services.AddSingleton<IFileSystem, FileSystem>();

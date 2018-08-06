@@ -117,7 +117,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                         Key = stringResourceData.Key,
                         Value = stringResourceData.Value,
                         UICulture = uiCulture,
-                        Site = stringResourceData.SiteId.HasValue ? _session.Get<Site>(stringResourceData.SiteId) : null
+                        Site = stringResourceData.SiteId.HasValue ? _session.Get<Site>(stringResourceData.SiteId) : null,
                     });
                     added++;
                 }

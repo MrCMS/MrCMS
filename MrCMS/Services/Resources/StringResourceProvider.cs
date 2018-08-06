@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
@@ -87,6 +87,11 @@ namespace MrCMS.Services.Resources
 
         public string GetValue(string key, string defaultValue = null)
         {
+            return GetValueForCulture(key, _getCurrentUserCultureInfo.Get(), defaultValue);
+        }
+
+        public string GetValueForCulture(string key, CultureInfo cultureInfo, string defaultValue = null)
+        {
             //using (MiniProfiler.Current.Step(string.Format("Getting resource - {0}", key)))
             {
                 lock (LockObject)
@@ -94,7 +99,7 @@ namespace MrCMS.Services.Resources
                     string currentUserCulture;
                     //using (MiniProfiler.Current.Step("culture check"))
                     {
-                        currentUserCulture = _getCurrentUserCultureInfo.GetInfoString();
+                        currentUserCulture = cultureInfo.Name;
                     }
 
                     if (ResourcesForSite.ContainsKey(key))
@@ -120,7 +125,12 @@ namespace MrCMS.Services.Resources
 
                     //using (MiniProfiler.Current.Step("default resource"))
                     {
-                        var defaultResource = new StringResource {Key = key, Value = defaultValue ?? key};
+                        var defaultResource = new StringResource
+                        {
+                            Key = key,
+                            Value = defaultValue ?? key,
+                            //UICulture = currentUserCulture
+                        };
                         _session.Transact(session => session.Save(defaultResource));
                         //AllResources[key] = new HashSet<StringResource> {defaultResource};
                         ResetResourceCache();

@@ -6,23 +6,21 @@
     var webpage = ViewData["webpage"] as Webpage;
 }
 
-@if (Model is AdminTab<Webpage>)
+@if (Model is AdminTab<Webpage> tab)
 {
-var tab = Model as AdminTab<Webpage>;
-<li class="@(isFirst ?"active":"")">
-    <a href="#@tab.TabHtmlId" data-toggle="tab">@tab.Name(webpage)</a>
-</li>
+    <li class="@(isFirst ?"active":"")">
+        <a href="#@tab.TabHtmlId" data-toggle="tab">@tab.Name(Html, webpage)</a>
+    </li>
 }
-else
+else if (Model is AdminTabGroup<Webpage> @group)
 {
-var @group = Model as AdminTabGroup<Webpage>;
-<li class="@(isFirst ?"active dropdown":"dropdown")">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">@(@group.Name(webpage))&nbsp;<b class="caret"></b></a>
-    <ul class="dropdown-menu">
-        @foreach (var tab in @group.Children)
-        {
-            <partial name="Tab" model="tab" view-data="ViewData"/>
-        }
-    </ul>
-</li>
+    <li class="@(isFirst ?"active dropdown":"dropdown")">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">@(@group.Name(Html, webpage))&nbsp;<b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            @foreach (var child in @group.Children)
+            {
+                <partial name="Tab" model="child" view-data="ViewData" />
+            }
+        </ul>
+    </li>
 }
