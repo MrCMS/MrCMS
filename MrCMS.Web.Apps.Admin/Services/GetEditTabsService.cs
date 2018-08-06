@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs;
 using MrCMS.Web.Apps.Admin.Models.Tabs;
 using NHibernate;
 

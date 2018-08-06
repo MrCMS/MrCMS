@@ -45,7 +45,7 @@ namespace MrCMS.Services
         private string GetPath(string relativeFilePath)
         {
             relativeFilePath = GetRelativeFilePath(relativeFilePath);
-            var baseDirectory = ApplicationPath.Substring(0, ApplicationPath.Length - 1);
+            var baseDirectory = ApplicationPath;
             var path = Path.Combine(baseDirectory, relativeFilePath.Substring(1));
             return path;
         }

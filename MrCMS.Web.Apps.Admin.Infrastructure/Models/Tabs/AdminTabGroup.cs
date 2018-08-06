@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MrCMS.Entities;
 
-namespace MrCMS.Web.Apps.Admin.Models.Tabs
+namespace MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs
 {
     public abstract class AdminTabGroup<T> : AdminTabBase<T>where T : SystemEntity
     {

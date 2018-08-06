@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities;
 
-namespace MrCMS.Web.Apps.Admin.Models.Tabs
+namespace MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs
 {
     public static class AdminTabBaseExtensions
     {

@@ -5,15 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Areas\Admin\Views\**" />
     <EmbeddedResource Include="Views\**" />
     <EmbeddedResource Include="wwwroot\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Views\TwoFactorPage\Form.cshtml" />
+    <None Remove="Areas\Admin\Views\_ViewImports.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj" />
     <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 

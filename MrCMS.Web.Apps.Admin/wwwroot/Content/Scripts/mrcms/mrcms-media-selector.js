@@ -320,7 +320,7 @@ function MediaSelectorWrapper(el, options) {
             self.setValue('');
         },
         onSelected: function (data) {
-            self.setValue(data.Url);
+            self.setValue(data.url);
             $.featherlight.close();
         }
     };

@@ -1,5 +1,11 @@
-﻿@using MrCMS.Helpers
+﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Infrastructure.Helpers
 @model MrCMS.Web.Apps.Admin.Models.WebpageEdit.WebpagePropertiesTabViewModel
+@{
+
+    var webpage = ViewData["webpage"] as Webpage;
+}
 @Html.HiddenFor(x => x.LiveUrlSegment)
 @Html.HiddenFor(x => x.DocumentType)
 @Html.HiddenFor(x => x.Id)
@@ -16,4 +22,4 @@
         @Html.TextAreaFor(x => x.BodyContent, new { @class = "ckedit-enabled" })
     </div>
 }
-@await Html.RenderCustomAdminProperties()
+@await Html.RenderCustomAdminProperties(webpage)

@@ -1,6 +1,7 @@
 ﻿@using MrCMS.Entities.Documents.Web
+@using MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs
 @using MrCMS.Web.Apps.Admin.Models.Tabs
-@model AdminTabBase<Webpage>
+@model MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs.AdminTabBase<Webpage>
 @{
     var isFirst = ViewData["is-first"] is bool b && b;
     var webpage = ViewData["webpage"] as Webpage;

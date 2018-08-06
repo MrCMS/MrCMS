@@ -27,11 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
+    <Folder Include="Models\UserEdit\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\UserEdit\" />
+    <ProjectReference Include="..\MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj" />
+    <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 
 </Project>

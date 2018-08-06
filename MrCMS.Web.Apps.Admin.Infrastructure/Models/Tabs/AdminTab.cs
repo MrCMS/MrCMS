@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities;
 
-namespace MrCMS.Web.Apps.Admin.Models.Tabs
+namespace MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs
 {
     public abstract class AdminTab<T> : AdminTabBase<T> where T : SystemEntity
     {

@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Apps.Core", "MrCM
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{788C01CB-B3BF-46CD-A987-8228BC730DDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrCMS.Web.Apps.Admin", "MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj", "{177C457A-952A-4443-A554-288CD87B1826}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MrCMS.Web.Apps.Admin", "MrCMS.Web.Apps.Admin\MrCMS.Web.Apps.Admin.csproj", "{177C457A-952A-4443-A554-288CD87B1826}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrCMS.Web.Apps.Admin.Infrastructure", "MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj", "{1A483BDB-D961-4C46-8547-E6962FC72435}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{177C457A-952A-4443-A554-288CD87B1826}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{177C457A-952A-4443-A554-288CD87B1826}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{177C457A-952A-4443-A554-288CD87B1826}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A483BDB-D961-4C46-8547-E6962FC72435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A483BDB-D961-4C46-8547-E6962FC72435}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A483BDB-D961-4C46-8547-E6962FC72435}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A483BDB-D961-4C46-8547-E6962FC72435}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +54,7 @@ Global
 		{EA7CA9B6-EA88-4F3E-8F94-A2D4D06E9D28} = {908BA7BA-1588-40C9-8428-C0B48F8C89C2}
 		{EE5E6C1D-FEF9-4E5D-AEE6-6296084D13B2} = {788C01CB-B3BF-46CD-A987-8228BC730DDF}
 		{177C457A-952A-4443-A554-288CD87B1826} = {788C01CB-B3BF-46CD-A987-8228BC730DDF}
+		{1A483BDB-D961-4C46-8547-E6962FC72435} = {788C01CB-B3BF-46CD-A987-8228BC730DDF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8E81A954-DE9B-49F5-BA40-EE5E535D5164}

@@ -14,10 +14,6 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             if (context.Metadata.ModelType.IsImplementationOf(typeof(UpdateAdminViewModel<>)))
             {
                 return new UpdateAdminViewModelBinder(context.CreateBinder);
-
-                //tabsService.GetEditTabs(serviceProvider,)
-                // this will just try and load the entity by id
-                //return new BinderTypeModelBinder(typeof(UpdateAdminViewModelBinder));
             }
 
             return null;

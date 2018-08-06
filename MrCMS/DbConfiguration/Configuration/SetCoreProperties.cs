@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
+using MrCMS.Services;
 using NHibernate.Event;
 using NHibernate.Persister.Entity;
 
@@ -32,7 +34,7 @@ namespace MrCMS.DbConfiguration.Configuration
                 if (systemEntity is SiteEntity && (systemEntity as SiteEntity).Site == null)
                 {
                     // TODO: get site
-                    Site site = null; //CurrentRequestData.CurrentSite;
+                    Site site = @event.Session.GetService<ICurrentSiteLocator>().GetCurrentSite();
                     SetSite(@event.Persister, @event.State, systemEntity as SiteEntity, site);
                 }
             }

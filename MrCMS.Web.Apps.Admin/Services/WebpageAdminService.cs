@@ -64,7 +64,6 @@ namespace MrCMS.Web.Apps.Admin.Services
                 .ToList();
         }
 
-
         public void SetOrders(List<SortItem> items)
         {
             _webpageRepository.Transact(repository => items.ForEach(item =>

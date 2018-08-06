@@ -1,0 +1,5 @@
+﻿@model MrCMS.Web.Apps.Core.Widgets.PlainTextWidget
+<div class="form-group">
+    @Html.LabelFor(widget => widget.Text)
+    @Html.TextAreaFor(widget => widget.Text, new { style = "width: 98%; height: 200px;", @class = "form-control" })
+</div>

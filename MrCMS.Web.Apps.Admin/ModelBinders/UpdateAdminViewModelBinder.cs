@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Helpers;
+using MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Models.Tabs;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
+using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.ModelBinders
 {
@@ -60,6 +62,18 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
                 }
             }
 
+            // add implementation view models
+            var entity = await serviceProvider.GetRequiredService<ISession>().GetAsync(modelType, id);
+
+            var implementationModelTypes =TypeHelper.GetAllConcreteTypesAssignableFrom(
+                typeof(IImplementationPropertiesViewModel<>).MakeGenericType(entity.GetType()));
+
+            foreach (var viewModelType in implementationModelTypes)
+            {
+                var boundModel = await BindModelType(bindingContext, metadataProvider, viewModelType);
+                model.Models.Add(boundModel);
+            }
+
             bindingContext.Result = ModelBindingResult.Success(model);
         }
 
@@ -69,23 +83,8 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             var objects = new List<object>();
             if (tab.ModelType != null)
             {
-                var metadata = metadataProvider.GetMetadataForType(tab.ModelType);
-
-                var modelBindingContext = new DefaultModelBindingContext
-                {
-                    BinderModelName = metadata.BinderModelName,
-                    BindingSource = metadata.BindingSource,
-                    IsTopLevelObject = true,
-                    Model = Activator.CreateInstance(tab.ModelType),
-                    ModelMetadata = metadata,
-                    ModelName = "",
-                    ModelState = new ModelStateDictionary(),
-                    ValueProvider = bindingContext.ValueProvider
-                };
-
-                var modelBinder = _createBinder(metadata);
-                await modelBinder.BindModelAsync(modelBindingContext);
-                objects.Add(modelBindingContext.Result.Model);
+                var model = await BindModelType(bindingContext, metadataProvider, tab.ModelType);
+                objects.Add(model);
             }
 
             foreach (var tabChild in tab.Children)
@@ -95,6 +94,28 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             }
 
             return objects;
+        }
+
+        private async Task<object> BindModelType(ModelBindingContext bindingContext, IModelMetadataProvider metadataProvider, Type type)
+        {
+            var metadata = metadataProvider.GetMetadataForType(type);
+
+            var modelBindingContext = new DefaultModelBindingContext
+            {
+                BinderModelName = metadata.BinderModelName,
+                BindingSource = metadata.BindingSource,
+                IsTopLevelObject = true,
+                Model = Activator.CreateInstance(type),
+                ModelMetadata = metadata,
+                ModelName = "",
+                ModelState = new ModelStateDictionary(),
+                ValueProvider = bindingContext.ValueProvider
+            };
+
+            var modelBinder = _createBinder(metadata);
+            await modelBinder.BindModelAsync(modelBindingContext);
+            var model = modelBindingContext.Result.Model;
+            return model;
         }
     }
 }

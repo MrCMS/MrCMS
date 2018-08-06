@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MrCMS.Web.Apps.Admin.Models.Tabs
+namespace MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs
 {
     public interface IAdminTab
     {

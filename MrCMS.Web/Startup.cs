@@ -18,6 +18,7 @@ using Microsoft.Extensions.Localization;
 using MrCMS.Apps;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -153,6 +154,9 @@ namespace MrCMS.Web
             services.AddSingleton<IStringLocalizerFactory, StringLocalizerFactory>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            // TODO: Look to removing Site for constructors and resolving like this
+            services.AddScoped<Site>(provider => provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite());
             //services.AddSingleton<IGetDefaultResourceValue, GetDefaultResourceValue>();
             //services.AddSingleton<ILocalizationManager, LocalizationManager>();
 
