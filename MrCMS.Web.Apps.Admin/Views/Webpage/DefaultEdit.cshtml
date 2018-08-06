@@ -3,7 +3,7 @@
 @using MrCMS.Web.Apps.Admin.Models.Tabs
 @using MrCMS.Web.Apps.Admin.Services
 @model Webpage
-@inject IGetWebpageEditTabsService TabsService
+@inject IGetEditTabsService TabsService
 @{
     var tabs = TabsService.GetEditTabs(Html, Model);
     ViewData["webpage"] = Model;

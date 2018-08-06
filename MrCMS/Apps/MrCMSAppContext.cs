@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using MrCMS.FileProviders;
+using MrCMS.Helpers;
 
 namespace MrCMS.Apps
 {
@@ -29,6 +32,16 @@ namespace MrCMS.Apps
             if (!string.IsNullOrWhiteSpace(appOptions.ContentPrefix))
                 app.ContentPrefix = appOptions.ContentPrefix;
             Apps.Add(app);
+        }
+
+        public void SetupMvcOptions(MvcOptions options)
+        {
+            Apps.ForEach(app => app.SetupMvcOptions(options));
+        }
+
+        public void ConfigureAutomapper(IMapperConfigurationExpression expression)
+        {
+            Apps.ForEach(app => app.ConfigureAutomapper(expression));
         }
     }
 }

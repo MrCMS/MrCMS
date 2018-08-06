@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
@@ -31,11 +32,15 @@ namespace MrCMS.Helpers
                 .Any();
         }
 
-        public static int FormPostingsCount(this IHtmlHelper<Webpage> helper)
+        public static int FormPostingsCount(this Webpage webpage, IHtmlHelper helper)
         {
-            return helper.GetRequiredService<ISession>()
+            return FormPostingsCount(webpage, helper.ViewContext.HttpContext.RequestServices);
+        }
+        public static int FormPostingsCount(this Webpage webpage, IServiceProvider provider)
+        {
+            return provider.GetRequiredService<ISession>()
                 .QueryOver<FormPosting>()
-                .Where(posting => posting.Webpage != null && posting.Webpage.Id == helper.ViewData.Model.Id)
+                .Where(posting => posting.Webpage != null && posting.Webpage.Id == webpage.Id)
                 .Cacheable()
                 .RowCount();
         }

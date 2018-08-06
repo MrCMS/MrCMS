@@ -14,12 +14,12 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
             get { return 100; }
         }
 
-        public override string Name(IHtmlHelper helper, Webpage entity)
+        public override string Name(IServiceProvider serviceProvider, Webpage entity)
         {
             return "Design";
         }
 
-        public override bool ShouldShow(IHtmlHelper helper, Webpage entity)
+        public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
             return true;
         }

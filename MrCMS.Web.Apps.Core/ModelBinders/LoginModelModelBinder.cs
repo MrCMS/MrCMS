@@ -2,11 +2,10 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MrCMS.Models.Auth;
-using MrCMS.Website;
 
 namespace MrCMS.Web.Apps.Core.ModelBinders
 {
-    public class LoginModelModelBinder : IExtendedModelBinder
+    public class LoginModelModelBinder : IModelBinder
     {
         private readonly IModelBinder _modelBinder;
 

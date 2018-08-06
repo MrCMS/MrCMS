@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,5 +17,7 @@ namespace MrCMS.Apps
         IServiceCollection RegisterServices(IServiceCollection serviceCollection);
 
         IRouteBuilder MapRoutes(IRouteBuilder routeBuilder);
+        void SetupMvcOptions(MvcOptions options);
+        void ConfigureAutomapper(IMapperConfigurationExpression expression);
     }
 }

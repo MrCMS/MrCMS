@@ -3,24 +3,21 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Models.Tabs;
 
 namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 {
     public class FormPostingsTab : AdminTab<Webpage>
     {
-        public override int Order
+        public override int Order => 200;
+
+        public override string Name(IServiceProvider serviceProvider, Webpage entity)
         {
-            get { return 200; }
+            return string.Format("Entries ({0})", entity.FormPostingsCount(serviceProvider));
         }
 
-        public override string Name(IHtmlHelper helper, Webpage entity)
-        {
-            //return string.Format("Entries ({0})", webpage.FormPostingsCount());
-            return "Entries"; // TODO: add count back in
-        }
-
-        public override bool ShouldShow(IHtmlHelper helper, Webpage entity)
+        public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
             return true;
         }

@@ -11,12 +11,12 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
     {
         public override int Order => 0;
 
-        public override string Name(IHtmlHelper helper, Webpage entity)
+        public override string Name(IServiceProvider serviceProvider, Webpage entity)
         {
             return "Fields";
         }
 
-        public override bool ShouldShow(IHtmlHelper helper, Webpage entity)
+        public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
             return true;
         }

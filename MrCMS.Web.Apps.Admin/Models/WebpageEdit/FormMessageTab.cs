@@ -31,12 +31,12 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
             return html.RenderPartialAsync("FormMessage", mapper.Map<FormMessageTabViewModel>(webpage));
         }
 
-        public override string Name(IHtmlHelper helper, Webpage entity)
+        public override string Name(IServiceProvider serviceProvider, Webpage entity)
         {
             return "Settings";
         }
 
-        public override bool ShouldShow(IHtmlHelper helper, Webpage entity)
+        public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
             return true;
         }

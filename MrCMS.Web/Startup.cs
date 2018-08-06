@@ -55,11 +55,6 @@ namespace MrCMS.Web
             services.RegisterOpenGenerics();
             services.SelfRegisterAllConcreteTypes();
 
-            services.AddAutoMapper(expression =>
-            {
-                // TODO: probably get rid of this eventually as it's relatively imperformant
-                expression.CreateMissingTypeMaps = true;
-            });
 
             var appContext = services.AddMrCMSApps(context =>
             {
@@ -72,6 +67,7 @@ namespace MrCMS.Web
             var compositeFileProvider =
                 new CompositeFileProvider(new[] { physicalProvider }.Concat(appContext.ViewFileProviders));
 
+            services.AddAutoMapper(expression => appContext.ConfigureAutomapper(expression));
             services.AddSingleton<IFileProvider>(compositeFileProvider);
             services.AddSession(options =>
             {
@@ -82,7 +78,7 @@ namespace MrCMS.Web
                 {
                     // add custom binder to beginning of collection
                     options.ModelBinderProviders.Insert(0, new SystemEntityBinderProvider());
-                    options.ModelBinderProviders.Insert(1, new ExtendedModelBinderProvider());
+                    appContext.SetupMvcOptions(options);
 
                     // TODO: refactor this to be added per app
                     options.Filters.AddService(typeof(AdminAuthFilter));

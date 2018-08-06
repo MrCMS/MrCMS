@@ -19,16 +19,16 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         private readonly IRoleService _roleService;
         private readonly IPasswordManagementService _passwordManagementService;
         private readonly IGetUserCultureOptions _getUserCultureOptions;
-        private readonly IGetUserEditTabsService _getUserEditTabsService;
 
-        public UserController(IUserManagementService userManagementService, IUserSearchService userSearchService, IRoleService roleService, IPasswordManagementService passwordManagementService, IGetUserCultureOptions getUserCultureOptions, IGetUserEditTabsService getUserEditTabsService)
+        public UserController(IUserManagementService userManagementService, IUserSearchService userSearchService,
+            IRoleService roleService, IPasswordManagementService passwordManagementService,
+            IGetUserCultureOptions getUserCultureOptions)
         {
             _userManagementService = userManagementService;
             _userSearchService = userSearchService;
             _roleService = roleService;
             _passwordManagementService = passwordManagementService;
             _getUserCultureOptions = getUserCultureOptions;
-            _getUserEditTabsService = getUserEditTabsService;
         }
 
         [Acl(typeof(UserACL), UserACL.View)]
@@ -68,7 +68,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             ViewData["OnlyAdmin"] = _roleService.IsOnlyAdmin(user);
             ViewData["culture-options"] = _getUserCultureOptions.Get();
 
-            ViewData["edit-tabs"] = _getUserEditTabsService.GetEditTabs(user);
             return user == null
                        ? (ActionResult)RedirectToAction("Index")
                        : View(user);

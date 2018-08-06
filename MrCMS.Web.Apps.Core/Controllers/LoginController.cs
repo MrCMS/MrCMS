@@ -48,7 +48,8 @@ namespace MrCMS.Web.Apps.Core.Controllers
         }
 
         [HttpPost]
-        public async Task<RedirectResult> Post([ModelBinder(typeof(LoginModelModelBinder))]
+        public async Task<RedirectResult> Post(
+            //[ModelBinder(typeof(LoginModelModelBinder))]
             LoginModel loginModel)
         {
             if (loginModel != null && ModelState.IsValid)

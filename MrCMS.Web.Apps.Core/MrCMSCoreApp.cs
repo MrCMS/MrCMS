@@ -1,27 +1,13 @@
-﻿using System.Reflection;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
-using MrCMS.Apps;
+﻿using MrCMS.Apps;
 
 namespace MrCMS.Web.Apps.Core
 {
-    public class MrCMSCoreApp : IMrCMSApp
+    public class MrCMSCoreApp : StandardMrCMSApp
     {
-        public string Name => "Core";
-        public string ContentPrefix { get; set; } = "/Apps/Core";
-        public string ViewPrefix { get; set; }
-
-        public Assembly Assembly => GetType().Assembly;
-
-        public IServiceCollection RegisterServices(IServiceCollection serviceCollection)
+        public MrCMSCoreApp()
         {
-            return serviceCollection;
+            ContentPrefix = "/Apps/Core";
         }
-
-        public IRouteBuilder MapRoutes(IRouteBuilder routeBuilder)
-        {
-            return routeBuilder;
-        }
+        public override string Name => "Core";
     }
 }

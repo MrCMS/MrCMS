@@ -30,4 +30,8 @@
     <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\UserEdit\" />
+  </ItemGroup>
+
 </Project>

@@ -2,7 +2,7 @@
 
 namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 {
-    public class PropertiesTabViewModel
+    public class WebpagePropertiesTabViewModel
     {
         public int Id { get; set; }
         public string LiveUrlSegment { get; set; }

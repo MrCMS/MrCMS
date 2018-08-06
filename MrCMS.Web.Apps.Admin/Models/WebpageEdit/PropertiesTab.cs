@@ -14,12 +14,12 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
             get { return 0; }
         }
 
-        public override string Name(IHtmlHelper helper, Webpage entity)
+        public override string Name(IServiceProvider serviceProvider, Webpage entity)
         {
             return "Properties";
         }
 
-        public override bool ShouldShow(IHtmlHelper helper, Webpage entity)
+        public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
             return true;
         }
@@ -29,7 +29,7 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
             get { return null; }
         }
 
-        public override Type ModelType => typeof(PropertiesTabViewModel);
+        public override Type ModelType => typeof(WebpagePropertiesTabViewModel);
 
         public override string TabHtmlId
         {
@@ -38,7 +38,7 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 
         public override Task RenderTabPane(IHtmlHelper html, IMapper mapper, Webpage webpage)
         {
-            return html.RenderPartialAsync("Properties", mapper.Map<PropertiesTabViewModel>(webpage));
+            return html.RenderPartialAsync("Properties", mapper.Map<WebpagePropertiesTabViewModel>(webpage));
         }
     }
 }

@@ -5,17 +5,18 @@
 @using MrCMS.Entities.People
 @using MrCMS.Helpers
 @using MrCMS.Services
-@using MrCMS.Web.Apps.Admin.Models.UserEdit
+@using MrCMS.Web.Apps.Admin.Services
 @using MrCMS.Website
 @model User
 @inject IGetCurrentUser GetCurrentUser
+@inject IGetEditTabsService EditTabsService
 @{
     ViewBag.Title = "Edit | " + Model.Name;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var onlyAdmin = Convert.ToBoolean(ViewData["OnlyAdmin"]);
     var userRoles = ViewData["AvailableRoles"] as IEnumerable<UserRole>;
     var cultureOptions = ViewData["culture-options"] as List<SelectListItem> ?? new List<SelectListItem>();
-    List<UserTabBase> tabs = ViewData["edit-tabs"] as List<UserTabBase> ?? new List<UserTabBase>();
+    var tabs = EditTabsService.GetEditTabs(Html, Model);
 }
 
 @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { id = "edit-user" }))
@@ -103,14 +104,14 @@
 {
     ViewData["user"] = Model;
     <ul class="nav nav-tabs margin-top-10" data-stickytabs="user-@Model.Id">
-        @foreach (UserTabBase tab in tabs)
+        @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();
             <partial name="Tab" model="tab" view-data="ViewData"/>
         }
     </ul>
     <div class="tab-content">
-        @foreach (UserTabBase tab in tabs)
+        @foreach (var tab in tabs)
         {
             ViewData["is-first"] = tab == tabs.First();
             <partial name="Content" model="tab" view-data="ViewData"/>

@@ -9,7 +9,7 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         AddPageModel GetAddModel(int? id);
         void Add(Webpage webpage);
-        void Update(Webpage webpage);
+        Webpage Update(UpdateWebpageViewModel viewModel);
         void Delete(Webpage webpage);
         List<SortItem> GetSortItems(Webpage parent);
         void SetOrders(List<SortItem> items);

@@ -3,12 +3,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.People;
 using MrCMS.Services;
-using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.ModelBinders
 {
-    public class AddUserModelBinder : IExtendedModelBinder
+    public class AddUserModelBinder : IModelBinder
     {
         private readonly IModelBinder _worker;
 

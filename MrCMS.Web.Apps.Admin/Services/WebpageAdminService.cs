@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Models;
@@ -12,11 +13,15 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class WebpageAdminService : IWebpageAdminService
     {
         private readonly IRepository<Webpage> _webpageRepository;
+        private readonly IMapper _mapper;
         private readonly IGetDocumentsByParent<Webpage> _getDocumentsByParent;
 
-        public WebpageAdminService(IRepository<Webpage> webpageRepository, IGetDocumentsByParent<Webpage> getDocumentsByParent)
+        public WebpageAdminService(IRepository<Webpage> webpageRepository,
+            IMapper mapper,
+            IGetDocumentsByParent<Webpage> getDocumentsByParent)
         {
             _webpageRepository = webpageRepository;
+            _mapper = mapper;
             _getDocumentsByParent = getDocumentsByParent;
         }
 
@@ -33,9 +38,16 @@ namespace MrCMS.Web.Apps.Admin.Services
             _webpageRepository.Add(webpage);
         }
 
-        public void Update(Webpage webpage)
+        public Webpage Update(UpdateWebpageViewModel viewModel)
         {
+            var webpage = _webpageRepository.Get(viewModel.Id);
+
+            foreach (var model in viewModel.Models)
+                _mapper.Map(model, webpage);
+
             _webpageRepository.Update(webpage);
+
+            return webpage;
         }
 
         public void Delete(Webpage webpage)

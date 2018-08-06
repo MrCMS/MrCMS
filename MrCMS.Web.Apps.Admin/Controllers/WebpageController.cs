@@ -8,6 +8,7 @@ using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Helpers;
 using MrCMS.Web.Apps.Admin.ModelBinders;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
@@ -75,12 +76,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [Acl(typeof(Webpage), TypeACLRule.Edit)]
         [ForceImmediateLuceneUpdate]
         public ActionResult Edit(
-            [ModelBinder(typeof(EditWebpageModelBinder))]
-            Webpage doc)
+            UpdateWebpageViewModel model)
         {
-            _webpageAdminService.Update(doc);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
-            return RedirectToAction("Edit", new {id = doc.Id});
+            var result = _webpageAdminService.Update(model);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", result.Name));
+            return RedirectToAction("Edit", new {id = result.Id});
         }
 
         [HttpGet]

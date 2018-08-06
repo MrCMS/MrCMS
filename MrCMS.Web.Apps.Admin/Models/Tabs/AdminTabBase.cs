@@ -1,18 +1,18 @@
 using System;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 using MrCMS.Entities;
-using MrCMS.Entities.Documents.Web;
-using MrCMS.Web.Apps.Admin.Models.WebpageEdit;
 
 namespace MrCMS.Web.Apps.Admin.Models.Tabs
 {
-    public abstract class AdminTabBase<T> where T : SystemEntity
+    public abstract class AdminTabBase<T> : IAdminTab where T : SystemEntity
     {
         public abstract int Order { get; }
-        public abstract string Name(IHtmlHelper helper, T entity);
-
-        public abstract bool ShouldShow(IHtmlHelper helper, T entity);
 
         public abstract Type ParentType { get; }
+        public abstract Type ModelType { get; }
+        public abstract IEnumerable<IAdminTab> Children { get; protected set; } 
+        public abstract string Name(IServiceProvider serviceProvider, T entity);
+
+        public abstract bool ShouldShow(IServiceProvider serviceProvider, T entity);
     }
 }

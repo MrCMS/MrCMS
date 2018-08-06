@@ -3,6 +3,9 @@
 @using MrCMS.Helpers
 @using MrCMS.Website
 @model MrCMS.Web.Apps.Admin.Models.WebpageEdit.SEOTabViewModel
+@{
+    var webpage = ViewData["webpage"] as Webpage;
+}
 <div class="display-inline">
     <i class="glyphicon glyphicon-question-sign" rel="tooltip" data-placement="top" data-original-title="This is the URL which people will see in the browser bar.
             For example if your Permalink is /hello-world and your domain is www.example.com, your full URL will be www.example.com/hello-world">&nbsp;</i>
@@ -70,9 +73,9 @@
     </div>
     <hr />
     <h4>@Html.Resource("Admin Webpage Seo SEO Analysis", "SEO Analysis") </h4>
-    @Html.LabelFor(webpage => webpage.SEOTargetPhrase)
+    @Html.LabelFor(model => model.SEOTargetPhrase)
     <div class="input-group">
-        @Html.TextBoxFor(webpage => webpage.SEOTargetPhrase, new { @class = "form-control" })
+        @Html.TextBoxFor(model => model.SEOTargetPhrase, new { @class = "form-control" })
         <span class="input-group-btn">
             <button data-seo-analyze="true" class="btn btn-default">@Html.Resource("Admin Webpage Seo Analyze", "Analyze")</button>
         </span>
@@ -84,13 +87,13 @@
     <hr />
 
     <div class="form-group">
-        @Html.InlineCheckboxFor(webpage => webpage.RevealInNavigation)
+        @Html.InlineCheckboxFor(model => model.RevealInNavigation)
     </div>
     <div class="form-group">
-        @Html.InlineCheckboxFor(webpage => webpage.IncludeInSitemap)
+        @Html.InlineCheckboxFor(model => model.IncludeInSitemap)
     </div>
     <div class="form-group">
-        @Html.InlineCheckboxFor(webpage => webpage.RequiresSSL)
+        @Html.InlineCheckboxFor(model => model.RequiresSSL)
     </div>
 }
 <hr />
@@ -111,14 +114,14 @@
     <h4>@Html.Resource("Advanced")</h4>
     <hr class="small-margin" />
     <div class="form-group">
-        @Html.InlineCheckboxFor(widget => widget.DoNotCache)
+        @Html.InlineCheckboxFor(model => model.DoNotCache)
     </div>
 }
 <hr />
 <strong>@Html.Resource("Page type"):</strong> @Html.GetDocumentMetadata(Model.Id).Name
 <br />
-<strong>@Html.Resource("Created On"): </strong>@Model.CreatedOn
+<strong>@Html.Resource("Created On"): </strong>@webpage.CreatedOn
 <br />
-<strong>@Html.Resource("Last Updated"): </strong>@Model.UpdatedOn
+<strong>@Html.Resource("Last Updated"): </strong>@webpage.UpdatedOn
 <br />
 <strong>Page Id: </strong>@Model.Id
