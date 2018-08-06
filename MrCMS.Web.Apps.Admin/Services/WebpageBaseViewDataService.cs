@@ -26,6 +26,8 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public void SetAddPageViewData(ViewDataDictionary viewData, Webpage parent)
         {
+            viewData["parent"] = parent;
+
             IOrderedEnumerable<DocumentMetadata> validWebpageDocumentTypes = _validWebpageChildrenService
                 .GetValidWebpageDocumentTypes(parent,
                     metadata =>

@@ -8,12 +8,12 @@ namespace MrCMS.Web.Apps.Admin.Mapping
     {
         public UpdateWebpageProfile()
         {
-            CreateMap<FormDesignTabViewModel, Webpage>(MemberList.Source);
-            CreateMap<FormMessageTabViewModel, Webpage>(MemberList.Source);
-            CreateMap<LayoutTabViewModel, Webpage>(MemberList.Source);
-            CreateMap<PermissionsTabViewModel, Webpage>(MemberList.Source);
-            CreateMap<WebpagePropertiesTabViewModel, Webpage>(MemberList.Source);
-            CreateMap<SEOTabViewModel, Webpage>(MemberList.Source);
+            CreateMap<Webpage, FormDesignTabViewModel>().ReverseMap();
+            CreateMap<Webpage, FormMessageTabViewModel>().ReverseMap();
+            CreateMap<Webpage, LayoutTabViewModel>().ReverseMap();
+            CreateMap<Webpage, PermissionsTabViewModel>().ReverseMap();
+            CreateMap<Webpage, WebpagePropertiesTabViewModel>().ReverseMap();
+            CreateMap<Webpage, SEOTabViewModel>().ReverseMap();
         }
     }
 }

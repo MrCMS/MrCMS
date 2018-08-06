@@ -8,7 +8,7 @@ namespace MrCMS.Web.Apps.Core.Areas.Admin.Mapping
     {
         public CoreAdminMappingProfile()
         {
-            CreateMap<TextPageViewModel, TextPage>(MemberList.Source);
+            CreateMap<TextPage, TextPageViewModel>().ReverseMap();
         }
     }
 }

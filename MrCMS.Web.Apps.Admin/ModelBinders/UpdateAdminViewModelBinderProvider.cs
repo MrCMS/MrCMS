@@ -12,9 +12,7 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             if (context == null) throw new ArgumentNullException(nameof(context));
 
             if (context.Metadata.ModelType.IsImplementationOf(typeof(UpdateAdminViewModel<>)))
-            {
                 return new UpdateAdminViewModelBinder(context.CreateBinder);
-            }
 
             return null;
         }

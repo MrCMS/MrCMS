@@ -4,9 +4,8 @@ using MrCMS.Web.Apps.Core.Pages;
 
 namespace MrCMS.Web.Apps.Core.Areas.Admin.Models
 {
-    public class TextPageViewModel : IImplementationPropertiesViewModel<TextPage>
+    public class TextPageViewModel : IUpdatePropertiesViewModel<TextPage>, IAddPropertiesViewModel<TextPage>
     {
-        public int Id { get; set; }
         [DisplayName("Featured Image")]
         public string FeatureImage { get; set; }
     }

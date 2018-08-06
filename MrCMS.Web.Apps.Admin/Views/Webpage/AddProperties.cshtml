@@ -1,9 +1,10 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Admin.Infrastructure.Helpers
-@model MrCMS.Entities.Documents.Web.Webpage
+@model object
 @{
+    Type type = ViewData["type"] as Type;
 }
 @if (Model != null)
 {
-    @Html.RenderCustomAdminProperties("Add")
+    @await Html.RenderCustomAddAdminProperties(type, Model)
 }

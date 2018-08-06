@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Helpers;
@@ -42,24 +45,30 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             //Build list 
             var model = _webpageAdminService.GetAddModel(id);
-            _webpageBaseViewDataService.SetAddPageViewData(ViewData, model?.Parent as Webpage);
+
+            Webpage parent = _webpageAdminService.GetParent(id);
+            _webpageBaseViewDataService.SetAddPageViewData(ViewData, parent);
+
             return View(model);
         }
 
         [HttpPost]
         [ForceImmediateLuceneUpdate]
-        public ActionResult Add(
-            [ModelBinder(typeof(AddWebpageModelBinder))]
-            Webpage doc)
+        public async Task<ActionResult> Add(AddWebpageModel model)
         {
-            if (!_urlValidationService.UrlIsValidForWebpage(doc.UrlSegment, null))
+            if (!_urlValidationService.UrlIsValidForWebpage(model.UrlSegment, null))
             {
-                _webpageBaseViewDataService.SetAddPageViewData(ViewData, doc.Parent as Webpage);
-                return View(doc);
+                Webpage parent = _webpageAdminService.GetParent(model.ParentId);
+                _webpageBaseViewDataService.SetAddPageViewData(ViewData, parent);
+                return View(model);
             }
-            _webpageAdminService.Add(doc);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
-            return RedirectToAction("Edit", new {id = doc.Id});
+
+            var additionalPropertyModel = _webpageAdminService.GetAdditionalPropertyModel(model.DocumentType);
+            if (additionalPropertyModel != null)
+                await TryUpdateModelAsync(additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+            var webpage = _webpageAdminService.Add(model, additionalPropertyModel);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully added", webpage.Name));
+            return RedirectToAction("Edit", new { id = webpage.Id });
         }
 
         [HttpGet]
@@ -80,7 +89,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             var result = _webpageAdminService.Update(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", result.Name));
-            return RedirectToAction("Edit", new {id = result.Id});
+            return RedirectToAction("Edit", new { id = result.Id });
         }
 
         [HttpGet]
@@ -118,7 +127,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             List<SortItem> items)
         {
             _webpageAdminService.SetOrders(items);
-            return RedirectToAction("Sort", parent == null ? null : new {id = parent.Id});
+            return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
         }
 
         public ActionResult Show(Webpage document)
@@ -134,7 +143,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             _webpageAdminService.PublishNow(webpage);
 
-            return RedirectToAction("Edit", new {id = webpage.Id});
+            return RedirectToAction("Edit", new { id = webpage.Id });
         }
 
         [HttpPost]
@@ -142,7 +151,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             _webpageAdminService.Unpublish(webpage);
 
-            return RedirectToAction("Edit", new {id = webpage.Id});
+            return RedirectToAction("Edit", new { id = webpage.Id });
         }
 
         public ActionResult ViewChanges(DocumentVersion documentVersion)
@@ -183,14 +192,14 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult AddProperties(
-            [ModelBinder(typeof(AddPropertiesModelBinder))]
-            Webpage webpage) 
+        public ActionResult AddProperties(string type)
         {
-            if (webpage != null)
+            var model = _webpageAdminService.GetAdditionalPropertyModel(type);
+            if (model != null)
             {
-                webpage.SetAdminViewData(this);
-                return PartialView(webpage);
+                // TODO: viewdata
+                ViewData["type"] = TypeHelper.GetTypeByName(type);
+                return PartialView(model);
             }
             return new EmptyResult();
         }

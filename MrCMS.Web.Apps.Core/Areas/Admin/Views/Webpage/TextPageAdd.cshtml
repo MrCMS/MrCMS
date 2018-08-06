@@ -1,4 +1,5 @@
-﻿@model MrCMS.Web.Apps.Core.Pages.TextPage
+﻿@using MrCMS.Web.Apps.Core.Areas.Admin.Models
+@model MrCMS.Web.Apps.Core.Areas.Admin.Models.TextPageViewModel
 <div class="form-group">
     @Html.LabelFor(webpage => webpage.FeatureImage) <br />
     @Html.TextBoxFor(webpage => webpage.FeatureImage, new { data_type = "media-selector" })

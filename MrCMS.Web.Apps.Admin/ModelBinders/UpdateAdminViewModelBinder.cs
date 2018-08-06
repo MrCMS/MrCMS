@@ -66,7 +66,7 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             var entity = await serviceProvider.GetRequiredService<ISession>().GetAsync(modelType, id);
 
             var implementationModelTypes =TypeHelper.GetAllConcreteTypesAssignableFrom(
-                typeof(IImplementationPropertiesViewModel<>).MakeGenericType(entity.GetType()));
+                typeof(IUpdatePropertiesViewModel<>).MakeGenericType(entity.GetType()));
 
             foreach (var viewModelType in implementationModelTypes)
             {

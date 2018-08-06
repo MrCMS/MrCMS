@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Areas\Admin\Views\_ViewImports.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj" />
     <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
   </ItemGroup>

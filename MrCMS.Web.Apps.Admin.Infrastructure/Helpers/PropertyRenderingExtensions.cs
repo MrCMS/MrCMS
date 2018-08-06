@@ -15,38 +15,43 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
 {
     public static class PropertyRenderingExtensions
     {
-        public static async Task<IHtmlContent> RenderCustomAdminProperties<T>(this IHtmlHelper htmlHelper, T entity, string suffix = null) where T : SystemEntity
+        public static async Task<IHtmlContent> RenderUpdateCustomAdminProperties<T>(this IHtmlHelper htmlHelper, T entity) where T : SystemEntity
         {
             if (entity == null)
                 return HtmlString.Empty;
             var type = entity.GetType();
 
-            return await RenderCustomAdminProperties(htmlHelper, suffix, type, entity);
+            var modelType = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IUpdatePropertiesViewModel<>).MakeGenericType(type)).FirstOrDefault();
+            if (modelType == null)
+                return HtmlString.Empty;
+            var mapper = htmlHelper.GetRequiredService<IMapper>();
+            var model = mapper.Map(entity, type, modelType);
+
+            return await RenderCustomAdminProperties(htmlHelper, String.Empty, type, model);
+        }
+        public static async Task<IHtmlContent> RenderCustomAddAdminProperties(this IHtmlHelper htmlHelper, Type type, object model)
+        {
+            return await RenderCustomAdminProperties(htmlHelper, "Add", type, model);
         }
 
-        private static async Task<IHtmlContent> RenderCustomAdminProperties(IHtmlHelper htmlHelper, string suffix, Type type, object entity)
+        private static async Task<IHtmlContent> RenderCustomAdminProperties(IHtmlHelper htmlHelper, string suffix, Type type, object model)
         {
             //if (MrCMSApp.AppWebpages.ContainsKey(type))
             //    htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWebpages[type];
             //if (MrCMSApp.AppWidgets.ContainsKey(type))
             //    htmlHelper.ViewContext.RouteData.DataTokens["app"] = MrCMSApp.AppWidgets[type];
 
-            // try and find an implementation of IImplementationPropertiesViewModel
-            var modelType = TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(IImplementationPropertiesViewModel<>).MakeGenericType(type)).FirstOrDefault();
-            if (modelType == null)
-                return HtmlString.Empty;
+            // try and find an implementation of IUpdatePropertiesViewModel
 
             var partialViewName = type.Name + (suffix ?? string.Empty);
             var viewEngine = htmlHelper.GetRequiredService<ICompositeViewEngine>();
             var actionContextAccessor = htmlHelper.GetRequiredService<IActionContextAccessor>();
-            var mapper = htmlHelper.GetRequiredService<IMapper>();
             ViewEngineResult viewEngineResult = viewEngine.FindView(actionContextAccessor.ActionContext,
                 partialViewName, false);
             if (viewEngineResult.View != null)
             {
                 try
                 {
-                    var model = mapper.Map(entity, type, modelType);
                     return await htmlHelper.PartialAsync(partialViewName, model);
                 }
                 catch (Exception exception)

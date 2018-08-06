@@ -7,8 +7,10 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface IWebpageAdminService
     {
-        AddPageModel GetAddModel(int? id);
-        void Add(Webpage webpage);
+        Webpage GetParent(int? id);
+        AddWebpageModel GetAddModel(int? id);
+        object GetAdditionalPropertyModel(string type);
+        Webpage Add(AddWebpageModel model, object additionalPropertyModel = null);
         Webpage Update(UpdateWebpageViewModel viewModel);
         void Delete(Webpage webpage);
         List<SortItem> GetSortItems(Webpage parent);

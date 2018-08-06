@@ -4,9 +4,11 @@ using System.Linq;
 using AutoMapper;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models;
+using MrCMS.Web.Apps.Admin.Models.Tabs;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -25,17 +27,48 @@ namespace MrCMS.Web.Apps.Admin.Services
             _getDocumentsByParent = getDocumentsByParent;
         }
 
-        public AddPageModel GetAddModel(int? id)
+
+        public Webpage GetParent(int? id)
         {
-            return new AddPageModel
+            return id.HasValue ? _webpageRepository.Get(id.Value) : null;
+        }
+
+        public AddWebpageModel GetAddModel(int? id)
+        {
+            return new AddWebpageModel
             {
-                Parent = id.HasValue ? _webpageRepository.Get(id.Value) : null
+                ParentId = id
             };
         }
 
-        public void Add(Webpage webpage)
+        public object GetAdditionalPropertyModel(string type)
         {
-            _webpageRepository.Add(webpage);
+            var documentType = TypeHelper.GetTypeByName(type);
+            if (documentType == null)
+                return null;
+            var additionalPropertyType =
+                TypeHelper.GetAllConcreteTypesAssignableFrom(
+                    typeof(IAddPropertiesViewModel<>).MakeGenericType(documentType)).FirstOrDefault();
+            if (additionalPropertyType == null)
+                return null;
+
+            return Activator.CreateInstance(additionalPropertyType);
+        }
+
+
+        public Webpage Add(AddWebpageModel model, object additionalPropertyModel)
+        {
+            var type = TypeHelper.GetTypeByName(model.DocumentType);
+            var instance = Activator.CreateInstance(type) as Webpage;
+
+            _mapper.Map(model, instance);
+
+            if (additionalPropertyModel != null)
+                _mapper.Map(additionalPropertyModel, instance);
+
+            _webpageRepository.Add(instance);
+
+            return instance;
         }
 
         public Webpage Update(UpdateWebpageViewModel viewModel)

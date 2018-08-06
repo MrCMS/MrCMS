@@ -17,7 +17,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         public string Suggest(Webpage parent,
-            [ModelBinder(typeof(SuggestParamsModelBinder))]
+            //[ModelBinder(typeof(SuggestParamsModelBinder))]
             SuggestParams suggestParams) 
         {
             return _webpageUrlService.Suggest(parent, suggestParams);
