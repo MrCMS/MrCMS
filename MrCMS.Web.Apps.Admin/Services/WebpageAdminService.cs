@@ -28,7 +28,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         }
 
 
-        public Webpage GetParent(int? id)
+        public Webpage GetWebpage(int? id)
         {
             return id.HasValue ? _webpageRepository.Get(id.Value) : null;
         }
@@ -75,6 +75,8 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             var webpage = _webpageRepository.Get(viewModel.Id);
 
+            _mapper.Map(viewModel, webpage);
+
             foreach (var model in viewModel.Models)
                 _mapper.Map(model, webpage);
 
@@ -107,8 +109,12 @@ namespace MrCMS.Web.Apps.Admin.Services
             }));
         }
 
-        public void PublishNow(Webpage webpage)
+        public void PublishNow(int id)
         {
+            var webpage = _webpageRepository.Get(id);
+            if (webpage == null)
+                return;
+
             if (webpage.PublishOn == null)
             {
                 webpage.Published = true;
@@ -117,8 +123,11 @@ namespace MrCMS.Web.Apps.Admin.Services
             }
         }
 
-        public void Unpublish(Webpage webpage)
+        public void Unpublish(int id)
         {
+            var webpage = _webpageRepository.Get(id);
+            if (webpage == null)
+                return;
             webpage.Published = false;
             webpage.PublishOn = null;
             _webpageRepository.Update(webpage);

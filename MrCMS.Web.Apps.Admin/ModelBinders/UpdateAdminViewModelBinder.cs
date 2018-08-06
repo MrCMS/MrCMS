@@ -42,16 +42,30 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             if (!(instance is IUpdateAdminViewModel model))
                 return;
 
+            var serviceProvider = bindingContext.HttpContext.RequestServices;
+            var metadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
+
+            var properties = metadataProvider.GetMetadataForProperties(instance.GetType());
+
+            foreach (var modelMetadata in properties.Where(x => !x.IsComplexType))
+            {
+                var value = await BindModelType(bindingContext, modelMetadata);
+                modelMetadata.PropertySetter(model, value);
+            }
+
+            //var metadata = metadataProvider.GetMetadataForType(instance.GetType());
+            //var modelBinder = _createBinder(metadata);
+            //await modelBinder.BindModelAsync(bindingContext);
+            //model = bindingContext.Result.Model as IUpdateAdminViewModel;
+
             model.Id = id.Value;
             model.Models = new List<object>();
 
-            var serviceProvider = bindingContext.HttpContext.RequestServices;
             var getEditTabsService = serviceProvider.GetRequiredService<IGetEditTabsService>();
             var tabs = getEditTabsService.GetEditTabs(serviceProvider, modelType, id.Value)
                 .OfType<IAdminTab>()
                 .ToList();
 
-            var metadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
 
             foreach (var tab in tabs.OrderBy(x => x.Order))
             {
@@ -65,12 +79,12 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             // add implementation view models
             var entity = await serviceProvider.GetRequiredService<ISession>().GetAsync(modelType, id);
 
-            var implementationModelTypes =TypeHelper.GetAllConcreteTypesAssignableFrom(
+            var implementationModelTypes = TypeHelper.GetAllConcreteTypesAssignableFrom(
                 typeof(IUpdatePropertiesViewModel<>).MakeGenericType(entity.GetType()));
 
             foreach (var viewModelType in implementationModelTypes)
             {
-                var boundModel = await BindModelType(bindingContext, metadataProvider, viewModelType);
+                var boundModel = await BindModelType(bindingContext, metadataProvider.GetMetadataForType(viewModelType));
                 model.Models.Add(boundModel);
             }
 
@@ -83,7 +97,8 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             var objects = new List<object>();
             if (tab.ModelType != null)
             {
-                var model = await BindModelType(bindingContext, metadataProvider, tab.ModelType);
+                Type type = tab.ModelType;
+                var model = await BindModelType(bindingContext, metadataProvider.GetMetadataForType(type));
                 objects.Add(model);
             }
 
@@ -96,18 +111,16 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             return objects;
         }
 
-        private async Task<object> BindModelType(ModelBindingContext bindingContext, IModelMetadataProvider metadataProvider, Type type)
+        private async Task<object> BindModelType(ModelBindingContext bindingContext, ModelMetadata metadata)
         {
-            var metadata = metadataProvider.GetMetadataForType(type);
-
             var modelBindingContext = new DefaultModelBindingContext
             {
                 BinderModelName = metadata.BinderModelName,
                 BindingSource = metadata.BindingSource,
                 IsTopLevelObject = true,
-                Model = Activator.CreateInstance(type),
+                Model = Activator.CreateInstance(metadata.ModelType),
                 ModelMetadata = metadata,
-                ModelName = "",
+                ModelName = metadata.Name ?? string.Empty,
                 ModelState = new ModelStateDictionary(),
                 ValueProvider = bindingContext.ValueProvider
             };

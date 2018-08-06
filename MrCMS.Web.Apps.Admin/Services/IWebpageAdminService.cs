@@ -7,7 +7,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface IWebpageAdminService
     {
-        Webpage GetParent(int? id);
+        Webpage GetWebpage(int? id);
         AddWebpageModel GetAddModel(int? id);
         object GetAdditionalPropertyModel(string type);
         Webpage Add(AddWebpageModel model, object additionalPropertyModel = null);
@@ -15,7 +15,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         void Delete(Webpage webpage);
         List<SortItem> GetSortItems(Webpage parent);
         void SetOrders(List<SortItem> items);
-        void PublishNow(Webpage webpage);
-        void Unpublish(Webpage webpage);
+        void PublishNow(int id);
+        void Unpublish(int id);
     }
 }

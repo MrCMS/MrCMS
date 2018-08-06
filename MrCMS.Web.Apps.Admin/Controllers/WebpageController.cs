@@ -46,7 +46,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             //Build list 
             var model = _webpageAdminService.GetAddModel(id);
 
-            Webpage parent = _webpageAdminService.GetParent(id);
+            Webpage parent = _webpageAdminService.GetWebpage(id);
             _webpageBaseViewDataService.SetAddPageViewData(ViewData, parent);
 
             return View(model);
@@ -58,7 +58,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             if (!_urlValidationService.UrlIsValidForWebpage(model.UrlSegment, null))
             {
-                Webpage parent = _webpageAdminService.GetParent(model.ParentId);
+                Webpage parent = _webpageAdminService.GetWebpage(model.ParentId);
                 _webpageBaseViewDataService.SetAddPageViewData(ViewData, parent);
                 return View(model);
             }
@@ -74,18 +74,18 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpGet]
         [ActionName("Edit")]
         [Acl(typeof(Webpage), TypeACLRule.Edit)]
-        public ActionResult Edit_Get(Webpage doc)
+        public ActionResult Edit_Get(int id)
         {
-            _webpageBaseViewDataService.SetEditPageViewData(ViewData, doc);
-            doc.SetAdminViewData(this);
-            return View(doc);
+            var webpage = _webpageAdminService.GetWebpage(id);
+            _webpageBaseViewDataService.SetEditPageViewData(ViewData, webpage);
+            webpage.SetAdminViewData(this);
+            return View(webpage);
         }
 
         [HttpPost]
         [Acl(typeof(Webpage), TypeACLRule.Edit)]
         [ForceImmediateLuceneUpdate]
-        public ActionResult Edit(
-            UpdateWebpageViewModel model)
+        public ActionResult Edit(UpdateWebpageViewModel model)
         {
             var result = _webpageAdminService.Update(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully saved", result.Name));
@@ -139,19 +139,19 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult PublishNow(Webpage webpage)
+        public ActionResult PublishNow(int id)
         {
-            _webpageAdminService.PublishNow(webpage);
+            _webpageAdminService.PublishNow(id);
 
-            return RedirectToAction("Edit", new { id = webpage.Id });
+            return RedirectToAction("Edit", new { id });
         }
 
         [HttpPost]
-        public ActionResult Unpublish(Webpage webpage)
+        public ActionResult Unpublish(int id)
         {
-            _webpageAdminService.Unpublish(webpage);
+            _webpageAdminService.Unpublish(id);
 
-            return RedirectToAction("Edit", new { id = webpage.Id });
+            return RedirectToAction("Edit", new { id });
         }
 
         public ActionResult ViewChanges(DocumentVersion documentVersion)
