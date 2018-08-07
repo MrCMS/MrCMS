@@ -19,6 +19,7 @@ namespace MrCMS.Services.Sitemaps
         public static readonly XNamespace ImageNameSpace = "http://www.google.com/schemas/sitemap-image/1.1";
         private readonly IEnumerable<ISitemapDataSource> _additionalSources;
         private readonly IGetSitemapPath _getSitemapPath;
+        private readonly IGetHomePage _getHomePage;
         private readonly IStatelessSession _session;
         private readonly Site _site;
         private readonly ISitemapElementAppender _sitemapElementAppender;
@@ -26,7 +27,8 @@ namespace MrCMS.Services.Sitemaps
 
 
         public SitemapService(IStatelessSession session, Site site, ISitemapElementAppender sitemapElementAppender,
-            SiteSettings siteSettings, IEnumerable<ISitemapDataSource> additionalSources, IGetSitemapPath getSitemapPath)
+            SiteSettings siteSettings, IEnumerable<ISitemapDataSource> additionalSources, IGetSitemapPath getSitemapPath,
+            IGetHomePage getHomePage)
         {
             _session = session;
             _site = site;
@@ -34,6 +36,7 @@ namespace MrCMS.Services.Sitemaps
             _siteSettings = siteSettings;
             _additionalSources = additionalSources;
             _getSitemapPath = getSitemapPath;
+            _getHomePage = getHomePage;
         }
 
         public void WriteSitemap()
@@ -63,13 +66,11 @@ namespace MrCMS.Services.Sitemaps
                 .List<SitemapData>().ToList();
 
             list.AddRange(_additionalSources.SelectMany(x => x.GetAdditionalData()));
-
+            var homepage = _getHomePage.Get();
             list.ForEach(
                 sitemapData =>
                     sitemapData.SetAbsoluteUrl(_siteSettings, _site, 
-                        //CurrentRequestData.HomePage.UrlSegment
-                        // TODO: get homepage url
-                        string.Empty
+                        homepage.UrlSegment
                         ));
             var xmlDocument = new XDocument(new XDeclaration("1.0", "utf-8", null));
             var urlset = new XElement(RootNamespace + "urlset",

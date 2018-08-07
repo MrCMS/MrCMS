@@ -5,6 +5,7 @@ using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Helpers;
 using MrCMS.Models;
+using MrCMS.Services.Caching;
 using MrCMS.Settings;
 using MrCMS.Website.Caching;
 using NHibernate;
@@ -64,9 +65,8 @@ namespace MrCMS.Services
             string title = null, object attributes = null)
         {
             var cachingInfo = _mediaSettings.GetImageTagCachingInfo(imageUrl, targetSize, alt, title, attributes);
-            // TODO: caching
-            //return helper.GetCached(cachingInfo, htmlHelper =>
-            //{
+            return helper.GetCached(cachingInfo, htmlHelper =>
+            {
                 using (new SiteFilterDisabler(_session))
                 {
                     if (string.IsNullOrWhiteSpace(imageUrl))
@@ -78,7 +78,7 @@ namespace MrCMS.Services
 
                     return ReturnTag(imageInfo, alt, title, attributes);
                 }
-            //});
+            });
         }
 
         private string GetFileImageUrl(MediaFile image, Size targetSize)

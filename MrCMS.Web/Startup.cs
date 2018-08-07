@@ -101,7 +101,7 @@ namespace MrCMS.Web
                 {
                     ConnectionString =
                         "Data Source=localhost;Initial Catalog=mrcms-migration;Integrated Security=True;Persist Security Info=False;MultipleActiveResultSets=True"
-                })).CreateSessionFactory());
+                }), provider.GetRequiredService<MrCMSAppContext>()).CreateSessionFactory());
             services.AddScoped<ISession>(provider =>
                 provider.GetRequiredService<ISessionFactory>().OpenFilteredSession(provider));
             services.AddTransient<IStatelessSession>(provider =>

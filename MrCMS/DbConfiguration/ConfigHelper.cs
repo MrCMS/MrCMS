@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Mapping;
+using MrCMS.Apps;
 using MrCMS.DbConfiguration.Types;
 
 namespace MrCMS.DbConfiguration
@@ -66,15 +67,11 @@ namespace MrCMS.DbConfiguration
             return propertyPart.CustomType<VarcharMax>().Length(4001);
         }
 
-        public static AutoPersistenceModel IncludeAppConventions(this AutoPersistenceModel model)
+        public static AutoPersistenceModel IncludeAppConventions(this AutoPersistenceModel model,
+            MrCMSAppContext appContext)
         {
-            //foreach (var baseType in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>()
-            //                            .Select(type => Activator.CreateInstance(type) as MrCMSApp)
-            //                            .SelectMany(app => app.Conventions))
-            //{
-            //    model.Conventions.Add(baseType);
-            //}
-            // TODO: add app conventions
+            foreach (var type in appContext.DbConventions)
+                model.Conventions.Add(type);
             return model;
         }
     }

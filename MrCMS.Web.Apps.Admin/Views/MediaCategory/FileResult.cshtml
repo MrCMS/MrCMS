@@ -21,7 +21,7 @@
 
                         </td>
                         <td>
-                            @foreach (var size in Model.GetSizes())
+                            @foreach (var size in Html.GetImageSizes(Model))
                             {
                                 <div>
                                     @Html.RadioButton("SelectedFile", Model.Id + "-" + size.Width + "-" + size.Height, new { @class = "selected-file", id = ViewData["upload"] + "SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height }) @Html.Label(ViewData["upload"] + "SelectedFile-" + Model.Id + "-" + size.Width + "-" + size.Height, new { style = "display:inline" }, size.Name + " (" + size.ActualWidth + "px x " + size.ActualHeight + "px)")

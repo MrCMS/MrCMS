@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MrCMS.Search;
 
 namespace MrCMS.Batching.CoreJobs
 {
-    // TODO: universal search
     public class RebuildUniversalSearchIndexExecutor : BaseBatchJobExecutor<RebuildUniversalSearchIndex>
     {
-        //private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
+        private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
 
         public RebuildUniversalSearchIndexExecutor(ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus
-            //, IUniversalSearchIndexManager universalSearchIndexManager
+            , IUniversalSearchIndexManager universalSearchIndexManager
         )
             : base(setBatchJobJobExecutionStatus)
         {
-            //_universalSearchIndexManager = universalSearchIndexManager;
+            _universalSearchIndexManager = universalSearchIndexManager;
         }
 
         protected override BatchJobExecutionResult OnExecute(RebuildUniversalSearchIndex batchJob)
         {
             try
             {
-                //_universalSearchIndexManager.ReindexAll();
+                _universalSearchIndexManager.ReindexAll();
                 return BatchJobExecutionResult.Success();
             }
             catch (Exception exception)
             {
+                // TODO: logging
                 //CurrentRequestData.ErrorSignal.Raise(exception);
                 return BatchJobExecutionResult.Failure(exception.Message);
             }

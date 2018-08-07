@@ -10,8 +10,7 @@ using MrCMS.Helpers.Validation;
 
 namespace MrCMS.Entities.People
 {
-    // TODO: integrate with identity
-    public class User : SystemEntity//, IUser<int>
+    public class User : SystemEntity
     {
         public User()
         {
@@ -86,11 +85,5 @@ namespace MrCMS.Entities.People
         [DisplayName("Site UI Culture")]
         public virtual string UICulture { get; set; }
 
-
-        //string IUser<int>.UserName
-        //{
-        //    get { return Email; }
-        //    set { Email = value; }
-        //}
     }
 }

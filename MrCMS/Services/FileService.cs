@@ -56,7 +56,7 @@ namespace MrCMS.Services
                     _session.Query<MediaFile>()
                         .Where(x => x.MediaCategory.Id == mediaFile.MediaCategory.Id)
                         .Max(x => (int?)x.DisplayOrder);
-                mediaFile.DisplayOrder = (max.HasValue ? (int)max + 1 : 1);
+                mediaFile.DisplayOrder = max + 1 ?? 1;
             }
 
             if (mediaFile.IsImage())
@@ -151,7 +151,7 @@ namespace MrCMS.Services
             int id = Convert.ToInt32(split[0]);
             var file = _session.Get<MediaFile>(id);
             ImageSize imageSize =
-                file.GetSizes()
+                file.GetSizes(_mediaSettings)
                     .FirstOrDefault(size => size.Size == new Size(Convert.ToInt32(split[1]), Convert.ToInt32(split[2])));
             return GetFileLocation(file, imageSize.Size, false);
         }

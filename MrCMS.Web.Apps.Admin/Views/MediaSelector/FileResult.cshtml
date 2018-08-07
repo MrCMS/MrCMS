@@ -21,7 +21,7 @@
                         </td>
                         <td width="10"></td>
                         <td>
-                            @foreach (var size in Model.GetSizes())
+                            @foreach (var size in Html.GetImageSizes(Model))
                             {
                                 <div>
                                     @{

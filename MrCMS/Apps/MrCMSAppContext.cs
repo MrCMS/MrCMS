@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using MrCMS.FileProviders;
 using MrCMS.Helpers;
+using NHibernate.Cfg;
 
 namespace MrCMS.Apps
 {
@@ -23,6 +24,8 @@ namespace MrCMS.Apps
 
         public IEnumerable<IFileProvider> ContentFileProviders =>
             Apps.Select(app => new EmbeddedContentFileProvider(app.Assembly, app.ContentPrefix));
+
+        public IEnumerable<Type> DbConventions => Apps.SelectMany(app => app.Conventions);
 
         public void RegisterApp<TApp>(Action<MrCMSAppOptions> options = null) where TApp : IMrCMSApp, new()
         {
@@ -42,6 +45,11 @@ namespace MrCMS.Apps
         public void ConfigureAutomapper(IMapperConfigurationExpression expression)
         {
             Apps.ForEach(app => app.ConfigureAutomapper(expression));
+        }
+
+        public void AppendConfiguration(Configuration configuration)
+        {
+            Apps.ForEach(app => app.AppendConfiguration(configuration));
         }
     }
 }

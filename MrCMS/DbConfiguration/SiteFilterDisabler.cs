@@ -1,10 +1,11 @@
 ﻿using System;
 using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
+using MrCMS.Services;
 using NHibernate;
 
 namespace MrCMS.DbConfiguration
 {
-    // TODO: apply site filter
     public class SiteFilterDisabler : IDisposable
     {
         private readonly ISession _session;
@@ -25,7 +26,7 @@ namespace MrCMS.DbConfiguration
         {
             if (_filterEnabled)
             {
-                _session.EnableFilter("SiteFilter").SetParameter("site", 1);//CurrentRequestData.CurrentSite.Id);
+                _session.EnableFilter("SiteFilter").SetParameter("site", _session.GetService<ICurrentSiteLocator>().GetCurrentSite().Id);
             }
         }
     }
@@ -51,7 +52,7 @@ namespace MrCMS.DbConfiguration
             _session.DisableFilter("SiteFilter");
             if (_filterEnabled)
             {
-                _session.EnableFilter("SiteFilter").SetParameter("site", 1); //CurrentRequestData.CurrentSite.Id);
+                _session.EnableFilter("SiteFilter").SetParameter("site", _session.GetService<ICurrentSiteLocator>().GetCurrentSite().Id);
             }
         }
     }

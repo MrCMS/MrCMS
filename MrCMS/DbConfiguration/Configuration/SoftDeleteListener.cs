@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
+using Microsoft.AspNetCore.Http;
 using MrCMS.DbConfiguration.Helpers;
 using MrCMS.Entities;
+using MrCMS.Helpers;
 using MrCMS.Website;
 using NHibernate.Engine;
 using NHibernate.Event;
@@ -18,21 +20,19 @@ namespace MrCMS.DbConfiguration.Configuration
         protected override void DeleteEntity(IEventSource session, object entity, EntityEntry entityEntry,
             bool isCascadeDeleteEnabled, IEntityPersister persister, ISet<object> transientEntities)
         {
-            //var systemEntity = entity as SystemEntity;
-            ////HttpContextBase context = CurrentRequestData.CurrentContext;
-            //if (systemEntity != null && !(context != null && context.IsSoftDeleteDisabled()))
-            //{
-            //    systemEntity.IsDeleted = true;
+            var context = session.GetContext();
+            if (entity is SystemEntity systemEntity && !(context != null && context.IsSoftDeleteDisabled()))
+            {
+                systemEntity.IsDeleted = true;
 
-            //    CascadeBeforeDelete(session, persister, systemEntity, entityEntry, transientEntities);
-            //    CascadeAfterDelete(session, persister, systemEntity, transientEntities);
-            //}
-            //else
-            //{
+                CascadeBeforeDelete(session, persister, systemEntity, entityEntry, transientEntities);
+                CascadeAfterDelete(session, persister, systemEntity, transientEntities);
+            }
+            else
+            {
                 base.DeleteEntity(session, entity, entityEntry, isCascadeDeleteEnabled,
                     persister, transientEntities);
-            //}
-            // TODO: enable soft delete
+            }
         }
     }
 }

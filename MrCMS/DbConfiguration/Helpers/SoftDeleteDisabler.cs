@@ -1,25 +1,28 @@
 using System;
+using Microsoft.AspNetCore.Http;
+
 //using MrCMS.Website;
 
 namespace MrCMS.DbConfiguration.Helpers
 {
-    // TODO: enable soft delete
     public class SoftDeleteDisabler : IDisposable
     {
+        private readonly HttpContext _context;
         private readonly bool _enableOnDispose;
 
-        public SoftDeleteDisabler()
+        public SoftDeleteDisabler(HttpContext context)
         {
-            //if (!CurrentRequestData.CurrentContext.IsSoftDeleteDisabled())
-            //{
-            //    _enableOnDispose = true;
-            //    CurrentRequestData.CurrentContext.DisableSoftDelete();
-            //}
+            _context = context;
+            if (!context.IsSoftDeleteDisabled())
+            {
+                _enableOnDispose = true;
+                context.DisableSoftDelete();
+            }
         }
         public void Dispose()
         {
-            //if (_enableOnDispose)
-            //    CurrentRequestData.CurrentContext.EnableSoftDelete();
+            if (_enableOnDispose)
+                _context.EnableSoftDelete();
         }
     }
 }

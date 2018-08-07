@@ -16,7 +16,6 @@ namespace MrCMS.Services
         private readonly IWidgetModelService _widgetModelService;
         private readonly ISession _session;
 
-        // TODO: complete and add caching
         public WidgetUIService(IGetWidgetCachingInfo getWidgetCachingInfo, IHtmlCacheService htmlCacheService, IWidgetModelService widgetModelService, ISession session)
         {
             _getWidgetCachingInfo = getWidgetCachingInfo;
@@ -44,7 +43,7 @@ namespace MrCMS.Services
 
         public void SetAppDataToken(RouteData routeData, Widget widget)
         {
-            throw new NotImplementedException("Not yet implemented");
+            //throw new NotImplementedException("Not yet implemented");
             //if (MrCMSApp.AppWidgets.ContainsKey(widget.Unproxy().GetType()))
             //    routeData.DataTokens["app"] = MrCMSApp.AppWidgets[widget.Unproxy().GetType()];
         }

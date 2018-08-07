@@ -6,8 +6,7 @@ using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Entities.People
 {
-    // TODO: integrate with identity
-    public class UserRole : SystemEntity//, IRole<int>
+    public class UserRole : SystemEntity
     {
         public UserRole()
         {

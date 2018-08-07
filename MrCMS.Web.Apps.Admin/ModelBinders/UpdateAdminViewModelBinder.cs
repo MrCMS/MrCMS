@@ -58,7 +58,7 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             //await modelBinder.BindModelAsync(bindingContext);
             //model = bindingContext.Result.Model as IUpdateAdminViewModel;
 
-            model.Id = id.Value;
+            //model.Id = id.Value;
             model.Models = new List<object>();
 
             var getEditTabsService = serviceProvider.GetRequiredService<IGetEditTabsService>();

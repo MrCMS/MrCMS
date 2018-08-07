@@ -7,7 +7,7 @@
             parentId = $("#Parent_Id").val(),
             template = $("#PageTemplate_Id").val(),
             useHierarchy = $("#mode").is(':checked');
-        if (pageName != "") {
+        if (pageName !== "") {
             $.get('/Admin/WebpageUrl/Suggest', {
                 pageName: pageName,
                 id: parentId,
@@ -38,13 +38,13 @@
     var areValuesChanged = function () {
         var value = previousValue;
         var currentValue = getCurrentValue();
-        if (value == null)
+        if (value === null)
             return true;
 
-        return value.documentType != currentValue.documentType
-            || value.mode != currentValue.mode
-            || value.name != currentValue.name
-            || value.template != currentValue.template;
+        return value.documentType !== currentValue.documentType
+            || value.mode !== currentValue.mode
+            || value.name !== currentValue.name
+            || value.template !== currentValue.template;
     }
     var updateUrl = function (event) {
         event.preventDefault();

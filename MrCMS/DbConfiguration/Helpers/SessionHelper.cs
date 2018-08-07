@@ -59,6 +59,10 @@ namespace MrCMS.Helpers
             // Don't wrap;
             return func.Invoke(session);
         }
+        public static Task TransactAsync(this ISession session, Func<ISession, CancellationToken, Task> action)
+        {
+            return TransactAsync(session, action, CancellationToken.None);
+        }
         public static Task TransactAsync(this ISession session, Func<ISession, CancellationToken, Task> action, CancellationToken cancellationToken)
         {
             return Transact(session, async ses =>

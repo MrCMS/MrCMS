@@ -23,21 +23,6 @@ namespace MrCMS.Services.FileMigration
         {
             return file != null && JpegExtensions.Any(s => s.Equals(file.FileExtension, StringComparison.InvariantCultureIgnoreCase));
         }
-        public static IEnumerable<ImageSize> GetSizes(this MediaFile file)
-        {
-            if (!IsImage(file)) 
-                yield break;
-            yield return new ImageSize("Original", file.Size);
-            //foreach (
-            //    var imageSize in
-            //        MrCMSApplication.Get<MediaSettings>()
-            //            .ImageSizes.Where(size => ImageProcessor.RequiresResize(file.Size, size.Size)))
-            //{
-            //    imageSize.ActualSize = ImageProcessor.CalculateDimensions(file.Size, imageSize.Size);
-            //    yield return imageSize;
-            //}
-            // TODO: update image sizes
-        }
 
 
         public static readonly HashSet<string> JpegExtensions = new HashSet<string> { ".jpg", ".jpeg" }; 

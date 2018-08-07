@@ -5,6 +5,7 @@ using System.Reflection;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using MrCMS.Apps;
 using MrCMS.Batching.Entities;
 using MrCMS.DbConfiguration.Configuration;
 using MrCMS.DbConfiguration.Conventions;
@@ -29,10 +30,12 @@ namespace MrCMS.DbConfiguration
     public class NHibernateConfigurator
     {
         private readonly IDatabaseProvider _databaseProvider;
+        private readonly MrCMSAppContext _appContext;
 
-        public NHibernateConfigurator(IDatabaseProvider databaseProvider)
+        public NHibernateConfigurator(IDatabaseProvider databaseProvider, MrCMSAppContext appContext)
         {
             _databaseProvider = databaseProvider;
+            _appContext = appContext;
             CacheEnabled = true;
         }
 
@@ -147,7 +150,7 @@ namespace MrCMS.DbConfiguration
             autoPersistenceModel.Add(typeof(SiteFilter));
         }
 
-        private static AutoPersistenceModel GetAutoPersistenceModel(List<Assembly> finalAssemblies)
+        private AutoPersistenceModel GetAutoPersistenceModel(List<Assembly> finalAssemblies)
         {
             return AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
                 .IgnoreBase<SystemEntity>()
@@ -162,13 +165,12 @@ namespace MrCMS.DbConfiguration
                 .IncludeAppBases()
                 .UseOverridesFromAssemblies(finalAssemblies)
                 .Conventions.AddFromAssemblyOf<CustomForeignKeyConvention>()
-                .IncludeAppConventions();
+                .IncludeAppConventions(_appContext);
         }
 
         private void AppSpecificConfiguration(NHibernate.Cfg.Configuration configuration)
         {
-            //MrCMSApp.AppendAllAppConfiguration(configuration);
-            // TODO: apps
+            _appContext.AppendConfiguration(configuration);
         }
 
         private void AppendListeners(NHibernate.Cfg.Configuration configuration)

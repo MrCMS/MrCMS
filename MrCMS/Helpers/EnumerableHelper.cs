@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-//using MrCMS.Paging;
-using MrCMS.Settings;
-using MrCMS.Website;
 using X.PagedList;
 
 namespace MrCMS.Helpers
@@ -12,10 +9,7 @@ namespace MrCMS.Helpers
     {
         public static void ForEach<T>(this IEnumerable<T> list, Action<T> action)
         {
-            foreach (var item in list)
-            {
-                action.Invoke(item);
-            }
+            foreach (var item in list) action.Invoke(item);
         }
 
         public static List<T> ToList<T>(this IEnumerable<T> list, Func<T, bool> predicate)
@@ -24,7 +18,7 @@ namespace MrCMS.Helpers
         }
 
         /// <summary>
-        /// Break a list of items into chunks of a specific size
+        ///     Break a list of items into chunks of a specific size
         /// </summary>
         public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunksize)
         {
