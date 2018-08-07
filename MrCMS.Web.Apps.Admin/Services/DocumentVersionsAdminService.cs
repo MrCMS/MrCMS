@@ -33,8 +33,10 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _documentVersionRepository.Get(id);
         }
 
-        public void RevertToVersion(DocumentVersion documentVersion)
+        public DocumentVersion RevertToVersion(int id)
         {
+            var documentVersion = GetDocumentVersion(id);
+
             var currentVersion = documentVersion.Document.Unproxy();
             var previousVersion = currentVersion.GetVersion(documentVersion.Id);
 
@@ -44,6 +46,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 versionProperty.SetValue(currentVersion, versionProperty.GetValue(previousVersion, null), null);
             }
             _documentRepository.Update(currentVersion);
+            return documentVersion;
         }
     }
 }

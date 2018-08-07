@@ -52,12 +52,11 @@ namespace MrCMS.Entities.Documents
                 switch (ChildrenListType)
                 {
                     case ChildrenListType.BlackList:
-                        // TODO: metadata
-                        return new List<Type>();
-                            //DocumentMetadataHelper.DocumentMetadatas.Where(
-                            //    metadata => !ChildrenList.Contains(metadata.Type) && !metadata.AutoBlacklist)
-                            //                      .Select(metadata => metadata.Type)
-                            //                      .ToList();
+                        return 
+                            DocumentMetadataHelper.DocumentMetadatas.Where(
+                                metadata => !ChildrenList.Contains(metadata.Type) && !metadata.AutoBlacklist)
+                                                  .Select(metadata => metadata.Type)
+                                                  .ToList();
                     case ChildrenListType.WhiteList:
                         return ChildrenList;
                 }

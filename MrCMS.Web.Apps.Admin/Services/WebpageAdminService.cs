@@ -85,13 +85,16 @@ namespace MrCMS.Web.Apps.Admin.Services
             return webpage;
         }
 
-        public void Delete(Webpage webpage)
+        public Webpage Delete(int id)
         {
+            var webpage = GetWebpage(id);
             _webpageRepository.Delete(webpage);
+            return webpage;
         }
 
-        public List<SortItem> GetSortItems(Webpage parent)
+        public List<SortItem> GetSortItems(int? id)
         {
+            var parent = GetWebpage(id);
             return _getDocumentsByParent.GetDocuments(parent)
                 .Select(
                     arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })

@@ -55,6 +55,7 @@ namespace MrCMS.Web
             services.RegisterAllSimplePairings();
             services.RegisterOpenGenerics();
             services.SelfRegisterAllConcreteTypes();
+            services.RegisterSettings();
 
 
             var appContext = services.AddMrCMSApps(context =>
@@ -70,19 +71,13 @@ namespace MrCMS.Web
 
             services.AddAutoMapper(expression => appContext.ConfigureAutomapper(expression));
             services.AddSingleton<IFileProvider>(compositeFileProvider);
-            services.AddSession(options =>
-            {
-                //options.CookieHttpOnly = true;
-            });
+            services.AddSession();
 
             services.AddMvc(options =>
                 {
                     // add custom binder to beginning of collection
                     options.ModelBinderProviders.Insert(0, new SystemEntityBinderProvider());
                     appContext.SetupMvcOptions(options);
-
-                    // TODO: refactor this to be added per app
-                    options.Filters.AddService(typeof(AdminAuthFilter));
 
                 }).AddRazorOptions(options =>
                 {

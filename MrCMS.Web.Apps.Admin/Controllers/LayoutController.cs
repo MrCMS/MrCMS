@@ -4,6 +4,7 @@ using MrCMS.Entities.Documents.Layout;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.ACL;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
@@ -37,75 +38,65 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(Layout doc)
+        public ActionResult Add(AddLayoutModel model)
         {
-            _layoutAdminService.Add(doc);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
-            return RedirectToAction("Edit", new {id = doc.Id});
+            var layout = _layoutAdminService.Add(model);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully added", model.Name));
+            return RedirectToAction("Edit", new { id = layout.Id });
         }
 
         [HttpGet]
         [ActionName("Edit")]
         [Acl(typeof(LayoutsACL), LayoutsACL.Edit)]
-        public ActionResult Edit_Get(Layout doc)
+        public ActionResult Edit_Get(int id)
         {
-            return View(doc);
+            var layout = _layoutAdminService.GetEditModel(id);
+            ViewData["layout-areas"] = _layoutAdminService.GetLayoutAreas(id);
+            return View(layout);
         }
 
         [HttpPost]
-        public ActionResult Edit(Layout doc)
+        public ActionResult Edit(UpdateLayoutModel model)
         {
-            _layoutAdminService.Update(doc);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
-            return RedirectToAction("Edit", new {id = doc.Id});
+            _layoutAdminService.Update(model);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", model.Name));
+            return RedirectToAction("Edit", new { id = model.Id });
         }
 
         [HttpGet]
         [ActionName("Delete")]
         [Acl(typeof(LayoutsACL), LayoutsACL.Delete)]
-        public ActionResult Delete_Get(Layout document)
+        public ActionResult Delete_Get(int id)
         {
-            return PartialView(document);
+            return PartialView(_layoutAdminService.GetLayout(id));
         }
 
         [HttpPost]
-        public ActionResult Delete(Layout document)
+        public ActionResult Delete(int id)
         {
-            _layoutAdminService.Delete(document);
-            TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
+            var layout = _layoutAdminService.Delete(id);
+            TempData.InfoMessages().Add(string.Format("{0} deleted", layout.Name));
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         [Acl(typeof(LayoutsACL), LayoutsACL.Sort)]
-        public ActionResult Sort(
-            //[IoCModelBinder(typeof(NullableEntityModelBinder))]
-            Layout parent) // TODO: model-binding
+        public ActionResult Sort(int? id)
         {
             var sortItems =
-                _layoutAdminService.GetSortItems(parent);
+                _layoutAdminService.GetSortItems(id);
 
             return View(sortItems);
         }
 
         [HttpPost]
         public ActionResult Sort(
-            //[IoCModelBinder(typeof(NullableEntityModelBinder))]
-            Layout parent, // TODO: model-binding
+            int? id, // TODO: model-binding
             List<SortItem> items)
         {
             _layoutAdminService.SetOrders(items);
-            return RedirectToAction("Sort", parent == null ? null : new {id = parent.Id});
+            return RedirectToAction("Sort", id);
         }
-
-        public ActionResult Show(Layout document)
-        {
-            if (document == null)
-                return RedirectToAction("Index");
-
-            return View(document);
-        }
-
 
         /// <summary>
         ///     Finds out if the path entered is valid.
@@ -121,18 +112,19 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Set(Layout doc)
+        public PartialViewResult Set(int id)
         {
-            ViewData["valid-parents"] = _layoutAdminService.GetValidParents(doc);
-            return PartialView();
+            ViewData["valid-parents"] = _layoutAdminService.GetValidParents(id);
+            return PartialView(id);
         }
 
         [HttpPost]
-        public RedirectToActionResult Set(Layout doc, int? parentVal)
+        public RedirectToActionResult Set(int id, int? parentVal)
         {
-            _layoutAdminService.SetParent(doc, parentVal);
+            _layoutAdminService.SetParent(id, parentVal);
 
-            return RedirectToAction("Edit", "Layout", new {id = doc.Id});
+            return RedirectToAction("Edit", "Layout", new { id });
         }
     }
+
 }

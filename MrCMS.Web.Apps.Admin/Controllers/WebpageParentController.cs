@@ -15,18 +15,19 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Set(Webpage webpage)
+        public PartialViewResult Set(int id)
         {
+            var webpage = _webpageParentAdminService.GetWebpage(id);
             ViewData["valid-parents"] = _webpageParentAdminService.GetValidParents(webpage);
             return PartialView(webpage);
         }
 
         [HttpPost]
-        public RedirectToActionResult Set(Webpage webpage, int? parentVal)
+        public RedirectToActionResult Set(int id, int? parentVal)
         {
-            _webpageParentAdminService.Set(webpage, parentVal);
+            _webpageParentAdminService.Set(id, parentVal);
 
-            return RedirectToAction("Edit", "Webpage", new { id = webpage.Id });
+            return RedirectToAction("Edit", "Webpage", new { id });
         }
     }
 }

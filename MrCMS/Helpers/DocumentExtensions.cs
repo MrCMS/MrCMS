@@ -18,18 +18,36 @@ namespace MrCMS.Helpers
 {
     public static class DocumentExtensions
     {
+        public static bool CanDeleteDocument(this IHtmlHelper helper, int id)
+        {
+            return !helper.AnyChildren(id);
+        }
+
+        public static bool AnyChildren(this IHtmlHelper helper, int id)
+        {
+            var document = helper.GetRequiredService<ISession>().Get<Document>(id);
+            if (document == null)
+                return false;
+            return AnyChildren(helper, document);
+        }
+
+        private static bool AnyChildren(this IHtmlHelper helper, Document document)
+        {
+            return helper.GetRequiredService<ISession>()
+                .QueryOver<Document>()
+                .Where(doc => doc.Parent != null && doc.Parent.Id == document.Id)
+                .Cacheable()
+                .Any();
+        }
+
         public static bool CanDelete<T>(this IHtmlHelper<T> helper) where T : Document
         {
-            return !helper.AnyChildren();
+            return !helper.AnyChildren(helper.ViewData.Model);
         }
 
         public static bool AnyChildren<T>(this IHtmlHelper<T> helper) where T : Document
         {
-            return helper.GetRequiredService<ISession>()
-                .QueryOver<Document>()
-                .Where(doc => doc.Parent != null && doc.Parent.Id == helper.ViewData.Model.Id)
-                .Cacheable()
-                .Any();
+            return helper.AnyChildren(helper.ViewData.Model);
         }
 
         public static int FormPostingsCount(this Webpage webpage, IHtmlHelper helper)

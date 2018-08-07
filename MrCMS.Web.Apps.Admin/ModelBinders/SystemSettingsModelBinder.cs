@@ -23,7 +23,8 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
 
         protected virtual MethodInfo GetGetSettingsMethod()
         {
-            return typeof (AppConfigSystemConfigurationProvider).GetMethodExt("GetSystemSettings");
+            return typeof(SqlSystemConfigurationProvider).GetMethodExt(nameof(SqlSystemConfigurationProvider
+                .GetSystemSettings));
         }
 
         public Task BindModelAsync(ModelBindingContext bindingContext)

@@ -15,17 +15,17 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Revert(DocumentVersion documentVersion)
+        public PartialViewResult Revert(int id)
         {
-            return PartialView(documentVersion);
+            return PartialView(_service.GetDocumentVersion(id));
         }
 
         [HttpPost]
         [ActionName("Revert")]
-        public RedirectToActionResult Revert_POST(DocumentVersion documentVersion)
+        public RedirectToActionResult Revert_POST(int id)
         {
-            _service.RevertToVersion(documentVersion);
-            return RedirectToAction("Edit", "Webpage", new { id = documentVersion.Document.Id });
+            var version =_service.RevertToVersion(id);
+            return RedirectToAction("Edit", "Webpage", new { id = version.Document.Id });
         }
     }
 }

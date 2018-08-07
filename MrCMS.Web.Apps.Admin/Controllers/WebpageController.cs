@@ -95,27 +95,26 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpGet]
         [Acl(typeof(Webpage), TypeACLRule.Delete)]
         [ActionName("Delete")]
-        public ActionResult Delete_Get(Webpage document)
+        public ActionResult Delete_Get(int id)
         {
-            return PartialView(document);
+            return PartialView(_webpageAdminService.GetWebpage(id));
         }
 
         [HttpPost]
         [Acl(typeof(Webpage), TypeACLRule.Delete)]
         [ForceImmediateLuceneUpdate]
-        public ActionResult Delete(Webpage document)
+        public ActionResult Delete(int id)
         {
-            _webpageAdminService.Delete(document);
-            TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
+            var webpage = _webpageAdminService.Delete(id);
+            TempData.InfoMessages().Add(string.Format("{0} deleted", webpage.Name));
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public ActionResult Sort(
-            //[IoCModelBinder(typeof(NullableEntityModelBinder))]
-            Webpage parent) // TODO: model-binding
+            int? id) // TODO: model-binding
         {
-            var sortItems = _webpageAdminService.GetSortItems(parent);
+            var sortItems = _webpageAdminService.GetSortItems(id);
 
             return View(sortItems);
         }

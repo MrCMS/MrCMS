@@ -45,8 +45,8 @@ namespace MrCMS.Services
         private string GetPath(string relativeFilePath)
         {
             relativeFilePath = GetRelativeFilePath(relativeFilePath);
-            var baseDirectory = ApplicationPath.Substring(0, ApplicationPath.Length - 1);
-            var path = Path.Combine(baseDirectory, relativeFilePath.Substring(1));
+            var baseDirectory = ApplicationPath;
+            var path = Path.Combine(baseDirectory, relativeFilePath.TrimStart('/', '\\'));
             return path;
         }
 
@@ -76,22 +76,13 @@ namespace MrCMS.Services
                 File.Delete(path);
         }
 
-        public bool Exists(string filePath)
-        {
-            return File.Exists(GetPath(filePath));
-        }
+        public bool Exists(string filePath) => File.Exists(GetPath(filePath));
 
-        public string ApplicationPath { get { return _hostingEnvironment.WebRootPath; } }
-
+        public string ApplicationPath => _hostingEnvironment.WebRootPath;
 
         public byte[] ReadAllBytes(string filePath) { return File.ReadAllBytes(GetPath(filePath)); }
 
-        public Stream GetReadStream(string filePath)
-        {
-            var path = GetPath(filePath);
-
-            return File.OpenRead(path);
-        }
+        public Stream GetReadStream(string filePath) => File.OpenRead(GetPath(filePath));
 
         public void WriteToStream(string filePath, Stream stream)
         {

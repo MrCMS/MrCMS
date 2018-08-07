@@ -88,7 +88,7 @@ namespace MrCMS.Settings
             var existingInDb = GetDbSettings<TSettings>();
             _session.Transact(session =>
             {
-                /* We do not clear cache after each setting update.
+            /* We do not clear cache after each setting update.
              * This behavior can increase performance because cached settings will not be cleared 
              * and loaded from database after each update */
                 foreach (var prop in typeof(TSettings).GetProperties())
@@ -149,10 +149,11 @@ namespace MrCMS.Settings
         ///     Adds a setting
         /// </summary>
         /// <param name="setting">Setting</param>
+        /// <exception cref="ArgumentNullException"></exception>
         protected virtual void InsertSetting(Setting setting)
         {
             if (setting == null)
-                throw new ArgumentNullException("setting");
+                throw new ArgumentNullException(nameof(setting));
 
             _session.Transact(session => session.Save(setting));
         }
@@ -161,10 +162,11 @@ namespace MrCMS.Settings
         ///     Updates a setting
         /// </summary>
         /// <param name="setting">Setting</param>
+        /// <exception cref="ArgumentNullException"></exception>
         protected virtual void UpdateSetting(Setting setting)
         {
             if (setting == null)
-                throw new ArgumentNullException("setting");
+                throw new ArgumentNullException(nameof(setting));
 
             _session.Transact(session => session.Update(setting));
         }
@@ -173,10 +175,11 @@ namespace MrCMS.Settings
         ///     Deletes a setting
         /// </summary>
         /// <param name="setting">Setting</param>
+        /// <exception cref="ArgumentNullException"></exception>
         protected virtual void DeleteSetting(Setting setting)
         {
             if (setting == null)
-                throw new ArgumentNullException("setting");
+                throw new ArgumentNullException(nameof(setting));
 
             _session.Delete(setting);
         }

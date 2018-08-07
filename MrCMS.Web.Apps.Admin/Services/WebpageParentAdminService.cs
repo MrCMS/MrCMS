@@ -17,6 +17,11 @@ namespace MrCMS.Web.Apps.Admin.Services
             _webpageRepository = webpageRepository;
         }
 
+        public Webpage GetWebpage(int id)
+        {
+            return _webpageRepository.Get(id);
+        }
+
         public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
         {
             List<DocumentMetadata> validParentTypes = DocumentMetadataHelper.GetValidParentTypes(webpage);
@@ -41,8 +46,10 @@ namespace MrCMS.Web.Apps.Admin.Services
             return result;
         }
 
-        public void Set(Webpage webpage, int? parentVal)
+        public void Set(int id, int? parentVal)
         {
+            var webpage = GetWebpage(id);
+
             if (webpage == null)
                 return;
 

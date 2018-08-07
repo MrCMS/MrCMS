@@ -6,7 +6,8 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface IWebpageParentAdminService
     {
+        Webpage GetWebpage(int id);
         IEnumerable<SelectListItem> GetValidParents(Webpage webpage);
-        void Set(Webpage webpage, int? parentId);
+        void Set(int webpage, int? parentId);
     }
 }

@@ -12,8 +12,8 @@ namespace MrCMS.Web.Apps.Admin.Services
         object GetAdditionalPropertyModel(string type);
         Webpage Add(AddWebpageModel model, object additionalPropertyModel = null);
         Webpage Update(UpdateWebpageViewModel viewModel);
-        void Delete(Webpage webpage);
-        List<SortItem> GetSortItems(Webpage parent);
+        Webpage Delete(int id);
+        List<SortItem> GetSortItems(int? parent);
         void SetOrders(List<SortItem> items);
         void PublishNow(int id);
         void Unpublish(int id);

@@ -2,19 +2,24 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Models;
+using MrCMS.Web.Apps.Admin.Models;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface ILayoutAdminService
     {
-        Layout GetAddLayoutModel(int? id);
-        void Add(Layout layout);
-        void Update(Layout layout);
-        void Delete(Layout layout);
-        List<SortItem> GetSortItems(Layout parent);
+        AddLayoutModel GetAddLayoutModel(int? id);
+        Layout GetLayout(int? id);
+        Layout Add(AddLayoutModel layout);
+        UpdateLayoutModel GetEditModel(int id);
+        List<LayoutArea> GetLayoutAreas(int id);
+        void Update(UpdateLayoutModel layout);
+        Layout Delete(int id);
+        List<SortItem> GetSortItems(int? parent);
         void SetOrders(List<SortItem> items);
         bool UrlIsValidForLayout(string urlSegment, int? id);
-        void SetParent(Layout layout, int? parentId);
-        IEnumerable<SelectListItem> GetValidParents(Layout layout);
+        void SetParent(int id, int? parentId);
+        IEnumerable<SelectListItem> GetValidParents(int id);
     }
+
 }

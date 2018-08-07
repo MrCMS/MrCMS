@@ -1,12 +1,13 @@
-﻿@model MrCMS.Entities.Documents.Layout.Layout
+﻿@using MrCMS.Web.Apps.Admin.Models
+@model MrCMS.Web.Apps.Admin.Models.AddLayoutModel
 @{
     ViewBag.Title = "Add Layout";
 }
-@using (Html.BeginForm("Add", "Layout", new { id = "" }, FormMethod.Post, new { id = "add-layout" }))
+@using (Html.BeginForm("Add", "Layout", new { id = "" }, FormMethod.Post, null, new { id = "add-layout" }))
 {
     <fieldset>
         <legend>
-           @Html.Resource("Admin Add Layout Title","Add Layout")
+            @Html.Resource("Admin Add Layout Title", "Add Layout")
             <button class="btn pull-right btn-primary">
                 @Html.Resource("Add")
             </button>
@@ -14,7 +15,7 @@
 
         <div class="row">
             <div class="col-lg-12">
-                @Html.HiddenFor(x => x.Parent.Id)
+                @Html.HiddenFor(x => x.ParentId)
                 <div class="form-group">
                     @Html.LabelFor(x => x.Name)
                     @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })

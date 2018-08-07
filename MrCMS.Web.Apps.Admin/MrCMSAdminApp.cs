@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using MrCMS.Apps;
+using MrCMS.Web.Apps.Admin.Filters;
 using MrCMS.Web.Apps.Admin.ModelBinders;
 
 namespace MrCMS.Web.Apps.Admin
@@ -29,6 +30,7 @@ namespace MrCMS.Web.Apps.Admin
         public override void SetupMvcOptions(MvcOptions options)
         {
             options.ModelBinderProviders.Insert(1, new UpdateAdminViewModelBinderProvider());
+                    options.Filters.AddService(typeof(AdminAuthFilter));
         }
     }
 }

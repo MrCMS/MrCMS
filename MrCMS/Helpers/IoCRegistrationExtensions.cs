@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Settings;
 
 namespace MrCMS.Helpers
 {
@@ -27,11 +29,27 @@ namespace MrCMS.Helpers
                 container.AddScoped(type);
         }
 
-        //public static void RegisterSettings(this IServiceCollection container, IReflectionHelper helper)
-        //{
-        //    foreach (var type in helper.GetAllConcreteImplementationsOf(typeof(ISiteSettings)))
-        //        container.AddScoped(type,
-        //            provider => provider.GetRequiredService<ISiteConfigurationProvider>().GetSiteSettings(type));
-        //}
+        public static void RegisterSettings(this IServiceCollection container)
+        {
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>())
+                container.AddScoped(type,
+                    provider =>
+                    {
+                        var configurationProvider = provider.GetRequiredService<ISystemConfigurationProvider>();
+                        var methodInfo = configurationProvider.GetType().GetMethodExt(nameof(ISystemConfigurationProvider.GetSystemSettings));
+                        return methodInfo.MakeGenericMethod(type).Invoke(configurationProvider, Array.Empty<object>());
+                    });
+
+
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<SiteSettingsBase>())
+                container.AddScoped(type,
+                    provider =>
+                    {
+                        var configurationProvider = provider.GetRequiredService<IConfigurationProvider>();
+                        var methodInfo = configurationProvider.GetType()
+                            .GetMethodExt(nameof(IConfigurationProvider.GetSiteSettings));
+                        return methodInfo.MakeGenericMethod(type).Invoke(configurationProvider, Array.Empty<object>());
+                    });
+        }
     }
 }

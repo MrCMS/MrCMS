@@ -8,6 +8,6 @@ namespace MrCMS.Web.Apps.Admin.Services
         VersionsModel GetVersions(Document document, int page);
 
         DocumentVersion GetDocumentVersion(int id);
-        void RevertToVersion(DocumentVersion documentVersion);
+        DocumentVersion RevertToVersion(int id);
     }
 }
