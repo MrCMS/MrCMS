@@ -23,7 +23,7 @@ namespace MrCMS.Services
             _settings = settings;
         }
 
-        public string Suggest(Webpage parent, SuggestParams suggestParams)
+        public string Suggest(SuggestParams suggestParams)
         {
             var documentType = suggestParams.DocumentType;
             var parts = documentType.Split(new[] { "-" }, StringSplitOptions.RemoveEmptyEntries);
@@ -34,6 +34,7 @@ namespace MrCMS.Services
             }
 
             IWebpageUrlGenerator generator = GetGenerator(suggestParams.DocumentType, suggestParams.Template);
+            var parent = suggestParams.ParentId.HasValue ? _session.Get<Webpage>(suggestParams.ParentId.Value) : null;
 
             string url = generator.GetUrl(suggestParams.PageName, parent, suggestParams.UseHierarchy);
 

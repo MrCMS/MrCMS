@@ -5,6 +5,6 @@ namespace MrCMS.Services
 {
     public interface IWebpageUrlService
     {
-        string Suggest(Webpage parent, SuggestParams suggestParams);
+        string Suggest(SuggestParams suggestParams);
     }
 }

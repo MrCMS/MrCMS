@@ -9,13 +9,15 @@ namespace MrCMS.Web.Apps.Admin.Mapping
     {
         public WebpageAdminProfile()
         {
-            CreateMap<Webpage, AddWebpageModel>().ReverseMap();
+            CreateMap<Webpage, AddWebpageModel>().ReverseMap()
+                .MapEntityLookup(x => x.ParentId, x => x.Parent)
+                ;
             CreateMap<Webpage, UpdateWebpageViewModel>().ReverseMap();
             CreateMap<Webpage, FormDesignTabViewModel>().ReverseMap();
             CreateMap<Webpage, FormMessageTabViewModel>().ReverseMap();
             CreateMap<Webpage, LayoutTabViewModel>()
                 .ReverseMap()
-                .ForMember(model => model.PageTemplate, expression => expression.ResolveUsing<PageTemplateResolver>())
+                .MapEntityLookup(x => x.PageTemplateId, x => x.PageTemplate)
                 ;
             CreateMap<Webpage, PermissionsTabViewModel>().ReverseMap();
             CreateMap<Webpage, WebpagePropertiesTabViewModel>().ReverseMap();

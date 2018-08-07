@@ -4,13 +4,13 @@
     var suggestUrl = function () {
         var pageName = $("#Name").val(),
             documentType = $("#DocumentType:checked").val(),
-            parentId = $("#Parent_Id").val(),
+            parentId = $("#ParentId").val(),
             template = $("#PageTemplate_Id").val(),
             useHierarchy = $("#mode").is(':checked');
         if (pageName !== "") {
             $.get('/Admin/WebpageUrl/Suggest', {
                 pageName: pageName,
-                id: parentId,
+                parentId: parentId,
                 documentType: documentType,
                 template: template,
                 useHierarchy: useHierarchy

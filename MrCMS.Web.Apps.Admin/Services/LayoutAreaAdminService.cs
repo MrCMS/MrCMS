@@ -1,9 +1,13 @@
+using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
+using MrCMS.Helpers;
 using MrCMS.Models;
+using MrCMS.Web.Apps.Admin.Models;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -13,19 +17,43 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IRepository<Webpage> _webpageRepository;
         private readonly IRepository<Widget> _widgetRepository;
         private readonly IRepository<PageWidgetSort> _pageWidgetSortRepository;
+        private readonly IMapper _mapper;
 
-        public LayoutAreaAdminService(IRepository<LayoutArea> layoutAreaRepository, IRepository<Webpage> webpageRepository, IRepository<Widget> widgetRepository, IRepository<PageWidgetSort> pageWidgetSortRepository)
+        public LayoutAreaAdminService(IRepository<LayoutArea> layoutAreaRepository, IRepository<Webpage> webpageRepository, IRepository<Widget> widgetRepository, IRepository<PageWidgetSort> pageWidgetSortRepository,
+            IMapper mapper)
         {
             _layoutAreaRepository = layoutAreaRepository;
             _webpageRepository = webpageRepository;
             _widgetRepository = widgetRepository;
             _pageWidgetSortRepository = pageWidgetSortRepository;
+            _mapper = mapper;
         }
 
-        public void Add(LayoutArea layoutArea)
+        public AddLayoutAreaModel GetAddModel(int id)
         {
+            return new AddLayoutAreaModel { LayoutId = id };
+        }
+
+        public void Add(AddLayoutAreaModel model)
+        {
+            var layoutArea = _mapper.Map<LayoutArea>(model);
             EnsureLayoutAreaIsSet(layoutArea);
             _layoutAreaRepository.Add(layoutArea);
+        }
+
+        public UpdateLayoutAreaModel GetEditModel(int id)
+        {
+            return _mapper.Map<UpdateLayoutAreaModel>(GetArea(id));
+        }
+
+        public Layout GetLayout(int id)
+        {
+            return GetArea(id)?.Layout.Unproxy();
+        }
+
+        public List<Widget> GetWidgets(int id)
+        {
+            return GetArea(id)?.GetWidgets();
         }
 
         private static void EnsureLayoutAreaIsSet(LayoutArea layoutArea)
@@ -34,10 +62,14 @@ namespace MrCMS.Web.Apps.Admin.Services
                 layoutArea.Layout.LayoutAreas.Add(layoutArea);
         }
 
-        public void Update(LayoutArea layoutArea)
+        public LayoutArea Update(UpdateLayoutAreaModel model)
         {
+            var layoutArea = GetArea(model.Id);
+            _mapper.Map(model, layoutArea);
+
             EnsureLayoutAreaIsSet(layoutArea);
             _layoutAreaRepository.Update(layoutArea);
+            return layoutArea;
         }
 
         public LayoutArea GetArea(int layoutAreaId)
@@ -45,11 +77,15 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _layoutAreaRepository.Get(layoutAreaId);
         }
 
-        public void DeleteArea(LayoutArea area)
+        public LayoutArea DeleteArea(int id)
         {
+            var area = GetArea(id);
+
             if (area.Layout?.LayoutAreas.Contains(area) == true)
                 area.Layout.LayoutAreas.Remove(area);
             _layoutAreaRepository.Delete(area);
+
+            return area;
         }
 
         public void SetWidgetOrders(PageWidgetSortModel pageWidgetSortModel)

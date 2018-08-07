@@ -10,7 +10,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
         {
             CreateMap<Layout, UpdateLayoutModel>().ReverseMap();
             CreateMap<Layout, AddLayoutModel>().ReverseMap()
-                .ForMember(x=>x.Parent, expression => expression.ResolveUsing<LayoutParentResolver>())
+                .MapEntityLookup(x => x.ParentId, x => x.Parent)
                 ;
         }
     }

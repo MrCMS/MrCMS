@@ -52,7 +52,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public List<LayoutArea> GetLayoutAreas(int id)
         {
-            return GetLayout(id).LayoutAreas.ToList();
+            return GetLayout(id).GetLayoutAreas().Distinct().ToList();
         }
 
         public void Update(UpdateLayoutModel model)

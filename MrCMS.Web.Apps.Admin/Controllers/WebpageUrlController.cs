@@ -16,11 +16,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             _webpageUrlService = webpageUrlService;
         }
 
-        public string Suggest(Webpage parent,
-            //[ModelBinder(typeof(SuggestParamsModelBinder))]
+        public string Suggest(
             SuggestParams suggestParams) 
         {
-            return _webpageUrlService.Suggest(parent, suggestParams);
+            return _webpageUrlService.Suggest(suggestParams);
         }
     }
 }

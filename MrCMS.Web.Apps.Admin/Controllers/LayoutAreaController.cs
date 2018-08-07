@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Models;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
 
@@ -16,52 +17,54 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Add(Layout layout)
+        public PartialViewResult Add(int id)
         {
-            return PartialView("Add", new LayoutArea {Layout = layout});
+            return PartialView("Add", _layoutAreaAdminService.GetAddModel(id));
         }
 
         [HttpPost]
-        public ActionResult Add(LayoutArea layoutArea)
+        public ActionResult Add(AddLayoutAreaModel layoutArea)
         {
             _layoutAreaAdminService.Add(layoutArea);
 
-            return RedirectToAction("Edit", "Layout", new {id = layoutArea.Layout.Id});
+            return RedirectToAction("Edit", "Layout", new { id = layoutArea.LayoutId });
         }
 
         [HttpGet]
         [ActionName("Edit")]
-        public ActionResult Edit_Get(LayoutArea layoutArea)
+        public ActionResult Edit_Get(int id)
         {
-            if (layoutArea == null)
+            var model = _layoutAreaAdminService.GetEditModel(id);
+            if (model == null)
                 return RedirectToAction("Index", "Layout");
 
-            return View(layoutArea);
+            ViewData["layout"] = _layoutAreaAdminService.GetLayout(id);
+            ViewData["widgets"] = _layoutAreaAdminService.GetWidgets(id);
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult Edit(LayoutArea area)
+        public ActionResult Edit(UpdateLayoutAreaModel model)
         {
-            _layoutAreaAdminService.Update(area);
+            var area = _layoutAreaAdminService.Update(model);
 
-            return RedirectToAction("Edit", "Layout", new {id = area.Layout.Id});
+            return RedirectToAction("Edit", "Layout", new { id = area.Layout.Id });
         }
 
 
         [HttpGet]
         [ActionName("Delete")]
-        public ActionResult Delete_Get(LayoutArea area)
+        public ActionResult Delete_Get(int id)
         {
-            return PartialView(area);
+            return PartialView(_layoutAreaAdminService.GetEditModel(id));
         }
 
         [HttpPost]
-        public ActionResult Delete(LayoutArea area)
+        public ActionResult Delete(int id)
         {
-            int layoutId = area.Layout.Id;
-            _layoutAreaAdminService.DeleteArea(area);
+            var layoutArea = _layoutAreaAdminService.DeleteArea(id);
 
-            return RedirectToAction("Edit", "Layout", new {id = layoutId});
+            return RedirectToAction("Edit", "Layout", new { id = layoutArea.Layout.Id });
         }
 
         [HttpGet]
@@ -96,7 +99,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             if (!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
 
-            return RedirectToAction("Edit", "Webpage", new {id = pageWidgetSortModel.WebpageId});
+            return RedirectToAction("Edit", "Webpage", new { id = pageWidgetSortModel.WebpageId });
         }
 
         [HttpPost]
@@ -107,7 +110,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             if (!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
 
-            return RedirectToAction("Edit", "Webpage", new {id = pageId});
+            return RedirectToAction("Edit", "Webpage", new { id = pageId });
         }
     }
+
 }
