@@ -18,10 +18,10 @@
         {
             @Html.HiddenFor(model => model.WebpageId);
             <div class="radio">
-                <label>@Html.RadioButtonFor(x => x.AddType, "global", new { id = "add-global" }) all pages using this layout</label>
+                <label>@Html.RadioButtonFor(x => x.ForPage, false, new { id = "add-global" }) all pages using this layout</label>
             </div>
             <div class="radio">
-                <label>@Html.RadioButtonFor(x => x.AddType, "page", new { id = "add-page" }) this page</label>
+                <label>@Html.RadioButtonFor(x => x.ForPage, true, new { id = "add-page" }) this page</label>
             </div>
             <div id="show-recursive" class="form-group">
                 @Html.InlineCheckboxFor(x => x.IsRecursive, null, null, "...and all child pages")

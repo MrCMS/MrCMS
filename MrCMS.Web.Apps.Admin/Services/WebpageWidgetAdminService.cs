@@ -16,8 +16,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             _widgetRepository = widgetRepository;
         }
 
-        public void Hide(Webpage webpage, int widgetId)
+        public void Hide(int webpageId, int widgetId)
         {
+            var webpage = _webpageRepository.Get(webpageId);
             var widget = _widgetRepository.Get(widgetId);
 
             if (webpage == null || widget == null) return;
@@ -29,8 +30,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             _webpageRepository.Update(webpage);
         }
 
-        public void Show(Webpage webpage, int widgetId)
+        public void Show(int webpageId, int widgetId)
         {
+            var webpage = _webpageRepository.Get(webpageId);
             var widget = _widgetRepository.Get(widgetId);
 
             if (webpage == null || widget == null) return;

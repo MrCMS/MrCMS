@@ -51,7 +51,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             return GetArea(id)?.Layout.Unproxy();
         }
 
-        public List<Widget> GetWidgets(int id)
+        public IList<Widget> GetWidgets(int id)
         {
             return GetArea(id)?.GetWidgets();
         }

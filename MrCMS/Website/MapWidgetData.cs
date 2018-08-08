@@ -8,7 +8,7 @@ namespace MrCMS.Website
     {
         public List<WidgetData> MapData(IList<Widget> widgets)
         {
-            return widgets.OrderBy(x => x.DisplayOrder)
+            return widgets
                 .Select(widget => new WidgetData
                 {
                     Id = widget.Id,

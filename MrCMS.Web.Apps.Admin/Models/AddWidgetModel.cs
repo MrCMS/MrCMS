@@ -13,6 +13,6 @@ namespace MrCMS.Web.Apps.Admin.Models
         public string WidgetType { get; set; }
 
         public string Name { get; set; }
-        public string AddType { get; set; }
+        public bool ForPage { get; set; }
     }
 }

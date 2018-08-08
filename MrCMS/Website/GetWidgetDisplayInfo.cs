@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 
 namespace MrCMS.Website
@@ -18,11 +19,11 @@ namespace MrCMS.Website
             _mapWidgetDisplayInfo = mapWidgetDisplayInfo;
         }
 
-        public IDictionary<string, WidgetDisplayInfo> GetWidgets(Layout layout)
+        public IDictionary<string, WidgetDisplayInfo> GetWidgets(Layout layout, Webpage webpage)
         {
             var layoutAreas = layout.GetLayoutAreas();
 
-            var widgetData = _getWidgetsForAreas.GetWidgets(layoutAreas);
+            var widgetData = _getWidgetsForAreas.GetWidgets(layoutAreas, webpage);
 
             return _mapWidgetDisplayInfo.MapInfo(widgetData);
         }

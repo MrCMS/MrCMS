@@ -11,7 +11,8 @@ namespace MrCMS.Web.Apps.Admin.Mapping
     {
         public static IMappingExpression<TSource, TDestination> MapEntityLookup<TSource, TDestination, TEntity>(
             this IMappingExpression<TSource, TDestination> expression,
-            Expression<Func<TSource, int?>> selector, Expression<Func<TDestination, TEntity>> destinationEntity)
+            Expression<Func<TSource, int?>> selector, Expression<Func<TDestination, TEntity>> destinationEntity,
+            Expression<Func<TSource, TDestination, bool>> condition = null)
             where TEntity : SystemEntity
         {
             return expression
@@ -26,6 +27,10 @@ namespace MrCMS.Web.Apps.Admin.Mapping
                         //    );
                     }).AfterMap((source, destination, context) =>
                 {
+                    if (condition != null && !condition.Compile()(source, destination))
+                    {
+                        return;
+                    }
                     // TODO: see if we don't need this - basically Automapper appears to be trying to map the Id property on the child object anyway if it exists
                     var session = context.Options.CreateInstance<ISession>();
                     var entityPropertyInfo = (destinationEntity.Body as MemberExpression)?.Member as PropertyInfo;

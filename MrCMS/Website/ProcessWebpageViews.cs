@@ -37,7 +37,7 @@ namespace MrCMS.Website
                 if (layout != null)
                 {
                     result.ViewData[LayoutFile] = layout.GetLayoutName();
-                    result.ViewData[WidgetData] = _getWidgetDisplayInfo.GetWidgets(layout);
+                    result.ViewData[WidgetData] = _getWidgetDisplayInfo.GetWidgets(layout, webpage);
                 }
             }
         }

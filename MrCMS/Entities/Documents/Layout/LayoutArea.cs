@@ -23,7 +23,7 @@ namespace MrCMS.Entities.Documents.Layout
 
         public virtual IList<PageWidgetSort> PageWidgetSorts { get; set; }
 
-        public virtual List<Widget.Widget> GetWidgets(Webpage webpage = null, bool showHidden = false)
+        public virtual IList<Widget.Widget> GetWidgets(Webpage webpage = null, bool showHidden = false)
         {
             var widgets = Widgets.Where(widget => widget.Webpage == null).ToList();
 
@@ -52,7 +52,7 @@ namespace MrCMS.Entities.Documents.Layout
                 if (webpage.PageWidgetSorts != null)
                 {
                     var pageWidgetSorts =
-                        webpage.PageWidgetSorts.Where(sort => sort.LayoutArea == this).OrderBy(sort => sort.Order).ToList();
+                        webpage.PageWidgetSorts.Where(sort => sort.LayoutArea?.Id == Id).OrderBy(sort => sort.Order).ToList();
 
                     if (pageWidgetSorts.Any())
                     {

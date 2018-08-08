@@ -13,7 +13,7 @@ namespace MrCMS.Web.Apps.Admin.Services
         UpdateLayoutAreaModel GetEditModel(int id);
         LayoutArea GetArea(int id);
         Layout GetLayout(int id);
-        List<Widget> GetWidgets(int id);
+        IList<Widget> GetWidgets(int id);
         LayoutArea Update(UpdateLayoutAreaModel model);
         LayoutArea DeleteArea(int id);
         void SetWidgetOrders(PageWidgetSortModel pageWidgetSortModel);
