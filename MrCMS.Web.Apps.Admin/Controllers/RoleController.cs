@@ -4,6 +4,7 @@ using MrCMS.ACL.Rules;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.Helpers;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
@@ -35,7 +36,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Add)]
-        public ActionResult Add(UserRole model)
+        public ActionResult Add(AddRoleModel model)
         {
             var addRoleResult = _roleAdminService.AddRole(model);
             if (!addRoleResult.Success)
@@ -46,8 +47,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpGet]
         [ActionName("Edit")]
         [Acl(typeof(RoleACL), RoleACL.Edit)]
-        public ActionResult Edit_Get(UserRole role)
+        public ActionResult Edit_Get(int id)
         {
+            var role = _roleAdminService.GetEditModel(id);
             if (role == null)
                 return RedirectToAction("Index");
 
@@ -56,7 +58,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Edit)]
-        public ActionResult Edit(UserRole model)
+        public ActionResult Edit(UpdateRoleModel model)
         {
             _roleAdminService.SaveRole(model);
 
@@ -66,8 +68,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpGet]
         [ActionName("Delete")]
         [Acl(typeof(RoleACL), RoleACL.Delete)]
-        public ActionResult Delete_Get(UserRole role)
+        public ActionResult Delete_Get(int id)
         {
+            var role = _roleAdminService.GetEditModel(id);
             if (role == null)
                 return RedirectToAction("Index");
 
@@ -76,9 +79,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(RoleACL), RoleACL.Delete)]
-        public ActionResult Delete(UserRole role)
+        public ActionResult Delete(int id)
         {
-            if (role != null) _roleAdminService.DeleteRole(role);
+            _roleAdminService.DeleteRole(id);
             return RedirectToAction("Index");
         }
 

@@ -1,5 +1,6 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Entities.People.UserRole
+@using MrCMS.Web.Apps.Admin.Models
+@model MrCMS.Web.Apps.Admin.Models.UpdateRoleModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @using (Html.BeginForm("Delete", "Role", FormMethod.Post))
 {
@@ -9,6 +10,6 @@
                 <input type="submit" class="btn-danger btn" value="@Html.Resource("Delete")" />
             </span>
         </legend>
-        @Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
+        @Html.InfoBlock(Html.Resource("Heads up") + "!", Html.Resource("Admin Delete Info Warning", "Deleting this cannot be undone."), AlertType.danger)
     </fieldset>
 }

@@ -7,7 +7,7 @@
 <h1 class="page-header">
     @Html.Resource("Admin User Roles Title", "User roles")
     <span class="btn-group  display-inline  pull-right">
-        @Html.ActionLink("Add", "Add", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
+        @Html.ActionLink("Add", "Add", "Role", null, new { @class = "btn btn-primary", data_toggle = "fb-modal" })
     </span>
 </h1>
 
@@ -15,25 +15,25 @@
     <tr>
         <th>
             @Html.Resource("Name")
-    </th>
-    <th></th>
-</tr>
-@foreach (UserRole role in Model)
-{
-    if (role.IsAdmin)
+        </th>
+        <th></th>
+    </tr>
+    @foreach (UserRole role in Model)
     {
-        <tr>
-            <td colspan="2">@role.Name</td>
-        </tr>
+        if (role.IsAdmin)
+        {
+            <tr>
+                <td colspan="2">@role.Name</td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(role.Name, "Edit", new { id = role.Id }, new { @class = "", data_toggle = "fb-modal" })
+                </td>
+                <td>@Html.ActionLink(Html.Resource("Delete"), "Delete", new { id = role.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })</td>
+            </tr>
+        }
     }
-    else
-    {
-        <tr>
-            <td>
-                @Html.ActionLink(role.Name, "Edit", new { id = role.Id }, new { @class = "", data_toggle = "fb-modal" })
-            </td>
-            <td>@Html.ActionLink(Resource("Delete"), "Delete", new { id = role.Id }, new { @class = "btn btn-danger btn-xs", data_toggle = "fb-modal" })</td>
-        </tr>
-    }
-}
 </table>

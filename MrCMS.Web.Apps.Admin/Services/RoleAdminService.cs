@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using MrCMS.Entities.People;
 using MrCMS.Models;
 using MrCMS.Services;
@@ -11,10 +12,12 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class RoleAdminService : IRoleAdminService
     {
         private readonly IRoleService _roleService;
+        private readonly IMapper _mapper;
 
-        public RoleAdminService(IRoleService roleService)
+        public RoleAdminService(IRoleService roleService, IMapper mapper)
         {
             _roleService = roleService;
+            _mapper = mapper;
         }
 
         public IEnumerable<UserRole> GetAllRoles()
@@ -33,22 +36,35 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _roleService.Search(term);
         }
 
-        public AddRoleResult AddRole(UserRole model)
+        public AddRoleResult AddRole(AddRoleModel model)
         {
             if (_roleService.GetRoleByName(model.Name) != null)
                 return new AddRoleResult(false, string.Format("{0} already exists.", model.Name));
-            _roleService.SaveRole(model);
+            var role = _mapper.Map<UserRole>(model);
+            _roleService.SaveRole(role);
             return new AddRoleResult(true, null);
         }
 
-        public void SaveRole(UserRole role)
+        public UpdateRoleModel GetEditModel(int id)
         {
+            return _mapper.Map<UpdateRoleModel>(GetRole(id));
+        }
+
+        private UserRole GetRole(int id)
+        {
+            return _roleService.GetRole(id);
+        }
+
+        public void SaveRole(UpdateRoleModel model)
+        {
+            var role = GetRole(model.Id);
+            _mapper.Map(model, role);
             _roleService.SaveRole(role);
         }
 
-        public void DeleteRole(UserRole role)
+        public void DeleteRole(int id)
         {
-            _roleService.DeleteRole(role);
+            _roleService.DeleteRole(GetRole(id));
         }
     }
 }

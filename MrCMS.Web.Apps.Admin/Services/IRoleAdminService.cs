@@ -7,9 +7,10 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface IRoleAdminService
     {
-        AddRoleResult AddRole(UserRole model);
-        void SaveRole(UserRole role);
-        void DeleteRole(UserRole role);
+        AddRoleResult AddRole(AddRoleModel model);
+        UpdateRoleModel GetEditModel(int id);
+        void SaveRole(UpdateRoleModel model);
+        void DeleteRole(int id);
         IEnumerable<UserRole> GetAllRoles();
         IEnumerable<AutoCompleteResult> Search(string term);
         string GetRolesForPermissions();
