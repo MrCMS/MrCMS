@@ -1,8 +1,11 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Admin.Infrastructure.Helpers
-@model MrCMS.Entities.Widget.Widget
+@model object
+@{
+    Type type = ViewData["type"] as Type;
+}
 
 @if (Model != null)
 {
-    @Html.RenderUpdateCustomAdminProperties("Add")
+    @await Html.RenderCustomAddAdminProperties(type, Model)
 }

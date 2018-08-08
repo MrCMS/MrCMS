@@ -69,7 +69,11 @@ namespace MrCMS.Web
             var compositeFileProvider =
                 new CompositeFileProvider(new[] { physicalProvider }.Concat(appContext.ViewFileProviders));
 
-            services.AddAutoMapper(expression => appContext.ConfigureAutomapper(expression));
+            services.AddAutoMapper(expression =>
+            {
+                expression.AllowNullDestinationValues = true;
+                appContext.ConfigureAutomapper(expression);
+            });
             services.AddSingleton<IFileProvider>(compositeFileProvider);
             services.AddSession();
 

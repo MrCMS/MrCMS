@@ -15,8 +15,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
             CreateMap<Webpage, UpdateWebpageViewModel>().ReverseMap();
             CreateMap<Webpage, FormDesignTabViewModel>().ReverseMap();
             CreateMap<Webpage, FormMessageTabViewModel>().ReverseMap();
-            CreateMap<Webpage, LayoutTabViewModel>()
-                .ReverseMap()
+            CreateMap<Webpage, LayoutTabViewModel>().ReverseMap()
                 .MapEntityLookup(x => x.PageTemplateId, x => x.PageTemplate)
                 ;
             CreateMap<Webpage, PermissionsTabViewModel>().ReverseMap();

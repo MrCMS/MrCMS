@@ -4,9 +4,9 @@ using MrCMS.Web.Apps.Core.Pages;
 
 namespace MrCMS.Web.Apps.Core.Areas.Admin.Mapping
 {
-    public class CoreAdminMappingProfile : Profile
+    public class CoreWebpageAdminMappingProfile : Profile
     {
-        public CoreAdminMappingProfile()
+        public CoreWebpageAdminMappingProfile()
         {
             CreateMap<TextPage, TextPageViewModel>().ReverseMap();
         }

@@ -4,11 +4,11 @@ using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Mapping
 {
-    public class CustomResolver<TSource, TDestination, TEntity> : IMemberValueResolver<TSource, TDestination, int?,TEntity> where TEntity : SystemEntity
+    public class EntityResolver<TSource, TDestination, TEntity> : IMemberValueResolver<TSource, TDestination, int?, TEntity> where TEntity : SystemEntity
     {
         private readonly ISession _session;
 
-        public CustomResolver(ISession session)
+        public EntityResolver(ISession session)
         {
             _session = session;
         }

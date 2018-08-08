@@ -10,29 +10,30 @@
 @using (Html.BeginForm("SortWidgetsForPage", "LayoutArea", FormMethod.Post, new { id = "edit-sort" }))
 {
     <fieldset>
-        <legend>@Html.Resource("Admin Widgets Sort For Page Title", "Sort Widgets for page")
+        <legend>
+            @Html.Resource("Admin Widgets Sort For Page Title", "Sort Widgets for page")
 
-            <span class="btn-group  display-inline  pull-right">
-                <button class="btn btn-primary">@Html.Resource("Save")</button>
-            </span>
-        </legend>
+        <span class="btn-group  display-inline  pull-right">
+            <button class="btn btn-primary">@Html.Resource("Save")</button>
+        </span>
+    </legend>
 
-        @Html.Hidden("returnUrl", ViewData["returnUrl"])
-        @Html.Hidden("LayoutAreaId", Model.LayoutAreaId)
-        @Html.Hidden("WebpageId", Model.WebpageId)
-        <ul id="sortable">
-            @for (int i = 0; i < Model.Widgets.Count; i++)
-            {
-                var widget = Model.Widgets[i];
-                <li>
-                    @Html.HiddenFor(model => model.Widgets[i].Id)
-                    @Html.HiddenFor(model => model.Widgets[i].Order)
-                    <i class="glyphicon glyphicon-resize-full"></i>&nbsp;&nbsp;
-                    @widget.Name
-                </li>
-            }
-        </ul>
+    @Html.Hidden("returnUrl", ViewData["returnUrl"])
+    @Html.HiddenFor(x => x.LayoutAreaId)
+    @Html.HiddenFor(x => x.WebpageId)
+    <ul id="sortable">
+        @for (int i = 0; i < Model.Widgets.Count; i++)
+        {
+            var widget = Model.Widgets[i];
+            <li>
+                @Html.HiddenFor(model => model.Widgets[i].Id)
+                @Html.HiddenFor(model => model.Widgets[i].Order)
+                <i class="glyphicon glyphicon-resize-full"></i>&nbsp;&nbsp;
+                @widget.Name
+            </li>
+        }
+    </ul>
 
-    </fieldset>
+</fieldset>
 }
-@Html.InfoBlock(Resource("Heads up") + "!", Resource("Admin Widgets Sort For Page info", "The sort you set here will only work on the current page. To order widgets for all pages please select 'Sort widgets' instead of 'Sort widgets for page.'"))
+@Html.InfoBlock(Html.Resource("Heads up") + "!", Html.Resource("Admin Widgets Sort For Page info", "The sort you set here will only work on the current page. To order widgets for all pages please select 'Sort widgets' instead of 'Sort widgets for page.'"))

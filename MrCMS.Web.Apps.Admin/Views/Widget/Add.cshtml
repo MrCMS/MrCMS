@@ -1,9 +1,10 @@
-﻿@using MrCMS.Helpers
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Admin.Models
 @model MrCMS.Web.Apps.Admin.Models.AddWidgetModel
 @{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 
-@using (Html.BeginForm("Add", "Widget", new { id = "" }, FormMethod.Post, new { id = "add-widget-form" }))
+@using (Html.BeginForm("Add", "Widget", new { id = "" }, FormMethod.Post, null, new { id = "add-widget-form" }))
 {
     <fieldset style="min-height: 500px">
         <legend>
@@ -12,24 +13,24 @@
                 <input type="submit" class="btn-success btn" value="@Html.Resource("Save")" id="add-widget" />
             </span>
         </legend>
-        @Html.HiddenFor(model => model.LayoutArea.Id)
-        @if (Model.Webpage != null)
+        @Html.HiddenFor(model => model.LayoutAreaId)
+        @if (Model.WebpageId != null)
         {
-            @Html.HiddenFor(model => model.Webpage.Id);
+            @Html.HiddenFor(model => model.WebpageId);
             <div class="radio">
-                <label>@Html.RadioButton("AddType", "global", true, new { id = "add-global" }) all pages using this layout</label>
+                <label>@Html.RadioButtonFor(x => x.AddType, "global", new { id = "add-global" }) all pages using this layout</label>
             </div>
             <div class="radio">
-                <label>@Html.RadioButton("AddType", "page", false, new { id = "add-page" }) this page</label>
+                <label>@Html.RadioButtonFor(x => x.AddType, "page", new { id = "add-page" }) this page</label>
             </div>
             <div id="show-recursive" class="form-group">
                 @Html.InlineCheckboxFor(x => x.IsRecursive, null, null, "...and all child pages")
             </div>
         }
         <div class="form-group">
-            @Html.Label("WidgetType", "Widget Type")
-            @Html.DropDownList("WidgetType", WidgetHelper.AllowedWidgetTypeDropdownItems, new { data_val = "true", data_val_required = "Please select a widget type", @class = "form-control" })
-            @Html.ValidationMessage("WidgetType")
+            @Html.LabelFor(x => x.WidgetType)
+            @Html.DropDownListFor(x => x.WidgetType, WidgetHelper.AllowedWidgetTypeDropdownItems, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.WidgetType)
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Name)

@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using MrCMS.Entities.Widget;
 using MrCMS.Helpers;
 using NHibernate;
