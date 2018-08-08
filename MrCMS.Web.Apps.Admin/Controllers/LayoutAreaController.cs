@@ -68,8 +68,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ViewResult SortWidgets(LayoutArea area, string returnUrl = null)
+        public ViewResult SortWidgets(int id, string returnUrl = null)
         {
+            var area = _layoutAreaAdminService.GetArea(id);
             ViewData["returnUrl"] = returnUrl;
             return View(new PageWidgetSortModel(area.GetWidgets(), area, null));
         }
@@ -85,8 +86,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ViewResult SortWidgetsForPage(LayoutArea area, int pageId, string returnUrl = null)
+        public ViewResult SortWidgetsForPage(int id, int pageId, string returnUrl = null)
         {
+            var area = _layoutAreaAdminService.GetArea(id);
             ViewData["returnUrl"] = returnUrl;
             return View(_layoutAreaAdminService.GetSortModel(area, pageId));
         }
@@ -103,9 +105,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult ResetSorting(LayoutArea area, int pageId, string returnUrl = null)
+        public ActionResult ResetSorting(int id, int pageId, string returnUrl = null)
         {
-            _layoutAreaAdminService.ResetSorting(area, pageId);
+            _layoutAreaAdminService.ResetSorting(id, pageId);
 
             if (!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);

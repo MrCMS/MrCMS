@@ -139,10 +139,10 @@ namespace MrCMS.Web.Apps.Admin.Services
             });
         }
 
-        public void ResetSorting(LayoutArea area, int pageId)
+        public void ResetSorting(int id, int pageId)
         {
             var webpage = _webpageRepository.Get(pageId);
-            var list = webpage.PageWidgetSorts.Where(sort => sort.LayoutArea == area).ToList();
+            var list = webpage.PageWidgetSorts.Where(sort => sort.LayoutArea?.Id == id).ToList();
 
             _pageWidgetSortRepository.Transact(repository => list.ForEach(repository.Delete));
         }
