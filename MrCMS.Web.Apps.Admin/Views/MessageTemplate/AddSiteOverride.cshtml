@@ -4,13 +4,13 @@
     ViewBag.Title = "Add Message Template Site Override";
 }
 
-@using (Html.BeginForm("AddSiteOverride", "MessageTemplate", new { TemplateType = Model.GetType().FullName }, FormMethod.Post, new { id = "edit-message-template" }))
+@using (Html.BeginForm("AddSiteOverride", "MessageTemplate", new { TemplateType = Model.GetType().FullName }, FormMethod.Post, null, new { id = "edit-message-template" }))
 {
     <fieldset>
         <legend>
-            @string.Format(Resource("Add {0} Override"), Model.GetType().Name.BreakUpString())
+            @string.Format(Html.Resource("Add {0} Override"), Model.GetType().Name.BreakUpString())
             <span class="pull-right btn-group">
-                @Html.ActionLink(Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
+                @Html.ActionLink(Html.Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
                 <input class="btn btn-primary" type="submit" value="@Html.Resource("Save")" />
             </span>
         </legend>
@@ -77,7 +77,7 @@
         @Html.InlineCheckboxFor(x => x.IsHtml)
         @Html.InlineCheckboxFor(x => x.IsDisabled)
 
-        @{ Html.RenderAction("Tokens", "MessageTemplateTokens", new { messageTemplate = Model });}
+        <partial name="Tokens" model="Model"/>
     </fieldset>
 }
 @{ Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-message-template.js");}

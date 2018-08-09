@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Services;
 using MrCMS.Settings;
 
 namespace MrCMS.Helpers
@@ -50,6 +52,28 @@ namespace MrCMS.Helpers
                             .GetMethodExt(nameof(IConfigurationProvider.GetSiteSettings));
                         return methodInfo.MakeGenericMethod(type).Invoke(configurationProvider, Array.Empty<object>());
                     });
+        }
+
+        public static void RegisterTokenProviders(this IServiceCollection container)
+        {
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<ITokenProvider>())
+                container.AddScoped(typeof(ITokenProvider), type);
+
+
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom(typeof(ITokenProvider<>)))
+            {
+                if (type.IsGenericType)
+                {
+                    container.AddScoped(typeof(ITokenProvider<>), type);
+                }
+                else
+                {
+                    var typed = type.GetBaseTypes(true).SelectMany(x=>x.GetInterfaces())
+                        .FirstOrDefault(x => x.GetGenericTypeDefinition() == typeof(ITokenProvider<>));
+                    if (typed != null)
+                        container.AddScoped(typed, type);
+                }
+            }
         }
     }
 }

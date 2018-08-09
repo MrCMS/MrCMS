@@ -51,13 +51,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("DeleteSiteOverride")]
-        public ActionResult DeleteSiteOverride_POST(
-            [ModelBinder(typeof(DeleteMessageTemplateOverrideModelBinder))]
-            MessageTemplate messageTemplate) 
+        public ActionResult DeleteSiteOverride_POST( string type) 
         {
-            if (messageTemplate != null)
+            if (type != null)
             {
-                _messageTemplateAdminService.DeleteOverride(messageTemplate);
+                _messageTemplateAdminService.DeleteOverride(type);
             }
             return RedirectToAction("Index");
         }
@@ -77,7 +75,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpPost]
         [ActionName("Edit")]
         public ActionResult Edit_POST(
-            //[IoCModelBinder(typeof(MessageTemplateOverrideModelBinder))]
+            [ModelBinder(typeof(MessageTemplateOverrideModelBinder))]
             MessageTemplate messageTemplate) // TODO: model-binding
         {
             if (messageTemplate != null)

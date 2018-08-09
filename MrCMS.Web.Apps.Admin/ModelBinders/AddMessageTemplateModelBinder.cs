@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
@@ -46,11 +47,15 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
 
             var serviceProvider = bindingContext.HttpContext.RequestServices;
             var metadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
-            bindingContext.ModelMetadata = metadataProvider.GetMetadataForType(type);
-                //ModelMetadataProviders.Current.GetMetadataForType(
-                //    () => CreateModel(controllerContext, bindingContext, type), type);
+            var metadata = metadataProvider.GetMetadataForType(type);
+            bindingContext.ModelMetadata = metadata;
+            var binderFactory= serviceProvider.GetRequiredService<IModelBinderFactory>();
 
-            var modelBinder = new SimpleTypeModelBinder(type, serviceProvider.GetRequiredService<ILoggerFactory>());
+            var modelBinder = binderFactory.CreateBinder(new ModelBinderFactoryContext
+            {
+                Metadata = metadata,
+                BindingInfo = BindingInfo.GetBindingInfo(Enumerable.Empty<object>(), metadata),
+            });
             return modelBinder.BindModelAsync(bindingContext);
         }
     }

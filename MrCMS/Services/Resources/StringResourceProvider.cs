@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -81,7 +82,8 @@ namespace MrCMS.Services.Resources
                                 s =>
                                     new HashSet<StringResource>(AllResources[s].Where(
                                             resource => resource.Site == null || resource.Site.Id == _site.Id)
-                                        .OrderByDescending(resource => resource.Site != null ? 1 : 0)));
+                                        .OrderByDescending(resource => resource.Site != null ? 1 : 0)),
+                                StringComparer.OrdinalIgnoreCase);
             }
         }
 

@@ -3,7 +3,7 @@
 @{
     var typeInfo = new { type = Model.GetType().FullName };
 }
-@using (Html.BeginForm("Preview", "MessageTemplatePreview", typeInfo, FormMethod.Post, new { id = "preview-message-form", style = "display:inline;" }))
+@using (Html.BeginForm("Preview", "MessageTemplatePreview", typeInfo, FormMethod.Post, null, new { id = "preview-message-form", style = "display:inline;" }))
 {
     <div style="min-height: 400px">
         <h1 class="page-header">

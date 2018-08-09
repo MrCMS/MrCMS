@@ -70,8 +70,12 @@ namespace MrCMS.Web.Apps.Admin.Services
             return null;
         }
 
-        public void DeleteOverride(MessageTemplate messageTemplate)
+
+        public void DeleteOverride(string type)
         {
+            var messageTemplate = GetOverride(type);
+            if (messageTemplate == null)
+                return;
             _messageTemplateProvider.DeleteSiteOverride(messageTemplate, _site);
         }
 

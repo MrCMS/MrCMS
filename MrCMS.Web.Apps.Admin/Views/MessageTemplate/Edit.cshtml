@@ -5,13 +5,13 @@
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/message-template.js");
 }
 
-@using (Html.BeginForm("Edit", "MessageTemplate", new { TemplateType = Model.GetType().FullName }, FormMethod.Post, new { id = "edit-message-template" }))
+@using (Html.BeginForm("Edit", "MessageTemplate", new { TemplateType = Model.GetType().FullName }, FormMethod.Post, null, new { id = "edit-message-template" }))
 {
     <fieldset>
         <legend>
             @Html.Resource("Edit") @Model.GetType().Name.BreakUpString() (@(Model.SiteId.HasValue ? "Site Override" : "System default"))
             <span class="pull-right btn-group  display-inline ">
-                @Html.ActionLink(Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
+                @Html.ActionLink(Html.Resource("Back"), "Index", "MessageTemplate", null, new { @class = "btn btn-default" })
                 <input class="btn btn-primary" type="submit" value="@Html.Resource("Save")" />
             </span>
         </legend>
@@ -54,7 +54,7 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                @Html.InfoBlock(Resource("Heads up" + "!"), "To send to multiple email addresses via To, Cc or Bcc, separate them with a comma, not a semi-colon")
+                @Html.InfoBlock(Html.Resource("Heads up" + "!"), "To send to multiple email addresses via To, Cc or Bcc, separate them with a comma, not a semi-colon")
             </div>
         </div>
         <div class="row">
@@ -79,6 +79,6 @@
         @Html.InlineCheckboxFor(x => x.IsHtml)
         @Html.InlineCheckboxFor(x => x.IsDisabled)
 
-        @{ Html.RenderAction("Tokens", "MessageTemplateTokens", new { messageTemplate = Model });}
+        <partial name="Tokens" model="Model"/>
     </fieldset>
 }

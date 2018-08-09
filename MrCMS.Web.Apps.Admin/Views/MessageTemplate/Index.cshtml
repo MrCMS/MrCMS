@@ -1,9 +1,8 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Web.Apps.Admin.Models
-@model System.Collections.Generic.List<MrCMS.Web.Apps.Admin.Models.MessageTemplateInfo>
+@model List<MessageTemplateInfo>
 @{
     ViewBag.Title = "Message Templates";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
 <h1 class="page-header">@Html.Resource("Admin Message Templates Title", "Message Templates")</h1>
@@ -32,30 +31,30 @@
                     @item.Type.Name.BreakUpString()
                 </td>
                 <td>
-                    @(item.IsOverride ? Resource("Site Override") : Resource("System Default"))
+                    @(item.IsOverride ? Html.Resource("Site Override") : Html.Resource("System Default"))
                 </td>
                 <td>
-                    @(item.IsEnabled ? Resource("Message Template Enabled", "Enabled") : Resource("Message Template Disabled", "Disabled"))
+                    @(item.IsEnabled ? Html.Resource("Message Template Enabled", "Enabled") : Html.Resource("Message Template Disabled", "Disabled"))
                 </td>
                 <td>
                     <div class="btn-group">
                         @*@Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })*@
                         @if (item.LegacyTemplateExists)
                         {
-                            @Html.ActionLink(Resource("Import legacy template"), "ImportLegacyTemplate", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Html.Resource("Import legacy template"), "ImportLegacyTemplate", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
                         }
                         @if (!item.IsOverride)
                         {
-                            @Html.ActionLink(Resource("Add site override"), "AddSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })
+                            @Html.ActionLink(Html.Resource("Add site override"), "AddSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })
                         }
                         else
                         {
-                            @Html.ActionLink(Resource("Delete site override"), "DeleteSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Html.Resource("Delete site override"), "DeleteSiteOverride", "MessageTemplate", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
                         }
-                        @Html.ActionLink(Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })
+                        @Html.ActionLink(Html.Resource("Edit"), "Edit", new { type = item.TypeName }, new { @class = "btn btn-default btn-xs" })
                         @if (item.CanPreview)
                         {
-                            @Html.ActionLink(Resource("Preview"), "Get", "MessageTemplatePreview", new { type = item.TypeName }, new { @class = "btn btn-xs btn-default" })
+                            @Html.ActionLink(Html.Resource("Preview"), "Get", "MessageTemplatePreview", new { type = item.TypeName }, new { @class = "btn btn-xs btn-default" })
                         }
                     </div>
                 </td>

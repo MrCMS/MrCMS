@@ -56,6 +56,7 @@ namespace MrCMS.Web
             services.RegisterOpenGenerics();
             services.SelfRegisterAllConcreteTypes();
             services.RegisterSettings();
+            services.RegisterTokenProviders();
 
 
             var appContext = services.AddMrCMSApps(context =>

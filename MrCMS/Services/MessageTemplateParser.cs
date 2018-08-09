@@ -14,11 +14,11 @@ namespace MrCMS.Services
         private static readonly MethodInfo GetMessageTemplateMethod = typeof(MessageTemplateParser)
             .GetMethodExt("GetAllTokens");
 
-        private readonly IServiceProvider _kernel;
+        private readonly IServiceProvider _serviceProvider;
 
-        public MessageTemplateParser(IServiceProvider kernel)
+        public MessageTemplateParser(IServiceProvider serviceProvider)
         {
-            _kernel = kernel;
+            _serviceProvider = serviceProvider;
         }
 
         public string Parse<T>(string template, T instance)
@@ -43,7 +43,7 @@ namespace MrCMS.Services
 
         private void ApplySystemWideTokens(StringBuilder stringBuilder)
         {
-            var providers = _kernel.GetServices<ITokenProvider>();
+            var providers = _serviceProvider.GetServices<ITokenProvider>();
             foreach (var token in providers.SelectMany(provider => provider.Tokens))
             {
                 stringBuilder.Replace("{" + token.Key + "}", token.Value());
@@ -52,7 +52,7 @@ namespace MrCMS.Services
 
         private void ApplyTypeSpecificTokens<T>(T instance, StringBuilder stringBuilder)
         {
-            IEnumerable<ITokenProvider<T>> tokenProviders = _kernel.GetServices<ITokenProvider<T>>();
+            IEnumerable<ITokenProvider<T>> tokenProviders = _serviceProvider.GetServices<ITokenProvider<T>>();
 
             foreach (var token in tokenProviders.SelectMany(tokenProvider => tokenProvider.Tokens))
             {
@@ -62,7 +62,7 @@ namespace MrCMS.Services
 
         public List<string> GetAllTokens<T>()
         {
-            IEnumerable<ITokenProvider<T>> tokenProviders = _kernel.GetServices<ITokenProvider<T>>();
+            IEnumerable<ITokenProvider<T>> tokenProviders = _serviceProvider.GetServices<ITokenProvider<T>>();
             return tokenProviders.SelectMany(provider => provider.Tokens.Select(pair => pair.Key)).ToList();
         }
 
@@ -83,7 +83,7 @@ namespace MrCMS.Services
 
         public List<string> GetAllStandardTokens()
         {
-            IEnumerable<ITokenProvider> tokenProviders = _kernel.GetServices<ITokenProvider>();
+            IEnumerable<ITokenProvider> tokenProviders = _serviceProvider.GetServices<ITokenProvider>();
             return tokenProviders.SelectMany(provider => provider.Tokens.Select(pair => pair.Key)).ToList();
         }
     }
