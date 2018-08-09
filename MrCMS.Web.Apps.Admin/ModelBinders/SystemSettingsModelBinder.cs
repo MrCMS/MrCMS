@@ -32,7 +32,7 @@ namespace MrCMS.Web.Apps.Admin.ModelBinders
             var settingTypes = TypeHelper.GetAllConcreteTypesAssignableFrom<SystemSettingsBase>();
             // Uses Id because the settings are edited on the same page as the site itself
             var configurationProvider =
-                bindingContext.HttpContext.RequestServices.GetRequiredService<IConfigurationProvider>();
+                bindingContext.HttpContext.RequestServices.GetRequiredService<ISystemConfigurationProvider>();
 
             var objects = settingTypes.Select(type =>
             {

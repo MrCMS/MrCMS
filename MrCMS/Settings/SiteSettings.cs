@@ -170,19 +170,19 @@ namespace MrCMS.Settings
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-            //viewDataDictionary["DefaultLayoutOptions"] = SiteSettingsOptionGenerator.GetLayoutOptions(session,
-            //    DefaultLayoutId);
-            //viewDataDictionary["403Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error403PageId);
-            //viewDataDictionary["404Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error404PageId);
-            //viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error500PageId);
-            //viewDataDictionary["Themes"] = SiteSettingsOptionGenerator.GetThemeNames(ThemeName);
+            viewDataDictionary["DefaultLayoutOptions"] = SiteSettingsOptionGenerator.GetLayoutOptions(session,
+                DefaultLayoutId);
+            viewDataDictionary["403Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error403PageId);
+            viewDataDictionary["404Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error404PageId);
+            viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error500PageId);
+            viewDataDictionary["Themes"] = SiteSettingsOptionGenerator.GetThemeNames(ThemeName);
 
-            //viewDataDictionary["UiCultures"] = SiteSettingsOptionGenerator.GetUiCultures(UICulture);
+            viewDataDictionary["UiCultures"] = SiteSettingsOptionGenerator.GetUiCultures(UICulture);
 
-            //viewDataDictionary["TimeZones"] = SiteSettingsOptionGenerator.GetTimeZones(TimeZone);
+            viewDataDictionary["TimeZones"] = SiteSettingsOptionGenerator.GetTimeZones(TimeZone);
 
-            //viewDataDictionary["DefaultFormRenderer"] =
-            //    SiteSettingsOptionGenerator.GetFormRendererOptions(FormRendererType);
+            viewDataDictionary["DefaultFormRenderer"] =
+                SiteSettingsOptionGenerator.GetFormRendererOptions(FormRendererType);
             // TODO: view data?
         }
 

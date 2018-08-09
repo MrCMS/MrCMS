@@ -152,8 +152,8 @@ namespace MrCMS.Settings
 
         public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
         {
-            //viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(session, null);
-            //viewDataDictionary["CacheExpiryTypeOptions"] = _siteSettingsOptionGenerator.GetCacheExpiryTypeOptions();
+            viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(session, null);
+            viewDataDictionary["CacheExpiryTypeOptions"] = _siteSettingsOptionGenerator.GetCacheExpiryTypeOptions();
             // TODO: view data?
         }
     }
