@@ -1,5 +1,5 @@
 ﻿@using MrCMS.Helpers
-@model MrCMS.Entities.Documents.Media.MediaCategory
+@model MrCMS.Web.Apps.Admin.Models.UpdateMediaCategoryModel
 @{
     ViewBag.Title = "Edit | " + Model.Name;
 
@@ -7,24 +7,25 @@
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
 }
 
-@using (Html.BeginForm("Edit", "MediaCategory", new { id = Model.Id }, FormMethod.Post, new { id = "edit-media", target = "_top" }))
+@using (Html.BeginForm("Edit", "MediaCategory", new { id = Model.Id }, FormMethod.Post, null, new { id = "edit-media", target = "_top" }))
 {
     <fieldset>
-        <legend>@Model.Name
-            <span class="btn-group  display-inline  pull-right">
-                <input type="submit" class="btn btn-primary" value="@Html.Resource("Save")">
-            </span>
-        </legend>
+        <legend>
+            @Model.Name
+        <span class="btn-group  display-inline  pull-right">
+            <input type="submit" class="btn btn-primary" value="@Html.Resource("Save")">
+        </span>
+    </legend>
 
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Name, "Folder Name")
-                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
-                </div>
-                @Html.LabelFor(x=>x.IsGallery)
-                @Html.CheckBoxFor(x=>x.IsGallery)
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                @Html.LabelFor(x => x.Name, "Folder Name")
+                @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
             </div>
+            @Html.LabelFor(x => x.IsGallery)
+            @Html.CheckBoxFor(x => x.IsGallery)
         </div>
-    </fieldset>
+    </div>
+</fieldset>
 }

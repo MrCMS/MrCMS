@@ -34,7 +34,7 @@
     <div id="results">
         <div id="fileupload" data-message="@Html.Resource("Click here or drag files to upload")" class="dropzone margin-bottom-10 margin-top-10"></div>
 
-        <input type="hidden" value="@Url.Action("Files", "File", new { Id = (Model.CategoryId ?? null) })" id="action-url" />
+        <input type="hidden" value="@Url.Action("Files", "File", new { Id = Model.CategoryId })" id="action-url" />
 
 
         <div id="progress" class="progress" style="height: 30px; display: none; margin-bottom: 5px;">

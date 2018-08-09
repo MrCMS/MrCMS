@@ -98,3 +98,4 @@ MrCMS.Web/Properties/PublishProfiles/demo.mrcms.com.pubxml
 *.pubxml
 *sitemap.xml
 
+MrCMS.Web/wwwroot/Content/

@@ -11,7 +11,7 @@ namespace MrCMS.Web.Apps.Admin.Services
     public interface IFileAdminService
     {
         ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength,
-            MediaCategory mediaCategory);
+            int mediaCategoryId);
 
         void DeleteFile(MediaFile mediaFile);
         void SaveFile(MediaFile mediaFile);

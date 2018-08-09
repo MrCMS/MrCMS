@@ -28,59 +28,60 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             //Build list 
             var model = _mediaCategoryAdminService.GetNewCategoryModel(id);
+            ViewData["parent"] = _mediaCategoryAdminService.GetCategory(id);
 
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult Add(MediaCategory doc)
+        public ActionResult Add(AddMediaCategoryModel model)
         {
-            _mediaCategoryAdminService.Add(doc);
+            var doc = _mediaCategoryAdminService.Add(model);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", doc.Name));
             return RedirectToAction("Show", new { id = doc.Id });
         }
 
         [HttpGet, ActionName("Edit")]
-        public ActionResult Edit_Get(MediaCategory doc)
+        public ActionResult Edit_Get(int id)
         {
-            return View(doc);
+            return View(_mediaCategoryAdminService.GetEditModel(id));
         }
 
         [HttpPost]
-        public ActionResult Edit(MediaCategory doc)
+        public ActionResult Edit(UpdateMediaCategoryModel model)
         {
-            _mediaCategoryAdminService.Update(doc);
-            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", doc.Name));
-            return RedirectToAction("Show", new { id = doc.Id });
+            var category = _mediaCategoryAdminService.Update(model);
+            TempData.SuccessMessages().Add(string.Format("{0} successfully saved", category.Name));
+            return RedirectToAction("Show", new { id = category.Id });
         }
 
         [HttpGet, ActionName("Delete")]
-        public ActionResult Delete_Get(MediaCategory document)
+        public ActionResult Delete_Get(int id)
         {
-            return PartialView(document);
+            return PartialView(_mediaCategoryAdminService.GetEditModel(id));
         }
 
         [HttpPost]
-        public ActionResult Delete(MediaCategory document)
+        public ActionResult Delete(int id)
         {
-            _mediaCategoryAdminService.Delete(document);
-            TempData.InfoMessages().Add(string.Format("{0} deleted", document.Name));
+            var category = _mediaCategoryAdminService.Delete(id);
+            TempData.InfoMessages().Add(string.Format("{0} deleted", category.Name));
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public ActionResult Sort(/*[IoCModelBinder(typeof(NullableEntityModelBinder))] */MediaCategory parent) // TODO: model-binding
+        public ActionResult Sort(int id)
         {
-            List<SortItem> sortItems = _mediaCategoryAdminService.GetSortItems(parent);
+            List<SortItem> sortItems = _mediaCategoryAdminService.GetSortItems(id);
 
             return View(sortItems);
         }
 
         [HttpPost]
-        public ActionResult Sort(/*[IoCModelBinder(typeof(NullableEntityModelBinder))] */MediaCategory parent, List<SortItem> items) // TODO: model-binding
+        public ActionResult Sort(int id, List<SortItem> items)
         {
             _mediaCategoryAdminService.SetOrders(items);
-            return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
+            return RedirectToAction("Sort", new { id });
         }
 
         public ActionResult Show(MediaCategorySearchModel searchModel)
@@ -97,26 +98,24 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             return View(searchModel);
         }
 
-        //[ChildActionOnly]
-        // TODO: refactor to view component
-        public PartialViewResult Manage(MediaCategorySearchModel searchModel)
-        {
-            ViewData["category"] = _fileAdminService.GetCategory(searchModel);
-            ViewData["sort-by-options"] = _fileAdminService.GetSortByOptions(searchModel);
+        ////[ChildActionOnly]
+        //// TODO: refactor to view component
+        //public PartialViewResult Manage(MediaCategorySearchModel searchModel)
+        //{
 
-            return PartialView(searchModel);
-        }
+        //    return PartialView(searchModel);
+        //}
 
 
-        public ActionResult Upload(/*[IoCModelBinder(typeof(NullableEntityModelBinder))] */MediaCategory category) // TODO: model binding
-        {
-            return PartialView(category);
-        }
+        //public ActionResult Upload(/*[IoCModelBinder(typeof(NullableEntityModelBinder))] */MediaCategory category) // TODO: model binding
+        //{
+        //    return PartialView(category);
+        //}
 
-        public PartialViewResult RemoveMedia()
-        {
-            return PartialView();
-        }
+        //public PartialViewResult RemoveMedia()
+        //{
+        //    return PartialView();
+        //}
 
         [HttpGet]
         public ActionResult ShowFilesSimple(MediaCategory category)
@@ -135,10 +134,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult SortFiles(MediaCategory parent, List<SortItem> items)
+        public ActionResult SortFiles(int? id, List<SortItem> items)
         {
             _fileAdminService.SetOrders(items);
-            return RedirectToAction("SortFiles", new { id = parent.Id });
+            return RedirectToAction("SortFiles", new { id });
         }
 
         /// <summary>
@@ -156,7 +155,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [Acl(typeof(MediaToolsACL), MediaToolsACL.Cut)]
         public JsonResult MoveFilesAndFolders(
-            [ModelBinder(typeof(MoveFilesModelBinder))]MoveFilesAndFoldersModel model) 
+            [ModelBinder(typeof(MoveFilesModelBinder))]MoveFilesAndFoldersModel model)
         {
             _fileAdminService.MoveFiles(model.Files, model.Folder);
             string message = _fileAdminService.MoveFolders(model.Folders, model.Folder);
@@ -166,7 +165,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [Acl(typeof(MediaToolsACL), MediaToolsACL.Delete)]
         public JsonResult DeleteFilesAndFolders(
             [ModelBinder(typeof(DeleteFilesModelBinder))]
-            DeleteFilesAndFoldersModel model) 
+            DeleteFilesAndFoldersModel model)
         {
             _fileAdminService.DeleteFilesSoft(model.Files);
             _fileAdminService.DeleteFoldersSoft(model.Folders);
@@ -176,8 +175,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         public ActionResult Directory(MediaCategorySearchModel searchModel)
         {
-            ViewData["files"] = _fileAdminService.GetFilesForFolder(searchModel);
-            ViewData["folders"] = _fileAdminService.GetSubFolders(searchModel);
+            //ViewData["files"] = _fileAdminService.GetFilesForFolder(searchModel);
+            //ViewData["folders"] = _fileAdminService.GetSubFolders(searchModel);
 
             return PartialView(searchModel);
         }

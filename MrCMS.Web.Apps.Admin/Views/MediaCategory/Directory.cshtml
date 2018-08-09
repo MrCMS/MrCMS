@@ -1,13 +1,17 @@
 ﻿@using System.Drawing
 @using MrCMS.Entities.Documents.Media
 @using MrCMS.Helpers
-@using MrCMS.Media
-@using MrCMS.Paging
+@using MrCMS.Web.Apps.Admin.Helpers
 @using MrCMS.Web.Apps.Admin.Models
+@using MrCMS.Web.Apps.Admin.Services
+@using X.PagedList
+@using X.PagedList.Mvc
+@using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
+@inject IFileAdminService FileAdminService
 @{
-    var files = ViewData["files"] as IPagedList<MediaFile>;
-    var folders = ViewData["folders"] as IList<MediaCategory> ?? new List<MediaCategory>();
+    var files = FileAdminService.GetFilesForFolder(Model);
+    var folders = FileAdminService.GetSubFolders(Model);
 }
 
 <div data-update-media-folder="@Url.Action("Directory", "MediaCategory", Model)">
@@ -47,12 +51,12 @@
                     </div>
                 }
                 <div class="clearfix"> </div>
-                @Html.PageCurrentPage(files, i => new { Page = i }, PagedListRenderOptions.PageNumbersOnly)
+                @Html.PagedListPager(files, page => Url.Action("Index", "MediaCategory", new { page, Model.SearchText, Model.SortBy, Model.Id }), PagedListRenderOptions.PageNumbersOnly)
 
             }
             else
             {
-                @Html.InfoBlock("", Resource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
+                @Html.InfoBlock("", Html.Resource("Admin Media No Files Message", "There are no files here yet - why not upload some?"))
             }
         </div>
         <div class="clearfix"> </div>

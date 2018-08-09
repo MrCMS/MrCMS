@@ -1,5 +1,6 @@
 ﻿@using System.Drawing
 @using System.Linq
+@using Microsoft.AspNetCore.Html
 @using MrCMS.Helpers
 @model MrCMS.Entities.Documents.Media.MediaCategory
 <div id="file-list-simple" data-category-id="@Model.Id">
@@ -25,7 +26,7 @@
                         @Html.Link(file.FileName, file.FileUrl)
 
                     </td>
-                    <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? MvcHtmlString.Create("<br />" + file.Description) : null)</td>
+                    <td>@file.Title @(!string.IsNullOrEmpty(file.Description) ? new HtmlString("<br />" + file.Description) : null)</td>
                     <th><a href="@Url.Action("Delete", "File", new{Id=file.Id})" class="btn btn-danger btn-xs delete-file-simple">Delete</a></th>
                 </tr>
             }

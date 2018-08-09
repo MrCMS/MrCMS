@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Admin.Models;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -12,41 +14,58 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IRepository<MediaCategory> _mediaCategoryRepository;
         private readonly IGetDocumentsByParent<MediaCategory> _getDocumentsByParent;
         private readonly IUrlValidationService _urlValidationService;
+        private readonly IMapper _mapper;
 
-        public MediaCategoryAdminService(IRepository<MediaCategory> mediaCategoryRepository, IGetDocumentsByParent<MediaCategory> getDocumentsByParent,IUrlValidationService urlValidationService)
+        public MediaCategoryAdminService(IRepository<MediaCategory> mediaCategoryRepository,
+            IGetDocumentsByParent<MediaCategory> getDocumentsByParent, 
+            IUrlValidationService urlValidationService,
+            IMapper mapper)
         {
             _mediaCategoryRepository = mediaCategoryRepository;
             _getDocumentsByParent = getDocumentsByParent;
             _urlValidationService = urlValidationService;
+            _mapper = mapper;
         }
 
-        public MediaCategory GetNewCategoryModel(int? id)
+        public AddMediaCategoryModel GetNewCategoryModel(int? id)
         {
-            return new MediaCategory
+            return new AddMediaCategoryModel
             {
-                Parent = id.HasValue ? _mediaCategoryRepository.Get(id.Value) : null
-            }; ;
+                ParentId = id
+            };
         }
 
-        public void Add(MediaCategory mediaCategory)
+        public MediaCategory GetCategory(int? id)
         {
+            return id.HasValue ? _mediaCategoryRepository.Get(id.Value) : null;
+        }
+
+        public MediaCategory Add(AddMediaCategoryModel model)
+        {
+            var mediaCategory = _mapper.Map<MediaCategory>(model);
             _mediaCategoryRepository.Add(mediaCategory);
+            return mediaCategory;
         }
 
-        public void Update(MediaCategory mediaCategory)
+        public MediaCategory Update(UpdateMediaCategoryModel model)
         {
-            _mediaCategoryRepository.Update(mediaCategory);
+            var category = GetCategory(model.Id);
+            _mapper.Map(model, category);
+            _mediaCategoryRepository.Update(category);
+            return category;
         }
 
-        public void Delete(MediaCategory mediaCategory)
+        public MediaCategory Delete(int id)
         {
+            var mediaCategory = _mediaCategoryRepository.Get(id);
             _mediaCategoryRepository.Delete(mediaCategory);
+            return mediaCategory;
         }
 
-        public List<SortItem> GetSortItems(MediaCategory parent)
+        public List<SortItem> GetSortItems(int id)
         {
             return
-                _getDocumentsByParent.GetDocuments(parent)
+                _getDocumentsByParent.GetDocuments(GetCategory(id))
                     .Select(
                         arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
                     .OrderBy(x => x.Order)
@@ -67,6 +86,11 @@ namespace MrCMS.Web.Apps.Admin.Services
         public bool UrlIsValidForMediaCategory(string urlSegment, int? id)
         {
             return _urlValidationService.UrlIsValidForMediaCategory(urlSegment, id);
+        }
+
+        public UpdateMediaCategoryModel GetEditModel(int id)
+        {
+            return _mapper.Map<UpdateMediaCategoryModel>(GetCategory(id));
         }
     }
 }

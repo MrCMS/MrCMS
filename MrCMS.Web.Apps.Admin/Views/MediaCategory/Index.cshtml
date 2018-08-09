@@ -1,8 +1,6 @@
-﻿@using MrCMS.Web.Apps.Admin.Models
-@model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
+﻿@model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
 @{
     ViewBag.Title = "Manage Media";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
 <div class="inline-buttons-container">
@@ -12,6 +10,7 @@
     </div>
 </div>
 
+<partial name="Manage" model="Model" />
 @*
     // TODO: implement the media categories
     @{ Html.RenderAction("Manage", new { searchModel = Model });}*@ 

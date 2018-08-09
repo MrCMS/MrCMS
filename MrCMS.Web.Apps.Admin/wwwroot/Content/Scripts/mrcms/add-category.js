@@ -16,7 +16,7 @@ $(function () {
     }, 100);
 
     function setStandardUrl() {
-        var parentUrl = $("#Parent_UrlSegment").val();
+        var parentUrl = $("#ParentUrl").val();
         if (parentUrl != '') {
             parentUrl += "/";
         }

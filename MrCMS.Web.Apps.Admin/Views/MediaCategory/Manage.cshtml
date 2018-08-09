@@ -1,26 +1,24 @@
-﻿@using System.Collections.Generic
-@using System.Drawing
-@using System.Linq
-@using MrCMS.Entities.Documents.Media
+﻿@using System.Linq
 @using MrCMS.Helpers
-@using MrCMS.Media
-@using MrCMS.Paging
+@using MrCMS.Services
 @using MrCMS.Web.Apps.Admin.ACL
-@using MrCMS.Web.Apps.Admin.Models
-@using MrCMS.Website
+@using MrCMS.Web.Apps.Admin.Services
 @model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
+@inject IFileAdminService FileAdminService
+@inject IGetCurrentUser GetCurrentUser
 @{
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
-    var category = ViewData["category"] as MediaCategory;
-    var sortByOptions = ViewData["sort-by-options"] as List<SelectListItem> ?? new List<SelectListItem>();
-    bool canAccessMediaToolsCut = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Cut);
-    bool canAccessMediaToolsDelete = CurrentRequestData.CurrentUser.CanAccess<MediaToolsACL>(MediaToolsACL.Delete);
+    var category = FileAdminService.GetCategory(Model);
+    var sortByOptions = FileAdminService.GetSortByOptions(Model);
+    var user = GetCurrentUser.Get();
+    bool canAccessMediaToolsCut = user.CanAccess<MediaToolsACL>(MediaToolsACL.Cut);
+    bool canAccessMediaToolsDelete = user.CanAccess<MediaToolsACL>(MediaToolsACL.Delete);
 }
 
 <div class="margin-bottom-20">
-    @{ Html.RenderAction("Upload", "MediaCategory", new { category }); }
+    <partial name="Upload" model="category" />
     <div class="clearfix"></div>
 </div>
 
@@ -63,18 +61,19 @@
 {
     <span class="btn-group margin-bottom-20" id="file-tools">
         @{
-    if (canAccessMediaToolsCut)
-    {
-        <button id="cut-files" class="btn btn-default" disabled>@Html.Resource("Cut")</button>
-    }
-    <button id="paste-files" class="btn btn-default" disabled>@Html.Resource("Paste")</button>
-    if (canAccessMediaToolsDelete)
-    {
-        <button id="delete-files" class="btn btn-default" disabled>@Html.Resource("Delete")</button>
-    }
-    <button id="clear-files" class="btn btn-default">@Html.Resource("Clear")</button>
+            if (canAccessMediaToolsCut)
+            {
+                <button id="cut-files" class="btn btn-default" disabled>@Html.Resource("Cut")</button>
+            }
+            <button id="paste-files" class="btn btn-default" disabled>@Html.Resource("Paste")</button>
+            if (canAccessMediaToolsDelete)
+            {
+                <button id="delete-files" class="btn btn-default" disabled>@Html.Resource("Delete")</button>
+            }
+            <button id="clear-files" class="btn btn-default">@Html.Resource("Clear")</button>
         }
     </span>
 }
 <div class="clearfix"></div>
-@{Html.RenderAction("Directory","MediaCategory",Model);}
+
+<partial name="Directory" model="Model" />

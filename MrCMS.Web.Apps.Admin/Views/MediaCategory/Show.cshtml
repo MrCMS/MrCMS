@@ -14,4 +14,4 @@
     </span>
 </div>
 @Html.Hidden("FolderId", Model.Id)
-@{ Html.RenderAction("Manage", new { searchModel = Model });} 
+<partial name="Manage" model="Model" />

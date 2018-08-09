@@ -14,4 +14,5 @@ namespace MrCMS.Helpers
                    new T().CanAccess(currentUser, operation, type);
         }
     }
+
 }

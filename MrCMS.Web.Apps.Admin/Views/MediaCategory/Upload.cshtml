@@ -1,11 +1,12 @@
 ﻿@using System.Diagnostics
 @using MrCMS.Settings
 @model MrCMS.Entities.Documents.Media.MediaCategory
+@inject MediaSettings MediaSettings
 
 <div id="fileupload" class="dropzone" data-message="@Html.Resource("Click here or drag files to upload")">
     
 </div>
-<input type="hidden" value="@Url.Action("Files", "File", new { id = Model == null ? (int?)null : Model.Id })" id="action-url" />
+<input type="hidden" value="@Url.Action("Files", "File", new { id = Model?.Id })" id="action-url" />
 @if (Model != null)
 {
     <input type="hidden" value="@Model.Id" id="action-category-id" />
@@ -16,4 +17,4 @@
 </div>
 <div id="mrcmsfiles" class=""></div>
 <input type="hidden" id="allowedFileTypes" value="@FileTypeUploadSettings.AllowedFileTypes" />
-<input type="hidden" id="maxFileSizeUpload" value="@(SiteSettings<MediaSettings>().MaxFileSizeUpload)" />
+<input type="hidden" id="maxFileSizeUpload" value="@(MediaSettings.MaxFileSizeUpload)" />

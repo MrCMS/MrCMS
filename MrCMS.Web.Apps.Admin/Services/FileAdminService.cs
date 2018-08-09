@@ -40,9 +40,10 @@ namespace MrCMS.Web.Apps.Admin.Services
         }
 
         public ViewDataUploadFilesResult AddFile(Stream stream, string fileName, string contentType, long contentLength,
-            MediaCategory mediaCategory)
+            int mediaCategoryId)
         {
-            MediaFile mediaFile = _fileService.AddFile(stream, fileName, contentType, contentLength, mediaCategory);
+            MediaFile mediaFile = _fileService.AddFile(stream, fileName, contentType, contentLength,
+                _session.Get<MediaCategory>(mediaCategoryId));
             return mediaFile.GetUploadFilesResult();
         }
 

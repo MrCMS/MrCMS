@@ -23,7 +23,7 @@
     <fieldset>
         <legend>@Html.Resource("Admin Media Sort Files", "Sort files")
             <span class="btn-group  display-inline  pull-right">
-                @Html.ActionLink(Resource("Admin Media Back To Category","Back to folder"), "Show", new { id = ViewData["categoryId"] }, new { @class = "btn btn-default" })
+                @Html.ActionLink(Html.Resource("Admin Media Back To Category","Back to folder"), "Show", new { id = ViewData["categoryId"] }, new { @class = "btn btn-default" })
                 <button class="btn btn-primary">
                     @Html.Resource("Save")</button>
             </span>

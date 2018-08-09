@@ -21,7 +21,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Files")]
-        public JsonResult Files_Post(/*[IoCModelBinder(typeof(NullableEntityModelBinder))] */MediaCategory mediaCategory) // TODO: model binder
+        public JsonResult Files_Post(int id) 
         {
             var list = new List<ViewDataUploadFilesResult>();
             foreach (var file in Request.Form.Files)
@@ -29,8 +29,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
                 if (_fileService.IsValidFileType(file.FileName))
                 {
                     ViewDataUploadFilesResult dbFile = _fileService.AddFile(file.OpenReadStream(), file.FileName,
-                        file.ContentType, file.Length,
-                        mediaCategory);
+                        file.ContentType, file.Length, id);
                     list.Add(dbFile);
                 }
             }
