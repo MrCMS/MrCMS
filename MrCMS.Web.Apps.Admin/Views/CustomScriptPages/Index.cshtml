@@ -1,7 +1,6 @@
 ﻿@using MrCMS.Entities.Documents.Web
-@using MrCMS.Helpers
-@using MrCMS.Paging
-@using MrCMS.Web.Apps.Admin.Models
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Admin.Models.CustomScriptPagesSearchModel
 @{
     ViewBag.Title = "Custom Script Pages";
@@ -46,14 +45,14 @@
                             @(!string.IsNullOrWhiteSpace(webpage.CustomFooterScripts) ? "✓" : "")
                         </td>
                         <td class="text-right">
-                            @Html.ActionLink(Resource("Edit"), "Edit", "Webpage", new { id = webpage.Id }, new { @class = "btn btn-default btn-xs" })
+                            @Html.ActionLink(Html.Resource("Edit"), "Edit", "Webpage", new { id = webpage.Id }, new { @class = "btn btn-default btn-xs" })
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
 
-        @Html.Pager(webpages, "Index", page => new { page })
+        @Html.PagedListPager(webpages, page => Url.Action("Index", "CustomScriptPages", new { page }))
     }
     else
     {

@@ -20,7 +20,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public ViewResult Index()
         {
             ViewData["roles"] = _roleAdminService.GetAllRoles().ToList();
-            ViewData["settings"] = _configurationProvider.GetSystemSettings<AuthRoleSettings>();
+            ViewData["auth-role-settings"] = _configurationProvider.GetSystemSettings<AuthRoleSettings>();
+            ViewData["security-settings"] = _configurationProvider.GetSystemSettings<SecuritySettings>();
 
             return View();
         }
@@ -32,10 +33,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Settings()
-        {
-            return PartialView(_configurationProvider.GetSystemSettings<SecuritySettings>());
-        }
 
         [HttpPost]
         public ActionResult Settings(SecuritySettings settings)

@@ -1,18 +1,18 @@
 ﻿@using MrCMS.Entities.People
-@using MrCMS.Helpers
 @using MrCMS.Settings
 @model dynamic
 @{
-    ViewBag.Title = Resource("Security Options");
-    var settings = ViewData["settings"] as AuthRoleSettings;
+    ViewBag.Title = Html.Resource("Security Options");
+    var authRoleSettings = ViewData["auth-role-settings"] as AuthRoleSettings;
+    var securitySettings = ViewData["security-settings"] as SecuritySettings;
     var roles = ViewData["roles"] as List<UserRole>;
 }
 
 <h1>@Html.Resource("Security Options")</h1>
 
-@{ Html.RenderAction("Settings"); }
+<partial name="Settings" model="securitySettings"/>
 
-<hr />
+<hr/>
 
 @using (Html.BeginForm("Index", "SecurityOptions", FormMethod.Post))
 {
@@ -30,20 +30,20 @@
                         @role.Name
                     </td>
                     <td>
-                        @if (settings.SendNotificationEmailRoles.Contains(role.Id))
+                        @if (authRoleSettings.SendNotificationEmailRoles.Contains(role.Id))
                         {
-                            <input type="checkbox" name="@nameof(AuthRoleSettings.SendNotificationEmailRoles)" value="@role.Id" checked="checked" />
+                            <input type="checkbox" name="@nameof(AuthRoleSettings.SendNotificationEmailRoles)" value="@role.Id" checked="checked"/>
                         }
                         else
                         {
-                            <input type="checkbox" name="@nameof(AuthRoleSettings.SendNotificationEmailRoles)" value="@role.Id" />
+                            <input type="checkbox" name="@nameof(AuthRoleSettings.SendNotificationEmailRoles)" value="@role.Id"/>
                         }
                     </td>
                 </tr>
             }
             </tbody>
         </table>
-        <hr />
+        <hr/>
         <h3>
             @Html.Resource("Which user roles is 2 factor auth enabled for?")
         </h3>
@@ -59,23 +59,22 @@
                         @role.Name
                     </td>
                     <td>
-                        @if (settings.TwoFactorAuthRoles.Contains(role.Id))
+                        @if (authRoleSettings.TwoFactorAuthRoles.Contains(role.Id))
                         {
-                            <input type="checkbox" name="@nameof(AuthRoleSettings.TwoFactorAuthRoles)" value="@role.Id" checked="checked" />
+                            <input type="checkbox" name="@nameof(AuthRoleSettings.TwoFactorAuthRoles)" value="@role.Id" checked="checked"/>
                         }
                         else
                         {
-                            <input type="checkbox" name="@nameof(AuthRoleSettings.TwoFactorAuthRoles)" value="@role.Id" />
+                            <input type="checkbox" name="@nameof(AuthRoleSettings.TwoFactorAuthRoles)" value="@role.Id"/>
                         }
                     </td>
                 </tr>
             }
             </tbody>
-    
+
         </table>
         <button class="btn btn-primary" type="submit">
             @Html.Resource("Save")
         </button>
     </fieldset>
-
 }
