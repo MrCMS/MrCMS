@@ -5,21 +5,21 @@ namespace MrCMS.Models
 {
     public class ImportDocumentsResult
     {
-        private ImportDocumentsResult()
+        public ImportDocumentsResult()
         {
             Errors = new Dictionary<string, List<string>>();
         }
-        public Batch Batch { get; private set; }
-        public Dictionary<string, List<string>> Errors { get; private set; }
-        public bool Success { get { return Batch != null; } }
+        public int? BatchId { get; set; }
+        public Dictionary<string, List<string>> Errors { get; set; }
+        public bool Success => BatchId != null;
 
         public static ImportDocumentsResult Successful(Batch batch)
         {
-            return new ImportDocumentsResult { Batch = batch };
+            return new ImportDocumentsResult {BatchId = batch?.Id};
         }
         public static ImportDocumentsResult Failure(Dictionary<string, List<string>> errors)
         {
-            return new ImportDocumentsResult { Errors = errors };
+            return new ImportDocumentsResult {Errors = errors};
         }
     }
 }

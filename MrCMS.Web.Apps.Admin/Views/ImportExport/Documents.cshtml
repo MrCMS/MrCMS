@@ -6,7 +6,6 @@
 @model MrCMS.Models.ExportDocumentsModel
 @{
     ViewBag.Title = "Import/Export Documents";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var result = (ImportDocumentsResult)ViewBag.Messages;
 
 }
@@ -37,7 +36,7 @@
     <span class="alert alert-info">@ViewBag.ExportStatus</span><div class="clearfix"></div>
 }
 <hr />
-@Html.InfoBlock("", Resource("Admin Import / Export Documents Info", "Import File must be in .xslx format. After clicking on 'Import Documents' any new documents inside file will be added to database and existing ones will be updated with provided values in file."))
+@Html.InfoBlock("", Html.Resource("Admin Import / Export Documents Info", "Import File must be in .xslx format. After clicking on 'Import Documents' any new documents inside file will be added to database and existing ones will be updated with provided values in file."))
 <hr />
 @using (Html.BeginForm("ImportDocuments", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
@@ -51,7 +50,7 @@
         foreach (var item in result.Errors)
         {
             <span>
-                @string.Format(Resource("Admin Import / Export Documents Choose Import File Errors", "{0} has the following errors"), @item.Key):
+                @string.Format(Html.Resource("Admin Import / Export Documents Choose Import File Errors", "{0} has the following errors"), @item.Key):
             </span>
             <ul>
                 @foreach (string error in item.Value)

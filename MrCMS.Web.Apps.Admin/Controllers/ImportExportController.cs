@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Models;
 using MrCMS.Services.ImportExport;
+using MrCMS.Web.Apps.Admin.Helpers;
 using MrCMS.Website.Controllers;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
@@ -19,8 +20,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpGet]
         public ActionResult Documents()
         {
-            if (TempData.ContainsKey("messages"))
-                ViewBag.Messages = TempData["messages"];
+            //if (TempData.ContainsKey("messages"))
+                ViewBag.Messages = TempData.Get<ImportDocumentsResult>("messages");
             if (TempData.ContainsKey("import-status"))
                 ViewBag.ImportStatus = TempData["import-status"];
             if (TempData.ContainsKey("export-status"))
@@ -53,7 +54,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         {
             if (document != null && document.Length > 0 &&
                 document.ContentType == ImportExportManager.XlsxContentType)
-                TempData["messages"] = _importExportManager.ImportDocumentsFromExcel(document.OpenReadStream());
+                TempData.Set(_importExportManager.ImportDocumentsFromExcel(document.OpenReadStream()), "messages");
             else
                 TempData["import-status"] = "Please choose non-empty Excel (.xslx) file before uploading.";
             return RedirectToAction("Documents");
