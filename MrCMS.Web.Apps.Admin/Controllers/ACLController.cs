@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL;
 using MrCMS.ACL.Rules;
@@ -13,34 +15,30 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 {
     public class ACLController : MrCMSAdminController
     {
-        private readonly IACLService _aclService;
+        private readonly IAclAdminService _aclService;
         private readonly ACLSettings _aclSettings;
         private readonly IConfigurationProvider _configurationProvider;
 
-        public ACLController(IACLService aclService, ACLSettings aclSettings, IConfigurationProvider configurationProvider)
+        public ACLController(IAclAdminService aclService, ACLSettings aclSettings, IConfigurationProvider configurationProvider)
         {
             _aclService = aclService;
             _aclSettings = aclSettings;
             _configurationProvider = configurationProvider;
         }
 
-        [HttpGet]
-        [Acl(typeof(AclAdminACL), AclAdminACL.View)]
         public ViewResult Index()
         {
-            ViewData["settings"] = _aclSettings;
-            return View(_aclService.GetACLModel());
+            ViewData["acl-rules"] = _aclService.GetOptions();
+            return View();
         }
 
         [HttpPost]
-        [Acl(typeof(AclAdminACL), AclAdminACL.Edit)]
-        public RedirectToActionResult Index(
-            [ModelBinder(typeof(ACLUpdateModelBinder))]
-            List<ACLUpdateRecord> model)
+        public RedirectToActionResult Index(IFormCollection collection)
         {
-            _aclService.UpdateACL(model);
+            var result = _aclService.UpdateAcl(collection);
             return RedirectToAction("Index");
         }
+
 
         [HttpPost]
         [Acl(typeof(AclAdminACL), AclAdminACL.Edit)]

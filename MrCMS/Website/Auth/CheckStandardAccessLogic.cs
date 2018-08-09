@@ -26,12 +26,12 @@ namespace MrCMS.Website.Auth
             _siteConfigurationProvider = siteConfigurationProvider;
         }
 
-        public async Task<StandardLogicCheckResult> Check()
+        public StandardLogicCheckResult Check()
         {
-            return await Check(_getCurrentUser.Get());
+            return Check(_getCurrentUser.Get());
         }
 
-        public async Task<StandardLogicCheckResult> Check(User user)
+        public StandardLogicCheckResult Check(User user)
         {
             // must be logged in
             if (user == null)
@@ -39,15 +39,15 @@ namespace MrCMS.Website.Auth
 
             if (_cachedResults.ContainsKey(user.Id))
                 return _cachedResults[user.Id];
-            var result = await GetResult(user);
+            var result = GetResult(user);
             _cachedResults[user.Id] = result;
             return result;
         }
 
-        private async Task<StandardLogicCheckResult> GetResult(User user)
+        private StandardLogicCheckResult GetResult(User user)
         {
             // if they're an admin they're always allowed
-            if (await _userRoleManager.IsInRoleAsync(user, UserRole.Administrator))
+            if (_userRoleManager.IsInRoleAsync(user, UserRole.Administrator).GetAwaiter().GetResult()) // TODO: async?
                 return new StandardLogicCheckResult { CanAccess = true };
 
             // if ACL isn't on, they're not allowed because they're not an admin
@@ -56,7 +56,7 @@ namespace MrCMS.Website.Auth
                 return new StandardLogicCheckResult { CanAccess = false };
 
             // if the user has no roles, they cannot have any acl access granted
-            var roles = await _userRoleManager.GetRolesAsync(user);
+            var roles = _userRoleManager.GetRolesAsync(user).GetAwaiter().GetResult(); // TODO: async?
             if (!roles.Any())
                 return new StandardLogicCheckResult { CanAccess = false };
 

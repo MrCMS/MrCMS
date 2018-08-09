@@ -30,29 +30,29 @@ namespace MrCMS.ACL.Rules
         }
 
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string>
-                   {
-                       ShowMenu,
-                       SiteSettings,
-                       SystemSettings,
-                       FileSystemSettings,
-                       Sites,
-                       Resources,
-                       Logs,
-                       Batch,
-                       Tasks,
-                       ImportExport,
-                       MessageTemplates,
-                       PageTemplates,
-                       UrlGenerators,
-                       ACL,
-                       Indices,
-                       MessageQueue,
-                       Notifications,
-                       ClearCaches
-                   };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string>
+        //           {
+        //               ShowMenu,
+        //               SiteSettings,
+        //               SystemSettings,
+        //               FileSystemSettings,
+        //               Sites,
+        //               Resources,
+        //               Logs,
+        //               Batch,
+        //               Tasks,
+        //               ImportExport,
+        //               MessageTemplates,
+        //               PageTemplates,
+        //               UrlGenerators,
+        //               ACL,
+        //               Indices,
+        //               MessageQueue,
+        //               Notifications,
+        //               ClearCaches
+        //           };
+        //}
     }
 }

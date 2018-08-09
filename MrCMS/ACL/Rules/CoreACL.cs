@@ -10,14 +10,14 @@ namespace MrCMS.ACL.Rules
 
         public override string DisplayName => "Core Functionality";
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string>
-            {
-                ManagePages,
-                ManageMedia,
-                ManageLayouts,
-            };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string>
+        //    {
+        //        ManagePages,
+        //        ManageMedia,
+        //        ManageLayouts,
+        //    };
+        //}
     }
 }

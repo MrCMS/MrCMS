@@ -16,9 +16,9 @@ namespace MrCMS.Web.Apps.Admin.ACL
             get { return "Layouts"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string> { Show, Add, Edit, Delete, Sort };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string> { Show, Add, Edit, Delete, Sort };
+        //}
     }
 }

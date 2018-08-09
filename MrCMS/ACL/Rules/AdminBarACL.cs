@@ -11,9 +11,9 @@ namespace MrCMS.ACL.Rules
             get { return "Admin Bar"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string> { Show };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string> { Show };
+        //}
     }
 }

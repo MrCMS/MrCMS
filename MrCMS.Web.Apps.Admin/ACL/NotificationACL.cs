@@ -12,12 +12,12 @@ namespace MrCMS.Web.Apps.Admin.ACL
             get { return "Notifications"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string>
-                   {
-                       Delete
-                   };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string>
+        //           {
+        //               Delete
+        //           };
+        //}
     }
 }

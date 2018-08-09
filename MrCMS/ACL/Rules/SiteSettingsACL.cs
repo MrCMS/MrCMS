@@ -13,13 +13,13 @@ namespace MrCMS.ACL.Rules
             get { return "Site Settings"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string>
-                      {
-                          View,
-                          Save
-                      };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string>
+        //              {
+        //                  View,
+        //                  Save
+        //              };
+        //}
     }
 }

@@ -14,16 +14,16 @@ namespace MrCMS.ACL.Rules
             get { return "Indices"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string>
-                       {
-                           View,
-                           Reindex,
-                           Create,
-                           Optimize,
-                           SetBoosts
-                       };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string>
+        //               {
+        //                   View,
+        //                   Reindex,
+        //                   Create,
+        //                   Optimize,
+        //                   SetBoosts
+        //               };
+        //}
     }
 }

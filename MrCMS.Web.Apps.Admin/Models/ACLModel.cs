@@ -7,39 +7,9 @@ namespace MrCMS.Web.Apps.Admin.Models
 {
     public class ACLModel
     {
-        private ACLModel()
-        {
-        }
-
-        public List<ACLRoleModel> Roles { get; private set; }
-        public List<ACLRuleModel> Features { get; private set; }
-        public List<ACLRuleModel> Webpages { get; private set; }
-        public List<ACLRuleModel> Widgets { get; private set; }
-
-        public static ACLModel Create(IEnumerable<UserRole> userRoles, List<ACLRule> systemRules)
-        {
-            List<ACLRoleModel> roles =
-                userRoles.Select(role => new ACLRoleModel { Name = role.Name, Role = role }).ToList();
-            List<ACLRuleModel> featureRules = systemRules.SelectMany(rule => rule.GetRules()
-                .Select(aclGroup => ACLRuleModel.Create(roles, rule, aclGroup))).ToList();
-
-            var typeACL = new TypeACLRule();
-
-            List<ACLRuleModel> webpageRules = typeACL.WebpageRules
-                .Select(
-                    aclGroup =>
-                        ACLRuleModel.Create(roles, typeACL, aclGroup)).ToList();
-            List<ACLRuleModel> widgetRules = typeACL.WidgetRules
-                .Select(
-                    aclGroup =>
-                        ACLRuleModel.Create(roles, typeACL, aclGroup)).ToList();
-            return new ACLModel
-            {
-                Roles = roles,
-                Features = featureRules,
-                Webpages = webpageRules,
-                Widgets = widgetRules,
-            };
-        }
+        public List<ACLRoleModel> Roles { get; set; }
+        public List<ACLRuleModel> Features { get; set; }
+        public List<ACLRuleModel> Webpages { get; set; }
+        public List<ACLRuleModel> Widgets { get; set; }
     }
 }

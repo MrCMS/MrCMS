@@ -1,36 +1,20 @@
-﻿using MrCMS.Website;
-
-namespace MrCMS.Models
+﻿namespace MrCMS.Models
 {
-    public class ChildMenuItem 
+    public class ChildMenuItem
     {
-        private readonly ACLOption _aclOption;
-        private readonly SubMenu _subMenu;
-
-        public ChildMenuItem(string text, string url, ACLOption aclOption = null, SubMenu subMenu = null)
+        public ChildMenuItem(string text, string url, bool canShow = false, SubMenu subMenu = null)
         {
-            _aclOption = aclOption;
-            _subMenu = subMenu;
+            Children = subMenu;
             Url = url;
+            CanShow = canShow;
             Text = text;
         }
 
-        public string Text { get; private set; }
-        public string Url { get; private set; }
+        public string Text { get; }
+        public string Url { get; }
 
-        public bool CanShow
-        {
-            get
-            {
-                if (_aclOption == null) return true;
-                return _aclOption.Rule == null || true; // TODO: refactor to be off this object
-                //_aclOption.Rule.CanAccess(CurrentRequestData.CurrentUser, _aclOption.Operation);
-            }
-        }
+        public bool CanShow { get; set; }
 
-        public SubMenu Children
-        {
-            get { return _subMenu; }
-        }
+        public SubMenu Children { get; }
     }
 }

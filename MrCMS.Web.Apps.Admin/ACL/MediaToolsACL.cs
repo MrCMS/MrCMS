@@ -13,12 +13,12 @@ namespace MrCMS.Web.Apps.Admin.ACL
             get { return "Media Tools"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string>
-            {
-                Delete, Cut
-            };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string>
+        //    {
+        //        Delete, Cut
+        //    };
+        //}
     }
 }

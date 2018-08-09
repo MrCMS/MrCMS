@@ -14,6 +14,7 @@
     <None Remove="Views\NavLinks\SubMenu.cshtml" />
     <None Remove="Views\Shared\Components\NavLinks\Default.cshtml" />
     <None Remove="Views\Shared\Components\NavLinks\SubMenu.cshtml" />
+    <None Remove="Views\SystemSettings\TestEmailSettings.cshtml" />
     <None Remove="Views\User\Content.cshtml" />
     <None Remove="Views\User\Tab.cshtml" />
     <None Remove="Views\Webpage\Tab.cshtml" />
@@ -29,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Models\UserEdit\" />
+    <Folder Include="Views\FileMigration\" />
   </ItemGroup>
 
   <ItemGroup>

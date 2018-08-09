@@ -1,16 +1,17 @@
 ﻿using MrCMS.ACL.Rules;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Website.Auth;
 
 namespace MrCMS.Web.Apps.Admin.Models
 {
     public class SystemAdminMenuItem : IAdminMenuItem
     {
-        private readonly IGetCurrentUser _getCurrentUser;
+        private readonly IAccessChecker _accessChecker;
 
-        public SystemAdminMenuItem(IGetCurrentUser getCurrentUser)
+        public SystemAdminMenuItem(IAccessChecker accessChecker)
         {
-            _getCurrentUser = getCurrentUser;
+            _accessChecker = accessChecker;
         }
 
         private SubMenu _children;
@@ -18,64 +19,61 @@ namespace MrCMS.Web.Apps.Admin.Models
         public string IconClass => "fa fa-cogs";
         public string Url { get; private set; }
 
-        public bool CanShow =>
-            new SystemAdminMenuACL().CanAccess(_getCurrentUser.Get(), SystemAdminMenuACL.ShowMenu);
+        public bool CanShow => _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.ShowMenu);
 
         public SubMenu Children => _children ??
                                    (_children = GetChildren());
 
         public int DisplayOrder => 100;
 
-        private static SubMenu GetChildren()
+        private SubMenu GetChildren()
         {
-            var systemAdminMenuACL = new SystemAdminMenuACL();
             return new SubMenu
             {
-                new ChildMenuItem("Settings", "#", subMenu: new SubMenu
+                new ChildMenuItem("Settings", "#",_accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.ShowMenu),  new SubMenu
                 {
-                    new ChildMenuItem("Site Settings", "/Admin/Settings",
-                        ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.SiteSettings)),
+                    new ChildMenuItem("Site Settings", "/Admin/Settings", _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.SiteSettings)),
                     new ChildMenuItem("System Settings", "/Admin/SystemSettings",
-                        ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.SiteSettings)),
+                        _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.SystemSettings)),
                     new ChildMenuItem("Filesystem Settings", "/Admin/Settings/FileSystem",
-                        ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.FileSystemSettings)),
+                        _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.FileSystemSettings)),
                     new ChildMenuItem("Mail Settings", "/Admin/SystemSettings/Mail",
-                        ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.SiteSettings)),
+                        _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.SiteSettings)),
                     new ChildMenuItem("ACL", "/Admin/ACL",
-                        ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.ACL))
+                        _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.ACL))
                 }),
-                new ChildMenuItem("Security", "#", ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Security),
+                new ChildMenuItem("Security", "#", _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Security),
                     new SubMenu
                     {
                         new ChildMenuItem("Custom Scripts", "/Admin/CustomScriptPages",
-                            ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Security)),
+                            _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Security)),
                         new ChildMenuItem("Security Options", "/Admin/SecurityOptions",
-                            ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Security))
+                            _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Security))
                     }),
                 new ChildMenuItem("Import/Export Documents", "/Admin/ImportExport/Documents",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.ImportExport)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.ImportExport)),
                 new ChildMenuItem("Message Templates", "/Admin/MessageTemplate",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.MessageTemplates)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.MessageTemplates)),
                 new ChildMenuItem("Page Templates", "/Admin/PageTemplate",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.PageTemplates)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.PageTemplates)),
                 new ChildMenuItem("Page Defaults", "/Admin/PageDefaults",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.UrlGenerators)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.UrlGenerators)),
                 new ChildMenuItem("Sites", "/Admin/Sites",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Sites)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Sites)),
                 new ChildMenuItem("Resources", "/Admin/Resource",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Resources)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Resources)),
                 new ChildMenuItem("Logs", "/Admin/Log",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Logs)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Logs)),
                 new ChildMenuItem("Batches", "/Admin/Batch",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Batch)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Batch)),
                 new ChildMenuItem("Tasks", "/Admin/Task",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Tasks)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Tasks)),
                 new ChildMenuItem("Indexes", "/Admin/Indexes",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Indices)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Indices)),
                 new ChildMenuItem("Message Queue", "/Admin/MessageQueue",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.MessageQueue)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.MessageQueue)),
                 new ChildMenuItem("Notifications", "/Admin/Notification",
-                    ACLOption.Create(systemAdminMenuACL, SystemAdminMenuACL.Notifications)),
+                    _accessChecker.CanAccess<SystemAdminMenuACL>(SystemAdminMenuACL.Notifications)),
                 new ChildMenuItem("Clear Caches", "/Admin/ClearCaches"),
                 new ChildMenuItem("About", "/Admin/About")
             };

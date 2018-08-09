@@ -13,9 +13,9 @@ namespace MrCMS.Website.Auth
             _getAclRoles = getAclRoles;
         }
 
-        public async Task<bool> CanAccessLogic(StandardLogicCheckResult result, IList<string> keys)
+        public bool CanAccessLogic(StandardLogicCheckResult result, IList<string> keys)
         {
-            return result.CanAccess ?? (await _getAclRoles.GetRoles(result.Roles, keys)).Any();
+            return result.CanAccess ?? _getAclRoles.GetRoles(result.Roles, keys).Any();
         }
     }
 }

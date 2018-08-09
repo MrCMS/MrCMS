@@ -6,7 +6,7 @@ using MrCMS.Website.Auth;
 
 namespace MrCMS.Web.Apps.Admin.Filters
 {
-    public class AdminAuthFilter : IAsyncAuthorizationFilter
+    public class AdminAuthFilter : IAuthorizationFilter
     {
         private readonly IAccessChecker _accessChecker;
 
@@ -15,14 +15,14 @@ namespace MrCMS.Web.Apps.Admin.Filters
             _accessChecker = accessChecker;
         }
 
-        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
+        public void OnAuthorization(AuthorizationFilterContext context)
         {
             if (!context.IsAdminRequest())
                 return;
 
             var actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
 
-            if (!await _accessChecker.CanAccess(actionDescriptor))
+            if (!_accessChecker.CanAccess(actionDescriptor))
                 context.Result = new ForbidResult();
         }
     }

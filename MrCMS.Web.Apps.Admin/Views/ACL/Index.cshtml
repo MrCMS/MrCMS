@@ -1,60 +1,74 @@
 ﻿@using MrCMS.ACL
+@using MrCMS.Entities.People
 @using MrCMS.Web.Apps.Admin.Models
-@model MrCMS.Web.Apps.Admin.Models.ACLModel
+@model dynamic
 @{
-    ViewBag.Title = "ACL";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    var settings = ViewData["settings"] as ACLSettings;
+    var rules = ViewData["acl-rules"] as List<AclInfo>;
+    var roles = rules.SelectMany(x => x.Roles).Select(x => new { x.Id, x.Name }).Distinct().OrderBy(x => x.Name).ToList();
 }
-@using (Html.BeginForm())
-{
-    <fieldset>
-        <legend>ACL
-            <span class="btn-group display-inline pull-right">
-                @if (settings.ACLEnabled)
-                {
-                    @Html.ActionLink("Disable ACL", "Disable", "ACL", null, new { id = "disable-acl", @class = "btn btn-default" })
-                }
-                else
-                {
-                    @Html.ActionLink("Enable ACL", "Enable", "ACL", null, new { id = "enable-acl", @class = "btn btn-default" })
-                }
-                <input class="btn btn-primary" type="submit" value="Update" />
-            </span>
-        </legend>
-    </fieldset>
-    <div class="row">
-        <div class="col-lg-12">
-            @if (settings.ACLEnabled)
+
+<form method="post" asp-action="Index">
+    <div class="card">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <h1>ACL</h1>
+                </div>
+                <div class="col">
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-outline-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-block">
+            @foreach (var group in rules.GroupBy(x => x.Rule).OrderBy(x => x.Key))
             {
-                <h3>@Html.Resource("Admin ACL Features", "Features")</h3>
-                Html.RenderPartial("Group", new ViewDataDictionary(Model.Features) { { "roles", Model.Roles } });
-                <hr />
-                <h2>@Html.Resource("Admin ACL Webpages", "Webpages")</h2>
-                Html.RenderPartial("Group", new ViewDataDictionary(Model.Webpages) { { "roles", Model.Roles } });
-                <hr />
-                <h2>@Html.Resource("Admin ACL Widgets", "Widgets")</h2>
-                Html.RenderPartial("Group", new ViewDataDictionary(Model.Widgets) { { "roles", Model.Roles } });
-            }
-            else
-            {
-                <p>@Html.Resource("Admin ACL Disabled", "ACL is disabled").</p>
+                <h3>@group.Key.BreakUpString()</h3>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>
+                                Operation
+                            </th>
+                            @foreach (var role in roles)
+                            {
+                                <th>
+                                    @role.Name
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var rule in group.OrderBy(x => x.Type).ThenBy(x => x.Operation))
+                        {
+                            <tr>
+                                <td>
+                                    @rule.Operation.BreakUpString()
+                                </td>
+                                @foreach (var role in rule.Roles)
+                                {
+                                    var key = string.Format("{0}-{1}", role.Id, rule.Key);
+                                    if (role.Name != UserRole.Administrator)
+                                    {
+                                        <td>
+
+                                            <input name="acl" value="@key" type="checkbox" @(role.Allowed ? "checked" : "") />
+
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input type="checkbox" checked="checked" disabled="disabled" />
+                                        </td>
+                                    }
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             }
         </div>
     </div>
-}
-@section JavaScriptBlock
-{
-    <script>
-        $(function () {
-            $('#disable-acl').click(function () {
-                post_to_url($(this).attr('href'), {});
-                return false;
-            });
-            $('#enable-acl').click(function () {
-                post_to_url($(this).attr('href'), {});
-                return false;
-            });
-        })
-    </script>
-}
+</form>

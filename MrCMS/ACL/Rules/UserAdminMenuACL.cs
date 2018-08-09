@@ -15,9 +15,9 @@ namespace MrCMS.ACL.Rules
             get { return "User Admin Menu"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string> { ShowMenu, Users, Roles, YourAccount, ThirdPartyAuth, UserSubscriptionReports };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string> { ShowMenu, Users, Roles, YourAccount, ThirdPartyAuth, UserSubscriptionReports };
+        //}
     }
 }

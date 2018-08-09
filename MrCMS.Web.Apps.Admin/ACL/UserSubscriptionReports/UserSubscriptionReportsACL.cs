@@ -12,12 +12,12 @@ namespace MrCMS.Web.Apps.Admin.ACL.UserSubscriptionReports
             get { return "UserSubscriptionReports"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string>
-                   {
-                       View
-                   };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string>
+        //           {
+        //               View
+        //           };
+        //}
     }
 }

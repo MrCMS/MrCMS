@@ -14,9 +14,9 @@ namespace MrCMS.ACL.Rules
             get { return "Roles"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string> {View, Add, Edit, Delete};
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string> {View, Add, Edit, Delete};
+        //}
     }
 }

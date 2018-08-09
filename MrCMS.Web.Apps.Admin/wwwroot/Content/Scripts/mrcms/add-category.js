@@ -17,7 +17,7 @@ $(function () {
 
     function setStandardUrl() {
         var parentUrl = $("#ParentUrl").val();
-        if (parentUrl != '') {
+        if (parentUrl !== '') {
             parentUrl += "/";
         }
         $("#UrlSegment").val(parentUrl + $("#Name").val().trim().replace(/\W/g, '-').toLowerCase());

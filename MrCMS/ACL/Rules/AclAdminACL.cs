@@ -12,9 +12,9 @@ namespace MrCMS.ACL.Rules
             get { return "ACLAdmin"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string> { View, Edit };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string> { View, Edit };
+        //}
     }
 }

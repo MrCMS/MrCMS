@@ -1,54 +1,43 @@
 ﻿using MrCMS.ACL.Rules;
 using MrCMS.Models;
-using MrCMS.Services;
+using MrCMS.Website.Auth;
 
 namespace MrCMS.Web.Apps.Admin.Models
 {
     public class UserAdminMenuItem : IAdminMenuItem
     {
-        private readonly IGetCurrentUser _getCurrentUser;
-
-        public UserAdminMenuItem(IGetCurrentUser getCurrentUser)
-        {
-            _getCurrentUser = getCurrentUser;
-        }
+        private readonly IAccessChecker _accessChecker;
 
         private SubMenu _children;
-        public string Text { get { return "Users"; } }
-        public string IconClass { get { return "fa fa-users"; } }
+
+        public UserAdminMenuItem(IAccessChecker accessChecker)
+        {
+            _accessChecker = accessChecker;
+        }
+
+        public string Text => "Users";
+        public string IconClass => "fa fa-users";
         public string Url { get; private set; }
-        public bool CanShow
-        {
-            get { return new UserAdminMenuACL().CanAccess(_getCurrentUser.Get(), UserAdminMenuACL.ShowMenu); }
-        }
+        public bool CanShow => _accessChecker.CanAccess<UserAdminMenuACL>(UserAdminMenuACL.ShowMenu);
 
-        public SubMenu Children
-        {
-            get
-            {
-                return _children ??
-                       (_children = GetChildren());
-            }
-        }
+        public SubMenu Children => _children ??
+                                   (_children = GetChildren());
 
-        private static SubMenu GetChildren()
+        public int DisplayOrder => 99;
+
+        private SubMenu GetChildren()
         {
-            var userAdminMenuACL = new UserAdminMenuACL();
             return new SubMenu
-                       {
-                           
-                              
-                                       new ChildMenuItem("Users", "/Admin/User",
-                                                         ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.Users)),
-                                       new ChildMenuItem("Roles", "/Admin/Role",
-                                                         ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.Roles)),
-                                       new ChildMenuItem("Third Party Auth", "/Admin/ThirdPartyAuth",
-                                                         ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.ThirdPartyAuth)),
-                                       new ChildMenuItem("User Subscription Reports ", "/Admin/UserSubscriptionReports",
-                                                         ACLOption.Create(userAdminMenuACL, UserAdminMenuACL.UserSubscriptionReports))                     
-                       };
+            {
+                new ChildMenuItem("Users", "/Admin/User",
+                    _accessChecker.CanAccess<UserAdminMenuACL>(UserAdminMenuACL.Users)),
+                new ChildMenuItem("Roles", "/Admin/Role",
+                    _accessChecker.CanAccess<UserAdminMenuACL>(UserAdminMenuACL.Roles)),
+                new ChildMenuItem("Third Party Auth", "/Admin/ThirdPartyAuth",
+                    _accessChecker.CanAccess<UserAdminMenuACL>(UserAdminMenuACL.ThirdPartyAuth)),
+                new ChildMenuItem("User Subscription Reports ", "/Admin/UserSubscriptionReports",
+                    _accessChecker.CanAccess<UserAdminMenuACL>(UserAdminMenuACL.UserSubscriptionReports))
+            };
         }
-
-        public int DisplayOrder { get { return 99; } }
     }
 }

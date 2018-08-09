@@ -11,12 +11,12 @@ namespace MrCMS.ACL.Rules
             get { return "Admin Access"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string>
-                       {
-                           Allowed
-                       };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string>
+        //               {
+        //                   Allowed
+        //               };
+        //}
     }
 }

@@ -26,10 +26,10 @@ namespace MrCMS.Helpers
             }
         }
 
-        public static bool CanAccess<T>(this User user, string operation, string type = null) where T : ACLRule, new()
-        {
-            return new T().CanAccess(user, operation, type);
-        }
+        //public static bool CanAccess<T>(this User user, string operation, string type = null) where T : ACLRule, new()
+        //{
+        //    return new T().CanAccess(user, operation, type);
+        //}
 
         public static T Get<T>(this User user) where T : UserProfileData
         {

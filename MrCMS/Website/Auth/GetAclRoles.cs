@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using MrCMS.Data;
 using MrCMS.Entities.ACL;
 using MrCMS.Services;
-using NHibernate.Linq;
 
 namespace MrCMS.Website.Auth
 {
@@ -19,14 +17,14 @@ namespace MrCMS.Website.Auth
             _roleManager = roleManager;
         }
 
-        public async Task<List<ACLRole>> GetRoles(IList<string> roles, IList<string> keys)
+        public List<ACLRole> GetRoles(IList<string> roles, IList<string> keys)
         {
-            var roleIds = await _roleManager.Roles.Where(role => roles.Contains(role.Name))
+            var roleIds = _roleManager.Roles.Where(role => roles.Contains(role.Name))
                 .Select(x => x.Id)
-                .ToListAsync();
+                .ToList();
 
-            return await _repository.Query().Where(role => roleIds.Contains(role.UserRole.Id) && keys.Contains(role.Name))
-                .ToListAsync();
+            return _repository.Query().Where(role => roleIds.Contains(role.UserRole.Id) && keys.Contains(role.Name))
+                .ToList();
         }
     }
 }

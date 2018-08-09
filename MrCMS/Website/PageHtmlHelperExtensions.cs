@@ -8,6 +8,7 @@ using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Website.Auth;
 
 namespace MrCMS.Website
 {
@@ -43,10 +44,9 @@ namespace MrCMS.Website
         public static bool EditingEnabled(this IHtmlHelper helper)
         {
             var serviceProvider = helper.ViewContext.HttpContext.RequestServices;
-            var currentUser = serviceProvider.GetRequiredService<IGetCurrentUser>()
-                .Get();
-            return currentUser != null &&
-                   currentUser.CanAccess<AdminBarACL>("Show") &&
+            var currentUser = serviceProvider.GetRequiredService<IGetCurrentUser>() .Get();
+            var accessChecker = serviceProvider.GetRequiredService<IAccessChecker>();
+            return currentUser != null && accessChecker.CanAccess<AdminBarACL>(AdminBarACL.Show) &&
                    serviceProvider.GetRequiredService<SiteSettings>().EnableInlineEditing;
         }
 

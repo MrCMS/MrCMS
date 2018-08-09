@@ -17,26 +17,26 @@ namespace MrCMS.ACL
 
         public abstract string DisplayName { get; }
 
-        public bool CanAccess(User user, string operation, string typeName = null)
-        {
-            return user.IsAdmin || user.Roles.Any(role => CanAccessLogic(role, operation, typeName));
-        }
+        //public bool CanAccess(User user, string operation, string typeName = null)
+        //{
+        //    return user.IsAdmin || user.Roles.Any(role => CanAccessLogic(role, operation, typeName));
+        //}
 
-        public bool CanAccess(UserRole userRole, string operation, string typeName = null)
-        {
-            return userRole.IsAdmin || CanAccessLogic(userRole, operation, typeName);
-        }
+        //public bool CanAccess(UserRole userRole, string operation, string typeName = null)
+        //{
+        //    return userRole.IsAdmin || CanAccessLogic(userRole, operation, typeName);
+        //}
 
-        private bool CanAccessLogic(UserRole userRole, string operation, string typeName = null)
-        {
-            //if (!MrCMSApplication.Get<ACLSettings>().ACLEnabled)
-            //    return false;
-            //var aclRoles = userRole.ACLRoles;
-            //var b = GetKey(operation, typeName);
-            //return aclRoles.Any(role => role.Name == b);
-            // TODO : add logic, probably refactor outside of this class
-            return false;
-        }
+        //private bool CanAccessLogic(UserRole userRole, string operation, string typeName = null)
+        //{
+        //    //if (!MrCMSApplication.Get<ACLSettings>().ACLEnabled)
+        //    //    return false;
+        //    //var aclRoles = userRole.ACLRoles;
+        //    //var b = GetKey(operation, typeName);
+        //    //return aclRoles.Any(role => role.Name == b);
+        //    // TODO : add logic, probably refactor outside of this class
+        //    return false;
+        //}
 
         protected string GetKey(string operation, string typeName = null)
         {
@@ -48,34 +48,34 @@ namespace MrCMS.ACL
                         : start;
         }
 
-        public List<string> Operations
-        {
-            get { return _operations ?? (_operations = GetOperations()); }
-        }
+        //public List<string> Operations
+        //{
+        //    get { return _operations ?? (_operations = GetOperations()); }
+        //}
 
-        protected abstract List<string> GetOperations();
+        //protected abstract List<string> GetOperations();
 
-        public virtual List<ACLGroup> GetRules()
-        {
-            return new List<ACLGroup>
-                       {
-                           new ACLGroup
-                               {
-                                   Name = DisplayName,
-                                   AppName = AppName,
-                                   Operations = Operations.Select(s => new ACLOperation
-                                                                           {
-                                                                               Name = s,
-                                                                               Key = GetKey(s),
-                                                                           }).ToList(),
-                                   Type = null
-                               }
-                       };
-        }
+        //public virtual List<ACLGroup> GetRules()
+        //{
+        //    return new List<ACLGroup>
+        //               {
+        //                   new ACLGroup
+        //                       {
+        //                           Name = DisplayName,
+        //                           AppName = AppName,
+        //                           Operations = Operations.Select(s => new ACLOperation
+        //                                                                   {
+        //                                                                       Name = s,
+        //                                                                       Key = GetKey(s),
+        //                                                                   }).ToList(),
+        //                           Type = null
+        //                       }
+        //               };
+        //}
     }
 
     public abstract class ACLRule<T> : ACLRule where T : IMrCMSApp, new()
     {
-        protected override IMrCMSApp App { get { return new T(); } }
+        //protected override IMrCMSApp App => new T();
     }
 }

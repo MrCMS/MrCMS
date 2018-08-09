@@ -6,6 +6,6 @@ namespace MrCMS.Website.Auth
 {
     public interface IGetAclRoles
     {
-        Task<List<ACLRole>> GetRoles(IList<string> roles, IList<string> keys);
+        List<ACLRole> GetRoles(IList<string> roles, IList<string> keys);
     }
 }

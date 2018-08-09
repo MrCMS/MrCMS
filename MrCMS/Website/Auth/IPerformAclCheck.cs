@@ -5,6 +5,6 @@ namespace MrCMS.Website.Auth
 {
     public interface IPerformAclCheck
     {
-        Task<bool> CanAccessLogic(StandardLogicCheckResult result, IList<string> keys);
+        bool CanAccessLogic(StandardLogicCheckResult result, IList<string> keys);
     }
 }

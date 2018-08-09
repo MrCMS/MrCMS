@@ -20,33 +20,33 @@ namespace MrCMS.Website.Auth
             _performAclCheck = performAclCheck;
         }
 
-        public async Task<bool> CanAccess(ControllerActionDescriptor descriptor)
+        public bool CanAccess(ControllerActionDescriptor descriptor)
         {
-            var result = await _checkStandardAccessLogic.Check();
+            var result = _checkStandardAccessLogic.Check();
             var keys = _getAclKeys.GetKeys(descriptor);
-            return await _performAclCheck.CanAccessLogic(result, keys);
+            return _performAclCheck.CanAccessLogic(result, keys);
         }
 
-        public async Task<bool> CanAccess(ControllerActionDescriptor descriptor, User user)
+        public bool CanAccess(ControllerActionDescriptor descriptor, User user)
         {
-            var result = await _checkStandardAccessLogic.Check(user);
+            var result = _checkStandardAccessLogic.Check(user);
             var keys = _getAclKeys.GetKeys(descriptor);
-            return await _performAclCheck.CanAccessLogic(result, keys);
+            return _performAclCheck.CanAccessLogic(result, keys);
         }
 
 
-        public async Task<bool> CanAccess<TAclRule>(string operation) where TAclRule : ACLRule
+        public bool CanAccess<TAclRule>(string operation) where TAclRule : ACLRule
         {
-            var result = await _checkStandardAccessLogic.Check();
+            var result = _checkStandardAccessLogic.Check();
             var keys = _getAclKeys.GetKeys<TAclRule>(operation);
-            return await _performAclCheck.CanAccessLogic(result, keys);
+            return _performAclCheck.CanAccessLogic(result, keys);
         }
 
-        public async Task<bool> CanAccess<TAclRule>(string operation, User user) where TAclRule : ACLRule
+        public bool CanAccess<TAclRule>(string operation, User user) where TAclRule : ACLRule
         {
-            var result = await _checkStandardAccessLogic.Check(user);
+            var result = _checkStandardAccessLogic.Check(user);
             var keys = _getAclKeys.GetKeys<TAclRule>(operation);
-            return await _performAclCheck.CanAccessLogic(result, keys);
+            return _performAclCheck.CanAccessLogic(result, keys);
         }
     }
 }

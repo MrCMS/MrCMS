@@ -11,9 +11,9 @@ namespace MrCMS.ACL.Rules
             get { return "Inline Editing"; }
         }
 
-        protected override List<string> GetOperations()
-        {
-            return new List<string> { Allowed };
-        }
+        //protected override List<string> GetOperations()
+        //{
+        //    return new List<string> { Allowed };
+        //}
     }
 }
