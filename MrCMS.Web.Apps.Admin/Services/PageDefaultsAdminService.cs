@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Models;
+using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -15,15 +19,18 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IGetUrlGeneratorOptions _getUrlGeneratorOptions;
         private readonly IGetLayoutOptions _getLayoutOptions;
         private readonly ISession _session;
+        private readonly MrCMSAppContext _appContext;
         private readonly IConfigurationProvider _configurationProvider;
 
         public PageDefaultsAdminService(IConfigurationProvider configurationProvider,
-            IGetUrlGeneratorOptions getUrlGeneratorOptions, IGetLayoutOptions getLayoutOptions, ISession session)
+            IGetUrlGeneratorOptions getUrlGeneratorOptions, IGetLayoutOptions getLayoutOptions, ISession session,
+            MrCMSAppContext appContext)
         {
             _configurationProvider = configurationProvider;
             _getUrlGeneratorOptions = getUrlGeneratorOptions;
             _getLayoutOptions = getLayoutOptions;
             _session = session;
+            _appContext = appContext;
         }
 
 
@@ -31,26 +38,25 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             var layoutOptions = _getLayoutOptions.Get();
             var settings = _configurationProvider.GetSiteSettings<PageDefaultsSettings>();
-            //return (from key in MrCMSApp.AppWebpages.Keys.OrderBy(type => type.FullName)
-            //        select new PageDefaultsInfo
-            //        {
-            //            DisplayName = GetDisplayName(key),
-            //            TypeName = key.FullName,
-            //            GeneratorDisplayName = settings.GetGeneratorType(key).Name.BreakUpString(),
-            //            LayoutName = GetLayoutName(layoutOptions, key),
-            //            CacheEnabled = key.GetCustomAttribute<WebpageOutputCacheableAttribute>(false) == null
-            //                ? CacheEnabledStatus.Unavailable
-            //                : settings.CacheDisabled(key)
-            //                    ? CacheEnabledStatus.Disabled
-            //                    : CacheEnabledStatus.Enabled
-            //        }).ToList();
-            return new List<PageDefaultsInfo>(); // TODO: page defaults
+            var webpages = TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>();
+            return (from key in webpages
+                    select new PageDefaultsInfo
+                    {
+                        DisplayName = GetDisplayName(key),
+                        TypeName = key.FullName,
+                        GeneratorDisplayName = settings.GetGeneratorType(key).Name.BreakUpString(),
+                        LayoutName = GetLayoutName(layoutOptions, key),
+                        CacheEnabled = key.GetCustomAttribute<WebpageOutputCacheableAttribute>(false) == null
+                            ? CacheEnabledStatus.Unavailable
+                            : settings.CacheDisabled(key)
+                                ? CacheEnabledStatus.Disabled
+                                : CacheEnabledStatus.Enabled
+                    }).ToList();
         }
 
-        private static string GetDisplayName(Type key)
+        private string GetDisplayName(Type key)
         {
-            var appName = "None"; // TODO: get app name
-            // MrCMSApp.AppWebpages[key];
+            var appName = _appContext.Types.ContainsKey(key) ? _appContext.Types[key].Name : "System"; 
             return string.Format("{0} ({1})", key.GetMetadata().Name, appName);
         }
 

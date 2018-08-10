@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Website;
 
@@ -7,6 +6,7 @@ namespace MrCMS.ViewComponents
 {
     public class LayoutAreaViewComponent : ViewComponent
     {
+        // TODO: setup front end editing
         public IViewComponentResult Invoke(string name, bool allowFrontEndEditing = false)
         {
             var info = GetInfo(name);
