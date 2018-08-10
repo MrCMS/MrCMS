@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -15,12 +17,16 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class PageTemplateAdminService : IPageTemplateAdminService
     {
         private readonly IGetUrlGeneratorOptions _getUrlGeneratorOptions;
+        private readonly IMapper _mapper;
+        private readonly MrCMSAppContext _appContext;
         private readonly ISession _session;
 
-        public PageTemplateAdminService(ISession session, IGetUrlGeneratorOptions getUrlGeneratorOptions)
+        public PageTemplateAdminService(ISession session, IGetUrlGeneratorOptions getUrlGeneratorOptions, IMapper mapper, MrCMSAppContext appContext)
         {
             _session = session;
             _getUrlGeneratorOptions = getUrlGeneratorOptions;
+            _mapper = mapper;
+            _appContext = appContext;
         }
 
         public IPagedList<PageTemplate> Search(PageTemplateSearchQuery query)
@@ -30,37 +36,43 @@ namespace MrCMS.Web.Apps.Admin.Services
             return queryOver.Paged(query.Page);
         }
 
-        public void Add(PageTemplate template)
+        public void Add(AddPageTemplateModel model)
         {
+            var template = _mapper.Map<PageTemplate>(model);
             _session.Transact(session => session.Save(template));
         }
 
-        public void Update(PageTemplate template)
+        public UpdatePageTemplateModel GetEditModel(int id)
         {
+            var template = GetTemplate(id);
+            return _mapper.Map<UpdatePageTemplateModel>(template);
+        }
+
+        public void Update(UpdatePageTemplateModel model)
+        {
+            var template = GetTemplate(model.Id);
+            _mapper.Map(model, template);
             _session.Transact(session => session.Update(template));
+        }
+
+        private PageTemplate GetTemplate(int id)
+        {
+            return _session.Get<PageTemplate>(id);
         }
 
         public List<SelectListItem> GetPageTypeOptions()
         {
             List<SelectListItem> selectListItems = GetNewList();
-            // TODO: get page types
-            //Dictionary<Type, string>.KeyCollection appWebpageTypes = MrCMSApp.AppWebpages.Keys;
-            //selectListItems.AddRange(from key in appWebpageTypes.OrderBy(type => type.FullName)
-            //    let appName = MrCMSApp.AppWebpages[key]
-            //    select
-            //        new SelectListItem
-            //        {
-            //            Text = string.Format("{0} ({1})", key.GetMetadata().Name, appName),
-            //            Value = key.FullName
-            //        });
-            //selectListItems.AddRange(
-            //    TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
-            //        .FindAll(type => !appWebpageTypes.Contains(type))
-            //        .Select(type => new SelectListItem
-            //        {
-            //            Text = string.Format("{0} (System)", type.Name.BreakUpString()),
-            //            Value = type.FullName
-            //        }));
+            selectListItems.AddRange(
+                TypeHelper.GetAllConcreteMappedClassesAssignableFrom<Webpage>()
+                    .Select(type => new { typeName = type.FullName, displayName = type.Name.BreakUpString(), app = _appContext.Types.ContainsKey(type) ? _appContext.Types[type].Name : "System" })
+                    .OrderBy(x => x.app)
+                    .ThenBy(x => x.displayName)
+                    .Select(info => new SelectListItem
+                    {
+                        Text = string.Format("{0} ({1})", info.displayName, info.app),
+                        Value = info.typeName
+                    }));
             return selectListItems;
         }
 
@@ -74,10 +86,11 @@ namespace MrCMS.Web.Apps.Admin.Services
                 emptyItemText: "Please select...");
         }
 
-        public List<SelectListItem> GetUrlGeneratorOptions(Type type)
+        public List<SelectListItem> GetUrlGeneratorOptions(string typeName)
         {
+            var type = TypeHelper.GetTypeByName(typeName);
             List<SelectListItem> urlGeneratorOptions = _getUrlGeneratorOptions.Get(type);
-            urlGeneratorOptions.Insert(0, new SelectListItem {Text = "Please select...", Value = ""});
+            urlGeneratorOptions.Insert(0, new SelectListItem { Text = "Please select...", Value = "" });
             return urlGeneratorOptions;
         }
 

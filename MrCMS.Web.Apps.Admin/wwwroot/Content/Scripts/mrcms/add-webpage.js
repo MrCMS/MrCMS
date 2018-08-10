@@ -63,11 +63,15 @@
     var updateAdditionalProperties = function (event) {
         $(".hide-until-document-selected").show();
         $("#message-choose-document").hide();
-        var webpageType = $(':radio[name=DocumentType]:checked').val();
+        var element = $(':radio[name=DocumentType]:checked');
+        var webpageType = element.val();
         $.get('/Admin/Webpage/AddProperties', { type: webpageType, parentId: $("#Parent_Id").val() }, function (data) {
             $("[data-additional-properties]").html(data);
             admin.initializePlugins();
         });
+        // set page template from data attribute
+        var templateId = element.data('page-template-id');
+        $('#PageTemplateId').val(templateId);
     };
     return {
         init: function () {

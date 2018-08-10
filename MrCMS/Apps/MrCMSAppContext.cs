@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
@@ -15,9 +16,11 @@ namespace MrCMS.Apps
         public MrCMSAppContext()
         {
             Apps = new HashSet<IMrCMSApp>();
+            Types = new Dictionary<Type, IMrCMSApp>();
         }
 
         public ISet<IMrCMSApp> Apps { get; }
+        public IDictionary<Type, IMrCMSApp> Types { get; }
 
         public IEnumerable<IFileProvider> ViewFileProviders =>
             Apps.Select(app => new EmbeddedViewFileProvider(app.Assembly, app.ViewPrefix));
@@ -35,6 +38,9 @@ namespace MrCMS.Apps
             if (!string.IsNullOrWhiteSpace(appOptions.ContentPrefix))
                 app.ContentPrefix = appOptions.ContentPrefix;
             Apps.Add(app);
+
+            // register apps
+            app.Assembly.GetTypes().ForEach(type => Types[type] = app);
         }
 
         public void SetupMvcOptions(MvcOptions options)

@@ -10,11 +10,12 @@ namespace MrCMS.Web.Apps.Admin.Services
     public interface IPageTemplateAdminService
     {
         IPagedList<PageTemplate> Search(PageTemplateSearchQuery query);
-        void Add(PageTemplate template);
-        void Update(PageTemplate template);
+        void Add(AddPageTemplateModel model);
+        UpdatePageTemplateModel GetEditModel(int id);
+        void Update(UpdatePageTemplateModel template);
 
         List<SelectListItem> GetPageTypeOptions();
         List<SelectListItem> GetLayoutOptions();
-        List<SelectListItem> GetUrlGeneratorOptions(Type type);
+        List<SelectListItem> GetUrlGeneratorOptions(string typeName);
     }
 }

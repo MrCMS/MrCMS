@@ -34,31 +34,30 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(PageTemplate template)
+        public RedirectToActionResult Add(AddPageTemplateModel model)
         {
-            _service.Add(template);
+            _service.Add(model);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public PartialViewResult Edit(PageTemplate template)
+        public PartialViewResult Edit(int id)
         {
+            var model = _service.GetEditModel(id);
             ViewData["layout-options"] = _service.GetLayoutOptions();
-            ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(template.GetPageType());
-            return PartialView(template);
+            ViewData["url-generator-options"] = _service.GetUrlGeneratorOptions(model.PageType);
+            return PartialView(model);
         }
 
         [HttpPost]
         [ActionName("Edit")]
-        public RedirectToActionResult Edit_POST(PageTemplate template)
+        public RedirectToActionResult Edit_POST(UpdatePageTemplateModel model)
         {
-            _service.Update(template);
+            _service.Update(model);
             return RedirectToAction("Index");
         }
 
-        public JsonResult GetUrlGeneratorOptions(
-            [ModelBinder(typeof (GetUrlGeneratorOptionsTypeModelBinder))]
-            Type type)
+        public JsonResult GetUrlGeneratorOptions(string type)
         {
             return Json(_service.GetUrlGeneratorOptions(type));
         }

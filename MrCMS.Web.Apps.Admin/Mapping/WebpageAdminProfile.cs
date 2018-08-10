@@ -11,6 +11,7 @@ namespace MrCMS.Web.Apps.Admin.Mapping
         {
             CreateMap<Webpage, AddWebpageModel>().ReverseMap()
                 .MapEntityLookup(x => x.ParentId, x => x.Parent)
+                .MapEntityLookup(x => x.PageTemplateId, x => x.PageTemplate)
                 ;
             CreateMap<Webpage, UpdateWebpageViewModel>().ReverseMap();
             CreateMap<Webpage, FormDesignTabViewModel>().ReverseMap();

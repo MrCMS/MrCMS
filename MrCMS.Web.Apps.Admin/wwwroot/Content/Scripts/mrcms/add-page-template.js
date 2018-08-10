@@ -8,7 +8,7 @@
         $el.empty(); // remove old options
         $.each(data, function (key, option) {
             $el.append($("<option></option>")
-               .attr("value", option.Value).text(option.Text));
+               .attr("value", option.value).text(option.text));
         });
     }
 

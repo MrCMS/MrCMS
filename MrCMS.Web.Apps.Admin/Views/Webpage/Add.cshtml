@@ -11,7 +11,7 @@
     var types = ViewData["DocumentTypes"] as List<DocumentTypeToAdd>;
     if (types.Count == 1)
     {
-        Model.DocumentType = types.First().DisplayId;
+        Model.DocumentType = types.First().DocumentType;
     }
 
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/add-webpage.js");
@@ -33,13 +33,14 @@
                 {
                     <div class="radio">
                         <label class="radio">
-                            @Html.RadioButtonFor(x => x.DocumentType, documentType.DisplayId, new { data_val = "true", data_val_required = "Please select a page type" })
+                            @Html.RadioButtonFor(x => x.DocumentType, documentType.DocumentType, new { data_val = "true", data_val_required = "Please select a page type", data_page_template_id = documentType.TemplateId })
                             <i class="@documentType.Type.IconClass"></i>
                             @documentType.DisplayName
                         </label>
                     </div>
                 }
                 @Html.ValidationMessage("DocumentType")
+                @Html.HiddenFor(x => x.PageTemplateId)
             </div>
 
             <div class="col-lg-10 hide-until-document-selected" style="display: none;">

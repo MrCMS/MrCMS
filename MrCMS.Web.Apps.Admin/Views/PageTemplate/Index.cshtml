@@ -1,11 +1,12 @@
 ﻿@using System.Linq
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
-@using MrCMS.Paging
 @using MrCMS.Web.Apps.Admin.Models
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Admin.Models.PageTemplateSearchQuery
 @{
-    var results = ViewData["results"] as IPagedList<PageTemplate> ?? PagedList<PageTemplate>.Empty;
+    var results = ViewData["results"] as IPagedList<PageTemplate>;
 }
 <h1 class="page-header">
     @Html.Resource("Admin Page Templates", "Page Templates")
@@ -66,14 +67,14 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink(Resource("Edit"), "Edit", "PageTemplate", new { id = template.Id }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
+                            @Html.ActionLink(Html.Resource("Edit"), "Edit", "PageTemplate", new { id = template.Id }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
                         </div>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    @Html.Pager(results, "Index", page => new { page })
+    @Html.PagedListPager(results, page => Url.Action("Index", new { page }))
 }
 else
 {

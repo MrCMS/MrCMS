@@ -1,6 +1,6 @@
 ﻿@using System.Collections.Generic
 @using MrCMS.Helpers
-@model MrCMS.Entities.Documents.Web.PageTemplate
+@model MrCMS.Web.Apps.Admin.Models.UpdatePageTemplateModel
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
     List<SelectListItem> layoutOptions = ViewData["layout-options"] as List<SelectListItem> ?? new List<SelectListItem>();
@@ -28,9 +28,9 @@
             @Html.ValidationMessageFor(x => x.PageTemplateName)
         </div>
         <div class="form-group">
-            @Html.LabelFor(x => x.Layout.Id, Resource("Layout"))
-            @Html.DropDownListFor(x => x.Layout.Id, layoutOptions, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Layout.Id)
+            @Html.LabelFor(x => x.LayoutId, Html.Resource("Layout"))
+            @Html.DropDownListFor(x => x.LayoutId, layoutOptions, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.LayoutId)
         </div>
         <div class="form-group">
             @Html.LabelFor(x => x.UrlGeneratorType)
