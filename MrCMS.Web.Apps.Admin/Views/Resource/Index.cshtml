@@ -1,12 +1,11 @@
-﻿@using System.Collections.Generic
-@using System.Linq
+﻿@using System.Linq
 @using MrCMS.Entities.Resources
-@using MrCMS.Helpers
-@using MrCMS.Paging
-@using MrCMS.Web.Apps.Admin.Models
+@using MrCMS.Web.Apps.Admin.Services
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Admin.Models.StringResourceSearchQuery
 @{
-    var resources = ViewData["results"] as IPagedList<StringResource> ?? PagedList<StringResource>.Empty;
+    var resources = ViewData["results"] as IPagedList<StringResource>;
     var languageOptions = ViewData["language-options"] as List<SelectListItem> ?? new List<SelectListItem>();
     var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
@@ -17,8 +16,8 @@
         <legend>
             @Html.Resource("Admin Resources Title", "Resources")
             <span class="btn-group display-inline pull-right">
-                @Html.ActionLink(Resource("Admin Resource Export", "Export All"), "Export", "ResourceUpdate", new { }, new { @class = "btn btn-default" })
-                @Html.ActionLink(Resource("Admin Resource Export Filtered", "Export As Filtered"), "Export", "ResourceUpdate", new { Model.Key, Model.Value }, new { @class = "btn btn-default" })
+                @Html.ActionLink(Html.Resource("Admin Resource Export", "Export All"), "Export", "ResourceUpdate", new { }, new { @class = "btn btn-default" })
+                @Html.ActionLink(Html.Resource("Admin Resource Export Filtered", "Export As Filtered"), "Export", "ResourceUpdate", new { Model.Key, Model.Value }, new { @class = "btn btn-default" })
 
                 <input type="submit" class="btn btn-primary" value="@Html.Resource("Filter")" />
             </span>
@@ -84,16 +83,16 @@ else
             {
                 <tr>
                     <td>
-                        @Html.Resource.DisplayKey
+                        @StringResourceExtensions.GetDisplayKey(resource.Key)
                     </td>
                     <td>
-                        @Html.Resource.Value
+                        @resource.Value
                     </td>
                     <td>
-                        @Html.Resource.DisplaySite
+                        @resource.DisplaySite
                     </td>
                     <td>
-                        @Html.Resource.DisplayUICulture
+                        @resource.DisplayUICulture
                     </td>
                     <td>
                         <div class="btn-group">
@@ -128,7 +127,7 @@ else
         </tbody>
     </table>
 }
-@Html.Pager(resources, "Index", i => new { page = i })
+@Html.PagedListPager(resources, page => Url.Action("Index", new { page, Model.Key, Model.Language, Model.Value, Model.SiteId }))
 
 <fieldset>
     <legend>

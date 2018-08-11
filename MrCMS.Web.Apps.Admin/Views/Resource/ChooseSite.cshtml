@@ -1,7 +1,4 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Helpers
-@using MrCMS.Web.Apps.Admin.Models
-@using MrCMS.Website
+﻿@using MrCMS.Helpers
 @model MrCMS.Web.Apps.Admin.Models.ChooseSiteParams
 
 @{
@@ -30,16 +27,16 @@ else
                     <button type="submit" class="btn-primary btn">@Html.Resource("Proceed")</button>
                 </span>
             </legend>
-            @if (Request.UrlReferrer != null)
+            @if (Context.Request.Referer() != null)
             {
-                @Html.Hidden("referrer", Request.UrlReferrer.ToString())
+                @Html.Hidden("referrer", Context.Request.Referer())
             }
-            @Html.HiddenFor(resource => resource.Key)
-            @Html.HiddenFor(resource => resource.Language)
+            @Html.HiddenFor(siteParams => siteParams.Key)
+            @Html.HiddenFor(siteParams => siteParams.Language)
             <div class="form-group">
-                @Html.LabelFor(resource => resource.Id, @Html.Resource("Site"))
-                @Html.DropDownListFor(resource => resource.Id, siteOptions, new { @data_val = "true", data_val_required = "Please select a site.", @class = "form-control" })
-                @Html.ValidationMessageFor(resource => resource.Id)
+                @Html.LabelFor(siteParams => siteParams.Id, @Html.Resource("Site"))
+                @Html.DropDownListFor(siteParams => siteParams.Id, siteOptions, new { @data_val = "true", data_val_required = "Please select a site.", @class = "form-control" })
+                @Html.ValidationMessageFor(siteParams => siteParams.Id)
             </div>
         </fieldset>
     }

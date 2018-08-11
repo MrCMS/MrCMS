@@ -10,12 +10,14 @@ namespace MrCMS.Web.Apps.Admin.Services
     public interface IStringResourceAdminService
     {
         IPagedList<StringResource> Search(StringResourceSearchQuery searchQuery);
-        void Add(StringResource resource);
-        void Update(StringResource resource);
-        void Delete(StringResource resource);
-        List<SelectListItem> GetLanguageOptions(string key, Site site);
+        void Add(AddStringResourceModel resource);
+        StringResource GetResource(int id);
+        UpdateStringResourceModel GetEditModel(StringResource resource);
+        void Update(UpdateStringResourceModel model);
+        void Delete(int id);
+        List<SelectListItem> GetLanguageOptions(string key, int? siteId);
         List<SelectListItem> SearchLanguageOptions();
-        StringResource GetNewResource(string key, Site site);
+        AddStringResourceModel GetNewResource(string key, int? id);
         List<SelectListItem> ChooseSiteOptions(ChooseSiteParams chooseSiteParams);
         List<SelectListItem> SearchSiteOptions();
     }

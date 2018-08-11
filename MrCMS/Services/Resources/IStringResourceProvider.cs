@@ -13,7 +13,7 @@ namespace MrCMS.Services.Resources
         string GetValue(string key, string defaultValue = null);
         string GetValueForCulture(string key, CultureInfo cultureInfo, string defaultValue = null);
         IEnumerable<string> GetOverriddenLanguages();
-        IEnumerable<string> GetOverriddenLanguages(string key, Site site);
+        IEnumerable<string> GetOverriddenLanguages(string key, int? siteId);
         void Insert(StringResource resource);
         void AddOverride(StringResource resource);
         void Update(StringResource resource);

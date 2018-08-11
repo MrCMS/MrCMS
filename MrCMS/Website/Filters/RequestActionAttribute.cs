@@ -18,4 +18,5 @@ namespace MrCMS.Website.Filters
             return routeContext.HttpContext.GetRouteValue("action")?.ToString() == _actionName;
         }
     }
+
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
@@ -19,14 +20,16 @@ namespace MrCMS.Web.Apps.Admin.Services
         private const string DefaultLanguage = "Default";
         private readonly IStringResourceProvider _provider;
         private readonly ISession _session;
+        private readonly IMapper _mapper;
         private readonly SiteSettings _siteSettings;
 
         public StringResourceAdminService(IStringResourceProvider provider, SiteSettings siteSettings,
-            ISession session)
+            ISession session, IMapper mapper)
         {
             _provider = provider;
             _siteSettings = siteSettings;
             _session = session;
+            _mapper = mapper;
         }
 
         public IPagedList<StringResource> Search(StringResourceSearchQuery searchQuery)
@@ -55,29 +58,43 @@ namespace MrCMS.Web.Apps.Admin.Services
                 }
             }
 
-            return new PagedList<StringResource>(resources.OrderBy(resource => resource.DisplayKey), searchQuery.Page,
+            return new PagedList<StringResource>(resources.OrderBy(resource => StringResourceExtensions.GetDisplayKey(resource.Key)), searchQuery.Page,
                 _siteSettings.DefaultPageSize);
         }
 
-        public void Add(StringResource resource)
+        public void Add(AddStringResourceModel model)
         {
+            var resource = _mapper.Map<StringResource>(model);
             _provider.AddOverride(resource);
         }
 
-        public void Update(StringResource resource)
+        public StringResource GetResource(int id)
         {
+            return _session.Get<StringResource>(id);
+        }
+
+        public UpdateStringResourceModel GetEditModel(StringResource resource)
+        {
+            return _mapper.Map<UpdateStringResourceModel>(resource);
+        }
+
+        public void Update(UpdateStringResourceModel model)
+        {
+            var resource = GetResource(model.Id);
+            _mapper.Map(model, resource);
             _provider.Update(resource);
         }
 
-        public void Delete(StringResource resource)
+        public void Delete(int id)
         {
+            var resource = _session.Get<StringResource>(id);
             _provider.Delete(resource);
         }
 
-        public List<SelectListItem> GetLanguageOptions(string key, Site site)
+        public List<SelectListItem> GetLanguageOptions(string key, int? siteId)
         {
             List<CultureInfo> cultureInfos = CultureInfo.GetCultures(CultureTypes.AllCultures).ToList();
-            IEnumerable<string> languages = _provider.GetOverriddenLanguages(key, site);
+            IEnumerable<string> languages = _provider.GetOverriddenLanguages(key, siteId);
             cultureInfos.RemoveAll(info => languages.Contains(info.Name));
             return cultureInfos.OrderBy(info => info.DisplayName)
                 .BuildSelectItemList(info => info.DisplayName, info => info.Name,
@@ -99,13 +116,13 @@ namespace MrCMS.Web.Apps.Admin.Services
             return selectListItems;
         }
 
-        public StringResource GetNewResource(string key, Site site)
+        public AddStringResourceModel GetNewResource(string key, int? id)
         {
             string value =
                 _provider.AllResources.Where(x => x.Key == key && x.Site == null && x.UICulture == null)
                     .Select(resource => resource.Value)
                     .FirstOrDefault();
-            return new StringResource { Key = key, Site = site, Value = value };
+            return new AddStringResourceModel { Key = key, SiteId = id, Value = value };
         }
 
         public List<SelectListItem> ChooseSiteOptions(ChooseSiteParams chooseSiteParams)

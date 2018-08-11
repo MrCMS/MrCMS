@@ -151,14 +151,14 @@ namespace MrCMS.Services.Resources
                     .Where(s => !string.IsNullOrWhiteSpace(s));
         }
 
-        public IEnumerable<string> GetOverriddenLanguages(string key, Site site)
+        public IEnumerable<string> GetOverriddenLanguages(string key, int? siteId)
         {
             if (ResourcesForSite.ContainsKey(key))
             {
                 var stringResources = ResourcesForSite[key];
-                stringResources = site == null
+                stringResources = siteId == null
                     ? stringResources.FindAll(resource => resource.Site == null)
-                    : stringResources.FindAll(resource => resource.Site != null && resource.Site.Id == site.Id);
+                    : stringResources.FindAll(resource => resource.Site != null && resource.Site.Id == siteId);
                 return stringResources
                     .Select(resource => resource.UICulture)
                     .Where(s => !string.IsNullOrWhiteSpace(s));

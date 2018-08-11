@@ -33,34 +33,36 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpGet]
         public ViewResult Add(string key, 
-            //[IoCModelBinder(typeof(NullableEntityModelBinder))]
-            Site site, bool language = false) // TODO: model-binding
+            int? id, bool language = false) // TODO: model-binding
         {
             if (language)
-                ViewData["language-options"] = _stringResourceAdminService.GetLanguageOptions(key, site);
+                ViewData["language-options"] = _stringResourceAdminService.GetLanguageOptions(key, id);
 
-            return View(_stringResourceAdminService.GetNewResource(key, site));
+            return View(_stringResourceAdminService.GetNewResource(key, id));
         }
 
         [HttpPost]
         [ActionName("Add")]
-        public RedirectToActionResult Add_POST(StringResource resource)
+        public RedirectToActionResult Add_POST(AddStringResourceModel model)
         {
-            _stringResourceAdminService.Add(resource);
+            _stringResourceAdminService.Add(model);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public ViewResult Edit(StringResource resource)
+        public ViewResult Edit(int id)
         {
-            return View(resource);
+            var resource =  _stringResourceAdminService.GetResource(id);
+            ViewData["resource"] = resource;
+            var model = _stringResourceAdminService.GetEditModel(resource);
+            return View(model);
         }
 
         [HttpPost]
         [ActionName("Edit")]
-        public RedirectToActionResult Edit_POST(StringResource resource)
+        public RedirectToActionResult Edit_POST(UpdateStringResourceModel model)
         {
-            _stringResourceAdminService.Update(resource);
+            _stringResourceAdminService.Update(model);
             return RedirectToAction("Index");
         }
 
@@ -72,9 +74,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Delete")]
-        public RedirectToActionResult Delete_POST(StringResource resource)
+        public RedirectToActionResult Delete_POST(int id)
         {
-            _stringResourceAdminService.Delete(resource);
+            _stringResourceAdminService.Delete(id);
             return RedirectToAction("Index");
         }
     }

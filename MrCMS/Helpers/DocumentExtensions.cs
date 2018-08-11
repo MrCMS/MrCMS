@@ -10,6 +10,7 @@ using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Models;
 using MrCMS.Website;
 using Newtonsoft.Json;
 using NHibernate;
@@ -139,20 +140,6 @@ namespace MrCMS.Helpers
                  (info.PropertyType.IsGenericType && info.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
                 &&
                 !ignorePropertyNames.Contains(info.Name)).ToList();
-        }
-    }
-
-    public class VersionChange
-    {
-        public string Property { get; set; }
-
-        public object PreviousValue { get; set; }
-
-        public object CurrentValue { get; set; }
-
-        public bool AnyChange
-        {
-            get { return !Equals(PreviousValue, CurrentValue); }
         }
     }
 }

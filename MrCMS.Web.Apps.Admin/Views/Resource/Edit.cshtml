@@ -1,9 +1,13 @@
-﻿@using MrCMS.Helpers
-@using MrCMS.Website
-@model MrCMS.Entities.Resources.StringResource
+﻿@using MrCMS.Entities.Resources
+@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Services
+@model MrCMS.Web.Apps.Admin.Models.UpdateStringResourceModel
 
-@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
-@using (Html.BeginForm("Edit", "Resource", FormMethod.Post))
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";
+    var resource = ViewData["resource"] as StringResource;
+}
+@using (Html.BeginForm("Edit", "Resource",new{Model.Id}, FormMethod.Post))
 {
     <fieldset>
         <legend>@Html.Resource("Admin Resources Edit resource", "Edit resource") 
@@ -11,12 +15,12 @@
                 <input type="submit" class="btn-primary btn" value="@Html.Resource("Save")" />
             </span>
         </legend>
-        "@Model.DisplayKey" @Html.Resource("for") @Model.DisplayUICulture
+        "@StringResourceExtensions.GetDisplayKey(resource.Key)" @Html.Resource("for") @resource.DisplayUICulture
         @Html.ReturnToReferrer()
         <div class="form-group">
-            @Html.LabelFor(task => task.Value)
-            @Html.TextBoxFor(task => task.Value, new { @class = "form-control" })
-            @Html.ValidationMessageFor(resource => resource.Value)
+            @Html.LabelFor(model => model.Value)
+            @Html.TextBoxFor(model => model.Value, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Value)
         </div>
     </fieldset>
 }
