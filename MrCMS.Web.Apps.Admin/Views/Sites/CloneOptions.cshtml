@@ -1,7 +1,10 @@
 ﻿@using MrCMS.Web.Apps.Admin.Models
-@model List<MrCMS.Web.Apps.Admin.Models.SiteCloneOption>
+@using MrCMS.Web.Apps.Admin.Services
+@model AddSiteModel
+@inject ISiteCloneOptionsAdminService AdminService
 @{
-    var otherSites = ViewData["other-sites"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var otherSites = AdminService.GetOtherSiteOptions();
+    var partOptions = AdminService.GetClonePartOptions();
 }
 
 <table class="table table-condensed table-striped">
@@ -24,7 +27,7 @@
                 @Html.DropDownList("copy-all", otherSites, new { @class = "form-control" })
             </td>
         </tr>
-        @foreach (var option in Model)
+        @foreach (var option in partOptions)
         {
             <tr>
                 <td>

@@ -1,7 +1,6 @@
 ﻿@using MrCMS.Helpers
 @using MrCMS.Models
-@model MrCMS.Entities.Multisite.Site
-@*@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}*@
+@model MrCMS.Web.Apps.Admin.Models.AddSiteModel
 
 @using (Html.BeginForm("Add", "Sites", FormMethod.Post))
 {
@@ -28,7 +27,7 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                @{ Html.RenderAction("Get", "SiteCloneOptions");}
+                <partial name="CloneOptions" model="Model"/>
             </div>
         </div>
     </fieldset>

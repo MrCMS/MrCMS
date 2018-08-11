@@ -1,10 +1,10 @@
 ﻿@using System.Collections.Generic
 @using MrCMS.Entities.People
 @using MrCMS.Settings
-@model MrCMS.Entities.Multisite.Site
+@using MrCMS.Web.Apps.Admin.Models
+@model MrCMS.Web.Apps.Admin.Models.UpdateSiteModel
 @{
     ViewBag.Title = "Edit | " + Model.Name;
-    var settings = ViewData["Settings"] as List<SiteSettingsBase>;
 }
 
 @using (Html.BeginForm("Edit", "Sites", FormMethod.Post, new { id = "edit-site" }))
@@ -36,6 +36,6 @@
             @Html.ValidationMessageFor(x => x.StagingUrl)
         </div>
 
-        @{ Html.RenderPartial("RestrictedDomains", Model); }
+        <partial name="RestrictedDomains" model="Model" />
     </fieldset>
 }

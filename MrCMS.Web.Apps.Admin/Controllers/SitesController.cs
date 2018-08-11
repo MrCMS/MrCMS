@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Web.Apps.Admin.ModelBinders;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
 
@@ -30,43 +31,43 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public ViewResult Add_Get()
         {
 
-            return View(new Site());
+            return View();
         }
 
         [HttpPost]
-        public RedirectToActionResult Add(Site site,
+        public RedirectToActionResult Add(AddSiteModel model,
             [ModelBinder(typeof(GetSiteCopyOptionsModelBinder))]
             List<SiteCopyOption> options)
         {
-            _siteAdminService.AddSite(site, options);
+            _siteAdminService.AddSite(model, options);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         [ActionName("Edit")]
-        public ViewResult Edit_Get(Site site)
+        public ViewResult Edit_Get(int id)
         {
-            return View(site);
+            return View(_siteAdminService.GetEditModel(id));
         }
 
         [HttpPost]
-        public RedirectToActionResult Edit(Site site)
+        public RedirectToActionResult Edit(UpdateSiteModel model)
         {
-            _siteAdminService.SaveSite(site);
+            _siteAdminService.SaveSite(model);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         [ActionName("Delete")]
-        public PartialViewResult Delete_Get(Site site)
+        public PartialViewResult Delete_Get(int id)
         {
-            return PartialView(site);
+            return PartialView(_siteAdminService.GetEditModel(id));
         }
 
         [HttpPost]
-        public RedirectToActionResult Delete(Site site)
+        public RedirectToActionResult Delete(int id)
         {
-            _siteAdminService.DeleteSite(site);
+            _siteAdminService.DeleteSite(id);
             return RedirectToAction("Index");
         }
     }

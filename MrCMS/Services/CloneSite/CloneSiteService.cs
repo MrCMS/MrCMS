@@ -40,8 +40,7 @@ namespace MrCMS.Services.CloneSite
 
         private SiteCopyOptionInfo GetSiteCopyOptionInfo(SiteCopyOption option, IServiceProvider serviceProvider)
         {
-            var cloneSiteParts = serviceProvider.GetService(option.SiteCopyActionType) as ICloneSiteParts;
-            if (cloneSiteParts == null)
+            if (!(serviceProvider.GetService(option.SiteCopyActionType) is ICloneSiteParts cloneSiteParts))
                 return null;
 
             return new SiteCopyOptionInfo(option.SiteId, cloneSiteParts);
