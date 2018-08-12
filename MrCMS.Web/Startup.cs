@@ -21,6 +21,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
+using MrCMS.Logging;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;
@@ -95,6 +96,7 @@ namespace MrCMS.Web
                 .AddDataAnnotationsLocalization()
                 .AddAppMvcConfig(appContext);
 
+            services.AddLogging(builder => builder.AddMrCMSLogger());
 
             services.AddSingleton<ISessionFactory>(provider => new NHibernateConfigurator(new SqlServer2012Provider(
                 new DatabaseSettings
@@ -193,6 +195,8 @@ namespace MrCMS.Web
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<MrCMSLoggingMiddleware>();
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new CompositeFileProvider(
@@ -214,4 +218,5 @@ namespace MrCMS.Web
 
         }
     }
+
 }

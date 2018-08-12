@@ -1,12 +1,16 @@
-﻿@model MrCMS.Logging.Log
+﻿@using MrCMS.Web.Apps.Admin.Helpers
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@model MrCMS.Logging.Log
 @{
     ViewBag.Title = "View Log #" + Model.Id;
+    var contextData = Model.GetContextData();
 }
 
 <h1 class="page-header">
     @Html.Resource("Admin Logs Log Title", "Log") #@Model.Id
     <span class="btn-group  display-inline  pull-right">
-        @Html.ActionLink("Back to list", "Index", null, new { @class = "btn btn-default" })
+        @Html.ActionLink("Back to list", "Index", "Log", null, new { @class = "btn btn-default" })
         <a href="@Url.Action("DeleteLog", "Log", new { Model.Id })" class="btn btn-danger" data-toggle="fb-modal">@Html.Resource("Delete")</a>
     </span>
 </h1>
@@ -52,11 +56,19 @@
                 @Html.Raw(Model.DetailFormatted)
             </td>
         </tr>
+        @*<tr>
+                <td>
+                    @Html.Resource("Exception Data")
+                </td>
+                <td>
+                    @Model.FormatExceptionData()
+                </td>
+            </tr>*@
     </tbody>
 </table>
-@if (Model.Error != null)
+@if (contextData != null)
 {
-    <h4>@Html.Resource("Admin Logs Server Variables", "Server Variables")</h4>
+    <h4>@Html.Resource("Admin Logs - Request Data", "Request Data")</h4>
     <div style="overflow: scroll">
         <table class="table table-striped table-condensed">
             <thead>
@@ -70,17 +82,56 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var key in Model.Error.ServerVariables.AllKeys)
+                <tr>
+                    <td>
+                        @Html.Resource("Uri")
+                    </td>
+                    <td>
+                        @contextData.Uri
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Resource("Method")
+                    </td>
+                    <td>
+                        @contextData.Method
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Resource("User Agent")
+                    </td>
+                    <td>
+                        @contextData.UserAgent
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Resource("IP Address")
+                    </td>
+                    <td>
+                        @contextData.IPAddress
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Resource("User")
+                    </td>
+                    <td>
+                        @contextData.User
+                    </td>
+                </tr>
+                @foreach (var header in contextData.Headers)
                 {
                     <tr>
                         <td>
-                            @key
+                            @header.Key
                         </td>
                         <td>
-                            @Model.Error.ServerVariables[key]
+                            @header.Value
                         </td>
                     </tr>
-
                 }
             </tbody>
         </table>

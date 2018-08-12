@@ -1,13 +1,12 @@
-﻿@using System
-@using System.Collections.Generic
-@using System.Linq
+﻿@using System.Linq
 @using MrCMS.Helpers
 @using MrCMS.Logging
-@using MrCMS.Paging
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @model LogSearchQuery
 @{
     ViewBag.Title = "Logs";
-    var logs = ViewData["logs"] as IPagedList<Log> ?? PagedList<Log>.Empty;
+    var logs = ViewData["logs"] as IPagedList<Log>;
     var siteOptions = ViewData["site-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 @using (Html.BeginForm("Index", "Log", FormMethod.Get))
@@ -70,7 +69,7 @@
 @if (logs.Count == 0)
 {
     @Html.Resource("Admin Logs No Logs", "No logs")
-        }
+}
 else
 {
     <table class="table table-striped table-condensed" style="overflow: scroll">
@@ -110,11 +109,11 @@ else
                         @entry.Type
                     </td>
                     <td>
-                        @Html.ActionLink(Resource("Show"), "Show", new { id = entry.Id }, new { @class = "btn btn-xs btn-default" })
+                        @Html.ActionLink(Html.Resource("Show"), "Show", new { id = entry.Id }, new { @class = "btn btn-xs btn-default" })
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 }
-@Html.Pager(logs, "Index", i => new { page = i })
+@Html.PagedListPager(logs, page => Url.Action("Index", new { page, Model.Type, Model.Detail, Model.From, Model.To, Model.Message, Model.SiteId }))

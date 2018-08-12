@@ -11,6 +11,8 @@ namespace MrCMS.Logging
     {
         public virtual LogEntryType Type { get; set; }
         //public virtual Error Error { get; set; }
+        public virtual string ExceptionData { get; set; }
+        public virtual string RequestData { get; set; }
         public virtual string Message { get; set; }
         public virtual string Detail { get; set; }
 

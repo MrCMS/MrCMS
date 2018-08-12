@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using System.Web;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.Extensions.Primitives;
 //using Elmah;
 //using Mindscape.Raygun4Net;
 using MrCMS.DbConfiguration.Types;
 using MrCMS.Entities.Multisite;
-using MrCMS.Helpers;
 using MrCMS.Website;
-using NHibernate;
+using ISession = NHibernate.ISession;
 
 namespace MrCMS.Logging
 {
