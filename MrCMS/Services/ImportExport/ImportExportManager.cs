@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using MrCMS.Services.ImportExport.DTOs;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using MrCMS.Data;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Messages;
@@ -16,17 +18,20 @@ namespace MrCMS.Services.ImportExport
         private readonly IImportDocumentsService _importDocumentService;
         private readonly IExportDocumentsService _exportDocumentsService;
         private readonly IRepository<Webpage> _webpageRepository;
+        private readonly ILogger<ImportExportManager> _logger;
         private readonly IMessageParser<ExportDocumentsEmailTemplate> _messageParser;
 
         public ImportExportManager(IImportDocumentsValidationService importDocumentsValidationService,
             IImportDocumentsService importDocumentsService, IExportDocumentsService exportDocumentsService,
-            IMessageParser<ExportDocumentsEmailTemplate> messageParser, IRepository<Webpage> webpageRepository)
+            IMessageParser<ExportDocumentsEmailTemplate> messageParser, IRepository<Webpage> webpageRepository,
+            ILogger<ImportExportManager> logger)
         {
             _importDocumentsValidationService = importDocumentsValidationService;
             _importDocumentService = importDocumentsService;
             _exportDocumentsService = exportDocumentsService;
             _messageParser = messageParser;
             _webpageRepository = webpageRepository;
+            _logger = logger;
         }
 
         public ImportDocumentsResult ImportDocumentsFromExcel(Stream file, bool autoStart = true)
@@ -62,15 +67,25 @@ namespace MrCMS.Services.ImportExport
 
         public byte[] ExportDocumentsToExcel()
         {
-            var webpages = _webpageRepository.Query().ToList();
-            var package = _exportDocumentsService.GetExportExcelPackage(webpages);
-            return _exportDocumentsService.ConvertPackageToByteArray(package);
+            try
+            {
+                var webpages = _webpageRepository.Query().ToList();
+                var package = _exportDocumentsService.GetExportExcelPackage(webpages);
+                return _exportDocumentsService.ConvertPackageToByteArray(package);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, exception, exception.Message);
+                throw;
+            }
         }
 
         public ExportDocumentsResult ExportDocumentsToEmail(ExportDocumentsModel model)
         {
-            var queuedMessage = _messageParser.GetMessage(toAddress: model.Email);
-            _messageParser.QueueMessage(queuedMessage, new List<AttachmentData>
+            try
+            {
+                var queuedMessage = _messageParser.GetMessage(toAddress: model.Email);
+                _messageParser.QueueMessage(queuedMessage, new List<AttachmentData>
             {
                 new AttachmentData
                 {
@@ -80,7 +95,13 @@ namespace MrCMS.Services.ImportExport
                 }
             });
 
-            return new ExportDocumentsResult {Success = true};
+                return new ExportDocumentsResult { Success = true };
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, exception, exception.Message);
+                throw;
+            }
         }
 
         public const string XlsxContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";

@@ -7,11 +7,11 @@ namespace MrCMS.Logging
 {
     public class MrCMSLoggingMiddleware : IMiddleware
     {
-        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger<MrCMSLoggingMiddleware> _logger;
 
-        public MrCMSLoggingMiddleware(ILoggerFactory loggerFactory)
+        public MrCMSLoggingMiddleware(ILogger<MrCMSLoggingMiddleware> logger)
         {
-            _loggerFactory = loggerFactory;
+            _logger = logger;
         }
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
@@ -21,7 +21,7 @@ namespace MrCMS.Logging
             }
             catch (Exception exception)
             {
-                _loggerFactory.CreateLogger("pipeline").Log(LogLevel.Error, exception, exception.Message);
+                _logger.Log(LogLevel.Error, exception, exception.Message);
                 throw;
             }
         }

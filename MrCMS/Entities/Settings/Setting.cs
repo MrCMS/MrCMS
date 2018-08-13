@@ -1,9 +1,11 @@
+using MrCMS.Entities.Multisite;
+
 namespace MrCMS.Entities.Settings
 {
     /// <summary>
     ///     Represents a setting
     /// </summary>
-    public class Setting : SiteEntity
+    public class Setting : SystemEntity
     {
         /// <summary>
         ///     Gets or sets the type
@@ -24,5 +26,6 @@ namespace MrCMS.Entities.Settings
         ///     Gets or sets the value
         /// </summary>
         public virtual string Value { get; set; }
+        public virtual Site Site { get; set; }
     }
 }

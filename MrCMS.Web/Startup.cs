@@ -163,7 +163,8 @@ namespace MrCMS.Web
             //services.AddSingleton<ILocalizationManager, LocalizationManager>();
 
 
-            services.AddScoped<IUrlHelper>(x => {
+            services.AddScoped<IUrlHelper>(x =>
+            {
                 var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
                 var factory = x.GetRequiredService<IUrlHelperFactory>();
                 return factory.GetUrlHelper(actionContext);
@@ -172,8 +173,20 @@ namespace MrCMS.Web
                 .Create(null, null));
 
 
-            // TODO: update the resolution of this
-            services.AddSingleton<IFileSystem, FileSystem>();
+            services.AddScoped<IFileSystem>(provider =>
+            {
+                var settings = provider.GetService<FileSystemSettings>();
+
+                var storageType = settings.StorageType;
+                if (string.IsNullOrWhiteSpace(storageType))
+                    return provider.GetService<FileSystem>();
+
+                var type = TypeHelper.GetTypeByName(storageType);
+                if (type?.IsAssignableFrom(typeof(IFileSystem)) != true)
+                    return provider.GetService<FileSystem>();
+
+                return provider.GetService(type) as IFileSystem;
+            });
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -190,6 +203,7 @@ namespace MrCMS.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, MrCMSAppContext appContext)
         {
+            app.UseMiddleware<CurrentSiteSettingsMiddleware>();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

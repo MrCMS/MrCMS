@@ -10,17 +10,8 @@ namespace MrCMS.Tasks
 
         public TaskExecutionResult Execute()
         {
-            try
-            {
-                OnExecute();
-                return TaskExecutionResult.Successful(this);
-            }
-            catch (Exception ex)
-            {
-                //CurrentRequestData.ErrorSignal.Raise(ex);
-                // TODO: logging
-                return TaskExecutionResult.Failure(this, ex);
-            }
+            OnExecute();
+            return TaskExecutionResult.Successful(this);
         }
 
         public abstract string GetData();

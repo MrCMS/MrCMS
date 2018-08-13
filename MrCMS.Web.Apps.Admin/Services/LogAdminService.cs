@@ -20,14 +20,6 @@ namespace MrCMS.Web.Apps.Admin.Services
             _session = session;
         }
 
-        public void Insert(Log log)
-        {
-            //if (log.Error == null)
-            //    log.Error = new Error();
-            // TODO: error/elmah
-            _session.Transact(session => session.Save(log));
-        }
-
 
         public void DeleteAllLogs()
         {

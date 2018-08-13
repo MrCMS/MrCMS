@@ -21,9 +21,8 @@ namespace MrCMS.Services.ImportExport.BatchJobs
         private readonly IEventContext _eventContext;
 
         public ImportDocumentBatchJobExecutor(ISession session,
-            ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus, IUpdateTagsService updateTagsService, IUpdateUrlHistoryService updateUrlHistoryService,
-           IEventContext eventContext)
-            : base(setBatchJobJobExecutionStatus)
+            IUpdateTagsService updateTagsService, IUpdateUrlHistoryService updateUrlHistoryService,
+            IEventContext eventContext)
         {
             _session = session;
             _updateTagsService = updateTagsService;

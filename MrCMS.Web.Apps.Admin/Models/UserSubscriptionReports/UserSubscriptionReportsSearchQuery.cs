@@ -24,7 +24,7 @@ namespace MrCMS.Web.Apps.Admin.Models.UserSubscriptionReports
             {
                 if (_startDate == DateTime.MinValue)
                 {
-                    _startDate = new DateTime(DateTime.Now.Year, 1, 1);
+                    _startDate = new DateTime(DateTime.UtcNow.Year, 1, 1);
                     return _startDate.Date;
                 }
                 else
@@ -44,7 +44,7 @@ namespace MrCMS.Web.Apps.Admin.Models.UserSubscriptionReports
             {
                 if (_endDate == DateTime.MinValue)
                 {
-                    _endDate = DateTime.Now;
+                    _endDate = DateTime.UtcNow;
                     return _endDate.Date;
                 }
                 else

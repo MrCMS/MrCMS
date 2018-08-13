@@ -11,12 +11,15 @@ namespace MrCMS.Services
     public class UserLookup : IUserLookup
     {
         private readonly IEnumerable<IExternalUserSource> _externalUserSources;
+        private readonly IGetNowForSite _getNowForSite;
         private readonly ISession _session;
 
-        public UserLookup(ISession session, IEnumerable<IExternalUserSource> externalUserSources)
+        public UserLookup(ISession session, IEnumerable<IExternalUserSource> externalUserSources, IGetNowForSite getNowForSite)
         {
             _session = session;
             _externalUserSources = externalUserSources;
+            // TODO: check if this is right for here, as users are system entities
+            _getNowForSite = getNowForSite;
         }
 
         public User GetUserByEmail(string email)
@@ -38,11 +41,12 @@ namespace MrCMS.Services
 
         public User GetUserByResetGuid(Guid resetGuid)
         {
+            var now = _getNowForSite.Now;
             return
                 _session.QueryOver<User>()
                     .Where(
                         user =>
-                            user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= DateTime.UtcNow)
+                            user.ResetPasswordGuid == resetGuid && user.ResetPasswordExpiry >= now)
                     .Cacheable().SingleOrDefault();
         }
 

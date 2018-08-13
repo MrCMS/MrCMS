@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
@@ -9,25 +8,24 @@ namespace MrCMS.HealthChecks
 {
     public class StalledQueuedTasks : HealthCheck
     {
+        private readonly IGetNowForSite _getNowForSite;
         private readonly ISession _session;
 
-        public StalledQueuedTasks(ISession session)
+        public StalledQueuedTasks(ISession session, IGetNowForSite getNowForSite)
         {
             _session = session;
+            _getNowForSite = getNowForSite;
         }
 
-        public override string DisplayName
-        {
-            get { return "Stalled Queued Tasks"; }
-        }
+        public override string DisplayName => "Stalled Queued Tasks";
 
         public override HealthCheckResult PerformCheck()
         {
+            var checkDate = _getNowForSite.Now.AddMinutes(-30);
             var any = _session.QueryOver<QueuedTask>()
                 .Where(
-                    task =>
-                        task.Status == TaskExecutionStatus.Pending &&
-                        task.CreatedOn <= DateTime.UtcNow.AddMinutes(-30))
+                    task => task.Status == TaskExecutionStatus.Pending &&
+                            task.CreatedOn <= checkDate)
                 .Any();
             return any
                 ? new HealthCheckResult

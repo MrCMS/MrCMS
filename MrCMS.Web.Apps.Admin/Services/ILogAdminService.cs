@@ -7,7 +7,6 @@ namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface ILogAdminService
     {
-        void Insert(Log log);
         IPagedList<Log> GetEntriesPaged(LogSearchQuery searchQuery);
         void DeleteAllLogs();
         void DeleteLog(Log log);

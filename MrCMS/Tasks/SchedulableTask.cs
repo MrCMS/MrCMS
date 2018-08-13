@@ -3,23 +3,13 @@ using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
-    public abstract class SchedulableTask 
+    public abstract class SchedulableTask
     {
         public abstract int Priority { get; }
 
-        public Exception Execute()
+        public void Execute()
         {
-            try
-            {
-                OnExecute();
-                return null;
-            }
-            catch (Exception ex)
-            {
-                //CurrentRequestData.ErrorSignal.Raise(ex);
-                // TODO: logging
-                return ex;
-            }
+            OnExecute();
         }
         protected abstract void OnExecute();
     }

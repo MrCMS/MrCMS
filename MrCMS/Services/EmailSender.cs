@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Messaging;
 using MrCMS.Helpers;
 using MrCMS.Messages;
@@ -15,12 +16,13 @@ namespace MrCMS.Services
     {
         //private readonly ErrorSignal _errorSignal;
         private readonly ISession _session;
+        private readonly ILogger<EmailSender> _logger;
         private readonly SmtpClient _smtpClient;
 
-        public EmailSender(ISession session, MailSettings mailSettings, /*ErrorSignal errorSignal,*/ IGetSmtpClient getSmtpClient)
+        public EmailSender(ISession session, MailSettings mailSettings, ILogger<EmailSender> logger, IGetSmtpClient getSmtpClient)
         {
             _session = session;
-            //_errorSignal = errorSignal;
+            _logger = logger;
             _smtpClient = getSmtpClient.GetClient(mailSettings);
         }
 
@@ -42,12 +44,11 @@ namespace MrCMS.Services
                 var mailMessage = BuildMailMessage(queuedMessage);
 
                 _smtpClient.Send(mailMessage);
-                queuedMessage.SentOn = DateTime.Now;
+                queuedMessage.SentOn = DateTime.UtcNow;
             }
             catch (Exception exception)
             {
-                //_errorSignal.Raise(exception);
-                // TODO: logging
+                _logger.Log(LogLevel.Error, exception, exception.Message);
                 queuedMessage.Tries++;
             }
             _session.Transact(session => session.SaveOrUpdate(queuedMessage));

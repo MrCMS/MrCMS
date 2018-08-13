@@ -82,6 +82,9 @@ else
                     @Html.Resource("Site")
                 </th>
                 <th>
+                    @Html.Resource("Level")
+                </th>
+                <th>
                     @Html.Resource("Message")
                 </th>
                 <th>
@@ -101,6 +104,9 @@ else
                     </td>
                     <td>
                         @entry.SiteName
+                    </td>
+                    <td>
+                        @entry.LogLevel
                     </td>
                     <td>
                         @entry.Message

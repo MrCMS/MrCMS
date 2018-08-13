@@ -5,6 +5,7 @@ using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Services;
+using NHibernate;
 using NHibernate.Event;
 using NHibernate.Persister.Entity;
 
@@ -13,15 +14,14 @@ namespace MrCMS.DbConfiguration.Configuration
     [Serializable]
     public class SetCoreProperties : IPreInsertEventListener
     {
-        public async Task<bool> OnPreInsertAsync(PreInsertEvent @event, CancellationToken cancellationToken)
+        public Task<bool> OnPreInsertAsync(PreInsertEvent @event, CancellationToken cancellationToken)
         {
-            return OnPreInsert(@event);
+            return Task.FromResult(OnPreInsert(@event));
         }
 
         public bool OnPreInsert(PreInsertEvent @event)
         {
-            var systemEntity = @event.Entity as SystemEntity;
-            if (systemEntity != null)
+            if (@event.Entity is SystemEntity systemEntity)
             {
                 var now = DateTime.UtcNow;
 
@@ -31,11 +31,11 @@ namespace MrCMS.DbConfiguration.Configuration
                 if (systemEntity.UpdatedOn == DateTime.MinValue)
                     SetUpdatedOn(@event.Persister, @event.State, systemEntity, now);
 
-                if (systemEntity is SiteEntity && (systemEntity as SiteEntity).Site == null)
+                if (systemEntity is SiteEntity entity && entity.Site == null)
                 {
                     // TODO: get site
-                    Site site = @event.Session.GetService<ICurrentSiteLocator>().GetCurrentSite();
-                    SetSite(@event.Persister, @event.State, systemEntity as SiteEntity, site);
+                    Site site = ((ISession)@event.Session).GetService<ICurrentSiteLocator>().GetCurrentSite();
+                    SetSite(@event.Persister, @event.State, entity, site);
                 }
             }
 

@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
 using MrCMS.Helpers;
@@ -17,11 +19,13 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
+        private readonly ILogger<FormAdminService> _logger;
 
-        public FormAdminService(ISession session, IStringResourceProvider stringResourceProvider)
+        public FormAdminService(ISession session, IStringResourceProvider stringResourceProvider, ILogger<FormAdminService> logger)
         {
             _session = session;
             _stringResourceProvider = stringResourceProvider;
+            _logger = logger;
         }
 
         public void ClearFormData(Webpage webpage)
@@ -35,18 +39,26 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public byte[] ExportFormData(Webpage webpage)
         {
-            var stringBuilder = new StringBuilder();
-
-            var headers = GetHeadersForExport(webpage).ToList();
-            stringBuilder.AppendLine(string.Join(",", headers.Select(FormatField)));
-
-            var formDataForExport = GetFormDataForExport(webpage);
-            foreach (var data in formDataForExport)
+            try
             {
-                stringBuilder.AppendLine(string.Join(",", data.Value.Select(FormatField)));
-            }
+                var stringBuilder = new StringBuilder();
 
-            return Encoding.Default.GetBytes(stringBuilder.ToString());
+                var headers = GetHeadersForExport(webpage).ToList();
+                stringBuilder.AppendLine(string.Join(",", headers.Select(FormatField)));
+
+                var formDataForExport = GetFormDataForExport(webpage);
+                foreach (var data in formDataForExport)
+                {
+                    stringBuilder.AppendLine(string.Join(",", data.Value.Select(FormatField)));
+                }
+
+                return Encoding.Default.GetBytes(stringBuilder.ToString());
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error,exception,exception.Message);
+                throw;
+            }
         }
 
         public void DeletePosting(FormPosting posting)

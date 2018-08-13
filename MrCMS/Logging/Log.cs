@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 //using Elmah;
 using MrCMS.Entities;
 //using MrCMS.Website;
@@ -20,5 +21,7 @@ namespace MrCMS.Logging
         {
             get { return (Detail ?? string.Empty).Replace(Environment.NewLine, "<br />"); }
         }
+
+        public virtual LogLevel LogLevel { get; set; }
     }
 }

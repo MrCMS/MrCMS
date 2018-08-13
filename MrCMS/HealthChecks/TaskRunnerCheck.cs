@@ -10,10 +10,12 @@ namespace MrCMS.HealthChecks
     public class TaskRunnerCheck : HealthCheck
     {
         private readonly ITaskSettingManager _taskSettingManager;
+        private readonly IGetNowForSite _getNowForSite;
 
-        public TaskRunnerCheck(ITaskSettingManager taskSettingManager)
+        public TaskRunnerCheck(ITaskSettingManager taskSettingManager, IGetNowForSite getNowForSite)
         {
             _taskSettingManager = taskSettingManager;
+            _getNowForSite = getNowForSite;
         }
 
         public override string DisplayName
@@ -23,10 +25,11 @@ namespace MrCMS.HealthChecks
 
         public override HealthCheckResult PerformCheck()
         {
+            var nowForSite = _getNowForSite.Now;
             var tasks = _taskSettingManager.GetInfo()
                         .ToList()
-                        .Where(x => x.Enabled && 
-                            (!x.LastCompleted.HasValue || x.LastCompleted.Value <= DateTime.UtcNow.AddSeconds(-(x.FrequencyInSeconds + 120))));
+                        .Where(x => x.Enabled &&
+                            (!x.LastCompleted.HasValue || x.LastCompleted.Value <= nowForSite.AddSeconds(-(x.FrequencyInSeconds + 120))));
 
             if (tasks.Any())
             {

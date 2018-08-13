@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.Extensions.Logging;
 using MrCMS.Entities;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -46,6 +47,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
             var partialViewName = type.Name + (suffix ?? string.Empty);
             var viewEngine = htmlHelper.GetRequiredService<ICompositeViewEngine>();
             var actionContextAccessor = htmlHelper.GetRequiredService<IActionContextAccessor>();
+            var logger = htmlHelper.GetRequiredService<ILogger<CompositeViewEngine>>();
             ViewEngineResult viewEngineResult = viewEngine.FindView(actionContextAccessor.ActionContext,
                 partialViewName, false);
             if (viewEngineResult.View != null)
@@ -56,8 +58,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
                 }
                 catch (Exception exception)
                 {
-                    // TODO: logging
-                    //CurrentRequestData.ErrorSignal.Raise(exception);
+                    logger.Log(LogLevel.Error, exception, exception.Message);
                     return
                         new HtmlString(
                             "We could not find a custom admin view for this page. Either this page is bespoke or has no custom properties.");
@@ -77,6 +78,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
 
             var viewEngine = htmlHelper.GetRequiredService<ICompositeViewEngine>();
             var actionContextAccessor = htmlHelper.GetRequiredService<IActionContextAccessor>();
+            var logger = htmlHelper.GetRequiredService<ILogger<CompositeViewEngine>>();
             ViewEngineResult viewEngineResult = viewEngine.FindView(actionContextAccessor.ActionContext,
                 entityType.Name, false);
             if (viewEngineResult.View != null)
@@ -87,8 +89,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
                 }
                 catch (Exception exception)
                 {
-                    // TODO: logging
-                    //CurrentRequestData.ErrorSignal.Raise(exception);
+                    logger.Log(LogLevel.Error, exception, exception.Message);
                 }
             }
             return HtmlString.Empty;
@@ -105,6 +106,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
 
             var viewEngine = htmlHelper.GetRequiredService<ICompositeViewEngine>();
             var actionContextAccessor = htmlHelper.GetRequiredService<IActionContextAccessor>();
+            var logger = htmlHelper.GetRequiredService<ILogger<CompositeViewEngine>>();
             ViewEngineResult viewEngineResult = viewEngine.FindView(actionContextAccessor.ActionContext, userProfileType.Name, false);
             if (viewEngineResult.View != null)
             {
@@ -114,8 +116,7 @@ namespace MrCMS.Web.Apps.Admin.Infrastructure.Helpers
                 }
                 catch (Exception exception)
                 {
-                    // TODO: logging
-                    //CurrentRequestData.ErrorSignal.Raise(exception);
+                    logger.Log(LogLevel.Error, exception, exception.Message);
                 }
             }
             return HtmlString.Empty;

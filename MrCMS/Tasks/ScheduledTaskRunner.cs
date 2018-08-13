@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
+using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Settings;
@@ -20,15 +21,20 @@ namespace MrCMS.Tasks
         private readonly IServiceProvider _serviceProvider;
         private readonly ITaskSettingManager _taskSettingManager;
         private readonly ITriggerUrls _triggerUrls;
+        private readonly ILogger<ScheduledTaskRunner> _logger;
+        private readonly IGetNowForSite _getNowForSite;
 
         public ScheduledTaskRunner(SiteSettings siteSettings,
-            Site site, IServiceProvider serviceProvider, ITaskSettingManager taskSettingManager, ITriggerUrls triggerUrls)
+            Site site, IServiceProvider serviceProvider, ITaskSettingManager taskSettingManager, ITriggerUrls triggerUrls,
+            ILogger<ScheduledTaskRunner> logger,IGetNowForSite getNowForSite)
         {
             _siteSettings = siteSettings;
             _site = site;
             _serviceProvider = serviceProvider;
             _taskSettingManager = taskSettingManager;
             _triggerUrls = triggerUrls;
+            _logger = logger;
+            _getNowForSite = getNowForSite;
         }
 
         public void TriggerScheduledTasks()
@@ -44,7 +50,7 @@ namespace MrCMS.Tasks
 
         private List<TaskInfo> GetPendingScheduledTasks()
         {
-            DateTime startTime = DateTime.UtcNow;
+            DateTime startTime = _getNowForSite.Now;
             var scheduledTasks =
                 _taskSettingManager.GetInfo()
                     .Where(task =>
@@ -72,8 +78,7 @@ namespace MrCMS.Tasks
             }
             catch (Exception exception)
             {
-                // TODO: logging
-                //CurrentRequestData.ErrorSignal.Raise(exception);
+                _logger.Log(LogLevel.Error, exception, exception.Message);
                 SetStatus(typeObj, TaskExecutionStatus.Pending);
             }
         }

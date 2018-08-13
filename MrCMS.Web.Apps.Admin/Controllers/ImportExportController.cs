@@ -41,8 +41,6 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             }
             catch (Exception ex)
             {
-                //CurrentRequestData.ErrorSignal.Raise(ex);
-                // TODO: logging
                 TempData["export-status"] =
                     "Documents exporting has failed. Please try again and contact system administration if error continues to appear.";
                 return RedirectToAction("Documents");
@@ -68,10 +66,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
                 _importExportManager.ExportDocumentsToEmail(model);
                 TempData["export-status"] = "Documents successfully exported.";
             }
-            catch (Exception ex)
+            catch 
             {
-                //CurrentRequestData.ErrorSignal.Raise(ex);
-                // TODO: logging
                 TempData["export-status"] =
                     "Documents exporting has failed. Please try again and contact system administration if error continues to appear.";
             }

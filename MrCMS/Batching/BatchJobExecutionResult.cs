@@ -30,32 +30,5 @@ namespace MrCMS.Batching
                 Message = message
             };
         }
-
-        internal static BatchJobExecutionResult Try(Func<BatchJobExecutionResult> func)
-        {
-            try
-            {
-                return func();
-            }
-            catch (Exception ex)
-            {
-                // TODO: logging
-                //CurrentRequestData.ErrorSignal.Raise(ex);
-                return Failure(ex.Message);
-            }
-        }
-        internal static Task<BatchJobExecutionResult> TryAsync(Func<Task<BatchJobExecutionResult>> func)
-        {
-            try
-            {
-                return func();
-            }
-            catch (Exception ex)
-            {
-                // TODO: logging
-                //CurrentRequestData.ErrorSignal.Raise(ex);
-                return Task.FromResult(Failure(ex.Message));
-            }
-        }
     }
 }

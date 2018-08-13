@@ -149,8 +149,7 @@ namespace MrCMS.Web.Apps.Core.Controllers
             }
             catch (Exception ex)
             {
-                //ErrorSignal.FromCurrentContext().Raise(ex);
-                // TODO: logging
+                // TODO: should this not say what's wrong and redirect back to the password reset again?
                 return _uniquePageService.RedirectTo<LoginPage>();
             }
         }

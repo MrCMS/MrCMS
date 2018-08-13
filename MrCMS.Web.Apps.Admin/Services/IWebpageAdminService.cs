@@ -17,5 +17,6 @@ namespace MrCMS.Web.Apps.Admin.Services
         void SetOrders(List<SortItem> items);
         void PublishNow(int id);
         void Unpublish(int id);
+        string GetServerDate();
     }
 }

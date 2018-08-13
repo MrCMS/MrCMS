@@ -186,7 +186,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         /// <returns>Date</returns>
         public string GetServerDate()
         {
-            return DateTime.Now.ToString(); // TODO: sort out dates and cultures
+            return _webpageAdminService.GetServerDate();
+            //return DateTime.Now.ToString(); // TODO: sort out dates and cultures
             //return CurrentRequestData.Now.ToString(CurrentRequestData.CultureInfo);
         }
 

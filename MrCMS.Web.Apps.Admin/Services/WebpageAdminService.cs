@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
+using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Models.Tabs;
 
@@ -17,14 +18,17 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly IRepository<Webpage> _webpageRepository;
         private readonly IMapper _mapper;
         private readonly IGetDocumentsByParent<Webpage> _getDocumentsByParent;
+        private readonly SiteSettings _siteSettings;
 
         public WebpageAdminService(IRepository<Webpage> webpageRepository,
             IMapper mapper,
-            IGetDocumentsByParent<Webpage> getDocumentsByParent)
+            IGetDocumentsByParent<Webpage> getDocumentsByParent,
+            SiteSettings siteSettings)
         {
             _webpageRepository = webpageRepository;
             _mapper = mapper;
             _getDocumentsByParent = getDocumentsByParent;
+            _siteSettings = siteSettings;
         }
 
 
@@ -134,6 +138,12 @@ namespace MrCMS.Web.Apps.Admin.Services
             webpage.Published = false;
             webpage.PublishOn = null;
             _webpageRepository.Update(webpage);
+        }
+
+        public string GetServerDate()
+        {
+            var now = DateTime.UtcNow;
+            return now.Add(_siteSettings.TimeZoneInfo.GetUtcOffset(now)).ToString();
         }
     }
 }

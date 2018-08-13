@@ -1,5 +1,6 @@
 using System;
 using System.Net.Mail;
+using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Multisite;
 using MrCMS.Models;
 using MrCMS.Services.Resources;
@@ -10,14 +11,17 @@ namespace MrCMS.Services
     public class TestSmtpSettings : ITestSmtpSettings
     {
         private readonly IGetSmtpClient _getSmtpClient;
+
+        private readonly ILogger<TestSmtpSettings> _logger;
+
         //private readonly ErrorSignal _errorSignal;
         private readonly IStringResourceProvider _resourceProvider;
         private readonly Site _site;
 
-        public TestSmtpSettings(IGetSmtpClient getSmtpClient,/* ErrorSignal errorSignal,*/ IStringResourceProvider resourceProvider, Site site)
+        public TestSmtpSettings(IGetSmtpClient getSmtpClient, ILogger<TestSmtpSettings> logger, IStringResourceProvider resourceProvider, Site site)
         {
             _getSmtpClient = getSmtpClient;
-            //_errorSignal = errorSignal;
+            _logger = logger;
             _resourceProvider = resourceProvider;
             _site = site;
         }
@@ -41,8 +45,7 @@ namespace MrCMS.Services
             }
             catch (Exception ex)
             {
-                //_errorSignal.Raise(ex);
-                // TODO: logging
+                _logger.Log(LogLevel.Error, ex, ex.Message);
                 return false;
             }
         }

@@ -1,4 +1,6 @@
 ﻿using System;
+using MrCMS.Helpers;
+using MrCMS.Settings;
 using MrCMS.Website;
 using NHibernate.Engine;
 
@@ -9,9 +11,7 @@ namespace MrCMS.DbConfiguration.Types
     {
         protected override TimeZoneInfo GetTimeZone(ISessionImplementor session)
         {
-            // TODO: timezone
-            return TimeZoneInfo.Local;
-            //return CurrentRequestData.TimeZoneInfo;
+            return session.GetContext().GetSiteSettings()?.TimeZoneInfo ?? TimeZoneInfo.Local;
         }
     }
 }

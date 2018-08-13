@@ -11,6 +11,7 @@ using MrCMS.Entities;
 using MrCMS.Settings;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Engine;
 using NHibernate.Linq;
 using X.PagedList;
 using ISession = NHibernate.ISession;
@@ -32,12 +33,20 @@ namespace MrCMS.Helpers
 
         public static HttpContext GetContext(this ISession session)
         {
-            return (session.GetSessionImplementation().Interceptor as MrCMSInterceptor)?.Context;
+            return GetContext(session.GetSessionImplementation());
+        }
+        public static HttpContext GetContext(this ISessionImplementor session)
+        {
+            return (session.Interceptor as MrCMSInterceptor)?.Context;
         }
 
         public static T GetService<T>(this ISession session)
         {
-            return !(session.GetSessionImplementation().Interceptor is MrCMSInterceptor mrCMSInterceptor)
+            return session.GetSessionImplementation().GetService<T>();
+        }
+        public static T GetService<T>(this ISessionImplementor sessionImplementor)
+        {
+            return !(sessionImplementor.Interceptor is MrCMSInterceptor mrCMSInterceptor)
                 ? default(T)
                 : mrCMSInterceptor.ServiceProvider.GetRequiredService<T>();
         }

@@ -40,9 +40,11 @@ namespace MrCMS.Indexing.Management
         private readonly TDefinition _definition;
         private readonly IStatelessSession _statelessSession;
         private readonly IGetLuceneDirectory _getLuceneDirectory;
+        private readonly IGetIndexResult _getIndexResult;
 
         public IndexManager(IGetLuceneIndexWriter getLuceneIndexWriter, IGetLuceneIndexSearcher getLuceneIndexSearcher,
-            Site site, TDefinition definition, IStatelessSession statelessSession, IGetLuceneDirectory getLuceneDirectory)
+            Site site, TDefinition definition, IStatelessSession statelessSession, IGetLuceneDirectory getLuceneDirectory,
+            IGetIndexResult getIndexResult)
         {
             _getLuceneIndexWriter = getLuceneIndexWriter;
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
@@ -50,6 +52,7 @@ namespace MrCMS.Indexing.Management
             _definition = definition;
             _statelessSession = statelessSession;
             _getLuceneDirectory = getLuceneDirectory;
+            _getIndexResult = getIndexResult;
         }
 
         public string IndexFolderName
@@ -150,7 +153,7 @@ namespace MrCMS.Indexing.Management
 
         public IndexResult Insert(IEnumerable<TEntity> entities)
         {
-            return IndexResult.GetResult(() => Write(writer =>
+            return _getIndexResult.GetResult(() => Write(writer =>
             {
                 foreach (TEntity entity in entities)
                     writer.AddDocument(Definition.Convert(entity));
@@ -159,7 +162,7 @@ namespace MrCMS.Indexing.Management
 
         public IndexResult Insert(TEntity entity)
         {
-            return IndexResult.GetResult(() => Write(writer => writer.AddDocument(Definition.Convert(entity))));
+            return _getIndexResult.GetResult(() => Write(writer => writer.AddDocument(Definition.Convert(entity))));
         }
 
         public IndexResult Insert(object entity)
@@ -167,7 +170,7 @@ namespace MrCMS.Indexing.Management
             if (entity is TEntity)
                 return Insert(entity as TEntity);
 
-            return IndexResult.GetResult(() =>
+            return _getIndexResult.GetResult(() =>
             {
                 throw new Exception(
                     string.Format(
@@ -182,7 +185,7 @@ namespace MrCMS.Indexing.Management
             if (entity is TEntity)
                 return Delete(entity as TEntity);
 
-            return IndexResult.GetResult(() =>
+            return _getIndexResult.GetResult(() =>
             {
                 throw new Exception(
                     string.Format(
@@ -199,7 +202,7 @@ namespace MrCMS.Indexing.Management
 
         public IndexResult Update(IEnumerable<TEntity> entities)
         {
-            return IndexResult.GetResult(() => Write(writer =>
+            return _getIndexResult.GetResult(() => Write(writer =>
             {
                 foreach (TEntity entity in entities)
                     writer.UpdateDocument(Definition.GetIndex(entity),
@@ -209,7 +212,7 @@ namespace MrCMS.Indexing.Management
 
         public IndexResult Update(TEntity entity)
         {
-            return IndexResult.GetResult(() => Write(writer =>
+            return _getIndexResult.GetResult(() => Write(writer =>
             {
                 var indexSearcher = _getLuceneIndexSearcher.Get(Definition);
 
@@ -227,17 +230,14 @@ namespace MrCMS.Indexing.Management
             if (entity is TEntity)
                 return Update(entity as TEntity);
 
-            return IndexResult.GetResult(() =>
-            {
-                throw new Exception(
-                    string.Format(
-                        "object {0} is not of correct type for the index {1}", entity, GetType().Name));
-            });
+            return _getIndexResult.GetResult(() => throw new Exception(
+                string.Format(
+                    "object {0} is not of correct type for the index {1}", entity, GetType().Name)));
         }
 
         public IndexResult Delete(IEnumerable<TEntity> entities)
         {
-            return IndexResult.GetResult(() => Write(writer =>
+            return _getIndexResult.GetResult(() => Write(writer =>
             {
                 foreach (TEntity entity in entities)
                     writer.DeleteDocuments(Definition.GetIndex(entity));
@@ -246,7 +246,7 @@ namespace MrCMS.Indexing.Management
 
         public IndexResult Delete(TEntity entity)
         {
-            return IndexResult.GetResult(() => Write(writer => writer.DeleteDocuments(Definition.GetIndex(entity))));
+            return _getIndexResult.GetResult(() => Write(writer => writer.DeleteDocuments(Definition.GetIndex(entity))));
         }
 
         public IndexResult ReIndex()
@@ -257,15 +257,12 @@ namespace MrCMS.Indexing.Management
                 criteria.Add(Restrictions.Eq("Site.Id", _site.Id));
             var entities = criteria.SetCacheable(true)
                 .List<TEntity>().ToList();
-            return IndexResult.GetResult(() =>
+            return _getIndexResult.GetResult(() => Write(writer =>
             {
-                Write(writer =>
-                {
-                    foreach (Document document in Definition.ConvertAll(entities))
-                        writer.AddDocument(document);
-                    //writer.Optimize();
-                }, true);
-            });
+                foreach (Document document in Definition.ConvertAll(entities))
+                    writer.AddDocument(document);
+                //writer.Optimize();
+            }, true));
         }
 
         public Document GetDocument(object entity)

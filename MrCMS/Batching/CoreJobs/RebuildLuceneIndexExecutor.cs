@@ -7,9 +7,7 @@ namespace MrCMS.Batching.CoreJobs
     {
         private readonly IIndexService _indexService;
 
-        public RebuildLuceneIndexExecutor(ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus,
-            IIndexService indexService)
-            : base(setBatchJobJobExecutionStatus)
+        public RebuildLuceneIndexExecutor(IIndexService indexService)
         {
             _indexService = indexService;
         }

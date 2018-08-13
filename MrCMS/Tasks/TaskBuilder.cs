@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using MrCMS.Helpers;
 using NHibernate;
+using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
 namespace MrCMS.Tasks
 {
@@ -10,11 +12,13 @@ namespace MrCMS.Tasks
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ISession _session;
+        private readonly ILogger<TaskBuilder> _logger;
 
-        public TaskBuilder(IServiceProvider serviceProvider,ISession session)
+        public TaskBuilder(IServiceProvider serviceProvider,ISession session, ILogger<TaskBuilder> logger)
         {
             _serviceProvider = serviceProvider;
             _session = session;
+            _logger = logger;
         }
 
         public IList<AdHocTask> GetTasksToExecute(IList<QueuedTask> pendingQueuedTasks)
@@ -30,8 +34,7 @@ namespace MrCMS.Tasks
                 }
                 catch (Exception exception)
                 {
-                    //CurrentRequestData.ErrorSignal.Raise(exception);
-                    // TODO: add logging
+                    _logger.Log(LogLevel.Error, exception, exception.Message);
                     failedTasks.Add(queuedTask);
                 }
             }

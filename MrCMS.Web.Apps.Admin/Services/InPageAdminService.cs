@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using MrCMS.Entities;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
@@ -20,13 +21,15 @@ namespace MrCMS.Web.Apps.Admin.Services
         private readonly ISession _session;
         private readonly IStringResourceProvider _stringResourceProvider;
         private readonly IShortcodeParser _shortcodeParser;
+        private readonly ILogger<InPageAdminService> _logger;
 
         public InPageAdminService(ISession session, IStringResourceProvider stringResourceProvider,
-            IShortcodeParser shortcodeParser)
+            IShortcodeParser shortcodeParser, ILogger<InPageAdminService> logger)
         {
             _session = session;
             _stringResourceProvider = stringResourceProvider;
             _shortcodeParser = shortcodeParser;
+            _logger = logger;
         }
 
         public SaveResult SaveBodyContent(UpdatePropertyData updatePropertyData)
@@ -56,7 +59,7 @@ namespace MrCMS.Web.Apps.Admin.Services
                 };
             }
             if (string.IsNullOrWhiteSpace(updatePropertyData.Content) &&
-                propertyInfo.GetCustomAttributes(typeof (RequiredAttribute), false).Any())
+                propertyInfo.GetCustomAttributes(typeof(RequiredAttribute), false).Any())
             {
                 return new SaveResult(false,
                     string.Format(_stringResourceProvider.GetValue("Admin InlineEditing Save Required", "Could not edit '{0}' as it is required"), updatePropertyData.Property));
@@ -67,10 +70,9 @@ namespace MrCMS.Web.Apps.Admin.Services
                 propertyInfo.SetValue(entity, updatePropertyData.Content, null);
                 _session.Transact(session => session.SaveOrUpdate(entity));
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                //CurrentRequestData.ErrorSignal.Raise(ex);
-                // TODO: logging
+                _logger.Log(LogLevel.Error, exception, exception.Message);
 
                 return new SaveResult(false, string.Format(_stringResourceProvider.GetValue("Admin InlineEditing Save Error", "Could not save to database '{0}' due to unknown error. Please check log."), updatePropertyData.Property));
             }
@@ -85,12 +87,7 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public string GetFormattedBodyContent(GetPropertyData getPropertyData, Controller controller)
         {
-            ContentInfo content = GetContent(getPropertyData);
-
-            //if (entity is Webpage)
-            //    CurrentRequestData.CurrentPage = entity as Webpage;
-            //IHtmlHelper htmlHelper = null;
-            return _shortcodeParser.Parse(controller.GetHtmlHelper(), content.Content).ToString();
+            return _shortcodeParser.Parse(controller.GetHtmlHelper(), GetContent(getPropertyData).Content).ToString();
         }
 
         private ContentInfo GetContent(GetPropertyData getPropertyData)

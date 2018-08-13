@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.Resources;
@@ -20,15 +21,17 @@ namespace MrCMS.Services.Resources
 
         private static readonly object LockObject = new object();
         private readonly IGetCurrentUserCultureInfo _getCurrentUserCultureInfo;
+        private readonly ILogger<StringResourceProvider> _logger;
         private readonly ISession _session;
         private readonly Site _site;
         private bool _retryingAllResources;
 
-        public StringResourceProvider(ISession session, Site site, IGetCurrentUserCultureInfo getCurrentUserCultureInfo)
+        public StringResourceProvider(ISession session, Site site, IGetCurrentUserCultureInfo getCurrentUserCultureInfo, ILogger<StringResourceProvider> logger)
         {
             _session = session;
             _site = site;
             _getCurrentUserCultureInfo = getCurrentUserCultureInfo;
+            _logger = logger;
         }
 
         private IEnumerable<StringResource> AllStringResources
@@ -49,12 +52,12 @@ namespace MrCMS.Services.Resources
                     {
                         if (!_retryingAllResources)
                         {
-                            //CurrentRequestData.ErrorSignal.Raise(new Exception("Resource list empty"));
-                            // TODO: logging
+                            _logger.Log(LogLevel.Information, "Resource list empty");
                         }
                     }
                     catch
                     {
+                        // ignored
                     }
 
                     if (!_retryingAllResources)
@@ -220,13 +223,16 @@ namespace MrCMS.Services.Resources
 
         private Dictionary<string, HashSet<StringResource>> GetAllResourcesFromDb()
         {
-            using (new SiteFilterDisabler(_session))
+            lock (LockObject)
             {
-                var allResourcesFromDb =
-                    _session.QueryOver<StringResource>().Cacheable().List().ToHashSet();
-                var groupBy =
-                    allResourcesFromDb.GroupBy(resource => resource.Key);
-                return groupBy.ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
+                using (new SiteFilterDisabler(_session))
+                {
+                    var allResourcesFromDb =
+                        _session.QueryOver<StringResource>().Cacheable().List().ToHashSet();
+                    var groupBy =
+                        allResourcesFromDb.GroupBy(resource => resource.Key);
+                    return groupBy.ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
+                }
             }
         }
     }

@@ -17,17 +17,19 @@ namespace MrCMS.Services.FileMigration
         private readonly ISession _session;
         private readonly IEnumerable<IFileSystem> _fileSystems;
         private readonly FileSystemSettings _fileSystemSettings;
+
         public MigrateFileBatchRunner(ISession session,
-            ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus, IServiceProvider serviceProvider, FileSystemSettings fileSystemSettings)
-            : base(setBatchJobJobExecutionStatus)
+            IServiceProvider serviceProvider, FileSystemSettings fileSystemSettings)
         {
             _session = session;
             _fileSystems =
                 TypeHelper.GetAllTypesAssignableFrom<IFileSystem>()
                     .Select(type => serviceProvider.GetService(type) as IFileSystem)
-                    .ToList(); ;
+                    .ToList();
+            ;
             _fileSystemSettings = fileSystemSettings;
         }
+
         public IFileSystem CurrentFileSystem
         {
             get

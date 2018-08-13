@@ -52,7 +52,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddProperty([ModelBinder(typeof(AddFormPropertyModelBinder))] FormProperty formProperty) 
+        public JsonResult AddProperty([ModelBinder(typeof(AddFormPropertyModelBinder))] FormProperty formProperty)
         {
             _formAdminService.AddFormProperty(formProperty);
             return Json(new FormActionResult { success = true });
@@ -130,7 +130,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [HttpGet]
         public ActionResult Sort(Webpage webpage)
         {
-            var sortItems = webpage.FormProperties.OrderBy(x=>x.DisplayOrder)
+            var sortItems = webpage.FormProperties.OrderBy(x => x.DisplayOrder)
                                 .Select(
                                     arg => new SortItem { Order = arg.DisplayOrder, Id = arg.Id, Name = arg.Name })
                                 .ToList();
@@ -155,7 +155,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public RedirectToActionResult ClearFormData_POST(Webpage webpage)
         {
             _formAdminService.ClearFormData(webpage);
-            return RedirectToAction("Edit","Webpage", new { id = webpage.Id });
+            return RedirectToAction("Edit", "Webpage", new { id = webpage.Id });
         }
 
         [HttpGet]
@@ -166,10 +166,8 @@ namespace MrCMS.Web.Apps.Admin.Controllers
                 var file = _formAdminService.ExportFormData(webpage);
                 return File(file, "text/csv", "MrCMS-FormData-[" + webpage.UrlSegment + "]-" + DateTime.UtcNow + ".csv");
             }
-            catch (Exception ex)
+            catch
             {
-                //CurrentRequestData.ErrorSignal.Raise(ex);
-                // TODO: logging
                 return RedirectToAction("Edit", "Webpage", new { id = webpage.Id });
             }
         }

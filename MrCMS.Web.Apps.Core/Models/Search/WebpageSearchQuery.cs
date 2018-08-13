@@ -30,11 +30,13 @@ namespace MrCMS.Web.Apps.Core.Models.Search
 
         public Query GetQuery()
         {
+            // TODO: refactor to outside of model
             var booleanQuery = new BooleanQuery
             {
                 {
                     new TermRangeQuery(
                         FieldDefinition.GetFieldName<PublishedOnFieldDefinition>(), null,
+                        // TODO: replace utcnow with site now
                         new BytesRef( DateTools.DateToString(DateTime.UtcNow, DateTools.Resolution.SECOND)), false, true),
                     Occur.MUST
                 }

@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using MrCMS.Website;
 
 namespace MrCMS.Tasks
 {
     public class DefaultTaskExecutionHandler : ITaskExecutionHandler
     {
-        public DefaultTaskExecutionHandler(ITaskStatusUpdater taskStatusUpdater)
+        public DefaultTaskExecutionHandler(ITaskStatusUpdater taskStatusUpdater, ILogger<DefaultTaskExecutionHandler> logger)
         {
             _taskStatusUpdater = taskStatusUpdater;
+            _logger = logger;
         }
 
         private readonly ITaskStatusUpdater _taskStatusUpdater;
+        private readonly ILogger<DefaultTaskExecutionHandler> _logger;
         public int Priority { get { return -1; } }
         public IList<AdHocTask> ExtractTasksToHandle(ref IList<AdHocTask> list)
         {
@@ -39,8 +42,7 @@ namespace MrCMS.Tasks
             }
             catch (Exception exception)
             {
-                //CurrentRequestData.ErrorSignal.Raise(exception);
-                // TODO: logging
+                _logger.Log(LogLevel.Error, exception, exception.Message);
                 return TaskExecutionResult.Failure(executableTask, exception);
             }
         }

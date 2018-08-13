@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -13,28 +14,28 @@ namespace MrCMS.Logging
     public class MrCMSDatabaseLogger : ILogger
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly ICurrentSiteLocator _currentSiteLocator;
-        private readonly ISession _session;
 
-        public MrCMSDatabaseLogger(IHttpContextAccessor contextAccessor, ICurrentSiteLocator currentSiteLocator, ISession session)
+        public MrCMSDatabaseLogger(IHttpContextAccessor contextAccessor)
         {
             _contextAccessor = contextAccessor;
-            _currentSiteLocator = currentSiteLocator;
-            _session = session;
         }
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel))
                 return;
+            var context = _contextAccessor.HttpContext;
+            var currentSiteLocator = context.RequestServices.GetRequiredService<ICurrentSiteLocator>();
+            var session = context.RequestServices.GetRequiredService<ISession>();
             var log = new Log
             {
+                LogLevel = logLevel,
                 ExceptionData = GetExceptionData(exception),
-                RequestData = GetRequestData(_contextAccessor.HttpContext),
-                Message = exception.Message,
+                RequestData = GetRequestData(context),
+                Message = formatter(state, exception),
                 Detail = exception.StackTrace,
-                Site = _currentSiteLocator.GetCurrentSite()
+                Site = currentSiteLocator.GetCurrentSite()
             };
-            _session.Transact(session => session.Save(log));
+            session.Transact(s => s.Save(log));
         }
 
         private string GetRequestData(HttpContext httpContext)
@@ -76,7 +77,8 @@ namespace MrCMS.Logging
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return logLevel == LogLevel.Critical || logLevel == LogLevel.Error || logLevel == LogLevel.Warning;
+            return _contextAccessor.HttpContext != null &&
+                   (logLevel == LogLevel.Critical || logLevel == LogLevel.Error || logLevel == LogLevel.Warning);
         }
 
         public IDisposable BeginScope<TState>(TState state)

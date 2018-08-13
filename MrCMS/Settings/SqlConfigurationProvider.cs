@@ -131,15 +131,10 @@ namespace MrCMS.Settings
             //using (MiniProfiler.Current.Step($"Get from db: {typeof(TSettings).FullName}"))
             {
                 var typeName = typeof(TSettings).FullName.ToLower();
-                IList<Setting> settings;
-                using (new SiteFilterDisabler(_session))
-                {
-                    settings =
-                        _session.QueryOver<Setting>()
-                            .Where(x => x.SettingType == typeName && x.Site.Id == _site.Id)
-                            .Cacheable()
-                            .List();
-                }
+                var settings = _session.QueryOver<Setting>()
+                    .Where(x => x.SettingType == typeName && x.Site.Id == _site.Id)
+                    .Cacheable()
+                    .List();
                 return settings.GroupBy(setting => setting.PropertyName)
                     .ToDictionary(x => x.Key, x => x.Select(y => y).First());
             }
@@ -155,7 +150,11 @@ namespace MrCMS.Settings
             if (setting == null)
                 throw new ArgumentNullException(nameof(setting));
 
-            _session.Transact(session => session.Save(setting));
+            _session.Transact(session =>
+            {
+                setting.Site = _site;
+                return session.Save(setting);
+            });
         }
 
         /// <summary>

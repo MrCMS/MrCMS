@@ -4,6 +4,7 @@ using MrCMS.DbConfiguration;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Services.Notifications;
+using MrCMS.Website;
 using NHibernate;
 
 namespace MrCMS.Tasks
@@ -11,10 +12,12 @@ namespace MrCMS.Tasks
     public class PublishScheduledWebpagesTask : SchedulableTask
     {
         private readonly ISession _session;
+        private readonly IGetNowForSite _getNowForSite;
 
-        public PublishScheduledWebpagesTask(ISession session)
+        public PublishScheduledWebpagesTask(ISession session, IGetNowForSite getNowForSite)
         {
             _session = session;
+            _getNowForSite = getNowForSite;
         }
 
         public override int Priority
@@ -26,7 +29,7 @@ namespace MrCMS.Tasks
         {
             using (new SiteFilterDisabler(_session))
             {
-                var now = DateTime.UtcNow;
+                var now = _getNowForSite.Now;
                 var due = _session.QueryOver<Webpage>().Where(x => !x.Published && x.PublishOn <= now).List();
                 if (!due.Any())
                     return;
