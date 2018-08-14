@@ -386,11 +386,11 @@ namespace MrCMS.Helpers
                 strongText.InnerHtml.Append(boldText);
 
                 tagBulder.InnerHtml.AppendHtml(strongText);
-                tagBulder.InnerHtml.Append(" " + text);
+                tagBulder.InnerHtml.AppendHtml(" " + text);
             }
             else
             {
-                tagBulder.InnerHtml.Append(text);
+                tagBulder.InnerHtml.AppendHtml(text);
             }
 
             return tagBulder;

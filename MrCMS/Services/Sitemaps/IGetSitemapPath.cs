@@ -4,7 +4,8 @@ namespace MrCMS.Services.Sitemaps
 {
     public interface IGetSitemapPath
     {
-        string GetPath(Site site);
-        bool FileExists(string path);
+        string GetRelativePath(Site site);
+        string GetAbsolutePath(Site site);
+        bool FileExists(Site site);
     }
 }

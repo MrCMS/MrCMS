@@ -41,7 +41,7 @@ namespace MrCMS.Services.Sitemaps
 
         public void WriteSitemap()
         {
-            var sitemapPath = _getSitemapPath.GetPath(_site);
+            var sitemapPath = _getSitemapPath.GetAbsolutePath(_site);
 
             SitemapData data = null;
             var queryOver = _session.QueryOver<Webpage>()

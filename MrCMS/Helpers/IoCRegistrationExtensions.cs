@@ -4,6 +4,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Services;
 using MrCMS.Settings;
+using MrCMS.Tasks;
 
 namespace MrCMS.Helpers
 {
@@ -68,12 +69,18 @@ namespace MrCMS.Helpers
                 }
                 else
                 {
-                    var typed = type.GetBaseTypes(true).SelectMany(x=>x.GetInterfaces())
+                    var typed = type.GetBaseTypes(true).SelectMany(x => x.GetInterfaces())
                         .FirstOrDefault(x => x.GetGenericTypeDefinition() == typeof(ITokenProvider<>));
                     if (typed != null)
                         container.AddScoped(typed, type);
                 }
             }
+        }
+        public static void RegisterTasks(this IServiceCollection container)
+        {
+            foreach (var type in TypeHelper.GetAllConcreteTypesAssignableFrom<AdHocTask>())
+                container.AddTransient(type);
+
         }
     }
 }

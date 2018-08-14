@@ -1,6 +1,10 @@
 ﻿using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using MrCMS.Helpers;
 using MrCMS.Settings;
-using NHibernate;
+using ISession = NHibernate.ISession;
 
 namespace MrCMS.Tasks
 {
@@ -10,16 +14,19 @@ namespace MrCMS.Tasks
         private readonly ITaskBuilder _taskBuilder;
         private readonly ITaskExecutor _taskExecutor;
         private readonly ITaskQueuer _taskQueuer;
+        private readonly IUrlHelper _urlHelper;
         private readonly ITriggerUrls _triggerUrls;
 
-        public QueuedTaskRunner(ITaskQueuer taskQueuer, ITaskBuilder taskBuilder, ITaskExecutor taskExecutor,
-            ISession session, ITriggerUrls triggerUrls)
+        public QueuedTaskRunner(ITaskQueuer taskQueuer,
+            ITaskBuilder taskBuilder, ITaskExecutor taskExecutor,
+            ISession session, ITriggerUrls triggerUrls, IUrlHelper urlHelper)
         {
             _taskQueuer = taskQueuer;
             _taskBuilder = taskBuilder;
             _taskExecutor = taskExecutor;
             _session = session;
             _triggerUrls = triggerUrls;
+            _urlHelper = urlHelper;
         }
 
         public void TriggerPendingTasks()
@@ -29,11 +36,8 @@ namespace MrCMS.Tasks
             {
                 var siteSettings = new SqlConfigurationProvider(_session, site).GetSiteSettings<SiteSettings>();
 
-                return string.Format("{0}/{1}?{2}={3}",
-                    site.GetFullDomain.TrimEnd('/'),
-                    TaskExecutionController.ExecuteQueuedTasksURL,
-                    siteSettings.TaskExecutorKey,
-                    siteSettings.TaskExecutorPassword);
+                return _urlHelper.AbsoluteAction("ExecuteQueuedTasks", "TaskExecution",
+                    new RouteValueDictionary {[siteSettings.TaskExecutorKey] = siteSettings.TaskExecutorPassword}, site);
             }));
         }
 

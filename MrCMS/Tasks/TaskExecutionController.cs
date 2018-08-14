@@ -22,6 +22,7 @@ namespace MrCMS.Tasks
         }
 
         [TaskExecutionKeyPasswordAuth]
+        [Route(ExecutePendingTasksURL)]
         public ContentResult Execute()
         {
             _taskResetter.ResetHungTasks();
@@ -31,6 +32,7 @@ namespace MrCMS.Tasks
         }
 
         [TaskExecutionKeyPasswordAuth]
+        [Route(ExecuteTaskURL)]
         public ContentResult ExecuteTask(string type)
         {
             _scheduledTaskRunner.ExecuteTask(type);
@@ -38,6 +40,7 @@ namespace MrCMS.Tasks
         }
 
         [TaskExecutionKeyPasswordAuth]
+        [Route(ExecuteQueuedTasksURL)]
         public ContentResult ExecuteQueuedTasks()
         {
             _queuedTaskRunner.ExecutePendingTasks();

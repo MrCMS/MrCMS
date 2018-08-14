@@ -36,10 +36,5 @@ namespace MrCMS.Entities.Multisite
                 return true;
             return entity.Site != null && entity.Site.Id == Id;
         }
-
-        public virtual string GetFullDomain
-        {
-            get { return "http://" + BaseUrl; }
-        }
     }
 }

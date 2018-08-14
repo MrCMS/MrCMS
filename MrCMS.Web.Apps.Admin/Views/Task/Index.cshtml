@@ -1,17 +1,19 @@
-﻿@using MrCMS.Helpers
-@using MrCMS.Paging
+﻿@using Microsoft.AspNetCore.Routing
+@using MrCMS.Helpers
 @using MrCMS.Settings
 @using MrCMS.Tasks
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @model MrCMS.Tasks.QueuedTaskSearchQuery
+@inject SiteSettings SiteSettings
 @{
     ViewBag.Title = "Scheduled Tasks";
     var scheduledTasks = ViewData["scheduled-tasks"] as List<TaskInfo> ?? new List<TaskInfo>();
-    var tasks = ViewData["tasks"] as IPagedList<QueuedTask> ?? PagedList<QueuedTask>.Empty;
-    var siteSettings = SiteSettings<SiteSettings>();
-    var executionUrl = Url.Action("Execute", "TaskExecution", new RouteValueDictionary { { "area", "" }, { siteSettings.TaskExecutorKey, siteSettings.TaskExecutorPassword } }, "http");
+    var tasks = ViewData["tasks"] as IPagedList<QueuedTask>;
+    var executionUrl = Url.Action("Execute", "TaskExecution", new RouteValueDictionary { { "area", "" }, { SiteSettings.TaskExecutorKey, SiteSettings.TaskExecutorPassword } }, Context.Request.Scheme);
 }
 
-@Html.InfoBlock(Resource("Heads up") + "!", string.Format(Resource("Admin - Tasks info", "In order to execute tasks, you must poll the following url: <a href='{0}'>{1}</a> <br />"), executionUrl, executionUrl))
+@Html.InfoBlock(Html.Resource("Heads up") + "!", string.Format(Html.Resource("Admin - Tasks info", "In order to execute tasks, you must poll the following url: <a href='{0}'>{1}</a> <br />"), executionUrl, executionUrl))
 <fieldset>
     <legend>
         Scheduled Tasks
@@ -67,7 +69,7 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink("Edit", "Edit", new { type = task.TypeName}, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
+                                @Html.ActionLink("Edit", "Edit", new { type = task.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
                                 @Html.ActionLink("Reset", "Reset", new { type = task.TypeName }, new { @class = "btn btn-xs btn-warning", data_toggle = "fb-modal" })
                             </div>
                         </td>
@@ -139,13 +141,13 @@
                             else
                             {
                                 @:-
-                        }
+                            }
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-        @Html.Pager(tasks, "Index", page => new { page })
+        @Html.PagedListPager(tasks, page => Url.Action("Index", new { page }))
     }
     else
     {

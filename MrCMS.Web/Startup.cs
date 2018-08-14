@@ -59,6 +59,7 @@ namespace MrCMS.Web
             services.SelfRegisterAllConcreteTypes();
             services.RegisterSettings();
             services.RegisterTokenProviders();
+            services.RegisterTasks();
 
 
             var appContext = services.AddMrCMSApps(context =>

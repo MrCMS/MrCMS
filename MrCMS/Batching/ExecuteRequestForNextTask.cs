@@ -26,7 +26,7 @@ namespace MrCMS.Batching
                 {"area", ""},
                 {_siteSettings.TaskExecutorKey, _siteSettings.TaskExecutorPassword}
             };
-            var url = _urlHelper.Action("ExecuteNext", "BatchExecution", routeValues, "https");
+            var url = _urlHelper.Action("ExecuteNext", "BatchExecution", routeValues, _urlHelper.ActionContext.HttpContext.Request.Scheme);
             httpClient.GetAsync(url);
         }
     }

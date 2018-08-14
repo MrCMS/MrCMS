@@ -76,7 +76,7 @@ namespace MrCMS.Tasks
                 return;
             _session.Transact(session =>
             {
-                session.Save(new TaskSettings {TypeName = type.FullName});
+                session.Save(new TaskSettings { TypeName = type.FullName });
             });
         }
 
@@ -108,7 +108,8 @@ namespace MrCMS.Tasks
 
         private Dictionary<Type, TaskSettings> GetAllSettings()
         {
-            return _session.QueryOver<TaskSettings>().Cacheable().List().ToDictionary(settings => settings.Type);
+            return _session.QueryOver<TaskSettings>().Cacheable().List().Where(x => x.Type != null)
+                .ToDictionary(settings => settings.Type);
         }
     }
 }

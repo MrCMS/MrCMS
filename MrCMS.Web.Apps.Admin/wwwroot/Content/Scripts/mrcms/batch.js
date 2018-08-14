@@ -38,9 +38,9 @@
             var completionStatus = runInfo.completionStatus;
             $('[data-batch-run-progress-bar=' + id + ']').css('width', completionStatus.percentageCompleted);
             if ($('[data-batch-run-progress-bar=' + id + ']').length) {
-                if (runInfo.status == 'Executing') {
+                if (runInfo.status === 'Executing') {
                     $('title').text(completionStatus.percentageCompleted + ' Batch #' + id + ' - Executing');
-                } else if (runInfo.status == 'Complete') {
+                } else if (runInfo.status === 'Complete') {
                     $('title').text('Complete: Batch #' + id);
                 }
             }

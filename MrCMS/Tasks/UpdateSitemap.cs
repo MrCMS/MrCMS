@@ -1,7 +1,11 @@
 using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using MrCMS.Entities.Multisite;
+using MrCMS.Helpers;
 using MrCMS.Settings;
-using NHibernate;
+using ISession = NHibernate.ISession;
 
 namespace MrCMS.Tasks
 {
@@ -9,11 +13,15 @@ namespace MrCMS.Tasks
     {
         private readonly ISession _session;
         private readonly ITriggerUrls _triggerUrls;
+        private readonly IUrlHelper _urlHelper;
 
-        public UpdateSitemap(ISession session, ITriggerUrls triggerUrls)
+        public UpdateSitemap(ISession session,
+            ITriggerUrls triggerUrls,
+            IUrlHelper urlHelper)
         {
             _session = session;
             _triggerUrls = triggerUrls;
+            _urlHelper = urlHelper;
         }
 
         public override int Priority
@@ -28,11 +36,8 @@ namespace MrCMS.Tasks
             _triggerUrls.Trigger(sites.Select(site =>
             {
                 var siteSettings = new SqlConfigurationProvider(_session, site).GetSiteSettings<SiteSettings>();
-                return string.Format("{0}/{1}?{2}={3}",
-                    site.GetFullDomain.TrimEnd('/'),
-                    SitemapController.WriteSitemapUrl,
-                    siteSettings.TaskExecutorKey,
-                    siteSettings.TaskExecutorPassword);
+                return _urlHelper.AbsoluteAction("Update", "Sitemap",
+                    new RouteValueDictionary { [siteSettings.TaskExecutorKey] = siteSettings.TaskExecutorPassword }, site);
             }));
         }
     }

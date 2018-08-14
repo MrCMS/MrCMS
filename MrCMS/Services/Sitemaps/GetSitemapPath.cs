@@ -1,28 +1,33 @@
 using System;
 using System.IO;
 using System.Web;
+using Microsoft.AspNetCore.Hosting;
 using MrCMS.Entities.Multisite;
 
 namespace MrCMS.Services.Sitemaps
 {
     public class GetSitemapPath : IGetSitemapPath
     {
-        //private readonly HttpServerUtilityBase _server;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        //public GetSitemapPath(HttpServerUtilityBase server)
-        //{
-        //    _server = server;
-        //}
-        public string GetPath(Site site)
+        public GetSitemapPath(IHostingEnvironment hostingEnvironment)
         {
-            // TODO: sitemap path
-            return String.Empty;
-            //return _server.MapPath($"~/App_Data/sitemap-{site.Id}.xml");
+            _hostingEnvironment = hostingEnvironment;
         }
 
-        public bool FileExists(string path)
+        public string GetRelativePath(Site site)
         {
-            return File.Exists(path);
+            return $"App_Data\\sitemap-{site.Id}.xml";
+        }
+
+        public string GetAbsolutePath(Site site)
+        {
+            return Path.Combine(_hostingEnvironment.ContentRootPath, GetRelativePath(site));
+        }
+
+        public bool FileExists(Site site)
+        {
+            return _hostingEnvironment.ContentRootFileProvider.GetFileInfo(GetRelativePath(site)).Exists;
         }
     }
 }

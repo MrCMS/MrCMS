@@ -23,18 +23,20 @@ namespace MrCMS.Tasks
         }
 
         [TaskExecutionKeyPasswordAuth]
+        [Route(WriteSitemapUrl)]
         public ContentResult Update()
         {
             _sitemapService.WriteSitemap();
             return new ContentResult { Content = "Executed", ContentType = "text/plain" };
         }
 
+        [Route(SitemapUrl)]
         public ActionResult Show()
         {
-            var fileName = _getSitemapPath.GetPath(_site);
-            if (_getSitemapPath.FileExists(fileName))
-                return File(fileName, "application/xml");
-            return new EmptyResult();
+            if (!_getSitemapPath.FileExists(_site))
+                return new EmptyResult();
+
+            return PhysicalFile(_getSitemapPath.GetAbsolutePath(_site), "application/xml");
         }
     }
 }
