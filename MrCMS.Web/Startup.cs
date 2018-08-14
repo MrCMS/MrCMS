@@ -27,6 +27,7 @@ using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin;
 using MrCMS.Web.Apps.Admin.Filters;
+using MrCMS.Web.Apps.Admin.Hubs;
 using MrCMS.Web.Apps.Core;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
@@ -197,7 +198,13 @@ namespace MrCMS.Web
                 options.LogoutPath
                     = new PathString("/logout");
             });
+            services.AddAuthorization(options =>
+                {
+                    options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
+                });
             services.AddAuthentication();
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -219,6 +226,11 @@ namespace MrCMS.Web
             app.UseSession();
             app.UseAuthentication();
 
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NotificationHub>("/notificationsHub");
+                routes.MapHub<BatchProcessingHub>("/batchHub");
+            });
 
             app.UseMvc(builder =>
             {

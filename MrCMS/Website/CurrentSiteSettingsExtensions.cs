@@ -7,7 +7,7 @@ namespace MrCMS.Website
     {
         public static SiteSettings GetSiteSettings(this HttpContext context)
         {
-            return context.Items[CurrentSiteSettingsMiddleware.Key] as SiteSettings;
+            return context?.Items[CurrentSiteSettingsMiddleware.Key] as SiteSettings;
         }
     }
 }

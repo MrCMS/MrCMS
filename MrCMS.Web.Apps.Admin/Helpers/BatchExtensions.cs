@@ -1,18 +1,20 @@
-﻿using MrCMS.Batching.Entities;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Batching.Entities;
+using MrCMS.Helpers;
+using MrCMS.Web.Apps.Admin.Services.Batching;
 
 namespace MrCMS.Web.Apps.Admin.Helpers
 {
     public static class BatchExtensions
     {
-        // TODO: implement without static locator - batching
-        //public static int GetItemCount(this Batch batch)
-        //{
-        //    return MrCMSApplication.Get<IGetBatchItemCount>().Get(batch);
-        //}
+        public static int GetBatchItemCount(this IHtmlHelper helper, Batch batch)
+        {
+            return helper.GetRequiredService<IGetBatchItemCount>().Get(batch);
+        }
 
-        //public static BatchStatus GetStatus(this Batch batch)
-        //{
-        //    return MrCMSApplication.Get<IGetBatchStatus>().Get(batch);
-        //}
+        public static BatchStatus GetBatchStatus(this IHtmlHelper helper, Batch batch)
+        {
+            return helper.GetRequiredService<IGetBatchStatus>().Get(batch);
+        }
     }
 }

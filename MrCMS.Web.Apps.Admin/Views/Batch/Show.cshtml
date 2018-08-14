@@ -37,7 +37,7 @@
                 <tbody>
                     @foreach (var run in Model.BatchRuns.OrderByDescending(run => run.Id))
                     {
-                        Html.RenderAction("Row", "BatchRun", new { run.Id });
+                        <partial name="~/Areas/Admin/Views/BatchRun/Row.cshtml" model="run"/>
                     }
                 </tbody>
             </table>

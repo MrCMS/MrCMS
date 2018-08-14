@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Views\Batch\BatchRun.cshtml" />
     <None Remove="Views\Navigation\Children.cshtml" />
     <None Remove="Views\NavLinks\SubMenu.cshtml" />
     <None Remove="Views\Shared\Components\NavLinks\Default.cshtml" />

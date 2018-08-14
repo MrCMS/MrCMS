@@ -1,8 +1,9 @@
 ﻿@using MrCMS.Batching.Entities
 @using MrCMS.Web.Apps.Admin.Services.Batching
 @model MrCMS.Batching.Entities.BatchRun
+@inject IBatchRunUIService UIService
 @{
-    var completionStatus = ViewData["completion-status"] is BatchCompletionStatus ? (BatchCompletionStatus)ViewData["completion-status"] : new BatchCompletionStatus();
+    var completionStatus = UIService.GetCompletionStatus(Model);
 }
 
 <div class="row" data-batch-run-id="@Model.Id" data-refresh-url="@Url.Action("Status", "BatchRun", new { Model.Id })">
@@ -63,6 +64,7 @@
                 @completionStatus.Failed
             </dd>
         </dl>
+        <partial />
         @{Html.RenderPartial("ShowButton", Model);}
     </div>
 </div>

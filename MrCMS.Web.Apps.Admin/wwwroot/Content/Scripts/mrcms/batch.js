@@ -36,21 +36,21 @@
             var id = runInfo.id;
             $('[data-batch-run-status=' + id + ']').html(runInfo.status);
             var completionStatus = runInfo.completionStatus;
-            $('[data-batch-run-progress-bar=' + id + ']').css('width', completionStatus.PercentageCompleted);
+            $('[data-batch-run-progress-bar=' + id + ']').css('width', completionStatus.percentageCompleted);
             if ($('[data-batch-run-progress-bar=' + id + ']').length) {
                 if (runInfo.status == 'Executing') {
-                    $('title').text(completionStatus.PercentageCompleted + ' Batch #' + id + ' - Executing');
+                    $('title').text(completionStatus.percentageCompleted + ' Batch #' + id + ' - Executing');
                 } else if (runInfo.status == 'Complete') {
                     $('title').text('Complete: Batch #' + id);
                 }
             }
-            $('[data-batch-run-full-status=' + id + ']').html(completionStatus.FullStatus);
-            $('[data-batch-run-average-time-taken=' + id + ']').html(completionStatus.AverageTimeTaken);
-            $('[data-batch-run-time-taken=' + id + ']').html(completionStatus.TimeTaken);
-            $('[data-batch-run-pending=' + id + ']').html(completionStatus.Pending);
-            $('[data-batch-run-succeeded=' + id + ']').html(completionStatus.Succeeded);
-            $('[data-batch-run-time-remaining=' + id + ']').html(completionStatus.EstimatedTimeRemaining);
-            $('[data-batch-run-failed=' + id + ']').html(completionStatus.Failed);
+            $('[data-batch-run-full-status=' + id + ']').html(completionStatus.fullStatus);
+            $('[data-batch-run-average-time-taken=' + id + ']').html(completionStatus.averageTimeTaken);
+            $('[data-batch-run-time-taken=' + id + ']').html(completionStatus.timeTaken);
+            $('[data-batch-run-pending=' + id + ']').html(completionStatus.pending);
+            $('[data-batch-run-succeeded=' + id + ']').html(completionStatus.succeeded);
+            $('[data-batch-run-time-remaining=' + id + ']').html(completionStatus.estimatedTimeRemaining);
+            $('[data-batch-run-failed=' + id + ']').html(completionStatus.failed);
         }
         function updateJob(id) {
             var elements = $('[data-batch-job-id=' + id + ']');
@@ -60,13 +60,15 @@
         function init() {
             $(document).on('click', '[data-batch-run-start]', startBatch);
             $(document).on('click', '[data-batch-run-pause]', pauseBatch);
-            //var batchHub = $.connection.batch;
-            //batchHub.client.updateResult = updateResult;
-            //batchHub.client.updateRun = updateRun;
-            //batchHub.client.updateJob = updateJob;
-            //batchHub.client.refreshBatchRunUI = refreshRun;
-            //$.connection.hub.start().fail(function () { console.log('Could not Connect!'); });
-            // TODO: SignalR implementation
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl('/batchHub')
+                .configureLogging(signalR.LogLevel.Warning)
+                .build();
+            connection.start().catch(err => console.error(err.toString()));
+            connection.on('updateResult', updateResult);
+            connection.on('updateRun', updateRun);
+            connection.on('updateJob', updateJob);
+            connection.on('refreshBatchRunUI', refreshRun);
         }
         return {
             init: init

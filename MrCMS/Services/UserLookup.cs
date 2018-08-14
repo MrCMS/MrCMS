@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 using System.Web;
 using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.People;
@@ -59,8 +60,13 @@ namespace MrCMS.Services
 
         public User GetCurrentUser(HttpContext context)
         {
-            return context.User != null && !string.IsNullOrWhiteSpace(context.User.Identity.Name)
-                ? GetUserByEmail(context.User.Identity.Name)
+            return GetCurrentUser(context?.User);
+        }
+
+        public User GetCurrentUser(IPrincipal principal)
+        {
+            return principal!= null && !string.IsNullOrWhiteSpace(principal.Identity.Name)
+                ? GetUserByEmail(principal.Identity.Name)
                 : null;
         }
     }

@@ -25,15 +25,15 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult Start(BatchRun run)
+        public JsonResult Start(int id)
         {
-            return Json(_batchRunUIService.Start(run));
+            return Json(_batchRunUIService.Start(id));
         }
 
         [HttpPost]
-        public JsonResult Pause(BatchRun run)
+        public JsonResult Pause(int id)
         {
-            return Json(_batchRunUIService.Pause(run));
+            return Json(_batchRunUIService.Pause(id));
         }
 
         public ActionResult Status(BatchRun batchRun)

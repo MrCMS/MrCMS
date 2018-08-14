@@ -24,6 +24,8 @@ namespace MrCMS.Batching.Services
 
         public async Task<bool> Execute(BatchRun batchRun)
         {
+            if (batchRun == null)
+                return false;
             var stopWatch = Stopwatch.StartNew();
             var result = _getNextJobToRun.Get(batchRun);
             var runResult = result.Result;

@@ -4,7 +4,9 @@ using MrCMS.Batching;
 using MrCMS.Batching.CoreJobs;
 using MrCMS.Batching.Entities;
 using MrCMS.Batching.Services;
+using MrCMS.Helpers;
 using MrCMS.Indexing;
+using MrCMS.Indexing.Management;
 using MrCMS.Services.ImportExport.BatchJobs;
 using MrCMS.Services.ImportExport.DTOs;
 using Newtonsoft.Json;
@@ -30,10 +32,11 @@ namespace MrCMS.Services.ImportExport
                 UrlSegment = item.UrlSegment
             } as BatchJob).ToList();
             jobs.Add(new RebuildUniversalSearchIndex());
-            //jobs.AddRange(IndexingHelper.IndexDefinitionTypes.Select(definition => new RebuildLuceneIndex
-            //{
-            //    IndexName = definition.SystemName
-            //}));
+            jobs.AddRange(TypeHelper.GetAllConcreteTypesAssignableFrom<IndexDefinition>().Select(definition =>
+                new RebuildLuceneIndex
+                {
+                    IndexName = definition.FullName
+                }));
             // TODO: rebuild all indexes
 
             BatchCreationResult batchCreationResult = _createBatch.Create(jobs);

@@ -26,13 +26,15 @@ namespace MrCMS.Web.Apps.Admin.Services.Batching
                 .List();
         }
 
-        public int? Start(BatchRun run)
+        public int? Start(int id)
         {
+            var run = _session.Get<BatchRun>(id);
             return _controlBatchRun.Start(run) ? run.Id : (int?) null;
         }
 
-        public bool Pause(BatchRun run)
+        public bool Pause(int id)
         {
+            var run = _session.Get<BatchRun>(id);
             return _controlBatchRun.Pause(run);
         }
 
