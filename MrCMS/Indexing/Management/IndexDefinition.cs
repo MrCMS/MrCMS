@@ -85,15 +85,6 @@ namespace MrCMS.Indexing.Management
 
     public abstract class IndexDefinition<T> : IndexDefinition where T : SystemEntity
     {
-        private static readonly FieldDefinition<T> _id =
-            new StringFieldDefinition<T>("id", entity => new List<string> { entity.Id.ToString() },
-                entity => entity.ToDictionary(arg => arg, arg => new List<string> { arg.Id.ToString() }.AsEnumerable()),
-                Field.Store.YES);
-        private static readonly FieldDefinition<T> _entityType =
-            new StringFieldDefinition<T>("entityType", GetEntityTypes,
-                entity => entity.ToDictionary(arg => arg, GetEntityTypes),
-                Field.Store.YES);
-
         private static IEnumerable<string> GetEntityTypes(T entity)
         {
             if (entity == null)
@@ -108,22 +99,23 @@ namespace MrCMS.Indexing.Management
 
         protected readonly ISession _session;
         private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
+        private readonly IServiceProvider _serviceProvider;
 
-        protected IndexDefinition(ISession session, IGetLuceneIndexSearcher getLuceneIndexSearcher, IHostingEnvironment hostingEnvironment)
+        protected IndexDefinition(ISession session, IGetLuceneIndexSearcher getLuceneIndexSearcher, IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
         : base(hostingEnvironment)
         {
             _session = session;
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
+            _serviceProvider = serviceProvider;
         }
 
-        public static FieldDefinition<T> Id
-        {
-            get { return _id; }
-        }
-        public static FieldDefinition<T> EntityType
-        {
-            get { return _entityType; }
-        }
+        public static FieldDefinition<T> Id { get; } = new StringFieldDefinition<T>("id", entity => new List<string> { entity.Id.ToString() },
+            entity => entity.ToDictionary(arg => arg, arg => new List<string> { arg.Id.ToString() }.AsEnumerable()),
+            Field.Store.YES);
+
+        public static FieldDefinition<T> EntityType { get; } = new StringFieldDefinition<T>("entityType", GetEntityTypes,
+            entity => entity.ToDictionary(arg => arg, GetEntityTypes),
+            Field.Store.YES);
 
         public Document Convert(T entity)
         {
@@ -184,8 +176,21 @@ namespace MrCMS.Indexing.Management
             return new Term(Id.FieldName, entity.Id.ToString());
         }
 
-        public abstract IEnumerable<FieldDefinition<T>> Definitions { get; }
-        public abstract IEnumerable<string> FieldNames { get; }
+        public sealed override IEnumerable<IFieldDefinitionInfo> DefinitionInfos
+        {
+            get
+            {
+                var definitionInterfaceType = typeof(IFieldDefinition<,>).MakeGenericType(GetType(),typeof(T));
+                var types = TypeHelper.GetAllConcreteTypesAssignableFrom(definitionInterfaceType);
+                return types.Select(type => _serviceProvider.GetService(type)).OfType<IFieldDefinitionInfo>();
+
+            }
+        }
+
+
+        public IEnumerable<FieldDefinition<T>> Definitions => DefinitionInfos.OfType<IFieldDefinition<T>>().Select(x => x.GetDefinition);
+
+        public IEnumerable<string> FieldNames => Definitions.Select(x => x.FieldName);
 
         public sealed override Document Convert(object entity)
         {

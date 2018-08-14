@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using MrCMS.Entities.Documents.Web;
@@ -13,25 +14,10 @@ namespace MrCMS.Web.Apps.Core.Indexing
 
         public WebpageSearchIndexDefinition(ISession session, IGetLuceneIndexSearcher getLuceneIndexSearcher,
             IEnumerable<IFieldDefinition<WebpageSearchIndexDefinition, Webpage>> definitions,
-            IHostingEnvironment hostingEnvironment)
-            : base(session, getLuceneIndexSearcher,hostingEnvironment)
+            IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
+            : base(session, getLuceneIndexSearcher,hostingEnvironment, serviceProvider)
         {
             _definitions = new HashSet<IFieldDefinition<WebpageSearchIndexDefinition, Webpage>>(definitions);
-        }
-
-        public override IEnumerable<FieldDefinition<Webpage>> Definitions
-        {
-            get { return _definitions.Select(definition => definition.GetDefinition); }
-        }
-
-        public override IEnumerable<string> FieldNames
-        {
-            get { return _definitions.Select(definition => definition.Name); }
-        }
-
-        public override IEnumerable<IFieldDefinitionInfo> DefinitionInfos
-        {
-            get { return _definitions; }
         }
 
         public override string IndexFolderName

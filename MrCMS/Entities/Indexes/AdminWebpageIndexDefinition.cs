@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using MrCMS.Entities.Documents.Web;
@@ -9,25 +10,13 @@ namespace MrCMS.Entities.Indexes
 {
     public class AdminWebpageIndexDefinition : IndexDefinition<Webpage>
     {
-        private readonly HashSet<IFieldDefinition<AdminWebpageIndexDefinition, Webpage>> _definitions;
 
         public AdminWebpageIndexDefinition(ISession session, IGetLuceneIndexSearcher getLuceneIndexSearcher,
-            IEnumerable<IFieldDefinition<AdminWebpageIndexDefinition, Webpage>> definitions,
-            IHostingEnvironment hostingEnvironment)
-            : base(session, getLuceneIndexSearcher, hostingEnvironment)
+            IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
+            : base(session, getLuceneIndexSearcher, hostingEnvironment, serviceProvider)
         {
-            _definitions = new HashSet<IFieldDefinition<AdminWebpageIndexDefinition, Webpage>>(definitions);
         }
 
-        public override IEnumerable<FieldDefinition<Webpage>> Definitions
-        {
-            get { return _definitions.Select(definition => definition.GetDefinition); }
-        }
-
-        public override IEnumerable<string> FieldNames
-        {
-            get { return _definitions.Select(definition => definition.Name); }
-        }
 
         public override string IndexFolderName
         {
@@ -39,9 +28,5 @@ namespace MrCMS.Entities.Indexes
             get { return "Default Admin Webpage Index"; }
         }
 
-        public override IEnumerable<IFieldDefinitionInfo> DefinitionInfos
-        {
-            get { return _definitions; }
-        }
     }
 }

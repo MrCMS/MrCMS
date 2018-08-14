@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
 using MrCMS.Models;
+using MrCMS.Search;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Admin.Models;
 using NHibernate;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -12,59 +15,71 @@ namespace MrCMS.Web.Apps.Admin.Services
     public class IndexAdminService : IIndexAdminService
     {
         private readonly IIndexService _indexService;
+        private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
         private readonly ISession _session;
-        //private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
+        private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
 
         public IndexAdminService(IServiceProvider serviceProvider, ISession session,
-            //IUniversalSearchIndexManager universalSearchIndexManager, 
-            IIndexService indexService)
+            IUniversalSearchIndexManager universalSearchIndexManager,
+            IIndexService indexService, IMapper mapper)
         {
             _serviceProvider = serviceProvider;
             _session = session;
-            //_universalSearchIndexManager = universalSearchIndexManager;
+            _universalSearchIndexManager = universalSearchIndexManager;
             _indexService = indexService;
+            _mapper = mapper;
         }
 
-        public List<LuceneFieldBoost> GetBoosts(string type)
+        public List<UpdateLuceneFieldBoostModel> GetBoosts(string type)
         {
             Type definitionType = TypeHelper.GetTypeByName(type);
-            var indexDefinition = _serviceProvider.GetService(definitionType) as IndexDefinition;
 
-            if (indexDefinition != null)
-                return indexDefinition.DefinitionInfos.Select(info => info.TypeName)
+            if (_serviceProvider.GetService(definitionType) is IndexDefinition indexDefinition)
+            {
+                var luceneFieldBoosts = indexDefinition.DefinitionInfos.Select(info => info.TypeName)
                     .Select(
                         fieldName =>
                             _session.QueryOver<LuceneFieldBoost>()
                                 .Where(boost => boost.Definition == fieldName)
                                 .Cacheable()
                                 .SingleOrDefault() ?? new LuceneFieldBoost
-                                {
-                                    Definition = fieldName,
-                                }).ToList();
-            return new List<LuceneFieldBoost>();
+                            {
+                                Definition = fieldName,
+                            }).ToList();
+                return _mapper.Map<List<UpdateLuceneFieldBoostModel>>(luceneFieldBoosts);
+            }
+
+            return new List<UpdateLuceneFieldBoostModel>();
         }
 
-        public void SaveBoosts(List<LuceneFieldBoost> boosts)
+        public void SaveBoosts(List<UpdateLuceneFieldBoostModel> boosts)
         {
-            _session.Transact(session => boosts.ForEach(session.SaveOrUpdate));
+            _session.Transact(session => boosts.ForEach(model =>
+            {
+                if (model.Id == 0)
+                {
+                    session.Save(_mapper.Map<LuceneFieldBoost>(model));
+                }
+                else
+                {
+                    var luceneFieldBoost = session.Get<LuceneFieldBoost>(model.Id);
+                    _mapper.Map(model, luceneFieldBoost);
+                    session.Update(luceneFieldBoost);
+                }
+            }));
         }
 
-        // TODO: universal search
-        //public MrCMSIndex GetUniversalSearchIndexInfo()
-        //{
-        //    return _universalSearchIndexManager.GetUniversalIndexInfo();
-        //}
+        public MrCMSIndex GetUniversalSearchIndexInfo()
+        {
+            return _universalSearchIndexManager.GetUniversalIndexInfo();
+        }
 
-        //public void ReindexUniversalSearch()
-        //{
-        //    _universalSearchIndexManager.ReindexAll();
-        //}
+        public void ReindexUniversalSearch()
+        {
+            _universalSearchIndexManager.ReindexAll();
+        }
 
-        //public void OptimiseUniversalSearch()
-        //{
-        //    _universalSearchIndexManager.Optimise();
-        //}
 
         public List<MrCMSIndex> GetIndexes()
         {
@@ -74,10 +89,6 @@ namespace MrCMS.Web.Apps.Admin.Services
         public void Reindex(string typeName)
         {
             _indexService.Reindex(typeName);
-        }
-
-        public void Optimise(string typeName)
-        {
         }
     }
 }

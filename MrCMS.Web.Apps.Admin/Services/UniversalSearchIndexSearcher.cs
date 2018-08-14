@@ -5,131 +5,142 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
+using Lucene.Net.Util;
 using MrCMS.Entities;
 using MrCMS.Helpers;
+using MrCMS.Indexing.Utils;
+using MrCMS.Search;
+using MrCMS.Search.Models;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Models.Search;
 using NHibernate;
+using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
-    // TODO: universal search
-    //public class UniversalSearchIndexSearcher : IUniversalSearchIndexSearcher
-    //{
-    //    private readonly ISearchConverter _searchConverter;
-    //    private readonly ISession _session;
-    //    private readonly SiteSettings _siteSettings;
-    //    private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
+    public class UniversalSearchIndexSearcher : IUniversalSearchIndexSearcher
+    {
+        private readonly ISearchConverter _searchConverter;
+        private readonly ISession _session;
+        private readonly SiteSettings _siteSettings;
+        private readonly IUniversalSearchIndexManager _universalSearchIndexManager;
 
-    //    public UniversalSearchIndexSearcher(IUniversalSearchIndexManager universalSearchIndexManager,
-    //        ISearchConverter searchConverter, ISession session, SiteSettings siteSettings)
-    //    {
-    //        _universalSearchIndexManager = universalSearchIndexManager;
-    //        _searchConverter = searchConverter;
-    //        _session = session;
-    //        _siteSettings = siteSettings;
-    //    }
+        public UniversalSearchIndexSearcher(IUniversalSearchIndexManager universalSearchIndexManager,
+            ISearchConverter searchConverter, ISession session, SiteSettings siteSettings)
+        {
+            _universalSearchIndexManager = universalSearchIndexManager;
+            _searchConverter = searchConverter;
+            _session = session;
+            _siteSettings = siteSettings;
+        }
 
-    //    public List<UniversalSearchItemQuickSearch> QuickSearch(QuickSearchParams searchParams)
-    //    {
-    //        IndexSearcher searcher = _universalSearchIndexManager.GetSearcher();
-    //        var query = new BooleanQuery {GetFilterByTerm(searchParams.Term)};
+        public List<UniversalSearchItemQuickSearch> QuickSearch(QuickSearchParams searchParams)
+        {
+            IndexSearcher searcher = _universalSearchIndexManager.GetSearcher();
+            var query = new BooleanQuery { GetFilterByTerm(searchParams.Term) };
 
-    //        if (!string.IsNullOrWhiteSpace(searchParams.Type))
-    //        {
-    //            query.Add(FilterByEntityType(searchParams.Type));
-    //        }
-    //        TopDocs topDocs = searcher.Search(query, 10);
+            if (!string.IsNullOrWhiteSpace(searchParams.Type))
+            {
+                query.Add(FilterByEntityType(searchParams.Type));
+            }
+            TopDocs topDocs = searcher.Search(query, 10);
 
-    //        List<UniversalSearchItem> universalSearchItems =
-    //            topDocs.ScoreDocs.Select(doc => _searchConverter.Convert(searcher.Doc(doc.Doc))).ToList();
+            List<UniversalSearchItem> universalSearchItems =
+                topDocs.ScoreDocs.Select(doc => _searchConverter.Convert(searcher.Doc(doc.Doc))).ToList();
 
-    //        return universalSearchItems.Select(item => new UniversalSearchItemQuickSearch(item)).ToList();
-    //    }
+            return universalSearchItems.Select(item => new UniversalSearchItemQuickSearch(item)).ToList();
+        }
 
-    //    public IPagedList<AdminSearchResult> Search(AdminSearchQuery searchQuery)
-    //    {
-    //        int pageSize = _siteSettings.DefaultPageSize;
-    //        using (MiniProfiler.Current.Step("Search for results"))
-    //        {
-    //            IndexSearcher searcher = _universalSearchIndexManager.GetSearcher();
-    //            var query = new BooleanQuery();
-    //            if (!string.IsNullOrWhiteSpace(searchQuery.Term))
-    //            {
-    //                query.Add(GetFilterByTerm(searchQuery.Term));
-    //            }
-    //            if (!string.IsNullOrWhiteSpace(searchQuery.Type))
-    //            {
-    //                query.Add(FilterByEntityType(searchQuery.Type));
-    //            }
+        public IPagedList<AdminSearchResult> Search(AdminSearchQuery searchQuery)
+        {
+            int pageSize = _siteSettings.DefaultPageSize;
+            //using (MiniProfiler.Current.Step("Search for results"))
+            {
+                IndexSearcher searcher = _universalSearchIndexManager.GetSearcher();
+                var query = new BooleanQuery();
+                if (!string.IsNullOrWhiteSpace(searchQuery.Term))
+                {
+                    query.Add(GetFilterByTerm(searchQuery.Term));
+                }
+                if (!string.IsNullOrWhiteSpace(searchQuery.Type))
+                {
+                    query.Add(FilterByEntityType(searchQuery.Type));
+                }
 
-    //            if (searchQuery.CreatedOnFrom.HasValue || searchQuery.CreatedOnTo.HasValue)
-    //            {
-    //                query.Add(GetDateQuery(searchQuery));
-    //            }
-    //            TopDocs topDocs = GetTopDocs(searchQuery, searcher, query, pageSize);
+                if (searchQuery.CreatedOnFrom.HasValue || searchQuery.CreatedOnTo.HasValue)
+                {
+                    query.Add(GetDateQuery(searchQuery));
+                }
+                TopDocs topDocs = GetTopDocs(searchQuery, searcher, query, pageSize);
 
-    //            List<UniversalSearchItem> universalSearchItems =
-    //                GetUniversalSearchItems(searchQuery, topDocs, pageSize, searcher);
+                List<UniversalSearchItem> universalSearchItems =
+                    GetUniversalSearchItems(searchQuery, topDocs, pageSize, searcher);
 
 
-    //            List<AdminSearchResult> adminSearchResults;
-    //            using (MiniProfiler.Current.Step("Get Results"))
-    //                adminSearchResults = universalSearchItems.Select(item =>
-    //                {
-    //                    Type systemType = TypeHelper.GetTypeByName(item.SystemType);
-    //                    var entity = _session.Get(systemType, item.Id) as SystemEntity;
-    //                    return new AdminSearchResult(item, entity);
-    //                }).ToList();
+                List<AdminSearchResult> adminSearchResults;
+                //using (MiniProfiler.Current.Step("Get Results"))
+                adminSearchResults = universalSearchItems.Select(item =>
+                {
+                    Type systemType = TypeHelper.GetTypeByName(item.SystemType);
+                    var entity = _session.Get(systemType, item.Id) as SystemEntity;
+                    return new AdminSearchResult(item, entity);
+                }).ToList();
 
-    //            return new StaticPagedList<AdminSearchResult>(adminSearchResults, searchQuery.Page, pageSize,
-    //                topDocs.TotalHits);
-    //        }
-    //    }
+                return new StaticPagedList<AdminSearchResult>(adminSearchResults, searchQuery.Page, pageSize,
+                    topDocs.TotalHits);
+            }
+        }
 
-    //    private static TopDocs GetTopDocs(AdminSearchQuery searchQuery, IndexSearcher searcher, BooleanQuery query, int pageSize)
-    //    {
-    //        using (MiniProfiler.Current.Step("Get Top Docs"))
-    //            return searcher.Search(query, pageSize * searchQuery.Page);
-    //    }
+        private static TopDocs GetTopDocs(AdminSearchQuery searchQuery, IndexSearcher searcher, BooleanQuery query, int pageSize)
+        {
+            //using (MiniProfiler.Current.Step("Get Top Docs"))
+            return searcher.Search(query, pageSize * searchQuery.Page);
+        }
 
-    //    private List<UniversalSearchItem> GetUniversalSearchItems(AdminSearchQuery searchQuery, TopDocs topDocs, int pageSize, IndexSearcher searcher)
-    //    {
-    //        using (MiniProfiler.Current.Step("Get Search Items"))
-    //            return topDocs.ScoreDocs.Skip(pageSize * (searchQuery.Page - 1))
-    //                .Select(doc => _searchConverter.Convert(searcher.Doc(doc.Doc)))
-    //                .ToList();
-    //    }
+        private List<UniversalSearchItem> GetUniversalSearchItems(AdminSearchQuery searchQuery, TopDocs topDocs, int pageSize, IndexSearcher searcher)
+        {
+            //using (MiniProfiler.Current.Step("Get Search Items"))
+            return topDocs.ScoreDocs.Skip(pageSize * (searchQuery.Page - 1))
+                .Select(doc => _searchConverter.Convert(searcher.Doc(doc.Doc)))
+                .ToList();
+        }
 
-    //    private BooleanClause GetDateQuery(AdminSearchQuery searchQuery)
-    //    {
-    //        return new BooleanClause(new TermRangeQuery(UniversalSearchFieldNames.CreatedOn,
-    //            searchQuery.CreatedOnFrom.HasValue ? DateTools.DateToString(searchQuery.CreatedOnFrom.Value, DateTools.Resolution.SECOND) : null,
-    //            searchQuery.CreatedOnTo.HasValue ? DateTools.DateToString(searchQuery.CreatedOnTo.Value, DateTools.Resolution.SECOND) : null,
-    //            searchQuery.CreatedOnFrom.HasValue,
-    //            searchQuery.CreatedOnTo.HasValue
-    //            ), Occur.MUST);
-    //    }
+        private BooleanClause GetDateQuery(AdminSearchQuery searchQuery)
+        {
+            return new BooleanClause(new TermRangeQuery(UniversalSearchFieldNames.CreatedOn,
+                searchQuery.CreatedOnFrom.HasValue ? new BytesRef(DateTools.DateToString(searchQuery.CreatedOnFrom.Value, DateTools.Resolution.SECOND)) : null,
+                searchQuery.CreatedOnTo.HasValue ? new BytesRef(DateTools.DateToString(searchQuery.CreatedOnTo.Value, DateTools.Resolution.SECOND)) : null,
+                searchQuery.CreatedOnFrom.HasValue,
+                searchQuery.CreatedOnTo.HasValue
+                ), Occur.MUST);
+        }
 
-    //    private static BooleanClause FilterByEntityType(string type)
-    //    {
-    //        return new BooleanClause(
-    //            new TermQuery(new Term(UniversalSearchFieldNames.EntityType, type)), Occur.MUST);
-    //    }
+        private static BooleanClause FilterByEntityType(string type)
+        {
+            return new BooleanClause(
+                new TermQuery(new Term(UniversalSearchFieldNames.EntityType, type)), Occur.MUST);
+        }
 
-    //    private static BooleanClause GetFilterByTerm(string term)
-    //    {
-    //        var analyser = new StandardAnalyzer(Version.LUCENE_30);
-    //        var parser = new MultiFieldQueryParser(Version.LUCENE_30,
-    //            new[]
-    //            {
-    //                UniversalSearchFieldNames.PrimarySearchTerms, UniversalSearchFieldNames.SecondarySearchTerms,
-    //                UniversalSearchFieldNames.DisplayName, UniversalSearchFieldNames.Id,
-    //                UniversalSearchFieldNames.EntityType
-    //            }, analyser);
-    //        var booleanClause = new BooleanClause(term.SafeGetSearchQuery(parser, analyser), Occur.MUST);
-    //        return booleanClause;
-    //    }
-    //}
+        private static BooleanClause GetFilterByTerm(string term)
+        {
+            var analyser = new StandardAnalyzer(LuceneVersion.LUCENE_48);
+            var queryBuilder = new Lucene.Net.Util.QueryBuilder(analyser);
+            var fields = new[]
+            {
+                UniversalSearchFieldNames.PrimarySearchTerms, UniversalSearchFieldNames.SecondarySearchTerms,
+                UniversalSearchFieldNames.DisplayName, UniversalSearchFieldNames.Id,
+                UniversalSearchFieldNames.EntityType
+            };
+            var booleanQuery = new BooleanQuery();
+            foreach (var field in fields)
+            {
+                var fuzzyQuery = new FuzzyQuery(new Term(field, new BytesRef(term)), term.Length / 2, 0, 10, true);
+                booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+            }
+
+            var booleanClause = new BooleanClause(booleanQuery, Occur.MUST);
+            return booleanClause;
+        }
+    }
 }

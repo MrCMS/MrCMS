@@ -44,16 +44,15 @@
                 <div class="btn-group">
                     @if (index.DoesIndexExist)
                     {
-                        @Html.FormLink(Resource("Admin Indexes Reindex", "Reindex"), "Reindex", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
-                        @Html.FormLink(Resource("Admin Indexes Optimise", "Optimise"), "Optimise", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
+                        @Html.FormLink(Html.Resource("Admin Indexes Reindex", "Reindex"), "Reindex", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
                     }
                     else
                     {
-                        @Html.FormLink(Resource("Admin Indexes Create", "Create"), "Create", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
+                        @Html.FormLink(Html.Resource("Admin Indexes Create", "Create"), "Create", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default" })
                     }
 
 
-                    @Html.ActionLink(Resource("Admin Indexes Set Boosts", "Set Boosts"), "Boosts", "Indexes", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
+                    @Html.ActionLink(Html.Resource("Admin Indexes Set Boosts", "Set Boosts"), "Boosts", "Indexes", new { type = index.TypeName }, new { @class = "btn btn-xs btn-default", data_toggle = "fb-modal" })
                 </div>
             </td>
         </tr>
@@ -78,10 +77,6 @@
 @using (Html.BeginForm("ReindexUniversalSearch", "Indexes", FormMethod.Post))
 {
     <button class="btn btn-default" type="submit">@Html.Resource("Admin Indexes Reindex Universal Search Button", "Reindex Universal Search")</button>
-}
-@using (Html.BeginForm("OptimiseUniversalSearch", "Indexes", FormMethod.Post))
-{
-    <button class="btn btn-default" type="submit">@Html.Resource("Admin Indexes Optimise Universal Search Button", "Optimise Universal Search")</button>
 }
 @functions{
 

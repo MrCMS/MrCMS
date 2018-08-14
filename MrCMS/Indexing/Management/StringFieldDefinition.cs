@@ -17,10 +17,7 @@ namespace MrCMS.Indexing.Management
         {
         }
 
-        public override FieldDefinition<T2> GetDefinition
-        {
-            get { return new StringFieldDefinition<T2>(Name, GetValues, GetValues, Store, Boost); }
-        }
+        public override FieldDefinition<T2> GetDefinition => new StringFieldDefinition<T2>(Name, GetValues, GetValues, Store, Boost);
 
         protected abstract IEnumerable<string> GetValues(T2 obj);
 

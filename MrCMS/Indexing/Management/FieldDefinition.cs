@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities;
 using MrCMS.Helpers;
 using MrCMS.Tasks;
@@ -37,12 +38,13 @@ namespace MrCMS.Indexing.Management
             //return FieldNames.ContainsKey(typeof(T)) ? FieldNames[typeof(T)] : string.Empty;
         }
 
-        public static string GetDisplayName(string definitionTypeName)
+        public static string GetDefinitionDisplayName(IHtmlHelper helper, string definitionTypeName)
         {
-            //var fieldName = (TypeHelper.GetTypeByName(definitionTypeName));
-            //return fieldName == null ? definitionTypeName : fieldName.DisplayName;
-            // TODO: refactor to allow DI
-            return definitionTypeName;
+            var type = TypeHelper.GetTypeByName(definitionTypeName);
+            var info = helper.ViewContext.HttpContext.RequestServices.GetService(type) as IFieldDefinitionInfo;
+            if (info == null)
+                return definitionTypeName;
+            return info.DisplayName;
         }
     }
 
@@ -57,48 +59,31 @@ namespace MrCMS.Indexing.Management
         where T2 : SystemEntity
     {
         private readonly ILuceneSettingsService _luceneSettingsService;
-        private readonly string _name;
-        private readonly Field.Store _store;
 
         protected FieldDefinition(ILuceneSettingsService luceneSettingsService, string name,
             Field.Store store = Field.Store.YES)
         {
             _luceneSettingsService = luceneSettingsService;
-            _name = name;
-            _store = store;
+            Name = name;
+            Store = store;
         }
 
         public abstract FieldDefinition<T2> GetDefinition { get; }
 
-        public string Name
-        {
-            get { return _name; }
-        }
+        public string Name { get; }
 
-        public string DisplayName
-        {
-            get { return GetType().Name.Replace("FieldDefinition", "").BreakUpString(); }
-        }
+        public string DisplayName => GetType().Name.Replace("FieldDefinition", "").BreakUpString();
 
-        public Field.Store Store
-        {
-            get { return _store; }
-        }
+        public Field.Store Store { get; }
 
 
-        public float Boost
-        {
-            get { return _luceneSettingsService.GetBoost(this); }
-        }
+        public float Boost => _luceneSettingsService.GetBoost(this);
 
         public virtual Dictionary<Type, Func<SystemEntity, IEnumerable<LuceneAction>>> GetRelatedEntities()
         {
             return new Dictionary<Type, Func<SystemEntity, IEnumerable<LuceneAction>>>();
         }
 
-        public string TypeName
-        {
-            get { return GetType().FullName; }
-        }
+        public string TypeName => GetType().FullName;
     }
 }

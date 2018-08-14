@@ -30,9 +30,7 @@ namespace MrCMS.Indexing.Management
                     .Cacheable().List()))
                     .SingleOrDefault(boost => boost.Definition == fieldDefinition.TypeName);
 
-            return luceneFieldBoost == null
-                ? 1f
-                : luceneFieldBoost.Boost;
+            return luceneFieldBoost?.Boost ?? 1f;
         }
     }
 
