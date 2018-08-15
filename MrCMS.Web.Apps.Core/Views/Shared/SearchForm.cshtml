@@ -1,8 +1,9 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Services
 @using MrCMS.Web.Apps.Core.Pages
+@inject IUniquePageService UniquePageService
 @{
-    var url = ""; //UniquePageHelper.GetUrl<SearchPage>();
-    // TODO: get unique page url
+    var url = UniquePageService.GetUrl<SearchPage>();
 }
 <form class="navbar-form navbar-left form-inline" role="search" method="GET" action="@url">
     <div class="input-group">

@@ -14,22 +14,6 @@ using NHibernate.Criterion;
 
 namespace MrCMS.Indexing.Management
 {
-    public static class IndexManager
-    {
-        public static void EnsureIndexExists<T1, T2>()
-            where T1 : SystemEntity
-            where T2 : IndexDefinition<T1>
-        {
-            //var service = MrCMSApplication.Get<IIndexService>();
-            //IIndexManagerBase indexManagerBase = service.GetIndexManagerBase(typeof(T2));
-            //if (!indexManagerBase.IndexExists)
-            //{
-            //    service.Reindex(indexManagerBase.GetIndexDefinitionType().FullName);
-            //}
-            // TODO: refactor and or reimplement this
-        }
-    }
-
     public class IndexManager<TEntity, TDefinition> : IIndexManager<TEntity, TDefinition>
         where TEntity : SystemEntity
         where TDefinition : IndexDefinition<TEntity>

@@ -37,7 +37,6 @@ namespace MrCMS.Services.ImportExport
                 {
                     IndexName = definition.FullName
                 }));
-            // TODO: rebuild all indexes
 
             BatchCreationResult batchCreationResult = _createBatch.Create(jobs);
             if (autoStart)

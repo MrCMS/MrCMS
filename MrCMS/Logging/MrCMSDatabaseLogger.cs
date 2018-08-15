@@ -32,7 +32,7 @@ namespace MrCMS.Logging
                 ExceptionData = GetExceptionData(exception),
                 RequestData = GetRequestData(context),
                 Message = formatter(state, exception),
-                Detail = exception.StackTrace,
+                Detail = exception?.StackTrace,
                 Site = currentSiteLocator.GetCurrentSite()
             };
             session.Transact(s => s.Save(log));

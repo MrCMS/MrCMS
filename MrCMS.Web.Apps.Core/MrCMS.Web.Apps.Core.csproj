@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="7.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj" />
     <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
   </ItemGroup>

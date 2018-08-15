@@ -19,12 +19,13 @@ namespace MrCMS.Indexing.Querying
         private bool _disposed;
 
         public Searcher(TDefinition definition, IGetLuceneIndexSearcher getLuceneIndexSearcher,
-            SiteSettings siteSettings)
+            SiteSettings siteSettings, IIndexManager<TEntity,TDefinition> manager)
         {
             Definition = definition;
             _getLuceneIndexSearcher = getLuceneIndexSearcher;
             _siteSettings = siteSettings;
-            IndexManager.EnsureIndexExists<TEntity, TDefinition>();
+            if (!manager.IndexExists)
+                manager.CreateIndex();
         }
 
         public TDefinition Definition { get; }
