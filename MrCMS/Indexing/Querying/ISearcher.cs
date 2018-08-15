@@ -12,6 +12,7 @@ namespace MrCMS.Indexing.Querying
         where TDefinition : IndexDefinition<TEntity>
     {
         IndexSearcher IndexSearcher { get; }
+        TDefinition Definition { get; }
 
         string IndexName { get; }
 

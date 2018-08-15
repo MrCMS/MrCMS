@@ -1,21 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
-using Lucene.Net.Search;
 using Microsoft.AspNetCore.Hosting;
 using MrCMS.Entities;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Utils;
 using MrCMS.Tasks;
-using MrCMS.Website;
 using NHibernate;
 using NHibernate.Criterion;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Version = Lucene.Net.Util.LuceneVersion;
 
 namespace MrCMS.Indexing.Management
@@ -28,10 +26,7 @@ namespace MrCMS.Indexing.Management
         {
             _hostingEnvironment = hostingEnvironment;
         }
-        public string SystemName
-        {
-            get { return GetType().FullName; }
-        }
+        public string SystemName => GetType().FullName;
 
         public abstract string IndexFolderName { get; }
 
@@ -60,7 +55,10 @@ namespace MrCMS.Indexing.Management
         public List<LuceneAction> GetAllActions(object entity, LuceneOperation operation)
         {
             if (!(entity is SystemEntity))
+            {
                 return new List<LuceneAction>();
+            }
+
             var systemEntity = entity as SystemEntity;
             var actionsDictionary = GetActionsDictionary(operation);
             var luceneActions = new List<LuceneAction>();
@@ -71,16 +69,10 @@ namespace MrCMS.Indexing.Management
             return luceneActions;
         }
 
-        public virtual string[] SearchableFieldNames
-        {
-            get
-            {
-                return DefinitionInfos
+        public virtual string[] SearchableFieldNames => DefinitionInfos
                                .Select(info => info.Name)
                                .Distinct()
                                .ToArray();
-            }
-        }
     }
 
     public abstract class IndexDefinition<T> : IndexDefinition where T : SystemEntity
@@ -88,7 +80,10 @@ namespace MrCMS.Indexing.Management
         private static IEnumerable<string> GetEntityTypes(T entity)
         {
             if (entity == null)
+            {
                 yield break;
+            }
+
             Type entityType = entity.GetType();
             while (typeof(T).IsAssignableFrom(entityType))
             {
@@ -97,15 +92,13 @@ namespace MrCMS.Indexing.Management
             }
         }
 
-        protected readonly ISession _session;
-        private readonly IGetLuceneIndexSearcher _getLuceneIndexSearcher;
+        protected readonly ISession Session;
         private readonly IServiceProvider _serviceProvider;
 
-        protected IndexDefinition(ISession session, IGetLuceneIndexSearcher getLuceneIndexSearcher, IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
+        protected IndexDefinition(ISession session, IHostingEnvironment hostingEnvironment, IServiceProvider serviceProvider)
         : base(hostingEnvironment)
         {
-            _session = session;
-            _getLuceneIndexSearcher = getLuceneIndexSearcher;
+            Session = session;
             _serviceProvider = serviceProvider;
         }
 
@@ -123,7 +116,9 @@ namespace MrCMS.Indexing.Management
             document = document.SetFields(GetNewDefinitionList().Concat(Definitions), entity);
 
             foreach (var additionalField in GetAdditionalFields(entity))
+            {
                 document.Add(additionalField);
+            }
 
             return document;
         }
@@ -180,7 +175,7 @@ namespace MrCMS.Indexing.Management
         {
             get
             {
-                var definitionInterfaceType = typeof(IFieldDefinition<,>).MakeGenericType(GetType(),typeof(T));
+                var definitionInterfaceType = typeof(IFieldDefinition<,>).MakeGenericType(GetType(), typeof(T));
                 var types = TypeHelper.GetAllConcreteTypesAssignableFrom(definitionInterfaceType);
                 return types.Select(type => _serviceProvider.GetService(type)).OfType<IFieldDefinitionInfo>();
 
@@ -190,19 +185,30 @@ namespace MrCMS.Indexing.Management
 
         public IEnumerable<FieldDefinition<T>> Definitions => DefinitionInfos.OfType<IFieldDefinition<T>>().Select(x => x.GetDefinition);
 
+        public TFieldDefinition GetFieldDefinition<TFieldDefinition>() where TFieldDefinition : IFieldDefinitionInfo
+        {
+            return DefinitionInfos.OfType<TFieldDefinition>().FirstOrDefault();
+        }
+
         public IEnumerable<string> FieldNames => Definitions.Select(x => x.FieldName);
 
         public sealed override Document Convert(object entity)
         {
             if (entity is T)
+            {
                 return Convert(entity as T);
+            }
+
             return null;
         }
 
         public sealed override Term GetIndex(object entity)
         {
             if (entity is T)
+            {
                 return GetIndex(entity as T);
+            }
+
             return null;
         }
 
@@ -213,7 +219,7 @@ namespace MrCMS.Indexing.Management
 
         public virtual T Convert(Document document)
         {
-            return _session.Get<T>(document.GetValue<int>(Id.FieldName));
+            return Session.Get<T>(document.GetValue<int>(Id.FieldName));
         }
 
         public virtual IEnumerable<T> Convert(IEnumerable<Document> documents)
@@ -223,7 +229,7 @@ namespace MrCMS.Indexing.Management
                 ids.Chunk(100)
                     .SelectMany(
                         ints =>
-                            _session.QueryOver<T>()
+                            Session.QueryOver<T>()
                                 .Where(arg => arg.Id.IsIn(ints.ToList()))
                                 .Cacheable()
                                 .List()
@@ -236,7 +242,7 @@ namespace MrCMS.Indexing.Management
                 ids.Chunk(100)
                     .SelectMany(
                         ints =>
-                            _session.QueryOver<T2>()
+                            Session.QueryOver<T2>()
                                 .Where(arg => arg.Id.IsIn(ints.ToList()))
                                 .Cacheable()
                                 .List()
@@ -284,12 +290,14 @@ namespace MrCMS.Indexing.Management
         private IEnumerable<LuceneAction> GetRootEntityAction(SystemEntity arg, LuceneOperation operation)
         {
             if (arg is T)
+            {
                 yield return new LuceneAction
                 {
                     Entity = arg,
                     IndexDefinition = this,
                     Operation = operation,
                 };
+            }
         }
     }
 }

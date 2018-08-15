@@ -15,7 +15,7 @@ namespace MrCMS.Indexing.Management
     {
         static FieldDefinition()
         {
-            // TODO: refacctor FieldNames
+            // TODO: refactor FieldNames
             //IEnumerable<IFieldDefinitionInfo> fieldDefinitionInfos = MrCMSApplication.GetAll<IFieldDefinitionInfo>();
             //FieldNames = fieldDefinitionInfos.ToDictionary(info => info.GetType(), info => info.Name);
         }
@@ -31,12 +31,12 @@ namespace MrCMS.Indexing.Management
             return definitions.Select(definition => definition.FieldName).ToArray();
         }
 
-        public static string GetFieldName<T>() where T : IFieldDefinitionInfo
-        {
-            // TODO: possibly restore
-            return typeof(T).Name;
-            //return FieldNames.ContainsKey(typeof(T)) ? FieldNames[typeof(T)] : string.Empty;
-        }
+        //public static string GetFieldName<T>() where T : IFieldDefinitionInfo
+        //{
+        //    // TODO: possibly restore
+        //    return typeof(T).Name;
+        //    //return FieldNames.ContainsKey(typeof(T)) ? FieldNames[typeof(T)] : string.Empty;
+        //}
 
         public static string GetDefinitionDisplayName(IHtmlHelper helper, string definitionTypeName)
         {

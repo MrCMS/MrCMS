@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
@@ -15,6 +11,9 @@ using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Models.Search;
 using NHibernate;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -38,13 +37,15 @@ namespace MrCMS.Web.Apps.Admin.Services
         public List<UniversalSearchItemQuickSearch> QuickSearch(QuickSearchParams searchParams)
         {
             IndexSearcher searcher = _universalSearchIndexManager.GetSearcher();
-            var query = new BooleanQuery { GetFilterByTerm(searchParams.Term) };
+            var query = new BooleanQuery();
+            AddFilter(query, searchParams.Term);
 
             if (!string.IsNullOrWhiteSpace(searchParams.Type))
             {
                 query.Add(FilterByEntityType(searchParams.Type));
             }
-            TopDocs topDocs = searcher.Search(query, 10);
+
+            var topDocs = searcher.Search(query, 10);
 
             List<UniversalSearchItem> universalSearchItems =
                 topDocs.ScoreDocs.Select(doc => _searchConverter.Convert(searcher.Doc(doc.Doc))).ToList();
@@ -59,10 +60,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             {
                 IndexSearcher searcher = _universalSearchIndexManager.GetSearcher();
                 var query = new BooleanQuery();
-                if (!string.IsNullOrWhiteSpace(searchQuery.Term))
-                {
-                    query.Add(GetFilterByTerm(searchQuery.Term));
-                }
+                AddFilter(query, searchQuery.Term);
                 if (!string.IsNullOrWhiteSpace(searchQuery.Type))
                 {
                     query.Add(FilterByEntityType(searchQuery.Type));
@@ -89,6 +87,16 @@ namespace MrCMS.Web.Apps.Admin.Services
 
                 return new StaticPagedList<AdminSearchResult>(adminSearchResults, searchQuery.Page, pageSize,
                     topDocs.TotalHits);
+            }
+        }
+
+        private static void AddFilter(BooleanQuery query, string term)
+        {
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                query.Add(term.GetSearchFilterByTerm(UniversalSearchFieldNames.PrimarySearchTerms,
+                    UniversalSearchFieldNames.SecondarySearchTerms, UniversalSearchFieldNames.DisplayName,
+                    UniversalSearchFieldNames.Id, UniversalSearchFieldNames.EntityType));
             }
         }
 
@@ -122,25 +130,5 @@ namespace MrCMS.Web.Apps.Admin.Services
                 new TermQuery(new Term(UniversalSearchFieldNames.EntityType, type)), Occur.MUST);
         }
 
-        private static BooleanClause GetFilterByTerm(string term)
-        {
-            var analyser = new StandardAnalyzer(LuceneVersion.LUCENE_48);
-            var queryBuilder = new Lucene.Net.Util.QueryBuilder(analyser);
-            var fields = new[]
-            {
-                UniversalSearchFieldNames.PrimarySearchTerms, UniversalSearchFieldNames.SecondarySearchTerms,
-                UniversalSearchFieldNames.DisplayName, UniversalSearchFieldNames.Id,
-                UniversalSearchFieldNames.EntityType
-            };
-            var booleanQuery = new BooleanQuery();
-            foreach (var field in fields)
-            {
-                var fuzzyQuery = new FuzzyQuery(new Term(field, new BytesRef(term)), term.Length / 2, 0, 10, true);
-                booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
-            }
-
-            var booleanClause = new BooleanClause(booleanQuery, Occur.MUST);
-            return booleanClause;
-        }
     }
 }

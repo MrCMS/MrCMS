@@ -1,18 +1,26 @@
-using System.Collections.Generic;
-using System.Linq;
+using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Lucene.Net.Search;
+using Lucene.Net.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Indexes;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Indexing.Definitions;
+using MrCMS.Indexing.Management;
 using MrCMS.Indexing.Querying;
+using MrCMS.Indexing.Utils;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Admin.Models.Search;
 using NHibernate;
 using NHibernate.Criterion;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using X.PagedList;
+using Document = MrCMS.Entities.Documents.Document;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -36,20 +44,62 @@ namespace MrCMS.Web.Apps.Admin.Services
 
         public IPagedList<Webpage> Search(AdminWebpageSearchQuery model)
         {
-            return _documentSearcher.Search(model.GetQuery(), model.Page);
+            return _documentSearcher.Search(GetQuery(model), model.Page);
         }
 
         public IEnumerable<QuickSearchResult> QuickSearch(AdminWebpageSearchQuery model)
         {
-            return Enumerable.Select(_documentSearcher.Search(model.GetQuery(), model.Page, 10), x => new QuickSearchResult
-                                                                                          {
-                                                                                              id = x.Id,
-                                                                                              value = x.Name,
-                                                                                              url = x.AbsoluteUrl
-                                                                                              //CreatedOn = x.CreatedOn.ToShortDateString().ToString(),
-                                                                                              //Type = x.GetType().Name.ToString()
-                                                                                          });
+            return Enumerable.Select(_documentSearcher.Search(GetQuery(model), model.Page, 10), x => new QuickSearchResult
+            {
+                id = x.Id,
+                value = x.Name,
+                url = x.AbsoluteUrl
+                //CreatedOn = x.CreatedOn.ToShortDateString().ToString(),
+                //Type = x.GetType().Name.ToString()
+            });
         }
+        public Query GetQuery(AdminWebpageSearchQuery model)
+        {
+            if (String.IsNullOrWhiteSpace(model.Term) && String.IsNullOrWhiteSpace(model.Type) && !model.CreatedOnTo.HasValue && !model.CreatedOnFrom.HasValue && model.ParentId == null)
+            {
+                return new MatchAllDocsQuery();
+            }
+
+            var booleanQuery = new BooleanQuery();
+            if (!String.IsNullOrWhiteSpace(model.Term))
+            {
+                booleanQuery.Add(model.Term.GetSearchFilterByTerm(_documentSearcher.Definition.SearchableFieldNames));
+            }
+            if (model.CreatedOnFrom.HasValue || model.CreatedOnTo.HasValue)
+            {
+                booleanQuery.Add(GetDateQuery(model), Occur.MUST);
+            }
+
+            if (!string.IsNullOrEmpty(model.Type))
+            {
+                booleanQuery.Add(new TermQuery(new Term(_documentSearcher.Definition.GetFieldDefinition<TypeFieldDefinition>()?.Name, model.Type)),
+                                 Occur.MUST);
+            }
+
+            if (model.ParentId != null)
+            {
+                booleanQuery.Add(
+                    new TermQuery(new Term(_documentSearcher.Definition.GetFieldDefinition<ParentIdFieldDefinition>().Name, model.ParentId.ToString())), Occur.MUST);
+            }
+
+            return booleanQuery;
+        }
+        private Query GetDateQuery(AdminWebpageSearchQuery model)
+        {
+            return new TermRangeQuery(_documentSearcher.Definition.GetFieldDefinition<CreatedOnFieldDefinition>().Name,
+                model.CreatedOnFrom.HasValue
+                    ? new BytesRef(DateTools.DateToString(model.CreatedOnFrom.Value, DateTools.Resolution.SECOND))
+                    : null,
+                model.CreatedOnTo.HasValue
+                    ? new BytesRef(DateTools.DateToString(model.CreatedOnTo.Value, DateTools.Resolution.SECOND))
+                    : null, model.CreatedOnFrom.HasValue, model.CreatedOnTo.HasValue);
+        }
+
 
         public IEnumerable<Document> GetBreadCrumb(int? parentId)
         {
@@ -79,7 +129,7 @@ namespace MrCMS.Web.Apps.Admin.Services
             var selectListItems =
                 GetPageListItems(
                     rootWebpages, parentIds, 1).ToList();
-            selectListItems.Insert(0, new SelectListItem { Selected = false, Text = _stringResourceProvider.GetValue("Admin Root","Root"), Value = "0" });
+            selectListItems.Insert(0, new SelectListItem { Selected = false, Text = _stringResourceProvider.GetValue("Admin Root", "Root"), Value = "0" });
             return selectListItems;
         }
 

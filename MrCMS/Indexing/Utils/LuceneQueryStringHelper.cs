@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.TokenAttributes;
+using Lucene.Net.Index;
 using Lucene.Net.Search;
+using Lucene.Net.Util;
 
 namespace MrCMS.Indexing.Utils
 {
@@ -26,6 +28,19 @@ namespace MrCMS.Indexing.Utils
 
         //    return query;
         //}
+
+        public static BooleanClause GetSearchFilterByTerm(this string term, params string[] fields)
+        {
+            var booleanQuery = new BooleanQuery();
+            foreach (var field in fields)
+            {
+                var fuzzyQuery = new FuzzyQuery(new Term(field, new BytesRef(term)), term.Length / 2, 0, 10, true);
+                booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+            }
+
+            var booleanClause = new BooleanClause(booleanQuery, Occur.MUST);
+            return booleanClause;
+        }
         // TODO: look at API that marries with safe get search query lucene
 
         public static string MakeFuzzy(this string keywords)
