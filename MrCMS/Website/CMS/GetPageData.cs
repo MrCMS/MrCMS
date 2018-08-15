@@ -10,16 +10,18 @@ namespace MrCMS.Website.CMS
         private readonly IGetDocumentByUrl<Webpage> _getWebpageByUrl;
         private readonly IGetHomePage _getHomePage;
         private readonly ISetCurrentPage _setCurrentPage;
+        private readonly ICanPreviewWebpage _canPreview;
 
-        public GetPageData(IGetDocumentByUrl<Webpage> getWebpageByUrl, IGetHomePage getHomePage, ISetCurrentPage setCurrentPage)
+        public GetPageData(IGetDocumentByUrl<Webpage> getWebpageByUrl, IGetHomePage getHomePage, ISetCurrentPage setCurrentPage, ICanPreviewWebpage canPreview)
         {
             _getWebpageByUrl = getWebpageByUrl;
             _getHomePage = getHomePage;
             _setCurrentPage = setCurrentPage;
+            _canPreview = canPreview;
         }
 
 
-        public async Task<PageData> GetData(string url, string method)
+        public PageData GetData(string url, string method)
         {
             Webpage webpage = string.IsNullOrWhiteSpace(url)
                 ? _getHomePage.Get()
@@ -29,16 +31,15 @@ namespace MrCMS.Website.CMS
 
             _setCurrentPage.SetPage(webpage);
 
-            // TODO: additional checks for page data
-            //var isPreview = !webpage.Published;
-            //if (isPreview && !await _canPreview.CanPreview(webpage))
-            //    return null;
+            var isPreview = !webpage.Published;
+            if (isPreview && !_canPreview.CanPreview(webpage))
+                return null;
 
             var metadata = webpage.GetMetadata();
 
             return new PageData
             {
-                IsPreview = false,
+                IsPreview = isPreview,
                 Id = webpage.Id,
                 Type = webpage.GetType(),
                 Controller = metadata.GetController(method),

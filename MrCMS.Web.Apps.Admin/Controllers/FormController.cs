@@ -178,10 +178,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             return View(posting);
         }
         [HttpPost]
-        [ActionName("DeleteEntry")]
-        public ActionResult DeleteEntry_POST(FormPosting posting)
+        public ActionResult DeleteEntry(int id)
         {
-            _formAdminService.DeletePosting(posting);
+            var posting = _formAdminService.DeletePosting(id);
             return RedirectToAction("Edit", "Webpage", new { id = posting.Webpage.Id });
         }
     }

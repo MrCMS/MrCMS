@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
@@ -29,14 +30,14 @@ namespace MrCMS.Shortcodes.Forms
             _siteSettings = siteSettings;
         }
 
-        public string GetForm(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submittedStatus)
+        public IHtmlContent GetForm(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submittedStatus)
         {
             if (webpage == null)
-                return string.Empty;
+                return HtmlString.Empty;
 
             var formProperties = webpage.FormProperties;
             if (!formProperties.Any())
-                return string.Empty;
+                return HtmlString.Empty;
 
             var form = GetForm(webpage);
 
@@ -51,7 +52,7 @@ namespace MrCMS.Shortcodes.Forms
             if (_siteSettings.HasHoneyPot)
                 form.InnerHtml.AppendHtml(_siteSettings.GetHoneypot());
 
-            return form.ToString();
+            return form;
         }
 
         private MatchEvaluator AddValidation(IList<FormProperty> formProperties)

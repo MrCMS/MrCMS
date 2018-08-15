@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Helpers;
 using MrCMS.Web.Apps.Admin.Services;
+using System.Linq;
 
 namespace MrCMS.Web.Apps.Admin.Helpers
 {
@@ -9,10 +9,11 @@ namespace MrCMS.Web.Apps.Admin.Helpers
     {
         public static void RenderLocalisedScripts(this IHtmlHelper helper)
         {
-            var localisedScripts = helper.ViewContext.HttpContext.RequestServices.GetServices<ILocalisedScripts>();
+            var serviceProvider = helper.ViewContext.HttpContext.RequestServices;
+            var types = TypeHelper.GetAllConcreteTypesAssignableFrom<ILocalisedScripts>();
+            var localisedScripts = types.Select(serviceProvider.GetService).OfType<ILocalisedScripts>();
             var scriptList = localisedScripts.SelectMany(scripts => scripts.Files).ToArray();
-            //helper.ViewContext.Writer.Write(Scripts.Render(scriptList));
-            // TODO: write scripts to view context 
+            helper.WriteScriptsToResponse(scriptList);
         }
     }
 }

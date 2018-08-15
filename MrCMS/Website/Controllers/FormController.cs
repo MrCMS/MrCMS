@@ -15,9 +15,9 @@ namespace MrCMS.Website.Controllers
             _formPostingHandler = formPostingHandler;
         }
 
-        //[ValidateInput(false)]
         [GoogleRecaptcha]
         [DoNotCache]
+        [Route("save-form/{id}")]
         public ActionResult Save(int id)
         {
             var webpage = _formPostingHandler.GetWebpage(id);

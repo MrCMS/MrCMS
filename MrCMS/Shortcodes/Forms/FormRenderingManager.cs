@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 
@@ -14,10 +15,10 @@ namespace MrCMS.Shortcodes.Forms
             _customFormRenderer = customFormRenderer;
         }
 
-        public string RenderForm(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submitted)
+        public IHtmlContent RenderForm(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submitted)
         {
             if (webpage == null)
-                return string.Empty;
+                return HtmlString.Empty;
             return string.IsNullOrWhiteSpace(webpage.FormDesign)
                        ? _defaultFormRenderer.GetDefault(helper, webpage, submitted)
                        : _customFormRenderer.GetForm(helper, webpage, submitted);

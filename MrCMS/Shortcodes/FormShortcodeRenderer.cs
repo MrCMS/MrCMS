@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Services;
 using MrCMS.Shortcodes.Forms;
 using NHibernate;
 
@@ -10,30 +12,31 @@ namespace MrCMS.Shortcodes
     public class FormShortcodeRenderer : IShortcodeRenderer
     {
         private readonly IFormRenderer _formRenderer;
+        private readonly IGetCurrentPage _getCurrentPage;
         private readonly ISession _session;
 
-        public FormShortcodeRenderer(ISession session, IFormRenderer formRenderer)
+        public FormShortcodeRenderer(ISession session, IFormRenderer formRenderer, IGetCurrentPage getCurrentPage)
         {
             _session = session;
             _formRenderer = formRenderer;
+            _getCurrentPage = getCurrentPage;
         }
 
         public string TagName => "form";
 
-        public string Render(IHtmlHelper helper, Dictionary<string, string> attributes)
+        public IHtmlContent Render(IHtmlHelper helper, Dictionary<string, string> attributes)
         {
             Webpage page = null;
             if (attributes.ContainsKey("id"))
             {
                 int id;
                 if (!int.TryParse(attributes["id"], out id))
-                    return string.Empty;
+                    return HtmlString.Empty;
                 page = _session.Get<Webpage>(id);
             }
             else
             {
-                // TODO: get current page
-                //page =  CurrentRequestData.CurrentPage;
+                page = _getCurrentPage.GetPage();
             }
 
             var status = GetStatus(helper.ViewContext);

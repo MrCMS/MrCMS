@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Settings;
 using MrCMS.Website.Filters;
+using System.Linq;
 
 namespace MrCMS.Shortcodes.Forms
 {
@@ -25,27 +26,31 @@ namespace MrCMS.Shortcodes.Forms
             _siteSettings = siteSettings;
         }
 
-        public string GetDefault(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submittedStatus)
+        public IHtmlContent GetDefault(IHtmlHelper helper, Webpage webpage, FormSubmittedStatus submittedStatus)
         {
             if (webpage == null)
-                return string.Empty;
+            {
+                return HtmlString.Empty;
+            }
 
             var formProperties = webpage.FormProperties.OrderBy(x => x.DisplayOrder);
             if (!formProperties.Any())
-                return string.Empty;
+            {
+                return HtmlString.Empty;
+            }
 
             var form = GetForm(webpage);
             foreach (var property in formProperties)
             {
-                var elementHtml = string.Empty;
+                IHtmlContentBuilder elementHtml = new HtmlContentBuilder();
                 var renderer = _elementRendererManager.GetElementRenderer(property);
-                elementHtml += _labelRenderer.AppendLabel(property);
+                elementHtml.AppendHtml(_labelRenderer.AppendLabel(property));
                 var existingValue = submittedStatus.Data[property.Name];
 
                 var element = renderer.AppendElement(property, existingValue, _siteSettings.FormRendererType);
                 element.TagRenderMode = renderer.IsSelfClosing ? TagRenderMode.SelfClosing : TagRenderMode.Normal;
-                elementHtml += element;
-                elementHtml += _validationMessaageRenderer.AppendRequiredMessage(property);
+                elementHtml.AppendHtml(element);
+                elementHtml.AppendHtml(_validationMessaageRenderer.AppendRequiredMessage(property));
                 var elementContainer =
                     _elementRendererManager.GetElementContainer(_siteSettings.FormRendererType, property);
                 if (elementContainer != null)
@@ -63,7 +68,7 @@ namespace MrCMS.Shortcodes.Forms
 
             var div = new TagBuilder("div");
             div.InnerHtml.AppendHtml(GetSubmitButton(webpage));
-            form.InnerHtml .AppendHtml(div);
+            form.InnerHtml.AppendHtml(div);
 
             if (submittedStatus.Submitted)
             {
@@ -72,9 +77,11 @@ namespace MrCMS.Shortcodes.Forms
             }
 
             if (_siteSettings.HasHoneyPot)
+            {
                 form.InnerHtml.AppendHtml(_siteSettings.GetHoneypot());
+            }
 
-            return form.ToString();
+            return form;
         }
 
 

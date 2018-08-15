@@ -1,5 +1,11 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Models
+@using MrCMS.Web.Apps.Admin.Services
 @model MrCMS.Entities.Documents.Web.Webpage
+@inject IFormAdminService AdminService
+@{
+    var postingsModel = AdminService.GetFormPostings(Model, 1, string.Empty);
+}
 <div class="tab-pane" id="postings-tab">
     <div class="row">
         <div class="col-lg-7">
@@ -15,7 +21,5 @@
             </div>
         </div>
     </div>
-    @*
-        // TODO: Render postings
-        @{ Html.RenderAction("Postings", "Form", new { id = Model.Id });}*@
+    <partial name="~/Areas/Admin/Views/Form/Postings.cshtml" model="postingsModel" />
 </div>

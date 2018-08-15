@@ -18,6 +18,6 @@ namespace MrCMS.Web.Apps.Admin.Services
         void SetOrders(List<SortItem> items);
         void ClearFormData(Webpage webpage);
         byte[] ExportFormData(Webpage webpage);
-        void DeletePosting(FormPosting posting);
+        FormPosting DeletePosting(int id);
     }
 }

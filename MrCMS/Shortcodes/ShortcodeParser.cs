@@ -1,7 +1,8 @@
-using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MrCMS.Shortcodes
 {
@@ -23,19 +24,28 @@ namespace MrCMS.Shortcodes
         public IHtmlContent Parse(IHtmlHelper htmlHelper, string current)
         {
             if (string.IsNullOrWhiteSpace(current))
+            {
                 return HtmlString.Empty;
+            }
 
             current = ShortcodeMatcher.Replace(current, match =>
             {
                 var tagName = match.Groups[1].Value;
                 if (!_renderShortcode.CanRender(tagName))
+                {
                     return string.Empty;
+                }
 
                 var matches = AttributeMatcher.Matches(match.Groups[2].Value);
 
                 var attributes = matches.ToDictionary(m => m.Groups[1].Value, m => m.Groups[2].Value);
 
-                return _renderShortcode.Render(htmlHelper, tagName, attributes);
+                using (var writer = new StringWriter())
+                {
+                    var content = _renderShortcode.Render(htmlHelper, tagName, attributes);
+                    content.WriteTo(writer, System.Text.Encodings.Web.HtmlEncoder.Default);
+                    return writer.ToString();
+                }
             });
 
             return new HtmlString(current);

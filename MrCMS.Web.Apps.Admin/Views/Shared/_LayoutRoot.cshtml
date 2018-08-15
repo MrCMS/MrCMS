@@ -1,8 +1,10 @@
 ﻿@using System.Globalization
 @using MrCMS.Helpers
+@using MrCMS.Services
 @using MrCMS.Web.Apps.Admin.Helpers
 @using MrCMS.Website
 @using MrCMS.Website.Optimization
+@inject IGetCurrentUser GetCurrentUser
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/gif" href="/Areas/Admin/Content/Images/mrcms-icon.gif">
 
-    
+
     @Html.RenderStyleBundle("~/admin/stylesheets/mrcms")
     @Html.RenderStyleBundle("~/admin/stylesheets/apps")
 
@@ -22,7 +24,7 @@
         <img src="/Areas/Admin/Content/Images/ajax-loader2.gif" />
     </div>
     @RenderBody()
-    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"> </script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/Editors/ckeditor/ckeditor.js")"></script>
 
     @Html.RenderScriptBundle("~/admin/scripts/lib")
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/Content/plugins/signalr/signalr.js")"></script>
@@ -30,11 +32,12 @@
     <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/globalize/0.1.1/cultures/globalize.culture.@(CultureInfo.CurrentCulture.Name).js"></script>
     @Html.RenderScriptBundle("~/admin/scripts/mrcms")
     @Html.RenderScriptBundle("~/admin/scripts/apps")
-    @*@if (!CurrentRequestData.CurrentUser.DisableNotifications)
+
+    @if (GetCurrentUser.Get()?.DisableNotifications == false)
     {
-        Html.RenderAction("Show", "TransientNotification");
-        Html.RenderAction("Show", "PersistentNotification");
-    }*@
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/transient-notifications.js");
+        Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/persistent-notifications.js");
+    }
 
     @{ Html.RenderLocalisedScripts();}
     @{ Html.RenderScripts();}
@@ -45,6 +48,6 @@
     {
         @RenderSection("JavaScriptBlock")
     }
-@*    @MiniProfiler.RenderIncludes()*@
+    @*    @MiniProfiler.RenderIncludes()*@
 </body>
 </html>

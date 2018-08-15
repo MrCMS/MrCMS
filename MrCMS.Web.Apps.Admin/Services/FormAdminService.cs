@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Extensions.Logging;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Documents.Web.FormProperties;
@@ -11,6 +7,10 @@ using MrCMS.Services.Resources;
 using MrCMS.Web.Apps.Admin.Models;
 using NHibernate;
 using NHibernate.Criterion;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using X.PagedList;
 
 namespace MrCMS.Web.Apps.Admin.Services
@@ -56,15 +56,17 @@ namespace MrCMS.Web.Apps.Admin.Services
             }
             catch (Exception exception)
             {
-                _logger.Log(LogLevel.Error,exception,exception.Message);
+                _logger.Log(LogLevel.Error, exception, exception.Message);
                 throw;
             }
         }
 
-        public void DeletePosting(FormPosting posting)
+        public FormPosting DeletePosting(int id)
         {
+            var posting = _session.Get<FormPosting>(id);
             posting.Webpage.FormPostings.Remove(posting);
             _session.Transact(session => session.Delete(posting));
+            return posting;
         }
 
         public void AddFormProperty(FormProperty property)
@@ -72,7 +74,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             _session.Transact(session =>
             {
                 if (property.Webpage.FormProperties != null)
+                {
                     property.DisplayOrder = property.Webpage.FormProperties.Count;
+                }
 
                 session.Save(property);
             });
@@ -93,7 +97,10 @@ namespace MrCMS.Web.Apps.Admin.Services
         {
             FormPropertyWithOptions formProperty = formListOption.FormProperty;
             if (formProperty != null)
+            {
                 formProperty.Options.Add(formListOption);
+            }
+
             _session.Transact(session =>
             {
                 formListOption.OnSaving(session);
@@ -170,9 +177,13 @@ namespace MrCMS.Web.Apps.Admin.Services
                             .SelectMany(header => posting.FormValues.Where(x => x.Key == header)))
                 {
                     if (!value.IsFile)
+                    {
                         items[i].Add(value.Value);
+                    }
                     else
+                    {
                         items[i].Add("http://" + webpage.Site.BaseUrl + value.Value);
+                    }
                 }
                 items[i].Add(posting.CreatedOn.ToString()); // TODO: culture info
             }

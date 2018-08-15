@@ -1,7 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web.FormProperties;
+using MrCMS.Helpers;
 using MrCMS.Settings;
+using System;
+using System.Linq;
 namespace MrCMS.Shortcodes.Forms
 {
     public class ElementRendererManager : IElementRendererManager
@@ -15,7 +17,14 @@ namespace MrCMS.Shortcodes.Forms
 
         public IFormElementRenderer GetElementRenderer<T>(T property) where T : FormProperty
         {
-            return _serviceProvider.GetService(typeof(IFormElementRenderer<>).MakeGenericType(property.GetType())) as IFormElementRenderer;
+            var type = typeof(IFormElementRenderer<>).MakeGenericType(property.GetType());
+            var concreteType = TypeHelper.GetAllConcreteTypesAssignableFrom(type).FirstOrDefault();
+            if (concreteType != null)
+            {
+                return _serviceProvider.GetService(concreteType) as IFormElementRenderer;
+            }
+
+            return null;
         }
 
         public TagBuilder GetElementContainer(FormRenderingType formRendererType, FormProperty property)

@@ -22,7 +22,7 @@
         });
     };
     var displayNotification = function (notification) {
-        return $('<li>').attr('data-notification', true).html('<div class="notification-date">' + notification.Date + '</div><div class="notification-msg">' + notification.Message + '</div>');
+        return $('<li>').attr('data-notification', true).html('<div class="notification-date">' + notification.date + '</div><div class="notification-msg">' + notification.message + '</div>');
     };
     var displayNoNotifications = function () {
         return $('<li>').html('No notifications');
@@ -49,9 +49,12 @@
         init: function () {
             initializeNotifications();
             $(document).on('submit', '[data-mark-all-as-read]', markAllAsRead);
-            var adminHub = $.connection.notifications;
-            adminHub.client.sendPersistentNotification = prependNotification;
-            $.connection.hub.start().fail(function () { console.log('Could not Connect!'); });
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl('/notificationsHub')
+                .configureLogging(signalR.LogLevel.Warning)
+                .build();
+            connection.on('sendPersistentNotification', prependNotification);
+            connection.start().catch(err => console.error(err.toString()));
         }
     };
 };

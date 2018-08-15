@@ -1,6 +1,7 @@
 ﻿@using System.Linq
 @using MrCMS.Helpers
 @using MrCMS.Web.Apps.Admin.Models
+@using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Admin.Models.PostingsModel
 
 
@@ -10,7 +11,7 @@
     <div class="input-group">
         @Html.TextBoxFor(webpage => webpage.Search, new { @class = "form-control" })
         <span class="input-group-btn">
-            <button class="btn btn-default" id="search-postings" data-action="update" data-url="@Url.Action("Postings", new { id = Model.Id })">@Html.Resource("Admin Form Postings Search Button", "Search")</button>
+            <button class="btn btn-default" id="search-postings" data-action="update" data-url="@Url.Action("Postings","Form", new { id = Model.Id })">@Html.Resource("Admin Form Postings Search Button", "Search")</button>
         </span>
     </div>
     <br />
@@ -51,7 +52,7 @@
                         </td>
                         <td>
                             <div class="btn-group">
-                                @Html.ActionLink(Html.Resource("Admin Form Postings View full entry", "View full entry"), "ViewPosting", new { id = posting.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
+                                @Html.ActionLink(Html.Resource("Admin Form Postings View full entry", "View full entry"), "ViewPosting", "Form", new { id = posting.Id }, new { @class = "btn btn-default btn-xs", data_toggle = "fb-modal" })
 
                                 @Html.ActionLink(Html.Resource("Delete"), "DeleteEntry", "Form", new { id = posting.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
                             </div>
@@ -60,9 +61,7 @@
                 }
             </tbody>
         </table>
-        @*
-            // TODO: Paging
-            @Html.Pager(Model.Items, "Postings", i => new { Model.Id, page = i, Model.Search })*@
+        @Html.PagedListPager(Model.Items, page => Url.Action("Postings", "Form", new { Model.Id, page, Model.Search }))
     }
     else
     {

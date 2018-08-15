@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Helpers;
 
 namespace MrCMS.Website.Optimization
 {
@@ -51,20 +52,14 @@ namespace MrCMS.Website.Optimization
 
         public void GetScripts(ViewContext viewContext)
         {
-            foreach (string path in GetScriptData(viewContext.HttpContext).Values.SelectMany(x => x).Select(data => data.Url).Distinct())
-            {
-                viewContext.Writer.Write("<script src=\"{0}\" type=\"text/javascript\"></script>",
-                    path.StartsWith("~") ? path.Substring(1) : path);
-            }
+            viewContext.WriteScriptsToResponse(GetScriptData(viewContext.HttpContext).Values.SelectMany(x => x)
+                .Select(data => data.Url).Distinct());
         }
 
         public void GetCss(ViewContext viewContext)
         {
-            foreach (string path in GetStyleData(viewContext.HttpContext).Values.SelectMany(x => x).Select(x => x.Url).Distinct())
-            {
-                viewContext.Writer.Write("<link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" />",
-                    path.StartsWith("~") ? path.Substring(1) : path);
-            }
+            viewContext.WriteCssToResponse(GetStyleData(viewContext.HttpContext).Values.SelectMany(x => x)
+                .Select(x => x.Url).Distinct());
         }
     }
 }

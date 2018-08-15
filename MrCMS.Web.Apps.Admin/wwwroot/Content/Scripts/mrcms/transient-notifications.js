@@ -1,16 +1,19 @@
 ﻿var TransientNotifications = function () {
     var showNotification = function (notification) {
         noty({
-            text: '<div class="notification-date">' + notification.Date + '</div><div class="notification-msg">' + notification.Message + "</div>",
+            text: '<div class="notification-date">' + notification.date + '</div><div class="notification-msg">' + notification.message + "</div>",
             layout: 'bottomRight',
             timeout: 5000
         });
     };
     return {
         init: function () {
-            var adminHub = $.connection.notifications;
-            adminHub.client.sendTransientNotification = showNotification;
-            $.connection.hub.start().fail(function () { console.log('Could not Connect!'); });
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl('/notificationsHub')
+                .configureLogging(signalR.LogLevel.Warning)
+                .build();
+            connection.on('sendTransientNotification', showNotification);
+            connection.start().catch(err => console.error(err.toString()));
         }
     };
 };
