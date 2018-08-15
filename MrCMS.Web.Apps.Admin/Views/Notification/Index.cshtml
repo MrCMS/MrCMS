@@ -1,12 +1,11 @@
-﻿@using System.Collections.Generic
-@using MrCMS.Entities.Notifications
+﻿@using MrCMS.Entities.Notifications
 @using MrCMS.Helpers
-@using MrCMS.Paging
 @using MrCMS.Web.Apps.Admin.ACL
-@using MrCMS.Web.Apps.Admin.Models
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Admin.Models.NotificationSearchQuery
 @{
-    var results = ViewData["results"] as IPagedList<Notification> ?? PagedList<Notification>.Empty;
+    var results = ViewData["results"] as IPagedList<Notification>;
     var notificationTypeOptions = ViewData["notification-type-options"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 @using (Html.BeginForm("Index", "Notification", FormMethod.Get))
@@ -16,7 +15,7 @@
             @Html.Resource("Admin Notifications Title", "Notifications")
             <span class="btn-group display-inline pull-right">
                 <input type="submit" class="btn btn-primary" value="Search" />
-                @Html.ActionLink(Resource("Admin Notifications Push", "Push"), "Push", "Notification", new { }, new { @class = "btn btn-default", data_toggle = "fb-modal" })
+                @Html.ActionLink(Html.Resource("Admin Notifications Push", "Push"), "Push", "Notification", new { }, new { @class = "btn btn-default", data_toggle = "fb-modal" })
             </span>
         </legend>
 
@@ -95,7 +94,7 @@ else
                         <div class="btn-group">
                             @if (Html.CanAccess<NotificationACL>(NotificationACL.Delete))
                             {
-                                @Html.ActionLink("Delete", "Delete", "Notification", new {id = notification.Id}, new {@class = "btn btn-xs btn-danger", data_toggle = "fb-modal"})
+                                @Html.ActionLink("Delete", "Delete", "Notification", new { id = notification.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })
                             }
                         </div>
                     </td>
@@ -104,4 +103,4 @@ else
         </tbody>
     </table>
 }
-@Html.Pager(results, "Index", page => new { page })
+@Html.PagedListPager(results, page => Url.Action("Index", new { page }))

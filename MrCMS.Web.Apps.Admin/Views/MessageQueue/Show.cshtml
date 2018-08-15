@@ -3,7 +3,7 @@
     <legend>
         @Html.Resource("Message") #@Model.Id
         <span class="btn-group  display-inline  pull-right">
-            @Html.ActionLink(Resource("Back"), "Index", null, new { @class = "btn " })
+            @Html.ActionLink(Html.Resource("Back"), "Index", null, new { @class = "btn " })
         </span>
     </legend>
     <table class="table table-striped table-condensed">

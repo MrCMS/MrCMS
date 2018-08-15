@@ -2,7 +2,8 @@
 @using System.Linq
 @using MrCMS.Entities.Messaging
 @using MrCMS.Helpers
-@using MrCMS.Paging
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @model MrCMS.Models.MessageQueueQuery
 @{
     var queuedMessages = ViewData["data"] as IPagedList<QueuedMessage>;
@@ -91,7 +92,7 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            @Html.ActionLink(Resource("View"), "Show", "MessageQueue", new { id = message.Id }, new { @class = "btn btn-xs btn-default" })
+                            @Html.ActionLink(Html.Resource("View"), "Show", "MessageQueue", new { id = message.Id }, new { @class = "btn btn-xs btn-default" })
                         </div>
                     </td>
                 </tr>
@@ -103,5 +104,5 @@ else
 {
     <p>No results match your search.</p>
 }
-@Html.Pager(queuedMessages, "Index", page => new { page })
+@Html.PagedListPager(queuedMessages, page => Url.Action("Index",  new { page }))
 
