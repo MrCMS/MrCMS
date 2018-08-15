@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL;
 using MrCMS.Entities.Documents;
 using MrCMS.Entities.Documents.Web;
@@ -10,12 +6,13 @@ using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Helpers;
-using MrCMS.Web.Apps.Admin.ModelBinders;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website;
 using MrCMS.Website.Controllers;
 using MrCMS.Website.Filters;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Controllers
 {
@@ -65,7 +62,10 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
             var additionalPropertyModel = _webpageAdminService.GetAdditionalPropertyModel(model.DocumentType);
             if (additionalPropertyModel != null)
+            {
                 await TryUpdateModelAsync(additionalPropertyModel, additionalPropertyModel.GetType(), string.Empty);
+            }
+
             var webpage = _webpageAdminService.Add(model, additionalPropertyModel);
             TempData.SuccessMessages().Add(string.Format("{0} successfully added", webpage.Name));
             return RedirectToAction("Edit", new { id = webpage.Id });
@@ -111,8 +111,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Sort(
-            int? id) // TODO: model-binding
+        public ActionResult Sort(int? id)
         {
             var sortItems = _webpageAdminService.GetSortItems(id);
 
@@ -121,18 +120,19 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         public ActionResult Sort(
-            //[IoCModelBinder(typeof(NullableEntityModelBinder))]
-            Webpage parent, // TODO: model-binding
+            int? id,
             List<SortItem> items)
         {
             _webpageAdminService.SetOrders(items);
-            return RedirectToAction("Sort", parent == null ? null : new { id = parent.Id });
+            return RedirectToAction("Sort", new { id });
         }
 
         public ActionResult Show(Webpage document)
         {
             if (document == null)
+            {
                 return RedirectToAction("Index");
+            }
 
             return View(document);
         }
@@ -156,7 +156,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public ActionResult ViewChanges(DocumentVersion documentVersion)
         {
             if (documentVersion == null)
+            {
                 return RedirectToAction("Index");
+            }
 
             return PartialView(documentVersion);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,10 @@ namespace MrCMS.Apps
         {
             get { yield break; }
         }
+
+        public virtual IEnumerable<Type> BaseTypes =>Enumerable.Empty<Type>();
+        public virtual IDictionary<Type, string> SignalRHubs => new Dictionary<Type, string>();
+
         public string ContentPrefix { get; set; }
         public string ViewPrefix { get; set; }
 

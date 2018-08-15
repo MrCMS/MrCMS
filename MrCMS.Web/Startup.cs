@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +14,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using MrCMS.Apps;
 using MrCMS.DbConfiguration;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -26,8 +22,6 @@ using MrCMS.Services;
 using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin;
-using MrCMS.Web.Apps.Admin.Filters;
-using MrCMS.Web.Apps.Admin.Hubs;
 using MrCMS.Web.Apps.Core;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
@@ -153,6 +147,7 @@ namespace MrCMS.Web
 
 
             services.AddSingleton<ICmsMethodTester, CmsMethodTester>();
+            services.AddSingleton<IGetMrCMSMiddleware, GetMrCMSMiddleware>();
             services.AddSingleton<IAssignPageDataToRouteData, AssignPageDataToRouteData>();
             services.AddSingleton<IQuerySerializer, QuerySerializer>();
             services.AddSingleton<IStringLocalizerFactory, StringLocalizerFactory>();
@@ -211,13 +206,10 @@ namespace MrCMS.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, MrCMSAppContext appContext)
         {
-            app.UseMiddleware<CurrentSiteSettingsMiddleware>();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseMiddleware<MrCMSLoggingMiddleware>();
 
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -227,22 +219,7 @@ namespace MrCMS.Web
             app.UseSession();
             app.UseAuthentication();
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<NotificationHub>("/notificationsHub");
-                routes.MapHub<BatchProcessingHub>("/batchHub");
-            });
-
-            app.UseMvc(builder =>
-            {
-                builder.MapMrCMS();
-                builder.MapMrCMSApps(appContext);
-
-                builder.MapRoute(
-                    "default",
-                    "{controller=Home}/{action=Index}/{id?}");
-            });
-
+            app.UseMrCMS();
         }
     }
 

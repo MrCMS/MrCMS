@@ -17,6 +17,8 @@ namespace MrCMS.Apps
 
         Assembly Assembly { get; }
         IEnumerable<Type> Conventions { get; }
+        IEnumerable<Type> BaseTypes { get; }
+        IDictionary<Type, string> SignalRHubs { get; }
 
         IServiceCollection RegisterServices(IServiceCollection serviceCollection);
 

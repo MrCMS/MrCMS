@@ -33,7 +33,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         [ActionName("AddSiteOverride")]
         public ActionResult AddSiteOverride_POST(
             [ModelBinder(typeof(MessageTemplateOverrideModelBinder))]
-            MessageTemplate messageTemplate) 
+            MessageTemplate messageTemplate)
 
         {
             if (messageTemplate != null)
@@ -51,7 +51,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("DeleteSiteOverride")]
-        public ActionResult DeleteSiteOverride_POST( string type) 
+        public ActionResult DeleteSiteOverride_POST(string type)
         {
             if (type != null)
             {
@@ -74,9 +74,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [ActionName("Edit")]
-        public ActionResult Edit_POST(
-            [ModelBinder(typeof(MessageTemplateOverrideModelBinder))]
-            MessageTemplate messageTemplate) // TODO: model-binding
+        public ActionResult Edit_POST([ModelBinder(typeof(MessageTemplateOverrideModelBinder))] MessageTemplate messageTemplate)
         {
             if (messageTemplate != null)
             {

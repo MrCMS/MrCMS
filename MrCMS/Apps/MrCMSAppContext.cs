@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using MrCMS.FileProviders;
 using MrCMS.Helpers;
+using MrCMS.Website;
+using MrCMS.Website.CMS;
 using NHibernate.Cfg;
 
 namespace MrCMS.Apps
@@ -29,6 +31,13 @@ namespace MrCMS.Apps
             Apps.Select(app => new EmbeddedContentFileProvider(app.Assembly, app.ContentPrefix));
 
         public IEnumerable<Type> DbConventions => Apps.SelectMany(app => app.Conventions);
+        public IEnumerable<Type> DbBaseTypes => Apps.SelectMany(app => app.BaseTypes);
+
+        public IDictionary<Type, string> SignalRHubs =>
+            Apps.SelectMany(app => app.SignalRHubs).ToDictionary(x => x.Key, x => x.Value); 
+
+        // TODO: get middleware per app
+        public IEnumerable<MiddlewareInfo> Middlewares => Enumerable.Empty<MiddlewareInfo>(); // throw new NotImplementedException();
 
         public void RegisterApp<TApp>(Action<MrCMSAppOptions> options = null) where TApp : IMrCMSApp, new()
         {

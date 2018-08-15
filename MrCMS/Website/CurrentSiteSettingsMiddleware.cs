@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using MrCMS.Settings;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website
 {
@@ -13,6 +13,7 @@ namespace MrCMS.Website
         {
             _configurationProvider = configurationProvider;
         }
+
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             context.Items[Key] = _configurationProvider.GetSiteSettings<SiteSettings>();

@@ -32,8 +32,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpGet]
-        public ViewResult Add(string key, 
-            int? id, bool language = false) // TODO: model-binding
+        public ViewResult Add(string key, int? id, bool language = false)
         {
             if (language)
                 ViewData["language-options"] = _stringResourceAdminService.GetLanguageOptions(key, id);

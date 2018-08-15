@@ -39,21 +39,10 @@ namespace MrCMS.DbConfiguration
             return model;
         }
 
-        public static AutoPersistenceModel UseConventionsFromAssemblies(this AutoPersistenceModel model,
-            IEnumerable<Assembly> assemblies)
+        public static AutoPersistenceModel IncludeAppBases(this AutoPersistenceModel model, MrCMSAppContext appContext)
         {
-            return UseConventionsFromAssemblies(model, assemblies.ToArray());
-        }
-
-        public static AutoPersistenceModel IncludeAppBases(this AutoPersistenceModel model)
-        {
-            //foreach (Type baseType in TypeHelper.GetAllConcreteTypesAssignableFrom<MrCMSApp>()
-            //    .Select(type => Activator.CreateInstance(type) as MrCMSApp)
-            //    .SelectMany(app => app.BaseTypes))
-            //{
-            //    model.IncludeBase(baseType);
-            //}
-            // TODO: Include app bases
+            foreach (var type in appContext.DbBaseTypes)
+                model.IncludeBase(type);
             return model;
         }
 

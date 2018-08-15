@@ -91,7 +91,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         public ActionResult Sort(
-            int? id, // TODO: model-binding
+            int? id,
             List<SortItem> items)
         {
             _layoutAdminService.SetOrders(items);

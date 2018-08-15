@@ -1,7 +1,7 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 
 namespace MrCMS.Website.CMS
 {
@@ -19,7 +19,9 @@ namespace MrCMS.Website.CMS
         public async Task RouteAsync(RouteContext context)
         {
             if (context == null)
+            {
                 throw new ArgumentNullException(nameof(context));
+            }
 
             // get the service provider 
             var serviceProvider = context.HttpContext.RequestServices;
@@ -27,16 +29,26 @@ namespace MrCMS.Website.CMS
             // we only route requests that are of routable methods
             var method = context.HttpContext.Request.Method;
             if (!serviceProvider.GetRequiredService<ICmsMethodTester>().IsRoutable(method))
+            {
                 return;
+            }
 
             // we want to look at the whole path with the leading '/' stripped
             var url = context.HttpContext.Request.Path.ToUriComponent()?.TrimStart('/');
 
             var matchResult = serviceProvider.GetRequiredService<ICmsRouteMatcher>().TryMatch(url, method);
             if (matchResult.MatchType == CmsRouteMatchType.NoMatch)
+            {
                 return;
+            }
+
             if (matchResult.MatchType == CmsRouteMatchType.Preview)
+            {
                 context.RouteData.MakePreview();
+            }
+
+
+
             serviceProvider.GetRequiredService<IAssignPageDataToRouteData>().Assign(context.RouteData, matchResult.PageData);
 
             context.RouteData.MakeCMSRequest();
