@@ -12,10 +12,12 @@ namespace MrCMS.Website.Controllers
             _authorisationService = authorisationService;
         }
 
+
+        [Route("logout")]
         public RedirectResult Logout()
         {
             _authorisationService.Logout();
-            return Redirect("~");
+            return Redirect("~/");
         }
     }
 }

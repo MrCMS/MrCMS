@@ -110,8 +110,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         [HttpPost]
         [Acl(typeof(UserACL), UserACL.SetPassword)]
-        public ActionResult SetPassword(User user, string password)
+        public ActionResult SetPassword(int id, string password)
         {
+            var user = _userManagementService.GetUser(id);
             _passwordManagementService.SetPassword(user, password, password);
             _userManagementService.SaveUser(user);
             return RedirectToAction("Edit", new { user.Id });

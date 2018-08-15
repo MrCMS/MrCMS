@@ -33,6 +33,7 @@
     <Folder Include="Models\UserEdit\" />
     <Folder Include="Views\FileMigration\" />
     <Folder Include="Views\SiteCloneOptions\" />
+    <Folder Include="Views\SiteList\" />
   </ItemGroup>
 
   <ItemGroup>
