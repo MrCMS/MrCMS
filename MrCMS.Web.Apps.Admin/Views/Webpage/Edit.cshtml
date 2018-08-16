@@ -29,9 +29,7 @@
                     <a href="@Url.Action(Html.Resource("Delete"), "Webpage", new {id = Model.Id})" class="btn btn-danger" data-toggle="fb-modal">Delete</a>
                 }
 
-                @(Model.PublishOn == null
-                                                      ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" })
-                                                      : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
+                @(Model.PublishOn == null ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" }) : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
 
                 @Html.EditorFor(x => x.PublishOn)
                 @Html.ValidationMessageFor(x => x.PublishOn)

@@ -13,6 +13,6 @@ namespace MrCMS.Web.Apps.Admin.Services
         void DeleteRole(int id);
         IEnumerable<UserRole> GetAllRoles();
         IEnumerable<AutoCompleteResult> Search(string term);
-        string GetRolesForPermissions();
+        IEnumerable<string> GetRolesForPermissions();
     }
 }

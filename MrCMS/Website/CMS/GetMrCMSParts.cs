@@ -9,6 +9,7 @@ using MrCMS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Routing;
 
 namespace MrCMS.Website.CMS
 {
@@ -58,11 +59,6 @@ namespace MrCMS.Website.CMS
                 },
                 new RegistrationInfo
                 {
-                    Registration = builder => builder.UseMiddleware<WebpageDisallowedMiddleware>(),
-                    Order = 9650
-                },
-                new RegistrationInfo
-                {
                     Registration = builder => builder.UseWhen(
                         context => context.RequestServices.GetRequiredService<IGetCurrentUser>().Get()?.IsAdmin == true
                                    && context.RequestServices.GetRequiredService<SiteSettings>().SSLAdmin,
@@ -95,6 +91,8 @@ namespace MrCMS.Website.CMS
                         builder.MapRoute(
                             "default",
                             "{controller=Home}/{action=Index}/{id?}");
+
+                        builder.Routes.Add(new FileNotFoundRouter(builder.DefaultHandler));
                     }),
                     Order = 1000
                 },

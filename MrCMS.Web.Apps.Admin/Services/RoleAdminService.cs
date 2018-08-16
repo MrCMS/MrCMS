@@ -25,10 +25,9 @@ namespace MrCMS.Web.Apps.Admin.Services
             return _roleService.GetAllRoles();
         }
 
-        public string GetRolesForPermissions()
+        public IEnumerable<string> GetRolesForPermissions()
         {
-            string[] roles = _roleService.GetAllRoles().Select(x => x.Name).ToArray();
-            return JsonConvert.SerializeObject(roles);
+            return _roleService.GetAllRoles().Select(x => x.Name);
         }
 
         public IEnumerable<AutoCompleteResult> Search(string term)

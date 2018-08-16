@@ -1,4 +1,5 @@
 using System;
+using MrCMS.Entities.Documents.Web;
 
 namespace MrCMS.Website.CMS
 {
@@ -11,5 +12,7 @@ namespace MrCMS.Website.CMS
         public string Action { get; set; }
 
         public bool IsPreview { get; set; }
+
+        public Webpage Webpage { get; set; }
     }
 }

@@ -39,7 +39,8 @@ namespace MrCMS.Website.CMS
                 Id = webpage.Id,
                 Type = webpage.GetType(),
                 Controller = metadata.GetController(method),
-                Action = metadata.GetAction(method)
+                Action = metadata.GetAction(method),
+                Webpage = webpage
             };
         }
     }

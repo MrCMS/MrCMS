@@ -5,16 +5,16 @@ namespace MrCMS.Website.Controllers
 {
     public class ErrorController : MrCMSUIController
     {
-        public ViewResult FileNotFound(Uri url)
+        public ViewResult FileNotFound(string path)
         {
-            return View(new FileNotFoundModel(url));
+            return View(new FileNotFoundModel(path));
         }
 
         public class FileNotFoundModel 
         {
-            public FileNotFoundModel(Uri url)
+            public FileNotFoundModel(string path)
             {
-                MissingUrl = url;
+                MissingUrl = Uri.TryCreate(path, UriKind.Relative, out Uri missingUrl) ? missingUrl : null;
             }
 
             public Uri MissingUrl { get; private set; }

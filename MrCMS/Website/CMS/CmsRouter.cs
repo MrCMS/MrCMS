@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Helpers;
+using MrCMS.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -37,22 +40,44 @@ namespace MrCMS.Website.CMS
             var url = context.HttpContext.Request.Path.ToUriComponent()?.TrimStart('/');
 
             var matchResult = serviceProvider.GetRequiredService<ICmsRouteMatcher>().TryMatch(url, method);
-            if (matchResult.MatchType == CmsRouteMatchType.NoMatch)
+            switch (matchResult.MatchType)
             {
-                return;
+                case CmsRouteMatchType.NoMatch:
+                    return;
+                case CmsRouteMatchType.Disallowed:
+                    await HandleDisallowed(context, serviceProvider);
+                    return;
+                case CmsRouteMatchType.Preview:
+                    context.RouteData.MakePreview();
+                    break;
+                case CmsRouteMatchType.Success:
+                    break;
             }
-
-            if (matchResult.MatchType == CmsRouteMatchType.Preview)
-            {
-                context.RouteData.MakePreview();
-            }
-
-
-
             serviceProvider.GetRequiredService<IAssignPageDataToRouteData>().Assign(context.RouteData, matchResult.PageData);
 
             context.RouteData.MakeCMSRequest();
             context.RouteData.Routers.Add(_defaultRouter);
+            await _defaultRouter.RouteAsync(context);
+        }
+
+        private async Task HandleDisallowed(RouteContext context, IServiceProvider serviceProvider)
+        {
+            var getErrorPage = serviceProvider.GetRequiredService<IGetErrorPage>();
+            var currentUser = serviceProvider.GetRequiredService<IGetCurrentUser>().Get();
+
+            var code = currentUser != null ? 403 : 401;
+            context.HttpContext.Response.StatusCode = code;
+            var webpage = getErrorPage.GetPage(code);
+            if (webpage == null)
+            {
+                await context.HttpContext.Response.WriteAsync(code.ToString());
+                return;
+            }
+
+            var metadata = webpage.GetMetadata();
+            context.RouteData.Values["controller"] = metadata.WebGetController;
+            context.RouteData.Values["action"] = metadata.WebGetAction;
+            context.RouteData.Values["id"] = webpage.Id;
             await _defaultRouter.RouteAsync(context);
         }
 

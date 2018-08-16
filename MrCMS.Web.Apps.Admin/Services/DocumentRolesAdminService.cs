@@ -1,10 +1,10 @@
-using System;
-using System.Linq;
-using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
 using NHibernate;
 using NHibernate.Criterion;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
@@ -17,51 +17,23 @@ namespace MrCMS.Web.Apps.Admin.Services
             _session = session;
         }
 
-        public void SetFrontEndRoles(string frontEndRoles, Webpage webpage)
+        public ISet<UserRole> GetFrontEndRoles(string frontEndRoles, bool inheritFromParent)
         {
-            if (webpage == null) throw new ArgumentNullException("webpage");
-
             if (frontEndRoles == null)
+            {
                 frontEndRoles = string.Empty;
+            }
+
+            if (inheritFromParent)
+            {
+                return new HashSet<UserRole>();
+            }
 
             var roleNames =
                 frontEndRoles.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(
                     x => !string.IsNullOrWhiteSpace(x));
 
-            var roles = webpage.FrontEndAllowedRoles.ToList();
-
-            if (webpage.InheritFrontEndRolesFromParent)
-            {
-                roles.ForEach(role =>
-                {
-                    role.FrontEndWebpages.Remove(webpage);
-                    webpage.FrontEndAllowedRoles.Remove(role);
-                });
-            }
-            else
-            {
-                roleNames.ForEach(name =>
-                {
-                    var role = GetRole(name);
-                    if (role != null)
-                    {
-                        if (!webpage.FrontEndAllowedRoles.Contains(role))
-                        {
-                            webpage.FrontEndAllowedRoles.Add(role);
-                            role.FrontEndWebpages.Add(webpage);
-                        }
-                        roles.Remove(role);
-                    }
-
-                });
-
-                roles.ForEach(role =>
-                {
-                    webpage.FrontEndAllowedRoles.Remove(role);
-                    role.FrontEndWebpages.Remove(webpage);
-                });
-            }
-
+            return roleNames.Select(GetRole).Where(x => x != null).ToHashSet();
         }
 
         private UserRole GetRole(string name)
