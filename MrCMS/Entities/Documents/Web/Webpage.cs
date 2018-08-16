@@ -87,12 +87,6 @@ namespace MrCMS.Entities.Documents.Web
             }
         }
 
-        // TODO: get rid of this
-        //public virtual string LiveUrlSegment
-        //{
-        //    get { return UrlSegment; }
-        //}
-
         [UIHint("DateTime")]
         [DisplayName("Publish On")]
         public virtual DateTime? PublishOn { get; set; }
