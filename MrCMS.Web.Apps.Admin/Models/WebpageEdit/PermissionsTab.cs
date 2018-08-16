@@ -1,19 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Infrastructure.Models.Tabs;
-using MrCMS.Web.Apps.Admin.Models.Tabs;
+using System;
+using System.Threading.Tasks;
 
 namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 {
     public class PermissionsTab : AdminTab<Webpage>
     {
-        public override int Order
-        {
-            get { return 500; }
-        }
+        public override int Order => 500;
 
         public override string Name(IServiceProvider serviceProvider, Webpage entity)
         {
@@ -22,20 +18,14 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 
         public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
-            return true;
+            return !(entity is Redirect);
         }
 
-        public override Type ParentType
-        {
-            get { return null; }
-        }
+        public override Type ParentType => null;
 
         public override Type ModelType => typeof(PermissionsTabViewModel);
 
-        public override string TabHtmlId
-        {
-            get { return "permissions"; }
-        }
+        public override string TabHtmlId => "permissions";
 
         public override Task RenderTabPane(IHtmlHelper html, IMapper mapper, Webpage webpage)
         {

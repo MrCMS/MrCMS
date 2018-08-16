@@ -18,6 +18,8 @@
     <None Remove="Views\SystemSettings\TestEmailSettings.cshtml" />
     <None Remove="Views\User\Content.cshtml" />
     <None Remove="Views\User\Tab.cshtml" />
+    <None Remove="Views\Webpage\RedirectAdd.cshtml" />
+    <None Remove="Views\Webpage\RedirectSEO.cshtml" />
     <None Remove="Views\Webpage\Tab.cshtml" />
     <None Remove="Views\Webpage\TabContent.cshtml" />
     <None Remove="Views\Webpage\Versions.cshtml" />
@@ -38,6 +40,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MrCMS.Web.Apps.Admin.Infrastructure\MrCMS.Web.Apps.Admin.Infrastructure.csproj" />
+    <ProjectReference Include="..\MrCMS.Web.Apps.Core\MrCMS.Web.Apps.Core.csproj" />
     <ProjectReference Include="..\MrCMS\MrCMS.csproj" />
   </ItemGroup>
 

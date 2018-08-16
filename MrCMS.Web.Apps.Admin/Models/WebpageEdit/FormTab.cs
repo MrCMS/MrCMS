@@ -25,7 +25,7 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
 
         public override bool ShouldShow(IServiceProvider serviceProvider, Webpage entity)
         {
-            return true;
+            return !(entity is Redirect);
         }
     }
 }

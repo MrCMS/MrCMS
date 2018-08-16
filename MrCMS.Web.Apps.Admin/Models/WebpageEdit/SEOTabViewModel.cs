@@ -17,7 +17,5 @@ namespace MrCMS.Web.Apps.Admin.Models.WebpageEdit
         public string CustomHeaderScripts { get; set; }
         public string CustomFooterScripts { get; set; }
         public bool DoNotCache { get; set; }
-        //public DateTime CreatedOn { get; set; }
-        //public DateTime UpdatedOn { get; set; }
     }
 }

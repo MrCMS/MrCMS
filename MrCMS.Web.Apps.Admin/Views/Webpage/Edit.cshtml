@@ -2,10 +2,13 @@
 @using MrCMS.Entities.Documents.Web
 @using MrCMS.Helpers
 @using MrCMS.Web.Apps.Admin.Models
+@using MrCMS.Web.Apps.Admin.Services
 @model Webpage
+@inject IGetEditTabsService TabsService
 @{
     ViewBag.Title = "Edit | " + Model.Name;
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewData["webpage"] = Model;
+    var tabs = TabsService.GetEditTabs(Html, Model);
 }
 
 @using (Html.BeginForm("Edit", "Webpage", FormMethod.Post, new { id = "edit-document", data_are_you_sure = Html.Resource(AdminMessages.AreYouSureDefaultMessage) }))
@@ -27,8 +30,8 @@
                 }
 
                 @(Model.PublishOn == null
-                              ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" })
-                              : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
+                                                      ? Html.ActionLink(Html.Resource("Publish Now"), "PublishNow", new { id = Model.Id }, new { @class = "btn btn-warning", id = "publish-status-change" })
+                                                      : Html.ActionLink(Html.Resource("Unpublish"), "Unpublish", new { id = Model.Id }, new { @class = "btn btn-success", id = "publish-status-change" }))
 
                 @Html.EditorFor(x => x.PublishOn)
                 @Html.ValidationMessageFor(x => x.PublishOn)
@@ -39,6 +42,21 @@
     </div>
     @Html.ValidationSummary()
 
-    await Html.RenderPartialAsync(Convert.ToString(ViewData["EditView"]));
+    <ul class="nav nav-tabs margin-top-10" data-stickytabs="webpage-@Model.Id">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="Tab" model="tab" view-data="ViewData" />
+        }
+    </ul>
+    <div class="tab-content">
+        @foreach (var tab in tabs)
+        {
+            ViewData["is-first"] = tab == tabs.First();
+            <partial name="TabContent" model="tab" view-data="ViewData" />
+        }
+    </div>
+
+    Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/edit-webpage.js");
 }
 

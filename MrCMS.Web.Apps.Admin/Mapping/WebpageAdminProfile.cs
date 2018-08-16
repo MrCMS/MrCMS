@@ -2,6 +2,7 @@
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Models.WebpageEdit;
+using MrCMS.Web.Apps.Core.Areas.Admin.Models;
 
 namespace MrCMS.Web.Apps.Admin.Mapping
 {
@@ -22,6 +23,9 @@ namespace MrCMS.Web.Apps.Admin.Mapping
             CreateMap<Webpage, PermissionsTabViewModel>().ReverseMap();
             CreateMap<Webpage, WebpagePropertiesTabViewModel>().ReverseMap();
             CreateMap<Webpage, SEOTabViewModel>().ReverseMap();
+
+            CreateMap<Redirect, RedirectViewModel>().ReverseMap();
+            CreateMap<Redirect, RedirectSEOTabViewModel>().ReverseMap();
         }
     }
 }

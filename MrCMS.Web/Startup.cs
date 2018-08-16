@@ -147,7 +147,7 @@ namespace MrCMS.Web
 
 
             services.AddSingleton<ICmsMethodTester, CmsMethodTester>();
-            services.AddSingleton<IGetMrCMSMiddleware, GetMrCMSMiddleware>();
+            services.AddSingleton<IGetMrCMSParts, GetMrCMSParts>();
             services.AddSingleton<IAssignPageDataToRouteData, AssignPageDataToRouteData>();
             services.AddSingleton<IQuerySerializer, QuerySerializer>();
             services.AddSingleton<IStringLocalizerFactory, StringLocalizerFactory>();

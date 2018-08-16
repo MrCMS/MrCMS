@@ -6,7 +6,7 @@ namespace MrCMS.Entities.Documents.Metadata
     {
         public override string IconClass { get { return "glyphicon glyphicon-forward"; } }
         public override int DisplayOrder { get { return 6; } }
-        public override string EditPartialView { get { return "RedirectEdit"; } }
+        //public override string EditPartialView { get { return "RedirectEdit"; } }
         public override bool HasBodyContent { get { return false; }}
     }
 }
