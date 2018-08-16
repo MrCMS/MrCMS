@@ -37,7 +37,7 @@ namespace MrCMS.Apps
             Apps.SelectMany(app => app.SignalRHubs).ToDictionary(x => x.Key, x => x.Value); 
 
         // TODO: get middleware per app
-        public IEnumerable<RegistrationInfo> Middlewares => Enumerable.Empty<RegistrationInfo>(); // throw new NotImplementedException();
+        public IEnumerable<RegistrationInfo> Registrations => Apps.SelectMany(app => app.Registrations); // throw new NotImplementedException();
 
         public void RegisterApp<TApp>(Action<MrCMSAppOptions> options = null) where TApp : IMrCMSApp, new()
         {

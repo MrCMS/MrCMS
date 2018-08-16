@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Website.CMS;
 using NHibernate.Cfg;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace MrCMS.Apps
 {
@@ -19,8 +20,9 @@ namespace MrCMS.Apps
             get { yield break; }
         }
 
-        public virtual IEnumerable<Type> BaseTypes =>Enumerable.Empty<Type>();
+        public virtual IEnumerable<Type> BaseTypes => Enumerable.Empty<Type>();
         public virtual IDictionary<Type, string> SignalRHubs => new Dictionary<Type, string>();
+        public virtual IEnumerable<RegistrationInfo> Registrations => Enumerable.Empty<RegistrationInfo>();
 
         public string ContentPrefix { get; set; }
         public string ViewPrefix { get; set; }
@@ -38,7 +40,11 @@ namespace MrCMS.Apps
 
         public virtual void SetupMvcOptions(MvcOptions options) { }
 
-        public virtual void ConfigureAutomapper(IMapperConfigurationExpression expression) => expression.AddProfiles(Assembly);
+        public virtual void ConfigureAutomapper(IMapperConfigurationExpression expression)
+        {
+            expression.AddProfiles(Assembly);
+        }
+
         public virtual void AppendConfiguration(Configuration configuration) { }
     }
 }

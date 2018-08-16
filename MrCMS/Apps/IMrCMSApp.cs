@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using MrCMS.Website.CMS;
 using NHibernate.Cfg;
 
 namespace MrCMS.Apps
@@ -19,6 +20,7 @@ namespace MrCMS.Apps
         IEnumerable<Type> Conventions { get; }
         IEnumerable<Type> BaseTypes { get; }
         IDictionary<Type, string> SignalRHubs { get; }
+        IEnumerable<RegistrationInfo> Registrations { get; }
 
         IServiceCollection RegisterServices(IServiceCollection serviceCollection);
 

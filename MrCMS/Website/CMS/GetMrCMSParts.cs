@@ -104,7 +104,7 @@ namespace MrCMS.Website.CMS
             };
 
 
-            sortedMiddleware.AddRange(appContext.Middlewares);
+            sortedMiddleware.AddRange(appContext.Registrations);
             return sortedMiddleware.OrderByDescending(x => x.Order);
         }
     }
