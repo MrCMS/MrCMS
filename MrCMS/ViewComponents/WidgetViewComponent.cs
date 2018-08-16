@@ -12,11 +12,18 @@ namespace MrCMS.ViewComponents
             _widgetUIService = widgetUIService;
         }
 
-        public IViewComponentResult Invoke(int id)
+        public IViewComponentResult Invoke(int id, bool editable = false)
         {
             var widget = _widgetUIService.GetModel(id);
             if (widget.Widget == null)
+            {
                 return Content(string.Empty);
+            }
+            if (editable)
+            {
+                return View("Editable", widget.Widget);
+            }
+
             return View(widget.Widget.GetType().Name, widget.Model);
         }
     }

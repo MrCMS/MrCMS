@@ -1,17 +1,32 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Website;
+using MrCMS.Website.Auth;
+using System.Collections.Generic;
 
 namespace MrCMS.ViewComponents
 {
     public class LayoutAreaViewComponent : ViewComponent
     {
-        // TODO: setup front end editing
-        public IViewComponentResult Invoke(string name, bool allowFrontEndEditing = false)
+        private readonly IFrontEndEditingChecker _frontEndEditingChecker;
+
+        public LayoutAreaViewComponent(IFrontEndEditingChecker frontEndEditingChecker)
+        {
+            _frontEndEditingChecker = frontEndEditingChecker;
+        }
+
+        public IViewComponentResult Invoke(string name, bool allowFrontEndEditing = true)
         {
             var info = GetInfo(name);
             if (info == null)
+            {
                 return Content(string.Empty);
+            }
+
+            if (_frontEndEditingChecker.IsAllowed() && allowFrontEndEditing)
+            {
+                return View("Editable", info);
+            }
+
             return View(info);
         }
 

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MrCMS.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Website.Optimization
 {
@@ -15,8 +15,15 @@ namespace MrCMS.Website.Optimization
             var uri = new Uri(url, UriKind.RelativeOrAbsolute);
             var scriptData = GetScriptData(helper.ViewContext.HttpContext);
             if (!scriptData.ContainsKey(path))
+            {
                 scriptData[path] = new List<ResourceData>();
-            scriptData[path].Add(ResourceData.Get(uri.IsAbsoluteUri, url));
+            }
+
+            var resourceData = ResourceData.Get(uri.IsAbsoluteUri, url);
+            if (!scriptData[path].Contains(resourceData))
+            {
+                scriptData[path].Add(resourceData);
+            }
         }
 
         private IDictionary<string, List<ResourceData>> GetScriptData(HttpContext context)
@@ -36,8 +43,15 @@ namespace MrCMS.Website.Optimization
             var uri = new Uri(url, UriKind.RelativeOrAbsolute);
             var cssData = GetStyleData(helper.ViewContext.HttpContext);
             if (!cssData.ContainsKey(path))
+            {
                 cssData[path] = new List<ResourceData>();
-            cssData[path].Add(ResourceData.Get(uri.IsAbsoluteUri, url));
+            }
+
+            var resourceData = ResourceData.Get(uri.IsAbsoluteUri, url);
+            if (!cssData[path].Contains(resourceData))
+            {
+                cssData[path].Add(resourceData);
+            }
         }
         private IDictionary<string, List<ResourceData>> GetStyleData(HttpContext context)
         {

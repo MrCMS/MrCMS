@@ -1,9 +1,14 @@
 ﻿@using System.Drawing
+@using MrCMS.ACL.Rules
 @using MrCMS.Helpers
+@using MrCMS.Services
+@using MrCMS.Services.Canonical
 @using MrCMS.Settings
+@using MrCMS.Website.Auth
 @using MrCMS.Website.Optimization
 @model MrCMS.Entities.Documents.Web.Webpage
-@inject SEOSettings seoSettings
+@inject SEOSettings SeoSettings
+@inject IFrontEndEditingChecker FrontEndEditingChecker
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,12 +30,12 @@
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><script src="/Apps/Core/Content/Scripts/respond.min.js"></script><![endif]-->
 
-    @Html.Raw(seoSettings.TrackingScripts)
+    @Html.Raw(SeoSettings.TrackingScripts)
     @Html.Raw(Model.CustomHeaderScripts)
-    @*@ViewData.LinkTags().Render()*@
+    @ViewData.LinkTags().Render()
 </head>
 <body>
-    @Html.Raw(seoSettings.TrackingScriptsBody)
+    @Html.Raw(SeoSettings.TrackingScriptsBody)
     <nav class="navbar navbar-mrcms" role="navigation">
         <div class="container">
             <div class="navbar-header">
@@ -89,10 +94,11 @@
     }
 
 
-    @*@if (CurrentRequestData.CurrentUser != null && CurrentRequestData.CurrentUser.CanAccess<AdminBarACL>("Show") && SiteSettings<SiteSettings>().EnableInlineEditing)
-        {
-            Html.RenderAction("InPageEditor", "InPageAdmin", new { id = Model.Id, area = "Admin" });
-        }*@
+
+    @if (FrontEndEditingChecker.IsAllowed())
+    {
+        <partial name="~/Views/Shared/InPageEditor.cshtml" model="Model" />
+    }
     @if (IsSectionDefined("JavascriptBlockInclude"))
     {
         @RenderSection("JavascriptBlockInclude")

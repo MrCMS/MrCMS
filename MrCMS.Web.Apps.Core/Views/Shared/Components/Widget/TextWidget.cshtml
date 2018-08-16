@@ -1,4 +1,5 @@
 ﻿@using System
+@using MrCMS.Website
 @model MrCMS.Web.Apps.Core.Widgets.TextWidget
-@Html.Raw(Model.Text)
+@Html.Editable(widget => widget.Text, true)
 

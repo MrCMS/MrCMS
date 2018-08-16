@@ -50,8 +50,6 @@ namespace MrCMS.Website.CMS
                 case CmsRouteMatchType.Preview:
                     context.RouteData.MakePreview();
                     break;
-                case CmsRouteMatchType.Success:
-                    break;
             }
             serviceProvider.GetRequiredService<IAssignPageDataToRouteData>().Assign(context.RouteData, matchResult.PageData);
 

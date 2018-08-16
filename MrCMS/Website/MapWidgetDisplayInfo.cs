@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MrCMS.Entities.Documents.Layout;
+using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Widget;
 
 namespace MrCMS.Website
@@ -30,6 +31,21 @@ namespace MrCMS.Website
                     };
                 }, StringComparer.OrdinalIgnoreCase);
 
+        }
+
+        public IDictionary<string, WidgetDisplayInfo> MapInfo(IEnumerable<LayoutArea> layoutAreas, Webpage webpage)
+        {
+            return layoutAreas.ToDictionary(area => area.AreaName,
+                area =>
+                {
+                    return new WidgetDisplayInfo
+                    {
+                        Id = area.Id,
+                        Name = area.AreaName,
+                        HasCustomSort = webpage.PageWidgetSorts?.Any(x => x.LayoutArea?.Id == area.Id) == true,
+                        Widgets = _mapWidgetData.MapData(area.GetWidgets(webpage))
+                    };
+                });
         }
     }
 }

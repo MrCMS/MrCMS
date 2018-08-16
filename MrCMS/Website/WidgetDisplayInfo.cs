@@ -6,6 +6,7 @@ namespace MrCMS.Website
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public bool HasCustomSort { get; set; }
         public List<WidgetData> Widgets { get; set; }
     }
 }

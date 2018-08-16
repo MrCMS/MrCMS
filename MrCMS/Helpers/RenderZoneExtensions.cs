@@ -8,7 +8,7 @@ namespace MrCMS.Helpers
 {
     public static class RenderZoneExtensions
     {
-        public static Task<IHtmlContent> RenderZone(this IViewComponentHelper helper, string name, bool allowFrontEndEditing = false)
+        public static Task<IHtmlContent> RenderZone(this IViewComponentHelper helper, string name, bool allowFrontEndEditing = true)
         {
             return helper.InvokeAsync<LayoutAreaViewComponent>(new { name, allowFrontEndEditing });
         }
