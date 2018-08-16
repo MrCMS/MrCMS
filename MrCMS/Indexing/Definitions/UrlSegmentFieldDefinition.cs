@@ -7,6 +7,7 @@ using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Indexes;
 using MrCMS.Helpers;
 using MrCMS.Indexing.Management;
+using MrCMS.Services;
 using MrCMS.Tasks;
 using MrCMS.Website;
 using NHibernate;
@@ -19,17 +20,19 @@ namespace MrCMS.Indexing.Definitions
     {
         private readonly IStatelessSession _statelessSession;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IGetLiveUrl _getLiveUrl;
 
-        public UrlSegmentFieldDefinition(ILuceneSettingsService luceneSettingsService, IStatelessSession statelessSession, IServiceProvider serviceProvider)
+        public UrlSegmentFieldDefinition(ILuceneSettingsService luceneSettingsService, IStatelessSession statelessSession, IServiceProvider serviceProvider, IGetLiveUrl getLiveUrl)
             : base(luceneSettingsService, "urlsegment")
         {
             _statelessSession = statelessSession;
             _serviceProvider = serviceProvider;
+            _getLiveUrl = getLiveUrl;
         }
 
         protected override IEnumerable<string> GetValues(Webpage obj)
         {
-            yield return obj.LiveUrlSegment;
+            yield return _getLiveUrl.GetUrlSegment(obj);
             foreach (var urlHistory in obj.Urls)
             {
                 yield return urlHistory.UrlSegment;

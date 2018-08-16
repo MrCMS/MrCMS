@@ -5,9 +5,10 @@
 @using MrCMS.Website
 @model MrCMS.Web.Apps.Core.Models.Navigation.NavigationList
 @inject IGetCurrentPage GetCurrentPage
+@inject IGetLiveUrl GetLiveUrl
 @{
     var currentPage = GetCurrentPage.GetPage();
-    var activePages = currentPage?.ActivePages.Select(webpage => "/" + webpage.LiveUrlSegment).ToList()?? new List<string>();
+    var activePages = currentPage?.ActivePages.Select(webpage => GetLiveUrl.GetUrlSegment(webpage, true)).ToList() ?? new List<string>();
 }
     <ul class="nav navbar-nav">
         @foreach (var item in Model)

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
+using MrCMS.Services;
 using NHibernate;
 
 namespace MrCMS.Website
@@ -8,10 +9,12 @@ namespace MrCMS.Website
     public class SitemapPlaceholderUIService : ISitemapPlaceholderUIService
     {
         private readonly ISession _session;
+        private readonly IGetLiveUrl _getLiveUrl;
 
-        public SitemapPlaceholderUIService(ISession session)
+        public SitemapPlaceholderUIService(ISession session, IGetLiveUrl getLiveUrl)
         {
             _session = session;
+            _getLiveUrl = getLiveUrl;
         }
 
         public RedirectResult Redirect(SitemapPlaceholder page)
@@ -27,7 +30,7 @@ namespace MrCMS.Website
             if (child == null)
                 return new RedirectResult("~");
             if (child.GetType().FullName != typeof(SitemapPlaceholder).FullName)
-                return new RedirectResult($"~/{child.LiveUrlSegment}");
+                return new RedirectResult($"~/{_getLiveUrl.GetUrlSegment(child)}");
             var lastRedirectChildUrl = GetTheLastRedirectChildLink(child);
             return !string.IsNullOrWhiteSpace(lastRedirectChildUrl)
                 ? new RedirectResult($"~/{lastRedirectChildUrl}")
@@ -48,7 +51,7 @@ namespace MrCMS.Website
             if (child.DocumentType == typeof(SitemapPlaceholder).FullName)
                 GetTheLastRedirectChildLink(child);
 
-            return child.LiveUrlSegment;
+            return _getLiveUrl.GetAbsoluteUrl(child);
         }
     }
 }

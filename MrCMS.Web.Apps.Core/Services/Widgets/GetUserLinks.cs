@@ -30,15 +30,14 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             var loggedIn = _getCurrentUser.Get() != null;
             if (loggedIn)
             {
-                var userAccountPage = _uniquePageService.GetUniquePage<UserAccountPage>();
-                if (userAccountPage != null)
+                var userAccountPage = _uniquePageService.GetUrl<UserAccountPage>();
+                if (!string.IsNullOrWhiteSpace(userAccountPage))
                 {
-                    var liveUrlSegment = userAccountPage.LiveUrlSegment;
                     navigationRecords.Add(new NavigationRecord
                     {
                         Text = new HtmlString(_stringResourceProvider.GetValue("My Account")),
                         Url =
-                            new HtmlString(string.Format("/{0}", liveUrlSegment))
+                            new HtmlString(string.Format("/{0}", userAccountPage))
                     });
                 }
 
@@ -51,20 +50,20 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
             }
             else
             {
-                var liveUrlSegment = _uniquePageService.GetUniquePage<LoginPage>().LiveUrlSegment;
-                if (liveUrlSegment != null)
+                var loginPageUrl = _uniquePageService.GetUrl<LoginPage>();
+                if (loginPageUrl != null)
                 {
                     navigationRecords.Add(new NavigationRecord
                     {
                         Text = new HtmlString(_stringResourceProvider.GetValue("Login")),
-                        Url = new HtmlString(string.Format("/{0}", liveUrlSegment))
+                        Url = new HtmlString(string.Format("/{0}", loginPageUrl))
                     });
-                    var urlSegment = _uniquePageService.GetUniquePage<RegisterPage>().LiveUrlSegment;
-                    if (urlSegment != null)
+                    var registerPageUrl = _uniquePageService.GetUrl<RegisterPage>();
+                    if (registerPageUrl != null)
                         navigationRecords.Add(new NavigationRecord
                         {
                             Text = new HtmlString(_stringResourceProvider.GetValue("Register")),
-                            Url = new HtmlString(string.Format("/{0}", urlSegment))
+                            Url = new HtmlString(string.Format("/{0}", registerPageUrl))
                         });
                 }
             }

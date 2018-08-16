@@ -9,10 +9,12 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
     public class UserTokenProvider : ITokenProvider<User>
     {
         private readonly IUniquePageService _uniquePageService;
+        private readonly IGetLiveUrl _getLiveUrl;
 
-        public UserTokenProvider(IUniquePageService uniquePageService)
+        public UserTokenProvider(IUniquePageService uniquePageService, IGetLiveUrl getLiveUrl)
         {
             _uniquePageService = uniquePageService;
+            _getLiveUrl = getLiveUrl;
             _tokens = GetTokens();
         }
 
@@ -34,7 +36,7 @@ namespace MrCMS.Web.Apps.Core.MessageTemplates.TokenProviders
                                        var resetPasswordPage = _uniquePageService.GetUniquePage<ResetPasswordPage>();
 
                                        string resetUrl = resetPasswordPage != null
-                                                             ? string.Format("{0}?id={1}", resetPasswordPage.AbsoluteUrl, user.ResetPasswordGuid)
+                                                             ? string.Format("{0}?id={1}", _getLiveUrl.GetAbsoluteUrl(resetPasswordPage), user.ResetPasswordGuid)
                                                              : string.Empty;
 
                                        return resetUrl;

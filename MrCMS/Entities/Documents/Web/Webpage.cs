@@ -87,12 +87,11 @@ namespace MrCMS.Entities.Documents.Web
             }
         }
 
-        public virtual string LiveUrlSegment
-        {
-            //get { return CurrentRequestData.HomePage == this ? string.Empty : UrlSegment; }
-            // TODO: home page
-            get { return UrlSegment; }
-        }
+        // TODO: get rid of this
+        //public virtual string LiveUrlSegment
+        //{
+        //    get { return UrlSegment; }
+        //}
 
         [UIHint("DateTime")]
         [DisplayName("Publish On")]
@@ -169,21 +168,21 @@ namespace MrCMS.Entities.Documents.Web
             get { return string.Join(", ", FrontEndAllowedRoles.Select(x => x.Name)); }
         }
 
-        public virtual string AbsoluteUrl
-        {
-            get
-            {
-                // TODO: refactor to extension or something else
-                string scheme = (RequiresSSL )//|| MrCMSApplication.Get<SiteSettings>().SSLEverywhere)
-                    ? "https://"
-                    : "http://";
-                string authority = Site.BaseUrl;
-                if (authority.EndsWith("/"))
-                    authority = authority.TrimEnd('/');
+        //public virtual string AbsoluteUrl
+        //{
+        //    get
+        //    {
+        //        // TODO: refactor to extension or something else
+        //        string scheme = (RequiresSSL )//|| MrCMSApplication.Get<SiteSettings>().SSLEverywhere)
+        //            ? "https://"
+        //            : "http://";
+        //        string authority = Site.BaseUrl;
+        //        if (authority.EndsWith("/"))
+        //            authority = authority.TrimEnd('/');
 
-                return string.Format("{0}{1}/{2}", scheme, authority, LiveUrlSegment);
-            }
-        }
+        //        return string.Format("{0}{1}/{2}", scheme, authority, LiveUrlSegment);
+        //    }
+        //}
 
         public virtual IList<UrlHistory> Urls { get; set; }
 

@@ -1,18 +1,20 @@
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using MrCMS.Entities.Documents.Web;
 using NHibernate;
+using System.Linq;
 
 namespace MrCMS.Services
 {
     public class UniquePageService : IUniquePageService
     {
         private readonly ISession _session;
+        private readonly IGetLiveUrl _getLiveUrl;
 
-        public UniquePageService(ISession session)
+        public UniquePageService(ISession session, IGetLiveUrl getLiveUrl)
         {
             _session = session;
+            _getLiveUrl = getLiveUrl;
         }
 
         public T GetUniquePage<T>()
@@ -25,7 +27,7 @@ namespace MrCMS.Services
         public string GetUrl<T>(object queryString = null) where T : Webpage, IUniquePage
         {
             var page = GetUniquePage<T>();
-            var url = page != null ? string.Format("/{0}", page.LiveUrlSegment) : "/";
+            var url = _getLiveUrl.GetUrlSegment(page, true);
             if (queryString != null)
             {
                 url += string.Format("?{0}",

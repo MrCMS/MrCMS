@@ -4,9 +4,10 @@
 @using MrCMS.Website
 @model MrCMS.Web.Apps.Core.Models.CurrentPageSubNavigationModel
 @inject IGetCurrentPage GetCurrentPage
+@inject IGetLiveUrl GetLiveUrl
 @{
     var currentPage = GetCurrentPage.GetPage();
-    var activePages = currentPage?.ActivePages.Select(webpage => "/" + webpage.LiveUrlSegment).ToList()?? new List<string>();
+    var activePages = currentPage?.ActivePages.Select(webpage => GetLiveUrl.GetUrlSegment(webpage, true)).ToList() ?? new List<string>();
 }
 @if (Model.Model.ShowNameAsTitle)
 {

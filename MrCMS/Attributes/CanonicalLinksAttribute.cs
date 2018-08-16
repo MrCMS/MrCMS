@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Models;
+using MrCMS.Services;
 using MrCMS.Services.Canonical;
 using X.PagedList;
 
@@ -29,23 +30,35 @@ namespace MrCMS.Attributes
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
             if (!(filterContext.Result is ViewResult viewResult))
+            {
                 return;
+            }
+
             if (!(viewResult.Model is Webpage webpage))
+            {
                 return;
+            }
 
             ViewDataDictionary viewData = viewResult.ViewData;
+            var serviceProvider = filterContext.HttpContext.RequestServices;
             if (string.IsNullOrWhiteSpace(_pagedDataKey))
             {
-                SetCanonicalUrl(viewData, webpage);
+                SetCanonicalUrl(serviceProvider.GetRequiredService<IGetLiveUrl>(), viewData, webpage);
             }
             else
             {
                 if (!viewData.ContainsKey(_pagedDataKey))
+                {
                     return;
+                }
+
                 var pagedListMetaData = viewData[_pagedDataKey] as PagedListMetaData;
                 if (pagedListMetaData == null)
+                {
                     return;
-                IGetPrevAndNextRelTags getTags = filterContext.HttpContext.RequestServices.GetRequiredService<IGetPrevAndNextRelTags>();
+                }
+
+                IGetPrevAndNextRelTags getTags = serviceProvider.GetRequiredService<IGetPrevAndNextRelTags>();
                 SetPrevAndNext(viewData, webpage, pagedListMetaData, getTags);
 
                 if (_setPageInfo != PageInfoMethod.DoNothing && pagedListMetaData.PageNumber > 1)
@@ -57,27 +70,42 @@ namespace MrCMS.Attributes
                     {
                         case PageInfoMethod.SetFromPage:
                             if (string.IsNullOrWhiteSpace(title))
+                            {
                                 viewData[MrCMSPageExtensions.PageTitleKey] = $"Page {pagedListMetaData.PageNumber} of {pagedListMetaData.PageCount} for { webpage.GetPageTitle()}";
+                            }
+
                             if (string.IsNullOrWhiteSpace(description))
+                            {
                                 viewData[MrCMSPageExtensions.PageDescriptionKey] = string.Empty;
+                            }
+
                             break;
                         case PageInfoMethod.SetFromViewData:
                             if (!string.IsNullOrWhiteSpace(title))
+                            {
                                 viewData[MrCMSPageExtensions.PageTitleKey] =
                                     $"Page {pagedListMetaData.PageNumber} of {pagedListMetaData.PageCount} for {title}";
+                            }
+
                             if (string.IsNullOrWhiteSpace(description))
+                            {
                                 viewData[MrCMSPageExtensions.PageDescriptionKey] = string.Empty;
+                            }
+
                             break;
                     }
                 }
             }
         }
 
-        private void SetCanonicalUrl(ViewDataDictionary viewData, Webpage webpage)
+        private void SetCanonicalUrl(IGetLiveUrl getLiveUrl, ViewDataDictionary viewData, Webpage webpage)
         {
-            var canonicalLink = webpage.AbsoluteUrl;
+            var canonicalLink = getLiveUrl.GetAbsoluteUrl(webpage);
             if (!string.IsNullOrWhiteSpace(webpage.ExplicitCanonicalLink))
+            {
                 canonicalLink = webpage.ExplicitCanonicalLink;
+            }
+
             viewData.LinkTags().Add(LinkTag.Canonical, canonicalLink);
         }
 
@@ -85,11 +113,15 @@ namespace MrCMS.Attributes
         {
             var prev = getTags.GetPrev(webpage, metadata, viewData);
             if (!string.IsNullOrWhiteSpace(prev))
+            {
                 viewData.LinkTags().Add(LinkTag.Prev, prev);
+            }
 
             var next = getTags.GetNext(webpage, metadata, viewData);
             if (!string.IsNullOrWhiteSpace(next))
+            {
                 viewData.LinkTags().Add(LinkTag.Next, next);
+            }
         }
     }
     public enum PageInfoMethod

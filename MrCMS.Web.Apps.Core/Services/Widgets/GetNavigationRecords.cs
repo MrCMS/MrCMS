@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Html;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Widgets;
@@ -14,10 +15,12 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
     public class GetNavigationRecords : GetWidgetModelBase<Navigation>
     {
         private readonly ISession _session;
+        private readonly IGetLiveUrl _getLiveUrl;
 
-        public GetNavigationRecords(ISession session)
+        public GetNavigationRecords(ISession session, IGetLiveUrl getLiveUrl)
         {
             _session = session;
+            _getLiveUrl = getLiveUrl;
         }
 
         public override object GetModel(Navigation widget)
@@ -29,13 +32,13 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                        .Select(webpage => new NavigationRecord
                        {
                            Text = new HtmlString(webpage.Name),
-                           Url = new HtmlString("/" + webpage.LiveUrlSegment),
+                           Url = new HtmlString(_getLiveUrl.GetUrlSegment(webpage,true)),
                            Children = childPages.Where(webpage1 => webpage1.ParentId == webpage.Id)
-                                            .Select(webpage1 =>
+                                            .Select(child =>
                                                     new NavigationRecord
                                                     {
-                                                        Text = new HtmlString(webpage1.Name),
-                                                        Url = new HtmlString("/" + webpage1.LiveUrlSegment)
+                                                        Text = new HtmlString(child.Name),
+                                                        Url = new HtmlString(_getLiveUrl.GetUrlSegment(child, true))
                                                     }).ToList()
                        }).ToList();
 

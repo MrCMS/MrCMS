@@ -9,11 +9,13 @@ namespace MrCMS.Messages.Security
     {
         private readonly SecuritySettings _settings;
         private readonly IMessageParser<FooterScriptChangeMessageTemplate, WebpageScriptChangeModel> _parser;
+        private readonly IGetLiveUrl _getLiveUrl;
 
-        public SendWebpageFooterScriptsChangedEmails(SecuritySettings settings, IMessageParser<FooterScriptChangeMessageTemplate, WebpageScriptChangeModel> parser)
+        public SendWebpageFooterScriptsChangedEmails(SecuritySettings settings, IMessageParser<FooterScriptChangeMessageTemplate, WebpageScriptChangeModel> parser, IGetLiveUrl getLiveUrl)
         {
             _settings = settings;
             _parser = parser;
+            _getLiveUrl = getLiveUrl;
         }
         public void Execute(ScriptChangedEventArgs<Webpage> args)
         {
@@ -22,7 +24,7 @@ namespace MrCMS.Messages.Security
             var message = _parser.GetMessage(new WebpageScriptChangeModel
             {
                 Name = args.Holder?.Name,
-                Url = args.Holder?.AbsoluteUrl,
+                Url = _getLiveUrl.GetAbsoluteUrl(args.Holder),
                 PreviousValue = args.PreviousValue,
                 CurrentValue = args.CurrentValue
             });

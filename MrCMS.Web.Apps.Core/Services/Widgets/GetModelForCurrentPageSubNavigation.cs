@@ -1,14 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Http;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
 using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Core.Models;
 using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Widgets;
-using MrCMS.Website;
+using System.Collections.Generic;
+using System.Linq;
 using ISession = NHibernate.ISession;
 
 namespace MrCMS.Web.Apps.Core.Services.Widgets
@@ -17,11 +15,13 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
     {
         private readonly ISession _session;
         private readonly IGetCurrentPage _getCurrentPage;
+        private readonly IGetLiveUrl _getLiveUrl;
 
-        public GetModelForCurrentPageSubNavigation(ISession session, IGetCurrentPage getCurrentPage)
+        public GetModelForCurrentPageSubNavigation(ISession session, IGetCurrentPage getCurrentPage, IGetLiveUrl getLiveUrl)
         {
             _session = session;
             _getCurrentPage = getCurrentPage;
+            _getLiveUrl = getLiveUrl;
         }
 
         public override object GetModel(CurrentPageSubNavigation widget)
@@ -34,13 +34,13 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                     .Select(webpage => new NavigationRecord
                     {
                         Text = new HtmlString(webpage.Name),
-                        Url = new HtmlString("/" + webpage.LiveUrlSegment),
+                        Url = new HtmlString(_getLiveUrl.GetUrlSegment(webpage, true)),
                         Children = GetPublishedChildWebpages(webpage.Id)
-                            .Select(webpage1 =>
+                            .Select(child =>
                                 new NavigationRecord
                                 {
-                                    Text = new HtmlString(webpage1.Name),
-                                    Url = new HtmlString("/" + webpage1.LiveUrlSegment)
+                                    Text = new HtmlString(child.Name),
+                                    Url = new HtmlString(_getLiveUrl.GetUrlSegment(child, true))
                                 }).ToList()
                     }).ToList();
 
@@ -50,6 +50,7 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                 Model = widget
             };
         }
+
         private IEnumerable<Webpage> GetPublishedChildWebpages(int parentId)
         {
             return _session.QueryOver<Webpage>()

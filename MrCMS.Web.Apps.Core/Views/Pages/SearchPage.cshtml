@@ -10,6 +10,7 @@
 @using X.PagedList.Mvc.Core
 @model MrCMS.Web.Apps.Core.Pages.SearchPage
 @inject IUniquePageService UniquePageService
+@inject IGetLiveUrl GetLiveUrl
 @{
     var searchModel = ViewData["webpageSearchQueryModel"] as WebpageSearchQuery;
     var results = ViewData["searchResults"] as IPagedList<Webpage>;
@@ -24,7 +25,7 @@
     {
         <div class="row">
             <div class="col-lg-12">
-                <a href="/@result.LiveUrlSegment">
+                <a href="@GetLiveUrl.GetUrlSegment(result,true)">
                     <h4 class="margin-top-10 margin-bottom-5">
                         @result.Name.StripHtml().TruncateString(200)
                     </h4>

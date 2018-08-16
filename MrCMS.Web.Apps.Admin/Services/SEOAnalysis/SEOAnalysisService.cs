@@ -5,6 +5,7 @@ using System.Net;
 using HtmlAgilityPack;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
+using MrCMS.Services;
 using MrCMS.Web.Apps.Admin.Models.SEOAnalysis;
 using NHibernate;
 
@@ -14,11 +15,13 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
     {
         private readonly IEnumerable<ISEOAnalysisFacetProvider> _analysisFacetProviders;
         private readonly ISession _session;
+        private readonly IGetLiveUrl _getLiveUrl;
 
-        public SEOAnalysisService(IEnumerable<ISEOAnalysisFacetProvider> analysisFacetProviders, ISession session)
+        public SEOAnalysisService(IEnumerable<ISEOAnalysisFacetProvider> analysisFacetProviders, ISession session, IGetLiveUrl getLiveUrl)
         {
             _analysisFacetProviders = analysisFacetProviders;
             _session = session;
+            _getLiveUrl = getLiveUrl;
         }
 
         public SEOAnalysisResult Analyze(Webpage webpage, string analysisTerm)
@@ -40,7 +43,7 @@ namespace MrCMS.Web.Apps.Admin.Services.SEOAnalysis
 
         private HtmlNode GetDocument(Webpage webpage)
         {
-            string absoluteUrl = webpage.AbsoluteUrl;
+            string absoluteUrl = _getLiveUrl.GetAbsoluteUrl(webpage);
             WebRequest request = WebRequest.Create(absoluteUrl);
 
             var document = new HtmlDocument();

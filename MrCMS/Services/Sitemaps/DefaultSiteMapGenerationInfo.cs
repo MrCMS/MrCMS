@@ -7,6 +7,12 @@ namespace MrCMS.Services.Sitemaps
 {
     public class DefaultSitemapGenerationInfo : ISitemapGenerationInfo
     {
+        private readonly IGetLiveUrl _getLiveUrl;
+
+        public DefaultSitemapGenerationInfo(IGetLiveUrl getLiveUrl)
+        {
+            _getLiveUrl = getLiveUrl;
+        }
         public bool ShouldAppend(Webpage webpage)
         {
             return webpage.Published;
@@ -19,14 +25,9 @@ namespace MrCMS.Services.Sitemaps
                 return;
             var content = publishOn.Value.SitemapDateString();
             urlset.Add(new XElement(SitemapService.RootNamespace + "url",
-                new XElement(SitemapService.RootNamespace + "loc", webpage.AbsoluteUrl),
+                new XElement(SitemapService.RootNamespace + "loc", _getLiveUrl.GetAbsoluteUrl(webpage)),
                 new XElement(SitemapService.RootNamespace + "lastmod", content)
                 ));
-            //XmlNode url = urlset.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "url", ""));
-            //XmlNode loc = url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "loc", ""));
-            //loc.InnerText = webpage.AbsoluteUrl;
-            //XmlNode lastMod = url.AppendChild(xmlDocument.CreateNode(XmlNodeType.Element, "lastmod", ""));
-            //lastMod.InnerText = webpage.UpdatedOn.ToString("yyyy-MM-dd");
         }
     }
 }

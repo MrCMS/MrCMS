@@ -14,6 +14,7 @@ namespace MrCMS.Services.Canonical
     {
         private static readonly Dictionary<Type, Type> GetRelTypes = new Dictionary<Type, Type>();
         private readonly IServiceProvider _serviceProvider;
+        private readonly IGetLiveUrl _getLiveUrl;
 
         static GetPrevAndNextRelTags()
         {
@@ -40,9 +41,10 @@ namespace MrCMS.Services.Canonical
             }
         }
 
-        public GetPrevAndNextRelTags(IServiceProvider serviceProvider)
+        public GetPrevAndNextRelTags(IServiceProvider serviceProvider, IGetLiveUrl getLiveUrl)
         {
             _serviceProvider = serviceProvider;
+            _getLiveUrl = getLiveUrl;
         }
 
         public string GetPrev(Webpage webpage, PagedListMetaData metadata, ViewDataDictionary viewData)
@@ -50,13 +52,12 @@ namespace MrCMS.Services.Canonical
             if (webpage == null)
                 return null;
             webpage = webpage.Unproxy();
-            var baseUrl = webpage.AbsoluteUrl;
+            var baseUrl = _getLiveUrl.GetAbsoluteUrl(webpage);
 
             var type = webpage.GetType();
             if (GetRelTypes.ContainsKey(type))
             {
-                var getTags = _serviceProvider.GetRequiredService(GetRelTypes[type]) as GetRelTags;
-                if (getTags != null)
+                if (_serviceProvider.GetRequiredService(GetRelTypes[type]) is GetRelTags getTags)
                     return getTags.GetPrev(webpage, metadata, viewData);
             }
 
@@ -72,13 +73,12 @@ namespace MrCMS.Services.Canonical
             if (webpage == null)
                 return null;
             webpage = webpage.Unproxy();
-            var baseUrl = webpage.AbsoluteUrl;
+            var baseUrl = _getLiveUrl.GetAbsoluteUrl(webpage);
 
             var type = webpage.GetType();
             if (GetRelTypes.ContainsKey(type))
             {
-                var getTags = _serviceProvider.GetRequiredService(GetRelTypes[type]) as GetRelTags;
-                if (getTags != null)
+                if (_serviceProvider.GetRequiredService(GetRelTypes[type]) is GetRelTags getTags)
                     return getTags.GetNext(webpage, metadata, viewData);
             }
 
