@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Helpers;
 using MrCMS.Settings;
 
 namespace MrCMS.Website.Filters
@@ -10,18 +11,10 @@ namespace MrCMS.Website.Filters
         public static IHtmlContent RenderRecaptcha(this IHtmlHelper helper, string id = null, string errorClass = null,
             string errorMessage = null)
         {
-            var settings = new GoogleRecaptchaSettings();
+            var settings = helper.GetRequiredService<GoogleRecaptchaSettings>();
 
             return RenderDiv(id, errorClass, errorMessage, settings);
         }
-
-        //public static MvcHtmlString RenderRecaptcha(this HtmlHelper helper, string id = null, string errorClass = null,
-        //    string errorMessage = null)
-        //{
-        //    var settings = new GoogleRecaptchaSettings();
-
-        //    return RenderDiv(id, errorClass, errorMessage, settings);
-        //}
 
         private static IHtmlContent RenderDiv(string id, string errorClass, string errorMessage,
             GoogleRecaptchaSettings settings)
