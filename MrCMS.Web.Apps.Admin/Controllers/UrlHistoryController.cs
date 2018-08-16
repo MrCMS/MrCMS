@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Services;
+using MrCMS.Web.Apps.Admin.Models;
 using MrCMS.Web.Apps.Admin.Services;
 using MrCMS.Website.Controllers;
 
@@ -25,9 +26,9 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(UrlHistory history)
+        public ActionResult Delete(int id)
         {
-            _urlHistoryAdminService.Delete(history);
+            var history =_urlHistoryAdminService.Delete(id);
 
             return RedirectToAction("Edit", "Webpage", new { id = history.Webpage.Id });
         }
@@ -42,11 +43,11 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(UrlHistory history)
+        public ActionResult Add(AddUrlHistoryModel model)
         {
-            _urlHistoryAdminService.Add(history);
+            _urlHistoryAdminService.Add(model);
 
-            return RedirectToAction("Edit", "Webpage", new { id = history.Webpage.Id });
+            return RedirectToAction("Edit", "Webpage", new { id = model.WebpageId });
         }
 
         public ActionResult ValidateUrlIsAllowed(string urlsegment)

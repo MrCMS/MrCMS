@@ -30,7 +30,7 @@
                 {
                     <tr>
                         <td>
-                            <a href="http://@webpage.Site.BaseUrl/@url.UrlSegment" target="_blank">http://@webpage.Site.BaseUrl/@url.UrlSegment</a>
+                            <a href="//@webpage.Site.BaseUrl/@url.UrlSegment" target="_blank">@webpage.Site.BaseUrl/@url.UrlSegment</a>
                         </td>
                         <td>
                             @Html.ActionLink("Delete", "Delete", "UrlHistory", new { id = url.Id }, new { @class = "btn btn-xs btn-danger", data_toggle = "fb-modal" })

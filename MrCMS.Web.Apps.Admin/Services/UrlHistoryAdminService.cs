@@ -1,6 +1,8 @@
+using AutoMapper;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
 using MrCMS.Helpers;
+using MrCMS.Web.Apps.Admin.Models;
 using NHibernate;
 using NHibernate.Criterion;
 
@@ -10,22 +12,32 @@ namespace MrCMS.Web.Apps.Admin.Services
     {
         private readonly ISession _session;
         private readonly Site _site;
+        private readonly IMapper _mapper;
 
-        public UrlHistoryAdminService(ISession session, Site site)
+        public UrlHistoryAdminService(ISession session, Site site, IMapper mapper)
         {
             _session = session;
             _site = site;
+            _mapper = mapper;
         }
 
-        public void Delete(UrlHistory urlHistory)
+        public UrlHistory Delete(int id)
         {
-            if (urlHistory.Webpage != null) urlHistory.Webpage.Urls.Remove(urlHistory);
+            var urlHistory = _session.Get<UrlHistory>(id);
+            if (urlHistory == null)
+            {
+                return null;
+            }
+
+            urlHistory.Webpage?.Urls.Remove(urlHistory);
             _session.Transact(session => _session.Delete(urlHistory));
+            return urlHistory;
         }
 
-        public void Add(UrlHistory urlHistory)
+        public void Add(AddUrlHistoryModel model)
         {
-            if (urlHistory.Webpage != null) urlHistory.Webpage.Urls.Add(urlHistory);
+            var urlHistory = _mapper.Map<UrlHistory>(model);
+            urlHistory.Webpage?.Urls.Add(urlHistory);
             _session.Transact(session => session.Save(urlHistory));
         }
 
@@ -41,11 +53,11 @@ namespace MrCMS.Web.Apps.Admin.Services
                 && x.UrlSegment.IsInsensitiveLike(url, MatchMode.Exact)).SingleOrDefault();
         }
 
-        public UrlHistory GetUrlHistoryToAdd(int webpageId)
+        public AddUrlHistoryModel GetUrlHistoryToAdd(int webpageId)
         {
-            return new UrlHistory
+            return new AddUrlHistoryModel
             {
-                Webpage = _session.Get<Webpage>(webpageId)
+                WebpageId = webpageId
             };
         }
     }

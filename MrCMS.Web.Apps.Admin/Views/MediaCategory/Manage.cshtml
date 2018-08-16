@@ -5,16 +5,14 @@
 @using MrCMS.Web.Apps.Admin.Services
 @model MrCMS.Web.Apps.Admin.Models.MediaCategorySearchModel
 @inject IFileAdminService FileAdminService
-@inject IGetCurrentUser GetCurrentUser
 @{
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-uploader.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media-category.js");
     Html.IncludeScript("~/Areas/Admin/Content/Scripts/mrcms/media.js");
     var category = FileAdminService.GetCategory(Model);
     var sortByOptions = FileAdminService.GetSortByOptions(Model);
-    var user = GetCurrentUser.Get();
-    bool canAccessMediaToolsCut = user.CanAccess<MediaToolsACL>(MediaToolsACL.Cut);
-    bool canAccessMediaToolsDelete = user.CanAccess<MediaToolsACL>(MediaToolsACL.Delete);
+    bool canAccessMediaToolsCut = Html.CanAccess<MediaToolsACL>(MediaToolsACL.Cut);
+    bool canAccessMediaToolsDelete = Html.CanAccess<MediaToolsACL>(MediaToolsACL.Delete);
 }
 
 <div class="margin-bottom-20">

@@ -1,14 +1,15 @@
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Entities.Multisite;
+using MrCMS.Web.Apps.Admin.Models;
 
 namespace MrCMS.Web.Apps.Admin.Services
 {
     public interface IUrlHistoryAdminService
     {
-        void Delete(UrlHistory urlHistory);
-        void Add(UrlHistory urlHistory);
+        UrlHistory Delete(int id);
+        void Add(AddUrlHistoryModel urlHistory);
         UrlHistory GetByUrlSegment(string url);
         UrlHistory GetByUrlSegmentWithSite(string url, Site site, Webpage page);
-        UrlHistory GetUrlHistoryToAdd(int webpageId);
+        AddUrlHistoryModel GetUrlHistoryToAdd(int webpageId);
     }
 }
