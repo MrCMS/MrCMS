@@ -5,6 +5,7 @@ using MrCMS.IoC.Modules;
 using MrCMS.Website;
 using Ninject;
 using Ninject.Web.Common;
+using Ninject.Web.Common.WebHost;
 using WebActivatorEx;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(MrCMSKernel), "Start", Order = 1)]

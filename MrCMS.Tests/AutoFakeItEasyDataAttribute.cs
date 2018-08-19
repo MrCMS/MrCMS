@@ -1,6 +1,7 @@
-using Ploeh.AutoFixture;
-using Ploeh.AutoFixture.AutoFakeItEasy;
-using Ploeh.AutoFixture.Xunit;
+using AutoFixture;
+using AutoFixture.AutoFakeItEasy;
+using AutoFixture.Xunit;
+
 
 namespace MrCMS.Tests
 {
