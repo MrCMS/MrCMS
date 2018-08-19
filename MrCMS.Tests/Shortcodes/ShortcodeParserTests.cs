@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using AutoFixture.Xunit;
 using FakeItEasy;
 using FluentAssertions;
 using MrCMS.Shortcodes;
 using MrCMS.Website;
-using Ploeh.AutoFixture.Xunit;
 using Xunit.Extensions;
 
 namespace MrCMS.Tests.Shortcodes
