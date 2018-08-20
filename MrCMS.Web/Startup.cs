@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,8 +11,10 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using MrCMS.Apps;
 using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
@@ -23,7 +26,9 @@ using MrCMS.Services.Resources;
 using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin;
 using MrCMS.Web.Apps.Core;
+using MrCMS.Web.Apps.Core.Auth;
 using MrCMS.Website;
+using MrCMS.Website.Auth;
 using MrCMS.Website.CMS;
 using NHibernate;
 using ISession = NHibernate.ISession;
@@ -185,20 +190,13 @@ namespace MrCMS.Web
                 return provider.GetService(type) as IFileSystem;
             });
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.AccessDeniedPath
-                    = new PathString("/login");
-                options.LoginPath
-                    = new PathString("/login");
-                options.LogoutPath
-                    = new PathString("/logout");
-            });
+            services.AddAuthentication();
+            services.TryAddEnumerable(ServiceDescriptor.Transient<IPostConfigureOptions<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache>());
+            services.AddSingleton<IOptionsMonitorCache<CookieAuthenticationOptions>, GetCookieAuthenticationOptionsFromCache>();
             services.AddAuthorization(options =>
                 {
                     options.AddPolicy("admin", builder => builder.RequireRole(UserRole.Administrator));
                 });
-            services.AddAuthentication();
 
             services.AddSignalR();
         }

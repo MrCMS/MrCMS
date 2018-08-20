@@ -5,6 +5,7 @@ namespace MrCMS.Website.Controllers
 {
     public class LogoutController : MrCMSUIController
     {
+        public const string RouteUrl = "logout";
         private readonly IAuthorisationService _authorisationService;
 
         public LogoutController(IAuthorisationService authorisationService)
@@ -13,7 +14,7 @@ namespace MrCMS.Website.Controllers
         }
 
 
-        [Route("logout")]
+        [Route(RouteUrl)]
         public RedirectResult Logout()
         {
             _authorisationService.Logout();
