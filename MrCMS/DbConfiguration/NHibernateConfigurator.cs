@@ -77,11 +77,15 @@ namespace MrCMS.DbConfiguration
 
             var iPersistenceConfigurer = _databaseProvider.GetPersistenceConfigurer();
             var autoPersistenceModel = GetAutoPersistenceModel(assemblies);
-            ApplyCoreFilters(autoPersistenceModel);
 
             var config = Fluently.Configure()
                 .Database(iPersistenceConfigurer)
-                .Mappings(m => m.AutoMappings.Add(autoPersistenceModel))
+                .Mappings(m =>
+                {
+                    m.AutoMappings.Add(autoPersistenceModel);
+                    foreach (var assembly in assemblies)
+                        m.FluentMappings.AddFromAssembly(assembly);
+                })
                 .Cache(SetupCache)
                 .ExposeConfiguration(AppendListeners)
                 .ExposeConfiguration(AppSpecificConfiguration)
@@ -144,13 +148,7 @@ namespace MrCMS.DbConfiguration
             }
             builder.ProviderClass<SysCacheProvider>();
         }
-
-        private static void ApplyCoreFilters(AutoPersistenceModel autoPersistenceModel)
-        {
-            autoPersistenceModel.Add(typeof (NotDeletedFilter));
-            autoPersistenceModel.Add(typeof (SiteFilter));
-        }
-
+        
         private static AutoPersistenceModel GetAutoPersistenceModel(List<Assembly> finalAssemblies)
         {
             return AutoMap.Assemblies(new MrCMSMappingConfiguration(), finalAssemblies)
