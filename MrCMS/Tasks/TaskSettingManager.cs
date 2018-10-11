@@ -108,7 +108,7 @@ namespace MrCMS.Tasks
 
         private Dictionary<Type, TaskSettings> GetAllSettings()
         {
-            return _session.QueryOver<TaskSettings>().Cacheable().List().ToDictionary(settings => settings.Type);
+            return _session.QueryOver<TaskSettings>().Cacheable().List().Where(x => x.Type != null).ToDictionary(settings => settings.Type);
         }
     }
 }

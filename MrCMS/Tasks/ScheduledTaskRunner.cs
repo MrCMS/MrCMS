@@ -61,6 +61,10 @@ namespace MrCMS.Tasks
         public void ExecuteTask(string type)
         {
             var typeObj = TypeHelper.GetTypeByName(type);
+            if (typeObj == null)
+            {
+                return;
+            }
             var schedulableTask = _kernel.Get(typeObj) as SchedulableTask;
             if (schedulableTask == null)
                 return;
