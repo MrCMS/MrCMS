@@ -375,7 +375,6 @@
     <Compile Include="DbConfiguration\Configuration\SaveDocumentVersions.cs" />
     <Compile Include="DbConfiguration\Configuration\UpdateIndicesListener.cs" />
     <Compile Include="DbConfiguration\Configuration\UrlHistoryListener.cs" />
-    <Compile Include="DbConfiguration\Conventions\AddIndexConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\CacheConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\DateTimeConvention.cs" />
     <Compile Include="DbConfiguration\Conventions\NotDeletedFilterConvention.cs" />
