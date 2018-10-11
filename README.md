@@ -125,11 +125,13 @@ The Mr CMS ECommerce App listed [on GitHub](https://github.com/MrCMS/Ecommerce) 
 *	Feature: Raygun implementation for centralised logging 
 *	Feature/SEO: Self referencing canonical or over-ride on SEO and properties tab
 *	Performance: Full page caching. Ability to output cache a full webpage. 
+*	Fix: Lucene write lock when cache cleared and index is being written to.
 *	Security: Record logins 
 *	Security: Email Alerts for login 
 *	Security: Monitor the scripts per page (header/footer). Alert on change. 
-*	Security: Basic two factor authentication via email 
+*	Security: Two factor authentication via email 
 *	Security: File types now configured in web.config 
+*	Note: Now targets .NET 4.7
 
 ## 0.5.1 - September 2016
 *   Swapped out old Azure caching for Redis cache
