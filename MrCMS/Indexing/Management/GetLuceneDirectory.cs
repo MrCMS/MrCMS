@@ -1,78 +1,65 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Web;
 using Lucene.Net.Store;
-using Lucene.Net.Store.Azure;
 using MrCMS.Entities.Multisite;
-using MrCMS.Services;
-using MrCMS.Settings;
 using Directory = Lucene.Net.Store.Directory;
 
 namespace MrCMS.Indexing.Management
 {
     public class GetLuceneDirectory : IGetLuceneDirectory
     {
-        private readonly IAzureFileSystem _azureFileSystem;
-        private readonly HttpContextBase _context;
-        private readonly FileSystemSettings _fileSystemSettings;
-        
-        private static readonly Dictionary<int, Dictionary<string, Directory>> DirectoryCache =
-            new Dictionary<int, Dictionary<string,Directory>>();
+        private static readonly Dictionary<int, Dictionary<string, Directory>> StandardDirectoryCache =
+            new Dictionary<int, Dictionary<string, Directory>>();
 
-        public GetLuceneDirectory(FileSystemSettings fileSystemSettings, IAzureFileSystem azureFileSystem,
-            HttpContextBase context)
+        private static readonly Dictionary<int, Dictionary<string, Directory>> RamDirectoryCache =
+            new Dictionary<int, Dictionary<string, Directory>>();
+
+        private readonly HttpContextBase _context;
+
+        public GetLuceneDirectory(HttpContextBase context)
         {
-            _fileSystemSettings = fileSystemSettings;
-            _azureFileSystem = azureFileSystem;
             _context = context;
         }
 
-
-        private bool UseAzureForLucene
-        {
-            get
-            {
-                return _fileSystemSettings.StorageType == typeof(AzureFileSystem).FullName &&
-                       _fileSystemSettings.UseAzureForLucene;
-            }
-        }
-
-        public Directory Get(Site site, string folderName, bool useRAMCache = false)
+        public Directory GetRamDirectory(Site site, string folderName)
         {
             var siteId = site.Id;
-            if (!DirectoryCache.ContainsKey(siteId))
-            {
-                DirectoryCache[siteId] = new Dictionary<string, Directory>();
-            }
-            var dictionary = DirectoryCache[siteId];
+            if (!RamDirectoryCache.ContainsKey(siteId))
+                RamDirectoryCache[siteId] = new Dictionary<string, Directory>();
+            var dictionary = RamDirectoryCache[siteId];
             if (!dictionary.ContainsKey(folderName))
-            {
-                dictionary[folderName] = GetDirectory(site, folderName, useRAMCache);
-            }
+                dictionary[folderName] = new RAMDirectory(GetStandardDictionary(site, folderName));
             return dictionary[folderName];
         }
 
-        private Directory GetDirectory(Site site, string folderName, bool useRAMCache)
+        public Directory GetStandardDictionary(Site site, string folderName)
         {
-            if (UseAzureForLucene)
-            {
-                string catalog = AzureDirectoryHelper.GetAzureCatalogName(site, folderName);
-                return new AzureDirectory(_azureFileSystem.StorageAccount, catalog, new RAMDirectory());
-            }
-            string location = string.Format("~/App_Data/Indexes/{0}/{1}/", site.Id, folderName);
-            string mapPath = _context.Server.MapPath(location);
-            var directory = FSDirectory.Open(new DirectoryInfo(mapPath));
-            return useRAMCache ? (Directory)new RAMDirectory(directory) : directory;
+            var siteId = site.Id;
+            if (!StandardDirectoryCache.ContainsKey(siteId))
+                StandardDirectoryCache[siteId] = new Dictionary<string, Directory>();
+            var dictionary = StandardDirectoryCache[siteId];
+            if (!dictionary.ContainsKey(folderName)) dictionary[folderName] = GetDirectory(site, folderName);
+            return dictionary[folderName];
         }
 
-        public void ClearCache()
+        public void ResetRamDirectory(Site site, string folderName)
         {
-            foreach (var indexSearcher in DirectoryCache.SelectMany(x => x.Value.Values))
-                indexSearcher.Dispose();
+            var siteId = site.Id;
+            if (!RamDirectoryCache.ContainsKey(siteId)) return;
+            var dictionary = RamDirectoryCache[siteId];
+            if (!dictionary.ContainsKey(folderName)) return;
 
-            DirectoryCache.Clear();
+            var directory = dictionary[folderName];
+            directory.Dispose();
+            dictionary.Remove(folderName);
+        }
+
+        private Directory GetDirectory(Site site, string folderName)
+        {
+            var location = $"~/App_Data/Indexes/{site.Id}/{folderName}/";
+            var mapPath = _context.Server.MapPath(location);
+            return FSDirectory.Open(new DirectoryInfo(mapPath));
         }
     }
 }

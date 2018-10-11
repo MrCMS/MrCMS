@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
@@ -13,6 +10,8 @@ using MrCMS.Indexing.Management;
 using MrCMS.Models;
 using MrCMS.Website;
 using StackExchange.Profiling;
+using System;
+using System.Linq;
 using Version = Lucene.Net.Util.Version;
 
 namespace MrCMS.Search
@@ -28,7 +27,7 @@ namespace MrCMS.Search
         protected Analyzer Analyser;
 
         public UniversalSearchIndexManager(IUniversalSearchItemGenerator universalSearchItemGenerator, Site site,
-            IGetLuceneIndexWriter getLuceneIndexWriter, IGetLuceneIndexSearcher getLuceneIndexSearcher,IGetLuceneDirectory getLuceneDirectory)
+            IGetLuceneIndexWriter getLuceneIndexWriter, IGetLuceneIndexSearcher getLuceneIndexSearcher, IGetLuceneDirectory getLuceneDirectory)
         {
             _universalSearchItemGenerator = universalSearchItemGenerator;
             _site = site;
@@ -37,10 +36,7 @@ namespace MrCMS.Search
             _getLuceneDirectory = getLuceneDirectory;
         }
 
-        private bool IndexExists
-        {
-            get { return IndexReader.IndexExists(GetDirectory(_site)); }
-        }
+        private bool IndexExists => IndexReader.IndexExists(GetDirectory(_site));
 
         public void Insert(SystemEntity entity)
         {
@@ -56,7 +52,9 @@ namespace MrCMS.Search
             };
 
             if (!AnyExistInEndRequest(data))
+            {
                 CurrentRequestData.OnEndRequest.Add(new AddUniversalSearchTaskInfo(data));
+            }
         }
 
         public void Update(SystemEntity entity)
@@ -72,7 +70,9 @@ namespace MrCMS.Search
             };
 
             if (!AnyExistInEndRequest(data))
+            {
                 CurrentRequestData.OnEndRequest.Add(new AddUniversalSearchTaskInfo(data));
+            }
         }
 
         public void Delete(SystemEntity entity)
@@ -89,7 +89,9 @@ namespace MrCMS.Search
             };
 
             if (!AnyExistInEndRequest(data))
+            {
                 CurrentRequestData.OnEndRequest.Add(new AddUniversalSearchTaskInfo(data));
+            }
         }
 
         public void ReindexAll()
@@ -122,7 +124,9 @@ namespace MrCMS.Search
         public void EnsureIndexExists()
         {
             if (!IndexExists)
+            {
                 ReindexAll();
+            }
         }
 
         public MrCMSIndex GetUniversalIndexInfo()
@@ -136,16 +140,25 @@ namespace MrCMS.Search
                 TypeName = GetType().FullName
             };
         }
+        private static readonly object LockObject = new object();
 
         public void Write(Action<IndexWriter> writeFunc, bool recreateIndex = false)
         {
             if (recreateIndex)
-                RecreateIndex();
-            using (var indexWriter = _getLuceneIndexWriter.Get(FolderName, GetAnalyser()))
             {
-                writeFunc(indexWriter);
-                indexWriter.Commit();
+                RecreateIndex();
             }
+
+            lock (LockObject)
+            {
+                using (var indexWriter = _getLuceneIndexWriter.Get(FolderName, GetAnalyser()))
+                {
+                    writeFunc(indexWriter);
+                    indexWriter.Commit();
+                }
+                _getLuceneDirectory.ResetRamDirectory(_site, FolderName);
+            }
+
             _getLuceneIndexSearcher.Reset(FolderName);
         }
 
@@ -164,7 +177,9 @@ namespace MrCMS.Search
         private int? GetNumberOfDocs()
         {
             if (!IndexExists)
+            {
                 return null;
+            }
 
             using (IndexReader indexReader = IndexReader.Open(GetDirectory(_site), true))
             {
@@ -209,7 +224,7 @@ namespace MrCMS.Search
 
         private Directory GetDirectory(Site site)
         {
-            return _getLuceneDirectory.Get(site, FolderName);
+            return _getLuceneDirectory.GetStandardDictionary(site, FolderName);
         }
     }
 }
