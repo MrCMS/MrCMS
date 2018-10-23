@@ -46,7 +46,13 @@ namespace MrCMS.Website.Filters
                 var jsonString = Encoding.Default.GetString(googleResponse);
                 var json = JsonConvert.DeserializeObject<GoogleRecaptchaResponse>(jsonString);
                 if (!json.Success)
-                    filterContext.Result = new EmptyResult();
+                {
+                    var filterContextResult = new ContentResult
+                    {
+                        Content = "Failed Recaptcha, please click back and try again."
+                    };
+                    filterContext.Result = filterContextResult;
+                }
             }
         }
 
