@@ -123,14 +123,17 @@ namespace MrCMS.Web.Apps.Core.Controllers
 
 
         [HttpGet]
-        public ActionResult PasswordReset(ResetPasswordPage page, Guid id)
+        public ActionResult PasswordReset(ResetPasswordPage page, Guid? id)
         {
-            var user = _userLookup.GetUserByResetGuid(id);
+            if (id == null)
+                return Redirect("~");
+
+            var user = _userLookup.GetUserByResetGuid((Guid)id);
 
             if (user == null)
                 return Redirect("~");
 
-            ViewData["ResetPasswordViewModel"] = new ResetPasswordViewModel(id, user);
+            ViewData["ResetPasswordViewModel"] = new ResetPasswordViewModel((Guid)id, user);
 
             return View(page);
         }
