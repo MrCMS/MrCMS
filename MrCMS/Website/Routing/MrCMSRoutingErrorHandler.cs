@@ -46,7 +46,7 @@ namespace MrCMS.Website.Routing
 
         private bool ShouldLogException(int code)
         {
-            return code != 404 || _siteSettings.Log404s;
+            return code != 404 || _siteSettings.Log404s || code != 403;
         }
 
         private void HandleExceptionWithElmah(Exception exception)
