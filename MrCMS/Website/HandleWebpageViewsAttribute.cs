@@ -11,7 +11,7 @@ namespace MrCMS.Website
             if (result == null) return;
             var webpage = result.Model as Webpage;
             if (webpage == null) return;
-            MrCMSApplication.Get<IProcessWebpageViews>().Process(result, webpage);
+            filterContext.HttpContext.Get<IProcessWebpageViews>().Process(result, webpage);
         }
     }
 }
