@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 using MrCMS.Batching;
 using MrCMS.Entities.Documents.Web;
@@ -9,17 +7,18 @@ using NHibernate;
 
 namespace MrCMS.Services.WebsiteManagement
 {
-    public class UpdateUrlBatchJobExecutor : BaseBatchJobExecutor<UpdateUrlBatchJob>
+    public class CompleteMergeBatchJobExecutor: BaseBatchJobExecutor<CompleteMergeBatchJob>
     {
         private readonly ISession _session;
 
-        public UpdateUrlBatchJobExecutor(ISession session,
+        public CompleteMergeBatchJobExecutor(ISession session,
             ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus) : base(setBatchJobJobExecutionStatus)
         {
             _session = session;
         }
 
-        protected override BatchJobExecutionResult OnExecute(UpdateUrlBatchJob batchJob)
+
+        protected override BatchJobExecutionResult OnExecute(CompleteMergeBatchJob batchJob)
         {
             using (new NotificationDisabler())
             {
@@ -28,28 +27,30 @@ namespace MrCMS.Services.WebsiteManagement
                 {
                     return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.WebpageId);
                 }
+                var mergeInto = _session.Get<Webpage>(batchJob.MergedIntoId);
+                if (mergeInto == null)
+                {
+                    return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.MergedIntoId);
+                }
 
                 _session.Transact(session =>
                 {
-                    var urlHistories = webpage.Urls.ToList();
-                    foreach (var webpageUrl in urlHistories)
+                    var urlSegment = webpage.UrlSegment;
+                    session.Delete(webpage);
+                    var urlHistory = new UrlHistory
                     {
-                        if (!batchJob.NewUrl.Equals(webpageUrl.UrlSegment, StringComparison.InvariantCultureIgnoreCase))
-                            continue;
-
-                        webpage.Urls.Remove(webpageUrl);
-                        session.Delete(webpageUrl);
-                    }
-
-                    webpage.UrlSegment = batchJob.NewUrl;
-                    session.Update(webpage);
+                        UrlSegment = urlSegment,
+                        Webpage = mergeInto,
+                    };
+                    mergeInto.Urls.Add(urlHistory);
+                    session.Save(urlHistory);
                 });
 
                 return BatchJobExecutionResult.Success();
             }
         }
 
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(UpdateUrlBatchJob batchJob)
+        protected override Task<BatchJobExecutionResult> OnExecuteAsync(CompleteMergeBatchJob batchJob)
         {
             throw new System.NotImplementedException();
         }

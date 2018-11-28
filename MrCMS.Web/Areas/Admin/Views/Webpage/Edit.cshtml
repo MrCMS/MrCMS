@@ -17,6 +17,10 @@
                 <a href="/@Model.LiveUrlSegment" class="btn btn-default">View</a>
 
                 @Html.ActionLink(Resource("Move"), "Index", "MoveWebpage", new { Model.Id }, new { @class = "btn btn-default" })
+                @if (Model.AnyChildren())
+                {
+                    @Html.ActionLink(Resource("Merge"), "Index", "MergeWebpage", new {Model.Id}, new {@class = "btn btn-default"})
+                }
                 @if (Model.CanAddChildren())
                 {
                     @Html.ActionLink(Resource("Add a child page"), "Add", new { Model.Id }, new { @class = "btn btn-default" })

@@ -9,17 +9,17 @@ using NHibernate;
 
 namespace MrCMS.Services.WebsiteManagement
 {
-    public class UpdateUrlBatchJobExecutor : BaseBatchJobExecutor<UpdateUrlBatchJob>
+    public class MoveWebpageBatchJobExecutor : BaseBatchJobExecutor<MoveWebpageBatchJob>
     {
         private readonly ISession _session;
 
-        public UpdateUrlBatchJobExecutor(ISession session,
+        public MoveWebpageBatchJobExecutor(ISession session,
             ISetBatchJobExecutionStatus setBatchJobJobExecutionStatus) : base(setBatchJobJobExecutionStatus)
         {
             _session = session;
         }
 
-        protected override BatchJobExecutionResult OnExecute(UpdateUrlBatchJob batchJob)
+        protected override BatchJobExecutionResult OnExecute(MoveWebpageBatchJob batchJob)
         {
             using (new NotificationDisabler())
             {
@@ -29,19 +29,15 @@ namespace MrCMS.Services.WebsiteManagement
                     return BatchJobExecutionResult.Failure("Could not find the webpage with id " + batchJob.WebpageId);
                 }
 
+                var parent = batchJob.NewParentId.HasValue ? _session.Get<Webpage>(batchJob.NewParentId) : null;
+                if (batchJob.NewParentId.HasValue &&  parent == null)
+                {
+                    return BatchJobExecutionResult.Failure("Could not find the parent webpage with id " + batchJob.NewParentId);
+                }
+
                 _session.Transact(session =>
                 {
-                    var urlHistories = webpage.Urls.ToList();
-                    foreach (var webpageUrl in urlHistories)
-                    {
-                        if (!batchJob.NewUrl.Equals(webpageUrl.UrlSegment, StringComparison.InvariantCultureIgnoreCase))
-                            continue;
-
-                        webpage.Urls.Remove(webpageUrl);
-                        session.Delete(webpageUrl);
-                    }
-
-                    webpage.UrlSegment = batchJob.NewUrl;
+                    webpage.Parent = parent;
                     session.Update(webpage);
                 });
 
@@ -49,7 +45,7 @@ namespace MrCMS.Services.WebsiteManagement
             }
         }
 
-        protected override Task<BatchJobExecutionResult> OnExecuteAsync(UpdateUrlBatchJob batchJob)
+        protected override Task<BatchJobExecutionResult> OnExecuteAsync(MoveWebpageBatchJob batchJob)
         {
             throw new System.NotImplementedException();
         }

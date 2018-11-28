@@ -12,35 +12,35 @@ using System.Web.Mvc;
 
 namespace MrCMS.Web.Areas.Admin.Services
 {
-    public class MoveWebpageAdminService : IMoveWebpageAdminService
+    public class MergeWebpageAdminService : IMergeWebpageAdminService
     {
         private readonly IRepository<Webpage> _webpageRepository;
         private readonly IStringResourceProvider _resourceProvider;
         private readonly IWebpageUrlService _webpageUrlService;
-        private readonly ICreateUpdateUrlBatch _createUpdateUrlBatch;
+        private readonly ICreateMergeBatch _createMergeBatch;
 
-        public MoveWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider, IWebpageUrlService webpageUrlService, ICreateUpdateUrlBatch createUpdateUrlBatch)
+        public MergeWebpageAdminService(IRepository<Webpage> webpageRepository, IStringResourceProvider resourceProvider, IWebpageUrlService webpageUrlService, ICreateMergeBatch createMergeBatch)
         {
             _webpageRepository = webpageRepository;
             _resourceProvider = resourceProvider;
             _webpageUrlService = webpageUrlService;
-            _createUpdateUrlBatch = createUpdateUrlBatch;
+            _createMergeBatch = createMergeBatch;
         }
-
         public IEnumerable<SelectListItem> GetValidParents(Webpage webpage)
         {
-            var webpages = GetValidParentWebpages(webpage);
-            List<SelectListItem> result = webpages
-                .BuildSelectItemList(page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
-                    page => page.Id.ToString(),
-                    webpage1 => webpage.Parent != null && webpage.ParentId == webpage1.Id, emptyItem: null);
+            var children = _webpageRepository.Query().Where(x => x.Parent.Id == webpage.Id).ToList();
+            // get the matching pages for all types
+            var potentialParents = children.Select(child => GetValidParentWebpages(child).ToHashSet()).ToHashSet();
 
-            if (IsRootAllowed(webpage))
-            {
-                result.Insert(0, SelectListItemHelper.EmptyItem("Root"));
-            }
+            var validForAll = potentialParents.SelectMany(x => x).Distinct()
+                .Where(x => x != webpage && potentialParents.All(y => y.Contains(x))).ToHashSet();
 
-            return result;
+            var items = validForAll.BuildSelectItemList(
+                page => string.Format("{0} ({1})", page.Name, page.GetMetadata().Name),
+                page => page.Id.ToString(),
+                webpage1 => webpage.Parent != null && webpage.ParentId == webpage1.Id, emptyItem: null);
+
+            return items;
         }
 
         private IOrderedEnumerable<Webpage> GetValidParentWebpages(Webpage webpage)
@@ -60,93 +60,63 @@ namespace MrCMS.Web.Areas.Admin.Services
             return webpages;
         }
 
-        private bool SetParent(Webpage webpage, Webpage parent)
-        {
-            if (webpage == null)
-            {
-                return false;
-            }
-
-            webpage.Parent = parent;
-
-            _webpageRepository.Update(webpage);
-            return true;
-        }
-
-        public MoveWebpageResult Validate(MoveWebpageModel moveWebpageModel)
+        public MergeWebpageResult Validate(MergeWebpageModel moveWebpageModel)
         {
             var webpage = GetWebpage(moveWebpageModel);
             var parent = GetParent(moveWebpageModel);
 
-            if (parent == webpage.Parent.Unproxy())
-            {
-                return new MoveWebpageResult
-                {
-                    Success = false,
-                    Message = _resourceProvider.GetValue("The webpage already has this parent")
-                };
-            }
-
             var validParentWebpages = GetValidParentWebpages(webpage);
-            var valid = parent == null ? IsRootAllowed(webpage) : validParentWebpages.Contains(parent);
+            var valid = webpage != null && parent != null && validParentWebpages.Contains(parent);
 
-            return new MoveWebpageResult
+            return new MergeWebpageResult
             {
                 Success = valid,
                 Message = valid ? string.Empty : _resourceProvider.GetValue("Sorry, but you can't select that as a parent for this page.")
             };
         }
 
-        private Webpage GetParent(MoveWebpageModel moveWebpageModel)
+        private Webpage GetParent(MergeWebpageModel moveWebpageModel)
         {
-            return moveWebpageModel.ParentId.HasValue
-                ? _webpageRepository.Get(moveWebpageModel.ParentId.Value)
-                : null;
+            return _webpageRepository.Get(moveWebpageModel.MergeIntoId);
         }
 
-        private Webpage GetWebpage(MoveWebpageModel moveWebpageModel)
+        private Webpage GetWebpage(MergeWebpageModel moveWebpageModel)
         {
             return _webpageRepository.Get(moveWebpageModel.Id);
         }
 
-        private bool IsRootAllowed(Webpage webpage)
-        {
-            return !webpage.GetMetadata().RequiresParent;
-        }
-
-        public MoveWebpageConfirmationModel GetConfirmationModel(MoveWebpageModel model)
+        public MergeWebpageConfirmationModel GetConfirmationModel(MergeWebpageModel model)
         {
             var webpage = GetWebpage(model);
             var parent = GetParent(model);
 
 
-            return new MoveWebpageConfirmationModel
+            return new MergeWebpageConfirmationModel
             {
                 Webpage = webpage,
-                Parent = parent,
+                MergedInto = parent,
                 ChangedPages = GetChangedPages(model, webpage, parent)
             };
         }
-
-        private List<MoveWebpageChangedPageModel> GetChangedPages(MoveWebpageModel model, Webpage webpage, Webpage parent)
+        private List<MergeWebpageChangedPageModel> GetChangedPages(MergeWebpageModel model, Webpage webpage, Webpage parent)
         {
             var webpageHierarchy = GetWebpageHierarchy(webpage).ToList();
 
-            var parentActivePages = (parent?.ActivePages.Reverse() ?? Enumerable.Empty<Webpage>()).ToList();
-            List<MoveWebpageChangedPageModel> models = new List<MoveWebpageChangedPageModel>();
+            var parentActivePages = (parent.ActivePages.Reverse()).ToList();
+            List<MergeWebpageChangedPageModel> models = new List<MergeWebpageChangedPageModel>();
             foreach (var page in webpageHierarchy)
             {
                 var activePages = page.ActivePages.ToList();
                 var indexOf = activePages.IndexOf(webpage);
-                var childActivePages = activePages.Take(indexOf + 1).ToList();
+                var childActivePages = activePages.Take(indexOf).ToList();
                 activePages.Reverse();
                 var immediateParent = childActivePages.ElementAtOrDefault(1);
                 childActivePages.Reverse();
                 var newUrl = GetNewUrl(model, parent, page, immediateParent, models.FirstOrDefault(x => x.Id == immediateParent?.Id));
-                models.Add(new MoveWebpageChangedPageModel
+                models.Add(new MergeWebpageChangedPageModel
                 {
                     Id = page.Id,
-                    ParentId = immediateParent?.Id,
+                    ParentId = immediateParent?.Id ?? model.Id,
                     OldUrl = page.UrlSegment,
                     NewUrl = newUrl,
                     OldHierarchy = GetHierarchy(activePages),
@@ -156,8 +126,7 @@ namespace MrCMS.Web.Areas.Admin.Services
             return models;
         }
 
-        private string GetNewUrl(MoveWebpageModel model, Webpage parent, Webpage page, Webpage immediateParent,
-            MoveWebpageChangedPageModel parentModel)
+        private string GetNewUrl(MergeWebpageModel model, Webpage parent, Webpage page, Webpage immediateParent, MergeWebpageChangedPageModel parentModel)
         {
             if (!model.UpdateUrls)
             {
@@ -191,14 +160,13 @@ namespace MrCMS.Web.Areas.Admin.Services
         {
             return string.Join(" > ", webpages.Select(x => x.Name));
         }
-
         private IEnumerable<Webpage> GetWebpageHierarchy(Webpage webpage)
         {
-            yield return webpage;
             var descendants = _webpageRepository.Query().Where(x => x.Parent.Id == webpage.Id).OrderBy(x => x.DisplayOrder)
                 .ToList();
             foreach (var descendant in descendants)
             {
+                yield return descendant;
                 foreach (var child in GetWebpageHierarchy(descendant))
                 {
                     yield return child;
@@ -206,34 +174,45 @@ namespace MrCMS.Web.Areas.Admin.Services
             }
         }
 
-        public MoveWebpageResult Confirm(MoveWebpageModel model)
+
+        public MergeWebpageResult Confirm(MergeWebpageModel model)
         {
             var confirmationModel = GetConfirmationModel(model);
 
-            var success = SetParent(confirmationModel.Webpage, confirmationModel.Parent);
-            if (!success)
-            {
-                return new MoveWebpageResult
-                {
-                    Success = false,
-                    Message = _resourceProvider.GetValue("There was an issue setting the parent to the new value")
-                };
-            }
+            var success = _createMergeBatch.CreateBatch(confirmationModel);
 
-            success = _createUpdateUrlBatch.CreateBatch(confirmationModel);
-
-            return new MoveWebpageResult
+            return new MergeWebpageResult
             {
                 Success = success,
                 Message = _resourceProvider.GetValue(success
                     ? "The page has been moved successfully"
-                    : "There was an issue creating the batch to update the page URLs")
+                    : "There was an issue creating the batch to complete the merge")
             };
+            throw new System.NotImplementedException();
+            //var success = SetParent(confirmationModel.Webpage, confirmationModel.Parent);
+            //if (!success)
+            //{
+            //    return new MoveWebpageResult
+            //    {
+            //        Success = false,
+            //        Message = _resourceProvider.GetValue("There was an issue setting the parent to the new value")
+            //    };
+            //}
+
+            //success = _createUpdateUrlBatch.CreateBatch(confirmationModel);
+
+            //return new MoveWebpageResult
+            //{
+            //    Success = success,
+            //    Message = _resourceProvider.GetValue(success
+            //        ? "The page has been moved successfully"
+            //        : "There was an issue creating the batch to update the page URLs")
+            //};
         }
 
-        public MoveWebpageModel GetModel(Webpage webpage)
+        public MergeWebpageModel GetModel(Webpage webpage)
         {
-            return new MoveWebpageModel
+            return new MergeWebpageModel
             {
                 Id = webpage.Id
             };

@@ -331,6 +331,7 @@
     <Compile Include="Areas\Admin\Controllers\BatchRunController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchRunResultController.cs" />
     <Compile Include="Areas\Admin\Controllers\CustomScriptPagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MergeWebpageController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplatePreviewController.cs" />
     <Compile Include="Areas\Admin\Controllers\MessageTemplateTokensController.cs" />
     <Compile Include="Areas\Admin\Controllers\RegisteredHandlersController.cs" />
@@ -366,6 +367,10 @@
     <Compile Include="Areas\Admin\Models\DashboardAreaAction.cs" />
     <Compile Include="Areas\Admin\Models\LineGraphData.cs" />
     <Compile Include="Areas\Admin\Models\MediaCategorySortMethod.cs" />
+    <Compile Include="Areas\Admin\Models\MergeWebpageChangedPageModel.cs" />
+    <Compile Include="Areas\Admin\Models\MergeWebpageConfirmationModel.cs" />
+    <Compile Include="Areas\Admin\Models\MergeWebpageModel.cs" />
+    <Compile Include="Areas\Admin\Models\MergeWebpageResult.cs" />
     <Compile Include="Areas\Admin\Models\MoveFilesAndFoldersModel.cs" />
     <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageTemplateController.cs" />
@@ -573,6 +578,7 @@
     <Compile Include="Areas\Admin\Services\IAdminUserStatsService.cs" />
     <Compile Include="Areas\Admin\Services\IAdminWebpageSearchService.cs" />
     <Compile Include="Areas\Admin\Services\IBatchAdminService.cs" />
+    <Compile Include="Areas\Admin\Services\ICreateMergeBatch.cs" />
     <Compile Include="Areas\Admin\Services\ICreateUpdateUrlBatch.cs" />
     <Compile Include="Areas\Admin\Services\ICustomScriptPageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IDocumentRolesAdminService.cs" />
@@ -593,6 +599,7 @@
     <Compile Include="Areas\Admin\Services\ILogAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMediaCategoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMediaSelectorService.cs" />
+    <Compile Include="Areas\Admin\Services\IMergeWebpageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMessageQueueAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMessageTemplateAdminService.cs" />
     <Compile Include="Areas\Admin\Services\IMessageTemplatePreviewService.cs" />
@@ -631,6 +638,7 @@
     <Compile Include="Areas\Admin\Services\LogAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MediaCategoryAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MediaSelectorService.cs" />
+    <Compile Include="Areas\Admin\Services\MergeWebpageAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MessageQueueAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MessageTemplateAdminService.cs" />
     <Compile Include="Areas\Admin\Services\MessageTemplatePreviewService.cs" />
@@ -2194,6 +2202,8 @@
     <Content Include="Areas\Admin\Views\SecurityOptions\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SecurityOptions\Settings.cshtml" />
     <Content Include="Areas\Admin\Views\MoveWebpage\Confirm.cshtml" />
+    <Content Include="Areas\Admin\Views\MergeWebpage\Confirm.cshtml" />
+    <Content Include="Areas\Admin\Views\MergeWebpage\Index.cshtml" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
