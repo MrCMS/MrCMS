@@ -1,10 +1,10 @@
-using System;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Models;
 using MrCMS.Settings;
 using NHibernate;
 using Ninject;
+using System;
 
 namespace MrCMS.Services
 {
@@ -24,7 +24,7 @@ namespace MrCMS.Services
             _settings = settings;
         }
 
-        public string Suggest(Webpage parent,SuggestParams suggestParams)
+        public string Suggest(Webpage parent, SuggestParams suggestParams)
         {
             IWebpageUrlGenerator generator = GetGenerator(suggestParams.DocumentType, suggestParams.Template);
 
@@ -32,12 +32,14 @@ namespace MrCMS.Services
 
             //make sure the URL is unique
 
-            if (!_urlValidationService.UrlIsValidForWebpage(url, null))
+            if (!_urlValidationService.UrlIsValidForWebpage(url, suggestParams.WebpageId))
             {
                 int counter = 1;
 
-                while (!_urlValidationService.UrlIsValidForWebpage(string.Format("{0}-{1}", url, counter), null))
+                while (!_urlValidationService.UrlIsValidForWebpage(string.Format("{0}-{1}", url, counter), suggestParams.WebpageId))
+                {
                     counter++;
+                }
 
                 url = string.Format("{0}-{1}", url, counter);
             }

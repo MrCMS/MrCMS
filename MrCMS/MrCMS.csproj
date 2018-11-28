@@ -850,7 +850,6 @@
     <Compile Include="Services\IQuerySerializer.cs" />
     <Compile Include="Services\IQueueMessage.cs" />
     <Compile Include="Services\ISaveFormFileUpload.cs" />
-    <Compile Include="Services\IStoredInAppData.cs" />
     <Compile Include="Services\ITestSmtpSettings.cs" />
     <Compile Include="Services\IUniquePageService.cs" />
     <Compile Include="Services\IUrlValidationService.cs" />
@@ -919,6 +918,8 @@
     <Compile Include="Services\WebpageUIService.cs" />
     <Compile Include="Services\WebpageUrlGenerator.cs" />
     <Compile Include="Services\WebpageUrlService.cs" />
+    <Compile Include="Services\WebsiteManagement\UpdateUrlBatchJob.cs" />
+    <Compile Include="Services\WebsiteManagement\UpdateUrlBatchJobExecutor.cs" />
     <Compile Include="Services\WidgetModelService.cs" />
     <Compile Include="Services\Widgets\DefaultGetWidgetModel.cs" />
     <Compile Include="Services\Widgets\GetWidgetModelBase.cs" />
