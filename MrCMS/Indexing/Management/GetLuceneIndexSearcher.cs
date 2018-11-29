@@ -1,14 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
 using Lucene.Net.Search;
 using MrCMS.Entities.Multisite;
+using System.Collections.Concurrent;
 
 namespace MrCMS.Indexing.Management
 {
     public class GetLuceneIndexSearcher : IGetLuceneIndexSearcher
     {
-        private static readonly Dictionary<int, Dictionary<string, IndexSearcher>> IndexSearcherCache =
-            new Dictionary<int, Dictionary<string, IndexSearcher>>();
+        private static readonly ConcurrentDictionary<int, ConcurrentDictionary<string, IndexSearcher>> IndexSearcherCache =
+            new ConcurrentDictionary<int, ConcurrentDictionary<string, IndexSearcher>>();
 
         private readonly IGetLuceneDirectory _getLuceneDirectory;
         private readonly Site _site;
@@ -31,16 +30,8 @@ namespace MrCMS.Indexing.Management
 
         public IndexSearcher Get(string folderName)
         {
-            if (!IndexSearcherCache.ContainsKey(SiteId))
-            {
-                IndexSearcherCache[SiteId] = new Dictionary<string, IndexSearcher>();
-            }
-            var dictionary = IndexSearcherCache[SiteId];
-            if (!dictionary.ContainsKey(folderName))
-            {
-                dictionary[folderName] = GetInternal(folderName);
-            }
-            return dictionary[folderName];
+
+            return IndexSearcherCache.GetOrAdd(SiteId, new ConcurrentDictionary<string, IndexSearcher>()).GetOrAdd(folderName, GetInternal(folderName));
         }
 
         public void Reset(IndexDefinition definition)
@@ -50,21 +41,31 @@ namespace MrCMS.Indexing.Management
 
         public void Reset(string folderName)
         {
-            if (IndexSearcherCache.ContainsKey(SiteId))
+            var removed = IndexSearcherCache.GetOrAdd(SiteId, new ConcurrentDictionary<string, IndexSearcher>())
+                  .TryRemove(folderName, out var searcher);
+
+            if (removed)
             {
-                IndexSearcherCache[SiteId].Remove(folderName);
+                searcher.Dispose();
             }
         }
 
         public void ClearCache()
         {
-            foreach (var indexSearcher in IndexSearcherCache.SelectMany(x => x.Value.Values))
-                indexSearcher.Dispose();
+            foreach (var key in IndexSearcherCache.Keys)
+            {
+                if (!IndexSearcherCache.TryRemove(key, out var dictionary))
+                    continue;
 
-            IndexSearcherCache.Clear();
+                foreach (var dictionaryKey in dictionary.Keys)
+                {
+                    if(dictionary.TryRemove(dictionaryKey,out var searcher))
+                        searcher.Dispose();
+                }
+            }
         }
 
-        public IndexSearcher GetInternal(string folderName)
+        private IndexSearcher GetInternal(string folderName)
         {
             return new IndexSearcher(_getLuceneDirectory.GetRamDirectory(_site, folderName));
         }

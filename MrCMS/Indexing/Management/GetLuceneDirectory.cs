@@ -1,19 +1,20 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Web;
 using Lucene.Net.Store;
 using MrCMS.Entities.Multisite;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Web;
 using Directory = Lucene.Net.Store.Directory;
 
 namespace MrCMS.Indexing.Management
 {
     public class GetLuceneDirectory : IGetLuceneDirectory
     {
-        private static readonly Dictionary<int, Dictionary<string, Directory>> StandardDirectoryCache =
-            new Dictionary<int, Dictionary<string, Directory>>();
+        // TODO: Check if we should cache the standard directory, we may want to say that if we need to get to the disc level, we should always get a fresh instance
+        private static readonly ConcurrentDictionary<int, ConcurrentDictionary<string, Directory>> StandardDirectoryCache =
+            new ConcurrentDictionary<int, ConcurrentDictionary<string, Directory>>();
 
-        private static readonly Dictionary<int, Dictionary<string, Directory>> RamDirectoryCache =
-            new Dictionary<int, Dictionary<string, Directory>>();
+        private static readonly ConcurrentDictionary<int, ConcurrentDictionary<string, Directory>> RamDirectoryCache =
+            new ConcurrentDictionary<int, ConcurrentDictionary<string, Directory>>();
 
         private readonly HttpContextBase _context;
 
@@ -24,35 +25,27 @@ namespace MrCMS.Indexing.Management
 
         public Directory GetRamDirectory(Site site, string folderName)
         {
-            var siteId = site.Id;
-            if (!RamDirectoryCache.ContainsKey(siteId))
-                RamDirectoryCache[siteId] = new Dictionary<string, Directory>();
-            var dictionary = RamDirectoryCache[siteId];
-            if (!dictionary.ContainsKey(folderName))
-                dictionary[folderName] = new RAMDirectory(GetStandardDictionary(site, folderName));
-            return dictionary[folderName];
+            return GetSiteRAMCache(site)
+                .GetOrAdd(folderName, s => new RAMDirectory(GetStandardDictionary(site, s)));
+        }
+
+        private static ConcurrentDictionary<string, Directory> GetSiteRAMCache(Site site)
+        {
+            return RamDirectoryCache.GetOrAdd(site.Id, i => new ConcurrentDictionary<string, Directory>());
         }
 
         public Directory GetStandardDictionary(Site site, string folderName)
         {
-            var siteId = site.Id;
-            if (!StandardDirectoryCache.ContainsKey(siteId))
-                StandardDirectoryCache[siteId] = new Dictionary<string, Directory>();
-            var dictionary = StandardDirectoryCache[siteId];
-            if (!dictionary.ContainsKey(folderName)) dictionary[folderName] = GetDirectory(site, folderName);
-            return dictionary[folderName];
+            return StandardDirectoryCache.GetOrAdd(site.Id, i => new ConcurrentDictionary<string, Directory>())
+                .GetOrAdd(folderName, s => GetDirectory(site, s));
         }
 
         public void ResetRamDirectory(Site site, string folderName)
         {
-            var siteId = site.Id;
-            if (!RamDirectoryCache.ContainsKey(siteId)) return;
-            var dictionary = RamDirectoryCache[siteId];
-            if (!dictionary.ContainsKey(folderName)) return;
-
-            var directory = dictionary[folderName];
-            directory.Dispose();
-            dictionary.Remove(folderName);
+            if (GetSiteRAMCache(site).TryRemove(folderName, out var directory))
+            {
+                directory.Dispose();
+            }
         }
 
         private Directory GetDirectory(Site site, string folderName)

@@ -255,6 +255,7 @@
     <Compile Include="Apps\MrCMSApp.cs" />
     <Compile Include="Apps\MrCMSAppRegistrationContext.cs" />
     <Compile Include="Attributes\CanonicalLinksAttribute.cs" />
+    <Compile Include="Attributes\MandatoryAttribute.cs" />
     <Compile Include="Batching\BaseBatchJobExecutor.cs">
       <SubType>Code</SubType>
     </Compile>
