@@ -1,4 +1,5 @@
 ﻿@using MrCMS.Helpers
+@using MrCMS.Web.Apps.Admin.Helpers
 @{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutPopup.cshtml";}
 @model MrCMS.Entities.Documents.DocumentVersion
@@ -7,7 +8,7 @@
         @Html.Resource("Admin Webpage Version", "Version") @Model.Id
         @if (Model.AnyDifferencesFromCurrent())
         {
-            using (Html.BeginForm("Revert", "Versions", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline;" }))
+            using (Html.BeginForm("Revert", "Versions", new { id = Model.Id }, FormMethod.Post))
             {
                 <span class="btn-group display-inline pull-right">
                     <input type="submit" class="btn btn-primary" value="Revert to version" />

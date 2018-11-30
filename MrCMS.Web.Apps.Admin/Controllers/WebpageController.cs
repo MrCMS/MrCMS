@@ -127,15 +127,15 @@ namespace MrCMS.Web.Apps.Admin.Controllers
             return RedirectToAction("Sort", new { id });
         }
 
-        public ActionResult Show(Webpage document)
-        {
-            if (document == null)
-            {
-                return RedirectToAction("Index");
-            }
+        //public ActionResult Show(Webpage document)
+        //{
+        //    if (document == null)
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
 
-            return View(document);
-        }
+        //    return View(document);
+        //}
 
         [HttpPost]
         public ActionResult PublishNow(int id)

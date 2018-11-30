@@ -13,6 +13,7 @@ namespace MrCMS.Apps
     public interface IMrCMSApp
     {
         string Name { get; }
+        string Version { get; }
         string ContentPrefix { get; set; }
         string ViewPrefix { get; set; }
 

@@ -14,6 +14,7 @@ namespace MrCMS.Apps
     public abstract class StandardMrCMSApp : IMrCMSApp
     {
         public abstract string Name { get; }
+        public abstract string Version { get; }
         public virtual Assembly Assembly => GetType().Assembly;
         public virtual IEnumerable<Type> Conventions
         {

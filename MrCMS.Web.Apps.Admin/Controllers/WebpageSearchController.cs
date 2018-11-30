@@ -16,6 +16,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
 
         public ViewResult Search(WebpageSearchQuery searchQuery)
         {
+            ViewData["results"] = _webpageAdminSearchService.Search(searchQuery);
             return View(searchQuery);
         }
 

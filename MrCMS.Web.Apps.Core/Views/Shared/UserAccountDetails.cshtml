@@ -1,7 +1,7 @@
 ﻿@using System
 @using MrCMS.Helpers
 @model MrCMS.Models.Auth.UserAccountModel
-@using (Html.BeginForm("UserAccountDetails", "UserAccount", null, FormMethod.Post, new { @class = "" }))
+@using (Html.BeginForm("UserAccountDetails", "UserAccount", null, FormMethod.Post))
 {
     <div class="form-group">
         @Html.LabelFor(model => model.FirstName, new { @class = "control-label" })

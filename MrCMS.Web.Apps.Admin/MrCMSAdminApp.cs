@@ -19,6 +19,7 @@ namespace MrCMS.Web.Apps.Admin
         }
 
         public override string Name => "Admin";
+        public override string Version => "1.0";
 
         public override IRouteBuilder MapRoutes(IRouteBuilder routeBuilder)
         {

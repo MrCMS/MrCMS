@@ -1,9 +1,10 @@
-﻿@using System
-@using MrCMS.Helpers
+﻿@using MrCMS.Services
+@using MrCMS.Services.Resources
 @using MrCMS.Web.Apps.Core.Pages
 @model MrCMS.Models.Auth.RegisterModel
+@inject IUniquePageService UniquePageService  
 
-@using (Html.BeginForm("RegistrationDetails", "Registration", null, FormMethod.Post, new { @class = "" }))
+@using (Html.BeginForm("RegistrationDetails", "Registration", null, FormMethod.Post))
 {
     @Html.HiddenFor(x => x.ReturnUrl)
     <div class="row">
@@ -36,8 +37,8 @@
             </div>
             
             <div class="btn-group">
-            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> @Resource("Register")</button>
-            <a href="@( UniquePageHelper.GetUrl<LoginPage>())" class="btn btn-default">@Resource("Already Registered? Login here")</a>            
+            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> @Html.Resource("Register")</button>
+            <a href="@(UniquePageService.GetUrl<LoginPage>())" class="btn btn-default">@Html.Resource("Already Registered? Login here")</a>            
             </div>
             <br />
             @if (!String.IsNullOrEmpty(ViewBag.Message))

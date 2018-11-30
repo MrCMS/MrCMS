@@ -1,13 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Internal;
@@ -22,6 +12,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MrCMS.Services;
 using MrCMS.Settings;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace MrCMS.Helpers
 {
@@ -33,7 +32,9 @@ namespace MrCMS.Helpers
         {
             var explicitValue = isChecked.HasValue;
             if (explicitValue)
+            {
                 htmlAttributes.Remove("checked"); // Explicit value must override dictionary
+            }
 
             return MakeCheckbox(htmlHelper, InputType.CheckBox, metadata, typeof(TModel), htmlHelper.ViewData.Model,
                 name, !explicitValue /* useViewData */,
@@ -73,20 +74,27 @@ namespace MrCMS.Helpers
             }
 
             if (!usedModelState && useViewData)
+            {
                 isChecked = htmlHelper.EvalBoolean(fullName);
+            }
 
             if (isChecked)
+            {
                 tagBuilder.MergeAttribute("checked", "checked");
+            }
 
             tagBuilder.MergeAttribute("value", valueParameter, false);
 
             tagBuilder.GenerateId(fullName, "-");
 
             // If there are any errors for a named field, we add the css attribute.
-            ModelStateEntry modelState;
-            if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out modelState))
+            if (htmlHelper.ViewData.ModelState.TryGetValue(fullName, out ModelStateEntry modelState))
+            {
                 if (modelState.Errors.Count > 0)
+                {
                     tagBuilder.AddCssClass(HtmlHelper.ValidationInputCssClassName);
+                }
+            }
 
             AddValidationAttributes(htmlHelper.ViewContext, tagBuilder,
                 htmlHelper.MetadataProvider.GetModelExplorerForType(type, viewDataModel), name);
@@ -177,7 +185,9 @@ namespace MrCMS.Helpers
                     html.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName), "-"));
 
             if (htmlAttributes != null)
+            {
                 tag.MergeAttributes(htmlAttributes);
+            }
 
             tag.InnerHtml.AppendHtml(resolvedLabelText);
             return tag.ToMvcHtmlString(TagRenderMode.Normal);
@@ -185,9 +195,11 @@ namespace MrCMS.Helpers
 
         private static object GetModelStateValue(this IHtmlHelper html, string key, Type destinationType)
         {
-            ModelStateEntry modelState;
-            if (html.ViewData.ModelState.TryGetValue(key, out modelState) && modelState.RawValue != null)
+            if (html.ViewData.ModelState.TryGetValue(key, out ModelStateEntry modelState) && modelState.RawValue != null)
+            {
                 return ModelBindingHelper.ConvertTo(modelState.RawValue, destinationType, null /* culture */);
+            }
+
             return null;
         }
 
@@ -267,9 +279,13 @@ namespace MrCMS.Helpers
             var labelHtmlAttributes = AnonymousObjectToHtmlAttributes(labelAttributes);
             // add checkbox style to label, for Bootstrap
             if (labelHtmlAttributes.ContainsKey("class"))
+            {
                 labelHtmlAttributes["class"] += " checkbox-inline";
+            }
             else
+            {
                 labelHtmlAttributes["class"] = "checkbox-inline";
+            }
 
             text = text ?? metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
             var builder = new HtmlContentBuilder().AppendHtml(checkbox).Append(text);
@@ -314,7 +330,7 @@ namespace MrCMS.Helpers
         public static IHtmlContent Link(this IHtmlHelper helper, string text, string url, object htmlAttributes = null)
         {
             var tagBuilder = new TagBuilder("a");
-            tagBuilder.Attributes.Add("href", ParseUrl(url));
+            tagBuilder.Attributes.Add("href", ParseUrl(url, helper.ViewContext.HttpContext.Request.Scheme));
             if (htmlAttributes != null)
             {
                 var dictionary = AnonymousObjectToHtmlAttributes(htmlAttributes);
@@ -326,11 +342,18 @@ namespace MrCMS.Helpers
             return tagBuilder;
         }
 
-        private static string ParseUrl(string url)
+        private static string ParseUrl(string url, string scheme)
         {
-            Uri result;
-            if (Uri.TryCreate(url, UriKind.Absolute, out result)) return result.ToString();
-            if (Uri.TryCreate("http://" + url, UriKind.Absolute, out result)) return result.ToString();
+            if (Uri.TryCreate(url, UriKind.Absolute, out Uri result))
+            {
+                return result.ToString();
+            }
+
+            if (Uri.TryCreate(scheme + "://" + url, UriKind.Absolute, out result))
+            {
+                return result.ToString();
+            }
+
             return url;
         }
 
@@ -359,7 +382,9 @@ namespace MrCMS.Helpers
             RouteValueDictionary additions)
         {
             foreach (var key in additions)
+            {
                 baseDictionary[key.Key] = key.Value;
+            }
 
             return baseDictionary;
         }
@@ -368,9 +393,14 @@ namespace MrCMS.Helpers
         {
             var routeValueDictionary = new RouteValueDictionary();
             if (htmlAttributes != null)
+            {
                 foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(htmlAttributes))
+                {
                     routeValueDictionary.Add(propertyDescriptor.Name.Replace('_', '-'),
                         propertyDescriptor.GetValue(htmlAttributes));
+                }
+            }
+
             return routeValueDictionary;
         }
 
@@ -405,7 +435,9 @@ namespace MrCMS.Helpers
 
             var file = fileService.GetFileByUrl(seoSettings.Favicon);
             if (file == null)
+            {
                 return HtmlString.Empty;
+            }
 
             var imageUrl = imageRenderingService.GetImageUrl(file.FileUrl, size);
 

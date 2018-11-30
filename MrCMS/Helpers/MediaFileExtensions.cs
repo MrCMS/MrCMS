@@ -1,13 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Models;
 using MrCMS.Services;
 using MrCMS.Settings;
-using MrCMS.Website;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MrCMS.Helpers
 {
@@ -16,6 +15,10 @@ namespace MrCMS.Helpers
         public static readonly HashSet<string> JpegExtensions = new HashSet<string> { ".jpg", ".jpeg" };
         public static readonly List<string> ImageExtensions = new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".bmp" };
 
+        public static IFileSystem GetFileSystem(MediaFile file, IEnumerable<IFileSystem> possibleFileSystems)
+        {
+            return GetFileSystem(file?.FileUrl, possibleFileSystems);
+        }
         public static IFileSystem GetFileSystem(string fileUrl, IEnumerable<IFileSystem> possibleFileSystems)
         {
             return possibleFileSystems.FirstOrDefault(system => system.Exists(fileUrl));
@@ -40,20 +43,20 @@ namespace MrCMS.Helpers
         public static IEnumerable<ImageSize> GetSizes(this MediaFile file, MediaSettings mediaSettings)
         {
             if (!IsImage(file))
+            {
                 yield break;
+            }
+
             yield return new ImageSize("Original", file.Size);
-            foreach (
-                ImageSize imageSize in
-                mediaSettings
-                        .ImageSizes.Where(size => ImageProcessor.RequiresResize(file.Size, size.Size)))
+            foreach (ImageSize imageSize in
+                mediaSettings.ImageSizes.Where(size => ImageProcessor.RequiresResize(file.Size, size.Size)))
             {
                 imageSize.ActualSize = ImageProcessor.CalculateDimensions(file.Size, imageSize.Size);
                 yield return imageSize;
             }
-            // TODO: resized images
         }
 
-        public static IEnumerable<ImageSize> GetImageSizes(this IHtmlHelper helper,  MediaFile file)
+        public static IEnumerable<ImageSize> GetImageSizes(this IHtmlHelper helper, MediaFile file)
         {
             return GetSizes(file, helper.ViewContext.HttpContext.RequestServices.GetRequiredService<MediaSettings>());
         }

@@ -9,5 +9,6 @@ namespace MrCMS.Web.Apps.Core
             ContentPrefix = "/Apps/Core";
         }
         public override string Name => "Core";
+        public override string Version => "1.0";
     }
 }

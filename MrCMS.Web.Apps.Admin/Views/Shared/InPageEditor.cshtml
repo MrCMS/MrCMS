@@ -10,10 +10,10 @@
     var canEditPage = Html.CanAccess<TypeACLRule>(TypeACLRule.Edit, Model.GetType().FullName);
 }
 <div class="mrcms-admin-nav-bar">
-    <a href="@Url.Action("Index", "Home", new {area = "admin"})" target="_parent" class="mrcms-btn mrcms-btn-default mrcms-btn-xs">Admin</a>
+    <a href="@Url.Action("Index", "Home", new {area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-default mrcms-btn-xs">Admin</a>
     @if (canEditPage)
     {
-        <a href="@Url.Action("Edit", "Webpage", new {Model.Id, area = "admin"})" target="_parent" class="mrcms-btn mrcms-btn-xs mrcms-btn-primary">Edit</a>
+        <a href="@Url.Action("Edit", "Webpage", new {Model.Id, area = "Admin"})" target="_parent" class="mrcms-btn mrcms-btn-xs mrcms-btn-primary">Edit</a>
         if (Model.Published)
         {
             <a id="unpublish-now" class="mrcms-btn mrcms-btn-xs mrcms-btn-success">Unpublish</a>
@@ -25,10 +25,10 @@
     }
     @if (Model.CanAddChildren())
     {
-        @Html.ActionLink("Add a child page", "Add", "Webpage", new {id = Model.Id, area = "admin"}, new {@class = "mrcms-btn mrcms-btn-xs mrcms-btn-default"})
+        @Html.ActionLink("Add a child page", "Add", "Webpage", new {id = Model.Id, area = "Admin"}, new {@class = "mrcms-btn mrcms-btn-xs mrcms-btn-default"})
     }
 
-    @Html.ActionLink("Add page", "Add", "Webpage", new {id = Model.Parent?.Id, area = "admin"}, new {@class = "mrcms-btn mrcms-btn-xs mrcms-btn-default"})
+    @Html.ActionLink("Add page", "Add", "Webpage", new {id = Model.Parent?.Id, area = "Admin"}, new {@class = "mrcms-btn mrcms-btn-xs mrcms-btn-default"})
 
     @if (Html.CanAccess<InlineEditingACL>("Allowed"))
     {
