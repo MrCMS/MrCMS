@@ -1,33 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
+using MrCMS.FileProviders;
 
-namespace MrCMS.FileProviders
+namespace MrCMS.Installation
 {
-    public class EmbeddedContentFileProvider : IFileProvider
+    public class InstallationContentFileProvider : IFileProvider
     {
-        private readonly string _prefix;
-        private const string Wwwroot = "/wwwroot";
+        private const string Installation = "/Installation/Content";
         private readonly CaseInsensitiveEmbeddedFileProvider _internalProvider;
 
-        public EmbeddedContentFileProvider(Assembly assembly, string prefix = null)
+        public InstallationContentFileProvider()
         {
-            _prefix = prefix;
-            _internalProvider = new CaseInsensitiveEmbeddedFileProvider(assembly);
+            _internalProvider = new CaseInsensitiveEmbeddedFileProvider(this.GetType().Assembly);
         }
 
         public IFileInfo GetFileInfo(string subpath)
         {
             var path = TidyPath(subpath, false);
-            var fileInfo = _internalProvider.GetFileInfo(Wwwroot + path);
-            if (fileInfo is NotFoundFileInfo // isn't found
-                && !string.IsNullOrWhiteSpace(_prefix) // and has prefix
-                && path.StartsWith(_prefix, StringComparison.InvariantCultureIgnoreCase)) // and prefix matches
+            var fileInfo = _internalProvider.GetFileInfo(Installation + path);
+            if (fileInfo is NotFoundFileInfo) // isn't found
             {
-                fileInfo = _internalProvider.GetFileInfo(Wwwroot + path.Substring(_prefix.Length));
+                fileInfo = _internalProvider.GetFileInfo(Installation + path);
             }
             return fileInfo;
         }
@@ -35,12 +29,10 @@ namespace MrCMS.FileProviders
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
             var path = TidyPath(subpath, true);
-            var directoryContents = _internalProvider.GetDirectoryContents(Wwwroot + path);
-            if (directoryContents is NotFoundDirectoryContents // isn't found
-                && !string.IsNullOrWhiteSpace(_prefix) // and has prefix
-                && path.StartsWith(_prefix, StringComparison.InvariantCultureIgnoreCase)) // and prefix matches
+            var directoryContents = _internalProvider.GetDirectoryContents(Installation + path);
+            if (directoryContents is NotFoundDirectoryContents )// isn't found
             {
-                directoryContents = _internalProvider.GetDirectoryContents(Wwwroot + path.Substring(_prefix.Length));
+                directoryContents = _internalProvider.GetDirectoryContents(Installation + path);
             }
             return directoryContents;
         }
@@ -76,8 +68,7 @@ namespace MrCMS.FileProviders
             return string.Join("/", segments);
         }
 
-
-
         public IChangeToken Watch(string filter) => NullChangeToken.Singleton; // can't change - `it's embedded
+
     }
 }

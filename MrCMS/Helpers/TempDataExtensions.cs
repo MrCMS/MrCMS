@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using MrCMS.Helpers;
 using Newtonsoft.Json;
 
-namespace MrCMS.Web.Apps.Admin.Helpers
+namespace MrCMS.Helpers
 {
     public static class TempDataExtensions
     {

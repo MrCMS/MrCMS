@@ -34,13 +34,13 @@ namespace MrCMS.Web.Apps.Core.Services.Installation
                 };
                 session.Save(defaultMediaCategory);
 
-                string logoPath = ("/Content/images/mrcms-logo.png");
+                string logoPath = ("/images/mrcms-logo.png");
                 var fileStream = _fileProvider.GetFileInfo(logoPath).CreateReadStream();
                 MediaFile dbFile = _fileService.AddFile(fileStream, Path.GetFileName(logoPath), "image/png",
                     fileStream.Length,
                     defaultMediaCategory);
 
-                string logoPath1 = ("/Content/Images/mrcms-hat.gif");
+                string logoPath1 = ("/Images/mrcms-hat.gif");
                 var fileStream1 = _fileProvider.GetFileInfo(logoPath).CreateReadStream(); 
                 MediaFile dbFile1 = _fileService.AddFile(fileStream1, Path.GetFileName(logoPath1), "image/gif",
                     fileStream1.Length,

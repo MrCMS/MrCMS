@@ -4,30 +4,30 @@ using MrCMS.Settings;
 
 namespace MrCMS.DbConfiguration
 {
-    [Description("Use built-in data storage (Sqlite) (limited compatibility).")]
-    [NoConnectionStringBuilder]
-    public class SqliteProvider : IDatabaseProvider
-    {
-        private readonly DatabaseSettings _databaseSettings;
+    //[Description("Use built-in data storage (Sqlite) (limited compatibility).")]
+    //[NoConnectionStringBuilder]
+    //public class SqliteProvider : IDatabaseProvider
+    //{
+    //    private readonly DatabaseSettings _databaseSettings;
 
-        public SqliteProvider(DatabaseSettings databaseSettings)
-        {
-            _databaseSettings = databaseSettings;
-        }
+    //    public SqliteProvider(DatabaseSettings databaseSettings)
+    //    {
+    //        _databaseSettings = databaseSettings;
+    //    }
 
-        public IPersistenceConfigurer GetPersistenceConfigurer()
-        {
-            return
-                SQLiteConfiguration.Standard.ConnectionString(builder => builder.Is(_databaseSettings.ConnectionString));
-        }
+    //    public IPersistenceConfigurer GetPersistenceConfigurer()
+    //    {
+    //        return
+    //            SQLiteConfiguration.Standard.ConnectionString(builder => builder.Is(_databaseSettings.ConnectionString));
+    //    }
 
-        public void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config)
-        {
-        }
+    //    public void AddProviderSpecificConfiguration(NHibernate.Cfg.Configuration config)
+    //    {
+    //    }
 
-        public string Type
-        {
-            get { return GetType().FullName; }
-        }
-    }
+    //    public string Type
+    //    {
+    //        get { return GetType().FullName; }
+    //    }
+    //}
 }

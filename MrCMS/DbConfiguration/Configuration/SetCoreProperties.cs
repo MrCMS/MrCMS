@@ -33,8 +33,7 @@ namespace MrCMS.DbConfiguration.Configuration
 
                 if (systemEntity is SiteEntity entity && entity.Site == null)
                 {
-                    // TODO: get site
-                    Site site = ((ISession)@event.Session).GetService<ICurrentSiteLocator>().GetCurrentSite();
+                    Site site = ((ISession) @event.Session).GetService<Site>();
                     SetSite(@event.Persister, @event.State, entity, site);
                 }
             }

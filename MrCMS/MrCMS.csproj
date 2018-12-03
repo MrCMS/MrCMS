@@ -5,6 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Installation\Views\**" />
+    <EmbeddedResource Include="Installation\Content\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Installation\Content\images\logo.png" />
+    <None Remove="Installation\Content\images\mrcms-hat.gif" />
+    <None Remove="Installation\Content\images\mrcms-logo.png" />
+    <None Remove="Installation\Content\style.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="EPPlus" Version="4.5.2.1" />
@@ -18,12 +30,6 @@
     <PackageReference Include="NHibernate.Caches.CoreMemoryCache" Version="5.4.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.1" />
     <PackageReference Include="X.PagedList" Version="7.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System">
-      <HintPath>System</HintPath>
-    </Reference>
   </ItemGroup>
 
 
