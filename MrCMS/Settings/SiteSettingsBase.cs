@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MrCMS.Helpers;
 using MrCMS.Services;
@@ -22,7 +23,7 @@ namespace MrCMS.Settings
             get { return false; }
         }
 
-        public virtual void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
+        public virtual void SetViewData(IServiceProvider serviceProvider, ViewDataDictionary viewDataDictionary)
         {
         }
     }

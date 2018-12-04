@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc.Razor;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace MrCMS.Website
 {
@@ -20,9 +20,15 @@ namespace MrCMS.Website
 
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
         {
-            return !context.Values.ContainsKey(Key) 
-                ? viewLocations 
-                : viewLocations.Select(s => $"/Apps/{context.Values[Key]}" + s).Concat(viewLocations);
+            foreach (var viewLocation in viewLocations)
+            {
+                if (context.Values.ContainsKey(Key))
+                {
+                    yield return $"/Apps/{context.Values[Key]}{viewLocation}";
+                }
+
+                yield return viewLocation;
+            }
         }
     }
 }

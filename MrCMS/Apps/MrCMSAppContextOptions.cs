@@ -1,6 +1,6 @@
 ﻿namespace MrCMS.Apps
 {
-    public class MrCMSAppOptions
+    public class MrCMSAppContextOptions
     {
         public string ContentPrefix { get; set; }
     }

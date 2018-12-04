@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using MrCMS.ACL.Rules;
 using MrCMS.Helpers;
@@ -14,12 +15,12 @@ namespace MrCMS.Web.Apps.Admin.Controllers
     public class SettingsController : MrCMSAdminController
     {
         private readonly IConfigurationProvider _configurationProvider;
-        private readonly ISession _session;
+        private readonly IServiceProvider _serviceProvider;
 
-        public SettingsController(IConfigurationProvider configurationProvider, ISession session)
+        public SettingsController(IConfigurationProvider configurationProvider, IServiceProvider serviceProvider)
         {
             _configurationProvider = configurationProvider;
-            _session = session;
+            _serviceProvider = serviceProvider;
         }
 
         [HttpGet]
@@ -27,7 +28,7 @@ namespace MrCMS.Web.Apps.Admin.Controllers
         public ViewResult Index()
         {
             var settings = _configurationProvider.GetAllSiteSettings().FindAll(arg => arg.RenderInSettings);
-            settings.ForEach(@base => @base.SetViewData(_session, ViewData));
+            settings.ForEach(@base => @base.SetViewData(_serviceProvider, ViewData));
             return View(settings);
         }
 

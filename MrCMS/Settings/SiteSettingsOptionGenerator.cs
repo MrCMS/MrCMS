@@ -1,23 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MrCMS.Apps;
 using MrCMS.Entities.Documents.Layout;
 using MrCMS.Entities.Documents.Media;
 using MrCMS.Entities.Documents.Web;
 using MrCMS.Helpers;
 using MrCMS.Website.Caching;
 using NHibernate;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace MrCMS.Settings
 {
-    public class SiteSettingsOptionGenerator
+    public class SiteSettingsOptionGenerator : ISiteSettingsOptionGenerator
     {
-        public virtual List<SelectListItem> GetErrorPageOptions(ISession session, int pageId)
+        private readonly ISession _session;
+        private readonly MrCMSAppContext _appContext;
+
+        public SiteSettingsOptionGenerator(ISession session, MrCMSAppContext appContext)
         {
-            var list = session.QueryOver<Webpage>().Where(webpage => webpage.Parent == null).Cacheable().List();
+            _session = session;
+            _appContext = appContext;
+        }
+
+        public virtual List<SelectListItem> GetErrorPageOptions(int pageId)
+        {
+            var list = _session.QueryOver<Webpage>().Where(webpage => webpage.Parent == null).Cacheable().List();
             return
                 list.Where(page => page.Published)
                          .BuildSelectItemList(
@@ -26,10 +35,10 @@ namespace MrCMS.Settings
                              page => page.Id == pageId, (string)null);
         }
 
-        public virtual List<SelectListItem> GetMediaCategoryOptions(ISession session, int? categoryId)
+        public virtual List<SelectListItem> GetMediaCategoryOptions(int? categoryId)
         {
             var list =
-                session.QueryOver<MediaCategory>()
+                _session.QueryOver<MediaCategory>()
                        .Where(category => category.Parent == null && !category.HideInAdminNav)
                        .Cacheable()
                        .List();
@@ -40,9 +49,9 @@ namespace MrCMS.Settings
                     category => category.Id == categoryId, (string)null);
         }
 
-        public virtual List<SelectListItem> GetLayoutOptions(ISession session, int? selectedLayoutId)
+        public virtual List<SelectListItem> GetLayoutOptions(int? selectedLayoutId)
         {
-            return session.QueryOver<Layout>()
+            return _session.QueryOver<Layout>()
                           .Cacheable()
                           .List()
                           .BuildSelectItemList(
@@ -54,6 +63,9 @@ namespace MrCMS.Settings
 
         public virtual List<SelectListItem> GetThemeNames(string themeName)
         {
+            return _appContext.Themes.BuildSelectItemList(theme => theme.Name,
+                selected: theme => theme.Name == themeName,
+                emptyItem: SelectListItemHelper.EmptyItem("None", ""));
             // TODO: themes
             return new List<SelectListItem>();
             //var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath + "\\Themes\\";

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -14,7 +13,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using MrCMS.Apps;
-using MrCMS.DbConfiguration;
 using MrCMS.Entities.Multisite;
 using MrCMS.Entities.People;
 using MrCMS.Helpers;
@@ -22,16 +20,13 @@ using MrCMS.Installation;
 using MrCMS.Logging;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
-using MrCMS.Settings;
 using MrCMS.Web.Apps.Admin;
 using MrCMS.Web.Apps.Core;
 using MrCMS.Web.Apps.Core.Auth;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
-using NHibernate;
-using System;
 using System.Linq;
-using ISession = NHibernate.ISession;
+using MrCMS.Themes.Red;
 
 namespace MrCMS.Web
 {
@@ -66,6 +61,7 @@ namespace MrCMS.Web
             {
                 context.RegisterApp<MrCMSCoreApp>();
                 context.RegisterApp<MrCMSAdminApp>();
+                context.RegisterTheme<RedTheme>();
             });
 
             services.AddDataAccess(isInstalled, Configuration.GetSection(Database));
@@ -103,22 +99,7 @@ namespace MrCMS.Web
                 appContext.ConfigureAutomapper(expression);
             });
 
-            services.AddMvc(options =>
-                {
-                    // add custom binder to beginning of collection
-                    options.ModelBinderProviders.Insert(0, new SystemEntityBinderProvider());
-                    appContext.SetupMvcOptions(options);
-
-                }).AddRazorOptions(options =>
-                {
-                    options.ViewLocationExpanders.Insert(0, new WebpageViewExpander());
-                    options.ViewLocationExpanders.Insert(1, new AppViewLocationExpander());
-                    options.FileProviders.Add(fileProvider);
-                })
-                .AddViewLocalization()
-                .AddDataAnnotations()
-                .AddDataAnnotationsLocalization()
-                .AddAppMvcConfig(appContext);
+            services.AddMvcForMrCMS(appContext, fileProvider);
 
             services.AddLogging(builder => builder.AddMrCMSLogger());
 

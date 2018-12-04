@@ -46,7 +46,7 @@ namespace MrCMS.FileProviders
         /// </summary>
         /// <param name="assembly">The assembly that contains the embedded resources.</param>
         /// <param name="baseNamespace">The base namespace that contains the embedded resources.</param>
-        public CaseInsensitiveEmbeddedFileProvider(Assembly assembly, string baseNamespace)
+        private CaseInsensitiveEmbeddedFileProvider(Assembly assembly, string baseNamespace)
         {
             if (assembly == null)
                 throw new ArgumentNullException(nameof(assembly));
@@ -100,8 +100,6 @@ namespace MrCMS.FileProviders
                 return new NotFoundFileInfo(fileName);
             }
 
-            //if (_assembly.GetManifestResourceInfo(str) == null)
-            //    return new NotFoundFileInfo(fileName);
             return new EmbeddedResourceFileInfo(_assembly, resourceName, fileName, _lastModified);
         }
 
@@ -165,10 +163,7 @@ namespace MrCMS.FileProviders
                                       segments[i].Substring(findPosition + 1).Replace(".", "._");
 
                     // A dash is replaced with an underscore when no underscores are in the name or a dot occurrence is before it.
-                    //if ((findPosition = segments[i].IndexOf('_')) == -1 || (dotPosition >= 0 && dotPosition < findPosition))
-                    {
-                        segments[i] = segments[i].Replace('-', '_');
-                    }
+                    segments[i] = segments[i].Replace('-', '_');
                 }
             }
 

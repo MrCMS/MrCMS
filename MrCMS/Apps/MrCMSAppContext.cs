@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using MrCMS.FileProviders;
 using MrCMS.Helpers;
+using MrCMS.Themes;
 using MrCMS.Website;
 using MrCMS.Website.CMS;
 using NHibernate.Cfg;
@@ -18,17 +19,21 @@ namespace MrCMS.Apps
         public MrCMSAppContext()
         {
             Apps = new HashSet<IMrCMSApp>();
+            Themes = new HashSet<IMrCMSTheme>();
             Types = new Dictionary<Type, IMrCMSApp>();
         }
 
         public ISet<IMrCMSApp> Apps { get; }
+        public ISet<IMrCMSTheme> Themes { get; }
         public IDictionary<Type, IMrCMSApp> Types { get; }
 
         public IEnumerable<IFileProvider> ViewFileProviders =>
-            Apps.Select(app => new EmbeddedViewFileProvider(app.Assembly, app.ViewPrefix));
+            Themes.Select(app => new ThemeEmbeddedViewFileProvider(app.Assembly, app.ViewPrefix)).Concat(
+                Apps.Select(app => new EmbeddedViewFileProvider(app.Assembly, app.ViewPrefix)));
 
         public IEnumerable<IFileProvider> ContentFileProviders =>
-            Apps.Select(app => new EmbeddedContentFileProvider(app.Assembly, app.ContentPrefix));
+            Themes.Select(app => new EmbeddedContentFileProvider(app.Assembly, app.ContentPrefix)).Concat(
+                Apps.Select(app => new EmbeddedContentFileProvider(app.Assembly, app.ContentPrefix)));
 
         public IEnumerable<Type> DbConventions => Apps.SelectMany(app => app.Conventions);
         public IEnumerable<Type> DbBaseTypes => Apps.SelectMany(app => app.BaseTypes);
@@ -45,9 +50,9 @@ namespace MrCMS.Apps
 
         }
 
-        public void RegisterApp<TApp>(Action<MrCMSAppOptions> options = null) where TApp : IMrCMSApp, new()
+        public void RegisterApp<TApp>(Action<MrCMSAppContextOptions> options = null) where TApp : IMrCMSApp, new()
         {
-            var appOptions = new MrCMSAppOptions();
+            var appOptions = new MrCMSAppContextOptions();
             options?.Invoke(appOptions);
             var app = new TApp();
             if (!string.IsNullOrWhiteSpace(appOptions.ContentPrefix))
@@ -56,6 +61,17 @@ namespace MrCMS.Apps
 
             // register apps
             app.Assembly.GetTypes().ForEach(type => Types[type] = app);
+        }
+
+        public void RegisterTheme<TTheme>(Action<MrCMSAppContextOptions> options = null)
+            where TTheme : IMrCMSTheme, new()
+        {
+            var appOptions = new MrCMSAppContextOptions();
+            options?.Invoke(appOptions);
+            var theme = new TTheme();
+            if (!string.IsNullOrWhiteSpace(appOptions.ContentPrefix))
+                theme.ContentPrefix = appOptions.ContentPrefix;
+            Themes.Add(theme);
         }
 
         public void SetupMvcOptions(MvcOptions options)

@@ -8,7 +8,6 @@ namespace MrCMS.FileProviders
     public class EmbeddedViewFileProvider : IFileProvider
     {
         private readonly string _prefix;
-        private const string Views = "/Views";
         private readonly CaseInsensitiveEmbeddedFileProvider _internalProvider;
         public EmbeddedViewFileProvider(Assembly assembly, string prefix = null)
         {
@@ -16,11 +15,8 @@ namespace MrCMS.FileProviders
             _internalProvider = new CaseInsensitiveEmbeddedFileProvider(assembly);
         }
 
-        public IFileInfo GetFileInfo(string subpath)
+        public virtual IFileInfo GetFileInfo(string subpath)
         {
-            //if (!subpath.StartsWith(Views))
-            //    return new NotFoundFileInfo(subpath);
-
             var fileInfo = _internalProvider.GetFileInfo(subpath);
             if (fileInfo is NotFoundFileInfo // isn't found
                 && !string.IsNullOrWhiteSpace(_prefix) // and has prefix
@@ -31,11 +27,8 @@ namespace MrCMS.FileProviders
             return fileInfo;
         }
 
-        public IDirectoryContents GetDirectoryContents(string subpath)
+        public virtual IDirectoryContents GetDirectoryContents(string subpath)
         {
-            //if (!subpath.StartsWith(Views))
-            //    return new NotFoundDirectoryContents();
-
             var directoryContents = _internalProvider.GetDirectoryContents(subpath);
             if (directoryContents is NotFoundDirectoryContents // isn't found
                 && !string.IsNullOrWhiteSpace(_prefix) // and has prefix

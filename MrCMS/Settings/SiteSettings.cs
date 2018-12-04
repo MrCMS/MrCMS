@@ -5,14 +5,13 @@ using System.Globalization;
 using System.Net;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.DependencyInjection;
 using NHibernate;
 
 namespace MrCMS.Settings
 {
     public class SiteSettings : SiteSettingsBase
     {
-        private readonly SiteSettingsOptionGenerator _siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
-        private SiteSettingsOptionGenerator _siteSettingsOptionGeneratorOverride;
 
         public SiteSettings()
         {
@@ -24,11 +23,6 @@ namespace MrCMS.Settings
             TaskExecutorKey = "executor";
             TaskExecutorPassword = Guid.NewGuid().ToString();
             TaskExecutionDelay = 10;
-        }
-
-        protected SiteSettingsOptionGenerator SiteSettingsOptionGenerator
-        {
-            get { return _siteSettingsOptionGeneratorOverride ?? _siteSettingsOptionGenerator; }
         }
 
 
@@ -163,27 +157,22 @@ namespace MrCMS.Settings
         public FormRenderingType FormRendererType { get; set; }
 
 
-        public void SetSiteSettingsOptionGeneratorOverride(SiteSettingsOptionGenerator siteSettingsOptionGenerator)
+
+        public override void SetViewData(IServiceProvider serviceProvider, ViewDataDictionary viewDataDictionary)
         {
-            _siteSettingsOptionGeneratorOverride = siteSettingsOptionGenerator;
-        }
+            var generator = serviceProvider.GetRequiredService<ISiteSettingsOptionGenerator>();
+            viewDataDictionary["DefaultLayoutOptions"] = generator.GetLayoutOptions(DefaultLayoutId);
+            viewDataDictionary["403Options"] = generator.GetErrorPageOptions(Error403PageId);
+            viewDataDictionary["404Options"] = generator.GetErrorPageOptions(Error404PageId);
+            viewDataDictionary["500Options"] = generator.GetErrorPageOptions(Error500PageId);
+            viewDataDictionary["Themes"] = generator.GetThemeNames(ThemeName);
 
-        public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
-        {
-            viewDataDictionary["DefaultLayoutOptions"] = SiteSettingsOptionGenerator.GetLayoutOptions(session,
-                DefaultLayoutId);
-            viewDataDictionary["403Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error403PageId);
-            viewDataDictionary["404Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error404PageId);
-            viewDataDictionary["500Options"] = SiteSettingsOptionGenerator.GetErrorPageOptions(session, Error500PageId);
-            viewDataDictionary["Themes"] = SiteSettingsOptionGenerator.GetThemeNames(ThemeName);
+            viewDataDictionary["UiCultures"] = generator.GetUiCultures(UICulture);
 
-            viewDataDictionary["UiCultures"] = SiteSettingsOptionGenerator.GetUiCultures(UICulture);
-
-            viewDataDictionary["TimeZones"] = SiteSettingsOptionGenerator.GetTimeZones(TimeZone);
+            viewDataDictionary["TimeZones"] = generator.GetTimeZones(TimeZone);
 
             viewDataDictionary["DefaultFormRenderer"] =
-                SiteSettingsOptionGenerator.GetFormRendererOptions(FormRendererType);
-            // TODO: view data?
+                generator.GetFormRendererOptions(FormRendererType);
         }
 
         public TagBuilder GetHoneypot()

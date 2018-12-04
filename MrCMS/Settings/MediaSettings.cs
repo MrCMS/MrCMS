@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.DependencyInjection;
 using MrCMS.Models;
 using MrCMS.Website.Caching;
 using NHibernate;
@@ -10,7 +12,6 @@ namespace MrCMS.Settings
 {
     public class MediaSettings : SiteSettingsBase
     {
-        private readonly SiteSettingsOptionGenerator _siteSettingsOptionGenerator = new SiteSettingsOptionGenerator();
         private Size _largeSize;
         private Size _maxSize;
         private Size _mediumSize;
@@ -150,11 +151,11 @@ namespace MrCMS.Settings
         [DisplayName("Media Page Size")]
         public int MediaPageSize { get; set; }
 
-        public override void SetViewData(ISession session, ViewDataDictionary viewDataDictionary)
+        public override void SetViewData(IServiceProvider serviceProvider, ViewDataDictionary viewDataDictionary)
         {
-            viewDataDictionary["DefaultCategoryOptions"] = _siteSettingsOptionGenerator.GetMediaCategoryOptions(session, null);
-            viewDataDictionary["CacheExpiryTypeOptions"] = _siteSettingsOptionGenerator.GetCacheExpiryTypeOptions();
-            // TODO: view data?
+            var generator = serviceProvider.GetRequiredService<ISiteSettingsOptionGenerator>();
+            viewDataDictionary["DefaultCategoryOptions"] = generator.GetMediaCategoryOptions(null);
+            viewDataDictionary["CacheExpiryTypeOptions"] = generator.GetCacheExpiryTypeOptions();
         }
     }
 }

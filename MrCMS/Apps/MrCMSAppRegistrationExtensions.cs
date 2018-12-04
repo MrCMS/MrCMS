@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using MrCMS.Services.Resources;
+using MrCMS.Website;
 
 namespace MrCMS.Apps
 {
@@ -30,6 +33,28 @@ namespace MrCMS.Apps
 
             return builder;
         }
+
+        public static IMvcBuilder AddMvcForMrCMS(this IServiceCollection services, MrCMSAppContext appContext,
+            IFileProvider fileProvider)
+        {
+            return services.AddMvc(options =>
+                {
+                    // add custom binder to beginning of collection
+                    options.ModelBinderProviders.Insert(0, new SystemEntityBinderProvider());
+                    appContext.SetupMvcOptions(options);
+
+                }).AddRazorOptions(options =>
+                {
+                    options.ViewLocationExpanders.Insert(0, new WebpageViewExpander());
+                    options.ViewLocationExpanders.Insert(1, new AppViewLocationExpander());
+                    options.ViewLocationExpanders.Insert(2, new ThemeViewLocationExpander());
+                    options.FileProviders.Add(fileProvider);
+                })
+                .AddViewLocalization()
+                .AddDataAnnotations()
+                .AddDataAnnotationsLocalization()
+                .AddAppMvcConfig(appContext);
+        } 
 
         public static IFileProvider AddFileProvider(this IServiceCollection services,
             IHostingEnvironment environment, MrCMSAppContext appContext)
