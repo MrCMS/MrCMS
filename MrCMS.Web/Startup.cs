@@ -53,6 +53,9 @@ namespace MrCMS.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var isInstalled = IsInstalled();
+
+            // services always required
             services.RegisterAllSimplePairings();
             services.RegisterOpenGenerics();
             services.SelfRegisterAllConcreteTypes();
@@ -64,18 +67,9 @@ namespace MrCMS.Web
                 context.RegisterApp<MrCMSCoreApp>();
                 context.RegisterApp<MrCMSAdminApp>();
             });
-            services.AddSingleton(appContext);
 
-            services.AddScoped<ISession>(provider =>
-            {
-                var session = provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-nh-session"] as ISession;
-                return session ?? provider.GetRequiredService<ISessionFactory>().OpenFilteredSession(provider);
-            });
-            services.AddTransient<IStatelessSession>(provider =>
-            {
-                var session = provider.GetRequiredService<IHttpContextAccessor>().HttpContext.Items["override-nh-stateless-session"] as IStatelessSession;
-                return session ?? provider.GetRequiredService<ISessionFactory>().OpenStatelessSession();
-            });
+            services.AddDataAccess(isInstalled, Configuration.GetSection(Database));
+
             // TODO: Look to removing Site for constructors and resolving like this
             services.AddScoped<Site>(provider =>
             {
@@ -83,43 +77,20 @@ namespace MrCMS.Web
                 return site ?? provider.GetRequiredService<ICurrentSiteLocator>().GetCurrentSite();
             });
 
-            services.AddScoped<IFileSystem>(provider =>
-            {
-                var settings = provider.GetService<FileSystemSettings>();
-
-                var storageType = settings.StorageType;
-                if (string.IsNullOrWhiteSpace(storageType))
-                {
-                    return provider.GetService<FileSystem>();
-                }
-
-                var type = TypeHelper.GetTypeByName(storageType);
-                if (type?.IsAssignableFrom(typeof(IFileSystem)) != true)
-                {
-                    return provider.GetService<FileSystem>();
-                }
-
-                return provider.GetService(type) as IFileSystem;
-            });
+            services.AddMrCMSFileSystem();
 
             services.AddSignalR();
 
-            if (!IsInstalled())
+            // if the system is not installed we just want MrCMS to show the installation screen
+            if (!isInstalled)
             {
-                services.AddSingleton((IFileProvider)new InstallationContentFileProvider());
-
-                services.AddMvc().AddRazorOptions(options =>
-                {
-                var fileProvider = new InstallationViewFileProvider();
-                    options.FileProviders.Insert(0, fileProvider);
-                });
+                services.AddInstallationServices();
                 return;
             }
-            var physicalProvider = Environment.ContentRootFileProvider;
-            var compositeFileProvider =
-                new CompositeFileProvider(new[] { physicalProvider }.Concat(appContext.ViewFileProviders));
 
-            services.AddSingleton<IFileProvider>(compositeFileProvider);
+            // Live services
+
+            var fileProvider = services.AddFileProvider(Environment, appContext);
 
             services.RegisterSettings();
             services.RegisterTokenProviders();
@@ -142,7 +113,7 @@ namespace MrCMS.Web
                 {
                     options.ViewLocationExpanders.Insert(0, new WebpageViewExpander());
                     options.ViewLocationExpanders.Insert(1, new AppViewLocationExpander());
-                    options.FileProviders.Add(compositeFileProvider);
+                    options.FileProviders.Add(fileProvider);
                 })
                 .AddViewLocalization()
                 .AddDataAnnotations()
@@ -151,88 +122,15 @@ namespace MrCMS.Web
 
             services.AddLogging(builder => builder.AddMrCMSLogger());
 
-            services.Configure<DatabaseSettings>(Configuration.GetSection(Database));
-            services.RegisterDatabaseProviders();
-
-            services.AddSingleton<ISessionFactory>(provider =>
-                new NHibernateConfigurator(provider.GetRequiredService<IDatabaseProviderResolver>().GetProvider(),
-                    provider.GetRequiredService<MrCMSAppContext>()).CreateSessionFactory());
-
-            services.AddIdentity<User, UserRole>(options =>
-            {
-                // lockout
-                if (int.TryParse(Configuration["Auth:Lockout:MaxFailedAccessAttempts"],
-                    out var maxFailedAccessAttempts))
-                {
-                    options.Lockout.MaxFailedAccessAttempts = maxFailedAccessAttempts;
-                }
-
-                if (TimeSpan.TryParse(Configuration["Auth:Lockout:DefaultLockoutTimeSpan"],
-                    out var defaultLockoutTimeSpan))
-                {
-                    options.Lockout.DefaultLockoutTimeSpan = defaultLockoutTimeSpan;
-                }
-
-                if (bool.TryParse(Configuration["Auth:Lockout:AllowedForNewUsers"], out var allowedForNewUsers))
-                {
-                    options.Lockout.AllowedForNewUsers = allowedForNewUsers;
-                }
-
-                // password
-                if (int.TryParse(Configuration["Auth:Password:RequiredLength"], out var requiredLength))
-                {
-                    options.Password.RequiredLength = requiredLength;
-                }
-
-                if (bool.TryParse(Configuration["Auth:Password:RequireDigit"], out var requireDigit))
-                {
-                    options.Password.RequireDigit = requireDigit;
-                }
-
-                if (bool.TryParse(Configuration["Auth:Password:RequireLowercase"], out var requireLowercase))
-                {
-                    options.Password.RequireLowercase = requireLowercase;
-                }
-
-                if (bool.TryParse(Configuration["Auth:Password:RequireNonAlphanumeric"],
-                    out var requireNonAlphanumeric))
-                {
-                    options.Password.RequireNonAlphanumeric = requireNonAlphanumeric;
-                }
-
-                if (bool.TryParse(Configuration["Auth:Password:RequireUppercase"], out var requireUppercase))
-                {
-                    options.Password.RequireUppercase = requireUppercase;
-                }
-
-                // sign in
-                if (bool.TryParse(Configuration["Auth:SignIn:RequireConfirmedEmail"],
-                    out var requireConfirmedEmail))
-                {
-                    options.SignIn.RequireConfirmedEmail = requireConfirmedEmail;
-                }
-
-                if (bool.TryParse(Configuration["Auth:SignIn:RequireConfirmedPhoneNumber"],
-                    out var requireConfirmedPhoneNumber))
-                {
-                    options.SignIn.RequireConfirmedPhoneNumber = requireConfirmedPhoneNumber;
-                }
-
-                options.User.RequireUniqueEmail = true;
-                options.ClaimsIdentity.UserNameClaimType = nameof(User.Email);
-                options.ClaimsIdentity.UserIdClaimType = nameof(User.Id);
-            })
-              .AddMrCMSStores()
-              .AddDefaultTokenProviders();
-
+            services.AddMrCMSIdentity(Configuration);
 
             services.AddSingleton<ICmsMethodTester, CmsMethodTester>();
             services.AddSingleton<IGetMrCMSParts, GetMrCMSParts>();
             services.AddSingleton<IAssignPageDataToRouteData, AssignPageDataToRouteData>();
             services.AddSingleton<IQuerySerializer, QuerySerializer>();
+
             services.AddSingleton<IStringLocalizerFactory, StringLocalizerFactory>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddSingleton<IDatabaseProviderResolver, DatabaseProviderResolver>();
 
 
             services.AddScoped<IUrlHelper>(x =>
@@ -262,7 +160,7 @@ namespace MrCMS.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, MrCMSAppContext appContext, IDatabaseProviderResolver databaseProviderResolver)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, MrCMSAppContext appContext)
         {
             if (env.IsDevelopment())
             {
@@ -271,26 +169,19 @@ namespace MrCMS.Web
 
             app.UseSession();
 
-
-            if (!databaseProviderResolver.IsProviderConfigured())
+            if (!IsInstalled())
             {
-                app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new InstallationContentFileProvider()
-                });
-
                 app.ShowInstallation();
+                return;
             }
-            else
+
+            app.UseStaticFiles(new StaticFileOptions
             {
-                app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new CompositeFileProvider(
-                        new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
-                });
-                app.UseAuthentication();
-                app.UseMrCMS();
-            }
+                FileProvider = new CompositeFileProvider(
+                    new[] { Environment.WebRootFileProvider }.Concat(appContext.ContentFileProviders))
+            });
+            app.UseAuthentication();
+            app.UseMrCMS();
         }
     }
 

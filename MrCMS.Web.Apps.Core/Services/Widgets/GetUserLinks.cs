@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Html;
 using MrCMS.Services;
 using MrCMS.Services.Resources;
@@ -6,6 +5,7 @@ using MrCMS.Services.Widgets;
 using MrCMS.Web.Apps.Core.Models.Navigation;
 using MrCMS.Web.Apps.Core.Pages;
 using MrCMS.Web.Apps.Core.Widgets;
+using System.Collections.Generic;
 
 namespace MrCMS.Web.Apps.Core.Services.Widgets
 {
@@ -56,15 +56,17 @@ namespace MrCMS.Web.Apps.Core.Services.Widgets
                     navigationRecords.Add(new NavigationRecord
                     {
                         Text = new HtmlString(_stringResourceProvider.GetValue("Login")),
-                        Url = new HtmlString(string.Format("/{0}", loginPageUrl))
+                        Url = new HtmlString(loginPageUrl)
                     });
                     var registerPageUrl = _uniquePageService.GetUrl<RegisterPage>();
                     if (registerPageUrl != null)
+                    {
                         navigationRecords.Add(new NavigationRecord
                         {
                             Text = new HtmlString(_stringResourceProvider.GetValue("Register")),
-                            Url = new HtmlString(string.Format("/{0}", registerPageUrl))
+                            Url = new HtmlString(registerPageUrl)
                         });
+                    }
                 }
             }
 

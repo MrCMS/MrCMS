@@ -10,13 +10,5 @@ namespace MrCMS.Logging
             builder.Services.AddSingleton<ILoggerProvider, MrCMSDatabaseLoggerProvider>();
             return builder;
         }
-
-        //public static ILoggingBuilder AddFile(this ILoggingBuilder builder>
-        //{
-        //    builder.AddFile();
-        //    builder.Services.Configure(configure);
-
-        //    return builder;
-        //}
     }
 }

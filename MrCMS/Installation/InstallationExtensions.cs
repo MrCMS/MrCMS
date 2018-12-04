@@ -1,23 +1,41 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using System.Threading.Tasks;
 
 namespace MrCMS.Installation
 {
     public static class InstallationExtensions
     {
-        public static void ShowInstallation(this IApplicationBuilder applicationBuilder)
+        public static IServiceCollection AddInstallationServices(this IServiceCollection services)
         {
-            applicationBuilder.UseMvc(builder =>
+            services.AddSingleton<IFileProvider>(new InstallationContentFileProvider());
+
+            services.AddMvc().AddRazorOptions(options =>
+            {
+                var fileProvider = new InstallationViewFileProvider();
+                options.FileProviders.Insert(0, fileProvider);
+            });
+
+            return services;
+        }
+
+        public static void ShowInstallation(this IApplicationBuilder app)
+        {
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new InstallationContentFileProvider()
+            });
+            app.UseMvc(builder =>
             {
                 builder.MapRoute("Installation", "",
-                    new {controller = "Install", action = "Setup"});
+                    new { controller = "Install", action = "Setup" });
                 builder.Routes.Add(new InstallationRedirectRouter());
-                // "{controller=Install}/{action=Setup}/{id?}");
             });
         }
 
-        public class InstallationRedirectRouter : IRouter
+        private class InstallationRedirectRouter : IRouter
         {
             public Task RouteAsync(RouteContext context)
             {
